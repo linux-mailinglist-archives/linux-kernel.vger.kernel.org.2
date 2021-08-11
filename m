@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B913E9295
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F2F3E9281
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhHKN0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:26:16 -0400
-Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:44116 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231405AbhHKNYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:24:11 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id DB3C91807F217;
-        Wed, 11 Aug 2021 13:23:44 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 593651A29FE;
-        Wed, 11 Aug 2021 13:23:43 +0000 (UTC)
-Message-ID: <c296dd2f66e97ad38d5456c0fab4e0ff99b14634.camel@perches.com>
-Subject: Re: [PATCH net-next v2 2/2] bonding: combine netlink and console
- error messages
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jonathan Toppins <jtoppins@redhat.com>, netdev@vger.kernel.org,
-        leon@kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S231558AbhHKNY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:24:57 -0400
+Received: from www.zeus03.de ([194.117.254.33]:36446 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230137AbhHKNYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:24:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=Ob18HouyjEG4yKGxnXe8mW2b9Ubs
+        QmEYQVddNMLg/Tc=; b=vE/Z4umeG8rqyiGlUVPlQGI7s+tAEkpPvEkpLJWYZkyt
+        dE3xHhJx2hi4NM801MAB07HUZ1Ug7h99ZHF2ra3Wmz2nTejsN3S2bOTzvHlByk5e
+        sKD6KoZLVxKpYVcMOqWM40aOkRiHSfVyiM/deFkoqiJI1IKP6KGV3LlW5n4+oEU=
+Received: (qmail 2664356 invoked from network); 11 Aug 2021 15:24:24 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Aug 2021 15:24:24 +0200
+X-UD-Smtp-Session: l3s3148p1@Vm5ziUjJ8J0gARa4RTP4AfHKOCm/nqrR
+Date:   Wed, 11 Aug 2021 15:24:23 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 11 Aug 2021 06:23:41 -0700
-In-Reply-To: <20210811054917.722bd988@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <cover.1628650079.git.jtoppins@redhat.com>
-         <e6b78ce8f5904a5411a809cf4205d745f8af98cb.1628650079.git.jtoppins@redhat.com>
-         <d5e1aada694465fd62f57695e264259815e60746.camel@perches.com>
-         <20210811054917.722bd988@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+Subject: Re: [PATCH 1/7] i2c: at91-master: : use proper DMAENGINE API for
+ termination
+Message-ID: <YRPPh6ucRfL/gGZG@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
+ <20210623095942.3325-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 593651A29FE
-X-Spam-Status: No, score=1.56
-X-Stat-Signature: 4djjjcjq8kkr7c1aewnaurrx6cw1hctk
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/EeNUAF09QPTMPt+4vmd/b8cehfzKAmU8=
-X-HE-Tag: 1628688223-324698
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QdmGwop7VZKZW5o7"
+Content-Disposition: inline
+In-Reply-To: <20210623095942.3325-2-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-11 at 05:49 -0700, Jakub Kicinski wrote:
-> On Tue, 10 Aug 2021 20:27:01 -0700 Joe Perches wrote:
-> > > +#define BOND_NL_ERR(bond_dev, extack, errmsg) do {		\
-> > > +	if (extack)						\
-> > > +		NL_SET_ERR_MSG(extack, errmsg);			\
-> > > +	else							\
-> > > +		netdev_err(bond_dev, "Error: %s\n", errmsg);	\
-> > > +} while (0)
-> > > +
-> > > +#define SLAVE_NL_ERR(bond_dev, slave_dev, extack, errmsg) do {		\
-> > > +	if (extack)							\
-> > > +		NL_SET_ERR_MSG(extack, errmsg);				\
-> > > +	else								\
-> > > +		slave_err(bond_dev, slave_dev, "Error: %s\n", errmsg);	\
-> > > +} while (0)  
-> > 
-> > Ideally both of these would be static functions and not macros.
-> 
-> That may break our ability for NL_SET_ERR_MSG to place strings 
-> back in a static buffer, no?
 
-Not really.
+--QdmGwop7VZKZW5o7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The most common way to place things in a particular section is to
-use __section("whatever")
+On Wed, Jun 23, 2021 at 11:59:35AM +0200, Wolfram Sang wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-It's pretty trivial to mark these errmsg strings as above.
+Applied to for-next, thanks!
 
 
+--QdmGwop7VZKZW5o7
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmETz4MACgkQFA3kzBSg
+KbYuUA/+I2bdHPXgGVSkfL9GsxgoG+ReEDCPFZuA6jN4kagY1rmXHVSlSeIMlKyR
+r0x8l4FGpcQiG4gc3KoU1K60t5tTk3AmR8/sFoEwLRD3vZ+XO3SRMLafzPOsUqJ9
+0RrxkH2tRRWGfs6VZdmeD5LzG952rpyRB3DT/rGOahoQkXeVax7hgJQdO9rKfo4E
+Rcl4TBgao4gKooGRZfGPeU9SFZ6DrAS/TK5aEm4eg1vREH6Vw/rXgwJm0L9/5awI
+3bKtbHogDRaqcsm0snS/cpgJ6KoRUMRlsbvx9RM4lENjQOloG6RHFvtTBfOW9+A2
+RetOLeiWe3EHJzA1xqjTx8PtxRU15DUJpK0dZuk6g0YaJZsNoTXb2WFglcjkHgTm
+bnDrZk/r7RTt8NUwPQZUyXarduR7VV3CfrnVvb1POkSBBBqDAfAtUik/L+RJoc7j
+I0TgMzQWvZL+HoG3xnaoCYEoDgEemzi8n6+4Ls5Yj+SjEoQYS1gWfefpoFGJcpIR
+hS2FNzMgZilMcPD9BbtRczqUgBq3Ry+fB7GSJTwNYRkQckMw4FV7OSRMSmuLpXcj
+ox0Z8P3q3rsH9bodav+ljf0mJUQdN3O6LodU+WZuI52wIsIwQ31cG+HvTnbb/56d
+/6BWmVSo1UiVmcOtSDbDXcjWGc0lwAR4j1OYQXKwQlxTY7nmzlE=
+=tkps
+-----END PGP SIGNATURE-----
+
+--QdmGwop7VZKZW5o7--
