@@ -2,337 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333993E90F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD543E910D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238009AbhHKM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:27:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238277AbhHKMZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA6B60FC3;
-        Wed, 11 Aug 2021 12:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628684681;
-        bh=KhdkyWs62enuVFTS+UMmW5FuOLpzgkVsa0BKCMVUt7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lZkS9XrxaOjEOWe6Q2O59awKPKuPx5XbCdDz2OToG9JFc15gaznkxR8pY9VlOYtn/
-         KNHrFOD5xfxn2dUKIe5b+/zbNMP0k/bl55YzSeXq4K+X8rctM7hYkgHiF+IPyu1yvH
-         dInFR2P4k8LtxljGT9vwyc1TtKqACUj9vs1m/Dn0VEiIeCM+WUHvd5XgAxQUtNLx/q
-         EIP+lGwLdSBN8dIuv21+pljWkz2PyvvSNExSOwoNCpX93VtqH0N2OJNvLyHZu37vtL
-         P/Yl/YUXdkyteJUIIJVB1ATIu0X03dGEtsWknR7RYVxxat0LzLbzvL4fudjinrKit9
-         YKg7Zhwj4HdZg==
-Date:   Wed, 11 Aug 2021 15:24:36 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 15/18] ARC: mm: support 3 levels of page tables
-Message-ID: <YRPBhJyYM/L5XWb/@kernel.org>
-References: <20210811004258.138075-1-vgupta@kernel.org>
- <20210811004258.138075-16-vgupta@kernel.org>
+        id S237742AbhHKMaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhHKMaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:30:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A9FC0617BD
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:25:31 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id h9so4241423ljq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zEH3nbdjRk3iKKEKjuiI8MahBqLUdJ0ANeHswehlAC4=;
+        b=fryX8NC6y6XlhC7j8uc53VpWuPhaK1RvrhW4QxLCjceOa1J59cngm58Q5breUEAZbO
+         OdlWLshstDrjt6UOfytqzUzuH9ayTdiWPqaDLgUlsUlCyZld1UlCCVRE0nBVaW4paNh6
+         1a3FNJ14ZhQ8hNw03miW5hJUrtt3hETfd0HLclQFNJOttkWqXJ3IQJ2dZonNKhWThxNV
+         s25hAQibOskooQ2GsZBsZ7KyVni2733OGYGblU+c4qNb68oeRVGM9Zmcpn+boaMC4754
+         13X17tG6W+wmrmnj86w4abOEdedO5ZYDks6sohT3FniDvvsgkv/WrYVhuuAwaLgJG3Rb
+         a1kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zEH3nbdjRk3iKKEKjuiI8MahBqLUdJ0ANeHswehlAC4=;
+        b=Bal2k3XBRi4iJeJZ3gsue+G5w93aQbSDrSafrcYIPduNUPooikme6lgIr6krpq9N7w
+         od+djai/wfA/ypbN2LNZpd4LsQdRJ+pLZLZuaXKSsghs8Rz7ijMYXTg4cty5ze447WeL
+         4hYaeUhsaxz45Xt795sbsWQOSg9RuZ1ItQtk3iy0Ymu2LrLW5Nha5dX2X70anJTYq+SW
+         rZeehg5GzAizU8KUcW3TCIUhkzI2zUo5fIPp0k20DZPhySrxuBhFDGt0+OUTiWg3XshW
+         7bJUON7V9svfcj9gbhIdP9sjL172r7os7iRi7DBy88Bi8O98LJsaX/CTUKJV3k+pVY8s
+         OEvQ==
+X-Gm-Message-State: AOAM533YJjITEBZQgSHiC+aty27B0VkUKkBcHPy0tRSgVYIaU0hg5CPO
+        0dWaZOPvMpcmgkSiyMoMSZEak213Rx54nMuhyLyHpQ==
+X-Google-Smtp-Source: ABdhPJz/gGHq1zq1jYiqFyFHQT7Hh0KkvI1s2Ai88t2QU+nt6YVYNQmSr60cJpcwWEILkaeEmBjD5VELf9BFPZPEGi4=
+X-Received: by 2002:a2e:9a4b:: with SMTP id k11mr12624317ljj.368.1628684730077;
+ Wed, 11 Aug 2021 05:25:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811004258.138075-16-vgupta@kernel.org>
+References: <cover.1628590591.git.viresh.kumar@linaro.org> <afc7b34cee856f1ed1a65034f4a9fe705dd04d6a.1628590591.git.viresh.kumar@linaro.org>
+In-Reply-To: <afc7b34cee856f1ed1a65034f4a9fe705dd04d6a.1628590591.git.viresh.kumar@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 14:25:18 +0200
+Message-ID: <CACRpkdajnPsD01ztx5xdVnR=cEK78KY+D169HXeDKuaOMS9qfQ@mail.gmail.com>
+Subject: Re: [PATCH V5 1/2] gpio: Add virtio-gpio driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stratos-dev@op-lists.linaro.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 05:42:55PM -0700, Vineet Gupta wrote:
-> ARCv2 MMU is software walked and Linux implements 2 levels of paging: pgd/pte.
-> Forthcoming hw will have multiple levels, so this change preps mm code
-> for same. It is also fun to try multi levels even on soft-walked code to
-> ensure generic mm code is robust to handle.
-> 
-> overview
-> ________
-> 
-> 2 levels {pgd, pte} : pmd is folded but pmd_* macros are valid and operate on pgd
-> 3 levels {pgd, pmd, pte}:
->   - pud is folded and pud_* macros point to pgd
->   - pmd_* macros operate on actual pmd
-> 
-> code changes
-> ____________
-> 
-> 1. #include <asm-generic/pgtable-nopud.h>
-> 
-> 2. Define CONFIG_PGTABLE_LEVELS 3
-> 
-> 3a. Define PMD_SHIFT, PMD_SIZE, PMD_MASK, pmd_t
-> 3b. Define pmd_val() which actually deals with pmd
->     (pmd_offset(), pmd_index() are provided by generic code)
-> 3c. Define pmd_alloc_one() and pmd_free() to allocate pmd
->     (pmd_populate/pmd_free already exist)
-> 
-> 4. Define pud_none(), pud_bad() macros based on generic pud_val() which
->    internally pertains to pgd now.
-> 4b. define pud_populate() to just setup pgd
-> 
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
-> ---
->  arch/arc/Kconfig                      |  4 ++
->  arch/arc/include/asm/page.h           | 11 +++++
->  arch/arc/include/asm/pgalloc.h        | 22 ++++++++++
->  arch/arc/include/asm/pgtable-levels.h | 63 ++++++++++++++++++++++++---
->  arch/arc/include/asm/processor.h      |  2 +-
->  arch/arc/mm/fault.c                   |  4 ++
->  arch/arc/mm/tlb.c                     |  4 +-
->  arch/arc/mm/tlbex.S                   |  9 ++++
->  8 files changed, 111 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-> index 59d5b2a179f6..43cb8aaf57a2 100644
-> --- a/arch/arc/Kconfig
-> +++ b/arch/arc/Kconfig
-> @@ -314,6 +314,10 @@ config ARC_HUGEPAGE_16M
->  
->  endchoice
->  
-> +config PGTABLE_LEVELS
-> +	int "Number of Page table levels"
-> +	default 2
-> +
->  config ARC_COMPACT_IRQ_LEVELS
->  	depends on ISA_ARCOMPACT
->  	bool "Setup Timer IRQ as high Priority"
-> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-> index 313e6f543d2d..df3cc154ae4a 100644
-> --- a/arch/arc/include/asm/page.h
-> +++ b/arch/arc/include/asm/page.h
-> @@ -41,6 +41,17 @@ typedef struct {
->  #define pgd_val(x)	((x).pgd)
->  #define __pgd(x)	((pgd_t) { (x) })
->  
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +
-> +typedef struct {
-> +	unsigned long pmd;
-> +} pmd_t;
-> +
-> +#define pmd_val(x)	((x).pmd)
-> +#define __pmd(x)	((pmd_t) { (x) })
-> +
-> +#endif
-> +
->  typedef struct {
->  #ifdef CONFIG_ARC_HAS_PAE40
->  	unsigned long long pte;
-> diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
-> index 0cf73431eb89..01c2d84418ed 100644
-> --- a/arch/arc/include/asm/pgalloc.h
-> +++ b/arch/arc/include/asm/pgalloc.h
-> @@ -86,6 +86,28 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
->  }
->  
->  
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +
-> +static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
-> +{
-> +	set_pud(pudp, __pud((unsigned long)pmdp));
-> +}
-> +
-> +static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
-> +{
-> +	return (pmd_t *)__get_free_page(
-> +		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
-> +}
-> +
-> +static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
-> +{
-> +	free_page((unsigned long)pmd);
-> +}
-> +
-> +#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
-> +
-> +#endif
-> +
->  /*
->   * With software-only page-tables, addr-split for traversal is tweakable and
->   * that directly governs how big tables would be at each level.
-> diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-> index 8ece75335bb5..1c2f022d4ad0 100644
-> --- a/arch/arc/include/asm/pgtable-levels.h
-> +++ b/arch/arc/include/asm/pgtable-levels.h
-> @@ -10,6 +10,8 @@
->  #ifndef _ASM_ARC_PGTABLE_LEVELS_H
->  #define _ASM_ARC_PGTABLE_LEVELS_H
->  
-> +#if CONFIG_PGTABLE_LEVELS == 2
-> +
->  /*
->   * 2 level paging setup for software walked MMUv3 (ARC700) and MMUv4 (HS)
->   *
-> @@ -37,16 +39,38 @@
->  #define PGDIR_SHIFT		21
->  #endif
->  
-> -#define PGDIR_SIZE		BIT(PGDIR_SHIFT)	/* vaddr span, not PDG sz */
-> -#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
-> +#else
-> +
-> +/*
-> + * A default 3 level paging testing setup in software walked MMU
-> + *   MMUv4 (8K page): <4> : <7> : <8> : <13>
-> + */
-> +#define PGDIR_SHIFT		28
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +#define PMD_SHIFT		21
-> +#endif
-> +
-> +#endif
->  
-> +#define PGDIR_SIZE		BIT(PGDIR_SHIFT)
-> +#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
->  #define PTRS_PER_PGD		BIT(32 - PGDIR_SHIFT)
->  
-> -#define PTRS_PER_PTE		BIT(PGDIR_SHIFT - PAGE_SHIFT)
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +#define PMD_SIZE		BIT(PMD_SHIFT)
-> +#define PMD_MASK		(~(PMD_SIZE - 1))
-> +#define PTRS_PER_PMD		BIT(PGDIR_SHIFT - PMD_SHIFT)
+On Tue, Aug 10, 2021 at 12:25 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-Maybe move these into the previous #if CONFIG_PGTABLE_LEVELS > 2?
+> This patch adds a new driver for Virtio based GPIO devices.
+>
+> This allows a guest VM running Linux to access GPIO lines provided by
+> the host. It supports all basic operations, except interrupts for the
+> GPIO lines.
+>
+> Based on the initial work posted by:
+> "Enrico Weigelt, metux IT consult" <lkml@metux.net>.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-> +#endif
-> +
-> +#define PTRS_PER_PTE		BIT(PMD_SHIFT - PAGE_SHIFT)
->  
->  #ifndef __ASSEMBLY__
->  
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +#include <asm-generic/pgtable-nopud.h>
-> +#else
->  #include <asm-generic/pgtable-nopmd.h>
-> +#endif
->  
->  /*
->   * 1st level paging: pgd
-> @@ -57,9 +81,35 @@
->  #define pgd_ERROR(e) \
->  	pr_crit("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
->  
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +
-> +/* In 3 level paging, pud_* macros work on pgd */
-> +#define pud_none(x)		(!pud_val(x))
-> +#define pud_bad(x)		((pud_val(x) & ~PAGE_MASK))
-> +#define pud_present(x)		(pud_val(x))
-> +#define pud_clear(xp)		do { pud_val(*(xp)) = 0; } while (0)
-> +#define pud_pgtable(pud)	((pmd_t *)(pud_val(pud) & PAGE_MASK))
-> +#define pud_page(pud)		virt_to_page(pud_pgtable(pud))
-> +#define set_pud(pudp, pud)	(*(pudp) = pud)
-> +
-> +/*
-> + * 2nd level paging: pmd
-> + */
-> +#define pmd_ERROR(e) \
-> +	pr_crit("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
-> +
-> +#define pmd_pfn(pmd)		((pmd_val(pmd) & PMD_MASK) >> PAGE_SHIFT)
-> +#define pfn_pmd(pfn,prot)	__pmd(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
-> +#define mk_pmd(page,prot)	pfn_pmd(page_to_pfn(page),prot)
-> +
-> +#endif
-> +
->  /*
-> - * Due to the strange way generic pgtable level folding works, in a 2 level
-> - * setup, pmd_val() returns pgd, so these pmd_* macros actually work on pgd
-> + * Due to the strange way generic pgtable level folding works, the pmd_* macros
-> + *  - are valid even for 2 levels (which supposedly only has pgd - pte)
-> + *  - behave differently for 2 vs. 3
-> + * In 2  level paging        (pgd -> pte), pmd_* macros work on pgd
-> + * In 3+ level paging (pgd -> pmd -> pte), pmd_* macros work on pmd
->   */
->  #define pmd_none(x)		(!pmd_val(x))
->  #define pmd_bad(x)		((pmd_val(x) & ~PAGE_MASK))
-> @@ -70,6 +120,9 @@
->  #define set_pmd(pmdp, pmd)	(*(pmdp) = pmd)
->  #define pmd_pgtable(pmd)	((pgtable_t) pmd_page_vaddr(pmd))
->  
-> +/*
-> + * 3rd level paging: pte
-> + */
->  #define pte_ERROR(e) \
->  	pr_crit("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
->  
-> diff --git a/arch/arc/include/asm/processor.h b/arch/arc/include/asm/processor.h
-> index e4031ecd3c8c..f28afcf5c6d1 100644
-> --- a/arch/arc/include/asm/processor.h
-> +++ b/arch/arc/include/asm/processor.h
-> @@ -93,7 +93,7 @@ extern unsigned int get_wchan(struct task_struct *p);
->  #define VMALLOC_START	(PAGE_OFFSET - (CONFIG_ARC_KVADDR_SIZE << 20))
->  
->  /* 1 PGDIR_SIZE each for fixmap/pkmap, 2 PGDIR_SIZE gutter (see asm/highmem.h) */
-> -#define VMALLOC_SIZE	((CONFIG_ARC_KVADDR_SIZE << 20) - PGDIR_SIZE * 4)
-> +#define VMALLOC_SIZE	((CONFIG_ARC_KVADDR_SIZE << 20) - PMD_SIZE * 4)
->  
->  #define VMALLOC_END	(VMALLOC_START + VMALLOC_SIZE)
->  
-> diff --git a/arch/arc/mm/fault.c b/arch/arc/mm/fault.c
-> index 41f154320964..8da2f0ad8c69 100644
-> --- a/arch/arc/mm/fault.c
-> +++ b/arch/arc/mm/fault.c
-> @@ -39,6 +39,8 @@ noinline static int handle_kernel_vaddr_fault(unsigned long address)
->  	if (!pgd_present(*pgd_k))
->  		goto bad_area;
->  
-> +	set_pgd(pgd, *pgd_k);
-> +
->  	p4d = p4d_offset(pgd, address);
->  	p4d_k = p4d_offset(pgd_k, address);
->  	if (!p4d_present(*p4d_k))
-> @@ -49,6 +51,8 @@ noinline static int handle_kernel_vaddr_fault(unsigned long address)
->  	if (!pud_present(*pud_k))
->  		goto bad_area;
->  
-> +	set_pud(pud, *pud_k);
-> +
->  	pmd = pmd_offset(pud, address);
->  	pmd_k = pmd_offset(pud_k, address);
->  	if (!pmd_present(*pmd_k))
-> diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
-> index 34f16e0b41e6..77da83569b36 100644
-> --- a/arch/arc/mm/tlb.c
-> +++ b/arch/arc/mm/tlb.c
-> @@ -658,8 +658,8 @@ char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
->  			  IS_USED_CFG(CONFIG_TRANSPARENT_HUGEPAGE));
->  
->  	n += scnprintf(buf + n, len - n,
-> -		      "MMU [v%x]\t: %dk PAGE, %sJTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
-> -		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,
-> +		      "MMU [v%x]\t: %dk PAGE, %s, swalk %d lvl, JTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
-> +		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,  CONFIG_PGTABLE_LEVELS,
->  		       p_mmu->sets * p_mmu->ways, p_mmu->sets, p_mmu->ways,
->  		       p_mmu->u_dtlb, p_mmu->u_itlb,
->  		       IS_AVAIL2(p_mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
-> diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
-> index d08bd09a0afc..5f6bfdfda1be 100644
-> --- a/arch/arc/mm/tlbex.S
-> +++ b/arch/arc/mm/tlbex.S
-> @@ -173,6 +173,15 @@ ex_saved_reg1:
->  	tst	r3, r3
->  	bz	do_slow_path_pf         ; if no Page Table, do page fault
->  
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +	lsr     r0, r2, PMD_SHIFT	; Bits for indexing into PMD
-> +	and	r0, r0, (PTRS_PER_PMD - 1)
-> +	ld.as	r1, [r3, r0]		; PMD entry
-> +	tst	r1, r1
-> +	bz	do_slow_path_pf
-> +	mov	r3, r1
-> +#endif
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  	and.f	0, r3, _PAGE_HW_SZ	; Is this Huge PMD (thp)
->  	add2.nz	r1, r1, r0
-> -- 
-> 2.25.1
-> 
+I see there is a dependency that needs to be fixed but
+the driver looks good to me:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Sincerely yours,
-Mike.
+Yours,
+Linus Walleij
