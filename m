@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C8B3E9653
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E9C3E9651
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhHKQqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:46:35 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:38839 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhHKQqe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:46:34 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 17BGjLup009549;
-        Thu, 12 Aug 2021 01:45:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 17BGjLup009549
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628700322;
-        bh=X9DsnRLorrRzC4aklBYuipruGKuEaAwA49SVBCCAwS0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PmKf/HbdYeZ6rENzJ5PDj3H992+9evTUBqFnpd3/iiaqBUziJOAR50HMYJOWB3tvk
-         Trg1EIvYD45sO95dntIj5zXUfrJYBSCcaXE0dipNBvqqW9PdxhEpk/9XPab5GfK7Of
-         IdwK8tor8c0Aqbz3UAiggxl0ks8Ge8MSP8lT9QJZElOOmoney3COfYysyIn/dnd4U0
-         iR5YYKa6aOgAsjEr+iLts/n6/0H7WabK6P3uaIY7B4o5oWwuZNyQuMGoFaXXMFPx0o
-         4y+5kSM4QeoQtvpbcuSPVqtpqFg+9Zr1z/88uBw8TmMhBBo0trYBjjODtgGWaZJGnY
-         /hvw9PkLHBqBg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Michal Simek <monstr@monstr.eu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] microblaze: move core-y in arch/microblaze/Makefile to arch/microblaze/Kbuild
-Date:   Thu, 12 Aug 2021 01:45:18 +0900
-Message-Id: <20210811164518.187497-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S230095AbhHKQqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhHKQqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:46:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E05E60C3E;
+        Wed, 11 Aug 2021 16:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628700357;
+        bh=0qa35o8A8qS98BltBIjIrqKNdNXst0gyYDOnjg1L0MI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HWMZhOAJtyjVmUWJ4nr8QhZIPUr3C+1yX8AnBfP2DVVyF+JDIj88ZGb3bLWrcAo2A
+         F/veC0RK+y1KdxDLf3WmmSfPe3uxRXXHwr8Cr4sNibFZMKsv4A2vsa4LEQ3f1JOfyx
+         75zUmFX4/rwv0XUYH0duNMLwIxgBUGOhFk3az9bk=
+Date:   Wed, 11 Aug 2021 18:45:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] staging: r8188eu: Remove wrapper around vfree
+Message-ID: <YRP+wz05avsLx3EN@kroah.com>
+References: <20210802192721.23110-1-Larry.Finger@lwfinger.net>
+ <20210802192721.23110-3-Larry.Finger@lwfinger.net>
+ <20210811154412.GA1005754@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811154412.GA1005754@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use obj-y to clean up Makefile.
+On Wed, Aug 11, 2021 at 08:44:12AM -0700, Guenter Roeck wrote:
+> On Mon, Aug 02, 2021 at 02:27:17PM -0500, Larry Finger wrote:
+> > This call is so simple that there is no need, or use, for a wrapper.
+> > 
+> 
+> Except the wrapper was presumably there to map generic code to Linux
+> code, and the patch doesn't add an include <linux/vmalloc.h> anywhere.
+> This results in widespread build errrors such as
+> 
+> drivers/staging/r8188eu/core/rtw_mlme.c: In function '_rtw_free_mlme_priv':
+> drivers/staging/r8188eu/core/rtw_mlme.c:129:17: error: implicit declaration of function 'vfree'
+> 
+> for all architectures where <linux/vmalloc.h> isn't included indirectly.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Has now been fixed up in my tree and will show up in the next
+linux-next.
 
- arch/microblaze/Kbuild   | 4 ++++
- arch/microblaze/Makefile | 5 -----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+sorry about that,
 
-diff --git a/arch/microblaze/Kbuild b/arch/microblaze/Kbuild
-index a4e40e534e6a..a1c597889319 100644
---- a/arch/microblaze/Kbuild
-+++ b/arch/microblaze/Kbuild
-@@ -1 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+obj-y			+= kernel/
-+obj-y			+= mm/
-+obj-$(CONFIG_PCI)	+= pci/
-+obj-y			+= boot/dts/
-diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
-index 6d4af39e3890..9adc6b6434df 100644
---- a/arch/microblaze/Makefile
-+++ b/arch/microblaze/Makefile
-@@ -50,17 +50,12 @@ KBUILD_CFLAGS += -ffixed-r31 $(CPUFLAGS-y) $(CPUFLAGS-1) $(CPUFLAGS-2)
- 
- head-y := arch/microblaze/kernel/head.o
- libs-y += arch/microblaze/lib/
--core-y += arch/microblaze/kernel/
--core-y += arch/microblaze/mm/
--core-$(CONFIG_PCI) += arch/microblaze/pci/
- 
- boot := arch/microblaze/boot
- 
- # Are we making a simpleImage.<boardname> target? If so, crack out the boardname
- DTB:=$(subst simpleImage.,,$(filter simpleImage.%, $(MAKECMDGOALS)))
- 
--core-y	+= $(boot)/dts/
--
- export DTB
- 
- all: linux.bin
--- 
-2.30.2
-
+greg k-h
