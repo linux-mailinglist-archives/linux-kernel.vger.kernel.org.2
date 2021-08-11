@@ -2,186 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0503E95B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5841A3E95BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhHKQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:16:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44389 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229508AbhHKQQG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:16:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628698542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=31qE1bVII2HIf93HYG2MbHWEfiiik6GenrXLfQ/a8MA=;
-        b=GRW9TSehoBoJvDRrXN6rprznS+uivAJuEQjvTRV7DQNwCKlLmiTJqXGwsBe2eDI/uSeos/
-        nCLyWmGfLpVGjivIiUs2GR++eJbzrWGKSfCcbGfaYTKbx8RKrBX0WqJ2ckYpW1PMkFpITj
-        85oEKcc+yfWdgx3vuuqzjRGd7YgR8+Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-sfg7NxnLOYi5LBPXf_QuzQ-1; Wed, 11 Aug 2021 12:15:41 -0400
-X-MC-Unique: sfg7NxnLOYi5LBPXf_QuzQ-1
-Received: by mail-wm1-f71.google.com with SMTP id z15-20020a7bc7cf0000b02902e6a68ffd3cso618567wmk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:15:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=31qE1bVII2HIf93HYG2MbHWEfiiik6GenrXLfQ/a8MA=;
-        b=MyXWLyIOimXyD16POTMdzjAl8XGVfYjNSTz82KMcrsBbvepwStSFMVEK6cmluVF1vF
-         G2F4Td4gAJlzpKxMssptlsR/g7QrGzfjc4HcC5BqX7Uh6iX6ZtBdYh37vAAJNeQTGOBt
-         lOEjG9/yE7A2iwKhbmVoH5OgLdae9SkNA1TZZpVIr5VScN1u7DHMzp1EQGZrbFCcSgTZ
-         kGyjQsjpNVwGwALprbI2te+oNr+bVfUDSgj5LoUssD7ImLpbR3GYV12YaWKeYjKUHhaG
-         YYc05H3sDBCsusJO6VtYs92ISj3L1uBfSfsg58FUim9JsFtcVwf5Dp7IV4SgNbwefe9A
-         xIwA==
-X-Gm-Message-State: AOAM53208KoYWe1uK3W4WwZ0zDngCcW+byqLI8cARhPNrpAMR92ecwxN
-        fcSNpD8es++LwCBufeScqXGHTercUtrPa/Yj+u4lq3U8yxkKCrxT8oA1jZGcGMJTmMmk/wwlx//
-        IrffYKRxyYow2WU3csVZ4vTWv
-X-Received: by 2002:a5d:42c9:: with SMTP id t9mr3932941wrr.356.1628698539896;
-        Wed, 11 Aug 2021 09:15:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4hMFf5taUyGh68P+K4K446qluU1H8SPaIK2FUHBp8IrAP9TpNdfncoCfAlpaLQtVS57MwaQ==
-X-Received: by 2002:a5d:42c9:: with SMTP id t9mr3932915wrr.356.1628698539636;
-        Wed, 11 Aug 2021 09:15:39 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64a0.dip0.t-ipconnect.de. [91.12.100.160])
-        by smtp.gmail.com with ESMTPSA id n8sm26832112wrx.46.2021.08.11.09.15.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 09:15:39 -0700 (PDT)
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
-        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
-        peterz@infradead.org, chinwen.chang@mediatek.com,
-        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
-        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
-        jonathan.davies@nutanix.com
-References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
- <YQrdY5zQOVgQJ1BI@t490s> <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
- <YQrn33pOlpdl662i@t490s>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
-Message-ID: <0beb1386-d670-aab1-6291-5c3cb0d661e0@redhat.com>
-Date:   Wed, 11 Aug 2021 18:15:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229933AbhHKQQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:16:48 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45426 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhHKQQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:16:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9etRDZteX1Y0FD9CQdjx0qPLybESllogXDOFBwIf/bk=; b=j+jnauB322Qw/28/zy00hvqAln
+        x1r6UkWN/Y7u8P+oPqeVxAWjIlhAEJt7bLj6xMMrzz7tjOei9HQ2u68RC7Yw9J+xATE3pBXaoiT+S
+        qCufKbhyW3xxCrEPj5ND/RYkFiZg3I9VWEd1hdYluz9HnmW0Qxcq+KTVpbZeqkGwLpJA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDqts-00H9Ae-1J; Wed, 11 Aug 2021 18:16:16 +0200
+Date:   Wed, 11 Aug 2021 18:16:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: fsl, fec: add "fsl,
+ wakeup-irq" property
+Message-ID: <YRP30Mb8NaD4FjQj@lunn.ch>
+References: <20210805074615.29096-1-qiangqing.zhang@nxp.com>
+ <20210805074615.29096-2-qiangqing.zhang@nxp.com>
+ <2e1a14bf-2fa8-ed39-d133-807c4e14859c@gmail.com>
+ <DB8PR04MB67950F6863A8FEE6745CBC68E6F69@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <498f3cee-8f37-2ab1-93c4-5472572ecc37@gmail.com>
+ <DB8PR04MB6795DC35D0387637052E64A1E6F79@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <YRKOGYwx1uVdsKoF@lunn.ch>
+ <VI1PR04MB6800EE08F70CC3F0DD53C991E6F89@VI1PR04MB6800.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <YQrn33pOlpdl662i@t490s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1PR04MB6800EE08F70CC3F0DD53C991E6F89@VI1PR04MB6800.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.21 21:17, Peter Xu wrote:
-> On Wed, Aug 04, 2021 at 08:49:14PM +0200, David Hildenbrand wrote:
->> TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't store
->> any state information regarding shared memory in per-process page tables: it
->> just doesn't make too much sense.
->>
->> And this is similar to SOFTDIRTY or UFFD_WP bits: this information actually
->> belongs to the shared file ("did *someone* write to this page", "is
->> *someone* interested into changes to that page", "is there something"). I
->> know, that screams for a completely different design in respect to these
->> features.
->>
->> I guess we start learning the hard way that shared memory is just different
->> and requires different interfaces than per-process page table interfaces we
->> have (pagemap, userfaultfd).
->>
->> I didn't have time to explore any alternatives yet, but I wonder if tracking
->> such stuff per an actual fd/memfd and not via process page tables is
->> actually the right and clean approach. There are certainly many issues to
->> solve, but conceptually to me it feels more natural to have these shared
->> memory features not mangled into process page tables.
-> 
-> Yes, we can explore all the possibilities, I'm totally fine with it.
-> 
-> I just want to say I still don't think when there's page cache then we must put
-> all the page-relevant things into the page cache.
+> So I would prefer solution 1, it's easier and under-control.
 
-[sorry for the late reply]
+Hi Joakim
 
-Right, but for the case of shared, swapped out pages, the information is 
-already there, in the page cache :)
+Using quirks is fine by me.
 
-> 
-> They're shared by processes, but process can still have its own way to describe
-> the relationship to that page in the cache, to me it's as simple as "we allow
-> process A to write to page cache P", while "we don't allow process B to write
-> to the same page" like the write bit.
-
-The issue I'm having uffd-wp as it was proposed for shared memory is 
-that there is hardly a sane use case where we would *want* it to work 
-that way.
-
-A UFFD-WP flag in a page table for shared memory means "please notify 
-once this process modifies the shared memory (via page tables, not via 
-any other fd modification)". Do we have an example application where 
-these semantics makes sense and don't over-complicate the whole 
-approach? I don't know any, thus I'm asking dumb questions :)
-
-
-For background snapshots in QEMU the flow would currently be like this, 
-assuming all processes have the shared guest memory mapped.
-
-1. Background snapshot preparation: QEMU requests all processes
-    to uffd-wp the range
-a) All processes register a uffd handler on guest RAM
-b) All processes fault in all guest memory (essentially populating all
-    memory): with a uffd-WP extensions we might be able to get rid of
-    that, I remember you were working on that.
-c) All processes uffd-WP the range to set the bit in their page table
-
-2. Background snapshot runs:
-a) A process either receives a UFFD-WP event and forwards it to QEMU or
-    QEMU polls all other processes for UFFD events.
-b) QEMU writes the to-be-changed page to the migration stream.
-c) QEMU triggers all processes to un-protect the page and wake up any
-    waiters. All processes clear the uffd-WP bit in their page tables.
-
-3. Background snapshot completes:
-a) All processes unregister the uffd handler
-
-
-Now imagine something like this:
-
-1. Background snapshot preparation:
-a) QEMU registers a UFFD-WP handler on a *memfd file* that corresponds
-    to guest memory.
-b) QEMU uffd-wp's the whole file
-
-2. Background snapshot runs:
-a) QEMU receives a UFFD-WP event.
-b) QEMU writes the to-be-changed page to the migration stream.
-c) QEMU un-protect the page and wake up any waiters.
-
-3. Background snapshot completes:
-a) QEMU unregister the uffd handler
-
-
-Wouldn't that be much nicer and much easier to handle? Yes, it is much 
-harder to implement because such an infrastructure does not exist yet, 
-and it most probably wouldn't be called uffd anymore, because we are 
-dealing with file access. But this way, it would actually be super easy 
-to use the feature across multiple processes and eventually to even 
-catch other file modifications.
-
-Again, I am not sure if uffd-wp or softdirty make too much sense in 
-general when applied to shmem. But I'm happy to learn more.
-
--- 
-Thanks,
-
-David / dhildenb
-
+      Andrew
