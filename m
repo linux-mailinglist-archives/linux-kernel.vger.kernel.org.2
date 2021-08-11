@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBCD3E8F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C084F3E8F88
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbhHKLgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbhHKLgH (ORCPT
+        id S237393AbhHKLgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:36:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237385AbhHKLgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:36:07 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D6FC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id k2so2244931plk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ocNu8t+0vPe8xDuDrmXUgxK/R5Hfv7t0v2kfkL1QOgA=;
-        b=B+dx6gtSem9LSUSvN8E6giOkQHucQX2rfdWvdRiGZVmSPgioJxHNzz96Wv/7YAzK/m
-         JyrlpDgL5bOF6eMtXkydeAbLGqIVrhMrKIOcRV1PJmBbaTyLJ7prchjvpW3b/9EJ4Gcf
-         ateFz6QnoBeY6tSGD7pStGh857XyHpTJPAPNYmXPvvaf8f6DMcrxqyD04zVorltoKP3z
-         E9/BFvyIJiHW/R/cj3ZR88UE93OebnOpVaMGRh8SMPHgat07me51s6HqtWI7CNWbMEe0
-         xEtnFJU2f52n+5cz37RdDZfaSwfAZp2z2D4FqRC4OCW3n6bDmRvJZFMhXfWD/Tci4rTh
-         0rZA==
+        Wed, 11 Aug 2021 07:36:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628681776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+S2exkjtlBxygOtOf45G5PJ8smTzamomsBrJITv8Zac=;
+        b=WMopg2I4kkWef8EoyR5o5hHMTcEI/59s17Clt9hDxRPcVHAaLQu8GdaGqoj0QnIBuUW4Yt
+        U04anzgsF9W655f8PwShcB6c3dOxdxX2Yt0XYCQf48UDTWDRd8O8B0lMTFxFd+PqVj6vw0
+        I/JlUK6gLjBINf3kVCRVakgmAVrXVtY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-riBtCIKGMlyAsoj-kBmrbw-1; Wed, 11 Aug 2021 07:36:13 -0400
+X-MC-Unique: riBtCIKGMlyAsoj-kBmrbw-1
+Received: by mail-ej1-f69.google.com with SMTP id ja25-20020a1709079899b02905b2a2bf1a62so570392ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:36:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ocNu8t+0vPe8xDuDrmXUgxK/R5Hfv7t0v2kfkL1QOgA=;
-        b=HmZbE1vaXClSQF4Jpfc7+vvWXaiaS3mK9Kb6xMIRciZ63AaUg2wv31lkbdRq+O7IYe
-         UPaAwmJiv5kfv4wRBJY+Ot4tKN7hg+27InhU6TIDRMO1uyWar5hMKlm5TgWzRnxbd2B+
-         1jzjB1yU3RtQO+jbLYAWjd3two96ER9BuQCF1fEU1CbMZ3OwsHA4eEl/JP++cqYurhlj
-         EXbH/R6kOHY/Sj7VCpQLRMuccFTxJeOKh6qIAbPGYFvE0KezU05PkfhYeWnRgtkfDz/Y
-         x838v68vaC7x18+dUHfMDT6gtEBma9Jp3D3w/L4PiB/BgwaiVOX3z6xyAe1TaXn/iROq
-         HZXQ==
-X-Gm-Message-State: AOAM532Cm1bOqS4xttGuCH5Xj/SZ4IgQEkry8wTIGRcZNlS1qsa18COW
-        bD8socTKvbOBcHDWPV9AQQ4=
-X-Google-Smtp-Source: ABdhPJz2SBVANXMZ07VbSSh4pznTgoL/y9wtPx7R4CwSyd5hF9Ctj75Fuud9mXAdwAvfcZj7S9//6A==
-X-Received: by 2002:a17:902:8543:b029:12d:461f:a6a8 with SMTP id d3-20020a1709028543b029012d461fa6a8mr3905116plo.1.1628681743298;
-        Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.103])
-        by smtp.gmail.com with ESMTPSA id c12sm26423669pfl.56.2021.08.11.04.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 04:35:42 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        luben.tuikov@amd.com, tzimmermann@suse.de, sam@ravnborg.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] gpu: drm: amd: amdgpu: amdgpu_i2c: fix possible uninitialized-variable access in amdgpu_i2c_router_select_ddc_port()
-Date:   Wed, 11 Aug 2021 04:34:58 -0700
-Message-Id: <20210811113458.6940-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=+S2exkjtlBxygOtOf45G5PJ8smTzamomsBrJITv8Zac=;
+        b=C0A7670WiWNkRfvZWAa8GEE4b2i2NSzb5YGlUO0FO7iiLyrLZhqUYxkIGMLpjm9UpA
+         I49WS1myaTgP0RN9B80ClOgmG/Vb42zwoWCV4vdjJjlpPaPaJjEpcRZFbE/ewPDGy7xH
+         JHS5s/OJNiukeYXHD/+DNmtT48IpSSsIRIl7fjEeGqBrRLNsI2GuP4rMYP98yeF6Pacw
+         VkD7+vcvAEROXM0pT5Whxd0qqk6bXS2YX83pqUEso/+2j3AYz7RTSuKI/8qRnM0YIvbl
+         Ltoe1ctS/lVWPauMiV67sypo8F3nOyS4EZargSLADQ2+6t6yWN1sDPGWDzpMYqqZMTFA
+         VhNg==
+X-Gm-Message-State: AOAM5337JnQR0HLjyjR3ysij0Kw1naZYxhpd7Pyf6fm0sfZUKgZ3Ekxa
+        A+G9iyvz9f3EuldL4x9ywTy11C4PzF5azG3U+XRu2UUl+lTvOpie/wDVBqsMPB8I6WlZgs5/XH9
+        fMaD2mBPU48dXvZHMzAJvTG4N
+X-Received: by 2002:a05:6402:94b:: with SMTP id h11mr10671264edz.76.1628681771938;
+        Wed, 11 Aug 2021 04:36:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUzWqNXPpLEiXwfgxkzBIN1W6Pp9trzh8bVCD3xoae7TLtfwWpOMpwPsaWV3Cw8DEovIjkXQ==
+X-Received: by 2002:a05:6402:94b:: with SMTP id h11mr10671247edz.76.1628681771743;
+        Wed, 11 Aug 2021 04:36:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id h19sm1463315ejt.46.2021.08.11.04.36.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 04:36:10 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20210803044607.599629-1-mizhang@google.com>
+ <20210803044607.599629-4-mizhang@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f047f6ea-6d66-b7a7-cb39-7f5427876913@redhat.com>
+Date:   Wed, 11 Aug 2021 13:36:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210803044607.599629-4-mizhang@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable val is declared without initialization, and its address is 
-passed to amdgpu_i2c_get_byte(). In this function, the value of val is 
-accessed in:
-  DRM_DEBUG("i2c 0x%02x 0x%02x read failed\n",
-       addr, *val);
+On 03/08/21 06:46, Mingwei Zhang wrote:
+> +	union {
+> +		struct {
+> +			atomic64_t pages_4k;
+> +			atomic64_t pages_2m;
+> +			atomic64_t pages_1g;
+> +			atomic64_t pages_512g;
+> +		};
+> +		atomic64_t pages[4];
+> +	};
+>   	u64 nx_lpage_splits;
 
-Also, when amdgpu_i2c_get_byte() returns, val may remain uninitialized, 
-but it is accessed in:
-  val &= ~amdgpu_connector->router.ddc_mux_control_pin;
+This array can use KVM_NR_PAGE_SIZES as the size.
 
-To fix this possible uninitialized-variable access, initialize val to 0 in
-amdgpu_i2c_router_select_ddc_port().
+Queued, thanks!
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-index bca4dddd5a15..82608df43396 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-@@ -339,7 +339,7 @@ static void amdgpu_i2c_put_byte(struct amdgpu_i2c_chan *i2c_bus,
- void
- amdgpu_i2c_router_select_ddc_port(const struct amdgpu_connector *amdgpu_connector)
- {
--	u8 val;
-+	u8 val = 0;
- 
- 	if (!amdgpu_connector->router.ddc_valid)
- 		return;
--- 
-2.25.1
+Paolo
 
