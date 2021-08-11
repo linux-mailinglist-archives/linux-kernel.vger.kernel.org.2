@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58853E8DF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F183E8DFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236846AbhHKKBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:01:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53962 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236784AbhHKKBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:01:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628676071; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=YsRXRW60o9vyHLLImrko8sF08vcveheFzhu6/n2s0+Y=; b=obiwAA8K4wTIW9gUaYidDFlTknBLP1Z3lQX7mldZc61nVsccf9QSjuzQCP+ndU4Qm5yDxvX7
- eYCWlssfqg6dgdqq1esG83YBgabsy8vaUs/0tZJvqf7rIF7qLCVU8+Ms9lcLoMMqGUYR4co8
- zjzpoACRu+9qv8MGKXX2XdO2c7k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61139fd5f746c298d96b87ab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 10:00:52
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7E28FC433F1; Wed, 11 Aug 2021 10:00:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.220.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89553C433F1;
-        Wed, 11 Aug 2021 10:00:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 89553C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
- <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
- <20210810024308.gurvzpbe2bc2bhky@vireshk-i7>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <e452c0b5-5555-d6e2-40da-6aa21a26766d@codeaurora.org>
-Date:   Wed, 11 Aug 2021 15:30:46 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236867AbhHKKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236784AbhHKKBv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:01:51 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8FAC061765;
+        Wed, 11 Aug 2021 03:01:27 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id u3so3191265ejz.1;
+        Wed, 11 Aug 2021 03:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t8sJsXG1L+yGCSNJaMEQAUetNo1GZzFfdSMSXPDTu2E=;
+        b=PPudw5ZgG0aCGpmGeDrDKZ/ZHM3K/7UqkCEiBQFKDtRj4weR3ZrcL+WJhalo7r8kS6
+         12GeBqpaX0H5Q3GTSOy5xAWrDn7pwuaYmJR3K34wzYAlcqIzMTCw6ImMcGBrtvCDS6L7
+         dbzBnXspZjflJ+ovhtjtlCVA7VBSGMao1AKGnyC5xH11+CTqJTUzTOcwRVC9oMFHEHoN
+         MmwWMVQrzYHBHGWIiBBgSmlVT/o1JbP7LD6KYRy03LF+KIKkBB4WbHqz7bnd6CXeXJJg
+         rgW5ZO1YkNjgYO+Rj/q5/aaYbCGdiaSq/M+NrVGhkDHOhIHb+J2jipve7aFh0MezQ4CV
+         xijQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t8sJsXG1L+yGCSNJaMEQAUetNo1GZzFfdSMSXPDTu2E=;
+        b=BUH247KXBI30dzOne/ov18M/scDJOHm5C4+ffNaOmQK7Xv5phpMGzy8DK9K0QeNWu+
+         uXJZV7L+bJ4cV5h1VmMrMVxHIUMTi3ENvvzEE8ahCooFiffMy1M2S60doh1tdNXj3GjN
+         NOoyO6QuH95oA3O/9Xm33zAGKKkDHAAI4WjmV+BXSa4HZ3r1qqkgNUBptMjoS6rJ1pIg
+         vXgeLL6wkg+90eBZb6uutmAVV+WhwpRXno4+6OqMsln0QrOoWNZe6VktZP0PhbY9dt1h
+         09DfEoOmsEuqDdr7oW+6HLkA3Tlx0A8g07Bfq1mNwqZz/cW7EhCl1ek+gDyn7SOhtKMp
+         2rXQ==
+X-Gm-Message-State: AOAM531vtb0gO01DGJT176RZVU1eOCmeZJ+VjqsXkjluvjaoBXcauNsi
+        IUumjpowjlTxOUfqCwItLcw=
+X-Google-Smtp-Source: ABdhPJz6CsfiRG/zGTl51wJCCX5mI5lhmvKxJB40wv/D8tnS2ztUadRA6z97LpY3pSMzT1Ms1cuP7A==
+X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr2772945ejc.504.1628676086179;
+        Wed, 11 Aug 2021 03:01:26 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id z10sm7889853ejg.3.2021.08.11.03.01.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 03:01:25 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 13:01:22 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: fix VLAN traffic leaks again
+Message-ID: <20210811100122.hntia6od6qdc6dvd@skbuf>
+References: <20210811095043.1700061-1-dqfext@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210810024308.gurvzpbe2bc2bhky@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811095043.1700061-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/10/2021 8:13 AM, Viresh Kumar wrote:
-> On 09-08-21, 16:38, Rajendra Nayak wrote:
->> Sure, I can do that, apart from the error print, the function currently also
->> returns a -EINVAL in case of the missing 'required-opps', are we suggesting
->> we change that to not return an error also?
+On Wed, Aug 11, 2021 at 05:50:43PM +0800, DENG Qingfang wrote:
+> When a port leaves a VLAN-aware bridge, the current code does not clear
+> other ports' matrix field bit. If the bridge is later set to VLAN-unaware
+> mode, traffic in the bridge may leak to that port.
 > 
-> No.
+> Remove the VLAN filtering check in mt7530_port_bridge_leave.
 > 
->> Since this is completely optional in the device node, we would want the function to
->> ideally not return error and only do so in case 'required-opps' exists and the
->> translation to performance state fails.
-> 
-> Not really. The function should return failure if the property isn't
-> there, but it shouldn't be EINVAL but ENODEV.
+> Fixes: 474a2ddaa192 ("net: dsa: mt7530: fix VLAN traffic leaks")
+> Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
 
-In my case I don't want to error out if the property is missing, I want to error out
-only when the property exists but can't be translated into a performance state.
+That hunk looked indeed very strange when I went over it with commit
+'net: dsa: remove the "dsa_to_port in a loop" antipattern from drivers',
+so I'm happy to see it go away.
 
-So currently I check if the property exists and *only then* try to translate it, Ulf asked
-me to skip the check. If I do that and I call of_get_required_opp_performance_state()
-unconditionally, and if it errors out I will need to put in additional logic (check for
-return value of ENODEV) to distinguish between the property-does-not-exist vs
-property-exists-but-cannot-be-translated case.
-It just seems more straight-forward to call this only when the property exists, Ulf?
-  
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
