@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3005A3E8D41
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801C03E8D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236469AbhHKJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhHKJb7 (ORCPT
+        id S236599AbhHKJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:34:50 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13264 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236580AbhHKJet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:31:59 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27671C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:31:36 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x12so2082473wrr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i+238jwSCXHQqmEbgjIzlgckTMFLhUBBmLjyo/HYZD8=;
-        b=tyEiKPTNfEinjX3TbBEjAgu5sAivydzdzdr5SzkY+/rNqmO+7BZ/ObQQW3CsYxnAYp
-         7PziXML11kCwjs9Sk3T6bsQ6mI2j4amE0w+4I8ynL8g+DA66bnsCOLlSMcdio4nT+J7t
-         +GSEUMgwxKfgX0K5ERuofrsfEYp788xjzTWIhcr+wRcEK5cY9brXq1OW0fAPIIuhvb2o
-         blW0sk9DGlVgfPxNSWhnUJg9VxPmg8PbsthHS2Rw2d3tNsGE0A/9pJosPpKt+icn+lOI
-         01g7/XI+XrYYP+tS/gq+YXbaUk2dg+E88ftqm2IXPJncsw7BsmApA6Wd8LJz/mcp+/TT
-         6I8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i+238jwSCXHQqmEbgjIzlgckTMFLhUBBmLjyo/HYZD8=;
-        b=qpdQZPp+oT4WlGbUYb3AanBEqM0WM3LEhoHgAdIYOs5YbDzFPZXZdg2vjVGYahM7om
-         wMtFvUVpz4Ak2FT2uZ73j9yzhZUukGD53FE4XanUll0tjyUeCutz5hzSqYJWJ4QR+JOZ
-         DyICrPbVuiNHnr8I2VGevoQPjW0dueHmUXQF5G6R0u03Q5lWVFnaN01iFQLcdqIpF2J0
-         S5cAdhQQu6CI9Yh1M59dCcWQTpjqbT/CCFVkp6STc1ZXDvzgesDmww5O1tRfVs2fx8em
-         BN9LKp8m2O05xl98dNo3ykq0CzBReFhHEMKnFq1Q2DrVoS7nGM+7irH582VwV5B1D0co
-         tRpA==
-X-Gm-Message-State: AOAM530PMb88nKBujn6MNWvJcuRT2NvnFwzBGpRvg+a3exYZDxTxqDUW
-        Ygnwh66mLQT9WjBCuTCzovjv/9JMWWpEc6KN
-X-Google-Smtp-Source: ABdhPJz9X1dryGzeIrrmIlHKjUuFly3XEDHvEoOtsQrchrSq7e1rd66PhETWLAhrRqwbm+lzrkaUSg==
-X-Received: by 2002:adf:90b1:: with SMTP id i46mr22281975wri.159.1628674294586;
-        Wed, 11 Aug 2021 02:31:34 -0700 (PDT)
-Received: from google.com (44.232.78.34.bc.googleusercontent.com. [34.78.232.44])
-        by smtp.gmail.com with ESMTPSA id a18sm5335628wmg.43.2021.08.11.02.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:31:34 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 09:31:21 +0000
-From:   Floris Westermann <westermann@google.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
-        alex.bennee@linaro.org, jean-philippe@linaro.org,
-        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
-        Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v6 00/17] Introduce SCMI transport based on VirtIO
-Message-ID: <YROY6YntswWxfaub@google.com>
-References: <20210712141833.6628-1-cristian.marussi@arm.com>
+        Wed, 11 Aug 2021 05:34:49 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gl4QT4C8yz1CTRf;
+        Wed, 11 Aug 2021 17:34:09 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 11 Aug 2021 17:34:17 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 11 Aug 2021 17:34:17 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2] genirq/timings: Fix error return code in irq_timings_test_irqs()
+Date:   Wed, 11 Aug 2021 17:33:32 +0800
+Message-ID: <20210811093333.2376-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712141833.6628-1-cristian.marussi@arm.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-I am currently working on an interface for VMs to communicate their
-performance requirements to the hosts by passing through cpu frequency
-adjustments.
+Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/irq/timings.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Your patch looks very interesting but I have some questions:
+v1 --> v2:
+Replace -EFAULT with two more appropriate error codes.
 
+diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
+index d309d6fbf5bd..59affb3bfdfa 100644
+--- a/kernel/irq/timings.c
++++ b/kernel/irq/timings.c
+@@ -794,12 +794,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
+ 
+ 		__irq_timings_store(irq, irqs, ti->intervals[i]);
+ 		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
++			ret = -EBADSLT;
+ 			pr_err("Failed to store in the circular buffer\n");
+ 			goto out;
+ 		}
+ 	}
+ 
+ 	if (irqs->count != ti->count) {
++		ret = -ERANGE;
+ 		pr_err("Count differs\n");
+ 		goto out;
+ 	}
+-- 
+2.25.1
 
-On Mon, Jul 12, 2021 at 03:18:16PM +0100, Cristian Marussi wrote:
->
-> The series has been tested using an emulated fake SCMI device and also a
-> proper SCP-fw stack running through QEMU vhost-users, with the SCMI stack
-> compiled, in both cases, as builtin and as a loadable module, running tests
-> against mocked SCMI Sensors using HWMON and IIO interfaces to check the
-> functionality of notifications and sync/async commands.
->
-> Virtio-scmi support has been exercised in the following testing scenario
-> on a JUNO board:
->
->  - normal sync/async command transfers
->  - notifications
->  - concurrent delivery of correlated response and delayed responses
->  - out-of-order delivery of delayed responses before related responses
->  - unexpected delayed response delivery for sync commands
->  - late delivery of timed-out responses and delayed responses
->
-> Some basic regression testing against mailbox transport has been performed
-> for commands and notifications too.
->
-> No sensible overhead in total handling time of commands and notifications
-> has been observed, even though this series do indeed add a considerable
-> amount of code to execute on TX path.
-> More test and measurements could be needed in these regards.
->
-
-Can you share any data and benchmarks using you fake SCMI device.
-Also, could you provide the emulated device code so that the results can
-be reproduced.
-
-
-Cheers,
-Floris
