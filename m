@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7643E87C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7EA3E87CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhHKBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:51:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46982 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230401AbhHKBvW (ORCPT
+        id S231366AbhHKB4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhHKB4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:51:22 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17B1Wb8S121278;
-        Tue, 10 Aug 2021 21:50:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4YyHtzQsCrTd8shlfgbCeJc6L1qn4hEFd6Uj12mcM2g=;
- b=byCez6+QwW2j1RWt48H0HmT5+pbHDEnVvgVGCJkRlufw284nxq0fO/2sigSa5xlcLQOI
- 1N/he4anLjGrl3aXki13hp9TvvNiJ2j/OUjpzt64b8JYmJH9x6cu0azy9KZQ1nKZXAt+
- yr5R7CzCy2/2vLlzIYJyvTy9bc3HBO21E8nrRyhXBl2GX1mRg6r/7lENwTBZcYywdz5s
- pbIqTEFhQhmNExYu1AuLmnThn7yEjpF93DNbvhPI/m+TIpCAemQjrTViscBv3KAule+P
- pn0ueg/Ut0L5RQAnv1pc2hzxIMGbc4T4Q9d9Q1CDGrvaPZkhpYnIUqZ904gqScw9D83G nA== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aby977t1f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 21:50:58 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17B1m0ke021287;
-        Wed, 11 Aug 2021 01:50:58 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04dal.us.ibm.com with ESMTP id 3a9htdm53m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 01:50:58 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17B1oub630278046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 01:50:56 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D85F28068;
-        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D3CF2806D;
-        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status
- and define flag
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
- <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
- <20210810175855.fixtw5jks4gbmkua@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
-Date:   Tue, 10 Aug 2021 21:50:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 10 Aug 2021 21:56:51 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BA9C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 18:56:29 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id q2so576161plr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 18:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L7Vrio5869xJ4kniJiHaeZ3njHxK4MBP7ptl9ZaNmz4=;
+        b=XIcnMHJS0HzJBvAbvZ13pC1p40eEQLgprLUgRvZ3vfpOAFDh8pWyjoa3KWK7fGUiy4
+         EcuCtI13WYHPLAju1Bd0PyMkG07Q47ms+7RjwG5mgeqfkUa9qejDPPQAnJsExZBuLbmo
+         fDX4JB9rHBup99Fd/hZjvUMqIbxZJ/TUF/4yZX7YUx6RsngSRRzituHuCmZ3Aa5oM+XF
+         6cNExX2P3dtnvOdLputjHedNw8G+M1BZde39uDjOmk2o0yghqSUIQUaIahXR1MyVMU5w
+         K8Y6pf4B6KCCV+xYv8xgicVqpyH6nOta0y0Q50Fzwo8DrCydrBUJoM10OO1IxidBzwYu
+         qNKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L7Vrio5869xJ4kniJiHaeZ3njHxK4MBP7ptl9ZaNmz4=;
+        b=eZjLKfJu/LZANsO5ZiOtXrd2Gf6Kj5hJgJ6ZtIZ4r8G2VtykqWAL0u0wruOrT2DV32
+         EUcUvDNFCBqurWeczi3It5PM67t+1uPmYFaFJ5k/Hky0idoMV/glMByr5lF7XzdyD9Rk
+         xznSOhmsZr1gHrFnuyExkBF1zrqL+0P7oKVPpniVzjGXOCZMvRIWA0Y4uGrfwgQXo6NG
+         nWsKJFxeLJsEbKu3BdzBoZSYCyqcVn9YLr2qM55/016MyF/V6iKlBwVorDprGKxqyhIa
+         6hw49jxWOlsKaT6+xfdPrbc2yvozJjVZaaWy6j3+YGPTL49Fv3G8W2AFvKX5Z+6vgIks
+         U0Vg==
+X-Gm-Message-State: AOAM53364kzkv41omfu6+mw/mmd9ylKxD/juXISB+Uku7UQ+sR8k3mq2
+        cN+ydF4nHkkwxG8LCy6vYXo=
+X-Google-Smtp-Source: ABdhPJzP2dBQDbSEySU5K2vyqGn+5swpOpL5QinPxvehFmTVDMJLEuVqBb6qaDtjl2wc0lt2SliKKQ==
+X-Received: by 2002:a17:90a:2c0c:: with SMTP id m12mr32992607pjd.107.1628646988847;
+        Tue, 10 Aug 2021 18:56:28 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id z3sm22996407pjn.43.2021.08.10.18.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 18:56:28 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     airlied@linux.ie
+Cc:     linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH agp] [amd64] Remove redundant assignment to variable
+Date:   Tue, 10 Aug 2021 18:57:17 -0700
+Message-Id: <20210811015717.9186-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210810175855.fixtw5jks4gbmkua@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kHS51RwoDUoLBMfVUf9-7oWwEuLThsug
-X-Proofpoint-ORIG-GUID: kHS51RwoDUoLBMfVUf9-7oWwEuLThsug
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108110007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
-> On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
->> From: Stefan Berger <stefanb@linux.ibm.com>
->>
->> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
->> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
->>
->>
->>   		default:
->> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
->> index 51198b137461..252f1cccdfc5 100644
->> --- a/drivers/char/tpm/tpm_ibmvtpm.h
->> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
->> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
->>   	wait_queue_head_t wq;
->>   	u16 res_len;
->>   	u32 vtpm_version;
->> -	u8 tpm_processing_cmd;
->> +	u8 tpm_status;
->> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
-> Declare this already in the fix, and just leave the rename here.
+The variable i has been assigned in the for loop and has not been used
+elsewhere. From the perspective of clean code, it can be deleted.
 
-You mean the fix patch does not use 'true' anymore but uses the 
-TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? 
-And literally only the renaming of this field is done in the 2nd patch?
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+---
+ drivers/char/agp/amd64-agp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+index b40edae32817..0413b3136541 100644
+--- a/drivers/char/agp/amd64-agp.c
++++ b/drivers/char/agp/amd64-agp.c
+@@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
+ 	if (!amd_nb_has_feature(AMD_NB_GART))
+ 		return -ENODEV;
+ 
+-	i = 0;
+ 	for (i = 0; i < amd_nb_num(); i++) {
+ 		struct pci_dev *dev = node_to_amd_nb(i)->misc;
+ 		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
+-- 
+2.25.1
 
-    Stefan
-
-
->
->>   };
->>   
->>   #define CRQ_RES_BUF_SIZE	PAGE_SIZE
->> -- 
->> 2.31.1
->>
->>
-> Otherwise, these look fine.
->
-> /Jarkko
