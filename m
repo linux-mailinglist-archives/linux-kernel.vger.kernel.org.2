@@ -2,171 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23A03E9371
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E5C3E9377
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhHKOTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:19:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43476 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232444AbhHKOTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:19:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628691550; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=lLO4eFNHdUCV1ee4Fqm1c0UbZaPJfKpMDZtjZ/5Hlzo=; b=P/MBRM9e2C+V48BWOZ1FIDIiH1lSMXTHEJkXchRn+LDmRaNd2luN+eooNbUZjYgw2xkXBPcQ
- DWExx1d5Y+Wpm0HLFfuCo2LiRamM02A85M7FNk/jkIelMzN123kJKpdjpI+Z1Dnp94O5QL6X
- WlkipMJrROxDjLmFASvQB+81vPw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6113dc4eb14e7e2ecb772009 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 14:18:54
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 12915C4360C; Wed, 11 Aug 2021 14:18:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8582CC433F1;
-        Wed, 11 Aug 2021 14:18:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8582CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] arm64: dts: qcom: sc7280: Add gpu thermal zone cooling support
-Date:   Wed, 11 Aug 2021 19:48:36 +0530
-Message-Id: <20210811194758.v4.2.Iea8318d85a23f0167fd523ea85df5630147649f9@changeid>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628691516-33624-1-git-send-email-akhilpo@codeaurora.org>
-References: <1628691516-33624-1-git-send-email-akhilpo@codeaurora.org>
+        id S232491AbhHKOTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232386AbhHKOTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:19:50 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6335DC061765;
+        Wed, 11 Aug 2021 07:19:26 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso4565640wms.1;
+        Wed, 11 Aug 2021 07:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AkaVV/B4zm1StBccEJF79FiDT5uYQrDcCQSV22VX30I=;
+        b=VfQwWxYc0BAYDB88MDFCVEmvIdX9iQ1okd2lUzkvZAUKxLhodeWXj2o6islzuiy7lP
+         0dfmE4G1gwNVraO8e2AAJ0jlW2KPNZ1onr3TNS7bRch+9x2O99UuJ3eUnC8ZiiQxXnvI
+         q5exULF23j+tflRYFnePUjh4+mneigS/bIDmteVlI9B99QJlLjcCXU/cHCKiYBz4Yupt
+         6KOwDSrN9slR2dpNY8kEjSuVZDrkHkVoZl0J6i+sBK5Ac32XWhHpdfh/LBXH2HbwBoXy
+         ExqwbOrVdMV7dpQCqope71pFW7HI9uyb2lGncxySBVDLyLsgPdo1aTKaxmgqbfTCZ0Ie
+         11bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AkaVV/B4zm1StBccEJF79FiDT5uYQrDcCQSV22VX30I=;
+        b=LAjDeH+4/LfPW95U9L1n3maATVSQsbEqsI+Km05J+V1wI70uRseq7nC4nBWx+nbJCT
+         1/ZK8n2x8RtK4GFWvMtuFLbw6/2I5vYGR9GMYQg1IEtI+GnYhj8E0ps1oPYnxc5EVYTp
+         qUe+JCWlX/6fCngr71qX2ZmK7UbSdKDfHkupN9iyz/DdqtOe5PdwW6LdXkJmY2MjFSxC
+         zgLILIbZ+ilW/SoRyfQ1PHDE+aK1TtiX5hcqzZI4LB/iRaBbm3QPaTHEHcgO1oRYYON6
+         FJqwCQCuTn5VBCSqSaWUKxKaQUWbjxB5fCSyia0p65ubJsoZz4JrxV//pw4B8SH6Eldl
+         ykMA==
+X-Gm-Message-State: AOAM531kuUillw5KTNG346hkrdTvVQr634OXIRa8yxxzOObrUYoOg6up
+        trUV1yPtTLpuNF2vhe078AY=
+X-Google-Smtp-Source: ABdhPJythbVeqVlxRPbfuIJIg7664unWUee9J/dNSZXJFYo5PpsLdnPwGPhEvhKPMEuHjDkJ9LebLg==
+X-Received: by 2002:a05:600c:4101:: with SMTP id j1mr27882935wmi.110.1628691564973;
+        Wed, 11 Aug 2021 07:19:24 -0700 (PDT)
+Received: from [10.0.0.18] ([37.165.41.250])
+        by smtp.gmail.com with ESMTPSA id y14sm15510450wrs.29.2021.08.11.07.19.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 07:19:24 -0700 (PDT)
+Subject: Re: [PATCH -next] net/ipv4/tcp.c: remove superfluous header file in
+ tcp.c
+To:     Mianhan Liu <liumh1@shanghaitech.edu.cn>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew <Wilcoxwilly@infradead.org>
+References: <20210811133305.14640-1-liumh1@shanghaitech.edu.cn>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <6240ae70-3a50-2570-a115-c61ef09286a6@gmail.com>
+Date:   Wed, 11 Aug 2021 16:19:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210811133305.14640-1-liumh1@shanghaitech.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
 
-Add cooling-cells property and the cooling maps for the gpu thermal
-zones to support GPU thermal cooling.
 
-Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
+On 8/11/21 3:33 PM, Mianhan Liu wrote:
+> nr_free_buffer_pages could be exposed through mm.h instead of swap.h,
+> and then tcp.c wouldn't need swap.h. Moreover, after preprocessing
+> all the files that use nr_free_buffer_pages, it turns out that those files
+> have already included mm.h.
+> Thus, we can move nr_free_buffer_pages from swap.h to mm.h safely
+> so as to reduce the obsolete includes.
+> 
+> Signed-off-by: MianHan Liu <liumh1@shanghaitech.edu.cn>
 
-(no changes since v1)
+Not sure why tcp gets a special treatment.
+Patch title does not match changelog at all.
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+You should submit a pure mm patch, then eventually one networking follow up.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index b9006d8..cd2bbf0 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -592,7 +592,7 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
--		gpu@3d00000 {
-+		gpu: gpu@3d00000 {
- 			compatible = "qcom,adreno-635.0", "qcom,adreno";
- 			#stream-id-cells = <16>;
- 			reg = <0 0x03d00000 0 0x40000>,
-@@ -607,6 +607,7 @@
- 			qcom,gmu = <&gmu>;
- 			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "gfx-mem";
-+			#cooling-cells = <2>;
- 
- 			gpu_opp_table: opp-table {
- 				compatible = "operating-points-v2";
-@@ -2523,16 +2524,16 @@
- 		};
- 
- 		gpuss0-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens1 1>;
- 
- 			trips {
- 				gpuss0_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss0_crit: gpuss0-crit {
-@@ -2541,19 +2542,26 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss0_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		gpuss1-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens1 2>;
- 
- 			trips {
- 				gpuss1_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss1_crit: gpuss1-crit {
-@@ -2562,6 +2570,13 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss1_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		nspss0-thermal {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+# git grep -n linux/swap.h -- net
+net/9p/trans_virtio.c:34:#include <linux/swap.h>
+net/ipv4/sysctl_net_ipv4.c:18:#include <linux/swap.h>
+net/ipv4/tcp.c:263:#include <linux/swap.h>
+net/ipv4/udp.c:81:#include <linux/swap.h>
+net/netfilter/ipvs/ip_vs_ctl.c:27:#include <linux/swap.h>
+net/openvswitch/meter.c:15:#include <linux/swap.h>
+net/sctp/protocol.c:36:#include <linux/swap.h>
 
