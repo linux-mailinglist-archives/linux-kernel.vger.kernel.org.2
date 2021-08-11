@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0785E3E9005
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F0C3E9008
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237344AbhHKMEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:04:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232160AbhHKMEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:04:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6127D60F55;
-        Wed, 11 Aug 2021 12:04:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628683466;
-        bh=1/ul8lTpnB4T++xzDF3kRFrA2xyEls7zKujxDteqWws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EVoRi/drbZA10GqMWQqMmCoGAgW4Royyy0CA+6YNMUfjh0ivQaLCh9tX9suVJWJhQ
-         DHwrdzBb+C3sDOcDa7hs/wGTbPlX7jTnhKThl1cLojTXdv/nywsx5dinAFS8ml7Qpe
-         6M548VZLJmoJwx1UJlLzoKqbPE0VldIiADMotoUf986q2t8pTy8S6ntOBUqtTWyPHQ
-         4TfSQ2U4+U9Bevg+AIfxFDiOW3awR2RdFk65K/GAoYfjcDynTwnD9x+mjr5wb3uKdx
-         rmWZZ+roqwqo8cE+AlXBnZ1jNmJwsqt5XH6EaPIFkg1uGUBH6QAfRro3yE0VetTfKT
-         v/W01nfpUVP8A==
-Date:   Wed, 11 Aug 2021 15:04:21 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 06/18] ARC: mm: Enable STRICT_MM_TYPECHECKS
-Message-ID: <YRO8xUlAtMeJnDbe@kernel.org>
-References: <20210811004258.138075-1-vgupta@kernel.org>
- <20210811004258.138075-7-vgupta@kernel.org>
+        id S237449AbhHKMFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:05:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22551 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237412AbhHKMFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:05:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628683492; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=UpoWxDwi/WJD3AY6N5zl01gu9NgyIOD/P/DwkvQG18c=;
+ b=LbHjTcoKqSeUzy+XmJL9pJrRENDJH+aB81neEMHLnfUG7BCdukkLlixdCr9TV3mxgavEbzwP
+ p2or/rOmUR6LnfYwVO3qd8Ub5hiSF1t+ZINtqSrTM4/H4XqbESp7K0RYkYq51jMTOLkeLXcL
+ tn/Sn1V7vjH+BEVaY88K9yFnA7Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6113bcdc454b7a558f2e4cde (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 12:04:44
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 52A8EC43460; Wed, 11 Aug 2021 12:04:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AD779C4338A;
+        Wed, 11 Aug 2021 12:04:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811004258.138075-7-vgupta@kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Aug 2021 17:34:41 +0530
+From:   rajpat@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
+        swboyd@chromium.org
+Subject: Re: [PATCH V4 3/4] arm64: dts: sc7280: Update QUPv3 Debug UART DT
+ node
+In-Reply-To: <YP7X7kjH9wd818Xg@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-4-git-send-email-rajpat@codeaurora.org>
+ <YP7X7kjH9wd818Xg@google.com>
+Message-ID: <4700a6df7ed665c6b17003cd35aab0c4@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 05:42:46PM -0700, Vineet Gupta wrote:
-> In the past I've refrained from doing this (atleast 2 times) due to the
+On 2021-07-26 21:12, Matthias Kaehlcke wrote:
+> On Mon, Jul 26, 2021 at 07:10:46PM +0530, Rajesh Patil wrote:
+>> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> 
+>> Update QUPv3 Debug UART DT node with the interconnect names and
+>> functions for SC7280 SoC.
+>> 
+>> Split the Debug UART pin control functions.
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+>> ---
+>> Changes in V4:
+>>  - As per Bjorn's comment, posting this debug-uart node update
+>>    as seperate patch
+>> 
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 18 +++++++-----------
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 28 
+>> ++++++++++++++++++++++++----
+>>  2 files changed, 31 insertions(+), 15 deletions(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index f63cf51..a50c9e5 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -383,18 +383,14 @@
+>>  	bias-pull-up;
+>>  };
+>> 
+>> -&qup_uart5_default {
+>> -	tx {
+>> -		pins = "gpio46";
+>> -		drive-strength = <2>;
+>> -		bias-disable;
+>> -	};
+>> +&qup_uart5_tx {
+>> +	drive-strength = <2>;
+>> +	bias-disable;
+>> +};
+>> 
+>> -	rx {
+>> -		pins = "gpio47";
+>> -		drive-strength = <2>;
+>> -		bias-pull-up;
+>> -	};
+>> +&qup_uart5_rx {
+>> +	drive-strength = <2>;
+>> +	bias-pull-up;
+>>  };
+>> 
+>>  &sdc1_on {
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 455e58f..951818f 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -853,8 +853,13 @@
+>>  				clock-names = "se";
+>>  				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
+>>  				pinctrl-names = "default";
+>> -				pinctrl-0 = <&qup_uart5_default>;
+>> +				pinctrl-0 = <&qup_uart5_cts>, <&qup_uart5_rts>, <&qup_uart5_tx>, 
+>> <&qup_uart5_rx>;
+>>  				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
+>> +				power-domains = <&rpmhpd SC7280_CX>;
+>> +				operating-points-v2 = <&qup_opp_table>;
+>> +				interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt 
+>> SLAVE_QUP_CORE_0 0>,
+>> +						<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_QUP_0 0>;
+>> +				interconnect-names = "qup-core", "qup-config";
+> 
+> 
+> Most of the above should be added by patch '[2/4] arm64: dts: sc7280: 
+> Add QUPv3
+> wrapper_0 nodes'.
 
-                                            ^ at least
+Based on the comments on v3 [1], I have added this as a separate patch
+[1] https://lore.kernel.org/patchwork/patch/1441257/
 
-> slight code bloat due to ABI implications of pte_t etc becoming sttuct
+> 
+> I have to say I dislike that the SoC DT file dictates which UART to use 
+> for
+> the serial console. Technically it could be any of them, right? uart5 
+> is
+> used because that's what the IDP does, and the rest of the world is 
+> expected
+> to follow. Why not configure uart5 as "qcom,geni-uart" by default and
+> overwrite the compatible string and pinctrl in the board file? You 
+> could even
+> add 'qup-uartN-all' (or similar) pinconfigs to sc7280.dtsi, which would 
+> make
+> the changes in the board file trivial.
 
-                                                                 ^ struct
-> 
-> Per ARC ABI, functions return struct via memory and not through register
-> r0, even if the struct would fits in register(s)
+Okay, will make the compatible as "qcom,geni-uart" in SoC dt and later 
+modify it in idp dts as "qcom,geni-debug-uart".
 
-                              ^ fit
-> 
->  - caller allocates space on stack and passes the address as first arg
->    (r0), shifting rest of args by one
-> 
->  - callee creates return struct in memory (referenced via r0)
-> 
-> This time around the code actually shrunk slightly (due to subtle
-> inlining heuristic effects), but still slightly inefficient due to
-> return values passed through memory. That however seems like a small
-
-Out of curiosity, is this actually measurable on real world applications?
-
-> cost compared to maintenance burden given the impending new mmu support
-> for page walk etc
-> 
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
-> ---
->  arch/arc/include/asm/page.h | 26 --------------------------
->  arch/arc/mm/ioremap.c       |  2 +-
->  2 files changed, 1 insertion(+), 27 deletions(-)
-> 
-> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-> index 4a9d33372fe2..c4ac827379cd 100644
-> --- a/arch/arc/include/asm/page.h
-> +++ b/arch/arc/include/asm/page.h
-> @@ -34,12 +34,6 @@ void copy_user_highpage(struct page *to, struct page *from,
->  			unsigned long u_vaddr, struct vm_area_struct *vma);
->  void clear_user_page(void *to, unsigned long u_vaddr, struct page *page);
->  
-> -#undef STRICT_MM_TYPECHECKS
-> -
-> -#ifdef STRICT_MM_TYPECHECKS
-> -/*
-> - * These are used to make use of C type-checking..
-> - */
->  typedef struct {
->  #ifdef CONFIG_ARC_HAS_PAE40
->  	unsigned long long pte;
-> @@ -64,26 +58,6 @@ typedef struct {
->  
->  #define pte_pgprot(x) __pgprot(pte_val(x))
->  
-> -#else /* !STRICT_MM_TYPECHECKS */
-> -
-> -#ifdef CONFIG_ARC_HAS_PAE40
-> -typedef unsigned long long pte_t;
-> -#else
-> -typedef unsigned long pte_t;
-> -#endif
-> -typedef unsigned long pgd_t;
-> -typedef unsigned long pgprot_t;
-> -
-> -#define pte_val(x)	(x)
-> -#define pgd_val(x)	(x)
-> -#define pgprot_val(x)	(x)
-> -#define __pte(x)	(x)
-> -#define __pgd(x)	(x)
-> -#define __pgprot(x)	(x)
-> -#define pte_pgprot(x)	(x)
-> -
-> -#endif
-> -
->  typedef pte_t * pgtable_t;
->  
->  /*
-> diff --git a/arch/arc/mm/ioremap.c b/arch/arc/mm/ioremap.c
-> index 95c649fbc95a..052bbd8b1e5f 100644
-> --- a/arch/arc/mm/ioremap.c
-> +++ b/arch/arc/mm/ioremap.c
-> @@ -39,7 +39,7 @@ void __iomem *ioremap(phys_addr_t paddr, unsigned long size)
->  	if (arc_uncached_addr_space(paddr))
->  		return (void __iomem *)(u32)paddr;
->  
-> -	return ioremap_prot(paddr, size, PAGE_KERNEL_NO_CACHE);
-> +	return ioremap_prot(paddr, size, pgprot_val(PAGE_KERNEL_NO_CACHE));
->  }
->  EXPORT_SYMBOL(ioremap);
->  
-> -- 
-> 2.25.1
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
+Thanks,
+Rajesh
