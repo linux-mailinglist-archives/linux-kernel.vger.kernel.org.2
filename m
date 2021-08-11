@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8433E904A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A783E904C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237608AbhHKMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:16:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62124 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237552AbhHKMPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:15:44 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BC43xD171699;
-        Wed, 11 Aug 2021 08:15:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vz/JF6D9et2ylMltouH3zrYLZOET3avHkTYyvpC8n10=;
- b=OyhfMP9AB6greSlwzUK/SjRTLCoo/7cXGUMiJgFkF+4Bg23+F1aR4i/7xKbuLqKYb3J8
- +gIrcHKrgbOKnUvB517PMfwwx85mMpO6A6uTiIgEjFTiBwHGK86Xem4pNOwOxLTUxT/G
- cs5C1J34mYaUV6uUb8rVbRlt4b4fjR/hA1bf7Nzjqn31RBaNb/sJSl7knm+9e9MPNF4A
- 3RuPcVbhODJCByXMO2HkCcIuHCgGwFg2a5a6EhvQ/Jj224SWM+Lz6orXM2jPOeO8HUsr
- lNM81WvF2KTa0IU5RtGvPXAM3jGnEXClYLkDxu8kRDa0nv4nVNQsyNypzsqqDDc/T/NJ Ng== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3accthaeae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 08:15:17 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BCCoTJ011035;
-        Wed, 11 Aug 2021 12:15:16 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma03dal.us.ibm.com with ESMTP id 3a9hte6tse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 12:15:16 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BCFE0H38011302
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 12:15:14 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A3FE1112061;
-        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83C88112062;
-        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status
- and define flag
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, nasastry@in.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
- <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
- <20210810175855.fixtw5jks4gbmkua@kernel.org>
- <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
- <20210811021030.5meaty2zxf253nfl@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <4eff0296-78da-52b6-322d-56e0f9d78dc2@linux.ibm.com>
-Date:   Wed, 11 Aug 2021 08:15:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237634AbhHKMQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237540AbhHKMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA16760FC3;
+        Wed, 11 Aug 2021 12:15:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628684122;
+        bh=irWqmSUH1/ML7unA3kAGPLQs6RzjTFj1LRE3RBi/7uA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HWiEn6NQt2QEye6Wzv9LpGZn4RqnIljkxxoNbuBDIu4bd3YZe+W1DYmeqtLQFUtSq
+         0e8yYus7TgjRw6ZrpCzOzjwimI2Us1Ot1dII3/iOUjl8lQn9UoJ3t5twgQtV/Ez3Xw
+         +zgbPEaJhx37Ojq8iEglLqVqemr7Ve+B8vmalbMuZOJ5I3enz1cRyBYnFSld8DU0YJ
+         BIx9lJ4Fii9axtjz7BTFuNRLDo40kAMm2TLo9aY7SsZYqo98nCYo9IwVKjyrSqlrgo
+         7a9xr13+/PbEGH9ZB5ajQ5eG9oPKCu/ejw/vQ/uH6nEVj8gu2JkpHKjd5T3UYbtc5G
+         ga165PmyZH8cg==
+Date:   Wed, 11 Aug 2021 15:15:17 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 11/18] ARC: mm: move MMU specific bits out of entry code
+Message-ID: <YRO/VSMNi00X37xQ@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-12-vgupta@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210811021030.5meaty2zxf253nfl@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XxohQtRH4nD48N9kbmsjsJOLPSV0YN2o
-X-Proofpoint-ORIG-GUID: XxohQtRH4nD48N9kbmsjsJOLPSV0YN2o
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108110080
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811004258.138075-12-vgupta@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I believe a few words here would be useful even for the future version of
+yourself ;-)
 
-On 8/10/21 10:10 PM, Jarkko Sakkinen wrote:
-> On Tue, Aug 10, 2021 at 09:50:55PM -0400, Stefan Berger wrote:
->> On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
->>> On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
->>>> From: Stefan Berger <stefanb@linux.ibm.com>
->>>>
->>>> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
->>>> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
->>>>
->>>>
->>>>    		default:
->>>> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
->>>> index 51198b137461..252f1cccdfc5 100644
->>>> --- a/drivers/char/tpm/tpm_ibmvtpm.h
->>>> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
->>>> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
->>>>    	wait_queue_head_t wq;
->>>>    	u16 res_len;
->>>>    	u32 vtpm_version;
->>>> -	u8 tpm_processing_cmd;
->>>> +	u8 tpm_status;
->>>> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
->>> Declare this already in the fix, and just leave the rename here.
->> You mean the fix patch does not use 'true' anymore but uses the
->> TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? And
->> literally only the renaming of this field is done in the 2nd patch?
-> I can fixup these patches, and use '1', instead of true. No need to send
-> new ones.
->
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+On Tue, Aug 10, 2021 at 05:42:51PM -0700, Vineet Gupta wrote:
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+> ---
+>  arch/arc/kernel/entry.S | 6 ------
+>  arch/arc/mm/tlb.c       | 3 +++
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
+> index 2cb8dfe866b6..684efd094520 100644
+> --- a/arch/arc/kernel/entry.S
+> +++ b/arch/arc/kernel/entry.S
+> @@ -101,12 +101,6 @@ ENTRY(EV_MachineCheck)
+>  	lr  r0, [efa]
+>  	mov r1, sp
+>  
+> -	; hardware auto-disables MMU, re-enable it to allow kernel vaddr
+> -	; access for say stack unwinding of modules for crash dumps
+> -	lr	r3, [ARC_REG_PID]
+> -	or	r3, r3, MMU_ENABLE
+> -	sr	r3, [ARC_REG_PID]
+> -
+>  	lsr  	r3, r2, 8
+>  	bmsk 	r3, r3, 7
+>  	brne    r3, ECR_C_MCHK_DUP_TLB, 1f
+> diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
+> index b68d5798327b..34f16e0b41e6 100644
+> --- a/arch/arc/mm/tlb.c
+> +++ b/arch/arc/mm/tlb.c
+> @@ -813,5 +813,8 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
+>  		}
+>  	}
+>  
+> +	/* Re-enable MMU as hardware may have auto-disabled it upon exception */
+> +	write_aux_reg(ARC_REG_PID, read_aux_reg(ARC_REG_PID) | MMU_ENABLE);
+> +
+>  	local_irq_restore(flags);
+>  }
+> -- 
+> 2.25.1
+> 
 
-THANKS!
-
-   Stefan
-
->
-> /Jarkko
+-- 
+Sincerely yours,
+Mike.
