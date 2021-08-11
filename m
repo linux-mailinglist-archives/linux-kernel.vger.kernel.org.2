@@ -2,141 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCFF3E8AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169373E8AD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbhHKHLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhHKHLP (ORCPT
+        id S235464AbhHKHLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:11:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38240 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235119AbhHKHLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:11:15 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780EFC061765;
-        Wed, 11 Aug 2021 00:10:52 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id y34so3576733lfa.8;
-        Wed, 11 Aug 2021 00:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YNOXr6gzd+fqJpCwsyne4QPv5njjHsYeJ33t/NJz//g=;
-        b=Iu/qQ7BSrvV6jOV5E/kWloIvWNBX1Dm+1T3YQZaMaUz5xfhQA+JymnLBSikIBlmMl7
-         lJOZHQs23oO+mY9DRGT5TskG9k3R7Ltg3Zk+3nSsTzlfBOlHv1uGS6YCjNz+X5JQNyht
-         lnI4rZgIe8BUy4S+A/4LIVBwW5viSmdd/hl0cAdAm+OnjHAwS6wpL7o7/EqKQMQRMpkd
-         /kzWBcWrtd6pet8RfU2aI2BRRbbhh+M6O9Cuo/Xl2VWRjNx7azbFJ7hRWZ85fZI+pCCu
-         7iQ3dEc194Eo9rlrEFndgKGTlPVmh4/HmwtwVt/TCcW0nlQuJj+rLVwFBAy2iqODoTHf
-         ZmQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YNOXr6gzd+fqJpCwsyne4QPv5njjHsYeJ33t/NJz//g=;
-        b=hjriDpvUPaKJhPNkfZdf7rCkDTHDJslyRqJgeAjEmrCbgzJzNCqC81GO5iCw2WcBoW
-         nMMPXDcY95125IwhRSxbtJif9Ib1IbiMMktomLypTAIf3pWeSq52P3MzXMcsDRV8EWUF
-         Tb1hjQLr2j7VFW785LKs8Qla+HpjTmgtcgF17uUB0aP8STPNSGP8o9IMI7LRqdmSznBW
-         owec7KNOmmPXuqMABHjWfy8tt2IUjPtuEPjiWdMbciIeGKby7tz2VOkv0aOdgeQ9Eltu
-         HEE9Vg56LkyluVcu5vyS3B1nSFZBoCydxoGDwQU46ne7fkFgegyQx+wQkhLCgsAhnsr8
-         mgVw==
-X-Gm-Message-State: AOAM533hN2vpASk/M+Fms2ED00wTqZ873tC97hRQnf02DZ3BIzL4oj8I
-        A5LC6xXsneEffeXdMhDeGnH5mjZn0OvQzgVHWUA=
-X-Google-Smtp-Source: ABdhPJwLNEUIEP0BqRl99scaraURy5c+0sWgr6fX5WMrnYlA5rf2EP/d6BREs+ZzGYinthmdFT9DF22pMR5AW9D3T7c=
-X-Received: by 2002:ac2:4c13:: with SMTP id t19mr24490681lfq.450.1628665850749;
- Wed, 11 Aug 2021 00:10:50 -0700 (PDT)
+        Wed, 11 Aug 2021 03:11:30 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 39AF21C0B76; Wed, 11 Aug 2021 09:11:06 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 09:11:05 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 130/135] net: qede: Fix end of loop tests for
+ list_for_each_entry
+Message-ID: <20210811071105.GA10829@duo.ucw.cz>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.220428504@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210811051938.111191-1-puranjay12@gmail.com> <20210811051938.111191-3-puranjay12@gmail.com>
- <CAHp75VeWSwk7g+HUQ21cRKFDBdHKv4M4mTjv6Ng5DnZz-ugj2Q@mail.gmail.com>
-In-Reply-To: <CAHp75VeWSwk7g+HUQ21cRKFDBdHKv4M4mTjv6Ng5DnZz-ugj2Q@mail.gmail.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Wed, 11 Aug 2021 12:40:39 +0530
-Message-ID: <CANk7y0i2ki2omXqpwHob4UhjrwYBiTX3z2D_BEDi3pLgCAENPQ@mail.gmail.com>
-Subject: Re: [PATCH v11 2/2] iio: accel: Add driver support for ADXL355
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        Darius <Darius.Berghe@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Disposition: inline
+In-Reply-To: <20210810173000.220428504@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:25 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Aug 11, 2021 at 8:19 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
-> >
-> > ADXL355 is a 3-axis MEMS Accelerometer. It offers low noise density,
-> > low 0g offset drift, low power with selectable measurement ranges.
-> > It also features programmable high-pass and low-pass filters.
->
-> Thanks for an update! My comments below.
-> After addressing, feel free to add
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
-> ...
->
-> > +#ifndef _ADXL355_H_
-> > +#define _ADXL355_H_
-> > +
-> > +#include <linux/regmap.h>
->
-> What I meant here is you need to add a forward declaration, i.e.
->
-> struct device;
-okay, I will add this.
->
-> line.
->
-> > +extern const struct regmap_access_table adxl355_readable_regs_tbl;
-> > +extern const struct regmap_access_table adxl355_writeable_regs_tbl;
-> > +
-> > +int adxl355_core_probe(struct device *dev, struct regmap *regmap,
-> > +                      const char *name);
-> > +
-> > +#endif /* _ADXL355_H_ */
->
-> ...
->
-> > +#define MEGA(x) ((x) * 1000000)
-> > +#define TERA(x) ((x) * 1000000000000UL)
->
-> What I meant is to define just constants. It will be easier to move
-> this to a global space (I have a patch, btw, but it may be applied
-> later). So, just
->
-> #define MEGA  1000000UL
-> #define TERA 1000000000000UUL
-will change in v12
->
-> And note that the second one should have a ULL suffix.
->
-> ...
->
-> > +       ret = regmap_bulk_write(data->regmap,
-> > +                               adxl355_chans[chan].offset_reg,
-> > +                               data->transf_buf, 2);
->
-> ARRAY_SIZE() ?
-ARRAY SIZE is 3, but here we need to transfer 2 bytes only.
->
-> > +       if (ret)
-> > +               goto set_opmode_unlock;
->
-> --
-> With Best Regards,
-> Andy Shevchenko
 
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
--- 
-Thanks and Regards
+> [ Upstream commit 795e3d2ea68e489ee7039ac29e98bfea0e34a96c ]
+>=20
+> The list_for_each_entry() iterator, "vlan" in this code, can never be
+> NULL so the warning will never be printed.
 
-Yours Truly,
+Could someone double-check this? Because changelog is not accurate;
+condition is using logical or, so warning can be printed. I don't
+really see a bug with the old code.
 
-Puranjay Mohan
+New code is quite confusing, and if the vlan with required vic is the
+"head" one, it will do the wrong thing, no?
+
+Best regards,
+								Pavel
+
+> +++ b/drivers/net/ethernet/qlogic/qede/qede_filter.c
+> @@ -842,7 +842,7 @@ int qede_vlan_rx_kill_vid(struct net_device *dev, __b=
+e16 proto, u16 vid)
+>  		if (vlan->vid =3D=3D vid)
+>  			break;
+> =20
+> -	if (!vlan || (vlan->vid !=3D vid)) {
+> +	if (list_entry_is_head(vlan, &edev->vlan_list, list)) {
+>  		DP_VERBOSE(edev, (NETIF_MSG_IFUP | NETIF_MSG_IFDOWN),
+>  			   "Vlan isn't configured\n");
+>  		goto out;
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRN4CQAKCRAw5/Bqldv6
+8oWdAJ40iXM9RWRnOMRdz8yoM9pxCKWjkwCggWdRY9om8nbfaB+K0uxa/hDiFSE=
+=AuQV
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
