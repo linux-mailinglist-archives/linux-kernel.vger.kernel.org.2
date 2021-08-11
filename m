@@ -2,209 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21013E8E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F17D3E8E96
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237164AbhHKKY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:24:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20202 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236935AbhHKKYZ (ORCPT
+        id S237150AbhHKK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:26:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50720 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236894AbhHKK0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:24:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628677441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wjib2CaoBoKQ960V8nb3t6a1/GwcD38v7ydXMlMNTLw=;
-        b=gaKUGVkcRCO/BXK4rUgbzzcvPsWsAGQYNjHRjGfdPFnpDRai1WP0GOOzkta/+9EftNcFBx
-        0o1YD5goyFrxgiE1V9IKTh71PKZgFjGX8JJzeC/nVSHu1jfhIQ/NxNY28M2TK7aws9qWP8
-        milCzZMHKdDfUUenG+DcpqG15Wp5R1g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-A1WSQEExOHuemxTFuC2LLA-1; Wed, 11 Aug 2021 06:24:00 -0400
-X-MC-Unique: A1WSQEExOHuemxTFuC2LLA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 11 Aug 2021 06:26:17 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7478A101C8A0;
-        Wed, 11 Aug 2021 10:23:59 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE7625D9C6;
-        Wed, 11 Aug 2021 10:23:58 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com, mtosatti@redhat.com
-Subject: [PATCH 2/2] kvm: x86: abstract locking around pvclock_update_vm_gtod_copy
-Date:   Wed, 11 Aug 2021 06:23:56 -0400
-Message-Id: <20210811102356.3406687-3-pbonzini@redhat.com>
-In-Reply-To: <20210811102356.3406687-1-pbonzini@redhat.com>
-References: <20210811102356.3406687-1-pbonzini@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C49081FE29;
+        Wed, 11 Aug 2021 10:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628677553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIVroiF9CWXaHpVcigCtxn4G9TJ5tno4t7MoqivtmBE=;
+        b=b+SuKVfs3TEK9nrziOok74mNZMgUtiymJF99t0VR8N6PbJOj4rqd7s7kiJeR5uwkFJE3V1
+        qUuRkJhU8f8/CcC6xfB8bQ3ZpF2d4GnhJg1XqaXKt8Voxto9QGaBYOa1VSDjUz72YRjtih
+        Dfku/ugQMlkKEyOeoAWGJMbPyGnXvFE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628677553;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIVroiF9CWXaHpVcigCtxn4G9TJ5tno4t7MoqivtmBE=;
+        b=88LED16uP9Jki6B+ocpzbFNhVd5PaojtVuvOjAht+8CLWYWTDGJ9K3HcZ5vgvumzwoISXg
+        sp9gxICXsIV91YAQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id ABDC8131F5;
+        Wed, 11 Aug 2021 10:25:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id MS2KKbGlE2GbDgAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Wed, 11 Aug 2021 10:25:53 +0000
+Date:   Wed, 11 Aug 2021 12:25:53 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Keith Busch <kbusch@kernel.org>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>
+Subject: Re: [PATCH v4 2/8] nvme-tcp: Update number of hardware queues before
+ using them
+Message-ID: <20210811102553.auradulozluc5ond@carbon.lan>
+References: <20210802112658.75875-1-dwagner@suse.de>
+ <20210802112658.75875-3-dwagner@suse.de>
+ <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
+ <20210809085250.xguvx5qiv2gxcoqk@carbon>
+ <01d7878c-e396-1d6b-c383-8739ca0b3d11@grimberg.me>
+ <20210811010718.GA3135947@dhcp-10-100-145-180.wdc.com>
+ <079108ce-6ca0-800e-e3df-29d015a4530c@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <079108ce-6ca0-800e-e3df-29d015a4530c@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updates to the kvmclock parameters needs to do a complicated dance of
-KVM_REQ_MCLOCK_INPROGRESS and KVM_REQ_CLOCK_UPDATE in addition to taking
-pvclock_gtod_sync_lock.  Place that in two functions that can be called
-on all of master clock update, KVM_SET_CLOCK, and Hyper-V reenlightenment.
+On Tue, Aug 10, 2021 at 10:57:58PM -0700, Sagi Grimberg wrote:
+> > > I think we should always wait for the freeze to complete.
+> > 
+> > Don't the queues need to be started in order for the freeze to complete?
+> > Any enqueued requests on the quiesced queues will never complete this
+> > way, so the wait_freeze() will be stuck, right? If so, I think the
+> > nvme_start_queues() was in the correct place already.
+> 
+> Exactly what I was trying to point out (poorly though)
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  1 -
- arch/x86/kvm/x86.c              | 66 +++++++++++++--------------------
- 2 files changed, 26 insertions(+), 41 deletions(-)
+Thanks for explaining. I think I got the general idea what the different
+states are doing and what the transitions are now. (famous last words).
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index bc6157677753..c54f9da91f99 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1839,7 +1839,6 @@ u64 kvm_calc_nested_tsc_multiplier(u64 l1_multiplier, u64 l2_multiplier);
- unsigned long kvm_get_linear_rip(struct kvm_vcpu *vcpu);
- bool kvm_is_linear_rip(struct kvm_vcpu *vcpu, unsigned long linear_rip);
- 
--void kvm_make_mclock_inprogress_request(struct kvm *kvm);
- void kvm_make_scan_ioapic_request(struct kvm *kvm);
- void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
- 				       unsigned long *vcpu_bitmap);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 284afaa1db86..8f96cdfcf364 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2757,35 +2757,36 @@ static void pvclock_update_vm_gtod_copy(struct kvm *kvm)
- #endif
- }
- 
--void kvm_make_mclock_inprogress_request(struct kvm *kvm)
-+static void kvm_start_pvclock_update(struct kvm *kvm)
- {
-+	struct kvm_arch *ka = &kvm->arch;
- 	kvm_make_all_cpus_request(kvm, KVM_REQ_MCLOCK_INPROGRESS);
-+
-+	/* no guest entries from this point */
-+	spin_lock_irq(&ka->pvclock_gtod_sync_lock);
- }
- 
--static void kvm_gen_update_masterclock(struct kvm *kvm)
-+static void kvm_end_pvclock_update(struct kvm *kvm)
- {
--#ifdef CONFIG_X86_64
--	int i;
--	struct kvm_vcpu *vcpu;
- 	struct kvm_arch *ka = &kvm->arch;
--	unsigned long flags;
--
--	kvm_hv_invalidate_tsc_page(kvm);
--
--	kvm_make_mclock_inprogress_request(kvm);
--
--	/* no guest entries from this point */
--	spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
--	pvclock_update_vm_gtod_copy(kvm);
--	spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
-+	struct kvm_vcpu *vcpu;
-+	int i;
- 
-+	spin_unlock_irq(&ka->pvclock_gtod_sync_lock);
- 	kvm_for_each_vcpu(i, vcpu, kvm)
- 		kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
- 
- 	/* guest entries allowed */
- 	kvm_for_each_vcpu(i, vcpu, kvm)
- 		kvm_clear_request(KVM_REQ_MCLOCK_INPROGRESS, vcpu);
--#endif
-+}
-+
-+static void kvm_update_masterclock(struct kvm *kvm)
-+{
-+	kvm_hv_invalidate_tsc_page(kvm);
-+	kvm_start_pvclock_update(kvm);
-+	pvclock_update_vm_gtod_copy(kvm);
-+	kvm_end_pvclock_update(kvm);
- }
- 
- u64 get_kvmclock_ns(struct kvm *kvm)
-@@ -6077,12 +6078,10 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 			goto out;
- 
- 		r = 0;
--		/*
--		 * TODO: userspace has to take care of races with VCPU_RUN, so
--		 * kvm_gen_update_masterclock() can be cut down to locked
--		 * pvclock_update_vm_gtod_copy().
--		 */
--		kvm_gen_update_masterclock(kvm);
-+
-+		kvm_hv_invalidate_tsc_page(kvm);
-+		kvm_start_pvclock_update(kvm);
-+		pvclock_update_vm_gtod_copy(kvm);
- 
- 		/*
- 		 * This pairs with kvm_guest_time_update(): when masterclock is
-@@ -6091,15 +6090,12 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 		 * is slightly ahead) here we risk going negative on unsigned
- 		 * 'system_time' when 'user_ns.clock' is very small.
- 		 */
--		spin_lock_irq(&ka->pvclock_gtod_sync_lock);
- 		if (kvm->arch.use_master_clock)
- 			now_ns = ka->master_kernel_ns;
- 		else
- 			now_ns = get_kvmclock_base_ns();
- 		ka->kvmclock_offset = user_ns.clock - now_ns;
--		spin_unlock_irq(&ka->pvclock_gtod_sync_lock);
--
--		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
-+		kvm_end_pvclock_update(kvm);
- 		break;
- 	}
- 	case KVM_GET_CLOCK: {
-@@ -8105,9 +8101,7 @@ static void tsc_khz_changed(void *data)
- static void kvm_hyperv_tsc_notifier(void)
- {
- 	struct kvm *kvm;
--	struct kvm_vcpu *vcpu;
- 	int cpu;
--	unsigned long flags;
- 
- 	mutex_lock(&kvm_lock);
- 	list_for_each_entry(kvm, &vm_list, vm_list)
-@@ -8121,19 +8115,11 @@ static void kvm_hyperv_tsc_notifier(void)
- 	kvm_max_guest_tsc_khz = tsc_khz;
- 
- 	list_for_each_entry(kvm, &vm_list, vm_list) {
--		struct kvm_arch *ka = &kvm->arch;
--
--		kvm_make_mclock_inprogress_request(kvm);
--		spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
-+		kvm_start_pvclock_update(kvm);
- 		pvclock_update_vm_gtod_copy(kvm);
--		spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
--
--		kvm_for_each_vcpu(cpu, vcpu, kvm)
--			kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
--
--		kvm_for_each_vcpu(cpu, vcpu, kvm)
--			kvm_clear_request(KVM_REQ_MCLOCK_INPROGRESS, vcpu);
-+		kvm_end_pvclock_update(kvm);
- 	}
-+
- 	mutex_unlock(&kvm_lock);
- }
- #endif
-@@ -9413,7 +9399,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		if (kvm_check_request(KVM_REQ_MIGRATE_TIMER, vcpu))
- 			__kvm_migrate_timers(vcpu);
- 		if (kvm_check_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu))
--			kvm_gen_update_masterclock(vcpu->kvm);
-+			kvm_update_masterclock(vcpu->kvm);
- 		if (kvm_check_request(KVM_REQ_GLOBAL_CLOCK_UPDATE, vcpu))
- 			kvm_gen_kvmclock_update(vcpu);
- 		if (kvm_check_request(KVM_REQ_CLOCK_UPDATE, vcpu)) {
--- 
-2.27.0
+Anyway, the first three patches are the result of debugging the case of
+'prior_ioq_cnt != nr_io_queues'. Starting the queues before updating the
+number of queues lookes strange.
 
+I suppose in the case 'prior_ioq_cnt > nr_io_queues',
+nvme_tcp_start_io_queues() should be successful and we do the
+blk_mq_update_nr_hw_queues(). In the other case we should land in the
+error recovery.
+
+Wouldn't it make sense to always exercise the error recovery path if we
+detect 'prior_ioq_cnt != nr_io_queues' and reduce the number of things
+which can go wrong?
+
+Daniel
