@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1903E9782
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1673E978A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhHKSTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S231132AbhHKSU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHKSTa (ORCPT
+        with ESMTP id S230189AbhHKSUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:19:30 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A137DC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:19:06 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so6523496pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:19:06 -0700 (PDT)
+        Wed, 11 Aug 2021 14:20:20 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860E2C061765;
+        Wed, 11 Aug 2021 11:19:55 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id f23so3347413qkk.13;
+        Wed, 11 Aug 2021 11:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gKVoI857eV59yGVCpnpGmuE3eZ6QKq/ygbPwI02F10E=;
-        b=iIKu8JcDcnXwDVZ2Sbgt1DUtxcgjpRp5KmKvVaZuaRfpjwnQtZehUrZEmBUzmSoYFk
-         o2OAq1h/lQTaEQQsP5jd/nx1d4fog4ZRZpmZJ82DSeDEoAxb/dZSyZBgRJEk1OdMFq9U
-         pYquPwFdWsG3veZTCyWio7whBKm82rrXO+b8w=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nXzVpyij1ZNQ2Jytic1y9iKjfHsLQUQIKsqqIrPJxhA=;
+        b=rnHu4E+PQlPlVp0uMPW/pul3vdmZh78miXqPsl2EBz8w7MC/5V4b0vcsE+dkG/0g0T
+         hi1h8KcBxq+Jl6x/NChwUoMnTWWHNdz6e9ervTXmX0Q0IG0k8RzRKumXRtPK19/87CPV
+         Kr437NrIxuIpeVXiDEBtKizCD97pmkkN37S+pTLwmP3guEcnbhCfMbQ7ey4/8A7pGKkb
+         y6yVPdJVahNIROaAj41K8ZzxBAvLsDj4Px2aEXdo0AY6z69AZEyB1vqaOM2T4ntuwnCA
+         lltgoWS0bU7xviD8HMhxROC9mSdDjmZtk1FDQKXYXAFL/nZ9SqebFv6dbvctA1C2XGAh
+         rZgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gKVoI857eV59yGVCpnpGmuE3eZ6QKq/ygbPwI02F10E=;
-        b=IWLhEoi0ed9g5i/XPKtLDJ+O3ECdgOKR5aaOVdKaM4cLIGWvYntrrovv4iIzpxaMQp
-         VZN5/Nhc6f1NxNsaGi+WR1GQxYSF3u2ZwgY0/loyy/nmTDmmxd0/LkJMig9Hq6eRyVFy
-         oPS3dxdGvJgoDMEt1VUEjOsXnOMUFx73mTGq3jISC28fEGrImt8S8lXFXN8rqPxkHm7g
-         y4PhqfSrPUfd53yYaHUaheRJY+lJ2p/b32b1qEWhE77B+0PlgUQcRkE/Acu/yfIMhZt8
-         PYJjFavEBvLA8/r6qBkpbWVu50Ye7gDIDopX+fc3JkI8MCX0mSQFYM9WlT9cUQpLSddh
-         R8Ew==
-X-Gm-Message-State: AOAM530jkR1DDb5F0ryLEnVKwa2FuD297RKv06mlqhn5+i6+BQoFpF5v
-        SvLoMMFktaufyA52GMe8bcT09g==
-X-Google-Smtp-Source: ABdhPJxIkBUVFl1x4qjyNrZuRkWAOfGzFoLEWZR3B6lokmBF52NkFwJ8aG0iGwB0LGEOhhsvPiCtHw==
-X-Received: by 2002:a62:8042:0:b029:3cd:8339:7551 with SMTP id j63-20020a6280420000b02903cd83397551mr60343pfd.79.1628705946146;
-        Wed, 11 Aug 2021 11:19:06 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:1c85:53f6:c893:55e8])
-        by smtp.gmail.com with ESMTPSA id nr6sm7222027pjb.39.2021.08.11.11.19.05
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=nXzVpyij1ZNQ2Jytic1y9iKjfHsLQUQIKsqqIrPJxhA=;
+        b=BayeF3PC6PXZjPz6zPQdeW/AM9d/xodUfmOBVy+6MbeeH+/VGa2mbeQw1ifhvdpSim
+         BII+iT1heK415RhCZ3SWxczy8YDbx1ms3EPgiTwMhCV792lX+gtm/B6STe+tydjwKiCF
+         Rs4dtkPnL3746lmKCoROZNOsU17LXu40xhr21IZ+TZxY9r47Iqhep9ggvzf86fnCmmpB
+         QRYZrTGFnQqLtSrS4wovmb6p1LoCXknXQ4aBBNnVZbx7cNzKZ9buQ9NHRLbO8f9Mz192
+         BjGfhJ3BIWfKFzdp7Zz5urW3h2pjLhh8z+CbAzsthsm1CxfmJEGGEniOSf7qQP68esC4
+         2ZSg==
+X-Gm-Message-State: AOAM530E3E5uDdHcv6uCNWE3p5TriceLxYXPEfSJC6iOgE4l8h30dIsy
+        3YLZ5Vju9SIFocmQ0hfgQAI=
+X-Google-Smtp-Source: ABdhPJw+btSMcpcGz2MbjdsBF3HMosEM+0Kb2NIXpBzeNZx9IKkq3p9OthkgmZ/wWHqUpmxpCjvNig==
+X-Received: by 2002:a37:9401:: with SMTP id w1mr353500qkd.166.1628705994692;
+        Wed, 11 Aug 2021 11:19:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y199sm13474573qkb.36.2021.08.11.11.19.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:19:05 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Alex Elder <elder@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sc7280: Use GIC_SPI for intc cells
-Date:   Wed, 11 Aug 2021 11:19:04 -0700
-Message-Id: <20210811181904.779316-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+        Wed, 11 Aug 2021 11:19:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 11 Aug 2021 11:19:52 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Marc Hulsman <m.hulsman@tudelft.nl>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rudolf Marek <r.marek@assembler.cz>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: hwmon: Error handling in w83793.c, w83791d.c, w83792d.c
+Message-ID: <20210811181952.GA3833613@roeck-us.net>
+References: <20210811161515.17842-1-lutovinova@ispras.ru>
+ <20210811175120.GA3138792@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811175120.GA3138792@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use the GIC_SPI macro instead of a plain 0 here to match other
-uses of the primary interrupt controller on sc7280.
+On Wed, Aug 11, 2021 at 10:52:03AM -0700, Guenter Roeck wrote:
+> On Wed, Aug 11, 2021 at 07:15:14PM +0300, Nadezda Lutovinova wrote:
+> > In w83793_detect_subclients(): if driver read tmp value sufficient for 
+> > (tmp & 0x08) && (!(tmp & 0x80)) && ((tmp & 0x7) == ((tmp >> 4) & 0x7))
+> > from device then Null pointer dereference occurs.
+> > (It is possible if tmp = 0b0xyz1xyz, where same chars mean same numbers).
+> > 
+> > It can be fixed just by adding a checking for null pointer, patch for 
+> > this is in the next letter. But a question arised:
+> > The array w83793_data->lm75 is used once in this function after switching 
+> > to devm_i2c_new_dummy_device() instead of i2c_new_dummy(). And this 
+> > function is called once (from w83793_probe()). Maybe this array should be 
+> > deleted from struct w83793_data?
+> > 
+> 
+> That is part of it. However, the entire code is wrong. There is no need
+> to check for I2C address overlap in the first place, and the i2c address
+> for the second 'virtual' chip should start with 0x4c, not with 0x48.
+> See w83793g/w83793ag datasheet, section 8.3.2.2.
 
-Suggested-by: Matthias Kaehlcke <mka@chromium.org>
-Cc: Alex Elder <elder@linaro.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Wait, that is wrong. Those are just the initial register values.
+Forget the noise above; sorry for the confusion.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index f70ab3c5d08b..569802536321 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -598,8 +598,8 @@ ipa: ipa@1e40000 {
- 				    "ipa-shared",
- 				    "gsi";
- 
--			interrupts-extended = <&intc 0 654 IRQ_TYPE_EDGE_RISING>,
--					      <&intc 0 432 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts-extended = <&intc GIC_SPI 654 IRQ_TYPE_EDGE_RISING>,
-+					      <&intc GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
- 					      <&ipa_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
- 					      <&ipa_smp2p_in 1 IRQ_TYPE_EDGE_RISING>;
- 			interrupt-names = "ipa",
+Guenter
 
-base-commit: 97ec669dfcfa22f8a595356ceb6ce46e7b4a82e9
--- 
-https://chromeos.dev
-
+> I assume the code was copied from w83791d and w83792d, where the addresses
+> can indeed overlap.
+> 
+> Guenter
+> 
+> > The same situation in w83791d.c and in w83792d.
+> > 
+> > Found by Linux Driver Verification project (linuxtesting.org).
+> > 
+> > Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
