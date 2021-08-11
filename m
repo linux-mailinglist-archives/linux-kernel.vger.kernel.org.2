@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6923E8E9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46673E8EB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237104AbhHKKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:30:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48592 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237048AbhHKKao (ORCPT
+        id S237199AbhHKKcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:32:13 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3624 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236935AbhHKKcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:30:44 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 350E9221D1;
-        Wed, 11 Aug 2021 10:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628677820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9PROUPtd8tEVskY/x6F4cQKQn0LeaTzerYxm4i+slnw=;
-        b=zTIZyeUy8mE4QaOiuEp13YJvKZp5L8XAaUDYhhMYAHx6k1kyQ4hvY18ZvQ6TrWZMh+jdyH
-        L3GXpO4H/jgTt9l4jZG7qpY62madXczy2FiLtK2etIFlnP+t0Sp9w4FdslWFNiWLFPrX86
-        RDj5gM59hmtd/daztRelmR7gfPICYaE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628677820;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9PROUPtd8tEVskY/x6F4cQKQn0LeaTzerYxm4i+slnw=;
-        b=2YGzMIs6bMSGM1nNVEVwRaSd49v37+r29fwBw8DUzlbZE3C1SFuGEIYZYTIoAiW0IoLOQn
-        njjPEo2fxahy3xAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1D66E131F5;
-        Wed, 11 Aug 2021 10:30:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id SkrXBrymE2G0DwAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Wed, 11 Aug 2021 10:30:20 +0000
-Date:   Wed, 11 Aug 2021 12:30:19 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        James Smart <jsmart2021@gmail.com>
-Subject: Re: [PATCH v4 6/8] nvme-fc: fix controller reset hang during traffic
-Message-ID: <20210811103019.j2smukkfseqa3qdr@carbon.lan>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-7-dwagner@suse.de>
- <79c89923-f586-79e7-6dfd-c15ceb21f569@suse.de>
- <20210804080847.bajae2twtnmccvq7@beryllium.lan>
- <d43f83cf-a3cd-df16-5af8-1f530b25d1cc@grimberg.me>
+        Wed, 11 Aug 2021 06:32:11 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gl5hK69ZTz6BDkl;
+        Wed, 11 Aug 2021 18:31:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 11 Aug 2021 12:31:46 +0200
+Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 11 Aug
+ 2021 11:31:45 +0100
+Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
+ function arm_smmu_cmdq_issue_cmd_with_sync()
+To:     Will Deacon <will@kernel.org>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
+ <20210626110130.2416-3-thunder.leizhen@huawei.com>
+ <20210810182454.GB3296@willie-the-truck>
+ <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
+ <20210811100905.GB4426@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d551f31d-4edc-db28-fb08-41a130a5d97f@huawei.com>
+Date:   Wed, 11 Aug 2021 11:31:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d43f83cf-a3cd-df16-5af8-1f530b25d1cc@grimberg.me>
+In-Reply-To: <20210811100905.GB4426@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.4]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:05:04PM -0700, Sagi Grimberg wrote:
-> Why is there a conditional freeze?
+>>>> Obviously, inserting as many commands at a time as possible can reduce the
+>>>> number of times the mutex contention participates, thereby improving the
+>>>> overall performance. At least it reduces the number of calls to function
+>>>> arm_smmu_cmdq_issue_cmdlist().
+>>>>
+>>>> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
+>>>> the 'cmd+sync' commands at a time.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
+>>>>   1 file changed, 21 insertions(+), 12 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
+>>>>   	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
+>>>>   }
+>>>>   
+>>>> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+>>>> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+>>>>   {
+>>>>   	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
+>>>>   }
+>>>>   
+>>>> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
+>>>> +					     struct arm_smmu_cmdq_ent *ent)
+>>>> +{
+>>>> +	u64 cmd[CMDQ_ENT_DWORDS];
+>>>> +
+>>>> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
+>>>> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
+>>>> +			 ent->opcode);
+>>>> +		return -EINVAL;
 
-The freeze only happens if I/O queues have been created/started. If I
-understand this correctly, this is the corner case we were only able to
-establish the admin queue and fail later to setup the I/O queues.
+Are any of the errors returned from the "issue command" functions 
+actually consumed? I couldn't see it on mainline code from a brief browse.
+
+>>>> +	}
+>>>> +
+>>>> +	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, true);
+
+Thanks,
+John
