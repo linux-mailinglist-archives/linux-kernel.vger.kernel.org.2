@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF7B3E9B3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8472F3E9B41
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhHKX3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        id S232866AbhHKXbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232819AbhHKX3i (ORCPT
+        with ESMTP id S232664AbhHKXbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:29:38 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D7C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:29:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso7649610pjy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:29:14 -0700 (PDT)
+        Wed, 11 Aug 2021 19:31:18 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1DAC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:30:54 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso7655320pjy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K+p/vb8Nh3bZn0qfhOImjTyqVNq1MlM0FRF8GGlBxUc=;
-        b=qQWU0Xwu5tF7zhG3txv3x6kiRCSsotxMmRnDbRQVXHCaKlCiWqD10QXUAlMddyU+pk
-         xFITmDg4/TAhu0BZVlyWw7e3fX63V7A2035wmSjG/MTqoCcmGMgLwmnZ9Ewt+hk5Urpa
-         sD5jkyZvCZ27Dp8HzbQkWYMxWm6rwWmRBOZ8aMC0C+TvniiQ5HSSnyTu1urskro5a5Ar
-         42zafCfGhlSf56Hmw8nB5jkdpZ8Vs+v0sDIcvRKtYRp0p975kIYVQ0/phCWZ5BrrpeUf
-         gQyBY+H2CskMeZGePvsI636NyaDU9wjTcr0fxO97HHjpUpIzNo+/0Dr5isGtbQJqdzWc
-         /ZAA==
+        bh=oGjft6uK2qjPni3rYs2xkfv9Qr3hWhHlCu61Lfg9dwo=;
+        b=KGF7OvjM6xpm2dcnV4TZt94/0PP/6rryAn51TQtMI8PMyNstZiqpR4o4M6dhTamRWs
+         g9EOZxb5D89XEfktvUEHHhPkpXy+Hmi05VOWRgwTVd9OLvFSv4xWFXhNWjEyIN09KyKs
+         4fyqkWNdWLKgAPlcPDpAcmVW8lSwcX6cLZVgTZo6u78f/aDCPj+/UighVkaCNH/VsJGQ
+         7hZeajrWOtjCr0mUDPSGbr2zvZ/0e2Z3s/NNdhwxHuoGSZq50liLutTN/XQtkRapPCgV
+         FF6Bcix3tq/Al/ufi1oP33g4e6gANYimhDTdAXfmGgi4fPZkt9KFhhdzxGEY6dDmG5KC
+         +BNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K+p/vb8Nh3bZn0qfhOImjTyqVNq1MlM0FRF8GGlBxUc=;
-        b=ZLbiwpw1ocgq34+e5xuflXR9HKoK1aX3HJFg4jmdS/LPWlEkczf+tPZVCvsVd60cp1
-         NIM1RQ5b/5FnacsuAqezjsqKwhMtWBnGDJZBtl3EDSV3lj0kDfV01bNbNTElmSV+7gvM
-         D9AEA8Qd30XMTewuV1qu8GtnDQty806oD9bLEDioy5YBWjHxFn4GwPP25zr3eVRI6Uh+
-         ST6KGrVYWYPJX7X1vjs96+O3wuuMgJSU29pfN2tnPBqd/vAl54KeM6GUL0DkEKqzWuOw
-         se5nstOIXkpmpFjK30+cL0Nnij6cKtOVZDiGJwflUcnI+Q4m/ARheDy2mGRrtu+/NJrj
-         zfsA==
-X-Gm-Message-State: AOAM533Y1xfpBPPIds9Go+WysCmP7vFAxhMZq1heyaLdl71Wq6GHRXvm
-        9K3kQKXomI7V5+GKCV7fof/EKHFCbt3Uy1ETI9JznFU1fAKP+w==
-X-Google-Smtp-Source: ABdhPJzcBaCYUrXG7U8HwgdTdWC/E8gWuT4Ng7D5uFteTeqCoXOELTwCbYpl0dJO594uus5VXzsLAP02mG5aSZyTlQ4=
-X-Received: by 2002:a63:aa43:: with SMTP id x3mr1118476pgo.208.1628724553856;
- Wed, 11 Aug 2021 16:29:13 -0700 (PDT)
+        bh=oGjft6uK2qjPni3rYs2xkfv9Qr3hWhHlCu61Lfg9dwo=;
+        b=dYMwJByDg421zo/xP/YLNJGswwHc7jVZq4scDTBVXHBuTxYOYJQNVQ9FbMLwFC77t2
+         AmN6ux8rZ8zvyzv2VQKwmUUWun8CTEMRDua5Y1dl4FCTUqbsdXVfoKotlosTQAcZWESB
+         yrs2xGi4XTo2cAiQ9uKYMmGqdGcDmjRo2d4dtYwokFzgRAwQca6rRFgf8VS1g4Wag24x
+         jiOb7NKAkd+y7d7nZ6vqc5deG3+J93luiTQW5EcUg9rvlf7NA6iN5TInKJvfUQ5a7a4r
+         t8LNSA8l1BLATbIKe3aurAjZ5VneiBOqoYMoNApVlT51aZZa8dTlrCGvgrBjnbuVi/RK
+         e3nQ==
+X-Gm-Message-State: AOAM531y4bkXpvWr32Sx03J1YfJuIZ6tp8W6gUkzcCXQymBBqCbhqWy3
+        MmRCnIs0IZvEjI1Lv2jXR/AcgEkiWaLBH0Sz9NtIAA==
+X-Google-Smtp-Source: ABdhPJxlna/Ynzwk5Dff6Ys7vZddkj55PSC1UknedewCBNdz+1n2p06B5wLltjn/hQhKtMBQvZDWD+WnZ2/JP5T0TSs=
+X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr1054428pjq.217.1628724653564;
+ Wed, 11 Aug 2021 16:30:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810235047.177883-1-phil@philpotter.co.uk>
- <20210810235047.177883-2-phil@philpotter.co.uk> <YRN+6yLnjQTM6LJU@kroah.com>
-In-Reply-To: <YRN+6yLnjQTM6LJU@kroah.com>
+References: <20210810235047.177883-1-phil@philpotter.co.uk> <37fc4e87-3131-eb54-d47d-8ed4dc85e983@gmail.com>
+In-Reply-To: <37fc4e87-3131-eb54-d47d-8ed4dc85e983@gmail.com>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Thu, 12 Aug 2021 00:29:03 +0100
-Message-ID: <CAA=Fs0k+ZuW4OQUCn3gqiqQUOiF6N7ycS8wunPOVt2rrWEC56w@mail.gmail.com>
-Subject: Re: [PATCH 1/8] staging: r8188eu: remove unused functions from os_dep/ioctl_linux.c
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+Date:   Thu, 12 Aug 2021 00:30:42 +0100
+Message-ID: <CAA=Fs0nkmsnewA8z_XKB--0bcxOoPnxZgn-_1fD3CccfN4nt3A@mail.gmail.com>
+Subject: Re: [PATCH 0/8] staging: r8188eu: cleanup several warnings
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
         linux-staging@lists.linux.dev,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -61,44 +61,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 08:40, Greg KH <gregkh@linuxfoundation.org> wrote:
+On Wed, 11 Aug 2021 at 07:39, Michael Straube <straube.linux@gmail.com> wrote:
 >
-> On Wed, Aug 11, 2021 at 12:50:40AM +0100, Phillip Potter wrote:
-> > Remove unused functions that are now no longer called as a result of the
-> > removal of rtw_ioctl in a previous patch. This includes functions not
-> > directly called from rtw_ioctl, but anything in that specific
-> > call-chain.
+> On 8/11/21 1:50 AM, Phillip Potter wrote:
+> > This series does a lot of cleanup, and came about due to me noticing
+> > that the Makefile contains several lines that silence build warnings
+> > about unused variables, functions and so on.
 > >
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > ---
-> >  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 1538 ++----------------
-> >  1 file changed, 127 insertions(+), 1411 deletions(-)
+> > It accomplishes does three things therefore:
+> > (1) Removes the unused functions no longer called by rtw_ioctl, which
+> >      was deleted in a previous patch (with the exception of the android
+> >      code, which I will add back in once ndo_siocdevprivate is merged in).
+> > (2) Cleanup all build warnings resulting from removing the offending
+> >      Makefile lines.
+> > (3) Remove the offending Makefile lines so that future build warnings
+> >      can be caught locally before submission as well.
 > >
-> > diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > index 4e21801cbfcf..1ccc5f8de1ee 100644
-> > --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > @@ -1539,7 +1539,6 @@ static int rtw_wx_get_essid(struct net_device *dev,
-> >       wrqu->essid.length = len;
-> >       wrqu->essid.flags = 1;
+> > Phillip Potter (8):
+> >    staging: r8188eu: remove unused functions from os_dep/ioctl_linux.c
+> >    staging: r8188eu: remove unused oid_null_function function
+> >    staging: r8188eu: remove unused label from recv_indicatepkt_reorder
+> >    staging: r8188eu: remove rtw_mfree_sta_priv_lock function
+> >    staging: r8188eu: remove unused variable from rtl8188e_init_dm_priv
+> >    staging: r8188eu: remove unused variable from rtw_init_drv_sw
+> >    staging: r8188eu: remove unused variable from rtw_init_recv_timer
+> >    staging: r8188eu: remove lines from Makefile that silence build
+> >      warnings
 > >
-> > -exit:
+> >   drivers/staging/r8188eu/Makefile             |    9 -
+> >   drivers/staging/r8188eu/core/rtw_recv.c      |    2 -
+> >   drivers/staging/r8188eu/core/rtw_sta_mgt.c   |    9 -
+> >   drivers/staging/r8188eu/hal/rtl8188e_dm.c    |    1 -
+> >   drivers/staging/r8188eu/include/rtw_ioctl.h  |    6 -
+> >   drivers/staging/r8188eu/os_dep/ioctl_linux.c | 1538 ++----------------
+> >   drivers/staging/r8188eu/os_dep/os_intfs.c    |    1 -
+> >   drivers/staging/r8188eu/os_dep/recv_linux.c  |    2 -
+> >   8 files changed, 127 insertions(+), 1441 deletions(-)
+> >
 >
-> This is not a "function", but a label that was not used.
+> Acked-by: Michael Straube <straube.linux@gmail.com>
 >
-> I'll take this but be more careful next time in the description of
-> patches as to what they are doing...
->
-> thanks,
->
-> greg k-h
+> Michael
 
-Dear Greg,
-
-Sorry about that, I had even made a mental note to mention the label
-explicitly, but it somehow slipped out of my head. I dealt with this
-in the same patch as it was one of the build warnings I uncovered.
-Thank you for taking the patches.
+Thank you Michael :-)
 
 Regards,
 Phil
