@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9812A3E91D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAB93E91DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhHKMsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
+        id S229904AbhHKMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKMsU (ORCPT
+        with ESMTP id S229473AbhHKMsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:48:20 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A2FC061765;
-        Wed, 11 Aug 2021 05:47:57 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id w20so5441111lfu.7;
-        Wed, 11 Aug 2021 05:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=maVdPAhzuun15W4v+98yU9YOHED/7XUgEFEe/1oMvOA=;
-        b=RX8mgA2mqjOOK93KuFiX2pdWvtkcpIUs7LVTZU8lS+InmsSd89MWKauhshqzNUlNn1
-         mhTYVz1fPUMgotTWyhMNoxY6kHN3sqODLgyXMWgZmIvAHgQ/oi9ZqWCgdkX1fo0d9oKR
-         vFVkFDsMNvKLmecuMB522cb9DZGYHA9cDImZH7iG6Cn5p/Y2sYtMJOdXq7x/Lyh+au/N
-         tp4ccvczuNjxSM4lC4pUEFuzWTJIdFKL8Wh94SRdatnVNjme591FjaeKt3e4i/WMeV78
-         v/nC9y57SXwPAMinpBlFcpRQ3AxaI9jRModDiBLWmQ52N6HZlleJBoIfomLxl6FRfMde
-         64rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=maVdPAhzuun15W4v+98yU9YOHED/7XUgEFEe/1oMvOA=;
-        b=Drp2qkkj44ZsOt9Lh0v/OIef2wL0omJ7GGTTKENzLBTF2Cayhs9cEOZQwZL9QF3vVf
-         MS47g8EfF/HHPQ5W5TMUt067lzJVNNulhY0N6NYjoBJnTaie7/ReMZioBfXn83D1I9Hz
-         suaoUNv05wg/8MT5W2XY6ywR73GxzzjqyDwdeh9c6W3Mji10vMg4xv+2LrqEQNnSDctp
-         pa0FobsXkTMXRLQ2m/jhYOR8sDfH34tMn+RDDJ12zF5xHhkTjrsT4gdIHqOqE2l+5jOG
-         Xh8vxb6scLxh3YilyioiJtcqyaDFxgw7LZdsYVT2tEoqscuExID/o1S2ZiE9E1IyV8PE
-         f5iA==
-X-Gm-Message-State: AOAM530EdYNKz7t+0avHS0QTpWVa8zbTvyisWubtNQfP1rpHEvF79ScD
-        rX9aVaHTn115lVDFgO7EwMs=
-X-Google-Smtp-Source: ABdhPJzjb8jZ/Njn/4tPomE/Wan7HmUOf3JwJT/erg1ebJJW/nBfaFufA3lJ0IKfgS++eJQHesec+A==
-X-Received: by 2002:ac2:4106:: with SMTP id b6mr24945834lfi.89.1628686075610;
-        Wed, 11 Aug 2021 05:47:55 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id v27sm2348551lfp.155.2021.08.11.05.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 05:47:55 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:47:53 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>
-Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
- property
-Message-ID: <20210811124753.nckmggmil47yytxz@mobilestation>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
- <20210802135839.4clqd34npppwasyh@mobilestation>
- <CAHp75Vcz=vkaGObUcOOTZA51pHPoMc50RpPBLg4fgZgHdUStRA@mail.gmail.com>
- <20210804124433.crh7w6jzfjcswubo@mobilestation>
- <YQqnrHAuSneeEFgO@smile.fi.intel.com>
- <CACRpkdYJyVUix6MSLQvF1Ok21gHdk6d8ToGpP_rh5v6Rpwyn5g@mail.gmail.com>
+        Wed, 11 Aug 2021 08:48:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D728C061765;
+        Wed, 11 Aug 2021 05:48:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628686105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UIGmo69KZrc2J9HeCu65ppUBj4zfHrwzhS5X2A72n+c=;
+        b=ysr+3jUJrjWVrnARKplskpxUSmoqLGvr5hwN92aP4+nowhWjgmRtIHbHDALO5Nu/OKI1MH
+        h6/YppAsbNtsvS3guAgjC5ATnP9p6LqPU3u+baQpVtIGoXeC9LOMv0slpTSguAphTVhPm3
+        WyqxEwxTivaTuUa3A+B/qay/MlIis/2DYjRZpknk02YXO4T6dYFRCIcKCekqCWH+pw48Jh
+        9hhZ+y1duXq4gjtKOnIbIDcKvz45hPkfXtEpJ2dgxoNX7PKRhxmo2sqHpZ+6TpRkh+1RdD
+        hvQ4wLXbd06qxSGZ4Sgj9bwuYGGMwj1oqUDTI1V/MOiqLTPRnVIlXCqR935pOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628686105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UIGmo69KZrc2J9HeCu65ppUBj4zfHrwzhS5X2A72n+c=;
+        b=yfxhM/yJc8O22ZYimus/Y+SjpdfR6O+BllFZ0Lgc1pX2gqxyHkWw18fE8ikVSRQ7ntiWuw
+        uDC37QeXlRaVlUAA==
+To:     linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org,
+        vincent.donnefort@arm.com, valentin.schneider@arm.com,
+        peterz@infradead.org, mingo@kernel.org, rdunlap@infradead.org
+Subject: Re: + kernel-cpuc-eliminate-all-kernel-doc-warnings.patch added to
+ -mm tree
+In-Reply-To: <874kbwp2te.ffs@tglx>
+References: <20210811043016.-ahQ6%akpm@linux-foundation.org>
+ <874kbwp2te.ffs@tglx>
+Date:   Wed, 11 Aug 2021 14:48:24 +0200
+Message-ID: <871r70p2p3.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYJyVUix6MSLQvF1Ok21gHdk6d8ToGpP_rh5v6Rpwyn5g@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus
+On Wed, Aug 11 2021 at 14:45, Thomas Gleixner wrote:
+> On Tue, Aug 10 2021 at 21:30, akpm@linux-foundation.org wrote:
+>> The patch titled
+>>      Subject: kernel/cpu.c: eliminate all kernel-doc warnings
+>> has been added to the -mm tree.  Its filename is
+>>      kernel-cpuc-eliminate-all-kernel-doc-warnings.patch
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=smp/core&id=11bc021d1fbaaa1a6e7b92d6631faa875dd40b7d
 
-On Wed, Aug 11, 2021 at 02:40:49PM +0200, Linus Walleij wrote:
-> On Wed, Aug 4, 2021 at 4:44 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Wed, Aug 04, 2021 at 03:44:33PM +0300, Serge Semin wrote:
-> > > Thus, yes, I think we need to make sure here that the property
-> > > is only used in framework of the kernel and isn't passed via
-> > > inappropriate paths like DT/ACPI fw so not to get into the
-> > > maintainability troubles in future.
-> >
-> > Got it. I'll add the additional check in next version.
-> 
+I picked up the corresponding kernel/smp.c fix as well
 
-> This seems reasonable for me, if you can get this done with
-> some kind of elegance.
-> 
+Thanks,
 
-There is v2 of this series has already been posted:
-https://lore.kernel.org/linux-gpio/20210804160019.77105-1-andriy.shevchenko@linux.intel.com/
-with the denoted concern taken into account. 
-
--Sergey
-
-> Maybe use the "linux,gpio-base" property as mentioned so it is
-> clear that this is a Linux-internal thing only.
-> 
-> Yours,
-> Linus Walleij
+        tglx
