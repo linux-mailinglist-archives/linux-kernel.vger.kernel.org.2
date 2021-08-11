@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6B43E87B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776033E87B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhHKBhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:37:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:50770 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhHKBhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:37:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="202201573"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="202201573"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 18:37:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="516263485"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2021 18:37:25 -0700
-Date:   Wed, 11 Aug 2021 09:37:24 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v7 3/5] mm/hugetlb: add support for mempolicy
- MPOL_PREFERRED_MANY
-Message-ID: <20210811013724.GB2474@shbuild999.sh.intel.com>
-References: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
- <1627970362-61305-4-git-send-email-feng.tang@intel.com>
- <YQ06tNiDEsvl8004@dhcp22.suse.cz>
- <20210809024430.GA46432@shbuild999.sh.intel.com>
- <YRDqRMTXVZO9EkoC@dhcp22.suse.cz>
- <20210809123747.GB46432@shbuild999.sh.intel.com>
- <YRErZFQGZx4aPYuU@dhcp22.suse.cz>
- <20210810085048.GA67328@shbuild999.sh.intel.com>
- <81f33a1-8ff-f2d4-63ff-de6c81d86f3@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81f33a1-8ff-f2d4-63ff-de6c81d86f3@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S230505AbhHKBjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:39:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45156 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhHKBjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 21:39:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628645935; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Zm6ZufoPa2Vzbq714mN4eHoIrlYEf7LG9dIpJUkh/bY=; b=XwMuAA9SYbCvUOTVEV5jYRn1rJgrnRYK55RLl/UsZSdYDabfWrc0MLYNAQwFh/K+ijxEEDSi
+ 9M3TqExOz5wH8cu75XeSM+toUAmbdmPOCaW4+glVn2AGKByM3j63sOQmFzhm3f9rwIvcFEHO
+ 855yf/eF6PoUrBebuRVz7RG9D+4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61132a2a76c3a9a17243b8d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 01:38:50
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D444C433D3; Wed, 11 Aug 2021 01:38:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83A49C433F1;
+        Wed, 11 Aug 2021 01:38:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83A49C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v1] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu cpufreq driver flag
+Date:   Wed, 11 Aug 2021 07:08:38 +0530
+Message-Id: <1628645918-12890-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huge,
+As remote cpufreq updates are supported on QCOM platforms, set
+dvfs_possible_from_any_cpu cpufreq driver flag.
 
-On Tue, Aug 10, 2021 at 02:35:05PM -0700, Hugh Dickins wrote:
-> On Tue, 10 Aug 2021, Feng Tang wrote:
-> > On Mon, Aug 09, 2021 at 03:19:32PM +0200, Michal Hocko wrote:
-> > [snip]
-> > > > > Do you think you can provide same helpers for other policies as well?
-> > > > > Maybe we can get rid of some other ifdefery as well.
-> > > > 
-> > > > Sure. I can make separate patch(es) for that.
-> > > > 
-> > > > And you mean helper like mpol_is_bind/default/local/preferred? 
-> > > > 
-> > > > I just run 'git-grep MPOL', and for places using "mode == MPOL_XXX",
-> > > > mostly they are in mempolicy.[ch], the only another place is in
-> > > > shmem.c, do we need to create all the helpers for it and the
-> > > > potential future users? 
-> > > 
-> > > I would just go with those instances which need to ifdef for NUMA.
-> > > Thanks!
-> > 
-> > Yes, following is a patch to remove one CONFIG_NUMA check, though
-> > an bolder idea to extend the patch by removing the CONFIG_TMPFS
-> > check in the same line.
-> > 
-> > Thanks,
-> > Feng
-> > 
-> > ---------8<---------------------------------
-> > 
-> > From 1a5858721ac8ce99c27c13d310bba2983dc73d97 Mon Sep 17 00:00:00 2001
-> > From: Feng Tang <feng.tang@intel.com>
-> > Date: Tue, 10 Aug 2021 17:00:59 +0800
-> > Subject: [PATCH] mm: shmem: avoid open coded check for mempolicy's mode
-> > 
-> > Add a mempolicy helper to do the check, which can also remove
-> > a CONFIG_NUMA option check.
-> > 
-> > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> 
-> No thanks: this is not an improvement.
-> 
-> The "#if defined(CONFIG_NUMA) && defined(CONFIG_TMPFS)" is there to
-> eliminate dead code that would not be automatically eliminated by the
-> optimizer: it's not there just to avoid MPOL_DEFAULT, and it's there
-> to cover shmem_get_sbmpol() along with shmem_show_mpol().
+Signed-off-by: Taniya Das <tdas@codeaurora.org>
+---
+ drivers/cpufreq/qcom-cpufreq-hw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for the explaination! I did some tests that in !NUMA case, the
-'sbinfo->mpol' is always NULL (I could be wrong) which makes the
-2 functions almost non-ops.
+diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+index f86859b..20455aa 100644
+--- a/drivers/cpufreq/qcom-cpufreq-hw.c
++++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+@@ -161,6 +161,7 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+ 		return ret;
+ 	} else {
+ 		policy->fast_switch_possible = true;
++		policy->dvfs_possible_from_any_cpu = true;
+ 		icc_scaling_enabled = false;
+ 	}
 
-> I know we tend to avoid #ifdefs in .c files, and that's good; and
-> I know you could find other code in mm/shmem.c which might also be
-> #ifdef'ed to eliminate other dead code in other configs; but unless
-> there's a new drive to purge our .c source of all #ifdefs,
-> please just leave this as is.
- 
-Ok, and sorry for the noise.
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
 
-Thanks,
-Feng
-
-> Thanks,
-> Hugh
-> 
