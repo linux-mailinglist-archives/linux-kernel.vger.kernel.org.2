@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BD13E89C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F3D3E89C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhHKFee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbhHKFec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:34:32 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7548C061799
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:34:09 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so2845067pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ScSbxJofNLIiJut+toTZ7USozFNrpn/9FRU/yhxl+AE=;
-        b=eb6WOqa/iiW+lVxPN/WwlN1ktVPrT2bUzlrRfDrYo41IvDzG4/ln5yWs6uXhICalPc
-         8R0u5AzW7yMU6cYgS+wfVr1wFhPcTBbZD2Xyd4b7nHZ3hafixxLtxxbPGwpJLDHfRGdI
-         zsU9bV0uTcH4s9YjyKyk3RwVbO/HStRc+oKgUx5B2+8G9pO8KCbN0SSodCkkTKH5OwCj
-         NkEi8tGAip3xqqCWY5Cd5cCb4jacmdKEE4+LxGNZA+sGwQu085Zzb25vTOg1ndLK0z5V
-         r4ejQRIY4GkBb+GZRhHuNkrSOOBP5ZQyuytbggBbhP7/xyVm24hsXA8Zo39boZpUz10E
-         Ygng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ScSbxJofNLIiJut+toTZ7USozFNrpn/9FRU/yhxl+AE=;
-        b=RiGdEoBX2ce3QuAr2Os6UeklI1K9iDnfn2sXNt4yraxiMi/dvYKE1xh+3X7aUwhSoe
-         1qezF6GAc8hUic7Fyh1bke6bpLEwy2MTaW8FvvtM9HEknJCxoEOJyTrbm63Xn2zur3cU
-         zAZW3gxPti8LeWEHkruFiMldGoGRt6/+8YJAzHmWmuezYXd2K/p8DXJ77Xe9Br7awaiB
-         Z6EGbmp2pCYF4p8qlxcmNxhGjO84X7X+hxEyHZx/YLFHMAiC/kNg1cAE6iCR0kfZQ7Zg
-         4Q75ooGc6UGWcWcXwBibN6c8t+sAaVHppU7aTqhWTIqqB5VP974xnhgpMlvkY5UauFUI
-         3woA==
-X-Gm-Message-State: AOAM533Z4SSbEMyKzkQ0sGQHYyhaEG5PHxC/OE5/3cbZ9DuyKGjlxA0L
-        D/FUvVU0IOUNQEzjUDp0QP8whg==
-X-Google-Smtp-Source: ABdhPJyJHzEP2u8Lqj/aaTrSt5nOj9C159L82xQKicF/GaJrGfuVo5tn/qTlGn31FvoW9cEaqP30pg==
-X-Received: by 2002:a17:902:8507:b029:12b:533e:5e9d with SMTP id bj7-20020a1709028507b029012b533e5e9dmr28394940plb.53.1628660049321;
-        Tue, 10 Aug 2021 22:34:09 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id q4sm6443106pga.48.2021.08.10.22.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 22:34:08 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 11:04:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-Message-ID: <20210811053406.jqwextgtnxhgsjd2@vireshk-i7>
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <YRJym+Vn4bbwQzzs@google.com>
- <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
+        id S234293AbhHKFeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:34:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:42938 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229730AbhHKFeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:34:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD671FB;
+        Tue, 10 Aug 2021 22:33:56 -0700 (PDT)
+Received: from [10.163.67.241] (unknown [10.163.67.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12A223F718;
+        Tue, 10 Aug 2021 22:33:53 -0700 (PDT)
+Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
+ page size
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
+ <25ee7799069492f2501003faec7f9732@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <0b47c654-7e9b-a7ca-bdf4-f9607062200e@arm.com>
+Date:   Wed, 11 Aug 2021 11:04:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <25ee7799069492f2501003faec7f9732@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-08-21, 10:48, Viresh Kumar wrote:
-> On 10-08-21, 13:35, Quentin Perret wrote:
-> > This series adds more code than it removes,
+
+
+On 8/10/21 7:03 PM, Marc Zyngier wrote:
+> On 2021-08-10 08:02, Anshuman Khandual wrote:
+>> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
+>> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
+>> will be no such usage left.
+>>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
+>>  arch/arm64/mm/mmu.c          | 2 +-
+>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>> index 05321f4165e3..a6112b6d6ef6 100644
+>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>> @@ -85,7 +85,7 @@ static bool kvm_level_supports_block_mapping(u32 level)
+>>       * Reject invalid block mappings and don't bother with 4TB mappings for
+>>       * 52-bit PAs.
+>>       */
+>> -    return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
+>> +    return !(level == 0 || (!IS_ENABLED(CONFIG_ARM64_4K_PAGES) && level == 1));
+>>  }
+>>
+>>  static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
+>> @@ -155,7 +155,7 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
+>>  {
+>>      u64 pa = pte & KVM_PTE_ADDR_MASK;
+>>
+>> -    if (PAGE_SHIFT == 16)
+>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+>>          pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+>>
+>>      return pa;
+>> @@ -165,7 +165,7 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
+>>  {
+>>      kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
+>>
+>> -    if (PAGE_SHIFT == 16)
+>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+>>          pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
+>>
+>>      return pte;
+>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>> index 9ff0de1b2b93..8fdfca179815 100644
+>> --- a/arch/arm64/mm/mmu.c
+>> +++ b/arch/arm64/mm/mmu.c
+>> @@ -296,7 +296,7 @@ static void alloc_init_cont_pmd(pud_t *pudp,
+>> unsigned long addr,
+>>  static inline bool use_1G_block(unsigned long addr, unsigned long next,
+>>              unsigned long phys)
+>>  {
+>> -    if (PAGE_SHIFT != 12)
+>> +    if (!IS_ENABLED(CONFIG_ARM64_4K_PAGES))
+>>          return false;
+>>
+>>      if (((addr | next | phys) & ~PUD_MASK) != 0)
 > 
-> Sadly yes :(
+> I personally find it a lot less readable.
 > 
-> > and the unregistration is
-> > not a fix as we don't ever remove the EM tables by design, so not sure
-> > either of these points are valid arguments.
-> 
-> I think that design needs to be looked over again, it looks broken to
-> me everytime I land onto this code. I wonder why we don't unregister
-> stuff.
+> Also, there is no evaluation whatsoever. All the code guarded
+> by a PAGE_SIZE/PAGE_SHIFT that doesn't match the configuration
+> is dropped at compile time.
 
-Coming back to this series. We have two options, based on what I
-proposed here:
-
-https://lore.kernel.org/linux-pm/20210811050327.3yxrk4kqxjjwaztx@vireshk-i7/
-
-1. Let cpufreq core register with EM on behalf of cpufreq drivers.
-
-2. Update drivers to use ->ready() callback to do this stuff.
-
-I am fine with both :)
-
--- 
-viresh
+The primary idea here is to unify around IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
+usage in arm64, rather than having multiple methods to test page size when
+ever required.
