@@ -2,233 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49483E93E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAC73E93EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhHKOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:45:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232494AbhHKOpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628693120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBcHxr3b5mworuPq4PqU+l4xARfNUKjm75tM9rIDjPo=;
-        b=eIVA+OPApMd/Emy0nV7+kYEJlT9GwdAyB4W/dv7HOqguTQpjypY7VPS8b9Mbn38jTzO862
-        5tV0CCZvWQ7gbyMsOSr/AVswcoXPaBR4wi6blHzDmXkU8PKRkRBnupZ6zkQtYBcjimm1y9
-        +vmaXJRpJQDyKwF5XwEQi0u9u2IXhgk=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-VRn65XkrNVmDw9r--SIwJw-1; Wed, 11 Aug 2021 10:45:17 -0400
-X-MC-Unique: VRn65XkrNVmDw9r--SIwJw-1
-Received: by mail-wr1-f71.google.com with SMTP id r17-20020adfda510000b02901526f76d738so840700wrl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:45:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=eBcHxr3b5mworuPq4PqU+l4xARfNUKjm75tM9rIDjPo=;
-        b=b8Rtk5MyzhZNM7z9WFr6pe3BvC1H0pVySSthvYnr5V/o83FICPLzxQ5UH078Uihz1m
-         6BLI6uijPGzSjDkb05hT6gKgZbwc8QvWSg3hx6OOllhPe9baY0O2Id3KWkcPYJKs6ybL
-         4LusaFn/USHuFSsQ0oBBrAyomWkLYv6WC2aEF1Dm/QWhyhtdqRyeT+epufLl2faZ9qzB
-         fXszNYeBqiYW3MmqbKHBcSDJLRf79dEHX6w7KY0ybP1GiCZ0FOtmcbt37Y0dQ6hobc0M
-         3cR9Bb5RmGLe4kXDcRJ3XpJt/EUor5FTZiQM3S+FQkgajNRm+4dImAMB3zdYfcR6qkbZ
-         ZFVA==
-X-Gm-Message-State: AOAM532oue5olErjeBuB9T21Z2F8NhdyvyEM6jlV1bQlOJP80MtCKlOK
-        TtktcID9NWgApoW3q2L6luCZdApwmJK9SOznWW+z+btGupDlJ8qIBUzLevXNchJwYzEKiBX6w/i
-        r4wk/S7b2yBiDeN908af9R8+L
-X-Received: by 2002:a1c:f019:: with SMTP id a25mr10501109wmb.96.1628693116071;
-        Wed, 11 Aug 2021 07:45:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyH29GuiTfEW6pGrDbGgwByHckYOSWZlO1OckR66NtZ86Hv7seISYduYOnbWzd/HniZiX+U4w==
-X-Received: by 2002:a1c:f019:: with SMTP id a25mr10501089wmb.96.1628693115840;
-        Wed, 11 Aug 2021 07:45:15 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64a0.dip0.t-ipconnect.de. [91.12.100.160])
-        by smtp.gmail.com with ESMTPSA id g6sm9982769wrm.73.2021.08.11.07.45.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 07:45:14 -0700 (PDT)
-Subject: Re: mmap denywrite mess (Was: [GIT PULL] overlayfs fixes for
- 5.14-rc6)
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-References: <YRPaodsBm3ambw8z@miu.piliscsaba.redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <c13de127-a7f0-c2c3-cb21-24fce2c90c11@redhat.com>
-Date:   Wed, 11 Aug 2021 16:45:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232556AbhHKOrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232456AbhHKOrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:47:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D248760E93;
+        Wed, 11 Aug 2021 14:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628693228;
+        bh=/zsU7DYNDgNARnB0g1dZmMw+/dbZ0ppjRqy+YOX0LyY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZIKW2cU6ldwNIBgWMOja+Fxc3h8eXxOMM4Ru+ZI7wU9qwfstCzI743pBn+wato3Tv
+         ngtv+wM8YI5zEM2Ir+wdPclDhHEEc/ITO8PJhEzf33HQqvnQW3FhMk4zChe8Qea/Db
+         SeRZ4kc9xCCm7VfBnK3BaO5cy+9Q5LG/r3keTt1i1HgC9sbgcPRR/59CcVV1k2Ljr3
+         4aZxXI/MnV37xGW3jBZAmnp3JQ1XQCRqLegSO0r9rLk8iAMk29OpvYc3MG5w1qxZFV
+         5vyGb6hJZUBnuXpB7SAC6LdzEMRsr99e92rrLDytRTcfq+r5yeiYUYTDr4xX35rWUk
+         MNL3lAMpE7cuw==
+Date:   Wed, 11 Aug 2021 16:47:05 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] i2c: dev: Define pr_fmt() and drop duplication
+ substrings
+Message-ID: <YRPi6SIVf379tYOW@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210712142323.23118-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YRPaodsBm3ambw8z@miu.piliscsaba.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t7OT+ZOopNOJ3c7H"
+Content-Disposition: inline
+In-Reply-To: <20210712142323.23118-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.21 16:11, Miklos Szeredi wrote:
-> On Mon, Aug 09, 2021 at 02:25:17PM -0700, Linus Torvalds wrote:
-> 
->> Ugh. Th edances with denywrite and mapping_unmap_writable are really
->> really annoying.
-> 
-> Attached version has error and success paths separated.  Was that your
-> complaint?
-> 
->> I get the feeling that the whole thing with deny_write_access and
->> mapping_map_writable could possibly be done after-the-fact somehow as
->> part of actually inserting the vma in the vma tree, rather than done
->> as the vma is prepared.
-> 
-> I don't know if that's doable or not.  The final denywrite count is obtained in
-> __vma_link_file(), called after __vma_link().  The questions are:
-> 
->   - does the order of those helper calls matter?
-> 
->   - if it does, could the __vma_link() be safely undone after an unsuccessful
->     __vmal_link_file()?
-> 
->> And most users of vma_set_file() probably really don't want that whole
->> thing at all (ie the DRM stuff that just switches out a local thing.
->> They also don't check for the new error cases you've added.
-> 
-> Christian König wants to follow up with those checks (which should be asserts,
-> if the code wasn't buggy in the first place).
-> 
->> So I really think this is quite questionable, and those cases should
->> probably have been done entirely inside ovlfs rather than polluting
->> the cases that don't care and don't check.
-> 
-> I don't get that.  mmap_region() currently drops the deny counts from the
-> original file.  That doesn't work for overlayfs since it needs to take new temp
-> counts on the override file.
-> 
-> So mmap_region() is changed to drop the counts on vma->vm_file, but then all
-> callers of vma_set_file() will need to do that switch of temp counts, there's no
-> way around that.
-> 
-> Thanks,
-> Miklos
-> 
-> For reference, here's the previous discussion:
-> 
-> https://lore.kernel.org/linux-mm/YNHXzBgzRrZu1MrD@miu.piliscsaba.redhat.com/
-> 
-> ---
->   fs/overlayfs/file.c |    4 +++-
->   include/linux/mm.h  |    2 +-
->   mm/mmap.c           |    2 +-
->   mm/util.c           |   31 ++++++++++++++++++++++++++++++-
->   4 files changed, 35 insertions(+), 4 deletions(-)
-> 
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -475,7 +475,9 @@ static int ovl_mmap(struct file *file, s
->   	if (WARN_ON(file != vma->vm_file))
->   		return -EIO;
->   
-> -	vma_set_file(vma, realfile);
-> +	ret = vma_set_file(vma, realfile);
-> +	if (ret)
-> +		return ret;
->   
->   	old_cred = ovl_override_creds(file_inode(file)->i_sb);
->   	ret = call_mmap(vma->vm_file, vma);
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2780,7 +2780,7 @@ static inline void vma_set_page_prot(str
->   }
->   #endif
->   
-> -void vma_set_file(struct vm_area_struct *vma, struct file *file);
-> +int /* __must_check */ vma_set_file(struct vm_area_struct *vma, struct file *file);
->   
->   #ifdef CONFIG_NUMA_BALANCING
->   unsigned long change_prot_numa(struct vm_area_struct *vma,
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1806,6 +1806,7 @@ unsigned long mmap_region(struct file *f
->   		 */
->   		vma->vm_file = get_file(file);
->   		error = call_mmap(file, vma);
-> +		file = vma->vm_file;
->   		if (error)
->   			goto unmap_and_free_vma;
->   
-> @@ -1867,7 +1868,6 @@ unsigned long mmap_region(struct file *f
->   		if (vm_flags & VM_DENYWRITE)
->   			allow_write_access(file);
->   	}
-> -	file = vma->vm_file;
->   out:
->   	perf_event_mmap(vma);
->   
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -314,12 +314,41 @@ int vma_is_stack_for_current(struct vm_a
->   /*
->    * Change backing file, only valid to use during initial VMA setup.
->    */
-> -void vma_set_file(struct vm_area_struct *vma, struct file *file)
-> +int vma_set_file(struct vm_area_struct *vma, struct file *file)
->   {
-> +	vm_flags_t vm_flags = vma->vm_flags;
-> +	int err;
-> +
-> +	/* Get temporary denial counts on replacement */
-> +	if (vm_flags & VM_DENYWRITE) {
-> +		err = deny_write_access(file);
-> +		if (err)
-> +			return err;
-> +	}
-> +	if (vm_flags & VM_SHARED) {
-> +		err = mapping_map_writable(file->f_mapping);
-> +		if (err)
-> +			goto undo_denywrite;
-> +	}
-> +
->   	/* Changing an anonymous vma with this is illegal */
->   	get_file(file);
->   	swap(vma->vm_file, file);
-> +
-> +	/* Undo temporary denial counts on replaced */
-> +	if (vm_flags & VM_SHARED)
-> +		mapping_unmap_writable(file->f_mapping);
-> +
-> +	if (vm_flags & VM_DENYWRITE)
-> +		allow_write_access(file);
-> +
->   	fput(file);
-> +	return 0;
-> +
-> +undo_denywrite:
-> +	if (vm_flags & VM_DENYWRITE)
-> +		allow_write_access(file);
-> +	return err;
->   }
->   EXPORT_SYMBOL(vma_set_file);
->   
-> 
 
-I proposed a while ago to get rid of VM_DENYWRITE completely:
+--t7OT+ZOopNOJ3c7H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://lkml.kernel.org/r/20210423131640.20080-1-david@redhat.com
+On Mon, Jul 12, 2021 at 05:23:22PM +0300, Andy Shevchenko wrote:
+> Define pr_fmt() to print module name as prefix and at the same time
+> drop duplication substrings in the messages.
+>=20
+> While at it, convert printk(<LEVEL>) to pr_<level>().
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I haven't looked how much it still applies to current upstream, but 
-maybe that might help cleaning up that code.
+Applied to for-next, thanks!
 
--- 
-Thanks,
 
-David / dhildenb
+--t7OT+ZOopNOJ3c7H
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmET4ukACgkQFA3kzBSg
+KbbXtw//bOqkcl0K1UM1xdgy7I0Hjyg/fjUJrusTTIw9XAVyQv+oPWy6rllfQsGZ
+dTSES6I3ni2yKfyjNzH3F8bEGInOamAO9FTtd2r0qSwONe+mx3yVvbK2cEjQDBeh
+e1ZO6AHuRd7HIqOet6IqstLPQu3GFPjW38GRF1C52o5fWnPvpptYbr8BawWukE1u
+/iRx5imE3fdFkfq0c7hyVVf2BUrf9CB+LleWvFlzpWBID9qVjyzjuOYXBoKpMLLW
+HOT68R44HvofrxS2esVYgflYkMaY63CcGfRfVrS8c+LI5y0HHJh7cZqCvbenQcB/
+GPJYLqHLzLjHKa34nnh+TcrcWbadX6Gy+IHaKTcdAbWdGcMyMa6pAEkiZgdcjX7T
+vuDf1OCUlhB9Acx2tvZNf8K0bCSvY0aJ4ac0eQvkKRpKWqofGP8FH2w/NAniSEri
+327TGxKbsE/u2wltxu/GHxI5frgrhVdaLDyqRJEQrfGDyaFG2DZXh9GEo382lGxM
+EKtNHAqo6mIyffKKrHqDNuF1t9e/gUHVvCJWM4foj4p/GLDpYllPttHD+RNKp4rC
+K+JfB5zRAxkOX36h6q6TO2Iw2mop9DqahlsradasVvrhWSt9ui2vW/wkiQUdPvBr
+JWJmGiujBTz++JkBAs6dXhKdljeMUGPHNPTKH+JzZAoQlYmMzdo=
+=rUap
+-----END PGP SIGNATURE-----
+
+--t7OT+ZOopNOJ3c7H--
