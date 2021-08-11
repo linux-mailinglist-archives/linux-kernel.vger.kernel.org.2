@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFC13E9B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 00:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782E03E9B15
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 00:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhHKWqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 18:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        id S232710AbhHKWzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 18:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhHKWq3 (ORCPT
+        with ESMTP id S232470AbhHKWzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 18:46:29 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2682C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 15:46:05 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id r72so5757555iod.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 15:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vjRZSg+FXeB6OVDD4blHXzlgwCr3hJcyHvFtKEVHOmM=;
-        b=TzLuJ5rh2/btnG4ZbzYQCWePh2DQwoyJSunPxCznB6QmPW56nNHMa4K1tOj7b/wETx
-         n8rjWB+JFzOzEL0t81K886ggn/GcAyuKaFifuSsweCUdMsEIiaHQf3K98dWztpgZsO5p
-         TeZ/xgqM3JS0bjZGfL62ZwQJp0XFa88V0uuzA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vjRZSg+FXeB6OVDD4blHXzlgwCr3hJcyHvFtKEVHOmM=;
-        b=hPyf2XWTohmpPBdgKudTIiprfuuXxkX5wgxsNiZzxNhPXm8zfvpEY5QSq+C0UL8/n4
-         +AkbvYne3ivULqBqUv67EzELqBsjkztpB0RJgN1MlaWqv6KLx78QVB+8v5AfB61HPqK4
-         7hiQFIt1MG94dy/ve29cMNcEtV2ue2fPUTZJARGGDfxAMzKqLSxGPn2cgjmllJPqgmoH
-         5aggz8KiSOCeJX55t51EuGL1/orQGcPbHroeRxNIhuKQLGDYPwuReUw0ra/b6HcL8lFZ
-         ojKHE4O325mDtGCCuzic4hUJbcuWLefJUmixhBgc9QAgaxB4K7ziR4fbwp+nWLzOFd8q
-         BDRg==
-X-Gm-Message-State: AOAM531vzxYkV/XQWnO6cHcvBvAnokGMQgDxh+Mdsf8wK/Pjxq5gTMxN
-        HOa3Ucg+nw2sMJ1gGifMbQDzY9qyNieRAL8X
-X-Google-Smtp-Source: ABdhPJxwihB2HbhfZLJMw/Fz5pYkafER9vmeQIKJBMFgffRybUbOXlbB9Xsm7XzSy3ld+GYidLhwjQ==
-X-Received: by 2002:a05:6638:449:: with SMTP id r9mr955083jap.137.1628721965130;
-        Wed, 11 Aug 2021 15:46:05 -0700 (PDT)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
-        by smtp.gmail.com with ESMTPSA id i3sm354046ilu.46.2021.08.11.15.46.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 15:46:04 -0700 (PDT)
-Received: by mail-il1-f173.google.com with SMTP id f15so667161ilk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 15:46:04 -0700 (PDT)
-X-Received: by 2002:a92:cf4a:: with SMTP id c10mr559866ilr.269.1628721963809;
- Wed, 11 Aug 2021 15:46:03 -0700 (PDT)
+        Wed, 11 Aug 2021 18:55:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC865C061765;
+        Wed, 11 Aug 2021 15:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=2wxyBZN4Hk4I18K5RwgFDHv/H1AMQ7HcLWjYd+zp/TY=; b=nnMKtZLzc1yUsXHZArntvKErl1
+        UjtrIJISkTvTz02IN8VXHr5j9ypw288xz9EtemV2TNnJl/1Q/jdmdFsqrf4MJK1xD0FZpYhBA9Dz3
+        pKFQlumqspzOuiWT2f1ONtLvbEGnktVYAlOLIAlRlkfnFQQ/Iif+p/wJqiNa8Ln7XcvamFwmr2sQR
+        LzcOguFmqxFtCXxx8gPnFQ7oKLel4WTomnXVelMJ4TW056Ca11kDlRhkQqUcHtUvDS6aXeIPT5jiR
+        K6dQ+BTkTduqz6Npcu5EIICuqp5jdkAQHftYnsam/fRVKAF1n4z8M7KVsmOwwM0ygrE8sFsotuPFG
+        EdVOFw1w==;
+Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDx7U-008Iec-H0; Wed, 11 Aug 2021 22:54:44 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH] kbuild: allow "make" targets 'versioncheck' and 'includecheck' withoug .config file
+Date:   Wed, 11 Aug 2021 15:54:42 -0700
+Message-Id: <20210811225442.9537-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210811224141.1110495-1-swboyd@chromium.org>
-In-Reply-To: <20210811224141.1110495-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 11 Aug 2021 15:45:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XKrSfinnZjPPstY0jDX4cP7adAKtCcKFOo5q2=DH+d7w@mail.gmail.com>
-Message-ID: <CAD=FV=XKrSfinnZjPPstY0jDX4cP7adAKtCcKFOo5q2=DH+d7w@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7180-trogdor: Fix lpass dai link
- for HDMI
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Top-level Makefile targets 'versioncheck' and 'includecheck' don't
+need a configured kernel (i.e., don't need a .config file), so add
+them the the list of "no-dot-config-targets".
+This eliminates the 'make' error:
 
-On Wed, Aug 11, 2021 at 3:41 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> This should be the dai for display port. Without this set properly we
-> fail to get audio routed through external displays on trogdor. It looks
-> like we picked up v4[1] of this patch when there was a v7[2]. The v7
-> patch still had the wrong sound-dai but at least we can fix all this up
-> and audio works.
->
-> Cc: Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Fixes: b22d313e1772 ("arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI")
-> Link: https://lore.kernel.org/r/20210721080549.28822-3-srivasam@qti.qualcomm.com [1]
-> Link: https://lore.kernel.org/r/20210726120910.20335-3-srivasam@codeaurora.org [2]
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->
-> Changes from v1:
->  - Drop sound-dai-cells
->  - Replace hdmi-primary with hdmi
->
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+***
+*** Configuration file ".config" not found!
+***
+*** Please run some configurator (e.g. "make oldconfig" or
+*** "make menuconfig" or "make xconfig").
+***
+Makefile:759: include/config/auto.conf.cmd: No such file or directory
 
-I'm no audio expert, but this matches v7 except for the bugfix setting
-the ID for the `sound-dai` to be LPASS_DP_RX instead of 2, which
-matches downstream.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: linux-kbuild@vger.kernel.org
+---
+Fixes: I couldn't determine this.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+ Makefile |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- linux-next-20210811.orig/Makefile
++++ linux-next-20210811/Makefile
+@@ -274,7 +274,8 @@ no-dot-config-targets := $(clean-targets
+ 			 cscope gtags TAGS tags help% %docs check% coccicheck \
+ 			 $(version_h) headers headers_% archheaders archscripts \
+ 			 %asm-generic kernelversion %src-pkg dt_binding_check \
+-			 outputmakefile rustfmt rustfmtcheck
++			 outputmakefile rustfmt rustfmtcheck \
++			 versioncheck includecheck
+ # Installation targets should not require compiler. Unfortunately, vdso_install
+ # is an exception where build artifacts may be updated. This must be fixed.
+ no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
