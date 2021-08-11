@@ -2,310 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839843E9940
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FE13E9949
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhHKTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:55:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60859 "EHLO
+        id S231741AbhHKT6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:58:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27323 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229991AbhHKTzU (ORCPT
+        by vger.kernel.org with ESMTP id S231403AbhHKT6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:55:20 -0400
+        Wed, 11 Aug 2021 15:58:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628711695;
+        s=mimecast20190719; t=1628711880;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5jdVd8k5URnX6lBMFB7udQq0EhcO+kahsChnmRwo3jM=;
-        b=hQrLflbTZe+5vl6KExRD1cMYoErr4bhGA1m1Mes+8s7qyyGKVEGPpWE3vYo4tmu9YlwPvt
-        daNTFDfnd33pKhS/jJihIhr1WKsgwsZSoxhjmrKtGHdh0yJeYLQqNriNAzl51syfVrB+RZ
-        mGUKa6hRfe4gm1+3xf2S2Pjevb61yP4=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-T2Arx8LAMwqGwZ3nkNHUHw-1; Wed, 11 Aug 2021 15:54:54 -0400
-X-MC-Unique: T2Arx8LAMwqGwZ3nkNHUHw-1
-Received: by mail-qv1-f69.google.com with SMTP id f10-20020a0ccc8a0000b02903521ac3b9d7so1909199qvl.15
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:54:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5jdVd8k5URnX6lBMFB7udQq0EhcO+kahsChnmRwo3jM=;
-        b=VTOP1viBO+waJykNBiEBQa8xjsTiutaz9ekHYwhI5a4FzvOA/k14Q+Ktc1ptpKZN2+
-         IECrNp2NM+bE0JkShwxipUT6qPHK33yQO4ft/mZ/RLyZyzUS55qne2XaQHjSQuqY0nlG
-         EmQCa05jfoUKCt3N6DIvYFM2YNR/EX84m2tkorZ3MOZTiexIjLp2O5lYx2vWBA7w3bSA
-         y3GLzCSKvpEHcyJnaWqYOyuaofaFNYmaejEukGsyfOZht8jPBbMqtyNJYsao51ws08IB
-         qkhrvE4VOoY6N4mQmrEVj5M261jYoLF0TM19ko4yHsPw/6cGZkx4TQ4lvlFtHAPCTj+w
-         k+PQ==
-X-Gm-Message-State: AOAM531RfLdKu5dCjcWbE2fDRBwTowJPbGuWtUgW2/qzMTHYK29p1wZn
-        eBmFJxRFAk1Xt92QHP525f/id5V6d37BTsHEccCGrNavzb2YCnCBE8Gb6xQVIvDuHP/WDYNzSZy
-        gD8KXV5EZCU6itrcvAFSDEx65
-X-Received: by 2002:a0c:e609:: with SMTP id z9mr289680qvm.37.1628711693736;
-        Wed, 11 Aug 2021 12:54:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrS8Y6Pwjp17TuAO8ZT0PQJJipBxId/xjwfHs5hk6mFcayR6+uxDkQYm7yRWfcjlx45/5mjg==
-X-Received: by 2002:a0c:e609:: with SMTP id z9mr289660qvm.37.1628711693481;
-        Wed, 11 Aug 2021 12:54:53 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id n8sm113423qtp.52.2021.08.11.12.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 12:54:52 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:54:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
-        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
-        peterz@infradead.org, chinwen.chang@mediatek.com,
-        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
-        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
-        jonathan.davies@nutanix.com, Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
-Message-ID: <YRQrCrOCbVkJJ6Ph@t490s>
-References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
- <YQrdY5zQOVgQJ1BI@t490s>
- <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
- <YQrn33pOlpdl662i@t490s>
- <0beb1386-d670-aab1-6291-5c3cb0d661e0@redhat.com>
- <YRQWMIBwkdBK12Z3@t490s>
- <253e7067-1c62-19bd-d395-d5c0495610d7@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <253e7067-1c62-19bd-d395-d5c0495610d7@redhat.com>
+         to:to:cc:cc; bh=WxdcaYuyKYoi6tYy6rnNj7AJtwXW/DVftZFjymOGA2c=;
+        b=c5lcvTKVGt+/wwgvMdYJ0ARA5hOF/ipJ7dKb/78lq1BiqvfHMbSQ5LUvXOHGzytGqMlEYu
+        pK1DeMFmdVdFfC6ago9W3ypyOFRCiDc+SsEXgihnf4wk5Az9IqjbGeJNWdtOq3S5b7spzR
+        Lwm5e/5O+sD82A6/1i0TCLUUlWCxi8U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-THlbMnEaOlCLFHARtJeTbg-1; Wed, 11 Aug 2021 15:57:56 -0400
+X-MC-Unique: THlbMnEaOlCLFHARtJeTbg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D109192D78F;
+        Wed, 11 Aug 2021 19:57:41 +0000 (UTC)
+Received: from llong.com (unknown [10.22.18.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98E29797C8;
+        Wed, 11 Aug 2021 19:57:17 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
+Date:   Wed, 11 Aug 2021 15:57:07 -0400
+Message-Id: <20210811195707.30851-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 08:41:32PM +0200, David Hildenbrand wrote:
-> On 11.08.21 20:25, Peter Xu wrote:
-> > On Wed, Aug 11, 2021 at 06:15:37PM +0200, David Hildenbrand wrote:
-> > > On 04.08.21 21:17, Peter Xu wrote:
-> > > > On Wed, Aug 04, 2021 at 08:49:14PM +0200, David Hildenbrand wrote:
-> > > > > TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't store
-> > > > > any state information regarding shared memory in per-process page tables: it
-> > > > > just doesn't make too much sense.
-> > > > > 
-> > > > > And this is similar to SOFTDIRTY or UFFD_WP bits: this information actually
-> > > > > belongs to the shared file ("did *someone* write to this page", "is
-> > > > > *someone* interested into changes to that page", "is there something"). I
-> > > > > know, that screams for a completely different design in respect to these
-> > > > > features.
-> > > > > 
-> > > > > I guess we start learning the hard way that shared memory is just different
-> > > > > and requires different interfaces than per-process page table interfaces we
-> > > > > have (pagemap, userfaultfd).
-> > > > > 
-> > > > > I didn't have time to explore any alternatives yet, but I wonder if tracking
-> > > > > such stuff per an actual fd/memfd and not via process page tables is
-> > > > > actually the right and clean approach. There are certainly many issues to
-> > > > > solve, but conceptually to me it feels more natural to have these shared
-> > > > > memory features not mangled into process page tables.
-> > > > 
-> > > > Yes, we can explore all the possibilities, I'm totally fine with it.
-> > > > 
-> > > > I just want to say I still don't think when there's page cache then we must put
-> > > > all the page-relevant things into the page cache.
-> > > 
-> > > [sorry for the late reply]
-> > > 
-> > > Right, but for the case of shared, swapped out pages, the information is
-> > > already there, in the page cache :)
-> > > 
-> > > > 
-> > > > They're shared by processes, but process can still have its own way to describe
-> > > > the relationship to that page in the cache, to me it's as simple as "we allow
-> > > > process A to write to page cache P", while "we don't allow process B to write
-> > > > to the same page" like the write bit.
-> > > 
-> > > The issue I'm having uffd-wp as it was proposed for shared memory is that
-> > > there is hardly a sane use case where we would *want* it to work that way.
-> > > 
-> > > A UFFD-WP flag in a page table for shared memory means "please notify once
-> > > this process modifies the shared memory (via page tables, not via any other
-> > > fd modification)". Do we have an example application where these semantics
-> > > makes sense and don't over-complicate the whole approach? I don't know any,
-> > > thus I'm asking dumb questions :)
-> > > 
-> > > 
-> > > For background snapshots in QEMU the flow would currently be like this,
-> > > assuming all processes have the shared guest memory mapped.
-> > > 
-> > > 1. Background snapshot preparation: QEMU requests all processes
-> > >     to uffd-wp the range
-> > > a) All processes register a uffd handler on guest RAM
-> > 
-> > To be explicit: not a handler; just register with uffd-wp and pass over the fd
-> > to the main process.
-> 
-> Good point.
-> 
-> > 
-> > > b) All processes fault in all guest memory (essentially populating all
-> > >     memory): with a uffd-WP extensions we might be able to get rid of
-> > >     that, I remember you were working on that.
-> > > c) All processes uffd-WP the range to set the bit in their page table
-> > > 
-> > > 2. Background snapshot runs:
-> > > a) A process either receives a UFFD-WP event and forwards it to QEMU or
-> > >     QEMU polls all other processes for UFFD events.
-> > > b) QEMU writes the to-be-changed page to the migration stream.
-> > > c) QEMU triggers all processes to un-protect the page and wake up any
-> > >     waiters. All processes clear the uffd-WP bit in their page tables.
-> > > 
-> > > 3. Background snapshot completes:
-> > > a) All processes unregister the uffd handler
-> > > 
-> > > 
-> > > Now imagine something like this:
-> > > 
-> > > 1. Background snapshot preparation:
-> > > a) QEMU registers a UFFD-WP handler on a *memfd file* that corresponds
-> > >     to guest memory.
-> > > b) QEMU uffd-wp's the whole file
-> > > 
-> > > 2. Background snapshot runs:
-> > > a) QEMU receives a UFFD-WP event.
-> > > b) QEMU writes the to-be-changed page to the migration stream.
-> > > c) QEMU un-protect the page and wake up any waiters.
-> > > 
-> > > 3. Background snapshot completes:
-> > > a) QEMU unregister the uffd handler
-> > > 
-> > > 
-> > > Wouldn't that be much nicer and much easier to handle? Yes, it is much
-> > > harder to implement because such an infrastructure does not exist yet, and
-> > > it most probably wouldn't be called uffd anymore, because we are dealing
-> > > with file access. But this way, it would actually be super easy to use the
-> > > feature across multiple processes and eventually to even catch other file
-> > > modifications.
-> > 
-> > I can totally understand how you see this.  We've discussed about that, isn't
-> > it? About the ideal worlds. :)
-> 
-> Well, let's dream big :)
-> 
-> > 
-> > It would be great if this can work out, I hope so.  So far I'm not that
-> > ambicious, and as I said, I don't know whether there will be other concerns
-> > when it goes into the page cache layer, and when it's a behavior of multiple
-> > processes where one of them can rule others without others being notice of it.
-> > 
-> > Even if we want to go that way, I think we should first come up with some way
-> > to describe the domains that one uffd-wp registered file should behave upon.
-> > It shouldn't be "any process touching this file".
-> > 
-> > One quick example in my mind is when a malicious process wants to stop another
-> > daemon process, it'll be easier as long as the malicious process can delete a
-> > file that the daemon used to read/write, replace it with a shmem with uffd-wp
-> > registered (or maybe just a regular file on file systems, if your proposal will
-> > naturally work on them).  The problem is, is it really "legal" to be able to
-> > stop the daemon running like that?
-> 
-> Good question, I'd imagine e.g., file sealing could forbid uffd (or however
-> it is called) registration on a file, and there would have to be a way to
-> reject files that have uffd registered. But it's certainly a valid concern -
-> and it raises the question to *what* we actually want to apply such a
-> concept. Random files? random memfd? most probably not. Special memfds
-> created with an ALLOW_UFFD flag? sounds like a good idea.
+When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
+to one of the new cpus if it is not there already. For memory, however,
+they won't be migrated to the new nodes when cpuset.mems changes. This is
+an inconsistency in behavior.
 
-Note that when daemons open files, they may not be aware of what's underneath
-but read that file directly.  The attacker could still create the file with
-uffd-wp enabled with any flag we introduce.
+In cpuset v1, there is a memory_migrate control file to enable such
+behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
+for cpuset v2 so that we have a consistent set of behavior for both
+cpus and memory.
 
-> 
-> > 
-> > I also don't know the initial concept when uffd is designed and why it's
-> > designed at pte level.  Avoid vma manipulation should be a major factor, but I
-> > can't say I understand all of them.  Not sure whether Andrea has any input here.
-> 
-> AFAIU originally a) avoid signal handler madness and b) avoid VMA
-> modifications and c) avoid taking the mmap lock in write (well, that didn't
-> work out completely for uffd-wp for now IIRC).
+There is certainly a cost to make memory migration the default, but it
+is a one time cost that shouldn't really matter as long as cpuset.mems
+isn't changed frequenty.  Update the cgroup-v2.rst file to document the
+new behavior and recommend against changing cpuset.mems frequently.
 
-Nadav fixed that; it's with read lock now just like when it's introduced.
-Please see mwriteprotect_range() and commit 6ce64428d62026a10c.
+Since there won't be any concurrent access to the newly allocated cpuset
+structure in cpuset_css_alloc(), we can use the cheaper non-atomic
+__set_bit() instead of the more expensive atomic set_bit().
 
-I won't say message queue (signal handling) is because uffd is pte-based; that
-seems to be an orthogonal design decision.  But yeah I agree that's something
-better than using signal handlers.
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 11 +++++++++++
+ kernel/cgroup/cpuset.c                  |  6 +++++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-> 
-> > 
-> > That's why I think current uffd can still make sense with per-process concepts
-> > and keep it that way.  When register uffd-wp yes we need to do that for
-> > multiple processes, but it also means each process is fully aware that this is
-> > happening so it's kind of verified that this is wanted behavior for that
-> > process.  It'll happen with less "surprises", and smells safer.
-> > 
-> > I don't think that will not work out.  It may require all the process to
-> > support uffd-wp apis and cooperate, but that's so far how it should work for me
-> > in a safe and self-contained way.  Say, every process should be aware of what's
-> > going to happen on blocked page faults.
-> 
-> That's a valid concern, although I wonder if it can just be handled via
-> specially marked memfds ("this memfd might get a uffd handler registered
-> later").
-
-Yes, please see my above concern.  So I think we at least reached concensus on:
-(1) that idea is already not userfaultfd but something else; what's that is
-still to be defined.  And, (2) that definitely needs further thoughts and
-context to support its validity and safety.  Now uffd got people worried about
-safety already, that's why all the uffd selinux and privileged_userfaultfd
-sysctl comes to mainline; we'd wish good luck with the new concept!
-
-OTOH, uffd whole idea is already in mainline, it has limitations on requiring
-to rework all processes to support uffd-wp, but actually the same to MISSING
-messages has already happened and our QE is testing those: that's what we do
-with e.g. postcopy-migrating vhost-user enabled OVS-DPDK - we pass over uffd
-registered with missing mode and let QEMU handle the page fault.  So it's a bit
-complicated but it should work.  And I hope you can also agree we don't need to
-block uffd before that idea settles.
-
-The pte markers idea need comment; that's about implementation, and it'll be
-great to have comments there or even NACK (better with a better suggestion,
-though :).  But the original idea of uffd that is pte-based has never changed.
-
-> 
-> > > 
-> > > Again, I am not sure if uffd-wp or softdirty make too much sense in general
-> > > when applied to shmem. But I'm happy to learn more.
-> > 
-> > Me too, I'm more than glad to know whether the page cache idea could be
-> > welcomed or am I just wrong about it.  Before I understand more things around
-> > this, so far I still think the per-process based and fd-based solution of uffd
-> > still makes sense.
-> 
-> I'd be curious about applications where the per-process approach would
-> actually solve something a per-fd approach couldn't solve. Maybe there are
-> some that I just can't envision.
-
-Right, that's a good point.
-
-Actually it could be when like virtio-mem that some process shouldn't have
-write privilege, but we still allow some other process writting to the shmem.
-Something like that.
-
-> 
-> (using shmem for a single process only isn't a use case I consider important
-> :) )
-
-If you still remember the discussion about "having qemu start to use memfd and
-shmem as default"? :)
-
-shmem is hard but it's indeed useful in many cases, even if single threaded.
-For example, shmem-based VMs can do local binary update without migrating guest
-RAMs (because memory is shared between old/new binaries!).  To me it's always a
-valid request to enable both shmem and write protect.
-
-[It seems Andrea is not in the loop; do that for real]
-
-Thanks,
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 5c7377b5bd3e..babbe04c8d37 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2056,6 +2056,17 @@ Cpuset Interface Files
+ 	The value of "cpuset.mems" stays constant until the next update
+ 	and won't be affected by any memory nodes hotplug events.
+ 
++	Setting a non-empty value to "cpuset.mems" causes memory of
++	tasks within the cgroup to be migrated to the designated nodes if
++	they are currently using memory outside of the designated nodes.
++
++	There is a cost for this memory migration.  The migration
++	may not be complete and some memory pages may be left behind.
++	So it is recommended that "cpuset.mems" should be set properly
++	before spawning new tasks into the cpuset.  Even if there is
++	a need to change "cpuset.mems" with active tasks, it shouldn't
++	be done frequently.
++
+   cpuset.mems.effective
+ 	A read-only multiple values file which exists on all
+ 	cpuset-enabled cgroups.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index adb5190c4429..d151e1de93d4 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2737,12 +2737,16 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+-	set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
++	__set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
+ 	nodes_clear(cs->mems_allowed);
+ 	nodes_clear(cs->effective_mems);
+ 	fmeter_init(&cs->fmeter);
+ 	cs->relax_domain_level = -1;
+ 
++	/* Set CS_MEMORY_MIGRATE for default hierarchy */
++	if (cgroup_subsys_on_dfl(cpuset_cgrp_subsys))
++		__set_bit(CS_MEMORY_MIGRATE, &cs->flags);
++
+ 	return &cs->css;
+ }
+ 
 -- 
-Peter Xu
+2.18.1
 
