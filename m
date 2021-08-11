@@ -2,134 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551093E8997
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA4B3E8999
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhHKFKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbhHKFKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:10:15 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF27C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:09:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so7799153pjr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4+7r2wYydj9au+exa7oWuSxVTG1fG9vj88byQqpPzeA=;
-        b=REqW9HT3NtCm96X/UTqL6H0NrJ1fIp6GMmyoBimTuev8tTbiuwvCtB4wIHxl7q4rDp
-         mUfKK33ey52cW1j8jGxlmHWCk6awcVR4l/nqqpYq58rlaCtVnYphmP/H2vXrPp9lRnPR
-         zPRMs7DYH+6BhhqSZbKaHoSHrQWUBFfJksWfig9AHRdTm/6a4yRuMEf+NodKwdwwrWi7
-         NZKSCkgb1u0DTPQJHkFjaBg3CgnThigPF+WUn9+7+p2eG+Sb4Jqm968e/oT38GsYWJSD
-         /PjxyVqblCnukoc37nQF4r5OPm84eeoJ5TquZNdN87M/xJdnp5rIo6/0fEpYrNSwU779
-         XDPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4+7r2wYydj9au+exa7oWuSxVTG1fG9vj88byQqpPzeA=;
-        b=R/UTy8q8m4icBKE30OQl4Hxvd2X9wX/c5SP2kIZnnKfNZ6PR4wch7oVARmHY1smTVZ
-         Wt/VXo8gAxJNh2Vyx7IU+PPj0K037/oOxQytvPyn3xHJL4zci0k7GoBu7uIRR6/iWVu1
-         ECpkGCDkYhtkKHEcFbrWBqmGMm3iXtT568LyaCfhlTIVxTvtw7I4GqorGM1WK2e4QArR
-         pn2x/JN9XduCSdjGd6SxxCO7WFE//bkzQ/9J3DJS5hyzsP3sC2TYJyZhzovoXe60SGgA
-         1tS4LgNo5PTCHe/3Rbwm/iVREBg/1OuzGMFqRCqOGuNe11NFYWYyMctWC/vj/51kagKf
-         9YnA==
-X-Gm-Message-State: AOAM532OjXQrmB3tJaNQUFRj9fQZ0mW5/E4yRqjGxWLOSkSV++HsSYWP
-        5Di+jRBBWzaanzPb20P7MQo=
-X-Google-Smtp-Source: ABdhPJzQSclZvmDBAqfL4DFvgTqVQURrVJD2YoHY90U2Cizd0Xv0QwdLJYaVQMlPn0NbFY2atWrcrA==
-X-Received: by 2002:a63:1359:: with SMTP id 25mr139944pgt.79.1628658591547;
-        Tue, 10 Aug 2021 22:09:51 -0700 (PDT)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id z15sm30314987pgc.13.2021.08.10.22.09.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 22:09:51 -0700 (PDT)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     narmstrong@baylibre.com
-Cc:     jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
-        gouwa@khadas.com
-Subject: [PATCH] arm64: dts: meson-sm1: add spdifin spdifout nodes
-Date:   Wed, 11 Aug 2021 13:09:41 +0800
-Message-Id: <20210811050941.398360-1-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
+        id S234294AbhHKFLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:11:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233813AbhHKFLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:11:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5407C60F13;
+        Wed, 11 Aug 2021 05:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628658645;
+        bh=vtfachGX2HaQKQQ+eKZlQAp5s4358iBlM/gx9iFw89w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJERWMdNw8yHZE+h1TaCX40nXl9dQZAyGGZpl5gu96UEoAWKVdjgejNhWEzy5gLzH
+         15qohJQHhwiN54wKVsqipLECWOfF0q6NzoZMx/ZRKUL0vDlq8x6zzwDcxW/p2lwh7L
+         WfKEE4ssTF3pnksDYpqK9IVpImgGvI5y7Tt/qbrCZ/U11aQGJm/JsUDYRE2ES2E8M/
+         Y69c++lNaezHlR28vjS4gJHLB+NVjIOntCRaWKZm0Am6lXfaGk3Rnuaeprgv2/AoTO
+         RGQTO4Sf2jkKietY/D0QLOoynON/zwNW0VFjYIwNp/TIFWslQmgRJLbe8oHRWbAhFi
+         jwwC+hTx+1FQw==
+Date:   Wed, 11 Aug 2021 08:10:40 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vineet Gupta <vgupta@kernel.com>
+Subject: Re: [PATCH 03/18] ARC: mm: move mmu/cache externs out to setup.h
+Message-ID: <YRNb0EbPzejXJdax@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-4-vgupta@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811004258.138075-4-vgupta@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spdifin spdifout spdifout_b nodes for Amlogic SM1 SoCs.
+Hi Vineet,
 
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 40 ++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+On Tue, Aug 10, 2021 at 05:42:43PM -0700, Vineet Gupta wrote:
+> Signed-off-by: Vineet Gupta <vgupta@kernel.com>
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-index 3d8b1f4f2..1efdbb61e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-@@ -356,6 +356,33 @@ tdmin_lb: audio-controller@3c0 {
- 			status = "disabled";
- 		};
- 
-+		spdifin: audio-controller@400 {
-+			compatible = "amlogic,g12a-spdifin",
-+			"amlogic,axg-spdifin";
-+			reg = <0x0 0x400 0x0 0x30>;
-+			#sound-dai-cells = <0>;
-+			sound-name-prefix = "SPDIFIN";
-+			interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
-+			<&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
-+			clock-names = "pclk", "refclk";
-+			resets = <&clkc_audio AUD_RESET_SPDIFIN>;
-+			status = "disabled";
-+		};
-+
-+		spdifout: audio-controller@480 {
-+			compatible = "amlogic,g12a-spdifout",
-+			"amlogic,axg-spdifout";
-+			reg = <0x0 0x480 0x0 0x50>;
-+			#sound-dai-cells = <0>;
-+			sound-name-prefix = "SPDIFOUT";
-+			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
-+			<&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
-+			clock-names = "pclk", "mclk";
-+			resets = <&clkc_audio AUD_RESET_SPDIFOUT>;
-+			status = "disabled";
-+		};
-+
- 		tdmout_a: audio-controller@500 {
- 			compatible = "amlogic,sm1-tdmout";
- 			reg = <0x0 0x500 0x0 0x40>;
-@@ -401,6 +428,19 @@ tdmout_c: audio-controller@580 {
- 			status = "disabled";
- 		};
- 
-+		spdifout_b: audio-controller@680 {
-+			compatible = "amlogic,g12a-spdifout",
-+			"amlogic,axg-spdifout";
-+			reg = <0x0 0x680 0x0 0x50>;
-+			#sound-dai-cells = <0>;
-+			sound-name-prefix = "SPDIFOUT_B";
-+			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT_B>,
-+			<&clkc_audio AUD_CLKID_SPDIFOUT_B_CLK>;
-+			clock-names = "pclk", "mclk";
-+			resets = <&clkc_audio AUD_RESET_SPDIFOUT_B>;
-+			status = "disabled";
-+		};
-+
- 		toacodec: audio-controller@740 {
- 			compatible = "amlogic,sm1-toacodec",
- 				     "amlogic,g12a-toacodec";
+Hmm, this one seems odd. Try https://www.kernel.com/ ;-)
+
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+> ---
+>  arch/arc/include/asm/cache.h |  4 ----
+>  arch/arc/include/asm/mmu.h   |  4 ----
+>  arch/arc/include/asm/setup.h | 12 ++++++++++--
+
+A sentence about why these move would have been nice.
+
+>  3 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/cache.h b/arch/arc/include/asm/cache.h
+> index d8ece4292388..f0f1fc5d62b6 100644
+> --- a/arch/arc/include/asm/cache.h
+> +++ b/arch/arc/include/asm/cache.h
+> @@ -62,10 +62,6 @@
+>  #define ARCH_SLAB_MINALIGN	8
+>  #endif
+>  
+> -extern void arc_cache_init(void);
+> -extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
+> -extern void read_decode_cache_bcr(void);
+> -
+>  extern int ioc_enable;
+>  extern unsigned long perip_base, perip_end;
+>  
+> diff --git a/arch/arc/include/asm/mmu.h b/arch/arc/include/asm/mmu.h
+> index 38a036508699..762cfe66e16b 100644
+> --- a/arch/arc/include/asm/mmu.h
+> +++ b/arch/arc/include/asm/mmu.h
+> @@ -64,10 +64,6 @@ typedef struct {
+>  	unsigned long asid[NR_CPUS];	/* 8 bit MMU PID + Generation cycle */
+>  } mm_context_t;
+>  
+> -void arc_mmu_init(void);
+> -extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
+> -void read_decode_mmu_bcr(void);
+> -
+>  static inline int is_pae40_enabled(void)
+>  {
+>  	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
+> diff --git a/arch/arc/include/asm/setup.h b/arch/arc/include/asm/setup.h
+> index 01f85478170d..028a8cf76206 100644
+> --- a/arch/arc/include/asm/setup.h
+> +++ b/arch/arc/include/asm/setup.h
+> @@ -2,8 +2,8 @@
+>  /*
+>   * Copyright (C) 2004, 2007-2010, 2011-2012 Synopsys, Inc. (www.synopsys.com)
+>   */
+> -#ifndef __ASMARC_SETUP_H
+> -#define __ASMARC_SETUP_H
+> +#ifndef __ASM_ARC_SETUP_H
+> +#define __ASM_ARC_SETUP_H
+>  
+>  
+>  #include <linux/types.h>
+> @@ -34,4 +34,12 @@ long __init arc_get_mem_sz(void);
+>  #define IS_AVAIL2(v, s, cfg)	IS_AVAIL1(v, s), IS_AVAIL1(v, IS_USED_CFG(cfg))
+>  #define IS_AVAIL3(v, v2, s)	IS_AVAIL1(v, s), IS_AVAIL1(v, IS_DISABLED_RUN(v2))
+>  
+> +extern void arc_mmu_init(void);
+> +extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
+> +extern void read_decode_mmu_bcr(void);
+> +
+> +extern void arc_cache_init(void);
+> +extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
+> +extern void read_decode_cache_bcr(void);
+> +
+>  #endif /* __ASMARC_SETUP_H */
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.25.1
-
+Sincerely yours,
+Mike.
