@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59EC3E8B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149953E8B09
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhHKH3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:29:09 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39902 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231472AbhHKH3I (ORCPT
+        id S231499AbhHKH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhHKH3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:29:08 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2A2F11C0B76; Wed, 11 Aug 2021 09:28:44 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 09:28:43 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        jason@jlekstrand.net, Jonathan Gray <jsg@jsg.id.au>
-Subject: Re: [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in
- eb_parse()
-Message-ID: <20210811072843.GC10829@duo.ucw.cz>
-References: <20210810172955.660225700@linuxfoundation.org>
- <20210810173000.050147269@linuxfoundation.org>
+        Wed, 11 Aug 2021 03:29:20 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208BAC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:28:57 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z9so1567898wrh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=33brLztFm7epuRTZxl5Qnoky/aRPy2My1C2Ig5x+qyw=;
+        b=gGXEI++zwjG4J2LMhN62sAOU29Q1xeuzYXTu7LWr8FOdjyjUYgkZHZlG6OeQTeS2bb
+         ByMXf2IOg2xTUVJy2E5zL3B1urlG5e8tsW6/10wm0Kvuzhjf7PQhRlOwoYs49DqhwgZm
+         clg+PAH9tzjU0nvUryZXXUlR47KL3TDBQcWPh39A01yJrif9cxWoMEjm9pLeRZVS6CUJ
+         VvxS81jcvTUXoAxLmv8uDBx78S+O13REtGPozP2cm0W6IuGpJ01Jhsi1Glw9lKYQcPjw
+         /dzdJKzWFHg418ZA0fLlDMMo6WjtrJxfeDS3wJBtqFJsGCT4fSFdc2YbpnNi5S3sAxmv
+         oWyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=33brLztFm7epuRTZxl5Qnoky/aRPy2My1C2Ig5x+qyw=;
+        b=OGzuqebobg5jMeWJ8CcN9BKFpork14gKDsEKpu/g4quCCPuH9RkiTdJ/3I3SQ8U3oD
+         QUxk6tuhBjZzmE2mjiE7KuW3NXvuM95VecjoDC9rEjkigqtCUfLQaie/rD0MJ4QlN+vU
+         tpwMFDle8Ho+2ZqiwzPzBMUU7RE/Cq1tCHtsXzgBJl1DCiPzoffvmho+W8lAsN5dc9vO
+         UkY9U16TRRoaWq4sZcJo+ErX9pbH36o3JQGT52tTBhFoXUIBVZL6Ni4ObFqoXPBgI3Zr
+         IvDvDtBG6kirkUauTeqK97h7ien+nPFrc2a5Lbh1gsETMphxWgzr0kZiB96F/PZKQNGu
+         5c0Q==
+X-Gm-Message-State: AOAM532YxHLkFR6QA5Kz26aKWRWtqTTdn5b09OBVqXgM9qlmUjEuxTWe
+        pokkgoyZEcJGy4c0z+KtoKkEYA==
+X-Google-Smtp-Source: ABdhPJyqinaGIcncaVykCG/eusM2TzITbn25ZEc0Fgvmlu8UIfe1vvHG03dm8MiylYGulanWYl7fkQ==
+X-Received: by 2002:a5d:6451:: with SMTP id d17mr18160454wrw.154.1628666935664;
+        Wed, 11 Aug 2021 00:28:55 -0700 (PDT)
+Received: from google.com ([95.148.6.212])
+        by smtp.gmail.com with ESMTPSA id l18sm5854377wmc.30.2021.08.11.00.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 00:28:55 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 08:28:53 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: adjust ARM/NOMADIK/Ux500 ARCHITECTURES to
+ file renaming
+Message-ID: <YRN8NTvGUmEJ6VBN@google.com>
+References: <20210810191724.24452-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210810173000.050147269@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810191724.24452-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 10 Aug 2021, Lukas Bulwahn wrote:
 
---iFRdW5/EC4oqxDHL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> From: Jonathan Gray <jsg@jsg.id.au>
->=20
-> The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 in
-> 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it should
-> have leading to 'batch' being used uninitialised.  The 5.13 backport and
-> the mainline commit did not remove the portion this patch adds back.
-
-This patch has no upstream equivalent, right?
-
-Which is okay -- it explains it in plain english, but it shows that
-scripts should not simply search for anything that looks like SHA and
-treat it as upsteam commit it.
-
-So let me re-iterate need for consistent marking of upstream commits.
-
-So far this works reasonably well, but selecting one format and
-sticking to it would be even better.
-
-                ma =3D re.match(".*Upstream commit ([0-9a-f]*) .*", l)
-                if ma:
-                    m.upstream =3D ma.group(1)
-		ma =3D re.match("[Cc]ommit ([0-9a-f]*) upstream[.]*", l)
-                if ma:
-                    m.upstream =3D ma.group(1)
-		ma =3D re.match("[Cc]ommit: ([0-9a-f]*)", l)
-                if ma:
-	            m.upstream =3D ma.group(1)
-
-Thanks and best regards,
-								Pavel
-
-> Signed-off-by: Jonathan Gray <jsg@jsg.id.au>
-> Fixes: 6976f3cf34a1 ("drm/i915: Revert "drm/i915/gem: Asynchronous cmdpar=
-ser"")
-> Cc: <stable@vger.kernel.org> # 5.10
-> Cc: Jason Ekstrand <jason@jlekstrand.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Commit 8f00b3c41ae7 ("mfd: db8500-prcmu: Rename register header") renames
+> dbx500-prcmu-regs.h to db8500-prcmu-regs.h in ./drivers/mfd/, but misses
+> to adjust the ARM/NOMADIK/Ux500 ARCHITECTURES section in MAINTAINERS.
+> 
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> 
+>   warning: no file matches    F:    drivers/mfd/dbx500*
+> 
+> Remove the obsolete file entry after this file renaming.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |    7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-> @@ -2351,6 +2351,12 @@ static int eb_parse(struct i915_execbuff
->  		eb->batch_flags |=3D I915_DISPATCH_SECURE;
->  	}
-> =20
-> +	batch =3D eb_dispatch_secure(eb, shadow);
-> +	if (IS_ERR(batch)) {
-> +		err =3D PTR_ERR(batch);
-> +		goto err_trampoline;
-> +	}
-> +
->  	err =3D intel_engine_cmd_parser(eb->engine,
->  				      eb->batch->vma,
->  				      eb->batch_start_offset,
-> @@ -2377,6 +2383,7 @@ secure_batch:
->  err_unpin_batch:
->  	if (batch)
->  		i915_vma_unpin(batch);
-> +err_trampoline:
->  	if (trampoline)
->  		i915_vma_unpin(trampoline);
->  err_shadow:
->=20
+> applies cleanly on next-20210810
+> 
+> Linus, Lee, please pick this patch on your -next tree on top of the patch
+> mentioned above.
+> 
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Applied, thanks.
 
---iFRdW5/EC4oqxDHL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRN8KwAKCRAw5/Bqldv6
-8jBbAKCauBZgV5eO5Kezo/NR3t/5b6kB2wCeJ+0eyFa9mRtULm2hLeFAoRvDWQc=
-=jABX
------END PGP SIGNATURE-----
-
---iFRdW5/EC4oqxDHL--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
