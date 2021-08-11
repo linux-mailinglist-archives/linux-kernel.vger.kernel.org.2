@@ -2,185 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C863E8B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850833E8B24
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhHKHeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:34:21 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:28530 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235177AbhHKHeS (ORCPT
+        id S235666AbhHKHij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:38:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13152 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233182AbhHKHif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:34:18 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17B7VSVc019662;
-        Wed, 11 Aug 2021 07:33:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
- bh=3U0HbZI/0jNieu5FDDvRFz6a9mBk9uXFHEV+JuYRFtg=;
- b=nfJvHaNlSJMHmY7wiYNWY0O2RHqanWtnVlhcGbENCqyP2SJvS3o4Hxd8clsKQBAPE30R
- M7YN/KoMZyzXTpmND0S2flVW1ytYs37AnteU/67fKM+CWPNeTIJGiFwxzXZRRXN3VHS6
- xAEgfs0X2LLQOv1/qF1jNNuOSW+matDPIErjxLwZIru2tXm7QDcf8C/tEL5UiDMRxDDv
- dHTGOBXkqIsvF2xSebUyyve1ZSJOdptEnHSIBtAU6V6Nsmf5GqvwJw7Q/GzAri5G4tAO
- ofrC3kEl+7m4o7VDFnqvbCmw51F4OlMQSW0GNSU3EybzWuEyGlEABbe3bz9icCpyfuOb WQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2020-01-29;
- bh=3U0HbZI/0jNieu5FDDvRFz6a9mBk9uXFHEV+JuYRFtg=;
- b=ydTGLrm6NMHe3ec2cuMYiWJShVA2g/sz+vR7is3yq7XLsioDjUAgYPdfIUlgm0T5Ncob
- v6mOMZC4OzwIUukQakyQ8ZjDh1fzyozAdoA0W5g3fBbzQ5o52U12LoAQy8cljP1+Wajc
- 0Qon9Tj9TjwgXV5FHO+1P1GW3hE6rZj0nm0RACiJsVqjYn4Pf4wAWYCpp0SV3cw03O43
- AeYmdLZmel59GC88pk0tYg32VaQdK3LrYKUwBYU9ycTj9rZ1S5zmW8nprp9dVIY23l1w
- PIsi8ZWBNXViN1yAzI9iHbysrLIWUSnIE3fxWKpistpcXbHzMfq40NriZPdL+MDgp4Dp Rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ab17dwdcp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 07:33:36 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17B7UUCT175108;
-        Wed, 11 Aug 2021 07:33:35 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
-        by aserp3020.oracle.com with ESMTP id 3a9vv6391p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 07:33:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CW5u8Q4xqVpQoUDe64/5q/239KvQ4xgxWBAeu1Re4ZBQIfl7UkrF/h+iGZkvAW9DFIudQxm/Mz66qAMtXoEjBQHaWi+3Tr+YhCto88geb9DZKyglr5TQuHosJbKWUo1bDmjQmwPz2q/I/oQFNmun0Qn3eI0nRSdEWbLFGQwha/e/wCKSzP470igkWy6jFf5gIVsKFZmfF/hpkCqq9ai0ER4X39m4koY4VNjY6QOHmii0U+yg2+BUbsQge5xr2+zIXv/+H9K9NnKKBs3sD8UnKaddYW1GqwdUz1yqPzA0PRfJVWmbWH8w+0pWmrecGUBHRWHf39fLjaxTMnnDYe+/sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NGa+O5H7PEVFWcE0/ASI26AVqwAK4S2yGLkRoz9aAJo=;
- b=cvn7E7xACgfOPhZGYzRDEIXeoUdTVd9uwcwrBo0Nrk+03Bpe+rfwf9wZIS0FxRlRg5WxcmK6/z+C6WAoKsgPnZH2Ar+OTkhn+L+iGjzdcP7J75IJym/VFmdaSyILIyx9MXeE/2DiQLhKtROhEERYSOSSfGj+/xd184EeLUGtbRLhuYeUaDhEzCOaej1BFaMnfQ1yJ1E6OK/hdAqtG/0NmL21ejMBwga3jjqbU4ewISEF0N50nLxuCI/I5+7wbiKWcAkPl4zHF4MkouCMCpof75Zp2MkBDt0ackOddHuPn2bU65hybZbWEM90pQDg1DW9tKy4Ik4vw3azb65j5ec0NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NGa+O5H7PEVFWcE0/ASI26AVqwAK4S2yGLkRoz9aAJo=;
- b=IRfeaBFUoFPGAYMaII2gPcdJdFu3wYHb7Ug54DFqG2H2s3Q2ZQGt/Ru9Xdgw3h++TjZ3E/zkVAiK+N7CTUOfzEAouQG1mk9A3lmaVHG6nGTvjQTtmx6yFRHwD8PER3At/z1g0ywN7EABuq8yaBIcJBsWtBURf32Qr03lPyTB2vA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4754.namprd10.prod.outlook.com
- (2603:10b6:303:91::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.18; Wed, 11 Aug
- 2021 07:33:34 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4394.023; Wed, 11 Aug 2021
- 07:33:34 +0000
-Date:   Wed, 11 Aug 2021 10:33:11 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Tuo Li <islituo@gmail.com>
-Cc:     gregkh@linuxfoundation.org, will+git@drnd.me,
-        davidsondfgl@gmail.com, zhaoxiao@uniontech.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
-Subject: Re: [BUG] staging: rtl8192e: possible null-pointer dereference in
- rtllib_wx_set_encode()
-Message-ID: <20210811073311.GT22532@kadam>
-References: <a86f508c-84b0-3523-2a8e-6710e35e5bb3@gmail.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a86f508c-84b0-3523-2a8e-6710e35e5bb3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNXP275CA0040.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::28)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Wed, 11 Aug 2021 03:38:35 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17B7WfeJ028233;
+        Wed, 11 Aug 2021 03:36:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=m+JtjjEy5TsJLd92ur6KCDzzzlMk9GDK4ppT5WWK7Q0=;
+ b=RU7eOxjOmXTZY2NqL9Q2cCuGnoWfL2JgSObPvFj5X5DUCQvy3CJr9sGoOyIHy4gs1uJS
+ zKurjIFs2AOq3JH0/9P6p/Y+jKNeXIncxqqpyBtP7qrVznqmYwdUz9+GVWQuHB4Lla05
+ VnT+CjdpRKwM+2fY+BC6RWU12bpiYjqvgKLI+EBh+VYkhM76FTA8tivMKVcKizKleVHn
+ Jo0i+rCVp/3i/ZQI1h5EMEQmO4EnsvEBL+7njB1XMu91FzPXwHS83Yqt586eIKoZh6no
+ o17X+hxzAyptv2YldcDCXHKCd7rtF4qLS9LpxW4gTUr79zYKkwn/eCRnHPQNaKQ3f8fS GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8km2c1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 03:36:42 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17B7XWlk030716;
+        Wed, 11 Aug 2021 03:36:41 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8km2c0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 03:36:41 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17B7Wo1l024116;
+        Wed, 11 Aug 2021 07:36:38 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3a9ht8yjww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 07:36:38 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17B7aZTb55968192
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 07:36:35 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38D9BAE06A;
+        Wed, 11 Aug 2021 07:36:35 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C14C5AE079;
+        Wed, 11 Aug 2021 07:36:31 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.154.55])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 11 Aug 2021 07:36:31 +0000 (GMT)
+Date:   Wed, 11 Aug 2021 10:36:29 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        Will Deacon <will@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-riscv@lists.infradead.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        kvmarm@lists.cs.columbia.edu, linux-s390@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        x86@kernel.org, Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>, Len Brown <lenb@kernel.org>,
+        devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [PATCH v3] memblock: make memblock_find_in_range method private
+Message-ID: <YRN9/XrHiPUMdDPJ@linux.ibm.com>
+References: <20210803064218.6611-1-rppt@kernel.org>
+ <20210809190641.GA1176508@roeck-us.net>
+ <YRLLpImNhZaLzs3z@kernel.org>
+ <7db20940-cbd9-e900-db28-774c5782601c@roeck-us.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNXP275CA0040.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend Transport; Wed, 11 Aug 2021 07:33:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f1acfe90-b8d8-43d4-d7e8-08d95c9a52d1
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4754:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4754E4CD753518AAE614FB478EF89@CO1PR10MB4754.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YYlTKKPyBH2/rccvirPhtBhcS9SnuKh9SwrSYT6lXjgIwdqU6pvh6fXPgWblMFMg5EcE5ZAqLKpOqyP7nzPZdN/YjwC2x9TvI81tqtJC4TAUapHf0lYdAl4gXcIp2WW3BCWcvyDgMdYDwWygK0ncLnaVnODnh5Nv58fBaW6VJRE8IEIEmUTW47lCiAtUgOY3U+vz0IrXyKRFvgxr2UhQx5h7skjBLUPuPXE2hdIy1a6an354cGooxuFpz8IaQbeltDX19BbJsWoD6UzwCXcalBEXB6jA6wGQTjVag9ejXKtZP5Yj3xy0Dr87LfCClFXgX0iEul/fO+wIZlu5JHTYy+8DzHqIBbxtsiCR9n++GUAkzvsutWobkx7evivEA/5B+9rk2KSkUcjFuuhXQwWwAkpaeQgvWOCUO3t+StH8/PwVWsFtKrTiQrGQF7B3HYSLusa50hS2XO7NsLGaje/AeEZl4joCBXDFg8XqB38insLiUJ7fUDoZPkc8jhuohoLOPMuzrByyoA+GagAZ8yl9WAKrYuOfbVLVJbDhLN2DakEs+MFvL/FjkkuCYDXzH0Zq1y+j96J6Kd0YkgUeSqWP/FTWe4Gc3y1xaX0A7mwkHX2lJKgqkhAexVcaSwToMgn30loR3pbzWgAzUApZgLIwFTaQRqVUFnWiz2cb6JOtX55yNdPcwBW3ylJHZDW1T6fhD/IsFhAfHK/2kNdHaJP0VA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(33716001)(6916009)(956004)(66946007)(38100700002)(6666004)(478600001)(66556008)(9686003)(55016002)(186003)(4326008)(38350700002)(1076003)(8936002)(44832011)(5660300002)(66476007)(8676002)(33656002)(9576002)(26005)(316002)(2906002)(52116002)(6496006)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?hSZuxj1x1dSQcwD5AESi+1VWtrfrMz9MZLr8izhYOj1zQex4Qh8d9yzXqq?=
- =?iso-8859-1?Q?/GEzLx4T6CagCF2qEc6tMPurL1bmCdf79ue6ONHHWLeXp0cRzEV1jWKqKw?=
- =?iso-8859-1?Q?M2vEKXXGxlMwdFiBB8p0J2rbBQPgXHJRVI3eHiMa4tAV/HIYjlz9rt1myI?=
- =?iso-8859-1?Q?525fDDiZ0pyTOatjDdm+oJlIsddxEtlbAXkmaahbv/GtSN9B1bVioKJ8mE?=
- =?iso-8859-1?Q?BXKx7gKA8duZuZHH/vXs5HbYfGCRetsP3MGY7PjMQGhT7mjxfI6rVCTKNI?=
- =?iso-8859-1?Q?008rdJx0dwGFF0V9f6zJ2UtNns1js4McJPI+60U0GbrHgY1cPUu8tPq3+9?=
- =?iso-8859-1?Q?2ySRl+dTPu6/212IZITSeaEp2ayuFh6OT+evHyFBc8AxNBMVvJJheVeFtg?=
- =?iso-8859-1?Q?EegZ7rABWz/x+X3ACyjR2MULmN7zGXBHUgsGVEwBNOWLbWnDMxfPzdfdBA?=
- =?iso-8859-1?Q?Jg9ulYN5RMSXsk1Y3oCr+DbbH7ElZS5rXxP6xuerz/wnOQAlIJCljIquvZ?=
- =?iso-8859-1?Q?Wl7qUdken771y68JbW+12yqEA0f83tYBoJRWXeHSEH7/w0Zd9wCUmmJpje?=
- =?iso-8859-1?Q?vSkGk+r9FMRA7qA/VKXXdjn/DRUKPmTpBB/A2ih+WEn6AgZjvhk4JYlsGB?=
- =?iso-8859-1?Q?Wkd2jG1Wxdm2Suky3vNc9Kc1FPlJllCLBus58ub92nqHUHcOiasB4mgV2E?=
- =?iso-8859-1?Q?UMH6phRUh7+cEbRnSD+f/WN/cxdEiQZsUkma2yZgLYzGLqpP1Gq5qXqGqL?=
- =?iso-8859-1?Q?IZ/6XNHB2CokTA3oYuoxjjUL7eaXjDt5PLg+wyREEjXltHb2w1m77+VeHI?=
- =?iso-8859-1?Q?+nLYgIJChvrbXj5vjd4RV71oElNQrR4qUxzM2SejEeJ6GESck8Lh8B9QTe?=
- =?iso-8859-1?Q?eKN6J9P8mqfqihXgn9tLqszenNWLLsemXq92Xrs+nl9NqPw7PhEetsVqO6?=
- =?iso-8859-1?Q?bnKhXliRtTB/ghWhh+cIlsMBPeln+tP9XAGWKX0IG3x/gh/YV48g/oDBDl?=
- =?iso-8859-1?Q?v5NlUR0gy+Xo71XuT8N5Z1BXz/iJioNoXP7Cg4Fy7/I44U5HfutDmxgaQ6?=
- =?iso-8859-1?Q?C6c0I4GBDflwLQJSIvXMQgrleBLXzLmzGsQfHskSFqb0e4injn0xl4OURo?=
- =?iso-8859-1?Q?gNMtqGD0e++D3LJfGxSitpj2HwEfpZBlzsp1tYj4h7g6lxtPIvHX50KrM5?=
- =?iso-8859-1?Q?8YxA1b8Vpbg/1JjMas2lxe7USFe1D5hiEveN1fWzDG5ltzpvEDmGymlo5C?=
- =?iso-8859-1?Q?7PhXE5LejI6DH0NT5klCr339gO5Qe1d1BQyu00hEwpKIs2yEJcvZSkuvZ6?=
- =?iso-8859-1?Q?yQFtcQCYTT+Z6FNDqjONPvmAK+Pqr2VLNroy0UpRsw/ksyYzOREWZ/EyeZ?=
- =?iso-8859-1?Q?wtc2QkB7+G?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1acfe90-b8d8-43d4-d7e8-08d95c9a52d1
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 07:33:33.8376
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VJ8iimwzyZnhFwTc2m9k6AgPoLq4vhVdT8irdybN/8kyc+nxzUdAY8ETXAlvSmTJFyXvjpUshBvM7K8tW1RhFZbYndKloZUGPMsOhcxURs0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4754
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10072 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 mlxlogscore=903 malwarescore=0 adultscore=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7db20940-cbd9-e900-db28-774c5782601c@roeck-us.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KjgETmJ2ZlBV_z9jVvzjB2ISzeMnuxs6
+X-Proofpoint-ORIG-GUID: xIQ81LmHYZOWObinE8T8p_gKjQgiq9Cz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_02:2021-08-10,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108110048
-X-Proofpoint-GUID: 9c0PMfCeKyi1XfzGjeJRZVimI5MLpADK
-X-Proofpoint-ORIG-GUID: 9c0PMfCeKyi1XfzGjeJRZVimI5MLpADK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 11:33:57AM +0800, Tuo Li wrote:
-> Hello,
+On Tue, Aug 10, 2021 at 12:21:46PM -0700, Guenter Roeck wrote:
+> On 8/10/21 11:55 AM, Mike Rapoport wrote:
+> > On Mon, Aug 09, 2021 at 12:06:41PM -0700, Guenter Roeck wrote:
+> > > On Tue, Aug 03, 2021 at 09:42:18AM +0300, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > There are a lot of uses of memblock_find_in_range() along with
+> > > > memblock_reserve() from the times memblock allocation APIs did not exist.
+> > > > 
+> > > > memblock_find_in_range() is the very core of memblock allocations, so any
+> > > > future changes to its internal behaviour would mandate updates of all the
+> > > > users outside memblock.
+> > > > 
+> > > > Replace the calls to memblock_find_in_range() with an equivalent calls to
+> > > > memblock_phys_alloc() and memblock_phys_alloc_range() and make
+> > > > memblock_find_in_range() private method of memblock.
+> > > > 
+> > > > This simplifies the callers, ensures that (unlikely) errors in
+> > > > memblock_reserve() are handled and improves maintainability of
+> > > > memblock_find_in_range().
+> > > > 
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > I see a number of crashes in next-20210806 when booting x86 images from efi.
+> > > 
+> > > [    0.000000] efi: EFI v2.70 by EDK II
+> > > [    0.000000] efi: SMBIOS=0x1fbcc000 ACPI=0x1fbfa000 ACPI 2.0=0x1fbfa014 MEMATTR=0x1f25f018
+> > > [    0.000000] SMBIOS 2.8 present.
+> > > [    0.000000] DMI: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> > > [    0.000000] last_pfn = 0x1ff50 max_arch_pfn = 0x400000000
+> > > [    0.000000] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT
+> > > [    0.000000] Kernel panic - not syncing: alloc_low_pages: can not alloc memory
+> > > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.14.0-rc4-next-20210806 #1
+> > > [    0.000000] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> > > [    0.000000] Call Trace:
+> > > [    0.000000]  ? dump_stack_lvl+0x57/0x7d
+> > > [    0.000000]  ? panic+0xfc/0x2c6
+> > > [    0.000000]  ? alloc_low_pages+0x117/0x156
+> > > [    0.000000]  ? phys_pmd_init+0x234/0x342
+> > > [    0.000000]  ? phys_pud_init+0x171/0x337
+> > > [    0.000000]  ? __kernel_physical_mapping_init+0xec/0x276
+> > > [    0.000000]  ? init_memory_mapping+0x1ea/0x2aa
+> > > [    0.000000]  ? init_range_memory_mapping+0xdf/0x12e
+> > > [    0.000000]  ? init_mem_mapping+0x1e9/0x26f
+> > > [    0.000000]  ? setup_arch+0x5ff/0xb6d
+> > > [    0.000000]  ? start_kernel+0x71/0x6b4
+> > > [    0.000000]  ? secondary_startup_64_no_verify+0xc2/0xcb
+> > > 
+> > > Bisect points to this patch. Reverting it fixes the problem. Key seems to
+> > > be the amount of memory configured in qemu; the problem is not seen if
+> > > there is 1G or more of memory, but it is seen with all test boots with
+> > > 512M or 256M of memory. It is also seen with almost all 32-bit efi boots.
+> > > 
+> > > The problem is not seen when booting without efi.
+> > 
+> > It looks like this change uncovered a problem in
+> > x86::memory_map_top_down().
+> > 
+> > The allocation in alloc_low_pages() is limited by min_pfn_mapped and
+> > max_pfn_mapped. The min_pfn_mapped is updated at every iteration of the
+> > loop in memory_map_top_down, but there is another loop in
+> > init_range_memory_mapping() that maps several regions below the current
+> > min_pfn_mapped without updating this variable.
+> > 
+> > The memory layout in qemu with 256M of RAM and EFI enabled, causes
+> > exhaustion of the memory limited by min_pfn_mapped and max_pfn_mapped
+> > before min_pfn_mapped is updated.
+> > 
+> > Before this commit there was unconditional "reservation" of 2M in the end
+> > of the memory that moved the initial min_pfn_mapped below the memory
+> > reserved by EFI. The addition of check for xen_domain() removed this
+> > reservation for !XEN and made alloc_low_pages() use the range already busy
+> > with EFI data.
+> > 
+> > The patch below moves the update of min_pfn_mapped near the update of
+> > max_pfn_mapped so that every time a new range is mapped both limits will be
+> > updated accordingly.
+> > 
+> > diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> > index 1152a29ce109..be279f6e5a0a 100644
+> > --- a/arch/x86/mm/init.c
+> > +++ b/arch/x86/mm/init.c
+> > @@ -1,3 +1,4 @@
+> > +#define DEBUG
+> >   #include <linux/gfp.h>
+> >   #include <linux/initrd.h>
+> >   #include <linux/ioport.h>
+> > @@ -485,6 +486,7 @@ static void add_pfn_range_mapped(unsigned long start_pfn, unsigned long end_pfn)
+> >   	nr_pfn_mapped = clean_sort_range(pfn_mapped, E820_MAX_ENTRIES);
+> >   	max_pfn_mapped = max(max_pfn_mapped, end_pfn);
+> > +	min_pfn_mapped = min(min_pfn_mapped, start_pfn);
+> >   	if (start_pfn < (1UL<<(32-PAGE_SHIFT)))
+> >   		max_low_pfn_mapped = max(max_low_pfn_mapped,
+> > @@ -643,7 +645,6 @@ static void __init memory_map_top_down(unsigned long map_start,
+> >   		mapped_ram_size += init_range_memory_mapping(start,
+> >   							last_start);
+> >   		last_start = start;
+> > -		min_pfn_mapped = last_start >> PAGE_SHIFT;
+> >   		if (mapped_ram_size >= step_size)
+> >   			step_size = get_new_step_size(step_size);
+> >   	}
 > 
-> Our static analysis tool finds a possible null-pointer dereference in
-> rtllib_wx.c in Linux 5.14.0-rc3:
+> The offending patch was removed from next-20210810, but I applied the above change
+> to next-20210809 and it does indeed fix the problem. If it is added as separate patch,
+> please feel free to add
 > 
-> The variable (*crypt)->ops is checked in:
-> 342:    if (*crypt && (*crypt)->ops && strcmp((*crypt)->ops->name, "R-WEP")
-> != 0)
-> 
-> This indicates that it can be NULL. If so, null-pointer dereferences will
-> occur:
-> 389:    (*crypt)->ops->set_key()
-> 400:    len = (*crypt)->ops->get_key()
-> 
-> I am not quite sure whether this possible null-pointer dereference is real
-> and how to fix it if it is real.
-> Any feedback would be appreciated, thanks!
-> 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-I don't *think* the check is required.
+Thanks!
 
-The data in ieee->crypt_info.crypt[idx] is set in rtllib_wx_set_encode()
-and rtllib_wx_set_encode_ext() when we do "*crypt = new_crypt;".  (The
-line is the same in both functions).  And in both cases ->ops is
-non-NULL.
+I wonder now about that comment saying "xen has big range in reserved near
+end of ram". Maybe it was the same issue with Xen and we can entirely drop
+the reservation of the top 2M?
 
-So probably the check should be removed.
+x86 folks, what do you say?
 
-On the other hand, I don't know the code very well and it's possible I
-missed something.
-
-regards,
-dan carpenter
+-- 
+Sincerely yours,
+Mike.
