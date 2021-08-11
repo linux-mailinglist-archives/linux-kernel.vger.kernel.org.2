@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D873E892F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8563E8932
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhHKEUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 00:20:01 -0400
-Received: from mx-lax3-1.ucr.edu ([169.235.156.35]:6972 "EHLO
-        mx-lax3-1.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhHKET5 (ORCPT
+        id S233499AbhHKEW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 00:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhHKEWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 00:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1628655575; x=1660191575;
-  h=mime-version:references:in-reply-to:from:date:message-id:
-   subject:cc;
-  bh=8+2MFUiKTr6YMmCUjLtaAbosp3nC3TfZco3vRdKPf+I=;
-  b=dg0GcqOE5ZjIMy45+OXlgMn83b8CWUSBMRm6cLNX66fWYKhYuPbfQ0YN
-   29r9vLsr5KZ6wZ8xYHiVIN/NIpwpo0Ck/uA+DdYAH5aPiaq4IZQJlzbzx
-   ebO8wE2zwdF6yEd+K2nP86SoW6MHWVfJoSYq7B35AeGjgpM+e6YN647Uu
-   pgomnNU+ByyEUTst6AEelFEFMH6Ac2l/Zc4VKQ3w+xl8eIyJUGch/oy3w
-   gsymhs6sUQQduk/LfGXDVw/gnsPTJAXYoCtziUUW3cUnKxNgsk3L8FJaf
-   pYVcRz+Zp0VLxb/5guHfDHdUZL/TwWgwbNyZYg+x/xbC39hlwnblBjci+
-   A==;
-IronPort-SDR: URTmqXauW8LtgQw3OLK8jdP5QHA+wAPveQSJQ6CwxF4JtVHlodg73idhhwrDcwyZBxYtB0tnye
- 7RiQ9REStlKANdkY2Z372pcqo0sUtXIw0zjpFWv+K4zmi2aZ9oGkYlH1MA/vRBv/pjBxUNt7E8
- 4wl52zRIGPp+EnHunAZlkvZIPCiQ0/CRJF1QSvQupTnBIW3bXtmCL9sst5AJbKOKka8RjTAQ1O
- M+G6QxRbv0y2EL3s29WJmCbXUXiZoUW9QfJeLNXgPVKOuIqUBQbEio9EIBulgM83kM/5LPJG5n
- Hr416HLWG9ym6bucwes+5Ur0
-X-IPAS-Result: =?us-ascii?q?A2F+AgCfThNhhkfYVdFagQmBWYN4VhaESJFuimWBGoZ8i?=
- =?us-ascii?q?GiBfAIJAQEBD0EEAQGEWAIjgkECJTQJDgECBAEBAQEDAgMBAQEBAQEDAQEGA?=
- =?us-ascii?q?QEBAQEBBQQBAQIQAQEBAYEgC1kLY4FPgXkGBD2CNSmDZQgBAQEBAxIRBFIQC?=
- =?us-ascii?q?wsKAwICJgICIhIBBQEcGSI5ghYBgwedH4EEPYo4en8ygQGIFgEJDU6BFRJ+K?=
- =?us-ascii?q?ocLhmQngimBS4EFgTM3PodbFIJQBINcexNbgU6BUAEBAZA6G4MGiUmCCYEmm?=
- =?us-ascii?q?3EBBgKDDhySSowBK4NlkWCRKpgtoxYQI4E9ghUzGiV/BmcKgUFNAQIBAgEMA?=
- =?us-ascii?q?gECAQIBAgECCAEBAo41jlYkLzgCBgsBAQMJiHgB?=
-IronPort-PHdr: A9a23:U2DlRxWa3eejId7dr2xNDhmnHznV8Kz2VTF92vMcY1JmTK2v8tzYM
- VDF4r011RmVB92du6oP1LSempujcFRI2YyGvnEGfc4EfD4+ouJSoTYdBtWYA1bwNv/gYn9yN
- s1DUFh44yPzahANS47xaFLIv3K98yMZFAnhOgppPOT1HZPZg9iq2+yo9JDffRlEiCC+bL9uI
- xm7rwTcvdQKjIV/Lao81gHHqWZSdeRMwmNoK1OTnxLi6cq14ZVu7Sdete8/+sBZSan1cLg2Q
- rJeDDQ9LmA6/9brugXZTQuO/XQTTGMbmQdVDgff7RH6WpDxsjbmtud4xSKXM9H6QawyVD+/9
- KpgVgPmhzkbOD446GHXi9J/jKRHoBK6uhdzx5fYbJyJOPZie6/Qe9YaRWtaXsZKVixBBIy8Z
- JYRAeQYIO1YoYj9qEUKrRSjGAKgAO3ixiNNinLwwKY00fkuERve0QMvEdIBsnTaotv2OqkPT
- e+417XIwSnZYv9KxTvx9IrFfxY8qv+MR7Jwds/RxFEtGAPEj1SQqZHlPzSI3esOs2iU9etgX
- v+ohm8nqgBxoiKgxsYwhoXViI8Y0U3E+jljwIovO9K3VVN7bMeiHZBNuC6UK5F4Tdk+Q2F0p
- ik60LsGtIamcSUXx5oqxBrSZvybf4aG7RzuVvucLCl5iX94dr+yhBm//0euxODgSsS501RHo
- y5Zn9XQqH0Ayx3e58ubR/Z5+EqqxDWB1xjL5+1aPUw5kbDXJp0hz7IqiJYfrEXOEjX0lUnri
- qKda18q9fKy6+v9Z7XrvpqcN4hphQ7gKqkugcm/AfggMggJQmib5fyw1L398k39R7VHlvg2n
- bPYsJDePMgbvqy5DxJM3oYt6RuzEi2q0NsfnXkAI1JFfAyIg5L1NFHJJfD0Ffa/g1Kynzd33
- /3KIKHtD5HXInXAkLrtZ6hx51NdxQYpz91T+opYCrQbL/LyXk/xusbYDhg8MwGsw+fmCdV92
- ZkfWW6THqOUPrjfsUKU6eI1OeWDepIauCvlJ/g/+/HulWM5mUMafaSx2ZsXaXa4HulpIkmAY
- nrjnM0BEWEUsQo6V+HqllKCXiBJZ3qoXKIz+Cs7CIS4AofHXIyth6aB3CjoVrNMYWUTO1GeE
- WrvP7eEUvZEPDOAIsZgymRffaWqUcks2Qz451yy8KZuMueBon5QjpnkztUgorKL/Sw=
-IronPort-HdrOrdr: A9a23:5tqW/avFhgOGEoosZfaEj6yd7skDc9V00zEX/kB9WHVpmwKj5q
- aTdZUgpGbJYVkqKRQdcLy7Scu9qDbnhP1ICOoqXItKPjOW3FdARbsKheDfKn/bexEWndQtsp
- uIsJISNDQzNzJHZArBjDVQ2uxOruW6zA==
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="59626268"
-Received: from mail-pj1-f71.google.com ([209.85.216.71])
-  by smtp-lax3-1.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 Aug 2021 21:19:33 -0700
-Received: by mail-pj1-f71.google.com with SMTP id 61-20020a17090a09c3b029017897f47801so4131472pjo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:19:32 -0700 (PDT)
+        Wed, 11 Aug 2021 00:22:54 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D853CC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so1910103otq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=M+Fy0eR1+iop2G2YtVgpRm77F8HTctO7zKKFznc4zBo=;
+        b=Fo9g5LijgBrQLPT6MYDEQNxX6viodg54hr7z4FkxTTA21xFg3ZrnNnIuV5eOFU6HpM
+         HeXLgv/LwnWd2M9n9fm3NUb6HDbfUx4E4CtwuAH2Q51QtqvgmaESGr+NmF0AXxHRXs5n
+         ewFZnhcT5+bJ+kMcpEX9LWMIvBWWSLrSYEXws=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=xTux7jQgzWsX3hb3coGUGgC9dvVrQ9GiczNsYL/eB4o=;
-        b=g4BgjbqqfA672FDRFtWtcXwpeK6X62iEvs//Xs/QVCG+NgHCK74hH+fltF9IZK6Xfs
-         L8lYZ0PaSkkAUXLl71LzlQuiRpjDjOIfPIB2NkIM083huxYbJl9Em+mpQwxoBdEnvUmj
-         /coi8mOpDP7XdAO1rQp9dZ6Vze/YXs80YPInF+UcuZBc4Rnrz8qB71xRYJY5HCMbviM3
-         wThuHOwXnIkOPMp89S1KYsPvKcehv3j1QdmMY00hvM7rMIf3s/L2oTOVskhtOTkPZ+Tr
-         4Bym+xCebpeOuC1YpFq6up3RWKk7cmKqLanKTmB8Inlhwux3/o3zzuBSAbJqCDboe0kG
-         7yOA==
-X-Gm-Message-State: AOAM533EdKkGs91aO9A5iyt/zAdc323BuFKgjKAd0/YhTdBrXtAfx60x
-        9LpqUmIGOvFSzLJW2Bo1nfUwKBTpwP3nJ2pgjBiOTa4R+9juw2Eb4XS1TQhUGL+2p72OPWP0J3r
-        Jk4taz4x97dnMpqOHPNWE/otkLPTgjpq9UMiQi/ANiA==
-X-Google-Smtp-Source: ABdhPJzh/Psz3RJ+3YGdgVJIUqxlsN0c1embWJYGfGCxt2RU5trEXOPBDMNQ4gyq7U8SD2SNSUjqWg0sx/TJdO4jmmU=
-X-Received: by 2002:a63:f242:: with SMTP id d2mr151330pgk.384.1628655571899;
-        Tue, 10 Aug 2021 21:19:31 -0700 (PDT)
-X-Received: by 2002:a63:f242:: with SMTP id d2mt121407pgk.384.1628655571687;
- Tue, 10 Aug 2021 21:19:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=M+Fy0eR1+iop2G2YtVgpRm77F8HTctO7zKKFznc4zBo=;
+        b=eWrbu97SGFimbSOoT4VxH2wCwbU/gBWdKC2M9tr1CwTZdZzUMjwlkRRH2ynIyC6pG8
+         8axmjjusvBXMykwUtb1wSrcNsKumo1ySEL+6ke1OLI1GottyWfS56gYU0vLbaqDmX9wI
+         M8OCqsbml+grDI20sbk6XRUaSN8AkeTwbKkmAcbaEuFPJMap+ssiuzUlP+LWM5d9uckR
+         DQBvYp9QGSnwhe+8GSJkeaCY0bk0bhKbgyqF7zv5jCXV3AD6Z5qJStDBze6UG1r66KIc
+         ZUprhKvXhl3o0xJ5KpadwZRWBfJSPLdTbFAKXMUBTzXYCl6DWLNvEA74aUtgMntAZEbY
+         XCUQ==
+X-Gm-Message-State: AOAM531cKxHknj8Vh7SixiarYgU4QO8iXA+PprzJr+qhhEK+YJ5ZLtV+
+        yqIXFeWK7f5IK9X2IS3forfdt/Dv2WBNgZS3mYwJvA==
+X-Google-Smtp-Source: ABdhPJwFN1LHRL2LcpvpMcDdnpPoGURPoblDU8DwG8F5DDcdYAcQghp0zgONfhmA3uMvE4qsiAJCUK817GUSoi+F0hI=
+X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr23466057otv.25.1628655750208;
+ Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 10 Aug 2021 21:22:29 -0700
 MIME-Version: 1.0
-References: <20210723003607.64179-1-yzhai003@ucr.edu> <20210811035405.17382-1-yzhai003@ucr.edu>
-In-Reply-To: <20210811035405.17382-1-yzhai003@ucr.edu>
-From:   Yizhuo Zhai <yzhai003@ucr.edu>
-Date:   Tue, 10 Aug 2021 21:19:20 -0700
-Message-ID: <CABvMjLRj-ofVoNpOvT+DPOdW-=L52KbsRYeaKv=MTYfSJPZNBA@mail.gmail.com>
-Subject: Re: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <YRMXOlA5a98BwT3i@builder.lan>
+References: <20210721175432.2119-1-mdtipton@codeaurora.org>
+ <20210721175432.2119-5-mdtipton@codeaurora.org> <CAE-0n52iVgX0JjjnYi=NDg49xP961p=+W5R2bmO+2xwRceFhfA@mail.gmail.com>
+ <YRMXOlA5a98BwT3i@builder.lan>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 10 Aug 2021 21:22:29 -0700
+Message-ID: <CAE-0n53L_muNfpcunPmAWh-dG1h_y8xVqUG-es2CY8jdbnM8mg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] interconnect: qcom: icc-rpmh: Add BCMs to commit
+ list in pre_aggregate
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mike Tipton <mdtipton@codeaurora.org>, djakov@kernel.org,
+        agross@kernel.org, saravanak@google.com, okukatla@codeaurora.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Alex Elder <elder@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All:
-For your information, I update my signed-off zone using my full name
-"Yizhuo Zhai"
+Quoting Bjorn Andersson (2021-08-10 17:18:02)
+> On Tue 10 Aug 18:31 CDT 2021, Stephen Boyd wrote:
+>
+> > Quoting Mike Tipton (2021-07-21 10:54:32)
+> > > We're only adding BCMs to the commit list in aggregate(), but there are
+> > > cases where pre_aggregate() is called without subsequently calling
+> > > aggregate(). In particular, in icc_sync_state() when a node with initial
+> > > BW has zero requests. Since BCMs aren't added to the commit list in
+> > > these cases, we don't actually send the zero BW request to HW. So the
+> > > resources remain on unnecessarily.
+> > >
+> > > Add BCMs to the commit list in pre_aggregate() instead, which is always
+> > > called even when there are no requests.
+> > >
+> > > Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+> > > Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> > > ---
+> >
+> > This patch breaks reboot for me on sc7180 Lazor
+> >
+>
+> FWIW, it prevents at least SM8150 from booting (need to check my other
+> boards as well), because its no longer okay to have the interconnect
+> providers defined without having all client paths specified.
 
-On Tue, Aug 10, 2021 at 8:54 PM Yizhuo Zhai <yzhai003@ucr.edu> wrote:
->
-> From: Yizhuo <yzhai003@ucr.edu>
->
-> Inside function mt9m114_detect(), variable "retvalue" could
-> be uninitialized if mt9m114_read_reg() returns error, however, it
-> is used in the later if statement, which is potentially unsafe.
->
-> The local variable "retvalue" is renamed to "model" to avoid
-> confusion.
->
-> Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
-> Signed-off-by: Yizhuo Zhai<yzhai003@ucr.edu>
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index f5de81132177..77293579a134 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
->  static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
->  {
->         struct i2c_adapter *adapter = client->adapter;
-> -       u32 retvalue;
-> +       u32 model;
-> +       int ret;
->
->         if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
->                 dev_err(&client->dev, "%s: i2c error", __func__);
->                 return -ENODEV;
->         }
-> -       mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
-> -       dev->real_model_id = retvalue;
-> +       ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
-> +       if (ret)
-> +               return ret;
-> +       dev->real_model_id = model;
->
-> -       if (retvalue != MT9M114_MOD_ID) {
-> +       if (model != MT9M114_MOD_ID) {
->                 dev_err(&client->dev, "%s: failed: client->addr = %x\n",
->                         __func__, client->addr);
->                 return -ENODEV;
-> --
-> 2.17.1
->
-
-
--- 
-Kind Regards,
-
-Yizhuo Zhai
-
-Computer Science, Graduate Student
-University of California, Riverside
+So maybe the best course of action is to revert this patch from Linus'
+tree? It's not a super huge deal as "can't boot", but certainly makes
+reboot annoying on sc7180.
