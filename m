@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369ED3E90F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35753E90E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237961AbhHKM1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhHKMZw (ORCPT
+        id S238435AbhHKM00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:26:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51114 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237962AbhHKMYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:25:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5F6C061382
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:23:43 -0700 (PDT)
-Message-ID: <20210811121417.590136432@linutronix.de>
+        Wed, 11 Aug 2021 08:24:08 -0400
+Message-ID: <20210811121417.647465659@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684622;
+        s=2020; t=1628684623;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9snN8xer+lJKJI12sG/6cncJ9Ea2JsEyaBt7/r26lmo=;
-        b=cNSlBXdTvTuYYj9fmDfEmlzf1uYmt0/YX7YE1VJQFbwoRQ5U5U9fjTdwyg953oAflX5MRn
-        2REunNRzPfqIYlG5lqOy750oSMsOY3Um6xaTSmFjpXHwzdqaIuR+/+00Seh5Qqo7ygKYPt
-        uf2drcYbbHjpHU5zL/tEO/qSR3x5e1urKsWLFIn8QDLkLXEE5N+nlZHGVQiSgZmYLfDjF3
-        f/saULNq/t/ivGuMuXx+A8gsaWJ1ljUUZQ5ZO9pmRHaZkzKBTlAUdYJx8wtNr8VrHhRiBO
-        Q/CAR7PghwBrK7V3Kgyk4NJsprSvYCKENhedH24JTSjZ9K5/342PWTxzJYBfXg==
+        bh=3ytooRkFdVoLIkQBvivN8bveK+9EeU1H5HgaN+p1d3E=;
+        b=ra2j/ouDwTmzcNhoU5W19aQStyGSVtVx0MqnMkmYzpFA1obsLb1iEMowEvh5uHWk48r1xH
+        RTghQzKzkMO02FHWEhjsQ7sh3Sr4m5fisSQAyv+WXBXKyEmc4C9tNAy6QMF5o+hG6YxFhk
+        erourHIrMLQGGwqOl2CqcAMwhDrPJn3fneHz1jpwzgAS5FNVuPLu21PZkcvIf7JKdeOrJm
+        OK4gXbvTGVLERVF4rQiKa6TP7cwsQs48z5ibgkHXuLamJIEzr+8wKjkZsUNPEO6MuZsTlJ
+        60SK8c6Y9MP/YkU/cBc1qu9FuLO2fTOwz8/OvAKrvqLY1TRdHAbN7+oItmb2yA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684622;
+        s=2020e; t=1628684623;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9snN8xer+lJKJI12sG/6cncJ9Ea2JsEyaBt7/r26lmo=;
-        b=5AQ0ENmaUwW0Zw8vWDLs3+loNZC1K8DJ2mIa71akzE7xsu3yN27OvopnDaqEtooGgNHwfY
-        wlsOCNdlLBCONpCA==
+        bh=3ytooRkFdVoLIkQBvivN8bveK+9EeU1H5HgaN+p1d3E=;
+        b=iOU1AuaQdjz+Oa9YtOaYjS/ZoOsPT9jIxL14Yej50jYzIUjL3OsyzjX5N6a+a3JDrY7QEE
+        sWAfrLCCY0N1LEBQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,51 +45,46 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 58/68] futex: Remove bogus condition for requeue PI
+Subject: [patch V4 59/68] futex: Correct the number of requeued waiters for PI
 References: <20210811120348.855823694@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:23:42 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 14:23:43 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For requeue PI it's required to establish PI state for the PI futex to
-which waiters are requeued. This either acquires the user space futex on
-behalf of the top most waiter on the inner 'waitqueue' futex or attaches to
-the PI state of an existing waiter or creates on attached to the owner of
-the futex.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This code can retry in case of failure, but retry can never happen when the
-pi state was successfully created. The condition to run this code is:
+The accounting is wrong when either the PI sanity check or the
+requeue PI operation fails. Adjust it in the failure path.
 
-  (task_count - nr_wake) < nr_requeue
-
-which is always true because:
-
-   task_count = 0
-   nr_wake = 1
-   nr_requeue >= 0
-
-Remove it all together.
+Will be simplified in the next step.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V4: New patch
+ kernel/futex.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 ---
- kernel/futex.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2000,7 +2000,7 @@ static int futex_requeue(u32 __user *uad
+@@ -2116,6 +2116,8 @@ static int futex_requeue(u32 __user *uad
+ 
+ 		/* Ensure we requeue to the expected futex for requeue_pi. */
+ 		if (requeue_pi && !match_futex(this->requeue_pi_key, &key2)) {
++			/* Don't account for it */
++			task_count--;
+ 			ret = -EINVAL;
+ 			break;
  		}
- 	}
- 
--	if (requeue_pi && (task_count - nr_wake < nr_requeue)) {
-+	if (requeue_pi) {
- 		struct task_struct *exiting = NULL;
- 
- 		/*
+@@ -2157,6 +2159,8 @@ static int futex_requeue(u32 __user *uad
+ 				 */
+ 				this->pi_state = NULL;
+ 				put_pi_state(pi_state);
++				/* Don't account for it */
++				task_count--;
+ 				/*
+ 				 * We stop queueing more waiters and let user
+ 				 * space deal with the mess.
 
