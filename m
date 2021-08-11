@@ -2,87 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3A03E8A2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B423E8A32
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhHKGW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:22:57 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33384 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234609AbhHKGW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:22:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BAF201C0B76; Wed, 11 Aug 2021 08:22:31 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 08:22:31 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-omap@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Pavel Machek <pavel@denx.de>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] bus: ti-sysc: Fix error handling for
- sysc_check_active_timer()
-Message-ID: <20210811062231.GA16241@duo.ucw.cz>
-References: <20210811061053.32081-1-tony@atomide.com>
+        id S234778AbhHKG1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:27:10 -0400
+Received: from verein.lst.de ([213.95.11.211]:39257 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234575AbhHKG1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 02:27:09 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AE39F6736F; Wed, 11 Aug 2021 08:26:42 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 08:26:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>, hch@lst.de,
+        pali@kernel.org, linux-block@vger.kernel.org,
+        linux-leds@vger.kernel.org, axboe@kernel.dk, pavel@ucw.cz,
+        linux-kernel@vger.kernel.org, kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
+Message-ID: <20210811062642.GA3119@lst.de>
+References: <20210809033217.1113444-1-arequipeno@gmail.com> <20210809205633.4300bbea@thinkpad> <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com> <20210810004331.0f0094a5@thinkpad> <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210811061053.32081-1-tony@atomide.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
+> On 8/9/21 5:43 PM, Marek Behún wrote:
+>> I confess that I am not very familiar with internal blkdev API.
+>
+> It's mainly a matter of symbol visibility.  See this thread from a few
+> months ago:
+>
+>   https://www.spinics.net/lists/linux-leds/msg18244.html
+>
+> Now ... my code currently lives in block/, so there isn't actually
+> anything technically preventing it from iterating through the block
+> devices.
+>
+> The reactions to Enzo's patch (which you can see in that thread) make me
+> think that anything that iterates through all block devices is likely to
+> be rejected, but maybe I'm reading too much into it.
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed 2021-08-11 09:10:53, Tony Lindgren wrote:
-> We have changed the return type for sysc_check_active_timer() from -EBUSY
-> to -ENXIO, but the gpt12 system timer fix still checks for -EBUSY. We are
-> also not returning on other errors like we did earlier as noted by
-> Pavel Machek <pavel@denx.de>.
->=20
-> Commit 3ff340e24c9d ("bus: ti-sysc: Fix gpt12 system timer issue with
-> reserved status") should have been updated for commit 65fb73676112
-> ("bus: ti-sysc: suppress err msg for timers used as clockevent/source").
->=20
-> Let's fix the issue by checking for -ENXIO and returning on any other
-> errors as suggested by Pavel Machek <pavel@denx.de>.
->=20
-> Fixes: 3ff340e24c9d ("bus: ti-sysc: Fix gpt12 system timer issue with res=
-erved status")
-> Depends-on: 65fb73676112 ("bus: ti-sysc: suppress err msg for timers used=
- as clockevent/source")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-
-Reviewed-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRNspwAKCRAw5/Bqldv6
-8s23AJ9BjLJOmtII04M5RH+LmjUDyQSyogCeJrgFXvRYcUo8RUS9OXm9t6cmozA=
-=WWdc
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
+I think the main issue with this series is that it adds a shitload of
+code and a hook in the absolute I/O fastpath for fricking blinkenlights.
+I don't think it is even worth wasting time on something this ridiculous.
