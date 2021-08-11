@@ -2,110 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574163E903B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0333E903E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237550AbhHKMNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237509AbhHKMNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:13:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1738960F56;
-        Wed, 11 Aug 2021 12:12:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628683966;
-        bh=4URCwI+To5dzXx4W9xSAGUE66foFtybz8x7Tq5j21xs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b0eCa2VNlzrHho/Aa0bnBVVEd1hZKqMFi/Ynn1MaDNzuT3jxIfgeIynU6uBdLeo0g
-         bdHJ6dS95I1toqj12ufYyxGntNxxAkPNKx0C2UB63TrYici1Hl4751oZtZbTmtPrhq
-         Qv3qp28v2acvPvCM3Y/qM/Ay+ooiCxMIqLut486eXliBDZY2Ydpnyjpw1SiYpRv8Si
-         p81o0srOcOxLxKVbtIr7AVf3S1CoCne6hCveJHWzah23bNGjs7zjjxhxS7/fco7Ece
-         RKduTGUoHfn3XVFhO4kKDVCSvt24h9Y8dxwXVZ9EqYxut56ES1ncn3eELk3Ouep15M
-         ru2ZNWmJP3xgA==
-Date:   Wed, 11 Aug 2021 15:12:42 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, lkp@intel.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: ipa: always inline
- ipa_aggr_granularity_val()
-Message-ID: <YRO+uhPiS8g73rYk@unreal>
-References: <20210810160213.2257424-1-elder@linaro.org>
- <YRO8Xtd9+RRMqw1J@unreal>
- <aed281de-dd9b-c185-66b3-e597548a9649@linaro.org>
+        id S237572AbhHKMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:14:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:29112 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237364AbhHKMOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:14:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628684060; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ijoNVoseA/jZPJCm8rs+TxZ/CMRAWspycUzcxdUoZKQ=;
+ b=qvmpS0bMeFwF3okK1CJqeufTNWVlZKn4hRS9/j9+eWjJP6rhgxmPjCTfUdNB5RXDoNQXYeQH
+ RN4blgsOAD5bvhghxHlYuZRrCVmPU6tsNtt/tQvNL/o3RjzF0KGqZ641DefkyxXCaJwXS3I2
+ i08T5PCRQPYH81PZLbyQ4TT9w+0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6113befdf746c298d9cc89af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 12:13:49
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4DC50C4338A; Wed, 11 Aug 2021 12:13:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9A4BC433F1;
+        Wed, 11 Aug 2021 12:13:48 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aed281de-dd9b-c185-66b3-e597548a9649@linaro.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Aug 2021 17:43:48 +0530
+From:   rajpat@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+In-Reply-To: <YP7cmkayoajJ+1yj@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+ <YP7cmkayoajJ+1yj@google.com>
+Message-ID: <bdfd39def9a11104c043090d920ef4df@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 07:06:01AM -0500, Alex Elder wrote:
-> On 8/11/21 7:02 AM, Leon Romanovsky wrote:
-> > On Tue, Aug 10, 2021 at 11:02:13AM -0500, Alex Elder wrote:
-> >> It isn't required, but all callers of ipa_aggr_granularity_val()
-> >> pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
-> >> Two of those callers are in ipa_validate_build(), with the result
-> >> being passed to BUILD_BUG_ON().
-> >>
-> >> Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
-> >> inline ipa_aggr_granularity_val(), so the result of the function is
-> >> not constant at compile time, and that leads to build errors.
-> >>
-> >> Define the function with the __always_inline attribute to avoid the
-> >> errors.  And given that the function is inline, we can switch the
-> >> WARN_ON() there to be BUILD_BUG_ON().
-> >>
-> >> Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Signed-off-by: Alex Elder <elder@linaro.org>
-> >> ---
-> >>
-> >> David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
-> >>
-> >>  drivers/net/ipa/ipa_main.c | 4 ++--
-> >>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-> >> index 25bbb456e0078..f90b3521e266b 100644
-> >> --- a/drivers/net/ipa/ipa_main.c
-> >> +++ b/drivers/net/ipa/ipa_main.c
-> >> @@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
-> >>   * less than the number of timer ticks in the requested period.  0 is not
-> >>   * a valid granularity value.
-> >>   */
-> >> -static u32 ipa_aggr_granularity_val(u32 usec)
-> >> +static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
-> >>  {
-> >> -	WARN_ON(!usec);
-> >> +	BUILD_BUG_ON(!usec);
-> > 
-> > So what exactly are you checking here if all callers pass same value?
-> > It is in-kernel API, declared as static inside one module. There is no
-> > need to protect from itself.
+On 2021-07-26 21:32, Matthias Kaehlcke wrote:
+> On Mon, Jul 26, 2021 at 07:10:45PM +0530, Rajesh Patil wrote:
+>> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> 
+>> Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+>> ---
+>> Changes in V4:
+>>  - As per Bjorn's comment, added QUP Wrapper_0 nodes
+>>    other than debug-uart node
+>>  - Dropped interconnect votes for wrapper_0 node
+>> 
+>> Changes in V3:
+>>  - Broken the huge V2 patch into 3 smaller patches.
+>>    1. QSPI DT nodes
+>>    2. QUP wrapper_0 DT nodes
+>>    3. QUP wrapper_1 DT nodes
+>> 
+>> Changes in V2:
+>>  - As per Doug's comments removed pinmux/pinconf subnodes.
+>>  - As per Doug's comments split of SPI, UART nodes has been done.
+>>  - Moved QSPI node before aps_smmu as per the order.
+>> 
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  84 ++++
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 720 
+>> ++++++++++++++++++++++++++++++++
+>>  2 files changed, 804 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index b0bfd8e..f63cf51 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -358,6 +358,16 @@
+>>  	vdda18-supply = <&vreg_l1c_1p8>;
+>>  };
+>> 
+>> +&uart7 {
+>> +	status = "okay";
+>> +
+>> +	/delete-property/interrupts;
+>> +	interrupts-extended = <&intc GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>,
+>> +				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+>> +	pinctrl-names = "default", "sleep";
+>> +	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, 
+>> <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+>> +};
+>> +
+>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> 
+>>  &qspi_cs0 {
+>> @@ -428,3 +438,77 @@
+>>  		bias-pull-up;
+>>  	};
+>>  };
+>> +&qup_uart7_cts {
+>> +	/*
+>> +	 * Configure a pull-down on CTS to match the pull of
+>> +	 * the Bluetooth module.
+>> +	 */
+>> +	bias-pull-down;
+>> +};
+>> +
+>> +&qup_uart7_rts {
+>> +	/* We'll drive RTS, so no pull */
+>> +	drive-strength = <2>;
+>> +	bias-disable;
+>> +};
+>> +
+>> +&qup_uart7_tx {
+>> +	/* We'll drive TX, so no pull */
+>> +	drive-strength = <2>;
+>> +	bias-disable;
+>> +};
+>> +
+>> +&qup_uart7_rx {
+>> +	/*
+>> +	 * Configure a pull-up on RX. This is needed to avoid
+>> +	 * garbage data when the TX pin of the Bluetooth module is
+>> +	 * in tri-state (module powered off or not driving the
+>> +	 * signal yet).
+>> +	 */
+>> +	bias-pull-up;
+>> +};
+>> +
+>> +&tlmm {
+>> +	qup_uart7_sleep_cts: qup-uart7-sleep-cts {
+>> +		pins = "gpio28";
+>> +		function = "gpio";
+>> +		/*
+>> +		 * Configure a pull-down on CTS to match the pull of
+>> +		 * the Bluetooth module.
+>> +		 */
+>> +		bias-pull-down;
+>> +	};
+>> +
+>> +	qup_uart7_sleep_rts: qup-uart7-sleep-rts {
+>> +		pins = "gpio29";
+>> +		function = "gpio";
+>> +		/*
+>> +		 * Configure pull-down on RTS. As RTS is active low
+>> +		 * signal, pull it low to indicate the BT SoC that it
+>> +		 * can wakeup the system anytime from suspend state by
+>> +		 * pulling RX low (by sending wakeup bytes).
+>> +		 */
+>> +		bias-pull-down;
+>> +	};
+>> +
+>> +	qup_uart7_sleep_tx: qup-uart7-sleep-tx {
+>> +		pins = "gpio30";
+>> +		function = "gpio";
+>> +		/*
+>> +		 * Configure pull-up on TX when it isn't actively driven
+>> +		 * to prevent BT SoC from receiving garbage during sleep.
+>> +		 */
+>> +		bias-pull-up;
+>> +	};
+>> 
+>> +	qup_uart7_sleep_rx: qup-uart7-sleep-rx {
+>> +		pins = "gpio31";
+>> +		function = "gpio";
+>> +		/*
+>> +		 * Configure a pull-up on RX. This is needed to avoid
+>> +		 * garbage data when the TX pin of the Bluetooth module
+>> +		 * is floating which may cause spurious wakeups.
+>> +		 */
+>> +		bias-pull-up;
+>> +	};
+>> +};
 > 
-> Yeah that's a good point.  It can just as well be removed.
-> I think the check was added before I knew it was only going
-> to be used with a single constant value.  That said, the
-> point was to check at runtime a required constraint.
+> How the patches of this series are split strikes me as a bit odd. 
+> Supposedly
+> this patch adds the QUPv3 wrapper_0 DT nodes for the SC7280, however 
+> the
+> above is the pin configuration for the Bluetooth UART of the SC7280 IDP 
+> board.
+> I don't see a good reason why that should be part of this patch. It 
+> should be
+> a separate change whose subject indicates that it configures the 
+> Bluetooth UART
+> of the SC7280 IDP.
 > 
-> I'll post version 2 that simply removes it.  Thanks.
 
-Thanks
-> 
-> 					-Alex
-> 
-> > 
-> > Thanks
-> > 
-> >>  
-> >>  	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
-> >>  }
-> >> -- 
-> >> 2.27.0
-> >>
-> 
+Okay will split this up.
+
+> Without this conflation of SoC and board DT it would seem perfectly 
+> reasonable
+> to squash this patch and '[4/4] arm64: dts: sc7280: Add QUPv3 wrapper_1 
+> nodes'
+> into a single one, they are essentially doing the same thing, I see no 
+> need to
+> have different patches for the wrapper 0 and 1 nodes.
+
+Previously when QUP wrapper 0 and wrapper 1 nodes were added in single 
+patch, we faced some git issues as the patch was huge. Hence we split it 
+up.
+https://partnerissuetracker.corp.google.com/issues/177045897#comment12
