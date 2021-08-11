@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46673E8EB8
+	by mail.lfdr.de (Postfix) with ESMTP id C060F3E8EB7
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhHKKcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:32:13 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3624 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236935AbhHKKcL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237182AbhHKKcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Aug 2021 06:32:11 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gl5hK69ZTz6BDkl;
-        Wed, 11 Aug 2021 18:31:13 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 11 Aug 2021 12:31:46 +0200
-Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 11 Aug
- 2021 11:31:45 +0100
-Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
- function arm_smmu_cmdq_issue_cmd_with_sync()
-To:     Will Deacon <will@kernel.org>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
- <20210626110130.2416-3-thunder.leizhen@huawei.com>
- <20210810182454.GB3296@willie-the-truck>
- <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
- <20210811100905.GB4426@willie-the-truck>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <d551f31d-4edc-db28-fb08-41a130a5d97f@huawei.com>
-Date:   Wed, 11 Aug 2021 11:31:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+Received: from smtp-out1.suse.de ([195.135.220.28]:48730 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236861AbhHKKcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:32:10 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 89530221D2;
+        Wed, 11 Aug 2021 10:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628677906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KpLDPZd/N2/VcLHworm+Mh4R910b9m4Ub0D/eTKpZ2c=;
+        b=VbVynxJn3fn2qBccx43dG5RN+NVZw3aHD5cjvxnZ5rKYdjuQsvDMB3Al86aCK7tCfP0AKK
+        /ovX2lHHToJW+qgSviR6HEyPdpUKbZZEoiNVvrX33cP5rJI6ZDcleJStVKwc5K+MjUABhL
+        tIDHI5P5plKELLqIZyr0tVo3bhFcrCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628677906;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KpLDPZd/N2/VcLHworm+Mh4R910b9m4Ub0D/eTKpZ2c=;
+        b=9pnAPYyX7BnYcKFd8cyLrvcHazFsOhpr/jdI5zJ8HW59Gk4gssjbYPKcor7+nnfKHMagHd
+        rK0PknAIjWdbsRCw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 78E2E131F5;
+        Wed, 11 Aug 2021 10:31:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id IpSAHRKnE2EQEAAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Wed, 11 Aug 2021 10:31:46 +0000
+Date:   Wed, 11 Aug 2021 12:31:46 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>, yi.he@emc.com
+Subject: Re: [PATCH] nvme-tcp: Do not reset transport on data digest errors
+Message-ID: <20210811103146.ytqj5mqpioiba56x@carbon.lan>
+References: <20210805121541.77613-1-dwagner@suse.de>
+ <47ef76c6-4430-ca24-405e-a226d4303a39@grimberg.me>
+ <20210809090947.luoqaooi7gc6u6yu@carbon>
+ <2e91c065-d3c6-1bef-5906-1a4648368894@grimberg.me>
 MIME-Version: 1.0
-In-Reply-To: <20210811100905.GB4426@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.4]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e91c065-d3c6-1bef-5906-1a4648368894@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> Obviously, inserting as many commands at a time as possible can reduce the
->>>> number of times the mutex contention participates, thereby improving the
->>>> overall performance. At least it reduces the number of calls to function
->>>> arm_smmu_cmdq_issue_cmdlist().
->>>>
->>>> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
->>>> the 'cmd+sync' commands at a time.
->>>>
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>> ---
->>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
->>>>   1 file changed, 21 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
->>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
->>>>   	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
->>>>   }
->>>>   
->>>> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
->>>> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
->>>>   {
->>>>   	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
->>>>   }
->>>>   
->>>> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
->>>> +					     struct arm_smmu_cmdq_ent *ent)
->>>> +{
->>>> +	u64 cmd[CMDQ_ENT_DWORDS];
->>>> +
->>>> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
->>>> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
->>>> +			 ent->opcode);
->>>> +		return -EINVAL;
+On Tue, Aug 10, 2021 at 06:02:36PM -0700, Sagi Grimberg wrote:
+> 
+> > Hi Sagi,
+> > 
+> > On Fri, Aug 06, 2021 at 12:42:00PM -0700, Sagi Grimberg wrote:
+> > > > @@ -89,6 +89,7 @@ struct nvme_tcp_queue {
+> > > >    	size_t			data_remaining;
+> > > >    	size_t			ddgst_remaining;
+> > > >    	unsigned int		nr_cqe;
+> > > > +	u16			status;
+> > > 
+> > > Why is this a queue member and not a request member?
+> > 
+> > I was not sure if the TCP transport specific error handling should
+> > impact all other transport (size of struct request). Also I tried to
+> > avoid accessing cachelines which are not already in use. Except this I
+> > don't see there should be no problem to put this to struct request.
+> 
+> It is the correct place, lets see that it doesn't increase the struct.
 
-Are any of the errors returned from the "issue command" functions 
-actually consumed? I couldn't see it on mainline code from a brief browse.
+It should not according pahole:
 
->>>> +	}
->>>> +
->>>> +	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, true);
+        /* XXX 7 bytes hole, try to pack */
 
-Thanks,
-John
+        void *                     pdu;                  /*   144     8 */
+        int                        pdu_remaining;        /*   152     4 */
+        int                        pdu_offset;           /*   156     4 */
+        size_t                     data_remaining;       /*   160     8 */
+        size_t                     ddgst_remaining;      /*   168     8 */
+        unsigned int               nr_cqe;               /*   176     4 */
+        u16                        status;               /*   180     2 */
+
+        /* XXX 2 bytes hole, try to pack */
+
+Daniel
