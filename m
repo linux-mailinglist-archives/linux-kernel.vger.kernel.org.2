@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C47D3E93E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F753E93E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhHKOpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232487AbhHKOpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:45:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C601760C40;
-        Wed, 11 Aug 2021 14:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628693086;
-        bh=oRtuoqy/LIf+pZayY3sD4qqRwmSIP5c+RrGgz/UAT4s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TzdIx1Usw3UPeRUgpOuaqvKSYluxEiaq5OuPyIpU8W2G7l6eXnIlcHKnkFiKhoq53
-         lgiIqVroWlCJH2NcXmNcTEdhcWAeR8YD2TRbtTRAxxPwDkXBZZy/yw8eGO4E+lu4tH
-         rp+CpMUJoxJYqgKqU2RcHUJOE+IKc+CmGrqIDmPWpB5+3mGjYGeClVgMvOhiemSMn2
-         OC5CyEhqVrSLIUijHI6IUkWoIzbPVIXkzsAx+GBjvStC5RBUmpnJJgNeHws8+C4Nj/
-         6IqSJ1/2+GGWVF9QvWYvPP84ahUfPK0O5w8pcjTB2RUz17WP1YQaO+2n3Y0/aMfTRs
-         yGQFRzwbdZUnA==
-Date:   Wed, 11 Aug 2021 07:44:46 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the folio tree with the xfs tree
-Message-ID: <20210811144446.GD3601443@magnolia>
-References: <20210811174231.688566de@canb.auug.org.au>
- <20210811144345.GC3601443@magnolia>
+        id S232548AbhHKOpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhHKOpk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:45:40 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD0DC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:45:16 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id m17so1245023ljp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6v9hHCZVHAmYgbnWmMzGUr44DlUe75gTidfZaeJXFqM=;
+        b=ixasY3I7+egTqHiYwBpn7xtvMOB0ubWh0dHree5YQRsOXjfoZLiZcoMtIJ+YZMA1KC
+         QLIH+wpRjXQ+40tIMdWVHT5fHp2+y4BlqZOXDkt3LERoqmIYNij8izzIYqtmT8kInG/y
+         8e/b19oe2nAPywFHDVO4W2kMB6/e+tEFf05dEiOWavZs7/dXkRLdwBPdABA63ebtcxLE
+         GHhiqYKTqhzsudkCEB8ktzP3FkUIdnjYUVeZ2+83X7hRDrPkhK1sOqwnNNngBH9y/HP4
+         kQaJq1h5gX9j6hUFcgyXckbDJDPP0t3ZzIeWAvDjGY+SG6AfNpv8j8aVvFGP4os2KnLU
+         FjVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6v9hHCZVHAmYgbnWmMzGUr44DlUe75gTidfZaeJXFqM=;
+        b=UMODSItxJvxx5/VnnxNCbY0BtDc4JWZAZ7cFuhxxPM0uHFgoT6zDC+Rwh86V+60VSG
+         rCzu1z8YyBpQUEFgD8xIM70LIYp3i83PsWoMzfYXzEHVrRWudaptOa0Mbrb+QV8nA78h
+         5/PuETmwz49QnCmVhBcYGEFVBvDd6fmxWGVcKvVgMZkbvfO2ipnoxsRyq3vw6sEWUgCV
+         QCf805edNQSpbDi9TBTG7MmHHTpY+j6ZW821iHZVj9h5jWLQFjN0NqlMcjFrWPXtjxFA
+         k3uUADJEkxJmnjArt4rMhdVRc/N3/9C7Itpqe1E7SWGe1xQMiFd4X8ONDB3Cka2W+7np
+         OYbg==
+X-Gm-Message-State: AOAM531yGhlQBpwXsQ8ESbliMhBByl6IyMUX9T90GXhjvOGnmZlhWHq9
+        HZoFRc/GdB1wE62zBQJIwjjqgp8aZ108K8zFnPdbpQ==
+X-Google-Smtp-Source: ABdhPJxLhduWN/mt3ervtvbNLFqT3qSQ+hT6DmUXLPRYj76K2NG8pRMv3ca/z6GWKiGtYDR8kRc+zxzqFBMKyYGGHDg=
+X-Received: by 2002:a05:651c:327:: with SMTP id b7mr24076891ljp.74.1628693115248;
+ Wed, 11 Aug 2021 07:45:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811144345.GC3601443@magnolia>
+References: <20210805174219.3000667-1-piyush.mehta@xilinx.com>
+ <20210805174219.3000667-4-piyush.mehta@xilinx.com> <CACRpkdZ=WRhTTQOvQcDEQhbf5Fone0GHopZfJhsQfsS-NRQUUw@mail.gmail.com>
+ <974df9ef-6cdb-cb7b-2b9d-2eddaf1171f7@xilinx.com>
+In-Reply-To: <974df9ef-6cdb-cb7b-2b9d-2eddaf1171f7@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 16:45:04 +0200
+Message-ID: <CACRpkdZ5owo0rfOqysLpu+La+0p5SgNkjW6OFbG9tsOmtNJEtA@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] gpio: modepin: Add driver support for modepin GPIO controller
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Piyush Mehta <piyush.mehta@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>, wendy.liang@xilinx.com,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, rajan.vaja@xilinx.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, git <git@xilinx.com>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 07:43:45AM -0700, Darrick J. Wong wrote:
-> On Wed, Aug 11, 2021 at 05:42:31PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Today's linux-next merge of the folio tree got a conflict in:
-> > 
-> >   mm/util.c
-> > 
-> > between commit:
-> > 
-> >   de2860f46362 ("mm: Add kvrealloc()")
-> > 
-> > from the xfs tree and commit:
-> > 
-> >   3bc0556bade4 ("mm: Add folio_raw_mapping()")
-> > 
-> > from the folio tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> 
-> Hmmm.  Seeing as krealloc lives in mm/slab_common.c anyway, I might just
-> move this function there, and (hopefully) avoid this conflict.
+On Wed, Aug 11, 2021 at 3:30 PM Michal Simek <michal.simek@xilinx.com> wrote:
 
-Never mind, didn't work.
+> They are bootmode pins because that pins are designed and used by ROM to
+> get information which boot device should be used.
+> But after this is it is really behaving as generic purpose I/O pins.
+> Xilinx is using them for years for usb phy resets. I have also seen them
+> to be used for other reset functionality.
 
---D
+OK if they are used for general purpose tasks then a GPIO driver
+is fine, I was worried that it was just a way to read these pins from
+userspace.
 
-> 
-> --D
-> 
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> > 
-> > diff --cc mm/util.c
-> > index d06e48b28eec,e8fa30e48447..000000000000
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@@ -660,31 -635,6 +660,21 @@@ void kvfree_sensitive(const void *addr
-> >   }
-> >   EXPORT_SYMBOL(kvfree_sensitive);
-> >   
-> >  +void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
-> >  +{
-> >  +	void *newp;
-> >  +
-> >  +	if (oldsize >= newsize)
-> >  +		return (void *)p;
-> >  +	newp = kvmalloc(newsize, flags);
-> >  +	if (!newp)
-> >  +		return NULL;
-> >  +	memcpy(newp, p, oldsize);
-> >  +	kvfree(p);
-> >  +	return newp;
-> >  +}
-> >  +EXPORT_SYMBOL(kvrealloc);
-> >  +
-> > - static inline void *__page_rmapping(struct page *page)
-> > - {
-> > - 	unsigned long mapping;
-> > - 
-> > - 	mapping = (unsigned long)page->mapping;
-> > - 	mapping &= ~PAGE_MAPPING_FLAGS;
-> > - 
-> > - 	return (void *)mapping;
-> > - }
-> > - 
-> >   /* Neutral page->mapping pointer to address_space or anon_vma or other */
-> >   void *page_rmapping(struct page *page)
-> >   {
-> 
-> 
+Go ahead with this patch series!
+
+Yours,
+Linus Walleij
