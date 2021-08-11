@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6DB3E9060
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9072B3E9064
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237595AbhHKMTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:19:48 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:61116 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232496AbhHKMTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:19:35 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee36113c031b13-64a31; Wed, 11 Aug 2021 20:18:57 +0800 (CST)
-X-RM-TRANSID: 2ee36113c031b13-64a31
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36113c02cae4-3f770;
-        Wed, 11 Aug 2021 20:18:57 +0800 (CST)
-X-RM-TRANSID: 2ee36113c02cae4-3f770
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] mfd: ti_am335x_tscadc: Delete superfluous error message
-Date:   Wed, 11 Aug 2021 20:19:34 +0800
-Message-Id: <20210811121934.23548-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S237539AbhHKMUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232496AbhHKMUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:20:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B97746023B;
+        Wed, 11 Aug 2021 12:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628684414;
+        bh=Jkyif3d4kFjhIKg6jx01Qag1Q6rqMPw9mCrQuXo745E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RNw8VvFtn2G6ichHLHzmKNVwo6zy4RUIiOQNdZ58LxRx4M0kZ/kbsqVo+69ZfFnYq
+         O7gtmpGM+7ggMv4dLWanhE2b/VUAAF/8/jdr0Cda3Kvo7bFiridVaJ1BMUNrLC7C5R
+         TvHjDuz9GEh+yy+9m88QpYPNsZEeKP9nkTvQqKcKCNzrByKXs4BDtKTPn6WDwN3585
+         ENA73ygZZww79IlugxoI8udwiCRua7z7AHjyJV7cZafQR53Kz9IMxy3LJypQaMDawe
+         ZNZMliSWXYEEZDeSy2GzO3YRBOGag0WywFgncn/WH2uJmZvGzrcTNwudz2Cm60HWlK
+         JvPShRDkBHfyw==
+Date:   Wed, 11 Aug 2021 13:19:55 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     tangbin <tangbin@cmss.chinamobile.com>
+Cc:     olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: stm32: spdifrx: Delete unnecessary check in
+ theprobe function
+Message-ID: <20210811121955.GD4167@sirena.org.uk>
+References: <20210811115523.17232-1-tangbin@cmss.chinamobile.com>
+ <20210811115846.GC4167@sirena.org.uk>
+ <7ddb13ee-2ca6-bf8d-2a83-9896d29176c5@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n/aVsWSeQ4JHkrmm"
+Content-Disposition: inline
+In-Reply-To: <7ddb13ee-2ca6-bf8d-2a83-9896d29176c5@cmss.chinamobile.com>
+X-Cookie: To stay youthful, stay useful.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function ti_tscadc_probe(), when get irq failed,
-platform_get_irq() logs an error message, so remove
-redundant message here.
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/mfd/ti_am335x_tscadc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+--n/aVsWSeQ4JHkrmm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mfd/ti_am335x_tscadc.c b/drivers/mfd/ti_am335x_tscadc.c
-index 0e6e25308..55adc379f 100644
---- a/drivers/mfd/ti_am335x_tscadc.c
-+++ b/drivers/mfd/ti_am335x_tscadc.c
-@@ -175,10 +175,9 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
- 	tscadc->dev = &pdev->dev;
- 
- 	err = platform_get_irq(pdev, 0);
--	if (err < 0) {
--		dev_err(&pdev->dev, "no irq ID is specified.\n");
-+	if (err < 0)
- 		goto ret;
--	} else
-+	else
- 		tscadc->irq = err;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--- 
-2.20.1.windows.1
+On Wed, Aug 11, 2021 at 08:09:00PM +0800, tangbin wrote:
+> On 2021/8/11 19:58, Mark Brown wrote:
+> > On Wed, Aug 11, 2021 at 07:55:23PM +0800, Tang Bin wrote:
 
+> > > The function stm32_spdifrx_parse_of() is only called by the function
+> > > stm32_spdifrx_probe(), and the probe function is only called with
+> > > an openfirmware platform device. Therefore there is no need to check
+> > > the device_node in probe function.
 
+> > What is the benefit of not doing the check?  It seems like reasonable
+> > defensive programming.
 
+> I think it's unnecessary, because we all know than the probe function is
+> only trigger if
+
+> the device and the driver matches, and the trigger mode is just Device Tree.
+> So the device_node
+
+> must be exist in the probe function if it works. That's the reason why I
+> think it's redundant.
+
+I see why it is redundant, I don't see what problem this redudnancy
+causes.
+
+--n/aVsWSeQ4JHkrmm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmETwGoACgkQJNaLcl1U
+h9Cj4Af/azfVQM3xU3CdmasVulqZpZWu39+iv+ISKhYAhqPkrw6tq6sFFfpDAAQX
+BAs2T83O5CvB4peKwgBRLs6paHkWbWnftWMLCVrUfMzEBfRRq6T/wLfQxmDA3o89
+YRiXxOjTeZFwiWxRT+jVLh6S3QATZQBdoXU7jbqQH4rRIod5FXh8wdftLQQWm459
+WmIQLpypjSCZYPpeCs+UdYs/TatHQdXD0ssS3k5m+Hq3MufufSDUgIpNJUA0aTf5
+TfMTW+hMNnz9apT/9bVopicIh6Cf29Mr+O8gr9E7tdQYxNXIZD/MkcjucV8yW+Cu
+QFGgT4FSUrecnNJrnFUV8P39wsYkUQ==
+=f9BL
+-----END PGP SIGNATURE-----
+
+--n/aVsWSeQ4JHkrmm--
