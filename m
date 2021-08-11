@@ -2,268 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FA13E8F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2303E8F08
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237220AbhHKKvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:51:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8009 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237180AbhHKKvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:51:42 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gl6784w4WzYlHf;
-        Wed, 11 Aug 2021 18:51:00 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 18:51:14 +0800
-Received: from SWX921481.china.huawei.com (10.126.200.84) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 11 Aug 2021 18:51:09 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <robin.murphy@arm.com>, <will@kernel.org>, <linuxarm@huawei.com>,
-        "Barry Song" <song.bao.hua@hisilicon.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [PATCH] platform-msi: Add ABI to show msi_irqs of platform devices
-Date:   Wed, 11 Aug 2021 22:50:20 +1200
-Message-ID: <20210811105020.12980-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S237207AbhHKKvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237180AbhHKKvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:51:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5157B60E78;
+        Wed, 11 Aug 2021 10:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628679076;
+        bh=rH5YRaOaWyAR5nRm148pL736R8MucsTyJdvhBT11OlI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m7xjOa9y9J0xdu2uxFHvu2u5VOkNGxjIhzSUYBCzqjKIjFqxGuiAwMZqh2f98WFUL
+         zp/7IaiGIy05+GMRATbgq4gW1dAKfGM40EA+YYbNuUv1ze/FivFhau/zYbQalQOs8D
+         4C1g1QVH6XiJeMuUbFlXxdBI9bCFs+OP5P4YmUd19VdNWf5rHSmowyakGLoqrGzGXy
+         Hcm65dJKrqPHXuTlDe6Ky+2UHhHz7EM5yFl9a3OsIJdckrp7bbG/FbwXJHwsKTWcub
+         zWvBnRfrmQo9yETjkAeKe/4v4gg3ok4tFaTqqQTlik7tUz/c6TnJrHmGAGEnUjAB48
+         EhB2MzyKb32eQ==
+Date:   Wed, 11 Aug 2021 12:50:48 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Ian Pilcher <arequipeno@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, pali@kernel.org,
+        linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
+Message-ID: <20210811125048.3bbcebdb@thinkpad>
+In-Reply-To: <20210811062642.GA3119@lst.de>
+References: <20210809033217.1113444-1-arequipeno@gmail.com>
+        <20210809205633.4300bbea@thinkpad>
+        <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
+        <20210810004331.0f0094a5@thinkpad>
+        <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
+        <20210811062642.GA3119@lst.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.200.84]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi761-chm.china.huawei.com (10.1.198.147)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like pci devices have msi_irqs which can be used by userspace irq affinity
-tools or applications to bind irqs, platform devices also widely support msi
-irqs. For platform devices, for example ARM SMMU, userspaces also care about
-its msi irqs as applications can know the mapping between devices and irqs
-and then make smarter decision on handling irq affinity. For example, for
-SVA mode, it is better to pin io page fault to the numa node applications
-are running on. Otherwise, io page fault will get a remote page from the
-node iopf happens.
-With this patch, a system with multiple arm SMMUs in multiple different numa
-node can get the mapping between devices and irqs now:
-root@ubuntu:/sys/devices/platform# ls -l arm-smmu-v3.*/msi_irqs/*
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/25
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/26
--r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/27
--r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/28
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/29
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/30
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/31
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/32
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/33
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/34
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/35
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/36
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/37
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/38
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/39
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/40
+On Wed, 11 Aug 2021 08:26:42 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-Applications can use the mapping and the numa node information to pin
-irqs by leveraging the numa information which has also been exported:
-root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.0.auto/numa_node
-0
-root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.4.auto/numa_node
-2
+> On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
+> > On 8/9/21 5:43 PM, Marek Beh=C3=BAn wrote: =20
+> >> I confess that I am not very familiar with internal blkdev API. =20
+> >
+> > It's mainly a matter of symbol visibility.  See this thread from a few
+> > months ago:
+> >
+> >   https://www.spinics.net/lists/linux-leds/msg18244.html
+> >
+> > Now ... my code currently lives in block/, so there isn't actually
+> > anything technically preventing it from iterating through the block
+> > devices.
+> >
+> > The reactions to Enzo's patch (which you can see in that thread) make me
+> > think that anything that iterates through all block devices is likely to
+> > be rejected, but maybe I'm reading too much into it. =20
+>=20
+> I think the main issue with this series is that it adds a shitload of
+> code and a hook in the absolute I/O fastpath for fricking blinkenlights.
+> I don't think it is even worth wasting time on something this ridiculous.
 
-Cc: Zhou Wang <wangzhou1@hisilicon.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/ABI/testing/sysfs-bus-platform |  14 +++
- drivers/base/platform-msi.c                  | 122 +++++++++++++++++++++++++++
- 2 files changed, 136 insertions(+)
+That's why I think we should do this the way the netdev trigger does.
+Periodically reading block_device's stats, and if they are greater,
+blink the LED.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
-index 194ca70..4498f89 100644
---- a/Documentation/ABI/testing/sysfs-bus-platform
-+++ b/Documentation/ABI/testing/sysfs-bus-platform
-@@ -28,3 +28,17 @@ Description:
- 		value comes from an ACPI _PXM method or a similar firmware
- 		source. Initial users for this file would be devices like
- 		arm smmu which are populated by arm64 acpi_iort.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		The /sys/devices/.../msi_irqs directory contains a variable set
-+		of files, with each file being named after a corresponding msi
-+		irq vector allocated to that device.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/<N>
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		This attribute will show "msi" if <N> is a valid msi irq
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 0b72b13..6a72ebc 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -23,6 +23,7 @@
- struct platform_msi_priv_data {
- 	struct device		*dev;
- 	void 			*host_data;
-+	const struct attribute_group    **msi_irq_groups;
- 	msi_alloc_info_t	arg;
- 	irq_write_msi_msg_t	write_msg;
- 	int			devid;
-@@ -245,6 +246,120 @@ static void platform_msi_free_priv_data(struct platform_msi_priv_data *data)
- 	kfree(data);
- }
- 
-+static ssize_t platform_msi_show(struct device *dev, struct device_attribute *attr,
-+			     char *buf)
-+{
-+	struct msi_desc *entry;
-+	unsigned long irq;
-+	int retval;
-+
-+	retval = kstrtoul(attr->attr.name, 10, &irq);
-+	if (retval)
-+		return retval;
-+
-+	entry = irq_get_msi_desc(irq);
-+	if (entry)
-+		return sprintf(buf, "msi\n");
-+
-+	return -ENODEV;
-+}
-+
-+static int platform_msi_populate_sysfs(struct device *dev,
-+				       int nvec,
-+				       struct platform_msi_priv_data *data)
-+{
-+	struct attribute **msi_attrs;
-+	struct attribute *msi_attr;
-+	struct device_attribute *msi_dev_attr;
-+	struct attribute_group *msi_irq_group;
-+	const struct attribute_group **msi_irq_groups;
-+	struct msi_desc *entry;
-+	int ret = -ENOMEM;
-+	int count = 0;
-+	int i;
-+
-+	/* Dynamically create the MSI attributes for the device */
-+	msi_attrs = kcalloc(nvec + 1, sizeof(void *), GFP_KERNEL);
-+	if (!msi_attrs)
-+		return -ENOMEM;
-+	for_each_msi_entry(entry, dev) {
-+		for (i = 0; i < entry->nvec_used; i++) {
-+			msi_dev_attr = kzalloc(sizeof(*msi_dev_attr), GFP_KERNEL);
-+			if (!msi_dev_attr)
-+				goto error_attrs;
-+			msi_attrs[count] = &msi_dev_attr->attr;
-+
-+			sysfs_attr_init(&msi_dev_attr->attr);
-+			msi_dev_attr->attr.name = kasprintf(GFP_KERNEL, "%d",
-+							    entry->irq + i);
-+			if (!msi_dev_attr->attr.name)
-+				goto error_attrs;
-+			msi_dev_attr->attr.mode = S_IRUGO;
-+			msi_dev_attr->show = platform_msi_show;
-+			++count;
-+		}
-+	}
-+
-+	msi_irq_group = kzalloc(sizeof(*msi_irq_group), GFP_KERNEL);
-+	if (!msi_irq_group)
-+		goto error_attrs;
-+	msi_irq_group->name = "msi_irqs";
-+	msi_irq_group->attrs = msi_attrs;
-+
-+	msi_irq_groups = kcalloc(2, sizeof(void *), GFP_KERNEL);
-+	if (!msi_irq_groups)
-+		goto error_irq_group;
-+	msi_irq_groups[0] = msi_irq_group;
-+
-+	ret = sysfs_create_groups(&dev->kobj, msi_irq_groups);
-+	if (ret)
-+		goto error_irq_groups;
-+	data->msi_irq_groups = msi_irq_groups;
-+
-+	return 0;
-+
-+error_irq_groups:
-+	kfree(msi_irq_groups);
-+error_irq_group:
-+	kfree(msi_irq_group);
-+error_attrs:
-+	count = 0;
-+	msi_attr = msi_attrs[count];
-+	while (msi_attr) {
-+		msi_dev_attr = container_of(msi_attr, struct device_attribute, attr);
-+		kfree(msi_attr->name);
-+		kfree(msi_dev_attr);
-+		++count;
-+		msi_attr = msi_attrs[count];
-+	}
-+	kfree(msi_attrs);
-+	return ret;
-+}
-+
-+static void platform_msi_destroy_sysfs(struct device *dev,
-+				      struct platform_msi_priv_data *data)
-+{
-+	struct attribute **msi_attrs;
-+	struct device_attribute *dev_attr;
-+	int count = 0;
-+
-+	if (data->msi_irq_groups) {
-+		sysfs_remove_groups(&dev->kobj, data->msi_irq_groups);
-+		msi_attrs = data->msi_irq_groups[0]->attrs;
-+		while (msi_attrs[count]) {
-+			dev_attr = container_of(msi_attrs[count],
-+					struct device_attribute, attr);
-+			kfree(dev_attr->attr.name);
-+			kfree(dev_attr);
-+			++count;
-+		}
-+		kfree(msi_attrs);
-+		kfree(data->msi_irq_groups[0]);
-+		kfree(data->msi_irq_groups);
-+		data->msi_irq_groups = NULL;
-+	}
-+}
-+
- /**
-  * platform_msi_domain_alloc_irqs - Allocate MSI interrupts for @dev
-  * @dev:		The device for which to allocate interrupts
-@@ -272,8 +387,14 @@ int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
- 	if (err)
- 		goto out_free_desc;
- 
-+	err = platform_msi_populate_sysfs(dev, nvec, priv_data);
-+	if (err)
-+		goto out_free_irqs;
-+
- 	return 0;
- 
-+out_free_irqs:
-+	msi_domain_free_irqs(dev->msi_domain, dev);
- out_free_desc:
- 	platform_msi_free_descs(dev, 0, nvec);
- out_free_priv_data:
-@@ -293,6 +414,7 @@ void platform_msi_domain_free_irqs(struct device *dev)
- 		struct msi_desc *desc;
- 
- 		desc = first_msi_entry(dev);
-+		platform_msi_destroy_sysfs(dev, desc->platform.msi_priv_data);
- 		platform_msi_free_priv_data(desc->platform.msi_priv_data);
- 	}
- 
--- 
-1.8.3.1
-
+Marek
