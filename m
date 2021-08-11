@@ -2,153 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FB23E8F13
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823093E8F17
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbhHKKyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:54:02 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63704 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237183AbhHKKyB (ORCPT
+        id S237203AbhHKKyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:54:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53296 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhHKKya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:54:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628679218; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qlpDNvJjcRJ+wsfFRoWvzfj53K6Rwd/daWeirz+kr0U=;
- b=c9SHxCpY2pT51BKJ31F/oniJkCzu2VPfss3VhkCnm3onZl5N+AfTLzs1A3KSqtvto2JCrGVT
- g14/TprM01f3AWYbmrYMTpeGVMhaGR4i/wZpsYj6AkhOovBi8w1LNTXAPc83PD18XX/xSUOH
- hs7Is+aSmHQo0Uz0gpoQ5GOcboE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6113ac1e91487ad520c1b6f5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 10:53:18
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D8FDC433F1; Wed, 11 Aug 2021 10:53:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Wed, 11 Aug 2021 06:54:30 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C94CEC433F1;
-        Wed, 11 Aug 2021 10:53:16 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 08B25221AB;
+        Wed, 11 Aug 2021 10:54:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628679246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hv1T/hKNTE5d+nxwafHGQund8yaFQUJNQ0XZ3C5Zyew=;
+        b=iQOx39CqLJK+SgrFRASjmJYMXVBiEfDNNCMKiUUDReNTOCEmAwg+IaLD/VZIp4aNOAbESv
+        /5u0JPXXtkcM/vsgTcpzCwgtquzkcaLEE9pzamA8x82GTiDndne+ODLpBf9W3B9cz8f1t7
+        i7fWuilC//2Qj9CeUQKpoiHJ8b2yXgg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628679246;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hv1T/hKNTE5d+nxwafHGQund8yaFQUJNQ0XZ3C5Zyew=;
+        b=LKWKi2se9J/Klv+89EjxNlk7E2kGuS/TtKPdzHERlei0VBO4cNqB7Wi+l8rDIg9uIk2Cj8
+        HXSmQQr10iPPMECA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DA314131F5;
+        Wed, 11 Aug 2021 10:54:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id gddsNE2sE2HjFQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 10:54:05 +0000
+Subject: Re: [PATCH v14 040/138] mm/memcg: Convert mem_cgroup_charge() to take
+ a folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-41-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <40a868bf-61dc-1832-4799-ff85018ebcec@suse.cz>
+Date:   Wed, 11 Aug 2021 12:54:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210715033704.692967-41-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Aug 2021 16:23:16 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCHv4] iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom
- implementation
-In-Reply-To: <20210811103011.GD4426@willie-the-truck>
-References: <20210811060725.25221-1-saiprakash.ranjan@codeaurora.org>
- <20210811103011.GD4426@willie-the-truck>
-Message-ID: <47c50d2010a0c8f9c21c20584fb8db5e@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021-08-11 16:00, Will Deacon wrote:
-> On Wed, Aug 11, 2021 at 11:37:25AM +0530, Sai Prakash Ranjan wrote:
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> index f7da8953afbe..3904b598e0f9 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> @@ -327,9 +327,16 @@ static void arm_smmu_tlb_inv_range_s2(unsigned 
->> long iova, size_t size,
->>  static void arm_smmu_tlb_inv_walk_s1(unsigned long iova, size_t size,
->>  				     size_t granule, void *cookie)
->>  {
->> -	arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
->> -				  ARM_SMMU_CB_S1_TLBIVA);
->> -	arm_smmu_tlb_sync_context(cookie);
->> +	struct arm_smmu_domain *smmu_domain = cookie;
->> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
->> +
->> +	if (cfg->flush_walk_prefer_tlbiasid) {
->> +		arm_smmu_tlb_inv_context_s1(cookie);
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Convert all callers of mem_cgroup_charge() to call page_folio() on the
+> page they're currently passing in.  Many of them will be converted to
+> use folios themselves soon.
 > 
-> Hmm, this introduces an unconditional wmb() if tlbiasid is preferred. I
-> think that should be predicated on ARM_SMMU_FEAT_COHERENT_WALK like it 
-> is
-> for the by-VA ops. Worth doing as a separate patch.
-> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Ok I will keep this as-is for now then.
 
->> +	} else {
->> +		arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
->> +					  ARM_SMMU_CB_S1_TLBIVA);
->> +		arm_smmu_tlb_sync_context(cookie);
->> +	}
->>  }
->> 
->>  static void arm_smmu_tlb_add_page_s1(struct iommu_iotlb_gather 
->> *gather,
->> @@ -765,8 +772,10 @@ static int arm_smmu_init_domain_context(struct 
->> iommu_domain *domain,
->>  		.iommu_dev	= smmu->dev,
->>  	};
->> 
->> -	if (!iommu_get_dma_strict(domain))
->> +	if (!iommu_get_dma_strict(domain)) {
->>  		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
->> +		cfg->flush_walk_prefer_tlbiasid = true;
-> 
-> This is going to interact badly with Robin's series to allow dynamic
-> transition to non-strict mode, as we don't have a mechanism to switch
-> over to the by-ASID behaviour. Yes, it should _work_, but it's ugly 
-> having
-> different TLBI behaviour just because of the how the domain became
-> non-strict.
-> 
-> Robin -- I think this originated from your idea at [1]. Any idea how to 
-> make
-> it work with your other series, or shall we drop this part for now and 
-> leave
-> the TLB invalidation behaviour the same for now?
-> 
-> Will
-> 
-> [1] 
-> https://lore.kernel.org/r/da62ff1c-9b49-34d3-69a1-1a674e4a30f7@arm.com
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Right, I think we can drop this non-strict change for now because it 
-also makes
-it a pain to backport it to 5.4/5.10 kernels because of large number of 
-changes
-in dma apis in recent kernels. I will let you and Robin decide if it's 
-ok to
-drop this change and introduce it later with a different patch.
 
-Thanks,
-Sai
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c2ffad021e09..03283d97b62a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6681,10 +6681,9 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+>  			atomic_long_read(&parent->memory.children_low_usage)));
+>  }
+>  
+> -static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+> +static int __mem_cgroup_charge(struct folio *folio, struct mem_cgroup *memcg,
+>  			       gfp_t gfp)
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+The git/next version also renames this function to charge_memcg(), why? The new
+name doesn't look that internal as the old one. I don't have a strong opinion
+but CCing memcg maintainers who might.
+
+>  {
+> -	struct folio *folio = page_folio(page);
+>  	unsigned int nr_pages = folio_nr_pages(folio);
+>  	int ret;
+>  
+> @@ -6697,27 +6696,27 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+>  
+>  	local_irq_disable();
+>  	mem_cgroup_charge_statistics(memcg, nr_pages);
+> -	memcg_check_events(memcg, page_to_nid(page));
+> +	memcg_check_events(memcg, folio_nid(folio));
+>  	local_irq_enable();
+>  out:
+>  	return ret;
+>  }
+>  
