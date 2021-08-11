@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E13E92D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B9E3E92D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhHKNkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:40:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47992 "EHLO mga04.intel.com"
+        id S231940AbhHKNkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:40:45 -0400
+Received: from mga07.intel.com ([134.134.136.100]:55278 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231240AbhHKNkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:40:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213270270"
+        id S231526AbhHKNkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:40:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278870031"
 X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="213270270"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:39:37 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="278870031"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:40:20 -0700
 X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="506944347"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2021 06:39:35 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 93232142; Wed, 11 Aug 2021 16:39:34 +0300 (EEST)
+   d="scan'208";a="672876930"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:40:17 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mDoSp-007uwO-Ed; Wed, 11 Aug 2021 16:40:11 +0300
+Date:   Wed, 11 Aug 2021 16:40:11 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Sergey Ryazanov <ryazanov.s.a@gmail.com>,
         Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 net-next 1/1] wwan: core: Unshadow error code returned by ida_alloc_range()
-Date:   Wed, 11 Aug 2021 16:39:32 +0300
-Message-Id: <20210811133932.14334-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v3 net-next 1/1] wwan: core: Unshadow error code returned
+ by ida_alloc_range))
+Message-ID: <YRPTO4OdT8dVq2ei@smile.fi.intel.com>
+References: <20210811125010.11167-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811125010.11167-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ida_alloc_range() may return other than -ENOMEM error code.
-Unshadow it in the wwan_create_port().
+On Wed, Aug 11, 2021 at 03:50:10PM +0300, Andy Shevchenko wrote:
+> ida_alloc_range() may return other than -ENOMEM error code.
+> Unshadow it in the wwan_create_port().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
----
-v4: actually fixed typo in the subject (Sergey)
+> v3: split from original series with fixed subject and typo in body (Sergey)
 
- drivers/net/wwan/wwan_core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Oh, another typo in the subject (I'll fix it in v4)
 
-diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
-index 35ece98134c0..d293ab688044 100644
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -359,8 +359,8 @@ struct wwan_port *wwan_create_port(struct device *parent,
- {
- 	struct wwan_device *wwandev;
- 	struct wwan_port *port;
--	int minor, err = -ENOMEM;
- 	char namefmt[0x20];
-+	int minor, err;
- 
- 	if (type > WWAN_PORT_MAX || !ops)
- 		return ERR_PTR(-EINVAL);
-@@ -374,11 +374,14 @@ struct wwan_port *wwan_create_port(struct device *parent,
- 
- 	/* A port is exposed as character device, get a minor */
- 	minor = ida_alloc_range(&minors, 0, WWAN_MAX_MINORS - 1, GFP_KERNEL);
--	if (minor < 0)
-+	if (minor < 0) {
-+		err = minor;
- 		goto error_wwandev_remove;
-+	}
- 
- 	port = kzalloc(sizeof(*port), GFP_KERNEL);
- 	if (!port) {
-+		err = -ENOMEM;
- 		ida_free(&minors, minor);
- 		goto error_wwandev_remove;
- 	}
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
