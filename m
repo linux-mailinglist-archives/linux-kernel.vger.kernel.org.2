@@ -2,142 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A873E9354
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E4F3E9358
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhHKOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:11:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11946 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231902AbhHKOLx (ORCPT
+        id S232278AbhHKOMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232257AbhHKOMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:11:53 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BE31w3037444;
-        Wed, 11 Aug 2021 10:11:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=dUKxIJSDOKApYQlXkSoKV4OJ/WGFyoGgyMLFMdjO54o=;
- b=quELoMWgefur2ZOYWb8r83XOCCJhEd62nnp/w8CijaQveGvoL/xS2dkl5Tvm7x/z6eYy
- v1oRodDR7ZGPF2x+sv2CKMhacf6rfc/OhKmAERUMxO7fIa2pzjZLbC3YgcYrLTdsaO5w
- vC7Zd3FKUiV8uHnkwCNopn/ij/Cmx1Yx1x0bodMLW5+iJCpD6q8Hfct1eLQq/5DrZ+lQ
- +L9M3hv6DeoIDBJ1l/AjlrqkVQuatcKraBrOsIp+uWPL66Ls67uocMCqj8LIzxsPUaek
- Fp2abClT7H3tLHO88vBLW+cWTtfse3i7dS5jGnqZ8YNcuNBU99OahVwzPkdKN52jwdAO PQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3abvtekusj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 10:11:13 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17BE3s9W041379;
-        Wed, 11 Aug 2021 10:11:13 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3abvtekurd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 10:11:12 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BE7j36005828;
-        Wed, 11 Aug 2021 14:11:10 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3a9ht90628-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 14:11:10 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BEB87U14287190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 14:11:08 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 34733AE04D;
-        Wed, 11 Aug 2021 14:11:08 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B064AE05D;
-        Wed, 11 Aug 2021 14:11:07 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.154.55])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 11 Aug 2021 14:11:07 +0000 (GMT)
-Date:   Wed, 11 Aug 2021 17:11:05 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux-next: crash in alloc_huge_page()
-Message-ID: <YRPaeQYHPwI9r5a/@linux.ibm.com>
-References: <846c4502-3332-0d25-87f5-cb3b71afc38f@quicinc.com>
- <YRM+qm66PfTUQNFL@casper.infradead.org>
+        Wed, 11 Aug 2021 10:12:13 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1681C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:11:49 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g21so3982268edb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=h8iKVDtBUyzsr7/V/NiTCr0uqw4kRNEUJDacgRjPpPI=;
+        b=XL181+6FYKSKBUdZaWYWBUY8mgGlgimGrbE6W9t+S/CSDUsMfhMILm5c4fJpe8cGWw
+         y69iS8ZOrpqeOroj49BS7wxsPVlCUcRdfdNbsYlFXhzeHCD4zDd6Y1FjOnfhb8XaTgmn
+         2UqXLYJFB69t5469hPnoS0iq7QRam7VNhUGBc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=h8iKVDtBUyzsr7/V/NiTCr0uqw4kRNEUJDacgRjPpPI=;
+        b=BhvWBvG6fA48oS0a2h4a5fUowl2fT0WZZe0PTLMYPFDhbfQlbj4zp1VR+gywdXOhxK
+         or92334mv85l6YMK5fDfxEnfWEZNf/dhMsYvvqKPpymyZrgRfkzi2PoBDHoGNsiH3snn
+         PZr4BSyp12HME5bUrXAtbkRKatBgXNsyARibZhPPunTgQs7XkEtZHoHSlD9GYYC3w7qA
+         JRcdVnaVku6Ea5OCFnt969ZLFz/jpN1axpXwybFxI68mRY6sUUC6Jbpu16Qz+0o6lPN+
+         O4Jgobrgx1ZCBIOU6JDYuDCNyYHdeW1WBp8Bjjzbq53ifaBiHpj8ibmJR/yhse/3EVdW
+         5MoQ==
+X-Gm-Message-State: AOAM531fEF0+bbSTjzFqa4ESj4rsHg1FuhDpv9Y4LT82u0irx6/Fgxvp
+        vE7oWMECaIsS5P8i9qBNDK97IA==
+X-Google-Smtp-Source: ABdhPJxzcRA6Pnf737/+TIKDMNnxcylKXpNDwUnkPSHJCb5Yk/qPApU4i/Om2je8VrI1JQyJESThkg==
+X-Received: by 2002:aa7:d296:: with SMTP id w22mr11561530edq.170.1628691108358;
+        Wed, 11 Aug 2021 07:11:48 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
+        by smtp.gmail.com with ESMTPSA id s24sm3290589edq.56.2021.08.11.07.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 07:11:47 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 16:11:45 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: mmap denywrite mess (Was: [GIT PULL] overlayfs fixes for 5.14-rc6)
+Message-ID: <YRPaodsBm3ambw8z@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YRM+qm66PfTUQNFL@casper.infradead.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oY_pqWWuTXzOrNTlOMeyorEWhc-F3EiB
-X-Proofpoint-ORIG-GUID: yXV4swswMghlNMsSqlQCOAdWbZcYiV4H
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108110095
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 04:06:18AM +0100, Matthew Wilcox wrote:
-> On Tue, Aug 10, 2021 at 10:22:37PM -0400, Qian Cai wrote:
-> > and the page->lru has an address fffffffffffffffc for some reasons. Does it sound like some error code
-> > had not been handled properly and had been propagated here instead? I tried reverting a few recent
-> > commits for mm/hugetlb.c and mm/memblock.c without luck so far.
-> 
-> Yes, ff..fc is going to be at offset 8 from the actual address, so
-> that's -12 and -12 is ...
-> 
-> #define ENOMEM          12      /* Out of memory */
-> 
-> so something's returning ERR_PTR(-ENOMEM) instead of NULL.
+On Mon, Aug 09, 2021 at 02:25:17PM -0700, Linus Torvalds wrote:
 
-page is not initialized in alloc_buddy_huge_page_with_mpol() and after
-commit 2cfa8b23744f ("mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many-fix") we have 
+> Ugh. Th edances with denywrite and mapping_unmap_writable are really
+> really annoying.
 
-	struct page *page;
+Attached version has error and success paths separated.  Was that your
+complaint?
 
-	...
+> I get the feeling that the whole thing with deny_write_access and
+> mapping_map_writable could possibly be done after-the-fact somehow as
+> part of actually inserting the vma in the vma tree, rather than done
+> as the vma is prepared.
 
-	if (mpol_is_preferred_many(mpol)) {
-		gfp_t gfp = gfp_mask | __GFP_NOWARN;
+I don't know if that's doable or not.  The final denywrite count is obtained in
+__vma_link_file(), called after __vma_link().  The questions are:
 
-		gfp &=  ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
-		page = alloc_surplus_huge_page(h, gfp, nid, nodemask, false);
+ - does the order of those helper calls matter?
 
-		/* Fallback to all nodes if page==NULL */
-		nodemask = NULL;
-	}
+ - if it does, could the __vma_link() be safely undone after an unsuccessful
+   __vmal_link_file()?
 
-	if (!page)
-		page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask, false
+> And most users of vma_set_file() probably really don't want that whole
+> thing at all (ie the DRM stuff that just switches out a local thing.
+> They also don't check for the new error cases you've added.
 
-	mpol_cond_put(mpol);
-	return page;
+Christian König wants to follow up with those checks (which should be asserts,
+if the code wasn't buggy in the first place).
 
-so for !mpol_is_preferred_many() we return an uninitialized variable.
+> So I really think this is quite questionable, and those cases should
+> probably have been done entirely inside ovlfs rather than polluting
+> the cases that don't care and don't check.
 
-This should fix it:
+I don't get that.  mmap_region() currently drops the deny counts from the
+original file.  That doesn't work for overlayfs since it needs to take new temp
+counts on the override file.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 008662083fec..6337697f7ee4 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2152,7 +2152,7 @@ static
- struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
- 		struct vm_area_struct *vma, unsigned long addr)
- {
--	struct page *page;
-+	struct page *page = NULL;
- 	struct mempolicy *mpol;
- 	gfp_t gfp_mask = htlb_alloc_mask(h);
- 	int nid;
+So mmap_region() is changed to drop the counts on vma->vm_file, but then all
+callers of vma_set_file() will need to do that switch of temp counts, there's no
+way around that.
+
+Thanks,
+Miklos
+
+For reference, here's the previous discussion:
+
+https://lore.kernel.org/linux-mm/YNHXzBgzRrZu1MrD@miu.piliscsaba.redhat.com/
+
+---
+ fs/overlayfs/file.c |    4 +++-
+ include/linux/mm.h  |    2 +-
+ mm/mmap.c           |    2 +-
+ mm/util.c           |   31 ++++++++++++++++++++++++++++++-
+ 4 files changed, 35 insertions(+), 4 deletions(-)
+
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -475,7 +475,9 @@ static int ovl_mmap(struct file *file, s
+ 	if (WARN_ON(file != vma->vm_file))
+ 		return -EIO;
  
--- 
-Sincerely yours,
-Mike.
+-	vma_set_file(vma, realfile);
++	ret = vma_set_file(vma, realfile);
++	if (ret)
++		return ret;
+ 
+ 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+ 	ret = call_mmap(vma->vm_file, vma);
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2780,7 +2780,7 @@ static inline void vma_set_page_prot(str
+ }
+ #endif
+ 
+-void vma_set_file(struct vm_area_struct *vma, struct file *file);
++int /* __must_check */ vma_set_file(struct vm_area_struct *vma, struct file *file);
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+ unsigned long change_prot_numa(struct vm_area_struct *vma,
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1806,6 +1806,7 @@ unsigned long mmap_region(struct file *f
+ 		 */
+ 		vma->vm_file = get_file(file);
+ 		error = call_mmap(file, vma);
++		file = vma->vm_file;
+ 		if (error)
+ 			goto unmap_and_free_vma;
+ 
+@@ -1867,7 +1868,6 @@ unsigned long mmap_region(struct file *f
+ 		if (vm_flags & VM_DENYWRITE)
+ 			allow_write_access(file);
+ 	}
+-	file = vma->vm_file;
+ out:
+ 	perf_event_mmap(vma);
+ 
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -314,12 +314,41 @@ int vma_is_stack_for_current(struct vm_a
+ /*
+  * Change backing file, only valid to use during initial VMA setup.
+  */
+-void vma_set_file(struct vm_area_struct *vma, struct file *file)
++int vma_set_file(struct vm_area_struct *vma, struct file *file)
+ {
++	vm_flags_t vm_flags = vma->vm_flags;
++	int err;
++
++	/* Get temporary denial counts on replacement */
++	if (vm_flags & VM_DENYWRITE) {
++		err = deny_write_access(file);
++		if (err)
++			return err;
++	}
++	if (vm_flags & VM_SHARED) {
++		err = mapping_map_writable(file->f_mapping);
++		if (err)
++			goto undo_denywrite;
++	}
++
+ 	/* Changing an anonymous vma with this is illegal */
+ 	get_file(file);
+ 	swap(vma->vm_file, file);
++
++	/* Undo temporary denial counts on replaced */
++	if (vm_flags & VM_SHARED)
++		mapping_unmap_writable(file->f_mapping);
++
++	if (vm_flags & VM_DENYWRITE)
++		allow_write_access(file);
++
+ 	fput(file);
++	return 0;
++
++undo_denywrite:
++	if (vm_flags & VM_DENYWRITE)
++		allow_write_access(file);
++	return err;
+ }
+ EXPORT_SYMBOL(vma_set_file);
+ 
