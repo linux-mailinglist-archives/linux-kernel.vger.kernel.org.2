@@ -2,116 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0F43E93FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4FA3E9409
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhHKOyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:54:08 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65238 "EHLO mga11.intel.com"
+        id S232679AbhHKOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:55:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:52452 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhHKOyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:54:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="212026946"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="212026946"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:53:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="571158048"
-Received: from watoney1-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.129.121])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:53:40 -0700
-Subject: Re: [PATCH 01/11] mm: Introduce a function to check for
- virtualization protection features
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>
-References: <cover.1627424773.git.thomas.lendacky@amd.com>
- <cbc875b1d2113225c2b44a2384d5b303d0453cf7.1627424774.git.thomas.lendacky@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <805946e3-5138-3565-65eb-3cb8ac6f0b3e@linux.intel.com>
-Date:   Wed, 11 Aug 2021 07:53:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S232597AbhHKOzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:55:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C12CD1063;
+        Wed, 11 Aug 2021 07:55:15 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3901A3F718;
+        Wed, 11 Aug 2021 07:55:14 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 15:55:08 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
+ acpi_os_map_iomem() cast
+Message-ID: <20210811145508.GA3650@lpieralisi>
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+ <20210802152359.12623-2-lorenzo.pieralisi@arm.com>
+ <YRKtEDycefrZLB3X@infradead.org>
+ <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+ <YRPZ2Kqb/MFggHzQ@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <cbc875b1d2113225c2b44a2384d5b303d0453cf7.1627424774.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRPZ2Kqb/MFggHzQ@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 11, 2021 at 03:08:24PM +0100, Christoph Hellwig wrote:
+> On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
+> > The whole problem we are solving here is that ACPI, being based on
+> > x86, conflates MMIO mappings with memory mappings, and has been using
+> > the same underlying infrastructure for either.
+> 
+> So let's fix that problem instead of papering over it.
 
+Patch (3) in this series is a fix - I would ask whether it makes
+sense to merge patches (2-3) now and think about reworking the current
+ACPI IO/MEM mapping API later, it can be an invasive change for a fix,
+assuming we agree on how to rework the ACPI IO/MEM mapping API.
 
-On 7/27/21 3:26 PM, Tom Lendacky wrote:
-> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
-> new file mode 100644
-> index 000000000000..f8ed7b72967b
-> --- /dev/null
-> +++ b/include/linux/protected_guest.h
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Protected Guest (and Host) Capability checks
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Tom Lendacky<thomas.lendacky@amd.com>
-> + */
-> +
-> +#ifndef _PROTECTED_GUEST_H
-> +#define _PROTECTED_GUEST_H
-> +
-> +#ifndef __ASSEMBLY__
-
-Can you include headers for bool type and false definition?
-
---- a/include/linux/protected_guest.h
-+++ b/include/linux/protected_guest.h
-@@ -12,6 +12,9 @@
-
-  #ifndef __ASSEMBLY__
-
-+#include <linux/types.h>
-+#include <linux/stddef.h>
-
-Otherwise, I see following errors in multi-config auto testing.
-
-include/linux/protected_guest.h:40:15: error: unknown type name 'bool'
-include/linux/protected_guest.h:40:63: error: 'false' undeclared (first use in this functi
-
-
-> +
-> +#define PATTR_MEM_ENCRYPT		0	/* Encrypted memory */
-> +#define PATTR_HOST_MEM_ENCRYPT		1	/* Host encrypted memory */
-> +#define PATTR_GUEST_MEM_ENCRYPT		2	/* Guest encrypted memory */
-> +#define PATTR_GUEST_PROT_STATE		3	/* Guest encrypted state */
-> +
-> +#ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
-> +
-> +#include <asm/protected_guest.h>
-> +
-> +#else	/* !CONFIG_ARCH_HAS_PROTECTED_GUEST */
-> +
-> +static inline bool prot_guest_has(unsigned int attr) { return false; }
-> +
-> +#endif	/* CONFIG_ARCH_HAS_PROTECTED_GUEST */
-> +
-> +#endif	/* __ASSEMBLY__ */
-> +
-> +#endif	/* _PROTECTED_GUEST_H */
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Lorenzo
