@@ -2,99 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E3E3E922E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC17F3E9232
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhHKNFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:05:42 -0400
-Received: from mga03.intel.com ([134.134.136.65]:57334 "EHLO mga03.intel.com"
+        id S230367AbhHKNGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230033AbhHKNFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:05:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="215144050"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="215144050"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:05:16 -0700
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="672866927"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:05:13 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mDnut-007pVX-Lh; Wed, 11 Aug 2021 16:05:07 +0300
-Date:   Wed, 11 Aug 2021 16:05:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 2/4] gpio: dwapb: Read GPIO base from gpio-base
- property
-Message-ID: <YRPLA5xMDS5EnYrc@smile.fi.intel.com>
-References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
- <20210804160019.77105-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdazSqdOaoCknv=0wo3vw-FjrZKAy0rgh1hFbgd6au0vYw@mail.gmail.com>
+        id S230412AbhHKNGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:06:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63FE60C3E;
+        Wed, 11 Aug 2021 13:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628687150;
+        bh=Bz33UzmD6GboTLTh0tNwXiYUjE64KjnAWSJYzsiTfKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Iy/JdTx+4a03OAcCgwBPVNy7PMWmQKM1EjVDuoTKuwhbxT13eprkX1XJpm6Q+P/YP
+         d344Wy+P3o+rnePw7XvoUrdQeWnUCCGqOuN/TdpegCKiFT6mdse4dzoIVQxsKtrhL2
+         aK7jvEpN6bNTJ4x0qIGC7JSCnhZ9Tlgltq6bVCP7q8h40Q9Dsje3buxCtwJSxXfC1K
+         qxUq936xUZF3/VlPmJkTaTZxABfjLmgAekLS4DPc9imuHf/VX3m7iPEGAGtN3c/v27
+         lfXHSi9mGMelP+o7r6N59/QnxAasOTpvdKtdVu7zTHQ71iHciG1CGn6qogGyFksK/h
+         HsSMFxbu1uAvA==
+Date:   Wed, 11 Aug 2021 16:05:45 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memblock: Add missing debug code to memblock_add_node()
+Message-ID: <YRPLKSjH71Z9tBih@kernel.org>
+References: <c45e5218b6fcf0e3aeb63d9a9d9792addae0bb7a.1628672041.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdazSqdOaoCknv=0wo3vw-FjrZKAy0rgh1hFbgd6au0vYw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <c45e5218b6fcf0e3aeb63d9a9d9792addae0bb7a.1628672041.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 02:50:46PM +0200, Linus Walleij wrote:
-> On Wed, Aug 4, 2021 at 6:15 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Aug 11, 2021 at 10:54:36AM +0200, Geert Uytterhoeven wrote:
+> All other memblock APIs built on top of memblock_add_range() contain
+> debug code to print their parameters.
 > 
-> > For backward compatibility with some legacy devices introduce
-> > a new (*) property gpio-base to read GPIO base. This will allow
-> > further cleaning up of the driver.
-> >
-> > *) Note, it's not new for the GPIO library since the mockup driver
-> >    is using it already.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > v2: added check to ensure that the property won't be used by FW (Serge)
-> >  drivers/gpio/gpio-dwapb.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> > index 4c7153cb646c..674e91e69cc5 100644
-> > --- a/drivers/gpio/gpio-dwapb.c
-> > +++ b/drivers/gpio/gpio-dwapb.c
-> > @@ -584,6 +584,10 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
-> >
-> >                 pp->gpio_base   = -1;
-> >
-> > +               /* For internal use only, new platforms mustn't exercise this */
-> > +               if (is_software_node(fwnode))
-> > +                       fwnode_property_read_u32(fwnode, "gpio-base", &pp->gpio_base);
-> 
-> You rewrite the code quicker than I can review  :D
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Sorry for that :-)
-
-> So this is elegant, I would prefer "linux,gpio-base" but the
-> overall change is more important, with or without that change:
-
-I'm okay with the either, but the thing is that gpio-base is already in use.
-Perhaps in the future somebody can change both (gpio-mockup and this driver)
-to use the proposed one (AFAIU we free to change it since it's not part of FW
-interface).
-
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
+Applied for 5.15,
 Thanks!
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sincerely yours,
+Mike.
