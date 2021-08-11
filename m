@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E5A3E921C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6442F3E9222
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhHKNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:03:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46254 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhHKNDc (ORCPT
+        id S230495AbhHKNDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhHKNDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:03:32 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3AA5D220F7;
-        Wed, 11 Aug 2021 13:03:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628686988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eCOAlTjJs+lt3WhBiE4K2xJ3mK2mNvHeL5YmeJzRheg=;
-        b=YbWztrgmMJjPWvVHPoHnnbDRsK4Q3Kj9pOkcEyVc1VgVRSsoeaRYbXkqJwCzgV86QGwiyI
-        mvpQR0UrUb+PI7ryG7Q6nkRAx2qWcL8Un3Q/qfKICzZF5cI6gneJ4A6klrahhYHBl6RmGf
-        hoLyIHTE37mMn0x8x02zdDIPmZEtkEA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628686988;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eCOAlTjJs+lt3WhBiE4K2xJ3mK2mNvHeL5YmeJzRheg=;
-        b=Z8FDkYpO8/EmPI0nsvRKWsEQCEPPIgSlsdW69NKzIH7EiSrIJqTwtwgSOruztc4C+8bPOW
-        EGgcH80I8jCGLcDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 16F1B136D9;
-        Wed, 11 Aug 2021 13:03:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 9H+vBIzKE2F9NQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:03:08 +0000
-Subject: Re: [PATCH v14 041/138] mm/memcg: Convert uncharge_page() to
- uncharge_folio()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-42-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ec5cb63f-ca01-1b35-8cbd-adf8bf164bdc@suse.cz>
-Date:   Wed, 11 Aug 2021 15:03:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 09:03:47 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AC0C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:03:23 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id x9so4483900ljj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zuMFwAVD6fY0KArmeR9wSduaNs/aEjUW6qkJa3ECyv8=;
+        b=TCpUp5F1rIsu50ljO5tUd8VYmUjjBPVQQXUGND2l8iThkPszFllIURH2d9QO5Kp3wr
+         20hdUcM+6Mq2hwT8/HawHY7iF3d23NShYFzrA0yQTxhpIVWNWG6J4+mwqwZRds7vSWkn
+         ryr9QAZapCb+OCy9ATaGG5pWUNjSb0zXfOsY4sGS9wEDMP4gMGMuPjB4EBZbhBJ4ZJau
+         qYXAq8dS5PbHEiyDb/SNZ+os+lZI8mkwHbsYaFgwJ+E7cCOvstIh2d3ZmcSjmxSrk5tr
+         XZ0kwT+zphh3jDjsZruTgmXrO7y+kZ3ssAa6Yha3uKi5GrbF+U7p13/r2FIWYwnzAxBW
+         aX1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zuMFwAVD6fY0KArmeR9wSduaNs/aEjUW6qkJa3ECyv8=;
+        b=hBTM0dDQ72zcuEHNaKj5IvzQuGTDFUjuYgD/gNdgPT/a18MxEkB+IEdafbqvqiQwMI
+         6OwGse2FX/1exkocz+V4PiRW3DMK9OCEd6BcQO0oHNm2Gj1bUcwS+7JOWAzUeNKAWafK
+         7z18mCQycX0WQ7sBw25v5IXnVb3mMIDfU7s6U2ppIHEYrCJ+DU9kZtgDklB/EyOYynLE
+         7H1F33+I4hu4bt4rBMqHIMJAiM5XYrjdo2t+8TF2kN18Zt+H/ziVFul/CpD9HaEvz/RT
+         PWES5+DM3qaYFpq/+xa1v1jDWB0736dLorZgTJW175wrFShG9W9uwWW3kCa8nYBSmPnA
+         yMtQ==
+X-Gm-Message-State: AOAM533Gzbdg0TRT6BUy+Qo8mjVFnSi5zj6NkChr1ZVgmgf/afUoF5ez
+        E0VcleF1EqHIqa2LQkJSh0Vk80CiyUDu26+NAHO2gi7NR38=
+X-Google-Smtp-Source: ABdhPJzx+NlgiIZnomfYiB8/G4LgCd6WP6GFsrtvbCL30ZLORab4/n85+ZBn2rA47FR1ujRI3K0kFKlULjuaBeSQo5k=
+X-Received: by 2002:a05:651c:327:: with SMTP id b7mr23695765ljp.74.1628687001676;
+ Wed, 11 Aug 2021 06:03:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-42-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210805222625.40236-1-konrad.dybcio@somainline.org> <20210805222625.40236-2-konrad.dybcio@somainline.org>
+In-Reply-To: <20210805222625.40236-2-konrad.dybcio@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 15:03:10 +0200
+Message-ID: <CACRpkdYm_Ky+D5=rhX9gekKYZkTXwvS-FGED_Ou+_0=nEGZUUA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: qcom-pmic-gpio: Add support for pm8019
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        Martin Botka <martin.botka@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Use a folio rather than a page to ensure that we're only operating on
-> base or head pages, and not tail pages.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Fri, Aug 6, 2021 at 12:26 AM Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> PM8019 provides 6 GPIOs. Add a compatible to support that.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+I will merge this as soon as the binding is fixed (please resend both)
+
+Yours,
+Linus Walleij
