@@ -2,64 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684DC3E88B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28F83E88B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhHKDJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        id S232683AbhHKDNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233849AbhHKDJT (ORCPT
+        with ESMTP id S232102AbhHKDNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:09:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33414C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ji70bBzWzyIsNlqNlXXzqEpkz30w2PSWcwSbBgj0JSc=; b=YiyeRQe1UYy2bOPJOEId3lcakg
-        5ipV5ZHAtgBoeVZP0G5lOcOIHtjcFveclB421+VGjvuAjJP+Ccfjdpa6cPU8Iyj06nxBorajI3PoU
-        hjGp6s6ZNUO3JkXt6hKwVjL6w8xQ856+U7onoFhTQjis8NECtSPpQIudXhRqINQg0t4Jzkid2cLOC
-        HLn5A419STBphrTGZ3pilr/TKjEb+co20dEKqvdGf4H8ahYm3Xify0F2+2mimGfPmwD2cD7KZ7qLu
-        lx0Rv7i2IS2RalNyMzCtJ1ZOom+j5MAyuO/I1E1VKCzEn3hly4ZW3QAZORtLgDeGXDt5vTyjh+mwl
-        sIJcWxvw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDeZO-00CtQg-An; Wed, 11 Aug 2021 03:06:34 +0000
-Date:   Wed, 11 Aug 2021 04:06:18 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux-next: crash in alloc_huge_page()
-Message-ID: <YRM+qm66PfTUQNFL@casper.infradead.org>
-References: <846c4502-3332-0d25-87f5-cb3b71afc38f@quicinc.com>
+        Tue, 10 Aug 2021 23:13:00 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D61C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:12:37 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id a8so1195731pjk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nA6s5SUKPBQ0dyQ+8gQLVtYbBBkn3UOaZ+NSfCbjMkg=;
+        b=p5LDgZ2t+B+JteWwdlOOKCismHfQQXlCRhIDfxKJg64yBCytrfwvqhyPLHbmNHDc3H
+         WI5qCmW6TFZxjefGoteq1BOf7SbmmCyy5HN1TP0JEKib8gthBm/vP9RbbW0uyR0ASLPg
+         RY0RtCK62UPLIn6CmgPOrEGOwNT2hh2XYosr4RT9SDrrOQZ9mnC5qdQGg7lYqvdOtnmi
+         18Cqa6mKu0ogxFQMm7gphFFzxaX9CowRtlZ5yJx6UOmzXj/8dRbHe77V/nF2qcJlHdKS
+         CkLHd9rFQz5thhQpvia9wf9aQxJNSmxAszcI79LsRmcl2cf7O6IY9UqRavRdDREtOG7T
+         AQtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nA6s5SUKPBQ0dyQ+8gQLVtYbBBkn3UOaZ+NSfCbjMkg=;
+        b=Bptg97i0wNA+wWqQh4bCvJeYHRMy7Ds1gV64FhexeYjL7mpRIHElZvTSic44mKw/TG
+         5Z+Ubn00lI+IQoSof+7Nbqtjy53UCYwnvc+ciSF7/NDuFcZbwyz8JjwxE1ggh+9aUkFO
+         /qhuX/92/kfpKB1nb7oi90uUWC3MfNFygAfXwLS0T6OhGN44PQYskdQkonbbw9Da70Eu
+         OyoXSMBgrp/h1k5hBcwcpSy3loMlEgtJyqx41kmJYIsLP/G8D6bJ4prSQab0vUxHj3qY
+         1dCt2S2v4hiOJ0Z+zFB0plF7ZH/SgcriLzy9/PcTXtKoyvVmn0/bwCVZBPlnt+pV/GzN
+         v5jg==
+X-Gm-Message-State: AOAM533CA2TyRS9f3AghsZlTjucbsP3ZBtNP0eUx8Gr/FmKQ0vfFogFx
+        bzcL1xMgGMojkN9QvJDlSk4=
+X-Google-Smtp-Source: ABdhPJyysRuUq7d4TEhgCa6TpIX0ck1p4VhxU7XDNRsw74KRlsI/BERlTGNzeP/A2anDTf2uYAM4UA==
+X-Received: by 2002:a62:864b:0:b029:3c7:7197:59fc with SMTP id x72-20020a62864b0000b02903c7719759fcmr28120433pfd.59.1628651556775;
+        Tue, 10 Aug 2021 20:12:36 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.103])
+        by smtp.gmail.com with ESMTPSA id q21sm28800989pgk.71.2021.08.10.20.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 20:12:36 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
+        will+git@drnd.me, romain.perier@gmail.com, yashsri421@gmail.com,
+        apais@linux.microsoft.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] staging: rtl8192e: rtl_core: Fix possible null-pointer dereference in _rtl92e_pci_disconnect()
+Date:   Tue, 10 Aug 2021 20:11:35 -0700
+Message-Id: <20210811031135.4110-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <846c4502-3332-0d25-87f5-cb3b71afc38f@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:22:37PM -0400, Qian Cai wrote:
-> and the page->lru has an address fffffffffffffffc for some reasons. Does it sound like some error code
-> had not been handled properly and had been propagated here instead? I tried reverting a few recent
-> commits for mm/hugetlb.c and mm/memblock.c without luck so far.
+The variable dev is checked in:
+  if (dev)
 
-Yes, ff..fc is going to be at offset 8 from the actual address, so
-that's -12 and -12 is ...
+This indicates that it can be NULL. If so, a null-pointer dereference will 
+occur:
+  priv = rtllib_priv(dev);
 
-#define ENOMEM          12      /* Out of memory */
+However, the value of priv is not used in the remaining part of this 
+function. Thus the else-branch can be removed to fix this posible 
+null-pointer dereference.
 
-so something's returning ERR_PTR(-ENOMEM) instead of NULL.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> [ 8107.262232][T62705] Unable to handle kernel paging request at virtual address fffffffffffffffc
-
-These logs would be a lot easier to read if you snipped the irrelevant
-timestamp and whatever this Txxxxx thing is.
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+index e85d9c2cdc96..0eb37a95b519 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+@@ -2557,8 +2557,6 @@ static void _rtl92e_pci_disconnect(struct pci_dev *pdev)
+ 			release_mem_region(pci_resource_start(pdev, 1),
+ 					pci_resource_len(pdev, 1));
+ 		}
+-	} else {
+-		priv = rtllib_priv(dev);
+ 	}
+ 
+ 	pci_disable_device(pdev);
+-- 
+2.25.1
 
