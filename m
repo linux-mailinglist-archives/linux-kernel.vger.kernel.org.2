@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091B13E8F4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA653E8F4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhHKLLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:11:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:47748 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237154AbhHKLK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:10:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C950E106F;
-        Wed, 11 Aug 2021 04:10:33 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.67.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0DC533F70D;
-        Wed, 11 Aug 2021 04:10:29 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] KVM: arm64: Restrict IPA size to maximum 48 bits on 4K and 16K page size
-Date:   Wed, 11 Aug 2021 16:41:15 +0530
-Message-Id: <1628680275-16578-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S237221AbhHKLQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:16:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3625 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237191AbhHKLQR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 07:16:17 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gl6gD2vDFz6BCtW;
+        Wed, 11 Aug 2021 19:15:20 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 11 Aug 2021 13:15:52 +0200
+Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 11 Aug
+ 2021 12:15:51 +0100
+Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
+ function arm_smmu_cmdq_issue_cmd_with_sync()
+To:     Will Deacon <will@kernel.org>
+CC:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
+ <20210626110130.2416-3-thunder.leizhen@huawei.com>
+ <20210810182454.GB3296@willie-the-truck>
+ <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
+ <20210811100905.GB4426@willie-the-truck>
+ <d551f31d-4edc-db28-fb08-41a130a5d97f@huawei.com>
+ <20210811103344.GA4736@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <1dcf5fe0-6ae0-2df6-9d2a-bda6a4f885ac@huawei.com>
+Date:   Wed, 11 Aug 2021 12:15:14 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20210811103344.GA4736@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.4]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though ID_AA64MMFR0.PARANGE reports 52 bit PA size support, it cannot
-be enabled as guest IPA size on 4K or 16K page size configurations. Hence
-kvm_ipa_limit must be restricted to 48 bits. This change achieves required
-IPA capping.
+>>>>>>
+>>>>>> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
+>>>>>> the 'cmd+sync' commands at a time.
+>>>>>>
+>>>>>> Signed-off-by: Zhen Lei<thunder.leizhen@huawei.com>
+>>>>>> ---
+>>>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
+>>>>>>    1 file changed, 21 insertions(+), 12 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>>> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
+>>>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>>> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
+>>>>>>    	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
+>>>>>>    }
+>>>>>> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+>>>>>> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+>>>>>>    {
+>>>>>>    	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
+>>>>>>    }
+>>>>>> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
+>>>>>> +					     struct arm_smmu_cmdq_ent *ent)
+>>>>>> +{
+>>>>>> +	u64 cmd[CMDQ_ENT_DWORDS];
+>>>>>> +
+>>>>>> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
+>>>>>> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
+>>>>>> +			 ent->opcode);
+>>>>>> +		return -EINVAL;
+>> Are any of the errors returned from the "issue command" functions actually
+>> consumed? I couldn't see it on mainline code from a brief browse.
+> I don't think so.
 
-Before the commit c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA
-size based on host configuration"), the problem here would have been just
-latent via PHYS_MASK_SHIFT (which earlier in turn capped kvm_ipa_limit),
-which remains capped at 48 bits on 4K and 16K configs.
+I don't think so either.
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-kernel@vger.kernel.org
-Fixes: c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA size based on host configuration")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.14-rc5
+> Can we actually propagate them?
 
-Changes in V2:
+There does appear to be some places, here's one I found:
 
-- Replaced IS_ENABLED() based check with PAGE_SIZE based one per Marc
-- Moved the conditional code block near parange assignment per Marc
+arm_smmu_page_response() -> arm_smmu_cmdq_issue_cmd(), and 
+arm_smmu_page_response is set to arm_smmu_ops.page_response, which 
+returns an int
 
-Changes in V1:
-
-https://lore.kernel.org/lkml/1628657549-27584-1-git-send-email-anshuman.khandual@arm.com/
-
- arch/arm64/kvm/reset.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index cba7872..78d4bd8 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -317,6 +317,14 @@ int kvm_set_ipa_limit(void)
- 	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
- 	parange = cpuid_feature_extract_unsigned_field(mmfr0,
- 				ID_AA64MMFR0_PARANGE_SHIFT);
-+	/*
-+	 * IPA size beyond 48 bits could not be supported
-+	 * on either 4K or 16K page size. Hence let's cap
-+	 * it to 48 bits, in case it's reported as larger
-+	 * on the system.
-+	 */
-+	if (PAGE_SIZE != SZ_64K)
-+		parange = min(parange, (unsigned int)ID_AA64MMFR0_PARANGE_48);
- 
- 	/*
- 	 * Check with ARMv8.5-GTG that our PAGE_SIZE is supported at
--- 
-2.7.4
-
+Thanks,
+John
