@@ -2,95 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A5A3E936D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B133E9374
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhHKOSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:18:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59996 "EHLO mail.kernel.org"
+        id S232475AbhHKOTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:19:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:26762 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232362AbhHKOSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7508A6101D;
-        Wed, 11 Aug 2021 14:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628691498;
-        bh=A3EZZeZItWRPMBQpoZ2TUaotGzdYhODaB5KkWGuvd9Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SHY+wZa7RFwh4POJk5z6pKi5TvQYV7AtuZkya/T0+M+Y2sf295hgdDhhkFkvXLjDA
-         3KbcOYR/tviR5WgTtmsO2bThyUI6EuD/YZqqXf+on/TDyCwuprYpJwgMnuRUEH/U2O
-         Wk0EUJm3rjQDk8tKmcWcIWcpjwrv4qomY25InECaFXM2aRr57eiPlp6VWGgEJnq22F
-         lct7Ok5fu9T628A1WNAuMT0AjD6giMonajdrQgT+F9bJeK2S/SVVIaxOFUV4VLbRQH
-         +m04hWfQ1a144r6cazig361AhCV88YfNs7pRwfHls0oAFyCgN6Ok9FwuU8699hT6GP
-         QRauuYbtGCAkA==
-Date:   Wed, 11 Aug 2021 07:18:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>
-Subject: Re: [PATCH net-next 0/5] Move devlink_register to be near
- devlink_reload_enable
-Message-ID: <20210811071817.4af5ab34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YRPYMKxPHUkegEhj@unreal>
-References: <cover.1628599239.git.leonro@nvidia.com>
-        <20210810165318.323eae24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YRNp6Zmh99N3kJVa@unreal>
-        <20210811062732.0f569b9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YRPYMKxPHUkegEhj@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232261AbhHKOTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:19:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628691553; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=XzBMOZVZwkTAmFQiNb6R9u+25lfLgcGvjVnxo+nKgHs=; b=nKRpiEFeCxUu97DsBFdAxopn2dHqiicgIYST0u4PPxrVRsGSsP9Me3ptEYVc5zc/t4knahfU
+ 8RCKrAU0/M1F+ke94mpOa21Uw05xKL9pjHT+4dDMEhhO2JZ7Ta5Q2TcbOcFIOSNq/V3qXsFz
+ 1Rsq5dqV9lsT+O2re1U92s4ZSkE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6113dc4b66ff1079048239bc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 14:18:51
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62796C4338A; Wed, 11 Aug 2021 14:18:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07AABC433D3;
+        Wed, 11 Aug 2021 14:18:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 07AABC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] arm64: dts: qcom: sc7280: Add gpu support
+Date:   Wed, 11 Aug 2021 19:48:35 +0530
+Message-Id: <1628691516-33624-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 17:01:20 +0300 Leon Romanovsky wrote:
-> > > Not really, they will register but won't be accessible from the user space.
-> > > The only difference is the location of "[dev,new] ..." notification.  
-> > 
-> > Is that because of mlx5's use of auxdev, or locking? I don't see
-> > anything that should prevent the port notification from coming out.  
-> 
-> And it is ok, kernel can (and does) send notifications, because we left
-> devlink_ops assignment to be in devlink_alloc(). It ensures that all
-> flows that worked before will continue to work without too much changes.
-> 
-> > I think the notifications need to get straightened out, we can't notify
-> > about sub-objects until the object is registered, since they are
-> > inaccessible.  
-> 
-> I'm not sure about that. You present the case where kernel and user
-> space races against each other and historically kernel doesn't protect
-> from such flows. 
-> 
-> For example, you can randomly remove and add kernel modules. At some
-> point of time, you will get "missing symbols errors", just because
-> one module tries to load and it depends on already removed one.
+Add the necessary dt nodes for gpu support in sc7280.
 
-Sure. But there is a difference between an error because another
-actor did something conflicting, asynchronously, and API which by design
-sends notifications which can't be acted upon until later point in time,
-because kernel sent them too early.
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
 
-> We must protect kernel and this is what I do. User shouldn't access
-> devlink instance before he sees "dev name" notification.
+Changes in v4:
+- Removed the dependency on gpucc bindings (Stephen)
+- Reordered GPU's opp table
 
-Which is a new rule, and therefore a uAPI change..
+Changes in v3:
+- Re-ordered the nodes based on address (Stephen)
+- Added the patch for gpu cooling to the stack.
 
-> Of course, we can move various iterators to devlink_register(), but it
-> will make code much complex, because we have objects that can be
-> registered at any time (IMHO. trap is one of them) and I will need to 
-> implement notification logic that separate objects that were created
-> before devlink_register and after.
+Changes in v2:
+- formatting update and removed a duplicate header (Stephen)
 
-I appreciate it's a PITA but it is the downside of a solution where
-registration of co-dependent objects exposed via devlink is reordered 
-in the kernel.
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 115 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 029723a..b9006d8 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -592,6 +592,85 @@
+ 			qcom,bcm-voters = <&apps_bcm_voter>;
+ 		};
+ 
++		gpu@3d00000 {
++			compatible = "qcom,adreno-635.0", "qcom,adreno";
++			#stream-id-cells = <16>;
++			reg = <0 0x03d00000 0 0x40000>,
++			      <0 0x03d9e000 0 0x1000>,
++			      <0 0x03d61000 0 0x800>;
++			reg-names = "kgsl_3d0_reg_memory",
++				    "cx_mem",
++				    "cx_dbgc";
++			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
++			iommus = <&adreno_smmu 0 0x401>;
++			operating-points-v2 = <&gpu_opp_table>;
++			qcom,gmu = <&gmu>;
++			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "gfx-mem";
++
++			gpu_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-315000000 {
++					opp-hz = /bits/ 64 <315000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
++					opp-peak-kBps = <1804000>;
++				};
++
++				opp-450000000 {
++					opp-hz = /bits/ 64 <450000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
++					opp-peak-kBps = <4068000>;
++				};
++
++				opp-550000000 {
++					opp-hz = /bits/ 64 <550000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
++					opp-peak-kBps = <6832000>;
++				};
++			};
++		};
++
++		gmu: gmu@3d69000 {
++			compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
++			reg = <0 0x03d6a000 0 0x34000>,
++				<0 0x3de0000 0 0x10000>,
++				<0 0x0b290000 0 0x10000>;
++			reg-names = "gmu", "rscc", "gmu_pdc";
++			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hfi", "gmu";
++			clocks = <&gpucc 5>,
++					<&gpucc 8>,
++					<&gcc GCC_DDRSS_GPU_AXI_CLK>,
++					<&gcc GCC_GPU_MEMNOC_GFX_CLK>,
++					<&gpucc 2>,
++					<&gpucc 15>,
++					<&gpucc 11>;
++			clock-names = "gmu",
++				      "cxo",
++				      "axi",
++				      "memnoc",
++				      "ahb",
++				      "hub",
++				      "smmu_vote";
++			power-domains = <&gpucc 0>,
++					<&gpucc 1>;
++			power-domain-names = "cx",
++					     "gx";
++			iommus = <&adreno_smmu 5 0x400>;
++			operating-points-v2 = <&gmu_opp_table>;
++
++			gmu_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-200000000 {
++					opp-hz = /bits/ 64 <200000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
++				};
++			};
++		};
++
+ 		gpucc: clock-controller@3d90000 {
+ 			compatible = "qcom,sc7280-gpucc";
+ 			reg = <0 0x03d90000 0 0x9000>;
+@@ -606,6 +685,42 @@
+ 			#power-domain-cells = <1>;
+ 		};
+ 
++		adreno_smmu: iommu@3da0000 {
++			compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
++			reg = <0 0x03da0000 0 0x20000>;
++			#iommu-cells = <2>;
++			#global-interrupts = <2>;
++			interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
++					<&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
++					<&gpucc 2>,
++					<&gpucc 11>,
++					<&gpucc 5>,
++					<&gpucc 15>,
++					<&gpucc 13>;
++			clock-names = "gcc_gpu_memnoc_gfx_clk",
++					"gcc_gpu_snoc_dvm_gfx_clk",
++					"gpu_cc_ahb_clk",
++					"gpu_cc_hlos1_vote_gpu_smmu_clk",
++					"gpu_cc_cx_gmu_clk",
++					"gpu_cc_hub_cx_int_clk",
++					"gpu_cc_hub_aon_clk";
++
++			power-domains = <&gpucc 0>;
++		};
++
+ 		stm@6002000 {
+ 			compatible = "arm,coresight-stm", "arm,primecell";
+ 			reg = <0 0x06002000 0 0x1000>,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
