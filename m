@@ -2,67 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1F3E9268
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322C23E926B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhHKNTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:19:03 -0400
-Received: from mail-m17636.qiye.163.com ([59.111.176.36]:64104 "EHLO
-        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbhHKNTA (ORCPT
+        id S231591AbhHKNTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhHKNTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:19:00 -0400
-Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
-        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 64A3EC400ED;
-        Wed, 11 Aug 2021 21:18:35 +0800 (CST)
-From:   Yangtao Li <frank.li@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Fengnan Chang <changfengnan@vivo.com>,
-        Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH 2/2] fs: Don't create discard thread when device not support realtime discard
-Date:   Wed, 11 Aug 2021 21:18:26 +0800
-Message-Id: <20210811131826.223141-2-frank.li@vivo.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210811131826.223141-1-frank.li@vivo.com>
-References: <20210811131826.223141-1-frank.li@vivo.com>
+        Wed, 11 Aug 2021 09:19:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0272EC061765;
+        Wed, 11 Aug 2021 06:18:43 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d4so5613827lfk.9;
+        Wed, 11 Aug 2021 06:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6kHCOipcjZXWmpo3HZhEMRyqVY8BxVQo5dObADAmxsY=;
+        b=mlZycOyDjS0LQHewOGJq54kzmcwWqvlJVNq11HE5HgNAzxkBrMYxLhx+4ouRpKp8fX
+         dCBUxUPha/98WxKo2m/kZHIp0jFUo+b8T+HNc5N7gOlbpPyj779HMso9ZAb4ykmsLc+B
+         LF8ee8YH8QRD3wLC2E5gOr9txV/ixiMN4SwE4+3XIn5mHcA/Umw5LaK3UE1G6zOfNKO8
+         UAPKRyydUzFdxdtdN8ClwtCOFlwn7pR/axz9eLSTXTIBMUZbwLHwcwXnNq6+1LBVcNkP
+         71vzTwzM4rGYnJc5DA0cqZ1sw5XSxXFqd1OKzfk4hhswjQBur8iQLXwv9ArNoZppjHEZ
+         PRag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6kHCOipcjZXWmpo3HZhEMRyqVY8BxVQo5dObADAmxsY=;
+        b=PB+Afdm3xiCoBjuZvTQypqE/TWjP11RjOhv4LHo/q/eX104UMoQjSBu+mbx+zBL8C1
+         iJ/6K/Ut7MU0dh6GNBJCBUJPZQOmhygcvOeJK7DH8JOsjK15gw3kjdCr4FycgHtQC80q
+         MhkBMnJYBp86pSCbm9sS6BmdqcuOGv8gLfFTrxeQQh/oLDz9nxu4Fmo2yZ0xNEu9BcTG
+         x9UPnR0GPTADlySfZ4gQYfspz9p2TEXfVotHyYVo+gmOxttYnMzqq16Z7yWXVlxg1eNp
+         uRgEXs7GWFKYREYfPX/LGftLlkjuI8QctnfLrBMa7WQlSCbdCdB5mIx2E+j4kbHRgZ6N
+         5bdA==
+X-Gm-Message-State: AOAM532jbTxSnu4eV2ThkLB5UCGe3IEQt5Or5r27pWZVejMpFvpsnd6s
+        rLDwZrhVSylOgPuh8iSmHt829t9VycsdvIqWMKE=
+X-Google-Smtp-Source: ABdhPJziB6KFxpa67eSH3zBrs9TUw30rTGO3+bApDge1fl9VbSihlN0yFZCa8fXe2RjD+T3fyNYskaBLbsPaaX3JXw8=
+X-Received: by 2002:ac2:4205:: with SMTP id y5mr6953636lfh.512.1628687921400;
+ Wed, 11 Aug 2021 06:18:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpNQhlWQhhNTBpISUNCQk
-        1PVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KxQ6Lww4CD9ODyI6FiMXITdM
-        SFEKFAtVSlVKTUlDTUNMQkpOQkNCVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
-        VUpLT1VKQ0NVSk1OWVdZCAFZQUpCTkk3Bg++
-X-HM-Tid: 0a7b355d5a4ad996kuws64a3ec400ed
+References: <CAHhAz+hQBnUVWBnoQO6y44C-G5CnZdFLJ7v738_Y5Rt6AZSkrA@mail.gmail.com>
+ <41bebccc-7940-8379-0108-047bd1cc92f9@perex.cz> <CACk2A5ZcrVTv4AVHdmRDh-xWkx=1BHi6SV8yYqX1Z2DzcDR8hA@mail.gmail.com>
+In-Reply-To: <CACk2A5ZcrVTv4AVHdmRDh-xWkx=1BHi6SV8yYqX1Z2DzcDR8hA@mail.gmail.com>
+From:   Muni Sekhar <munisekharrms@gmail.com>
+Date:   Wed, 11 Aug 2021 18:48:29 +0530
+Message-ID: <CAHhAz+gD-UtvXgsWnWx8yPwMbpY4R-ZJqPg9TNNF+iZrmKxQSA@mail.gmail.com>
+Subject: Re: USB-Audio: Device or resource busy (strace log)
+To:     vishnu <vardhanraj4143@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        linux-usb@vger.kernel.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fengnan Chang <changfengnan@vivo.com>
+On Wed, Aug 11, 2021 at 6:19 PM vishnu <vardhanraj4143@gmail.com> wrote:
+>
+> can you paste output of
+> arecord -l (list of capture devices).
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: USB [Plantronics .Audio 628 USB], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-Don't create discard thread when device not support realtime discard.
 
-Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- fs/f2fs/segment.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Which device you are using and os.
+> Does this instance is already open by default? like any video playing or something like that?
+lsof does not catch it.
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 363779a4402d..bc4ac46f3041 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2161,6 +2161,8 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
- 	init_waitqueue_head(&dcc->discard_wait_queue);
- 	SM_I(sbi)->dcc_info = dcc;
- init_thread:
-+	if (!f2fs_realtime_discard_enable(sbi))
-+		return err;
- 	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
- 				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
- 	if (IS_ERR(dcc->f2fs_issue_discard)) {
+>
+> Yes you can stop pulse audio and try..
+>
+> On Wed, Aug 11, 2021 at 6:17 PM Jaroslav Kysela <perex@perex.cz> wrote:
+>>
+>> On 11. 08. 21 14:36, Muni Sekhar wrote:
+>> > Hi All,
+>> >
+>> > $ cat /proc/asound/cards
+>> >  0 [USB            ]: USB-Audio - Plantronics .Audio 628 USB
+>> >                       Plantronics Plantronics .Audio 628 USB at
+>> > usb-0000:00:14.0-2, full speed
+>> >
+>> > I am using a Plantronics USB Audio headset.
+>> >
+>> > $ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+>> > arecord: main:722: audio open error: Device or resource busy
+>> >
+>> >
+>> > 'arecord' command always fails the first time after system boot in my
+>> > system. But subsequent execution of the 'arecord' command runs fine.
+>> >
+>> >
+>> > I've attached the strace log for the "audio open error: Device or
+>> > resource busy" failure. Is there any fix available for this issue?
+>>
+>> You may check which other task blocks the PCM device:
+>>
+>>   lsof /dev/snd/pcmC0D0c
+It does not output any process.
+$ lsof /dev/snd/pcmC0D0c
+
+1st run:
+----------
+$ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+arecord: main:722: audio open error: Device or resource busy
+
+2nd run:
+----------
+$ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+Recording WAVE 'x.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+^CAborted by signal Interrupt...
+
+
+>>
+>> I guess that it will be pulseaudio (device enumeration).
+>>
+>>                                         Jaroslav
+>>
+>> --
+>> Jaroslav Kysela <perex@perex.cz>
+>> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
+
+
 -- 
-2.32.0
-
+Thanks,
+Sekhar
