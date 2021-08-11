@@ -2,114 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64243E9991
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992D83E9992
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhHKUQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbhHKUQD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:16:03 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B95C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:15:39 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so4870842otl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jWE7VU12/NhLSBAI8reKko5Lx0IBplhjTzD3kMB00EQ=;
-        b=P4atp6Byus8ywoOtAxCzKdkVerEWlZHWkngS5sUUeS1oErbXcKQDkvLycigkOwbATu
-         +0GdVkWAm+ZElen6tpvEEhcTw+rjsYTf4Rz6D0jydxqjgjNQvB+VsEi4TVSTvm7aUr8y
-         xq00/B3axowAqsBSJqwDUa8QTmy0cb0ID700mTdV4+fkURzTmPs/DSpCyr/4pLX+F7zD
-         uenIqFqCuDZjbpGY2ZiyLRcUIP9hEGmgQ9c++rkP0kghcWDewUg3gGDHHrauUCMCNh0u
-         ddfOqxV6HyBBRXR1SmAkQ5Dj/MBLYKMex7fUFpYcxTIRiQ/ulQI2LteBKmiu/ywpaA5Z
-         iaMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jWE7VU12/NhLSBAI8reKko5Lx0IBplhjTzD3kMB00EQ=;
-        b=Y2S89LH1VNwv/TasS71hF2tPmawiKPm3tmOobaiFuy2sPhJg3I+tjQIlxv1S1VcARV
-         cSIPZKrnRyDsC2hczkxzLk4uQtkrCCejZU/qqaLusO8kdhJD8hBHUN9S4roL4ksCxLZh
-         WQH8QlJH+63G44L32sAZ1+2DsIxDYfXTOgeD/kBe73QsT5Rt0e3cIe/8uP3ANrHkBMgF
-         FVpj8wVKBIO1ZvYw8p+Ia/lq1otOOKZjrxHzFc3PQ8peksObPuEUX8kQAmfy+EcT2/Lg
-         H91WHitHTIT8/U+t66goF0b/KyQFxxEebuhnEyqzuNMY1jEx+BLeqCHIdBe9VPuXHzQ8
-         dhlw==
-X-Gm-Message-State: AOAM5324NZCcCrgc294gxEEVHij+S/Lmu0rNWl9oqg7AGcl5LG5bWYhP
-        ikaCu1SftXBul8GN32va2x6sXT3Ko0ZuwA1eQA8=
-X-Google-Smtp-Source: ABdhPJwbYKEtMSc9HcmOT5BNGXm46YWUdTewMbKaIafAI/rx1XUQvEO94dA0H3phXzRueFDZViGWKSUq1IvCzn0HJFQ=
-X-Received: by 2002:a05:6830:1e78:: with SMTP id m24mr555941otr.23.1628712938940;
- Wed, 11 Aug 2021 13:15:38 -0700 (PDT)
+        id S232324AbhHKUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:16:15 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:50140 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231723AbhHKUQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 16:16:14 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 17BKFbRP008832
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 22:15:37 +0200
+Received: from [167.87.241.87] ([167.87.241.87])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17BKFbtY008020;
+        Wed, 11 Aug 2021 22:15:37 +0200
+Subject: Re: [PATCH] scripts/gdb: rework lx-symbols gdb script
+To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kieran Bingham <kbingham@kernel.org>
+References: <20210811133152.904945-1-mlevitsk@redhat.com>
+ <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
+ <6ebb9699530e245f33628c10bc774035fe7bfc84.camel@redhat.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <4d9e6fbf-48d6-58f9-98ae-ed2e7b72317f@siemens.com>
+Date:   Wed, 11 Aug 2021 22:15:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210811113458.6940-1-islituo@gmail.com>
-In-Reply-To: <20210811113458.6940-1-islituo@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 11 Aug 2021 16:15:27 -0400
-Message-ID: <CADnq5_M5jS2LNhH1im_KSgraTF3Z858PXTxvke45-7ZAnANOMA@mail.gmail.com>
-Subject: Re: [PATCH] gpu: drm: amd: amdgpu: amdgpu_i2c: fix possible
- uninitialized-variable access in amdgpu_i2c_router_select_ddc_port()
-To:     Tuo Li <islituo@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Tuikov, Luben" <luben.tuikov@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6ebb9699530e245f33628c10bc774035fe7bfc84.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On 11.08.21 22:10, Maxim Levitsky wrote:
+> On Wed, 2021-08-11 at 21:01 +0200, Jan Kiszka wrote:
+>> On 11.08.21 15:31, Maxim Levitsky wrote:
+>>> Fix several issues that are present in lx-symbols script:
+>>>
+>>> * Track module unloads by placing another software breakpoint at
+>>>   'free_module'
+>>>   (force uninline this symbol just in case), and use remove-symbol-file
+>>>   gdb command to unload the symobls of the module that is unloading.
+>>>
+>>>   That gives the gdb a chance to mark all software breakpoints from
+>>>   this module as pending again.
+>>>   Also remove the module from the 'known' module list once it is unloaded.
+>>>
+>>> * Since we now track module unload, we don't need to reload all
+>>>   symbols anymore when 'known' module loaded again
+>>>   (that can't happen anymore).
+>>>   This allows reloading a module in the debugged kernel to finish
+>>>   much faster, while lx-symbols tracks module loads and unloads.
+>>>
+>>> * Disable/enable all gdb breakpoints on both module load and unload
+>>>   breakpoint hits, and not only in 'load_all_symbols' as was done before.
+>>>   (load_all_symbols is no longer called on breakpoint hit)
+>>>   That allows gdb to avoid getting confused about the state of the
+>>>   (now two) internal breakpoints we place.
+>>>   Otherwise it will leave them in the kernel code segment, when
+>>>   continuing which triggers a guest kernel panic as soon as it skips
+>>>   over the 'int3' instruction and executes the garbage tail of the optcode
+>>>   on which the breakpoint was placed.
+>>>
+>>> * Block SIGINT while the script is running as this seems to crash gdb
+>>>
+>>> * Add a basic check that kernel is already loaded into the guest memory
+>>>   to avoid confusing errors.
+>>>
+>>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>>> ---
+>>>  kernel/module.c              |   8 +-
+>>>  scripts/gdb/linux/symbols.py | 203 +++++++++++++++++++++++------------
+>>>  2 files changed, 143 insertions(+), 68 deletions(-)
+>>>
+>>> diff --git a/kernel/module.c b/kernel/module.c
+>>> index ed13917ea5f3..242bd4bb0b55 100644
+>>> --- a/kernel/module.c
+>>> +++ b/kernel/module.c
+>>> @@ -906,8 +906,12 @@ int module_refcount(struct module *mod)
+>>>  }
+>>>  EXPORT_SYMBOL(module_refcount);
+>>>  
+>>> -/* This exists whether we can unload or not */
+>>> -static void free_module(struct module *mod);
+>>> +/* This exists whether we can unload or not
+>>> + * Keep it uninlined to provide a reliable breakpoint target,
+>>> + * e.g. for the gdb helper command 'lx-symbols'.
+>>> + */
+>>> +
+>>> +static noinline void free_module(struct module *mod);
+>>>  
+>>>  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+>>>  		unsigned int, flags)
+>>
+>> You likely want and need to push that as separate patch, analogously to
+>> be02a1862304.
+> 
+> I will do.
+> 
+>>
+>> And as you are factoring the patch, maybe think about whether you can
+>> split the changes to symbols.py into logical steps as well. The commit
+>> messages suggests that, thought that might be misleading.
+> 
+> I can try doing that.
+> 
+>>
+>>> diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+>>> index 08d264ac328b..78e278fb4bad 100644
+>>> --- a/scripts/gdb/linux/symbols.py
+>>> +++ b/scripts/gdb/linux/symbols.py
+>>> @@ -14,45 +14,23 @@
+>>>  import gdb
+>>>  import os
+>>>  import re
+>>> +import signal
+>>>  
+>>>  from linux import modules, utils
+>>>  
+>>>  
+>>>  if hasattr(gdb, 'Breakpoint'):
+>>> -    class LoadModuleBreakpoint(gdb.Breakpoint):
+>>> -        def __init__(self, spec, gdb_command):
+>>> -            super(LoadModuleBreakpoint, self).__init__(spec, internal=True)
+>>> +
+>>> +    class BreakpointWrapper(gdb.Breakpoint):
+>>> +        def __init__(self, callback, **kwargs):
+>>> +            super(BreakpointWrapper, self).__init__(internal=True, **kwargs)
+>>>              self.silent = True
+>>> -            self.gdb_command = gdb_command
+>>> +            self.callback = callback
+>>>  
+>>>          def stop(self):
+>>> -            module = gdb.parse_and_eval("mod")
+>>> -            module_name = module['name'].string()
+>>> -            cmd = self.gdb_command
+>>> -
+>>> -            # enforce update if object file is not found
+>>> -            cmd.module_files_updated = False
+>>> -
+>>> -            # Disable pagination while reporting symbol (re-)loading.
+>>> -            # The console input is blocked in this context so that we would
+>>> -            # get stuck waiting for the user to acknowledge paged output.
+>>> -            show_pagination = gdb.execute("show pagination", to_string=True)
+>>> -            pagination = show_pagination.endswith("on.\n")
+>>> -            gdb.execute("set pagination off")
+>>> -
+>>> -            if module_name in cmd.loaded_modules:
+>>> -                gdb.write("refreshing all symbols to reload module "
+>>> -                          "'{0}'\n".format(module_name))
+>>> -                cmd.load_all_symbols()
+>>> -            else:
+>>> -                cmd.load_module_symbols(module)
+>>> -
+>>> -            # restore pagination state
+>>> -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
+>>> -
+>>> +            self.callback()
+>>>              return False
+>>>  
+>>> -
+>>>  class LxSymbols(gdb.Command):
+>>>      """(Re-)load symbols of Linux kernel and currently loaded modules.
+>>>  
+>>> @@ -61,15 +39,52 @@ are scanned recursively, starting in the same directory. Optionally, the module
+>>>  search path can be extended by a space separated list of paths passed to the
+>>>  lx-symbols command."""
+>>>  
+>>> -    module_paths = []
+>>> -    module_files = []
+>>> -    module_files_updated = False
+>>> -    loaded_modules = []
+>>> -    breakpoint = None
+>>> -
+>>>      def __init__(self):
+>>>          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
+>>>                                          gdb.COMPLETE_FILENAME)
+>>> +        self.module_paths = []
+>>> +        self.module_files = []
+>>> +        self.module_files_updated = False
+>>> +        self.loaded_modules = {}
+>>> +        self.internal_breakpoints = []
+>>> +
+>>> +    # prepare GDB for loading/unloading a module
+>>> +    def _prepare_for_module_load_unload(self):
+>>> +
+>>> +        self.blocked_sigint = False
+>>> +
+>>> +        # block SIGINT during execution to avoid gdb crash
+>>> +        sigmask = signal.pthread_sigmask(signal.SIG_BLOCK, [])
+>>> +        if not signal.SIGINT in sigmask:
+>>> +            self.blocked_sigint = True
+>>> +            signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+>>> +
+>>> +        # disable all breakpoints to workaround a GDB bug where it would
+>>> +        # not correctly resume from an internal breakpoint we placed
+>>> +        # in do_module_init/free_module (it leaves the int3
+>>
+>> Seems the comment ends prematurely.
+> 
+> Yep, GDB leaves the int3 instruction in the guest memory, and the guest dies after
+> it encounters the truncated instruction that follows it.
+> 
+>>
+>> Any reference to a gdb bug tracker entry? Or affected versions? The
+>> description is a bit too fuzzy.
+> 
+> Well stricly speaking this isn't a GDB bug.
+> GDB documentation explictly prohibits what we are doing in this script.
+> 
+> https://sourceware.org/gdb/current/onlinedocs/gdb/Breakpoints-In-Python.html
+> 
+> "You should not alter the execution state of the inferior (i.e., step, next, etc.), alter the current frame context 
+> (i.e., change the current active frame), or alter, add or delete any breakpoint. 
+> As a general rule, you should not alter any data within GDB or the inferior at this time."
+> 
+> However we are reloading the whole symbol table as a response to a breakpoint.
+> 
+> However there is pretty much no other way to do what this script does so the next best thing
+> is to workaround this as was already partially done, and I just made it more robust.
+> 
+> Same for blocking SIGINT which I added, which otherwise crashes GDB
+> while the symbols are reloading.
+> It probably will also be blamed on this.
+> 
+> Do you think I might have some luck taking with GDB maintainers and asking them to support
+> this use case of updating symbol table when a breakpoint hits?
+> 
 
-Alex
+We should at least clarify if it's a GDB bug or our use case is outside
+of the envisioned ones, thus need to account for that. Then we should
+not call it a bug.
 
-On Wed, Aug 11, 2021 at 7:35 AM Tuo Li <islituo@gmail.com> wrote:
->
-> The variable val is declared without initialization, and its address is
-> passed to amdgpu_i2c_get_byte(). In this function, the value of val is
-> accessed in:
->   DRM_DEBUG("i2c 0x%02x 0x%02x read failed\n",
->        addr, *val);
->
-> Also, when amdgpu_i2c_get_byte() returns, val may remain uninitialized,
-> but it is accessed in:
->   val &= ~amdgpu_connector->router.ddc_mux_control_pin;
->
-> To fix this possible uninitialized-variable access, initialize val to 0 in
-> amdgpu_i2c_router_select_ddc_port().
->
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-> index bca4dddd5a15..82608df43396 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
-> @@ -339,7 +339,7 @@ static void amdgpu_i2c_put_byte(struct amdgpu_i2c_chan *i2c_bus,
->  void
->  amdgpu_i2c_router_select_ddc_port(const struct amdgpu_connector *amdgpu_connector)
->  {
-> -       u8 val;
-> +       u8 val = 0;
->
->         if (!amdgpu_connector->router.ddc_valid)
->                 return;
-> --
-> 2.25.1
->
+[...]
+
+>>> +            if not module_list:
+>>> +                gdb.write("no modules found\n")
+>>> +            else:
+>>> +                [self._do_load_module_symbols(module) for module in module_list]
+>>
+>> Is that common python style? Elsewhere, you do
+>>
+>> for var in list:
+>>     function(var)
+> 
+> It is a code I moved verbatim from the above. 
+> I can change it to use the more common syntax.
+
+Oh, missed that. And it seems I once wrote it this way - no idea anymore
+why...
+
+Jan
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
