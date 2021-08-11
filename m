@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC24A3E9053
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A573E9056
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237497AbhHKMR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:17:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43831 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237453AbhHKMR6 (ORCPT
+        id S237521AbhHKMSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhHKMSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:17:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628684255; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lytk+GDi5s2zB6R0XzDXR78NKrdNr9wxnP0Z0BAj3XY=;
- b=sLb83qEDwQytEjyE4ZLYlKCn82AwIAXBewexlM5OYsypX3Qww4XJZfrbd4S1bsHrcvdLYH1C
- iQSd7bk1MRv6DML6eTVDYou/Oy+nX1UwXgDbXQPJ0IfXZgeVWUBblyzyP2KD9VuNPGBkPiVy
- 07/5xQUh82KcgXmR+rUnzEmwR0I=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6113bfdc91487ad52013cbba (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 12:17:32
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D5B06C43217; Wed, 11 Aug 2021 12:17:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 535F7C4338A;
-        Wed, 11 Aug 2021 12:17:31 +0000 (UTC)
+        Wed, 11 Aug 2021 08:18:21 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0364C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:17:57 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id m17so448703ljp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KQjb/FThXLfBl/otc3Znh0SZQ+j62VlqIHDeYo+IMZg=;
+        b=tpLq6HB2rX522yTr4THCUwY7joSNADf4vSrKKu61HhVFIllWBYhinsNhaggrONz8hM
+         tDLN86QYxoZIZfKrdxHMR2/59QaV86eynH52IIlKR274X1lcOprxx/+RBEbVTk7ygZIQ
+         ngjRQkm8RAfN4gMDLdy9NpLGwYCiZlywH2O3Is4x4Nr2NNdW3C8wtPIP/gFqTMTjlC51
+         MGNu85NbTSDHS/GTNLKH+63Mk6pnX3tmBlD/98aTh55zEWaB7g6hADOSHK84xiMsIjvh
+         243ls6P1nfk47fcRXZamgi5COT+S1zFrLX0Gldz8FVbrJ3YFL6Q4eJulvPy4NPi0X0Ej
+         9dOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KQjb/FThXLfBl/otc3Znh0SZQ+j62VlqIHDeYo+IMZg=;
+        b=iqAtj11WhJlTpDLvZIqb926pPH/Knb5Dxr1PWGfZitG16/+zr7LtTd3E6Ma/1cxv6j
+         ZgeYrN6Q3NxLPrnf1Xbs7rKgrWnzLV6TuwIkODgvHRH4yLEZzPVOp8B/BZtULDKzbDID
+         0tCEURCZmoEW1Lp26egy04iToqw0Aftunpx9xLzwuIzIPexuaa8wIe9Y5XMcjYoBw3Os
+         lFkcfGZMQW4jIAaK6jJi5m53C/Tmv6QMWVAQNzrmZT5Hx9Vqs1xVnD7q/JKToPlvodaN
+         2bYIqG/cKXlBGyrWmFevxNYLOyXJB3WX0XhD0e066yxaOBP6tO/jf1Mo3EGIbuKen0Fo
+         EExw==
+X-Gm-Message-State: AOAM5338l4L8RO+ZvEJlbHTPAN6ucNkeiDmIr50yCmxF5SlbIGmF8ady
+        8bCHTrbQhMt2S4CrPcQoYJO2P6qBNnW3xFGdKaDGkg==
+X-Google-Smtp-Source: ABdhPJykncSqm3nyxK3p72zHiH80OFKfNQHUKLJLnWJSQkukUssrqDDbMiWiEf8QJ4mkA7jhMhWxAvKH1ulwqn1rzAY=
+X-Received: by 2002:a05:651c:1318:: with SMTP id u24mr23139087lja.200.1628684276361;
+ Wed, 11 Aug 2021 05:17:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Aug 2021 17:47:31 +0530
-From:   rajpat@codeaurora.org
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
-In-Reply-To: <162741363048.2368309.1689681966672627944@swboyd.mtv.corp.google.com>
-References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
- <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
- <162741363048.2368309.1689681966672627944@swboyd.mtv.corp.google.com>
-Message-ID: <552cd7bd2ae6635cf97e03be590f6e93@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
+ <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
+ <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
+In-Reply-To: <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 14:17:45 +0200
+Message-ID: <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-28 00:50, Stephen Boyd wrote:
-> Quoting Rajesh Patil (2021-07-26 06:40:45)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index ca6e36b..455e58f 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -520,6 +520,25 @@
->> 
->>                 };
->> 
->> +               qup_opp_table: qup-opp-table {
-> 
-> Surely this can live underneath a qup node parallel to the i2c and spi
-> devices?
-> 
-But this is common to both qup0 and qup1 right?
+On Tue, Aug 3, 2021 at 9:23 PM Robert Marko <robert.marko@sartura.hr> wrote:
 
->> +                       compatible = "operating-points-v2";
->> +
->> +                       opp-75000000 {
->> +                               opp-hz = /bits/ 64 <75000000>;
->> +                               required-opps = <&rpmhpd_opp_low_svs>;
->> +                       };
->> +
->> +                       opp-100000000 {
->> +                               opp-hz = /bits/ 64 <100000000>;
->> +                               required-opps = <&rpmhpd_opp_svs>;
->> +                       };
->> +
->> +                       opp-128000000 {
->> +                               opp-hz = /bits/ 64 <128000000>;
->> +                               required-opps = <&rpmhpd_opp_nom>;
->> +                       };
->> +               };
->> +
->>                 qupv3_id_0: geniqup@9c0000 {
->>                         compatible = "qcom,geni-se-qup";
->>                         reg = <0 0x009c0000 0 0x2000>;
+> The pins that this driver wants to expose are used for SFP-s only,
+> they are provided by the Lattice CPLD which also does other things.
+>
+> Linux has a generic SFP driver which is used to manage these SFP
+> ports, but it only supports GPIO-s, it has no concept of anything else.
+> Since the driver is fully generic, I have no idea how could one extend it
+> to effectively handle these pins internally, especially since I have more
+> switches that use the CPLD for SFP-s as well, even for 48 ports and 192
+> pins for them.
+
+Which file is this driver in so I can look?
+
+Maybe it is not a good idea to look for generic code just because
+it is convenient? I have had this problem before with GPIO, along
+the lines "lemme just do this dirty thing this one time because it
+is so convenient for me" (more or less) and the answer is still
+"no".
+
+Can you either augment the driver to handle a regmap with bit indices
+instead or write a new similar driver for that or refactor it some other
+way?
+
+It is not a simple solution to your problem, but it might be the right
+solution even if it means some more work.
+
+> GPIO regmap works perfectly for this as its generic enough to cover all of
+> these cases.
+
+Yeah but it might be the wrong thing to do even if it is simple
+to use and works.
+
+> CPLD also provides pins to test the port LED-s per color as well,
+> but I have chosen not to expose them so far.
+
+Have you considered
+Documentation/devicetree/bindings/leds/register-bit-led.txt
+
+> > If it is a regmap in Linux then that is fine, just pass the regmap
+> > around inside the kernel, OK finished. But really that is an OS
+> > detail.
+>
+> Yes, its regmap but I cant really pass it to the SFP driver as I don't have
+> special driver handling the SFP but rather the generic kernel one.
+> It only knows how to handle GPIO-s.
+
+Of course you have to program it. If I know which driver it
+is it is easier to provide architecture ideas.
+
+Yours,
+Linus Walleij
