@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475773E92E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC3D3E92E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhHKNmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S231841AbhHKNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhHKNmo (ORCPT
+        with ESMTP id S230425AbhHKNo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:42:44 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0237C0613D5;
-        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so3393549otl.1;
-        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
+        Wed, 11 Aug 2021 09:44:57 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528AAC061765;
+        Wed, 11 Aug 2021 06:44:33 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so9578876pji.5;
+        Wed, 11 Aug 2021 06:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hz+p4gP3lCXrc+gD0f6i+2Jz++hhSm2TSQk8dx4ur28=;
-        b=nZ2UF4T4GhHt2s2B7v/GSlVVwtT+DjhKHTiV6Wn3U8mXrGGvoY3UYvf35wcy1CCp9l
-         CxCibh/b01vnsLBIbmODsBKNO/kDYZQyopXPOilGmcf+kyAK1xbuWRjMpzQ7/gsQaWgd
-         KQ/Bm7CQsdrQpmEimCF0gRtnO9/0JD+xQEurbh8r7r76Q/ABcO3rF+WrUqNRX0lHojCQ
-         PSkm9Tq0jn4YkwyIXWOTk8AP12kJOqKxvwexxWuD3qeShQ5HkJgJr1jBAd+7JdCykhaQ
-         1N1hzET8J+mWn+F/lgrSReg0eBM9vva0ogAjQ37ZpDhe0uxvDCTtJslDu5Z4+M6Isbwe
-         oS7A==
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=eCt2wsyZd2oXWNANaRGNRd49CscrG4STsqKNCVrAZMc=;
+        b=KR0jaHtdFKt/MKcdHAdLGTfpT584saeRGF0HariciM+9jXidZbnTVW7h2iiIW4mQvD
+         bxTxJv5DL9IvTx4GYCDrsGl553X7/w3//Yre7y63maWBnvt5wcs/I5sFvpHogn6ozEy7
+         Md6WPuxg6p3WKauy+FuYyzXMxMhwFqiv71HmmhF5KICx43oKJoZ62gNBFxR45Is/eAk5
+         oE/KRoiaUfYnnwrJ3mZeXDZVz6sc5QtFe9Dge1YoHSZKxIILNjx4+DcVQpZSJkV9ClQo
+         QQK/FFwRKglrtv7YX6Ya60COo0dxOcSreg0I+Bke3eIZ/S4k0tc9llTKspBw1pF0MVRa
+         ILhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hz+p4gP3lCXrc+gD0f6i+2Jz++hhSm2TSQk8dx4ur28=;
-        b=fCYomNCdG6aOGecLPvht7ZdH9eYkiW7hLHh8W8UBHp5lklggMYKuAQM4SyU7gezOV1
-         ZlNRbLQ+Ocy1ocwuVmM1Y6VmQyWoP7ANr6bAqrVU/AwqSpnAn1SWMIBw7lTqdO7AWDFd
-         orV5ZNiDtqf3yrGF3OeDqw5X96a1fHOASOaPQpz02JfXhUVagJ6e1o07kTA+BVecqB1t
-         M7wkxeO7QlWL2KjCk/epD+GbAfO/fnUNksxg35pNReo6EXB3P/lP3sTGeePSilGN/+6Z
-         ejpGh5l1q5XqEvBGEXcYhGrT6DKUQRl9Qk8up1IP9Z+FIVQQLrliefiGJBLeM1vu7TGD
-         SysA==
-X-Gm-Message-State: AOAM532zRAPhyrw8OysCnwllvVy8kvkJaJgrO/P4bgC+NI4zxgtp0Rws
-        QdZSh9aSEdngDpAbHzz1KRM=
-X-Google-Smtp-Source: ABdhPJxdODF9OoSlnIa5RL/vRy5NZLti/s0RzpXrEpOHVCNgHsyK/KkpSQPBtALY6NwdtYHGK6Z5Sw==
-X-Received: by 2002:a9d:a72:: with SMTP id 105mr23573290otg.99.1628689340070;
-        Wed, 11 Aug 2021 06:42:20 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.45])
-        by smtp.googlemail.com with ESMTPSA id w13sm2730559otl.41.2021.08.11.06.42.18
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=eCt2wsyZd2oXWNANaRGNRd49CscrG4STsqKNCVrAZMc=;
+        b=L+aukZwcbSYg2Qm0wUV+16iFbABWFUOWX3wvpTdHpSl91eRLMko5A6dWRF0ZYCZHtZ
+         WXhO6Q2RFXsbnjE38p80acylgUDy489LhHxx+PFudwcGatXQDGUGKHQvyhbq5YVJ6+vg
+         roCD4Opmgk8Z5lm+5s2ynZUopqsZvaaOkrn5e7vsZrp8s1k718gSPQWTUlXizhE17rmh
+         z2enW6YBDPHqzBxzScjfMys3gWzMBV8oV88N17Ggn3vDwHsfvmCxUwH6oMe1GXNy+FSs
+         s0FEhbljzqmtL72wXeqqpLbKz3BGQm0mYGnMGItQ/ZM0wPZdUrVRHWY6ww2oJ34V4XEj
+         34dw==
+X-Gm-Message-State: AOAM532Yn6npiwgTH7/P6IHqhFzqIBfedAS1p92ys+WuPzumCB9Nnosa
+        n3A6nfF/dqndbrcW+Cwknf4=
+X-Google-Smtp-Source: ABdhPJz2sWNeOQxA0VhWcX8bUiL7AMEKuDWyy6xIy6ATye9lPxBjS9yXZfWuIMOKGT8KoX/JMFwrsQ==
+X-Received: by 2002:a63:f004:: with SMTP id k4mr23341pgh.390.1628689472821;
+        Wed, 11 Aug 2021 06:44:32 -0700 (PDT)
+Received: from [10.178.0.42] ([85.203.23.37])
+        by smtp.gmail.com with ESMTPSA id q4sm9160247pga.48.2021.08.11.06.44.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 06:42:19 -0700 (PDT)
-Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        David Ahern <dsahern@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-crypto@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        Dmitry Safonov <dima@arista.com>
-References: <cover.1628544649.git.cdleonard@gmail.com>
- <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
- <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
- <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <8d656f85-6f66-6c40-c4af-b05c6639b9ab@gmail.com>
-Date:   Wed, 11 Aug 2021 07:42:17 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 11 Aug 2021 06:44:32 -0700 (PDT)
+To:     njavali@marvell.com, mrangankar@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
+From:   Tuo Li <islituo@gmail.com>
+Subject: [BUG] scsi: qla4xxx: possible double lock in qla4_82xx_wr_32()
+Message-ID: <50b8ad40-b272-d601-889e-9ef336bf9170@gmail.com>
+Date:   Wed, 11 Aug 2021 21:44:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 2:29 AM, Leonard Crestez wrote:
-> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
->> Hi Leonard,
->>
->> On Tue, 10 Aug 2021 at 02:50, Leonard Crestez <cdleonard@gmail.com>
->> wrote:
->> [..]
->>> +/* Representation of a Master Key Tuple as per RFC5925 */
->>> +struct tcp_authopt_key_info {
->>> +       struct hlist_node node;
->>> +       /* Local identifier */
->>> +       u32 local_id;
->>
->> There is no local_id in RFC5925, what's that?
->> An MKT is identified by (send_id, recv_id), together with
->> (src_addr/src_port, dst_addr/dst_port).
->> Why introducing something new to already complicated RFC?
-> 
-> It was there to simplify user interface and initial implementation.
-> 
-> But it seems that BGP listeners already needs to support multiple
-> keychains for different peers so identifying the key by (send_id,
-> recv_id, binding) is easier for userspace to work with. Otherwise they
-> need to create their own local_id mapping internally.
-> 
+Hello,
 
-any proposed simplification needs to be well explained and how it
-relates to the RFC spec.
+Our static analysis tool finds a possible double lock in ql4_nx.c in 
+Linux 5.14.0-rc3:
 
+ha->hw_lock is first locked in:
+418:    write_lock_irqsave(&ha->hw_lock, flags);
+
+And then the function qla4_82xx_crb_win_lock() is called:
+419:    qla4_82xx_crb_win_lock(ha);
+
+In this function, the function qla4_82xx_rd_32() is called:
+389:    done = qla4_82xx_rd_32(ha, QLA82XX_PCIE_REG(PCIE_SEM7_LOCK));
+
+In this function, ha->hw_lock is locked again:
+442:    write_lock_irqsave(&ha->hw_lock, flags);
+
+I am not quite sure whether this possible double lock is real and how to 
+fix it if it is real.
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
