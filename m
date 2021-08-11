@@ -2,75 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7D3E900A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BE43E900C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237412AbhHKMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
+        id S237491AbhHKMG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbhHKMGQ (ORCPT
+        with ESMTP id S237453AbhHKMG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:06:16 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7FEC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:05:52 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id m18so4186999ljo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:05:52 -0700 (PDT)
+        Wed, 11 Aug 2021 08:06:26 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A369C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:06:03 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id i13so2515286ilm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cVOtFYGU43ov9I+yQxtGQ35j2i18nVVfQ4awTJDgPJ4=;
-        b=CPWX39SnW8CZrFW2qn0MNAMA+30m493YsPeMGcpMEubsgqTWN6/FRsFotEu/mHURnp
-         0+ZFMd04KyBRc2s9+ojx5Z2PwuLRdtJAAAoIj2JIXeT7t4ImCzbIiEdA4SyfEHAUax/u
-         aNgmm/gKi5t9S+ZQIf8B07FvKhFWC9C8BlVPolSrHOS1c5zO8ibQngqhvpbUMie4103W
-         51wG7T5Ko5xRt2bQUi5p4Ok61zuCUFdrHQ0YadkUFiIs8UTxdNVlXHEhz2zo+poBBDjG
-         f/cR+ScOfMVUUD5u4jXmzPDon5LprjRo5WwbvYQ/z1HRsqQ5Kkhxh6Ta39OOQtSyQbt8
-         vFtg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DnrUUhs9d/NQwIxtLGBh6Otm1ldtOTYeYBWlYRbI7PA=;
+        b=tptwbMa9rqzpyUbqtHw71jjBwHiNvLpTl2RM4D8dM7QARsMRBNo1wEPDo37r2TvSsD
+         Nt+6JUBJkRD+/90JuC9BZ/QuMQuWi0v6HflD3FJ1crdizwMHkO2dVd0kg50NIaarWsc0
+         J88Vl0QMpoby/FWgGA2bk7/pZ3i25J4RImaKhT/4pSMvA93Prlrr3wi68rXGAGljOrmb
+         L3n6Z9rGRPnGcIX0v3/55nnmV7Q5oZ1qfJ6/pMnnubAVHPNPu/5cx8UO7bQrqHaSaZQ5
+         6dDjhAXqnN8uAvelpR4yxDCOOiv74AKukOMpjXijDd2YkgY3GuOAFCovOWkK0hv4FHJw
+         GQ5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cVOtFYGU43ov9I+yQxtGQ35j2i18nVVfQ4awTJDgPJ4=;
-        b=a+z9vpTQ7jv7xlTzAJlar5sZMIwTyeylHiUy5yoFOnv0Bi0XGDCts7jlf1k8vvS+qN
-         nUh+5GFUx8jCZGjQRKDeBlil7gXVKm2iEUJ54+jwjoB9GwaF5qg3NafChx12rh1T58bg
-         VVCXp+CLZ9ZDAbzURwM3l24XcMiSh8kzAKBmgFrkzJZeq5nEhF+AetaKTcjzjXOJiP5Q
-         03s3KMiYsPr5cAQB5UhajjXC9MUjNuPSL4y7ImraFoV3SH1mVKFZlODq4mz8tZui/FHt
-         7zLF7J6H1W85+94O7PN25pxr1Svbfgj95SynmlGIsYVoWDtVTMEadFmwguUcmyjQvCBN
-         K07g==
-X-Gm-Message-State: AOAM531YwzsmA1lksguO0z+jy+Xt9CFML+X5OVd5iLcLoQLyEEwoTwZA
-        vkarQ/WL30nPJ3mvUKg2SwYE2jNH1Cvwuz6hoV39/Y925uE=
-X-Google-Smtp-Source: ABdhPJx2sxRjFcOgDyC1RUaJopNkQ29AiB1uUuxLikUrXJiGT/rVKH5OFuPAlNvzZgJw/fJGDIE17l0RC7IA+EZ/fWI=
-X-Received: by 2002:a05:651c:327:: with SMTP id b7mr23507045ljp.74.1628683551136;
- Wed, 11 Aug 2021 05:05:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DnrUUhs9d/NQwIxtLGBh6Otm1ldtOTYeYBWlYRbI7PA=;
+        b=seUfIKuaw5JuvxDTwN8g889VWx+mjLMJy99ysjdHCutV9fjVzAptN4w5xB/YT9UdG2
+         1CnjF+E3/Ao5ojBBwcrsqDkLbprRiI3/e4rLsnqieu73W4b0W9TiI/+btxTtSmOMnQAg
+         HsHdubKr/zbpWjg5c11Q08XFfa/vWWC4sU3Hm0MvR0VAfodq9qpZ7zN+pXZm10Otg5z/
+         B6SPAkK4lITSvXeL1q3Owrvr/xdYYR1OOYld/An/uG10xbzsrlfFNZLuxa065ib9NEN4
+         FhNRgyXxZttUyQp274EgUjSNXzJX+JaaOMxZkJm6PG8x3TscqHtiuL6LXbCIOdkeMHl3
+         ROeQ==
+X-Gm-Message-State: AOAM531sTv07t9tRM3CGdDrnoIaUgfUfjU/MbTCPZZzVj8DHod+5xXlw
+        C4B9Qw51sJC4VtWv7ile7SCYDLEGnUIFqA==
+X-Google-Smtp-Source: ABdhPJyLqjUEOYTMumCwcRHq2yLu/P0Hs/5xv7KeyNhWBaELdXf2yzH0tGRTzE4ErblyX06H8gn/6A==
+X-Received: by 2002:a92:d987:: with SMTP id r7mr232956iln.303.1628683562526;
+        Wed, 11 Aug 2021 05:06:02 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id w4sm14345324ior.2.2021.08.11.05.06.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 05:06:02 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: ipa: always inline
+ ipa_aggr_granularity_val()
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, lkp@intel.com, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210810160213.2257424-1-elder@linaro.org>
+ <YRO8Xtd9+RRMqw1J@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <aed281de-dd9b-c185-66b3-e597548a9649@linaro.org>
+Date:   Wed, 11 Aug 2021 07:06:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210803173925.57216-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210803173925.57216-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:05:40 +0200
-Message-ID: <CACRpkdawS25uPOf4c2m+Z0aNSN2UMNouhd6SrmRhNrLecnwzEQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Deduplicate forward declaration in the
- consumer.h header
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRO8Xtd9+RRMqw1J@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 7:39 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On 8/11/21 7:02 AM, Leon Romanovsky wrote:
+> On Tue, Aug 10, 2021 at 11:02:13AM -0500, Alex Elder wrote:
+>> It isn't required, but all callers of ipa_aggr_granularity_val()
+>> pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
+>> Two of those callers are in ipa_validate_build(), with the result
+>> being passed to BUILD_BUG_ON().
+>>
+>> Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
+>> inline ipa_aggr_granularity_val(), so the result of the function is
+>> not constant at compile time, and that leads to build errors.
+>>
+>> Define the function with the __always_inline attribute to avoid the
+>> errors.  And given that the function is inline, we can switch the
+>> WARN_ON() there to be BUILD_BUG_ON().
+>>
+>> Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>
+>> David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
+>>
+>>  drivers/net/ipa/ipa_main.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+>> index 25bbb456e0078..f90b3521e266b 100644
+>> --- a/drivers/net/ipa/ipa_main.c
+>> +++ b/drivers/net/ipa/ipa_main.c
+>> @@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
+>>   * less than the number of timer ticks in the requested period.  0 is not
+>>   * a valid granularity value.
+>>   */
+>> -static u32 ipa_aggr_granularity_val(u32 usec)
+>> +static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
+>>  {
+>> -	WARN_ON(!usec);
+>> +	BUILD_BUG_ON(!usec);
+> 
+> So what exactly are you checking here if all callers pass same value?
+> It is in-kernel API, declared as static inside one module. There is no
+> need to protect from itself.
 
-> struct acpi_device is repeated in two branches of ifdeffery.
-> Move it out and hence deduplicate.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Yeah that's a good point.  It can just as well be removed.
+I think the check was added before I knew it was only going
+to be used with a single constant value.  That said, the
+point was to check at runtime a required constraint.
 
-That's neat!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I'll post version 2 that simply removes it.  Thanks.
 
-Yours,
-Linus Walleij
+					-Alex
+
+> 
+> Thanks
+> 
+>>  
+>>  	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+>>  }
+>> -- 
+>> 2.27.0
+>>
+
