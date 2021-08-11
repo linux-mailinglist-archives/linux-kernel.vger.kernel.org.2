@@ -2,289 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164613E967E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87483E968B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhHKRFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        id S230363AbhHKRHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhHKRFO (ORCPT
+        with ESMTP id S229535AbhHKRHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:05:14 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1F7C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:04:50 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id n6so5705979ljp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:04:50 -0700 (PDT)
+        Wed, 11 Aug 2021 13:07:49 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BABC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:07:24 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id x14so4751747edr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=knf4e9QJIMKImSV5qeMhnbOncjZp3zFKh9Lv4EXo6MI=;
-        b=NgvSaEE+J2Qu7IXRxAXxxmGfKrrGRgvjfOOMN5JxtrVEEVcQ6O9IfINCVJNQdaYyuM
-         7EWKQwjVhgcEkWEoxlD622BKsi6s2wodFsXQHYJquatAarIapQfcpBC21Nog6B1v+46a
-         6nM90V6kXQzxeoXWb4vgBusi5v841vFBexg8LnKHHUkTFaAfqd1uODmk3zAv6FcSeDAK
-         TFMp494sN6PSfzRF4WZEe7in7LV7DY6oz3OXpdv0G6X8e2r9CVbieT+NQxrwC6He+5Rd
-         jtdREVKld0kccBwUKQYx5X+XQsmr89I3J1327uVBU+VW5pWRM3lilBP3cUDtrot0lyt1
-         i3rA==
+         :cc:content-transfer-encoding;
+        bh=3XQGC3d64b+I6TOaPbwAFaPjlDo41tWhOmrtKo7/ocU=;
+        b=HQF3q65f2wid9sOwU4NV66gg39HYhl8qRYeeOoInwbjPuSUWfYJPtfCegTW8HLg/Tm
+         kvpwW9Vcm1+DQP8CYmf5D03t5aHEn1Alg4eDSt0fMqox6A+YhhDPUCFvAmdmEZQRfP/8
+         7s06Q0q+Dr4U6abpp1nYlEQxvQ5EHcHW71+SNzqbD9TKiAjnkeNsLGH/2OkKHUd9ASdY
+         5Zz9U4Tv+XDf2XDdgHICWoUa/TDvA/1ETYLtAUUwFQlQbeiU5xUDOoE3qGw1OSOrSkbX
+         Lg3Iy6acktcamI6mK2cRbkILzOJX+IOsBUO0eJz7tGnz3GZeMVi1I+vZOZJshsiMDnDx
+         zpZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=knf4e9QJIMKImSV5qeMhnbOncjZp3zFKh9Lv4EXo6MI=;
-        b=RlPVjtnfBwJiOP6tRGpSMXt35k1JcQEKN58o0IyTjiAHcfA3K8DZjRWt5Dkd2kYkHe
-         ALol8R/zmYm5h3RJOjhEVuC/ygAgi8niDZhHAdlk9y+230okD2QtJ+utGak8jqG4UTyt
-         wvdTrMxuVdR1RVKd0Z35XTPLKvSbYfRsjYQ6GfG89wvlERhoS1n7YW8xQUq8ype9eCOM
-         dRGHPJFGQC6GVck9st0ZjeSOVFu6RPj48gHWWjCAvNJBwebZlPYRRgUUMjgKuV4ytqT3
-         jcmeI1Kyly6AJsQ709nEy4LdoaUHgnGXynZ++Ed3lwyqkxsTmAdZmE4fdV9zMeZ3Dmpb
-         6Nrg==
-X-Gm-Message-State: AOAM531joY4XDUi4XGa/Rw8dUeThcGspGsEaW4wklWD8dK0W3JwUkP9q
-        30iwr0glWun01BEPOCSEz9BSeemUYCFjOv22Pfv+Fg==
-X-Google-Smtp-Source: ABdhPJwTokZ4kAaFQv9Jxk1a+fTmq1O0FERIIcZVPTaV5KnJIwVTRDNgPvKDt7D1S2aGqBQsIGzoTg28Yh71PEqRcfI=
-X-Received: by 2002:a2e:9ec1:: with SMTP id h1mr24109147ljk.0.1628701488538;
- Wed, 11 Aug 2021 10:04:48 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3XQGC3d64b+I6TOaPbwAFaPjlDo41tWhOmrtKo7/ocU=;
+        b=dIHF+xImGijvEoEkqehqZFToQ/qTQXI1a2k7erQzNovkXCm37WjrBaGL48+MsCN5C2
+         oFSp62fZltDJRUdZdGxTQEclj2ElTERavP8Vo210gzu3k0S8ok6hLhOafV4suaO8Cjcs
+         5gYxjBsQ6XhTCGQ2mBGgKAhWMivOCPaJJwM+mTzeD+BNuOJNgXXZQfxxvIDML09Acjrt
+         7/J8DFQg4zAaYbmYPjWFkE7ZOKVmafN7HWEsEqjJnysAg6IkQnfgJJbPqx56z5YVdunz
+         fA2Wce99Lks3z8pQ9vZIRRa6F2Ij1lu0GVgVyfurdd1I2Q6uHZZaT+WSX0Haec+cHydN
+         Vx2A==
+X-Gm-Message-State: AOAM530MtfJz0NmlJpxaUSV7pNSr7bglNrDd+ospOrZ8/vhdtCQXnx2v
+        bHJXhLlITv95/PggyJjED/ZhB35t6hvzbspLGzd1lg==
+X-Google-Smtp-Source: ABdhPJxCes62ilnkIwtlPZaMP9n/Kc7mf1nsAuS/tFpdUbsGb7++QbvV0RXQj4zm5umVAQRXrnmL2mnk6E+IIXl0xCQ=
+X-Received: by 2002:a05:6402:2153:: with SMTP id bq19mr1900509edb.239.1628701643169;
+ Wed, 11 Aug 2021 10:07:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210811172605.72d6650e@canb.auug.org.au>
-In-Reply-To: <20210811172605.72d6650e@canb.auug.org.au>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 11 Aug 2021 10:04:36 -0700
-Message-ID: <CAKwvOdkv+L6LQO2NPr7EmGS3mp3AN=5CBfFkS0v6YU4j4YAm6A@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the rust tree with the kbuild tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Finn Behrens <me@kloenk.de>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
+References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 11 Aug 2021 22:37:11 +0530
+Message-ID: <CA+G9fYv7JPNoQEyjcgM_Cyaa1OKZtVx2mFV8DzvNGKADxeKziQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/85] 5.4.140-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:26 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Tue, 10 Aug 2021 at 23:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi all,
+> This is the start of the stable review cycle for the 5.4.140 release.
+> There are 85 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Today's linux-next merge of the rust tree got a conflict in:
+> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
+> Anything received after that time might be too late.
 >
->   Makefile
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.140-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
 >
-> between commit:
+> thanks,
 >
->   6f5b41a2f5a6 ("Makefile: move initial clang flag handling into scripts/Makefile.clang")
->   231ad7f409f1 ("Makefile: infer --target from ARCH for CC=clang")
->   f12b034afeb3 ("scripts/Makefile.clang: default to LLVM_IAS=1")
->
-> from the kbuild tree and commit:
->
->   e17f1b1f3e01 ("Makefile: generate `CLANG_FLAGS` even in GCC builds")
->
-> from the rust tree.
->
-> I fixed it up (Makefile fix up at the bottom, plus the following patch)
-> and can carry the fix as necessary. This is now fixed as far as
-> linux-next is concerned, but any non trivial conflicts should be
-> mentioned to your upstream maintainer when your tree is submitted for
-> merging.  You may also want to consider cooperating with the maintainer
-> of the conflicting tree to minimise any particularly complex conflicts.
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Wed, 11 Aug 2021 17:18:36 +1000
-> Subject: [PATCH] fixup for rust integration with Makefile.clang creation
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  Makefile               | 17 -----------------
->  scripts/Makefile.clang | 19 +++++++++++++------
->  2 files changed, 13 insertions(+), 23 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 5d504a1dcb06..3638ce07f208 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -625,24 +625,7 @@ endif
->  # and from include/config/auto.conf.cmd to detect the compiler upgrade.
->  CC_VERSION_TEXT = $(subst $(pound),,$(shell LC_ALL=C $(CC) --version 2>/dev/null | head -n 1))
->
-> -TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
-> -
-> -ifneq ($(CROSS_COMPILE),)
-> -TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -endif
-> -ifeq ($(LLVM_IAS),1)
-> -TENTATIVE_CLANG_FLAGS  += -integrated-as
-> -else
-> -TENTATIVE_CLANG_FLAGS  += -no-integrated-as
-> -GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> -TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> -endif
-> -
-> -export TENTATIVE_CLANG_FLAGS
-> -
-> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->  include $(srctree)/scripts/Makefile.clang
-> -endif
-
-Thanks Stephen for taking the time to resolve this and send a patch.
-We owe you one. We knew this conflict was coming.
-
-Miguel, would you mind rolling this patch into your tree, then
-crediting Stephen if possible (on the patch that adds
-TENTATIVE_CLANG_FLAGS)?
-
-I think the above `ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)`
-should stay in the top level Makefile though. It does look nicer to
-bury it in scripts/Makefile.clang, but I worry that someone doing a
-GCC build might trip the $(error) in that file (if CROSS_COMPILE was
-set and we're building a non-llvm-supported target).
-
-Also, if you're rebasing the related patches, I hope we can use a
-shorter identifier than TENTATIVE_CLANG_FLAGS? If they're used for
-bindgen, maybe BINDGEN_FLAGS?
-
->
->  # Include this also for config targets because some architectures need
->  # cc-cross-prefix to determine CROSS_COMPILE.
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> index 3ae63bd35582..555b5255d9b3 100644
-> --- a/scripts/Makefile.clang
-> +++ b/scripts/Makefile.clang
-> @@ -12,24 +12,31 @@ CLANG_TARGET_FLAGS_s390             := s390x-linux-gnu
->  CLANG_TARGET_FLAGS_x86         := x86_64-linux-gnu
->  CLANG_TARGET_FLAGS             := $(CLANG_TARGET_FLAGS_$(SRCARCH))
->
-> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
-> +
->  ifeq ($(CROSS_COMPILE),)
->  ifeq ($(CLANG_TARGET_FLAGS),)
->  $(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
->  else
-> -CLANG_FLAGS    += --target=$(CLANG_TARGET_FLAGS)
-> +TENTATIVE_CLANG_FLAGS  += --target=$(CLANG_TARGET_FLAGS)
->  endif # CLANG_TARGET_FLAGS
->  else
-> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
->  endif # CROSS_COMPILE
->
->  ifeq ($(LLVM_IAS),0)
-> -CLANG_FLAGS    += -no-integrated-as
-> +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
->  else
-> -CLANG_FLAGS    += -integrated-as
-> +TENTATIVE_CLANG_FLAGS  += -integrated-as
->  endif
-> -CLANG_FLAGS    += -Werror=unknown-warning-option
-> +
-> +export TENTATIVE_CLANG_FLAGS
-> +
-> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
->  KBUILD_CFLAGS  += $(CLANG_FLAGS)
->  KBUILD_AFLAGS  += $(CLANG_FLAGS)
->  export CLANG_FLAGS
-> +endif
-> --
-> 2.30.2
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc Makefile
-> index fcda81da6c20,c814b209b6c9..000000000000
-> --- a/Makefile
-> +++ b/Makefile
-> @@@ -581,10 -613,28 +623,25 @@@ endi
->   # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
->   # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
->   # and from include/config/auto.conf.cmd to detect the compiler upgrade.
->  -CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
->  +CC_VERSION_TEXT = $(subst $(pound),,$(shell LC_ALL=C $(CC) --version 2>/dev/null | head -n 1))
->
-> + TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
-> +
-> + ifneq ($(CROSS_COMPILE),)
-> + TENTATIVE_CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> + endif
-> + ifeq ($(LLVM_IAS),1)
-> + TENTATIVE_CLANG_FLAGS += -integrated-as
-> + else
-> + TENTATIVE_CLANG_FLAGS += -no-integrated-as
-> + GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> + TENTATIVE_CLANG_FLAGS += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> + endif
-> +
-> + export TENTATIVE_CLANG_FLAGS
-> +
->   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->  -CLANG_FLAGS   += $(TENTATIVE_CLANG_FLAGS)
->  -KBUILD_CFLAGS += $(CLANG_FLAGS)
->  -KBUILD_AFLAGS += $(CLANG_FLAGS)
->  -export CLANG_FLAGS
->  +include $(srctree)/scripts/Makefile.clang
->   endif
->
->   # Include this also for config targets because some architectures need
-> @@@ -713,12 -763,11 +770,12 @@@ $(KCONFIG_CONFIG)
->   # This exploits the 'multi-target pattern rule' trick.
->   # The syncconfig should be executed only once to make all the targets.
->   # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
->  -quiet_cmd_syncconfig = SYNC    $@
->  -      cmd_syncconfig = $(MAKE) -f $(srctree)/Makefile syncconfig
->  -
->  +#
->  +# Do not use $(call cmd,...) here. That would suppress prompts from syncconfig,
->  +# so you cannot notice that Kconfig is waiting for the user input.
-> - %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
-> + %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h %/generated/rustc_cfg: $(KCONFIG_CONFIG)
->  -      +$(call cmd,syncconfig)
->  +      $(Q)$(kecho) "  SYNC    $@"
->  +      $(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
->   else # !may-sync-config
->   # External modules and some install targets need include/generated/autoconf.h
->   # and include/config/auto.conf but do not care if they are up-to-date.
-> @@@ -848,8 -926,13 +939,13 @@@ els
->   DEBUG_CFLAGS  += -g
->   endif
->
->  -ifneq ($(LLVM_IAS),1)
->  +ifndef CONFIG_AS_IS_LLVM
->   KBUILD_AFLAGS += -Wa,-gdwarf-2
-> + ifdef CONFIG_DEBUG_INFO_REDUCED
-> + DEBUG_RUSTFLAGS += -Cdebuginfo=1
-> + else
-> + DEBUG_RUSTFLAGS += -Cdebuginfo=2
-> + endif
->   endif
->
->   ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
-> @@@ -1201,9 -1327,12 +1305,12 @@@ archprepare: outputmakefile archheader
->   prepare0: archprepare
->         $(Q)$(MAKE) $(build)=scripts/mod
->         $(Q)$(MAKE) $(build)=.
-> + ifdef CONFIG_RUST
-> +       $(Q)$(MAKE) $(build)=rust
-> + endif
->
->   # All the preparing..
->  -prepare: prepare0 prepare-objtool prepare-resolve_btfids
->  +prepare: prepare0
->
->   PHONY += remove-stale-files
->   remove-stale-files:
+> greg k-h
 
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-Thanks,
-~Nick Desaulniers
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.140-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: ff7bc8590c20350dd180f3e751354836564c7342
+* git describe: v5.4.139-86-gff7bc8590c20
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+39-86-gff7bc8590c20
+
+## No regressions (compared to v5.4.139-78-g48ffc0f8906e)
+
+## No fixes (compared to v5.4.139-78-g48ffc0f8906e)
+
+
+## Test result summary
+total: 78998, pass: 64186, fail: 798, skip: 12688, xfail: 1326
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* timesync-off
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
