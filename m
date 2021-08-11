@@ -2,58 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD813E90B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078AF3E90AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhHKMYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:24:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:35393 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237913AbhHKMXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:23:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="202281062"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="202281062"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:22:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="445911372"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:22:45 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mDnFo-007ord-28; Wed, 11 Aug 2021 15:22:40 +0300
-Date:   Wed, 11 Aug 2021 15:22:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        wsa@kernel.org
-Subject: Re: [PATCH v3 1/3] units: Add SI metric prefix definitions
-Message-ID: <YRPBEMVzQK7AbrSL@smile.fi.intel.com>
-References: <20210712142027.22900-1-andriy.shevchenko@linux.intel.com>
+        id S238198AbhHKMXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:23:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50274 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237666AbhHKMXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:23:04 -0400
+Message-ID: <20210811121414.607674736@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628684560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=Tm2qJv6M2HHUN5mTudc04ti4cTP5D1ZxP2EQ6uzJEys=;
+        b=u6sVLa/+cO+x9Ol9HjALW4dnEIr0in7ytioPO0xlDf7g3BxzahHlwQUCxbmKz/O9pItrEH
+        BDSLAk4ue7jwwu9uWRM33EcuBjd+FhvbdAKJt/iIu9HYpoAIeXcQ8Oik4vi0OyhzkFugt1
+        N6FLJDeK6zkyMqm7KPffYN+Y7dFFAnhO4+uRx1P3e76OXE71u7t8H3HDv2qin76cYQYfkl
+        2NLhoVJ2H+giq3m0YNAYMIRAXO/83VDNtJD66btmDrg4qwo9oBOo37Lv5mS9js/oFlmN1J
+        9oVB0YJE76Z5AadHc2IhfCw+DydPZELI/PlIO9Co7598fZUeRjBY0vc/RjiNPA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628684560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=Tm2qJv6M2HHUN5mTudc04ti4cTP5D1ZxP2EQ6uzJEys=;
+        b=Y9eL26/jJODVCkorH+3zdZz0Z+EoFZpi9sRfvc83+Y/RyovChY1MjopazThWf/Aji0GGJ4
+        JYftyCFv1IGxJRCg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: [patch V4 08/68] media/atomisp: Use lockdep instead of *mutex_is_locked()
+References: <20210811120348.855823694@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712142027.22900-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+Date:   Wed, 11 Aug 2021 14:22:40 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 05:20:25PM +0300, Andy Shevchenko wrote:
-> Sometimes it's useful to have well-defined SI metric prefix to be used
-> to self-describe the formulas or equations.
-> 
-> List most popular ones in the units.h.
+From: Peter Zijlstra <peterz@infradead.org>
 
-Wolfram, can we have this applied or commented? It seems we are going to have
-more users of these definitions (I have recently reviewed one of IIO driver
-where two of them are in use).
+Subject: [patch V4 08/68] media/atomisp: Use lockdep instead of *mutex_is_locked()
 
+The only user of rt_mutex_is_locked() is an anti-pattern, remove it.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210714100719.GA11408@worktop.programming.kicks-ass.net
+---
 
+---
+ drivers/staging/media/atomisp/pci/atomisp_ioctl.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+@@ -1904,8 +1904,8 @@ int __atomisp_streamoff(struct file *fil
+ 	dev_dbg(isp->dev, "Stop stream on pad %d for asd%d\n",
+ 		atomisp_subdev_source_pad(vdev), asd->index);
+ 
+-	BUG_ON(!rt_mutex_is_locked(&isp->mutex));
+-	BUG_ON(!mutex_is_locked(&isp->streamoff_mutex));
++	lockdep_assert_held(&isp->mutex);
++	lockdep_assert_held(&isp->streamoff_mutex);
+ 
+ 	if (type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		dev_dbg(isp->dev, "unsupported v4l2 buf type\n");
 
