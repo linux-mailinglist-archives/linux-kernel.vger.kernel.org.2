@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225AB3E9438
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64D03E9442
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhHKPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:06:33 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19298 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232641AbhHKPGc (ORCPT
+        id S232810AbhHKPLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232440AbhHKPLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:06:32 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BF5nwI003926;
-        Wed, 11 Aug 2021 15:05:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
- b=t1Xpw8W1eRzW3/uI7bHvz1Jk1lxtw3Bvu5nDjMmlxBKPpB99bTceWJEN6D7QclZCAnCF
- yHJRiWyuu2940qkq8+jBDoypyDNRrThRPlYhgYnmzzYQMK7t0X+nPI0etmN2QzRc7+6U
- 7Wgyz8bEFmNvH4NaWj0cKNxcMuxzqjA3tw2LrBEOaTtRCzNBxnihFimkv8r9+N80j5Yb
- IDPtdcxoN7ozo/ksN278udPleIlNkExsZWA36ESMxBAT+aaFbL7jIfBRkkccaJSpkeOa
- amLNCRYbbaiOYf5nJ/Pf403OBYxaT2N/sc3rZQF5UCEWq1B5cEQhxWwebFwH4fA4r8d3 cw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
- b=dy+H6lfyvWHFQA8YQrxLSDfS/VVF++gxrskL/UeZHlmDsaXIZUBBvgBvm12WcNHyJwUH
- 2fXHnVbOEHB3clb3huIW3QIZouvQEavHEhlvW0ejyB6nRqcVHSPy5RA3HBh1GTeK6ds7
- rJMNOseY8LQQwlurXBjX1cwu+nw3rcBliDLDKdH0T3g2TtaXWfpISXu7aaAfBC2wydS/
- 4WCU54OJ87SI58b12sHtPleN0IiEV0BmBnz7/xANJy4hP3Ob2DB5uJqDtQhp5gZr0NPx
- 5bUw3zAhsse8UmrsEnbuf132t/1Y+2U/oEd/HvpqgirSJlK3u4hEugGGrw4185xqFs5F YA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3abwqgtdv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 15:05:49 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17BF1mJq078862;
-        Wed, 11 Aug 2021 15:05:48 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2048.outbound.protection.outlook.com [104.47.51.48])
-        by aserp3030.oracle.com with ESMTP id 3abx3vw8ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 15:05:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eWBdar1msZVvkQucbytL54g2ldkHkH15KgL2f2fjPHYXqO+0fAg4z2D/PfZZqKbXd+5Fa1AkTFJkqCJ9UtxkV3kMmcTG3hqie/xnhoIw+0PiZtRDtuOxIQZ8KsFYHW5vmtwHXfoeN+6qmOlFrTvRJuxFm8mQGJ0ouwai4WsDKZjcTKlqIxGddAGU9kZO1S//UTN6sVK+5z4MJKHxq2H5LXny6HPF40QHmWo4r+96df6dBfLLJm8SIumsdxT+mQlEK+rngFB/38XAyTjzQyepWkpM1oIOHoMRZ4YR3Zdvk2B9bpMaJei3rvbMkuhw3sRGB5C7xvcCxyHmilC0E0YIBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
- b=QO+7BHN6vTAZ05d2FFpsvCMmtdi3PDgaM+F4NbQ9q8qlhDlCqFa/RhbCyvNxIa2CNA9nAJtQVelgHlidNynblldIkyAjSyTHUaZdn/KAujnNWKLuEtsE05S7I/Fi/FPALTjFI3zcVTAq6yQD5msRcKuUCizOpjxVgEbUp2amU65Ve3Jdk/ZmNYB1BsORmtmYSwV1pFCMjc63o8+bXefP1U1ZTyrIn7FTFFOGef3+UWHC86XjyfI1hmfGfk204hEf+PEI5t/BD68/voOOiVLHL3RnlWjdKdG1qWStg1KsvuI5wf0jL500dBcKOXluHK49mRRuurYIuG1qv4ncBZN54A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
- b=w9fwpfAQLvp9m2BR+soEAHhcESqgMMgWXtBma3Dkz7rkkwrxyaS3cV12JGgdbfhW4fZXwngpTJgt5oAm9VDh6VabrmsxuytfQjZPYsJga3oODiiTXjwg0ss2Is+9Sz6ljeeMR63QIJWSa/h/MyJ8Q+9k7CzREVJAA9suRytzNXI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4062.namprd10.prod.outlook.com (2603:10b6:208:180::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 11 Aug
- 2021 15:05:41 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::7cd0:8600:6e6e:aa8c]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::7cd0:8600:6e6e:aa8c%7]) with mapi id 15.20.4415.016; Wed, 11 Aug 2021
- 15:05:41 +0000
-Subject: Re: [PATCH] xen/events: Fix race in set_evtchn_to_irq
-To:     Maximilian Heyne <mheyne@amazon.de>
-Cc:     Amit Shah <aams@amazon.de>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jan Beulich <jbeulich@suse.com>,
-        Malcolm Crossley <malcolm.crossley@citrix.com>,
-        David Vrabel <david.vrabel@citrix.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20210811140806.75710-1-mheyne@amazon.de>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <482af7c4-ad9e-6054-db45-ec05249a2517@oracle.com>
-Date:   Wed, 11 Aug 2021 11:05:33 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210811140806.75710-1-mheyne@amazon.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SA9P221CA0012.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:806:25::17) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        Wed, 11 Aug 2021 11:11:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F36C061765;
+        Wed, 11 Aug 2021 08:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=8c4jvAPh9GG+ChQXbPWzdnZGQWYdJP7nQQ9g0ggPFr8=; b=bIBef/TM/54i+CILkU7k3b2UK
+        NMIiNzGHW8C0jIqsdEV/k6eQtYm7RTM84z5AtFAWeDApx4SfxMabe+TvUfdehlUHHUu7obCnBVbqq
+        AIRtN2u7fScxvgsScdWaWL0/J/K2T5YkG1pZyzQy1I9u8238DVXSds52MnvD+eSSmVm4BN2n2ZBz7
+        kJIgaH2v2ez0VGPFWJNr298SX3lJ4VIybRQU8aqXHsdXNl/Yku29RDzpDU1mCX7/M0Yv8V4TLZevd
+        EvPNWgSrLDsYMWdGVd9v1rRSaVCJgJ+V/MfWfpdXiDiJgDYIWBzMCnN5UbICdKdaMC3KgLqvFBdmz
+        4E8vRdCgg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47184)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mDpsU-0000iQ-CT; Wed, 11 Aug 2021 16:10:46 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mDpsT-0003Fl-2U; Wed, 11 Aug 2021 16:10:45 +0100
+Date:   Wed, 11 Aug 2021 16:10:45 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Ivan T. Ivanov" <iivanov@suse.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: leds: Trigger leds only if PHY speed is known
+Message-ID: <20210811151044.GW22278@shell.armlinux.org.uk>
+References: <20210716141142.12710-1-iivanov@suse.de>
+ <YPGjnvB92ajEBKGJ@lunn.ch>
+ <162646032060.16633.4902744414139431224@localhost>
+ <20210719152942.GQ22278@shell.armlinux.org.uk>
+ <162737250593.8289.392757192031571742@localhost>
+ <162806599009.5748.14837844278631256325@localhost>
+ <20210809141633.GT22278@shell.armlinux.org.uk>
+ <162867546407.30043.9226294532918992883@localhost>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.99.104] (160.34.89.104) by SA9P221CA0012.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend Transport; Wed, 11 Aug 2021 15:05:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9421e239-e915-4cea-31a3-08d95cd97c71
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4062:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR10MB40623EEE954B99B689F6730E8AF89@MN2PR10MB4062.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kIGKsSuwbk9wcAFbVc8LBE6/X+XLLBiSLxM6MHoAjQuUasTfcaHb3in83SV4nE/tqz1P9qlvMTH+v5IMf6Fe0/D6W7o4ZPauzNhX9tbpWIKgaMgrAkQG/FSb6Ya3l9ePclyzMSd/im9OI4uTjjntDX/jUHgnAKIOK/52OGde7UR3esJUtEidjlk8dlaLaMubsbVCCJ4o9Barxum17Fk9sgftGXfbgWwpsEEFrxHHi6q44d5EEmZeONu5Jy8HBrTpqOao4ZkmluVs+rlAYefziz8/alLXLLC9MHUHY9u6XMhsztfteA8HXID3+qHzeZoNHk8MWlaq78fQIMohEowwCqgpAzBTeOHGgT9yqnZk93bd5YfBeOT9TuIH579kWwObCxQ1IQhIpUjIIIpX0sApriVxeGGj9WxSkljh3pjP2HLQXnq2C2VXYQvMGVZ5AyclJt870Upl7X7+pGPrnOl/NzbgDfHmQIA5zYi7N7VcNhWywpana8btP7MUWzBtlWO1ZbQLvuGGUHnVE9PjBlkfEQfwV+i1ekPRxX2S9R2DPbA8DcxOYxVzr+j+INpqRzVjatxlMDHXXrzSy0YkVklqRhwU/KK/zoW644DKO1rGzVe15BbhsRjNFMslc5gaQb8QVqvTIxVD09Y1aB0eoxyOn/EFXJWgw+kwVVRaWndvnFmqyuhsb1zzSP2pDJsOP0fkNovOXQceZPn36ubDns4ek5kjusgIQ/8k95mmEpEBAWo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(346002)(366004)(376002)(31696002)(36756003)(83380400001)(4326008)(316002)(86362001)(7416002)(478600001)(8936002)(8676002)(6916009)(16576012)(6666004)(38100700002)(54906003)(66476007)(5660300002)(6486002)(66556008)(26005)(66946007)(53546011)(956004)(44832011)(2616005)(31686004)(186003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bW5oN1l4SkhkaWNKZW9GR0hsb0NaeUhvby9IZWZFWmRzOWxBUmUzSEJpOGdJ?=
- =?utf-8?B?THoxMFlwRVJ5M0NMcEFJV1VzWjZoU2YyalpZcS9GcjZMdE1vMmZKejNPZGlZ?=
- =?utf-8?B?dDdSRURDWHg1R1c1bjVyQjB5Y2RoOUZUcHZuc3gwN0hJU2txdEhSMHdXTDFt?=
- =?utf-8?B?VHhyQWVSWWxRTDRVcTFmdHVROGpGNUlOekJiMHVrSytwRk5YUlFaZThxU0tP?=
- =?utf-8?B?czhaemlGcWFnSlA2OUdPRGhQSnN0M1dFUDM5S0owWnpkbzA2RXhNclJNc3FP?=
- =?utf-8?B?OGU2NTlOa2tEWlFFZlpMNm5jTnV5UjVTZVl5OElqbGdmZnBuQ0xYWGJSZll2?=
- =?utf-8?B?NlJnQy8zRWwwUWU2WEFkdkk0aEYzMFJJSFVrWlgxbTU3T0VNek5UTHEydkZi?=
- =?utf-8?B?ZVZvOTJ5Tnp2ME0rYUxNY1RUNW93ZmNsc0ZCbjNiUDJCbDNCL3FVMVMyaU5V?=
- =?utf-8?B?Mm9ER1NsUUZURzZRa1NwQWVkcnBCc21nSXhXYkd0eGNtQ3JzR0ZTTFRvN1ZY?=
- =?utf-8?B?bmxOenhVNll4UnZEUHphZFREYy9ZZVhuWEdVVDFLTHNVSnRDOGRmcUp5ZUEy?=
- =?utf-8?B?ZXB0czJTL3JpSzZiZ1dYb1k4cGptcGkyRUxiUEtENk5sVE9odVVVNHRqVk0w?=
- =?utf-8?B?djlPT2RSZXJQZEV4RThKd2RzMVY1WjhKek1ZVGJqV0JMSWNMZnQrWUxFYkkz?=
- =?utf-8?B?UlRKbFpPbU9IRW94Q2xQN05nLytKeEFYTEZORHFyeE1vYjIwWGVoYVRGNkpa?=
- =?utf-8?B?Y0lLQzB1UVEyZ1RueTFUNUovZlhybDdwZDVnV3ZqOUc3RFpRekFrNjFkUFlp?=
- =?utf-8?B?YzNKb0NPdldBNkNyK2Z6Y0ZvRU5VRFZ2NFBCMUMwNUJ4MTk4c25rZTBMdktZ?=
- =?utf-8?B?QW44V0oza1cwUWNUb21MczFSWENPWGRXTXY3SDhJZnp2eE5lQ2J2VmFSUDV4?=
- =?utf-8?B?YzQ5aW9XOFp1WnNUWTVIcGNHREdDZUd1T1ZxUDNJRUJXeVJXVnRmcTEvenVF?=
- =?utf-8?B?ZHdzaTJTZmd4TzJMeEM3bUdZSlFpWWVUNEt6QWJrSXpMWktILzQyaEI5cnFk?=
- =?utf-8?B?cmdibEtYaWRydlY0bld2cU00UW9IR25obFNlUlZJU1hRVFVzY3k0N210bndG?=
- =?utf-8?B?a0NPSm1FcE1mNWVtQk1OSlZBaEk2WmNhdXlucnhTYUxubFJ5QlJkUG5QZXMw?=
- =?utf-8?B?bnBnb1RUa3ZBMEFHaW5iZHoxMGhBZDYxRHZ6R0c5d3dONVAvbm1OaFQzVG1x?=
- =?utf-8?B?MUxvQWl3UkNvR1lURWJhT3Y5ajBWRjQvRUR0TkRJQWtCUXRuUEQyejErWFFl?=
- =?utf-8?B?b3UrdWpqaTFoS1RnZ1FmTyttMmhOQ3RVRE9rVWRxakRvcGIxMU8rQW5tR0hP?=
- =?utf-8?B?TlhyYW43alVSRDVsQ3k5RXg1R2haRjgwcWFkYTIvQ3JEWlJsSGRWdEwyRHFY?=
- =?utf-8?B?d3haMDBzNWhkTWpjeFRPbkRoN3ZaNlRXbHVyaEpKaHAraUR1bm5JNG90NWVJ?=
- =?utf-8?B?WEIxQU9qYm1QdThIeEhreW5ISUQvY2l0SlpGYzluM0hPbjQzVHVOTVFpbkRQ?=
- =?utf-8?B?ZDN0a2xyMTRkWmJLTEcwMm56bDc2YzV6R3o4VXRlVWZkYU01UUpvQ1BkN3Fn?=
- =?utf-8?B?K2RjSXpJQVFvUFQ2aDhSZ0VxZUZmZjd3MTh0a1llT1p1cFFJa0NOWWFiSWNQ?=
- =?utf-8?B?RGpHSFRTRE02Z09ldVkyNG04aU5zalZMM2VNdEFWbWw0R1BPUDNhbG5BNFdZ?=
- =?utf-8?Q?Kw9bN0Fw5M+WBqPd0IvqGOVIrH7VqmGIKcT3QIm?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9421e239-e915-4cea-31a3-08d95cd97c71
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 15:05:41.5744
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IZpdoqsqxd1qjdb0iIoE1n22LkLGHTr8XvTw32+grNIefOskwvVSj1ql3vz1wChajdyZ79GHIAEC4Q8syHAKp1hDBZpblAIeNoqM/2viPrA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4062
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10072 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 phishscore=0 mlxlogscore=844 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108110101
-X-Proofpoint-ORIG-GUID: YnaBpIpl3LJ3d-hhg-PW9E01XoZSRxLz
-X-Proofpoint-GUID: YnaBpIpl3LJ3d-hhg-PW9E01XoZSRxLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162867546407.30043.9226294532918992883@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 11, 2021 at 12:51:04PM +0300, Ivan T. Ivanov wrote:
+> There are a few callers of this, but then we have a few callers of
+> genphy_read_status() too, which are outside just implementing 
+> phy_driver->read_status() and don't use locking.
 
-On 8/11/21 10:08 AM, Maximilian Heyne wrote:
->
-> This patch sets evtchn_to_irq rows via a cmpxchg operation so that they
-> will be set only once. Clearing the row was moved up before writing the
-> row to evtchn_to_irq in order to not create a race once the row is
-> visible for other threads. Accesses to the rows are now guarded by
-> READ_ONCE and WRITE_ONCE just as for the columns in the data structure.
+I think we need to strongly discourage people using the genphy*
+functions directly from anything except phylib driver code. Any
+such use is a layering violation.
 
+I think it does make sense to have a set of lower-level API
+functions that do the locking necessary, rather than having the
+phylib locking spread out across multiple network drivers. It's
+better to have it in one place.
 
-Is this last part really needed? We needed to do that for array elements to avoid an interrupt handler from seeing a partially updated entry but I am not sure I see how this can happen to the row pointer. The only place where it might be important is when we update the pointer to the new page but you are using cmpxchg there already.
+> Then there a few users of phy_init_eee() which uses phy_read_status(),
+> again without locking.
 
+That is kind-of a special case - phy_init_eee() can be called by
+network drivers from within the phylib adjust_link() callback, and
+this callback is made while holding the phydev's lock. So those
+cases are safe.
 
->  
-> -		evtchn_to_irq[row] = (int *)get_zeroed_page(GFP_KERNEL);
-> -		if (evtchn_to_irq[row] == NULL)
-> +		evtchn_row = (int *) get_zeroed_page(GFP_KERNEL);
+If phy_init_eee() is called outside of that, and the lock isn't
+taken, then yes, it's buggy.
 
+This all said, I can't say that I have particularly liked the
+phy_init_eee() API. It seems to mix interface-up like configuration
+(do we wish clocks to stop in EEE) with working out whether EEE
+should be enabled for the speed/duplex that we've just read from
+the PHY. However, most users of this function are being called as a
+result of a link-up event when we already know the link parameters,
+so we shouldn't be re-interrogating the PHY at this point. It seems
+to me to be entirely unnecessary.
 
-Not directly related to this patch but I don't think we need to get a zeroed page --- we will initialize it to -1 immediately below.
+> I think will be easier if we protect public phylib API internally with
+> lock, otherwise it is easy to make mistakes, obviously. But still this
+> will not protect users which directly dereference phy_device members.
 
+As Andrew says... but there are some members that network drivers
+have to access due to the design of phylib, such as speed, duplex,
+*pause, link, etc. Indeed these can change at any time when
+phydev->lock is not held due to the action of phylib polling or
+link interrupts from the PHY. So, accessing them outside of the
+adjust_link() callback without holding the lock is racy.
 
+Note that phylink's usage is similarly safe to the adjust_link()
+callback; its access to these members is similarly protected by
+phydev->lock taken in the phylib state machine - we use the
+slightly lower-level phy_link_change() hook which avoids some of
+the help that phylib provides to network drivers (which phylink
+really doesn't want phylib managing.)
 
--boris
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
