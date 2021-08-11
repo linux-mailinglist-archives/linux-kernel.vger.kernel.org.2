@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED24D3E874F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486893E8751
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbhHKAl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbhHKAl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:41:57 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810FAC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:41:34 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id d11so690330eja.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+IKe5IV7lT/U5uUeCk8dwVAQVUVWQi0SX4MD0PFARrk=;
-        b=VpErF9BeqvJ1lvp3C6qQVShFP+IPiAWshgdKLp0P6z5k1tr0AEcTxGz7UXnNvecgkT
-         YT99OYu7LRWl/Fy8NL6FIcxXcEsQLWAxQyNk05Zd8sc8Qx8x7XwvaM2sLY8/poHHrPu/
-         DyjfK5DuBXeRhweChIlCA1+mwEa406UsmTGdff6uEJHY9SaVQJnQwoVW60I0hdrHNxvT
-         B7PAjoDqxdm+RkuigKCXFaq8jWVK9FfgEfezb2NHeiW/Q1qHn1shnvOneg5hIHS3xcg3
-         YHRkeLwJ1ju+oYqRCy4vCIsyP4fSsn+uZS9kDF6Io8A5TEIZ4DCoY+wVtUa1vrnoYB34
-         k4Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+IKe5IV7lT/U5uUeCk8dwVAQVUVWQi0SX4MD0PFARrk=;
-        b=J/fTj8tqb6Vdf6DAOd9zXX0GReQmJP9GPPR46gCQX4/Tg7bRf8wbfAQlVcTXU9f067
-         FhW2hN8gM9eUkeCRX7zuV9TY4oy1Smb42PnM337kYo77VBTG1O7xCZWUXd1DvIpBQr/k
-         8bctohRqaw4dLO+PD9fNj/9aH5x7TUkRJlwDLl25qXTcojqJAfjeQrccQ0pU2R8E657j
-         igZiyXusRosv4lAi0kMikguztPp9/YLBlzs7tuSL/JHMgGHLFRXaGS3JxUhjpiFSu8z0
-         UDeKILw9PcuLv2hEnnbFE9ayN2o3Q7AS9T5SX42Ji8qqga1Xf752Ka6+yRHlIWbeLvDf
-         MdSA==
-X-Gm-Message-State: AOAM533IvfSmFeixrRxsh43yKXne5GtFVgBO4B7iem5SDaKWVQMzllvK
-        n55UgpqKM89QnPRIG0d/Cals9KPJnsiJRdpl6eM=
-X-Google-Smtp-Source: ABdhPJzhKYKVAFCRyomt10DfXYeqMxabU4psPm98irB3JQRDdIK4pz5dLQpzfGjYi+Bm/E+rvMoR2ThLD7k0wAPtJa0=
-X-Received: by 2002:a17:906:d147:: with SMTP id br7mr1138362ejb.126.1628642493014;
- Tue, 10 Aug 2021 17:41:33 -0700 (PDT)
+        id S235866AbhHKAnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:43:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232410AbhHKAni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:43:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E99A06056C;
+        Wed, 11 Aug 2021 00:43:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628642596;
+        bh=dhUncP/4+yqpzI3mayz8xRr13F3WjLadA+iK0UX3tsc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FcOe5AdnPi+ivIsFrXpVskA7CT3OaYgFY5uwIoLAnmXpOiqmJZJnHEH/dgzhzIiFA
+         daQatxU1WOJoqbIL+k2/lxbO+HEt4fYjku5bG5xZZqQZ+JXaqsEVhyCDfEOQXiu6Lw
+         vl3/QTj3whmwV/eTM64Bl7RuxmKYZ+OVENOqIHvCbDqJsc30kBjiwLfAzaaiV/wCKu
+         34kQTz/ugSPNSV8ljWdTuXUx1gU83pfFnhE55F7dDYV0Nt62JXvnEReo3bEmJgm0sE
+         4xrZoVBsn8BoefU+dLOQ77RqwcILcZ1W4JmyNvj5gI7r6J+KuPyXtn7gDaxTnW1aEt
+         oTpe7tKHWmUrg==
+From:   Vineet Gupta <vgupta@kernel.org>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH 00/18] ARC mm updates to support 3 or 4 levels of paging
+Date:   Tue, 10 Aug 2021 17:42:40 -0700
+Message-Id: <20210811004258.138075-1-vgupta@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <ef00ee9e0cf2b8fbcdf639d5038c373b69c0e1e1.1628639145.git.andreyknvl@gmail.com>
- <CALvZod6d=Ri1K-cZMi_6MXuDnoRPdz5mCPN6DXRB8YyotV6d2w@mail.gmail.com>
-In-Reply-To: <CALvZod6d=Ri1K-cZMi_6MXuDnoRPdz5mCPN6DXRB8YyotV6d2w@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 11 Aug 2021 02:41:22 +0200
-Message-ID: <CA+fCnZcQEEkpe+OtCYfWZb1nzov0FChQgTF3yuK6=M5bN_YLWA@mail.gmail.com>
-Subject: Re: [PATCH] mm/slub, kasan: fix checking page_alloc allocations on free
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 2:18 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Tue, Aug 10, 2021 at 4:47 PM <andrey.konovalov@linux.dev> wrote:
-> >
-> > From: Andrey Konovalov <andreyknvl@gmail.com>
-> >
-> > A fix for stat counters f227f0faf63b ("slub: fix unreclaimable slab stat
-> > for bulk free") used page_address(page) as kfree_hook() argument instead
-> > of object. While the change is technically correct, it breaks KASAN's
-> > ability to detect improper (unaligned) pointers passed to kfree() and
-> > causes the kmalloc_pagealloc_invalid_free test to fail.
-> >
-> > This patch changes free_nonslab_page() to pass object to kfree_hook()
-> > instead of page_address(page) as it was before the fix.
-> >
-> > Fixed: f227f0faf63b ("slub: fix unreclaimable slab stat for bulk free")
-> > Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
->
-> The fix is already in the mm tree:
-> https://lkml.kernel.org/r/20210802180819.1110165-1-shakeelb@google.com
+Hi,
 
-Ah, I missed this.
+Big pile of ARC mm changes to prepare for 3 or 4 levels of paging (from
+current 2) needed for new hardware page walked MMUv6 (in aRCv3 ISA based
+cores).
 
-Please CC kasan-dev for KASAN-related fixes.
+Most of these changes are incremental cleanups to make way for 14/18 and
+15/18 which actually imeplement the new levels (in existing ARCv2 port)
+and worth a critical eye.
 
-Thanks!
+CC'ing some of you guys dealing with page tables for a while :-)
+to spot any obvious gotchas.
+
+Thx,
+-Vineet
+
+Vineet Gupta (18):
+  ARC: mm: simplify mmu scratch register assingment to mmu needs
+  ARC: mm: remove tlb paranoid code
+  ARC: mm: move mmu/cache externs out to setup.h
+  ARC: mm: remove pgd_offset_fast
+  ARC: mm: Fixes to allow STRICT_MM_TYPECHECKS
+  ARC: mm: Enable STRICT_MM_TYPECHECKS
+  ARC: ioremap: use more commonly used PAGE_KERNEL based uncached flag
+  ARC: mm: pmd_populate* to use the canonical set_pmd (and drop pmd_set)
+  ARC: mm: non-functional code cleanup ahead of 3 levels
+  ARC: mm: move MMU specific bits out of ASID allocator
+  ARC: mm: move MMU specific bits out of entry code
+  ARC: mm: disintegrate mmu.h (arcv2 bits out)
+  ARC: mm: disintegrate pgtable.h into levels and flags
+  ARC: mm: hack to allow 2 level build with 4 level code
+  ARC: mm: support 3 levels of page tables
+  ARC: mm: support 4 levels of page tables
+  ARC: mm: vmalloc sync from kernel to user table to update PMD ...
+  ARC: mm: introduce _PAGE_TABLE to explicitly link pgd,pud,pmd entries
+
+ arch/arc/Kconfig                          |   7 +-
+ arch/arc/include/asm/cache.h              |   4 -
+ arch/arc/include/asm/entry-compact.h      |   8 -
+ arch/arc/include/asm/mmu-arcv2.h          |  94 +++++++
+ arch/arc/include/asm/mmu.h                |  73 +----
+ arch/arc/include/asm/mmu_context.h        |  29 +-
+ arch/arc/include/asm/page.h               |  72 +++--
+ arch/arc/include/asm/pgalloc.h            |  70 ++++-
+ arch/arc/include/asm/pgtable-bits-arcv2.h | 151 +++++++++++
+ arch/arc/include/asm/pgtable-levels.h     | 179 ++++++++++++
+ arch/arc/include/asm/pgtable.h            | 315 +---------------------
+ arch/arc/include/asm/processor.h          |   2 +-
+ arch/arc/include/asm/setup.h              |  12 +-
+ arch/arc/kernel/entry.S                   |   6 -
+ arch/arc/mm/fault.c                       |  20 +-
+ arch/arc/mm/ioremap.c                     |   3 +-
+ arch/arc/mm/tlb.c                         |  71 ++---
+ arch/arc/mm/tlbex.S                       |  80 ++----
+ 18 files changed, 617 insertions(+), 579 deletions(-)
+ create mode 100644 arch/arc/include/asm/mmu-arcv2.h
+ create mode 100644 arch/arc/include/asm/pgtable-bits-arcv2.h
+ create mode 100644 arch/arc/include/asm/pgtable-levels.h
+
+-- 
+2.25.1
+
