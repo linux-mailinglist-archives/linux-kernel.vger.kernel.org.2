@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3CD3E8786
+	by mail.lfdr.de (Postfix) with ESMTP id E9E213E8788
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbhHKBHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:07:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235974AbhHKBHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DAED60EE7;
-        Wed, 11 Aug 2021 01:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628644040;
-        bh=Kzw3EE08cLDDxpFKCb5ghCcQ8BT9rSSf34MuXPqd2js=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rkpMUw07zaqXpsN6IamkLlptJqRCTggAPkqO/kzKQN5yd9b7wECe4OB5fi0lNoRqE
-         bqCVEAoTAuJf5bWouBr88yLnquj85hY/QYn/TlutxszsuF1bKui8XIqitQ3myBBzel
-         mp8UzrJbehkoPX/zciSaxEyWwrwgtrAolPzV+ewDdgJwj22DRfBzVsBHMh8yl9y08g
-         u8PHKj+UM5hlOeaBX3yVljGP1z313P2kVNxaSQVmG8QS7kWrk+ESFTKU3ZIjRbd/z4
-         mI30XJn7GN/byHrxo+dS8KaYvCUypoOsQDQXSjQN9h8yPIfmKHQ+lAbXuU4DPUQ4a+
-         d2KV7TWJLT7xg==
-Date:   Tue, 10 Aug 2021 18:07:18 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>
-Subject: Re: [PATCH v4 2/8] nvme-tcp: Update number of hardware queues before
- using them
-Message-ID: <20210811010718.GA3135947@dhcp-10-100-145-180.wdc.com>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-3-dwagner@suse.de>
- <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
- <20210809085250.xguvx5qiv2gxcoqk@carbon>
- <01d7878c-e396-1d6b-c383-8739ca0b3d11@grimberg.me>
+        id S233319AbhHKBH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:07:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8006 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhHKBH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 21:07:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gks9d1sGXzYnNf;
+        Wed, 11 Aug 2021 09:07:17 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 11 Aug 2021 09:07:31 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 11 Aug 2021 09:07:30 +0800
+Subject: Re: [PATCH 4.19 00/54] 4.19.203-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210810172944.179901509@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <b8535986-4360-ced2-423b-ba338bc152c4@huawei.com>
+Date:   Wed, 11 Aug 2021 09:07:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01d7878c-e396-1d6b-c383-8739ca0b3d11@grimberg.me>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:00:37PM -0700, Sagi Grimberg wrote:
-> 
-> 
-> On 8/9/21 1:52 AM, Daniel Wagner wrote:
-> > Hi Sagi,
-> > 
-> > On Fri, Aug 06, 2021 at 12:57:17PM -0700, Sagi Grimberg wrote:
-> > > > -	ret = nvme_tcp_start_io_queues(ctrl);
-> > > > -	if (ret)
-> > > > -		goto out_cleanup_connect_q;
-> > > > -
-> > > > -	if (!new) {
-> > > > -		nvme_start_queues(ctrl);
-> > > > +	} else if (prior_q_cnt != ctrl->queue_count) {
-> > > 
-> > > So if the queue count did not change we don't wait to make sure
-> > > the queue g_usage_counter ref made it to zero? What guarantees that it
-> > > did?
-> > 
-> > Hmm, good point. we should always call nvme_wait_freeze_timeout()
-> > for !new queues. Is this what you are implying?
-> 
-> I think we should always wait for the freeze to complete.
 
-Don't the queues need to be started in order for the freeze to complete?
-Any enqueued requests on the quiesced queues will never complete this
-way, so the wait_freeze() will be stuck, right? If so, I think the
-nvme_start_queues() was in the correct place already.
+
+On 2021/8/11 1:29, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.203 release.
+> There are 54 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.203-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 4.19.203-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.203-rc1
+Commit: f9d1a17ebeccc490534fe19202f7315bab3f0b7f
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
