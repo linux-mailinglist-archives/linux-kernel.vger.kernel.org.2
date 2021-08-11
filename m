@@ -2,142 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F073E96EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484833E96F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhHKRiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:38:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38026 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231366AbhHKRil (ORCPT
+        id S231251AbhHKRkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:40:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34714 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhHKRkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:38:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628703495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6tCiBXyEPPVHcytD6Q7sBcV/4LPCan3AiWP5HZnI2c4=;
-        b=OYNZMCCDWzMQA4PilthT0QWNBKStE3qlZj+egfJWE8pKGP5UbsQom5XYBd8e62uPZj+Ord
-        aX/hIzXiJIKozEOEe+Z6J4p5nVOsubSe9OCWGPXWrmZYsi1o3ZrhptSOXYzxIXnnc6v10e
-        I9AN2YrjfG3DrlC+1tL03cJY3k/tUsQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-imnCy9Q_OPiuCd3ki1QnDQ-1; Wed, 11 Aug 2021 13:38:14 -0400
-X-MC-Unique: imnCy9Q_OPiuCd3ki1QnDQ-1
-Received: by mail-wr1-f69.google.com with SMTP id m2-20020a0560000082b0290154f6e2e51fso999606wrx.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:38:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6tCiBXyEPPVHcytD6Q7sBcV/4LPCan3AiWP5HZnI2c4=;
-        b=HH3+GvlIa2jnS6iY/KyILTwIIddQdDUrtcEFTf9RE1s3HMhtc9IolZ/LnJMGH4KZVU
-         DfMxCArAOCEqDcsgPH4zTlc/UBvN1SrrM+AY1RP8YDsvyse0l4ODkLe3qKAEZ6Q+JP8c
-         r7+NqFjYBDV/pU5UF509x2lL8Z4sLQW4cNu3KtaqlU7oRzXrH4THJwMoveV6mOQ1s9gZ
-         2WW2AG2QmFiCxUirQV7LXZ113rCFe/EOPL7apGUbmr2x657RtGrUjG/dBE87DL0P+f01
-         9ijnIlM1cblRbFnKpXi1WqOSzh5D34Eai6xACRNdCEMZ7Nqu0b/e6EE8N2SQr6RQu5Wf
-         a1qg==
-X-Gm-Message-State: AOAM531Ne1PY9XkUrPB2lnvOZJappcPY4QuE/Zzk6PTN37yVr0sMiTkp
-        hSC84qkEHDbF4OP4u6ySmYUhM2jowRf0Q05CZK/geXUF9ilL+18KuErNftJ7rJuaV7qSQvLerPa
-        YdCILQEBrDsMdVKO/ZeihOMzy
-X-Received: by 2002:a5d:4e4f:: with SMTP id r15mr4511384wrt.346.1628703493607;
-        Wed, 11 Aug 2021 10:38:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBKcCmyDX18C7DbXsG1LgPCGgWfobdmtNU6zwx/hvy49vfqyb0tHvKV1pHDmAur3B0NTSeKQ==
-X-Received: by 2002:a5d:4e4f:: with SMTP id r15mr4511375wrt.346.1628703493439;
-        Wed, 11 Aug 2021 10:38:13 -0700 (PDT)
-Received: from pc-32.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id b10sm8505245wrn.9.2021.08.11.10.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 10:38:13 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 19:38:11 +0200
-From:   Guillaume Nault <gnault@redhat.com>
-To:     James Carlson <carlsonj@workingcode.com>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Chris Fowler <cfowler@outpostsentinel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210811173811.GE15488@pc-32.home>
-References: <20210807163749.18316-1-pali@kernel.org>
- <20210809122546.758e41de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210809193109.mw6ritfdu27uhie7@pali>
- <20210810153941.GB14279@pc-32.home>
- <BN0P223MB0327A247724B7AE211D2E84EA7F79@BN0P223MB0327.NAMP223.PROD.OUTLOOK.COM>
- <20210810171626.z6bgvizx4eaafrbb@pali>
- <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
+        Wed, 11 Aug 2021 13:40:32 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17BHdqsY001365;
+        Wed, 11 Aug 2021 12:39:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628703592;
+        bh=EeqwQHMJVVet/Wz81B1nnj8xO0XYMvcfTM+AUUBD22w=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Y336EmtNzCHVUy1vovyPDMJlPfn4UUvmg77xOneQ5Tv6khStEGOHh03HbHIDVfkcr
+         hvyDzGLmIARtMjjPmBDRZRviDTlSCsML83G5gM/hGkeGHgj2Jw7s5u0i3IrFzw3eOv
+         X/obi81BB4EAqwdt6VIczImPAJSpzp0g60ABwGrs=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17BHdqHb018479
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Aug 2021 12:39:52 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 11
+ Aug 2021 12:39:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 11 Aug 2021 12:39:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17BHdpJ2029437;
+        Wed, 11 Aug 2021 12:39:51 -0500
+Date:   Wed, 11 Aug 2021 23:09:50 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH v3 2/7] phy: cdns-dphy: Prepare for Rx support
+Message-ID: <20210811173948.cezk6zu366c3huhw@ti.com>
+References: <20210624184108.21312-1-p.yadav@ti.com>
+ <20210624184108.21312-3-p.yadav@ti.com>
+ <YQ0MZqI36bz1Jp87@matsya>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
+In-Reply-To: <YQ0MZqI36bz1Jp87@matsya>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:11:11PM -0400, James Carlson wrote:
-> On 8/10/21 1:16 PM, Pali Rohár wrote:
-> > On Tuesday 10 August 2021 16:38:32 Chris Fowler wrote:
-> > > Isn't the UNIT ID the interface number?  As in 'unit 100' will give me ppp100?
+On 06/08/21 03:48PM, Vinod Koul wrote:
+> On 25-06-21, 00:11, Pratyush Yadav wrote:
+> > The Rx programming sequence differs from the Tx programming sequence.
+> > Currently only Tx mode is supported. Move all the Tx related parts into
+> > a set of Tx-specific hooks that are then called by the main PHY
+> > framework hooks. This way when Rx support is added all that is needed to
+> > be done is to plug in the Rx hooks.
 > > 
-> > If you do not specify pppd 'ifname' argument then pppd argument 'unit 100'
-> > will cause that interface name would be ppp100.
+> > The clocks "psm" and "pll_ref" are not used by the Rx path so make them
+> > optional in the probe and then check if they exist in the power_on()
+> > hook.
 > > 
-> > But you are free to rename interface to any string which you like, even
-> > to "ppp99".
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
 > > 
-> > But this ppp unit id is not interface number. Interface number is
-> > another number which has nothing with ppp unit id and is assigned to
-> > every network interface (even loopback). You can see them as the first
-> > number in 'ip -o l' output. Or you can retrieve it via if_nametoindex()
-> > function in C.
+> > (no changes since v1)
+> > 
+> >  drivers/phy/cadence/cdns-dphy.c | 140 ++++++++++++++++++++++++--------
+> >  1 file changed, 104 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
+> > index ba042e39cfaf..8656f2102a91 100644
+> > --- a/drivers/phy/cadence/cdns-dphy.c
+> > +++ b/drivers/phy/cadence/cdns-dphy.c
+> > @@ -75,6 +75,11 @@ struct cdns_dphy;
+> >  struct cdns_dphy_ops {
+> >  	int (*probe)(struct cdns_dphy *dphy);
+> >  	void (*remove)(struct cdns_dphy *dphy);
+> > +	int (*power_on)(struct cdns_dphy *dphy);
+> > +	int (*power_off)(struct cdns_dphy *dphy);
+> > +	int (*validate)(struct cdns_dphy *dphy, enum phy_mode mode, int submode,
+> > +			union phy_configure_opts *opts);
+> > +	int (*configure)(struct cdns_dphy *dphy, union phy_configure_opts *opts);
+> >  	void (*set_psm_div)(struct cdns_dphy *dphy, u8 div);
+> >  	void (*set_clk_lane_cfg)(struct cdns_dphy *dphy,
+> >  				 enum cdns_dphy_clk_lane_cfg cfg);
+> > @@ -86,12 +91,18 @@ struct cdns_dphy_ops {
+> >  struct cdns_dphy {
+> >  	struct cdns_dphy_cfg cfg;
+> >  	void __iomem *regs;
+> > +	struct device *dev;
+> >  	struct clk *psm_clk;
+> >  	struct clk *pll_ref_clk;
+> >  	const struct cdns_dphy_ops *ops;
+> >  	struct phy *phy;
+> >  };
+> >  
+> > +struct cdns_dphy_driver_data {
+> > +	const struct cdns_dphy_ops *tx;
+> > +	const struct cdns_dphy_ops *rx;
+> > +};
+> > +
+> >  static int cdns_dsi_get_dphy_pll_cfg(struct cdns_dphy *dphy,
+> >  				     struct cdns_dphy_cfg *cfg,
+> >  				     struct phy_configure_opts_mipi_dphy *opts,
+> > @@ -199,20 +210,9 @@ static void cdns_dphy_ref_set_psm_div(struct cdns_dphy *dphy, u8 div)
+> >  	       dphy->regs + DPHY_PSM_CFG);
+> >  }
+> >  
+> > -/*
+> > - * This is the reference implementation of DPHY hooks. Specific integration of
+> > - * this IP may have to re-implement some of them depending on how they decided
+> > - * to wire things in the SoC.
+> > - */
+> > -static const struct cdns_dphy_ops ref_dphy_ops = {
+> > -	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
+> > -	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
+> > -	.set_psm_div = cdns_dphy_ref_set_psm_div,
+> > -};
+> > -
+> > -static int cdns_dphy_config_from_opts(struct phy *phy,
+> > -				      struct phy_configure_opts_mipi_dphy *opts,
+> > -				      struct cdns_dphy_cfg *cfg)
+> > +static int cdns_dphy_tx_config_from_opts(struct phy *phy,
+> > +					 struct phy_configure_opts_mipi_dphy *opts,
+> > +					 struct cdns_dphy_cfg *cfg)
+> >  {
+> >  	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> >  	unsigned int dsi_hfp_ext = 0;
+> > @@ -232,24 +232,13 @@ static int cdns_dphy_config_from_opts(struct phy *phy,
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
+> > -			      union phy_configure_opts *opts)
+> > +static int cdns_dphy_tx_configure(struct cdns_dphy *dphy,
+> > +				  union phy_configure_opts *opts)
+> >  {
+> >  	struct cdns_dphy_cfg cfg = { 0 };
+> > -
+> > -	if (mode != PHY_MODE_MIPI_DPHY)
+> > -		return -EINVAL;
+> > -
+> > -	return cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
+> > -}
+> > -
+> > -static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> > -{
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > -	struct cdns_dphy_cfg cfg = { 0 };
+> >  	int ret;
+> >  
+> > -	ret = cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
+> > +	ret = cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > @@ -279,9 +268,21 @@ static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_power_on(struct phy *phy)
+> > +static int cdns_dphy_tx_validate(struct cdns_dphy *dphy, enum phy_mode mode,
+> > +				 int submode, union phy_configure_opts *opts)
+> >  {
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +	struct cdns_dphy_cfg cfg = { 0 };
+> > +
+> > +	if (submode != PHY_MIPI_DPHY_SUBMODE_TX)
+> > +		return -EINVAL;
+> > +
+> > +	return cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
+> > +}
+> > +
+> > +static int cdns_dphy_tx_power_on(struct cdns_dphy *dphy)
+> > +{
+> > +	if (!dphy->psm_clk || !dphy->pll_ref_clk)
+> > +		return -EINVAL;
+> >  
+> >  	clk_prepare_enable(dphy->psm_clk);
+> >  	clk_prepare_enable(dphy->pll_ref_clk);
+> > @@ -293,16 +294,77 @@ static int cdns_dphy_power_on(struct phy *phy)
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_power_off(struct phy *phy)
+> > +static int cdns_dphy_tx_power_off(struct cdns_dphy *dphy)
+> >  {
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > -
+> >  	clk_disable_unprepare(dphy->pll_ref_clk);
+> >  	clk_disable_unprepare(dphy->psm_clk);
+> >  
+> >  	return 0;
+> >  }
+> >  
+> > +static const struct cdns_dphy_ops tx_ref_dphy_ops = {
+> > +	.power_on = cdns_dphy_tx_power_on,
+> > +	.power_off = cdns_dphy_tx_power_off,
+> > +	.validate = cdns_dphy_tx_validate,
+> > +	.configure = cdns_dphy_tx_configure,
+> > +	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
+> > +	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
+> > +	.set_psm_div = cdns_dphy_ref_set_psm_div,
+> > +};
+> > +
+> > +/*
+> > + * This is the reference implementation of DPHY hooks. Specific integration of
+> > + * this IP may have to re-implement some of them depending on how they decided
+> > + * to wire things in the SoC.
+> > + */
+> > +static const struct cdns_dphy_driver_data ref_dphy_ops = {
+> > +	.tx = &tx_ref_dphy_ops,
+> > +};
+> > +
+> > +static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
+> > +			      union phy_configure_opts *opts)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (mode != PHY_MODE_MIPI_DPHY)
+> > +		return -EINVAL;
+> > +
+> > +	if (dphy->ops->validate)
+> > +		return dphy->ops->validate(dphy, mode, submode, opts);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int cdns_dphy_power_on(struct phy *phy)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (dphy->ops->power_on)
+> > +		return dphy->ops->power_on(dphy);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int cdns_dphy_power_off(struct phy *phy)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (dphy->ops->power_off)
+> > +		return dphy->ops->power_off(dphy);
+> > +
+> > +	return 0;
+> > +}
 > 
-> Correct; completely unrelated to the notion of "interface index."
-> 
-> > ... So if people are really using pppd's 'unit' argument then I think it
-> > really make sense to support it also in new rtnl interface.
-> 
-> The pppd source base is old.  It dates to the mid-80's.  So it predates not
-> just rename-able interfaces in Linux but Linux itself.
-> 
-> I recall supported platforms in the past (BSD-derived) that didn't support
-> allowing the user to specify the unit number.  In general, on those
-> platforms, the option was accepted and just ignored, and there were either
-> release notes or man page updates (on that platform) that indicated that
-> "unit N" wouldn't work there.
-> 
-> Are there users on Linux who make use of the "unit" option and who would
-> mourn its loss?  Nobody really knows.  It's an ancient feature that was
-> originally intended to deal with systems that couldn't rename interfaces
-> (where one had to make sure that the actual interface selected matched up
-> with pre-configured filtering rules or static routes or the like), and to
-> make life nice for administrators (e.g., making sure that serial port 1 maps
-> to ppp1, port 2 is ppp2, and so on).
-> 
-> I would think and hope most users reach for the more-flexible "ifname"
-> option first, but I certainly can't guarantee it.  It could be buried in a
-> script somewhere or (god forbid) some kind of GUI or "usability" tool.
-> 
-> If I were back at Sun, I'd probably call it suitable only for a "Major"
-> release, as it removes a publicly documented feature.  But I don't know what
-> the considerations are here.  Maybe it's just a "don't really care."
+> why do you need a dphy specific power_on/off only to call internal
+> ops..? If there is no additional logic lets drop this and continue the
+> phy ops for this
 
-I'm pretty sure someone, somewhere, would hate us if we broke the
-"unit" option. The old PPP ioctl API has been there for so long,
-there certainly remains tons of old tools, scripts and config files
-that "just work" without anybody left to debug or upgrade them.
+I don't clearly understand what you are trying to say. The internal ops 
+(dphy->ops) are DPHY-specific. So for example, you might have different 
+power on/off sequences for Rx and Tx mode DPHYs. You would then 
+implement different power_on() and power_off() hooks for those and store 
+them in dphy->ops. How else would you handle this?
 
-We can't just say, "starting from kernel x.y.z the unit option is a
-noop, use ifname instead" as affected people surely won't get the
-message (and there are other tools beyond pppd that may use this
-kernel API).
+> 
+> -- 
+> ~Vinod
 
-But for the netlink API, we don't have to repeat the same mistake.
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
