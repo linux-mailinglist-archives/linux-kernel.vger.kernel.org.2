@@ -2,233 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC043E999A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72D83E9998
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhHKUVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:21:12 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59429 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230413AbhHKUVL (ORCPT
+        id S231779AbhHKUUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhHKUUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:21:11 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2154C5C010B;
-        Wed, 11 Aug 2021 16:20:47 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Wed, 11 Aug 2021 16:20:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=7fkPLfKbxa0wqLdybdh/2UwMGYWz
-        xlG6ejMw/dsNXA8=; b=b64xL5cJEbMyETJPKEuIv/c0I5VUqYrLOWWxhOB7Y50d
-        0nWdjRvYWPmmB0fQzjZvZLYsMMIPa8znN950HlcZ8B5pi1XmRaN/zE+tFAdmHMyU
-        Xq3Ux/Bx5gRvdzOksoDaZuM8BwfWIPhY2GFtiVgFW7xh89vqB/xS4fy5D3kgnfTC
-        UWAK9WlfeGqGU2XNnwVHk1HD9T6OBFizl9Qv7bFDXx9e5sV/wYuT7JQDy+YHptbE
-        X/lR0S1gJAX+RXajd6VyrRLhzP79jCcsUJ1YMb6LAQqmP5cG7v7WtxDz94MqoaFS
-        L1r+NIUYqc4fII1LewIMFuMe2bBz8/vAdOCQuSlRqg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7fkPLf
-        Kbxa0wqLdybdh/2UwMGYWzxlG6ejMw/dsNXA8=; b=FF5wqQcIrKApBju5rQgaU7
-        0edML8se30kYJsySEZZ87j46ObiGFnRzygXNRLP6gVA90f7lZg3GVOmwLSOIQlRu
-        jvoIlznlI03ytfK/kCAQbB5AgZ+elfFHb+QymbpmUqdIXlM341Vu0+meyYK+Rlq3
-        rFK9z/YivuT4hriAJv5+4Me9/lMtPdHp9cETzbVdT+1rJGWioGQmkD3BbaMezJT0
-        8PMkh8ONSLCJQBLXD602XzG22wpnY72vvL92HkCo+sW1rFT7duWgSzbYlpVhNfnH
-        UIJzqnzBIhvPJS4JN4x2uGuhDNapBbHuaOnyxQmxb8CvdZsKIEI6gGM9yBcN1Lnw
-        ==
-X-ME-Sender: <xms:HTEUYYlsll1W9rHzc5NNLoPtmatzsTRwQF1nYOzA7wmbzvMQ6WQBng>
-    <xme:HTEUYX1o0SIK22yEjgmtOUGDviHZ_3e3fBRCNiz1pwr4cAaFpLmh7cX3aD5qQQ5rw
-    LTD4vQO965qla9nNNk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedugddugeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpeehjefgtddtfeelfeetjeeifeduueehleektdegtdejheeiteeuleehuefh
-    geehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:HTEUYWojpqdY3hOcCqlqIx00enxUGVM2LWUmdR9VkRhRwNnnFlih3A>
-    <xmx:HTEUYUm8KXyp7cc4Qxup3rG-4YxNA7YLH7tSnlrQzCwGNxo44P_j6Q>
-    <xmx:HTEUYW2FfnoT0iAaz4pwZdUQOUjEsy0HNs8586MYvsF1mCwwjkq7tg>
-    <xmx:HzEUYS_Lh86PqaZHvI5j6HmZp-OYmdhdzDvJW0JMJ7olK2FiTSoMIw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3A46251C0060; Wed, 11 Aug 2021 16:20:45 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
-Mime-Version: 1.0
-Message-Id: <7b6cf00c-86ea-43c4-861f-f1cc32d5852d@www.fastmail.com>
-In-Reply-To: <a721f8e3-4c1d-afb2-3ae2-eb1360e1eaca@arm.com>
-References: <20210806155523.50429-1-sven@svenpeter.dev>
- <20210806155523.50429-3-sven@svenpeter.dev>
- <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
- <dadbd8b0-171a-4008-8a2e-f68abfed9285@www.fastmail.com>
- <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
- <cf78f795-1e75-45c9-a759-018f17cfaed9@www.fastmail.com>
- <a721f8e3-4c1d-afb2-3ae2-eb1360e1eaca@arm.com>
-Date:   Wed, 11 Aug 2021 22:18:32 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Robin Murphy" <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org
-Cc:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Alexander Graf" <graf@amazon.com>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Will Deacon" <will@kernel.org>
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/3]_iommu/dma-iommu:_Support_iovad->granule_>_?=
- =?UTF-8?Q?PAGE=5FSIZE?=
-Content-Type: text/plain
+        Wed, 11 Aug 2021 16:20:46 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9508BC061765;
+        Wed, 11 Aug 2021 13:20:22 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g21so5674509edb.4;
+        Wed, 11 Aug 2021 13:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3SzsmOsH/ZksAiu3m5vkV53kJ8Io7UQPxk+6rle6cO0=;
+        b=lvBxo2KzvOWNFyRckKcLAbbGR59F+R2DoLPmUTpzerl9JMwJMmkkdZAIv8daFCVrLj
+         2u4SmTDuoJ+dpIUNbaqCGXV+AK+74NjPL+QiTjBEPnDevcI4w1zDF2BvzD0UiTIVVN55
+         NfbXT9fLsK6T3feZR+ZuZWTXw4p/u64WLRtcQR3o/aM4aCJkAww1DmttIWzgF5sCm+1u
+         Kugbh1y+MIq8yH6JWHHtMApKWHs6hqHdc6WoF4Jc+qVx1L8Y8RZOHU6l8je98SKbnPlV
+         1ToZHUsZF9F20FivoFCHvGSxf+VSkgeTOhDgoBDG2co4kMq1spjoA5P3/yJdTIFKZFR6
+         nb3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3SzsmOsH/ZksAiu3m5vkV53kJ8Io7UQPxk+6rle6cO0=;
+        b=J3y2uCcNDhBtRq4fcQrG23VneJWhvpDXE+IPqPTbuP3fsb1f6eXGrXOJDOq/OSC4b2
+         3cSikD+8loIHh/4Assovi/wehYAtaRNbakiFEyLT1xGIUuSSLjhdIHylhpH2xtiTLDCK
+         F0VjQpkgmY71VQEktoBnhtDs0msZasS6n107cB90Mq15h0xK4tU1SqFPvKRGyxMh21zc
+         GaN0Ohi3rCROAjSpLO9Eaep7K27gQK2FMq0kDnO1sVqPkGOLE2sn1D/vpsYVXGE0ePII
+         aLDWPftbC+4TA+C6QdghubWu5H4kBzUNeGP+x6MMQctNNG4FjNN0vKtqt6DsLjB1dr1M
+         gHig==
+X-Gm-Message-State: AOAM533eQHBKeMbYWPhxMBxb6GVo/9c62H6y0EbMnWM5HH6gKx89nRxp
+        Gc5fjRVGmUxkCGQdL9elOvI=
+X-Google-Smtp-Source: ABdhPJyvwO/Gnm8uSMs8+Y3MrhV+NqCdvwB31wUYlY1ezFahsPpm5JjMGJr9ATJiRFBnUjINy6DgtQ==
+X-Received: by 2002:a05:6402:5:: with SMTP id d5mr817303edu.359.1628713221097;
+        Wed, 11 Aug 2021 13:20:21 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id n10sm138237ejk.86.2021.08.11.13.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 13:20:20 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 23:20:19 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <20210811202019.seskua7bzagxis7u@skbuf>
+References: <YQfvXTEbyYFMLH5u@lunn.ch>
+ <20210802135911.inpu6khavvwsfjsp@skbuf>
+ <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
+ <20210803235401.rctfylazg47cjah5@skbuf>
+ <20210804095954.GN22278@shell.armlinux.org.uk>
+ <20210804104625.d2qw3gr7algzppz5@skbuf>
+ <YQ6pc6EZRLftmRh3@lunn.ch>
+ <20191b895a56e2a29f7fee8063d9cc0900f55bfe.camel@microchip.com>
+ <YRQViFYGsoG3OUCc@lunn.ch>
+ <20210811201414.GX22278@shell.armlinux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811201414.GX22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, Aug 10, 2021, at 11:51, Robin Murphy wrote:
-> On 2021-08-09 21:45, Sven Peter wrote:
+On Wed, Aug 11, 2021 at 09:14:14PM +0100, Russell King (Oracle) wrote:
+> On Wed, Aug 11, 2021 at 08:23:04PM +0200, Andrew Lunn wrote:
+> > > I hope that using "*-internal-delay-ps" for Mac would be the right option.
+> > > Shall i include these changes as we discussed in next revision of the patch? 
 > > 
-> > 
-> > On Mon, Aug 9, 2021, at 19:41, Robin Murphy wrote:
-> >> On 2021-08-07 12:47, Sven Peter via iommu wrote:
-> >>>
-> >>>
-> >>> On Fri, Aug 6, 2021, at 20:04, Robin Murphy wrote:
-> >>>> On 2021-08-06 16:55, Sven Peter via iommu wrote:
-> >>>>> @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
-> >>>>>     	if (dev_is_untrusted(dev))
-> >>>>>     		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
-> >>>>>     
-> >>>>> +	/*
-> >>>>> +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
-> >>>>> +	 * very likely run into sgs with a physical address that is not aligned
-> >>>>> +	 * to an IOMMU page boundary. Fall back to just mapping every entry
-> >>>>> +	 * independently with __iommu_dma_map then.
-> >>>>
-> >>>> Scatterlist segments often don't have nicely aligned ends, which is why
-> >>>> we already align things to IOVA granules in main loop here. I think in
-> >>>> principle we'd just need to move the non-IOVA-aligned part of the
-> >>>> address from sg->page to sg->offset in the temporary transformation for
-> >>>> the rest of the assumptions to hold. I don't blame you for being timid
-> >>>> about touching that, though - it took me 3 tries to get right when I
-> >>>> first wrote it...
-> >>>>
-> >>>
-> >>>
-> >>> I've spent some time with that code now and I think we cannot use it
-> >>> but have to fall back to iommu_dma_map_sg_swiotlb (even though that swiotlb
-> >>> part is a lie then):
-> >>>
-> >>> When we have sg_phys(s) = 0x802e65000 with s->offset = 0 the paddr
-> >>> is aligned to PAGE_SIZE but has an offset of 0x1000 from something
-> >>> the IOMMU can map.
-> >>> Now this would result in s->offset = -0x1000 which is already weird
-> >>> enough.
-> >>> Offset is unsigned (and 32bit) so this will actually look like
-> >>> s->offset = 0xfffff000 then, which isn't much better.
-> >>> And then sg_phys(s) = 0x902e64000 (instead of 0x802e64000) and
-> >>> we'll map some random memory in iommu_map_sg_atomic and a little bit later
-> >>> everything explodes.
-> >>>
-> >>> Now I could probably adjust the phys addr backwards and make sure offset is
-> >>> always positive (and possibly larger than PAGE_SIZE) and later restore it
-> >>> in __finalise_sg then but I feel like that's pushing this a little bit too far.
-> >>
-> >> Yes, that's what I meant. At a quick guess, something like the
-> >> completely untested diff below.
-> > 
-> > That unfortunately results in unaligned mappings
+> > Yes, that seems sensible. But please limit them to the CPU port. Maybe
+> > return -EINVAL for other ports.
 > 
-> You mean it even compiles!? :D
+> Hmm. Don't we want ports that are "MAC like" to behave "MAC like" ?
+> In other words, shouldn't a DSA port that can be connected to an
+> external PHY should accept the same properties as a conventional
+> Ethernet MAC e.g. in a SoC device?
 
-I was more impressed that it already almost worked correctly :)
-
-> 
-> > [    9.630334] iommu: unaligned: iova 0xbff40000 pa 0x0000000801a3b000 size 0x4000 min_pagesz 0x4000
-> > 
-> > I'll take a closer look later this week and see if I can fix it.
-> 
-> On reflection, "s->offset ^ s_iova_off" is definitely wrong, that more 
-> likely wants to be "s->offset & ~s_iova_off".
-> 
-> Robin.
-> 
-
-
-If I change
-
-		sg_set_page(s, phys_to_page(sg_phys(s)), s_length,
-			    s_iova_off & ~PAGE_MASK);
-
-in __finalise_sg (and the same thing in __invalidate_sg) to
-
-		sg_set_page(s, phys_to_page(sg_phys(s) + s_iova_off), s_length,
-			    s_iova_off & ~PAGE_MASK);
-
-then it also restores the original fields correctly.
-
-
-What is the proper way to credit you for coming up with this?
-Do you create the commit and I apply it to my local tree and
-include it in my submission once I have fixed the other
-issues? Or do I create the commit and put a Suggested-by
-in the message?
-
-
-Either way, here's the patch that I have right now:
-
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 7ce74476699d..ba31dc59566d 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -907,8 +907,8 @@ static int __finalise_sg(struct device *dev, struct scatterlist *sg, int nents,
- 		unsigned int s_length = sg_dma_len(s);
- 		unsigned int s_iova_len = s->length;
-
--		s->offset += s_iova_off;
--		s->length = s_length;
-+		sg_set_page(s, phys_to_page(sg_phys(s) + s_iova_off), s_length,
-+			    s_iova_off & ~PAGE_MASK);
- 		sg_dma_address(s) = DMA_MAPPING_ERROR;
- 		sg_dma_len(s) = 0;
-
-@@ -952,10 +952,11 @@ static void __invalidate_sg(struct scatterlist *sg, int nents)
- 	int i;
-
- 	for_each_sg(sg, s, nents, i) {
--		if (sg_dma_address(s) != DMA_MAPPING_ERROR)
--			s->offset += sg_dma_address(s);
- 		if (sg_dma_len(s))
--			s->length = sg_dma_len(s);
-+			sg_set_page(s,
-+				    phys_to_page(sg_phys(s) + sg_dma_address(s)),
-+				    sg_dma_len(s),
-+				    sg_dma_address(s) & ~PAGE_MASK);
- 		sg_dma_address(s) = DMA_MAPPING_ERROR;
- 		sg_dma_len(s) = 0;
- 	}
-@@ -1031,15 +1032,16 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	 * stashing the unaligned parts in the as-yet-unused DMA fields.
- 	 */
- 	for_each_sg(sg, s, nents, i) {
--		size_t s_iova_off = iova_offset(iovad, s->offset);
-+		phys_addr_t s_phys = sg_phys(s);
-+		size_t s_iova_off = iova_offset(iovad, s_phys);
- 		size_t s_length = s->length;
- 		size_t pad_len = (mask - iova_len + 1) & mask;
-
- 		sg_dma_address(s) = s_iova_off;
- 		sg_dma_len(s) = s_length;
--		s->offset -= s_iova_off;
- 		s_length = iova_align(iovad, s_length + s_iova_off);
--		s->length = s_length;
-+		sg_set_page(s, phys_to_page(s_phys - s_iova_off),
-+			    s_length, s->offset & ~s_iova_off);
-
- 		/*
- 		 * Due to the alignment of our single IOVA allocation, we can
-
-
-
-
-
-Sven
++1, I thought the whole purpose of the discussion was to stop singling
+out the CPU port as being special in any way w.r.t. RGMII delays.
