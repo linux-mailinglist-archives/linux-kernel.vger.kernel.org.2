@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DDE3E881C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145E33E8820
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhHKCoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 22:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        id S232359AbhHKCos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 22:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbhHKCoh (ORCPT
+        with ESMTP id S232553AbhHKCoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 22:44:37 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA5C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:14 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id n12so77881plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:14 -0700 (PDT)
+        Tue, 10 Aug 2021 22:44:44 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FAFC06179B
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:18 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso7337374pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=32CCkzzdwlBxBR5R3R3lQIa/BUxHULX8DF1l6bUu8Gg=;
-        b=MrvkA+8UoYyZJMGfbINoSZj40Z+N4JQ9I+NievWkQ2fR4dqQzEEvM7whbnBjgjGSmv
-         l0nrF9dUjZOZJuu1L8+giXIxKKnkMMqME0MQSJQCkXZaC5uCZvyEgAU+e6jaPTaIs+Jt
-         nWKhDYvv2sA5nS684Pwkv8J+1ViFVgH/xaDZE=
+        bh=FhJsQrtI0mlERMxw9DUQORRBKVECLUnsn0dwH6DWscI=;
+        b=GaECZtBIkJz6AyK40abK6J/+xb1of30F2yKMSOfbnFJzZa+eIrW9GbunW+ibsd9In3
+         7Kc5Pg0qEdwK3TJRv5MsTWa+CRah7ae+e1BOe+EFrRArcSSxhsolZ43znN4wQRc1PCPu
+         nPEKIZszTZB/NEcILNd/AZkE7jqyO4WOqXV1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=32CCkzzdwlBxBR5R3R3lQIa/BUxHULX8DF1l6bUu8Gg=;
-        b=ot8rt2Bf338/kn30gR3bAcbeWywfs7zz5TZLaRqU2uaStaBLFkDddXFwOjBFUkYG+S
-         Wqnf4yONprri6SAhP9kMcUuRNoglfVXkL0G7aQ454N/+bAHTN3QUZhipi4Q2ghbSC4Oo
-         RtActC15spkpY6m9QvqLBTC2oxp1EqD2bHmmAIj39qEktcnfeC56xnZlNCBINS4VWRNZ
-         BoDLOzHgHJd2tF3o6sc84Al37Pw/OQLYF/NeuhlOgb3UcL2ZTpJ/mI5bD8pObS+HS4Q4
-         NVisTiOua44ksxP9Jpd0viPcQ1WDBxWytGg4vB4wyI9NYWXMysGteOIj0LHE9+i4EZtx
-         pNqA==
-X-Gm-Message-State: AOAM531KUEVL6pug99DN4x4JkufnB6EYGeU4I1dLoSc321fzFJE6JVf/
-        QPzTQmPGGr9cvlikhe2anh0dbQ==
-X-Google-Smtp-Source: ABdhPJy2axgHyiRzRqB0mBc5KbCk2yWjNcqP8qah7TL56kK7YEtNcGf0hUpmuLezpBSWmj7A8FmJjw==
-X-Received: by 2002:a65:6099:: with SMTP id t25mr239595pgu.85.1628649854506;
-        Tue, 10 Aug 2021 19:44:14 -0700 (PDT)
+        bh=FhJsQrtI0mlERMxw9DUQORRBKVECLUnsn0dwH6DWscI=;
+        b=iyzh3XOLPr9wjKzbXMWS/H5HSnqL71qwB1bkPTR+q/hYOLCMREFNWB09ODxGQOeJ9z
+         Z+ZGLf+yValWD/szLS8X0Kta8MSOevtvfbmrSIpUY4gVoXxiby2/DK2VT7NZ0RP67rIo
+         ihVIYHfmrILpL4IwiDvHwC/oe3wkRh5Zy70xID0CcbY5lnVyzMCs2lUofKjr6/a376L7
+         YcwYxmJQG7uDmRu5jwn1oCaH9vbwwI0xw/9Ve7/TbLIU0fTbVL3/nI85sRyBvorUudWD
+         TWRUuYr04ZBHeQBmR4I/zirXr6gzA/P2I2ACMotQTQI2tzs3wz5EUARCq26jM1CaoOpz
+         PsWQ==
+X-Gm-Message-State: AOAM530FS+CEDwrm3gSXajabckvhngQ3wRtw/yhiXjvODMeXbjrXWTYO
+        ThFU7oaci5JEl7CID8NQHCdLbA==
+X-Google-Smtp-Source: ABdhPJywf14WhUCr12O+J7cLL1Oy8A8X6l/SjDM/es4+ywB1SrthLhZtomuPe2Vx+un8ayRcrCU0eQ==
+X-Received: by 2002:a63:5506:: with SMTP id j6mr853602pgb.19.1628649858038;
+        Tue, 10 Aug 2021 19:44:18 -0700 (PDT)
 Received: from localhost ([2401:fa00:8f:203:1e5c:70cb:3289:1b5b])
-        by smtp.gmail.com with UTF8SMTPSA id 128sm890278pfe.55.2021.08.10.19.44.12
+        by smtp.gmail.com with UTF8SMTPSA id k6sm10298046pjj.52.2021.08.10.19.44.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 19:44:14 -0700 (PDT)
+        Tue, 10 Aug 2021 19:44:17 -0700 (PDT)
 From:   David Stevens <stevensd@chromium.org>
 X-Google-Original-From: David Stevens <stevensd@google.com>
 To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
@@ -52,9 +52,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>
-Subject: [PATCH v3 2/5] dma-iommu: fix arch_sync_dma for map
-Date:   Wed, 11 Aug 2021 11:42:44 +0900
-Message-Id: <20210811024247.1144246-3-stevensd@google.com>
+Subject: [PATCH v3 3/5] dma-iommu: add SKIP_CPU_SYNC after syncing
+Date:   Wed, 11 Aug 2021 11:42:45 +0900
+Message-Id: <20210811024247.1144246-4-stevensd@google.com>
 X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
 In-Reply-To: <20210811024247.1144246-1-stevensd@google.com>
 References: <20210811024247.1144246-1-stevensd@google.com>
@@ -66,65 +66,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Stevens <stevensd@chromium.org>
 
-When calling arch_sync_dma, we need to pass it the memory that's
-actually being used for dma. When using swiotlb bounce buffers, this is
-the bounce buffer. Move arch_sync_dma into the __iommu_dma_map_swiotlb
-helper, so it can use the bounce buffer address if necessary. This also
-means it is no longer necessary to call iommu_dma_sync_sg_for_device in
-iommu_dma_map_sg for untrusted devices.
+After syncing in map/unmap, add the DMA_ATTR_SKIP_CPU_SYNC flag so
+anything that uses attrs later on will skip any sync work that has
+already been completed. In particular, this skips copying from the
+swiotlb twice during unmap.
 
-Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
 Signed-off-by: David Stevens <stevensd@chromium.org>
 ---
- drivers/iommu/dma-iommu.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/iommu/dma-iommu.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 54e103b989d9..4f0cc4a0a61f 100644
+index 4f0cc4a0a61f..be0214b1455c 100644
 --- a/drivers/iommu/dma-iommu.c
 +++ b/drivers/iommu/dma-iommu.c
-@@ -576,6 +576,9 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
- 		memset(padding_start, 0, padding_size);
- 	}
- 
-+	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-+		arch_sync_dma_for_device(phys, org_size, dir);
-+
- 	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
- 	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
- 		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
-@@ -848,14 +851,9 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+@@ -859,8 +859,11 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+ static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+ 		size_t size, enum dma_data_direction dir, unsigned long attrs)
  {
- 	phys_addr_t phys = page_to_phys(page) + offset;
- 	bool coherent = dev_is_dma_coherent(dev);
--	dma_addr_t dma_handle;
- 
--	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
-+	return __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
- 			coherent, dir, attrs);
--	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
--	    dma_handle != DMA_MAPPING_ERROR)
--		arch_sync_dma_for_device(phys, size, dir);
--	return dma_handle;
+-	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
++	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+ 		iommu_dma_sync_single_for_cpu(dev, dma_handle, size, dir);
++		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
++	}
++
+ 	__iommu_dma_unmap_swiotlb(dev, dma_handle, size, dir, attrs);
  }
  
- static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
-@@ -998,12 +996,12 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	    iommu_deferred_attach(dev, domain))
- 		return 0;
- 
--	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
--		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
--
+@@ -999,8 +1002,10 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
  	if (dev_is_untrusted(dev))
  		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
  
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-+		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
-+
+-	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
++	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+ 		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
++		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
++	}
+ 
  	/*
  	 * Work out how much IOVA space we need, and align the segments to
- 	 * IOVA granules for the IOMMU driver to handle. With some clever
+@@ -1068,8 +1073,10 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+ 	struct scatterlist *tmp;
+ 	int i;
+ 
+-	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
++	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+ 		iommu_dma_sync_sg_for_cpu(dev, sg, nents, dir);
++		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
++	}
+ 
+ 	if (dev_is_untrusted(dev)) {
+ 		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
 -- 
 2.32.0.605.g8dce9f2422-goog
 
