@@ -2,95 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9373E8774
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B723E8775
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235880AbhHKAzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57634 "EHLO mail.kernel.org"
+        id S235929AbhHKA4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:56:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23454 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231423AbhHKAzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:55:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA8C560EBC;
-        Wed, 11 Aug 2021 00:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628643321;
-        bh=DTAl8Wi9FD9YleLLXVNMvg0hoef/6IRV9MZimfYACKs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=S/on2pMTwZaJSwkcXzWZVlrGebs2GrailsKp9itDSYbLhN3bH7whN4Iu24MX2FEO+
-         wG7Ks4XZPTTBGeuIbXwD+949oawDjbNMcEtItsLRBsGTiDZaQE30PfF+YfaHcWFbvQ
-         2WGyWZRYRRw/5+V5vOxC6Dh7kB2cCz/GThFIeJO3eSxviYttpxXux2Z5CisxLUc1JQ
-         /mAqsCdVOe65QDcTV6lwlDO/w3Rr9OYK14IUXWc37IzOLhofTERPlWKF2vZmbEf7+Y
-         mQc1q9bJbb0y8iL6U9dIG0f+ewoQCAMg4CO3YVxCj5uGpoxfMEdzKMErl4bh5OuxkS
-         fvPVsOKVdmPFg==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] staging: r8188eu: os_dep: Hoist vmalloc.h include into osdep_service.h
-Date:   Tue, 10 Aug 2021 17:55:05 -0700
-Message-Id: <20210811005505.3953122-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc1
+        id S231423AbhHKA4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:56:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="202209309"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="202209309"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 17:56:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="506664260"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2021 17:56:09 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mDcXQ-000L6K-Bb; Wed, 11 Aug 2021 00:56:08 +0000
+Date:   Wed, 11 Aug 2021 08:55:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 8ae9e3f63865bc067c144817da9df025dbb667f2
+Message-ID: <61131ff2.vgqQfA95qPx69m/g%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 71f09c5ae9d2 ("staging: r8188eu: Remove wrapper around
-vfree"), the driver fails to build on Hexagon due to an implicit
-declaration in several different files:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 8ae9e3f63865bc067c144817da9df025dbb667f2  x86/mce/inject: Replace deprecated CPU-hotplug functions.
 
-drivers/staging/r8188eu/core/rtw_mlme.c:129:3: error: implicit
-declaration of function 'vfree'
-[-Werror,-Wimplicit-function-declaration]
-                vfree(pmlmepriv->free_bss_buf);
-                ^
-1 error generated.
+elapsed time: 723m
 
-Previously, vfree() was only called in osdep_service.c, which includes
-vmalloc.h for vmalloc() and vfree(). Now, the driver relies on vfree()
-getting implicitly included from another file.
+configs tested: 122
+configs skipped: 64
 
-Hoist the vmalloc.h include from osdep_service.c to osdep_service.h so
-that the driver continues to build fine on all architectures.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Fixes: 71f09c5ae9d2 ("staging: r8188eu: Remove wrapper around vfree")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210810
+arm                            zeus_defconfig
+arm                             rpc_defconfig
+powerpc                     sbc8548_defconfig
+mips                          rb532_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                           ip28_defconfig
+powerpc                     tqm8541_defconfig
+i386                             alldefconfig
+powerpc                      bamboo_defconfig
+arm                          pxa910_defconfig
+powerpc                      ep88xc_defconfig
+mips                    maltaup_xpa_defconfig
+arm                       versatile_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                            e55_defconfig
+powerpc                          g5_defconfig
+arm                      footbridge_defconfig
+csky                                defconfig
+xtensa                          iss_defconfig
+xtensa                    xip_kc705_defconfig
+arc                      axs103_smp_defconfig
+arm                            lart_defconfig
+mips                      maltasmvp_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                     mpc83xx_defconfig
+mips                      loongson3_defconfig
+microblaze                      mmu_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210810
+x86_64               randconfig-a006-20210810
+x86_64               randconfig-a003-20210810
+x86_64               randconfig-a005-20210810
+x86_64               randconfig-a002-20210810
+x86_64               randconfig-a001-20210810
+i386                 randconfig-a004-20210809
+i386                 randconfig-a005-20210809
+i386                 randconfig-a006-20210809
+i386                 randconfig-a002-20210809
+i386                 randconfig-a001-20210809
+i386                 randconfig-a003-20210809
+i386                 randconfig-a004-20210810
+i386                 randconfig-a002-20210810
+i386                 randconfig-a001-20210810
+i386                 randconfig-a003-20210810
+i386                 randconfig-a006-20210810
+i386                 randconfig-a005-20210810
+i386                 randconfig-a004-20210808
+i386                 randconfig-a005-20210808
+i386                 randconfig-a006-20210808
+i386                 randconfig-a002-20210808
+i386                 randconfig-a001-20210808
+i386                 randconfig-a003-20210808
+i386                 randconfig-a011-20210810
+i386                 randconfig-a015-20210810
+i386                 randconfig-a013-20210810
+i386                 randconfig-a014-20210810
+i386                 randconfig-a016-20210810
+i386                 randconfig-a012-20210810
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210810
+x86_64               randconfig-a013-20210810
+x86_64               randconfig-a011-20210810
+x86_64               randconfig-a012-20210810
+x86_64               randconfig-a016-20210810
+x86_64               randconfig-a014-20210810
+x86_64               randconfig-a015-20210810
+x86_64               randconfig-a016-20210809
+x86_64               randconfig-a012-20210809
+x86_64               randconfig-a013-20210809
+x86_64               randconfig-a011-20210809
+x86_64               randconfig-a014-20210809
+x86_64               randconfig-a015-20210809
+
 ---
- drivers/staging/r8188eu/include/osdep_service.h | 1 +
- drivers/staging/r8188eu/os_dep/osdep_service.c  | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index 7e002009f9a0..0d1419af8274 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -39,6 +39,7 @@
- #include <linux/interrupt.h>	/*  for struct tasklet_struct */
- #include <linux/ip.h>
- #include <linux/kthread.h>
-+#include <linux/vmalloc.h>
- 
- #include <linux/usb.h>
- #include <linux/usb/ch9.h>
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index 910da0f0004a..9ea4e1a7c45f 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -6,7 +6,6 @@
- #include "../include/osdep_service.h"
- #include "../include/drv_types.h"
- #include "../include/recv_osdep.h"
--#include "../include/linux/vmalloc.h"
- #include "../include/rtw_ioctl_set.h"
- 
- /*
-
-base-commit: ae7471cae00a432d1c9692452b1b9175a8f3c1b3
--- 
-2.33.0.rc1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
