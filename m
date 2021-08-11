@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3AC3E97EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAAF3E97ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhHKSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        id S230273AbhHKStg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHKSst (ORCPT
+        with ESMTP id S231243AbhHKStQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:48:49 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E53C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:48:25 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id db14so1677665qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:48:25 -0700 (PDT)
+        Wed, 11 Aug 2021 14:49:16 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8775C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:48:52 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id n1-20020a9d1e810000b0290514da4485e4so1782115otn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:48:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QXzKXvFp1VaOu436UKEuohFjo8wrYLVba4+cewsAvpA=;
-        b=u100rSlqWXrGMEJnMlU3PRU56IUsCPjCokscAfgDNwK+higO44digKOiRDj5BQSPpM
-         ZS58RGwL7C8iNB60vAmnsqFazlSEsmtXaQOBkf+X74GwqjHkEbSNLAWQsAcs5V5kRRqI
-         JUid3RalT/VT5LESVj2bhx3WcKdSyKkKPt4UKRPSqi8r8ju/snUnvUjNtIQfCg0uhTMp
-         TCXMz0SZZynSwM7sKSGAfkAOZqT/FUwkuG5zT4IaShb7FRMwq2tts3yTsBsu+zx0T6q3
-         XXZycBqy9JAk5jNE2JK+C5crsaJP4+nxLDWo32qzl2i7pk7LsFUOet4dY9Z6jjSBUYm+
-         u0QA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=vnWMVNHKYEEeZ37C83kTGsgTXsBJBBrZvQ8KfTHY4Zs=;
+        b=gz+0atFneoycooO1m9dLELLImmYCE2ILiC9wwR6svjAcqs7Ap3v+BXwTxDV/CRCt3m
+         CQgsMLbSook3vXEQeOPMPSdcl73w1GB6E505eLf/FaWHeKXp7CPMoCROq7vDHlfdnbO8
+         m7BLmdDqyjVwTYh2gvPOjJqHxMf3HgNP49rWUd/kJXh+ZWyHaVSx8rc2lP6a3f2NwPkq
+         om8mjdHlbCpFUKVzj5OG/jWFbBbZdHE4v2L8VBAF3PhRPVdtHMlecZX8XdPTURPwVOdq
+         6JxYu4FkQ9Ngizgp7/vG1xRk4UnAYnBjLM48bXZY0mwpKBDrN9mEokELEid5939bB60e
+         24aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QXzKXvFp1VaOu436UKEuohFjo8wrYLVba4+cewsAvpA=;
-        b=mIVjxj4scFrojylsNa5p0BJQzQ+WQ+tTwpc/+xRUBPhEcV7OsB5/0P7x4806GCA49i
-         WPhUyhSYfVEa1xhl8EaltmSVpbSl1rAyRAN2vqzJPN8esS79e5pSAJF5snhUwVtLaPEg
-         dmev8/do/ANT3oxEv3RMHkvtcbxRPZgAIllvT1qiFL658Xu8OjiiU07F/+I+iY8crqTK
-         FQ9C3ARpHSi4OGgC7LZSWVCBWeIVqUVgeDs10+PjcR0ASyTX/3Ww0gNHWaCpAqcYBrHc
-         2ifdTEc55fOT9ZJ/YZA8XqtgRT3Knid92S76PgJUS67AxMYwpPVeUOzJjkFgWcmG2UBr
-         QBFw==
-X-Gm-Message-State: AOAM533Rh6wfHPI6UV6bXx8es/+M36CLL6U61lqvJ579DY07nYZ+RSNd
-        Ax9KbTP2OOhYx2qIrekjyqIFtQ==
-X-Google-Smtp-Source: ABdhPJyWn4X+uyzoMtbmfnwzp3LCwRx5aYuUQZj4R2Ml+aXeDMIkWiyWJn4gv55p1ioBHtAUt/EsXw==
-X-Received: by 2002:a0c:e84a:: with SMTP id l10mr55172qvo.3.1628707704201;
-        Wed, 11 Aug 2021 11:48:24 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d9fa])
-        by smtp.gmail.com with ESMTPSA id u3sm8098767qke.95.2021.08.11.11.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:48:23 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 14:48:21 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] cgroup/cpuset: Enable memory migration for cpuset v2
-Message-ID: <YRQbdTgprUJyuis7@cmpxchg.org>
-References: <20210811163035.1977-1-longman@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vnWMVNHKYEEeZ37C83kTGsgTXsBJBBrZvQ8KfTHY4Zs=;
+        b=TAGM94lKwaUcK2F+EBavxSlI2AkHmjcp0cdxqSOUadFZhErf0FDVozUR734jrbyXcQ
+         uwOrtNeebR7d7Pk2LGTeWcc66gOsq0/yz7HiP+lMQlHPJHOYfk+96XbycQEkGkR0a8gU
+         uJdCSuJQcALoJ7jhf3P2OhJHDPqcCRwLxag0UvS+CLwd8UuArAcOhbLIky+ukVG7+1HI
+         OEx94MTYqvCfeS7gBZYaL3Pfm+Hg1I478sXpp9GlJZH2ryqSyWqfIjLK3TnC7lVdS+wi
+         RL60OgpTyGzlbWjD1KvP/xz53w0qJR214JFx9QEkevzGcCRaKszxG2TmtaKHwjFJA48r
+         Y6OA==
+X-Gm-Message-State: AOAM530uMANs51fBQ8SjlfIXOXtaZPP6hBqBodyFC3giklliufTvXLki
+        fzS70YNSkqMTuhzGCDgVQKZr2DTbOGvDQw==
+X-Google-Smtp-Source: ABdhPJyOR5e7XHLhqPPGLNslcO5qqQqeQg9c1mVjiCQUOSkcjKzI+JYT2891DDy/kvZ0R6QN6vmz3A==
+X-Received: by 2002:a05:6830:30ac:: with SMTP id g12mr284072ots.209.1628707732117;
+        Wed, 11 Aug 2021 11:48:52 -0700 (PDT)
+Received: from [192.168.68.112] (192-241-58-140.ip.ctc.biz. [192.241.58.140])
+        by smtp.gmail.com with ESMTPSA id d26sm1539553oos.41.2021.08.11.11.48.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 11:48:51 -0700 (PDT)
+Subject: Re: [PATCH] seccomp: Fix setting number of loaded filters
+To:     Kees Cook <keescook@chromium.org>,
+        Wiktor Garbacz <wiktorg@google.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org
+References: <20210810125158.329849-1-wiktorg@google.com>
+ <202108111144.3519134B5@keescook>
+From:   Hsuan-Chi Kuo <hsuanchikuo@gmail.com>
+Message-ID: <96d45778-6011-81e2-2fec-3f07ee8b6e15@gmail.com>
+Date:   Wed, 11 Aug 2021 13:48:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811163035.1977-1-longman@redhat.com>
+In-Reply-To: <202108111144.3519134B5@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:30:35PM -0400, Waiman Long wrote:
-> When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
-> to one of the new cpus if it is not there already. For memory, however,
-> they won't be migrated to the new nodes when cpuset.mems changes. This is
-> an inconsistency in behavior.
-> 
-> In cpuset v1, there is a memory_migrate control file to enable such
-> behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
-> for cpuset v2 so that we have a consistent set of behavior for both
-> cpus and memory.
-> 
-> There is certainly a cost to make memory migration the default, but it
-> is a one time cost that shouldn't really matter as long as cpuset.mems
-> isn't changed frequenty.  Update the cgroup-v2.rst file to document the
-> new behavior and recommend against changing cpuset.mems frequently.
-> 
-> Since there won't be any concurrent access to the newly allocated cpuset
-> structure in cpuset_css_alloc(), we can use the cheaper non-atomic
-> __set_bit() instead of the more expensive atomic set_bit().
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
->  kernel/cgroup/cpuset.c                  | 6 +++++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 5c7377b5bd3e..47c832ad1322 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2056,6 +2056,12 @@ Cpuset Interface Files
->  	The value of "cpuset.mems" stays constant until the next update
->  	and won't be affected by any memory nodes hotplug events.
->  
-> +	Setting a non-empty value to "cpuset.mems" causes memory of
-> +	tasks within the cgroup to be migrated to the designated nodes if
-> +	they are currently using memory outside of the designated nodes.
-> +	There is a cost for this migration.  So "cpuset.mems" shouldn't
-> +	be changed frequently.
+Thanks.
 
-The migration skips over pages that are (temporarily) off the LRU for
-reclaim, compaction etc. so it can leave random pages behind.
+I was just trying to understand how seccomp works by code reading and 
+spotted this bug.
 
-In practice it's probably fine, but it probably makes sense to say
-it's advisable to set this config once before the workload launches
-for best results, and not rely too much on changing things around
-post-hoc, due to cost you pointed out but also due to reliability.
 
-Otherwise no objection from me.
+On 8/11/21 1:46 PM, Kees Cook wrote:
+> On Tue, Aug 10, 2021 at 02:51:58PM +0200, Wiktor Garbacz wrote:
+>> The value is only reported through procfs so this
+>> is purely cosmetic.
+> Hi,
+>
+> Thanks for the patch! I thought this had already been fixed, but I see I
+> dropped the ball. :( Sorry!
+>
+> I'll get the original fix landed[1], and add you as a reporter.
+>
+> Out of curiosity, how did you (or Hsuan-Chi Kuo) find this? Broken
+> behavior, code reading, static analysis?
+>
+> Thanks!
+>
+> -Kees
+>
+> [1] https://lore.kernel.org/lkml/20210304233708.420597-1-hsuanchikuo@gmail.com/
+>
+>> Signed-off-by: Wiktor Garbacz <wiktorg@google.com>
+>> ---
+>>   kernel/seccomp.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+>> index 057e17f3215d..6469eca8078c 100644
+>> --- a/kernel/seccomp.c
+>> +++ b/kernel/seccomp.c
+>> @@ -602,7 +602,7 @@ static inline void seccomp_sync_threads(unsigned long flags)
+>>   		smp_store_release(&thread->seccomp.filter,
+>>   				  caller->seccomp.filter);
+>>   		atomic_set(&thread->seccomp.filter_count,
+>> -			   atomic_read(&thread->seccomp.filter_count));
+>> +			   atomic_read(&caller->seccomp.filter_count));
+>>   
+>>   		/*
+>>   		 * Don't let an unprivileged task work around
+>> -- 
+>> 2.32.0.605.g8dce9f2422-goog
+>>
