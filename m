@@ -2,63 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4FA3E9409
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF613E9413
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhHKOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:55:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:52452 "EHLO foss.arm.com"
+        id S232762AbhHKO6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:58:16 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45248 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232597AbhHKOzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:55:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C12CD1063;
-        Wed, 11 Aug 2021 07:55:15 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3901A3F718;
-        Wed, 11 Aug 2021 07:55:14 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:55:08 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
- acpi_os_map_iomem() cast
-Message-ID: <20210811145508.GA3650@lpieralisi>
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
- <20210802152359.12623-2-lorenzo.pieralisi@arm.com>
- <YRKtEDycefrZLB3X@infradead.org>
- <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
- <YRPZ2Kqb/MFggHzQ@infradead.org>
+        id S232540AbhHKO6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:58:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=sxjpe8U8+ZHfXcYWBfce/Brxk/9js2ihphx4OJMweFQ=; b=t9ER4x2tadeKCwr5LvGzGB1eyd
+        oWciKQAKKiAWz9ZAXpZea+XXqPvX3Y0r1TnLek/6rp76ViDg8rTeftpLprtlXKMsVxdKLR9/CtnUj
+        Rpe18YeOPadXB5ZhcTYYg+PH9LmOgKC9kzMw7JqGn7hJOKz36F+NHmhhle6jEbKv1SFg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDpfo-00H8L8-Nm; Wed, 11 Aug 2021 16:57:40 +0200
+Date:   Wed, 11 Aug 2021 16:57:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, robert.marko@sartura.hr,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v2 1/3] net: mdio: Add the reset function for IPQ MDIO
+ driver
+Message-ID: <YRPlZGXWJGoLRSSN@lunn.ch>
+References: <20210810133116.29463-1-luoj@codeaurora.org>
+ <20210810133116.29463-2-luoj@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRPZ2Kqb/MFggHzQ@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210810133116.29463-2-luoj@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 03:08:24PM +0100, Christoph Hellwig wrote:
-> On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
-> > The whole problem we are solving here is that ACPI, being based on
-> > x86, conflates MMIO mappings with memory mappings, and has been using
-> > the same underlying infrastructure for either.
-> 
-> So let's fix that problem instead of papering over it.
+> +	ret = clk_prepare_enable(priv->mdio_clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
 
-Patch (3) in this series is a fix - I would ask whether it makes
-sense to merge patches (2-3) now and think about reworking the current
-ACPI IO/MEM mapping API later, it can be an invasive change for a fix,
-assuming we agree on how to rework the ACPI IO/MEM mapping API.
+This can be simplified to just:
 
-Lorenzo
+     return clk_prepare_enable(priv->mdio_clk);
+
+     Andrew
