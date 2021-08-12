@@ -2,173 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C4F3EA797
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C413EA79B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238095AbhHLPbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:31:07 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47424 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236547AbhHLPbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:31:05 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 557C91FF5B;
-        Thu, 12 Aug 2021 15:30:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628782239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qi9jWdZSJj/m82RJPqM2XKkZ0Klj1CgP0gfzMHD9/qk=;
-        b=YVLHPWfepY5REPMwTCV+MUl5T6hDCOK33Ksvk1CGWS5eHw1Ns6hqOHfPQr0F3D3sA0ERlo
-        uaX67Bzcp19Sl0dZAs/RfDjieMLLd2Zwi49fuyegZt2MBDOYBVNsJoybvdf16FGut457Zu
-        PQbY8E5bjVjiu7IUklsUhv9MMIJCAJA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628782239;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qi9jWdZSJj/m82RJPqM2XKkZ0Klj1CgP0gfzMHD9/qk=;
-        b=bT1Ek2CwBp+ljIqbnci9w6AnNiyWIz806gqxJmxHQeQLYqVlmT0KpWQAJSjvbfGdjg9Mu3
-        M6Ah2igmp3DbqQDA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A52C013AC3;
-        Thu, 12 Aug 2021 15:30:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id WMngJp4+FWF+cwAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 15:30:38 +0000
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-9-clin@suse.com>
- <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
- <20210809080346.GO30984@dragon>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Subject: Re: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
-Message-ID: <3c65f75d-724f-a438-1e22-6baeb745a8e5@suse.de>
-Date:   Thu, 12 Aug 2021 17:30:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238138AbhHLPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:31:41 -0400
+Received: from mout.gmx.net ([212.227.17.20]:42799 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237922AbhHLPbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628782265;
+        bh=/Gr1GdWHDT8BPNnA+VcX8W7t9qtsbNmaU/ibJFzxrAw=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=RehEff0aaD4fYUZZodNyDDz0LPXHZXp8uopXRIu2aCzCdI1hLtn2YWcaTxSGeW5LY
+         Szkd7OWyVMiwF7EywCF5iMoGgcRH++aUBFKPiu7ynBz+u/ChAOoQF6qCXRNGmapSn8
+         uNLYRCqQKFCxABoh3wSRHNSO0rTJFgdmP8i5OE5Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.67]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MG9g4-1mJddl1Zue-00GaHG; Thu, 12
+ Aug 2021 17:31:05 +0200
+Message-ID: <e5f39aa65a0d7d72a414556eb0c182bb8dcd1691.camel@gmx.de>
+Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Date:   Thu, 12 Aug 2021 17:31:04 +0200
+In-Reply-To: <87v94ahemj.ffs@tglx>
+References: <20210713135158.054424875@linutronix.de>
+         <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
+         <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
+         <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
+         <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
+         <87v94ahemj.ffs@tglx>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-In-Reply-To: <20210809080346.GO30984@dragon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bBgsQz8ncGOk7AnAL5btq3RL36uE+o643l7zSPqq3Ur4qw4Nx8Z
+ 3t8YFhDcSMJms//9+HL1/DAfu0F+fUkt+KLwWOjQs8hBcYONwUKmV2e6LEClilRhgRGNtjA
+ tEdjlhCOTklnTOt7kc4zGnMzUaaRSEpVYtn5/iguYiHpvdtRWiXr1NXvFfgaDYsZ++U39ii
+ dAkn1bW51h7CGDLkUMgkg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VBUL4Zl4eGM=:rT2nu6qpQvn+P0DYXg0z2p
+ AWJ+mGtetsZzOZ9+a0HnLQP3+Hl3IA2T7+FPL0qnb4eaaqS0UjeeT4/xttpL0iQuOFjDIB2m/
+ tvrzjGw7RSg/UNPTOWk1UMe6a24AZfXDI3ABuXi6GoEn0lvG6VqS9ofBkz8VPLS+Q08hOjfsN
+ tp83x0Z1PaV+GHIaPKrzwkNfKEVPxsz9sgCpaoPBXsJXxZoz2Gt1ekCYccSZ1YYD98CHeJBRq
+ SPJnn85JmbxC1o4aE32A8Opo8gQsOdVttqRsaNWsUqgKWcVAtSZy1JoYydJLUOCInGF5bhu/x
+ wBXW3zSoJqE+dy8WciklwJTg2teS09SbpZ1a9bnF2/NZ7wRw885HhMY/0prNBIpzLLgH1VDEl
+ WpzIx7VFGobUBU53t3J5Xxsd5PoMM3hWiLfuVl6qVK5ED341uQojvvXl7b+6B6q87lo3GtDX1
+ ExnknpHiZIrOaafvlqZH6P8W7uSdtWZxzlPeRVQjSUjnbMJdwwAxQhbzC1jlibVWpOowrwrPN
+ vnObWEaPF7FZAHPduMWgyP/gtJosPqOqNerYPOwLKeuMVOq57fYIQ4+7nqUyoeWxM6Kzqp+BL
+ MCDACwr7DzpoNbiclkOTU6kWSqYjXUO2izdwcikMFoccdk1kY+D7w+W0NtQON6A/aqoZkRqaS
+ iDkTpfh2Sep5UELJC8FPytoFyHx13X9Ux63pJLawsQVBmwBJJkECv8AGPEJ4dATFkC3Xixa/W
+ xL0LiHCDbT1oBt4c9Vwn2Xjm8bszqTemDeO5Q2OYfdkvzGBg2BCedIWJdwA3w+F2TV8mNJfQT
+ ngFtrRRuVDkFromMLYdLyU7iDCQ9z+nXVfEhpPDtbC6/ci37xYPGaqC12bjPhIgHLf8wpMvJN
+ cEoy+4Qh9QdWg+rO/QJx1vngF4ts2oObt/VD5CHgOj+EX8THhXJVqlhyz5Sq07PjsJ+D3JJbC
+ HwNuEXdKxMgw0l2udJI+ohR2cYGemqiiRs2otQjbWwOS3DolWxxdECrw/9U2Tm08gljjUx5QC
+ Np5AqUkzIVbXQaVGck0NE63EGuJExtCvAGF6a4dEc1cIAVFYh8wTJg1wUbI8XUIkp2oYKihdA
+ Ujp+JWqdQGsznozZk9DKkvJO20QdFNDtalF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Shawn and Krzysztof,
+On Thu, 2021-08-12 at 17:22 +0200, Thomas Gleixner wrote:
+> >
+> > Config attached just in case.
+>
+> I rather assume it's a hardware dependency. What kind of machine are you
+> using?
 
-On 09.08.21 10:03, Shawn Guo wrote:
-> On Thu, Aug 05, 2021 at 09:49:51AM +0200, Krzysztof Kozlowski wrote:
->> On 05/08/2021 08:54, Chester Lin wrote:
->>> Add a new entry for the maintenance of NXP S32G2 DT files.
->>>
->>> Signed-off-by: Chester Lin <clin@suse.com>
->>> ---
->>>  MAINTAINERS | 6 ++++++
->>>  1 file changed, 6 insertions(+)
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 36aee8517ab0..3c6ba6cefd8f 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
->>>  F:	arch/arm/mach-npcm/wpcm450.c
->>>  F:	drivers/*/*wpcm*
->>>  
->>> +ARM/NXP S32G2 ARCHITECTURE
+Desktop box is a garden variety MEDION i4790 box with an Nvidia GTX980.
+Lappy is an HP Spectre 360 i5-6200U w. i915 graphics.  Very mundane.
 
-Suggestion from NXP is to use the broader S32G name.
+	-Mike
 
->>> +M:	Chester Lin <clin@suse.com>
->>> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>> +S:	Maintained
->>> +F:	arch/arm64/boot/dts/freescale/s32g2*
->>
->> I support the idea of sub-sub-architecture maintainers but I think idea
->> of in-file addresses was preferred:
->> https://lore.kernel.org/lkml/20200830122922.3884-1-shawnguo@kernel.org/
-
-I had specifically asked Chester to add a MAINTAINERS section.
-
-Is your apparent suggestion of not accepting this MAINTAINERS patch
-based on the assumption that we're dealing with only one email address
-in three files? What do you see as the threshold to warrant a section?
-
-From my point of view, above MAINTAINERS entry is incomplete, as we
-should CC the full team working on S32G for patch review, not just
-Chester himself.
-So that would in my mind have been additional R: and L: entries in that
-MAINTAINERS section.
-
-> Thanks for reminding that the patch didn't land.  I just resent it with
-> your Reviewed-by tag added.  Thanks!
-
-Your above patch does not make clear to me what syntax we should use for
-adding email addresses to .dts[i] files now:
-
-https://lore.kernel.org/lkml/20210809081033.GQ30984@dragon/
-
-Especially when not dealing with file authors.
-
-I get the impression it is not a replacement for an F: wildcard used in
-MAINTAINERS, but rather a complement?
-
-Please understand that this is not about a single .dts file, as your
-patch suggests, but about a complete SoC family consisting of s32g*.dts*
-as well as in the future drivers specific to this platform. It seems way
-easier to specify the list of maintainers/reviewers in MAINTAINERS once
-with suitable wildcard paths, than copying them into each and every
-.dtsi and .dts file and driver .c/.h and later needing to sync multiple
-places. If a bot or user has fixes or cleanups for the S32G code, we
-want to know about it, so that NXP can consider it for their BSP
-branches and SUSE for our SLE branches, and obviously for follow-up
-patch series that are already in the works and waiting on this one.
-
-Once merged, I would expect Chester or someone from NXP to set up an
-S32G tree on kernel.org that gets integrated into linux-next and sends
-pull requests to the SoC tree maintainers without bothering i.MX and
-Layerscape maintainers. Did you handle that differently for S32V?
-
-Thanks,
-Andreas
-
-P.S. Have you checked or considered whether your script change might
-start to CC non-existing email addresses, since we wouldn't be allowed
-to remove them from copyright or authorship statements to prevent that?
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
