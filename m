@@ -2,117 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DF53EA4EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792F53EA56C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237330AbhHLMwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S237654AbhHLNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236323AbhHLMwk (ORCPT
+        with ESMTP id S235404AbhHLNRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:52:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C668DC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:52:14 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id q3so5409764edt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:52:14 -0700 (PDT)
+        Thu, 12 Aug 2021 09:17:12 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B2DC0613D5;
+        Thu, 12 Aug 2021 06:16:47 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id k5-20020a05600c1c85b02902e699a4d20cso4553540wms.2;
+        Thu, 12 Aug 2021 06:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hW2AHW2LGJWIg3Oz36vt6ea6Y6cYNr8cSKGnKNQkhWE=;
-        b=e/T/nmC7+7cvdq1AUguADrAErXb0ShX24hCl6Rw6/nVVl+VEsZkw2cFfWVHWvhaXkf
-         GOK2hW+hF689McaSUc1xPbQWNwrSKVPud1zyd1xNOSDvrFYFUEP6HhJMEVCi/03HQ3EA
-         WtvK9SC5NU+mu6BkA8LG3WOIzf0ToTVXX8SwsZlZCnCGNMHzfQrQaX8/u9OYVPU4wbfh
-         Mcd8kJ6q6vjr9U66i9JQFwihEF+BaClrepaw8VmdhO0f/Yp0xkpetNc0cP3AoIexmjyA
-         heIDosxNKfXa5zE1C5/uAMIZjG3O5oka/fhzJdf2HZV4vSJzXe6HLTiy7qxAjbPUw3tD
-         RokA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+31ueKWHEK9Ld0HlUFK7VqSg4Er3ncbHktaznur2+5c=;
+        b=FyoubiJin22pY6y9t1oNuyu5vUN6YLKc2wZ7lYpSaAt1artsZEkoftVP+Em9dMEFuU
+         3msNrA0k9agTXHRd5rzromx6w3gCpj/0PK7lsXrF0589RumQvLAbQ6dYaEX5mSSMW6dj
+         iVhGfBjw9H4t2sdQF10W5d13SR10P6kErEFrto+kOC7/H3l783LboZbg7+FN+kInQ5SY
+         0nFMlh0gIgYj74EDQqAho11+3/B65Z58iRgojnFOSOioK32nacTtDw+xWgr8Qzcv/+/f
+         qedn1HaS4YyQOhyd4TReo5NKrNjhtsFf2uoKBb/WK8iVg3hblgOZypbGFImGwq9lsAA9
+         iNRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hW2AHW2LGJWIg3Oz36vt6ea6Y6cYNr8cSKGnKNQkhWE=;
-        b=MTaVk5ESuE/EA1kdE3UIlPpq/yhIwC+njOyP+YAwjRMhhVZe4hfyN/bXjAGNtljm0G
-         kilNZ0HzVdL36ChP8Hu24zWBFsbyZg6pQhOcrj59ystmlJ7mFuKZzxB8X9esGnIObAfp
-         bIX3pOFfeH9KIMVM6ymrhIL4Zcz8UOe+5A/vmLBx0TvmQvFOs5d7Hbtq96/1O7LzhxHu
-         79ik+xwT/BKvJpG0V5r9N8jtKIunmXdgqzbUTrmara1EgSYgnYDkCgT6JOiPlCiI2AWD
-         4IkAfbPG+R67qfPmmNygXDgIW97iVOl7ONd/P/ZNdVhkTC6VwaeZolkjjEyxXqM+v3DS
-         nzLA==
-X-Gm-Message-State: AOAM5309EL/+BHu+e6Rb8+2QoHmQ9OLtxUe1+BWyENfrK1Q4ln2ly4RT
-        ljAPrjZdxPMWPOuMNEY1gRs=
-X-Google-Smtp-Source: ABdhPJx8r3AQYyHckN9/UA3uF3NV/MJLpkO8leO/8z2J/VxO8fU+Qz57FFO3S2Rv3+u0ll3GAnqBaA==
-X-Received: by 2002:aa7:c4d4:: with SMTP id p20mr5307552edr.382.1628772733392;
-        Thu, 12 Aug 2021 05:52:13 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id w5sm791941ejz.25.2021.08.12.05.52.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+31ueKWHEK9Ld0HlUFK7VqSg4Er3ncbHktaznur2+5c=;
+        b=QY2k7em/GVVzteEmRNRafH2f/mXCf8PK5g2cPXmY1rONsiLxACunS9GyZflRlGv1k2
+         Tdt7BGEGTXHLofm6kBnCQUM+NDLp6tEW8xfHBLnTJBr3qahNMQZo/LG+JJblX1Bwl1z0
+         xMlLqlWrcd0+vln2csi3+BAj2p7Ox2oIC15FUbHi2G5+pm6GuHcyvnzhXygz/RhNIBnv
+         l0WH2rfP1wibjhPszdyyE4DeBys2rSdOIEjfccLE9ypnbdIVttyJH59wXusDv5C6Io+B
+         wp1aC5AqwbS/Ez9/lAeIEfQsL292QSR/UigxQOptMlLCQNxrdX4CKGircxM5Y/LQrASj
+         hmXw==
+X-Gm-Message-State: AOAM532L5yn9Q3UwSEM7WuWm0htsoGm2z3vX1PtTn5nGsQaLQ7JRbH1J
+        2VoMMFuvpb9uaLFZeEtKDlk=
+X-Google-Smtp-Source: ABdhPJz24og6hk2s3mMcE4r6/Chwlj+eYbXKQsI/avnzLDZur2B4noxvos7sb+RzE2W5Lj5mli47tw==
+X-Received: by 2002:a7b:cc07:: with SMTP id f7mr4086698wmh.134.1628774205636;
+        Thu, 12 Aug 2021 06:16:45 -0700 (PDT)
+Received: from Blackbeard.. (static.214.212.76.144.clients.your-server.de. [144.76.212.214])
+        by smtp.gmail.com with ESMTPSA id o125sm2857070wme.15.2021.08.12.06.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 05:52:12 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] staging: r8188eu: Remove all 5GHz network types
-Date:   Thu, 12 Aug 2021 14:52:11 +0200
-Message-ID: <271471387.QXUees3VCy@localhost.localdomain>
-In-Reply-To: <13cdcd41-20f6-3b8e-0515-5066b1fdb49c@lwfinger.net>
-References: <20210812002519.23678-1-fmdefrancesco@gmail.com> <20210812002519.23678-2-fmdefrancesco@gmail.com> <13cdcd41-20f6-3b8e-0515-5066b1fdb49c@lwfinger.net>
+        Thu, 12 Aug 2021 06:16:44 -0700 (PDT)
+From:   JafarAkhondali <jafar.akhoondali@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>, jlee@suse.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        mgross@linux.intel.com
+Cc:     JafarAkhondali <jafar.akhoondali@gmail.com>
+Subject: [PATCH v5] platform/x86: acer-wmi: Add Turbo Mode support for Acer PH315-53
+Date:   Thu, 12 Aug 2021 17:23:07 +0430
+Message-Id: <20210812125307.1749207-1-jafar.akhoondali@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 12, 2021 4:09:49 AM CEST Larry Finger wrote:
-> On 8/11/21 7:25 PM, Fabio M. De Francesco wrote:
-> > Remove all 5Ghz network types. r8188eu works on
-> > 802.11bgn standards and on 2.4Ghz band.
-> > 
-> > Signed-off-by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >   drivers/staging/r8188eu/core/rtw_ap.c         | 13 ++---------
-> >   drivers/staging/r8188eu/core/rtw_ieee80211.c  | 19 +++------------
-> >   drivers/staging/r8188eu/core/rtw_ioctl_set.c  |  2 +-
-> >   drivers/staging/r8188eu/core/rtw_mlme.c       | 10 --------
-> >   drivers/staging/r8188eu/core/rtw_p2p.c        |  2 +-
-> >   drivers/staging/r8188eu/core/rtw_wlan_util.c  | 15 ++----------
-> >   drivers/staging/r8188eu/hal/odm.c             |  1 -
-> >   drivers/staging/r8188eu/include/ieee80211.h   | 23 ++-----------------
-> >   drivers/staging/r8188eu/include/wifi.h        |  2 +-
-> >   drivers/staging/r8188eu/include/wlan_bssdef.h |  2 +-
-> >   10 files changed, 13 insertions(+), 76 deletions(-)
-> 
-> Fabio,
-> 
-> This patch is fine, but it does conflict with my series fixing the smatch
-> warnings. Whichever set Greg takes first will apply cleanly, but the second 
-will
-> fail. This problem is due to many people working at the same time.
-> 
-Hi Larry,
+Hi,
 
-The Wizard of Git :-) (Greg, of course) has been able to work this problem out 
-and took both series, as you probably already know.
+The Acer Predator Helios series (usually denoted by PHxxx-yy) features
+a particular key above the keyboard named "TURBO".
+The turbo key does 3 things:
+1. Set all fan's speeds to TURBO mode
+2. Overclocks the CPU and GPU in the safe range
+3. Turn on an LED just below the turbo button
 
-Just kidding... However, you may be interested to know that, most of the 
-times, the above-mentioned conflict can be worked out by using the 3-way merge 
-option of git-am (https://en.wikipedia.org/wiki/Merge_(version_control)#Three-way_merge). I suppose that he used that option to resolve the conflict (am I 
-missing something?).
+All the above actions are operating using WMI function calls,
+and there is no custom OC level for turbo. It acts as a flag
+for enabling turbo mode instead of telling processors to use
+a specific multiply of power (e.g. 1.3x of power).
 
-> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
+I've run some benchmark tests and it worked fine:
 
-Thanks for looking at my patches and acking them.
+GpuTest 0.7.0
+http://www.geeks3d.com
 
-Fabio
-> 
-> Larry
+Module: FurMark
+Normal mode Score: 7289 points (FPS: 121)
+Turbo mode Score: 7675 points (FPS: 127)
+Settings:
+- 1920x1080 fullscreen
+- antialiasing: Off
+- duration: 60000 ms
+
+Renderer:
+- GeForce RTX 2060/PCIe/SSE2
+- OpenGL: 4.6.0 NVIDIA 460.32.03
+
+This feature is presented by Acer officially and should not harm
+hardware in any case.
+
+A challenging part of implementing this feature is that calling
+overclock function requires knowing the exact count of fans
+for CPU and GPU of each model, which to the best of my
+knowledge is not available in the kernel.
+
+So after checking the official PredatorSense application methods, it
+turned out they have provided the software the list of fans in each model.
+I have access to the mentioned list, and all similar PH-iii-jj can be
+added easily by matching "DMI_PRODUCT_NAME".
+
+Creating a specific file for the Acer gaming features is not possible
+because the current in use WMI event GUID is required for the turbo button
+and it's not possible to register multiple listeners on a single WMI event.
 
 
+Signed-off-by: JafarAkhondali <jafar.akhoondali@gmail.com>
+---
+ Changes in v5:
+ - Use helper for Turbo fan mode
+ - Initialize OC GPU config variables
 
+ Changes in v4:
+ - Fix Indents
+ - Make functions return early
+
+ Changes in v3:
+ - Remove usages of gaming_interface
+ - Add ACPI output for u32 buffer length
+ - Remove set_u64 and get_u64 functions
+ - Remove unrelated whitespace changes for to this patch
+
+ Changes in v2:
+ - Fix formatting problems
+
+
+ drivers/platform/x86/acer-wmi.c | 179 ++++++++++++++++++++++++++++++++
+ 1 file changed, 179 insertions(+)
+
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 85db9403cc14..c8f118fe04ac 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -60,6 +60,11 @@ MODULE_LICENSE("GPL");
+ #define ACER_WMID_GET_THREEG_METHODID		10
+ #define ACER_WMID_SET_THREEG_METHODID		11
+ 
++#define ACER_WMID_SET_GAMING_LED_METHODID 2
++#define ACER_WMID_GET_GAMING_LED_METHODID 4
++#define ACER_WMID_SET_GAMING_FAN_BEHAVIOR 14
++#define ACER_WMID_SET_GAMING_MISC_SETTING_METHODID 22
++
+ /*
+  * Acer ACPI method GUIDs
+  */
+@@ -68,6 +73,7 @@ MODULE_LICENSE("GPL");
+ #define WMID_GUID1		"6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3"
+ #define WMID_GUID2		"95764E09-FB56-4E83-B31A-37761F60994A"
+ #define WMID_GUID3		"61EF69EA-865C-4BC3-A502-A0DEBA0CB531"
++#define WMID_GUID4		"7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56"
+ 
+ /*
+  * Acer ACPI event GUIDs
+@@ -81,6 +87,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
+ enum acer_wmi_event_ids {
+ 	WMID_HOTKEY_EVENT = 0x1,
+ 	WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
++	WMID_GAMING_TURBO_KEY_EVENT = 0x7,
+ };
+ 
+ static const struct key_entry acer_wmi_keymap[] __initconst = {
+@@ -215,6 +222,9 @@ struct hotkey_function_type_aa {
+ #define ACER_CAP_THREEG			BIT(4)
+ #define ACER_CAP_SET_FUNCTION_MODE	BIT(5)
+ #define ACER_CAP_KBD_DOCK		BIT(6)
++#define ACER_CAP_TURBO_OC     BIT(7)
++#define ACER_CAP_TURBO_LED     BIT(8)
++#define ACER_CAP_TURBO_FAN     BIT(9)
+ 
+ /*
+  * Interface type flags
+@@ -301,6 +311,9 @@ struct quirk_entry {
+ 	u8 mailled;
+ 	s8 brightness;
+ 	u8 bluetooth;
++	u8 turbo;
++	u8 cpu_fans;
++	u8 gpu_fans;
+ };
+ 
+ static struct quirk_entry *quirks;
+@@ -312,6 +325,10 @@ static void __init set_quirks(void)
+ 
+ 	if (quirks->brightness)
+ 		interface->capability |= ACER_CAP_BRIGHTNESS;
++
++	if (quirks->turbo)
++		interface->capability |= ACER_CAP_TURBO_OC | ACER_CAP_TURBO_LED
++					 | ACER_CAP_TURBO_FAN;
+ }
+ 
+ static int __init dmi_matched(const struct dmi_system_id *dmi)
+@@ -340,6 +357,12 @@ static struct quirk_entry quirk_acer_travelmate_2490 = {
+ 	.mailled = 1,
+ };
+ 
++static struct quirk_entry quirk_acer_predator_ph315_53 = {
++	.turbo = 1,
++	.cpu_fans = 1,
++	.gpu_fans = 1,
++};
++
+ /* This AMW0 laptop has no bluetooth */
+ static struct quirk_entry quirk_medion_md_98300 = {
+ 	.wireless = 1,
+@@ -507,6 +530,15 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
+ 		},
+ 		.driver_data = &quirk_acer_travelmate_2490,
+ 	},
++	{
++		.callback = dmi_matched,
++		.ident = "Acer Predator PH315-53",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Predator PH315-53"),
++		},
++		.driver_data = &quirk_acer_predator_ph315_53,
++	},
+ 	{
+ 		.callback = set_force_caps,
+ 		.ident = "Acer Aspire Switch 10E SW3-016",
+@@ -1344,6 +1376,114 @@ static struct wmi_interface wmid_v2_interface = {
+ 	.type = ACER_WMID_v2,
+ };
+ 
++/*
++ * WMID Gaming interface
++ */
++
++static acpi_status
++WMI_gaming_execute_u64(u32 method_id, u64 in, u64 *out)
++{
++	struct acpi_buffer input = { (acpi_size) sizeof(u64), (void *)(&in) };
++	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
++	union acpi_object *obj;
++	u32 tmp = 0;
++	acpi_status status;
++
++	status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
++
++	if (ACPI_FAILURE(status))
++		return status;
++	obj = (union acpi_object *) result.pointer;
++
++	if (obj) {
++		if (obj->type == ACPI_TYPE_BUFFER) {
++			if (obj->buffer.length == sizeof(u32))
++				tmp = *((u32 *) obj->buffer.pointer);
++			else if (obj->buffer.length == sizeof(u64))
++				tmp = *((u64 *) obj->buffer.pointer);
++		} else if (obj->type == ACPI_TYPE_INTEGER) {
++			tmp = (u64) obj->integer.value;
++		}
++	}
++
++	if (out)
++		*out = tmp;
++
++	kfree(result.pointer);
++
++	return status;
++}
++
++static acpi_status WMID_gaming_set_u64(u64 value, u32 cap)
++{
++	u32 method_id = 0;
++
++	if (!(interface->capability & cap))
++		return AE_BAD_PARAMETER;
++
++	switch (cap) {
++	case ACER_CAP_TURBO_LED:
++		method_id = ACER_WMID_SET_GAMING_LED_METHODID;
++		break;
++	case ACER_CAP_TURBO_FAN:
++		method_id = ACER_WMID_SET_GAMING_FAN_BEHAVIOR;
++		break;
++	case ACER_CAP_TURBO_OC:
++		method_id = ACER_WMID_SET_GAMING_MISC_SETTING_METHODID;
++		break;
++	default:
++		return AE_BAD_PARAMETER;
++	}
++
++	return WMI_gaming_execute_u64(method_id, value, NULL);
++}
++
++static acpi_status WMID_gaming_get_u64(u64 *value, u32 cap)
++{
++	acpi_status status;
++	u64 result;
++	u64 input;
++	u32 method_id;
++
++	if (!(interface->capability & cap))
++		return AE_BAD_PARAMETER;
++
++	switch (cap) {
++	case ACER_CAP_TURBO_LED:
++		method_id = ACER_WMID_GET_GAMING_LED_METHODID;
++		input = 0x1;
++		break;
++	default:
++		return AE_BAD_PARAMETER;
++	}
++	status = WMI_gaming_execute_u64(method_id, input, &result);
++	if (ACPI_SUCCESS(status))
++		*value = (u64) result;
++
++	return status;
++}
++
++void WMID_gaming_set_fan_mode(u8 fan_mode)
++{
++	/* fan_mode = 1 is used for auto, fan_mode = 2 used for turbo*/
++	u64 gpu_fan_config1 = 0, gpu_fan_config2 = 0;
++	int i;
++
++	if (quirks->cpu_fans > 0)
++		gpu_fan_config2 |= 1;
++	for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
++		gpu_fan_config2 |= 1 << (i + 1);
++	for (i = 0; i < quirks->gpu_fans; ++i)
++		gpu_fan_config2 |= 1 << (i + 3);
++	if (quirks->cpu_fans > 0)
++		gpu_fan_config1 |= fan_mode;
++	for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
++		gpu_fan_config1 |= fan_mode << (2 * i + 2);
++	for (i = 0; i < quirks->gpu_fans; ++i)
++		gpu_fan_config1 |= fan_mode << (2 * i + 6);
++	WMID_gaming_set_u64(gpu_fan_config2 | gpu_fan_config1 << 16, ACER_CAP_TURBO_FAN);
++}
++
+ /*
+  * Generic Device (interface-independent)
+  */
+@@ -1575,6 +1715,41 @@ static int acer_gsensor_event(void)
+ 	return 0;
+ }
+ 
++/*
++ *  Predator series turbo button
++ */
++static int acer_toggle_turbo(void)
++{
++	u64 turbo_led_state;
++
++	/* Get current state from turbo button */
++	if (ACPI_FAILURE(WMID_gaming_get_u64(&turbo_led_state, ACER_CAP_TURBO_LED)))
++		return -1;
++
++	if (turbo_led_state) {
++		/* Turn off turbo led */
++		WMID_gaming_set_u64(0x1, ACER_CAP_TURBO_LED);
++
++		/* Set FAN mode to auto */
++		WMID_gaming_set_fan_mode(0x1);
++
++		/* Set OC to normal */
++		WMID_gaming_set_u64(0x5, ACER_CAP_TURBO_OC);
++		WMID_gaming_set_u64(0x7, ACER_CAP_TURBO_OC);
++	} else {
++		/* Turn on turbo led */
++		WMID_gaming_set_u64(0x10001, ACER_CAP_TURBO_LED);
++
++		/* Set FAN mode to turbo */
++		WMID_gaming_set_fan_mode(0x2);
++
++		/* Set OC to turbo mode */
++		WMID_gaming_set_u64(0x205, ACER_CAP_TURBO_OC);
++		WMID_gaming_set_u64(0x207, ACER_CAP_TURBO_OC);
++	}
++	return turbo_led_state;
++}
++
+ /*
+  * Switch series keyboard dock status
+  */
+@@ -1872,6 +2047,10 @@ static void acer_wmi_notify(u32 value, void *context)
+ 		acer_gsensor_event();
+ 		acer_kbd_dock_event(&return_value);
+ 		break;
++	case WMID_GAMING_TURBO_KEY_EVENT:
++		if (return_value.key_num == 0x4)
++			acer_toggle_turbo();
++		break;
+ 	default:
+ 		pr_warn("Unknown function number - %d - %d\n",
+ 			return_value.function, return_value.key_num);
+-- 
+2.30.2
 
