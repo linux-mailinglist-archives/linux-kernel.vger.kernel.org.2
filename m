@@ -2,215 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685AB3EA3BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800E73EA3C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236881AbhHLL2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:28:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:32519 "EHLO m43-7.mailgun.net"
+        id S236854AbhHLLbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:31:40 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:52730 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236880AbhHLL2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:28:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628767696; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=XC1oXGl6RhLL8EDIf3T6NaqALry94hjHfj48dPdlLwo=; b=kJq2xcvdoB8rC4yUh/dyFd6nYG8AJlUn1/9asFNoXoOHdLduXh4xskJWJjMANqhFf5lgVeP1
- W1zb9/Xds0zjPy6oW81iuP3rmC0n5eYSOTvdOtcb/cv0XtOK0qBGk0pmtet35R0xaFfrMIzI
- /idGoKmIyduLW6BUCVzosTJ3R0o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 611505b876c3a9a17270ed3f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 11:27:52
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD6CCC43147; Thu, 12 Aug 2021 11:27:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 460E8C43148;
-        Thu, 12 Aug 2021 11:27:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 460E8C43148
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
-        viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net,
-        digetx@gmail.com, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v7 3/3] arm64: dts: sc7180: Add required-opps for i2c
-Date:   Thu, 12 Aug 2021 16:57:22 +0530
-Message-Id: <1628767642-4008-4-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628767642-4008-1-git-send-email-rnayak@codeaurora.org>
-References: <1628767642-4008-1-git-send-email-rnayak@codeaurora.org>
+        id S232025AbhHLLbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:31:38 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mE8vY-0003Kl-NN; Thu, 12 Aug 2021 19:31:12 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mE8vV-0002NX-R2; Thu, 12 Aug 2021 19:31:09 +0800
+Date:   Thu, 12 Aug 2021 19:31:09 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Weili Qian <qianweili@huawei.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, wangzhou1@hisilicon.com,
+        liulongfang@huawei.com
+Subject: Re: [PATCH 3/5] crypto: hisilicon - support runtime PM for
+ accelerator device
+Message-ID: <20210812113109.GA9121@gondor.apana.org.au>
+References: <1628332356-33278-1-git-send-email-qianweili@huawei.com>
+ <1628332356-33278-4-git-send-email-qianweili@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628332356-33278-4-git-send-email-qianweili@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
-Though qup-i2c does not support DVFS, it still needs to vote for a
-performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
-requirement.
+On Sat, Aug 07, 2021 at 06:32:34PM +0800, Weili Qian wrote:
+>
+> @@ -1083,6 +1105,10 @@ static void hpre_remove(struct pci_dev *pdev)
+>  	hisi_qm_uninit(qm);
+>  }
+>  
+> +const struct dev_pm_ops hpre_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(hisi_qm_suspend, hisi_qm_resume, NULL)
+> +};
+> +
 
-Use 'required-opps' to pass this information from
-device tree, and also add the power-domains property to specify
-the CX power-domain.
+This causes a warning as it should be static.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 4721c15..c8921e2 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -790,8 +790,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi0: spi@880000 {
-@@ -842,8 +844,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi1: spi@884000 {
-@@ -894,8 +898,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart2: serial@888000 {
-@@ -928,8 +934,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi3: spi@88c000 {
-@@ -980,8 +988,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart4: serial@890000 {
-@@ -1014,8 +1024,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi5: spi@894000 {
-@@ -1079,8 +1091,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi6: spi@a80000 {
-@@ -1131,8 +1145,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart7: serial@a84000 {
-@@ -1165,8 +1181,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi8: spi@a88000 {
-@@ -1217,8 +1235,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart9: serial@a8c000 {
-@@ -1251,8 +1271,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi10: spi@a90000 {
-@@ -1303,8 +1325,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi11: spi@a94000 {
+Thanks,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
