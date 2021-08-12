@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FDC3EA57D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA9A3EA587
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbhHLNWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:22:44 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41339 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237043AbhHLNSR (ORCPT
+        id S237835AbhHLNXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:23:02 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:49702 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237346AbhHLNTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:18:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uio.0Gz_1628774269;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Uio.0Gz_1628774269)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Aug 2021 21:17:49 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH 3/3] crypto: tcrypt: add GCM/CCM mode test for SM4 algorithm
-Date:   Thu, 12 Aug 2021 21:17:48 +0800
-Message-Id: <20210812131748.81620-4-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
-References: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
+        Thu, 12 Aug 2021 09:19:09 -0400
+X-UUID: 4ba14b39419b40f4a982dff6b7b928f4-20210812
+X-UUID: 4ba14b39419b40f4a982dff6b7b928f4-20210812
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 223306628; Thu, 12 Aug 2021 21:18:38 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Aug 2021 21:18:37 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 12 Aug 2021 21:18:35 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     Pawel Laszczak <pawell@cadence.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH v2 1/7] usb: mtu3: restore HS function when set SS/SSP
+Date:   Thu, 12 Aug 2021 21:17:57 +0800
+Message-ID: <1628774283-475-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcrypt supports GCM/CCM mode, CMAC, CBCMAC, and speed test of
-SM4 algorithm.
+Due to HS function is disabled when set as FS, need restore
+it when set as SS/SSP.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Fixes: dc4c1aa7eae9 ("usb: mtu3: add ->udc_set_speed()")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- crypto/tcrypt.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+v2: no changes
+---
+ drivers/usb/mtu3/mtu3_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 73c97e085baf..8d20e903beaa 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1906,6 +1906,14 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 		ret += tcrypt_test("streebog512");
+diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
+index 562f4357831e..6403f01947b2 100644
+--- a/drivers/usb/mtu3/mtu3_core.c
++++ b/drivers/usb/mtu3/mtu3_core.c
+@@ -227,11 +227,13 @@ static void mtu3_set_speed(struct mtu3 *mtu, enum usb_device_speed speed)
+ 		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
  		break;
- 
-+	case 55:
-+		ret += tcrypt_test("gcm(sm4)");
-+		break;
-+
-+	case 56:
-+		ret += tcrypt_test("ccm(sm4)");
-+		break;
-+
- 	case 100:
- 		ret += tcrypt_test("hmac(md5)");
+ 	case USB_SPEED_SUPER:
++		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
+ 		mtu3_clrbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
+ 			     SSUSB_U3_PORT_SSP_SPEED);
  		break;
-@@ -1997,6 +2005,15 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 	case 157:
- 		ret += tcrypt_test("authenc(hmac(sha1),ecb(cipher_null))");
+ 	case USB_SPEED_SUPER_PLUS:
+-			mtu3_setbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
++		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
++		mtu3_setbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
+ 			     SSUSB_U3_PORT_SSP_SPEED);
  		break;
-+
-+	case 158:
-+		ret += tcrypt_test("cbcmac(sm4)");
-+		break;
-+
-+	case 159:
-+		ret += tcrypt_test("cmac(sm4)");
-+		break;
-+
- 	case 181:
- 		ret += tcrypt_test("authenc(hmac(sha1),cbc(des))");
- 		break;
-@@ -2326,6 +2343,34 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 				NULL, 0, 16, 8, speed_template_16);
- 		break;
- 
-+	case 222:
-+		test_aead_speed("gcm(sm4)", ENCRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		test_aead_speed("gcm(sm4)", DECRYPT, sec,
-+				NULL, 0, 16, 8, speed_template_16);
-+		break;
-+
-+	case 223:
-+		test_aead_speed("rfc4309(ccm(sm4))", ENCRYPT, sec,
-+				NULL, 0, 16, 16, aead_speed_template_19);
-+		test_aead_speed("rfc4309(ccm(sm4))", DECRYPT, sec,
-+				NULL, 0, 16, 16, aead_speed_template_19);
-+		break;
-+
-+	case 224:
-+		test_mb_aead_speed("gcm(sm4)", ENCRYPT, sec, NULL, 0, 16, 8,
-+				   speed_template_16, num_mb);
-+		test_mb_aead_speed("gcm(sm4)", DECRYPT, sec, NULL, 0, 16, 8,
-+				   speed_template_16, num_mb);
-+		break;
-+
-+	case 225:
-+		test_mb_aead_speed("rfc4309(ccm(sm4))", ENCRYPT, sec, NULL, 0,
-+				   16, 16, aead_speed_template_19, num_mb);
-+		test_mb_aead_speed("rfc4309(ccm(sm4))", DECRYPT, sec, NULL, 0,
-+				   16, 16, aead_speed_template_19, num_mb);
-+		break;
-+
- 	case 300:
- 		if (alg) {
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
+ 	default:
 -- 
-2.19.1.3.ge56e4f7
+2.18.0
 
