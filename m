@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583873E9BDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E33E9BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhHLBOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:14:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233141AbhHLBOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:14:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B266C610CD;
-        Thu, 12 Aug 2021 01:13:56 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mDzIB-003pIa-Oi; Wed, 11 Aug 2021 21:13:55 -0400
-Message-ID: <20210812011355.600699663@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 11 Aug 2021 21:12:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [for-linus][PATCH 7/7] tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL
- event name
-References: <20210812011250.954353252@goodmis.org>
+        id S229773AbhHLBWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhHLBWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 21:22:47 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D2AC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:22:22 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id e11so2403472ljq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=prestigetransportation-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YgmCb/M36G7y/F9n7pqOEX0jUkjwsODoD9HmSF/j27M=;
+        b=Z8wLcIgju1YXAogPl4GXFufU95L35sHnKOrG6YRyJonvs80+KjOVokDMr1y/Y4yWPq
+         76lkI74Wk6/frOe9Qqv+RyXfSiA6UvlzeUXm87zF30RPpey9fc/KWmE07Gb6IgLN5N9V
+         GAXp+4g7+ISAPVmdIVOri98PGfmJOn9/rhpZqZSV/89QGSpoZoFLBNreI7nuiCqr5lsv
+         CNexvlefGKhwqvfnpDjtJ+k700kaJzkmNkzmQEDln3HaS5nAG9KbSspj/XddIG/fqVRi
+         Xi81qUxaLNGdCXKHuX1+YcEALa7lWIr/uQ2c/8Cd6Az/oNvvEWDAaxOMcnk7X1PCccMB
+         qIkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YgmCb/M36G7y/F9n7pqOEX0jUkjwsODoD9HmSF/j27M=;
+        b=HJLA0/2bI8V0jUcDCub80AHnB2xp+acOb+epCNpZVlrqCRK8FIJSJ14NjIrhXglG6L
+         rGqUadW+NLc04g80mcVx9JJvH6ox0/uMlsl8IDQ1VpO8e7fJQEB9exvVrrtVqSGfMARV
+         mV+3NIx8ms19kEcNQqhNh8fJ42UeNh2qvaJD9biU4eF2chlUbCqwi69KFF/vPh08FPUL
+         KUU67NXhRcVSZlSUBTs1n1UVraYMSS17syFLWRfkbOngnwdfQjMyheppRuVmwDOiR5kX
+         RAJMnEZJrDVGu4xMytGY7UOItMSbehMzyaNN5O5jML4afqWks4HiLsmPIiedhw+3M9qo
+         2iyQ==
+X-Gm-Message-State: AOAM5322j9NM09828wYJqtSoBLfI0eKOyG9kMGmJhU5GK6n/pmVHqgsu
+        xy9YumEKFFbx2qvu+C/wO5S5M/WcczR1VLl2KxGt3g==
+X-Google-Smtp-Source: ABdhPJyk5iqyFP+Bcouz1m9nylkSZB5oddh7QHUWidMhBkm9ZyQVFp9l5u3C17ylQCvqvO7UAcKs8nN4ZkPemdMLQfU=
+X-Received: by 2002:a2e:7a0e:: with SMTP id v14mr693188ljc.324.1628731341207;
+ Wed, 11 Aug 2021 18:22:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210811081623.9832-1-jasowang@redhat.com>
+In-Reply-To: <20210811081623.9832-1-jasowang@redhat.com>
+From:   ivan <ivan@prestigetransportation.com>
+Date:   Wed, 11 Aug 2021 20:20:03 -0500
+Message-ID: <CACFia2dOarWzZ-FfOgA-n3Puxhw4zacdEPtabzbbveyeuV3YBA@mail.gmail.com>
+Subject: Re: [RFC PATCH] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Ivan <ivan@prestigetransportation.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, Aug 11, 2021 at 3:16 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+> Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO") tries to
+> advertise LRO on behalf of the guest offloading features and allow the
+> administrator to enable and disable those features via ethtool.
+>
+> This may lead several issues:
+>
+> - For the device that doesn't support control guest offloads, the
+>   "LRO" can't be disabled so we will get a warn in the
+>   dev_disable_lro()
+> - For the device that have the control guest offloads, the guest
+>   offloads were disabled in the case of bridge etc which may slow down
+>   the traffic.
+>
+> Try to fix this by using NETIF_F_GRO_HW instead so we're not
+> guaranteed to be re-segmented as original. Or we may want a new netdev
+> feature like RX_GSO since the guest offloads for virtio-net is
+> actually to receive GSO packet.
+>
+> Or we can try not advertise LRO is control guest offloads is not
+> enabled. This solves the warning but will still slow down the traffic.
+>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/net/virtio_net.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 0416a7e00914..10c382b08bce 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
+>         VIRTIO_NET_F_GUEST_CSUM
+>  };
+>
+> -#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
+> +#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
+>                                 (1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
+>                                 (1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
+>                                 (1ULL << VIRTIO_NET_F_GUEST_UFO))
+> @@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+>                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+>                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
+> -               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
+> +               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+>                 return -EOPNOTSUPP;
+>         }
+>
+> @@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
+>         u64 offloads;
+>         int err;
+>
+> -       if ((dev->features ^ features) & NETIF_F_LRO) {
+> +       if ((dev->features ^ features) & NETIF_F_GRO_HW) {
+>                 if (vi->xdp_enabled)
+>                         return -EBUSY;
+>
+> -               if (features & NETIF_F_LRO)
+> +               if (features & NETIF_F_GRO_HW)
+>                         offloads = vi->guest_offloads_capable;
+>                 else
+>                         offloads = vi->guest_offloads_capable &
+> -                                  ~GUEST_OFFLOAD_LRO_MASK;
+> +                                  ~GUEST_OFFLOAD_GRO_HW_MASK;
+>
+>                 err = virtnet_set_guest_offloads(vi, offloads);
+>                 if (err)
+> @@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
+>                 dev->features |= NETIF_F_RXCSUM;
+>         if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+>             virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
+> -               dev->features |= NETIF_F_LRO;
+> +               dev->features |= NETIF_F_GRO_HW;
+>         if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
+> -               dev->hw_features |= NETIF_F_LRO;
+> +               dev->hw_features |= NETIF_F_GRO_HW;
+>
+>         dev->vlan_features = dev->features;
+>
+> --
 
-The following commands:
+I applied this patch, recompiled the kernel, and tested it.
+The warning messages are gone. Network speed is normal.
+I can now enable forwarding, and nothing bad happens.
+So far, so good.
 
- # echo 'read_max u64 size;' > synthetic_events
- # echo 'hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)' > events/syscalls/sys_enter_read/trigger
-
-Causes:
-
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] PREEMPT SMP
- CPU: 4 PID: 1763 Comm: bash Not tainted 5.14.0-rc2-test+ #155
- Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-v03.03 07/14/2016
- RIP: 0010:strcmp+0xc/0x20
- Code: 75 f7 31 c0 0f b6 0c 06 88 0c 02 48 83 c0 01 84 c9 75 f1 4c 89 c0
-c3 0f 1f 80 00 00 00 00 31 c0 eb 08 48 83 c0 01 84 d2 74 0f <0f> b6 14 07
-3a 14 06 74 ef 19 c0 83 c8 01 c3 31 c0 c3 66 90 48 89
- RSP: 0018:ffffb5fdc0963ca8 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: ffffffffb3a4e040 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: ffff9714c0d0b640 RDI: 0000000000000000
- RBP: 0000000000000000 R08: 00000022986b7cde R09: ffffffffb3a4dff8
- R10: 0000000000000000 R11: 0000000000000000 R12: ffff9714c50603c8
- R13: 0000000000000000 R14: ffff97143fdf9e48 R15: ffff9714c01a2210
- FS:  00007f1fa6785740(0000) GS:ffff9714da400000(0000)
-knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000002d863004 CR4: 00000000001706e0
- Call Trace:
-  __find_event_file+0x4e/0x80
-  action_create+0x6b7/0xeb0
-  ? kstrdup+0x44/0x60
-  event_hist_trigger_func+0x1a07/0x2130
-  trigger_process_regex+0xbd/0x110
-  event_trigger_write+0x71/0xd0
-  vfs_write+0xe9/0x310
-  ksys_write+0x68/0xe0
-  do_syscall_64+0x3b/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f1fa6879e87
-
-The problem was the "trace(read_max,count)" where the "count" should be
-"$count" as "onmax()" only handles variables (although it really should be
-able to figure out that "count" is a field of sys_enter_read). But there's
-a path that does not find the variable and ends up passing a NULL for the
-event, which ends up getting passed to "strcmp()".
-
-Add a check for NULL to return and error on the command with:
-
- # cat error_log
-  hist:syscalls:sys_enter_read: error: Couldn't create or find variable
-  Command: hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)
-                                ^
-Link: https://lkml.kernel.org/r/20210808003011.4037f8d0@oasis.local.home
-
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: stable@vger.kernel.org
-Fixes: 50450603ec9cb tracing: Add 'onmax' hist trigger action support
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_hist.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 949ef09dc537..a48aa2a2875b 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
- 			event = data->match_data.event;
- 		}
- 
-+		if (!event)
-+			goto free;
- 		/*
- 		 * At this point, we're looking at a field on another
- 		 * event.  Because we can't modify a hist trigger on
--- 
-2.30.2
+Thank you.
