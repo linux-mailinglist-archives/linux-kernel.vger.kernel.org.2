@@ -2,84 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3AF3EA5CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1283EA5CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbhHLNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:38:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231602AbhHLNid (ORCPT
+        id S237588AbhHLNjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237333AbhHLNjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:38:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628775488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oiGXmDTLhiS3oN2r9OJ7cRVpEzCCbBrauFWnA55fp7U=;
-        b=SQfu2oAWcvf3xCvln3s1UKb+HqyTLFrxTOKvjyWu3SKpYCjzt8vpi247+bQJq1x7B2F79u
-        e1Lftp9qoPEn2sntgjbp5eoJydUc+F8OAGsQsYpc0iEZ3BXqkF4P4JCrlcOh8TJEgS4gYx
-        SFivcRcH41jf3hVMNs8NIuPGOh8V7Rc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-TZtzByDUPuGJ6gxXgq_XZA-1; Thu, 12 Aug 2021 09:38:04 -0400
-X-MC-Unique: TZtzByDUPuGJ6gxXgq_XZA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C80358015C7;
-        Thu, 12 Aug 2021 13:38:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0F335D9C6;
-        Thu, 12 Aug 2021 13:38:00 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <3088327.1628774588@warthog.procyon.org.uk>
-References: <3088327.1628774588@warthog.procyon.org.uk> <YRUbXoMzWVX9X/Vf@casper.infradead.org> <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk> <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, trond.myklebust@primarydata.com,
-        darrick.wong@oracle.com, hch@lst.de, jlayton@kernel.org,
-        sfrench@samba.org, torvalds@linux-foundation.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use ->direct_IO() not ->readpage()
+        Thu, 12 Aug 2021 09:39:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8394C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:39:16 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mEAvS-0002HD-BW; Thu, 12 Aug 2021 15:39:14 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3ed7:427:d9dd:eb1b])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0BE4666612F;
+        Thu, 12 Aug 2021 13:39:12 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 15:39:11 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
+Message-ID: <20210812133911.ewv2ge474gdxuuwf@pengutronix.de>
+References: <20210806104833.102081-1-mkl@pengutronix.de>
+ <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
+ <20210809072414.syapcl2v7urytygg@pengutronix.de>
+ <1b5875759dc9d68f2379cde389b1bf5595ee3964.camel@esd.eu>
+ <20210809175158.5xdkqeemjo3hqwcw@pengutronix.de>
+ <10975691377830c5fa647918b07fd8c5adf7483b.camel@esd.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3088957.1628775479.1@warthog.procyon.org.uk>
-Date:   Thu, 12 Aug 2021 14:37:59 +0100
-Message-ID: <3088958.1628775479@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2rjljajh7h5zjash"
+Content-Disposition: inline
+In-Reply-To: <10975691377830c5fa647918b07fd8c5adf7483b.camel@esd.eu>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
 
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > After submitting the IO here ...
-> > 
-> > > +	if (ret != -EIOCBQUEUED)
-> > > +		swapfile_read_complete(&ki->iocb, ret, 0);
-> > 
-> > We only touch the 'ki' here ... if the caller didn't call read_complete
-> > 
-> > > +	swapfile_put_kiocb(ki);
-> > 
-> > Except for here, which is only touched in order to put the refcount.
-> > 
-> > So why can't swapfile_read_complete() do the work of freeing the ki?
-> 
-> When I was doing something similar for cachefiles, I couldn't get it to work
-> like that.  I'll have another look at that.
+--2rjljajh7h5zjash
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah, yes.  generic_file_direct_write() accesses in the kiocb *after* calling
-->direct_IO(), so the kiocb *must not* go away until after
-generic_file_direct_write() has returned.
+On 12.08.2021 13:27:57, Stefan M=C3=A4tje wrote:
+> Am Montag, den 09.08.2021, 19:51 +0200 schrieb Marc Kleine-Budde:
+> > On 09.08.2021 17:22:51, Stefan M=C3=A4tje wrote:
+> > > > Speaking of that patch. Can you please create an entry in the
+> > > > MAINTAINERS file, too? I suggest to add yourself as M: and the
+> > > > socketcan@e.u as R:. The change in the MAINTAINERS file will be a s=
+econd
+> > > > patch in that series. Just include it the next iteration of that se=
+ries.
+> > >=20
+> > > Do you think of something like the patch below?
+> >=20
+> > ACK
+> :
+> > > =20
+> > > +CAN NETWORK DRIVERS ESD HARDWARE
+> >=20
+> > This usually starts with the company's name or the driver name, so
+> > something like "ESD PCIe/402 CAN DRIVER" and a separate entry for the
+> > USB driver or "ESD CAN NETWORK DRIVERS" if you want to have a single
+> > entry.
+>=20
+> Following the requirement to start with the company's name I'll include t=
+his
+> patch for MAINTAINERS:
 
-David
+not a requirement, but usually done :)
 
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 41fcfdb24a81..8ad40b5d082e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6900,6 +6900,14 @@ S:       Maintained
+>  F:     include/linux/errseq.h
+>  F:     lib/errseq.c
+> =20
+> +ESD CAN NETWORK DRIVERS
+> +M:     Stefan M=C3=A4tje <stefan.maetje@esd.eu>
+> +R:     socketcan@esd.eu
+> +L:     linux-can@vger.kernel.org
+> +S:     Maintained
+> +F:     drivers/net/can/esd/
+> +F:     drivers/net/can/usb/esd_usb2.c
+> +
+>  ET131X NETWORK DRIVER
+>  M:     Mark Einon <mark.einon@gmail.com>
+>  S:     Odd Fixes
+>=20
+
+Fine! Adding this to the MAINTAINERS should be a separate patch in the seri=
+es.
+
+> > > > > and his email address shows up in MODULE_AUTHOR() macro. He also =
+left
+> > > > > our company already.
+> > > >=20
+> > > > In newly added changes, it makes sense that all email addresses are
+> > > > working. :D
+> > >=20
+> > > So I'll remove his stale email address together with the
+> > > MODULE_AUTHOR() macro and file the authorship credits in a changed
+> > > copyright history at the top of the source files.
+> >=20
+> > Yes, his name but with the socketcan@e.u email in MODULE_AUTHOR().
+> > Regarding the top of the file's copyright information, the last patch
+> > only mentions 2 iterations of "esd" but no "real" people nor email
+> > addresses. I don't know what's you company's policy for the copyright
+> > line is, I don't mind adding Thomas, but use the socketcan@e.u email.
+> > People tend to look at the source file in case of problems, so better
+> > have working addresses there.
+> >=20
+>=20
+> For the MODULE_AUTHOR() stuff and the copyright notices I will change it
+> like this:
+
+Looks good! Squash into the patch where the file is added.
+
+> diff --git a/drivers/net/can/esd/esd_402_pci-core.c
+> b/drivers/net/can/esd/esd_402_pci-core.c
+> index 191e7f45c5d9..50d9c1dd1197 100644
+> --- a/drivers/net/can/esd/esd_402_pci-core.c
+> +++ b/drivers/net/can/esd/esd_402_pci-core.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/* Copyright (C) 2015 - 2017 esd electronic system design gmbh
+> - * Copyright (C) 2017 - 2021 esd electronics gmbh
+> +/* Copyright (C) 2015 - 2016 Thomas K=C3=B6rper, esd electronic system d=
+esign gmbh
+> + * Copyright (C) 2017 - 2021 Stefan M=C3=A4tje, esd electronics gmbh
+>   */
+> =20
+>  #include <linux/kernel.h>
+> @@ -524,7 +524,7 @@ static struct pci_driver pci402_driver =3D {
+> =20
+>  module_pci_driver(pci402_driver);
+> =20
+> -MODULE_DESCRIPTION("Socket-CAN driver for esd CAN PCI(e)/402 cards");
+> -MODULE_AUTHOR("Thomas K=C3=B6rper <thomas.koerper@esd.eu>");
+> +MODULE_DESCRIPTION("Socket-CAN driver for esd CAN 402 card family with e=
+sdACC
+> core on PCIe");
+> +MODULE_AUTHOR("Thomas K=C3=B6rper <socketcan@esd.eu>");
+>  MODULE_AUTHOR("Stefan M=C3=A4tje <stefan.maetje@esd.eu>");
+>  MODULE_LICENSE("GPL");
+>=20
+>=20
+> > Regarding the Co-Developed and Signed-off-by: Thomas posted the patches
+> > back in 2015 with his email address, so use it for the Co-Developed and
+> > Signed-off-by in your patch, too. This seems (or is) a bit inconsistent,
+> > but the S-o-b's should record the history of the patch.
+>=20
+> I'll add this in the next iteration of my driver patch as recommended.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--2rjljajh7h5zjash
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEVJH0ACgkQqclaivrt
+76lSegf9Ens8RcDI8okXriDTS0i6hstbd6OhXK96shOZbh9FycRNfaEo8PDNhrl7
+v9izrcBIupR3ua/LhCjEb8Ow3nC9nI+FTdmBD4ikjIVw5A1G8ZuSmwUT+spwWmQd
+q4l55fk2LlGw2l2ofCFxvvtS2//69CY2n4PyKT+wIpIbv4XX8PF/nvuYTQ3nMp2w
+5KR1J+HFCRYE6alcqXkPe7uqUeFAqlJDW9eZNf6r1MT3AwH8hhF7vszDh17jouuL
+bzdBDMFIf2Xbj6XfJ0VRAnjM1ai26j4rD+66pMesjOBlz9iaApsSDhAJ8l8oKGqZ
+w9ghL+i1zh5p6+G7mNhtI2UtzX5LQw==
+=F8Uo
+-----END PGP SIGNATURE-----
+
+--2rjljajh7h5zjash--
