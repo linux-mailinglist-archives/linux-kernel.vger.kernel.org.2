@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D6C3EA7AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ECC3EA7C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhHLPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
+        id S238252AbhHLPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbhHLPjJ (ORCPT
+        with ESMTP id S238175AbhHLPmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:39:09 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB17C061756;
-        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d1so7837491pll.1;
-        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JDlSeWOgXcTARSX0Sb/7iqT+nIM3mRl7e9seVpJTDsQ=;
-        b=eKwdoqgzbDwCSyrgnVW4fQAzUSWeoRx/kyQpFmKK+Fp7BDnr2/nHtS2A8lP7dy74pV
-         DhjbUbYBUBvR9ptLkWXPFGdb66asLd49SRfdmf9wxKJzWqlZ8T7NSu4mDDdOyr8QYGjC
-         0lNFiTw2Utqsdhq+i1tE7yKdLkrhwYJ4GcUjf5y7cP+4awTK44NJV01YV+BxlT3oQexu
-         0CRKAKLjxtq43dNgpQlyRzLdedFvCS41p+H+3bYjSaKBrgs7oVUsW9kyJWLlM734zPxy
-         UEVzFvb9jP9wMt2dE2D+cHyIUPC4b4v/Fn8lr0Ong2WornEq8pHks9kPtVFyDLYSburS
-         y7eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JDlSeWOgXcTARSX0Sb/7iqT+nIM3mRl7e9seVpJTDsQ=;
-        b=hJM2eKZLuZWUGB1ZtYM8wIiGMxjrCxMiW8u7lE1hFTvrP8+0ra24mXUBHibngk+tEl
-         VQ5BjEmaA/xjwH1pnIA8isw4jKFnHG9NR1BnFQLkQvBmwb/oe45twLb22dqWGeuJtLF2
-         EzK7E5Yan3jWQkbmv5bPeK4HK9dHKtYKW3YjSdIeLwCvu3U7M4EM/QRmoIqxnMiI9Kob
-         /jyyw4/zqn0DkARto5BXYYHE6GJofaBpqbOmsJr/MuQ1loD9veIqsNgctoZ7Hbcin3Py
-         OSNla+20BPGXPB/3duAIOSw+aeRJMlj8hW5QZyTlexSg0GYhb+xYlafuGHhrm/ULzryv
-         whog==
-X-Gm-Message-State: AOAM531lCJB/VtPrvzReAuDOevNIq+02KskgqcOvIJR24csxf9ar/okT
-        pKeCX4OOPOMDqeI3EMSzdxI=
-X-Google-Smtp-Source: ABdhPJzM/sI+FsioyGJB+Q38ExsQyZIIBjJUHCnSB8L/yQaI33b3CkRfajWOppoDj5zZgXKq84mYaQ==
-X-Received: by 2002:a17:90a:648b:: with SMTP id h11mr5000375pjj.141.1628782723341;
-        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id y7sm4139094pfp.102.2021.08.12.08.38.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:38:42 -0700 (PDT)
-Subject: Re: [PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_unmap_encrypted()
- function
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-10-ltykernel@gmail.com>
- <20210812122657.GB19050@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <0598906d-9a47-34a9-16bf-4bacff7fa058@gmail.com>
-Date:   Thu, 12 Aug 2021 23:38:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 12 Aug 2021 11:42:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD31FC0617A8;
+        Thu, 12 Aug 2021 08:41:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rRRInWTXt88iInQrUMslw6/dDmJVHBRbB2u0EULf5Hg=; b=Yw+Dh/oM1oO5pq6qyI7FNo3t6Q
+        gx5MdI+3AKoBLfLsXvV7hSsdpymjB+4rVyaoCBxbggUtS1dXiiIkxKYLtAzpxHz8ozQU6o15snaU3
+        g/YPrBRrNCj6lMSLi+nqago1irdlmXakhi+FcbIoG42INTBaWENjp2LHhYlaIr7Egfk91IAfElT/m
+        5KgDUhy2mv3CYLXkudaTbyYYA0sCBDGG6jWyRU3proN98MFmItee6ftH3yAeDixXfgHs7lNhanbBc
+        7KCjjcQwDIXgN+JXH8G+s0MayKXCVykM0HIw3mPAtULVEOvTqJaOSTNd4ke1enrddQTaShxQ/SagD
+        EvIXleCQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mECo0-00EikE-Vo; Thu, 12 Aug 2021 15:39:47 +0000
+Date:   Thu, 12 Aug 2021 16:39:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, trond.myklebust@primarydata.com,
+        darrick.wong@oracle.com, jlayton@kernel.org, sfrench@samba.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use
+ ->direct_IO() not ->readpage()
+Message-ID: <YRVAvKPn8SjczqrD@casper.infradead.org>
+References: <20210812122104.GB18532@lst.de>
+ <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk>
+ <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
+ <3085432.1628773025@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210812122657.GB19050@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3085432.1628773025@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/12/2021 8:26 PM, Christoph Hellwig wrote:
-> On Mon, Aug 09, 2021 at 01:56:13PM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> In Hyper-V Isolation VM with AMD SEV, swiotlb boucne buffer
->> needs to be mapped into address space above vTOM and so
->> introduce dma_map_decrypted/dma_unmap_encrypted() to map/unmap
->> bounce buffer memory. The platform can populate man/unmap callback
->> in the dma memory decrypted ops.
+On Thu, Aug 12, 2021 at 01:57:05PM +0100, David Howells wrote:
+> Christoph Hellwig <hch@lst.de> wrote:
 > 
-> Nothing here looks actually DMA related, and the names are horribly
-> confusing vs the actual dma_map_* calls.
+> > On Thu, Aug 12, 2021 at 12:57:58PM +0100, David Howells wrote:
+> > > Make swap_readpage(), when accessing a swap file (SWP_FS_OPS) use
+> > > the ->direct_IO() method on the filesystem rather then ->readpage().
+> > 
+> > ->direct_IO is just a helper for ->read_iter and ->write_iter, so please
+> > don't call it directly.  It actually is slowly on its way out, with at
+> > at least all of the iomap implementations not using it, as well as various
+> > other file systems.
 > 
+> [Note that __swap_writepage() uses ->direct_IO().]
+> 
+> Calling ->write_iter is probably a bad idea here.  Imagine that it goes
+> through, say, generic_file_write_iter(), then __generic_file_write_iter() and
+> then generic_file_direct_write().  It adds a number of delays into the system,
+> including:
+> 
+> 	- Taking the inode lock
+> 	- Removing file privs
+> 	- Cranking mtime, ctime, file version
+> 	  - Doing mnt_want_write
+> 	  - Setting the inode dirty
+> 	- Waiting on pages in the range that are being written 
+> 	- Walking over the pagecache to invalidate the range
+> 	- Redoing the invalidation (can't be skipped since page 0 is pinned)
+> 
+> that we might want to skip as they'll end up being done for every page swapped
+> out.
 
-OK. So this still need to keep in the set_memory.c file.
+I agree with David; we want something lower-level for swap to call into.
+I'd suggest aops->swap_rw and an implementation might well look
+something like:
+
+static ssize_t ext4_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
+{
+	return iomap_dio_rw(iocb, iter, &ext4_iomap_ops, NULL, 0);
+}
