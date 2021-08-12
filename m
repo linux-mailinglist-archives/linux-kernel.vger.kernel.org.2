@@ -2,213 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DB33EA9DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBE83EA9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbhHLSAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:00:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35566 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237277AbhHLSA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:00:29 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id ABE8E1FF6E;
-        Thu, 12 Aug 2021 18:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628791202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPq75eCxT+YlAg6XI9cL9LjIMlQFz2YZeURX6oXUIhI=;
-        b=yB/GEREBwDkn0vphDmIqlIB8noRASPCoWKQ8EXtlkYni/wjHChRfolqSKkeZ2TLvcLBlbm
-        I2ig2kbOxRwTj4ZSPIhyQeIZ1U4LkjkkjYf7c7lDyXPKd2yAly0yNMfS5mQnFW5mk3sGX9
-        gA5Tdxjzj0Nu7ICIPLNIO6aU5U8/Krg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628791202;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPq75eCxT+YlAg6XI9cL9LjIMlQFz2YZeURX6oXUIhI=;
-        b=DpQVkf1E51sIL8bPK9bsh8EKOktkw0jeYmdro+ANhja9hqt26NDFLn85g5gudxklTOO0aQ
-        QRYUSMr/jXTpRHAQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 16A2A13AC3;
-        Thu, 12 Aug 2021 18:00:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id vkHZA6JhFWGlFgAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 18:00:02 +0000
-To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        s32@nxp.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-7-clin@suse.com>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Subject: Re: [PATCH 6/8] arm64: dts: s32g2: add VNP-EVB and VNP-RDB2 support
-Message-ID: <aef2fab4-078e-330b-28d0-1da964985f83@suse.de>
-Date:   Thu, 12 Aug 2021 20:00:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210805065429.27485-7-clin@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S237277AbhHLSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235453AbhHLSCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8CE960FED;
+        Thu, 12 Aug 2021 18:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628791325;
+        bh=SHuQM+8f293Vwgu1Bf0Mq+SZ5B7X8I7/R4G6PeUiInk=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=V3vwAR50GFwnBdbOarqwagm6WuhzDnUThFl/bYs0aCl4BkOVABJU10aoQdVYLBjzP
+         Fou+e6DvAnpAX44FAhDd03cxzdlPWs1XCsGLsX5lUVmMa4jrhTa7T1514dd6n2IGzC
+         XOvSqL9L6N8q0ayOLd/5PyU2vpeItvrJsTl0r+G8uGECXlYOWMg09kERbT5Q8UxLGu
+         ES+aVcZgdXozhIs+hjZ857vWXMxTS9nPggXKtJXpMEoNsESuCoBNHQYxbxAE5UtTOO
+         V8WSqo+Y7y81KBbyMfsY84knZ1/HYAQnjwJdnplM4PUrfpZjls5FYJzy0SFVAiOZtN
+         m4xU5dDmF6qbQ==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1862527C0054;
+        Thu, 12 Aug 2021 14:02:04 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Thu, 12 Aug 2021 14:02:04 -0400
+X-ME-Sender: <xms:GmIVYVzYYgvfcvfNB0VCsfDlOZxnCO77cAVASZJTxZ3qGDaheD686g>
+    <xme:GmIVYVTjPiy6o8ZKVjcZlENb1sgoyVs-lHjb4WqJYkNQI8qtyeEqSbjvcXnStnBoL
+    oAptp5foCrM8m47MqE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeefgdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
+    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:GmIVYfWa1LdQSMmC0ycsXX_oKXx-UfeqHSKifJDScJ5D9TLPNYKx9A>
+    <xmx:GmIVYXiEfd0PNUBWEmGnpcU9AUJkxBaImjzwOQ2hooQ8S3JQxId-AA>
+    <xmx:GmIVYXD7WH4b1FflQJJymrhLD0KZTimFwbJ44wwcilKFCw7j4Aqz-g>
+    <xmx:HGIVYZDqNy7RP2OYJ2Y-oR6lM2S547b3fbPLPc4iC67aYL4Ajobz6A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 1614CA038A7; Thu, 12 Aug 2021 14:02:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
+Mime-Version: 1.0
+Message-Id: <9fed831a-b311-4a23-8f3a-eb7ddff9b102@www.fastmail.com>
+In-Reply-To: <87lf56bllc.fsf@disp2133>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+ <87lf56bllc.fsf@disp2133>
+Date:   Thu, 12 Aug 2021 11:01:36 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     "David Hildenbrand" <david@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Alexey Dobriyan" <adobriyan@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        "Jiri Olsa" <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        "Petr Mladek" <pmladek@suse.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Greg Ungerer" <gerg@linux-m68k.org>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        "Chinwen Chang" <chinwen.chang@mediatek.com>,
+        "Michel Lespinasse" <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Huang Ying" <ying.huang@intel.com>,
+        "Jann Horn" <jannh@google.com>, "Feng Tang" <feng.tang@intel.com>,
+        "Kevin Brodsky" <Kevin.Brodsky@arm.com>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        "Steven Price" <steven.price@arm.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "Christian Brauner" <christian.brauner@ubuntu.com>,
+        "Jens Axboe" <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        "Peter Xu" <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        "Shakeel Butt" <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        "Daniel Jordan" <daniel.m.jordan@oracle.com>,
+        "Nicolas Viennot" <Nicolas.Viennot@twosigma.com>,
+        "Thomas Cedeno" <thomascedeno@google.com>,
+        "Collin Fijalkovich" <cfijalkovich@google.com>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Miklos Szeredi" <miklos@szeredi.hu>,
+        "Chengguang Xu" <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org,
+        "Linux API" <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chester et al.,
 
-On 05.08.21 08:54, Chester Lin wrote:
-> Add initial device-trees of NXP S32G2's Evaluation Board (S32G-VNP-EVB)
-> and Reference Design 2 Board (S32G-VNP-RDB2).
 
-"Reference Design Board 2"?
+On Thu, Aug 12, 2021, at 10:48 AM, Eric W. Biederman wrote:
+> "Andy Lutomirski" <luto@kernel.org> writes:
 
+> I had a blind spot, and Florian Weimer made a very reasonable request.
+> Apparently userspace for shared libraires uses MAP_PRIVATE.
 > 
-> Signed-off-by: Chester Lin <clin@suse.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |  2 ++
->  .../arm64/boot/dts/freescale/s32g274a-evb.dts | 21 ++++++++++++++++
->  .../boot/dts/freescale/s32g274a-rdb2.dts      | 25 +++++++++++++++++++
->  3 files changed, 48 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/s32g274a-evb.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> So we almost don't care if the library is overwritten.  We loose some
+> efficiency and apparently there are some corner cases like the library
+> being extended past the end of the exiting file that are problematic.
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 4b4785d86324..2886ddd42894 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -67,4 +67,6 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-eval-v3.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
->  
-> +dtb-$(CONFIG_ARCH_S32) += s32g274a-evb.dtb
-> +dtb-$(CONFIG_ARCH_S32) += s32g274a-rdb2.dtb
+> Given that MAP_PRIVATE for shared libraries is our strategy for handling
+> writes to shared libraries perhaps we just need to use MAP_POPULATE or a
+> new related flag (perhaps MAP_PRIVATE_NOW) that just makes certain that
+> everything mapped from the executable is guaranteed to be visible from
+> the time of the mmap, and any changes from the filesystem side after
+> that are guaranteed to cause a copy on write.
+> 
+> Once we get that figured out we could consider getting rid of deny-write
+> entirely.
 
-@NXP: Note that since there's no distinction between S32V and S32G on
-the Kconfig level, we decided not to add a white line here. If you wish
-to visually separate them, that could be changed.
+Are all of the CoW bits in good enough shape for this to work without just immediately CoWing the whole file?  In principle, write(2) to a file should be able to notice that it needs to CoW some pages, but I doubt that this actually works.
 
-For reference:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/Kconfig.platforms
-
-speaks about S32 (without V), so did not need to get updated for S32G2.
-
->  dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> new file mode 100644
-> index 000000000000..a1ae5031730a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2021 SUSE LLC
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "s32g2.dtsi"
-> +
-> +/ {
-> +	model = "NXP S32G2 Evaluation Board (S32G-VNP-EVB)";
-> +	compatible = "fsl,s32g274a-evb", "fsl,s32g2";
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-
-Is there any marking on the PCB that a /* ... */ comment could reference
-here? Right now uart0 is close to stdout-path above, but that will
-change once more device nodes get added and enabled alphabetically.
-
-> +&uart0 {
-> +	status = "okay";
-
-No clock-frequency or clocks property needed?
-
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> new file mode 100644
-> index 000000000000..b2faae306b70
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2021 SUSE LLC
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "s32g2.dtsi"
-> +
-> +/ {
-> +	model = "NXP S32G2 Reference Design 2 (S32G-VNP-RDB2)";
-
-"Board" missing.
-
-> +	compatible = "fsl,s32g274a-rdb2", "fsl,s32g2";
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-
-Comment please.
-
-> +&uart0 {
-> +	status = "okay";
-
-No clock-frequency or clocks property needed?
-
-> +};
-> +
-> +&uart1 {
-> +	status = "okay";
-> +};
-
-What is uart1? Please add a comment. Does it actually work without
-clocks property?
-
-Thanks,
-Andreas
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+--Andy
