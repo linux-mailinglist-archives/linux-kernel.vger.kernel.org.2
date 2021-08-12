@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E623EAA80
+	by mail.lfdr.de (Postfix) with ESMTP id 638CC3EAA81
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbhHLS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbhHLS6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:58:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9F3C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=2TMktU68VItlfLVKEQGEsWCkv9G1cvfENhrTJPhMk+Y=; b=hdljJWzE1+eLjhxjK6o0lAS2Rc
-        YyMEJq5b9lYg40sXOacxryKEQeLtc9667oVgrivlbMov5bQyhSxYUoM38eJg5J2ju8z9scLYE7Dy6
-        U7HDP/AGemfiuRSBkVuSPp+u0yIaqBGcdOvRd9RS4emi9BHX9dzwoxy8H3XR4b3eambTEqAkiI5xu
-        3vjOUOknONlsqygQuTBMSgNoNi7l7V0W522aImsTitrP84CS/0brDARCA8BJwu4oIuT+21vtGRyor
-        TUwi11NaQQS7AufrXHahZHdBOksFGQeRHk4Bcba/u5DJ+kfcnY6hCcpS6lCPu+LIS5bFzroMO9nnm
-        PR2oairg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEFtq-00AwWB-61; Thu, 12 Aug 2021 18:57:54 +0000
-Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20210812112938.3748c7f5@oasis.local.home>
- <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
- <20210812133306.1c480741@oasis.local.home>
- <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
- <cef5b624-b5f8-7729-3b05-3543578c6e3e@infradead.org>
- <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a294a454-89c8-d32c-3b0a-1c53480a8ab6@infradead.org>
-Date:   Thu, 12 Aug 2021 11:57:52 -0700
+        id S234901AbhHLS6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234882AbhHLS63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:58:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 236EC61077;
+        Thu, 12 Aug 2021 18:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628794684;
+        bh=qInDITMHlKZExB3w3owcOP9e470UVRLbvU7avF4jbl8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=O8jhfdOWyyaLym8+6X2BZWzwaLe2fLqCOanrK2udvM8aquWfSiWF1pjewgQzxDAPL
+         vQismJEz4AhBVaavdyc5nXhmSUoeJfpekbERnI61osLXV8kY4L9ym+/mgI5b7/jkuJ
+         2KlU82IYMPi4qgxp8llZFr6q9/qFdcnKKh09kwBSd2V1RhICi+JJjRjBq+bKH2o+DG
+         YRlMFtLaQgn3zV+0Y1oV+DbP32ss8RBc4BGYfyaNkDs0WeyBP0bm7KP6eU3vrByPCh
+         eOEhufPXNMcVr6FWJgSU4yrw/LI0TiX3IUHAMubZ3cnQTn6m20bZGDZhhdrk9aTApN
+         aUW9tGPMQ+Gdg==
+Subject: Re: [PATCH 09/18] ARC: mm: non-functional code cleanup ahead of 3
+ levels
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-10-vgupta@kernel.org> <YRPDL90Qr5RLDmnT@kernel.org>
+ <7d022d55-c70b-b3ac-4f0b-1faa26c0d4bd@kernel.org>
+ <YRS9OvkgaQxOfkkg@kernel.org>
+From:   Vineet Gupta <vgupta@kernel.org>
+Message-ID: <f77ac5df-c92c-321a-7624-35520b386f6f@kernel.org>
+Date:   Thu, 12 Aug 2021 11:58:03 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
+In-Reply-To: <YRS9OvkgaQxOfkkg@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 11:17 AM, Linus Torvalds wrote:
-> On Thu, Aug 12, 2021 at 8:04 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> I just used some default settings. I didn't choose to use -Wmain.
-> 
-> What broken distro, what broken gcc version?
+On 8/11/21 11:18 PM, Mike Rapoport wrote:
+> On Wed, Aug 11, 2021 at 06:37:19PM -0700, Vineet Gupta wrote:
+>> On 8/11/21 5:31 AM, Mike Rapoport wrote:
+>>>> +/*
+>>>> + * For ARC, pgtable_t is not struct page *, but pte_t * (to avoid
+>>>> + * extraneous page_address() calculations) hence can't use
+>>>> + * use asm-generic/pgalloc.h which assumes it being struct page *
+>>>> + */
+>>> Another reason to leave ARC without asm-generic/pgalloc.h was
+>>> __get_order_pte() that other arches don't have.
+>>> So this and pgtable_t aliased to pte_t * seemed to me too much to bother
+>>> then, but probably it's worth reconsidering with addition of 3rd and 4th
+>>> levels.
+>> I agree that savings of not havign page_address() might not be huge. However
+>> asm-generic/pgalloc.h only has pte allocation routines and all other
+>> allocation levels come from arch file
+> asm-generic/pgalloc.h has allocation routines up to PUD.
+> There is also pgtable_pmd_page_ctor() and pgtable_pmd_page_dtor() called in
+> the generic versions of PMD allocation, it seems they are not called in ARC
+> implementation.
 
-openSUSE 15.3
-gcc (SUSE Linux) 7.5.0
+:-(
 
-> We can certainly add a -Wno-main for this case. We already do that for
-> a lot of other idiotic warnings like -Wno-pointer-sign.
+> So using asm-generic/pgalloc.h would probably save you some THP debugging ;-)
+>
+> We may even probably accommodate multi-page PTEs in asm-generic/pgalloc.h
+> with something like
+>
+> #ifndef __HAVE_ARCH_PTE_GET_ORDER
+> static inline int __pte_get_order(void)
+> {
+> 	return 0;
+> }
+> #endif
 
-That's what my first patch did, but Steven didn't like it.
+Not needed - those cases are unreal, esoteric at best. I'm working on 
+switching back to canonical struct page based pgtable_t, will do that in v2.
 
-> But when we do so, I want the exact tool and distro version named and
-> shamed. Because I sure don't see that warning, and from what I can
-> tell, most other people don't see it either.
-> 
-> So it's almost certainly your distro that has configured the gcc
-> install incorrectly - or some new gcc version that makes new insane
-> defaults. The commit message should talk about those kinds of details,
-> exactly so that people like me get an explanation for why we'd need
-> that odd '-Wno-main' flag.
-> 
-> Maybe even the line in the Makefile should have it. Like that
-> -Wno-pointer-sign thing does:
-> 
->    # disable pointer signed / unsigned warnings in gcc 4.0
->    KBUILD_CFLAGS += -Wno-pointer-sign
-> 
-> just because unexplained random compiler flags are a bad thing (the
-> same way unexplained random code changes due to them are bad)
+>> Also for ARCv2, given the arbitrary address split and ensuing paging levels
+>> (as well as support for different page sizes) we will need to make sure that
+>> one page is enough to hold any level's paging using say BUILD_BUG_ON. In
+>> fact that should also be done for 3rd and 4th levels for sanity.
+> Right, these sanity checks would be useful, but they may live in one of .c
+> files in arch/arc/mm.
 
+Sure !
 
--- 
-~Randy
-
+Thx,
+-Vineet
