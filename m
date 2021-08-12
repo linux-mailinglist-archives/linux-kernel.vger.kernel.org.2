@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AB23EA33B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5323EA33E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhHLLCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34064 "EHLO mail.kernel.org"
+        id S236683AbhHLLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:05:08 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:52728 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235696AbhHLLCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:02:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA9EA60EE2;
-        Thu, 12 Aug 2021 11:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628766138;
-        bh=+BsAMfqctJLMF9AnopT7K/xpTPc/l9B0E0fPKxuXqac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wzqfp7OMYik3b9zpVdxFNoMOtal+Ox4AdESiPR0emse1d1WVYKFRHdxIU+DMWw/Uq
-         rBAE75U5HdFe+zLdXIrWU7+ziV9F3rhsroRExPRU7wVUwb3xRrclfCViU6J58ES6O3
-         A+/nXu/CXz7qXvDFuuN5BMo9wjB9fz3o5C3gZ7Qo=
-Date:   Thu, 12 Aug 2021 13:02:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     rafael@kernel.org, bhelgaas@google.com, maz@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxarm@huawei.com,
-        robin.murphy@arm.com, will@kernel.org, lorenzo.pieralisi@arm.com,
-        dwmw@amazon.co.uk, Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH v2 0/2] msi: extend msi_irqs sysfs entries to platform
- devices
-Message-ID: <YRT/uGklgx2Wmd5v@kroah.com>
-References: <20210812105341.51657-1-21cnbao@gmail.com>
+        id S235696AbhHLLFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:05:07 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mE8Vt-0003C0-9C; Thu, 12 Aug 2021 19:04:41 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mE8Vs-0001bk-91; Thu, 12 Aug 2021 19:04:40 +0800
+Date:   Thu, 12 Aug 2021 19:04:40 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH 2/2] crypto: hisilicon/sec - modify the hardware endian
+ configuration
+Message-ID: <20210812110440.GB5890@gondor.apana.org.au>
+References: <1628243914-33224-1-git-send-email-yekai13@huawei.com>
+ <1628243914-33224-3-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210812105341.51657-1-21cnbao@gmail.com>
+In-Reply-To: <1628243914-33224-3-git-send-email-yekai13@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:53:39PM +1200, Barry Song wrote:
-> From: Barry Song <song.bao.hua@hisilicon.com>
-> 
-> Just like pci devices have msi_irqs which can be used by userspace irq affinity
-> tools or applications to bind irqs, platform devices also widely support msi
-> irqs.
-> For platform devices, for example ARM SMMU, userspaces also care about its msi
-> irqs as applications can know the mapping between devices and irqs and then
-> make smarter decision on handling irq affinity. For example, for SVA mode,
-> it is better to pin io page fault to the numa node applications are running
-> on. Otherwise, io page fault will get a remote page from the node iopf happens
-> rather than from the node applications are running on.
-> 
-> The first patch extracts the sysfs populate/destory code from PCI to
-> MSI core. The 2nd patch lets platform-msi export msi_irqs entry so that
-> userspace can know the mapping between devices and irqs for platform
-> devices.
+On Fri, Aug 06, 2021 at 05:58:34PM +0800, Kai Ye wrote:
+>
+> +	reg &= ~(BIT(1) | BIT(0));
+> +#ifndef CONFIG_64BIT
+> +	reg |= BIT(1);
+> +#endif
+> +
+> +#ifndef CONFIG_CPU_LITTLE_ENDIAN
+> +	reg |= BIT(0);
+> +#endif
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Please rewrite these without ifdefs.  For example,
+
+	if (!IS_ENABLED(CONFIG_64BIT))
+		reg |= BIT(1);
+	if (!IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
+		reg |= BIT(0);
+
+I can't vouch for the logic here so please double-check.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
