@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE1C3EA9B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6430D3EA9B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhHLRo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:44:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34220 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhHLRor (ORCPT
+        id S235384AbhHLRpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235535AbhHLRpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:44:47 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 74BD01FF6B;
-        Thu, 12 Aug 2021 17:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628790261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GjLy5j1wsZgYsAkLWE9gwStplnP2fdyuvJK9X16Uwc8=;
-        b=lIGzCv0I8YlOs2Tk2VETsdI2n1dTG/ArBJfNeNJFTeMjmkytmU7iuhnI4Hah/yIKhWdE28
-        gLQyvfbqGHLzxnlKFj9KAEfaJh3iyx6gZqwWDvdHjF1cx0Np6YOSWfDUm3gHF/dJLnXzTy
-        ipCbzwnH4F+u5qrGq6VOQm/cMHY0EBQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628790261;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GjLy5j1wsZgYsAkLWE9gwStplnP2fdyuvJK9X16Uwc8=;
-        b=I/Uzb8Q04U6W2dEIIemlNVY5uSsyU6ekttk7DxiEItevPv0hjzKqeecSVS9qlZFo8NwDdV
-        MRb0px56gIljIiAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5229D13AC3;
-        Thu, 12 Aug 2021 17:44:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id H6AHE/VdFWFcEwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:44:21 +0000
-Subject: Re: [PATCH v14 088/138] mm/filemap: Add filemap_get_folio
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-89-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8117c1fa-deeb-c90e-be11-a445d314caed@suse.cz>
-Date:   Thu, 12 Aug 2021 19:44:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 13:45:16 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D76C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:44:50 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id w20so14899539lfu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VzSi7iYmrmtOx5fJEmZOizgBlKohhjrX2as2U2GYhuU=;
+        b=Iuy65cd9QD+W9oRklapTOl/vGpAt69N7AHt7935VmuWT30nUSkBLsSxbBrjsTXF7sd
+         oQhFyLJbIV4AG5eZxit2x5DDOhwcVnLN4gXvzkbjwnIbNabPvlFuA71xPSVB/kYfVKFN
+         3/C0/AcMW17FPpO++mCmXAQPCNveA2p+lEPQ+RE4fl7mP2z5PMBkuLhz9LaK9T1XyOd8
+         Arjc6Jc7Isi4CiCjizQpJFyMBywuVFQInPHSxLqhCpQ9P2Pu3sFJcjGVVVRTG4fub5dI
+         EfYh0w3jsVGTHl0lgFqtJB3dUiFCY89HsoHoe2oUSTV33ExdvvdGg76zfUVgynG7kXuf
+         d8jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VzSi7iYmrmtOx5fJEmZOizgBlKohhjrX2as2U2GYhuU=;
+        b=GJYNXwJl+O7gklBEEuop0grarCAUGFADgxQkt59DCG5X2caGvQKZoYm58Xod1d0css
+         Qu1GbifSU2dqAkcOdSbUdxJPFmnTMcTs+YoxPFgyEd767RA2+5qakfmAyXAomyxv7o7Q
+         8PqreffU/NTLfRtms4/HyUeqxzw0ZZXBSDBpTcR7YMOo9dqM/Hldvfw2KGw41aSNQMLn
+         P5JO4LukSNIvfOVMVzFaGm4o7+gLf3vZOgNGAdP3ClvbOABUfpIT5uuaX34ItOEHVPSG
+         IlLyEEILWcB+qydMTDx9ikYn4XXuaapZvckTGYAlv8JXzGonPddPA0TXZuG5AvG74dhP
+         mTig==
+X-Gm-Message-State: AOAM5324GnBfBXK827UqAdCQ0bwwbj05Z0UWVxQqWD8b4v9DiVgiINk1
+        EO6i+0n2x8cqpAN2Hq8mNySe9yZH1rN9cOJ0Fi1OCg==
+X-Google-Smtp-Source: ABdhPJyLdg9kDeLpMVF+gSZPAAVGTrEBUw524cIRjyc7CmOwg7IpIIfh71HJuGLLmigiDO7Y7o2kRKmCGT1z8QdbyOE=
+X-Received: by 2002:ac2:429a:: with SMTP id m26mr3402699lfh.80.1628790288914;
+ Thu, 12 Aug 2021 10:44:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-89-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210807134936.3083984-1-pbonzini@redhat.com>
+In-Reply-To: <20210807134936.3083984-1-pbonzini@redhat.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Thu, 12 Aug 2021 10:44:21 -0700
+Message-ID: <CALzav=dyNE1qXEgXDiSf87K0Q4P2x8UtL--GDUEtwEGEgL_HPw@mail.gmail.com>
+Subject: Re: [PATCH 00/16] KVM: x86: pass arguments on the page fault path via
+ struct kvm_page_fault
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
-> filemap_get_folio() is a replacement for find_get_page().
-> Turn pagecache_get_page() into a wrapper around __filemap_get_folio().
-> Remove find_lock_head() as this use case is now covered by
-> filemap_get_folio().
-> 
-> Reduces overall kernel size by 209 bytes.  __filemap_get_folio() is
-> 316 bytes shorter than pagecache_get_page() was, but the new
-> pagecache_get_page() is 99 bytes.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Sat, Aug 7, 2021 at 6:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> This is a revival of Isaku's patches from
+> https://lore.kernel.org/kvm/cover.1618914692.git.isaku.yamahata@intel.com/.
+> The current kvm page fault handlers passes around many arguments to the
+> functions.  To simplify those arguments and local variables, introduce
+> a data structure, struct kvm_page_fault, to hold those arguments and
+> variables.  struct kvm_page_fault is allocated on stack on the caller
+> of kvm fault handler, kvm_mmu_do_page_fault(), and passed around.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+(I was out of office for the past few days so I'm just getting around
+to this series now.)
+
+Overall it looks good. Thanks for getting it cleaned up and merged
+into kvm/queue. I'll get Ben's memslot series applied on top of this,
+do a bit of performance testing, and send it out probably tomorrow or
+early next week.
+
+>
+> The patches were redone from scratch based on the suggested struct layout
+> from the review (https://lore.kernel.org/kvm/YK65V++S2Kt1OLTu@google.com/)
+> and the subjects of Isaku's patches, so I kept authorship for myself
+> and gave him a "Suggested-by" tag.
+>
+> The first two steps are unrelated cleanups that come in handy later on.
+>
+> Paolo
+>
+> Paolo Bonzini (16):
+>   KVM: MMU: pass unadulterated gpa to direct_page_fault
+>   KVM: x86: clamp host mapping level to max_level in
+>     kvm_mmu_max_mapping_level
+>   KVM: MMU: Introduce struct kvm_page_fault
+>   KVM: MMU: change mmu->page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change direct_page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change page_fault_handle_page_track() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change try_async_pf() arguments to kvm_page_fault
+>   KVM: MMU: change handle_abnormal_pfn() arguments to kvm_page_fault
+>   KVM: MMU: change __direct_map() arguments to kvm_page_fault
+>   KVM: MMU: change FNAME(fetch)() arguments to kvm_page_fault
+>   KVM: MMU: change kvm_tdp_mmu_map() arguments to kvm_page_fault
+>   KVM: MMU: change tdp_mmu_map_handle_target_level() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change fast_page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change kvm_mmu_hugepage_adjust() arguments to kvm_page_fault
+>   KVM: MMU: change disallowed_hugepage_adjust() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change tracepoints arguments to kvm_page_fault
+>
+>  arch/x86/include/asm/kvm_host.h |   4 +-
+>  arch/x86/kvm/mmu.h              |  81 ++++++++++-
+>  arch/x86/kvm/mmu/mmu.c          | 241 ++++++++++++++------------------
+>  arch/x86/kvm/mmu/mmu_internal.h |  13 +-
+>  arch/x86/kvm/mmu/mmutrace.h     |  18 +--
+>  arch/x86/kvm/mmu/paging_tmpl.h  |  96 ++++++-------
+>  arch/x86/kvm/mmu/tdp_mmu.c      |  49 +++----
+>  arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
+>  8 files changed, 253 insertions(+), 253 deletions(-)
+>
+> --
+> 2.27.0
+>
