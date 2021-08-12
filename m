@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355803EA2A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAFF3EA2A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236531AbhHLKBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235554AbhHLKBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:01:40 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0CCC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:01:15 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g12-20020a17090a7d0cb0290178f80de3d8so9772922pjl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=+qsDiG/u0qNSqiYDob4m8A+UZvUspauBM/mjXqKH/5c=;
-        b=m7QhLkXoY2rnV9J9PRrFWxJjqJAe+l9MpA3v6uvasoI3UQtP3htCsK63++BRTqBPv7
-         qKlIlEdp9CG68czgxhsdmpEOTjrfUsmocvGroCO8QDuxlx9Pb5NV+7ImfBs3Crj64Wfr
-         FPrAgH4zj9mU463gi4+0YtC2SlmulfIVm2oXfIRKLSVZjymnI6k6DyVgVaPBfEMLEc21
-         Y5rTtCwMcnazAhDWsk/1VtJhiKmNZTP50K4AnkSHS4Xp0ahUeMde+P9qR88fa959GXwV
-         2lXuPMR+YIPHA9xv+WOZxqdE+7S7AUGDrSomKoOYaPX2dfv9UrvY4YGsJULdYVGfr6+e
-         IBcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=+qsDiG/u0qNSqiYDob4m8A+UZvUspauBM/mjXqKH/5c=;
-        b=KsHAw1tyWcP34rPDXDS+8zPb2fKchAqKTgP8usCAMPYTMzsbFUErCJyzys+f+qgsty
-         MpN9shdHlAMJfE/UmU9bXID4AcVSk0XtXoYWx8XPWvyYDDdsYQasCEw3BcUxj8PG/4si
-         kPjwRZmAHOUwwNu+g/N0RH9oREpd05p+cfDj+RO6UHRBezlSZxB11+2j2q9aruM3ndcB
-         KBbNIR+JniRFhgUQkBx67WgDiWyI7xpLkfT5OvaoSOIqjORQqIQJp/TRWMsqrhqLWdgW
-         Nu4HrEU7FiYjeEPaS4iMbYrJ5a9AgfYxp+iL0BkXom8CSLw7GB67SITdm8EMnMk6l191
-         XVZQ==
-X-Gm-Message-State: AOAM532rPY2JYbB0/vDTdjFL/OKSYfVwEMWdv+5eQHq+EpNrP/L+nnmT
-        10qg122sqS3pCI6xCdWcBBY=
-X-Google-Smtp-Source: ABdhPJzOkUaqI03B0VQXdonY74JRw1ZY7dHfwTV1vXCDirOP5Pgv0GRN8j6MkHfK3q3Uhzv2JzVedw==
-X-Received: by 2002:a65:6459:: with SMTP id s25mr3208005pgv.7.1628762474171;
-        Thu, 12 Aug 2021 03:01:14 -0700 (PDT)
-Received: from localhost ([118.210.97.79])
-        by smtp.gmail.com with ESMTPSA id w3sm1781812pfn.96.2021.08.12.03.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 03:01:13 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 20:01:08 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] powerpc/interrupt: Do not call single_step_exception()
- from other exceptions
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        fthain@linux-m68k.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>, userm57@yahoo.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <aed174f5cbc06f2cf95233c071d8aac948e46043.1628611921.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <aed174f5cbc06f2cf95233c071d8aac948e46043.1628611921.git.christophe.leroy@csgroup.eu>
+        id S236549AbhHLKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:01:47 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36090 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236541AbhHLKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 06:01:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="279061099"
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="279061099"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 03:01:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="676709168"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2021 03:01:16 -0700
+Subject: Re: [PATCH v4 4/5] mmc: sdhci: move
+ SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <ff3907df3aa91f83a4a0a22b63d51bfe491ed039.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
+ <YQ6U5EeOPzCvLT8z@qmqm.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a64c83a5-641a-84cf-a208-41c87afd61cf@intel.com>
+Date:   Thu, 12 Aug 2021 13:01:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Message-Id: <1628762462.y419h5w2nx.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YQ6U5EeOPzCvLT8z@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of August 11, 2021 2:13 am:
-> single_step_exception() is called by emulate_single_step() which
-> is called from (at least) alignment exception() handler and
-> program_check_exception() handler.
->=20
-> Redefine it as a regular __single_step_exception() which is called
-> by both single_step_exception() handler and emulate_single_step()
-> function.
->=20
+On 7/08/21 5:12 pm, Micha³ Miros³aw wrote:
+> On Wed, Aug 04, 2021 at 03:33:56PM +0300, Adrian Hunter wrote:
+>> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
+>>> Push handling of clock frequency dependence for
+>>> SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN quirk to the drivers that use it.
+>> What is the max_clk dependency for, and why push it down?
+> 
+> I guess this is a workaround for a hardware issue. When I wrote this,
+> there was only a single user. Now I don't know if the second user got
+> the limit by accident or just uses the flag not knowing it doesn't work
+> as the quirk name suggests. IOW this makes it easier to fix in drivers
+> if the limit is wrong or irrelevant. The dependency doesn't feel like
+> it belongs to the generic driver anyway.
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Would you mind reaching out to the authors of the relevant patches
+and drivers to try to find out the purpose of the max_clk dependency,
+before we make any changes?
 
-> Fixes: 3a96570ffceb ("powerpc: convert interrupt handlers to use wrappers=
-")
-> Cc: stable@vger.kernel.org
-> Cc: Stan Johnson <userm57@yahoo.com>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Finn Thain <fthain@linux-m68k.org>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/traps.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> index dfbce527c98e..d56254f05e17 100644
-> --- a/arch/powerpc/kernel/traps.c
-> +++ b/arch/powerpc/kernel/traps.c
-> @@ -1104,7 +1104,7 @@ DEFINE_INTERRUPT_HANDLER(RunModeException)
->  	_exception(SIGTRAP, regs, TRAP_UNK, 0);
->  }
-> =20
-> -DEFINE_INTERRUPT_HANDLER(single_step_exception)
-> +static void __single_step_exception(struct pt_regs *regs)
->  {
->  	clear_single_step(regs);
->  	clear_br_trace(regs);
-> @@ -1121,6 +1121,11 @@ DEFINE_INTERRUPT_HANDLER(single_step_exception)
->  	_exception(SIGTRAP, regs, TRAP_TRACE, regs->nip);
->  }
-> =20
-> +DEFINE_INTERRUPT_HANDLER(single_step_exception)
-> +{
-> +	__single_step_exception(regs);
-> +}
-> +
->  /*
->   * After we have successfully emulated an instruction, we have to
->   * check if the instruction was being single-stepped, and if so,
-> @@ -1130,7 +1135,7 @@ DEFINE_INTERRUPT_HANDLER(single_step_exception)
->  static void emulate_single_step(struct pt_regs *regs)
->  {
->  	if (single_stepping(regs))
-> -		single_step_exception(regs);
-> +		__single_step_exception(regs);
->  }
-> =20
->  static inline int __parse_fpscr(unsigned long fpscr)
-> --=20
-> 2.25.0
->=20
->=20
+
+> 
+> [...]
+>>> @@ -318,6 +317,9 @@ static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
+>>>  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
+>>>  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
+>>>  
+>>> +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
+>>> +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
+>>> +
+>>>  	return 0;
+>>>  }
+>>>  
+>>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+>>> index 0993f7d0ce8e..cfa314e659bc 100644
+>>> --- a/drivers/mmc/host/sdhci.c
+>>> +++ b/drivers/mmc/host/sdhci.c
+>>> @@ -1905,8 +1905,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>>>  			/* Version 3.00 divisors must be a multiple of 2. */
+>>>  			if (host->max_clk <= clock) {
+>>>  				div = 1;
+>>> -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+>>> -					&& host->max_clk <= 25000000)
+>>> +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+>>>  					div = 2;
+>>>  			} else {
+>>>  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+
