@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40ECC3EA7C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDE23EA7B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhHLPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238175AbhHLPmH (ORCPT
+        id S237777AbhHLPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:40:27 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37570
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232854AbhHLPkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:42:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD31FC0617A8;
-        Thu, 12 Aug 2021 08:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rRRInWTXt88iInQrUMslw6/dDmJVHBRbB2u0EULf5Hg=; b=Yw+Dh/oM1oO5pq6qyI7FNo3t6Q
-        gx5MdI+3AKoBLfLsXvV7hSsdpymjB+4rVyaoCBxbggUtS1dXiiIkxKYLtAzpxHz8ozQU6o15snaU3
-        g/YPrBRrNCj6lMSLi+nqago1irdlmXakhi+FcbIoG42INTBaWENjp2LHhYlaIr7Egfk91IAfElT/m
-        5KgDUhy2mv3CYLXkudaTbyYYA0sCBDGG6jWyRU3proN98MFmItee6ftH3yAeDixXfgHs7lNhanbBc
-        7KCjjcQwDIXgN+JXH8G+s0MayKXCVykM0HIw3mPAtULVEOvTqJaOSTNd4ke1enrddQTaShxQ/SagD
-        EvIXleCQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mECo0-00EikE-Vo; Thu, 12 Aug 2021 15:39:47 +0000
-Date:   Thu, 12 Aug 2021 16:39:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, trond.myklebust@primarydata.com,
-        darrick.wong@oracle.com, jlayton@kernel.org, sfrench@samba.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use
- ->direct_IO() not ->readpage()
-Message-ID: <YRVAvKPn8SjczqrD@casper.infradead.org>
-References: <20210812122104.GB18532@lst.de>
- <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk>
- <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
- <3085432.1628773025@warthog.procyon.org.uk>
+        Thu, 12 Aug 2021 11:40:25 -0400
+Received: from localhost.localdomain (1-171-221-24.dynamic-ip.hinet.net [1.171.221.24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9BEE43F224;
+        Thu, 12 Aug 2021 15:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628782799;
+        bh=bb+D78y9t3UZu9BB80kiJI5yrTWzi5x0kq2PZ/EFOfA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=PDWKbccFqR4uVpEaqFk5I3xe1mN0/yjQ7qMfUWeL5DpkgCSPWxsrtwyssPHHKhHDR
+         Y6sAx7ebFOk3wuI1cEieaPqVo+u6iLcY9Bkv93khdI2qyaxNZT+HMdO04sjv+AnK/9
+         TSfoduky38TGRqKJjep2aTL/8OAjq3jIg4WOsg33yT34DyTefiCJ6uvxo8Ritgfem6
+         nsqoFnCJe37ioEdznYSbScwV/EQBadKdeuilNMsMR/TbUapHwTA/PwoybERCS0o3We
+         DmCoDjWLlj9pBir6rItWwzrao7FiRJfr+6Sm+X1xcFak/jnw3mR177Mz+T3T4RWzwO
+         LogOlxpu+6uXg==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     bhelgaas@google.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] PCI: Check PCIe upstream port for PME support
+Date:   Thu, 12 Aug 2021 23:39:44 +0800
+Message-Id: <20210812153944.813949-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3085432.1628773025@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:57:05PM +0100, David Howells wrote:
-> Christoph Hellwig <hch@lst.de> wrote:
-> 
-> > On Thu, Aug 12, 2021 at 12:57:58PM +0100, David Howells wrote:
-> > > Make swap_readpage(), when accessing a swap file (SWP_FS_OPS) use
-> > > the ->direct_IO() method on the filesystem rather then ->readpage().
-> > 
-> > ->direct_IO is just a helper for ->read_iter and ->write_iter, so please
-> > don't call it directly.  It actually is slowly on its way out, with at
-> > at least all of the iomap implementations not using it, as well as various
-> > other file systems.
-> 
-> [Note that __swap_writepage() uses ->direct_IO().]
-> 
-> Calling ->write_iter is probably a bad idea here.  Imagine that it goes
-> through, say, generic_file_write_iter(), then __generic_file_write_iter() and
-> then generic_file_direct_write().  It adds a number of delays into the system,
-> including:
-> 
-> 	- Taking the inode lock
-> 	- Removing file privs
-> 	- Cranking mtime, ctime, file version
-> 	  - Doing mnt_want_write
-> 	  - Setting the inode dirty
-> 	- Waiting on pages in the range that are being written 
-> 	- Walking over the pagecache to invalidate the range
-> 	- Redoing the invalidation (can't be skipped since page 0 is pinned)
-> 
-> that we might want to skip as they'll end up being done for every page swapped
-> out.
+Some platforms cannot detect ethernet hotplug once its upstream port is
+runtime suspended because PME isn't granted by BIOS _OSC. The issue can
+be workarounded by "pcie_ports=native".
 
-I agree with David; we want something lower-level for swap to call into.
-I'd suggest aops->swap_rw and an implementation might well look
-something like:
+The vendor confirmed that the PME in _OSC is disabled intentionally for
+system stability issues on the other OS, so we should also honor the PME
+setting here.
 
-static ssize_t ext4_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
-{
-	return iomap_dio_rw(iocb, iter, &ext4_iomap_ops, NULL, 0);
-}
+So before marking PME support status for the device, check
+PCI_EXP_RTCTL_PMEIE bit to ensure PME interrupt is either enabled by
+firmware or OS.
+
+Cc: Lukas Wunner <lukas@wunner.de>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213873
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Instead of prevent root port from runtime suspending, skip
+   initializing PME status for the downstream device.
+
+ drivers/pci/pci.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index aacf575c15cf..4344dc302edd 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2294,6 +2294,32 @@ void pci_pme_wakeup_bus(struct pci_bus *bus)
+ 		pci_walk_bus(bus, pci_pme_wakeup, (void *)true);
+ }
+ 
++#ifdef CONFIG_PCIE_PME
++static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
++{
++	struct pci_dev *bridge = pci_upstream_bridge(dev);
++	u16 val;
++	int ret;
++
++	if (!bridge)
++		return true;
++
++	if (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT &&
++	    pci_pcie_type(bridge) != PCI_EXP_TYPE_RC_EC)
++		return true;
++
++	ret = pcie_capability_read_word(bridge, PCI_EXP_RTCTL, &val);
++	if (ret)
++		return false;
++
++	return val & PCI_EXP_RTCTL_PMEIE;
++}
++#else
++static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
++{
++	return true;
++}
++#endif
+ 
+ /**
+  * pci_pme_capable - check the capability of PCI device to generate PME#
+@@ -3095,7 +3121,7 @@ void pci_pm_init(struct pci_dev *dev)
+ 	}
+ 
+ 	pmc &= PCI_PM_CAP_PME_MASK;
+-	if (pmc) {
++	if (pmc && pci_pcie_port_pme_enabled(dev)) {
+ 		pci_info(dev, "PME# supported from%s%s%s%s%s\n",
+ 			 (pmc & PCI_PM_CAP_PME_D0) ? " D0" : "",
+ 			 (pmc & PCI_PM_CAP_PME_D1) ? " D1" : "",
+-- 
+2.32.0
+
