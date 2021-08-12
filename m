@@ -2,166 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEFA3EA8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8D03EA8CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhHLRAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
+        id S233442AbhHLQyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhHLRAx (ORCPT
+        with ESMTP id S233324AbhHLQyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:00:53 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241A7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:00:28 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id n7so11617323ljq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:00:28 -0700 (PDT)
+        Thu, 12 Aug 2021 12:54:07 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FADC061756;
+        Thu, 12 Aug 2021 09:53:42 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so16288422pjs.0;
+        Thu, 12 Aug 2021 09:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nMdbm1Duu6T2o7Pmii6aGZ5IPzKeI0bawgd87K5hISA=;
-        b=XKB75bis9tKuNhHX3eDTMKeSxlvftJ15dFdW/PqjC89Ur4xgXcznCXav012keKDr9q
-         uVwQApi3YeYfIStj4+gOxYXeF8i11qPieLQ1yiCkx373DM+kh0ueZlzSltpcrquT6StP
-         3ucAz74g4LfHvAL2yjncpx8WOYjTgEkJKVJzQ=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6VeB2NYn9eofqF8nKLlfBx5n8WuLurLWCP0jk+U/zuA=;
+        b=ghY/Y1TQp4mbwP3V8+T9dU92Ev6OQB08h8E15tZpjc0UaFPXq68bNfe6aco9QHEyPw
+         Y2imqp0byCXMCOuDMEH2vZQAGWNXKZ10V2R6SohOnx5zZEfoH4PAuu7KtapgMMIcIBYr
+         i7AkSDIWe6l5B5nW3ZJPQEqz9Pe5p+9GRcf7MdHF0TqUpFh7VU7Ysj7NJJ3krV5S6THq
+         tVACBPm/xjbTy9ftkShGWGBras8mNu0LWxfDa3TEfyAQHqc3qoCGiwbKqPMzJolW9rwv
+         QG6kT3o3LH32Hh1krZWX9Zv7hUNuBn7Zc30xnxrKK7fezWBwpu4BQp7tSXgdh6IQvTve
+         f6Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nMdbm1Duu6T2o7Pmii6aGZ5IPzKeI0bawgd87K5hISA=;
-        b=hC2ll0+96yheJ2RiOfkMW4bb1nMMDs6rkCBKMQlS4B6+/WUN6LnvGQi4ihsT8VOxNB
-         D1Lkq2GNa8tc2S/0SZ5f/mxtOHjCCGwJkgClK5LbvLUvScrjUpa/CGL2xwHe+TY9+d8t
-         H0RqEKwotja99FlWq8zSdi+3jmjwTW5gl4Sg0j6j13lyyAB6GaUdVOBRRYnK0P2PLNq+
-         gUQrHoRPKCpnQagjR7h8KEW6U5DXUW8UMfbzuBc/9nWwvvY2+UhQ1Paqv6S1xZ6I9Ion
-         sLwH7G/19gm8/EIOltssDds2KZy53oTXbMGNG7GvIAne3hpgOxpwUirJvjRDulxSeZcy
-         /xGw==
-X-Gm-Message-State: AOAM533heGUHWfO0CjUympdNFjSIMD4qxu7WeDBWlMCeZjSmSvQ4YB70
-        OOVoa3m3Bmql2CHxJi6CcxvTyzO7EKhy+CeiHBQ=
-X-Google-Smtp-Source: ABdhPJw543hiUiQ+7K/4X+jUQnOeFAKfkFwm9aYw3UwwIxdXdoKKr9DYR0IUr7eTUITcwwUUhmov9A==
-X-Received: by 2002:a2e:9998:: with SMTP id w24mr3674480lji.86.1628787625777;
-        Thu, 12 Aug 2021 10:00:25 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id j1sm368839lji.124.2021.08.12.10.00.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 10:00:25 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id n17so14604453lft.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:00:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:1290:: with SMTP id u16mr3010715lfs.487.1628787137615;
- Thu, 12 Aug 2021 09:52:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6VeB2NYn9eofqF8nKLlfBx5n8WuLurLWCP0jk+U/zuA=;
+        b=tdK22KdPvvtWZsHtobJhQL7XWx1WqJZxjfcMPcm3EQ8bjZcPcnVE0Kgh7k5Nb8Yooa
+         vx/ah/4qBAYvtyBqLgJibon/GE8P2jUaLro2bfqd3lindQl5YbXv0q9iCBuxNbwEJJXk
+         ZnXhkvEyn4Hy8HrClZpYNK4K0O4se9B0otM0tbv21gZHISe4Hln7qFN18lBpqXFGMHzg
+         yLWWN1qDLgqWid8uPNvLzjDUnbie3ZAnazvEYBcRizfta/p39BRCyEz98CnpATsdAwH0
+         X+ubJHgAWe1hL2TcH8Z/ebJvAm3YZ23aMMToFG59uufPhKXtSrjf9Nv4CjDceJs2DtSO
+         QZLw==
+X-Gm-Message-State: AOAM5315sKz44YiXfRTB8NyOKPV6ITXvcU5zd+9wjcaVC22CJ0AxkVUU
+        A2U3a7jXRyQKtRQH05b55GI=
+X-Google-Smtp-Source: ABdhPJyTZxtpKatLvcazxWC9/KNpb82sDg0Pwo/xBqwHOhpj2iitbsBTpNb5bEg0e4sOgzGmkaIQzg==
+X-Received: by 2002:a17:90b:1b0c:: with SMTP id nu12mr5199932pjb.163.1628787221448;
+        Thu, 12 Aug 2021 09:53:41 -0700 (PDT)
+Received: from mugil-Nitro-AN515-52 ([2409:4072:60f:dfd:8405:dea5:a2d4:3c2c])
+        by smtp.gmail.com with ESMTPSA id u13sm4015501pfh.123.2021.08.12.09.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 09:53:40 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 22:23:27 +0530
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        Darius <Darius.Berghe@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Slawomir Stepien <sst@poczta.fm>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: potentiometer: Add driver support for AD5110
+Message-ID: <20210812165327.GA4542@mugil-Nitro-AN515-52>
+References: <20210809075745.160042-1-dmugil2000@gmail.com>
+ <20210809075745.160042-3-dmugil2000@gmail.com>
+ <CAHp75Ve=D1d5wFZgNseP=wGpteEkZHnmAi7j9ykKC+u_NrR5xw@mail.gmail.com>
+ <013bcb79-c496-44d8-2e93-57eb57834ee0@metafoo.de>
+ <CAHp75VcvA=dDOJXSFzgz69JVgbez4Lz27EGOEF7JWUehyrwQrA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210812084348.6521-1-david@redhat.com> <20210812084348.6521-4-david@redhat.com>
-In-Reply-To: <20210812084348.6521-4-david@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Aug 2021 06:51:59 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjWgFbEaE9T0smQu8WKkhrcNZZrghBUQ9441OdMsDg1-w@mail.gmail.com>
-Message-ID: <CAHk-=wjWgFbEaE9T0smQu8WKkhrcNZZrghBUQ9441OdMsDg1-w@mail.gmail.com>
-Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
- MM exe_file
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcvA=dDOJXSFzgz69JVgbez4Lz27EGOEF7JWUehyrwQrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:45 PM David Hildenbrand <david@redhat.com> wrote:
+On Wed, Aug 11, 2021 at 07:06:43PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 11, 2021 at 11:15 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
+> > On 8/10/21 2:49 PM, Andy Shevchenko wrote:
+> > >
+> > >> +       data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 10 / 8;
+> > >> +       if (!(val & BIT(7)))
+> > >> +               data->tol *= -1;
+> > > Shouldn't you simple use corresponding sign_extend*()?
+> > The data is encoded a sign-magnitude. sign_extend() works for two's
+> > complement numbers.
+> 
+> Good catch!
+> I'm wondering if it's a good idea to have a sign_magnitude_to_int()
+> helper or so?
 >
->         /* No ordering required: file already has been exposed. */
-> -       RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
-> +       exe_file = get_mm_exe_file(oldmm);
-> +       RCU_INIT_POINTER(mm->exe_file, exe_file);
-> +       if (exe_file)
-> +               deny_write_access(exe_file);
+So, What should I do now?
 
-Can we make a helper function for this, since it's done in two different places?
-
-> -       if (new_exe_file)
-> +       if (new_exe_file) {
->                 get_file(new_exe_file);
-> +               /*
-> +                * exec code is required to deny_write_access() successfully,
-> +                * so this cannot fail
-> +                */
-> +               deny_write_access(new_exe_file);
-> +       }
->         rcu_assign_pointer(mm->exe_file, new_exe_file);
-
-And the above looks positively wrong. The comment is also nonsensical,
-in that it basically says "we thought this cannot fail, so we'll just
-rely on it".
-
-If it truly cannot fail, then the comment should give the reason, not
-the "we depend on this not failing".
-
-And honestly, I don't see why it couldn't fail. And if it *does* fail,
-we cannot then RCU-assign the exe_file pointer with this, because
-you'll get a counter imbalance when you do the allow_write_access()
-later.
-
-Anyway, do_open_execat() does do deny_write_access() with proper error
-checking. I think that is the existing reference that you depend on -
-so that it doesn't fail. So the comment could possibly say that the
-only caller has done this, but can we not just use the reference
-deny_write_access() directly, and not do a new one here?
-
-IOW, maybe there's an extraneous 'allow_write_access()' somewhere that
-should be dropped when we do the whole binprm dance in execve()?
-
-             Linus
+> -- 
+> With Best Regards,
+> Andy Shevchenko
