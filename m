@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BCE3EA875
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B443EA87A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhHLQWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:22:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53730 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhHLQWE (ORCPT
+        id S232228AbhHLQXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhHLQXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:22:04 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7ECB41FD64;
-        Thu, 12 Aug 2021 16:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628785298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ppTMYje51Px+0V+L0Ygr5i3EGkcSrH/dpX1HN2hDd/0=;
-        b=YwuBWMZHq6JzJK1VThBUHkluUBZ8Yxpb07g+Ad+YVXm73E7tWYiz6oPpk0vEiKkeecMSni
-        eY7DoP+OqKg7Cgzi3mog+v/MNAIHV1N5Wg2TTIIJeRokXiyEMOur0iJYxFRMlwt/EIWe9f
-        XbZcNyxWGSNFbihTh9X00EE0pawe3ZU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628785298;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ppTMYje51Px+0V+L0Ygr5i3EGkcSrH/dpX1HN2hDd/0=;
-        b=5uJlCAvKZZvTPJLi0Ug5Fg0AACkX8+hy8kXXAWA44yftj029lmJZ6765mga699jhJPD2il
-        9c2FJB2E0CV4fNAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 695DF13ACC;
-        Thu, 12 Aug 2021 16:21:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id xvgRGZJKFWHmfwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:21:38 +0000
-Subject: Re: [PATCH v14 073/138] mm/writeback: Add folio_cancel_dirty()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-74-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <bc939652-c652-4a49-0d6d-9d0f73a9b756@suse.cz>
-Date:   Thu, 12 Aug 2021 18:21:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 12:23:00 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B2C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:22:35 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so16082051pjr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+SoaWmY5HiaLZfPNIYOXjYhH2JlGFXeFO+klyMpf2eo=;
+        b=IRw62K5TM6LB1N0TTJ5Kldi9LyBoBKWJbFxSVgLXGRqAKzkE19sQmwsJNHbZCPJln3
+         ZGrxdRhwh5xhb8HNvwm92fAJUdug+S+aQni/EOqfPRdcdvji+eQh8HZvjBADOv0e4sSp
+         qtdLuBLJNiqj9nhbPcT+0TzkPYkQwqFF1jU1w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+SoaWmY5HiaLZfPNIYOXjYhH2JlGFXeFO+klyMpf2eo=;
+        b=i4ZWTUcIr2Oz8wAii/xw7ULdzjv7BTaqhE0AFraCxNu5J9PHroPqqEWnb03eN/5RLy
+         sARC2l3Rvau4ej0FzHjqV72iZJViPViskcCEvgS6YyDvU67Idci2KJ6rE1UqQNypa7Nl
+         udeo7Q8JsMH/I9zlFXrp3GlhcM2cmk74FX/bzrtGiDLkobeR5RgZ+wxRr45Pr8uK47CS
+         xfKh/j561VJmTJ8uRyz8KRevHu2vEQr6bh/Mp5eyD0/2/lWqUkyzD/kCDFMxleyjlGc2
+         XewgwJJAdnPvlvclpgxkoa5vJ23QL/J1e+40vTSi9LMilq8+AwxbSe0NQd1fLDnnmspi
+         AzMg==
+X-Gm-Message-State: AOAM533W0XkcC31/L14EJ6cGEcPLiSN0DaxLPK3v1L5exEDTeMb+5U7B
+        IGXaEuh/vp99MB19YAdHY05s+Q==
+X-Google-Smtp-Source: ABdhPJwuvudA8aD0i3KortJevgnnespzG+N9CipcYX1YDChnc6LJBuJn1QL7lVDg9Wu6s465uHVfEw==
+X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr5157016pjr.213.1628785354590;
+        Thu, 12 Aug 2021 09:22:34 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6683:43e5:ba4c:d76c])
+        by smtp.gmail.com with UTF8SMTPSA id n20sm3694942pfv.212.2021.08.12.09.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 09:22:34 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:22:32 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V5 3/7] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+Message-ID: <YRVKyJmJgwQObwFQ@google.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
+ <1628754078-29779-4-git-send-email-rajpat@codeaurora.org>
+ <YRUsr6x9vqvaBB9i@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-74-willy@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YRUsr6x9vqvaBB9i@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Turn __cancel_dirty_page() into __folio_cancel_dirty() and add wrappers.
-> Move the prototypes into pagemap.h since this is page cache functionality.
-> Saves 44 bytes of kernel text in total; 33 bytes from __folio_cancel_dirty
-> and 11 from two callers of cancel_dirty_page().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Thu, Aug 12, 2021 at 07:14:07AM -0700, Matthias Kaehlcke wrote:
+> On Thu, Aug 12, 2021 at 01:11:14PM +0530, Rajesh Patil wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> >  			qup_uart5_default: qup-uart5-default {
+> >  				pins = "gpio46", "gpio47";
+> >  				function = "qup13";
+> >  			};
+> 
+> Wait, why does uart5 use the pins of qup13? Is see this is
+> 'fixed' by '[4/7] arm64: dts: sc7280: Update QUPv3 UART5 DT
+> node' but I'm still surprised ...
+> 
+> Doesn't 'fixing' this break devices that are currently using
+> 'uart5'? It seems those devices would need to change from
+> 'uart5' to 'uart11'.
+
+Apparently the above configuration is bogus. I checked the schematic
+of the IDP which uses uart5, the debug UART is on pins 22 and 23, aka
+qup05. It seems uart5 works in spite of the bogus pinconf because the
+default for the pins is their QUP function.
