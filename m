@@ -2,217 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A42C3EABCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254743EABC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhHLUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        id S235447AbhHLUcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhHLUcS (ORCPT
+        with ESMTP id S229677AbhHLUcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:32:18 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5083DC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:53 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id t9-20020a0562140c69b029033e8884d712so4081848qvj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:53 -0700 (PDT)
+        Thu, 12 Aug 2021 16:32:08 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5889DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:42 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id n17so15669775lft.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=zD3YqN3uKrjqq7dXEXETUikzHIusIdXQADNng2MRWg0=;
-        b=k0zAa1liZuKENSSN0W4s5uib7EonBbTNvp/dQ9cPRlx2IJwJ0H6qU972+G8uODGSXZ
-         lRATx42r4Z7mdMj4OaGnd4kzU/TvFMKH2tWVGub3E6MN7VgscyZ7Na55GeJGA0BkYuJQ
-         PMKLMZZiQJKVEUl8eDgzWD2FSVqH7qc9izOka2DbQAI7JLAy3LXQiTw+/HAxnF1l94ac
-         BI3Kb+uiRQRgc5ktQkKKO/oWg4sMQxCXKl+Advsc8iorvoBLAiRiUjb0qbe/MPrgT5Hp
-         mjBpZBSnAWsm7ZeZIwC7CpEPPhK3ergL2pvG7jIaqI3qWnc0n9XGO4srUXP1DZtN3VFp
-         1qbA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KUUhLtTlH34qCrAMz8FLnyHB8kOZP64VRsvKeH3KR8s=;
+        b=nOrRIYAAPbw5bHnn75Pm1qIco3wpb+lMROBcM7ri9KOPOhTw4kzAADCurwjRrUInst
+         AXb0PTXH/Ifcg2m/DuYXno20AWpOr1UP3nS9ZCLJYk6Vvkv0cayMwMxZd+7RW49DkTc7
+         5ghHighVMBccvkyAh5MMV0rI78r1gJdnmKDO88f61M7O4pTz9YBPRbFqroZPoi6+iWaR
+         0DeXqL15wzNkOOaK4cHifr5LqGK+oqI9Zql05LdmdBoDzT9Hvi0K2+kJ2oIj4wT2gOIT
+         S28D/7Aw2YvHu5ix/XLS27EequZ1oFuGbNVzTIm3vAe5ebX8CSfvvsdKPYTlFd+lOBUl
+         YXjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=zD3YqN3uKrjqq7dXEXETUikzHIusIdXQADNng2MRWg0=;
-        b=hTlmzaLzM921z5jQFwgn+3gWD1DHcAa8q0Tj/3d+iK3EaGUO4GRRbNqfckdFmhx8En
-         couM4C6RZUMua2C4OZiS2MV3SDawZ5lJJokxEdY3s4V8MXNUqU8YSOeJbt+YlguxOXvo
-         trrDlKhipSOZeljtTEYCJvucIWAmvdyCjPvmOZJBj6PqYscwkDnhbla19VJwpIwSq+7r
-         Rt4+gHhZipbAT8tx+DawFsJEGqouNKhZNMki3UCRlib5QwSdE+M27ESn0o5ZcJ7gPLgj
-         sBMnA41CtqaBFfeos26gA+cV7ZurfegX7lKJkjXiVAeZWgUzypzbOxj4d/UxDkcB+X3v
-         dQFQ==
-X-Gm-Message-State: AOAM5320rzLuaSwbKQ9lSAyaJWxUGejs5iUOcVWfETN20ri4ef8UgWwF
-        UjjE2mZJgEA+G3jLqYO9WYG82/kkoMuS
-X-Google-Smtp-Source: ABdhPJxPrujZoCKXu0Y0JWTKDXJbusKVULjrqEkfyGMlUiS7SCtxgy6kV+FIsrpHAX9hDYwMaqEW19T065RI
-X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:d977:cec1:ae4a:f50e])
- (user=joshdon job=sendgmr) by 2002:a05:6214:4a8:: with SMTP id
- w8mr3939270qvz.25.1628800312377; Thu, 12 Aug 2021 13:31:52 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 13:31:37 -0700
-Message-Id: <20210812203137.2880834-1-joshdon@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH] fs/proc/uptime.c: fix idle time reporting in /proc/uptime
-From:   Josh Don <joshdon@google.com>
-To:     Ingo Molnar <mingo@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KUUhLtTlH34qCrAMz8FLnyHB8kOZP64VRsvKeH3KR8s=;
+        b=euMrHPrOh+Sr4yflsxdjP+thnJI19hGHrMvDfERFAy66dpLCkSiN0UXlzADIsslF4f
+         BkbbwqrGALYjpSuts8Uk88Eok5A2zMDMWhFPCEaw7e/ddTrEHIm0FzUM3nUXx17X7DW0
+         541IvgKTt9O3R42VHObNgDIh+t59MARL/GDx+9ZTVfKN4cRxZk0b2aw4lPZEiAOEmGOJ
+         0+UUK6cmu2H8a2EgKK06Eo6wO+SjoZQ8ZSgRNyROp57E6MjPC6pf8S2FAtsS5f6F0xz+
+         Fkw3Y8o5u3on6ZVYZkpvdsWcvvC2hvcDlBz3cdqJeyoHiR1ypwgwwZQfq2d+Kyzm+jHJ
+         +pTA==
+X-Gm-Message-State: AOAM531OBk8khaTTMVXXzEcu2cmAnLcSau+CQSGTWRpmpZJp+Jyk9Hgy
+        8O8kAN/3wzGiSI1MrV20Cf4DsQ==
+X-Google-Smtp-Source: ABdhPJyvYaymFYFw8Uki/dQxRfjDAkBBlPMhq9oHb4aqfUAn1utra3SHn9C+FY7EgizSN1SPsk58yw==
+X-Received: by 2002:a05:6512:2153:: with SMTP id s19mr3859298lfr.140.1628800300644;
+        Thu, 12 Aug 2021 13:31:40 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id u19sm361918lfo.205.2021.08.12.13.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 13:31:39 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A70E9102BEE; Thu, 12 Aug 2021 23:31:53 +0300 (+03)
+Date:   Thu, 12 Aug 2021 23:31:53 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Josh Don <joshdon@google.com>, Luigi Rizzo <lrizzo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH 4/5] x86/mm: Provide helpers for unaccepted memory
+Message-ID: <20210812203153.uoa7nx7w5zdsmzck@box.shutemov.name>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-5-kirill.shutemov@linux.intel.com>
+ <67ce254c-aacc-43b6-d8d5-168ef9200f9e@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67ce254c-aacc-43b6-d8d5-168ef9200f9e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-/proc/uptime reports idle time by reading the CPUTIME_IDLE field from
-the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
-continually updated on idle cpus, leading this value to appear
-incorrectly small.
+On Tue, Aug 10, 2021 at 11:16:26AM -0700, Dave Hansen wrote:
+> On 8/9/21 11:26 PM, Kirill A. Shutemov wrote:
+> > +void accept_memory(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +	if (!boot_params.unaccepted_memory)
+> > +		return;
+> > +
+> > +	spin_lock(&unaccepted_memory_lock);
+> > +	__accept_memory(start, end);
+> > +	spin_unlock(&unaccepted_memory_lock);
+> > +}
+> 
+> Isn't this taken in the:
+> 
+> 	del_page_from_free_list()->
+> 	clear_page_offline()->
+> 	accept_memory()
+> 
+> call path?
+> 
+> That's underneath:
+> 
+> 	spin_lock_irqsave(&zone->lock, flags);
+> 
+> Which means that accept_memory() can happen from interrupt context.  Is
+> it always covered by another spin_lock_irqsave() which means that it can
+> use a plain spin_lock()?
 
-/proc/stat performs an accounting update when reading idle time; we can
-use the same approach for uptime.
+I didn't give it enough thought yet, but we always run under zone lock
+which has to use spin_lock_irqsave() if it called from interrupt context.
 
-With this patch, /proc/stat and /proc/uptime now agree on idle time.
-Additionally, the following shows idle time tick up consistently on an
-idle machine:
-(while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
+Having said that I think it is good idea to move clear_page_offline() out
+zone lock. It should help with allocation latency. Not sure how messy it
+gets. Merging/splitting path looks complex and I'm not an expert in the
+page allocator.
 
-Reported-by: Luigi Rizzo <lrizzo@google.com>
-Signed-off-by: Josh Don <joshdon@google.com>
----
- fs/proc/stat.c              | 26 --------------------------
- fs/proc/uptime.c            | 13 ++++++++-----
- include/linux/kernel_stat.h |  1 +
- kernel/sched/cputime.c      | 28 ++++++++++++++++++++++++++++
- 4 files changed, 37 insertions(+), 31 deletions(-)
+> If so, it would be nice to call out that logic.  It *looks* like a
+> spinlock that we would want to be spin_lock_irqsave().
 
-diff --git a/fs/proc/stat.c b/fs/proc/stat.c
-index 6561a06ef905..99796a8a5223 100644
---- a/fs/proc/stat.c
-+++ b/fs/proc/stat.c
-@@ -24,16 +24,6 @@
- 
- #ifdef arch_idle_time
- 
--static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
--{
--	u64 idle;
--
--	idle = kcs->cpustat[CPUTIME_IDLE];
--	if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
--		idle += arch_idle_time(cpu);
--	return idle;
--}
--
- static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
- {
- 	u64 iowait;
-@@ -46,22 +36,6 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
- 
- #else
- 
--static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
--{
--	u64 idle, idle_usecs = -1ULL;
--
--	if (cpu_online(cpu))
--		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
--
--	if (idle_usecs == -1ULL)
--		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
--		idle = kcs->cpustat[CPUTIME_IDLE];
--	else
--		idle = idle_usecs * NSEC_PER_USEC;
--
--	return idle;
--}
--
- static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
- {
- 	u64 iowait, iowait_usecs = -1ULL;
-diff --git a/fs/proc/uptime.c b/fs/proc/uptime.c
-index 5a1b228964fb..c900f354ef93 100644
---- a/fs/proc/uptime.c
-+++ b/fs/proc/uptime.c
-@@ -12,18 +12,21 @@ static int uptime_proc_show(struct seq_file *m, void *v)
- {
- 	struct timespec64 uptime;
- 	struct timespec64 idle;
--	u64 nsec;
-+	const struct kernel_cpustat *kcs;
-+	u64 idle_nsec;
- 	u32 rem;
- 	int i;
- 
--	nsec = 0;
--	for_each_possible_cpu(i)
--		nsec += (__force u64) kcpustat_cpu(i).cpustat[CPUTIME_IDLE];
-+	idle_nsec = 0;
-+	for_each_possible_cpu(i) {
-+		kcs = &kcpustat_cpu(i);
-+		idle_nsec += get_idle_time(kcs, i);
-+	}
- 
- 	ktime_get_boottime_ts64(&uptime);
- 	timens_add_boottime(&uptime);
- 
--	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
-+	idle.tv_sec = div_u64_rem(idle_nsec, NSEC_PER_SEC, &rem);
- 	idle.tv_nsec = rem;
- 	seq_printf(m, "%lu.%02lu %lu.%02lu\n",
- 			(unsigned long) uptime.tv_sec,
-diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index 44ae1a7eb9e3..9a5f5c6239c7 100644
---- a/include/linux/kernel_stat.h
-+++ b/include/linux/kernel_stat.h
-@@ -102,6 +102,7 @@ extern void account_system_index_time(struct task_struct *, u64,
- 				      enum cpu_usage_stat);
- extern void account_steal_time(u64);
- extern void account_idle_time(u64);
-+extern u64 get_idle_time(const struct kernel_cpustat *kcs, int cpu);
- 
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
- static inline void account_process_tick(struct task_struct *tsk, int user)
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 872e481d5098..9d7629e21164 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -227,6 +227,34 @@ void account_idle_time(u64 cputime)
- 		cpustat[CPUTIME_IDLE] += cputime;
- }
- 
-+/*
-+ * Returns the total idle time for the given cpu.
-+ * @kcs: The kernel_cpustat for the desired cpu.
-+ * @cpu: The desired cpu.
-+ */
-+u64 get_idle_time(const struct kernel_cpustat *kcs, int cpu)
-+{
-+	u64 idle;
-+	u64 __maybe_unused idle_usecs = -1ULL;
-+
-+#ifdef arch_idle_time
-+	idle = kcs->cpustat[CPUTIME_IDLE];
-+	if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
-+		idle += arch_idle_time(cpu);
-+#else
-+	if (cpu_online(cpu))
-+		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
-+
-+	if (idle_usecs == -1ULL)
-+		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
-+		idle = kcs->cpustat[CPUTIME_IDLE];
-+	else
-+		idle = idle_usecs * NSEC_PER_USEC;
-+#endif
-+
-+	return idle;
-+}
-+
- /*
-  * When a guest is interrupted for a longer amount of time, missed clock
-  * ticks are not redelivered later. Due to that, this function may on
 -- 
-2.33.0.rc1.237.g0d66db33f3-goog
-
+ Kirill A. Shutemov
