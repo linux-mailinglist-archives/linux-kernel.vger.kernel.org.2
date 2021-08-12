@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342123EA83A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592CD3EA83D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhHLQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
+        id S231145AbhHLQHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHLQGS (ORCPT
+        with ESMTP id S229728AbhHLQGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:06:18 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13472C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:05:53 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id k2so7861950plk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:05:53 -0700 (PDT)
+        Thu, 12 Aug 2021 12:06:50 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515C6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:06:25 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id oa17so10434195pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:06:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Atv8Vvc8zmZs7qz1+cYK+lFIwWM1M7nG99JAbjLrF4E=;
-        b=YLBpW1dX3jsE7c7oMqrzlss5vSGGZs6u7+pnog4p6i2QHlY7s+MM8yFUpgnMjcnswI
-         ni53NkrUhey0mDGFIAAM44Gu5KJjoPDDc9/ZTF1wlR1sv0i/UsDLXsOePa6/LkOryX+c
-         TPtvVZVuubtiV8YUi6kELv08mDXeaxoCeEpbM=
+        bh=TX06zsnV7acVz1z3JgDeP59aGED9UWsBVN/SvvP0XMM=;
+        b=DQAzABT3sl+k3K9T3Yd7UVKtYggSobcspvGUr+9xTYq5xkUESC3/KPbaPjcTMMjcym
+         dXjFryUghY2zEYL6T0jcuaSqouLKYj4aLgQgbBUHZPSvVXAFGsyupzcHfyrWPnNYILqF
+         q0Rjzvepxi3jt/+EvKYdrt0jBLJhFboRueTqoLMMX0OqMx5IU5CYxDGLqd8K9Qh4qE5q
+         CupeHFKopOGNrc8tDzJ/r2YduoFF1vB6bK++JSF3iJH1Slwahx8h1hk3jaEUXybZErZ9
+         2ZNYDyWXBp1Rc/3zRDK2WAghvyUca7fqqLqBZ6AEocqzf+gZwfT9ttwrI8a9Rr3p6bHq
+         /sMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Atv8Vvc8zmZs7qz1+cYK+lFIwWM1M7nG99JAbjLrF4E=;
-        b=atoCEthk1tRkBLFcKPv6ET7wYnQ+4VA3CtB0VGGHdwQJMIuMAh9+iGXwJqhK+No5Jm
-         zm+sbHx0bcMLFEZn6ZYk/qIKR9HDOVXL0/reV8xq31LovnaamAulJOzU0LbOqUBzcQOm
-         4CcF9ONt+vs9n7yFPQ8D+AC1ckvw3mpCSolhI2Lm6cAvi/JdYFtqix9SgiV/WJN62h4s
-         TTpZ7zHGE+D7lGIZCjVIvK9P7c+P5rB5qb+PzyKa/u/Vn8um0K4KksSirqoBtUqTJjdQ
-         BKC3MZYizvh8LgBZsdEURK2VA56CbIgtlqQHwJdDUm1YM49uM0/ab0g8sL3GTuu+VWGa
-         QVBQ==
-X-Gm-Message-State: AOAM530U885C0c7jFYtnbnZ6bC2sMMpVVYAOpe0XEagzVf87rrubha/S
-        NtwzBTSC+5I/pMwX1DPzA/9JpA==
-X-Google-Smtp-Source: ABdhPJwMArqBGrrc5EDHc20ZZRFqVySoMYl6/C4HpJy4i1kKUF6QYYb5i+Gvtmzolcq+1zcng9ID9A==
-X-Received: by 2002:a63:ff51:: with SMTP id s17mr4473823pgk.415.1628784352580;
-        Thu, 12 Aug 2021 09:05:52 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6683:43e5:ba4c:d76c])
-        by smtp.gmail.com with UTF8SMTPSA id z9sm3723003pfa.2.2021.08.12.09.05.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 09:05:52 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:05:50 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
-Subject: Re: [PATCH V5 5/7] arm64: dts: sc7280: Configure debug uart for
- sc7280-idp
-Message-ID: <YRVG3sK82lZhTAGL@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-6-git-send-email-rajpat@codeaurora.org>
+        bh=TX06zsnV7acVz1z3JgDeP59aGED9UWsBVN/SvvP0XMM=;
+        b=UGB/fF/mwdfSXWTUjZn1GZDHrLdBxd1SwFsnTKB03Vom2MnzftIo595gWWZAWQ79xG
+         E7CmsDUiLPbcJ2ozJj++MWTEVnk7QMCSBSbikWbgwyhETOzGgLAv5csBVi/EaexVxmW7
+         7rXTNKq/hwuDKdhq4x8BgG2MQM8Vu4pghixLAjniZB7qSsWHmuoBYe/wHrRClDn6fSqK
+         Mv+ujM/eHaaDkaE9E+QLt6quzwvbMBYuMJsjDUdi0TLO5gOqNN/E/W8vWJxyaHHlUFOp
+         sN9sFp4yo0K2+sIQc8wPLFJSCvci6tC4VhK1mpHY3GAIazQI6EK9aIc0Zrn1juYr386s
+         Y6fA==
+X-Gm-Message-State: AOAM533CYoVKN2yi3MuzhYHiD2+P340bOWgF8dXQyKCaCn7/ynetEL+I
+        +0FR4GueBReWbiU/+cU5jw34lQ==
+X-Google-Smtp-Source: ABdhPJxMIEXNHyOHxn0ix8X+qupgzFT7Jg6ck3kRYpaG9WOjI6ZdgsnMqYH5UHrFGJ8IKyI5TINIWw==
+X-Received: by 2002:a63:fb16:: with SMTP id o22mr4384217pgh.309.1628784384506;
+        Thu, 12 Aug 2021 09:06:24 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d5sm3258126pju.28.2021.08.12.09.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 09:06:23 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 16:06:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Protect marking SPs unsync when using
+ TDP MMU with spinlock
+Message-ID: <YRVG+Vtry4MG+QDw@google.com>
+References: <20210810224554.2978735-1-seanjc@google.com>
+ <20210810224554.2978735-2-seanjc@google.com>
+ <74bb6910-4a0c-4d2f-e6b5-714a3181638e@redhat.com>
+ <YRPyLagRbw5QKoNc@google.com>
+ <591a0b05-da95-3782-0a71-2b9bb7875b7f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1628754078-29779-6-git-send-email-rajpat@codeaurora.org>
+In-Reply-To: <591a0b05-da95-3782-0a71-2b9bb7875b7f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:11:16PM +0530, Rajesh Patil wrote:
-> Configure uart5 as debug uart and split the pinctrl functions
-> to match with SoC dt.
+On Thu, Aug 12, 2021, Paolo Bonzini wrote:
+> On 11/08/21 17:52, Sean Christopherson wrote:
+> > All that said, I do not have a strong preference.  Were you thinking something
+> > like this?
 > 
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> Yes, pretty much this.
 
-As I mentioned on '[4/7] arm64: dts: sc7280: Update QUPv3 UART5 DT node',
-I think you need to squash the two patches to avoid breaking (temporarily)
-the SC7280 IDP DT due to the undefined node 'qup_uart5_default'
+Roger that, I'll work on a new version.  Thanks!
