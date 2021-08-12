@@ -2,169 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CCA3E9CC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38323E9CC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhHLDOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:14:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230171AbhHLDOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:14:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E3B1610A7;
-        Thu, 12 Aug 2021 03:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628738025;
-        bh=upoubUoFXUupbVihHazGgBdMNxy54/SCZ+T3/jlKERk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OqwSfW+yiJvyboc2kkEo2xyT9xNzZliDAW3jBXxzSAjFLlvb+FE/m/C5FwmRU5WaL
-         PoqT4RztphbwRX/w+Be9o+BR3opJ+qTRTYo03xsvoWplFj8Jh5qdbEp13WfVuflwSd
-         tj2gV3FEQKZedTJ+I+rNTCv7ZLIWv3N9ted/muxXXNmGzmC9OSvCnj+PQ6lkZoyqcW
-         wXG7jVeRXi3ewnrqw/e1mpzEVCxxtwE6zIeSaPUdd9HA1BvnyIwNR5rokED8k3yokh
-         B4LE0bN0wNbCZ0TP11TjQr6+F6Ag0NLsA0ySeOt7uE/YU+gL2KtAYa1daCEipciEXK
-         5XxVCj2Zs6LGw==
-Received: by mail-ed1-f47.google.com with SMTP id x14so7142422edr.12;
-        Wed, 11 Aug 2021 20:13:45 -0700 (PDT)
-X-Gm-Message-State: AOAM531Gsyakwt4gTacJ8XG0f5HH0hB8wUJtEZTyHnyFta65D6HrqixI
-        HOjRiG5809gQ2GLETYbMgnOfMOhUFmUwSVNNvw==
-X-Google-Smtp-Source: ABdhPJzbwIiwyus8IKZuyQeUUkPB0pXANOg79zMYiZaRiaBA4SqoNv4lSkj50zVHajQIBRcwrMp2s6DtG1DsUpopkEI=
-X-Received: by 2002:a05:6402:1215:: with SMTP id c21mr2783756edw.137.1628738023720;
- Wed, 11 Aug 2021 20:13:43 -0700 (PDT)
+        id S233700AbhHLDQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 23:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhHLDQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 23:16:15 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571DEC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 20:15:50 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 67393806B5;
+        Thu, 12 Aug 2021 15:15:45 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1628738145;
+        bh=+aeRJE8lBBEpOv4Yz590FcNPGDPhOZJQuB70ZkeBZCA=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=GV4pbBUbQnPFmxS0F/1+5HH0wXWEGAPU73pUJ+VBHQ0LO0qJERW1uCiGPGj1LCXP8
+         x3XiX6yvXMGo+nOXdIMBG7WwXJFrC/st21kzEOZHsUd4S/q3JtJxHmAc/qJR9Rcaqe
+         VVOh/DvfKe2Wo0rg8X9o+g4wRBwj6BXktWrU8e3HNl1r6NwrYIfMbxlnsG53Rt+g5H
+         xUqOEMc66aAPtFyZy4TES6u46Za0IZ+wsc3p3jEPiK7U//8gKpLQ3tFmTqyB0/ZK29
+         1TzQrIpHWcyvXfd0hY64i2Z8ONL2/c3hX/M6V0/mx4gfbylMEzTKLf8lKvx+ogAUiw
+         Vv6qPfBPnNNzQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B611492610001>; Thu, 12 Aug 2021 15:15:45 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 12 Aug 2021 15:15:45 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.023; Thu, 12 Aug 2021 15:15:45 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     "linux@roeck-us.net" <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] hwmon: (pmbus/bpa-rs600) cleanup and workaround
+Thread-Topic: [PATCH 0/2] hwmon: (pmbus/bpa-rs600) cleanup and workaround
+Thread-Index: AQHXjmfUhftEq+42BUuRDDpemCFUEKtuarIA
+Date:   Thu, 12 Aug 2021 03:15:44 +0000
+Message-ID: <a181b3a5-41f7-fa49-e7fe-ab32dc39ff39@alliedtelesis.co.nz>
+References: <20210811041738.15061-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20210811041738.15061-1-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8383F7ECAB3E344A93114472F017971F@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <cover.1627965261.git.mchehab+huawei@kernel.org>
- <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
- <20210804085045.3dddbb9c@coco.lan> <YQrARd7wgYS1nywt@robh.at.kernel.org>
- <20210805094612.2bc2c78f@coco.lan> <20210805095848.464cf85c@coco.lan>
- <CAL_JsqKso=z8LG3ViaggyS1k+1T2F5aAhP3_RNhumQoUUD+bbg@mail.gmail.com>
- <20210810114211.01df0246@coco.lan> <CAL_JsqKtXoFeJO6_13U+VsSXNGX_1TQvwOyQYRk5JUgBhvQChA@mail.gmail.com>
- <20210810162054.1aa84b84@coco.lan> <CAL_JsqL-R=kTugNAC-C1gfSm6Xnb0Nw_iLcRki8aQMNQjcLN6A@mail.gmail.com>
- <20210811084648.66ddff29@coco.lan>
-In-Reply-To: <20210811084648.66ddff29@coco.lan>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 11 Aug 2021 22:13:32 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLg-jD1P3oGDocMaeHWQc+9kLr3gEdantRNUScUq5xsQw@mail.gmail.com>
-Message-ID: <CAL_JsqLg-jD1P3oGDocMaeHWQc+9kLr3gEdantRNUScUq5xsQw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to work
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=aqTM9hRV c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=MhDmnRu9jo8A:10 a=VwQbUJbxAAAA:8 a=U6DuVk5YAAAA:20 a=gbS8T0rqnHn9gnFFVREA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 1:46 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Em Tue, 10 Aug 2021 11:13:48 -0600
-> Rob Herring <robh@kernel.org> escreveu:
->
-> > > > >                                         compatible =3D "pciclass,=
-0604";
-> > > > >                                         device_type =3D "pci";
-> > > > >                                         #address-cells =3D <3>;
-> > > > >                                         #size-cells =3D <2>;
-> > > > >                                         ranges;
-> > > > >                                 };
-> > > > >                                 pcie@1,0 { // Lane 4: M.2
-> > > >
-> > > > These 3 nodes (1, 5, 7) need to be child nodes of the above node.
-> >
-> > This was the main issue.
->
-> Ok, placing 1, 5, 7 as child nodes of 0 worked, with the attached
-> DT schema:
->
->
->         $ ls -l $(find /sys/devices/platform/soc/f4000000.pcie/ -name of_=
-node)
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/of_node -> ../../../../firmware/devicetree/base/soc/pcie@f4000=
-000
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:01.0/of_node -> .=
-./../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/=
-pcie@0,0/pcie@1,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:01.0/pci_bus/0000=
-:03/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/of_node -> .=
-./../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/=
-pcie@0,0/pcie@5,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/pci_bus/0000=
-:05/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:07.0/of_node -> .=
-./../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/=
-pcie@0,0/pcie@7,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:07.0/pci_bus/0000=
-:06/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/of_node -> ../../../../..=
-/../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/pci_bus/0000:02/of_node -=
-> ../../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pci=
-e@0,0/pcie@0,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/of_node -> ../../../../../../firmware/=
-devicetree/base/soc/pcie@f4000000/pcie@0,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node -> ../../../..=
-/../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0
->         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f=
-4000000.pcie/pci0000:00/pci_bus/0000:00/of_node -> ../../../../../../../fir=
-mware/devicetree/base/soc/pcie@f4000000
-
-This all looks right to me, but...
-
-> The logs also seem OK on my eyes:
->
->         [    3.911082]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f=
-4000000
->         [    4.001104] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000
->         [    4.043609] pci_bus 0000:01: pci_set_bus_of_node: of_node: /so=
-c/pcie@f4000000/pcie@0,0
->         [    4.076756] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0
->         [    4.120652] pci_bus 0000:02: pci_set_bus_of_node: of_node: /so=
-c/pcie@f4000000/pcie@0,0/pcie@0,0
->         [    4.150766] pci 0000:02:01.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0
->         [    4.196413] pci 0000:02:04.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0
->         [    4.238896] pci 0000:02:05.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0
->         [    4.280116] pci 0000:02:07.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0
->         [    4.309821] pci 0000:02:09.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0
-
-...these do not.
-
->         [    4.370830] pci_bus 0000:03: pci_set_bus_of_node: of_node: /so=
-c/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
->         [    4.382345] pci_bus 0000:04: pci_set_bus_of_node: of_node: (nu=
-ll)
->         [    4.411966] pci_bus 0000:05: pci_set_bus_of_node: of_node: /so=
-c/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
->         [    4.439898] pci_bus 0000:06: pci_set_bus_of_node: of_node: /so=
-c/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
->         [    4.491616] pci 0000:06:00.0: pci_set_of_node: of_node: /soc/p=
-cie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
->         [    4.519907] pci_bus 0000:07: pci_set_bus_of_node: of_node: (nu=
-ll)
+DQpPbiAxMS8wOC8yMSA0OjE3IHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBUaGlzIHNlcmll
+cyBidWlsZHMgb24gdG9wIG9mIHRoZSBCUEQtUlM2MDAgc3VwcG9ydFsxXSB3aGljaCBpcyBpbiBH
+dWVudGVyJ3MNCj4gdHJlZSBieSBoYXNuJ3QgbWFkZSBpdCB0byBMaW51cycgeWV0LiBUaGV5IG1p
+Z2h0IGFjdHVhbGx5IGNsZWFubHkgYXBwbHkgd2l0aG91dA0KPiBpdCBzaW5jZSB0aGV5IHRvdWNo
+IGRpZmZlcmVudCBwYXJ0cyBvZiB0aGUgZmlsZS4NCj4NCj4gWzFdIC0gaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvbGludXgtaHdtb24vMjAyMTA3MDgyMjA2MTguMjM1NzYtMS1jaHJpcy5wYWNraGFt
+QGFsbGllZHRlbGVzaXMuY28ubnovDQo+DQo+IENocmlzIFBhY2toYW0gKDIpOg0KPiAgICBod21v
+bjogKHBtYnVzL2JwYS1yczYwMCkgUmVtb3ZlIGR1cGxpY2F0ZSBkZWZpbmluaXRpb25zDQo+ICAg
+IGh3bW9uOiAocG1idXMvYnBhLXJzNjAwKSBBZGQgd29ya2Fyb3VuZCBmb3IgaW5jb3JyZWN0IFBp
+biBtYXgNCj4NCj4gICBkcml2ZXJzL2h3bW9uL3BtYnVzL2JwYS1yczYwMC5jIHwgNDQgKysrKysr
+KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDI3IGluc2Vy
+dGlvbnMoKyksIDE3IGRlbGV0aW9ucygtKQ0KDQpJJ3ZlIGFsc28gc2VudCBhIFBSIGZvciBhZGRp
+bmcgZGlzcGxheSBvZiB0aGUgcmF0ZWQgdmFsdWVzIHRvIGxtLXNlbnNvcnMNCg0KaHR0cHM6Ly9n
+aXRodWIuY29tL2xtLXNlbnNvcnMvbG0tc2Vuc29ycy9wdWxsLzM1OA0K
