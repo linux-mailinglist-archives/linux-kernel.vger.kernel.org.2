@@ -2,88 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7B33EABC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A42C3EABCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbhHLUbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:31:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60820 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhHLUbw (ORCPT
+        id S236153AbhHLUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhHLUcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:31:52 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628800285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E3exK/lR6t6Dbvglgzd+Bf4fBmwMv8kRs9nn23PWQEM=;
-        b=Y5+HA1E7/u03PL+rCmCOnL0fuU0NGWloBEApwv/NAeO539dTI4eIAHDQ7UffnNc7BGxQZN
-        nrGM1fsHU3yuVuKfvQWF2D5Ejz6Okg9isd05fkK43VLJDD/WECYPRjJguWQm4avSCHs6+4
-        S2jkpBcy0aC860MvdA1DCsENgnQVzi9su5gUkVXimJFC5F8pyid0KN1uC68v4YsXivM5Gr
-        T4VuDBTZCQrl3wsiyIlLZL0lOZfr2Gfo5cT1Go5P89+Zlr1qaALAan1z4CRXAyHLF+fOjP
-        exEuyFre2N8bABLKdf38w8ab2klvsDG51/y3tkngXg0U0USFu989Bv7w+Y59hQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628800285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E3exK/lR6t6Dbvglgzd+Bf4fBmwMv8kRs9nn23PWQEM=;
-        b=fGdZmd5Z/lT71YUoVKW/uI0bHV+P9lahndmDL6ArS1FXRZSi/vrkVQzCG502PnHJqbHHwP
-        cHGPWrJr8U4MCmAw==
-To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH] hrtimer: Use raw_cpu_ptr() in clock_was_set()
-In-Reply-To: <87a6lmiwi0.ffs@tglx>
-References: <20210713135158.054424875@linutronix.de>
- <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
- <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
- <87a6lmiwi0.ffs@tglx>
-Date:   Thu, 12 Aug 2021 22:31:24 +0200
-Message-ID: <875ywacsmb.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 12 Aug 2021 16:32:18 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5083DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:53 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id t9-20020a0562140c69b029033e8884d712so4081848qvj.18
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zD3YqN3uKrjqq7dXEXETUikzHIusIdXQADNng2MRWg0=;
+        b=k0zAa1liZuKENSSN0W4s5uib7EonBbTNvp/dQ9cPRlx2IJwJ0H6qU972+G8uODGSXZ
+         lRATx42r4Z7mdMj4OaGnd4kzU/TvFMKH2tWVGub3E6MN7VgscyZ7Na55GeJGA0BkYuJQ
+         PMKLMZZiQJKVEUl8eDgzWD2FSVqH7qc9izOka2DbQAI7JLAy3LXQiTw+/HAxnF1l94ac
+         BI3Kb+uiRQRgc5ktQkKKO/oWg4sMQxCXKl+Advsc8iorvoBLAiRiUjb0qbe/MPrgT5Hp
+         mjBpZBSnAWsm7ZeZIwC7CpEPPhK3ergL2pvG7jIaqI3qWnc0n9XGO4srUXP1DZtN3VFp
+         1qbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zD3YqN3uKrjqq7dXEXETUikzHIusIdXQADNng2MRWg0=;
+        b=hTlmzaLzM921z5jQFwgn+3gWD1DHcAa8q0Tj/3d+iK3EaGUO4GRRbNqfckdFmhx8En
+         couM4C6RZUMua2C4OZiS2MV3SDawZ5lJJokxEdY3s4V8MXNUqU8YSOeJbt+YlguxOXvo
+         trrDlKhipSOZeljtTEYCJvucIWAmvdyCjPvmOZJBj6PqYscwkDnhbla19VJwpIwSq+7r
+         Rt4+gHhZipbAT8tx+DawFsJEGqouNKhZNMki3UCRlib5QwSdE+M27ESn0o5ZcJ7gPLgj
+         sBMnA41CtqaBFfeos26gA+cV7ZurfegX7lKJkjXiVAeZWgUzypzbOxj4d/UxDkcB+X3v
+         dQFQ==
+X-Gm-Message-State: AOAM5320rzLuaSwbKQ9lSAyaJWxUGejs5iUOcVWfETN20ri4ef8UgWwF
+        UjjE2mZJgEA+G3jLqYO9WYG82/kkoMuS
+X-Google-Smtp-Source: ABdhPJxPrujZoCKXu0Y0JWTKDXJbusKVULjrqEkfyGMlUiS7SCtxgy6kV+FIsrpHAX9hDYwMaqEW19T065RI
+X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:d977:cec1:ae4a:f50e])
+ (user=joshdon job=sendgmr) by 2002:a05:6214:4a8:: with SMTP id
+ w8mr3939270qvz.25.1628800312377; Thu, 12 Aug 2021 13:31:52 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 13:31:37 -0700
+Message-Id: <20210812203137.2880834-1-joshdon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] fs/proc/uptime.c: fix idle time reporting in /proc/uptime
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Don <joshdon@google.com>, Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clock_was_set() can be invoked from preemptible context. Use raw_cpu_ptr()
-to check whether high resolution mode is active or not. It does not matter
-whether the task migrates after acquiring the pointer.
+/proc/uptime reports idle time by reading the CPUTIME_IDLE field from
+the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
+continually updated on idle cpus, leading this value to appear
+incorrectly small.
 
-Fixes: e71a4153b7c2 ("hrtimer: Force clock_was_set() handling for the HIGHRES=n, NOHZ=y case")
-Reported-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+/proc/stat performs an accounting update when reading idle time; we can
+use the same approach for uptime.
+
+With this patch, /proc/stat and /proc/uptime now agree on idle time.
+Additionally, the following shows idle time tick up consistently on an
+idle machine:
+(while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
+
+Reported-by: Luigi Rizzo <lrizzo@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
 ---
- kernel/time/hrtimer.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/proc/stat.c              | 26 --------------------------
+ fs/proc/uptime.c            | 13 ++++++++-----
+ include/linux/kernel_stat.h |  1 +
+ kernel/sched/cputime.c      | 28 ++++++++++++++++++++++++++++
+ 4 files changed, 37 insertions(+), 31 deletions(-)
 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -944,10 +944,11 @@ static bool update_needs_ipi(struct hrti
-  */
- void clock_was_set(unsigned int bases)
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 6561a06ef905..99796a8a5223 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -24,16 +24,6 @@
+ 
+ #ifdef arch_idle_time
+ 
+-static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+-{
+-	u64 idle;
+-
+-	idle = kcs->cpustat[CPUTIME_IDLE];
+-	if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
+-		idle += arch_idle_time(cpu);
+-	return idle;
+-}
+-
+ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
  {
-+	struct hrtimer_cpu_base *cpu_base = raw_cpu_ptr(&hrtimer_bases);
- 	cpumask_var_t mask;
- 	int cpu;
+ 	u64 iowait;
+@@ -46,22 +36,6 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
  
--	if (!hrtimer_hres_active() && !tick_nohz_active)
-+	if (!__hrtimer_hres_active(cpu_base) && !tick_nohz_active)
- 		goto out_timerfd;
+ #else
  
- 	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-@@ -958,9 +959,9 @@ void clock_was_set(unsigned int bases)
- 	/* Avoid interrupting CPUs if possible */
- 	cpus_read_lock();
- 	for_each_online_cpu(cpu) {
--		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
- 		unsigned long flags;
+-static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+-{
+-	u64 idle, idle_usecs = -1ULL;
+-
+-	if (cpu_online(cpu))
+-		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
+-
+-	if (idle_usecs == -1ULL)
+-		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
+-		idle = kcs->cpustat[CPUTIME_IDLE];
+-	else
+-		idle = idle_usecs * NSEC_PER_USEC;
+-
+-	return idle;
+-}
+-
+ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+ {
+ 	u64 iowait, iowait_usecs = -1ULL;
+diff --git a/fs/proc/uptime.c b/fs/proc/uptime.c
+index 5a1b228964fb..c900f354ef93 100644
+--- a/fs/proc/uptime.c
++++ b/fs/proc/uptime.c
+@@ -12,18 +12,21 @@ static int uptime_proc_show(struct seq_file *m, void *v)
+ {
+ 	struct timespec64 uptime;
+ 	struct timespec64 idle;
+-	u64 nsec;
++	const struct kernel_cpustat *kcs;
++	u64 idle_nsec;
+ 	u32 rem;
+ 	int i;
  
-+		cpu_base = &per_cpu(hrtimer_bases, cpu);
- 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
+-	nsec = 0;
+-	for_each_possible_cpu(i)
+-		nsec += (__force u64) kcpustat_cpu(i).cpustat[CPUTIME_IDLE];
++	idle_nsec = 0;
++	for_each_possible_cpu(i) {
++		kcs = &kcpustat_cpu(i);
++		idle_nsec += get_idle_time(kcs, i);
++	}
  
- 		if (update_needs_ipi(cpu_base, bases))
+ 	ktime_get_boottime_ts64(&uptime);
+ 	timens_add_boottime(&uptime);
+ 
+-	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
++	idle.tv_sec = div_u64_rem(idle_nsec, NSEC_PER_SEC, &rem);
+ 	idle.tv_nsec = rem;
+ 	seq_printf(m, "%lu.%02lu %lu.%02lu\n",
+ 			(unsigned long) uptime.tv_sec,
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 44ae1a7eb9e3..9a5f5c6239c7 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -102,6 +102,7 @@ extern void account_system_index_time(struct task_struct *, u64,
+ 				      enum cpu_usage_stat);
+ extern void account_steal_time(u64);
+ extern void account_idle_time(u64);
++extern u64 get_idle_time(const struct kernel_cpustat *kcs, int cpu);
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+ static inline void account_process_tick(struct task_struct *tsk, int user)
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 872e481d5098..9d7629e21164 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -227,6 +227,34 @@ void account_idle_time(u64 cputime)
+ 		cpustat[CPUTIME_IDLE] += cputime;
+ }
+ 
++/*
++ * Returns the total idle time for the given cpu.
++ * @kcs: The kernel_cpustat for the desired cpu.
++ * @cpu: The desired cpu.
++ */
++u64 get_idle_time(const struct kernel_cpustat *kcs, int cpu)
++{
++	u64 idle;
++	u64 __maybe_unused idle_usecs = -1ULL;
++
++#ifdef arch_idle_time
++	idle = kcs->cpustat[CPUTIME_IDLE];
++	if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
++		idle += arch_idle_time(cpu);
++#else
++	if (cpu_online(cpu))
++		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
++
++	if (idle_usecs == -1ULL)
++		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
++		idle = kcs->cpustat[CPUTIME_IDLE];
++	else
++		idle = idle_usecs * NSEC_PER_USEC;
++#endif
++
++	return idle;
++}
++
+ /*
+  * When a guest is interrupted for a longer amount of time, missed clock
+  * ticks are not redelivered later. Due to that, this function may on
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
+
