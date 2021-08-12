@@ -2,158 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5957C3EAB39
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00A23EAB42
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhHLTrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:47:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhHLTrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:47:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD59560FBF;
-        Thu, 12 Aug 2021 19:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628797601;
-        bh=FB/3JXubUJqc+EUesD4OCWgL312JeTESVV+Ra/v4hdw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MJA8LHF5KUCiP0sTl4iurA3fDS7AgIYzwMkVRxQd6P+Zzc8ZakNgX4P3asf1FKDNB
-         UbXBHwUJdCJ6kdN6CbXHKvkkwoSlyh/19gNstxaAXvsIoYR37CipfOmHFcW7w/8zrJ
-         BlU1dv71mF+AmDc7QlexVfXwJMtQgVkPVu9vlnl+FQmMbbVQ8lV7z22x6q0rZbKh2q
-         TnrSVTKXCNgJs2nrqsXem3Iby46GXQTdXgicmdrfSsM1euQN+HrZ/l6Tb6ZFlyQT8E
-         iyRV/bO+EVrfGZgIcLVddiSAVDvWhB3qv7lUAWv4x86HaLDNshBdsr3l63+uODvXS2
-         mVdS96JaUFIDQ==
-Date:   Thu, 12 Aug 2021 14:46:39 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 10/15] asm/io.h: Add ioremap_shared fallback
-Message-ID: <20210812194639.GA2502520@bjorn-Precision-5520>
+        id S235823AbhHLTrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235552AbhHLTrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:47:18 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50888C061756;
+        Thu, 12 Aug 2021 12:46:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id o23so13757381ejc.3;
+        Thu, 12 Aug 2021 12:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6XdIleat91/MzDpJVOaU1YmXdU4k0zkjMEY+D2f+xKw=;
+        b=dahg+GkWwhEV28eqPZ3i2PFQsLbWgFaJdtqZjD2IGS0L+hxOi48mD6O8LrKZ4fveXk
+         P0olEAvOB8dyDFW5cQ//s5ei9wn/SATCD9RP3/bmnjI/4YnBnjV4jkKuoBHVg7iX4ghw
+         lbdkP2JUVT2P4FanbFg7f8oeySrP1jJ5gC+D9N34z4l7350VvZWn018q1s5bdHYm3WkD
+         v5AqJwYVJKsK8IWjZmhScMQJAOd7zQQLeo2ZwDy9dG/87bvflKNO8V3dlcObb7Dv89er
+         lqHlKBkiQoqijhT0RLs17rDrCqsWsIYT8vM1hAa5FuaLKHfHbjRIENer+4qTPTrYv92J
+         /8Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6XdIleat91/MzDpJVOaU1YmXdU4k0zkjMEY+D2f+xKw=;
+        b=diSFbtlfg+4y8lynNCXrhHLhoSNrqMqPHYoSPLomaxJ/BUZ1A/Z8Y1G+i7ck3KSkqj
+         CofE7o4Zc32hrJAmRO3W4n1nggr4dFR7OepBGZLkan3dKteDWIIANHWXsGm8fzATeKx6
+         YRyfmWUQ9Efyf5hAnXoAEB/pR/RkMD6zkm8MpB/8TiHsCp2h30EfyxO76trJ8x+zvrHE
+         5BbG0zGzEASIicnt1OkbhZeCjR1PhVedn2ih8PnQ++I0s+ZzPII1+tPeXYqnIJvnO5Ku
+         s2lpFLhl69OOBMTHTQ1TvF5kBEN4/Ve+XVMTycE+wyP+fH++zLqkPCTloGk0lfKR3do9
+         9x7g==
+X-Gm-Message-State: AOAM532nP0ynfaqPj8MbX9qqCo+bgLyE0Bg8zsKQPWasZCXhLLY0DBGH
+        6H+cABXgJL2E2MZdPe8ulqQ=
+X-Google-Smtp-Source: ABdhPJwxasy2FDyr6WDV2CLwLaZmO8zjwsGax0+745qwOTIAVFsE566ZPIVNbpJZ5fiX7nnZSaAh8A==
+X-Received: by 2002:a17:907:9602:: with SMTP id gb2mr5335995ejc.119.1628797610905;
+        Thu, 12 Aug 2021 12:46:50 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:f865:21f3:80af:d6db? ([2a04:241e:502:1d80:f865:21f3:80af:d6db])
+        by smtp.gmail.com with ESMTPSA id b11sm1174848eja.104.2021.08.12.12.46.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 12:46:50 -0700 (PDT)
+Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
+From:   Leonard Crestez <cdleonard@gmail.com>
+To:     Dmitry Safonov <0x7f454c46@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        David Ahern <dsahern@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+References: <cover.1628544649.git.cdleonard@gmail.com>
+ <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
+ <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
+ <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+Message-ID: <785d945e-c0d2-fee5-39d8-99dc06a074f1@gmail.com>
+Date:   Thu, 12 Aug 2021 22:46:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805005218.2912076-11-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 05:52:13PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> From: Andi Kleen <ak@linux.intel.com>
+On 8/11/21 11:29 AM, Leonard Crestez wrote:
+> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
+>> On Tue, 10 Aug 2021 at 02:50, Leonard Crestez <cdleonard@gmail.com> 
+>>> +       /* If an old value exists for same local_id it is deleted */
+>>> +       key_info = __tcp_authopt_key_info_lookup(sk, info, 
+>>> opt.local_id);
+>>> +       if (key_info)
+>>> +               tcp_authopt_key_del(sk, info, key_info);
+>>> +       key_info = sock_kmalloc(sk, sizeof(*key_info), GFP_KERNEL | 
+>>> __GFP_ZERO);
+>>> +       if (!key_info)
+>>> +               return -ENOMEM;
+>>
+>> 1. You don't need sock_kmalloc() together with tcp_authopt_key_del().
+>>      It just frees the memory and allocates it back straight away - no
+>> sense in doing that.
 > 
-> This function is for declaring memory that should be shared with
-> a hypervisor in a confidential guest. If the architecture doesn't
-> implement it it's just ioremap.
-
-I would assume ioremap_shared() would "map" something, not "declare"
-it.
-
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->  arch/alpha/include/asm/io.h    | 1 +
->  arch/mips/include/asm/io.h     | 1 +
->  arch/parisc/include/asm/io.h   | 1 +
->  arch/sparc/include/asm/io_64.h | 1 +
->  include/asm-generic/io.h       | 4 ++++
->  5 files changed, 8 insertions(+)
+> The list is scanned in multiple places in later commits using nothing 
+> but an rcu_read_lock, this means that keys can't be updated in-place.
 > 
-> diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-> index 0fab5ac90775..701b44909b94 100644
-> --- a/arch/alpha/include/asm/io.h
-> +++ b/arch/alpha/include/asm/io.h
-> @@ -283,6 +283,7 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
->  }
->  
->  #define ioremap_wc ioremap
-> +#define ioremap_shared ioremap
->  #define ioremap_uc ioremap
->  
->  static inline void iounmap(volatile void __iomem *addr)
-> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-> index 6f5c86d2bab4..3713ff624632 100644
-> --- a/arch/mips/include/asm/io.h
-> +++ b/arch/mips/include/asm/io.h
-> @@ -179,6 +179,7 @@ void iounmap(const volatile void __iomem *addr);
->  #define ioremap(offset, size)						\
->  	ioremap_prot((offset), (size), _CACHE_UNCACHED)
->  #define ioremap_uc		ioremap
-> +#define ioremap_shared		ioremap
->  
->  /*
->   * ioremap_cache -	map bus memory into CPU space
-> diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-> index 0b5259102319..73064e152df7 100644
-> --- a/arch/parisc/include/asm/io.h
-> +++ b/arch/parisc/include/asm/io.h
-> @@ -129,6 +129,7 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
->   */
->  void __iomem *ioremap(unsigned long offset, unsigned long size);
->  #define ioremap_wc			ioremap
-> +#define ioremap_shared			ioremap
->  #define ioremap_uc			ioremap
->  
->  extern void iounmap(const volatile void __iomem *addr);
-> diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-> index 5ffa820dcd4d..18cc656eb712 100644
-> --- a/arch/sparc/include/asm/io_64.h
-> +++ b/arch/sparc/include/asm/io_64.h
-> @@ -409,6 +409,7 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
->  #define ioremap_uc(X,Y)			ioremap((X),(Y))
->  #define ioremap_wc(X,Y)			ioremap((X),(Y))
->  #define ioremap_wt(X,Y)			ioremap((X),(Y))
-> +#define ioremap_shared(X, Y)		ioremap((X), (Y))
->  static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
->  {
->  	return NULL;
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index e93375c710b9..bfcaee1691c8 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -982,6 +982,10 @@ static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
->  #define ioremap_wt ioremap
->  #endif
->  
-> +#ifndef ioremap_shared
-> +#define ioremap_shared ioremap
-> +#endif
-
-"ioremap_shared" is a very generic term for a pretty specific thing:
-"memory shared with a hypervisor in a confidential guest".
-
-Maybe deserves a comment with at least a hint here.  "Hypervisors in a
-confidential guest" isn't the first thing that comes to mind when I
-read "shared".
-
->  /*
->   * ioremap_uc is special in that we do require an explicit architecture
->   * implementation.  In general you do not want to use this function in a
-> -- 
-> 2.25.1
+>> 2. I think RFC says you must not allow a user to change an existing key:
+>>> MKT parameters are not changed. Instead, new MKTs can be installed, 
+>>> and a connection
+>>> can change which MKT it uses.
+>>
+>> IIUC, it means that one can't just change an existing MKT, but one can
+>> remove and later
+>> add MKT with the same (send_id, recv_id, src_addr/port, dst_addr/port).
+>>
+>> So, a reasonable thing to do:
+>> if (key_info)
+>>      return -EEXIST.
 > 
+> You're right, making the user delete keys explicitly is better.
+
+On a second thought this might be required to mark keys as "send-only" 
+and "recv-only" atomically.
+
+Separately from RFC5925 some vendors implement a "keychain" model based 
+on RFC8177 where each key has a distinct "accept-lifetime" and a 
+"send-lifetime". This could be implemented by adding flags 
+"expired_for_send" and "expired_for_recv" but requires the ability to 
+set an expiration mark without the key ever being deleted.
+
+--
+Regards,
+Leonard
