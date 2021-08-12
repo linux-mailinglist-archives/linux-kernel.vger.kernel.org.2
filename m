@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58623E9FB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A1C3E9FB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhHLHpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234583AbhHLHpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:45:11 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34869C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:44:46 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id m18so9299100ljo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=NyaJ++B2aCALocOuAObqcKcOAmgrUg5bGvDOtyDp6g4=;
-        b=ZThf3UyfBrydNivu27GZd40opCaeQrKBIniLPfKSbyGha3shvMTbgKqqfB6guaY3dJ
-         PafMyc+EzEh7XtQTuI49FbssnbIxYHMoWzHmrauxylPT9Mt46+FPpX5qNKGTqPd7ZKWe
-         ZzyWv8VH8ohL1nz7zPx6URcrfQSremb7EOZzc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=NyaJ++B2aCALocOuAObqcKcOAmgrUg5bGvDOtyDp6g4=;
-        b=eDkVroV9newnmcNujgL187FoCC2wRpUBBEmw6LHVUWVlUSOT23dHoVBHbXnY/QCNKI
-         aEhRNgw2TqqQA2ftXD1RSWyf/b0VjXPA2z8Ppgi0uZ9h4teXrsaSX0oB0nXZBuTyJ0QY
-         lEPrFO5vz+cjIzYKyX+GhJ9Z4um70snWgSgxaEKc22j9BTsGEKp02hY+GilRcDPYdzCv
-         icEwqiOlhzxPGvY1cZTKbeG6IpFxLULayPTFPASaThytTPI3HqBu5N9W7Tez9JxXNltf
-         X0vxmW9+diSUAfnuw5IYywlSYyyRAFTgWq/G3UeD2rmpN/vn0Q88h6EuD1wegqGodykB
-         4fKg==
-X-Gm-Message-State: AOAM533IgcVSvJ66hin5v0UsDxyE+odb9y5yx5DRdd6sDeNoQJNEGemF
-        Z/A5h+oVHskw+mFVskJMiBMdNg==
-X-Google-Smtp-Source: ABdhPJwnv0ye2HmxRqyGrc5NOVLhwwSpA2xpRHBC2r3XU1dM5VlR9kdld9A5hu1c/6eVz7Y0b5wZ9Q==
-X-Received: by 2002:a05:651c:554:: with SMTP id q20mr2057331ljp.172.1628754284537;
-        Thu, 12 Aug 2021 00:44:44 -0700 (PDT)
-Received: from cloudflare.com ([2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id e21sm187097lfq.240.2021.08.12.00.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 00:44:43 -0700 (PDT)
-References: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 0/5] sockmap: add sockmap support for unix
- stream socket
-In-reply-to: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-Date:   Thu, 12 Aug 2021 09:44:43 +0200
-Message-ID: <87v94bcdjo.fsf@cloudflare.com>
+        id S234492AbhHLHqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:46:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231502AbhHLHqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:46:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 501E460FC4;
+        Thu, 12 Aug 2021 07:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628754379;
+        bh=Ls1zKRbLvgNPQeKi4jwnzfArAicQtndjRZOspd/gn2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2fz4GAWTgKvdrUnkYDroRXFUgOM810yxdKzhuakSI1VJDdKZcH1R54wUaVtVeaXOS
+         7CLWQn0/jpWHGTKh3612PVOiWRmPprGBr4JgkvpUb0iiRJJkgjyqla0p1wulFUZE25
+         4AgbQUtz1udJDgI7coxO5NyF/qIk4gwKmRHazaDY=
+Date:   Thu, 12 Aug 2021 09:46:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Yizhuo Zhai <yzhai003@ucr.edu>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] media: atomisp: fix the uninitialized use and rename
+ "retvalue"
+Message-ID: <YRTRyEmXgBB5HxlU@kroah.com>
+References: <20210723003607.64179-1-yzhai003@ucr.edu>
+ <20210812073447.127193-1-yzhai003@ucr.edu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812073447.127193-1-yzhai003@ucr.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 09:47 PM CEST, Jiang Wang wrote:
-> This patch series add support for unix stream type
-> for sockmap. Sockmap already supports TCP, UDP,
-> unix dgram types. The unix stream support is similar
-> to unix dgram.
->
-> Also add selftests for unix stream type in sockmap tests.
->
->
-> Jiang Wang (5):
->   af_unix: add read_sock for stream socket types
->   af_unix: add unix_stream_proto for sockmap
->   selftest/bpf: add tests for sockmap with unix stream type.
->   selftest/bpf: change udp to inet in some function names
->   selftest/bpf: add new tests in sockmap for unix stream to tcp.
->
->  include/net/af_unix.h                         |  8 +-
->  net/unix/af_unix.c                            | 91 +++++++++++++++---
->  net/unix/unix_bpf.c                           | 93 ++++++++++++++-----
->  .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
->  4 files changed, 187 insertions(+), 53 deletions(-)
->
-> v1 -> v2 :
->  - Call unhash in shutdown.
->  - Clean up unix_create1 a bit.
->  - Return -ENOTCONN if socket is not connected.
->
-> v2 -> v3 :
->  - check for stream type in update_proto
->  - remove intermediate variable in __unix_stream_recvmsg
->  - fix compile warning in unix_stream_recvmsg
->
-> v3 -> v4 :
->  - remove sk_is_unix_stream, just check TCP_ESTABLISHED for UNIX sockets.
->  - add READ_ONCE in unix_dgram_recvmsg
->  - remove type check in unix_stream_bpf_update_proto
->
-> v4 -> v5 :
->  - add two missing READ_ONCE for sk_prot.
->
-> v5 -> v6 :
->  - fix READ_ONCE by reading to a local variable first.
+On Thu, Aug 12, 2021 at 12:34:46AM -0700, Yizhuo Zhai wrote:
+> Inside function mt9m114_detect(), variable "retvalue" could
+> be uninitialized if mt9m114_read_reg() returns error, however, it
+> is used in the later if statement, which is potentially unsafe.
+> 
+> The local variable "retvalue" is renamed to "model" to avoid
+> confusion.
+> 
+> Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+> Signed-off-by: Yizhuo Zhai <yzhai003@ucr.edu>
+> ---
+>  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> index f5de81132177..77293579a134 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> @@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+>  static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
+>  {
+>  	struct i2c_adapter *adapter = client->adapter;
+> -	u32 retvalue;
+> +	u32 model;
+> +	int ret;
+>  
+>  	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+>  		dev_err(&client->dev, "%s: i2c error", __func__);
+>  		return -ENODEV;
+>  	}
+> -	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+> -	dev->real_model_id = retvalue;
+> +	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
+> +	if (ret)
+> +		return ret;
+> +	dev->real_model_id = model;
+>  
+> -	if (retvalue != MT9M114_MOD_ID) {
+> +	if (model != MT9M114_MOD_ID) {
+>  		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+>  			__func__, client->addr);
+>  		return -ENODEV;
+> -- 
+> 2.25.1
+> 
+> 
 
-For the series:
+Hi,
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
