@@ -2,174 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436EF3EA32D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D233EA325
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhHLKy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236661AbhHLKyx (ORCPT
+        id S236541AbhHLKyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:54:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57768 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235059AbhHLKyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:54:53 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA13C0613D3;
-        Thu, 12 Aug 2021 03:54:28 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id a8so8717594pjk.4;
-        Thu, 12 Aug 2021 03:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Odt01punb17ITFlrIkGGB8hHCTznUelJjiAvTAKdxNI=;
-        b=vfrDdL+5PqWsegVKDIXrbiWTQL7QR6VHOm7UT1PxnU6oqF0CqAFPkb+NLyTo+8w9Ms
-         lME7b0GTtxn/JAzXRWRaTpm88R//Kp5DYx78I4SmSNAcRZtcxtFc4ILheCorn1IpvmAJ
-         KpwRmf1zg4HZ16y0Xbf/vqKvSa7T4tw27J42gVLjlOVtpdZmyiaiCEe3FJ6OH+SEWpqG
-         xgwbkXBWtsa8M7Oeg9nH9tx0DVHIeBdznAyBC7rzlfuxR6yBgQidzzAmsc8Vf6d9nWT0
-         q1i4ZN6zu5LDKe8jBHmeOH3oh1WjqwnH9SyDLj4zaurmaNJVXSIYjjLCRy0/9os/SjYR
-         waeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Odt01punb17ITFlrIkGGB8hHCTznUelJjiAvTAKdxNI=;
-        b=fHj5KMiEAH6/5U9hOCootu75eAeEEzEDQcIeAQYDUWWA1XGf2WiehHYfA/E65AljXA
-         malJoZdpXQMr/Cg7/sH+eWCY680Qm/2vWPHynwiD6dv5ziCXJrNmNNNUOQlYxRvpSlAQ
-         Ic750caOFWm2inJzbwyNhEo5M/luI/BwOjMYTugFMb563a7jvGqcFjfs44J8U6xCq8Pt
-         FtPWCJjbTaOZNTZKL3IYPxKYl+2npkEdAz+tULNVwsprLZJSx1fqW6eb/FKdjq22ve+f
-         32QcS2TqIXkZrHu/3091LiMsDnnUBDUz64Wgn489DlYhWgXE9wPp3qCPAsa5R4+ny5ol
-         warg==
-X-Gm-Message-State: AOAM530/d8kp3RKhUgY52qbYVku+U+GQ/gaB5MjMY4/EHtGdbKQdWVZm
-        Y6qBJfZgOx+8E7pjts06FBk=
-X-Google-Smtp-Source: ABdhPJzt872/2bBcxuFIUUQb/AgGb70PXH8tioGbiuL2GZPWp4IFUlUB6RmzFeU0TszPZFLYe+8Xgg==
-X-Received: by 2002:a17:90a:cb12:: with SMTP id z18mr3807423pjt.84.1628765667913;
-        Thu, 12 Aug 2021 03:54:27 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8916:5000:73b9:7bc0:297c:e850])
-        by smtp.gmail.com with ESMTPSA id j16sm3070866pfi.165.2021.08.12.03.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 03:54:27 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com,
-        maz@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org
-Cc:     linux-pci@vger.kernel.org, linuxarm@huawei.com,
-        robin.murphy@arm.com, will@kernel.org, lorenzo.pieralisi@arm.com,
-        dwmw@amazon.co.uk, Barry Song <song.bao.hua@hisilicon.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [PATCH v2 2/2] platform-msi: Add ABI to show msi_irqs of platform devices
-Date:   Thu, 12 Aug 2021 22:53:41 +1200
-Message-Id: <20210812105341.51657-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812105341.51657-1-21cnbao@gmail.com>
-References: <20210812105341.51657-1-21cnbao@gmail.com>
+        Thu, 12 Aug 2021 06:54:15 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628765629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hfoGD6Vp85UKZqBQKRVucx1rZSJDFax4wk2DU97QUSw=;
+        b=BWEMmFeElQSnWEL40aAz3dzH0xkdb/BjE6EQyDaE9AddkkVOs3hFv0T9wzK4gl8IcIDbdB
+        Y1AW2mDj8FPBDINfgrjRXuWlG8/R2pTJUloD3nO9PNc/iB742BZj20zVcqU0HvnRmkrYl1
+        And+FfXIYBqXgx1f6wYNunnJeaOP20/qL9vaN4shxnDUgw+eyxBptB8hSjA9BwVCeAKxfX
+        5Q5ylqFE2akq5q5nelwVtBF16ftZP/cBQbcbqmYeej2VZ1CnViR81kPNTV7L+SHOcuhw65
+        UTH51esAcKmdCqtasmqY1YcSvO0X3qeYg5wq1dFUpWD8Xi3wVt94n6vzewhOvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628765629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hfoGD6Vp85UKZqBQKRVucx1rZSJDFax4wk2DU97QUSw=;
+        b=+YYA1+D/NMmVRUdHe5999cHWAe9igzH/TP6zxu35SjyCoRDf9jBt6qqnKJtJm+G4xsAIMY
+        uqorbw0aZmZeFFAw==
+To:     brookxu <brookxu.cn@gmail.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] clocksource: skip check while watchdog hung up or
+ unstable
+In-Reply-To: <acbc5aaa-0d19-3144-5299-a66a49b20542@gmail.com>
+References: <63064a758eb087febce3eff5b2c736a5449b3dd2.1628675461.git.brookxu@tencent.com>
+ <877dgsp2vp.ffs@tglx> <2614d5ac-3392-20d1-d772-7a18bec40fa2@gmail.com>
+ <87wnoshyhi.ffs@tglx> <acbc5aaa-0d19-3144-5299-a66a49b20542@gmail.com>
+Date:   Thu, 12 Aug 2021 12:53:48 +0200
+Message-ID: <87fsvfhr2b.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
+On Wed, Aug 11 2021 at 23:26, brookxu wrote:
+> Thomas Gleixner wrote on 2021/8/11 22:01:
+>>> To be precise, we are processing interrupts in handle_edge_irq() for a long
+>>> time. Since the interrupts of multiple hardware queues are mapped to a single
+>>> CPU, multiple cores are continuously issuing IO, and then a single core is
+>>> processing IO. Perhaps the test case can be optimized, but shouldn't this lead
+>>> to switching clocks in principle?
+>> 
+>> The clocksource watchdog failure is only _ONE_ consequence. Processing
+>> hard interrupts for 155 seconds straight will trigger lockup detectors
+>> of all sorts if you have them enabled.
+>> 
+>> So just papering over the clocksource watchdog does not solve anything,
+>> really. Next week you have to add similar hacks to the lockup detectors,
+>> RCU and whatever.
+>
+> Yeah, we have observed soft lockup and RCU stall, but these behaviors are
+> expected because the current CPU scheduling is disabled. However, marking
+> TSC unstable is inconsistent with the actual situation. The worst problem
+> is that after the clocksource switched to hpet, the abnormal time will be
+> greatly prolonged due to the degradation of performance. We have not found
+> that soft lockup and RCU stall will affect the machine for a long time in
+> this test. Aside from these, as the watchdog is scheduled periodically, when
+> wd_nsec is 0, it means that something maybe abnormal, do we readlly still
+> need to continue to verify TSC? and how to ensure the correctness of the
+> results?
 
-Just like pci devices have msi_irqs which can be used by userspace irq affinity
-tools or applications to bind irqs, platform devices also widely support msi
-irqs. For platform devices, for example ARM SMMU, userspaces also care about
-its msi irqs as applications can know the mapping between devices and irqs
-and then make smarter decision on handling irq affinity. For example, for
-SVA mode, it is better to pin io page fault to the numa node applications
-are running on. Otherwise, io page fault will get a remote page from the
-node iopf happens.
-With this patch, a system with multiple arm SMMUs in multiple different numa
-node can get the mapping between devices and irqs now:
-root@ubuntu:/sys/devices/platform# ls -l arm-smmu-v3.*/msi_irqs/*
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/25
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/26
--r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/27
--r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/28
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/29
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/30
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/31
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/32
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/33
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/34
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/35
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/36
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/37
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/38
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/39
--r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/40
+Sorry no. While softlockups and RCU stalls might have no long term
+effect in the first place, this argumentation vs. the clocksource
+watchdog is just a strawman. You're abusing the system in a way which
+causes it to malfunction so you have to live with the consequences.
 
-Applications can use the mapping and the numa node information to pin
-irqs by leveraging the numa information which has also been exported:
-root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.0.auto/numa_node
-0
-root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.4.auto/numa_node
-2
+Aside of that this 'workaround' is just duct taping a particular part of
+the problem. What guarantees that after the interrupt storm subsided the
+clocksource delta of the watchdog becomes 0 (negative)?
 
-Cc: Zhou Wang <wangzhou1@hisilicon.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Absolutely nothing. The delta can be positive, but then the watchdog and
+the TSC are not in sync anymore which will disable the TSC as well.
+
+A 24MHz HPET has a wraparound time of ~178s which means during:
+
+  89s < tdelta < 178s
+
+your hack papers over the problem. Any interrupt storm time outside of
+that window results in fail.
+
+Now run the same test on a machine with a 14MHz HPET and you get
+
+ 153s < tdelta < 306s
+
+so your 155s interrupt storm barely fits. And what are you doing with
+your next test which runs only 80 seconds?
+
+Not to talk about the fact that you wreckage detection of a watchdog
+clocksource going stale.
+
+So no, we are not adding hacks to support abuse.
+
+What we really want to do is to add detection for interrupt storms of
+this sort and shut those interrupts down for good.
+
+Thanks,
+
+        tglx
 ---
- Documentation/ABI/testing/sysfs-bus-platform | 14 ++++++++++++++
- drivers/base/platform-msi.c                  | 10 ++++++++++
- 2 files changed, 24 insertions(+)
+Patient: "Doctor, it hurts when I hammer on my toe."
+Doctor:  "Don't do that then!"
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
-index 194ca70..ff30728 100644
---- a/Documentation/ABI/testing/sysfs-bus-platform
-+++ b/Documentation/ABI/testing/sysfs-bus-platform
-@@ -28,3 +28,17 @@ Description:
- 		value comes from an ACPI _PXM method or a similar firmware
- 		source. Initial users for this file would be devices like
- 		arm smmu which are populated by arm64 acpi_iort.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		The /sys/devices/.../msi_irqs directory contains a variable set
-+		of files, with each file being named after a corresponding msi
-+		irq vector allocated to that device.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/<N>
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		This attribute will show "msi" if <N> is a valid msi irq
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 0b72b13..a3bf910 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -23,6 +23,7 @@
- struct platform_msi_priv_data {
- 	struct device		*dev;
- 	void 			*host_data;
-+	const struct attribute_group    **msi_irq_groups;
- 	msi_alloc_info_t	arg;
- 	irq_write_msi_msg_t	write_msg;
- 	int			devid;
-@@ -272,8 +273,16 @@ int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
- 	if (err)
- 		goto out_free_desc;
- 
-+	priv_data->msi_irq_groups = msi_populate_sysfs(dev);
-+	if (IS_ERR(priv_data->msi_irq_groups)) {
-+		err = PTR_ERR(priv_data->msi_irq_groups);
-+		goto out_free_irqs;
-+	}
-+
- 	return 0;
- 
-+out_free_irqs:
-+	msi_domain_free_irqs(dev->msi_domain, dev);
- out_free_desc:
- 	platform_msi_free_descs(dev, 0, nvec);
- out_free_priv_data:
-@@ -293,6 +302,7 @@ void platform_msi_domain_free_irqs(struct device *dev)
- 		struct msi_desc *desc;
- 
- 		desc = first_msi_entry(dev);
-+		msi_destroy_sysfs(dev, desc->platform.msi_priv_data->msi_irq_groups);
- 		platform_msi_free_priv_data(desc->platform.msi_priv_data);
- 	}
- 
--- 
-1.8.3.1
 
