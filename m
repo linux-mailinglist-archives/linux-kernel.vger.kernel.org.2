@@ -2,170 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DC33E9BAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF273E9BB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbhHLAld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 20:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
+        id S233120AbhHLAmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 20:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbhHLAlb (ORCPT
+        with ESMTP id S231649AbhHLAmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:41:31 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BFCC061765;
-        Wed, 11 Aug 2021 17:41:06 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id w197so4638197qkb.1;
-        Wed, 11 Aug 2021 17:41:06 -0700 (PDT)
+        Wed, 11 Aug 2021 20:42:05 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C7FC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:41:41 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 108-20020a9d01750000b029050e5cc11ae3so5648396otu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hbfvVge12xVCxobyeYjszV9eiBtTs7pNE52AeEkb8Co=;
-        b=pRVFKKI1+hNqJTo4iFD7BFfnhkTV1JuHmKsTFvtwZBTOlGwiXo0TQ6nnOaCl2DJ25r
-         wvgj9LEjHiq8zuijSE0v3tbM4h6ewzYfh6uk3EZoYHz9Euu31G0zZHDs/KRt+ISWBNna
-         Wc511tYsWF6jo8+GByA4bJECnUueRsKQsyZuq02jbB3opLpe/aP7kT/K5/WYk4bwR7Mu
-         NeljhZhAcWWslNn0HCDh9lI8eaLqzWH+GGwlx3gcr5rgyaQrxMam7YnouREpQftRkvGl
-         FgvFl6ReGzo5Td4oxlVX9Ejg0RYmmQPUPWo0KlyUfn1ociRbdLHO4u68kMV/tLSbczWc
-         0H0A==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=jM+xutYWNtnqEV0s0IGhXP8JVGB/Bhk66wnci23eKj4=;
+        b=PxiNRLaJozLwNLBqEV7BuM1/mDxA/OdTcrZh9IFAsWsusIM2qnDMAOZ20Iwm4gR954
+         MiP3KowO8X8kwQDEhsIA38BIrMuj8ittf3BWeIOaq2hiMAZv5NlE9DyjC/8iHoTVizK7
+         aLPwMczvJ44xTE3/dNdMHahXWi3LeoRjOnTXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hbfvVge12xVCxobyeYjszV9eiBtTs7pNE52AeEkb8Co=;
-        b=SrBaKufa3DBdNYqYN0Or7MsWuckxy2mslh198d+01/y6fuvcBptYTyAicaYeeF5dDC
-         u0rY8l0bs8SmtRLbRmXyYK/HB+wlpuNwssIYag21ZWChWZj2D8GGMIAcAoRAk2WMtk1z
-         B81q4nFMJ4Zz3kgek9xlRLLbzj5hKsSpEdwmvz710x54RwsVuW54njTHbFPYUEeHukrX
-         IZMD67E4qujQPnzTtXzIP42ZOe9V5rhB0JV2syvcgL2BuSisvMf6GkXYpHNpCFaOCs7G
-         1H6vH7JD03e88XQ5TAuabyGbEksMylI3nl944Q7tFu2EjM4jAj4B3k4cCX7frIr8Ag+f
-         kU1w==
-X-Gm-Message-State: AOAM533DmEvlccyx9jqkdUDyFIMLc9TIeHe6aLnUJmR/koSxnc5hEj5M
-        owTpJDKyN21rAskFoRoXikMsFr+HJos=
-X-Google-Smtp-Source: ABdhPJzm3NLGvXxD5pWXL8BV2fBwL8vqf5e+4/p1FGd6eEENubDdxUkh9+fE1ZtJM1136RXbzy//OQ==
-X-Received: by 2002:a05:620a:22b:: with SMTP id u11mr1891332qkm.423.1628728865746;
-        Wed, 11 Aug 2021 17:41:05 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e18sm396806qtq.16.2021.08.11.17.41.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 17:41:05 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/2] hwmon: (pmbus/bpa-rs600) Add workaround for incorrect
- Pin max
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210811041738.15061-1-chris.packham@alliedtelesis.co.nz>
- <20210811041738.15061-3-chris.packham@alliedtelesis.co.nz>
- <20210811195327.GA966160@roeck-us.net>
- <b02c3a4d-4d91-0506-7833-6266efc0a2fc@alliedtelesis.co.nz>
- <20210811231805.GA1095781@roeck-us.net>
- <f6d3654f-c1b1-65d2-2593-392e2cc2f0d2@alliedtelesis.co.nz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <e86b8a83-bb5d-6d9b-298f-67a772e17539@roeck-us.net>
-Date:   Wed, 11 Aug 2021 17:41:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=jM+xutYWNtnqEV0s0IGhXP8JVGB/Bhk66wnci23eKj4=;
+        b=CnFFWT+s6Lerrn1FuAqIczW1RZ/rHewsFSx2aAp1NZzQTwtd5V0FF+d/qMGBba5eFI
+         lmrtTV8J8o9pCGpCYz13LfeiKpuKmmFFwtp0QWKHmRczAknLhKvrcXFPTsCvTf9YPFBW
+         BW4xs6ZCrLb3p6QDrSr+pUJ9SvYl/6HVuJAH0AC3YfRs9X+WgHNrUo3/EgLZHRiEhzsk
+         yI/soSKmbeB30+RIBtv68kUZ94Lv0ePuZD13tkorCiTYreGERPcw8DWoIJLeuVOxGP35
+         qZIC3ONuBfaB3Gn49DmJVZH7zq+RisahvvE5oZZvpnlhCi4UhVmYi4/6Lmt5DzkP4I5z
+         ROyA==
+X-Gm-Message-State: AOAM532+8xUqD9M8Z/3tO5H29+yUslgwVqvQb7y9PDz8xW9BiWzWDIgk
+        MGbKZKTAHv9BH04XF0TLWGAipGdCZlRAdm4jdgFxPw==
+X-Google-Smtp-Source: ABdhPJxAp1sBRQqhIhDhSWNPOBvBoD42tMJDnWSfW9Cdjwo+DFTF4wUF/0n1zEPIpBgLayxqaTTwbi8GAYeqEd067Ww=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr1308313otq.233.1628728900794;
+ Wed, 11 Aug 2021 17:41:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 11 Aug 2021 17:41:40 -0700
 MIME-Version: 1.0
-In-Reply-To: <f6d3654f-c1b1-65d2-2593-392e2cc2f0d2@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
+References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org> <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 11 Aug 2021 17:41:40 -0700
+Message-ID: <CAE-0n52=mR0Zt8UZ3vOM-nt0UJszcFhi-eYfzDtD0bt3zhNA_Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] drm/msm/dp: Add support for SC7280 eDP
+To:     Sankeerth Billakanti <sbillaka@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     robdclark@gmail.com, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 4:25 PM, Chris Packham wrote:
-> 
-> On 12/08/21 11:18 am, Guenter Roeck wrote:
->> On Wed, Aug 11, 2021 at 10:19:44PM +0000, Chris Packham wrote:
->>> On 12/08/21 7:53 am, Guenter Roeck wrote:
->>>> On Wed, Aug 11, 2021 at 04:17:38PM +1200, Chris Packham wrote:
->>>>> BPD-RS600 modules running firmware v5.70 misreport the MFR_PIN_MAX.
->>>>> The indicate a maximum of 1640W instead of 700W. Detect the invalid
->>>>> reading and return a sensible value instead.
->>>>>
->>>>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
->>>>> ---
->>>>>     drivers/hwmon/pmbus/bpa-rs600.c | 21 ++++++++++++++++++++-
->>>>>     1 file changed, 20 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
->>>>> index d495faa89799..f4baed9ce8a4 100644
->>>>> --- a/drivers/hwmon/pmbus/bpa-rs600.c
->>>>> +++ b/drivers/hwmon/pmbus/bpa-rs600.c
->>>>> @@ -65,6 +65,24 @@ static int bpa_rs600_read_vin(struct i2c_client *client)
->>>>>     	return ret;
->>>>>     }
->>>>>     
->>>>> +/*
->>>>> + * The firmware on some BPD-RS600 models incorrectly reports 1640W
->>>>> + * for MFR_PIN_MAX. Deal with this by returning a sensible value.
->>>>> + */
->>>>> +static int bpa_rs600_read_pin_max(struct i2c_client *client)
->>>>> +{
->>>>> +	int ret;
->>>>> +
->>>>> +	ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_PIN_MAX);
->>>>> +	if (ret < 0)
->>>>> +		return ret;
->>>>> +
->>>>> +	if (ret == 0x0b34)
->>>>> +		return 0x095e;
->>>> The comments from the descriotion need to be here.
->>> will update
->>>> Thanks,
->>>> Guenter
->>>>
->>>>> +
->>>>> +	return ret;
->>>>> +}
->>>>> +
->>>>>     static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int phase, int reg)
->>>>>     {
->>>>>     	int ret;
->>>>> @@ -92,7 +110,8 @@ static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int pha
->>>>>     		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_IOUT_MAX);
->>>>>     		break;
->>>>>     	case PMBUS_PIN_OP_WARN_LIMIT:
->>>>> -		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_PIN_MAX);
->>>>> +	case PMBUS_MFR_PIN_MAX:
->>>>> +		ret = bpa_rs600_read_pin_max(client);
->>>> So the idea is to return the same value for PMBUS_PIN_OP_WARN_LIMIT
->>>> (max_alarm) and PMBUS_MFR_PIN_MAX (rated_max) ? That doesn't really
->>>> make sense. The meaning of those limits is distinctly different.
->>> For the BPA-RS600/BPD-RS600 these appear to be treated the same.
->> What a mess.
-> *sigh* I know. I've also got another 2 BluTek supplies I haven't got
-> round to dealing with yet.
->> This needs to be documented in the driver, including the
->> behavior if any of those attributes is written into.
-> 
-> Mercifully these attributes are all read-only. So at least we don't have
-> to deal with that.
-> 
-Ok.
+Quoting Sankeerth Billakanti (2021-08-11 17:08:01)
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index b131fd37..1096c44 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -856,9 +856,9 @@ static const struct dpu_intf_cfg sm8150_intf[] = {
+>  };
+>
+>  static const struct dpu_intf_cfg sc7280_intf[] = {
+> -       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> +       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 1, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+>         INTF_BLK("intf_1", INTF_1, 0x35000, INTF_DSI, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+> -       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_EDP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+> +       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+>  };
+>
+>  /*************************************************************
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index d2569da..06d5a2d 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1244,7 +1244,9 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
+>                 struct dp_cr_status *cr, int *training_step)
+>  {
+>         int ret = 0;
+> +       u8 *dpcd = ctrl->panel->dpcd;
+>         u8 encoding = DP_SET_ANSI_8B10B;
+> +       u8 ssc = 0, assr = 0;
 
-> It's probably not too late to return -ENXIO for the WARN_LIMITs and have
-> lm-sensors display the rated_max (we also have a custom consumer of the
-> sysfs API that I'd need to sort out).
-> 
+Please don't initialize to zero and then overwrite it before using it.
+It hides usage before actual initialization bugs.
 
-That would indeed be much better if it works for you.
+>         struct dp_link_info link_info = {0};
+>
+>         dp_ctrl_config_ctrl(ctrl);
+> @@ -1254,9 +1256,21 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
+>         link_info.capabilities = DP_LINK_CAP_ENHANCED_FRAMING;
+>
+>         dp_aux_link_configure(ctrl->aux, &link_info);
+> +
+> +       if (dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5) {
+> +               ssc = DP_SPREAD_AMP_0_5;
+> +               drm_dp_dpcd_write(ctrl->aux, DP_DOWNSPREAD_CTRL, &ssc, 1);
+> +       }
+> +
+>         drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
+>                                 &encoding, 1);
+>
+> +       if (dpcd[DP_EDP_CONFIGURATION_CAP] & DP_ALTERNATE_SCRAMBLER_RESET_CAP) {
+> +               assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
+> +               drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
+> +                               &assr, 1);
+> +       }
+> +
+>         ret = dp_ctrl_link_train_1(ctrl, cr, training_step);
+>         if (ret) {
+>                 DRM_ERROR("link training #1 failed. ret=%d\n", ret);
+> @@ -1328,9 +1342,11 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+>         struct dp_io *dp_io = &ctrl->parser->io;
+>         struct phy *phy = dp_io->phy;
+>         struct phy_configure_opts_dp *opts_dp = &dp_io->phy_opts.dp;
+> +       u8 *dpcd = ctrl->panel->dpcd;
 
-Thanks,
-Guenter
+const?
 
->>
->> Guenter
->>
->>>> Guenter
->>>>
->>>>>     		break;
->>>>>     	case PMBUS_POUT_OP_WARN_LIMIT:
->>>>>     		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_POUT_MAX);
->>>>> -- 
->>>>> 2.32.0
->>>> >
+>
+>         opts_dp->lanes = ctrl->link->link_params.num_lanes;
+>         opts_dp->link_rate = ctrl->link->link_params.rate / 100;
+> +       opts_dp->ssc = dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5;
+>         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+>                                         ctrl->link->link_params.rate * 1000);
+>
+> @@ -1760,6 +1776,9 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+>         ctrl->link->link_params.num_lanes = ctrl->panel->link_info.num_lanes;
+>         ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
+>
+> +       if (ctrl->dp_ctrl.pixel_rate == 0)
+> +               return -EINVAL;
+> +
 
+Why are we enabling the stream with a zero pixel clk?
+
+>         DRM_DEBUG_DP("rate=%d, num_lanes=%d, pixel_rate=%d\n",
+>                 ctrl->link->link_params.rate,
+>                 ctrl->link->link_params.num_lanes, ctrl->dp_ctrl.pixel_rate);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index ee5bf64..a772290 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -117,8 +117,36 @@ struct dp_display_private {
+>         struct dp_audio *audio;
+>  };
+>
+> +struct msm_dp_config {
+> +       phys_addr_t io_start[3];
+> +       size_t num_dp;
+> +};
+> +
+> +static const struct msm_dp_config sc7180_dp_cfg = {
+> +       .io_start = { 0x0ae90000 },
+> +       .num_dp = 1,
+> +};
+> +
+> +static const struct msm_dp_config sc8180x_dp_cfg = {
+> +       .io_start = { 0xae90000, 0xae98000, 0 },
+> +       .num_dp = 3,
+> +};
+> +
+> +static const struct msm_dp_config sc8180x_edp_cfg = {
+> +       .io_start = { 0, 0, 0xae9a000 },
+> +       .num_dp = 3,
+> +};
+> +
+> +static const struct msm_dp_config sc7280_edp_cfg = {
+> +       .io_start = { 0xaea0000, 0 },
+> +       .num_dp = 2,
+> +};
+
+Are all of these supposed to be here?
+
+> +
+>  static const struct of_device_id dp_dt_match[] = {
+> -       {.compatible = "qcom,sc7180-dp"},
+> +       { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+> +       { .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
+> +       { .compatible = "qcom,sc8180x-edp", .data = &sc8180x_edp_cfg },
+> +       { .compatible = "qcom,sc7280-edp", .data = &sc7280_edp_cfg },
+
+Please sort alphabetically on compatible string, it helps avoid
+conflicts in the future.
+
+>         {}
+>  };
+>
+> @@ -1408,7 +1436,7 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+>
+>         dp_hpd_event_setup(dp);
+>
+> -       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
+> +       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
+>  }
+>
+>  void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor *minor)
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 0519dd3..c05fc0a 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -248,6 +248,33 @@ static int dp_parser_clock(struct dp_parser *parser)
+>         return 0;
+>  }
+>
+> +static int dp_parser_gpio(struct dp_parser *parser)
+> +{
+> +       struct device *dev = &parser->pdev->dev;
+> +       int ret;
+> +
+> +       parser->panel_bklt_gpio = devm_gpiod_get(dev, "panel-bklt",
+> +                       GPIOD_OUT_HIGH);
+> +       if (IS_ERR(parser->panel_bklt_gpio)) {
+> +               ret = PTR_ERR(parser->panel_bklt_gpio);
+> +               parser->panel_bklt_gpio = NULL;
+> +               DRM_ERROR("%s: cannot get panel-bklt gpio, %d\n", __func__, ret);
+> +               goto fail;
+> +       }
+> +
+> +       parser->panel_pwm_gpio = devm_gpiod_get(dev, "panel-pwm", GPIOD_OUT_HIGH);
+> +       if (IS_ERR(parser->panel_pwm_gpio)) {
+> +               ret = PTR_ERR(parser->panel_pwm_gpio);
+> +               parser->panel_pwm_gpio = NULL;
+> +               DRM_ERROR("%s: cannot get panel-pwm gpio, %d\n", __func__, ret);
+> +               goto fail;
+> +       }
+> +
+> +       DRM_INFO("gpio on");
+> +fail:
+> +       return 0;
+> +}
+
+Don't we have pwm backlight drivers like
+drivers/video/backlight/pwm_bl.c to support this? This sort of thing
+doesn't belong in the dp driver.
+
+> +
+>  static int dp_parser_parse(struct dp_parser *parser)
+>  {
+>         int rc = 0;
+> @@ -269,6 +296,10 @@ static int dp_parser_parse(struct dp_parser *parser)
+>         if (rc)
+>                 return rc;
+>
+> +       rc = dp_parser_gpio(parser);
+> +       if (rc)
+> +               return rc;
+> +
+>         /* Map the corresponding regulator information according to
+>          * version. Currently, since we only have one supported platform,
+>          * mapping the regulator directly.
