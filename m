@@ -2,100 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEDD3EA8A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A893EA8AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhHLQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S233020AbhHLQof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhHLQoU (ORCPT
+        with ESMTP id S232850AbhHLQoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:44:20 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D58C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:43:55 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so11627417pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z693XsiBKLrJvSZ/YAAMgAz4mbAtqabwjx08Gr/DpaA=;
-        b=bsXEPviGSDTJ7TDuPHVI19R5NuLoJ2kf8Gaw7EKQDdJmou0qLOnQG5dWGm37aEdqD9
-         96Nzf+MCAlpC3PxOTU9UU/Kst8rqgPBcfjl8lP38f9gEGT/1+mrCftDd1ehXZgWxRqmY
-         7dukLUx9IxpTI/84upP+ww7oQYY7zUBZqfb3Pye+i9VIPkgbetLMq6S1l0zFqo4+D8xZ
-         TM+VIqiWUQn7OkMZ9RTAKua2XPdr5atIZqyT8D+Cer3lLWjBqy0dj9SsHmP4X5YwpZj3
-         R7NTJAdLT/U2ZM6L1YaMAbMqOmzn4f/20r5XePvIzKWL/j91wc1Xsi7wg3qDLioYUqRh
-         pGjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z693XsiBKLrJvSZ/YAAMgAz4mbAtqabwjx08Gr/DpaA=;
-        b=jq5O8aQcFHatiPMk4T8spTEpop++3DzqxrU+Z62a7oId1HtmCC+yB//ogMquvPm9Av
-         DQwl4oE9ObhB7Tcp6TUkYp0E8hSKZXLTJJiNAk6FXFqSVnfsidbazg6AB+4Hr73mKf9j
-         5smE6pFRSXIpIKm0TrkfF556r0fjzsW8e7koV6ikPCKnz0F/z+y0Q3q+ABCqWS4/bDpK
-         gTx2XfGOxpaEsvpcf/2Nz1w9P3WqMHYePRhkCh4anrh7H3dm6PeZn4ReaABkD/dNkDq5
-         g4i6uAjMBLMbkOFqLm3m/xpqO1jfXfkgECVyNxjZ7ww85A75pB8gIGtf1JclFX+Q04NL
-         rzWg==
-X-Gm-Message-State: AOAM533h07PvlWSqJtLBg3fn5O5JgzAl3MfOQ0FvV7lXKfAmmkwIoYrK
-        i9kA7IG0sTuknNlQP30jRv6cgQ==
-X-Google-Smtp-Source: ABdhPJwlGCKp/K9xjWsUK3OWafCfD6463Y9XffOe17Y9OHk5HyISbCPM0vw0Mx//+9WqGVF1o8GqOw==
-X-Received: by 2002:a63:4a41:: with SMTP id j1mr4493549pgl.227.1628786634700;
-        Thu, 12 Aug 2021 09:43:54 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o22sm3877172pfu.87.2021.08.12.09.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 09:43:54 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 16:43:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Don't skip non-leaf SPTEs when zapping
- all SPTEs
-Message-ID: <YRVPxCv2RtyXi+XO@google.com>
-References: <20210812050717.3176478-1-seanjc@google.com>
- <20210812050717.3176478-2-seanjc@google.com>
- <01b22936-49b0-638e-baf8-269ba93facd8@redhat.com>
+        Thu, 12 Aug 2021 12:44:34 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02453C061756;
+        Thu, 12 Aug 2021 09:44:09 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3CDF1EE;
+        Thu, 12 Aug 2021 18:44:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1628786647;
+        bh=XvCA6j4gXwjOSrFn4suElfXNhS4BUoOrMljmbi7myyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dp4fRkknCQ4WYwcSq3/VqbpKx5+SoPru+dhfbnJeOOE6BJ9Qnvm3Ey+Is072Zdjh2
+         40nkhiCYH8HBj6+aEAe5ueRb/ejLIMzL36Wji61yL8fSkelW+hBn1w6reMpWsyVRtL
+         CVc+XWtz0PXe4/6Pkwp/FjTF3rNlzoBS8GA+Hj/s=
+Date:   Thu, 12 Aug 2021 19:44:03 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] drm/msm/dsi: Support NO_CONNECTOR bridges
+Message-ID: <YRVP0yEydFKufw5Q@pendragon.ideasonboard.com>
+References: <20210811235253.924867-1-robdclark@gmail.com>
+ <20210811235253.924867-3-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <01b22936-49b0-638e-baf8-269ba93facd8@redhat.com>
+In-Reply-To: <20210811235253.924867-3-robdclark@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021, Paolo Bonzini wrote:
-> On 12/08/21 07:07, Sean Christopherson wrote:
-> > @@ -739,8 +749,16 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> >   			  gfn_t start, gfn_t end, bool can_yield, bool flush,
-> >   			  bool shared)
-> >   {
-> > +	bool zap_all = (end == ZAP_ALL_END);
-> >   	struct tdp_iter iter;
-> > +	/*
-> > +	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
-> > +	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
-> > +	 * and so KVM will never install a SPTE for such addresses.
-> > +	 */
-> > +	end = min(end, 1ULL << (shadow_phys_bits - PAGE_SHIFT));
-> 
-> Then zap_all need not have any magic value.  You can use 0/-1ull, it's
-> readable enough.  ZAP_ALL_END is also unnecessary here if you do:
-> 
-> 	gfn_t max_gfn_host = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
-> 	bool zap_all = (start == 0 && end >= max_gfn_host);
+Hi Rob
 
-Aha!  Nice.  I was both too clever and yet not clever enough.
+Thank you for the patch.
 
-> 	end = min(end, max_gfn_host);
+On Wed, Aug 11, 2021 at 04:52:48PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> And as a small commit message nit, I would say "don't leak" instead of
-> "don't skip", since that's really the effect.
+> For now, since we have a mix of bridges which support this flag, which
+> which do *not* support this flag, or work both ways, try it once with
+> NO_CONNECTOR and then fall back to the old way if that doesn't work.
+> Eventually we can drop the fallback path.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/Kconfig           |  2 ++
+>  drivers/gpu/drm/msm/dsi/dsi_manager.c | 41 ++++++++++++++++++---------
+>  2 files changed, 30 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index e9c6af78b1d7..36e5ba3ccc28 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -14,6 +14,8 @@ config DRM_MSM
+>  	select REGULATOR
+>  	select DRM_KMS_HELPER
+>  	select DRM_PANEL
+> +	select DRM_BRIDGE
+> +	select DRM_PANEL_BRIDGE
+>  	select DRM_SCHED
+>  	select SHMEM
+>  	select TMPFS
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> index c41d39f5b7cf..1fd1cf93abbf 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> @@ -3,6 +3,8 @@
+>   * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>   */
+>  
+> +#include "drm/drm_bridge_connector.h"
+> +
+>  #include "msm_kms.h"
+>  #include "dsi.h"
+>  
+> @@ -690,8 +692,7 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
+>  	struct drm_device *dev = msm_dsi->dev;
+>  	struct drm_encoder *encoder;
+>  	struct drm_bridge *int_bridge, *ext_bridge;
+> -	struct drm_connector *connector;
+> -	struct list_head *connector_list;
+> +	int ret;
+>  
+>  	int_bridge = msm_dsi->bridge;
+>  	ext_bridge = msm_dsi->external_bridge =
+> @@ -699,22 +700,36 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
+>  
+>  	encoder = msm_dsi->encoder;
+>  
+> -	/* link the internal dsi bridge to the external bridge */
+> -	drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
+> -
+>  	/*
+> -	 * we need the drm_connector created by the external bridge
+> -	 * driver (or someone else) to feed it to our driver's
+> -	 * priv->connector[] list, mainly for msm_fbdev_init()
+> +	 * Try first to create the bridge without it creating it's own
 
-Hrm, yeah, I can see how "skip" doesn't raise alarm bells like it should.
+s/it's/its/
+
+> +	 * connector.. currently some bridges support this, and others
+> +	 * do not (and some support both modes)
+>  	 */
+> -	connector_list = &dev->mode_config.connector_list;
+> +	ret = drm_bridge_attach(encoder, ext_bridge, int_bridge,
+> +			DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+
+Should all this be moved one layer up, to the code that attaches to the
+mem_dsi->bridge ? I suppose we can start here, but as part of a global
+move to bridges and DRM_BRIDGE_ATTACH_NO_CONNECTOR, I think the
+top-level would make more sense in the long term.
+
+If you want to start here,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +	if (ret == -EINVAL) {
+> +		struct drm_connector *connector;
+> +		struct list_head *connector_list;
+> +
+> +		/* link the internal dsi bridge to the external bridge */
+> +		drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
+> +
+> +		/*
+> +		 * we need the drm_connector created by the external bridge
+> +		 * driver (or someone else) to feed it to our driver's
+> +		 * priv->connector[] list, mainly for msm_fbdev_init()
+> +		 */
+> +		connector_list = &dev->mode_config.connector_list;
+> +
+> +		list_for_each_entry(connector, connector_list, head) {
+> +			if (drm_connector_has_possible_encoder(connector, encoder))
+> +				return connector;
+> +		}
+>  
+> -	list_for_each_entry(connector, connector_list, head) {
+> -		if (drm_connector_has_possible_encoder(connector, encoder))
+> -			return connector;
+> +		return ERR_PTR(-ENODEV);
+>  	}
+>  
+> -	return ERR_PTR(-ENODEV);
+> +	return drm_bridge_connector_init(dev, encoder);
+>  }
+>  
+>  void msm_dsi_manager_bridge_destroy(struct drm_bridge *bridge)
+
+-- 
+Regards,
+
+Laurent Pinchart
