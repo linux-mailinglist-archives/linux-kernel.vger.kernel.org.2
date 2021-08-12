@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF713E9FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F06E3E9FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhHLHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
+        id S234733AbhHLHtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:49:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232348AbhHLHsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C84D6044F;
-        Thu, 12 Aug 2021 07:48:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628754492;
-        bh=CyN2mPCfM3j2Hf8s0RQ6ZOCusox6Uwiz3cxbwisUK9Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=goj28NmLw6K0aBCSpjhlakd71Ui8aT3P15TAEq2tRX5UTYN1tRSFfRaYn+K3GgStT
-         4RCKyHlC+KxRt7hGwtV1Te26766lX1BlM/gtI9qrzdMXx1rCF1Um0+q4Fezf3EZZZo
-         sV0jKC5L50UdUuf9eI1zsomfFO3gUUDK1G9GDdw74dWM2DgZmPbbgOVdDBGk//ZBf0
-         Pda/nW3TK7tqoreMNpQN1rCoAeLYP1AqX8RRZcwwyAtHwvMfI8Po920ZltkkibORwj
-         pKPSojrC05WkoRuMAzby2Bf3wmHJ0eKHK0DpOMAz6flMtpvrW1+KWkE9jjcSP1T+gs
-         c/bXmY0z6piiw==
-Date:   Thu, 12 Aug 2021 09:48:06 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to
- work
-Message-ID: <20210812094806.3a6de2a5@coco.lan>
-In-Reply-To: <CAL_JsqLg-jD1P3oGDocMaeHWQc+9kLr3gEdantRNUScUq5xsQw@mail.gmail.com>
-References: <cover.1627965261.git.mchehab+huawei@kernel.org>
-        <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
-        <20210804085045.3dddbb9c@coco.lan>
-        <YQrARd7wgYS1nywt@robh.at.kernel.org>
-        <20210805094612.2bc2c78f@coco.lan>
-        <20210805095848.464cf85c@coco.lan>
-        <CAL_JsqKso=z8LG3ViaggyS1k+1T2F5aAhP3_RNhumQoUUD+bbg@mail.gmail.com>
-        <20210810114211.01df0246@coco.lan>
-        <CAL_JsqKtXoFeJO6_13U+VsSXNGX_1TQvwOyQYRk5JUgBhvQChA@mail.gmail.com>
-        <20210810162054.1aa84b84@coco.lan>
-        <CAL_JsqL-R=kTugNAC-C1gfSm6Xnb0Nw_iLcRki8aQMNQjcLN6A@mail.gmail.com>
-        <20210811084648.66ddff29@coco.lan>
-        <CAL_JsqLg-jD1P3oGDocMaeHWQc+9kLr3gEdantRNUScUq5xsQw@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+        id S232348AbhHLHtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:49:32 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EE1A6044F;
+        Thu, 12 Aug 2021 07:49:08 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mE5Sc-004Ukj-AH; Thu, 12 Aug 2021 08:49:06 +0100
+Date:   Thu, 12 Aug 2021 08:49:05 +0100
+Message-ID: <87a6ln9k7i.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [PATCH v3 02/13] genirq: Define ack_irq() and eoi_irq() helpers
+In-Reply-To: <20210629125010.458872-3-valentin.schneider@arm.com>
+References: <20210629125010.458872-1-valentin.schneider@arm.com>
+        <20210629125010.458872-3-valentin.schneider@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, lorenzo.pieralisi@arm.com, vincenzo.frascino@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 11 Aug 2021 22:13:32 -0500
-Rob Herring <robh@kernel.org> escreveu:
-
-> On Wed, Aug 11, 2021 at 1:46 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > Em Tue, 10 Aug 2021 11:13:48 -0600
-> > Rob Herring <robh@kernel.org> escreveu:
-> >  
-> > > > > >                                         compatible = "pciclass,0604";
-> > > > > >                                         device_type = "pci";
-> > > > > >                                         #address-cells = <3>;
-> > > > > >                                         #size-cells = <2>;
-> > > > > >                                         ranges;
-> > > > > >                                 };
-> > > > > >                                 pcie@1,0 { // Lane 4: M.2  
-> > > > >
-> > > > > These 3 nodes (1, 5, 7) need to be child nodes of the above node.  
-> > >
-> > > This was the main issue.  
-> >
-> > Ok, placing 1, 5, 7 as child nodes of 0 worked, with the attached
-> > DT schema:
-> >
-> >
-> >         $ ls -l $(find /sys/devices/platform/soc/f4000000.pcie/ -name of_node)
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/of_node -> ../../../../firmware/devicetree/base/soc/pcie@f4000000
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:01.0/of_node -> ../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:01.0/pci_bus/0000:03/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/of_node -> ../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:05.0/pci_bus/0000:05/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:07.0/of_node -> ../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:07.0/pci_bus/0000:06/of_node -> ../../../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/of_node -> ../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/pci_bus/0000:02/of_node -> ../../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node -> ../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node -> ../../../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@0,0
-> >         lrwxrwxrwx 1 root root 0 ago 11 08:43 /sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node -> ../../../../../../../firmware/devicetree/base/soc/pcie@f4000000  
+On Tue, 29 Jun 2021 13:49:59 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
 > 
-> This all looks right to me, but...
+> The newly-added IRQCHIP_AUTOMASKS_FLOW flag requires some additional
+> bookkeeping around chip->{irq_ack, irq_eoi}() calls. Define wrappers around
+> those chip callbacks to drive the IRQD_IRQ_FLOW_MASKED state of an IRQ when
+> the chip has the IRQCHIP_AUTOMASKS_FLOW flag.
 > 
-> > The logs also seem OK on my eyes:
-> >
-> >         [    3.911082]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
-> >         [    4.001104] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000
-> >         [    4.043609] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
-> >         [    4.076756] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
-> >         [    4.120652] pci_bus 0000:02: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         [    4.150766] pci 0000:02:01.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         [    4.196413] pci 0000:02:04.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         [    4.238896] pci 0000:02:05.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         [    4.280116] pci 0000:02:07.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-> >         [    4.309821] pci 0000:02:09.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0  
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/irq/chip.c      | 16 ++++++++++++++++
+>  kernel/irq/internals.h |  2 ++
+>  2 files changed, 18 insertions(+)
 > 
-> ...these do not.
+> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+> index 21a21baa1366..793dbd8307b9 100644
+> --- a/kernel/irq/chip.c
+> +++ b/kernel/irq/chip.c
+> @@ -408,6 +408,22 @@ void irq_percpu_disable(struct irq_desc *desc, unsigned int cpu)
+>  	cpumask_clear_cpu(cpu, desc->percpu_enabled);
+>  }
+>  
+> +void ack_irq(struct irq_desc *desc)
+> +{
+> +	desc->irq_data.chip->irq_ack(&desc->irq_data);
+> +
+> +	if (desc->irq_data.chip->flags & IRQCHIP_AUTOMASKS_FLOW)
+> +		irq_state_set_flow_masked(desc);
+> +}
+> +
+> +void eoi_irq(struct irq_desc *desc)
+> +{
+> +	desc->irq_data.chip->irq_eoi(&desc->irq_data);
+> +
+> +	if (desc->irq_data.chip->flags & IRQCHIP_AUTOMASKS_FLOW)
+> +		irq_state_clr_flow_masked(desc);
 
-For the above:
+I just realised that this has a good chance to result in a mess with
+KVM, and specially the way we let the vGIC deactivate an interrupt
+directly from the guest, without any SW intervention (the magic HW bit
+in the LRs).
 
-	s/of_node:/BUS of_node:/
+With this, interrupts routed to a guest (such as the timers) will
+always have the IRQD_IRQ_FLOW_MASKED flag set, which will never be
+cleared.
 
-The debug printk is misleading. It is actually printing the BUS of_node:
-
-	void pci_set_of_node(struct pci_dev *dev)
-	{
-		dev_dbg(&dev->dev, "%s: of_node: %pOF\n",
-			__func__, dev->bus->dev.of_node);
-
-		if (!dev->bus->dev.of_node)
-			return;
-	...
-
-If I move it to the right place, e. g.:
-
-	void pci_set_of_node(struct pci_dev *dev)
-	{
-		if (!dev->bus->dev.of_node) {
-			dev_dbg(&dev->dev, "%s: BUS of_node is null\n",
-				__func__, dev->bus->dev.of_node);
-			return;
-		}
-		dev->dev.of_node = of_pci_find_child_device(dev->bus->dev.of_node,
-							    dev->devfn);
-		if (dev->dev.of_node)
-			dev->dev.fwnode = &dev->dev.of_node->fwnode;
-
-		dev_dbg(&dev->dev, "%s: of_node: %pOF\n",
-			__func__, dev->dev.of_node);
-	}
-
-It will produce:
-
-	[    4.155771]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
-	[    4.208740] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
-	[    4.236759] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
-	[    4.257899] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-	[    4.310350] pci_bus 0000:02: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
-	[    4.337784] pci 0000:02:01.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
-	[    4.370998] pci 0000:02:04.0: pci_set_of_node: of_node: (null)
-	[    4.391459] pci 0000:02:05.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
-	[    4.415378] pci 0000:02:07.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
-	[    4.439420] pci 0000:02:09.0: pci_set_of_node: of_node: (null)
-	[    4.494288] pci_bus 0000:03: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@1,0
-	[    4.511394] pci_bus 0000:04: pci_set_bus_of_node: of_node: (null)
-	[    4.525084] pci_bus 0000:05: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@5,0
-	[    4.542173] pci_bus 0000:06: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0/pcie@7,0
-	[    4.578575] pci 0000:06:00.0: pci_set_of_node: of_node: (null)
-	[    4.612159] pci_bus 0000:07: pci_set_bus_of_node: of_node: (null)
-
-Which reflects the PCIe topology.
+I wonder whether this have a chance to interact badly with
+mask/unmask, or with the rest of the flow...
 
 Thanks,
-Mauro
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
