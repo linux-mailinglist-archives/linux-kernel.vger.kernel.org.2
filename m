@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED553EA7EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D4D3EA7EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbhHLPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhHLPq3 (ORCPT
+        id S237375AbhHLPqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:46:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37228 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237013AbhHLPqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:46:29 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D15FC0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:46:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so11376852pjl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dwk5L2MpOulYe6pRzNF9OUp6M0ggFhdZIW74sN75qi0=;
-        b=ehFUTy2BHWlvdA8vgjz8PIQTASRmN1GADXs6tiMRnUutjlx2irkyPcS0GfKMgPdek4
-         HuuqXMHFMg8Od+JPchGJAD0WOWRa6Z+icb98hUeVZf4bsDmlVEi6PHRe0LhDSMFRdsH1
-         ThjPRLS5joNJvGJ3FqplVCsER1zAQsqJ6P0UQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dwk5L2MpOulYe6pRzNF9OUp6M0ggFhdZIW74sN75qi0=;
-        b=Cxx5cBxaVLp3nTZDGKJUR/ZqZ6AYOAOHjrTlFxY0KQxGiBFrtaHdDCNfBh46zCuqm1
-         7GI7jEHffmHBh8KJKRSeBI6+cIge7SFhLEN6mk4vrdXKt5D4fxrsiwjSxKlm/CzprCTY
-         P4NPqxjrQoOTsfjdBWkCmGMBYqX5if7LogswZqtEyP8pFLKN7CjGIuZU8+90snJeDikQ
-         xumXpXdZkh0UgBem1abwCijuY2oaGjiCCL9ESLbd5hkZ1REVXejDYOKL/LEaXDQaz657
-         o2eX6aERbljqtvNWdmfjSr/sYPUSBJCixXZfxbYF6aY4tjasvMKn/kqqqNwC1SsfjMbg
-         MV8w==
-X-Gm-Message-State: AOAM5328FMttA414E1ds7gsMXdfHZo1us3lgoMdW1nm8rniynQi4DIyO
-        xK3Ed7J7cy6VDryykb9O3n5UOQ==
-X-Google-Smtp-Source: ABdhPJzrQhQ8LMVgm0wqd0ZDzBIqrIopYqXqGXmzsZRKSRLr9eOwL0eJH/QGsBycHk4xcPRe2HVFQA==
-X-Received: by 2002:aa7:90c9:0:b029:307:49ca:dedd with SMTP id k9-20020aa790c90000b029030749cadeddmr4746287pfk.9.1628783164040;
-        Thu, 12 Aug 2021 08:46:04 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6683:43e5:ba4c:d76c])
-        by smtp.gmail.com with UTF8SMTPSA id m4sm10693720pjl.6.2021.08.12.08.46.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:46:03 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 08:46:01 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: Re: [PATCH V5 4/7] arm64: dts: sc7280: Update QUPv3 UART5 DT node
-Message-ID: <YRVCOS6SZGRM003t@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-5-git-send-email-rajpat@codeaurora.org>
+        Thu, 12 Aug 2021 11:46:44 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E5B2E222A7;
+        Thu, 12 Aug 2021 15:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628783177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jq1cdUU1f3lC+QwBs1xbMBuXa4d+oj3m5zq9K77zEo=;
+        b=ve112nHypYRMFshL0A8F+/PZOW8gytqyGs16jJa29/Y4F34LfL9NtH3RH0ME5DqSFPMoG9
+        0Wt3BhqMpX252jLlCUMtx4xuC74z5D6AZ+lbSnOiCBwYXfgeOZpoO1G75KKjtUKFeJ+lwC
+        r06MxmDCSKGH8lHRX90n3lSazxA9Kw0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628783177;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jq1cdUU1f3lC+QwBs1xbMBuXa4d+oj3m5zq9K77zEo=;
+        b=APM13VM6d7w8Rh3zVOxVvFIE/2YYLeIaDWMZzJvjpRc6EgdZ42JrfhZfMerfMUt7zVUKUM
+        BTRVFCx6JrJqAsCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 40CDB13AC3;
+        Thu, 12 Aug 2021 15:46:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ABmdDklCFWFqdwAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 15:46:17 +0000
+To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        s32@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-2-clin@suse.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
+Message-ID: <bcb3ddd8-23c9-81c9-7d05-b475311068ec@suse.de>
+Date:   Thu, 12 Aug 2021 17:46:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210805065429.27485-2-clin@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1628754078-29779-5-git-send-email-rajpat@codeaurora.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:11:15PM +0530, Rajesh Patil wrote:
-> From: Roja Rani Yarubandi <rojay@codeaurora.org>
-> 
-> Update the compatible string as "qcom,geni-uart".
-> Add interconnects and power-domains. Split the pinctrl
-> functions and correct the gpio pins.
-> 
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index e461395..2dc7e8c 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -861,13 +861,18 @@
->  			};
->  
->  			uart5: serial@994000 {
-> -				compatible = "qcom,geni-debug-uart";
-> +				compatible = "qcom,geni-uart";
->  				reg = <0 0x00994000 0 0x4000>;
->  				clock-names = "se";
->  				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
->  				pinctrl-names = "default";
-> -				pinctrl-0 = <&qup_uart5_default>;
-> +				pinctrl-0 = <&qup_uart5_cts>, <&qup_uart5_rts>, <&qup_uart5_tx>, <&qup_uart5_rx>;
->  				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
-> +				power-domains = <&rpmhpd SC7280_CX>;
-> +				operating-points-v2 = <&qup_opp_table>;
-> +				interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt SLAVE_QUP_CORE_0 0>,
-> +						<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_QUP_0 0>;
-> +				interconnect-names = "qup-core", "qup-config";
->  				status = "disabled";
->  			};
->  
-> @@ -2255,9 +2260,24 @@
->  				function = "qup04";
->  			};
->  
-> -			qup_uart5_default: qup-uart5-default {
-> -				pins = "gpio46", "gpio47";
-> -				function = "qup13";
+Hello Rob and NXP,
 
-sc7280-idp.dtsi references this node, so if this patch is applied the SC7280
-IDP DT would be broken, unless "[5/7] arm64: dts: sc7280: Configure debug
-uart for sc7280-idp" is also applied. I think you need to squash the two
-patches.
+On 05.08.21 08:54, Chester Lin wrote:
+> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
+> design 2 board ( S32G-VNP-RDB2).
+> 
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index e2097011c4b0..3914aa09e503 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -983,6 +983,13 @@ properties:
+>            - const: solidrun,lx2160a-cex7
+>            - const: fsl,lx2160a
+>  
+> +      - description: S32G2 based Boards
+> +        items:
+> +          - enum:
+> +              - fsl,s32g274a-evb
+> +              - fsl,s32g274a-rdb2
+
+@Rob: Should for new boards the description: syntax be used also for
+enums? Or just at SoC level, and for board enums still traditional #
+comments?
+
+> +          - const: fsl,s32g2
+
+@NXP: Is it sufficient here to have s32g2, or should we call this
+s32g274a and adjust the description above to S32G274A?
+
+Related, is the trailing A for Arm, like for the Layerscape chips? I.e.,
+not for Alpha or rev.A or something that will change for non-eval chips?
+
+> +
+>        - description: S32V234 based Boards
+>          items:
+>            - enum:
+
+Otherwise,
+
+Reviewed-by: Andreas Färber <afaerber@suse.de>
+
+Thanks,
+Andreas
+
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
