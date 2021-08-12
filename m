@@ -2,99 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322503EA767
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A555B3EA76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237945AbhHLPTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:19:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59206 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbhHLPTe (ORCPT
+        id S237951AbhHLPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:20:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46044 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236850AbhHLPU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:19:34 -0400
-Date:   Thu, 12 Aug 2021 15:19:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628781548;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Thu, 12 Aug 2021 11:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628781630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V34GEmeJhrmpBln2XLTU/+83lUZ0Gkvd5BCyv+3tI18=;
-        b=RuwHP8+90y6nvwoI6rhY1t4oM5O5MbykHNKngkdMh24LxG3vBu8HnJ+yDBfrLM6SFEPVUF
-        V9nas9D5bvQLbyKUJNzql7t1PiFYgtbvvzE6qguROdgoMmdpyrQ5Yt9mPx3nqar48VAfPS
-        dNKL8u17tEIv6spgAKI04TgGJdpFsop+ivdgeYlzqwlCHTYsqXmUJ/+JdH3Ej+aLEWgLPd
-        de+SPbd6ilAaFhtH0FBQPWB8+55JBHYGpr2OjGX+Sh3uHeCHhG9NlOEAzQvcYnjVcgrOWB
-        PM5zie+K7b+nIcjg0CSeKfUW+D5sLlzt6iECVSfY5NYv8gt4hIpPygBqzKlVZw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628781548;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V34GEmeJhrmpBln2XLTU/+83lUZ0Gkvd5BCyv+3tI18=;
-        b=ZZX/m6X7FAyNPzO1CILXOVne4xCWMVP/rZ8eGy99/ih1XVhxf2UU5r11Wl3tI67cZzCkpT
-        oJwrUi6gA5GaKsDg==
-From:   "tip-bot2 for Randy Dunlap" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/tools: Fix objdump version check again
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210731000146.2720-1-rdunlap@infradead.org>
-References: <20210731000146.2720-1-rdunlap@infradead.org>
+        bh=A5OMPPEs9ujuHSvx/fxuwi84cH52/9VQwos/NS7fl/I=;
+        b=hQ8qosJBNn1xnp8WQSXgbP9JCM+1hLP8Cvtq+8xCYNNqHA1JMCwQ3bm5IpKvfT1XnU3Lmz
+        K44WghXAYCX5bBfgUylXKw0/6FZQam/FuyY7ncq8szbw94ht3KbAkZhhRz3BSvCIW4Wbcb
+        iURTKc/6pqv9c3vEfcPEcJ0QQsO+HdE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-gx81Hpd9OhqzLK9emCwbKw-1; Thu, 12 Aug 2021 11:20:28 -0400
+X-MC-Unique: gx81Hpd9OhqzLK9emCwbKw-1
+Received: by mail-ed1-f69.google.com with SMTP id g3-20020a0564024243b02903be33db5ae6so3211595edb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:20:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A5OMPPEs9ujuHSvx/fxuwi84cH52/9VQwos/NS7fl/I=;
+        b=cE8vy1bI9+jGyjUO9Mfw8Fg1zDr/bSsWGZoH+FMO/Ql/NV1gFnOg+/ZnnV6ju2mtLU
+         fFaasqUCUqmSl7HikjUny3tWRXvDHet+Xq/g5poRoHP+kguUzmlOzkhPASCrScGKabUZ
+         70/0ItJnugYAfXd87ZjTHMBXQrB1adkzQWS+x+bjTQexS5wdULigfx2l8nQ/3xldEohz
+         MgeTAb9LA8lyGKg7WD2VtPLOUCe1ZCY0qx9T/ZkxiP4Olb8eyIY7HTG+4N3HVx/jiQet
+         pMPRwmwPY2Jf0SEBcBXVXyQwpQnxhcGvwTBQ3nIDZT6qMIVQtVAUB5Hv4pkhA8agokAv
+         JwuQ==
+X-Gm-Message-State: AOAM531lzy3nRjLwzXsV0HpIxCqYyVB+HJN1XxWGOCxJAg6ynK9Oe++O
+        adaQ/siTIdRVTeJDFkhIldB0XkcBPA2JxX2JOCgaaHP19z+6176ZvB7aY2k6AREONLfEr/AnLee
+        B1Hc31mVUC60lLWbR0goA3gVq
+X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr2289073ejb.294.1628781626988;
+        Thu, 12 Aug 2021 08:20:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywupV1SnYcXA6ApxaFvollFdpNxIJ9e+zDqIZXTpGac6DGPWBaUtFJCw4GtFfotIFaTRHwOw==
+X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr2289061ejb.294.1628781626752;
+        Thu, 12 Aug 2021 08:20:26 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id jo17sm941344ejb.40.2021.08.12.08.20.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 08:20:26 -0700 (PDT)
+Subject: Re: [PATCH] power: supply: axp288_charger: Use the defined variable
+ to clean code
+To:     Tang Bin <tangbin@cmss.chinamobile.com>, sre@kernel.org,
+        wens@csie.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+References: <20210811104929.24608-1-tangbin@cmss.chinamobile.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <60b7038f-2c68-4559-6a97-a5f2bc97647f@redhat.com>
+Date:   Thu, 12 Aug 2021 17:20:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <162878154758.395.4059560755319851621.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210811104929.24608-1-tangbin@cmss.chinamobile.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     839ad22f755132838f406751439363c07272ad87
-Gitweb:        https://git.kernel.org/tip/839ad22f755132838f406751439363c07272ad87
-Author:        Randy Dunlap <rdunlap@infradead.org>
-AuthorDate:    Fri, 30 Jul 2021 17:01:46 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 12 Aug 2021 17:17:25 +02:00
+On 8/11/21 12:49 PM, Tang Bin wrote:
+> Use the defined variable "dev" to make the code cleaner.
+> 
+> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-x86/tools: Fix objdump version check again
+Thanks, patch looks good to me:
 
-Skip (omit) any version string info that is parenthesized.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Warning: objdump version 15) is older than 2.19
-Warning: Skipping posttest.
+Regards,
 
-where 'objdump -v' says:
-GNU objdump (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18
+Hans
 
-Fixes: 8bee738bb1979 ("x86: Fix objdump version check in chkobjdump.awk for different formats.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210731000146.2720-1-rdunlap@infradead.org
 
----
- arch/x86/tools/chkobjdump.awk | 1 +
- 1 file changed, 1 insertion(+)
+> ---
+>  drivers/power/supply/axp288_charger.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
+> index a4df1ea92..b9553be9b 100644
+> --- a/drivers/power/supply/axp288_charger.c
+> +++ b/drivers/power/supply/axp288_charger.c
+> @@ -813,7 +813,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  	if (val == 0)
+>  		return -ENODEV;
+>  
+> -	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+> +	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
+>  	if (!info)
+>  		return -ENOMEM;
+>  
+> @@ -823,7 +823,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  
+>  	info->cable.edev = extcon_get_extcon_dev(AXP288_EXTCON_DEV_NAME);
+>  	if (info->cable.edev == NULL) {
+> -		dev_dbg(&pdev->dev, "%s is not ready, probe deferred\n",
+> +		dev_dbg(dev, "%s is not ready, probe deferred\n",
+>  			AXP288_EXTCON_DEV_NAME);
+>  		return -EPROBE_DEFER;
+>  	}
+> @@ -834,8 +834,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
+>  			return -EPROBE_DEFER;
+>  		}
+> -		dev_info(&pdev->dev,
+> -			 "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
+> +		dev_info(dev, "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
+>  	}
+>  
+>  	platform_set_drvdata(pdev, info);
+> @@ -874,7 +873,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  	INIT_WORK(&info->otg.work, axp288_charger_otg_evt_worker);
+>  	info->otg.id_nb.notifier_call = axp288_charger_handle_otg_evt;
+>  	if (info->otg.cable) {
+> -		ret = devm_extcon_register_notifier(&pdev->dev, info->otg.cable,
+> +		ret = devm_extcon_register_notifier(dev, info->otg.cable,
+>  					EXTCON_USB_HOST, &info->otg.id_nb);
+>  		if (ret) {
+>  			dev_err(dev, "failed to register EXTCON_USB_HOST notifier\n");
+> @@ -899,7 +898,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  					NULL, axp288_charger_irq_thread_handler,
+>  					IRQF_ONESHOT, info->pdev->name, info);
+>  		if (ret) {
+> -			dev_err(&pdev->dev, "failed to request interrupt=%d\n",
+> +			dev_err(dev, "failed to request interrupt=%d\n",
+>  								info->irq[i]);
+>  			return ret;
+>  		}
+> 
 
-diff --git a/arch/x86/tools/chkobjdump.awk b/arch/x86/tools/chkobjdump.awk
-index fd1ab80..a4cf678 100644
---- a/arch/x86/tools/chkobjdump.awk
-+++ b/arch/x86/tools/chkobjdump.awk
-@@ -10,6 +10,7 @@ BEGIN {
- 
- /^GNU objdump/ {
- 	verstr = ""
-+	gsub(/\(.*\)/, "");
- 	for (i = 3; i <= NF; i++)
- 		if (match($(i), "^[0-9]")) {
- 			verstr = $(i);
