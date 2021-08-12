@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8D63EA102
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186BA3EA0FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhHLIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:51:20 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:55356 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235116AbhHLIvQ (ORCPT
+        id S235129AbhHLIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhHLIvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:51:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628758251; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ya9+Ha0SGv8ND1/LQ97Qs9nz9/yO8+sXj545J9GZXEQ=; b=C9Dod/6Qz7pTvGUEvhUmb3R0NlUnHbPM8XjOnhJ1nA2mR0zg0XCDJqFr8trZ1Srn/jM1Rqiv
- OZ87krJVf+zd+3/SP/vuHVkJ1RdF4lKFdLhUq7SZdAlqsKjsC7+bC6AL1gL43heZParqMN5X
- J/1i8Nwxpas6aeweUwrTMQOxTO4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6114e0d176c3a9a17204dd71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 08:50:25
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86A29C43460; Thu, 12 Aug 2021 08:50:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2263C433F1;
-        Thu, 12 Aug 2021 08:50:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2263C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v3] Bluetooth: btusb: Add support different nvm to distinguish different factory for WCN6855 controller
-Date:   Thu, 12 Aug 2021 16:50:16 +0800
-Message-Id: <1628758216-3201-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 12 Aug 2021 04:51:08 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C46CC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:50:42 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so6852478otl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AFyPNO4ZkizLh3L5gPVy35vzpqSp3wuB2t4x2aRMQPw=;
+        b=Dw7WCJKVYgppAHEJ9FQoaU/9bvIu6cF/4LSfy/ttMhKBAoNhFwTPw0t53y7YerEawH
+         mBCjRqy55uTCgjD+xFR+HRu+IMueLOqNAFVUA30pc2UD9e9WljLfDvNNImDkvmHhtEXq
+         /17Ck0yYL4aMOtXxAnMoMHPNVz+z3HIcmqDoZ9pfI8J9D9PT5wZJV+X0Hh4c9O7XQk0v
+         Q4FRqWdIytObCFcQb1zdUXdUK6YIX0T6leyn1aGbYpRvvJNIcR4Cj7ZVcbzep3r7drJo
+         dzDTcRcQqHqbEpc9P7eeknis+nDKldFIn2TE6YRuWTTAdz/5JnzLI+Bka0lNgQqXapAB
+         Fy/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AFyPNO4ZkizLh3L5gPVy35vzpqSp3wuB2t4x2aRMQPw=;
+        b=rh5NAd/kNC1JF8wjjamNDOjQg/B1TxQsKuegvqjLWGvNEqTD/zQlRRJUv6OxIjpxr8
+         iace/iZkQol2rE4VAFThPuMBzCMFRDA0t1SEcQK/h5R2oTBY6osD25CFLcBLOke0Dopv
+         Sjgd3nopjB+/0W0P0TpS55WyOYivDNHswDjwGWRInCJ9PGDSyUSbC28A0Y0lU8UKIg53
+         RbVYGiEU+WpuyKGEr8dsDf4DpM1nyMiQ3hKFUBPP7+dUwruf0eSOel9rRerL6q95Ifwi
+         JVgZBgF9dyY4brY9WN+tidOkEBHuxYhJbChEmXu7MTCb0G3WovPXO+N8efUeLJPlkS/c
+         psmg==
+X-Gm-Message-State: AOAM532S8cwqC7a8RiBSbeWz/49Dcspn4Xt/QTuJuXuo9PQhWJrvJ3iQ
+        rKbci9xRENkB6Bwxflsx/6gQ1HmEjeWV4CdAwC611A==
+X-Google-Smtp-Source: ABdhPJysDReP89EMb13h1cgaiQj6lz+h0CzBnsfGhqallZmJIUoyDxnfKrmhk6+UmkuMXENkHCDbCJHccctC237tsrs=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr2619178otq.233.1628758241746;
+ Thu, 12 Aug 2021 01:50:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1628709663.git.andreyknvl@gmail.com> <da8d30df9206b54be2768b27bb026ec06e4da7a4.1628709663.git.andreyknvl@gmail.com>
+In-Reply-To: <da8d30df9206b54be2768b27bb026ec06e4da7a4.1628709663.git.andreyknvl@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Aug 2021 10:50:30 +0200
+Message-ID: <CANpmjNOf=XzX1xhjaz7+SBN2HYq+9jH4EcHi4gfwjSyTa3q00w@mail.gmail.com>
+Subject: Re: [PATCH 8/8] kasan: test: avoid corrupting memory in kasan_rcu_uaf
+To:     andrey.konovalov@linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+On Wed, 11 Aug 2021 at 21:34, <andrey.konovalov@linux.dev> wrote:
+>
+> From: Andrey Konovalov <andreyknvl@gmail.com>
+>
+> kasan_rcu_uaf() writes to freed memory via kasan_rcu_reclaim(), which is
+> only safe with the GENERIC mode (as it uses quarantine). For other modes,
+> this test corrupts kernel memory, which might result in a crash.
+>
+> Turn the write into a read.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-we have different factory to produce wcn6855 soc chip, so we should
-use different nvm file with suffix to distinguish them.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 60 ++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 51 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index b1a05bb9f4bf..d7b4e0f1c3e3 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4013,6 +4013,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
- #define QCA_DFU_TIMEOUT		3000
- #define QCA_FLAG_MULTI_NVM      0x80
- 
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-+
- struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
-@@ -4044,6 +4047,7 @@ static const struct qca_device_info qca_devices_table[] = {
- 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
- 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
- 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
- };
- 
- static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-@@ -4198,6 +4202,39 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
- 	return err;
- }
- 
-+static int btusb_setup_qca_form_nvm_name(char **fwname,
-+					int max_size,
-+					struct qca_version *ver,
-+					char *factory)
-+{
-+	/* if boardid equal 0, use default nvm without suffix */
-+	switch (le16_to_cpu(ver->board_id)) {
-+	case 0x0:
-+		/* we add suffix factory to distinguish with different factory. */
-+		if (factory != NULL) {
-+			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s.bin",
-+				 le32_to_cpu(ver->rom_version),
-+				 factory);
-+		} else {
-+			snprintf(*fwname, max_size, "qca/nvm_usb_%08x.bin",
-+				 le32_to_cpu(ver->rom_version));
-+		}
-+		break;
-+	default:
-+		if (factory != NULL) {
-+			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s_%04x.bin",
-+				le32_to_cpu(ver->rom_version),
-+				factory,
-+				le16_to_cpu(ver->board_id));
-+		} else {
-+			snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%04x.bin",
-+				le32_to_cpu(ver->rom_version),
-+				le16_to_cpu(ver->board_id));
-+		}
-+		break;
-+	}
-+}
-+
- static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 				    struct qca_version *ver,
- 				    const struct qca_device_info *info)
-@@ -4206,19 +4243,24 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 	char fwname[64];
- 	int err;
- 
--	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
--		/* if boardid equal 0, use default nvm without surfix */
--		if (le16_to_cpu(ver->board_id) == 0x0) {
-+	switch (ver->ram_version) {
-+	case WCN6855_2_0_RAM_VERSION_GF:
-+	case WCN6855_2_1_RAM_VERSION_GF:
-+		if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-+			btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, "gf");
-+		} else {
- 			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
- 				 le32_to_cpu(ver->rom_version));
-+		}
-+		break;
-+	default:
-+		if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-+			btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, NULL);
- 		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--				le32_to_cpu(ver->rom_version),
--				le16_to_cpu(ver->board_id));
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-+				 le32_to_cpu(ver->rom_version));
- 		}
--	} else {
--		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--			 le32_to_cpu(ver->rom_version));
-+		break;
- 	}
- 
- 	err = request_firmware(&fw, fwname, &hdev->dev);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+> ---
+>  lib/test_kasan_module.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
+> index fa73b9df0be4..7ebf433edef3 100644
+> --- a/lib/test_kasan_module.c
+> +++ b/lib/test_kasan_module.c
+> @@ -71,7 +71,7 @@ static noinline void __init kasan_rcu_reclaim(struct rcu_head *rp)
+>                                                 struct kasan_rcu_info, rcu);
+>
+>         kfree(fp);
+> -       fp->i = 1;
+> +       ((volatile struct kasan_rcu_info *)fp)->i;
+>  }
+>
+>  static noinline void __init kasan_rcu_uaf(void)
+> --
+> 2.25.1
+>
