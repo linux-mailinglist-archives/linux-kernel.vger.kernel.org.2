@@ -2,137 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE8E3EA1D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DA93EA1CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhHLJTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:19:07 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20876 "EHLO m43-7.mailgun.net"
+        id S236012AbhHLJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:18:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235249AbhHLJTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:19:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628759919; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=H9BL987TXxQr8icEZmvAmp/XVAdMz0I11U/9lBuccFU=; b=toKqegKWs5aQ5qcg6Cu6C8ZBDN1gvxbo1Rsq2yayUaM6TWvaiyJ3jMj1DkaBkvP/3HlfoXFK
- M7LD6iJQavVW8UbEoBh78u7WYU5XWJ2zdFNDO+fCW62Usr8cSrSWkJ4pYnp02dPMexQ5FZTd
- AJXpJOVmHhcp5sK3uY6fnbEOuhM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6114e75b66ff107904654f74 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 09:18:19
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AC8B7C43149; Thu, 12 Aug 2021 09:18:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7A6AC4360C;
-        Thu, 12 Aug 2021 09:18:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C7A6AC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 2/3] dt-bindings: msm: Add QTI download mode support binding
-Date:   Thu, 12 Aug 2021 14:47:41 +0530
-Message-Id: <217c22d40e0a9db713e2a55623408eca88166897.1628757036.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
+        id S235317AbhHLJSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:18:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C8256056B;
+        Thu, 12 Aug 2021 09:17:44 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 11:17:42 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 2/7] kernel/fork: factor out atomcially replacing the
+ current MM exe_file
+Message-ID: <20210812091742.nbnmsa37adaqkxwd@wittgenstein>
+References: <20210812084348.6521-1-david@redhat.com>
+ <20210812084348.6521-3-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210812084348.6521-3-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding for QTI download mode cookies
-region found in IMEM.
+On Thu, Aug 12, 2021 at 10:43:43AM +0200, David Hildenbrand wrote:
+> Let's factor the main logic out into atomic_set_mm_exe_file(), such that
+> all mm->exe_file logic is contained in kernel/fork.c.
+> 
+> While at it, perform some simple cleanups that are possible now that
+> we're simplifying the individual functions.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- .../bindings/arm/msm/qcom,dload-mode.yaml     | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml
+Looks good.
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml b/Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml
-new file mode 100644
-index 000000000000..90b9b6a9b75e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/msm/qcom,dload-mode.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Download Mode binding
-+
-+maintainers:
-+  - Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-+
-+description:
-+  Qualcomm download mode cookies memory region in IMEM is used by SDI
-+  (System Debug Image) firmware to determine whether to enter download
-+  mode or not to collect ramdump for post mortem debug.
-+
-+properties:
-+  compatible:
-+    const: qcom,dload-mode
-+
-+  reg:
-+    maxItems: 1
-+
-+  qcom,sdi-disable-regs:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      Phandle reference to a syscon representing TCSR followed by the
-+      offset and length for SDI disable register.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    imem@146aa000 {
-+      compatible = "simple-mfd";
-+      reg = <0x146aa000 0x2000>;
-+
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      ranges = <0 0x146aa000 0x2000>;
-+
-+      dload-mode@1c00 {
-+        compatible = "qcom,dload-mode";
-+        reg = <0x1c00 0x1000>;
-+        qcom,sdi-disable-regs = <&tcsr_regs 0x3a000 0x4>;
-+      };
-+    };
-+...
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+>  include/linux/mm.h |  2 ++
+>  kernel/fork.c      | 35 +++++++++++++++++++++++++++++++++--
+>  kernel/sys.c       | 33 +--------------------------------
+>  3 files changed, 36 insertions(+), 34 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 7ca22e6e694a..197505324b74 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2581,6 +2581,8 @@ extern int mm_take_all_locks(struct mm_struct *mm);
+>  extern void mm_drop_all_locks(struct mm_struct *mm);
+>  
+>  extern void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file);
+> +extern int atomic_set_mm_exe_file(struct mm_struct *mm,
+> +				  struct file *new_exe_file);
+>  extern struct file *get_mm_exe_file(struct mm_struct *mm);
+>  extern struct file *get_task_exe_file(struct task_struct *task);
+>  
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index bc94b2cc5995..6bd2e52bcdfb 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1149,8 +1149,8 @@ void mmput_async(struct mm_struct *mm)
+>   * Main users are mmput() and sys_execve(). Callers prevent concurrent
+>   * invocations: in mmput() nobody alive left, in execve task is single
+>   * threaded. sys_prctl(PR_SET_MM_MAP/EXE_FILE) also needs to set the
+> - * mm->exe_file, but does so without using set_mm_exe_file() in order
+> - * to avoid the need for any locks.
+> + * mm->exe_file, but uses atomic_set_mm_exe_file(), avoiding the need
+> + * for any locks.
+>   */
+>  void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+>  {
+> @@ -1170,6 +1170,37 @@ void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+>  		fput(old_exe_file);
+>  }
+>  
+> +int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+> +{
+> +	struct vm_area_struct *vma;
+> +	struct file *old_exe_file;
+> +	int ret = 0;
+> +
+> +	/* Forbid mm->exe_file change if old file still mapped. */
+> +	old_exe_file = get_mm_exe_file(mm);
+> +	if (old_exe_file) {
+> +		mmap_read_lock(mm);
+> +		for (vma = mm->mmap; vma && !ret; vma = vma->vm_next) {
+> +			if (!vma->vm_file)
+> +				continue;
+> +			if (path_equal(&vma->vm_file->f_path,
+> +				       &old_exe_file->f_path))
+> +				ret = -EBUSY;
+> +		}
+> +		mmap_read_unlock(mm);
+> +		fput(old_exe_file);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* set the new file, lockless */
+> +	get_file(new_exe_file);
+> +	old_exe_file = xchg(&mm->exe_file, new_exe_file);
+> +	if (old_exe_file)
+> +		fput(old_exe_file);
+> +	return 0;
+> +}
+> +
+>  /**
+>   * get_mm_exe_file - acquire a reference to the mm's executable file
+>   *
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index ef1a78f5d71c..40551b411fda 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -1846,7 +1846,6 @@ SYSCALL_DEFINE1(umask, int, mask)
+>  static int prctl_set_mm_exe_file(struct mm_struct *mm, unsigned int fd)
+>  {
+>  	struct fd exe;
+> -	struct file *old_exe, *exe_file;
+>  	struct inode *inode;
+>  	int err;
+>  
+> @@ -1869,40 +1868,10 @@ static int prctl_set_mm_exe_file(struct mm_struct *mm, unsigned int fd)
+>  	if (err)
+>  		goto exit;
+>  
+> -	/*
+> -	 * Forbid mm->exe_file change if old file still mapped.
+> -	 */
+> -	exe_file = get_mm_exe_file(mm);
+> -	err = -EBUSY;
+> -	if (exe_file) {
+> -		struct vm_area_struct *vma;
+> -
+> -		mmap_read_lock(mm);
+> -		for (vma = mm->mmap; vma; vma = vma->vm_next) {
+> -			if (!vma->vm_file)
+> -				continue;
+> -			if (path_equal(&vma->vm_file->f_path,
+> -				       &exe_file->f_path))
+> -				goto exit_err;
+> -		}
+> -
+> -		mmap_read_unlock(mm);
+> -		fput(exe_file);
+> -	}
+> -
+> -	err = 0;
+> -	/* set the new file, lockless */
+> -	get_file(exe.file);
+> -	old_exe = xchg(&mm->exe_file, exe.file);
+> -	if (old_exe)
+> -		fput(old_exe);
+> +	err = atomic_set_mm_exe_file(mm, exe.file);
+>  exit:
+>  	fdput(exe);
+>  	return err;
+> -exit_err:
+> -	mmap_read_unlock(mm);
+> -	fput(exe_file);
+> -	goto exit;
+>  }
+>  
+>  /*
+> -- 
+> 2.31.1
+> 
