@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F453EA3C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA743EA3C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236786AbhHLLbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:31:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhHLLbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA72560E9B;
-        Thu, 12 Aug 2021 11:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628767873;
-        bh=+NPBGnE+XEJoBmWXOgkcLntjyxblYos6pjANaetYmj4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O1xGm+uyQ971q/HIRx9e8EET3EfILrW6nl/7i3fdEFDyKc9DMjp6fmjLSDveVgxt1
-         8fDzzTOjKyDr2+lmw7GYJo9TbTPVwnaUu8dEK0f0nYxvCqjonnhhKeJgypOv8yO4Yg
-         DNJZIEf/f4mOtmwna0oHON0DdemWB06lHSzkJ2iuJeHkjNCmvfapEZ/VkHFUvbocCs
-         nbSzUZNxbJqXFhVi/Hgcz3oRKdjoZvMgzWY5CEaXG4aHIKBASHHJ8t6UeQ9GfcVfBy
-         Cia6uv0CKO39sjV55QnccsKGNpyggmYql+IEZAfvjVqXzOZPVBRtXwxs65q6LG5mEM
-         s1/7PpEKgWiMQ==
-Date:   Thu, 12 Aug 2021 20:31:10 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-Id: <20210812203110.3c82c040104e0fb488912ee1@kernel.org>
-In-Reply-To: <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
-        <20210811112249.555463f2@oasis.local.home>
-        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236892AbhHLLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:33:37 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:33665 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233613AbhHLLdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:33:36 -0400
+Received: by mail-oi1-f178.google.com with SMTP id h11so9906782oie.0;
+        Thu, 12 Aug 2021 04:33:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=njZPSmHfA5zoCliKmUp/d0fg44MW+GCyFpr9USFM3ak=;
+        b=Z65yRWFQ82yGBjojJqx6E9iJvGO9VGJnQgJ0yIwTS2QxEelrCZPToNnoBwiUz/98Qz
+         GlksIlM7Ta6GqO/L77HEcFst6N6MHGnrl93pIBkrKPzP0rGQM/FF/MqsJZ+uQlsNZXy4
+         sRmCrcuhXT19yImDETWl8VPg5s37tVLGZFrKo3vYIeOp428/WeEH6OM598chnftuiZjq
+         8p5Xz9gBv/ImhZwjkKucan/63WOM2sDAGCzTT/m+C9D/g043kevQlnmYWAq05UYq5oYn
+         vxf5IuSH5SJPa30hqHZprzVgMHyydfPDoV49MOiyKYmLEQKXtqzS78rVs/6scfXFUeaq
+         D8YA==
+X-Gm-Message-State: AOAM530aAFd9fe1nptH7gIpVMr6JGx9QWT9pXDNDdwQYR+rKIC7ZVsP0
+        5ybxmjPlT5MmJRMRLKm3c7xWT3QuYjN9/ZSQBnay6zpQcao=
+X-Google-Smtp-Source: ABdhPJx9L4bp13VO5Q8Czb8nhWBOUK8buhij6kzIJCIkKrqA0mAhkAZ5cpjl48Rr/tmV1Zoac0upMiqJQ15rTewjb9A=
+X-Received: by 2002:aca:af0d:: with SMTP id y13mr271805oie.161.1628767990675;
+ Thu, 12 Aug 2021 04:33:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210723082932.3570396-1-jk@codeconstruct.com.au>
+ <20210723082932.3570396-2-jk@codeconstruct.com.au> <alpine.DEB.2.22.394.2108121139490.530553@ramsan.of.borg>
+ <63a6e8ad8a8ae908aa73a3f910b98692c1a9aa37.camel@codeconstruct.com.au>
+In-Reply-To: <63a6e8ad8a8ae908aa73a3f910b98692c1a9aa37.camel@codeconstruct.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Aug 2021 13:32:59 +0200
+Message-ID: <CAMuHMdUjn8H8651XVOjBrBFqQs1bKR8kZbSPJWRhr071xk_kaw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 01/16] mctp: Add MCTP base
+To:     Jeremy Kerr <jk@codeconstruct.com.au>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matt Johnston <matt@codeconstruct.com.au>,
+        Andrew Jeffery <andrew@aj.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 10:27:35 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi Jeremy,
 
-> 
-> > Currently, we don't see any real use case to allow synthetic events to
-> > attach to an eprobe, but if there is, we can change the code to allow
-> > it, but we need to keep track of how many are attached, and limit them,
-> > and we need to find a way to check for loops.
-> 
-> Yes, anyway we need a way to find loops on histogram/eprobe at last.
+On Thu, Aug 12, 2021 at 1:15 PM Jeremy Kerr <jk@codeconstruct.com.au> wrote:
+> > When building an allmodconfig kernel, I got:
+>
+> [...]
+>
+> I don't see this on a clean allmodconfig build, nor when building the
+> previous commit then the MCTP commit with something like:
+>
+>   git checkout bc49d81^
+>   make O=obj.allmodconfig allmodconfig
+>   make O=obj.allmodconfig -j16
+>   git checkout bc49d81
+>   make O=obj.allmodconfig -j16
+>
+> - but it seems like it might be up to the ordering of a parallel build.
+>
+> From your description, it does sound like it's not regenerating flask.h;
+> the kbuild rules would seem to have a classmap.h -> flask.h dependency:
+>
+>   $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
+>
+>   quiet_cmd_flask = GEN     $(obj)/flask.h $(obj)/av_permissions.h
+>         cmd_flask = scripts/selinux/genheaders/genheaders $(obj)/flask.h $(obj)/av_permissions.h
+>
+>   targets += flask.h av_permissions.h
+>   $(obj)/flask.h: $(src)/include/classmap.h FORCE
+>         $(call if_changed,flask)
+>
+> however, classmap.h is #include-ed as part of the genheaders binary
+> build, rather than read at runtime; maybe $(obj)/flask.h should depend
+> on the genheaders binary, rather than $(src)/include/classmap.h ?
+>
+> If you can reproduce, can you compare the ctimes with:
+>
+>   stat scripts/selinux/genheaders/genheaders security/selinux/flask.h
+>
+> in your object dir?
 
-BTW, what about using similar machanism of "current_kprobe()" to detect
-the reccursion? As an easy way, prepare a static per-cpu pointer which sets
-the current eprobe and if the eprobe handler detects that is already set,
-it may warn (or silently ignore) and reject it.
-(Of course it is better to detect the loop when user sets the hist-trigger
-by reverse link)
+Unfortunately I can't seem to reproduce this anymore.
+Goodbye, Heisenbug!
 
-Thank you,
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
