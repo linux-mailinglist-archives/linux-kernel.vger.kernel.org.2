@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254743EABC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A478D3EABCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhHLUcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhHLUcI (ORCPT
+        id S237312AbhHLUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:32:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60834 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhHLUc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:32:08 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5889DC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:42 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id n17so15669775lft.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KUUhLtTlH34qCrAMz8FLnyHB8kOZP64VRsvKeH3KR8s=;
-        b=nOrRIYAAPbw5bHnn75Pm1qIco3wpb+lMROBcM7ri9KOPOhTw4kzAADCurwjRrUInst
-         AXb0PTXH/Ifcg2m/DuYXno20AWpOr1UP3nS9ZCLJYk6Vvkv0cayMwMxZd+7RW49DkTc7
-         5ghHighVMBccvkyAh5MMV0rI78r1gJdnmKDO88f61M7O4pTz9YBPRbFqroZPoi6+iWaR
-         0DeXqL15wzNkOOaK4cHifr5LqGK+oqI9Zql05LdmdBoDzT9Hvi0K2+kJ2oIj4wT2gOIT
-         S28D/7Aw2YvHu5ix/XLS27EequZ1oFuGbNVzTIm3vAe5ebX8CSfvvsdKPYTlFd+lOBUl
-         YXjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KUUhLtTlH34qCrAMz8FLnyHB8kOZP64VRsvKeH3KR8s=;
-        b=euMrHPrOh+Sr4yflsxdjP+thnJI19hGHrMvDfERFAy66dpLCkSiN0UXlzADIsslF4f
-         BkbbwqrGALYjpSuts8Uk88Eok5A2zMDMWhFPCEaw7e/ddTrEHIm0FzUM3nUXx17X7DW0
-         541IvgKTt9O3R42VHObNgDIh+t59MARL/GDx+9ZTVfKN4cRxZk0b2aw4lPZEiAOEmGOJ
-         0+UUK6cmu2H8a2EgKK06Eo6wO+SjoZQ8ZSgRNyROp57E6MjPC6pf8S2FAtsS5f6F0xz+
-         Fkw3Y8o5u3on6ZVYZkpvdsWcvvC2hvcDlBz3cdqJeyoHiR1ypwgwwZQfq2d+Kyzm+jHJ
-         +pTA==
-X-Gm-Message-State: AOAM531OBk8khaTTMVXXzEcu2cmAnLcSau+CQSGTWRpmpZJp+Jyk9Hgy
-        8O8kAN/3wzGiSI1MrV20Cf4DsQ==
-X-Google-Smtp-Source: ABdhPJyvYaymFYFw8Uki/dQxRfjDAkBBlPMhq9oHb4aqfUAn1utra3SHn9C+FY7EgizSN1SPsk58yw==
-X-Received: by 2002:a05:6512:2153:: with SMTP id s19mr3859298lfr.140.1628800300644;
-        Thu, 12 Aug 2021 13:31:40 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u19sm361918lfo.205.2021.08.12.13.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 13:31:39 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A70E9102BEE; Thu, 12 Aug 2021 23:31:53 +0300 (+03)
-Date:   Thu, 12 Aug 2021 23:31:53 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH 4/5] x86/mm: Provide helpers for unaccepted memory
-Message-ID: <20210812203153.uoa7nx7w5zdsmzck@box.shutemov.name>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <20210810062626.1012-5-kirill.shutemov@linux.intel.com>
- <67ce254c-aacc-43b6-d8d5-168ef9200f9e@intel.com>
+        Thu, 12 Aug 2021 16:32:57 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628800351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P0g6kaj3w3l8s66z1iLQpOYDO2iUHwY9sG7pabFyb34=;
+        b=DYKdHnUvdxnuxcXHyOctQBNAzVUGe/MdAiljNir0XmAdfJkJswzL1jCWknLQ8S9IKq7jiW
+        /mJgyYqZBmPnoAebGmfP2YbSDzSfsp2R+ve1YpkNqQAFhfq0YrikoyZwUF9q3qJbdMxywY
+        9RNl08VOqk1cHNFmCl7k8sCFBJAgYE+wH7nYp/spmdtdqzB4w1ZZ8XrT5+nbIO7IIgR3jY
+        6/j5cWEhrfCGlu2w9GWZc4nTYvc+D3jdDhEKJ2KAJ21mhDjdByXmzGiHhCh9ysGgvcSglW
+        jP73Kf0aiSpjLPfRqkdJOU6STCzb3kjQw5bf10NIqAXNugGDHJhCOqwfjjEImg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628800351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P0g6kaj3w3l8s66z1iLQpOYDO2iUHwY9sG7pabFyb34=;
+        b=lZ3p8zpAaDTY0wOmAI3HB0PocayVusZIVK1yN+a/OCs3DPncIdjTJ71/v9xZhrwyBlx91L
+        ucH9SccbnJnRdmBg==
+To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: [PATCH] hrtimer: Unbreak hrtimer_force_reprogram()
+In-Reply-To: <877dgqivhy.ffs@tglx>
+References: <20210713135158.054424875@linutronix.de>
+ <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
+ <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
+ <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
+Date:   Thu, 12 Aug 2021 22:32:30 +0200
+Message-ID: <8735recskh.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67ce254c-aacc-43b6-d8d5-168ef9200f9e@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:16:26AM -0700, Dave Hansen wrote:
-> On 8/9/21 11:26 PM, Kirill A. Shutemov wrote:
-> > +void accept_memory(phys_addr_t start, phys_addr_t end)
-> > +{
-> > +	if (!boot_params.unaccepted_memory)
-> > +		return;
-> > +
-> > +	spin_lock(&unaccepted_memory_lock);
-> > +	__accept_memory(start, end);
-> > +	spin_unlock(&unaccepted_memory_lock);
-> > +}
-> 
-> Isn't this taken in the:
-> 
-> 	del_page_from_free_list()->
-> 	clear_page_offline()->
-> 	accept_memory()
-> 
-> call path?
-> 
-> That's underneath:
-> 
-> 	spin_lock_irqsave(&zone->lock, flags);
-> 
-> Which means that accept_memory() can happen from interrupt context.  Is
-> it always covered by another spin_lock_irqsave() which means that it can
-> use a plain spin_lock()?
+Since the recent consoliation of reprogramming functions,
+hrtimer_force_reprogram() is affected by a check whether the new expiry
+time is past the current expiry time.
 
-I didn't give it enough thought yet, but we always run under zone lock
-which has to use spin_lock_irqsave() if it called from interrupt context.
+This breaks the NOHZ logic as that relies on the fact that the tick hrtimer
+is moved into the future. That means cpu_base->expires_next becomes stale
+and subsequent reprogramming attempts fail as well until the situation is
+cleaned up by an hrtimer interrupts.
 
-Having said that I think it is good idea to move clear_page_offline() out
-zone lock. It should help with allocation latency. Not sure how messy it
-gets. Merging/splitting path looks complex and I'm not an expert in the
-page allocator.
+For some yet unknown reason this leads to a complete stall, so for now
+partially revert the offending commit to a known working state. The root
+cause for the stall is still investigated and will be fixed in a subsequent
+commit.
 
-> If so, it would be nice to call out that logic.  It *looks* like a
-> spinlock that we would want to be spin_lock_irqsave().
+Fixes: b14bca97c9f5 ("hrtimer: Consolidate reprogramming code")
+Reported-by: Mike Galbraith <efault@gmx.de>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Mike Galbraith <efault@gmx.de>
+---
+ kernel/time/hrtimer.c |   40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
--- 
- Kirill A. Shutemov
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -652,24 +652,10 @@ static inline int hrtimer_hres_active(vo
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
+ }
+ 
+-static void
+-__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
+-		    struct hrtimer *next_timer, ktime_t expires_next)
++static void __hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base,
++				struct hrtimer *next_timer,
++				ktime_t expires_next)
+ {
+-	/*
+-	 * If the hrtimer interrupt is running, then it will reevaluate the
+-	 * clock bases and reprogram the clock event device.
+-	 */
+-	if (cpu_base->in_hrtirq)
+-		return;
+-
+-	if (expires_next > cpu_base->expires_next)
+-		return;
+-
+-	if (skip_equal && expires_next == cpu_base->expires_next)
+-		return;
+-
+-	cpu_base->next_timer = next_timer;
+ 	cpu_base->expires_next = expires_next;
+ 
+ 	/*
+@@ -707,8 +693,10 @@ hrtimer_force_reprogram(struct hrtimer_c
+ 
+ 	expires_next = hrtimer_update_next_event(cpu_base);
+ 
+-	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
+-			    expires_next);
++	if (skip_equal && expires_next == cpu_base->expires_next)
++		return;
++
++	__hrtimer_reprogram(cpu_base, cpu_base->next_timer, expires_next);
+ }
+ 
+ /* High resolution timer related functions */
+@@ -863,7 +851,19 @@ static void hrtimer_reprogram(struct hrt
+ 	if (base->cpu_base != cpu_base)
+ 		return;
+ 
+-	__hrtimer_reprogram(cpu_base, true, timer, expires);
++	if (expires >= cpu_base->expires_next)
++		return;
++
++	/*
++	 * If the hrtimer interrupt is running, then it will reevaluate the
++	 * clock bases and reprogram the clock event device.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
++
++	cpu_base->next_timer = timer;
++
++	__hrtimer_reprogram(cpu_base, timer, expires);
+ }
+ 
+ static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
