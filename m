@@ -2,70 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C027F3EA33F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AF63EA343
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhHLLFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhHLLFh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:05:37 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADD8C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:05:12 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id w14so8751422pjh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
-        b=A/CyD2IUxQnjac8rg2qBrLi5SJDTIceFfwRQSZAa/MFOm809busV09hQPkdY/+lTW8
-         l6iwqAIq5GgO/xSOXOvPdNMsvSJxrNU1QtBADJct8QBobC+AK8cLqakwW6EkKRBXyLpS
-         JKrX2l4oALWeyhB+kDtbzukuYB6PxD4hgWNLXcp2BRMyenRdbQxMlQDI0aS0HEt5GXIH
-         Xw9ZR/x9u23ObWrbjkIn4JJ5hxh28qJg2FaIC9LYvYvhNadStZ7Cbv/0lvbgWfc79VZa
-         t5oK58Ypv5ihlxvkl5VeVcjj5i0gd3ijBSgPaVvV1P3wPM/y9+rwbZAIYpa0PAORZB5E
-         0fFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
-        b=LME25GLT963/3soa50u5mquYV9gWt5F807+2lgPEo38eSuaSHkPh6N6jqG+0NuF+7x
-         3hIrzKUSuJsC0lID2Akv2NvIYVWVeSIH094xzg9mL0/cif50OUa6MHx6Kgu5ZlmtsiPU
-         MxHn1Ga+9P79bAHGVCjBKtb7NPbXDjkNJjwdpmboFLzeBxBpj3Poy20/HQMFSPX0RcDP
-         av4vi/Dcr+BWjw/u6gLn5ehuov//TJbc5AWE0Nz3/AqO4mrSmolX/ijQ76mZyeyMERVY
-         jGljOXcJdfExK7yruWlBF91/Q0Hty8LLmcz4+WhASp18mXJk6tOwzdokNHbOey5J/GhG
-         G0Fw==
-X-Gm-Message-State: AOAM532ZxailvWCX3rjLxB57SFxLbZttc4Qv8nksRdGI4elHBcn4GgIy
-        YRyAJQEmxfYkeFdfMfeJV2lftcqvX/kixEEhPrA=
-X-Google-Smtp-Source: ABdhPJzu/r90snvp+fH3leGGLNCaLRWakCvY0t0KI5DM4JYAXk6QXYToVH0iOZxKUygwdZmaEfGuZRetMtTCykG2hOI=
-X-Received: by 2002:a17:902:e5cd:b029:12c:fb5a:18c8 with SMTP id
- u13-20020a170902e5cdb029012cfb5a18c8mr3217935plf.79.1628766311858; Thu, 12
- Aug 2021 04:05:11 -0700 (PDT)
+        id S236740AbhHLLG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:06:26 -0400
+Received: from mail-bn8nam11on2084.outbound.protection.outlook.com ([40.107.236.84]:50847
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236724AbhHLLGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:06:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YKOJ0QxcTfZk+elrMchVGBCg5ZuG+HDU2hsS1eJyzze7EI22MjFFfTwIxeMtKEDRZ/FeRZNNWCy1WdJOfYZLWdW2sUUnIEpsR40BH+fX2IUfLZ4VBXiEX/mEp4AhfqML1FVPqBLOQbZu/gHIxsk14nI/sJoDyX3EDAg+Vi263JfhYIXWX6GJe0imcq4D9IZvpYTVmcwpxugfTdd9znYmKqKH4oN+1s//2DtDJCLSs1TxvJyj/RFTVLTVyVSfH3YnDkbUGHClvLwezeMgmUZ5bfd3v8DfoXh6tTJw3UY7ounpteq4FTiZK/9r1kTwYFxmZzP0KOQybRMGOruTFnWFKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zKasV50qbqEEUntPn32BZYY3Xw+97ssBN/VR7RK1qaM=;
+ b=g4XnX/3J0P3acTa1bM2Jh5wzMSzaBlvwzHSHiiAMiRA5f+ne3JJSqk2l8WRJgvflG46WftHrwr8XIZUSyj2FHxYVp5Y3hFgKyjabq5XEAij7EaCAFxdLidpYxlXLE2vicVrj/rPLNxLJo/+oaIqrzdRTDN8wrpIVwg1K5vkOVl5YqrMxvr8mIi3XyW7PEjCG6Utkr8lGIiMGi5QpBjJmMbeCcH4KlSI7haDo8D1m5h++vLwdgt9Zc+Hhljp1IKDghM4qwvWdqb6XrdoWlfkqWMsnvBCxMjiUatFHtNFGzoqac1fGm5kDW+CSmf+UNzoEtg+K8GPzun3VviM8OnRvvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zKasV50qbqEEUntPn32BZYY3Xw+97ssBN/VR7RK1qaM=;
+ b=NfV3NvAkHcNkVrLJTlKXvZdV+1PHOC7Vul+EHoS7ppcLSDiAl4q738S40a83QWfIIe5/f3pBWjwwma02mjbEZT8k3ZUYqo4DzhQiRpxmzB/yhhfUp/+hII2jssWUJc1GljnRkGDuJSJxU2qIokfHBs1z70q7Kq3ejZmrfhtUTRs=
+Received: from MWHPR08CA0041.namprd08.prod.outlook.com (2603:10b6:300:c0::15)
+ by MN2PR12MB4336.namprd12.prod.outlook.com (2603:10b6:208:1df::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Thu, 12 Aug
+ 2021 11:05:54 +0000
+Received: from CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:c0:cafe::d9) by MWHPR08CA0041.outlook.office365.com
+ (2603:10b6:300:c0::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend
+ Transport; Thu, 12 Aug 2021 11:05:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT068.mail.protection.outlook.com (10.13.175.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4415.16 via Frontend Transport; Thu, 12 Aug 2021 11:05:54 +0000
+Received: from amd-WhiteHaven.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 12 Aug
+ 2021 06:05:50 -0500
+From:   Shirish S <shirish.s@amd.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, Shirish S <shirish.s@amd.com>
+Subject: [PATCH] sched/debug: print column titles of show_state_filter()
+Date:   Thu, 12 Aug 2021 16:35:34 +0530
+Message-ID: <20210812110534.82349-1-shirish.s@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:a17:90a:ae10:0:0:0:0 with HTTP; Thu, 12 Aug 2021 04:05:11
- -0700 (PDT)
-Reply-To: sara2abdel@gmail.com
-From:   Sarah Abdel <majo1mba@gmail.com>
-Date:   Thu, 12 Aug 2021 13:05:11 +0200
-Message-ID: <CACzRdyvaZmda3nHTP+QUuVzjJjNCZjs8dmO5cSa7Qxuffvv-+Q@mail.gmail.com>
-Subject: Good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 29f68e9f-df6f-4a37-7ced-08d95d81276b
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4336:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4336C84D85F1B8D299672566F2F99@MN2PR12MB4336.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:98;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U+o31Bf1QeRagWWamcW6dbwvRL2VmumfuOGs0xHYQ/0QH3SvpqY21atbcW1pZjCfidxxQV7Q3J5c1re6zDNXYa6QN/ehT6+P7Kjw1d17VbaUT3b5DrJdwFBsVUFK1BcdAGmu3iBlYsUWAq3SPHtzJmU2/Uo29r/nC2noBGlB5OrpHv/9BdS/1SXAWD+WakQXrcw2WSTIxxvGmPYFgdBUxActISBu8/ToCfnaMygvInUjlZZR9ix7siEuD5eqOoDYVSHnt/ggy+apBptmlY7fGYeiLgtUvjoAujJnRMIMYoMTvLvB6PZBAwbYBrhREsyggGmvKo9UOhPLm+DZLEP90vk6QqxYi+Q8auFfLf0+InjUOa+x9zpgZznOMA7OB8ye1ymDvaNpExpQIGKKtMxZKZ4c5D/l72xZCRDZzLwBWvASC5lo+Ehw59xRQwUMfb1h5pRYgfTUYrlPK10ZDPd/VtMq7UDIFA0suc8IdKGUBAIOa7K/QPoNzCL7f8Y5BM80hdb5ihS5kLAYKOE0FnikQ6Ib4+vd4TWrJBebpyXBoNayDYP8YrsrvLlQR9Ufu1JdsFQ2lgRDsSB7X6E7D00Cfsi3n2NkgV0DcXfezgcWmmaXwDw5xmWh/bH5s8OAQ7NiBeN1wzA2U0rI1n4E7WDiGoUik8QNPLE1+EAS8QzM+spOFJUpe5iDKor7dpQNj5J3t69TkEEpSdkpQ5bNzlHzW+hKh9+vHT5NEWuV/4FHo0J/Leaobv69xCMWwuYQRqnnXwc1oChZ7F9C91czTUQfNw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(36840700001)(46966006)(336012)(82310400003)(81166007)(1076003)(2616005)(6666004)(83380400001)(70586007)(36756003)(34020700004)(5660300002)(7416002)(2906002)(4326008)(356005)(70206006)(186003)(16526019)(8936002)(82740400003)(110136005)(54906003)(7696005)(8676002)(426003)(316002)(36860700001)(26005)(478600001)(47076005)(86362001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 11:05:54.1466
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29f68e9f-df6f-4a37-7ced-08d95d81276b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4336
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This addition in the debug output shall improve readablitly..
+Its not intuitive for users that the pid printed in last column
+is of parent process.
 
-My name is Mrs.Sarah Abdel,I want to donate my fund $ 8.6 million USD
-to you on charity name to help the poor People.
+Without this patch:
+	localhost ~ # dmesg -w &
+	localhost ~ # echo w > /proc/sysrq-trigger
+	[22148.730225] sysrq: Show Blocked State
+	localhost ~ #
 
-As soon as I read from you I will give you more details on how to
-achieve this goal and get this fund transferred into your bank
-account.
+With this patch:
+	localhost ~ # dmesg -w &
+	localhost ~ # echo w > /proc/sysrq-trigger
+	[   99.979365] sysrq: Show Blocked State
+-->	[   99.983471]   task                        PC stack   pid father
+	localhost ~ #
 
-Thanks have a nice day,
-Mrs.Sarah Abdel
+v2: Dropped #ifdef logic
+v3: Sample output in commit message
+
+Signed-off-by: Shirish S <shirish.s@amd.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+---
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 20ffcc044134..1c7ea3ef5a9f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8174,6 +8174,9 @@ void show_state_filter(unsigned int state_filter)
+ {
+ 	struct task_struct *g, *p;
+ 
++	pr_info("  task%*s", BITS_PER_LONG == 32 ? 38 : 46,
++		"PC stack   pid father\n");
++
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		/*
+-- 
+2.17.1
+
