@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D663EA2F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03DB3EA328
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhHLKZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbhHLKZS (ORCPT
+        id S236613AbhHLKyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:54:43 -0400
+Received: from cpanel8.indieserve.net ([199.212.143.3]:34433 "EHLO
+        cpanel8.indieserve.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235059AbhHLKyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:25:18 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEADC061765;
-        Thu, 12 Aug 2021 03:24:52 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id b15so10521238ejg.10;
-        Thu, 12 Aug 2021 03:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lAh9DOdcJ3AKWMys8jX22Sn3J/EvQJoBUpAz3Mifi7Y=;
-        b=FuBgqDya2SMkvuzIHwWeMn0SPDEhxcF29PLUldLp1NFrLY5+fD7Rp6jGS5BNHlZlhJ
-         n8ldXVE1XB9H30jAnNzno+qV4GAWfDzxLbvvM23nYM82AJjqHteMjm5DNesrBD8HzBAd
-         wbMu/SXn/DPnLIoZiQ/Nw26qJU5cmH1yuarRlU9z8+tbKit8vwWJy5ZhLswPtbHcxfDU
-         wl3P3wO4TE7WjhH1m5YdZ/+C6Ipbtr/pprwqJ3UR5KN1CWJregTCj4OwPGHb3yA0Q7vD
-         DV8stnj6DbayS7mGIUBcqn8DbGixiBB+GL3oqJvXkrbBOpxUiA7zFTF4ATsy32Px1TXL
-         /mdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lAh9DOdcJ3AKWMys8jX22Sn3J/EvQJoBUpAz3Mifi7Y=;
-        b=GeEm9xcoa468hIBrywhPHnjfO+EfDfDPCw/iE99FvL1apexha39d1AFLBOyfEaKU7Q
-         05cyIx+YPOQW+Ug8KUKt1lAAWAu4p3T8eFW7QJzip8SW6HT1uitavDgVcrjISwlAWzQl
-         l8FYC6y17AKzjiu98lG2EJfUTcF8FI2pWY4agVfIuC0rAD4qIx3HzuDYH/mtZP6W7h6s
-         p5ZpRPc/pxciYI1epiEAKuOyodIjT6tqTn+/nbEHtn2KxRZBzz+DOgubdB2ech1YEMYq
-         X9yfW5hl670ddEHZ914LRmk3v5voY1MmUEuzgyAg6sWvA/FmQaR+WYw0rnb5rhV5aoNz
-         blaQ==
-X-Gm-Message-State: AOAM531nG09s6VSVyWjagJnK2A+ho4ikJ8OOsTouEUbN5/RWjEYkUrwl
-        rZV6uABE3qsbEpfnesUd8jYdffgt7erDKQc5Db0=
-X-Google-Smtp-Source: ABdhPJx3waPDU8WaSHHfmm2MI9XVdW007l7jwQHyxXP19vdrXuLfYGA/G01rd25ZVycRVcaSoB5/vWXK30VC+KjB2VA=
-X-Received: by 2002:a17:906:b0d4:: with SMTP id bk20mr2815864ejb.535.1628763891324;
- Thu, 12 Aug 2021 03:24:51 -0700 (PDT)
+        Thu, 12 Aug 2021 06:54:40 -0400
+X-Greylist: delayed 1645 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 06:54:40 EDT
+Received: from cpeac202e043973-cmac202e043970.sdns.net.rogers.com ([174.114.107.13]:58948 helo=fedora)
+        by cpanel8.indieserve.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <rpjday@crashcourse.ca>)
+        id 1mE7vF-0003Bk-2G; Thu, 12 Aug 2021 06:26:48 -0400
+Date:   Thu, 12 Aug 2021 06:26:44 -0400 (EDT)
+From:   "Robert P. J. Day" <rpjday@crashcourse.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>
+cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Muni Sekhar <munisekharrms@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+Subject: Re: LDD 3rd ed. - It was: Re: read() via USB bus
+In-Reply-To: <YRT1j20SRYXpPsXc@kroah.com>
+Message-ID: <61d7271d-d3cb-f25d-eaad-5489461a3bef@crashcourse.ca>
+References: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com> <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com> <YRDq530N/9uu2J0x@kroah.com> <13470108.apdoE9Qb8s@localhost.localdomain> <YRT1j20SRYXpPsXc@kroah.com>
 MIME-Version: 1.0
-References: <20210803063149.2821093-1-mudongliangabcd@gmail.com> <20210812100437.GA5055@gondor.apana.org.au>
-In-Reply-To: <20210812100437.GA5055@gondor.apana.org.au>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Thu, 12 Aug 2021 18:24:25 +0800
-Message-ID: <CAD-N9QWGgBBddi5kwTNANKVVdWaQRwagMHvaH592B5GDALpBrg@mail.gmail.com>
-Subject: Re: [PATCH v2] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpanel8.indieserve.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - crashcourse.ca
+X-Get-Message-Sender-Via: cpanel8.indieserve.net: authenticated_id: rpjday+crashcourse.ca/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: cpanel8.indieserve.net: rpjday@crashcourse.ca
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 6:05 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Tue, Aug 03, 2021 at 02:31:38PM +0800, Dongliang Mu wrote:
+On Thu, 12 Aug 2021, Greg KH wrote:
+
+> On Thu, Aug 12, 2021 at 11:45:45AM +0200, Fabio M. De Francesco wrote:
+> > Hi Greg,
 > >
-> > -theend:
-> > -     kfree(buf);
-> > +err_result:
-> >       kfree(result);
-> > -     crypto_finalize_hash_request(engine, breq, err);
-> > +err_buf:
-> > +     kfree(buf);
-> > +out:
-> > +     if (!err)
-> > +             crypto_finalize_hash_request(engine, breq, err);
-> >       return 0;
+> > On Monday, August 9, 2021 10:44:23 AM CEST Greg KH wrote:
+> > > On Mon, Aug 09, 2021 at 10:15:29AM +0200, Oliver Neukum wrote:
+> > > > On 09.08.21 09:58, Muni Sekhar wrote:
+> > > > > Hi all,
+> > > > >
+> > > > > PCIe memory mapped registers can be read via readb(), readw(), readl()
+> > > > > kernel API's. Similarly what are the kernel API to read the device
+> > > > > registers via USB bus
+> > > >
+> > > > [...]
+> > > >
+> > > > I hope this list stays friendly to newcomers and we will answer
+> > > > specific questions, but at this point I must advise you to first
+> > > > read an introductory book.
+> > >
+> > > Along these lines, take a look at the book, Linux Device Drivers, third
+> > > edition, which is free online, as it has a chapter about USB drivers and
+> > > how they work.  That should help you out to understand the issues
+> > > involved with USB devices.
+> > >
+> > I've heard that your book, LDD 3rd edition, has become obsolete a long time
+> > ago and most sample code cannot anymore build. Reading what you wrote above
+> > seems to contradict what I've been told by others... I must admit that I've
+> > just had a print copy of it that I have not yet opened for reading, therefore
+> > maybe that I'm totally wrong in assuming the above.
 >
-> This does not look right.  You're returning zero in case of an error
-
-Hi Herbert,
-
-Corentin Labbe said,
-
-For the error code, I am not sure it is needed, error code is already
-given to user via crypto_finalize_hash_request().
-The "return 0" is for crypto/crypto_engine API, returning an error
-will not change anything since we dont have retry_support.
-
-So I propose you to focus on dma_map_xxx() fix patch.
-
-See details in [1]. P.S., my previous patch returns err variable.
-
-[1] https://lkml.org/lkml/2021/7/26/164
-
-
+> Look into it and see the differences, it's not hard to notice.
 >
-> Cheers,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> And the code samples are all up to date online on github somewhere,
+> there's people keeping them alive if you want to track them down,
+> but really, just look at the in-kernel drivers for better examples
+> of real drivers.
+
+  it's possibly worth mentioning that a chap named javier martinez has
+been doing a decent job of upgrading the examples from LDD3 to keep up
+with current kernel development:
+
+  https://github.com/martinezjavier/ldd3
+
+of course, those examples won't match the explanations in the book
+anymore, but still, worth perusing.
+
+rday
