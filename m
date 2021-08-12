@@ -2,198 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1283EA5CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8863EA5CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237588AbhHLNjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        id S237333AbhHLNmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237333AbhHLNjl (ORCPT
+        with ESMTP id S236152AbhHLNmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:39:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8394C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:39:16 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mEAvS-0002HD-BW; Thu, 12 Aug 2021 15:39:14 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3ed7:427:d9dd:eb1b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 0BE4666612F;
-        Thu, 12 Aug 2021 13:39:12 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 15:39:11 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
-Message-ID: <20210812133911.ewv2ge474gdxuuwf@pengutronix.de>
-References: <20210806104833.102081-1-mkl@pengutronix.de>
- <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
- <20210809072414.syapcl2v7urytygg@pengutronix.de>
- <1b5875759dc9d68f2379cde389b1bf5595ee3964.camel@esd.eu>
- <20210809175158.5xdkqeemjo3hqwcw@pengutronix.de>
- <10975691377830c5fa647918b07fd8c5adf7483b.camel@esd.eu>
+        Thu, 12 Aug 2021 09:42:13 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0942BC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:41:48 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id t35so10340152oiw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w8ByNvmcER+djVrwXEK9pUfCYkOH6rFbdfIhJ/tSBvA=;
+        b=MNipbIQlWMXcHHMJ/+LhWIi2OgJ76yGlWDEmKM/0Bjhpqrf2ZfrIV/O3VG1gs20c4o
+         0EYw/Tnt/Q4Lg1N6gTrwRaJsOsvzgPOD6e6Eq5BtewSI1ZZyWF9JqjskwJUjqXK2bHvg
+         B3hJGt4+1R1Un8lVAHbXDIQ4XQCJxsbOMKWdPR98mTKJZTCIP/Faj5t+h1vQepdd2qgV
+         oVRNCnpRl4SzwP0WctbMN8MytglLzukvw5/g6CbEGp8RdK2HnlnqHOkpJ0PT4TwFa/v9
+         H5E7pAeX/h/QR3y7F62jTyKc4Sj6idE4suFcsW1HMpnSVEYwixuntgwctDS3LatpU9kW
+         geJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=w8ByNvmcER+djVrwXEK9pUfCYkOH6rFbdfIhJ/tSBvA=;
+        b=JnnkjfZqk363trYBh3/Ptxm8JJWlkjr8CNAH134o/kSXCcFfPq84h1MMHEJP0ctud7
+         16l5GyxFQPJ6AOLBe/+wh6symy0De4ZKehKSqInwyiMPXTAegKkmNaUe0PTPhgPwQWeT
+         kI9tOGO4H0It1fROSnXwFrs9NV92TMY+44XSisC6dIxpAW94+QshEkUG9irWZrz9e+MM
+         vnszEWb52bgcJdCKuk2XFxF10YU1rFCmuYtZ2fDQcFRrW3SdnbDyirQlohid3S0Ba9dE
+         moXQzyUnEB9w8ADyzaU57ccvcAwrcZZnSya1vr/WU0sVNeD9S0WAYRp6I0cMfp0w4QR2
+         i4ig==
+X-Gm-Message-State: AOAM532hikd0QjxwbC1dLCPEiCxYP4eD6xHIDDecRGVWdlgI1Szs+kC5
+        yTMQGyoICTen3PO7jRCKfaM=
+X-Google-Smtp-Source: ABdhPJxtwTGZdGVnSxCjpIEUVaQED8UOsBJIekT5sFbgESHHxcYCdesYT3483WIUoZCvGvi50HCaGw==
+X-Received: by 2002:a05:6808:144e:: with SMTP id x14mr3316950oiv.28.1628775707346;
+        Thu, 12 Aug 2021 06:41:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z21sm613612oto.46.2021.08.12.06.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 06:41:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 12 Aug 2021 06:41:45 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] riscv: __asm_copy_to-from_user: Improve using word
+ copy if size < 9*SZREG
+Message-ID: <20210812134145.GA4132779@roeck-us.net>
+References: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
+ <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2rjljajh7h5zjash"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <10975691377830c5fa647918b07fd8c5adf7483b.camel@esd.eu>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 10:52:44PM +0900, Akira Tsukamoto wrote:
+> Reduce the number of slow byte_copy when the size is in between
+> 2*SZREG to 9*SZREG by using none unrolled word_copy.
+> 
+> Without it any size smaller than 9*SZREG will be using slow byte_copy
+> instead of none unrolled word_copy.
+> 
+> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
 
---2rjljajh7h5zjash
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-On 12.08.2021 13:27:57, Stefan M=C3=A4tje wrote:
-> Am Montag, den 09.08.2021, 19:51 +0200 schrieb Marc Kleine-Budde:
-> > On 09.08.2021 17:22:51, Stefan M=C3=A4tje wrote:
-> > > > Speaking of that patch. Can you please create an entry in the
-> > > > MAINTAINERS file, too? I suggest to add yourself as M: and the
-> > > > socketcan@e.u as R:. The change in the MAINTAINERS file will be a s=
-econd
-> > > > patch in that series. Just include it the next iteration of that se=
-ries.
-> > >=20
-> > > Do you think of something like the patch below?
-> >=20
-> > ACK
-> :
-> > > =20
-> > > +CAN NETWORK DRIVERS ESD HARDWARE
-> >=20
-> > This usually starts with the company's name or the driver name, so
-> > something like "ESD PCIe/402 CAN DRIVER" and a separate entry for the
-> > USB driver or "ESD CAN NETWORK DRIVERS" if you want to have a single
-> > entry.
->=20
-> Following the requirement to start with the company's name I'll include t=
-his
-> patch for MAINTAINERS:
-
-not a requirement, but usually done :)
-
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 41fcfdb24a81..8ad40b5d082e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6900,6 +6900,14 @@ S:       Maintained
->  F:     include/linux/errseq.h
->  F:     lib/errseq.c
-> =20
-> +ESD CAN NETWORK DRIVERS
-> +M:     Stefan M=C3=A4tje <stefan.maetje@esd.eu>
-> +R:     socketcan@esd.eu
-> +L:     linux-can@vger.kernel.org
-> +S:     Maintained
-> +F:     drivers/net/can/esd/
-> +F:     drivers/net/can/usb/esd_usb2.c
+> ---
+>  arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 42 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+> index 63bc691cff91..6a80d5517afc 100644
+> --- a/arch/riscv/lib/uaccess.S
+> +++ b/arch/riscv/lib/uaccess.S
+> @@ -34,8 +34,10 @@ ENTRY(__asm_copy_from_user)
+>  	/*
+>  	 * Use byte copy only if too small.
+>  	 * SZREG holds 4 for RV32 and 8 for RV64
+> +	 * a3 - 2*SZREG is minimum size for word_copy
+> +	 *      1*SZREG for aligning dst + 1*SZREG for word_copy
+>  	 */
+> -	li	a3, 9*SZREG /* size must be larger than size in word_copy */
+> +	li	a3, 2*SZREG
+>  	bltu	a2, a3, .Lbyte_copy_tail
+>  
+>  	/*
+> @@ -66,9 +68,40 @@ ENTRY(__asm_copy_from_user)
+>  	andi	a3, a1, SZREG-1
+>  	bnez	a3, .Lshift_copy
+>  
+> +.Lcheck_size_bulk:
+> +	/*
+> +	 * Evaluate the size if possible to use unrolled.
+> +	 * The word_copy_unlrolled requires larger than 8*SZREG
+> +	 */
+> +	li	a3, 8*SZREG
+> +	add	a4, a0, a3
+> +	bltu	a4, t0, .Lword_copy_unlrolled
 > +
->  ET131X NETWORK DRIVER
->  M:     Mark Einon <mark.einon@gmail.com>
->  S:     Odd Fixes
->=20
-
-Fine! Adding this to the MAINTAINERS should be a separate patch in the seri=
-es.
-
-> > > > > and his email address shows up in MODULE_AUTHOR() macro. He also =
-left
-> > > > > our company already.
-> > > >=20
-> > > > In newly added changes, it makes sense that all email addresses are
-> > > > working. :D
-> > >=20
-> > > So I'll remove his stale email address together with the
-> > > MODULE_AUTHOR() macro and file the authorship credits in a changed
-> > > copyright history at the top of the source files.
-> >=20
-> > Yes, his name but with the socketcan@e.u email in MODULE_AUTHOR().
-> > Regarding the top of the file's copyright information, the last patch
-> > only mentions 2 iterations of "esd" but no "real" people nor email
-> > addresses. I don't know what's you company's policy for the copyright
-> > line is, I don't mind adding Thomas, but use the socketcan@e.u email.
-> > People tend to look at the source file in case of problems, so better
-> > have working addresses there.
-> >=20
->=20
-> For the MODULE_AUTHOR() stuff and the copyright notices I will change it
-> like this:
-
-Looks good! Squash into the patch where the file is added.
-
-> diff --git a/drivers/net/can/esd/esd_402_pci-core.c
-> b/drivers/net/can/esd/esd_402_pci-core.c
-> index 191e7f45c5d9..50d9c1dd1197 100644
-> --- a/drivers/net/can/esd/esd_402_pci-core.c
-> +++ b/drivers/net/can/esd/esd_402_pci-core.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/* Copyright (C) 2015 - 2017 esd electronic system design gmbh
-> - * Copyright (C) 2017 - 2021 esd electronics gmbh
-> +/* Copyright (C) 2015 - 2016 Thomas K=C3=B6rper, esd electronic system d=
-esign gmbh
-> + * Copyright (C) 2017 - 2021 Stefan M=C3=A4tje, esd electronics gmbh
->   */
-> =20
->  #include <linux/kernel.h>
-> @@ -524,7 +524,7 @@ static struct pci_driver pci402_driver =3D {
-> =20
->  module_pci_driver(pci402_driver);
-> =20
-> -MODULE_DESCRIPTION("Socket-CAN driver for esd CAN PCI(e)/402 cards");
-> -MODULE_AUTHOR("Thomas K=C3=B6rper <thomas.koerper@esd.eu>");
-> +MODULE_DESCRIPTION("Socket-CAN driver for esd CAN 402 card family with e=
-sdACC
-> core on PCIe");
-> +MODULE_AUTHOR("Thomas K=C3=B6rper <socketcan@esd.eu>");
->  MODULE_AUTHOR("Stefan M=C3=A4tje <stefan.maetje@esd.eu>");
->  MODULE_LICENSE("GPL");
->=20
->=20
-> > Regarding the Co-Developed and Signed-off-by: Thomas posted the patches
-> > back in 2015 with his email address, so use it for the Co-Developed and
-> > Signed-off-by in your patch, too. This seems (or is) a bit inconsistent,
-> > but the S-o-b's should record the history of the patch.
->=20
-> I'll add this in the next iteration of my driver patch as recommended.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---2rjljajh7h5zjash
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEVJH0ACgkQqclaivrt
-76lSegf9Ens8RcDI8okXriDTS0i6hstbd6OhXK96shOZbh9FycRNfaEo8PDNhrl7
-v9izrcBIupR3ua/LhCjEb8Ow3nC9nI+FTdmBD4ikjIVw5A1G8ZuSmwUT+spwWmQd
-q4l55fk2LlGw2l2ofCFxvvtS2//69CY2n4PyKT+wIpIbv4XX8PF/nvuYTQ3nMp2w
-5KR1J+HFCRYE6alcqXkPe7uqUeFAqlJDW9eZNf6r1MT3AwH8hhF7vszDh17jouuL
-bzdBDMFIf2Xbj6XfJ0VRAnjM1ai26j4rD+66pMesjOBlz9iaApsSDhAJ8l8oKGqZ
-w9ghL+i1zh5p6+G7mNhtI2UtzX5LQw==
-=F8Uo
------END PGP SIGNATURE-----
-
---2rjljajh7h5zjash--
+>  .Lword_copy:
+> -        /*
+> -	 * Both src and dst are aligned, unrolled word copy
+> +	/*
+> +	 * Both src and dst are aligned
+> +	 * None unrolled word copy with every 1*SZREG iteration
+> +	 *
+> +	 * a0 - start of aligned dst
+> +	 * a1 - start of aligned src
+> +	 * t0 - end of aligned dst
+> +	 */
+> +	bgeu	a0, t0, .Lbyte_copy_tail /* check if end of copy */
+> +	addi	t0, t0, -(SZREG) /* not to over run */
+> +1:
+> +	REG_L	a5, 0(a1)
+> +	addi	a1, a1, SZREG
+> +	REG_S	a5, 0(a0)
+> +	addi	a0, a0, SZREG
+> +	bltu	a0, t0, 1b
+> +
+> +	addi	t0, t0, SZREG /* revert to original value */
+> +	j	.Lbyte_copy_tail
+> +
+> +.Lword_copy_unlrolled:
+> +	/*
+> +	 * Both src and dst are aligned
+> +	 * Unrolled word copy with every 8*SZREG iteration
+>  	 *
+>  	 * a0 - start of aligned dst
+>  	 * a1 - start of aligned src
+> @@ -97,7 +130,12 @@ ENTRY(__asm_copy_from_user)
+>  	bltu	a0, t0, 2b
+>  
+>  	addi	t0, t0, 8*SZREG /* revert to original value */
+> -	j	.Lbyte_copy_tail
+> +
+> +	/*
+> +	 * Remaining might large enough for word_copy to reduce slow byte
+> +	 * copy
+> +	 */
+> +	j	.Lcheck_size_bulk
+>  
+>  .Lshift_copy:
+>  
