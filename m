@@ -2,133 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFCE3EA812
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C683EA80A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238538AbhHLPzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:55:18 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38260
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238351AbhHLPzQ (ORCPT
+        id S238474AbhHLPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238351AbhHLPyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:55:16 -0400
-Received: from localhost.localdomain (1.general.khfeng.us.vpn [10.172.68.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 35D924066E;
-        Thu, 12 Aug 2021 15:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628783689;
-        bh=hm5usQHds3jqJtmeH0GnYjRAm9cckUb+ezp56NfmWYc=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=emmByG5Dd3F09bGy+cXN572tmbpYGs4FiSzZsvpJpeZzDsuuH+yFYjJ3o8ALXByAs
-         utEzb0de2+zukawkQ2QOHqsx/us9IMwVwT4pKFTXYYIk3NzMWasYM0qRGxPpZKxgm4
-         eAdlkGaDorxuJAlMVTTVFks0KoascKMcX9Cc8oY7sV3QsJnDU+WDyJ5oYyDDQrtPU1
-         6YX4vlpk3teumqqsvhizCJb6X5JFa16XnITphDb/HS2BqG5Ji4Snv/ls8JcZg2aqDI
-         ohJgjcg8JxLbUThamFwwEI1L6mszuAAaABpj+8sU4YpqZzDyTGU/7nFeTRLB+G2DXx
-         0fsQ6qRX5PrfQ==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     hkallweit1@gmail.com, nic_swsd@realtek.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:8169 10/100/1000 GIGABIT ETHERNET
-        DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] r8169: Enable ASPM for selected NICs
-Date:   Thu, 12 Aug 2021 23:53:41 +0800
-Message-Id: <20210812155341.817031-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210812155341.817031-1-kai.heng.feng@canonical.com>
-References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+        Thu, 12 Aug 2021 11:54:20 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93031C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:55 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id k65so12610171yba.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9KW2/qijRYj1BOVATRIEUb5ZBc50beMYDjvUxmZFiRc=;
+        b=LHuXb9xzqe5DwhBYGOjusfcVLJLfxSrMOqgAdsG7OgbRVJdCX8A+FCQsg0LRpoz+Tu
+         AjQGQYHovApi+hFSLDN6rtlF9wmEBgVe6WbxXYtMJhWCS2fPc01sWMQwegW07LMbYBk1
+         g4TyhI5MbyZmvOgDgZnThyIOICYEFkcpi8FSs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9KW2/qijRYj1BOVATRIEUb5ZBc50beMYDjvUxmZFiRc=;
+        b=uhRHLa7BdFW3ju4iB5k7KYjqudM/ESNPier5LYVE4iN0XCFie282u4cJPSLru0Z0ah
+         C4pBhpqx/6AvaS22Wsd1RoHVBLSLNCDYPuadr2/9aRH64V4zSRPMWw6/PQdgBDIzElcF
+         08qrFLPADRAuwmmhYLlCUnI+Pavm/0RV0ET4HNPkUNDlFMqrdjZWDxbSuz/rJNLV1muk
+         yY0Y5KGUlI4K0U2Ukhi9Z5pt1iYFUc659gm/cxhJa75L5SLls0kdnK9XuPeTJteUYDu0
+         wQv0xY8P6Tn44mFZ2HvBx1q8liWrUD0aMcouqBUkQctMH6DqNlfVNzBpr/z23tyACG4I
+         gvrQ==
+X-Gm-Message-State: AOAM533VWp96phHPh7RYclFL+zYjL6KA3fGbqNHf3MUo5izNYyJaDzyE
+        koFRPKqLj16Vy5eIgmhtBlpRxkJtx8fRQ5T8lQBa
+X-Google-Smtp-Source: ABdhPJzZO0OsNFC/A2UHECLysjbKOC4vzD4gZilL/H0m8nkpIdJjITRQ2A/fHwlHwXIJYbEXwrlmPAVUpj41KqSL3h8=
+X-Received: by 2002:a25:e094:: with SMTP id x142mr5068884ybg.147.1628783634885;
+ Thu, 12 Aug 2021 08:53:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210812123433.27871-1-dimitri.ledkov@canonical.com>
+In-Reply-To: <20210812123433.27871-1-dimitri.ledkov@canonical.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 12 Aug 2021 08:53:44 -0700
+Message-ID: <CAOnJCULTxFmRbpw4wp7SYN8EJxFhSN5J04QDE=cfxLAB01ZOFA@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: prevent sbi_send_cpumask_ipi race with ftrace
+To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Pierce Andjelkovic <pierceandjelkovic@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest vendor driver enables ASPM for more recent r8168 NICs, do the
-same here to match the behavior.
+On Thu, Aug 12, 2021 at 5:36 AM Dimitri John Ledkov
+<dimitri.ledkov@canonical.com> wrote:
+>
+> From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+>
+> ftrace will patch instructions in sbi_send_cpumask_ipi, which is going to
+> be used by flush_icache_range, leading to potential races and crashes like
+> this:
+>
+> [    0.000000] ftrace: allocating 38893 entries in 152 pages
+> [    0.000000] Oops - illegal instruction [#1]
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-1014-generic #14-Ubuntu
+> [    0.000000] epc: ffffffe00000920e ra : ffffffe000009384 sp : ffffffe001803d30
+> [    0.000000]  gp : ffffffe001a14240 tp : ffffffe00180f440 t0 : ffffffe07fe38000
+> [    0.000000]  t1 : ffffffe0019cd338 t2 : 0000000000000000 s0 : ffffffe001803d70
+> [    0.000000]  s1 : 0000000000000000 a0 : ffffffe0000095aa a1 : 0000000000000001
+> [    0.000000]  a2 : 0000000000000002 a3 : 0000000000000000 a4 : 0000000000000000
+> [    0.000000]  a5 : 0000000000000000 a6 : 0000000000000004 a7 : 0000000052464e43
+> [    0.000000]  s2 : 0000000000000002 s3 : 0000000000000001 s4 : 0000000000000000
+> [    0.000000]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+> [    0.000000]  s8 : ffffffe001a170c0 s9 : 0000000000000001 s10: 0000000000000001
+> [    0.000000]  s11: 00000000fffcc5d0 t3 : 0000000000000068 t4 : 000000000000000b
+> [    0.000000]  t5 : ffffffe0019cd3e0 t6 : ffffffe001803cd8
+> [    0.000000] status: 0000000200000100 badaddr: 000000000513f187 cause: 0000000000000002
+> [    0.000000] ---[ end trace f67eb9af4d8d492b ]---
+> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+> [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+>
+> Where ffffffe00000920e lies in the middle of sbi_send_cpumask_ipi.
+>
+> Reproduced on Unmatched board using Ubuntu kernels. See
+> https://people.canonical.com/~xnox/lp1934548/ for sample images,
+> kernels, debug symbols.
+>
+> BugLink: https://bugs.launchpad.net/bugs/1934548
+> Reported-by: Pierce Andjelkovic <pierceandjelkovic@gmail.com>
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+> cc: Paul Walmsley <paul.walmsley@sifive.com>
+> cc: linux-riscv@lists.infradead.org
+> cc: stable@vger.kernel.org
+> ---
+>  arch/riscv/kernel/sbi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index 7402a417f38e..158199865c68 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -562,7 +562,7 @@ long sbi_get_mimpid(void)
+>         return __sbi_base_ecall(SBI_EXT_BASE_GET_MIMPID);
+>  }
+>
+> -static void sbi_send_cpumask_ipi(const struct cpumask *target)
+> +static void notrace sbi_send_cpumask_ipi(const struct cpumask *target)
+>  {
+>         struct cpumask hartid_mask;
+>
 
-In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
-vendor driver, also match that.
+flush_icache_range doesn't invoke sbi_send_cpumask_ipi.
+flush_icache_range->flush_icache_all->sbi_remote_fence_i->__sbi_rfence->sbi_ecall
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - No change
+Moreover, sbi.c should be removed from ftrace path as it is compiled
+with notrace flag after the patch [1]
 
- drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+CFLAGS_REMOVE_sbi.o   = $(CC_FLAGS_FTRACE)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 7ab2e841dc69..caa29e72a21a 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -623,7 +623,7 @@ struct rtl8169_private {
- 	} wk;
- 
- 	unsigned supports_gmii:1;
--	unsigned aspm_manageable:1;
-+	unsigned aspm_supported:1;
- 	unsigned aspm_enabled:1;
- 	struct delayed_work aspm_toggle;
- 	struct mutex aspm_mutex;
-@@ -2667,8 +2667,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
- 
- static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
- {
-+	if (!tp->aspm_supported)
-+		return;
-+
- 	/* Don't enable ASPM in the chip if OS can't control ASPM */
--	if (enable && tp->aspm_manageable) {
-+	if (enable) {
- 		RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
- 		RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
- 	} else {
-@@ -5284,6 +5287,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
- 	rtl_rar_set(tp, mac_addr);
- }
- 
-+static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
-+{
-+	switch (tp->mac_version) {
-+	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
-+	case RTL_GIGA_MAC_VER_38:
-+	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
-+	case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
-+	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
-+		return 1;
-+
-+	default:
-+		return 0;
-+	}
-+}
-+
- static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- {
- 	struct rtl8169_private *tp;
-@@ -5315,12 +5333,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (rc)
- 		return rc;
- 
--	/* Disable ASPM completely as that cause random device stop working
--	 * problems as well as full system hangs for some PCIe devices users.
--	 */
--	rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
--					  PCIE_LINK_STATE_L1);
--	tp->aspm_manageable = !rc;
-+	if (tp->mac_version == RTL_GIGA_MAC_VER_25)
-+		pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-+				       PCIE_LINK_STATE_L1 |
-+				       PCIE_LINK_STATE_CLKPM);
-+
-+	tp->aspm_supported = rtl_hw_aspm_supported(tp);
- 
- 	/* enable device (incl. PCI PM wakeup and hotplug setup) */
- 	rc = pcim_enable_device(pdev);
+This solution was proposed as a result of earlier discussion [2] last year.
+
+[1] https://patchwork.kernel.org/project/linux-riscv/patch/1608220905-1962-5-git-send-email-guoren@kernel.org/
+[2] https://lkml.org/lkml/2020/11/3/735
+
+The proposed fix probably hiding the root cause somehow.
+
+Do you have the patch[1] in your kernel ?
+
+
+> --
+> 2.30.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
+
 -- 
-2.32.0
-
+Regards,
+Atish
