@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9413E9F86
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F0B3E9F8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhHLHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231496AbhHLHkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:40:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E56360E78;
-        Thu, 12 Aug 2021 07:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628753995;
-        bh=irX84ooBnsiAdoz0s5VmTLIdLA7xUv8R2abt2xDslt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cfS0KONckKE6S/yS1AUqL5MrF3jPpcJBiUIqHzeR7N07C2hRV9SfUfhixPcUuOKJf
-         uL2V21XEwzGBvqfvdUMWTvXter/LPnHaUSv9PTPX4uabffL595ltUTRZ9JtP7gIOtj
-         lEXzV5M9kwQzAzeTdpCEoQtsxCzBqKy6cEt8DPNZNqIFOgaC1US/vbWSvYDXy/vFk/
-         O33qc4pB7hwzS3+U+dC7dPPuipH4fLongGgfpq1pnzCixNcwn8oub/4LRRBbs+4SQf
-         Y8zAR2lxYZ8bwIcrszU9diSsnPH3ShW8nj7K3uleAqbPyJZzlQcdpa1T113/iVtotz
-         R2EsLaCodzjIQ==
-Date:   Thu, 12 Aug 2021 09:39:43 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v5 1/3] i2c: aspeed: Add slave_enable() to toggle slave
- mode
-Message-ID: <YRTQP9sX0hkTJMTx@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20210714033833.11640-1-quan@os.amperecomputing.com>
- <20210714033833.11640-2-quan@os.amperecomputing.com>
+        id S234612AbhHLHkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:40:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234182AbhHLHkt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:40:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628754024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+YA80MSfyY5cO2eHQcFvJZUr+QFbT8jyLIwVnL3XyDE=;
+        b=aErHlgIO8+WFoZTPW8680TtfjwzxaWi6iH4JQew/RHRPqh7bx+AdV9jVcITUdZnf1eiZe3
+        HM0uLo1RmijLZRmNDZFQ0RUT+EsZP+IjOTMonI3yQVIG0PQQrEMJ0OBKDJ1DxFAbwD7bKR
+        KavXM5G0/UZADnvSew9+8LsvOkk811M=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-wBYUyVlLPXqo8BhimmiKdw-1; Thu, 12 Aug 2021 03:40:23 -0400
+X-MC-Unique: wBYUyVlLPXqo8BhimmiKdw-1
+Received: by mail-ed1-f69.google.com with SMTP id g3-20020a0564024243b02903be33db5ae6so2631353edb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:40:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+YA80MSfyY5cO2eHQcFvJZUr+QFbT8jyLIwVnL3XyDE=;
+        b=FswLX2cPzLNorZCGEKoq5uElDI/s7wUI2hlC3DSYi4bHohRX8hBQ6r435Qpxsl/beW
+         wbTUUf6xnb6S+c3OFXVGj+PFpemoFj545lpjkV0sMp9LjFbeTzNncT5+GCYtcYGp6328
+         81ewzlOGgrqB9ppQcgKa49u0Zo03YWKWULGIbXbRT9URIpmtvw7YnWdOdSNLVoKz4Af1
+         gLgOVAES0ouJ0Wit3/pIY5ppe8sAq+DIjT4kpJBDbacvhtqQ3HKGEvrZbNHR46H23+6Z
+         q16fzx/FVat88zargcYF+f4QpwPYGOZrejPhg4+k0kZO2BFgC2YBB28Vi4Xn1wNCYCcz
+         IVjA==
+X-Gm-Message-State: AOAM530IFQpyRge5HtKDJXpXhYh6+BTSJt6mC6qsYmil+75vc+7LjGqk
+        Y5vvLHKKSQ/Mr1NtNB7khorFfOmhLS6vmOGyaH5lkobHiYCN1Jk30NJNjkzO3sTxxZHuGEKOBYD
+        dUG7kliRpS+R5z0NPMfGCKusN
+X-Received: by 2002:a17:907:3e05:: with SMTP id hp5mr2332446ejc.527.1628754022300;
+        Thu, 12 Aug 2021 00:40:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHLttD6vImBlvWaz8Zn8JlOuh1AiQvwTB4Xn2HZ+O0TYRrJEkwE12etpyy/cqh8wA5osMDCw==
+X-Received: by 2002:a17:907:3e05:: with SMTP id hp5mr2332436ejc.527.1628754022136;
+        Thu, 12 Aug 2021 00:40:22 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id um4sm490085ejb.92.2021.08.12.00.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 00:40:21 -0700 (PDT)
+Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210811081619.3d3434cb@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1cb8dd94-a71b-aa91-3bed-365ce081dfd6@redhat.com>
+Date:   Thu, 12 Aug 2021 09:40:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GwGWc7OEMm4Wptga"
-Content-Disposition: inline
-In-Reply-To: <20210714033833.11640-2-quan@os.amperecomputing.com>
+In-Reply-To: <20210811081619.3d3434cb@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---GwGWc7OEMm4Wptga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 8/11/21 12:16 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   5c62c3d98b87 ("platform/x86: ISST: Fix optimization with use of numa")
+> 
+> Fixes tag
+> 
+>   Fixes: aa2ddd242572 ("ISST: Use numa node id for cpu pci dev mapping")
+> 
+> has these problem(s):
+> 
+>   - Subject does not match target commit subject
+>     Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
 
-Hi all,
+Thanks, I've fixes this now and then a forced-push of the pdx86 for-next branch.
 
-On Wed, Jul 14, 2021 at 10:38:31AM +0700, Quan Nguyen wrote:
-> Slave needs time to prepare the response data before Master could
-> enquiry via read transaction. However, there is no mechanism for
-> i2c-aspeed Slave to notify Master that it needs more time to process
-> and this make Master side to time out when trying to get the response.
->=20
-> This commit introduces the slave_enable() callback in struct
-> i2c_algorithm for Slave to temporary stop the Slave mode while working
-> on the response and re-enable the Slave when response data ready.
+Question, is there some script which I can run on my own tree to catch
+this (and similar issues) myself?  checkpatch does not catch this problem.
 
-Sorry that I couldn't chime in earlier, but NAK!
+Regards,
 
->  include/linux/i2c.h             |  2 ++
+Hans
 
-@Corey: Please do not change this file without my ACK. It is not a
-trivial change but an API extenstion and that should really be acked by
-the subsystem maintainer, in this case me. I was really surprised to see
-this in linux-next already.
-
-@all: Plus, I neither like the API (because it doesn't look generic to
-me but mostly handling one issue needed here) nor do I fully understand
-the use case. Normally, when a read is requested and the backend needs
-time to deliver the data, the hardware should stretch the SCL clock
-until some data register is finally written to. If it doesn't do it for
-whatever reason, this is a quirky hardware in my book and needs handling
-in the driver only. So, what is special with this HW? Can't we solve it
-differently?
-
-All the best,
-
-   Wolfram
-
-
---GwGWc7OEMm4Wptga
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEU0DsACgkQFA3kzBSg
-KbY9lg//WuQBcK9qC8p75mupHENCaWqvbTpqZARXpEbhlHtaxT2SqoADaOlbbFX8
-A2hu9n0efOSGZs1mEfLKL/y9BSBy0XLMLikoQgZw76ole8RWFjYJjJT1Oqqlk4p2
-LpVhrGj+g54IuMLo+vD0R5V9GeK6iXfFMwCJP5pi/AZ5p71DmyHDq/O7yDHvR5Cq
-m0e7SFKxyYt8oEUYFzqdi/EEx5ndMeIycipVFdNPRhAARJHixYprG4wmyqRBUhDM
-Mm43mGSsalicQggJ6vhVBj1JloOAN7Of7p4TsElFEX7uRig8Pgv35ODmMxNGfv81
-QCu1gV7gggqyt+V6dRl8TQoXb0bWcCZ3f7fodcRDdOWIHZhqq7IBURRoiVSGKZ7X
-UVVwNTt1X55FBxKAkj1Coxu1JZnp5LPa6bIpA4o2NSd4hj/smutrDVGVsQRnNLEK
-+sQ4ovJGK2YPjuOKxHyN+gZ4fO9Tj2nHlzm3AVWpalkd89qcclqDMRIaFdR9Wi3c
-t1mtXjMjqKOj99+yYacMMSnI4EfqsuTD2NxEMEQCGjlU27rcfXagxeif7RJZeSWq
-3tuvG7lGRNMKk59dC7/Rn9yl9vUUx5n1fiK4sNEaVvAK1lbXng8G4bxMgUW/EFN3
-0kln133baUn8BIfoaHBRjGSQ+npxyGS84OsJfjg1bzxZViBDA74=
-=05a4
------END PGP SIGNATURE-----
-
---GwGWc7OEMm4Wptga--
