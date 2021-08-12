@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33C73EA851
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F3F3EA85D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhHLQOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:14:30 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21190 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229791AbhHLQNH (ORCPT
+        id S232367AbhHLQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:16:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52032 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232611AbhHLQOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:13:07 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CGC1RO003849;
-        Thu, 12 Aug 2021 16:12:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=NUw2a6auC0L90dEpKCoF3i0Ba5bslxpZhP1+vV6FvY0=;
- b=KydXpE2y8bgBWsiz2qgprrvA1LT9KDMl2epOF1BrwFhz6xnfMnXzhfqnftoVwqy/Yjz+
- XTambm/DYiF1NPF4C1AKiE/UJWJFq9SItNGOt6LbYjvgJOFLFQFiW626QQ9J/8QnIwBS
- VGjHkm9MRF629kYxPcu9wO/q14kbCq5u0I7sze0jyqPiSFyqkn5AKUBIajoEiODac4w8
- qJxlRyV8s6JsofQfUxQxQop0o74lG1hXeyey7pjGaKKKSOOLHQ5LfBPb3ne/5NtsPMEo
- du3qDYFNbFZderKmiJZOGDC42p0pNR7FsJV1PS2H+f/f/bTMA3CgcsFtp/XYR0aYDRn4 tQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=NUw2a6auC0L90dEpKCoF3i0Ba5bslxpZhP1+vV6FvY0=;
- b=xOWFmUtilHXkBGevJYk3DlWdQrKX5wki16TtO8wTVfseUCg35rOp3VBMhofdiW0HuxqQ
- R085tT/fDA2SomM6efoLKmk6a3zIFmHXKQpwlty8yFIKk+arFKsHmRiW3oyKeZib98RW
- Wg22/wiQwCYqKpG4QpH7se3KVbzNGIDZh3uwLd6wD/t0dDM24D2HhZybQqzMROz6Ikv3
- /AiZbuLfH6vBjFxwBH9sDiXk5+QYE1YlJYQw8qN0TZe6ACeEEOmxeyG4I1clIf/ucurk
- ohQQw8dpBYPJdzy+q/rH7bCnZ8bxHnLuKTaMQcc7KaHKYjeyZteBbjToENBVuOxXInIS jg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ad2ajgrke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 16:12:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17CGAHl7170908;
-        Thu, 12 Aug 2021 16:12:37 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by userp3030.oracle.com with ESMTP id 3abjw8vhjv-1;
-        Thu, 12 Aug 2021 16:12:37 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Thu, 12 Aug 2021 12:14:54 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 298E31FF61;
+        Thu, 12 Aug 2021 16:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628784863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbKpH3fObpqF4YoutZpZCXlOx6vnUfgj3EGpl5lhHJE=;
+        b=gVnMmlBdln6b8Pzg9FVVu3DYRCvmcSfTU/lSasolqjxbCkTUI+A3KL+cUADf+mt627WClb
+        pNX7SmxGBTv0UuUsujpISDFK95JtJDoaqVIN+Z5c5dK+babdebAZYLU4HgNRfBff6i8nmw
+        jPoXY43K2bQtbN22stNjfPd2F33K3+g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628784863;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbKpH3fObpqF4YoutZpZCXlOx6vnUfgj3EGpl5lhHJE=;
+        b=YkfeMqGbvDhNvt+a691HrPiuV6yKoiZ0Zr2H/FN/8BXXr1NQxSHJcsPMp3hNzmmpKiv5Ql
+        +2iaVZqrJsZELjDQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 13F3B13ACC;
+        Thu, 12 Aug 2021 16:14:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id yCE/BN9IFWEpfgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:14:23 +0000
+Subject: Re: [PATCH v14 072/138] mm/writeback: Add folio_account_cleaned()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH for-next v2] RDMA/core/sa_query: Retry SA queries
-Date:   Thu, 12 Aug 2021 18:12:35 +0200
-Message-Id: <1628784755-28316-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-73-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <ea89a40c-68b3-c54d-8e7f-3c09757ddd8d@suse.cz>
+Date:   Thu, 12 Aug 2021 18:14:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10074 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120105
-X-Proofpoint-ORIG-GUID: 1HoNaFdNUZtsG4Ay3MhkqjIj4k4hipuQ
-X-Proofpoint-GUID: 1HoNaFdNUZtsG4Ay3MhkqjIj4k4hipuQ
+In-Reply-To: <20210715033704.692967-73-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A MAD packet is sent as an unreliable datagram (UD). SA requests are
-sent as MAD packets. As such, SA requests or responses may be silently
-dropped.
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Get the statistics right; compound pages were being accounted as a
+> single page.  This didn't matter before now as no filesystem which
+> supported compound pages did writeback.  Also move the declaration
+> to filemap.h since this is part of the page cache.  Add a wrapper for
 
-IB Core's MAD layer has a timeout and retry mechanism, which amongst
-other, is used by RDMA CM. But it is not used by SA queries. The lack
-of retries of SA queries leads to long specified timeout, and error
-being returned in case of packet loss. The ULP or user-land process
-has to perform the retry.
+Seems to be pagemap.h :)
 
-Fix this by taking advantage of the MAD layer's retry mechanism.
+> account_page_cleaned().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-First, a check against a zero timeout is added in
-rdma_resolve_route(). In send_mad(), we set the MAD layer timeout to
-one tenth of the specified timeout and the number of retries to
-10. The special case when timeout is less than 10 is handled.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-With this fix:
+Nit below:
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index bd97c461d499..792a83bd3917 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2453,14 +2453,15 @@ static void folio_account_dirtied(struct folio *folio,
+>   *
+>   * Caller must hold lock_page_memcg().
+>   */
+> -void account_page_cleaned(struct page *page, struct address_space *mapping,
+> +void folio_account_cleaned(struct folio *folio, struct address_space *mapping,
+>  			  struct bdi_writeback *wb)
+>  {
+>  	if (mapping_can_writeback(mapping)) {
+> -		dec_lruvec_page_state(page, NR_FILE_DIRTY);
+> -		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+> -		dec_wb_stat(wb, WB_RECLAIMABLE);
+> -		task_io_account_cancelled_write(PAGE_SIZE);
+> +		long nr = folio_nr_pages(folio);
+> +		lruvec_stat_mod_folio(folio, NR_FILE_DIRTY, -nr);
+> +		zone_stat_mod_folio(folio, NR_ZONE_WRITE_PENDING, -nr);
+> +		wb_stat_mod(wb, WB_RECLAIMABLE, -nr);
+> +		task_io_account_cancelled_write(folio_size(folio));
 
- # ucmatose -c 1000 -S 1024 -C 1
+In "mm/writeback: Add __folio_mark_dirty()" you used nr*PAGE_SIZE. Consistency?
 
-runs stable on an Infiniband fabric. Without this fix, we see an
-intermittent behavior and it errors out with:
-
-cmatose: event: RDMA_CM_EVENT_ROUTE_ERROR, error: -110
-
-(110 is ETIMEDOUT)
-
-Fixes: f75b7a529494 ("[PATCH] IB: Add automatic retries to MAD layer")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/cma.c      | 3 +++
- drivers/infiniband/core/sa_query.c | 9 ++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 515a7e9..c3f2fac 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3117,6 +3117,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
- 	struct rdma_id_private *id_priv;
- 	int ret;
- 
-+	if (!timeout_ms)
-+		return -EINVAL;
-+
- 	id_priv = container_of(id, struct rdma_id_private, id);
- 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
- 		return -EINVAL;
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index b61576f..5a56082 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1358,6 +1358,7 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- {
- 	unsigned long flags;
- 	int ret, id;
-+	const int nmbr_sa_query_retries = 10;
- 
- 	xa_lock_irqsave(&queries, flags);
- 	ret = __xa_alloc(&queries, &id, query, xa_limit_32b, gfp_mask);
-@@ -1365,7 +1366,13 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- 	if (ret < 0)
- 		return ret;
- 
--	query->mad_buf->timeout_ms  = timeout_ms;
-+	query->mad_buf->timeout_ms  = timeout_ms / nmbr_sa_query_retries;
-+	query->mad_buf->retries = nmbr_sa_query_retries;
-+	if (!query->mad_buf->timeout_ms) {
-+		/* Special case, very small timeout_ms */
-+		query->mad_buf->timeout_ms = 1;
-+		query->mad_buf->retries = timeout_ms;
-+	}
- 	query->mad_buf->context[0] = query;
- 	query->id = id;
- 
--- 
-1.8.3.1
+>  	}
+>  }
+>  
+> 
 
