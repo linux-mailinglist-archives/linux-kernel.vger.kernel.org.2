@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39E83EAB46
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A8A3EAB49
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhHLTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233827AbhHLTrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:47:48 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4DAC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:47:22 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id n6so12139368ljp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qvJKGlWHYO3//41xezQGyYw8UJPBhP9SV/wrzkVnfUg=;
-        b=AUs/6E5pat8I1fJyokuzJ4JusHDOSzN8l8aLgcRKdeX9KtFEnjzIHVGQdcH063XmfT
-         L8DrUiW6+JuEMuQC+wAGDiPlauZ+ZGgfEZy6Hrg3UFXrhpqsYhRXtJQHLBh5XGNbgpX7
-         83yl7MPZl9r+GoQJo4BF9ZBIUxpzEhatDUq+k4EAwg+NIgBIRuyAW10g+IizHwKpxIHb
-         847iKykQwPT5omTEY2WlTF1HgzWUmeOaC19PYgZ2wDBnaIyoEdyh3RD6Aih510c3+Vnm
-         DRXzLzeWm6eHwzLx5H9Hv5lza0imbE9IoOK69rZN1IyLr3wzEN2CKTy1VUXXn5SIw4xu
-         G1zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qvJKGlWHYO3//41xezQGyYw8UJPBhP9SV/wrzkVnfUg=;
-        b=ZGDACKievVXp2pLDY/vRda+5B9ZEv7bZrFauGDJitTG2iTOM35AVbsuTTC7T/i7gIw
-         n9Y8/qHKmQClUWh/j+yV3cYJJ/KxIOe7DrL5lBBXqDDOYXvVFIlLa8cfuLRofboYxA8g
-         Y1+Zgn5KdENrn9pGFAJpgNxlB0rnpYoiQzWmIuRyLFECgiGWPsSAnUe+PzIArv9jcPYc
-         wB8se3+j9c4DU4Vrr45zI1vI9AQ9GJ15Ez3taZOW7JqriOpzv2gmSjVZipLY0/hL2qpc
-         7t4TFYnl0Xx9MjIOJMkgALlIu74Z8D9Jfjv/ra9bhQ6BhF7RPBoRF4BD1x6h0yhYwiN2
-         RkgQ==
-X-Gm-Message-State: AOAM533tYBs43+HjdtAoUvxSmerP2Frbx+nt9VMpW3XibLUzx/jsT7QI
-        gZ7fgCTcB0mc5mnjDthsQbw=
-X-Google-Smtp-Source: ABdhPJwIhlxh4ESyiW4L2//MiwHAba42FQDaW0aluqa0AZC1HcLLHgT146f/MNqVD6oSzGONYjOJ1A==
-X-Received: by 2002:a2e:9b44:: with SMTP id o4mr3981428ljj.421.1628797641352;
-        Thu, 12 Aug 2021 12:47:21 -0700 (PDT)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id j17sm411739ljq.136.2021.08.12.12.47.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 12:47:20 -0700 (PDT)
-Subject: Re: [PATCH 3/5] arm64: Detect disabled HVC early
-To:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-4-maz@kernel.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <11c7b042-885f-ad48-7c5f-ad3dbd8f0340@gmail.com>
-Date:   Thu, 12 Aug 2021 21:47:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234932AbhHLTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233338AbhHLTsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:48:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E02B60FBF;
+        Thu, 12 Aug 2021 19:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628797690;
+        bh=9p726MGqfCJDwM63/3wcjpZXRx+ArKZoieJmNMNdx1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N6VXpRzDK9KpqN0Cf/9atiRkQv/qWwiKAvzyrFjgif1JjM0guI/0049l3Ny7KzGGB
+         uNy/sPFA4zSsNB+J1cBnGCZWbA8OpPun3ogowJI9jM+ZuwxUIKPfyFm3/mqCRoHuQI
+         DuTC1oD4nAeHt6ab48Yf3m6+fN1xVHNd7xYT1/zZYTqbMuTM/HcyYSc+wm8oGGv0l3
+         Rqh2O9vmCGQOqQpUgMmouu7e8lFiKq7JsOdCrlhvCD0ZSh7trQzUQwY+hCuk9SPCWv
+         K8mK+ucYU2Dyrr4QULMHNi/PhvhR9atapPCTYAdurY2Sn+/XXG34u0ulM3gMGFxitt
+         1bz4ZfKzoidyg==
+Date:   Thu, 12 Aug 2021 22:48:07 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, nasastry@in.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>
+Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to
+ tpm_status and define flag
+Message-ID: <20210812194807.7nhum62vnyu27tj6@kernel.org>
+References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
+ <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
+ <20210810175855.fixtw5jks4gbmkua@kernel.org>
+ <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
+ <20210811021030.5meaty2zxf253nfl@kernel.org>
+ <4eff0296-78da-52b6-322d-56e0f9d78dc2@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210812190213.2601506-4-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4eff0296-78da-52b6-322d-56e0f9d78dc2@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.2021 21:02, Marc Zyngier wrote:
-> Having HVC disabled from EL3 while the kernel is entered at EL2
-> is a complete nightmare.
+On Wed, Aug 11, 2021 at 08:15:14AM -0400, Stefan Berger wrote:
 > 
-> We end-up taking an UNDEF at the worse possible moment (checking
-> for VHE) and even if we didn't, having KVM enabled would signify
-> the premature end of the kernel.
-> 
-> Instead, try and detect this stupid case by issuing a HVC
-> for HVC_RESET_VECTORS, which does nothing when the stubs
-> are live. If we get HVC_STUB_ERR back, that's because the
-> UNDEF handler has kicked in.
-> 
-> In this situation, close your eyes, block your nose, and gracefully
-> pretend we have booted at EL1.
-> 
-> Reported-by: Rafał Miłecki <zajec5@gmail.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> On 8/10/21 10:10 PM, Jarkko Sakkinen wrote:
+> > On Tue, Aug 10, 2021 at 09:50:55PM -0400, Stefan Berger wrote:
+> > > On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
+> > > > On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
+> > > > > From: Stefan Berger <stefanb@linux.ibm.com>
+> > > > > 
+> > > > > Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
+> > > > > the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
+> > > > > 
+> > > > > 
+> > > > >    		default:
+> > > > > diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
+> > > > > index 51198b137461..252f1cccdfc5 100644
+> > > > > --- a/drivers/char/tpm/tpm_ibmvtpm.h
+> > > > > +++ b/drivers/char/tpm/tpm_ibmvtpm.h
+> > > > > @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
+> > > > >    	wait_queue_head_t wq;
+> > > > >    	u16 res_len;
+> > > > >    	u32 vtpm_version;
+> > > > > -	u8 tpm_processing_cmd;
+> > > > > +	u8 tpm_status;
+> > > > > +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
+> > > > Declare this already in the fix, and just leave the rename here.
+> > > You mean the fix patch does not use 'true' anymore but uses the
+> > > TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? And
+> > > literally only the renaming of this field is done in the 2nd patch?
+> > I can fixup these patches, and use '1', instead of true. No need to send
+> > new ones.
+> > 
+> > Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-This does the trick.
+I applied the first. If you have only one flag that you even
+document as "processing the command" in the inline comment,
+it makes absolutely no sense to rename it, as the current
+name perfectly documents what it exactly is.
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+/Jarkko
