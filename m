@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A475D3E9C23
+	by mail.lfdr.de (Postfix) with ESMTP id 1242E3E9C21
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 04:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhHLCI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 22:08:29 -0400
-Received: from m1364.mail.163.com ([220.181.13.64]:12260 "EHLO
-        m1364.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhHLCI1 (ORCPT
+        id S233460AbhHLCIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 22:08:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8400 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhHLCIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 22:08:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=dAi21
-        qFtOUAZAZ7vWpi4qn+7g8lQn04g7RhRHrYS5aQ=; b=hNAIZeBv76OuSS+ZugSO8
-        qu7RvuwfW5fEkMIxH7Ua+Hcqp7fPA9iJj2cpbC+Fz0kh2mzy7bgpJIZ5oZfXb5HG
-        qNCqHvAG+SHtMZiz8DoFfMXAG1szyCDVlGeG88gOdMpZ/uW9Dh51V0OMcYnK/m24
-        fvVacFEARRVVcsXOYvTMm0=
-Received: from slark_xiao$163.com ( [223.104.68.9] ) by ajax-webmail-wmsvr64
- (Coremail) ; Thu, 12 Aug 2021 10:07:09 +0800 (CST)
-X-Originating-IP: [223.104.68.9]
-Date:   Thu, 12 Aug 2021 10:07:09 +0800 (CST)
-From:   "Slark Xiao" <slark_xiao@163.com>
-To:     =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH] [v2,1/1] This aims to support Foxconn SDX55
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <875ywcfave.fsf@miraculix.mork.no>
-References: <20210811085635.4699-1-slark_xiao@163.com>
- <875ywcfave.fsf@miraculix.mork.no>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 11 Aug 2021 22:08:17 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GlVNS1Kwvz86Nx;
+        Thu, 12 Aug 2021 10:03:52 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 10:07:48 +0800
+Received: from [10.174.176.127] (10.174.176.127) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 10:07:47 +0800
+Subject: Re: [PATCH 0/5] block: replace incorrect uses of GENHD_FL_UP
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Luis Chamberlain <mcgrof@kernel.org>, <axboe@kernel.dk>,
+        <hare@suse.de>, <bvanassche@acm.org>, <ming.lei@redhat.com>,
+        <jack@suse.cz>, <osandov@fb.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210720182048.1906526-1-mcgrof@kernel.org>
+ <051ab019-5163-e691-43ed-052401b6b95a@huawei.com>
+ <YRNd4O1uV1auj/pK@infradead.org>
+From:   luomeng <luomeng12@huawei.com>
+Message-ID: <200816d2-4cfe-a26d-88c8-a0cde0b8614b@huawei.com>
+Date:   Thu, 12 Aug 2021 10:07:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Message-ID: <24551753.bf2.17b381cff23.Coremail.slark_xiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: QMGowABXXs5PghRhNKPBAA--.5850W
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBrRDsZF75bLMYbgABs6
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <YRNd4O1uV1auj/pK@infradead.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.127]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgoKCgoKCgoKCgoKCgoKCkF0IDIwMjEtMDgtMTEgMjA6MDE6NTcsICJCasO4cm4gTW9yayIgPGJq
-b3JuQG1vcmsubm8+IHdyb3RlOgo+U2xhcmsgWGlhbyA8c2xhcmtfeGlhb0AxNjMuY29tPiB3cml0
-ZXM6Cj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jIGIvZHJp
-dmVycy91c2Ivc2VyaWFsL3Fjc2VyaWFsLmMKPj4gaW5kZXggODNkYTgyMzZlM2M4Li5kOGI1OGFl
-YTNjNjAgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jCj4+ICsr
-KyBiL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jCj4+IEBAIC0xMTEsNiArMTExLDcgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCB1c2JfZGV2aWNlX2lkIGlkX3RhYmxlW10gPSB7Cj4+ICAJe1VT
-Ql9ERVZJQ0UoMHgxNmQ4LCAweDgwMDIpfSwJLyogQ01EVGVjaCBHb2JpIDIwMDAgTW9kZW0gZGV2
-aWNlIChWVTkyMikgKi8KPj4gIAl7VVNCX0RFVklDRSgweDA1YzYsIDB4OTIwNCl9LAkvKiBHb2Jp
-IDIwMDAgUURMIGRldmljZSAqLwo+PiAgCXtVU0JfREVWSUNFKDB4MDVjNiwgMHg5MjA1KX0sCS8q
-IEdvYmkgMjAwMCBNb2RlbSBkZXZpY2UgKi8KPj4gKwl7VVNCX0RFVklDRSgweDA1YzYsIDB4OTAx
-ZCl9LAkvKiBGb3hjb25uIFNEWDU1IFFETCAqLwo+Cj5JIGFzc3VtZSB0aGlzIGRldmljZSB3aWxs
-IGV4cG9zZSBvdGhlciBzZXJpYWwgZnVuY3Rpb25zIHdoZW4gYm9vdGVkIGluCj5hcHBsaWNhdGlv
-biBVU0IgbW9kZT8gIEJ1dCBwcm9iYWJseSBub3Qgd2l0aCBhIEdvYmkgMmsgbGF5b3V0Li4uIE1h
-eWJlCj5hZGQgdGhlIGFwcGxpY2F0aW9uIGRldmljZSBJRCB0byBzb21lIFVTQiBzZXJpYWwgZHJp
-dmVyIHRvbywgYW5kIGluY2x1ZGUKPnRoZSBRREwgZGV2aWNlIElEIHRoZXJlIGFzIHdlbGwgdG8g
-cmVkdWNlIGNvbmZ1c2lvbj8KPgo+Q291bGQgeW91IHByb3ZpZGUgYSB2aWV3IG9mIHRoZSBkZWZh
-dWx0IFVTQiBkZXNjcmlwdG9ycyBpbiBib3RoIFFETCBhbmQKPmFwcGxpY2F0aW9uIG1vZGU/ICBF
-LmcgZnJvbSBsc3VzYiAtdiBvciAgL3N5cy9rZXJuZWwvZGVidWcvdXNiL2RldmljZXM/Cj4KPgo+
-QmrDuHJuCgpIaSBCasO4cm4sCiAgVGhhbmsgeW91IGZvciB5b3VyIGdvb2QgYWR2aWNlLiBBY3R1
-YWxseSBpdCdzIG15IHR5cG8gZm9yICdRREwnLiBJdCBzaG91bGQgYmUgJ0RpYWcnIHBvcnQuCiAg
-UGxlYXNlIHNlZSBteSBsb2NhbCBzZXR0aW5nIGZvciBQQ0lFK1VTQiBtb2RlOgoKIGpiZEBqYmQt
-VGhpbmtQYWQtUDEtR2VuLTQ6fi9naXQvbmV0LW5leHQkIGxzdXNiIHwgZ3JlcCAwNWM2CkJ1cyAw
-MDMgRGV2aWNlIDAwMzogSUQgMDVjNjo5MDFkIFF1YWxjb21tLCBJbmMuIFF1YWxjb21tIEhTLVVT
-QiBBbmRyb2lkIERpYWcgOTAxRApqYmRAamJkLVRoaW5rUGFkLVAxLUdlbi00On4kIGxzcGNpIHwg
-Z3JlcCBGb3hjb25uCjAwMDA6MDg6MDAuMCBXaXJlbGVzcyBjb250cm9sbGVyIFswZDQwXTogRm94
-Y29ubiBJbnRlcm5hdGlvbmFsLCBJbmMuIERldmljZSBlMGFiCgogIE9uZSBtb3JlLCBzaG91bGQg
-SSBhZGQgYSBuZXcgbGF5b3V0IGZvciBRdWFsY29tbSBTRFg1NSBwbGF0Zm9ybT8gQXMgdGhlcmUg
-YXJlIEcxSyxHMkssIFNJRVJSQSBhbmQgIEhVQVdFSSBsYXlvdXQsIG5vbmUgb2YgdGhlbSBpbmNs
-dWRlcyBRdWFsY29tbSBTRFg1NS4KClRoYW5rcwo=
+
+
+ÔÚ 2021/8/11 13:19, Christoph Hellwig Ð´µÀ:
+> On Wed, Aug 11, 2021 at 10:42:20AM +0800, luomeng wrote:
+>> Hi:
+>>     When the fuzz test injected memory allocation failed, I had this BUG_ON:
+>> kernel BUG at fs/sysfs/group.c:116.
+>>    The cause of the bug_ON is that the add_disk memory fails to be allocated
+>> but no error processing is performed.
+>>    I find your patches add error processing. So what is your next step with
+>> these patches.
+> I have one more pending series on top of this one I need to submit here:
+> 
+> http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/alloc_disk
+> 
+> to make sure the disk always has a valid queue reference.  After that
+> Luis work to return an error from add_disk should be much easier bause
+> we not have defined state.
+> .
+Thanks.
+
+So how about this series, when this series will merge into linux master?
+
+And do you submit these patches ( 
+http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/alloc_disk) 
+on liunx?
+
+Luo Meng
