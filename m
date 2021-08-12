@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269583EA58E
+	by mail.lfdr.de (Postfix) with ESMTP id B701C3EA590
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237811AbhHLNXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
+        id S237856AbhHLNX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237674AbhHLNVf (ORCPT
+        with ESMTP id S237589AbhHLNWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:21:35 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD38C00EA85;
-        Thu, 12 Aug 2021 06:21:05 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id l11so7259755plk.6;
-        Thu, 12 Aug 2021 06:21:05 -0700 (PDT)
+        Thu, 12 Aug 2021 09:22:17 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C516BC00EAB0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:21:48 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 203-20020a1c00d40000b02902e6a4e244e4so4555882wma.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:21:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RrGE9qY6q5pKFuZWe8wC47/1qSM0FaVp53alD7sacQE=;
-        b=OGNXPwUdKji1eWBa5xXxJDq3MgBncwNQKXtkauakvygJ0dKVUn7plbxTp/KCakypZK
-         snQOX9YC0+5HSAf7yZ9a49Qg0kyOQpP3mUTR25ICYbi9PwleAf0OCASYBIIz6p2Vtym3
-         h2Qa5Rf63XLsbVkcXVperA+PUin2+kDeOweWqwr5A7oUx9b31K1sUv6LyfODCQ4s3W1k
-         Nf5hpAveP3kO+tbsqg6juaKysvroqZWJCnjWKQYFV/5/UXGjk0fwrGAgXV/hymUukkPV
-         sMXdeI3E9D85PvCAz3yIn7ohHufCsyIxGAgRLdJRsdjKM9uE/jINnctlpzTUXqTY9iLo
-         CBow==
+        bh=WZVGRDskmDYPzdeftiEChxL+8pjCbPwDx5dz49Ifopg=;
+        b=Q0PCtmR0L6F5btX+R5Hfv9xq5MzN6nGw6J5iuD8a/favIQ5eYGtcvjbNnHrOrwxeRC
+         ogScilg8e2dVTmhL3Gs2f3JUuA3uwSEPGA3ANRBMxg2L+QBzWoBkCN+8DKj2/M7S1NZ2
+         y5IVFrblsZNGCmQUagP8A57ywq5Mf8IV60ER0w0/GisQQ+/Huyy3sMZDrlmEgBEajExs
+         2dzdACx51jp1spYesfW2Q6/ZRvIUtE95aAGs9QMG04lqGPeUB42NYHWPHDhS7FOEiW4k
+         kILqb+4bbgpd6f+r0783O7CWJRf90RBR+fQRJpryNEMOKk1dvYEtGaqAtDvj611Ekhm9
+         bNSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RrGE9qY6q5pKFuZWe8wC47/1qSM0FaVp53alD7sacQE=;
-        b=IbNPxNcwt6hQReCjCOfinfi+3l1AAo7xx9NEX10bxAN1LxtyaK0mDjuNPDEKV3EC5b
-         H/CiiJZxmIeYexcOPPefARxLKB/oC2RPmaEh5AlhB/s5rJEZPLxVA2IbdFFyLOXbM1UA
-         KAIWUkFaOuGj4AMzc0/P7sdaU4JRtO/jNbrlUR2PJTN4GH1O9u9tDhSFMmvmovtSSdRT
-         D2sJ7PT5PgNAuJjYvh8cW8xk5Eh/2L/zsBsQkMlWxGdCzW248nkArEZaDA+KGo8ErsZh
-         uwVblwUVCELHbBBolZvGAl7hV6EQUEagnAgkLG8WWN7k6I2a8XpptLG5gUlMAm9o5+FY
-         /wIw==
-X-Gm-Message-State: AOAM533lw3P2z56dk/HPHp7Fr17xaNcOt95ClU7oVTUYIqLUInaz/oft
-        B1kO/dbzxYhVenLUhufDWwY=
-X-Google-Smtp-Source: ABdhPJxI5Tt5vtX0zDMijSjVIafzeaLyGnUw+kmctuBeTvjTDKCowjwc84IH7yc1FevEY92nWvuqIw==
-X-Received: by 2002:a17:902:ea03:b029:12d:13d8:63d1 with SMTP id s3-20020a170902ea03b029012d13d863d1mr3420739plg.49.1628774465161;
-        Thu, 12 Aug 2021 06:21:05 -0700 (PDT)
-Received: from Likes-MacBook-Pro.local ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id j185sm3674708pfb.86.2021.08.12.06.21.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 06:21:04 -0700 (PDT)
-Subject: Re: [PING][PATCH V9 00/18] KVM: x86/pmu: Add *basic* support to
- enable guest PEBS via DS
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        boris.ostrvsky@oracle.com, Zhu Lingshan <lingshan.zhu@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210722054159.4459-1-lingshan.zhu@intel.com>
- <YQF7lwM6qzYso0Gg@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Message-ID: <d4899d1b-b04d-6d96-7a29-dfb10355d601@gmail.com>
-Date:   Thu, 12 Aug 2021 21:20:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WZVGRDskmDYPzdeftiEChxL+8pjCbPwDx5dz49Ifopg=;
+        b=MEuMwlAYYbnMbgasPh/2yWqygR9XoCrbLGBCg8RuZ/wSf4obIQXzSjBwyp/2mFdwAp
+         +8LJBRdfEdSgI+G40wfslUFpg78nbvrWyC8ywWVpdPdK/dBRI1skAtAQqGttLU6oEVsQ
+         2Mc7i+dINmYR7c2ww+PPXeLvIl8gjxxg1REBFi7P25/DIm5pyg5SYAZRMMfPFx4lJTEG
+         bgWVE772+a4Wzw63y6GN6iUaOGddUeITl3D4bAOf24YXZcCMEp/QfUdzILic3dKl0Abc
+         PchHq2eA4P6phOr8pzey9xl2xDoXBi9enVu76SSdM9OCN4tj5RRgVjWuWlVKke1wOMvI
+         ZpAw==
+X-Gm-Message-State: AOAM530kal4h/FIaUo4uEWyxxB22SPi/O+6brcLDMt4jVgzrz5YuXdbj
+        tFWIbMRHcP7S9oX8+tdvHdc=
+X-Google-Smtp-Source: ABdhPJzp3tkIzXP6JNiRSbT++SHr3fYHl/ylsd2avLoJ9AHERWYyqr2mcU0dd5Ig+zKdFBaMKOkmGA==
+X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr4052145wmk.96.1628774507441;
+        Thu, 12 Aug 2021 06:21:47 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::2571])
+        by smtp.gmail.com with ESMTPSA id f2sm2041006wru.31.2021.08.12.06.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 06:21:47 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: replace custom hwaddr_aton_i() with mac_pton()
+Date:   Thu, 12 Aug 2021 15:20:57 +0200
+Message-Id: <20210812132057.22579-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YQF7lwM6qzYso0Gg@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+Replace custom hwaddr_aton_i() with mac_pton() in core/ioctl_linux.c
+and remove the now unused functions hwaddr_aton_i() and hex2num_i().
 
-On 28/7/2021 11:45 pm, Peter Zijlstra wrote:
->> Like Xu (17):
->>    perf/core: Use static_call to optimize perf_guest_info_callbacks
->>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
->>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
->>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
->>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
->>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
->>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
->>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
->>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
->>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
->>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
->>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
->>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
->>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
->>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
->>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
->>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
->>
->> Peter Zijlstra (Intel) (1):
->>    x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
-> Looks good:
-> 
-> Acked-by: Peter Zijlstra (Intel)<peterz@infradead.org>
-> 
-> How do we want to route this, all through the KVM tree?
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 40 +-------------------
+ 1 file changed, 1 insertion(+), 39 deletions(-)
 
-Do you have any comments for the latest version[1]
-or do we have a chance to get it queued for mainline ?
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index d059b738b348..38ee41f9d2ba 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -89,44 +89,6 @@ static const char * const iw_operation_mode[] = {
+ 	"Secondary", "Monitor"
+ };
+ 
+-static int hex2num_i(char c)
+-{
+-	if (c >= '0' && c <= '9')
+-		return c - '0';
+-	if (c >= 'a' && c <= 'f')
+-		return c - 'a' + 10;
+-	if (c >= 'A' && c <= 'F')
+-		return c - 'A' + 10;
+-	return -1;
+-}
+-
+-/**
+- * hwaddr_aton - Convert ASCII string to MAC address
+- * @txt: MAC address as a string (e.g., "00:11:22:33:44:55")
+- * @addr: Buffer for the MAC address (ETH_ALEN = 6 bytes)
+- * Returns: 0 on success, -1 on failure (e.g., string not a MAC address)
+- */
+-static int hwaddr_aton_i(const char *txt, u8 *addr)
+-{
+-	int i;
+-
+-	for (i = 0; i < 6; i++) {
+-		int a, b;
+-
+-		a = hex2num_i(*txt++);
+-		if (a < 0)
+-			return -1;
+-		b = hex2num_i(*txt++);
+-		if (b < 0)
+-			return -1;
+-		*addr++ = (a << 4) | b;
+-		if (i < 5 && *txt++ != ':')
+-			return -1;
+-	}
+-
+-	return 0;
+-}
+-
+ void indicate_wx_scan_complete_event(struct adapter *padapter)
+ {
+ 	union iwreq_data wrqu;
+@@ -2512,7 +2474,7 @@ static int rtw_get_ap_info(struct net_device *dev,
+ 	while (phead != plist) {
+ 		pnetwork = container_of(plist, struct wlan_network, list);
+ 
+-		if (hwaddr_aton_i(data, bssid)) {
++		if (!mac_pton(data, bssid)) {
+ 			DBG_88E("Invalid BSSID '%s'.\n", (u8 *)data);
+ 			spin_unlock_bh(&pmlmepriv->scanned_queue.lock);
+ 			return -EINVAL;
+-- 
+2.32.0
 
-I would really like to ease the burden of Lingshan on
-maintaining this feature and on the basis of this work,
-the guest BTS (Branch Tracking Store) is also ready to go.
-
-Thanks,
-Like Xu
-
-[1] https://lore.kernel.org/kvm/20210806133802.3528-1-lingshan.zhu@intel.com/
