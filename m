@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47ECC3EA442
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8863EA443
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbhHLMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60440 "EHLO mail.kernel.org"
+        id S236621AbhHLMHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:07:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234949AbhHLMHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:07:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BDF260FD7;
-        Thu, 12 Aug 2021 12:07:19 +0000 (UTC)
+        id S234949AbhHLMHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:07:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB776104F;
+        Thu, 12 Aug 2021 12:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628770039;
-        bh=5ADPpdHccujvZQXPlEKxF5syhlR8SQp8WXqrMYPJmfc=;
+        s=k20201202; t=1628770042;
+        bh=fu4ur+beZ0q1SwKzI6UwIh8hDnNHsHmUrehjdJC1COk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qXcBuBlb176dtDabI0bDUbinjkmt1fCYpG1zBI2xQv18Cj+zggQYEt+X7Dx5qzei2
-         Xb0Uq54jZzr+rGejQp234gIERb2r1ynDSpH4/NIgz4C9bBnaCfrwsGhESZ/qgda5Yw
-         wtYPrMvUUl0u7F4PkDQOJhPo+dWSpdD2owjEhZ6ChVofBB7zdJVqcjio7kEj6FFNip
-         UFB9mA/K6Znprgs8X1+QlC/M7iPgX8Lh3RDf9nPCHp7auAjL3PqW03XbpMdz/8A9Sy
-         2tPXo60bbwyF4gZQkxK3AU/16Z7URLIwo2YRAOiJjpeV8WQ4OriPRRf3sJLAFiPr57
-         FX/QNGTfyAJug==
+        b=eG+fHFw/vDlEPf80WDOc1A/5OIrwUO5pAHmwy8MevtDxY9I3moktxkrXnVRRSFcCM
+         o8rUbAQd/dwwz6D5AMBVAUxbtG09VS0uTOrTMAnq1fNXWRMh2I6ngL3SNGGng/m3JB
+         rhNJc/rbT2vf3/5MQN1CQsEFlNzr1wSiI4o3xH4mmCf8A1muECLZZl+vJewrkMxNEt
+         qTxLgctXIWXlQ/TpAw0ubs36dIDC0827RC1yBaIrTKbzqzXAk5CUN5yn7gk/p3JxuT
+         AX0BuK6K3U+r1KFGOmHjKLxrk2k3N3xwulEIlpcbzjpOPu9XUTvxcR4pHJVEY4GRhW
+         ZyNabSn41TiDA==
 From:   Mark Brown <broonie@kernel.org>
 To:     Oder Chiou <oder_chiou@realtek.com>,
         Douglas Anderson <dianders@chromium.org>
@@ -32,12 +32,12 @@ Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
         Takashi Iwai <tiwai@suse.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Bard Liao <bardliao@realtek.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong device ID
-Date:   Thu, 12 Aug 2021 13:06:58 +0100
-Message-Id: <162876970126.42668.8724722824512964124.b4-ty@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt5682: Properly turn off regulators if wrong device ID
+Date:   Thu, 12 Aug 2021 13:06:59 +0100
+Message-Id: <162876970127.42668.2574394243785887563.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
-References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
+In-Reply-To: <20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
+References: <20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,7 +45,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 16:59:15 -0700, Douglas Anderson wrote:
+On Wed, 11 Aug 2021 08:17:56 -0700, Douglas Anderson wrote:
 > When I booted up on a board that had a slightly different codec
 > stuffed on it, I got this message at bootup:
 > 
