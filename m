@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA25F3EA68B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8179E3EA63F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238014AbhHLO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:26:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57499 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233282AbhHLO0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:26:14 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mEBeQ-0002iE-00; Thu, 12 Aug 2021 16:25:42 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id DCCD2C07DD; Thu, 12 Aug 2021 16:09:34 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 16:09:34 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] MIPS: Migrate pistachio to generic kernel
-Message-ID: <20210812140934.GA9924@alpha.franken.de>
-References: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
+        id S237898AbhHLOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:10:20 -0400
+Received: from mail-dm6nam12on2064.outbound.protection.outlook.com ([40.107.243.64]:59497
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235263AbhHLOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:10:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IedwOr9MbVlhNbXFeTQqRSXI4So5LNc72lrNMt6VWNqvH3zwM2etl+ns1oTZTLbHTBEyjVv3XsV5MMm5SQqp55CtjZhRBXmbwxLym+7pskNGU2XVyCu1yNN6FLGEj8BN5ty4JqL2ONw36NLjqEuWb5X6t04NMRkriD9v0GlqnpjHCv89q2DEMbbxMkwAa2CZlGHey18SfiWc9TeyNSaN61di0WK5dgQAG9zj+tre1kYQcD9gJ8DJU2dxOooiw7LuDbwm+fckriN0GY4DN28gHdv6eb2EyQMfetEOXWRHDR5C/Bd4CDXY6KooqvZqDB2KH52WSPK/4YkuYQNs5E6x3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GfVxD61wTFYE7nHwYd8xx07bdgTsQEMjfyuzp6eEItc=;
+ b=SB0WoDXk+kvLB8r9C41n7ouPaRSXX2rQrChIcdkPCJg1QU7jtLSOPcWhsHkjrUYvw3HxuvUnzwWquK7FR2/S7Ki5iENRd8Ow2d1+IRgAPegAEoCK6KB05bIjiR7CzvXcVfUJK0xgzt821qoWJ8Qpng+0acGeknX8uxjkPQnTRzSxq6bZZVbVRy91QoA0mX0pR/CWid38kLzBV/eI840bPG6TWO+9TE7j6fULj7BfJwrj9t2hiJHLgKFZp8LPXwMDpEpqHO6LSOJByQpWoqMFlFziWdlXaqAVANVTbeBglLr2tKS+rFihF/M+ltCUBc/zEZNDMWAlExZ9lLud0VVq9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GfVxD61wTFYE7nHwYd8xx07bdgTsQEMjfyuzp6eEItc=;
+ b=qd6SBgoYQqEfY/C8qDGSjDSPyY0cxFiSZ1RhAnsAumXbgmisSxp0VCWp55MLefGGN7luLw6M0/mWlIiVCFOFYPZBMpYJnxsDUaVKjid/h6e2sJhquGqi7GuBNlEsZLOcLj9ja7ryVQfMfFDmv7M8Y2ad5JZTkt0tMJCuQzg/9rk=
+Received: from DM5PR19CA0008.namprd19.prod.outlook.com (2603:10b6:3:151::18)
+ by BN6PR12MB1506.namprd12.prod.outlook.com (2603:10b6:405:10::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Thu, 12 Aug
+ 2021 14:09:51 +0000
+Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:151:cafe::4) by DM5PR19CA0008.outlook.office365.com
+ (2603:10b6:3:151::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend
+ Transport; Thu, 12 Aug 2021 14:09:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4415.14 via Frontend Transport; Thu, 12 Aug 2021 14:09:50 +0000
+Received: from amd-WhiteHaven.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 12 Aug
+ 2021 09:09:47 -0500
+From:   Shirish S <shirish.s@amd.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, Shirish S <shirish.s@amd.com>
+Subject: [PATCH] sched/debug: print column titles of show_state_filter()
+Date:   Thu, 12 Aug 2021 19:39:34 +0530
+Message-ID: <20210812140934.87476-1-shirish.s@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e05e9dcf-b620-4f93-ff92-08d95d9ad9d9
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1506:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB15067AF8D9BCC729B2BD39B9F2F99@BN6PR12MB1506.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:98;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vFOsUC56EO7aW1F1Zu0l7JfSMlL86TztpRp2LuUIKx9hUgc5QtPZf74m5E97GWvzf62irTwdqlA5eoWgOYcRwildar5BDrjGoU87MbklIi75Ujhq4o78k9G3FXmGYVOnCIZqjMI68le6lq+fU5Y00d6n/545+kC6P93OSX8MEdWx+oE9Vj5uO8/a4WH/1cp9Ed8Ee7DOFrpY83pTLCIruEnvRnju2++ZywwWJtuA4He55QfwCCbK+dz/xeRgDxTMnB+1+/UdOsxfYp2V5dAefXJGv/VpQKYzlqrvtZ1J7PlLWlgrPoU9wArKtZBxNumJazrRxpE6+jHjfiYyglXakLAYOt6jr/hHf5vM21ATchY+uWeYkrZ5rBgEIZw0YCrpDupNzq5lFSL1LdIYEN5Uz83yULzQa0WURDNf4Ym8BzJnY+SlAMby/VwYD/wPi2V2pqKaUACACeL4UVVkrUJgZQUuA1pM957eCOuqptxFZfvz1Plv+D48PfZYXZGpNoin5UtoiBuoNapxhPyRQjZ0YCZVqXiI6G+z826Zd7dTjyApfGp59uP670aDgMaXisgPezlny+VEFqqHPt6yw7DqACe8A5Ilqcy9DiQgYsWUlGAYzFXtA+bOs1Dwxd+puLpWwMfVfc7oo76wv1o5Ee4dwPwMIEVhkYUiMrSiUmjHjV8DUrT6s5MUoMZ+WnhhqsdYqK0ktgrdfHeq14Jsy8qes3na6krImGRlab0ggOdWNZ2BGcSat+RSmZP3pzPxeYC+ahlPN21eaLVr4qSZgwqZNw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(46966006)(36840700001)(81166007)(316002)(83380400001)(36756003)(7696005)(82310400003)(336012)(86362001)(82740400003)(26005)(36860700001)(2906002)(34020700004)(16526019)(47076005)(54906003)(110136005)(2616005)(70206006)(6666004)(8936002)(70586007)(4326008)(356005)(1076003)(186003)(7416002)(478600001)(426003)(8676002)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 14:09:50.9935
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e05e9dcf-b620-4f93-ff92-08d95d9ad9d9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1506
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 10:25:34AM +0800, Jiaxun Yang wrote:
-> I'm lucky enough to get a Creator CI40 board from dusts.
-> This patchset move it to gerneic kernel to reduce maintenance burden.
-> It have been tested with SD Card boot.
-> 
-> --
-> v2: Minor fixes
-> v3: Typo fixes and 0day testbot warning fix (Thanks to Sergei!)
-> v4: 01.org warning fix
-> 
-> Jiaxun Yang (9):
->   MIPS: generic: Allow generating FIT image for Marduk board
->   MIPS: DTS: Pistachio add missing cpc and cdmm
->   clk: pistachio: Make it selectable for generic MIPS kernel
->   clocksource/drivers/pistachio: Make it selectable for MIPS
->   phy: pistachio-usb: Depend on MIPS || COMPILE_TEST
->   pinctrl: pistachio: Make it as an option
->   MIPS: config: generic: Add config for Marduk board
->   MIPS: Retire MACH_PISTACHIO
->   MIPS: Make a alias for pistachio_defconfig
-> 
->  arch/mips/Kbuild.platforms                    |   1 -
->  arch/mips/Kconfig                             |  30 --
->  arch/mips/Makefile                            |   3 +
->  arch/mips/boot/dts/Makefile                   |   2 +-
->  arch/mips/boot/dts/img/Makefile               |   3 +-
->  arch/mips/boot/dts/img/pistachio.dtsi         |  10 +
->  arch/mips/configs/generic/board-marduk.config |  53 +++
->  arch/mips/configs/pistachio_defconfig         | 316 ------------------
->  arch/mips/generic/Kconfig                     |   6 +
->  arch/mips/generic/Platform                    |   1 +
->  arch/mips/generic/board-marduk.its.S          |  22 ++
->  arch/mips/pistachio/Kconfig                   |  14 -
->  arch/mips/pistachio/Makefile                  |   2 -
->  arch/mips/pistachio/Platform                  |   6 -
->  arch/mips/pistachio/init.c                    | 125 -------
->  arch/mips/pistachio/irq.c                     |  24 --
->  arch/mips/pistachio/time.c                    |  55 ---
->  drivers/clk/Kconfig                           |   1 +
->  drivers/clk/Makefile                          |   2 +-
->  drivers/clk/pistachio/Kconfig                 |   8 +
->  drivers/clocksource/Kconfig                   |   3 +-
->  drivers/phy/Kconfig                           |   2 +-
->  drivers/pinctrl/Kconfig                       |   5 +-
->  23 files changed, 114 insertions(+), 580 deletions(-)
->  create mode 100644 arch/mips/configs/generic/board-marduk.config
->  delete mode 100644 arch/mips/configs/pistachio_defconfig
->  create mode 100644 arch/mips/generic/board-marduk.its.S
->  delete mode 100644 arch/mips/pistachio/Kconfig
->  delete mode 100644 arch/mips/pistachio/Makefile
->  delete mode 100644 arch/mips/pistachio/Platform
->  delete mode 100644 arch/mips/pistachio/init.c
->  delete mode 100644 arch/mips/pistachio/irq.c
->  delete mode 100644 arch/mips/pistachio/time.c
->  create mode 100644 drivers/clk/pistachio/Kconfig
+This addition in the debug output shall improve readablitly..
+Its not intuitive for users that the pid printed in last column
+is of parent process.
 
-series applied to mips-next.
+Without this patch:
+	localhost ~ # dmesg -w &
+	localhost ~ # echo w > /proc/sysrq-trigger
+	[22148.730225] sysrq: Show Blocked State
+	localhost ~ #
 
-Thomas.
+With this patch:
+	localhost ~ # dmesg -w &
+	localhost ~ # echo w > /proc/sysrq-trigger
+	[   99.979365] sysrq: Show Blocked State
+-->	[   99.983471]   task                        PC stack   pid father
+	localhost ~ #
 
+v2: Dropped #ifdef logic
+v3: Sample output in commit message
+
+Signed-off-by: Shirish S <shirish.s@amd.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+---
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 20ffcc044134..d9c7014870d5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8174,6 +8174,9 @@ void show_state_filter(unsigned int state_filter)
+ {
+ 	struct task_struct *g, *p;
+ 
++	pr_info("  task%*s", BITS_PER_LONG == 32 ? 38 : 46,
++		"PC stack   ppid\n");
++
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		/*
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.17.1
+
