@@ -2,169 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B453EADBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 01:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A193EADBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 01:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238737AbhHLXjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 19:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238496AbhHLXib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 19:38:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D23A661101;
-        Thu, 12 Aug 2021 23:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628811486;
-        bh=VGtZCbKljVwjXPskC+/bFDWf9l1SbMAK3xd6joWYr3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dh3f/J/QQ5q0R8A4sxpCNodX8JWCbztZwgSkoR0mwiE1JPB3LjQhc4rHCOFvEsFUz
-         Z0gRIJyWG38cuR4CyMOXJ6fdZ/Z3i2B1XJe3FVGhSYklCqrtLWcz2tms1tFmgLaczJ
-         mmiKZdQWV7pRKUAJnkYDnGyvX1O0uwRdkBE+UG/WvEMeT30FMXroO0s914EwJdn12t
-         5MCEQm4i53THfTpslaFBf1snNLHe/Snr1vKnHWhQHYYrXW/zhaFJzoKGEAVWceKe6+
-         n2PMoIx0/vvIIGG+vrxMJtKA3bIomvupXvJ4UwiQn7/orvyqUt+lx/uBX09r9Jyjvj
-         kVgvrQGf1V30g==
-From:   Vineet Gupta <vgupta@kernel.org>
-To:     linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH v2 19/19] ARC: mm: introduce _PAGE_TABLE to explicitly link pgd,pud,pmd entries
-Date:   Thu, 12 Aug 2021 16:37:53 -0700
-Message-Id: <20210812233753.104217-20-vgupta@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812233753.104217-1-vgupta@kernel.org>
-References: <20210812233753.104217-1-vgupta@kernel.org>
+        id S232106AbhHLXpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 19:45:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229601AbhHLXpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 19:45:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628811886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rd3OV6Dvw8ckC2y3lCBsgXJ9t52P1EWnPLZIGT1HBu4=;
+        b=QGl+sH/s7K8NbwD6+ZyP64h8ca69xCGZUiwqwxMkOe4u9p+KU5UYj3mDM7e0if0VNcZ18q
+        K/bKrFQ8TIFka2NUXn7e/B0i2mcImgQTJX1b2Jyf0h4x7wyE+mSikWgM1eieydRHD6VgPC
+        TmttKIjMIx+uP0fmrhbIZs6s/3tAknc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-ZaF8jtUaOK-Tku2-STNFjQ-1; Thu, 12 Aug 2021 19:44:45 -0400
+X-MC-Unique: ZaF8jtUaOK-Tku2-STNFjQ-1
+Received: by mail-qv1-f69.google.com with SMTP id t3-20020a0cf9830000b0290359840930bdso981512qvn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 16:44:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rd3OV6Dvw8ckC2y3lCBsgXJ9t52P1EWnPLZIGT1HBu4=;
+        b=YYoKOCp+LgnKgsEKvaDCxvJ1UbH4uDzOr176dfi6JWRpRzwGPjQyRRtSn5zahareFY
+         gPFSSQc/RI73NSKHUvodF/r5ZeyOXdX/QMEZ45UQRuZW9QmaaHuQwIiuQxfbM31dVotI
+         pCY+aooTmnAW2XlwqwqQFyqxIanJVRB6rAVJa+SvvSjnfyeUf8eC3+vqI2BwLKi50t+y
+         N9dfII1Eo+IjclytOrlZov1eN4bISyFGSkTHCBj9ZtlSqU7EhH8MxgO+DEubJFghvJQF
+         3KJAVZcpF3dqz/BQIwIg2zD8fQiVOEuYfJktokEosoqKF/yep9AzJnurlmA2J3EOxenl
+         c1GA==
+X-Gm-Message-State: AOAM533K2HWf9TbXhinQZ17oIbMHZzZ6i2+7AjADdfgZrCthvnV3Gd6H
+        BYPbfka+OFGt5O7BFnaBOmQv2iRpIQB0IBagbDmwbpNRo68JOSBlUgk5ndjlEsbrtjKFoHGLpu0
+        yE/iXkOI+bDLclS3Nn65JZg5r
+X-Received: by 2002:a05:6214:29cb:: with SMTP id gh11mr6584277qvb.61.1628811884826;
+        Thu, 12 Aug 2021 16:44:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtG0F13woSdCNsO/CYR7HlZ20+h7PTpQJDd38J7ov84KwjSzS4NEGUxdOjgIDcPQ5EpPxMAg==
+X-Received: by 2002:a05:6214:29cb:: with SMTP id gh11mr6584258qvb.61.1628811884614;
+        Thu, 12 Aug 2021 16:44:44 -0700 (PDT)
+Received: from treble ([68.74.140.199])
+        by smtp.gmail.com with ESMTPSA id i10sm2286766qkl.51.2021.08.12.16.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 16:44:44 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 16:44:40 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ramakrishna Saripalli <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
+Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
+ Forwarding
+Message-ID: <20210812234440.tcssf2iqs435bgdo@treble>
+References: <20210517220059.6452-1-rsaripal@amd.com>
+ <20210517220059.6452-2-rsaripal@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210517220059.6452-2-rsaripal@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARCv3 hardware walker expects Table Descriptors to have b'11 in LSB bits
-to continue moving to next level.
+On Mon, May 17, 2021 at 05:00:58PM -0500, Ramakrishna Saripalli wrote:
+> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..a5f694dccb24 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3940,6 +3940,11 @@
+>  			Format: {"off"}
+>  			Disable Hardware Transactional Memory
+>  
+> +	predictive_store_fwd_disable=	[X86] This option controls PSF.
+> +			off - Turns on PSF.
+> +			on  - Turns off PSF.
+> +			default : off.
+> +
 
-This commits adds that (to ARCv2 code) and ensures that it works in
-software walked regime.
+This needs a lot more text.
 
-The pte entries stil need tagging, but that is not possible in ARCv2
-since the LSB 2 bits are currently used.
+> +static const char * const psf_strings[] = {
+> +	[PREDICTIVE_STORE_FORWARD_NONE]		= "Vulnerable",
+> +	[PREDICTIVE_STORE_FORWARD_DISABLE]	= "Mitigation: Predictive Store Forward disabled",
 
-Signed-off-by: Vineet Gupta <vgupta@kernel.org>
----
- arch/arc/include/asm/pgalloc.h            | 8 ++++----
- arch/arc/include/asm/pgtable-bits-arcv2.h | 2 ++
- arch/arc/include/asm/pgtable-levels.h     | 6 +++---
- arch/arc/mm/tlbex.S                       | 4 +++-
- 4 files changed, 12 insertions(+), 8 deletions(-)
+This defaults to "Vulnerable", which is problematic for at least a few
+reasons.
 
-diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
-index 096b8ef58edb..a8c01eceba1b 100644
---- a/arch/arc/include/asm/pgalloc.h
-+++ b/arch/arc/include/asm/pgalloc.h
-@@ -43,12 +43,12 @@ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
- 	 *
- 	 * The cast itself is needed given simplistic definition of set_pmd()
- 	 */
--	set_pmd(pmd, __pmd((unsigned long)pte));
-+	set_pmd(pmd, __pmd((unsigned long)pte | _PAGE_TABLE));
- }
- 
- static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t pte_page)
- {
--	set_pmd(pmd, __pmd((unsigned long)page_address(pte_page)));
-+	set_pmd(pmd, __pmd((unsigned long)page_address(pte_page) | _PAGE_TABLE));
- }
- 
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
-@@ -74,7 +74,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 
- static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
- {
--	set_p4d(p4dp, __p4d((unsigned long)pudp));
-+	set_p4d(p4dp, __p4d((unsigned long)pudp | _PAGE_TABLE));
- }
- 
- #define __pud_free_tlb(tlb, pmd, addr)  pud_free((tlb)->mm, pmd)
-@@ -85,7 +85,7 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
- 
- static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
- {
--	set_pud(pudp, __pud((unsigned long)pmdp));
-+	set_pud(pudp, __pud((unsigned long)pmdp | _PAGE_TABLE));
- }
- 
- #define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
-diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
-index 183d23bc1e00..54aba0d3ae34 100644
---- a/arch/arc/include/asm/pgtable-bits-arcv2.h
-+++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
-@@ -32,6 +32,8 @@
- #define _PAGE_HW_SZ		0
- #endif
- 
-+#define _PAGE_TABLE		0x3
-+
- /* Defaults for every user page */
- #define ___DEF		(_PAGE_PRESENT | _PAGE_CACHEABLE)
- 
-diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-index 2da3c4e52a91..6c7a8360d986 100644
---- a/arch/arc/include/asm/pgtable-levels.h
-+++ b/arch/arc/include/asm/pgtable-levels.h
-@@ -98,7 +98,7 @@
- 
- /* In 4 level paging, p4d_* macros work on pgd */
- #define p4d_none(x)		(!p4d_val(x))
--#define p4d_bad(x)		((p4d_val(x) & ~PAGE_MASK))
-+#define p4d_bad(x)		(!(p4d_val(x) & _PAGE_TABLE))
- #define p4d_present(x)		(p4d_val(x))
- #define p4d_clear(xp)		do { p4d_val(*(xp)) = 0; } while (0)
- #define p4d_pgtable(p4d)	((pud_t *)(p4d_val(p4d) & PAGE_MASK))
-@@ -120,7 +120,7 @@
-  * In 4 level paging, pud_* macros work on pud
-  */
- #define pud_none(x)		(!pud_val(x))
--#define pud_bad(x)		((pud_val(x) & ~PAGE_MASK))
-+#define pud_bad(x)		(!(pud_val(x) & _PAGE_TABLE))
- #define pud_present(x)		(pud_val(x))
- #define pud_clear(xp)		do { pud_val(*(xp)) = 0; } while (0)
- #define pud_pgtable(pud)	((pmd_t *)(pud_val(pud) & PAGE_MASK))
-@@ -147,7 +147,7 @@
-  * In 3+ level paging (pgd -> pmd -> pte), pmd_* macros work on pmd
-  */
- #define pmd_none(x)		(!pmd_val(x))
--#define pmd_bad(x)		((pmd_val(x) & ~PAGE_MASK))
-+#define pmd_bad(pmd)		(!(pmd_val(pmd) & _PAGE_TABLE))
- #define pmd_present(x)		(pmd_val(x))
- #define pmd_clear(xp)		do { pmd_val(*(xp)) = 0; } while (0)
- #define pmd_page_vaddr(pmd)	(pmd_val(pmd) & PAGE_MASK)
-diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
-index e054780a8fe0..3874a8086591 100644
---- a/arch/arc/mm/tlbex.S
-+++ b/arch/arc/mm/tlbex.S
-@@ -171,11 +171,12 @@ ex_saved_reg1:
- 	lsr     r0, r2, PGDIR_SHIFT     ; Bits for indexing into PGD
- 	ld.as   r3, [r1, r0]            ; PGD entry corresp to faulting addr
- 	tst	r3, r3
--	bz	do_slow_path_pf         ; if no Page Table, do page fault
-+	bz	do_slow_path_pf         ; next level table missing, handover to linux vm code
- 
- #if CONFIG_PGTABLE_LEVELS > 3
- 	lsr     r0, r2, PUD_SHIFT	; Bits for indexing into PUD
- 	and	r0, r0, (PTRS_PER_PUD - 1)
-+	bmskn	r3, r3, 1		; clear _PAGE_TABLE bits
- 	ld.as	r1, [r3, r0]		; PMD entry
- 	tst	r1, r1
- 	bz	do_slow_path_pf
-@@ -185,6 +186,7 @@ ex_saved_reg1:
- #if CONFIG_PGTABLE_LEVELS > 2
- 	lsr     r0, r2, PMD_SHIFT	; Bits for indexing into PMD
- 	and	r0, r0, (PTRS_PER_PMD - 1)
-+	bmskn	r3, r3, 1		; clear _PAGE_TABLE bits
- 	ld.as	r1, [r3, r0]		; PMD entry
- 	tst	r1, r1
- 	bz	do_slow_path_pf
+1) I'm fairly sure this would be the first mitigation designed to
+   default to "Vulnerable".  Aside from whether that's a good idea, many
+   users will be alarmed to see "Vulnerable" in sysfs.
+
+2) If the system has the default per-process SSB mitigation
+   (prctl/seccomp) then PSF will be automatically mitigated in the same
+   way.  In that case "Vulnerable" isn't an accurate description.  (More
+   on that below.)
+
+> +static const struct {
+> +	const char *option;
+> +	enum psf_mitigation_cmd cmd;
+> +} psf_mitigation_options[]  __initconst = {
+> +	{ "on",		PREDICTIVE_STORE_FORWARD_CMD_ON },      /* Disable Speculative Store Bypass */
+> +	{ "off",	PREDICTIVE_STORE_FORWARD_CMD_NONE },    /* Don't touch Speculative Store Bypass */
+
+Copy/paste error in the comments: "Speculative Store Bypass" -> "Predictive Store Forwarding"
+
+I'd also recommend an "auto" option:
+
+	{ "auto",	PREDICTIVE_STORE_FORWARD_CMD_AUTO },    /* Platform decides */
+
+which would be the default.  For now it would function the same as
+"off", but would give room for tweaking defaults later.
+
+> +static enum psf_mitigation __init __psf_select_mitigation(void)
+> +{
+> +	enum psf_mitigation mode = PREDICTIVE_STORE_FORWARD_NONE;
+> +	enum psf_mitigation_cmd cmd;
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_PSFD))
+> +		return mode;
+> +
+> +	cmd = psf_parse_cmdline();
+> +
+> +	switch (cmd) {
+> +	case PREDICTIVE_STORE_FORWARD_CMD_ON:
+> +		mode = PREDICTIVE_STORE_FORWARD_DISABLE;
+> +		break;
+> +	default:
+> +		mode = PREDICTIVE_STORE_FORWARD_NONE;
+> +		break;
+> +	}
+> +
+> +	x86_spec_ctrl_mask |= SPEC_CTRL_PSFD;
+
+A comment would help for this last line.  I assume it's virt-related.
+
+> +
+> +	if (ssb_mode == SPEC_STORE_BYPASS_DISABLE)
+> +		mode = PREDICTIVE_STORE_FORWARD_DISABLE;
+> +
+> +	if (mode == PREDICTIVE_STORE_FORWARD_DISABLE) {
+> +		setup_force_cpu_cap(X86_FEATURE_PSFD);
+> +		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
+> +		wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
+> +	}
+
+The PSF mitigation is (to some extent) dependent on the SSB mitigation,
+since turning off SSB implicitly turns off PSF.  That should be
+reflected properly in sysfs for the prctl/seccomp cases.  Here I'd
+propose adding something like:
+
+	} else if (ssb_mode == SPEC_STORE_BYPASS_PRCTL) {
+		mode = PREDICTIVE_STORE_FORWARD_SSB_PRCTL;
+	} else if (ssb_mode == SPEC_STORE_BYPASS_SECCOMP) {
+		mode = PREDICTIVE_STORE_FORWARD_SSB_SECCOMP;
+	}
+
+And of course you'd need additional strings for those:
+
+	[PREDICTIVE_STORE_FORWARD_SSB_PRCTL]	= "Mitigation: Predictive Store Forward disabled via SSB prctl",
+	[PREDICTIVE_STORE_FORWARD_SSB_SECCOMP]	= "Mitigation: Predictive Store Forward disabled via SSB seccomp",
+
 -- 
-2.25.1
+Josh
 
