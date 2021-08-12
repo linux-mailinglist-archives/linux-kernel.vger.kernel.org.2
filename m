@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBF53E9DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C144D3E9DC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhHLFHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 01:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbhHLFHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:07:50 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A82BC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:07:25 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j9-20020a2581490000b02905897d81c63fso5039065ybm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=tu2iufR9aI/LsGWpANNecIoICf6nuJGttYFfk37Urfg=;
-        b=gDGO2ChgUCHmoQiOTXqkDMN+duj4YxkrJ/UzuL4FTogwGRv3AadGos1imJV/VsqrPt
-         C6vf6hkGnjmL3GVWuhwyh4gpVwx/FranaKpxHrs5tF+lUSBQD6ia4eHmtLY5FAou4Gnw
-         YVYYs2VUdqRTVUBRxx+rmWhnZSmcupoOyVBcuI7uQLQpZUomvt0+nndsPD+2HVyUKE3k
-         itX9sVh8yuORhYy/81vNkmDMVNMX+rMsEzmioXflGzJJHVSjOxdlh1Na06g2bvG5xTtM
-         1comgk7mTRjn/UWZ7FVcAwhwSpzvni+E4ZqS/JG9tuI4BGNjyE6OvY0rCoz9oPgDH4cY
-         6cjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=tu2iufR9aI/LsGWpANNecIoICf6nuJGttYFfk37Urfg=;
-        b=hCWriz/eHEc0wJ+ccsHcsWy6Ey2UAohIC6SGYrCMQZS6UNc45QH7MqOfd+dYV3rxGO
-         AHvweYL5imrGAdDBBuPHZQeNnqdNowZnbEKNgMjcIS5telagENzbHqWNvP8Uol2T3jVs
-         0eZwx9BONZSjeU14CPyoT71KzTjoZXwW93ogPcq193z3QLcw4NMSuHy4+ofRYenfSRHu
-         vYI3ZjGeHssUOzQCx7UkQFTJNmxvmqT8yVNsZb5nkeWpYVBM3zEgveI6UpC7a1Ls6Nik
-         VUlmYinx2xKm4k/8f0d4c5MjQQ8rmStSeLZWDM+rpLVyIm9Gm5J0lhWgBf3fKPmuTfIc
-         E5bw==
-X-Gm-Message-State: AOAM532bHO9Coagi62FFplpbcA2f6pAzdK+Bgy7dX0luv+HYlwOm8a5l
-        WOiHO7pFKvwho0zoN216PaBohxfDHIU=
-X-Google-Smtp-Source: ABdhPJwo4nyZkn+Get9j6PRPE86bGaP9wEO/nOLVaL9BNhIMi0FbZA4hRJYqpD6njTHuRw69HmoA4NIxrAI=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f150:c3bd:5e7f:59bf])
- (user=seanjc job=sendgmr) by 2002:a25:ba05:: with SMTP id t5mr2017139ybg.120.1628744844668;
- Wed, 11 Aug 2021 22:07:24 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 11 Aug 2021 22:07:17 -0700
-In-Reply-To: <20210812050717.3176478-1-seanjc@google.com>
-Message-Id: <20210812050717.3176478-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210812050717.3176478-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH 2/2] KVM: x86/mmu: Don't step down in the TDP iterator when
- zapping all SPTEs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233923AbhHLFJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 01:09:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:37624 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhHLFJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 01:09:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC32C1042;
+        Wed, 11 Aug 2021 22:09:13 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.68.17])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4FF073F40C;
+        Wed, 11 Aug 2021 22:09:10 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 0/5] KVM: arm64: General cleanups
+Date:   Thu, 12 Aug 2021 10:39:49 +0530
+Message-Id: <1628744994-16623-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the min_level for the TDP iterator at the root level when zapping all
-SPTEs so that the _iterator_ only processes top-level SPTEs.  Zapping a
-non-leaf SPTE will recursively zap all its children, thus there is no
-need for the iterator to attempt to step down.  This avoids rereading all
-the top-level SPTEs after they are zapped by causing try_step_down() to
-short-circuit.
+This series contains mostly unrelated general cleanups. This series applies
+on v5.14-rc5 and has been boot tested with different page sized guests.
 
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Changes in V2:
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 6566f70a31c1..aec069c18d82 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -751,6 +751,16 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- {
- 	bool zap_all = (end == ZAP_ALL_END);
- 	struct tdp_iter iter;
-+	int min_level;
-+
-+	/*
-+	 * No need to step down in the iterator when zapping all SPTEs, zapping
-+	 * the top-level non-leaf SPTEs will recurse on all their children.
-+	 */
-+	if (zap_all)
-+		min_level = root->role.level;
-+	else
-+		min_level = PG_LEVEL_4K;
- 
- 	/*
- 	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
-@@ -763,7 +773,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 
- 	rcu_read_lock();
- 
--	tdp_root_for_each_pte(iter, root, start, end) {
-+	for_each_tdp_pte_min_level(iter, root->spt, root->role.level,
-+				   min_level, start, end) {
- retry:
- 		if (can_yield &&
- 		    tdp_mmu_iter_cond_resched(kvm, &iter, flush, shared)) {
+- Dropped the first patch regarding PAGE_[SHIFT|SIZE] per Marc
+- Added remaining ID_AA64MMFR0_PARANGE_ macros and ARM64_MIN_PARANGE_BITS per Marc
+- Dropped memory and cycle reference from commit message in [PATCH 3/5]
+- Changed return value as u32 in kvm_target_cpu() per Will
+
+Changes in V1:
+
+https://lore.kernel.org/lkml/1628578961-29097-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (5):
+  arm64/mm: Add remaining ID_AA64MMFR0_PARANGE_ macros
+  KVM: arm64: Use ARM64_MIN_PARANGE_BITS as the minimum supported IPA
+  KVM: arm64: Drop init_common_resources()
+  KVM: arm64: Drop check_kvm_target_cpu() based percpu probe
+  KVM: arm64: Drop unused REQUIRES_VIRT
+
+ arch/arm64/include/asm/cpufeature.h | 14 +++++++-------
+ arch/arm64/include/asm/kvm_host.h   |  2 +-
+ arch/arm64/include/asm/sysreg.h     |  7 +++++++
+ arch/arm64/kvm/arm.c                | 27 ++-------------------------
+ arch/arm64/kvm/guest.c              |  4 ++--
+ arch/arm64/kvm/reset.c              |  2 +-
+ 6 files changed, 20 insertions(+), 36 deletions(-)
+
 -- 
-2.33.0.rc1.237.g0d66db33f3-goog
+2.20.1
 
