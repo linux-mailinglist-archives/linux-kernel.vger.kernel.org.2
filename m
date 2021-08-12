@@ -2,132 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08F03EA407
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EA83EA40C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237014AbhHLLuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:50:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:42310 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236091AbhHLLux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:50:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A86F71042;
-        Thu, 12 Aug 2021 04:50:27 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C16943F718;
-        Thu, 12 Aug 2021 04:50:26 -0700 (PDT)
-Subject: Re: [PATCH] irqchip/gic-v3: Fix priority comparison when non-secure
- priorities are used
-To:     Marc Zyngier <maz@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210811171505.1502090-1-wenst@chromium.org>
- <87fsvfal4n.wl-maz@kernel.org>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <79eabae1-e4a3-7a12-7aa0-3680569584e5@arm.com>
-Date:   Thu, 12 Aug 2021 12:51:34 +0100
+        id S236113AbhHLLwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234436AbhHLLwH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:52:07 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212D6C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:51:42 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id q11so657396ljp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:51:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rlpdpuyXj6YcNBgZUFrzgm9MUoy7FdsTwlVLZC96hnM=;
+        b=e8lal5KGHnYw27Nzezea4mPqS8PsL8syAdJLEzc7WSQamFLN7O+qo/grxGSjgYJDH2
+         43qh6N1fpxrYO92R0/tCL6V2jPa9PdLFphVpSKVji3ntNZKRznd467OTrpJQGmtyjINI
+         KxRX223o+nHAkva7iO3g3el91+XJk+PCWWzODif/QK4BrX9fi0oUPgNfAP2iHdfC7KSc
+         Jpei27UAMcx1/2l4PPTbuNjCBS7h8RsmIi6PdfV4VbGJNOBo5hUVjvZ/81lG5KIqWzLM
+         Jt7P/uO1qkHUK0q948a9AUrFzONbqXm+zqxfRwRVBnv8L2PJk8Yh0178bYNfiaG8WVlX
+         s7hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rlpdpuyXj6YcNBgZUFrzgm9MUoy7FdsTwlVLZC96hnM=;
+        b=cVYQugQabcg+Dcg2xHKKb+f0jerhpyC3znR3RIzJ1CtLY93KsguVSnSwHkiiFtuV3z
+         3kKWm1tRw18a88BD5SLx0M6oYcTPVYHEh43cvmhIKnFIyP0z8/4+sOML7RMfiBflJzxi
+         6asxhqG4QRw3CZOIf/TK15qR+kSkicofbY8yNYJB+MnG1wyM7xmXI8arwq9xHxueIPQO
+         oCtRGRoJUVuq5EIRu2jym9eizGKHVH95jvF45CIIapktnBSgw/pZcqq2WKYz7PNEqRDW
+         7BUvlFYCezeOTJHJkbRdlJo9LpieWwWc+HOCp8n2dKv7MrxhBjOKQy4N/vJV6vSCgXUL
+         eL7A==
+X-Gm-Message-State: AOAM5306UvxfnPY5XHPqnoinUSFmpDZvBs6K4pq9JoN7Ko3QYHNO6sd2
+        ukT/0TpDniTim1kyp7ertTt1mw==
+X-Google-Smtp-Source: ABdhPJzql9g5fBF4mq+NLEY566G+mWwLgg8dtZ4uSst93znXBx6EANp13aunHuiohly4Q6dSPuiZHQ==
+X-Received: by 2002:a2e:bc19:: with SMTP id b25mr2634281ljf.374.1628769100450;
+        Thu, 12 Aug 2021 04:51:40 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id n18sm239038lft.267.2021.08.12.04.51.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 04:51:40 -0700 (PDT)
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk>
+ <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
+ <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
+ <20210714164710.GC2719790@robh.at.kernel.org>
+ <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
+ <YRKjQJc0yiQXFqCD@builder.lan>
+ <CAPDyKFo+O34rvP7gbsC+ktd-p5QB9QAsbb+QEkWbiVqszChZJA@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <a053aef6-5f15-7b7c-7991-a4e74fb714ed@linaro.org>
+Date:   Thu, 12 Aug 2021 14:51:39 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <87fsvfal4n.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAPDyKFo+O34rvP7gbsC+ktd-p5QB9QAsbb+QEkWbiVqszChZJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-After re-familiarizing myself with the spec, it starting to look to me like indeed
-there's something not quite right (read as: totally broken) with my patch.
-
-Arm IHI 0069F, the pseudocode for reading ICC_RPR_EL1 (page 11-797), says that the
-priority returned is unchanged if SCTLR_EL3.FIQ == 0. This means that the
-ICC_RPR_EL1 read will return the secure view (the value as it is stored by the
-GIC) of the priority, so for pseudo-nmis it will return (GICD_INT_NMI_PRI >> 1) |
-0x80, which definitely != GICD_INT_NMI_PRI. This is further confirmed by this
-statement on page 4-67:
-
-"When GICD_CTLR.DS == 0, [..] For Non-secure access to ICC_PMR_EL1 and ICC_RPR_EL1
-when SCR_EL3.FIQ == 0:
-The Secure, unshifted view applies."
-
-I don't know how I missed that during testing.
-
-Did a quick test on the model with PMU NMIs (GICD_CTRL.DS = 0, SCTLR_EL2.FIQ = 0),
-gic_handle_nmi() was not being called at all, but when I changed the comparison to
-gic_read_rpr() == ((GICD_INT_NMI_PRI >> 1) | 0x80), NMIs were being correctly
-handled again.
-
-Will try to run some more tests on real hardware and see if I can confirm this.
-
-Thanks,
-
-Alex
-
-On 8/11/21 7:31 PM, Marc Zyngier wrote:
-> + Alex, who introduced this.
->
-> On Wed, 11 Aug 2021 18:15:05 +0100,
-> Chen-Yu Tsai <wenst@chromium.org> wrote:
->> When non-secure priorities are used, compared to the raw priority set,
->> the value read back from RPR is also right-shifted by one and the
->> highest bit set.
+On 12/08/2021 12:48, Ulf Hansson wrote:
+> On Tue, 10 Aug 2021 at 18:03, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
 >>
->> Add a macro to do the modifications to the raw priority when doing the
->> comparison against the RPR value. This corrects the pseudo-NMI behavior
->> when non-secure priorities in the GIC are used. Tested on 5.10 with
->> the "IPI as pseudo-NMI" series [1] applied on MT8195.
+>> On Tue 10 Aug 06:55 CDT 2021, Ulf Hansson wrote:
 >>
->> [1] https://lore.kernel.org/linux-arm-kernel/1604317487-14543-1-git-send-email-sumit.garg@linaro.org/
+>>> On Wed, 14 Jul 2021 at 18:47, Rob Herring <robh@kernel.org> wrote:
+>>>>
+>>>> On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>>>>>>
+>>>>>> - Peter (the email was bouncing)
+>>>>>
+>>>>> + Peter's kernel.org address
+>>>>>
+>>>>>>
+>>>>>> On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+>>>>>>>
+>>>>>>> On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+>>>>>>>> On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+>>>>>>>
+>>>>>>>>> Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+>>>>>>>>> being controlled through the UART and WiFi being present on PCIe
+>>>>>>>>> bus. Both blocks share common power sources. Add device driver handling
+>>>>>>>>> power sequencing of QCA6390/1.
+>>>>>>>
+>>>>>>>> Power sequencing of discoverable buses have been discussed several
+>>>>>>>> times before at LKML. The last attempt [1] I am aware of, was in 2017
+>>>>>>>> from Peter Chen. I don't think there is a common solution, yet.
+>>>>>>>
+>>>>>>> This feels a bit different to the power sequencing problem - it's not
+>>>>>>> exposing the individual inputs to the device but rather is a block that
+>>>>>>> manages everything but needs a bit of a kick to get things going (I'd
+>>>>>>> guess that with ACPI it'd be triggered via AML).  It's in the same space
+>>>>>>> but it's not quite the same issue I think, something that can handle
+>>>>>>> control of the individual resources might still struggle with this.
+>>>>>>
+>>>>>> Well, to me it looks very similar to those resouses we could manage
+>>>>>> with the mmc pwrseq, for SDIO. It's also typically the same kind of
+>>>>>> combo-chips that moved from supporting SDIO to PCIe, for improved
+>>>>>> performance I guess. More importantly, the same constraint to
+>>>>>> pre-power on the device is needed to allow it to be discovered/probed.
+>>>>>
+>>>>> In our case we'd definitely use pwrseq for PCIe bus and we can also
+>>>>> benefit from using pwrseq for serdev and for platform busses also (for
+>>>>> the same story of WiFi+BT chips).
+>>>>>
+>>>>> I can take a look at rewriting pwrseq code to also handle the PCIe
+>>>>> bus. Rewriting it to be a generic lib seems like an easy task,
+>>>>> plugging it into PCIe code would be more fun.
+>>>>>
+>>>>> Platform and serdev... Definitely even more fun.
+>>>>
+>>>> I don't want to see pwrseq (the binding) expanded to other buses. If
+>>>> that was the answer, we wouldn't be having this discussion. It was a
+>>>> mistake for MMC IMO.
+>>>
+>>> Let's make sure we get your point correctly. I think we have discussed
+>>> this in the past, but let's refresh our memories.
+>>>
+>>> If I recall correctly, you are against the mmc pwrseq DT bindings
+>>> because we are using a separate pwrseq OF node, that we point to via a
+>>> "mmc-pwrseq" property that contains a phandle from the mmc controller
+>>> device node. Is that correct?
+>>>
+>>> If we would have encoded the power sequence specific properties, from
+>>> within a child node for the mmc controller node, that would have been
+>>> okay for you, right?
+>>>
 >>
->> Fixes: 336780590990 ("irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0")
->> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->> ---
->>  drivers/irqchip/irq-gic-v3.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
+>> In Dmitry's case, we have an external chip with that needs to be powered
+>> on per a specific sequence, at which point the WiFi driver on PCIe and
+>> BT driver on serdev will be able to communicate with the device.
+> 
+> Thanks for sharing more details.
+> 
+> So, not only do we have a discoverable device that needs to be powered
+> on in a device specific way before probing, but in fact we have two
+> consumers of that "combo chip", one (PCIe) for Wifi and one (serdev)
+> for Bluetooth.
+> 
 >>
->> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
->> index e0f4debe64e1..e7a0b55413db 100644
->> --- a/drivers/irqchip/irq-gic-v3.c
->> +++ b/drivers/irqchip/irq-gic-v3.c
->> @@ -100,6 +100,15 @@ EXPORT_SYMBOL(gic_pmr_sync);
->>  DEFINE_STATIC_KEY_FALSE(gic_nonsecure_priorities);
->>  EXPORT_SYMBOL(gic_nonsecure_priorities);
->>  
->> +#define GICD_INT_RPR_PRI(priority)					\
->> +	({								\
->> +		u32 __priority = (priority);				\
->> +		if (static_branch_unlikely(&gic_nonsecure_priorities))	\
->> +			__priority = 0x80 | (__priority >> 1);		\
->> +									\
->> +		__priority;						\
-> This doesn't reflect what the pseudocode says of a read of ICC_RPR_EL1
-> AFAICS. When the priority is activated, it is indeed shifted. But a
-> read of RPR does appear to shift things back (and you loose the lowest
-> bit in the process). Please see 'aarch64/support/ICC_RPR_EL1' in the
-> architecture spec.
->
-> Can you confirm that SCR_EL3.FIQ is set on your system?
->
-> Thanks,
->
-> 	M.
->
->> +	})
->> +
->>  /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
->>  static refcount_t *ppi_nmi_refs;
->>  
->> @@ -687,7 +696,7 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
->>  		return;
->>  
->>  	if (gic_supports_nmi() &&
->> -	    unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
->> +	    unlikely(gic_read_rpr() == GICD_INT_RPR_PRI(GICD_INT_NMI_PRI))) {
->>  		gic_handle_nmi(irqnr, regs);
->>  		return;
->>  	}
->
+>> The extended case of this is where we have an SDX55 modem soldered onto
+>> the pcb next to the SoC, in which case the power sequencing is even more
+>> complex and additionally there are incoming gpios used to detect things
+>> such as the firmware of the modem has crashed and Linux needs to toggle
+>> power and rescan the PCIe bus.
+> 
+> That sounds very similar to what we manage for the SDIO bus already.
+> 
+> We have a mmc pwrseq node to describe what resources that are needed
+> to power on/off the external chip. The driver for the functional
+> device (Wifi chip for example) may then call SDIO APIs provided by the
+> mmc core to power on/off the device, in case some kind of reset would
+> be needed.
+> 
+> Additionally, we have a child node below the mmc controller node,
+> allowing us to describe device specific things for the SDIO functional
+> device, like an out-of-band IRQ line for example.
+> 
+> Overall, this seems to work fine, even if the DT bindings may be questionable.
+> 
+>>
+>> In both of these cases it seems quite reasonable to represent that
+>> external chip (and it's power needs) as a separate DT node. But we need
+>> a way to link the functional devices to that thing.
+> 
+> Don't get me wrong, I am not suggesting we should re-use the
+> mmc-pwrseq DT bindings - but just trying to share our experience
+> around them.
+> 
+> In the cases you describe, it certainly sounds like we need some kind
+> of minimal description in DT for these functional external devices.
+> For GPIO pins, for example.
+> 
+> How to describe this in DT is one thing, let's see if Rob can help to
+> point us in some direction of what could make sense.
+> 
+> When it comes to implementing a library/interface to manage these
+> functional devices, I guess we just have to continue to explore
+> various options. Perhaps just start simple with another subsystem,
+> like PCIe and see where this brings us.
+
+Thank you for your opinion and suggestions. In fact I'm probably going 
+to start working on non-discoverable busses first (by chaning support 
+for few other BT+WiFi Qualcomm chips), later shifting the attention to 
+the PCIe part. While this may seem like a longer path, I'd like to 
+narrow pwrseq subsystem first, before going into PCIe details.
+
+
+-- 
+With best wishes
+Dmitry
