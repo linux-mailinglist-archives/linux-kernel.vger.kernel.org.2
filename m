@@ -2,61 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD91A3EABDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1003EABE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbhHLUgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:36:35 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:52004 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhHLUge (ORCPT
+        id S234882AbhHLUkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:40:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60886 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhHLUkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:36:34 -0400
-Received: by mail-il1-f197.google.com with SMTP id g9-20020a92cda90000b029020cc3319a86so3811703ild.18
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:36:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=sBYzu++XtTyiMNxgm0IaBQVBwqzw9O6kfSOlaQ8ZUzI=;
-        b=ZV2fZw/kZuK5tmV0TLy2lq0joqKBuuE/OkEtKBqPl+z1CqWQBEgxQ3pIQi2bwH/IoG
-         Ttq4joGNpVjjS8uCRQwWhsHO6Nt7bqCY38JWvlpSbLLrsYh8gaQzTL3KsYukEEV1/3eY
-         rsonSxfDN6m3Eh70Ws+s55sXwOj3upQV+ccb3dbjjPYK/vJQE+STyw7x+Hhc63qOCH8j
-         m0k6UJSOxX5OzbPxlhIgWdK23s7mdiJWR0Mkje8Ecn9CUOk2PvwLdJ/stJhiRooGbA5J
-         n46FGpFmnkNbz76HPzMRS99GkoaNaahZNAOqEU1eJGKHtH0l3/oKrUTLN9y3EurufE1F
-         oCPQ==
-X-Gm-Message-State: AOAM530OM5yYPp0Wjpom5oPQhWoh+Z6R3uH//QhUVlMpQZI0YFBdJqbp
-        iK2BP7c8Tqg7JOuwXuRgMqcgsWDTA1UzoNlCXJaSha2J2hUG
-X-Google-Smtp-Source: ABdhPJw3XIRV+yx+RFhY33oFm2MfAtk/nwcxE0vdHJIYzGW+3k2IatJ4phFZ9UIf7JXcgVp/MEmL09rGjcQb9UcVNC5Ho6FryfrD
+        Thu, 12 Aug 2021 16:40:36 -0400
+Date:   Thu, 12 Aug 2021 20:40:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628800810;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mLxOOJTgmBsH4ceEt7U7qAgU0ffA70LQGqLsn5SImwI=;
+        b=hUTk2+7qjuIn3bCp9fpDndmkCWduahGUgjgPItz+Il3y1G8VPmszMFheCnxKWKuRg9TDB7
+        Z4JF4A7krWS+jhe0em2HriokqR1H2SD3Bbp0SMtmHI7fgTY0Ek4XyXzz2d/4yIOxq2Mcl3
+        rkdXtsth3YrhcgR1ilvSsC3a3AUT46wEMz0mG9TImoKV2YUKRjSY6qagPdv1F262HiL5x8
+        wu3KnbOjTlEkVtOXxDMXEf5xB1TFjJ0nBkyLJr9RKUThLd6TuBgW9LFOQ9TApYMciQUrS9
+        f0NblH0T+EpxtjoT2y/NSFRsZCBUpV39BywroolTnKKPUOr5DlsMZFpgDRGRYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628800810;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mLxOOJTgmBsH4ceEt7U7qAgU0ffA70LQGqLsn5SImwI=;
+        b=3NhhrqElTBt9h4zjYrc54RA6lN4G/wbde4CzX+CpmXhlflIqcGnjIInyyM0qi++6flthaR
+        EnzkKK/to6IHmaAg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] hrtimer: Unbreak hrtimer_force_reprogram()
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <8735recskh.ffs@tglx>
+References: <8735recskh.ffs@tglx>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ba02:: with SMTP id k2mr4427251iof.164.1628800568256;
- Thu, 12 Aug 2021 13:36:08 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 13:36:08 -0700
-In-Reply-To: <6f7d4c1d-f923-3ab1-c525-45316b973c72@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047f3b805c962affb@google.com>
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in iov_iter_revert
-From:   syzbot <syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162880080883.395.18131494384243612114.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following commit has been merged into the timers/core branch of tip:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Commit-ID:     f80e21489590c00f46226d5802d900e6f66e5633
+Gitweb:        https://git.kernel.org/tip/f80e21489590c00f46226d5802d900e6f66e5633
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 12 Aug 2021 22:32:30 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 12 Aug 2021 22:34:40 +02:00
 
-Reported-and-tested-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+hrtimer: Unbreak hrtimer_force_reprogram()
 
-Tested on:
+Since the recent consoliation of reprogramming functions,
+hrtimer_force_reprogram() is affected by a check whether the new expiry
+time is past the current expiry time.
 
-commit:         bff2c168 io_uring: don't retry with truncated iter
-git tree:       https://github.com/isilence/linux.git truncate
-kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=9671693590ef5aad8953
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+This breaks the NOHZ logic as that relies on the fact that the tick hrtimer
+is moved into the future. That means cpu_base->expires_next becomes stale
+and subsequent reprogramming attempts fail as well until the situation is
+cleaned up by an hrtimer interrupts.
 
-Note: testing is done by a robot and is best-effort only.
+For some yet unknown reason this leads to a complete stall, so for now
+partially revert the offending commit to a known working state. The root
+cause for the stall is still investigated and will be fixed in a subsequent
+commit.
+
+Fixes: b14bca97c9f5 ("hrtimer: Consolidate reprogramming code")
+Reported-by: Mike Galbraith <efault@gmx.de>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Mike Galbraith <efault@gmx.de>
+Link: https://lore.kernel.org/r/8735recskh.ffs@tglx
+
+---
+ kernel/time/hrtimer.c | 40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 33b00e2..0ea8702 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -652,24 +652,10 @@ static inline int hrtimer_hres_active(void)
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
+ }
+ 
+-static void
+-__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
+-		    struct hrtimer *next_timer, ktime_t expires_next)
++static void __hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base,
++				struct hrtimer *next_timer,
++				ktime_t expires_next)
+ {
+-	/*
+-	 * If the hrtimer interrupt is running, then it will reevaluate the
+-	 * clock bases and reprogram the clock event device.
+-	 */
+-	if (cpu_base->in_hrtirq)
+-		return;
+-
+-	if (expires_next > cpu_base->expires_next)
+-		return;
+-
+-	if (skip_equal && expires_next == cpu_base->expires_next)
+-		return;
+-
+-	cpu_base->next_timer = next_timer;
+ 	cpu_base->expires_next = expires_next;
+ 
+ 	/*
+@@ -707,8 +693,10 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ 
+ 	expires_next = hrtimer_update_next_event(cpu_base);
+ 
+-	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
+-			    expires_next);
++	if (skip_equal && expires_next == cpu_base->expires_next)
++		return;
++
++	__hrtimer_reprogram(cpu_base, cpu_base->next_timer, expires_next);
+ }
+ 
+ /* High resolution timer related functions */
+@@ -863,7 +851,19 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	if (base->cpu_base != cpu_base)
+ 		return;
+ 
+-	__hrtimer_reprogram(cpu_base, true, timer, expires);
++	if (expires >= cpu_base->expires_next)
++		return;
++
++	/*
++	 * If the hrtimer interrupt is running, then it will reevaluate the
++	 * clock bases and reprogram the clock event device.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
++
++	cpu_base->next_timer = timer;
++
++	__hrtimer_reprogram(cpu_base, timer, expires);
+ }
+ 
+ static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
