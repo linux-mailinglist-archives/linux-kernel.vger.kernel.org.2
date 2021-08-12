@@ -2,162 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABA13EAB22
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7433EAB27
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhHLTjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbhHLTjj (ORCPT
+        id S235258AbhHLTmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:42:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59761 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233823AbhHLTms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:39:39 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63865C061756;
-        Thu, 12 Aug 2021 12:39:13 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x10so3556368wrt.8;
-        Thu, 12 Aug 2021 12:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f1OrkRg0MF6p8RbuM8DdPW5HI5cmNqC1aOfIeyX1J90=;
-        b=UFBI1TqkKQ4TymtNrwUPyNvNb3z5McUTExypR9qoMlOeauluqGRpCiufV2xKSEroXR
-         Ol2Tc+YNv1gVEqEqsJ83BLwLLN/8XNCMFIqlyXOW1hM9/LqKyM9FRQB/1egy7Gj0w9RT
-         Tkx/uTJDTB3HjLUsq0X/s/5A5raAO2fUu6Bi34z0DofxLkqdpFw0WQt7rXTyDNItCf4h
-         svVOHmCJShL2MB8BBJY5ULGuIMvGmY67pEZiwzYCyYxPpcpAUNDbh3pptQ1pOMKLDexB
-         z3uNjyyXeVd8Jcb7GvH5jnEkBkl0cQm7k8qoFnyTgGMXiM51wamMSmfuMKfIbCaxYXv4
-         Lelw==
+        Thu, 12 Aug 2021 15:42:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628797342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VMd9t1Nb4FeOHDdu/UYPvY9zAU3dF/VqguEioUUUfOM=;
+        b=JLaypGyPe5+YT9LdANXEN8FKIAP7ed8LjF/ehXuRtuWj6tG/XFxchMiY0ODiPAFgqGNXYR
+        zb8rNjZtXdjLeu6YRaXoVNzQMmRA69iNYCLV/IJBmhytLXyY7fSbcPORJnJtARADgkuBxS
+        lkniG74Dds2Omxl8IKKVKlYcvI2HzNQ=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-vw7AvYlPOzOZggEaRlgA6w-1; Thu, 12 Aug 2021 15:42:21 -0400
+X-MC-Unique: vw7AvYlPOzOZggEaRlgA6w-1
+Received: by mail-qk1-f200.google.com with SMTP id p14-20020a05620a22eeb02903b94aaa0909so4293753qki.15
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:42:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f1OrkRg0MF6p8RbuM8DdPW5HI5cmNqC1aOfIeyX1J90=;
-        b=WIVp0MpI6WyqobJKPmvyZNSaUp9uIBGl2z7fAe68RfeXF1YclQsew7ON0SSVJ8CrkE
-         BiY+3tojaHZpX91d0sXZgLo+ogpa68TbQ0jnFf0vNZrdf0H5ozn2F154LPSjpbtgo085
-         dcINVDNF3dQaCHfX7uwlBtwbKr+O0HOtW3lgifZxfw//t3AUoPxzuiyf90pVhX6fkdIH
-         8Mhvi28G925R0MbLXCeWQEi2sawVpxEi8x42c7jCYOsxENniMqi1Gr38W674jLMCd7EQ
-         nofdprN7smbP4fQhrYrH2TQz2/UIf7z5cKXzj96op3744ILJyiU+YZRmlLikaCIvKnVN
-         3IBQ==
-X-Gm-Message-State: AOAM5314HUMzkVJ33tny4+MM0/Vr3gqryO1GkL+1m7R6hYcYVkPWRuTV
-        f7uwS/shrSbnIchyer7ZGq+wxWm2ixEaDw==
-X-Google-Smtp-Source: ABdhPJy3rGMRziZwzbsIQERT/xkaEYLK8vRvyhMT8U68I3LFXoFPmjS2nNsvN1m1Bn5mDY4TvKZpPQ==
-X-Received: by 2002:a5d:4bca:: with SMTP id l10mr4706634wrt.187.1628797151800;
-        Thu, 12 Aug 2021 12:39:11 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f10:c200:5c12:d692:d13:24d5? (p200300ea8f10c2005c12d6920d1324d5.dip0.t-ipconnect.de. [2003:ea:8f10:c200:5c12:d692:d13:24d5])
-        by smtp.googlemail.com with ESMTPSA id i9sm4901658wre.36.2021.08.12.12.39.08
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VMd9t1Nb4FeOHDdu/UYPvY9zAU3dF/VqguEioUUUfOM=;
+        b=R1pdZ3U/IyvvRBLJFB3RbYgb9s/kMd8Mt70ANb517q4HY1yVbFyDplaRNl9xMeHAG7
+         t256V72wMBDTJrs7/2gP1biSs2kado2ZhmwtRBGGeCXouPq7QwohnNdXn3LNg4LBnOIa
+         1kgyw0wEo6vCOHXuon21YefjClx8h5fgoCS6Nq8GIaYfcN9kP2hGcIGxqIodmSJcRyWl
+         Z2sxCvE0yPssQ5lY4tGC2U1ck++M9076TADtL0WsgvinONR/FXjs5J5V9pPAj0XLls83
+         ij6ZiGpcFeANfLOOlRaw2sSh7BLSAojQXy6iD795iVBeTMnMijPaTYY+MJ86J0knRYXv
+         bYJw==
+X-Gm-Message-State: AOAM533H5UFNNclWYq6+UefrBBnOBm0WO8iYoUnQfr6F4BGVP7ujtT7f
+        qGfx4cbAl/hKhLzRynINBpUIpsDaruhga+7EcR0fLNiH4t9o+eX3hPmymyCPRwVz2xEbFc7Jwkd
+        csTUUW5N/Gvx7tA8UniUYR3GZ
+X-Received: by 2002:ac8:5503:: with SMTP id j3mr5320090qtq.53.1628797340496;
+        Thu, 12 Aug 2021 12:42:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUUvZMpL7pSCm7q5XzMoYt2z1wevJP9H/EwWfdEYX35IIBypQ1jgNWDZP3M5c9bm3yA3odfA==
+X-Received: by 2002:ac8:5503:: with SMTP id j3mr5320084qtq.53.1628797340331;
+        Thu, 12 Aug 2021 12:42:20 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id o10sm1532330qtv.31.2021.08.12.12.42.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 12:39:11 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] r8169: Enable ASPM for selected NICs
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, nic_swsd@realtek.com
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
- <20210812155341.817031-2-kai.heng.feng@canonical.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
-Date:   Thu, 12 Aug 2021 21:38:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 12 Aug 2021 12:42:19 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH -tip] locking: Move CONFIG_LOCK_EVENT_COUNTS into Kernel
+ hacking section
+To:     Davidlohr Bueso <dave@stgolabs.net>, peterz@infradead.org,
+        mingo@redhat.com
+Cc:     will@kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20210330020636.112594-1-dave@stgolabs.net>
+ <20210812190526.mfrz5ifdodbncz3w@offworld>
+Message-ID: <de40081c-82c8-e22a-4b24-f9fd91e3921e@redhat.com>
+Date:   Thu, 12 Aug 2021 15:42:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210812155341.817031-2-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210812190526.mfrz5ifdodbncz3w@offworld>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.2021 17:53, Kai-Heng Feng wrote:
-> The latest vendor driver enables ASPM for more recent r8168 NICs, do the
-> same here to match the behavior.
-> 
-> In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
-> vendor driver, also match that.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
->  - No change
-> 
->  drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
->  1 file changed, 26 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index 7ab2e841dc69..caa29e72a21a 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -623,7 +623,7 @@ struct rtl8169_private {
->  	} wk;
->  
->  	unsigned supports_gmii:1;
-> -	unsigned aspm_manageable:1;
-> +	unsigned aspm_supported:1;
->  	unsigned aspm_enabled:1;
->  	struct delayed_work aspm_toggle;
->  	struct mutex aspm_mutex;
-> @@ -2667,8 +2667,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
->  
->  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
->  {
-> +	if (!tp->aspm_supported)
-> +		return;
-> +
->  	/* Don't enable ASPM in the chip if OS can't control ASPM */
-> -	if (enable && tp->aspm_manageable) {
-> +	if (enable) {
->  		RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
->  		RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
->  	} else {
-> @@ -5284,6 +5287,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
->  	rtl_rar_set(tp, mac_addr);
->  }
->  
-> +static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
-> +{
-> +	switch (tp->mac_version) {
-> +	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
-> +	case RTL_GIGA_MAC_VER_38:
-> +	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
-> +	case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
-> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
+On 8/12/21 3:05 PM, Davidlohr Bueso wrote:
+> Ping?
+>
+> On Mon, 29 Mar 2021, Davidlohr Bueso wrote:
+>
+>> It's a lot more intuitive to have it in the locking section of the 
+>> kernel
+>> hacking part rather than under "General architecture-dependent options".
+>>
+>> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+>> ---
+>> arch/Kconfig      | 9 ---------
+>> lib/Kconfig.debug | 9 +++++++++
+>> 2 files changed, 9 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/Kconfig b/arch/Kconfig
+>> index ecfd3520b676..d6f9aeaaf9f2 100644
+>> --- a/arch/Kconfig
+>> +++ b/arch/Kconfig
+>> @@ -1113,15 +1113,6 @@ config HAVE_ARCH_PREL32_RELOCATIONS
+>> config ARCH_USE_MEMREMAP_PROT
+>>     bool
+>>
+>> -config LOCK_EVENT_COUNTS
+>> -    bool "Locking event counts collection"
+>> -    depends on DEBUG_FS
+>> -    help
+>> -      Enable light-weight counting of various locking related events
+>> -      in the system with minimal performance impact. This reduces
+>> -      the chance of application behavior change because of timing
+>> -      differences. The counts are reported via debugfs.
+>> -
+>> # Select if the architecture has support for applying RELR relocations.
+>> config ARCH_HAS_RELR
+>>     bool
+>> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+>> index 2779c29d9981..76639ff5998c 100644
+>> --- a/lib/Kconfig.debug
+>> +++ b/lib/Kconfig.debug
+>> @@ -1401,6 +1401,15 @@ config DEBUG_LOCKING_API_SELFTESTS
+>>       The following locking APIs are covered: spinlocks, rwlocks,
+>>       mutexes and rwsems.
+>>
+>> +config LOCK_EVENT_COUNTS
+>> +    bool "Locking event counts collection"
+>> +    depends on DEBUG_FS
+>> +    help
+>> +      Enable light-weight counting of various locking related events
+>> +      in the system with minimal performance impact. This reduces
+>> +      the chance of application behavior change because of timing
+>> +      differences. The counts are reported via debugfs.
+>> +
+>> config LOCK_TORTURE_TEST
+>>     tristate "torture tests for locking"
+>>     depends on DEBUG_KERNEL
+>> -- 
+>> 2.26.2
+>>
+>
+I have no objection to that.
 
-This shouldn't be needed because ASPM support is announced the
-standard PCI way. Max a blacklist should be needed if there are
-chip versions that announce ASPM support whilst in reality they
-do not support it (or support is completely broken).
-
-> +		return 1;
-> +
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
->  static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->  {
->  	struct rtl8169_private *tp;
-> @@ -5315,12 +5333,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	if (rc)
->  		return rc;
->  
-> -	/* Disable ASPM completely as that cause random device stop working
-> -	 * problems as well as full system hangs for some PCIe devices users.
-> -	 */
-> -	rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> -					  PCIE_LINK_STATE_L1);
-> -	tp->aspm_manageable = !rc;
-> +	if (tp->mac_version == RTL_GIGA_MAC_VER_25)
-> +		pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> +				       PCIE_LINK_STATE_L1 |
-> +				       PCIE_LINK_STATE_CLKPM);
-> +
-> +	tp->aspm_supported = rtl_hw_aspm_supported(tp);
->  
->  	/* enable device (incl. PCI PM wakeup and hotplug setup) */
->  	rc = pcim_enable_device(pdev);
-> 
+Acked-by: Waiman Long <longman@redhat.com>
 
