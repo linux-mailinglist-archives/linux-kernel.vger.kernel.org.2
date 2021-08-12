@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225CF3EA8E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36843EA8E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhHLQ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:58:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58076 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233391AbhHLQ6k (ORCPT
+        id S233781AbhHLQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:58:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59782 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233391AbhHLQ6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:58:40 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9D1E11FD9F;
-        Thu, 12 Aug 2021 16:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628787494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 12 Aug 2021 12:58:53 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628787506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aa2B+tga46PKN+YnXZtm4+f7fweCbtyVtrejO29ygIs=;
-        b=PrsIPiCoyTn+EH25WZxlXVpskbuUzQKl4y2clV9wKDJC4s0OCoCRC5JaGPc9ChywE74Vl1
-        wRBzSrNJ1FpIIe4ZC7zha5DJ2vshpmvUzBnjst5B7hGWDpGLxfvkUD6j1PN+FhsEa930b8
-        ErgD/IDePBnlb7OgsCeLLK8Wq51o7E4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628787494;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=62G4dU5wieVTwuTwkdkYbYBGIKJZ6MMqOVtxRJPIJYw=;
+        b=fIa35NqWRwZjI7/9YAu6i+bf2Akd2/8CnMNsdzDuF4A4n/DlPsj6+8WU40wzMtu7L4o1M+
+        ZOCe4X9y9KXqXm2KVav/ArozL/SN6poJrlN6cCKaYyFCQIFsy1p9d/HnSfE+JaQQbhG6wX
+        9PD/+AWukZUOcKkUgCMXW50Lgr1BAbVtNQXbhQPzfCER/o+hY8y+6s6XHJBmihBHCsFVii
+        4cJkwQC9HjHVJ4QfZklSa87OztsQ/sBbAwFIYhLHc0Z0TfHFG8pyp8ruQEx5Tu7QrixZrZ
+        xLdEOR11A1KwRPpI6xpgt2Aom18Pv9QU96LW/2eGwZWLoRDAGmFDB1Nja0BNvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628787506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aa2B+tga46PKN+YnXZtm4+f7fweCbtyVtrejO29ygIs=;
-        b=kQubslZkiyir3zrCid8HhG5magl+uKtSiQ0N850lAds+/37ElalNvot9YOUIevQbP0mYS7
-        F2XfIVG1vw3LdXCw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 81AAE13AC3;
-        Thu, 12 Aug 2021 16:58:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id xT5VHiZTFWFfCQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:58:14 +0000
-Subject: Re: [PATCH v14 077/138] mm/filemap: Add i_blocks_per_folio()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-78-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <61a6f0a2-5303-b7f6-15aa-fa9caa2fb2d1@suse.cz>
-Date:   Thu, 12 Aug 2021 18:58:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=62G4dU5wieVTwuTwkdkYbYBGIKJZ6MMqOVtxRJPIJYw=;
+        b=s7R+9lBNyhtuoJ6c+4Zic/NWGqEHSgxnVP4wPmmCxGkBnN99vpjEuKqkjDIC728nnyaWUm
+        ePDAUR0VClz/yRCA==
+To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
+In-Reply-To: <e5f39aa65a0d7d72a414556eb0c182bb8dcd1691.camel@gmx.de>
+References: <20210713135158.054424875@linutronix.de>
+ <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
+ <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
+ <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
+ <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
+ <87v94ahemj.ffs@tglx>
+ <e5f39aa65a0d7d72a414556eb0c182bb8dcd1691.camel@gmx.de>
+Date:   Thu, 12 Aug 2021 18:58:26 +0200
+Message-ID: <87pmuiha6l.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-78-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
-> Reimplement i_blocks_per_page() as a wrapper around i_blocks_per_folio().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Thu, Aug 12 2021 at 17:31, Mike Galbraith wrote:
+> On Thu, 2021-08-12 at 17:22 +0200, Thomas Gleixner wrote:
+>> >
+>> > Config attached just in case.
+>>
+>> I rather assume it's a hardware dependency. What kind of machine are you
+>> using?
+>
+> Desktop box is a garden variety MEDION i4790 box with an Nvidia GTX980.
+> Lappy is an HP Spectre 360 i5-6200U w. i915 graphics.  Very mundane.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Hmm, spectre induced timer meltdown? :)
+
+Anyway I found a box which exposes the problem. Investigating...
+
+Thanks,
+
+        tglx
