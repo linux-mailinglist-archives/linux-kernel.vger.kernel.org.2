@@ -2,180 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5503E9B8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B1B3E9B96
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbhHLAUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 20:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230185AbhHLAUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:20:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA8356104F;
-        Thu, 12 Aug 2021 00:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628727606;
-        bh=8WwHn/zMxj39QrM8VdRSIm8zdth6Umf39XRXeWVmE6k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BPdorrsEj599FTpV2LS39F6Tkr7571nFfRknfLNvvlprN33+Mdmtk2FkntqYaOqT9
-         xLaKybLKzih4HlHo05atceeZjxSNlu8GRKunLtv0Vy7MSBt3ZZehXaCqTAYDXKzUBQ
-         Q3TtQ9dv+zW/TQv76lpXgVnEKnszkaB5MW1qUP1EmhTQjA0M2Cibm2POPpniTuIlnB
-         PRPoRAiIrFUblWwJrrZpoPjv9At7Cnqo7JNagMZn5ikS/M/QqSLAUogbQ3YFVF+xbx
-         /3SYgtHKDKew0Ctay6GJfjgMOtbqVniX9ov11YaLOCPp4Kc925XF3m/ssLUqBR/MaL
-         JudwvfnNexlYA==
-Received: by mail-ed1-f44.google.com with SMTP id r19so3279055eds.13;
-        Wed, 11 Aug 2021 17:20:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530QG0gWRd+PZ+lTAVZsVWsZFN8HcMU7c0UoX9e1kKGQ0KB5AMw/
-        Fby6I2cLp32zeBWmZerPwJWnb/jiQ/APlCVEqA==
-X-Google-Smtp-Source: ABdhPJxKHb7wCRP3M/rwctlj0eB86IcbWXjn8UwsLLYmcTXsasU1mLRWPrWTRtopKhZ4g6A4oAdieVECbfuvx3wokHw=
-X-Received: by 2002:aa7:c857:: with SMTP id g23mr2005613edt.219.1628727605357;
- Wed, 11 Aug 2021 17:20:05 -0700 (PDT)
+        id S233060AbhHLAYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 20:24:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46897 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232934AbhHLAYX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 20:24:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628727839; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=S5P1m+2rHcJaZXtc+bwHwQAAyB1CBhwMZ3Rpzh2V//I=;
+ b=wq7zQB5R8L7e++nnv1YGZhBANj51xh+d5wXxODJUgPIOdOwoOcgnT1ALiHstnNg7eM7gi/cm
+ vGazpDbRb0ha576URxuzbeECgBbJTkMZOpGH905VzCQ9s+0DBE3J9XS7mGBaVvdBq/f/nnGf
+ FUGBiHPM7G8lJeMR1onG8Vcuvqs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 61146a1091487ad520867fc6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 00:23:45
+ GMT
+Sender: sbillaka=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 344AEC43460; Thu, 12 Aug 2021 00:23:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbillaka)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20B53C433F1;
+        Thu, 12 Aug 2021 00:23:43 +0000 (UTC)
 MIME-Version: 1.0
-References: <1628646468-29775-1-git-send-email-yongqiang.niu@mediatek.com> <1628646468-29775-2-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1628646468-29775-2-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 12 Aug 2021 08:19:54 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-qigNtPJETHsE8YaVqxctrZ7Y+a31f5eqOVHXPowuucw@mail.gmail.com>
-Message-ID: <CAAOTY_-qigNtPJETHsE8YaVqxctrZ7Y+a31f5eqOVHXPowuucw@mail.gmail.com>
-Subject: Re: [PATCH v4] drm/mediatek: clear pending flag when cmdq packet is done.
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 12 Aug 2021 05:53:43 +0530
+From:   sbillaka@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org
+Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
+In-Reply-To: <YRH0WFvWmemHIHqc@builder.lan>
+References: <20210511041930.592483-1-bjorn.andersson@linaro.org>
+ <20210511041930.592483-2-bjorn.andersson@linaro.org>
+ <7708925ad4d973b4e5f291cdcbdbe406@codeaurora.org>
+ <YRH0WFvWmemHIHqc@builder.lan>
+Message-ID: <04267264ac7904733552d6ca02a6797b@codeaurora.org>
+X-Sender: sbillaka@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On 2021-08-10 09:06, Bjorn Andersson wrote:
+> On Mon 09 Aug 22:15 CDT 2021, sbillaka@codeaurora.org wrote:
+>> On 2021-05-11 09:49, Bjorn Andersson wrote:
+>> > diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c
+> [..]
+>> > +#define DP_PHY_AUX_CFG0				0x0020
+>> > +#define DP_PHY_AUX_CFG1				0x0024
+>> > +#define DP_PHY_AUX_CFG2				0x0028
+>> > +#define DP_PHY_AUX_CFG3				0x002c
+>> > +#define DP_PHY_AUX_CFG4				0x0030
+>> > +#define DP_PHY_AUX_CFG5				0x0034
+>> > +#define DP_PHY_AUX_CFG6				0x0038
+>> > +#define DP_PHY_AUX_CFG7				0x003c
+>> > +#define DP_PHY_AUX_CFG8				0x0040
+>> > +#define DP_PHY_AUX_CFG9				0x0044
+>> 
+>> The DP_PHY_AUX_CFG0 offset for sc8180x eDP phy is 0x0024.
+>> Some of the eDP PHY offset addresses are shifted by 4 address 
+>> locations,
+>> compared to the DP QMP PHY offset addresses for sc8180x.
+>> The DP_PHY_AUX_CFG* offsets for this eDP phy driver are as below:
+>> 
+>> #define DP_PHY_AUX_CFG0                         0x0024
+>> #define DP_PHY_AUX_CFG1                         0x0028
+>> #define DP_PHY_AUX_CFG2                         0x002c
+>> #define DP_PHY_AUX_CFG3                         0x0030
+>> #define DP_PHY_AUX_CFG4                         0x0034
+>> #define DP_PHY_AUX_CFG5                         0x0038
+>> #define DP_PHY_AUX_CFG6                         0x003c
+>> #define DP_PHY_AUX_CFG7                         0x0040
+>> #define DP_PHY_AUX_CFG8                         0x0044
+>> #define DP_PHY_AUX_CFG9                         0x0048
+>> 
+> 
+> I noticed this as well. During development I just used the numbers
+> directly in the code and I must have screwed up as I replaced them with
+> defined - and somehow missed this in the testing before posting.
+> 
+> Sorry about that.
+> 
+> [..]
+>> > +static int qcom_edp_phy_init(struct phy *phy)
+>> > +{
+>> > +	struct qcom_edp *edp = phy_get_drvdata(phy);
+>> > +	int ret;
+>> > +
+>> > +	ret = regulator_bulk_enable(ARRAY_SIZE(edp->supplies), edp->supplies);
+>> > +	if (ret)
+>> > +		return ret;
+>> > +
+>> > +	ret = clk_bulk_prepare_enable(ARRAY_SIZE(edp->clks), edp->clks);
+>> > +	if (ret)
+>> > +		goto out_disable_supplies;
+>> 
+>> I think the number of clk and regulator resources can vary based on
+>> platform.
+>> 
+> 
+> If that's the case we should replace the ARRAY_SIZE() with an integer.
+> But I prefer to wait with that until the number actually is variable.
+> 
+> [..]
+>> > +static int qcom_edp_phy_probe(struct platform_device *pdev)
+>> > +{
+>> > +	struct phy_provider *phy_provider;
+>> > +	struct device *dev = &pdev->dev;
+>> > +	struct qcom_edp *edp;
+>> > +	int ret;
+>> > +
+>> > +	edp = devm_kzalloc(dev, sizeof(*edp), GFP_KERNEL);
+>> > +	if (!edp)
+>> > +		return -ENOMEM;
+>> > +
+>> > +	edp->dev = dev;
+>> > +
+>> > +	edp->edp = devm_platform_ioremap_resource(pdev, 0);
+>> > +	if (IS_ERR(edp->edp))
+>> > +		return PTR_ERR(edp->edp);
+>> > +
+>> > +	edp->tx0 = devm_platform_ioremap_resource(pdev, 1);
+>> > +	if (IS_ERR(edp->tx0))
+>> > +		return PTR_ERR(edp->tx0);
+>> > +
+>> > +	edp->tx1 = devm_platform_ioremap_resource(pdev, 2);
+>> > +	if (IS_ERR(edp->tx1))
+>> > +		return PTR_ERR(edp->tx1);
+>> > +
+>> > +	edp->pll = devm_platform_ioremap_resource(pdev, 3);
+>> > +	if (IS_ERR(edp->pll))
+>> > +		return PTR_ERR(edp->pll);
+>> > +
+>> > +	edp->clks[0].id = "aux";
+>> > +	edp->clks[1].id = "cfg_ahb";
+>> > +	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(edp->clks), edp->clks);
+>> > +	if (ret)
+>> > +		return ret;
+>> > +
+>> > +	edp->supplies[0].supply = "vdda-phy";
+>> > +	edp->supplies[1].supply = "vdda-pll";
+>> > +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(edp->supplies),
+>> > edp->supplies);
+>> > +	if (ret)
+>> > +		return ret;
+>> 
+>> I believe, the combination of the number of regulator and clk 
+>> resources may
+>> vary based on the platform.
+>> I think we should not fail probe if all these resources are not 
+>> present in
+>> the device tree file.
+>> I think, these resources can be optional. We can get these resources 
+>> if they
+>> are present in the device tree file and enable them as required.
+>> 
+> 
+> It's quite helpful to the DTS writer to actually encode in the driver
+> which resources the driver expects and provide useful error messages
+> when these expectations aren't met - so I think in line with most other
+> drivers this should be decided based on the compatible.
+> 
+> What clocks and regulators do you have on sc7280?
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=
-=8811=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=889:48=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> In cmdq mode, packet may be flushed before it is executed, so
-> the pending flag should be cleared after cmdq packet is done.
+We have only one clock (edp refclk) and one regulator (phy-0p9) for 
+sc7280.
 
-Applied to mediatek-drm-next [1], thanks.
+> 
+> 
+> Thanks for the feedback, I see that I have a few more pieces of 
+> feedback
+> from others that I need to incorporate. I'll make sure to do that and
+> repost this patch shortly.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+Okay. Thank you.
 
-Regards,
-Chun-Kuang.
-
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 47 +++++++++++++++++++++++++++=
-++----
->  1 file changed, 42 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 4c25e33..89f093d 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -267,6 +267,36 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void=
- *mssg)
->  {
->         struct mtk_drm_crtc *mtk_crtc =3D container_of(cl, struct mtk_drm=
-_crtc, cmdq_cl);
->         struct cmdq_cb_data *data =3D mssg;
-> +       struct mtk_crtc_state *state;
-> +       unsigned int i;
-> +
-> +       state =3D to_mtk_crtc_state(mtk_crtc->base.state);
-> +
-> +       state->pending_config =3D false;
-> +
-> +       if (mtk_crtc->pending_planes) {
-> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
-> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
-> +                       struct mtk_plane_state *plane_state;
-> +
-> +                       plane_state =3D to_mtk_plane_state(plane->state);
-> +
-> +                       plane_state->pending.config =3D false;
-> +               }
-> +               mtk_crtc->pending_planes =3D false;
-> +       }
-> +
-> +       if (mtk_crtc->pending_async_planes) {
-> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
-> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
-> +                       struct mtk_plane_state *plane_state;
-> +
-> +                       plane_state =3D to_mtk_plane_state(plane->state);
-> +
-> +                       plane_state->pending.async_config =3D false;
-> +               }
-> +               mtk_crtc->pending_async_planes =3D false;
-> +       }
->
->         mtk_crtc->cmdq_vblank_cnt =3D 0;
->         mtk_drm_cmdq_pkt_destroy(mtk_crtc->cmdq_chan, data->pkt);
-> @@ -423,7 +453,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc=
-,
->                                     state->pending_vrefresh, 0,
->                                     cmdq_handle);
->
-> -               state->pending_config =3D false;
-> +               if (!cmdq_handle)
-> +                       state->pending_config =3D false;
->         }
->
->         if (mtk_crtc->pending_planes) {
-> @@ -443,9 +474,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
-c,
->                                 mtk_ddp_comp_layer_config(comp, local_lay=
-er,
->                                                           plane_state,
->                                                           cmdq_handle);
-> -                       plane_state->pending.config =3D false;
-> +                       if (!cmdq_handle)
-> +                               plane_state->pending.config =3D false;
->                 }
-> -               mtk_crtc->pending_planes =3D false;
-> +
-> +               if (!cmdq_handle)
-> +                       mtk_crtc->pending_planes =3D false;
->         }
->
->         if (mtk_crtc->pending_async_planes) {
-> @@ -465,9 +499,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
-c,
->                                 mtk_ddp_comp_layer_config(comp, local_lay=
-er,
->                                                           plane_state,
->                                                           cmdq_handle);
-> -                       plane_state->pending.async_config =3D false;
-> +                       if (!cmdq_handle)
-> +                               plane_state->pending.async_config =3D fal=
-se;
->                 }
-> -               mtk_crtc->pending_async_planes =3D false;
-> +
-> +               if (!cmdq_handle)
-> +                       mtk_crtc->pending_async_planes =3D false;
->         }
->  }
->
-> --
-> 1.8.1.1.dirty
->
+> 
+> Regards,
+> Bjorn
