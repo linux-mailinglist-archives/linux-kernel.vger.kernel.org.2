@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7AA3EA6F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43613EA6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237482AbhHLO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:57:11 -0400
-Received: from out1.migadu.com ([91.121.223.63]:27993 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236417AbhHLO5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:57:10 -0400
-X-Greylist: delayed 70504 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 10:57:09 EDT
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628780204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wLYmxDSn8yRlvCuXwA7dhNRH5OHfdPThVfS1yzZfw8s=;
-        b=qyNj2/4L4qC1jYYMJ0qKJnAT7LSTH56iqndM1Ypp/eSyeGZ8vj56KPYO0gmbjJ+hov1PSm
-        N6RJjphfvkVM6uC2LTY76FoNbXcXNmLMDeJuuV43soDoOJ0sMahCEQsyhKV2oH/6JfpifJ
-        7X7z5dmbyyhErQjYsZ4UB8xulo/AbGI=
-From:   andrey.konovalov@linux.dev
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        id S237534AbhHLO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236417AbhHLO5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:57:52 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7645FC061756;
+        Thu, 12 Aug 2021 07:57:27 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 301DC44A;
+        Thu, 12 Aug 2021 14:57:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 301DC44A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1628780247; bh=csI+g0I7i+/PQ+uJiZXzwrLTH3TTq4CmgYgZRCtgHEw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=kUZty8t2remczjo/K2FjOD4OBqbm+zzi/u8zz+Rzuig67nL9PSpUYNf6j7IC238W8
+         uURZ+5nnJ5uDwArYO8NCDbKYVdts6LMuYbCMvzfmxpGURLq9gQ4XPIL7JBZpHbnIW/
+         lDJIbSIEGFsuyvhZfOtegItIexEFbXSc3A9mrF71bVNx6OkhZB1R+7cwrnPQ6K2y+b
+         NY8EGQacIpwGI+MP+q2SBEcFfN8PYJUf0m9B0WafIG4pecbNajVNuTNpR+9BwYb8gs
+         sVL4RzxvXawoRIWvL3pBvWyKXG6Djpp9uALxvd2gbXhRHkSoFZYyvgtPHzScSEpv28
+         VCykKFk9X09iA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     cgel.zte@gmail.com, alexs@kernel.org, siyanteng@loongson.cn,
+        sterlingteng@gmail.com
+Cc:     yang.yang29@zte.com.cn, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/8] kasan: test: clean up ksize_uaf
-Date:   Thu, 12 Aug 2021 16:56:41 +0200
-Message-Id: <a1fc34faca4650f4a6e4dfb3f8d8d82c82eb953a.1628779805.git.andreyknvl@gmail.com>
-In-Reply-To: <cover.1628779805.git.andreyknvl@gmail.com>
-References: <cover.1628779805.git.andreyknvl@gmail.com>
+Subject: Re: [PATCH v5] docs/zh_CN: Add zh_CN/accounting/psi.rst
+In-Reply-To: <20210731084502.571451-1-yang.yang29@zte.com.cn>
+References: <20210731084502.571451-1-yang.yang29@zte.com.cn>
+Date:   Thu, 12 Aug 2021 08:57:26 -0600
+Message-ID: <87wnoqzp61.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: andrey.konovalov@linux.dev
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
+cgel.zte@gmail.com writes:
 
-Some KASAN tests use global variables to store function returns values
-so that the compiler doesn't optimize away these functions.
+> From: Yang Yang <yang.yang29@zte.com.cn>
+>
+> Add translation zh_CN/accounting/psi.rst and zh_CN/accounting/index.rst.
+>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
+> ---
+> v5: link accounting/index to top-level Chinese index.rst
+> v4: delete wrong Reviewed-by
+> v3: add reviewers
+> v2: correct wrong format and add translations for code annotations
+> ---
+>  .../translations/zh_CN/accounting/index.rst   |  25 +++
+>  .../translations/zh_CN/accounting/psi.rst     | 155 ++++++++++++++++++
+>  Documentation/translations/zh_CN/index.rst    |   2 +-
+>  3 files changed, 181 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/translations/zh_CN/accounting/index.rst
+>  create mode 100644 Documentation/translations/zh_CN/accounting/psi.rst
 
-ksize_uaf() doesn't call any functions, so it doesn't need to use
-kasan_int_result. Use volatile accesses instead, to be consistent with
-other similar tests.
+Applied, thanks.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
----
- lib/test_kasan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 1dcba6dbfc97..30f2cde96e81 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -737,8 +737,8 @@ static void ksize_uaf(struct kunit *test)
- 	kfree(ptr);
- 
- 	KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
--	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
--	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
- }
- 
- static void kasan_stack_oob(struct kunit *test)
--- 
-2.25.1
-
+jon
