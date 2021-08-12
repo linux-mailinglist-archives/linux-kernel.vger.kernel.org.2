@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C633E9D80
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32C33E9D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhHLE2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:28:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:44281 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhHLE2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:28:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="202462612"
-X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="202462612"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 21:28:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="527594245"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 21:28:14 -0700
-Date:   Wed, 11 Aug 2021 21:28:13 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] mm,hwpoison: fix race with hugetlb page allocation
-Message-ID: <20210812042813.GA1576603@agluck-desk2.amr.corp.intel.com>
-References: <20210603233632.2964832-1-nao.horiguchi@gmail.com>
- <20210603233632.2964832-2-nao.horiguchi@gmail.com>
+        id S233978AbhHLE3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhHLE3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 00:29:41 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8617C061765;
+        Wed, 11 Aug 2021 21:29:16 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id p22so3916998qki.10;
+        Wed, 11 Aug 2021 21:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7crB6ut1oFmTFNo8HvKM85WBKFVQGpST+6t0/W+ZBVU=;
+        b=mXfuFunSLUfRZ8+6697aQg2iBIcnsk+VZrFjuxyHJAjURoOiMgA+iEq4FzXMQMq9be
+         32UcAwJKS2cF1PCqSad8XBxiC3gniWc3WWFyK3A3lqBCxcHybJH8kLt1XRinQOT8oUZD
+         ykjK6/5qCeWp4dn8s88P1/FZijFBOALby6GvrAvCufQSTvcP3XsHMM1K4HxsxkbGH01D
+         cGkq0Y1HzG3OH8cM4WorjKTVBJZWnSWDsgkeLo8RlU1UWtJoiauIwG1aB+E8mHAhzGWO
+         pTcQkLYI/BOtsVNrj7zWnVMQ6UxHAtTrPVaCgkwkf52MxqaaOl4IjhyZ0Ekt7c86h354
+         6ETQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7crB6ut1oFmTFNo8HvKM85WBKFVQGpST+6t0/W+ZBVU=;
+        b=OvVJG7ZDUvH8GEqJ1WlV8k2mf77WCbhzBm1lRg+tSQCHpX1DnVAYWvftzXEyNo5m41
+         kmZ+HtxhRSb1bjniDKISWroqE1Izht0HXDHiFcCq8zM3tDg7bVTqqWFDsL938mqsToYA
+         NomU+FOWM5NovWCyb0SH9K8NlqkHdASfj9KlGdwd8+mObad6zw6CR7PnBpp/vxjZ9R2I
+         iR8rbRRYpCeSQudRKyZ6MTU5KcZJd80iUhejfst955X1h8vF7kQ1mQ0L+ulMFVIUUn9Z
+         abVRRieehwFi3WkuoWXfajjwRZ8AEbAh6RqLdwQWoHn0QNpxhn+Q2H1L2mLNjKe6cwio
+         46qg==
+X-Gm-Message-State: AOAM533e1LuFd3uyZ8q11ryp5FwZ0uCTS3NJCjHqFrFy+hyD/XusspnR
+        OXUwTy8DS0dk8ad5GwKB/N1aF6HuzjM=
+X-Google-Smtp-Source: ABdhPJxlpZ71SpJrRywihvbJFUMksa371VcklVh19YS84G/lBvW7XavSbPlXSAx03uHltYreiPnODg==
+X-Received: by 2002:a37:8387:: with SMTP id f129mr2640582qkd.79.1628742555907;
+        Wed, 11 Aug 2021 21:29:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i6sm624662qtj.21.2021.08.11.21.29.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 21:29:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 0/2] hwmon: (pmbus/bpa-rs600) cleanup and workaround
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210811041738.15061-1-chris.packham@alliedtelesis.co.nz>
+ <a181b3a5-41f7-fa49-e7fe-ab32dc39ff39@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <1f197bab-f7b1-d3c3-6d01-531364c88ca3@roeck-us.net>
+Date:   Wed, 11 Aug 2021 21:29:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603233632.2964832-2-nao.horiguchi@gmail.com>
+In-Reply-To: <a181b3a5-41f7-fa49-e7fe-ab32dc39ff39@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:36:31AM +0900, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On 8/11/21 8:15 PM, Chris Packham wrote:
 > 
-> When hugetlb page fault (under overcommitting situation) and
-> memory_failure() race, VM_BUG_ON_PAGE() is triggered by the following race:
+> On 11/08/21 4:17 pm, Chris Packham wrote:
+>> This series builds on top of the BPD-RS600 support[1] which is in Guenter's
+>> tree by hasn't made it to Linus' yet. They might actually cleanly apply without
+>> it since they touch different parts of the file.
+>>
+>> [1] - https://lore.kernel.org/linux-hwmon/20210708220618.23576-1-chris.packham@alliedtelesis.co.nz/
+>>
+>> Chris Packham (2):
+>>     hwmon: (pmbus/bpa-rs600) Remove duplicate defininitions
+>>     hwmon: (pmbus/bpa-rs600) Add workaround for incorrect Pin max
+>>
+>>    drivers/hwmon/pmbus/bpa-rs600.c | 44 ++++++++++++++++++++-------------
+>>    1 file changed, 27 insertions(+), 17 deletions(-)
 > 
->     CPU0:                           CPU1:
+> I've also sent a PR for adding display of the rated values to lm-sensors
 > 
->                                     gather_surplus_pages()
->                                       page = alloc_surplus_huge_page()
->     memory_failure_hugetlb()
->       get_hwpoison_page(page)
->         __get_hwpoison_page(page)
->           get_page_unless_zero(page)
->                                       zero = put_page_testzero(page)
->                                       VM_BUG_ON_PAGE(!zero, page)
->                                       enqueue_huge_page(h, page)
->       put_page(page)
+> https://github.com/lm-sensors/lm-sensors/pull/358
 > 
-> __get_hwpoison_page() only checks the page refcount before taking an
-> additional one for memory error handling, which is not enough because
-> there's a time window where compound pages have non-zero refcount during
-> hugetlb page initialization.
-> 
-> So make __get_hwpoison_page() check page status a bit more for hugetlb
-> pages with get_hwpoison_huge_page(). Checking hugetlb-specific flags
-> under hugetlb_lock makes sure that the hugetlb page is not transitive.
-> It's notable that another new function, HWPoisonHandlable(), is helpful
-> to prevent a race against other transitive page states (like a generic
-> compound page just before PageHuge becomes true).
+Excellent, thanks!
 
-I'm seeing some strange results when doing a simple injection/recovery.
+Guenter
 
-Current upstream often fails to offline the page with messages like:
-
-	"high-order kernel page"
-or
-	"unknown page"
-
-Things were working in v5.12. Broken in v5.13.
-
-Bisect says that:
-
-25182f05ffed ("mm,hwpoison: fix race with hugetlb page allocation")
-
-is the culprit (though it is possible that there is more than one
-issue ... failure symptoms changed a bit during the bisection).
-
-This commit doesn't revert automatically from upstream. But it
-does revert from v5.13. Running with this reverted from v5.13
-gives kernel that recovers normally[1] from hundreds of consecutive
-error injections.
-
--Tony
-
-[1] Almost normally. My test catches SIGBUS and prints the virtual
-address from the siginfo_t structure. Sometimes the address is correct
-other times it is NULL.
