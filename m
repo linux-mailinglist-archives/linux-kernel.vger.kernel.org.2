@@ -2,204 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C73C3E9E50
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69853E9E58
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhHLGNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:13:48 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:45627 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhHLGNq (ORCPT
+        id S232799AbhHLGS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:18:59 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:45718 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229588AbhHLGS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:13:46 -0400
-Received: by mail-io1-f71.google.com with SMTP id w19-20020a5d8a130000b0290590514c1e55so2889045iod.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:13:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DYL1J+oy4oDNfBwuAE6KH58xhAFOH+PfBaJADfwuBSo=;
-        b=C8L7vPfZbra+2vJJFwAUggfvuOVrw0s5upI4ZXGe7173eeQXohdGQiFIl4HkrGs6SN
-         zJ1/MPWnd7ESA7B0cwmAnwMxKv/CbyRfvvL/p4XgV0//cHGd6Fq4Vqc7UZ0DJHBkVE5J
-         nplSln8atvei9L11vi/OO5k2H6CfT3ASPw5QC2lBBhKk5p0jsDzA/xq9XAWpRZghgyvR
-         g6IpJsqjg0MJ0RfLch/dqumm4WnMVOsmUtkPnpRqSm9dADQvtu3jduFJNyeJBww+gAT2
-         YPijHVhnv6yLz8VLPa5rW1w0XwuFNmqNrW4nfn3DQCJnqXNtQ5xS1u30XU0OIbpcHtOr
-         +J9w==
-X-Gm-Message-State: AOAM530AreodI8NL9k2EG2Bm9z5TC1ztBefMujnyEkRrM6+7FWYCzAfe
-        VZQAIxUjVhhGmF3XJVjgSUyXFyz3VJF5li88s8UDoj+8Sqgc
-X-Google-Smtp-Source: ABdhPJx29JmgnSj90+sgKDtBiuaIDX86xQPzbZV35OvVkv5qo14IzLyzCUCWmDrDPgPPfalGc0k4BcPMwjxlJEG29GePaKjMgL/g
+        Thu, 12 Aug 2021 02:18:56 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17C6BPor031579;
+        Thu, 12 Aug 2021 06:18:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=piFDPYX3Rb54OhnpalPfMTL7NE688FnKk+5oCus6Wow=;
+ b=GVcfMqe+wcqel8g96FDe/3IH03Uf3EwLqqY803w42ZVYYe0BSYjZ6t467HVpUfxHAy+N
+ 2uQWDoEYHdWQtMFnUjz4/kdGeyG2bak/4pp5nzU8v9PcD3+CLqQUkTwytpqZhgPPKN6A
+ W9Zw0rAPzlLOUc7KOQaDP6B4m1ztjMI5dsOfiHmLii5y0vyUQiy/jUQxebc/4+agN7jt
+ 3CH/mf66uQXnvcgHoNY+ghiMllbSLePMrxfJHygxJHAnGh81t05brZioeZBUp0hWfnly
+ ZAxWjW7WieaiEN0n87wdzwFTh2a9bIn+CwA4J6asPLBC16UhLssv03BmJW7K5YqVPQxh oQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=piFDPYX3Rb54OhnpalPfMTL7NE688FnKk+5oCus6Wow=;
+ b=KKkz4EC30kHt39lUhroMensL+pWmY3fYsj+74TnC6xEEI+chXUJsfrtNE4huLXW+kEWc
+ kDE6traTXB6xHYVLxs4FS0AWzPq8T1OmZgEFVijd/58Mgf97RV+vFsB4WAgYPUZc95DK
+ 4JuVAV+cFbS6iE6eRvdh2YIJ/kI4Z0OpBOhKI3xGyZVyo+FwLV+iUINalDg9bmenI2rq
+ 5m5q1UPdGkKRpiNHE+7qLbajd1SwN5hLuC28vJSgZyCaMbv8a2QRZ2uWsmPD506gVkHC
+ n/KqeWZE4rsrQOs4+Z+4mH5BYj140h4xUPsSdzxTEaMESw0+LVA7LGvgo76HKavjyUQr uw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3abwkgbuep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 06:18:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17C6GKXI002702;
+        Thu, 12 Aug 2021 06:18:19 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by userp3020.oracle.com with ESMTP id 3aa3xwqm3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 06:18:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oSw/WLdQ8GcLccrMzhqpmWpQbtf8qMbmwA9eGS4uEeLbdxPpJM3wXVIxatFaB6o9NBNVac8tF1TnlgwwnwJhR6UeZegUAkfTwXL1KXZvHX1oR8J1QPvNiEjhle1iOdAzO7VHb0fDOsTjtMnHPZy+IF9QCL7eXbQOf1SoNGVhcoPlA6jd7gDX4PbkdOcDIQ9UBaVVTXpMqdHMIvr/f59IFXDobTiXvHv1+L8BRrH7xpdQUsyHTt51zcjY6HpxCsEVDFhRZxGcJjM/rPlDkeg8swJS912tzT2W2DgOtVNDV3SxaM2U2iGRfk4/fCbYb2QCXXQCUzq5fi2qCOH5mBBStg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=piFDPYX3Rb54OhnpalPfMTL7NE688FnKk+5oCus6Wow=;
+ b=XQdsBK4QxJrKywqKb7nwJ1ZKwlwWKaTrQrmVvDpqNbYkuYZDmbiTR8ElVZhpLUAumv0HEXNFvkyZ4v7Yr7nbIJhBV3buJqCQHO9m8uHxViTQ0uMTezpD325UT/aSa6pFv7sxJtr+PoIvn3c+QoAGiFAfO9I3iycDddhPE/RI+hJvW2nyWlWmVFa48aB0Mq2nZaHag2T3QCF0LlCggXqazgIyp2arVYhU0kDz6onl3IoVMyjd62RE+6+yg7KXE33YXvgz71J4tUzGS8IPurpXkgGeoVMiZjHcFL4HQa8Of+tL7JaISCarmMYi0UsI6K8Nvd03rN6oxQm4FSarxmMVOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=piFDPYX3Rb54OhnpalPfMTL7NE688FnKk+5oCus6Wow=;
+ b=r2YerIfK2fOOso9jCYcO64GAXQz/NtyJ6xgTppRS2HtB0mNI76IJaMWvpkE1PlrV8FjHJ1xEV3VjypN6zj2JOLn5UU0goBDIYf2IK/pqMHeeriFQYKvuD2QsrIF7cUNw7ay+wyMs1nsMxRHyVnad976Y9KkU7hzZ1KUavXM/F0I=
+Authentication-Results: philpotter.co.uk; dkim=none (message not signed)
+ header.d=none;philpotter.co.uk; dmarc=none action=none
+ header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5553.namprd10.prod.outlook.com
+ (2603:10b6:303:140::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Thu, 12 Aug
+ 2021 06:18:17 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4415.016; Thu, 12 Aug 2021
+ 06:18:16 +0000
+Date:   Thu, 12 Aug 2021 09:17:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] staging: r8188eu: (trivial) remove a duplicate debug
+ print
+Message-ID: <20210812061759.GW22532@kadam>
+References: <20210811201450.31366-1-martin@kaiser.cx>
+ <20210811201450.31366-3-martin@kaiser.cx>
+ <CAA=Fs0n0U62cZADeEGXD7HUYzCXpZuHXGZZruztNoTeShFw5aA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA=Fs0n0U62cZADeEGXD7HUYzCXpZuHXGZZruztNoTeShFw5aA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0041.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::16)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9c58:: with SMTP id 24mr1800988iof.120.1628748801983;
- Wed, 11 Aug 2021 23:13:21 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 23:13:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c5482805c956a118@google.com>
-Subject: [syzbot] INFO: task hung in hci_req_sync
-From:   syzbot <syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JNAP275CA0041.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 12 Aug 2021 06:18:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d2d4a9d2-4169-4b57-0275-08d95d58f8f5
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5553:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR10MB5553EFE3F62F78579B96A96A8EF99@CO6PR10MB5553.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8YRcAsNvVBgPijrwseLluwZyV0bQMaEdt2lyqnJrKQfEhgqaKzha4X7yn/vWmfRHlqjN5Uxu8y/nQmQwgYuwiDsz/pqB8A1/hQErHCBP7xVfgau9i3Hz+Jo8R/TiiIsJ+qaxs0InhDmcPyhljHpwUqTKdVjht/3fZWuJQQt+o8h2kJmVtitGBfTwwE/leWjb4EofHR9fYufItkPZz83H/x97wJL1O53053s28P8DlbXmwhsFjgd0gdeFIQrfSjQQgF6ZLNPB7KTGqVj39Purw4TScfR7GPJDmDBpEbh+d9bqiNvtbpSR+D/eXfLDXsxx4LrAaR1YcZHW0JXLQZYGKUeK1x1q3S2mVNNejxwQtsZP1kxlzgye6BX6Lh/6Kox5qWxYIuh7TX3BWxEHqXWRB7LDoizYuz1vLhDJJraWeHu2px7ycqD+Bk895tdM4xZWyyKi1G0BWQDGvhLjeovXLaMqVSlL14HXIEraRHxtb6z3ZzE9vCc8dw1dHJpG3IYzjk8Givt+023XYIcgaVA3UGlow3zUO/0Z0nFy89/a2dfXDBPvIXnh9bcPCjff91KKTEHbe73bi/Y4Kz0W8G6sIjeuRgsKoCx1F+jY7poaZxM+wwUn8/dWuVNeBz1ITaMOq6h6nmpI0BFbKNYfNPjjXcV6p049EBrQUijrP9+h51WpTagAD+CpjZAZeYU45tAEtY/sN4YPmoCphsiTJFZeeg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(396003)(39860400002)(55016002)(83380400001)(5660300002)(66946007)(9686003)(86362001)(6916009)(66556008)(66476007)(54906003)(316002)(9576002)(38100700002)(956004)(52116002)(6496006)(44832011)(186003)(2906002)(26005)(1076003)(38350700002)(478600001)(33656002)(33716001)(4326008)(6666004)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R8vYeng79KAKC0kaVT0xas+nBscG3psm4Kk/oABV7hRIQfhl+W5G3/hR6uUW?=
+ =?us-ascii?Q?7ZuArWKISTwzkXje1Dt3MDZ9t+j5uOTiwIV9SSBGhQckVn0RKDqFD7Pl3WFb?=
+ =?us-ascii?Q?qdXkbkhZOTXrueixBhFVytX4ny7zUPIODYpEeKCj8ShaE4It5I0o6HNINyo8?=
+ =?us-ascii?Q?XvFMV2JYs/E3FlOH0pvWK/Rzbd+ljXmKBfZOzTYLPu2v9HIeFHCDWEPJjwY2?=
+ =?us-ascii?Q?AGKZ2BAwAcNqXAVypcwEWhcFSxlsEPQjFFTRNkh/5kkykaxVXFejoZRYUwDZ?=
+ =?us-ascii?Q?a8YaVUys8LYq36d6Vy8g5HODsjCoJYrTa7w6Q3IOzPAiVLKVXKI7Rg94JBpx?=
+ =?us-ascii?Q?vBcXbWnqa67tjYIhVG9amJJt6KtS/0vOwVCkGuO1qfFG1gBXYRrUYxh6rATc?=
+ =?us-ascii?Q?O3ZENvYS49245VO4EWL+ycH68qiNeYk60kx8mGfhy7roR/h//X+SXY7S9lt1?=
+ =?us-ascii?Q?iC1w7Ww8g88xCSnAw1ApUffj31/J3V4xZdYtasGjl2v1AZFtK5wcb67FngY5?=
+ =?us-ascii?Q?wzLxC82QaOsJSmXt/rvrGTzhyjjFwuspwT/WbopMk8Hh9nobrRGq58pvJYZs?=
+ =?us-ascii?Q?U6We7LwJRkThgdotl1E6XfhJEkaO4EghoZ1sAL5a/7mLlwoer5YuSBUfKjcg?=
+ =?us-ascii?Q?o4H3FFenjCEwF58VxktL97iPwSnCXRne5b0dnHwO7MaN/cXfy467zdDUZ/v/?=
+ =?us-ascii?Q?ag22hlzMSQdTfRJFX/siu5w+CrTKuWpoNnNdggz/RBraR8Q4gkqyDdmaAYlD?=
+ =?us-ascii?Q?f2BO2MuQftvNoHJoNs/M0SCi9gy73vJZS/nCcBW4VhPnCsUfpRQHxCL3mscu?=
+ =?us-ascii?Q?pbLYXbUm+YqkrmvdN9WYPNsduYf+jY2mfJvLofG2eYH2Fgb/dhiLXG3JVOgK?=
+ =?us-ascii?Q?YfrJHcSSAU0UB0c3udh/9D5PzYPIN0g2fD5/Nb0ZZLxxNKlxP9FkqZkSw+cp?=
+ =?us-ascii?Q?GHLwlHkefKG+7ODoZonHw72tQuVXA/xLjxmZpj0i3y7JyiYQJIOqQM8I31WQ?=
+ =?us-ascii?Q?+3se6Sv+ECkAtxgLmGh2HitL8iDczdOJSxP6tgLrE4giIcktdGpoTe3LSeCo?=
+ =?us-ascii?Q?/cS9mALtSFzYWzCL1BkCh6yZBR70yNovBwuGCuq9/14iSspKRMFGLozqg1yN?=
+ =?us-ascii?Q?fvYAAjVWwGbbiO2uIc6UJAbnVsyfSliW7z59X52ETtdZuGD4LHjugRPAAlF3?=
+ =?us-ascii?Q?ehfeYezkFwL2FGVzvtCda3R2x9JAVUGVIJKwOZhQIvgPCD7Hgx3onUqwB7Ld?=
+ =?us-ascii?Q?XuIOeB4VJoYz2KGHBa2xhVZI+zvpsPNYZDIwXpSoSbxbCaE7D2yoTlorzD8l?=
+ =?us-ascii?Q?nYFTQUTkmU1Nr8P9Z4WutkQ9?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2d4a9d2-4169-4b57-0275-08d95d58f8f5
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 06:18:16.8475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1SOBvCovcln0WaOSPnjofXMQ19T9f7YQOf7SRMO1wnWa2sjnySdWw8FxOmzHGxk+AFH9e0FmDwAXN0QyjxdOLw/jvXDtJv8b1UlwIoEGQwM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5553
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10073 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108120040
+X-Proofpoint-GUID: LMWTLmhgLxNmpNO_3t9R4w2JH3lz6Usq
+X-Proofpoint-ORIG-GUID: LMWTLmhgLxNmpNO_3t9R4w2JH3lz6Usq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Aug 12, 2021 at 12:53:16AM +0100, Phillip Potter wrote:
+> On Wed, 11 Aug 2021 at 21:15, Martin Kaiser <martin@kaiser.cx> wrote:
+> >
+> > Keep the one that shows the wakeup capability.
+> >
 
-syzbot found the following issue on:
+Please think of the subject and the commit message as two different
+things.  Often it's people reviewing on email will only read one or the
+other.  In other words just restate the subject:
 
-HEAD commit:    c9194f32bfd9 Merge tag 'ext4_for_linus_stable' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1488f59e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=be2baed593ea56c6a84c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b5afc6300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcd192300000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17dce4fa300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=143ce4fa300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=103ce4fa300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
-
-INFO: task syz-executor446:8489 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor446 state:D stack:28712 pid: 8489 ppid:  8452 flags:0x00000000
-Call Trace:
- context_switch kernel/sched/core.c:4683 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6078
- __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
- __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
- hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
- hci_inquiry+0x6f4/0x9e0 net/bluetooth/hci_core.c:1357
- hci_sock_ioctl+0x1a7/0x910 net/bluetooth/hci_sock.c:1060
- sock_do_ioctl+0xcb/0x2d0 net/socket.c:1094
- sock_ioctl+0x477/0x6a0 net/socket.c:1221
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446449
-RSP: 002b:00007f36ab8342e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004cb400 RCX: 0000000000446449
-RDX: 00000000200000c0 RSI: 00000000800448f0 RDI: 0000000000000004
-RBP: 00000000004cb40c R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000003
-R13: 0000000000000004 R14: 00007f36ab8346b8 R15: 00000000004cb408
-INFO: task syz-executor446:8491 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor446 state:D stack:28176 pid: 8491 ppid:  8452 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4683 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6078
- __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
- __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
- hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
- hci_inquiry+0x6f4/0x9e0 net/bluetooth/hci_core.c:1357
- hci_sock_ioctl+0x1a7/0x910 net/bluetooth/hci_sock.c:1060
- sock_do_ioctl+0xcb/0x2d0 net/socket.c:1094
- sock_ioctl+0x477/0x6a0 net/socket.c:1221
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446449
-RSP: 002b:00007f36ab8342e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004cb400 RCX: 0000000000446449
-RDX: 00000000200000c0 RSI: 00000000800448f0 RDI: 0000000000000004
-RBP: 00000000004cb40c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 0000000000000004 R14: 00007f36ab8346b8 R15: 00000000004cb408
-
-Showing all locks held in the system:
-6 locks held by kworker/u4:0/8:
-1 lock held by khungtaskd/1635:
- #0: ffffffff8b97c180 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by in:imklog/8352:
- #0: ffff888033e1d4f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
-1 lock held by syz-executor446/8486:
- #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
-1 lock held by syz-executor446/8489:
- #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
-1 lock held by syz-executor446/8491:
- #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1635 Comm: khungtaskd Not tainted 5.14.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 8 Comm: kworker/u4:0 Not tainted 5.14.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:csd_lock_wait kernel/smp.c:440 [inline]
-RIP: 0010:smp_call_function_many_cond+0x452/0xc20 kernel/smp.c:967
-Code: 0b 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 49 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 d0 47 0b 00 f3 90 <41> 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 33 06 00 00 8b 43 08 31
-RSP: 0018:ffffc90000cd7a00 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: ffff8880b9d570c0 RCX: 0000000000000000
-RDX: ffff88813fe6d4c0 RSI: ffffffff816a6400 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff816a6426 R11: 0000000000000000 R12: ffffed10173aae19
-R13: 0000000000000001 R14: ffff8880b9d570c8 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f56e8f43000 CR3: 000000000b68e000 CR4: 0000000000350ef0
-Call Trace:
- on_each_cpu_cond_mask+0x56/0xa0 kernel/smp.c:1133
- on_each_cpu include/linux/smp.h:71 [inline]
- text_poke_sync arch/x86/kernel/alternative.c:929 [inline]
- text_poke_bp_batch+0x47d/0x560 arch/x86/kernel/alternative.c:1183
- text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
- text_poke_flush arch/x86/kernel/alternative.c:1265 [inline]
- text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
- arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:146
- jump_label_update+0x1d5/0x430 kernel/jump_label.c:830
- static_key_enable_cpuslocked+0x1b1/0x260 kernel/jump_label.c:177
- static_key_enable+0x16/0x20 kernel/jump_label.c:190
- toggle_allocation_gate mm/kfence/core.c:623 [inline]
- toggle_allocation_gate+0x100/0x390 mm/kfence/core.c:615
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+  These two debug messages have the same information.  Delete the less
+  informative one and keep the other.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Dear Martin,
+> 
+> Just my personal opinion, but I'd be inclined to strip out all DBG_88E
+> calls totally. If there are necessary functions being called such as
+> device_may_wakeup() we can always just keep this part and remove the
+> macro call (not checked this function out myself yet). Thanks.
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Yeah.  I agree.  The DBG_88E() doesn't call device_may_wakeup() unless
+the module is loaded with a high enough value "rtw_debug" module option
+so hopefully device_may_wakeup() does not have side effects.  (It does
+not).
+
+Thanks for reviewing these patches.  I do think it's nice to have
+positive reviews instead of just me complaining and pointing out the
+negative things.  We are trying to get code merged, not trying to put up
+roadblocks so maybe encouraging more Acked-by reviews is a good thing...
+
+regards,
+dan carpenter
+
