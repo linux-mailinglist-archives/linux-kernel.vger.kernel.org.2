@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBD23E9D9C
+	by mail.lfdr.de (Postfix) with ESMTP id E95703E9D9D
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhHLEgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
+        id S234165AbhHLEgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbhHLEgc (ORCPT
+        with ESMTP id S234143AbhHLEgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 00:36:32 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9530C0617B0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id q2so5591760plr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635E7C06179E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:08 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so13223481pjn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6wofbpP2XHH8vKqCJvAlC0rsCzyQ6IN16xqpsQAu78c=;
-        b=kcTGTOMugFVsFi9+hhyJu2RhkTevTNPQoau6mbfxI1ob4Xd98YMMTlWa4HAVxbnYZF
-         0zCmJXMZXbZw00yPhX2lYZyZua96iQxKSmxYzxFaQxfoHY2L3Ye9awQnnl4E874fpAvy
-         TqV1TxaMgS0kcmXxjvAOJbK9Eryr8xabf7A5CjzFtJ2YM7UI8zxqXn0EpKJDfFGjGHWJ
-         tf6goZyfThDvJNaFZRj008upYFfeQoE6+ngyRrnr910bX800SG1RDMvpXi7lK7uRfnK/
-         PK08nYK1MomznKkiawoMEmkuE7JCXNp8mnV3w3z1Wlb2WwZYV6b6j6PMFIAQ8OfYaZrs
-         jFrg==
+        bh=9HVQrCOVXbcxMp8JFbwYQtdcMjF/4FzEzkmzk55j+qs=;
+        b=NNjORvu+ttL+CFOCo7D45Yn4LkvAxOR6f1Gig7ouC62A9kFpKoUe+B2COQqZWaYo6s
+         EFIYD1i7xT7d/uesW+whvQ0HXxm6JTTg1qLK54j2OSMtPRCUxl9OXDWyC8e6TB+mI1xp
+         vtRGa2cNSu2wpcduh7fOk2wtwcLh54+uC6BCn4VlZkvGvDmkdngjtH59OZwiyA4FCkyx
+         LGXgxK5oSvMflvnvQwtENwczgV95ZjV1tURh2AiHsWlbE19/RPL172iKJ5qMJ8E/2ANW
+         1awLQnOKL7j4sq0yX8k61HIcI411xUOgD0oF4HwXTYYHiUM9SNijv0EW1LGlI1D8KHhV
+         ZG7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6wofbpP2XHH8vKqCJvAlC0rsCzyQ6IN16xqpsQAu78c=;
-        b=eNgUHiawSccFon8eDiKg2SEHACXk3qFl/Z4axKCHgD127DQHw9vOtu6RIsIz1ZWHfD
-         WrSrRkztqIZ09+S2kasUG3d/EVArgHiReyL1bz7UP7KOc30hT63Losz3+iOUQu9EP2j8
-         fkn/pgD4P66HIYOO1eVzNH8MNbYTIuPO8KcJk57jBlmZDtAd/weGyPlhVcofu8I9PELV
-         i6it+8s9+F2HP+HpWj9LVyWVzWTx+O9BXMEsvOFNwSWUSkov1L+W5PUAjRyG7j8Q2AFP
-         P2c0cJXdfWEuyg8I3E96Mmwl42d+FlhMTD35bNgt08/NPHePR1CbPDv7nWZtigPPfCu+
-         iRKw==
-X-Gm-Message-State: AOAM530DCGGpvLnlUZpz+rIPgnTd/dKiWs+ksLAT6CYAmiBpnpf/L3Tv
-        xrhJYiLVqrf/vSVOGxUrZOz0XQ==
-X-Google-Smtp-Source: ABdhPJxOyxfx5OgUlraC7cspL4slIMF78gy/l9Iz2XJBgeRFFX7HGChu5G1uG7HxFAKOJXmQPNG7RA==
-X-Received: by 2002:a65:690c:: with SMTP id s12mr2110775pgq.401.1628742965215;
-        Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
+        bh=9HVQrCOVXbcxMp8JFbwYQtdcMjF/4FzEzkmzk55j+qs=;
+        b=X219snYBEzvS0TZAMTD3betB7+ja8D1hRzVmvvNvGlIwBBq2kgFbLVLkEwFvzZxjzH
+         qcwc2cP3U+AriR+92odN+vkGwFHdUhVqRCiK4JTiMX8OGbg7YPM5L7T5WUwt1YWkKZKZ
+         LVsE/7fdYjPqyZsPedANohp26NRGaLhGTwBLAVksOd3blHqoBXxLogcuhInguqHjiKuT
+         pmkM5oQcGDESWChBp7wpzMNnA94ojvX5C1bChT/AxDmJ1y5uGGDxlIbk58fY+Zn46cNv
+         gDtUwb1IsRynrVchge1Vf3JixNg2RhnLUQ1GiS172Og3vnnA1J4ZdFejmKfQRDYJpcX7
+         JUyA==
+X-Gm-Message-State: AOAM533J0cQQO+6TqpT1bF7ChLeQfIpRoF+nRkVpP+wfhUSYKXVfWbkt
+        5rIuUkPTwfGT76iRfr44qho0xg==
+X-Google-Smtp-Source: ABdhPJzKJOCMQjx/Zlei5DgLRLP0WZUL1IsXTMITDjm0abr1tzgWWaZnfPz+bwvVAuWhp6gaZXwpfA==
+X-Received: by 2002:a62:e405:0:b029:3c8:e5ab:ca94 with SMTP id r5-20020a62e4050000b02903c8e5abca94mr2302045pfh.5.1628742967964;
+        Wed, 11 Aug 2021 21:36:07 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id z15sm1402647pgc.13.2021.08.11.21.36.04
+        by smtp.gmail.com with ESMTPSA id e8sm1433156pgg.31.2021.08.11.21.36.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 21:36:04 -0700 (PDT)
+        Wed, 11 Aug 2021 21:36:07 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Vincent Donnefort <vincent.donnefort@arm.com>,
         lukasz.luba@arm.com, Quentin Perret <qperret@google.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 7/9] cpufreq: scpi: Use .register_em() to register with energy model
-Date:   Thu, 12 Aug 2021 10:05:20 +0530
-Message-Id: <a214649dfcbc812ddf6b3906315da166caf01964.1628742634.git.viresh.kumar@linaro.org>
+Subject: [PATCH V3 8/9] cpufreq: vexpress: Use .register_em() to register with energy model
+Date:   Thu, 12 Aug 2021 10:05:21 +0530
+Message-Id: <b64eea485feb5cfb18e74e100dea49c917d4474a.1628742634.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1628742634.git.viresh.kumar@linaro.org>
 References: <cover.1628742634.git.viresh.kumar@linaro.org>
@@ -75,30 +74,30 @@ cpufreq_register_em_with_opp() to register with the EM core.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/scpi-cpufreq.c | 3 +--
+ drivers/cpufreq/vexpress-spc-cpufreq.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
-index d6a698a1b5d1..bda3e7d42964 100644
---- a/drivers/cpufreq/scpi-cpufreq.c
-+++ b/drivers/cpufreq/scpi-cpufreq.c
-@@ -163,8 +163,6 @@ static int scpi_cpufreq_init(struct cpufreq_policy *policy)
- 
- 	policy->fast_switch_possible = false;
+diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
+index ab56813b7256..284b6bd040b1 100644
+--- a/drivers/cpufreq/vexpress-spc-cpufreq.c
++++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
+@@ -440,8 +440,6 @@ static int ve_spc_cpufreq_init(struct cpufreq_policy *policy)
+ 	policy->freq_table = freq_table[cur_cluster];
+ 	policy->cpuinfo.transition_latency = 1000000; /* 1 ms */
  
 -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
 -
- 	return 0;
- 
- out_free_cpufreq_table:
-@@ -200,6 +198,7 @@ static struct cpufreq_driver scpi_cpufreq_driver = {
- 	.init	= scpi_cpufreq_init,
- 	.exit	= scpi_cpufreq_exit,
- 	.target_index	= scpi_cpufreq_set_target,
-+	.register_em	= cpufreq_register_em_with_opp,
+ 	if (is_bL_switching_enabled())
+ 		per_cpu(cpu_last_req_freq, policy->cpu) =
+ 						clk_get_cpu_rate(policy->cpu);
+@@ -475,6 +473,7 @@ static struct cpufreq_driver ve_spc_cpufreq_driver = {
+ 	.get			= ve_spc_cpufreq_get_rate,
+ 	.init			= ve_spc_cpufreq_init,
+ 	.exit			= ve_spc_cpufreq_exit,
++	.register_em		= cpufreq_register_em_with_opp,
+ 	.attr			= cpufreq_generic_attr,
  };
  
- static int scpi_cpufreq_probe(struct platform_device *pdev)
 -- 
 2.31.1.272.g89b43f80a514
 
