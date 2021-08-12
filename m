@@ -2,139 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934B23EA362
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DD93EA364
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbhHLLSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236687AbhHLLSE (ORCPT
+        id S236781AbhHLLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:19:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:49880 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232081AbhHLLTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:18:04 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A872C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:17:38 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id 90so1000001uax.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L0gyU3vJVuWPU21UXGdxDw4I761rPxaanXf3QMxUC1A=;
-        b=GR9CTz3qnI0sEDXS4Vz2dqqHPs12gPFKs+J+rdjPq/NqF1uywGom54qf5zP5DspdeQ
-         g7ZkfP/SFrc/cxUPSKthVQsTmV0dFWi2OxuJ+7QlubIPUOEkSyMLF/GBvZ5S1vDWtTGh
-         sa+m5oIMYu+5e9fGhuvZIedBm3enJquHi0Anmq6zHo1T/ms2N2i7FQ/1edif0N8YYffS
-         ue56lhAwZ5qvG46WVvcf4bdbanAVY27pKUsweEg9jnSO07vRfyVLi4xAFIY11bFyeauC
-         BU2lBXgG5d7/ddoZSgzVZEkqrroVUBYlqGeLhAL1cnwf4VXqnRsqK4WqPfko9em7W+mZ
-         dMPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L0gyU3vJVuWPU21UXGdxDw4I761rPxaanXf3QMxUC1A=;
-        b=Mr8WbjvjWNT+GnJbkAwLfmTq6CMdRdyDDuCX8VOfocNF/dvAxiIlSUItpulDr1ck//
-         kFAxhxD6qqehvtrutQMyu4tKk9XC0LXYttUptYJyCm8+eUBR2TIoSkAK4dd5Eidzw1VK
-         sUaMhFeqEhJFtJb2qhVwE+3YgqafVZ42RrHmpZJaQmtsoABk/9E70cRU699pvjKhybPu
-         De3EQmP0BklTGQDcRA8OHAQtaI7Y6Prb0s2pSZoBUM21cFUs0SsTvmJL2eH526D915Ef
-         nNlQGmM7P5BooXQW+Oo4aFgA2yRUSdyCIMXT5wNMjuVN1pKAOU3jSn9ttfXkcS3uG6Gm
-         M9hQ==
-X-Gm-Message-State: AOAM531g4BXZbP1dtkMdZEJayUmMM/TPRdRGZ6hlIvPxq2zKEYWhyk5D
-        9cKC3Gle8KeqZRx0kL4O470pkwY4mTB5S/XHWuPDRw==
-X-Google-Smtp-Source: ABdhPJyv6jhv7hsGxlvOXJ+PV6QFW4oGZxDyU7JGoVmm+PciCTwcwMITfVEp6nsx1+OUCwZN0NL2GzejpGySs3XeGIY=
-X-Received: by 2002:ab0:6695:: with SMTP id a21mr1572928uan.19.1628767057184;
- Thu, 12 Aug 2021 04:17:37 -0700 (PDT)
+        Thu, 12 Aug 2021 07:19:50 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C111220C171A;
+        Thu, 12 Aug 2021 04:19:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C111220C171A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1628767164;
+        bh=aPwd3twlJLRiZUFCIngPiuLde0SAgrVThrDd2k35pnw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NLcL5qWFCH2tMkNMMfxsZruq6hPtsol9tREYmHUUXNxI6AlKG+Lm/yO41KiJDCI9K
+         +ZgAnCiLzaok4MlA4sSJC5iSDm89lH++Sw8CAUjmY9mIPpJgVkZJqWCNZi4qkb0Xu5
+         Jw9cKFNDi2/gi/EnHxFZqJ8fUU/GNbW2MtHw8lWs=
+Received: by mail-pj1-f44.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so7728715pje.0;
+        Thu, 12 Aug 2021 04:19:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531u38x+CqXX1Jl6w2MA2h4fTVuFIljdvlv1uZh33/8Paw9TxkPu
+        eSIueRwlkcZKGO4n1/zkXsS9DFxAcC5nf9ceFOU=
+X-Google-Smtp-Source: ABdhPJzWd8kEvYy9tH/IHBkyR9zciGHmNayh6FL82gI1Uy1JILOHNCqGP3dYdAvg3qXPv/SNhL/Tg+7r+zr8evrMONE=
+X-Received: by 2002:a17:90a:ad85:: with SMTP id s5mr3758064pjq.187.1628767164221;
+ Thu, 12 Aug 2021 04:19:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701232728.23591-1-digetx@gmail.com> <20210701232728.23591-3-digetx@gmail.com>
- <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
- <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com> <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
- <a5dfdf59-f5b5-d28e-6b02-b0c860ba8d80@gmail.com> <CAPDyKFq+ExjbGrN=yUUXPKfN_fGrwY6EAYn9a6VUFFU_VjhC=g@mail.gmail.com>
- <6741262b-386b-7635-fd42-ebd4f877fddd@gmail.com> <CAPDyKFpJhX51rOnvbYTmj9Akd+xX+b7xcSWt87UDrvMEfYOZ7Q@mail.gmail.com>
- <aab38f90-f7b2-900f-897b-470b81d473f2@gmail.com> <8e110e08-1268-464c-6edb-0a3f640d43d6@gmail.com>
- <e21106ab-95ef-fc97-1744-dc58180e321a@gmail.com>
-In-Reply-To: <e21106ab-95ef-fc97-1744-dc58180e321a@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 12 Aug 2021 13:17:00 +0200
-Message-ID: <CAPDyKFpgoBsFOiCGEpgAyeYJyEZQAXSN_2iEJcVJbfV+7rvdMw@mail.gmail.com>
-Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
- domain drivers
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+ <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
+ <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com> <87o8a49idp.wl-maz@kernel.org>
+ <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com> <20210812121835.405d2e37@linux.microsoft.com>
+ <874kbuapod.wl-maz@kernel.org>
+In-Reply-To: <874kbuapod.wl-maz@kernel.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Thu, 12 Aug 2021 13:18:48 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+Message-ID: <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000003f456b05c95ae845"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 at 03:40, Dmitry Osipenko <digetx@gmail.com> wrote:
+--0000000000003f456b05c95ae845
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, Aug 12, 2021 at 1:05 PM Marc Zyngier <maz@kernel.org> wrote:
 >
-> 12.08.2021 01:41, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> I am not saying you should change the clock rate. The current code
-> >>> path that runs via devm_tegra_core_dev_init_opp_table() just calls
-> >>> clk_get_rate and then dev_pm_opp_set_rate() with the current rate to
-> >>> vote for the corresponding OPP level. Right?
-> >>>
-> >>> Isn't this exactly what you want? No?
-> >> I see now what you meant, it's actually a simpler variant and it works
-> >> too. Thank you for the suggestion, I'll prepare v8.
-> >>
-> > My bad, it doesn't work at all. I actually need to use the rpm_pstate o=
-r
-> > something else because performance state is coupled with the enable
-> > state of the device. If device is never rpm-suspended by consumer
-> > driver, then the initialized performance state is never dropped. Hence =
-I
-> > want to initialize the state which is set only when device is resumed.
+> On Thu, 12 Aug 2021 11:18:35 +0100,
+> Matteo Croce <mcroce@linux.microsoft.com> wrote:
 > >
-> > I'll need to think more about it.
+> > On Thu, 12 Aug 2021 10:48:03 +0200
+> > Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> >
+> > >
+> > >
+> > > On 8/11/21 4:16 PM, Marc Zyngier wrote:
+> > > > On Wed, 11 Aug 2021 13:53:59 +0100,
+> > > > Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > > >
+> > > >> Are you sure you do not need to adjust stmmac_set_bfsize(),
+> > > >> stmmac_rx_buf1_len() and stmmac_rx_buf2_len() ?
+> > > >>
+> > > >> Presumably DEFAULT_BUFSIZE also want to be increased by NET_SKB_PAD
+> > > >>
+> > > >> Patch for stmmac_rx_buf1_len() :
+> > > >>
+> > > >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > >> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c index
+> > > >> 7b8404a21544cf29668e8a14240c3971e6bce0c3..041a74e7efca3436bfe3e17f972dd156173957a9
+> > > >> 100644 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c +++
+> > > >> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c @@ -4508,12
+> > > >> +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct
+> > > >> stmmac_priv *priv, /* First descriptor, not last descriptor and
+> > > >> not split header */ if (status & rx_not_ls)
+> > > >> -               return priv->dma_buf_sz;
+> > > >> +               return priv->dma_buf_sz - NET_SKB_PAD -
+> > > >> NET_IP_ALIGN;
+> > > >>         plen = stmmac_get_rx_frame_len(priv, p, coe);
+> > > >>
+> > > >>         /* First descriptor and last descriptor and not split
+> > > >> header */
+> > > >> -       return min_t(unsigned int, priv->dma_buf_sz, plen);
+> > > >> +       return min_t(unsigned int, priv->dma_buf_sz - NET_SKB_PAD
+> > > >> - NET_IP_ALIGN, plen); }
+> > > >>
+> > > >>  static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+> > > >
+> > > > Feels like a major deficiency of the original patch. Happy to test a
+> > > > more complete patch if/when you have one.
+> > >
+> > > I wont have time in the immediate future.
+> > >
+> > > Matteo, if you do not work on a fix, I suggest we revert
+> > >  a955318fe67ec0d962760b5ee58e74bffaf649b8 stmmac: align RX buffers
+> > >
+> > > before a more polished version can be submitted.
+> > >
+> >
+> > Better to use stmmac_rx_offset() so to have the correct length when
+> > using XDP. Also, when XDP is enabled, the offset was
+> > XDP_PACKET_HEADROOM (i.e. 256 bytes) even before the change, so it
+> > could be already broken. Mark, can you try on the Jetson TX2 by
+> > attaching an XDP program and see if it works without my change?
 >
-> GENPD core has these false assumptions:
+> Sorry, you'll have to hold my hand here, as I know exactly nothing
+> about XDP....
 >
-> 1. It assumes that by default all devices are at zero performance level
-> at a boot time. This is not true for Tegra because hardware is
-> pre-initialized independently from GENPD.
 
-Right, which is similar to other SoCs.
+Attach the attached object with:
 
+ip link set eth0 xdp object passall.o
+
+This is an empty XDP program, its source:
+
+__attribute__((section("prog"), used))
+int xdp_main(struct xdp_md *ctx)
+{
+       return XDP_PASS;
+}
+
+Every packet will pass untouched, but the offset will be shifted from
+0 to 256 bytes, which could trigger the problem anyway:
+
+> > A possible fix, which takes in account also the XDP headroom for
+> > stmmac_rx_buf1_len() only could be (only compile tested, I don't have
+> > the hardware now):
 >
-> 2. It assumes that nothing depends on performance level and devices can
-> operate at any level at any time. Not true for Tegra and other platforms
-> where performance level is coupled with clocks state of attached
-> devices. OPP framework glues clock and performance level together for
-> us, which works good so far.
-
-Right, OPPs need to be managed differently depending on the SoC.
-That's why genpd is there to help and to model this as "performance
-states" and to allow operations to be set through SoC specific
-callabacks, for example.
-
-More importantly, the assumption is that in general, consumer drivers
-should use the OPP library to vote/set OPP levels, they shouldn't call
-dev_pm_genpd_set_performance_state() - unless they know exactly what
-they are doing.
-
+> However, this doesn't fix my issue. I still get all sort of
+> corruption. Probably stmmac_rx_buf2_len() also need adjusting (it has
+> a similar logic as its buf1 counterpart...)
 >
-> Hence I either need to patch every driver to use dev_pm_opp_set_rate in
-> order to sync clk rate with the perf level at device runtime, or I need
-> to preset the rpm perf level to allow GENPD core to set the level before
-> device is resumed.
+> Unless you can fix it very quickly, and given that we're towards the
+> end of the cycle, I'd be more comfortable if we reverted this patch.
+>
 
-When the device is getting attached to its genpd (during the probe
-sequence and for a single PM domain case), runtime PM is disabled for
-the device. If you would call dev_pm_opp_set_rate() from a genpd
-callback during attach (without changing the rate), this means you
-would update/synchronize the vote. In this way, the vote is set before
-the device is runtime resumed by the driver, right?
+Can it be that the HW can't do DMA on an address which is not word aligned?
+What if you replace NET_SKB_PAD with, let's say, 8?
 
-On the other hand, patching the driver should also be quite simple and
-you need to do that anyways, don't you?
+Regards,
+-- 
+per aspera ad upstream
 
-Kind regards
-Uffe
+--0000000000003f456b05c95ae845
+Content-Type: application/x-object; name="passall.o"
+Content-Disposition: attachment; filename="passall.o"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ks8tusn90>
+X-Attachment-Id: f_ks8tusn90
+
+f0VMRgIBAQAAAAAAAAAAAAEA9wABAAAAAAAAAAAAAAAAAAAAAAAAAGABAAAAAAAAAAAAAEAAAAAA
+AEAACAABALcAAAACAAAAlQAAAAAAAABHUEwAAAAAABAAAAAAAAAAAXpSAAh8CwEMAAAAGAAAABgA
+AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAEAPH/AAAA
+AAAAAAAAAAAAAAAAAAAAAAADAAMAAAAAAAAAAAAAAAAAAAAAABUAAAARAAQAAAAAAAAAAAAEAAAA
+AAAAAAcAAAASAAMAAAAAAAAAAAAQAAAAAAAAABwAAAAAAAAAAQAAAAIAAAAALnRleHQAeGRwX21h
+aW4AcHJvZwBfbGljZW5zZQAucmVsLmVoX2ZyYW1lAGtlcm5lbF9wYXNzYWxsLmMALnN0cnRhYgAu
+c3ltdGFiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAA9AAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAQAQAAAAAAAE0AAAAAAAAA
+AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAGAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAABAAAAABAAAABgAAAAAAAAAAAAAAAAAAAEAA
+AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAWAAAAAQAAAAMAAAAAAAAAAAAA
+AAAAAABQAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAIgAAAAEAAAACAAAA
+AAAAAAAAAAAAAAAAWAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAB4AAAAJ
+AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAEAAAAAAAAAAHAAAABQAAAAgAAAAAAAAAEAAAAAAA
+AABFAAAAAgAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAHgAAAAAAAAAAQAAAAMAAAAIAAAAAAAA
+ABgAAAAAAAAA
+--0000000000003f456b05c95ae845--
