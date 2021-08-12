@@ -2,221 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517173EAA16
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21A23EAA19
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbhHLSSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhHLSSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:18:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60659C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:18:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id r32-20020a25ac60000000b00593ff08c28aso2777020ybd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=Ap5QlBCuz9Gw2IVzVWaa/jAQ7BR/TRFXp1T/C8JX9Sw=;
-        b=Wv1SJ+tJvyp3Ave31chJRbZt76Jl0mtuHU5FXtZ42kXUP70j5mSJa3lwaMpVGKr/00
-         1SGLhtEHSzyIsIdxxcjwi5s02hZghHwYbOoM/ydVfJmLxaiCfQzG5Qu3r3LygE8s7vto
-         TpVDziBhwNQnK/5Cw9/UAcZT795vHlLmeVkQY8tIxDZJYg3ou42mQGkkc8VqCWNnM7Bo
-         +sms+tYwGlkqcCcEtUa85aE07DPzfesAN0wt8U7BVfrNy4f/tGDObIhpsL7mFJ7BrfeV
-         yK5RMfbbT9fApHuJo8F6+4Ay6QOI13gjlVM4gbAR7JTyYxA18Zcy9m3at4dRQXdDxhjj
-         bX3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=Ap5QlBCuz9Gw2IVzVWaa/jAQ7BR/TRFXp1T/C8JX9Sw=;
-        b=MRSHIn0qMW+qEacYPq6RlN8B4a3Fle+d7Hy1+Al3zS7FkrhxzaBc2gFG7CQbxvLuK4
-         325J/gnhhyRU+qDjCt2QBpkB+jQN99yGk54h9GBfp+trymeHrSrVq+AvMFsXRyGnce5z
-         lJT3gsGcxhGMSfgEGHxg4L07ADHu0lXFTCxXSxdzUjiEIC0PhB5WNk16l6lkExQqH/gO
-         L8fe2M5XqdEaEvUSP8QZmPDGRRenFIC8mEC9hj0381bXRjBB+64O5+VORULRWdrlqGou
-         1EhdP2XCJ7MOnqnGrXsO/LZX6bbIK9Q86JxgzHqjv6Wv3mmdqNn6Awl54VnA6VEt2rmH
-         qnxw==
-X-Gm-Message-State: AOAM53068drzDU3+XQdyCM5rY6jLmyahsJRhWAMi6pZmhh0dEtOC0WNG
-        uIWw2b3JVtpR+N1J/RK1Fdi89/xpvo0=
-X-Google-Smtp-Source: ABdhPJy3g3+bQewPZZYmexyc2LGe+tz6w8dxUUQTqmvR1HCQHxpDeyvATkqIXt8VoP2/xc7hEdf49AeNFuU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f150:c3bd:5e7f:59bf])
- (user=seanjc job=sendgmr) by 2002:a5b:592:: with SMTP id l18mr6232000ybp.490.1628792299655;
- Thu, 12 Aug 2021 11:18:19 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 12 Aug 2021 11:18:15 -0700
-Message-Id: <20210812181815.3378104-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v2] KVM: x86/mmu: Protect marking SPs unsync when using TDP
- MMU with spinlock
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S237888AbhHLSTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:19:34 -0400
+Received: from mail-sn1anam02on2078.outbound.protection.outlook.com ([40.107.96.78]:54525
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237823AbhHLST3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:19:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cc3OXdKui25ckuds/5qnA9ZyfdpDOQkLoTbM/i4Qzek/yhvi6i/1JsJTlBx7K/ApdaXCB3sVEMEHDxmZu4f4KLTErVYNFgvnbSmYeaiCg4Fk9Kv2zGtJ00LG4MoqO8VmZWck2PqD17aQQO5f4U8Qkq0fYnAFR7l/FklRvIG7NOdLICvMimzn73pOZ6xeaNkXYZbZUzYk+A3RLLFYGw3KJfGdt6vjLEZnR8JvE7NfKidKRhkuop9Ixd0m+yYJX7JmRcCjP4gHc7zkQGdxHxHXe6pZ4Xa4nGnO4Ut9EosJ0QbVqnGXiy5DVzAVatN3GkBPQ9Qf7pbCBAwEpgVM8GePKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5JWYeeyM7revPmQjm60r7erg/lrzCS7PXXvywT8khb8=;
+ b=gnydB2dDF3xvRTb/SHLijFldbrF8Ii8CBa28dJBOyzU4Ui3XqtyV4XWGzPliIgfMemLZbQ5UzZh9qZycRLWu43g6zGGehrBppokKL9BXvGlU/RH+hxdNKhTptKUeyB8i2B2Y6c0m6jRnG2S7/sUyPHSAJlG+IVY/RyXBYvf6IEn4d1Qb07TUSGQuIbmdls5pol9hppnxrPOgooZnMm2VhqIEgq7n7oikAoJ6h92ucyyz9I3RqIry7xajrozjvEWBWeWG7SeG8hndp9jgxnD7MXnziWp5r3FEystFnumY36PscoUQ6PW3WiThSWWBO6KPqzA1uJobOzq6k/tOEIUVnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5JWYeeyM7revPmQjm60r7erg/lrzCS7PXXvywT8khb8=;
+ b=WjpZylqRHcoKsQ5/uvv8se8QVSn5VaEfkQqyRcGdkH3BOW8fq8ORw/ZWqL7Yd6XmW2Nyd1rGIFaGmgtmc3V4FVE4hVJxQ1J7QR/FO1OPFZdCddiYxdBtkSOJ7eEHvcAlvFX6LCoo1pd/CWfjBi6xBksvoSdBN6mgsBRGIdt23rXV9Gn2HzH7pvqvd6/yaGB53z1WnrDjAhCzg/+R9NB3ItdFbxFX3q9s0zLXjcfGSQ9q/XN1oR3/odNJ98S+so1UbF4Iex6aMoId44qGyLylDRDB32MemuiBN2OMNdKNXquieLgQ68lY2d56ryctPFvdZkJ3fu7MLLqsLjzGB4nf1A==
+Received: from MW4PR03CA0231.namprd03.prod.outlook.com (2603:10b6:303:b9::26)
+ by CY4PR12MB1448.namprd12.prod.outlook.com (2603:10b6:910:f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.22; Thu, 12 Aug
+ 2021 18:19:02 +0000
+Received: from CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b9:cafe::9e) by MW4PR03CA0231.outlook.office365.com
+ (2603:10b6:303:b9::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend
+ Transport; Thu, 12 Aug 2021 18:19:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT058.mail.protection.outlook.com (10.13.174.164) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4415.16 via Frontend Transport; Thu, 12 Aug 2021 18:19:02 +0000
+Received: from [10.2.53.40] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 12 Aug
+ 2021 18:19:01 +0000
+Subject: Re: [PATCH v2 3/3] mm/gup: Remove try_get_page(), call
+ try_get_compound_head() directly
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-s390@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210811070542.3403116-1-jhubbard@nvidia.com>
+ <20210811070542.3403116-4-jhubbard@nvidia.com> <20210812092204.GB4827@lst.de>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <5bf6d220-1126-97a6-c7cc-3c198612c5c2@nvidia.com>
+Date:   Thu, 12 Aug 2021 11:19:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210812092204.GB4827@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 301ff135-5351-4b57-abe9-08d95dbda9b3
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1448:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB144890BF79C849A4D23B78F8A8F99@CY4PR12MB1448.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zxTaqPiP1T/OwxyqfodGSeGGDnMv44N7+UdA8EK2Mf5ksmVPRZ2k9GgKlphkFMqBvD6zUW4KlE/qLMNjcAdzFKbBsgRF1CTK+ShjPDeXoWOyEBumSfB203zzpqS9XaorWILRK4je6+AU/HL0N4dVgEBQE4EmDp6L8+NR5S0Nq0ML9/lM/2WCw0ZXQRqb94BCA2aVInCYyiz1FfKebJZygFEXw58b0pTmhsx3NXnu1ctA65eDo7l7FCbH0iWE2jDA9Xbko15Bfil36ywGIEPOyN/5qrPvKE94fl4IhbO29ZU6Si05D68jjcBvC5WU9TbaKzHM2jSKMNJ3GK4g6pokwgprobSB018ooiyS65Kz2yNEBezUVh8Efc/hYyR8xB8SYmBxpochxDkpKIczpo4TowDretGXEsbfHTc8Krm5keSf1BIVw/ar68Xfw4bWeFOpVHIcyTafBfCaGQUWHpt3ukrV9lu4fhm7QPPHSUsgaS0SGTNBSCRs9fnyVG+dnf0z7gyFr+a83T4VxbpL6UvpMnI1JqSKs2X0/kx2NGI/DxQgJWPVuxzJAuQ319ul46O+TGKCIOv+wNxwhxDmHRNjLy4tc+nJ+/hjyOVWmAEkdkv0by1B8zFtUgRXMAdId8BVDrlKa/MNLwwPFSqtoQEcsCJPSVuMqfTOa2wgi+Y5vQKBBGwliNGJUItPX9WTJiC1Hfml2/pGlWFkr9UeYNpTFjKmsHD2QuqRWjAGdWG3zgA=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(36840700001)(46966006)(54906003)(2906002)(356005)(478600001)(5660300002)(31686004)(36756003)(8936002)(6916009)(36860700001)(316002)(7636003)(70586007)(70206006)(7416002)(8676002)(16576012)(36906005)(4326008)(82740400003)(4744005)(86362001)(426003)(2616005)(53546011)(26005)(336012)(47076005)(186003)(16526019)(82310400003)(31696002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 18:19:02.4333
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 301ff135-5351-4b57-abe9-08d95dbda9b3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1448
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add yet another spinlock for the TDP MMU and take it when marking indirect
-shadow pages unsync.  When using the TDP MMU and L1 is running L2(s) with
-nested TDP, KVM may encounter shadow pages for the TDP entries managed by
-L1 (controlling L2) when handling a TDP MMU page fault.  The unsync logic
-is not thread safe, e.g. the kvm_mmu_page fields are not atomic, and
-misbehaves when a shadow page is marked unsync via a TDP MMU page fault,
-which runs with mmu_lock held for read, not write.
+On 8/12/21 2:22 AM, Christoph Hellwig wrote:
+> On Wed, Aug 11, 2021 at 12:05:42AM -0700, John Hubbard wrote:
+>> -		if (unlikely(!try_get_page(page)))
+>> +		if (unlikely(try_get_compound_head(page, 1) == NULL))
+> 
+> Why not a simple ! instead of the == NULL?
 
-Lack of a critical section manifests most visibly as an underflow of
-unsync_children in clear_unsync_child_bit() due to unsync_children being
-corrupted when multiple CPUs write it without a critical section and
-without atomic operations.  But underflow is the best case scenario.  The
-worst case scenario is that unsync_children prematurely hits '0' and
-leads to guest memory corruption due to KVM neglecting to properly sync
-shadow pages.
+I'll fix those up and post a v4.
 
-Use an entirely new spinlock even though piggybacking tdp_mmu_pages_lock
-would functionally be ok.  Usurping the lock could degrade performance when
-building upper level page tables on different vCPUs, especially since the
-unsync flow could hold the lock for a comparatively long time depending on
-the number of indirect shadow pages and the depth of the paging tree.
+> 
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
 
-For simplicity, take the lock for all MMUs, even though KVM could fairly
-easily know that mmu_lock is held for write.  If mmu_lock is held for
-write, there cannot be contention for the inner spinlock, and marking
-shadow pages unsync across multiple vCPUs will be slow enough that
-bouncing the kvm_arch cacheline should be in the noise.
+Thanks for the reviews!
 
-Note, even though L2 could theoretically be given access to its own EPT
-entries, a nested MMU must hold mmu_lock for write and thus cannot race
-against a TDP MMU page fault.  I.e. the additional spinlock only _needs_ to
-be taken by the TDP MMU, as opposed to being taken by any MMU for a VM
-that is running with the TDP MMU enabled.  Holding mmu_lock for read also
-prevents the indirect shadow page from being freed.  But as above, keep
-it simple and always take the lock.
 
-Alternative #1, the TDP MMU could simply pass "false" for can_unsync and
-effectively disable unsync behavior for nested TDP.  Write protecting leaf
-shadow pages is unlikely to noticeably impact traditional L1 VMMs, as such
-VMMs typically don't modify TDP entries, but the same may not hold true for
-non-standard use cases and/or VMMs that are migrating physical pages (from
-L1's perspective).
-
-Alternative #2, the unsync logic could be made thread safe.  In theory,
-simply converting all relevant kvm_mmu_page fields to atomics and using
-atomic bitops for the bitmap would suffice.  However, (a) an in-depth audit
-would be required, (b) the code churn would be substantial, and (c) legacy
-shadow paging would incur additional atomic operations in performance
-sensitive paths for no benefit (to legacy shadow paging).
-
-Fixes: a2855afc7ee8 ("KVM: x86/mmu: Allow parallel page faults for the TDP MMU")
-Cc: stable@vger.kernel.org
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- Documentation/virt/kvm/locking.rst |  8 ++++----
- arch/x86/include/asm/kvm_host.h    |  7 +++++++
- arch/x86/kvm/mmu/mmu.c             | 28 ++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-index 8138201efb09..5d27da356836 100644
---- a/Documentation/virt/kvm/locking.rst
-+++ b/Documentation/virt/kvm/locking.rst
-@@ -31,10 +31,10 @@ On x86:
- 
- - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock
- 
--- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock is
--  taken inside kvm->arch.mmu_lock, and cannot be taken without already
--  holding kvm->arch.mmu_lock (typically with ``read_lock``, otherwise
--  there's no need to take kvm->arch.tdp_mmu_pages_lock at all).
-+- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock and
-+  kvm->arch.mmu_unsync_pages_lock are taken inside kvm->arch.mmu_lock, and
-+  cannot be taken without already holding kvm->arch.mmu_lock (typically with
-+  ``read_lock`` for the TDP MMU, thus the need for additional spinlocks).
- 
- Everything else is a leaf: no other lock is taken inside the critical
- sections.
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 20daaf67a5bf..cf32b87b6bd3 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1036,6 +1036,13 @@ struct kvm_arch {
- 	struct list_head lpage_disallowed_mmu_pages;
- 	struct kvm_page_track_notifier_node mmu_sp_tracker;
- 	struct kvm_page_track_notifier_head track_notifier_head;
-+	/*
-+	 * Protects marking pages unsync during page faults, as TDP MMU page
-+	 * faults only take mmu_lock for read.  For simplicity, the unsync
-+	 * pages lock is always taken when marking pages unsync regardless of
-+	 * whether mmu_lock is held for read or write.
-+	 */
-+	spinlock_t mmu_unsync_pages_lock;
- 
- 	struct list_head assigned_dev_head;
- 	struct iommu_domain *iommu_domain;
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a272ccbddfa1..cef526dac730 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2596,6 +2596,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
- {
- 	struct kvm_mmu_page *sp;
-+	bool locked = false;
- 
- 	/*
- 	 * Force write-protection if the page is being tracked.  Note, the page
-@@ -2618,9 +2619,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
- 		if (sp->unsync)
- 			continue;
- 
-+		/*
-+		 * TDP MMU page faults require an additional spinlock as they
-+		 * run with mmu_lock held for read, not write, and the unsync
-+		 * logic is not thread safe.  Take the spinklock regardless of
-+		 * the MMU type to avoid extra conditionals/parameters, there's
-+		 * no meaningful penalty if mmu_lock is held for write.
-+		 */
-+		if (!locked) {
-+			locked = true;
-+			spin_lock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
-+
-+			/*
-+			 * Recheck after taking the spinlock, a different vCPU
-+			 * may have since marked the page unsync.  A false
-+			 * positive on the unprotected check above is not
-+			 * possible as clearing sp->unsync _must_ hold mmu_lock
-+			 * for write, i.e. unsync cannot transition from 0->1
-+			 * while this CPU holds mmu_lock for read (or write).
-+			 */
-+			if (READ_ONCE(sp->unsync))
-+				continue;
-+		}
-+
- 		WARN_ON(sp->role.level != PG_LEVEL_4K);
- 		kvm_unsync_page(vcpu, sp);
- 	}
-+	if (locked)
-+		spin_unlock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
- 
- 	/*
- 	 * We need to ensure that the marking of unsync pages is visible
-@@ -5604,6 +5630,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
- {
- 	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
- 
-+	spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
-+
- 	if (!kvm_mmu_init_tdp_mmu(kvm))
- 		/*
- 		 * No smp_load/store wrappers needed here as we are in
+thanks,
 -- 
-2.33.0.rc1.237.g0d66db33f3-goog
-
+John Hubbard
+NVIDIA
