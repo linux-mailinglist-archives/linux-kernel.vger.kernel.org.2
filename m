@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D4D3EA7EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F413EA7F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbhHLPqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:46:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37228 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhHLPqo (ORCPT
+        id S238324AbhHLPrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:47:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232854AbhHLPrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:46:44 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E5B2E222A7;
-        Thu, 12 Aug 2021 15:46:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628783177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 12 Aug 2021 11:47:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628783230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0jq1cdUU1f3lC+QwBs1xbMBuXa4d+oj3m5zq9K77zEo=;
-        b=ve112nHypYRMFshL0A8F+/PZOW8gytqyGs16jJa29/Y4F34LfL9NtH3RH0ME5DqSFPMoG9
-        0Wt3BhqMpX252jLlCUMtx4xuC74z5D6AZ+lbSnOiCBwYXfgeOZpoO1G75KKjtUKFeJ+lwC
-        r06MxmDCSKGH8lHRX90n3lSazxA9Kw0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628783177;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0jq1cdUU1f3lC+QwBs1xbMBuXa4d+oj3m5zq9K77zEo=;
-        b=APM13VM6d7w8Rh3zVOxVvFIE/2YYLeIaDWMZzJvjpRc6EgdZ42JrfhZfMerfMUt7zVUKUM
-        BTRVFCx6JrJqAsCA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=dbiO+MMva1fa8LvmVgmRyZgOmFEpvjj/UPm96j5b36w=;
+        b=ZlTIC8pL7aIZ6GUjbEoSxD8Ke1dEHLy3gdHtbeoZxPQloa79vWIAUuj/5Y98XWXp0jVva6
+        ppsqGCgDr6Ebj19iVo20lL6/2x5ojRm07KpDMRirUT3PnzTw9jtqYjpdY/N8LuUd+040qz
+        OwgRCO4iI2JJP10HEVVaeTUuFjhdwD8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-47--wulLrj2NJyuBjQkfQcq6w-1; Thu, 12 Aug 2021 11:47:08 -0400
+X-MC-Unique: -wulLrj2NJyuBjQkfQcq6w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 40CDB13AC3;
-        Thu, 12 Aug 2021 15:46:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ABmdDklCFWFqdwAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 15:46:17 +0000
-To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        s32@nxp.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-2-clin@suse.com>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
-Message-ID: <bcb3ddd8-23c9-81c9-7d05-b475311068ec@suse.de>
-Date:   Thu, 12 Aug 2021 17:46:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46C0F1082922;
+        Thu, 12 Aug 2021 15:47:07 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.17.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D80571B5C0;
+        Thu, 12 Aug 2021 15:46:58 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 11:46:56 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Shirish S <shirish.s@amd.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/debug: print column titles of show_state_filter()
+Message-ID: <YRVCcKcqPQz9VHZL@lorien.usersys.redhat.com>
+References: <20210812140934.87476-1-shirish.s@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210805065429.27485-2-clin@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812140934.87476-1-shirish.s@amd.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob and NXP,
+Hi,
 
-On 05.08.21 08:54, Chester Lin wrote:
-> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
-> design 2 board ( S32G-VNP-RDB2).
+On Thu, Aug 12, 2021 at 07:39:34PM +0530 Shirish S wrote:
+> This addition in the debug output shall improve readablitly..
+> Its not intuitive for users that the pid printed in last column
+> is of parent process.
 > 
-> Signed-off-by: Chester Lin <clin@suse.com>
+> Without this patch:
+> 	localhost ~ # dmesg -w &
+> 	localhost ~ # echo w > /proc/sysrq-trigger
+> 	[22148.730225] sysrq: Show Blocked State
+> 	localhost ~ #
+> 
+> With this patch:
+> 	localhost ~ # dmesg -w &
+> 	localhost ~ # echo w > /proc/sysrq-trigger
+> 	[   99.979365] sysrq: Show Blocked State
+> -->	[   99.983471]   task                        PC stack   pid father
+> 	localhost ~ #
+
+Thanks. Probably want to update this "father" too.
+
+And as Steve said, maybe a line or 2 of actual data?
+
+Cheers,
+Phil
+
+> 
+> v2: Dropped #ifdef logic
+> v3: Sample output in commit message
+> 
+> Signed-off-by: Shirish S <shirish.s@amd.com>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  kernel/sched/core.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index e2097011c4b0..3914aa09e503 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -983,6 +983,13 @@ properties:
->            - const: solidrun,lx2160a-cex7
->            - const: fsl,lx2160a
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 20ffcc044134..d9c7014870d5 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -8174,6 +8174,9 @@ void show_state_filter(unsigned int state_filter)
+>  {
+>  	struct task_struct *g, *p;
 >  
-> +      - description: S32G2 based Boards
-> +        items:
-> +          - enum:
-> +              - fsl,s32g274a-evb
-> +              - fsl,s32g274a-rdb2
-
-@Rob: Should for new boards the description: syntax be used also for
-enums? Or just at SoC level, and for board enums still traditional #
-comments?
-
-> +          - const: fsl,s32g2
-
-@NXP: Is it sufficient here to have s32g2, or should we call this
-s32g274a and adjust the description above to S32G274A?
-
-Related, is the trailing A for Arm, like for the Layerscape chips? I.e.,
-not for Alpha or rev.A or something that will change for non-eval chips?
-
+> +	pr_info("  task%*s", BITS_PER_LONG == 32 ? 38 : 46,
+> +		"PC stack   ppid\n");
 > +
->        - description: S32V234 based Boards
->          items:
->            - enum:
-
-Otherwise,
-
-Reviewed-by: Andreas Färber <afaerber@suse.de>
-
-Thanks,
-Andreas
+>  	rcu_read_lock();
+>  	for_each_process_thread(g, p) {
+>  		/*
+> -- 
+> 2.17.1
+> 
 
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+
