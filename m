@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96993EA2D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B5B3EA2CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhHLKLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:11:03 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:35189 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234677AbhHLKLC (ORCPT
+        id S236181AbhHLKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236173AbhHLKKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:11:02 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id C235A320079B;
-        Thu, 12 Aug 2021 06:10:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 12 Aug 2021 06:10:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=SwJEYo/gCeYJ1PODsUSdC0nhKr
-        VM+B8+h8O+pAj/MfY=; b=DnQVGsoz5xG5380WBCtyD2kmRGa9Ucy9JgFJ9TIlJ8
-        hRpyAvDN+GJFZyp9ezJnZgoTBRjg3eYf9s8LDvVgTtu4EOyPdBJHEmm5cA2si18E
-        g5kLjUN/ogg+RhFWbZLIF0LWB7Npl2FJFKjnyEDyuRRSebVxps8kpg9f4HhF+/RM
-        jENuv3RHIpwK7nRTIN5IPY5U+SmEcWEPusg5bozDUTHsw7A4yUUJ/JDn8bAGWacP
-        k3x/uyniU5QSz33TsZvEHimmqi3/x0hCOJnzb3LNB5GE5lEfM1Cl2CZYFkeZCCix
-        KiVmCHuFSyNPtlkTo3vP9JbT6151vxzbokQKcoeBGE9A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SwJEYo/gCeYJ1PODs
-        USdC0nhKrVM+B8+h8O+pAj/MfY=; b=b9TPXfkMSPwfpJ2xtqfIk9eD9GU0ncOiC
-        kTR73NZ5PcPPDOVi2c/SgBXKVYfvV3zNq7yjuvQZpE349oL43AuJWZfBkAQ4ltMK
-        GFNnJnArCZc4T4iQ6CVwMaQ2jt50VPl/lcPUPK8EriZLC9/7XRIXd9CT6whVHJmI
-        sYNEap/rwX+TmqLdrxWyOkWJh0xWQg0r3TRAolyi8O159e6Nwcs+3GwjsbiRkUNO
-        wrLXexFIfSrMPbTzJQx1JDJTnpiHoGQJPArssq+nzw67+4QPJU7ab1cG8/eWrVBM
-        ZhB2NKaYKlKRmHw60CNvKWnHjV4UXIJitxY+NNcfuIh2s+McbQtvw==
-X-ME-Sender: <xms:mvMUYeojZnIexCqKYEuONIITqj6JLqcZBLJKjVTUWYbq8xnoY8M5EA>
-    <xme:mvMUYcqib8nW-CjZgQ2STndkvnueHBNeXxXQL7eCQ6PzePl0WrWHROWIU0YOafjOh
-    TDrLVWJwfXC7cANlzw>
-X-ME-Received: <xmr:mvMUYTMkYkZSGetCeYtfQor44C4Jl9SLmQAvvXRy_x20Vcm4v8QGdgMWJkVip2onqk7UBSdpbpBwOfrU2V9lJ12u8ZoL43kcQE-fDwdacwYOyPlt1GX_NZGg1HQpjw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeefgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfrvght
-    vghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrhhnpe
-    eugfelkedvtdejffefjeehveelfeevkefgudduhfeghfefgedtheevjeefffffgfenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhessh
-    hvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:mvMUYd6nNgJzfZiMSO9OO9sj_LJQaXE1KnTwqSXbP-04y81yV2RlvQ>
-    <xmx:mvMUYd6xAo0nWUnSSNlxn16qf8V9OSBDQjOS9iX701GeE3Wm2wgmnw>
-    <xmx:mvMUYdjLgXNlXFUZuSQKl9_vQfhZL_V4s_6ohOj2Pv83vihSMM-ySA>
-    <xmx:nPMUYbTyARdhkySVWDhQPqpXrLRE5WFCwRpPZ-cubQXLH5MfdqtoaQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Aug 2021 06:10:33 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] irqchip/apple-aic: fix irq_disable from within irq handlers
-Date:   Thu, 12 Aug 2021 12:09:42 +0200
-Message-Id: <20210812100942.17206-1-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Thu, 12 Aug 2021 06:10:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574DDC061799;
+        Thu, 12 Aug 2021 03:09:45 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 10:09:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628762983;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIc2D9bxHOWfX49qYEC3q6JpMD8s1z/PNmyXUyrZx/k=;
+        b=tuxjEWbiKVvygZpdPtxSGMZixBErPBb93btDGIPuqUwzJQTUMlKOsPi5jYUKxuiVH3SYOF
+        1SGaI2aGRPFG++pjIZSfqaqZ8svbN41KGwR3QiiFd5uubINsY0NT9DY2ZDgZH7EMDGZkvV
+        LHcEECzTAy3uYA97tP6q210NDhqHBnPTBh3sjOzN89MBCtgQlpinmJvztzopPLkjdHuzI5
+        5Kl2xv9oZOzA1OL/xsJVUrIu+u9OzSefYvTBSZekP0RoBpiSTcDDC29yzJzN01qrdv8pAu
+        FXC64Ir8PUE0kHMSk0n4Cn4jJWeIH5ZbHxNOhXNozJ814TTCcWU5Q+sEDXknvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628762983;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIc2D9bxHOWfX49qYEC3q6JpMD8s1z/PNmyXUyrZx/k=;
+        b=9PvtLAPEDYkzr1bZpfsrf5ak7qKJ/bB+RaFdDbqJCfHf1w9Dxb0g6gckkxC7XvuiVe5kz5
+        ng4Ts5mi+K9mW/Dw==
+From:   "tip-bot2 for Paul Gortmaker" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] x86/reboot: Limit Dell Optiplex 990 quirk to early
+ BIOS versions
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210530162447.996461-4-paul.gortmaker@windriver.com>
+References: <20210530162447.996461-4-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162876298213.395.8927635127005087509.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When disable_irq_nosync for an interrupt is called from within its
-interrupt handler, this interrupt is only marked as disabled with the
-intention to mask it when it triggers again.
-The AIC hardware however automatically masks the interrupt when it is read.
-aic_irq_eoi then unmasks it again if it's not disabled *and* not masked.
-This results in a state mismatch between the hardware state and the
-state kept in irq_data: The hardware interrupt is masked but
-IRQD_IRQ_MASKED is not set. Any further calls to unmask_irq will directly
-return and the interrupt can never be enabled again.
+The following commit has been merged into the x86/misc branch of tip:
 
-Fix this by keeping the hardware and irq_data state in sync by unmasking in
-aic_irq_eoi if and only if the irq_data state also assumes the interrupt to
-be unmasked.
+Commit-ID:     a729691b541f6e63043beae72e635635abe5dc09
+Gitweb:        https://git.kernel.org/tip/a729691b541f6e63043beae72e635635abe5dc09
+Author:        Paul Gortmaker <paul.gortmaker@windriver.com>
+AuthorDate:    Sun, 30 May 2021 12:24:47 -04:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 12 Aug 2021 12:06:58 +02:00
 
-Fixes: 76cde2639411 ("irqchip/apple-aic: Add support for the Apple Interrupt Controller")
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
+x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS versions
+
+When this platform was relatively new in November 2011, with early BIOS
+revisions, a reboot quirk was added in commit 6be30bb7d750 ("x86/reboot:
+Blacklist Dell OptiPlex 990 known to require PCI reboot")
+
+However, this quirk (and several others) are open-ended to all BIOS
+versions and left no automatic expiry if/when the system BIOS fixed the
+issue, meaning that nobody is likely to come along and re-test.
+
+What is really problematic with using PCI reboot as this quirk does, is
+that it causes this platform to do a full power down, wait one second,
+and then power back on.  This is less than ideal if one is using it for
+boot testing and/or bisecting kernels when legacy rotating hard disks
+are installed.
+
+It was only by chance that the quirk was noticed in dmesg - and when
+disabled it turned out that it wasn't required anymore (BIOS A24), and a
+default reboot would work fine without the "harshness" of power cycling the
+machine (and disks) down and up like the PCI reboot does.
+
+Doing a bit more research, it seems that the "newest" BIOS for which the
+issue was reported[1] was version A06, however Dell[2] seemed to suggest
+only up to and including version A05, with the A06 having a large number of
+fixes[3] listed.
+
+As is typical with a new platform, the initial BIOS updates come frequently
+and then taper off (and in this case, with a revival for CPU CVEs); a
+search for O990-A<ver>.exe reveals the following dates:
+
+        A02     16 Mar 2011
+        A03     11 May 2011
+        A06     14 Sep 2011
+        A07     24 Oct 2011
+        A10     08 Dec 2011
+        A14     06 Sep 2012
+        A16     15 Oct 2012
+        A18     30 Sep 2013
+        A19     23 Sep 2015
+        A20     02 Jun 2017
+        A23     07 Mar 2018
+        A24     21 Aug 2018
+
+While it's overkill to flash and test each of the above, it would seem
+likely that the issue was contained within A0x BIOS versions, given the
+dates above and the dates of issue reports[4] from distros.  So rather than
+just throw out the quirk entirely, limit the scope to just those early BIOS
+versions, in case people are still running systems from 2011 with the
+original as-shipped early A0x BIOS versions.
+
+[1] https://lore.kernel.org/lkml/1320373471-3942-1-git-send-email-trenn@suse.de/
+[2] https://www.dell.com/support/kbdoc/en-ca/000131908/linux-based-operating-systems-stall-upon-reboot-on-optiplex-390-790-990-systems
+[3] https://www.dell.com/support/home/en-ca/drivers/driversdetails?driverid=85j10
+[4] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/768039
+
+Fixes: 6be30bb7d750 ("x86/reboot: Blacklist Dell OptiPlex 990 known to require PCI reboot")
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210530162447.996461-4-paul.gortmaker@windriver.com
+
 ---
- drivers/irqchip/irq-apple-aic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/reboot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-aic.c
-index b8c06bd8659e..6fc145aacaf0 100644
---- a/drivers/irqchip/irq-apple-aic.c
-+++ b/drivers/irqchip/irq-apple-aic.c
-@@ -226,7 +226,7 @@ static void aic_irq_eoi(struct irq_data *d)
- 	 * Reading the interrupt reason automatically acknowledges and masks
- 	 * the IRQ, so we just unmask it here if needed.
- 	 */
--	if (!irqd_irq_disabled(d) && !irqd_irq_masked(d))
-+	if (!irqd_irq_masked(d))
- 		aic_irq_unmask(d);
- }
- 
--- 
-2.25.1
-
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index ebfb911..0a40df6 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -388,10 +388,11 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
+ 	},
+ 	{	/* Handle problems with rebooting on the OptiPlex 990. */
+ 		.callback = set_pci_reboot,
+-		.ident = "Dell OptiPlex 990",
++		.ident = "Dell OptiPlex 990 BIOS A0x",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
++			DMI_MATCH(DMI_BIOS_VERSION, "A0"),
+ 		},
+ 	},
+ 	{	/* Handle problems with rebooting on Dell 300's */
