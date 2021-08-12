@@ -2,186 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97A53EA097
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DD43EA07E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhHLIda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:33:30 -0400
-Received: from mga04.intel.com ([192.55.52.120]:13037 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhHLId3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:33:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="213452396"
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="213452396"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 01:33:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="446407457"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 12 Aug 2021 01:33:03 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mE698-000MVt-EJ; Thu, 12 Aug 2021 08:33:02 +0000
-Date:   Thu, 12 Aug 2021 16:32:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 1fd628c2ee3d3d24661520f0356c0329389372ad
-Message-ID: <6114dcb2.GxHgyS6t9bHPLwDK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235135AbhHLIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:22:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:17007 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234199AbhHLIWb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 04:22:31 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Glfhb3gDkzb17L;
+        Thu, 12 Aug 2021 16:18:23 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 16:22:00 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 12 Aug
+ 2021 16:22:00 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <maco@android.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <qiulaibin@huawei.com>
+Subject: [PATCH -next] loop: fix loop_validate_block_size() can't make sense
+Date:   Thu, 12 Aug 2021 16:34:53 +0800
+Message-ID: <20210812083453.761319-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 1fd628c2ee3d3d24661520f0356c0329389372ad  Merge branch 'x86/irq'
+We config the block size of a loop device throuth
+the following process:
 
-elapsed time: 725m
+lo_ioctl(..., unsigned long arg)
+|                      ^^^^
+lo_simple_ioctl(..., unsigned long arg)
+|                             ^^^^
+loop_set_block_size(..., unsigned long arg)
+        |                         ^^^^
+        loop_validate_block_size(unsigned short bsize)
+        |                                 ^^^^^
+        blk_queue_logical_block_size(..., unsigned int size) {
+                '''
+                limits->logical_block_size = size;
+                        ^^^^ int
+                '''
+        }
 
-configs tested: 128
-configs skipped: 3
+loop_validate_block_size() will check the validity of bsize.
+But long to short will be truncated(eg arg=1049600 and
+it becomes 1024 after truncation by short. The block size
+must within the range of 512 ~ PAGE_SZIE, This truncation will
+turn illegal block szie to legal). The wrong of block size will
+raise other errors.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                      pic32mzda_defconfig
-nios2                            allyesconfig
-riscv                    nommu_virt_defconfig
-arm                      footbridge_defconfig
-arm                         assabet_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                        qi_lb60_defconfig
-mips                        jmr3927_defconfig
-mips                     loongson1b_defconfig
-x86_64                              defconfig
-arm                          badge4_defconfig
-powerpc                      makalu_defconfig
-mips                   sb1250_swarm_defconfig
-arm                         nhk8815_defconfig
-arm                       omap2plus_defconfig
-sh                          landisk_defconfig
-m68k                        m5307c3_defconfig
-sh                               j2_defconfig
-alpha                            allyesconfig
-mips                           ip22_defconfig
-arm                            zeus_defconfig
-sh                            migor_defconfig
-arm                  colibri_pxa300_defconfig
-x86_64                           allyesconfig
-arm                           h3600_defconfig
-powerpc                 mpc836x_mds_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210811
-i386                 randconfig-a001-20210811
-i386                 randconfig-a002-20210811
-i386                 randconfig-a003-20210811
-i386                 randconfig-a006-20210811
-i386                 randconfig-a005-20210811
-i386                 randconfig-a004-20210810
-i386                 randconfig-a002-20210810
-i386                 randconfig-a001-20210810
-i386                 randconfig-a003-20210810
-i386                 randconfig-a006-20210810
-i386                 randconfig-a005-20210810
-i386                 randconfig-a004-20210812
-i386                 randconfig-a003-20210812
-i386                 randconfig-a002-20210812
-i386                 randconfig-a001-20210812
-i386                 randconfig-a006-20210812
-i386                 randconfig-a005-20210812
-x86_64               randconfig-a013-20210811
-x86_64               randconfig-a011-20210811
-x86_64               randconfig-a012-20210811
-x86_64               randconfig-a016-20210811
-x86_64               randconfig-a014-20210811
-x86_64               randconfig-a015-20210811
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-x86_64               randconfig-a006-20210812
-x86_64               randconfig-a004-20210812
-x86_64               randconfig-a003-20210812
-x86_64               randconfig-a005-20210812
-x86_64               randconfig-a002-20210812
-x86_64               randconfig-a001-20210812
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
-x86_64               randconfig-a004-20210811
-x86_64               randconfig-a006-20210811
-x86_64               randconfig-a003-20210811
-x86_64               randconfig-a002-20210811
-x86_64               randconfig-a005-20210811
-x86_64               randconfig-a001-20210811
-
+Fixes: 3448914e8cc55 ("loop: Add LOOP_CONFIGURE ioctl")
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/block/loop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index fa1c298a8cfb..8fd551c00a9b 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -277,7 +277,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
+  * @bsize: size to validate
+  */
+ static int
+-loop_validate_block_size(unsigned short bsize)
++loop_validate_block_size(unsigned long bsize)
+ {
+ 	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+ 		return -EINVAL;
+-- 
+2.22.0
+
