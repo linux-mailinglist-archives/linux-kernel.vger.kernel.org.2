@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5323EA33E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C027F3EA33F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236683AbhHLLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:05:08 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:52728 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235696AbhHLLFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:05:07 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mE8Vt-0003C0-9C; Thu, 12 Aug 2021 19:04:41 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mE8Vs-0001bk-91; Thu, 12 Aug 2021 19:04:40 +0800
-Date:   Thu, 12 Aug 2021 19:04:40 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 2/2] crypto: hisilicon/sec - modify the hardware endian
- configuration
-Message-ID: <20210812110440.GB5890@gondor.apana.org.au>
-References: <1628243914-33224-1-git-send-email-yekai13@huawei.com>
- <1628243914-33224-3-git-send-email-yekai13@huawei.com>
+        id S236693AbhHLLFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231667AbhHLLFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:05:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADD8C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:05:12 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id w14so8751422pjh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
+        b=A/CyD2IUxQnjac8rg2qBrLi5SJDTIceFfwRQSZAa/MFOm809busV09hQPkdY/+lTW8
+         l6iwqAIq5GgO/xSOXOvPdNMsvSJxrNU1QtBADJct8QBobC+AK8cLqakwW6EkKRBXyLpS
+         JKrX2l4oALWeyhB+kDtbzukuYB6PxD4hgWNLXcp2BRMyenRdbQxMlQDI0aS0HEt5GXIH
+         Xw9ZR/x9u23ObWrbjkIn4JJ5hxh28qJg2FaIC9LYvYvhNadStZ7Cbv/0lvbgWfc79VZa
+         t5oK58Ypv5ihlxvkl5VeVcjj5i0gd3ijBSgPaVvV1P3wPM/y9+rwbZAIYpa0PAORZB5E
+         0fFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
+        b=LME25GLT963/3soa50u5mquYV9gWt5F807+2lgPEo38eSuaSHkPh6N6jqG+0NuF+7x
+         3hIrzKUSuJsC0lID2Akv2NvIYVWVeSIH094xzg9mL0/cif50OUa6MHx6Kgu5ZlmtsiPU
+         MxHn1Ga+9P79bAHGVCjBKtb7NPbXDjkNJjwdpmboFLzeBxBpj3Poy20/HQMFSPX0RcDP
+         av4vi/Dcr+BWjw/u6gLn5ehuov//TJbc5AWE0Nz3/AqO4mrSmolX/ijQ76mZyeyMERVY
+         jGljOXcJdfExK7yruWlBF91/Q0Hty8LLmcz4+WhASp18mXJk6tOwzdokNHbOey5J/GhG
+         G0Fw==
+X-Gm-Message-State: AOAM532ZxailvWCX3rjLxB57SFxLbZttc4Qv8nksRdGI4elHBcn4GgIy
+        YRyAJQEmxfYkeFdfMfeJV2lftcqvX/kixEEhPrA=
+X-Google-Smtp-Source: ABdhPJzu/r90snvp+fH3leGGLNCaLRWakCvY0t0KI5DM4JYAXk6QXYToVH0iOZxKUygwdZmaEfGuZRetMtTCykG2hOI=
+X-Received: by 2002:a17:902:e5cd:b029:12c:fb5a:18c8 with SMTP id
+ u13-20020a170902e5cdb029012cfb5a18c8mr3217935plf.79.1628766311858; Thu, 12
+ Aug 2021 04:05:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628243914-33224-3-git-send-email-yekai13@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a17:90a:ae10:0:0:0:0 with HTTP; Thu, 12 Aug 2021 04:05:11
+ -0700 (PDT)
+Reply-To: sara2abdel@gmail.com
+From:   Sarah Abdel <majo1mba@gmail.com>
+Date:   Thu, 12 Aug 2021 13:05:11 +0200
+Message-ID: <CACzRdyvaZmda3nHTP+QUuVzjJjNCZjs8dmO5cSa7Qxuffvv-+Q@mail.gmail.com>
+Subject: Good day
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 05:58:34PM +0800, Kai Ye wrote:
->
-> +	reg &= ~(BIT(1) | BIT(0));
-> +#ifndef CONFIG_64BIT
-> +	reg |= BIT(1);
-> +#endif
-> +
-> +#ifndef CONFIG_CPU_LITTLE_ENDIAN
-> +	reg |= BIT(0);
-> +#endif
+Hello,
 
-Please rewrite these without ifdefs.  For example,
+My name is Mrs.Sarah Abdel,I want to donate my fund $ 8.6 million USD
+to you on charity name to help the poor People.
 
-	if (!IS_ENABLED(CONFIG_64BIT))
-		reg |= BIT(1);
-	if (!IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
-		reg |= BIT(0);
+As soon as I read from you I will give you more details on how to
+achieve this goal and get this fund transferred into your bank
+account.
 
-I can't vouch for the logic here so please double-check.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Thanks have a nice day,
+Mrs.Sarah Abdel
