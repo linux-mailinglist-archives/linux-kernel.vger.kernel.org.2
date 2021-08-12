@@ -2,155 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50183EA7F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F503EA807
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238395AbhHLPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238025AbhHLPu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:50:56 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69EBF60FC0;
-        Thu, 12 Aug 2021 15:50:31 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mECyU-003thu-9n; Thu, 12 Aug 2021 11:50:30 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 2/2] libtracefs: Have end event variables not be the end event field name
-Date:   Thu, 12 Aug 2021 11:50:29 -0400
-Message-Id: <20210812155029.929048-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210812155029.929048-1-rostedt@goodmis.org>
-References: <20210812155029.929048-1-rostedt@goodmis.org>
+        id S238467AbhHLPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:53:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49974 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238195AbhHLPxw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:53:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7B0261FF5E;
+        Thu, 12 Aug 2021 15:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628783606;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2q0A/coQFwqBSuVcyXsF0R7oesMeHAt0aGAIiyJS3Sg=;
+        b=Y8UCUtdVkeZZSD/b/zQelqCp4JuS78wwdZMcb9hTkXml99ZbVpbDguA66C399jbylXKMyN
+        uoBCaJ3qB7p6pvXjZ9teegJvmNHjyrebMlyUzNHb+geoVnWf8pwRtBZvFzjNz7Bit09O+j
+        S0p4174DzhYry4L6J9IgFA8IyQab+b8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628783606;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2q0A/coQFwqBSuVcyXsF0R7oesMeHAt0aGAIiyJS3Sg=;
+        b=bKPzILz34oRvqZbcLC8wu1iU4MBhVamsgVwm3iqEpg9414MmZB6eJ0A/qt3oD+ZZBqqsFW
+        7ZwWgOtq5SbgF5DQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 66933A3F74;
+        Thu, 12 Aug 2021 15:53:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D04B7DA733; Thu, 12 Aug 2021 17:50:32 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 17:50:32 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210812155032.GL5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+ <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
+> On 12/8/21 6:38 pm, David Sterba wrote:
+> > On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
+> >> When removing a writeable device in __btrfs_free_extra_devids, the rw
+> >> device count should be decremented.
+> >>
+> >> This error was caught by Syzbot which reported a warning in
+> >> close_fs_devices because fs_devices->rw_devices was not 0 after
+> >> closing all devices. Here is the call trace that was observed:
+> >>
+> >>    btrfs_mount_root():
+> >>      btrfs_scan_one_device():
+> >>        device_list_add();   <---------------- device added
+> >>      btrfs_open_devices():
+> >>        open_fs_devices():
+> >>          btrfs_open_one_device();   <-------- writable device opened,
+> >> 	                                     rw device count ++
+> >>      btrfs_fill_super():
+> >>        open_ctree():
+> >>          btrfs_free_extra_devids():
+> >> 	  __btrfs_free_extra_devids();  <--- writable device removed,
+> >> 	                              rw device count not decremented
+> >> 	  fail_tree_roots:
+> >> 	    btrfs_close_devices():
+> >> 	      close_fs_devices();   <------- rw device count off by 1
+> >>
+> >> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
+> >> mount if we don't have replace item with target device"), rw_devices
+> >> was decremented on removing a writable device in
+> >> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
+> >> was not set for the device. However, this check does not need to be
+> >> reinstated as it is now redundant and incorrect.
+> >>
+> >> In __btrfs_free_extra_devids, we skip removing the device if it is the
+> >> target for replacement. This is done by checking whether device->devid
+> >> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
+> >> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
+> >> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
+> >> and so it's redundant to test for that bit.
+> >>
+> >> Additionally, following commit 82372bc816d7 ("Btrfs: make
+> >> the logic of source device removing more clear"), rw_devices is
+> >> incremented whenever a writeable device is added to the alloc
+> >> list (including the target device in btrfs_dev_replace_finishing), so
+> >> all removals of writable devices from the alloc list should also be
+> >> accompanied by a decrement to rw_devices.
+> >>
+> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> >> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> >> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> >> ---
+> >>   fs/btrfs/volumes.c | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> >> index 807502cd6510..916c25371658 100644
+> >> --- a/fs/btrfs/volumes.c
+> >> +++ b/fs/btrfs/volumes.c
+> >> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+> >>   		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+> >>   			list_del_init(&device->dev_alloc_list);
+> >>   			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> >> +			fs_devices->rw_devices--;
+> >>   		}
+> >>   		list_del_init(&device->dev_list);
+> >>   		fs_devices->num_devices--;
+> > 
+> > I've hit a crash on master branch with stacktrace very similar to one
+> > this bug was supposed to fix. It's a failed assertion on device close.
+> > This patch was the last one to touch it and it matches some of the
+> > keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
+> > the original patch but was not reinstated in your fix.
+> > 
+> > I'm not sure how reproducible it is, right now I have only one instance
+> > and am hunting another strange problem. They could be related.
+> > 
+> > assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
+> > 
+> > https://susepaste.org/view/raw/18223056 full log with other stacktraces,
+> > possibly relatedg
+> > 
+> 
+> Looking at the logs, it seems that a dev_replace was started, then 
+> suspended. But it wasn't canceled or resumed before the fs devices were 
+> closed.
+> 
+> I'll investigate further, just throwing some observations out there.
 
-Currently we have:
+Thanks. I'm testing the patch revert, no crash after first loop, I'll
+run a few more to be sure as it's not entirely reliable.
 
- # sqlhist -n wakeup 'select end.next_pid, (end.TIMESTAMP - start.TIMESTAMP) as lat
-   from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
-
-produces:
-
- echo 'wakeup s32 next_pid; u64 lat;' > /sys/kernel/tracing/synthetic_events
- echo 'hist:keys=pid:__arg_18871_1=common_timestamp' > /sys/kernel/tracing/events/sched/sched_waking/trigger
- echo 'hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmatch(sched.sched_waking).trace(wakeup,$next_pid,$lat)' > /sys/kernel/tracing/events/sched/sched_switch/trigger
-
-The issue is that we have "next_pid=next_pid" where if we want to change
-the above to use the "save" action:
-
- hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
-
-It fails with:
-
-   hist:sched:sched_switch: error: Couldn't find field
-    Command: hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
-                                                                       ^
-
-But by having the end vars be unique, then the above "save" works.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- src/tracefs-hist.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 9de70579a871..fefe251995ba 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -851,16 +851,19 @@ struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
- 
- static int add_synth_fields(struct tracefs_synth *synth,
- 			    const struct tep_format_field *field,
--			    const char *name)
-+			    const char *name, const char *var)
- {
- 	char **list;
- 	char *str;
- 	int ret;
- 
--	str = add_synth_field(field, name);
-+	str = add_synth_field(field, name ? : field->name);
- 	if (!str)
- 		return -1;
- 
-+	if (!name)
-+		name = var;
-+
- 	list = tracefs_list_add(synth->synthetic_fields, str);
- 	free(str);
- 	if (!list)
-@@ -942,7 +945,7 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 	if (ret < 0)
- 		goto pop_lists;
- 
--	ret = add_synth_fields(synth, key_field, name);
-+	ret = add_synth_fields(synth, key_field, name, NULL);
- 	if (ret < 0)
- 		goto pop_lists;
- 
-@@ -1071,7 +1074,7 @@ int tracefs_synth_add_compare_field(struct tracefs_synth *synth,
- 	if (ret < 0)
- 		goto out_free;
- 
--	ret = add_synth_fields(synth, start_field, name);
-+	ret = add_synth_fields(synth, start_field, name, NULL);
- 	if (ret < 0)
- 		goto out_free;
- 
-@@ -1116,7 +1119,7 @@ __hidden int synth_add_start_field(struct tracefs_synth *synth,
- 	if (ret)
- 		goto out_free;
- 
--	ret = add_synth_fields(synth, field, name);
-+	ret = add_synth_fields(synth, field, name, NULL);
- 	if (ret)
- 		goto out_free;
- 
-@@ -1188,6 +1191,7 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 				const char *name)
- {
- 	const struct tep_format_field *field;
-+	char *tmp_var = NULL;
- 	int ret;
- 
- 	if (!synth || !end_field) {
-@@ -1196,17 +1200,17 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 	}
- 
- 	if (!name)
--		name = end_field;
-+		tmp_var = new_arg(synth);
- 
- 	if (!trace_verify_event_field(synth->end_event, end_field, &field))
- 		return -1;
- 
--	ret = add_var(&synth->end_vars, name, end_field, false);
-+	ret = add_var(&synth->end_vars, name ? : tmp_var, end_field, false);
- 	if (ret)
- 		goto out;
- 
--	ret = add_synth_fields(synth, field, name);
--
-+	ret = add_synth_fields(synth, field, name, tmp_var);
-+	free(tmp_var);
-  out:
- 	return ret;
- }
--- 
-2.30.2
-
+Sending the revert is option of last resort as we're approaching end of
+5.14 dev cycle and the crash prevents testing (unlike the fuzzer
+warning).
