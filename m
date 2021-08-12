@@ -2,151 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD2F3EAC09
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73073EAC0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238066AbhHLUmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
+        id S238153AbhHLUnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238024AbhHLUmg (ORCPT
+        with ESMTP id S238133AbhHLUnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:42:36 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C9FC0612A9;
-        Thu, 12 Aug 2021 13:42:05 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id p22so7068116qki.10;
-        Thu, 12 Aug 2021 13:42:05 -0700 (PDT)
+        Thu, 12 Aug 2021 16:43:01 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D1FC06124A
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:36 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id c5so1300582ybn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0vSamTyccptzOdkOr+v7GJn23T5SHRt0Wd7iQnG52jY=;
-        b=WsddWCX2bH0za7uq6RXsMB/yT5Y5kXw5Dfi4StrzwM6j9+0IbgfdtWevLRetgVsmcq
-         FY9rZ8rN7XopwA3C2iMrRvd2jmPgW4oMLutiEKRAntdFlcfMA/c1lxG04WyoA7LKTg7l
-         JydE/tfQVnOAaC6f5uAKubOjH/kQYZUOHPgmanqwU0A/VBdRoloHkxJhutB6Npl+6/79
-         zkQVpKT/QllZZzFCvA2S+DG2b/klg3GgsSxrvHQf6pd6lrqIGEQeer1L0sikZv4Fba/l
-         enEfwf/qF4NpYUxz2D0hDf3N7elMXpKuKG3D1Jw24k7VBZsX24xzKjbg49QUNj4IQBEH
-         jzfQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SocJctGaI1z5Y2V/7vECrCscsCsQ4+Z36X400HrEw90=;
+        b=MCNby1XiS34HtYanu4HEMdBBHb3yopMV+ncDfXZPodXtOcrBLr22b4Ls/BfzbM0orx
+         TqWQKlFF8n3hldLltBeAiIuRiSueXGuR/x6wcKtQeIgY/OG+ScEbKhwPxWoI0qGWrurb
+         kiGMVfasnwjaeCnwtMBVGUFibsTbivcP5DJBWTQD6rwAe5AGcxzA6Mnkl/CvWSac4XRb
+         YiwMTW85eHqLcg+YmYX0CvbbhkOF6naVhEq8CtV16QYgDMxcjI4jZ08tesEszudmUeNC
+         1yFv4FlBVwzeYuw+XFWEQjr8VdpUhfofcBPc7LX8p0I64vx950IJ6NgchwjIyMzAg1fE
+         3Hxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0vSamTyccptzOdkOr+v7GJn23T5SHRt0Wd7iQnG52jY=;
-        b=oT4+7B/dIvH4f7zSRnXw7c+yXRLkx0Qkrr1aE8qZ1W5jkNKvwwuH89SmOL1RSbALMB
-         /2Hdl8o8Q+EwIdkYI+5S6CAHLmWaD2tkStCdA/dn2FAxETgFDeyYdlgqcgHik5Ewp/y3
-         N+/gKZbaH49y+5UdusXBY+U9p/USM6qoKxK0KoSaixZfL2rlAl9fqSGy04VeSJ7nzcdF
-         o1PPuh8uKC4p2ZSMeS6mm+qEwOxobG1V0p4kDpsspF2wjKV1BWaaw8S6g0SemGTqawXg
-         bH7K0jEAP9qCncgYg+Qr351LcfXHnajDzThs9ui7eudEwuB62i4OtL4SaBgEzipVoJen
-         HlzA==
-X-Gm-Message-State: AOAM533Dupmd4rvvLumHdOp9Lu2XJOdEB/787wKfTXlm9RXQ3c7tQVnq
-        G3wV/RUXOQ2jJk1zs4uYiRc=
-X-Google-Smtp-Source: ABdhPJw/1/MKI/+YdMlNsbB9IH09a4UY8r9lfrOqTmOPC3J4ZFt6cYVEJKpp1D5Peg1nmERqRT4y+g==
-X-Received: by 2002:a05:620a:cea:: with SMTP id c10mr6698474qkj.238.1628800925058;
-        Thu, 12 Aug 2021 13:42:05 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:e89f:d077:9161:1bd7])
-        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 13:42:04 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] arm64: dts: rockchip: add Quartz64-A usb2 support
-Date:   Thu, 12 Aug 2021 16:41:16 -0400
-Message-Id: <20210812204116.2303617-9-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812204116.2303617-1-pgwipeout@gmail.com>
-References: <20210812204116.2303617-1-pgwipeout@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SocJctGaI1z5Y2V/7vECrCscsCsQ4+Z36X400HrEw90=;
+        b=AUN6kzIz8XJeGbbCciGrim8tCkIEwT3lLqE4Sx3Ho/Lki+u2ckgHy5NaLcA1AsweiW
+         49WB3tq2dntMIjwo+ars+L/yvYi+jxRoGnGc3CwhyUXcWiIDNqNcG9BJKCEWTS6IfUnJ
+         fyP9TM/h5kh7am5WiGiQwWoB18vDLAO+auPLrNEV0qpSW5DqguCPe5r6gg6XPAZ53r3j
+         13DbKb1z33kXy8PkkmWJuHEdRDah1pc6q8ih0/0rPFPH32uExPSXJNP18c53b4uM/ZyY
+         xVc8NsQGIOtfjt9bXF/yLFM7+oHoOLdtgUpPTOstGxPb5HicTu8yGvFBuNl2ETilHpbW
+         5/iA==
+X-Gm-Message-State: AOAM533lOyrtFxO2z29Qxyrrn2wm9N7hORfYJc7hpamdrytx5SEYYg2J
+        QUNbeFbRuQRKUHELAOj44K86wPGg5g1bFETTZzhn1Q==
+X-Google-Smtp-Source: ABdhPJzIgj0CrwWUnOBFfrhyb8EUrtawZ0J3NKD3b1jYgEH5AUQqaCmnuiuSctcAx1ohrVe08vfPNjodqk7WcRj2tmg=
+X-Received: by 2002:a25:bec2:: with SMTP id k2mr7239053ybm.234.1628800954923;
+ Thu, 12 Aug 2021 13:42:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210812203137.2880834-1-joshdon@google.com>
+In-Reply-To: <20210812203137.2880834-1-joshdon@google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 12 Aug 2021 22:42:23 +0200
+Message-ID: <CANn89iJK-PzFrN2S_jojN2rvZBfBJY4cLTg6q+uzF-vcrfrAeQ@mail.gmail.com>
+Subject: Re: [PATCH] fs/proc/uptime.c: fix idle time reporting in /proc/uptime
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the nodes and regulators to enable usb2 support on the Quartz64
-Model A.
+On Thu, Aug 12, 2021 at 10:31 PM Josh Don <joshdon@google.com> wrote:
+>
+> /proc/uptime reports idle time by reading the CPUTIME_IDLE field from
+> the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
+> continually updated on idle cpus, leading this value to appear
+> incorrectly small.
+>
+> /proc/stat performs an accounting update when reading idle time; we can
+> use the same approach for uptime.
+>
+> With this patch, /proc/stat and /proc/uptime now agree on idle time.
+> Additionally, the following shows idle time tick up consistently on an
+> idle machine:
+> (while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
+>
+> Reported-by: Luigi Rizzo <lrizzo@google.com>
+> Signed-off-by: Josh Don <joshdon@google.com>
+> ---
+>  fs/proc/stat.c              | 26 --------------------------
+>  fs/proc/uptime.c            | 13 ++++++++-----
+>  include/linux/kernel_stat.h |  1 +
+>  kernel/sched/cputime.c      | 28 ++++++++++++++++++++++++++++
+>  4 files changed, 37 insertions(+), 31 deletions(-)
+>
+> diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+> index 6561a06ef905..99796a8a5223 100644
+> --- a/fs/proc/stat.c
+> +++ b/fs/proc/stat.c
+> @@ -24,16 +24,6 @@
+>
+>  #ifdef arch_idle_time
+>
+> -static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+> -{
+> -       u64 idle;
+> -
+> -       idle = kcs->cpustat[CPUTIME_IDLE];
+> -       if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
+> -               idle += arch_idle_time(cpu);
+> -       return idle;
+> -}
+> -
+>  static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+>  {
+>         u64 iowait;
+> @@ -46,22 +36,6 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+>
+>  #else
+>
+> -static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+> -{
+> -       u64 idle, idle_usecs = -1ULL;
+> -
+> -       if (cpu_online(cpu))
+> -               idle_usecs = get_cpu_idle_time_us(cpu, NULL);
+> -
+> -       if (idle_usecs == -1ULL)
+> -               /* !NO_HZ or cpu offline so we can rely on cpustat.idle */
+> -               idle = kcs->cpustat[CPUTIME_IDLE];
+> -       else
+> -               idle = idle_usecs * NSEC_PER_USEC;
+> -
+> -       return idle;
+> -}
+> -
+>  static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+>  {
+>         u64 iowait, iowait_usecs = -1ULL;
 
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
----
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+...
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index a3cdb6c2bec6..53ea5c13076b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -75,6 +75,22 @@ vcc5v0_usb: vcc5v0_usb {
- 		vin-supply = <&vcc12v_dcin>;
- 	};
- 
-+	/* all four ports are controlled by one gpio
-+	 * the host ports are sourced from vcc5v0_usb
-+	 * the otg port is sourced from vcc5v0_midu
-+	 */
-+	vcc5v0_usb20_host: vcc5v0_usb20_host {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_usb20_host";
-+		enable-active-high;
-+		gpio = <&gpio4 RK_PB5 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&vcc5v0_usb20_host_en>;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc5v0_usb>;
-+	};
-+
- 	vcc3v3_sd: vcc3v3_sd {
- 		compatible = "regulator-fixed";
- 		enable-active-low;
-@@ -367,6 +383,12 @@ pmic_int_l: pmic-int-l {
- 		};
- 	};
- 
-+	usb2 {
-+		vcc5v0_usb20_host_en: vcc5v0-usb20-host-en {
-+			rockchip,pins = <4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	vcc_sd {
- 		vcc_sd_h: vcc-sd-h {
- 			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
-@@ -424,3 +446,33 @@ bluetooth {
- &uart2 {
- 	status = "okay";
- };
-+
-+&u2phy1_host {
-+	phy-supply = <&vcc5v0_usb20_host>;
-+	status = "okay";
-+};
-+
-+&u2phy1_otg {
-+	phy-supply = <&vcc5v0_usb20_host>;
-+	status = "okay";
-+};
-+
-+&usb2phy1 {
-+	status = "okay";
-+};
-+
-+&usb_host0_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host0_ohci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ohci {
-+	status = "okay";
-+};
--- 
-2.25.1
+> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+> index 872e481d5098..9d7629e21164 100644
+> --- a/kernel/sched/cputime.c
+> +++ b/kernel/sched/cputime.c
+> @@ -227,6 +227,34 @@ void account_idle_time(u64 cputime)
+>                 cpustat[CPUTIME_IDLE] += cputime;
+>  }
+>
+> +/*
+> + * Returns the total idle time for the given cpu.
+> + * @kcs: The kernel_cpustat for the desired cpu.
+> + * @cpu: The desired cpu.
+> + */
+> +u64 get_idle_time(const struct kernel_cpustat *kcs, int cpu)
+> +{
+> +       u64 idle;
+> +       u64 __maybe_unused idle_usecs = -1ULL;
+> +
+> +#ifdef arch_idle_time
+> +       idle = kcs->cpustat[CPUTIME_IDLE];
+> +       if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
+> +               idle += arch_idle_time(cpu);
+> +#else
+> +       if (cpu_online(cpu))
+> +               idle_usecs = get_cpu_idle_time_us(cpu, NULL);
+> +
+> +       if (idle_usecs == -1ULL)
+> +               /* !NO_HZ or cpu offline so we can rely on cpustat.idle */
+> +               idle = kcs->cpustat[CPUTIME_IDLE];
+> +       else
+> +               idle = idle_usecs * NSEC_PER_USEC;
+> +#endif
+> +
+> +       return idle;
+> +}
+> +
+>
 
+Not sure why you moved get_idle_time() in kernel/sched/cputime.c
+
+For builds where CONFIG_PROC_FS is not set, this function is not used/needed.
