@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1484F3E9BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E1B3E9C01
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhHLBke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        id S233496AbhHLBkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbhHLBka (ORCPT
+        with ESMTP id S233470AbhHLBkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:40:30 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960CFC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:40:05 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4575C891B1;
-        Thu, 12 Aug 2021 13:40:02 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1628732402;
-        bh=0PIc7W/Q6OADnmNoNCW9y/GZ6e9+krN+3DhPpTgQlxU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=HreqBuW4yxsNEokuFoAojwPmIoLcUf1MgawPtnhNHm4RTdMqPm4fasagntQxtkPM5
-         hoKjobdSCTjVBIkv+lOI0CVgiW811rGlwga+jXuOy645eaaqeC2GJgPZM9m22IgUTz
-         YXu7aq8pXY1N3m4pfd06IdhwLfPXsN4waWXX4L5A7b1UzpZ2t8/VsZwdg6Basj7S7n
-         uDg7IhhGisxOmmjiJ56GHYipdi+A+7tLjfH60Oo0KLyv2LQusAV3ExwaCWwVHJedlF
-         zs9kZaTmbc2rep6PAicLt8us56mMBhvNbYQK4KREk+ktkCMVggGjzP63A7CsO0JE6C
-         jAsKCmegfn9yw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B61147bf20000>; Thu, 12 Aug 2021 13:40:02 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id 14FBC13EE8E;
-        Thu, 12 Aug 2021 13:40:02 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 1B22B280E9D; Thu, 12 Aug 2021 13:40:02 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     linux@roeck-us.net, jdelvare@suse.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2 2/2] hwmon: (pmbus/bpa-rs600) Add workaround for incorrect Pin max
-Date:   Thu, 12 Aug 2021 13:40:00 +1200
-Message-Id: <20210812014000.26293-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210812014000.26293-1-chris.packham@alliedtelesis.co.nz>
-References: <20210812014000.26293-1-chris.packham@alliedtelesis.co.nz>
+        Wed, 11 Aug 2021 21:40:33 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27B3C0613D5;
+        Wed, 11 Aug 2021 18:40:08 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id n7so8019982ljq.0;
+        Wed, 11 Aug 2021 18:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0MSveyJjLXImxpdu0C0hUm8m0UQzwOm1b1lGIh3ij04=;
+        b=kEvhNsPT1Mh5koxgm7JSi5bsT4K1jkqzm2sz4aUEorl7EezBk0pZo7NLctdYWuQjkT
+         FFXpPBc9HPFBov4bB1UIpGTzPtJP+vvfWLcKnugdCXkGvciV2gCfLQkgtjWMoPUX1tqp
+         GihIJhyKFrV2C4Yu5zm4PddYljKHLZKEX03IGVpO+IkvCBtqhtlReHb9mhX4SgRV+7MO
+         IyoZP68aD6PuncWbBTtRCisnb5AsFjC5F1+1HkCCkDKsJurt7+fmK4aNt4afYkGMej0J
+         q6FHiRf+RyJYNtE1VtcouOSTbgJPSkjKAYqP36qUyf+XAbYlcoHwW1NX/VwwWqs0Iy1t
+         W/OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0MSveyJjLXImxpdu0C0hUm8m0UQzwOm1b1lGIh3ij04=;
+        b=YcGeRnqMDQ0s4FT6vANUAz0ChDfJ47iaVybMQXyGluzw3ceSDOCar1eq5q5VL2+MMU
+         +c/iuE2xJsM772f6mE741bRkiPrs2b/FPyqznkq8N1yxOgSRadAneRhSEAUs7KlxJfRu
+         vLxUAn3lNUxsKCWmbLPaJLCsV6Bjv9UCGuwWAb1Ai1KsFbRou/vWM/PP8STObXEvzyf9
+         pQBeEZ9QhEgzYradTbr3CD6RUXnZcuDYUb+vFxKHNIA1gN0yCPUx86B6oiIYsQ2YWJM+
+         eL5rL9vH2kSiK52v1gKP8IhumhOjge/s8Ma+0QYp2MqlQwA3UU6EuCpjTynDjLXQFuUH
+         pN0A==
+X-Gm-Message-State: AOAM532JfQB42oG2oKaMPk4T9I8VMMC0rLufyF8PThSNzLKckd6FexOo
+        PfRc4ZsUMaDXSTCunjEKEXflGWuND/g=
+X-Google-Smtp-Source: ABdhPJxyf3JPf06cPGGELMY241Zb0GE/+7If22YtmX0pWKEEVkdOW8zH47pzihPAXvxexIiIxh46Qw==
+X-Received: by 2002:a05:651c:b28:: with SMTP id b40mr1107549ljr.504.1628732406876;
+        Wed, 11 Aug 2021 18:40:06 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
+        by smtp.googlemail.com with ESMTPSA id p8sm122711ljn.108.2021.08.11.18.40.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 18:40:06 -0700 (PDT)
+Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
+ domain drivers
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <20210701232728.23591-1-digetx@gmail.com>
+ <20210701232728.23591-3-digetx@gmail.com>
+ <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
+ <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com>
+ <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
+ <a5dfdf59-f5b5-d28e-6b02-b0c860ba8d80@gmail.com>
+ <CAPDyKFq+ExjbGrN=yUUXPKfN_fGrwY6EAYn9a6VUFFU_VjhC=g@mail.gmail.com>
+ <6741262b-386b-7635-fd42-ebd4f877fddd@gmail.com>
+ <CAPDyKFpJhX51rOnvbYTmj9Akd+xX+b7xcSWt87UDrvMEfYOZ7Q@mail.gmail.com>
+ <aab38f90-f7b2-900f-897b-470b81d473f2@gmail.com>
+ <8e110e08-1268-464c-6edb-0a3f640d43d6@gmail.com>
+Message-ID: <e21106ab-95ef-fc97-1744-dc58180e321a@gmail.com>
+Date:   Thu, 12 Aug 2021 04:40:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=aqTM9hRV c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=MhDmnRu9jo8A:10 a=P-41vWzb2nyXeCwVk6YA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+In-Reply-To: <8e110e08-1268-464c-6edb-0a3f640d43d6@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPD-RS600 modules running firmware v5.70 misreport the MFR_PIN_MAX.
-The indicate a maximum of 1640W instead of 700W. Detect the invalid
-reading and return a sensible value instead.
+12.08.2021 01:41, Dmitry Osipenko пишет:
+>>> I am not saying you should change the clock rate. The current code
+>>> path that runs via devm_tegra_core_dev_init_opp_table() just calls
+>>> clk_get_rate and then dev_pm_opp_set_rate() with the current rate to
+>>> vote for the corresponding OPP level. Right?
+>>>
+>>> Isn't this exactly what you want? No?
+>> I see now what you meant, it's actually a simpler variant and it works
+>> too. Thank you for the suggestion, I'll prepare v8.
+>>
+> My bad, it doesn't work at all. I actually need to use the rpm_pstate or
+> something else because performance state is coupled with the enable
+> state of the device. If device is never rpm-suspended by consumer
+> driver, then the initialized performance state is never dropped. Hence I
+> want to initialize the state which is set only when device is resumed.
+> 
+> I'll need to think more about it.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+GENPD core has these false assumptions:
 
-Notes:
-    Changes in v2:
-    - Add comments for magic values
+1. It assumes that by default all devices are at zero performance level
+at a boot time. This is not true for Tegra because hardware is
+pre-initialized independently from GENPD.
 
- drivers/hwmon/pmbus/bpa-rs600.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+2. It assumes that nothing depends on performance level and devices can
+operate at any level at any time. Not true for Tegra and other platforms
+where performance level is coupled with clocks state of attached
+devices. OPP framework glues clock and performance level together for
+us, which works good so far.
 
-diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs=
-600.c
-index 84dee86399cb..f2d4e378a775 100644
---- a/drivers/hwmon/pmbus/bpa-rs600.c
-+++ b/drivers/hwmon/pmbus/bpa-rs600.c
-@@ -65,6 +65,26 @@ static int bpa_rs600_read_vin(struct i2c_client *clien=
-t)
- 	return ret;
- }
-=20
-+/*
-+ * Firmware V5.70 incorrectly reports 1640W for MFR_PIN_MAX.
-+ * Deal with this by returning a sensible value.
-+ */
-+static int bpa_rs600_read_pin_max(struct i2c_client *client)
-+{
-+	int ret;
-+
-+	ret =3D pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_PIN_MAX);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Detect invalid 1640W (linear encoding) */
-+	if (ret =3D=3D 0x0b34)
-+		/* Report 700W (linear encoding) */
-+		return 0x095e;
-+
-+	return ret;
-+}
-+
- static int bpa_rs600_read_word_data(struct i2c_client *client, int page,=
- int phase, int reg)
- {
- 	int ret;
-@@ -91,6 +111,9 @@ static int bpa_rs600_read_word_data(struct i2c_client =
-*client, int page, int pha
- 	case PMBUS_READ_VIN:
- 		ret =3D bpa_rs600_read_vin(client);
- 		break;
-+	case PMBUS_MFR_PIN_MAX:
-+		ret =3D bpa_rs600_read_pin_max(client);
-+		break;
- 	default:
- 		if (reg >=3D PMBUS_VIRT_BASE)
- 			ret =3D -ENXIO;
---=20
-2.32.0
-
+Hence I either need to patch every driver to use dev_pm_opp_set_rate in
+order to sync clk rate with the perf level at device runtime, or I need
+to preset the rpm perf level to allow GENPD core to set the level before
+device is resumed.
