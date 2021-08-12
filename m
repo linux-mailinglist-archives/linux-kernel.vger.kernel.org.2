@@ -2,316 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45C63E9F3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85783E9F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbhHLHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234648AbhHLHJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:09:46 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B5DC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:09:21 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id l18so6790633wrv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ENuRC1sKFN/2rIqlshnIbbFqmsJH1/ok7osy11Vqvaw=;
-        b=HDQZTCSD3tyH0k6NpShG5PAswcXV3WEL3Va5HPSFKYGtqUKd1EaFmjfQa5nSQRDExQ
-         jaJk/eVMxUW9azv9Y7Tcl7xUMVQjpauvvRtogtKjXbHhioxO8xrUx2b4xLpfqFzbEXiF
-         vDkUaFLjOTuIIhnox43MSaIYG5gtBCMydrLEYxddwFPFlCd+yMhvz3E5ipJbD1W8ks3V
-         gn7Q5SLAlypbGKwXZdNCuaGMd2tLIxNvJLRcZ4BsOvvABIXBKaKElWft9OwPCLWf5bct
-         RRBgC2lhFsDBQgUNGAfts0goyaMkek3PmjmKc4v6wqntzfn5YgsJU90h426q3eBBN3k/
-         IU/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ENuRC1sKFN/2rIqlshnIbbFqmsJH1/ok7osy11Vqvaw=;
-        b=COZyq9oiJQSgY8noLENfBkLO2smsZE7/JRIgz1vlNfcHJqOzHkVC8jtKFGBzSEk4Ar
-         IAxMQpAJQ1O6YBrZsvQ1dMhbIi6a1Zjlvvyrhtq1XWiPeVD0fSw+5sOCWZZj4nAxMBNJ
-         4tYJwX+e1dtTxgDDqh5LHcQ4iJI3x2AKn0DgQHFJSZRm8W3ZrZnrLlzgyW9BwzkDCxcN
-         OQqZ4mkwTJcUjcqOX/3C8fDE63xbhZjLfKbLGRByseVmGjpUB+cFk7yvMf+k2WQ3gvka
-         0EkJzpe0IM/Bo6qQu+TEiqm56h24+D+aY3dLttzzUBaK/5Wz+bd9eyXMMgsP7CyFimdm
-         Awtw==
-X-Gm-Message-State: AOAM532GS4XruZEcPLMyDrV5w5OmqfRQm41a+F+pfiWdp2SFPtHiOAIf
-        R33kmpIXjbEwg1SLPZlVNzgAOS3/h1UQbbq/3OcKWA==
-X-Google-Smtp-Source: ABdhPJzriVaHMXK0J+1stLFfu6dz0hPAsCb0zCgKeBuYijlX8B4WWAQAjautVTL6Lmva25BZ54YzqQNTy1pzI+GC0bA=
-X-Received: by 2002:a5d:4090:: with SMTP id o16mr2234008wrp.176.1628752159438;
- Thu, 12 Aug 2021 00:09:19 -0700 (PDT)
+        id S234683AbhHLHKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:10:20 -0400
+Received: from mail-eopbgr80045.outbound.protection.outlook.com ([40.107.8.45]:3100
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230147AbhHLHKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:10:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A7MC5qrPdlfoysUY2AIczbnERhMapPWe1kD9Aiy1SSQjpPHGKZkvzr9r+uyfTBXJRHDl3VkAb3tF3EccygJpCA94QQ8wTli4GVwAV5eX7XnrXPLKnD1cu4njVBb0pNmL3nD54ZQPUvrm2z6IKDzpgHGXJvLf/bgr7ktgkewEnlA2y+HfACvgt12/SbqbiX1eA/Hb/YYVwwJyEG80GjnnCaRvQw3R2wXWcFnodvLSzAIRbQrW4+RXTUCZV5/4z92QMyHWj/vJcEMePeQJDofUvZ3bCkwH+XFtBr3KldyBi8V/GBYg2YY2GhjcEV9gXvM18hsW09hq8IdzI/2sIPa9pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AeFiwcqR1LKPAZm2moAWCjKldJj5j4/qPuQouh3vo7U=;
+ b=cjgQBIrJzOFbTAh7WGWFD0cRqvsUVYeT+zCgfdCzvVfATGxOH/Q8MzjV7PZO7Ng6c/jhLTRu0lI+5Sduu8y5uyz1LfjVqSOVg+e1fDXzZo5yE97g2BY/Ct8S+1awwMOL0udLY1reiKY466V2bl0s6wrFvbLPFx/ogl0TD9r09wNCnGCtE6NFjL4aXGai0ZNZUCA0fH8m69Y6k54ukdOYUHd2SOLdF0gb88B02DpUURoHygl5ZLPVNGYi9CUp0c0GI2wb2ZHtZaR+kdidGyu0GoMG85ZTAUbNDaBUWUZQuG41l/shPnB3S5nakgleGzez9ObBB8Q0IJ6iEx3tc5/mNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AeFiwcqR1LKPAZm2moAWCjKldJj5j4/qPuQouh3vo7U=;
+ b=R1zAANoRumoK89wYPeP8MqGjFkeSUFhG2+7ZG3yqVWT3d2cuYHMVoaLZeP00pVbxQTG0OCs1bDVZKH4BQhGF3u2yiazvpza4UmWYJQ/hzuJS2ROUG6BAXfHSJQgjpc5KYZlW02zqb7dL9wEAVqRHcbQE0BZYxaU/93GdEsTk+xo=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR04MB3094.eurprd04.prod.outlook.com (2603:10a6:6:10::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Thu, 12 Aug
+ 2021 07:09:52 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::6969:eadc:6001:c0d]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::6969:eadc:6001:c0d%6]) with mapi id 15.20.4415.017; Thu, 12 Aug 2021
+ 07:09:52 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH V2 net-next] net: fec: add WoL support for i.MX8MQ
+Date:   Thu, 12 Aug 2021 15:09:48 +0800
+Message-Id: <20210812070948.25797-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0151.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::31) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-References: <20210805235145.2528054-1-dlatypov@google.com> <20210805235145.2528054-2-dlatypov@google.com>
-In-Reply-To: <20210805235145.2528054-2-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 12 Aug 2021 15:09:07 +0800
-Message-ID: <CABVgOSmoNaYVcckw3PX7Cf32NjYPSpX3JqGESCqYJvTi6dwAsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kunit: add 'kunit.action' param to allow listing
- out tests
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e98e1005c95769a4"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0151.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Thu, 12 Aug 2021 07:09:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0621cd4c-b46e-45f0-0307-08d95d602e0a
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3094:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR04MB30940A15B02007E3C34FEAC4E6F99@DB6PR04MB3094.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tZv3y7Axtu9mICblYQm4OBIw8NFCxqdJFxaZ4XV/MNaoByinjIVaYZIFWs7HYtdpaWjwEorgRhCqTwGCUh4ELjCTY96MuXgu4zLbihBDBWhIQgURua1jBfjBKkdrOyvDO/IEJ4EReRi3CzKVNEsUgszx1uqMEm0wkr2Z6SKAWzZJnvRBlxsJg+US2swdWErlYFJTWOLycYyCPUW2hFlic5BpWV/LQYeSpuuu7tg4k92DiBcJ/7gsERNXJnMwmJ4g0a6JtSVqIUbZNpecCsZdiFeL0vCotfikDnYNiFDzellObIC1JeO/KNPivRRALNNCHFAWj/CA6YlyNGsIA89Wr9dPM90RORCU481OZtFeZe0UVMW0aCTMKXoAoDl/X5/mCjpjakmOZzz/HcM/IGL9WTHTbhH8Aakss6CEV4+fn0TIH9ykdWigwj0l+33/f8N3TJXNEMUCTg2gwd5WrV7vY1avPI1U664i4C0msJkDYaHG9dOd5eyiItb0unWVeCcI8LFZb9KHms4KZhyHqHB9r+tEKz+7yj140w7DBIoUjowhWYy1R5ag7PIejzqcndyf51traO+B02hfoPdkOdlTmYqhdvAT1stVOiitGL9IyqrJA2KdMrZihGTDuqBtokHvAkDs7QZ/rEnRpCpJDpmHham0cnRY+65xYVP0SoqKU2dsZN0xdxeGk8jNbOsmMPgmRF9Zsj26XV5fC7MokGwMWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(366004)(316002)(478600001)(5660300002)(83380400001)(38100700002)(38350700002)(4326008)(2616005)(66476007)(52116002)(66556008)(956004)(36756003)(1076003)(6506007)(66946007)(6486002)(26005)(86362001)(8676002)(186003)(8936002)(2906002)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?svyc4DhNKRVmBT6smEkVR/U91koy5IYRWaNRRdXh359AghnTxBebyvv1bo+q?=
+ =?us-ascii?Q?tbHxQh/ftR2+obksA1obNVXoub4kaTijaHbwwbdekDS6PibivUgsStD+DBGU?=
+ =?us-ascii?Q?P7E0bWZzRSCFJ1Yqwm/cuiQOk1N9k1q8qL/DFKBtSSD6SY28rS+UQyUCmR8s?=
+ =?us-ascii?Q?j/SXdBKX+HgGb0ImifyIYcsLSk8ovHlBUkk9liQNaZKqj6kepIMFgoeO0ZoX?=
+ =?us-ascii?Q?Q35dYaUigGQDfdvT5GqgCpHjNLMLdYfFHoSJXq1CLvTkk17bHRFwSyji8Fl0?=
+ =?us-ascii?Q?7/XrQjr3mckCZfnnc9VJup64Z4zn7tIRMj06Di0cfrRg+O/UWu24j3R9kh0v?=
+ =?us-ascii?Q?/0uflDtVYGC6FmGiukzLOv+Ga6EtxvHRPlO5CZS9neQi6REiHXOfCChgD6oj?=
+ =?us-ascii?Q?56lVi6X/6WC0Bv2hL7GqXsPbKOmhdp7fveOkLlRXxxeGw1VHHLTxZUvAKDa5?=
+ =?us-ascii?Q?AK2xWbtBPm7qHnncAuC+3jmhkHgHBoTiUj5J9aMVIa85EpPz+GBtuXQ6L/fB?=
+ =?us-ascii?Q?iniQEUIRWycx7dsfBIiW7dEdmBpX/3eZqS2G+ByoCJ0EX+StlmG7Iy5UtQZw?=
+ =?us-ascii?Q?QDbrLZuI1T5yAVfwzJe3fvzohAcn0Ofc/kAO+9YB1GyKw4w0rBOjcj9yb8d1?=
+ =?us-ascii?Q?5Jz1EoqbRMAd9T3N71+7PkGhzA3H1ekC/j6RVKX7Si5RT1HOotz7x9qmd5BD?=
+ =?us-ascii?Q?JPAIAF4WI/raX3HsRnkRBez2TjOZZC8oQoSAlwR01MDXTSELgkH0/7iHlt7J?=
+ =?us-ascii?Q?Wm+ev33rezBKNQI3Sttmayw16hmDJr+NJluLlBeu24DNOG4eHSKR0otBzJCy?=
+ =?us-ascii?Q?af2NFykYLVYlrHJTCCANPqGaPYkA2eQWyGCDQOjKHp8xZLtIAl2vfVApGUlA?=
+ =?us-ascii?Q?iWGEkv8ZCSLJNRHYngN3P0xEuLQR4C8uyQI7i5NJVfftswh1aHO8jkxHYInF?=
+ =?us-ascii?Q?e+lyMdzyLuW6/5ZgpZAU4OGWLFKjT9VKAuwFVbqfHjgELL0GDzCg6SWdkyZ6?=
+ =?us-ascii?Q?/6dnuMhYDW17QuFx5WfDENFkn7L3kHuc5SzAsrtsAfQTse2Z6hb0YVtm5PH2?=
+ =?us-ascii?Q?JiggpmhjRLWBYkI8znC88MBe+IgDUwVkZQtvAs9HZqit/FcT0kD3L8Q6ZrP+?=
+ =?us-ascii?Q?hWD/2DVG+58s2vtTbXnJn7vV69vaCCQuOVlihwQvuki7RR0tc1JK7DflKZOH?=
+ =?us-ascii?Q?oa4vQ0fKUB0fROiqEh/iBUjfDlydXe69VfsIsaZp+fZnxE+MLLjmEND/Ug0r?=
+ =?us-ascii?Q?zlgxg/xSQeaG9rwhKOI4vMgnuWSRbh8OZBQ8mrOInTJ/Q/yP1TDbhiOEZ8wZ?=
+ =?us-ascii?Q?kctZFQUWbgrRt/JFscGilsah?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0621cd4c-b46e-45f0-0307-08d95d602e0a
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 07:09:52.3164
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0jF+d2OYuYW2BcjB5eoct+Px6elkBbTkWKIxO6UlQ9IRjCBrt4Yp7GNfFNIF3XlxgRi1jCZukaRisIM4J5arAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e98e1005c95769a4
-Content-Type: text/plain; charset="UTF-8"
+By default FEC driver treat irq[0] (i.e. int0 described in dt-binding) as
+wakeup interrupt, but this situation changed on i.MX8M serials, SoC
+integration guys mix wakeup interrupt signal into int2 interrupt line.
+This patch introduces FEC_QUIRK_WAKEUP_FROM_INT2 to indicate int2 as wakeup
+interrupt for i.MX8MQ.
 
-On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Context:
-> It's difficult to map a given .kunitconfig => set of enabled tests.
->
-> Having a standard, easy way of getting the list could be useful in a
-> number of ways. For example, if we also extended kunit.filter_glob to
-> allow filtering on tests, this would allow users to run tests cases one
-> by one if they wanted to debug hermeticity issues.
->
-> This patch:
-> * adds a kunit.action module param with one valid non-null value, "list"
-> * for the "list" action, it simply prints out "<suite>.<test>"
-> * does not itself introduce kunit.py changes to make use of this [1].
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ChangeLogs:
+V1->V2:
+	* Add a quirk to indicate wakeup interrupt, instead of add
+	custom property 'fsl,wakeup-irq'.
+---
+ drivers/net/ethernet/freescale/fec.h      |  4 ++++
+ drivers/net/ethernet/freescale/fec_main.c | 24 ++++++++++++++++++-----
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-I really like this feature, and could live with the implementation,
-but do feel like we should probably have a more detailed idea of how
-the kunit_tool changes are going to work before settling on it for
-sure.
+diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+index d2e9a6c02d1e..7b4961daa254 100644
+--- a/drivers/net/ethernet/freescale/fec.h
++++ b/drivers/net/ethernet/freescale/fec.h
+@@ -492,6 +492,9 @@ struct bufdesc_ex {
+  */
+ #define FEC_QUIRK_DELAYED_CLKS_SUPPORT	(1 << 21)
+ 
++/* i.MX8MQ SoC integration mix wakeup interrupt signal into "int2" interrupt line. */
++#define FEC_QUIRK_WAKEUP_FROM_INT2	(1 << 22)
++
+ struct bufdesc_prop {
+ 	int qid;
+ 	/* Address of Rx and Tx buffers */
+@@ -580,6 +583,7 @@ struct fec_enet_private {
+ 	bool	bufdesc_ex;
+ 	int	pause_flag;
+ 	int	wol_flag;
++	int	wake_irq;
+ 	u32	quirks;
+ 
+ 	struct	napi_struct napi;
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index fdff37b87de7..83ab34b1d735 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -142,7 +142,7 @@ static const struct fec_devinfo fec_imx8mq_info = {
+ 		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
+ 		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
+ 		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES |
+-		  FEC_QUIRK_HAS_EEE,
++		  FEC_QUIRK_HAS_EEE | FEC_QUIRK_WAKEUP_FROM_INT2,
+ };
+ 
+ static const struct fec_devinfo fec_imx8qm_info = {
+@@ -2878,12 +2878,12 @@ fec_enet_set_wol(struct net_device *ndev, struct ethtool_wolinfo *wol)
+ 	device_set_wakeup_enable(&ndev->dev, wol->wolopts & WAKE_MAGIC);
+ 	if (device_may_wakeup(&ndev->dev)) {
+ 		fep->wol_flag |= FEC_WOL_FLAG_ENABLE;
+-		if (fep->irq[0] > 0)
+-			enable_irq_wake(fep->irq[0]);
++		if (fep->wake_irq > 0)
++			enable_irq_wake(fep->wake_irq);
+ 	} else {
+ 		fep->wol_flag &= (~FEC_WOL_FLAG_ENABLE);
+-		if (fep->irq[0] > 0)
+-			disable_irq_wake(fep->irq[0]);
++		if (fep->wake_irq > 0)
++			disable_irq_wake(fep->wake_irq);
+ 	}
+ 
+ 	return 0;
+@@ -3696,6 +3696,17 @@ static int fec_enet_get_irq_cnt(struct platform_device *pdev)
+ 	return irq_cnt;
+ }
+ 
++static void fec_enet_get_wakeup_irq(struct platform_device *pdev)
++{
++	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct fec_enet_private *fep = netdev_priv(ndev);
++
++	if (fep->quirks & FEC_QUIRK_WAKEUP_FROM_INT2)
++		fep->wake_irq = fep->irq[2];
++	else
++		fep->wake_irq = fep->irq[0];
++}
++
+ static int fec_enet_init_stop_mode(struct fec_enet_private *fep,
+ 				   struct device_node *np)
+ {
+@@ -3935,6 +3946,9 @@ fec_probe(struct platform_device *pdev)
+ 		fep->irq[i] = irq;
+ 	}
+ 
++	/* Decide which interrupt line is wakeup capable */
++	fec_enet_get_wakeup_irq(pdev);
++
+ 	ret = fec_enet_mii_init(pdev);
+ 	if (ret)
+ 		goto failed_mii_init;
+-- 
+2.17.1
 
-In particular, is the "<suite>.<test>" format the best way of giving
-test information, or do we want something more (K)TAP-like. (e.g., a
-test hierarchy with all tests marked SKIPed, or otherwise limited in
-some way). Maybe that'd allow some of the parser code to be re-used,
-and have fewer issues with having two separate ways of representing
-the test hierarchy. (What if, e.g., there were test or suite names
-with '.' in them?)
-
-On the other hand, this format does make it easier to use the
-filter_glob stuff, so it could go either way...
-
-> Note: kunit.filter_glob is respected for this and all future actions.
-> Note: we need a TAP header for kunit.py to isolate the KUnit output.
-
-I don't mind having a TAP header here, but we could either:
-(a) have a separate header for a test list, and have kunit_tool look
-for that as well, to avoid treating this as TAP when it isn't; or
-(b) try to standardise a "test list" format as part of KTAP:
-https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-
->
-> Go with a more generic "action" param, since it seems like we might
-> eventually have more modes besides just running or listing tests, e.g.
-> * perhaps a benchmark mode that reruns test cases and reports timing
-> * perhaps a deflake mode that reruns test cases that failed
-> * perhaps a mode where we randomize test order to try and catch
->   hermeticity bugs like "test a only passes if run after test b"
->
-
-The "action" parameter is fine by me. Do we want to give the default
-"run" action a name as well as making it the default?
-
-> Tested:
-> $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
-> ...
-> TAP version 14
-> 1..1
-
-I really don't like the test plan line combined with the
-"<suite>.<test>" format, particularly since this example notes that
-there's only one test (presumably the suite), and then proceeds to
-have three top-level things afterwards. It seems pretty misleading to
-me.
-
-> example.example_simple_test
-> example.example_skip_test
-> example.example_mark_skipped_test
-> reboot: System halted
->
-> [1] The interface for this can work in a few ways. We could add a
-> --list_tests flag or a new subcommand. But this change is enough to
-> allow people to split each suite into its own invocation, e.g. via a
-> short script like:
->
->   #!/bin/bash
->
->   cd $(git rev-parse --show-toplevel)
->
->   for suite in $(
->     ./tools/testing/kunit/kunit.py run --kernel_args=kunit.action=list --raw_output=kunit |
->     sed -n '/^TAP version/,$p' | grep -P -o '^[a-z][a-z0-9_-]+\.' | tr -d '.' | sort -u);
->   do
->     ./tools/testing/kunit/kunit.py run "${suite}"
->   done
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
-> v1 -> v2: write about potential other "actions" in commit desc.
-> ---
->  lib/kunit/executor.c | 46 +++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 41 insertions(+), 5 deletions(-)
->
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index acd1de436f59..77d99ee5ed64 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
->  #if IS_BUILTIN(CONFIG_KUNIT)
->
->  static char *filter_glob_param;
-> +static char *action_param;
-> +
->  module_param_named(filter_glob, filter_glob_param, charp, 0);
->  MODULE_PARM_DESC(filter_glob,
-> -               "Filter which KUnit test suites run at boot-time, e.g. list*");
-> +                "Filter which KUnit test suites run at boot-time, e.g. list*");
-> +module_param_named(action, action_param, charp, 0);
-> +MODULE_PARM_DESC(action,
-> +                "Changes KUnit executor behavior, valid values are:\n"
-> +                "<none>: run the tests like normal\n"
-> +                "'list' to list test names instead of running them.\n");
->
->  static char *kunit_shutdown;
->  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-> @@ -109,6 +116,33 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
->         pr_info("1..%d\n", num_of_suites);
->  }
->
-> +static void kunit_exec_run_tests(struct suite_set *suite_set)
-> +{
-> +       struct kunit_suite * const * const *suites;
-> +
-> +       kunit_print_tap_header(suite_set);
-> +
-> +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> +               __kunit_test_suites_init(*suites);
-> +}
-> +
-> +static void kunit_exec_list_tests(struct suite_set *suite_set)
-> +{
-> +       unsigned int i;
-> +       struct kunit_suite * const * const *suites;
-> +       struct kunit_case *test_case;
-> +
-> +       /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
-> +       kunit_print_tap_header(suite_set);
-> +
-> +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> +               for (i = 0; (*suites)[i] != NULL; i++) {
-> +                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
-> +                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
-> +                       }
-> +               }
-> +}
-> +
->  int kunit_run_all_tests(void)
->  {
->         struct kunit_suite * const * const *suites;
-> @@ -120,10 +154,12 @@ int kunit_run_all_tests(void)
->         if (filter_glob_param)
->                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
->
-> -       kunit_print_tap_header(&suite_set);
-> -
-> -       for (suites = suite_set.start; suites < suite_set.end; suites++)
-> -               __kunit_test_suites_init(*suites);
-> +       if (!action_param)
-> +               kunit_exec_run_tests(&suite_set);
-> +       else if (strcmp(action_param, "list") == 0)
-> +               kunit_exec_list_tests(&suite_set);
-> +       else
-> +               pr_err("kunit executor: unknown action '%s'\n", action_param);
->
->         if (filter_glob_param) { /* a copy was made of each array */
->                 for (suites = suite_set.start; suites < suite_set.end; suites++)
-> --
-> 2.32.0.605.g8dce9f2422-goog
->
-
---000000000000e98e1005c95769a4
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnAYJKoZIhvcNAQcCoIIPjTCCD4kCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz2MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-/nKVAPkPCzwfEPbL1262MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwgZoGCCsGAQUF
-BwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
-bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
-bS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouseLHIb
-0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vY2Ev
-Z3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA+XCDyl6gdUzbfGv+D
-Xg1PhWeHLeXCPc9+sNLwRPD9AYET0o6RJYqNAVFC77sI4quIUtKk+H44VwMwNOhX3PY+69dzUd2E
-XLgutq81YK/Kt/wRUdEbgvDhvjumsVENI6xc4xZzAXAZqJLK+AR5oNtx0o9GC2el89ZF3yPI8KqH
-1aOYvtgDisoXXmst9rm6Njnt9AitTax0LwWdl1yGwnA6cqJfq8h7Ehg+6X3TGW4wMM1RsB9tLL2d
-osQsJT49+adAbU2yODf/XkIQevor0sIhJuxYkLay9G2GK1DCEmqUfbXWF5yQRxBkhVXHodFI2+V1
-OPxk5TOVVOId6G/60Hq4MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
-YmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAyMDIw
-AhABeyW1Dfueu+w9B/G1jwK+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC6m4Du
-l5xOgjrxsAJgKRp8KY1ppnQwnxQ4y8aax9dROzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-CSqGSIb3DQEJBTEPFw0yMTA4MTIwNzA5MTlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEq
-MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqG
-SIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAH+ySI7QbUrCGRPjfFOlbXGJF
-t6EOKf1Ox6BYVqcMNnM8lySaaUs4fd2j6BX279qJH96crPIx3CAIx5cWbpox3wvHqWKp8gsWb+sy
-9gzIg7+2L+7VRO7m/0C4FC9xx+m6Ih+V+kvjElL1e97ZvhtRzP+HGj+4LlLf/NLH1CfxLTolvtgR
-kti9nxoDo98Wte63h2y0ft4mfBs4GrYgoJeCJxhfL80atJWMeLDZmPgAg9Tc8rQmWa435hAWqCc2
-YHNE1Enlq9H1VkZcnPgW50OM+2fMFaweKfHsNLjWwuhtzeBkRE3fPyHaR0bq2Wmsf0ZUjRofs70u
-l0lrDqYeeAofGw==
---000000000000e98e1005c95769a4--
