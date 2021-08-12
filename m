@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDE23EA7B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E733EA7C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237777AbhHLPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:40:27 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37570
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232854AbhHLPkZ (ORCPT
+        id S238121AbhHLPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:41:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237413AbhHLPlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:40:25 -0400
-Received: from localhost.localdomain (1-171-221-24.dynamic-ip.hinet.net [1.171.221.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9BEE43F224;
-        Thu, 12 Aug 2021 15:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628782799;
-        bh=bb+D78y9t3UZu9BB80kiJI5yrTWzi5x0kq2PZ/EFOfA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=PDWKbccFqR4uVpEaqFk5I3xe1mN0/yjQ7qMfUWeL5DpkgCSPWxsrtwyssPHHKhHDR
-         Y6sAx7ebFOk3wuI1cEieaPqVo+u6iLcY9Bkv93khdI2qyaxNZT+HMdO04sjv+AnK/9
-         TSfoduky38TGRqKJjep2aTL/8OAjq3jIg4WOsg33yT34DyTefiCJ6uvxo8Ritgfem6
-         nsqoFnCJe37ioEdznYSbScwV/EQBadKdeuilNMsMR/TbUapHwTA/PwoybERCS0o3We
-         DmCoDjWLlj9pBir6rItWwzrao7FiRJfr+6Sm+X1xcFak/jnw3mR177Mz+T3T4RWzwO
-         LogOlxpu+6uXg==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     bhelgaas@google.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] PCI: Check PCIe upstream port for PME support
-Date:   Thu, 12 Aug 2021 23:39:44 +0800
-Message-Id: <20210812153944.813949-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 12 Aug 2021 11:41:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628782887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wVAySSNkRIQjjk+QH2YkijF+uGWoxw5I4DLvZClTw1U=;
+        b=D134bOSUHTTA0PBGBrfxeua3cjVaITA/aBeygqqG9zTT1sBhyUKi2w0KPInxk3bKwqOzda
+        u1EV3dEohJvWbbo8vwT6klqVzAk0hvI/pwYaAxSyJm/zBxIB/ODa88m6P0j4NYOD9d2vrb
+        uM+rN2JHSIrzqz2iA+75RisxeW/qbCg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-wZL33MRCOdiRFLiRosI_kw-1; Thu, 12 Aug 2021 11:41:26 -0400
+X-MC-Unique: wZL33MRCOdiRFLiRosI_kw-1
+Received: by mail-ed1-f71.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so3211032edb.19
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:41:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wVAySSNkRIQjjk+QH2YkijF+uGWoxw5I4DLvZClTw1U=;
+        b=rV6J6AogI5miqXfyfLDz1Z1+PJunU2QE84mMz/sFPg8W0QBUEDxrM8/GfQ6D3hNZxi
+         sShg6+FQKeHOBL8VVNSiHg7HL483QMWsCMSrByj9ODvaWJ+2HoQlMG8SkvTcqwR5hqLq
+         LwoUyvcmJ0g8f4KUmtMrzotrJwk1CW5BYxQbEI9p5qG6pPGvQ/8t2x2W6TLJgmNHZnXM
+         SJlfx+Y9X40HViihiK71XqWbB8XuluvpNvwEWLYRVX/hPf3tKfcjH8jrBCB6SG17X0HU
+         xt0mudKOVHPODjmNIdjiPR/lO7XlJiTe/hQda8hUezzM3Tqv1xeNmhb1ak4ksT7CTMF6
+         h1Rw==
+X-Gm-Message-State: AOAM532GqyYFQTj67KgQRI6J/qes4WARf+U4ad76BIgodmklM7u/A2jY
+        h6CRCpqzVcS8EvTO8oT6Qp07BxDpQLWvRY17BvWurW3XYReyc/xTShrscw46teiKV4DOw4xUqUG
+        YbMdRbCM+dFrDhdE+EarfA/sR
+X-Received: by 2002:a50:ef11:: with SMTP id m17mr6095912eds.233.1628782885025;
+        Thu, 12 Aug 2021 08:41:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbkauFimraFjcUcxW/s5naeDzEHblJnwTGW5kN8SFMxVNVXXtWI2AkXQ1TgeG7maJbDTkRTw==
+X-Received: by 2002:a50:ef11:: with SMTP id m17mr6095860eds.233.1628782884809;
+        Thu, 12 Aug 2021 08:41:24 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s18sm988134ejh.12.2021.08.12.08.41.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 08:41:24 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] KVM: Refactor kvm_arch_vcpu_fault() to return a
+ struct page pointer
+To:     David Hildenbrand <david@redhat.com>,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org
+References: <YRQcZqCWwVH8bCGc@google.com>
+ <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
+ <98adbd3c-ec6f-5689-1686-2a8a7909951a@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d29447d4-a1b4-7f12-7bbc-8dc24cb38b72@redhat.com>
+Date:   Thu, 12 Aug 2021 17:41:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <98adbd3c-ec6f-5689-1686-2a8a7909951a@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some platforms cannot detect ethernet hotplug once its upstream port is
-runtime suspended because PME isn't granted by BIOS _OSC. The issue can
-be workarounded by "pcie_ports=native".
+On 12/08/21 11:04, David Hildenbrand wrote:
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
+> But at the same time I wonder if we should just get rid of 
+> CONFIG_KVM_S390_UCONTROL and consequently kvm_arch_vcpu_fault().
+> 
+> In practice CONFIG_KVM_S390_UCONTROL, is never enabled in any reasonable 
+> kernel build and consequently it's never tested; further, exposing the 
+> sie_block to user space allows user space to generate random SIE 
+> validity intercepts.
+> 
+> CONFIG_KVM_S390_UCONTROL feels like something that should just be 
+> maintained out of tree by someone who really needs to hack deep into hw 
+> virtualization for testing purposes etc.
 
-The vendor confirmed that the PME in _OSC is disabled intentionally for
-system stability issues on the other OS, so we should also honor the PME
-setting here.
+I have no preference either way.  It should definitely have selftests, 
+but in x86 land there are some features that are not covered by QEMU and 
+were nevertheless accepted upstream with selftests.
 
-So before marking PME support status for the device, check
-PCI_EXP_RTCTL_PMEIE bit to ensure PME interrupt is either enabled by
-firmware or OS.
-
-Cc: Lukas Wunner <lukas@wunner.de>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213873
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Instead of prevent root port from runtime suspending, skip
-   initializing PME status for the downstream device.
-
- drivers/pci/pci.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index aacf575c15cf..4344dc302edd 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -2294,6 +2294,32 @@ void pci_pme_wakeup_bus(struct pci_bus *bus)
- 		pci_walk_bus(bus, pci_pme_wakeup, (void *)true);
- }
- 
-+#ifdef CONFIG_PCIE_PME
-+static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
-+{
-+	struct pci_dev *bridge = pci_upstream_bridge(dev);
-+	u16 val;
-+	int ret;
-+
-+	if (!bridge)
-+		return true;
-+
-+	if (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT &&
-+	    pci_pcie_type(bridge) != PCI_EXP_TYPE_RC_EC)
-+		return true;
-+
-+	ret = pcie_capability_read_word(bridge, PCI_EXP_RTCTL, &val);
-+	if (ret)
-+		return false;
-+
-+	return val & PCI_EXP_RTCTL_PMEIE;
-+}
-+#else
-+static bool pci_pcie_port_pme_enabled(struct pci_dev *dev)
-+{
-+	return true;
-+}
-+#endif
- 
- /**
-  * pci_pme_capable - check the capability of PCI device to generate PME#
-@@ -3095,7 +3121,7 @@ void pci_pm_init(struct pci_dev *dev)
- 	}
- 
- 	pmc &= PCI_PM_CAP_PME_MASK;
--	if (pmc) {
-+	if (pmc && pci_pcie_port_pme_enabled(dev)) {
- 		pci_info(dev, "PME# supported from%s%s%s%s%s\n",
- 			 (pmc & PCI_PM_CAP_PME_D0) ? " D0" : "",
- 			 (pmc & PCI_PM_CAP_PME_D1) ? " D1" : "",
--- 
-2.32.0
+Paolo
 
