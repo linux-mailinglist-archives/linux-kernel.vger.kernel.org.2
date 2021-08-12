@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ABA3EA441
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1B33EA43E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237298AbhHLME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:04:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8402 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237214AbhHLMET (ORCPT
+        id S237261AbhHLMEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:04:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:17009 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237216AbhHLMES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:04:19 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gllc93L5hz86LS;
-        Thu, 12 Aug 2021 19:59:53 +0800 (CST)
+        Thu, 12 Aug 2021 08:04:18 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GllcW6FSyzb19c;
+        Thu, 12 Aug 2021 20:00:11 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
  (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 12
@@ -23,9 +23,9 @@ From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>, <hughd@google.com>
 CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH 1/4] shmem: remove unneeded variable ret
-Date:   Thu, 12 Aug 2021 20:03:47 +0800
-Message-ID: <20210812120350.49801-2-linmiaohe@huawei.com>
+Subject: [PATCH 2/4] shmem: remove unneeded header file
+Date:   Thu, 12 Aug 2021 20:03:48 +0800
+Message-ID: <20210812120350.49801-3-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210812120350.49801-1-linmiaohe@huawei.com>
 References: <20210812120350.49801-1-linmiaohe@huawei.com>
@@ -40,35 +40,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The local variable ret is always equal to -ENOMEM and never touched. So
-remove it and return -ENOMEM directly to simplify the code.
+mfill_atomic_install_pte() is introduced to install pte and update mmu
+cache since commit bf6ebd97aba0 ("userfaultfd/shmem: modify
+shmem_mfill_atomic_pte to use install_pte()"). So we should remove
+tlbflush.h as update_mmu_cache() is not called here now.
 
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- mm/shmem.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ mm/shmem.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/mm/shmem.c b/mm/shmem.c
-index 96f05f6af8bb..bf4a47419521 100644
+index bf4a47419521..41d2900153d9 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -3631,7 +3631,6 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
- 	struct shmem_options *ctx = fc->fs_private;
- 	struct inode *inode;
- 	struct shmem_sb_info *sbinfo;
--	int err = -ENOMEM;
+@@ -39,8 +39,6 @@
+ #include <linux/frontswap.h>
+ #include <linux/fs_parser.h>
  
- 	/* Round up to L1_CACHE_BYTES to resist false sharing */
- 	sbinfo = kzalloc(max((int)sizeof(struct shmem_sb_info),
-@@ -3709,7 +3708,7 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
+-#include <asm/tlbflush.h> /* for arch/microblaze update_mmu_cache() */
+-
+ static struct vfsmount *shm_mnt;
  
- failed:
- 	shmem_put_super(sb);
--	return err;
-+	return -ENOMEM;
- }
- 
- static int shmem_get_tree(struct fs_context *fc)
+ #ifdef CONFIG_SHMEM
 -- 
 2.23.0
 
