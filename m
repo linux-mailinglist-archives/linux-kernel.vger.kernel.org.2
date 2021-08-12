@@ -2,187 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886F93EA34A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508793EA34F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236716AbhHLLHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:07:54 -0400
-Received: from mail-mw2nam10on2050.outbound.protection.outlook.com ([40.107.94.50]:2113
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236478AbhHLLHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:07:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RznfdkZVPKuNZwXLf4B8ZVl+i6jZ2DNeffQ84CLXHIdF8AYQylcXlH1ITJKF4LUrJYzGT1vdIAjxjBL/1T1tpoE0fc2kQPaTPbxy8f23wGeKxHJ/v4XpgToxD+8yllOujyD7myK8n1r7HY3K4+8K2NolOcfE1u6oqAt/etQp0V9bBu8GMtRV66wCOp7bZsm0jO5DR4AzLHSUeGFGJhsGw+Dca1PTdqjpZhM5qrlQsIHmi1Nh7AOpRzIMfKZqLAdycrGyxMh4vc8iiAnTYRmpWWIMhLsQUWZgoER0mG9w37kvAKPJbJ+l9cOKAJWvIPFEaglwSBVqCEt9nfJu2nVzHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k1x6rKgWjoyileUQ0YQeLBsvrQRYEIyEtw/lW3xoxzI=;
- b=USEu/1VMmMx36p1vUToU7exk1+lLCSrNF7ZtRkK4XVFTlgTBe5bWAbjQnQUho/f+Vwy5tfY57whKk3OkSNYdyzDbTNQrS5kM2q0kFxlOFhEV1Z3hMWuxvPIC65KdM8f9UMX2goy6jCV55vYzRudSr4M/4DjGdJxvcaqhv0LOj6wU/WUycB1oOkjIwVzD29Dd4+Eo5H2v1xZjhfYRndX3XISZK/ERxj3elaKIfnroSevQRC0Lb3kZ4DdvOaJgTOlcq6wlFEceTxaPO8KxAqE7k+h0auzF/0rkZgkRcFL7YCum5HYhXF3PcpZqPI4OVhHuOVUpomaNXffvKL0YOPvqJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k1x6rKgWjoyileUQ0YQeLBsvrQRYEIyEtw/lW3xoxzI=;
- b=NgmtoAqNIlBBDYrgFmw6BH5lfBn8S5kWrjLOl1IfLpZ+TpddkMwwC0rJIkezbEKPf+TWZ+ZQ5LYSGkDbKDum+hhWxMF+sVoDZeOSRVi4X7jWvMNisLoq2qI7ZPdKgwz+gcC4gb4lHn//Lllb4f2UlQPJf++P2USaPPNVzu5u4bM=
-Received: from BN9PR12MB5384.namprd12.prod.outlook.com (2603:10b6:408:105::20)
- by BN9PR12MB5177.namprd12.prod.outlook.com (2603:10b6:408:11a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Thu, 12 Aug
- 2021 11:07:26 +0000
-Received: from BN9PR12MB5384.namprd12.prod.outlook.com
- ([fe80::8027:d882:45e9:7a19]) by BN9PR12MB5384.namprd12.prod.outlook.com
- ([fe80::8027:d882:45e9:7a19%7]) with mapi id 15.20.4394.022; Thu, 12 Aug 2021
- 11:07:25 +0000
-From:   "S, Shirish" <Shirish.S@amd.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] sched/debug: print column titles of
- show_state_filter()[V2]
-Thread-Topic: [PATCH] sched/debug: print column titles of
- show_state_filter()[V2]
-Thread-Index: AQHXeGApwcMMUKvQ2UeYt2AcIPdlB6tueyqAgAFoJAA=
-Date:   Thu, 12 Aug 2021 11:07:25 +0000
-Message-ID: <BN9PR12MB5384798085CF59B9D6F92113F2F99@BN9PR12MB5384.namprd12.prod.outlook.com>
-References: <20210714032705.79726-1-shirish.s@amd.com>
- <20210811093659.4177e890@oasis.local.home>
-In-Reply-To: <20210811093659.4177e890@oasis.local.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-08-12T11:07:23Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=6c68f7c4-c275-4845-a05e-1ccdbf514684;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: goodmis.org; dkim=none (message not signed)
- header.d=none;goodmis.org; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 82de7167-5120-4380-0819-08d95d815e0d
-x-ms-traffictypediagnostic: BN9PR12MB5177:
-x-microsoft-antispam-prvs: <BN9PR12MB5177693FD554E2FAD321C454F2F99@BN9PR12MB5177.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1775;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: coiGnQCJ6x+sSq7CqyuYh5wGXf/VrOrtE1/AHhM7sBoupnW1WdS7JcZyFssyD7BZ1tWNItpPe7IuxX29qc2LlumutF2SBVvdbAD4oqUgBELMD6JXD/LE2Q5oyq2kZ6ODJc31YayNdE7gAqPq3cF54PnEdtfcx7mxYAgDMpxqZSd2Ni2sf5bPpkk9ok8Wzqt+z/r1SkwcKj67WLRBKqkZIFqSdD9R4GXbxF9++jLK0F9liKhc54Ef6afil2CmWFZcIe0F7SMM5Fiwt7cAxOh64D2fpFs8lms+KfzFFElr4Dc4Ly7jVBvB0VNkCQpUMul1CWWVxYuNMVo493I0wH1+6s+2n8VVE69oni11ncUnBdNjSbTDKgst/I7CHUNycpRH7SafWGRsmZfJ0WQiidwDDIAg4aqmIOIZ3to+Jc8to41IhYHwduwmNt3304fprktphFdgS5lKIRzxSAEmPRTRRC2Xaz2dKnEJyQb4D+3YmZ2Qm2phjRbRF98iK4CoAWgH+8eABWvNayjw36pHwozQTXa2bM8WnEWw/9z8yaq0oyKBDjSuYcHerhWzyQ7lYIX/MgvAoLBQYrQUvHcpycrdM0wl+nXGUZOTofezy7fqCi8zFPuOWtrO3UOL+EDWxK8IFxO/2KDI5OYv1CG5W1OYqicIO+cDKnRS5Ow7IUOtuzTclTGtgR2hjoN8Krkd9Wfwh/4vBJLsdSRM7dhqwTDPng==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5384.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(53546011)(478600001)(26005)(6506007)(52536014)(7696005)(55236004)(8936002)(9686003)(33656002)(8676002)(5660300002)(38070700005)(55016002)(66946007)(86362001)(66446008)(64756008)(66556008)(66476007)(54906003)(316002)(6916009)(186003)(38100700002)(71200400001)(76116006)(122000001)(4326008)(7416002)(2906002)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YLan03loO1mks9z4zeOJeXQuGKxpboCqMEKF/Xbc1q/08qHrlk/EcFmwsf0G?=
- =?us-ascii?Q?olVShhk4vZoMtAVt/IWZhGB+5feaqhC7pgtpbOstb+EOo+m6XqVbdh9VAjou?=
- =?us-ascii?Q?LAXiex6DrP9WkY7/ddBm7vMPfjbIWxwhLYN//7L3fjH51ow/cBX9Vhc43kcw?=
- =?us-ascii?Q?BlWbvzT8yWa9uy4VY592pi+LU7oLP7+i3lAnpTeS2RplgpvoTTgRKWaIrvuB?=
- =?us-ascii?Q?WZinxe6rhjhkkaICXeaC/mH5t9ljlSD4vs1lOViLsq3vTvTFV0l5rE46Hl2q?=
- =?us-ascii?Q?51+GofR4aktk7xDedymh+mvThJX/haAmEw0mBVP0yeWnYtLyBVYN81JXQY1Y?=
- =?us-ascii?Q?QIbQRJCnOEwTsL49u61dS1u2DTIM1NCGRLtG/Di5nbngAlEcL5MMMm/riaar?=
- =?us-ascii?Q?m5wwPfsFIbV9cUELW1EvMMUysdCz34+jMQUsaZKEiZcfn/KYLV3Za6egEdVT?=
- =?us-ascii?Q?dWTn2tj5beWLL0f6Z1mrQBl4dxWq6Fa6wBNo+ZqODCV92RZLtlx/oZXECKJA?=
- =?us-ascii?Q?CHv2mQfPonXd7xZW3WYsLwCqaBOqiCrL4D/I93iDxjvotuw6DvioR+m1fQYv?=
- =?us-ascii?Q?HLLRx9X2dNNA6YD4jvlgQLJgzMPbgb0wvjYw3d/hw4Yu/Xvt79bNt0Glld0M?=
- =?us-ascii?Q?qTjfxoWyQoUfv9EN0AJcLmWo+ia+tFGOIDGIYRe9moYBQ1y+e2hUDeoDaEBY?=
- =?us-ascii?Q?C8/qEu7V6UwSzvlRLDZEpqI4ftIfFrA3KVUAtz+7DsDhcCA5HTbU/A7R++OE?=
- =?us-ascii?Q?xukDcGOSCEVFmZnb3pfWNGKd4ZTcvWTfIVH+Ari0DSc5pkyXUIDwlTqxiyXL?=
- =?us-ascii?Q?UkBjU3r+C8tOStI61oiuc0yswEm3JYvns9JBPN0wJAyL2kBdo6N1gss+ZepK?=
- =?us-ascii?Q?5I8wNQXxvke+F+p9wmrKCmiqQTEWCzUiXPPPdnGngMD1yU1pAWpqOhYlT7Ib?=
- =?us-ascii?Q?HChGTQFNf7+gUrhESSg9i2S505fdaldsa8rCJkW9New0TtcOgKi0HAePDoRi?=
- =?us-ascii?Q?5QVONYgnpHjuqS6pUIW5xdEnVj5MyjerngWz2AbUG2ZH0WsuPsqG/5XFIJ01?=
- =?us-ascii?Q?E2Tkm7p4Muoii1U1xFMHnlcP9CF/P76n5C51d5zCzaAxPS5aw67TgVL55xBm?=
- =?us-ascii?Q?FIyP1HsZnrV/BU4VUGOEIeS4TLKjeJuEr9i//vhUkTEfFUgkOyQcKeq3YdAN?=
- =?us-ascii?Q?tjFK6TqwwaqqA4Zw9ay6epoFTgVThhvTjp7BCXU/MfX6MdFul+lR0hWx2rWS?=
- =?us-ascii?Q?fK+IQIN6THht1ey1pWIxjDyuONlOtUWCbVGPSJtO6yDZLHc7rVuKf+zHUb6+?=
- =?us-ascii?Q?2aBfLQs4ePn5XUfkI79SpIbU?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5384.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82de7167-5120-4380-0819-08d95d815e0d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 11:07:25.7283
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tOMUBXTYdoPTN5XLs1Kt+DTrq/noFjyKbLfGu5tkdaG3hVvIS6poDGzwtmc49Xd+VRcq3sRyS8yHJqRyD91zfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5177
+        id S236690AbhHLLKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:10:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45552 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236478AbhHLLKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:10:19 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B2AF62226F;
+        Thu, 12 Aug 2021 11:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628766593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=SVxoOaFBxTfaDzPiE8U0rcQ67FZW06oth1X9BuQvDS0=;
+        b=XPYAXUTfFPj1U/Ee6QQc74gBrbWtITyPV2NJNuIDGp+OFGkhFSk+4C3h8pkIYUGu7MGjjt
+        Zak3ui0Qtk+uZq0mI8IVND6JJQ4GUZDnNOTPxdnY6/SRgHEnO7Gyg/rXsTLIdhSGi5K343
+        l1C8s90rM4lyHIl6bHKj/BR58OITeYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628766593;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=SVxoOaFBxTfaDzPiE8U0rcQ67FZW06oth1X9BuQvDS0=;
+        b=vY1m65wYWsFdvpAZ6g8aq0P3RnZa7L69oOwRJE6T7NtPbY2mUHTYkAsPWjQaGCX77bV9W5
+        PaxGxKiq/tf+dPCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id AB297A3EDA;
+        Thu, 12 Aug 2021 11:09:53 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 13:09:53 +0200
+Message-ID: <s5hmtpmj4vy.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.14-rc6
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only]
+Linus,
 
-Done.
+please pull sound fixes for v5.14-rc6 from:
 
-Thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.14-rc6
 
+The topmost commit is d07149aba2ef423eae94a9cc2a6365d0cdf6fd51
 
-Regards,
-Shirish S
+----------------------------------------------------------------
 
------Original Message-----
-From: Steven Rostedt <rostedt@goodmis.org>=20
-Sent: Wednesday, August 11, 2021 7:07 PM
-To: S, Shirish <Shirish.S@amd.com>
-Cc: Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; =
-Juri Lelli <juri.lelli@redhat.com>; Vincent Guittot <vincent.guittot@linaro=
-.org>; Dietmar Eggemann <dietmar.eggemann@arm.com>; Ben Segall <bsegall@goo=
-gle.com>; Mel Gorman <mgorman@suse.de>; Daniel Bristot de Oliveira <bristot=
-@redhat.com>; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/debug: print column titles of show_state_filter(=
-)[V2]
+sound fixes for 5.14-rc6
 
-On Wed, 14 Jul 2021 08:57:05 +0530
-Shirish S <shirish.s@amd.com> wrote:
+This seems to be a usual bump in the middle, containing lots of
+pending ASoC fixes since the previous PR.
 
-> This addition in the debug output shall improve readablitly..
-> Its not intuitive for users that the pid printed in last column is of=20
-> parent process.
+- Yet another PCM mmap regression fix
+- Fix for ASoC DAPM prefix handling
+- Various cs42l42 codec fixes
+- PCM buffer reference fixes in a few ASoC drivers
+- Fixes for ASoC SOF, AMD, tlv320, WM
+- HD-audio quirks
 
-Hi Shirish,
+----------------------------------------------------------------
 
-perhaps add a before and after output to show people what you are trying to=
- improve, and that can help the maintainers see if it is a useful patch or =
-not.
+Arnd Bergmann (1):
+      ASoC: codecs: wcd938x: fix wcd module dependency
 
-Note, I'm only a reviewer of scheduling code, I'm not one that can pull in =
-the patch.
+Brent Lu (1):
+      ASoC: Intel: sof_da7219_mx98360a: fail to initialize soundcard
 
--- Steve
+Derek Fang (1):
+      ASoC: rt5682: Adjust headset volume button threshold
 
+Guennadi Liakhovetski (1):
+      ASoC: SOF: Intel: hda-ipc: fix reply size checking
 
->=20
-> v2: Dropped #ifdef logic
->=20
-> Signed-off-by: Shirish S <shirish.s@amd.com>
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> ---
->  kernel/sched/core.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c index=20
-> 2d9ff40f4661..22cee4c0f4b1 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8194,6 +8194,9 @@ void show_state_filter(unsigned int=20
-> state_filter)  {
->  	struct task_struct *g, *p;
-> =20
-> +	pr_info("  task%*s", BITS_PER_LONG =3D=3D 32 ? 38 : 46,
-> +		"PC stack   pid father\n");
-> +
->  	rcu_read_lock();
->  	for_each_process_thread(g, p) {
->  		/*
+Jeremy Szu (1):
+      ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 650 G8 Notebook PC
+
+Lucas Tanure (1):
+      ASoC: wm_adsp: Let soc_cleanup_component_debugfs remove debugfs
+
+Luke D Jones (1):
+      ALSA: hda: Add quirk for ASUS Flow x13
+
+Marek Vasut (1):
+      ASoC: tlv320aic32x4: Fix TAS2505/TAS2521 processing block selection
+
+Mario Limonciello (1):
+      ASoC: amd: renoir: Run hibernation callbacks
+
+Mark Brown (3):
+      ASoC: tlv320aic31xx: Fix jack detection after suspend
+      ASoC: component: Remove misplaced prefix handling in pin control functions
+      ASoC: nau8824: Fix open coded prefix handling
+
+Peter Ujfalusi (1):
+      ASoC: topology: Select SND_DYNAMIC_MINORS
+
+Pierre-Louis Bossart (2):
+      ASoC: SOF: Intel: hda: enforce exclusion between HDaudio and SoundWire
+      ASoC: SOF: Intel: Kconfig: fix SoundWire dependencies
+
+Richard Fitzgerald (10):
+      MAINTAINERS: Add sound devicetree bindings for Wolfson Micro devices
+      ASoC: cs42l42: Correct definition of ADC Volume control
+      ASoC: cs42l42: Don't allow SND_SOC_DAIFMT_LEFT_J
+      ASoC: cs42l42: Fix bclk calculation for mono
+      ASoC: cs42l42: Fix inversion of ADC Notch Switch control
+      ASoC: cs42l42: Remove duplicate control for WNF filter frequency
+      ASoC: cs42l42: PLL must be running when changing MCLK_SRC_SEL
+      ASoC: cs42l42: Fix LRCLK frame start edge
+      ASoC: cs42l42: Constrain sample rate to prevent illegal SCLK
+      ASoC: cs42l42: Fix mono playback
+
+Takashi Iwai (6):
+      ASoC: intel: atom: Fix reference to PCM buffer address
+      ASoC: xilinx: Fix reference to PCM buffer address
+      ASoC: uniphier: Fix reference to PCM buffer address
+      ASoC: kirkwood: Fix reference to PCM buffer address
+      ASoC: amd: Fix reference to PCM buffer address
+      ALSA: pcm: Fix mmap breakage without explicit buffer setup
+
+Vijendar Mukunda (1):
+      ASoC: amd: enable stop_dma_first flag for cz_dai_7219_98357 dai link
+
+---
+ MAINTAINERS                                  |   3 +-
+ sound/core/pcm_native.c                      |   5 +-
+ sound/pci/hda/patch_realtek.c                |   2 +
+ sound/soc/Kconfig                            |   1 +
+ sound/soc/amd/acp-da7219-max98357a.c         |   5 ++
+ sound/soc/amd/acp-pcm-dma.c                  |   2 +-
+ sound/soc/amd/raven/acp3x-pcm-dma.c          |   2 +-
+ sound/soc/amd/renoir/acp3x-pdm-dma.c         |   2 +-
+ sound/soc/amd/renoir/rn-pci-acp3x.c          |   2 +
+ sound/soc/codecs/Kconfig                     |   1 +
+ sound/soc/codecs/Makefile                    |   5 +-
+ sound/soc/codecs/cs42l42.c                   | 104 ++++++++++++++++++---------
+ sound/soc/codecs/cs42l42.h                   |   3 +
+ sound/soc/codecs/nau8824.c                   |  42 ++---------
+ sound/soc/codecs/rt5682.c                    |   1 +
+ sound/soc/codecs/tlv320aic31xx.c             |  10 +++
+ sound/soc/codecs/tlv320aic32x4.c             |  33 +++++++--
+ sound/soc/codecs/wm_adsp.c                   |   1 -
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |   3 +-
+ sound/soc/intel/boards/sof_da7219_max98373.c |   2 +-
+ sound/soc/kirkwood/kirkwood-dma.c            |  26 ++++---
+ sound/soc/soc-component.c                    |  63 +++++++---------
+ sound/soc/sof/intel/Kconfig                  |   4 +-
+ sound/soc/sof/intel/hda-ipc.c                |   4 +-
+ sound/soc/sof/intel/hda.c                    |  12 ++++
+ sound/soc/uniphier/aio-dma.c                 |   2 +-
+ sound/soc/xilinx/xlnx_formatter_pcm.c        |   4 +-
+ 27 files changed, 206 insertions(+), 138 deletions(-)
+
