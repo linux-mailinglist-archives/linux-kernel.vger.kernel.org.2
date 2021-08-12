@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083D23EA98F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDCC3EA992
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhHLRg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:36:26 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:55518 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236128AbhHLRgZ (ORCPT
+        id S236437AbhHLRhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:37:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51322 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhHLRhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:36:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UioNIcs_1628789757;
-Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UioNIcs_1628789757)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 13 Aug 2021 01:35:57 +0800
-Subject: Re: [PATCH v2 2/2] net: return early for possible invalid uaddr
-To:     Eric Dumazet <eric.dumazet@gmail.com>, davem@davemloft.net,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Baoyou Xie <baoyou.xie@alibaba-inc.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210811152431.66426-1-wenyang@linux.alibaba.com>
- <20210811152431.66426-2-wenyang@linux.alibaba.com>
- <247c8272-0e26-87ab-d492-140047d4abc4@gmail.com>
-From:   Wen Yang <wenyang@linux.alibaba.com>
-Message-ID: <6c11b9e7-6aac-65c9-4755-99d41fbdcb4e@linux.alibaba.com>
-Date:   Fri, 13 Aug 2021 01:35:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Thu, 12 Aug 2021 13:37:40 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C1ABA22258;
+        Thu, 12 Aug 2021 17:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628789833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rtvikXvVzhf77pjK9DX6g9U2RJhd2kjezc1u1IrW7D0=;
+        b=jsvWY403o1qR2yyFGI0LQZYk1erQXkl0GHfrYzrPmFOLKEdReDDgLKaenzLnZMa5/Fclog
+        XjOzsWREdkRGd8a9F13RFKaHNMGSFjv8pFTg4yp6wzHZCXvjaZJHw6/zPUMwIKIpcCiaMN
+        rK2hCXjnT4xKb6eoK0W1/gUfo43jA5c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628789833;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rtvikXvVzhf77pjK9DX6g9U2RJhd2kjezc1u1IrW7D0=;
+        b=YIp8Up3ObmAebni6fHUvyUd6o31EV6p+p8IHj51NHWAuEE9N5YpBJz9HXbtB/dIIhCxl6s
+        TY5H/wb70mSpVoCw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9E9A013AC3;
+        Thu, 12 Aug 2021 17:37:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id oC8/JUlcFWHoEQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:37:13 +0000
+Subject: Re: [PATCH v14 087/138] mm/filemap: Convert mapping_get_entry to
+ return a folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-88-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e3278134-172a-e7ff-ca59-84d671fc7d47@suse.cz>
+Date:   Thu, 12 Aug 2021 19:37:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <247c8272-0e26-87ab-d492-140047d4abc4@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715033704.692967-88-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2021/8/12 上午12:11, Eric Dumazet 写道:
+On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
+> The pagecache only contains folios, so indicate that this is definitely
+> not a tail page.  Shrinks mapping_get_entry() by 56 bytes, but grows
+> pagecache_get_page() by 21 bytes as gcc makes slightly different hot/cold
+> code decisions.  A net reduction of 35 bytes of text.
 > 
-> 
-> On 8/11/21 5:24 PM, Wen Yang wrote:
->> The inet_dgram_connect() first calls inet_autobind() to select an
->> ephemeral port, then checks uaddr in udp_pre_connect() or
->> __ip4_datagram_connect(), but the port is not released until the socket
->> is closed. This could cause performance issues or even exhaust ephemeral
->> ports if a malicious user makes a large number of UDP connections with
->> invalid uaddr and/or addr_len.
->>
->>   
-> 
-> This is a big patch.
-> 
-> Can the malicious user still use a large number of UDP sockets,
-> with valid uaddr/add_len and consequently exhaust ephemeral ports ?
-> 
-> If yes, it does not seem your patch is helping.
-> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Thank you for your comments.
-However, we could make these optimizations:
-
-1, If the user passed in some invalid parameters, we should return as
-soon as possible. We shouldn't assume that these parameters are valid
-first, then do some real work (such as select an ephemeral port), and
-then finally check that they are indeed valid or not.
-
-2. Unify the code for checking parameters in udp_pre_connect() and
-__ip4_datagram_connect() to make the code clearer.
-
-> If no, have you tried instead to undo the autobind, if the connect fails ?
-> 
-
-Thanks. Undo the autobind is useful if the connect fails.
-We will add this logic and submit the v3 patch later.
-
--- 
-Best wishes，
-Wen
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
