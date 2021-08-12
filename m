@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C413EA79B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBA63EA7A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238138AbhHLPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:31:41 -0400
-Received: from mout.gmx.net ([212.227.17.20]:42799 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237922AbhHLPbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:31:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628782265;
-        bh=/Gr1GdWHDT8BPNnA+VcX8W7t9qtsbNmaU/ibJFzxrAw=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=RehEff0aaD4fYUZZodNyDDz0LPXHZXp8uopXRIu2aCzCdI1hLtn2YWcaTxSGeW5LY
-         Szkd7OWyVMiwF7EywCF5iMoGgcRH++aUBFKPiu7ynBz+u/ChAOoQF6qCXRNGmapSn8
-         uNLYRCqQKFCxABoh3wSRHNSO0rTJFgdmP8i5OE5Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.219.67]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MG9g4-1mJddl1Zue-00GaHG; Thu, 12
- Aug 2021 17:31:05 +0200
-Message-ID: <e5f39aa65a0d7d72a414556eb0c182bb8dcd1691.camel@gmx.de>
-Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Date:   Thu, 12 Aug 2021 17:31:04 +0200
-In-Reply-To: <87v94ahemj.ffs@tglx>
-References: <20210713135158.054424875@linutronix.de>
-         <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
-         <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
-         <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
-         <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
-         <87v94ahemj.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S237915AbhHLPgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:36:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28790 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236426AbhHLPgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:36:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628782539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NHxcJB6Dx8/bsst5x+A7CZjcxgMXd7//qJ3xADNRAT8=;
+        b=OCpCnr+Xij3BIRm/QVeIG4Xi77IPypy3eKwu7GDiadEXiTtS/VFLWMX9ag7C2YoqAPIxPp
+        AJwwnIyyPKZcJGkprIZuojTWI9fPHF1PeUkwougoI12X7gDv25BB+q2Hm+8tCdrAy+m1Zi
+        167ZNcEn3LfNn1plMHDvNhJjwz1AmqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-oLMqJgz-PaSewlFGmDQ1nA-1; Thu, 12 Aug 2021 11:35:37 -0400
+X-MC-Unique: oLMqJgz-PaSewlFGmDQ1nA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A077E100A972;
+        Thu, 12 Aug 2021 15:35:28 +0000 (UTC)
+Received: from redhat.com (ovpn-112-138.phx2.redhat.com [10.3.112.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFD9783BF8;
+        Thu, 12 Aug 2021 15:35:27 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 10:35:25 -0500
+From:   Eric Blake <eblake@redhat.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@lst.de,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+Subject: Re: [PATCH] block: nbd: add sanity check for first_minor
+Message-ID: <20210812153525.hlged76ivhqtffyg@redhat.com>
+References: <20210812091501.22648-1-paskripkin@gmail.com>
+ <7f9a6877-12d9-0177-d09a-6522e5a557ec@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bBgsQz8ncGOk7AnAL5btq3RL36uE+o643l7zSPqq3Ur4qw4Nx8Z
- 3t8YFhDcSMJms//9+HL1/DAfu0F+fUkt+KLwWOjQs8hBcYONwUKmV2e6LEClilRhgRGNtjA
- tEdjlhCOTklnTOt7kc4zGnMzUaaRSEpVYtn5/iguYiHpvdtRWiXr1NXvFfgaDYsZ++U39ii
- dAkn1bW51h7CGDLkUMgkg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VBUL4Zl4eGM=:rT2nu6qpQvn+P0DYXg0z2p
- AWJ+mGtetsZzOZ9+a0HnLQP3+Hl3IA2T7+FPL0qnb4eaaqS0UjeeT4/xttpL0iQuOFjDIB2m/
- tvrzjGw7RSg/UNPTOWk1UMe6a24AZfXDI3ABuXi6GoEn0lvG6VqS9ofBkz8VPLS+Q08hOjfsN
- tp83x0Z1PaV+GHIaPKrzwkNfKEVPxsz9sgCpaoPBXsJXxZoz2Gt1ekCYccSZ1YYD98CHeJBRq
- SPJnn85JmbxC1o4aE32A8Opo8gQsOdVttqRsaNWsUqgKWcVAtSZy1JoYydJLUOCInGF5bhu/x
- wBXW3zSoJqE+dy8WciklwJTg2teS09SbpZ1a9bnF2/NZ7wRw885HhMY/0prNBIpzLLgH1VDEl
- WpzIx7VFGobUBU53t3J5Xxsd5PoMM3hWiLfuVl6qVK5ED341uQojvvXl7b+6B6q87lo3GtDX1
- ExnknpHiZIrOaafvlqZH6P8W7uSdtWZxzlPeRVQjSUjnbMJdwwAxQhbzC1jlibVWpOowrwrPN
- vnObWEaPF7FZAHPduMWgyP/gtJosPqOqNerYPOwLKeuMVOq57fYIQ4+7nqUyoeWxM6Kzqp+BL
- MCDACwr7DzpoNbiclkOTU6kWSqYjXUO2izdwcikMFoccdk1kY+D7w+W0NtQON6A/aqoZkRqaS
- iDkTpfh2Sep5UELJC8FPytoFyHx13X9Ux63pJLawsQVBmwBJJkECv8AGPEJ4dATFkC3Xixa/W
- xL0LiHCDbT1oBt4c9Vwn2Xjm8bszqTemDeO5Q2OYfdkvzGBg2BCedIWJdwA3w+F2TV8mNJfQT
- ngFtrRRuVDkFromMLYdLyU7iDCQ9z+nXVfEhpPDtbC6/ci37xYPGaqC12bjPhIgHLf8wpMvJN
- cEoy+4Qh9QdWg+rO/QJx1vngF4ts2oObt/VD5CHgOj+EX8THhXJVqlhyz5Sq07PjsJ+D3JJbC
- HwNuEXdKxMgw0l2udJI+ohR2cYGemqiiRs2otQjbWwOS3DolWxxdECrw/9U2Tm08gljjUx5QC
- Np5AqUkzIVbXQaVGck0NE63EGuJExtCvAGF6a4dEc1cIAVFYh8wTJg1wUbI8XUIkp2oYKihdA
- Ujp+JWqdQGsznozZk9DKkvJO20QdFNDtalF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f9a6877-12d9-0177-d09a-6522e5a557ec@gmail.com>
+User-Agent: NeoMutt/20210205-687-0ed190
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-12 at 17:22 +0200, Thomas Gleixner wrote:
-> >
-> > Config attached just in case.
->
-> I rather assume it's a hardware dependency. What kind of machine are you
-> using?
+On Thu, Aug 12, 2021 at 12:42:38PM +0300, Pavel Skripkin wrote:
+> 
+> Fun thing: I got a reply to this email from
+> nsd-public@police.gov.hk, which is Hong Kong Police office email. Does
+> anyone know what is going on? :) It's a bit scary...
 
-Desktop box is a garden variety MEDION i4790 box with an Nvidia GTX980.
-Lappy is an HP Spectre 360 i5-6200U w. i915 graphics.  Very mundane.
+You are not alone.  Apparently, someone subscribed that address to the
+nbd@other.debian.org list and it is auto-responding to every message
+it receives; hopefully, a list administrator (I am not one) will be
+willing to forcefully unsubscribe that address.
 
-	-Mike
+-- 
+Eric Blake, Principal Software Engineer
+Red Hat, Inc.           +1-919-301-3266
+Virtualization:  qemu.org | libvirt.org
 
