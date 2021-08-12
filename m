@@ -2,224 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB883EAA53
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443CB3EAA58
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237932AbhHLSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:36:54 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56272 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234334AbhHLSgs (ORCPT
+        id S234029AbhHLSjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229905AbhHLSjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:36:48 -0400
-Received: from x64host.home (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3F5B620C1558;
-        Thu, 12 Aug 2021 11:36:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3F5B620C1558
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628793383;
-        bh=HJY2GOAOOvc8RDfN7JED+eTXmUXW5HORS7eNhRhtjow=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fYQ5V+YqDk2JLbY1pk+I7C3E1DWoi0SXbyNqFrLQr7Dcf4HF5uUchjQtKGuMY28Ff
-         yKNVdfvLTidvFQOlr7Vb6cghccz6tYOMw3ejRSBoknRwvBkeKhenVvft/1n6SubgW/
-         zCVsQrMqVI4GQham7g15Tn0J7kNW3QcX1Zyhet0c=
-From:   madvenka@linux.microsoft.com
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v7 4/4] arm64: Create a list of SYM_CODE functions, check return PC against list
-Date:   Thu, 12 Aug 2021 13:35:58 -0500
-Message-Id: <20210812183559.22693-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812183559.22693-1-madvenka@linux.microsoft.com>
-References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
- <20210812183559.22693-1-madvenka@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 12 Aug 2021 14:39:21 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E208C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:38:56 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id r14-20020a0c8d0e0000b02902e82df307f0so3426532qvb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:38:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=vF0sL0fF9hkrbzST732Pf1ePejYOAKjxRopYSg2L7GI=;
+        b=ftmg5/kzgPCbtDKLvOXGUxAwgCyGmQz0FjyxE5ReqXet/Q3aA1zLsnxWPlB9wBt+pN
+         K36M/laOaTJCahnaYG+LNZAf7hopKfo/T+Woj0Lqtbqu8pUOV08Rgb1uTcba1TJr0CsM
+         pIaP6y6TJZPdNQC4tqbrFxivJPv7+MSF1WXFvYLcnk9PYVB16yaHqxW2lm2zhBpIOK1h
+         50U6BCKLsA18+Vj6lm9LmvdlfTSSlVnaBtXrWZqcWMnMAKMPMD32u7dtfSsqBLeKG8i0
+         jZ1p4P4C5/fUOMLRZN8BUZUng1f5AJdXFoKWvPMWGX9zD4QQPl1J08H98tOdXaO+4cWa
+         +tzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=vF0sL0fF9hkrbzST732Pf1ePejYOAKjxRopYSg2L7GI=;
+        b=dGm5sRRnUAw8fytVnNmenFwHp6XDUZ1IpSqgorSbcQJ4qT//kMAnF8KPfp8dnmTJW8
+         R/h43itbkMKVePQ2iLRpMOAxvAmkd5Uv+xwi0SFQn5bUmyFwWPFmS8rThcZKDx+GgMv+
+         603ucK0QgwFDgQeRIzpTT38pQewEhGlc8mZ4jF+K4SorkedmqP1Iz+Yd2CWdmYuuk/s9
+         YAAqDDm4oBzajlUo28kpVQUGalK4+8e+IOw1TZlTic6KMctNniP4EaWfCr5IZq1kGInK
+         BKhLRCbtopTcmOXaJ/ljdKo9y537N3PWsoffzUvIWdQ+WlxaFgH0DDq8jVzako0D6OFZ
+         c2LA==
+X-Gm-Message-State: AOAM530BiG82ZcZKfg+6gMagg8kj1b8nBAtv4Gy8fFhiTEqVOp9K4QA+
+        RI7JqXHzkVx+yGe3ruyCGghM4xfSBjk28H+b/m0=
+X-Google-Smtp-Source: ABdhPJwEMgPpcsPo8OyjMcTQ93JyDKLoZMXUBpm95iKTMbDwHElvwnHRCWgHnUP9ul8VWThpXNeyoIM91UlK6m0wk90=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:2e44:5ff0:453:5647])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:c441:: with SMTP id
+ t1mr5209159qvi.25.1628793535171; Thu, 12 Aug 2021 11:38:55 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 11:38:48 -0700
+Message-Id: <20210812183848.1519994-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH v2] x86/build: remove stale cc-option checks
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+cc-option, __cc-option, cc-option-yn, and cc-disable-warning all invoke
+the compiler during build time, and can slow down the build when these
+checks become stale for our supported compilers, whose minimally
+supported versions increases over time. See
+Documentation/process/changes.rst for the current supported minimal
+versions (GCC 4.9+, clang 10.0.1+). Compiler version support for these
+flags may be verified on godbolt.org.
 
-SYM_CODE functions don't follow the usual calling conventions. Check if the
-return PC in a stack frame falls in any of these. If it does, consider the
-stack trace unreliable.
+The following flags are supported by all supported versions of GCC and
+Clang. Remove their cc-option, __cc-option, and cc-option-yn tests.
+* -Wno-address-of-packed-member
+* -mno-avx
+* -m32
+* -mno-80387
+* -march=k8
+* -march=nocona
+* -march=core2
+* -march=atom
+* -mtune=generic
+* -mfentry
 
-Define a special section for unreliable functions
-=================================================
+-mpreferred-stack-boundary= is specific to GCC, while
+-mstack-alignment= is specific to Clang. Rather than test for this three
+times via cc-option and __cc-option, rely on CONFIG_CC_IS_* from
+Kconfig.
 
-Define a SYM_CODE_END() macro for arm64 that adds the function address
-range to a new section called "sym_code_functions".
+GCC did not support values less than 4 for -mpreferred-stack-boundary=
+until GCC 7+. Change the cc-option test to check for a value of 2,
+rather than 4.
 
-Linker file
-===========
-
-Include the "sym_code_functions" section under read-only data in
-vmlinux.lds.S.
-
-Initialization
-==============
-
-Define an early_initcall() to create a sym_code_functions[] array from
-the linker data.
-
-Unwinder check
-==============
-
-Add a reliability check in unwind_is_reliable() that compares a return
-PC with sym_code_functions[]. If there is a match, then return failure.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1436
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- arch/arm64/include/asm/linkage.h  | 12 +++++++
- arch/arm64/include/asm/sections.h |  1 +
- arch/arm64/kernel/stacktrace.c    | 53 +++++++++++++++++++++++++++++++
- arch/arm64/kernel/vmlinux.lds.S   | 10 ++++++
- 4 files changed, 76 insertions(+)
+Changes v1 -> v2:
+* Change -mpreferred-stack-boundary= cc-option test to check 2 rather
+  than 4, noting that in the commit message.
+* Rebase on tip/master.
+* Carry forward Nathan's RB tag.
 
-diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
-index 9906541a6861..616bad74e297 100644
---- a/arch/arm64/include/asm/linkage.h
-+++ b/arch/arm64/include/asm/linkage.h
-@@ -68,4 +68,16 @@
- 		SYM_FUNC_END_ALIAS(x);		\
- 		SYM_FUNC_END_ALIAS(__pi_##x)
+ arch/x86/Makefile | 53 +++++++++++++++++------------------------------
+ 1 file changed, 19 insertions(+), 34 deletions(-)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 307fd0000a83..0d33ba013683 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -14,10 +14,13 @@ endif
  
-+/*
-+ * Record the address range of each SYM_CODE function in a struct code_range
-+ * in a special section.
-+ */
-+#define SYM_CODE_END(name)				\
-+	SYM_END(name, SYM_T_NONE)			;\
-+	99:						;\
-+	.pushsection "sym_code_functions", "aw"		;\
-+	.quad	name					;\
-+	.quad	99b					;\
-+	.popsection
-+
- #endif
-diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
-index e4ad9db53af1..c84c71063d6e 100644
---- a/arch/arm64/include/asm/sections.h
-+++ b/arch/arm64/include/asm/sections.h
-@@ -21,5 +21,6 @@ extern char __exittext_begin[], __exittext_end[];
- extern char __irqentry_text_start[], __irqentry_text_end[];
- extern char __mmuoff_data_start[], __mmuoff_data_end[];
- extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
-+extern char __sym_code_functions_start[], __sym_code_functions_end[];
+ # For gcc stack alignment is specified with -mpreferred-stack-boundary,
+ # clang has the option -mstack-alignment for that purpose.
+-ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
++ifdef CONFIG_CC_IS_GCC
++ifneq ($(call cc-option, -mpreferred-stack-boundary=2),)
+       cc_stack_align4 := -mpreferred-stack-boundary=2
+       cc_stack_align8 := -mpreferred-stack-boundary=3
+-else ifneq ($(call cc-option, -mstack-alignment=16),)
++endif
++endif
++ifdef CONFIG_CC_IS_CLANG
+       cc_stack_align4 := -mstack-alignment=4
+       cc_stack_align8 := -mstack-alignment=8
+ endif
+@@ -31,8 +34,8 @@ REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
  
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index b60f8a20ba64..26dbdd4fff77 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -18,6 +18,31 @@
- #include <asm/stack_pointer.h>
- #include <asm/stacktrace.h>
+ REALMODE_CFLAGS += -ffreestanding
+ REALMODE_CFLAGS += -fno-stack-protector
+-REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+-REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
++REALMODE_CFLAGS += -Wno-address-of-packed-member
++REALMODE_CFLAGS += $(cc_stack_align4)
+ REALMODE_CFLAGS += $(CLANG_FLAGS)
+ export REALMODE_CFLAGS
  
-+struct code_range {
-+	unsigned long	start;
-+	unsigned long	end;
-+};
-+
-+static struct code_range	*sym_code_functions;
-+static int			num_sym_code_functions;
-+
-+int __init init_sym_code_functions(void)
-+{
-+	size_t size = (unsigned long)__sym_code_functions_end -
-+		      (unsigned long)__sym_code_functions_start;
-+
-+	sym_code_functions = (struct code_range *)__sym_code_functions_start;
-+	/*
-+	 * Order it so that sym_code_functions is not visible before
-+	 * num_sym_code_functions.
-+	 */
-+	smp_mb();
-+	num_sym_code_functions = size / sizeof(struct code_range);
-+
-+	return 0;
-+}
-+early_initcall(init_sym_code_functions);
-+
- /*
-  * AArch64 PCS assigns the frame pointer to x29.
-  *
-@@ -185,6 +210,10 @@ void show_stack(struct task_struct *tsk, unsigned long *sp, const char *loglvl)
-  */
- static bool notrace unwind_is_reliable(struct stackframe *frame)
- {
-+	const struct code_range *range;
-+	unsigned long pc;
-+	int i;
-+
- 	/*
- 	 * If the PC is not a known kernel text address, then we cannot
- 	 * be sure that a subsequent unwind will be reliable, as we
-@@ -192,6 +221,30 @@ static bool notrace unwind_is_reliable(struct stackframe *frame)
- 	 */
- 	if (!__kernel_text_address(frame->pc))
- 		return false;
-+
-+	/*
-+	 * Check the return PC against sym_code_functions[]. If there is a
-+	 * match, then the consider the stack frame unreliable.
-+	 *
-+	 * As SYM_CODE functions don't follow the usual calling conventions,
-+	 * we assume by default that any SYM_CODE function cannot be unwound
-+	 * reliably.
-+	 *
-+	 * Note that this includes:
-+	 *
-+	 * - Exception handlers and entry assembly
-+	 * - Trampoline assembly (e.g., ftrace, kprobes)
-+	 * - Hypervisor-related assembly
-+	 * - Hibernation-related assembly
-+	 * - CPU start-stop, suspend-resume assembly
-+	 * - Kernel relocation assembly
-+	 */
-+	pc = frame->pc;
-+	for (i = 0; i < num_sym_code_functions; i++) {
-+		range = &sym_code_functions[i];
-+		if (pc >= range->start && pc < range->end)
-+			return false;
-+	}
- 	return true;
- }
+@@ -48,8 +51,7 @@ export BITS
+ #
+ #    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
+ #
+-KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
+-KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
++KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
  
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 709d2c433c5e..2bf769f45b54 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -111,6 +111,14 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
+ # Intel CET isn't enabled in the kernel
+ KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+@@ -59,9 +61,8 @@ ifeq ($(CONFIG_X86_32),y)
+         UTS_MACHINE := i386
+         CHECKFLAGS += -D__i386__
  
-+#define SYM_CODE_FUNCTIONS				\
-+	. = ALIGN(16);					\
-+	.symcode : AT(ADDR(.symcode) - LOAD_OFFSET) {	\
-+		__sym_code_functions_start = .;		\
-+		KEEP(*(sym_code_functions))		\
-+		__sym_code_functions_end = .;		\
-+	}
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -196,6 +204,8 @@ SECTIONS
- 	swapper_pg_dir = .;
- 	. += PAGE_SIZE;
+-        biarch := $(call cc-option,-m32)
+-        KBUILD_AFLAGS += $(biarch)
+-        KBUILD_CFLAGS += $(biarch)
++        KBUILD_AFLAGS += -m32
++        KBUILD_CFLAGS += -m32
  
-+	SYM_CODE_FUNCTIONS
-+
- 	. = ALIGN(SEGMENT_ALIGN);
- 	__init_begin = .;
- 	__inittext_begin = .;
+         KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
+ 
+@@ -72,7 +73,7 @@ ifeq ($(CONFIG_X86_32),y)
+         # Align the stack to the register width instead of using the default
+         # alignment of 16 bytes. This reduces stack usage and the number of
+         # alignment instructions.
+-        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
++        KBUILD_CFLAGS += $(cc_stack_align4)
+ 
+         # CPU-specific tuning. Anything which can be shared with UML should go here.
+         include arch/x86/Makefile_32.cpu
+@@ -93,7 +94,6 @@ else
+         UTS_MACHINE := x86_64
+         CHECKFLAGS += -D__x86_64__
+ 
+-        biarch := -m64
+         KBUILD_AFLAGS += -m64
+         KBUILD_CFLAGS += -m64
+ 
+@@ -104,7 +104,7 @@ else
+         KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
+ 
+         # Don't autogenerate traditional x87 instructions
+-        KBUILD_CFLAGS += $(call cc-option,-mno-80387)
++        KBUILD_CFLAGS += -mno-80387
+         KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
+ 
+         # By default gcc and clang use a stack alignment of 16 bytes for x86.
+@@ -114,20 +114,17 @@ else
+         # default alignment which keep the stack *mis*aligned.
+         # Furthermore an alignment to the register width reduces stack usage
+         # and the number of alignment instructions.
+-        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align8))
++        KBUILD_CFLAGS += $(cc_stack_align8)
+ 
+ 	# Use -mskip-rax-setup if supported.
+ 	KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
+ 
+         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
+-        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
+-        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
+-
+-        cflags-$(CONFIG_MCORE2) += \
+-                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
+-	cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
+-		$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
+-        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
++        cflags-$(CONFIG_MK8)		+= -march=k8
++        cflags-$(CONFIG_MPSC)		+= -march=nocona
++        cflags-$(CONFIG_MCORE2)		+= -march=core2
++        cflags-$(CONFIG_MATOM)		+= -march=atom
++        cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
+         KBUILD_CFLAGS += $(cflags-y)
+ 
+         KBUILD_CFLAGS += -mno-red-zone
+@@ -158,18 +155,6 @@ export CONFIG_X86_X32_ABI
+ ifdef CONFIG_FUNCTION_GRAPH_TRACER
+   ifndef CONFIG_HAVE_FENTRY
+ 	ACCUMULATE_OUTGOING_ARGS := 1
+-  else
+-    ifeq ($(call cc-option-yn, -mfentry), n)
+-	ACCUMULATE_OUTGOING_ARGS := 1
+-
+-	# GCC ignores '-maccumulate-outgoing-args' when used with '-Os'.
+-	# If '-Os' is enabled, disable it and print a warning.
+-        ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+-          undefine CONFIG_CC_OPTIMIZE_FOR_SIZE
+-          $(warning Disabling CONFIG_CC_OPTIMIZE_FOR_SIZE.  Your compiler does not have -mfentry so you cannot optimize for size with CONFIG_FUNCTION_GRAPH_TRACER.)
+-        endif
+-
+-    endif
+   endif
+ endif
+ 
+@@ -193,7 +178,7 @@ ifdef CONFIG_RETPOLINE
+   # only been fixed starting from gcc stable version 8.4.0 and
+   # onwards, but not for older ones. See gcc bug #86952.
+   ifndef CONFIG_CC_IS_CLANG
+-    KBUILD_CFLAGS += $(call cc-option,-fno-jump-tables)
++    KBUILD_CFLAGS += -fno-jump-tables
+   endif
+ endif
+ 
+
+base-commit: c5ee8ababa9be56241c949d5c3b9e29a1d0300d6
 -- 
-2.25.1
+2.33.0.rc1.237.g0d66db33f3-goog
 
