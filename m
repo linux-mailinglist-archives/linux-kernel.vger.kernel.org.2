@@ -2,202 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F293EA63C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA25F3EA68B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhHLOJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:09:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36662 "EHLO mail.kernel.org"
+        id S238014AbhHLO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:26:15 -0400
+Received: from elvis.franken.de ([193.175.24.41]:57499 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235263AbhHLOJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:09:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 394246103E;
-        Thu, 12 Aug 2021 14:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628777361;
-        bh=aQ47d5YlVySZNXPNcA6Ef4BYQj2TbtNuZ997hYOG4tA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GMeA8eQgYaXAYeDX3QXpVozkdY40gObR/Js01KQMoeHKSXLiV1BBQBPEFPxoxDlDZ
-         AXQyCcaTVmzLW10tQOQvNMRgURX637yhvopTXKHuabl2QQVP+Ra56b5S59umS3TO+/
-         bd0BBRXjhNdgzu8EKjSzBBLc+CcO5XPnAo86wRlYo2jmZWCKfQ69/24+nQxTFtkpWj
-         50LSW3FyG2mOdLj5ivEbwYYwNrLCOSTA6kreritvBBnKQoXdrxt7Ip6JW533dvqCyH
-         4KH7RE6MYlQeFGhh5rn1vDW2lBjk1cQq0YBAe+8yyrbPKtBY/XrDUSbY17dPB0aVGl
-         oPuS2RUvgF/Pg==
-Received: by pali.im (Postfix)
-        id BFB5872F; Thu, 12 Aug 2021 16:09:18 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 16:09:18 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Guillaume Nault <gnault@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>, linux-ppp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210812140918.lfll55przd4ajtc7@pali>
-References: <20210807163749.18316-1-pali@kernel.org>
- <20210809122546.758e41de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210809193109.mw6ritfdu27uhie7@pali>
- <20210810153941.GB14279@pc-32.home>
- <20210810160450.eluiktsp7oentxo3@pali>
- <20210811171918.GD15488@pc-32.home>
- <20210811175449.5hrwoevw7xv2jxxn@pali>
- <20210812091941.GA3525@pc-23.home>
+        id S233282AbhHLO0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:26:14 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mEBeQ-0002iE-00; Thu, 12 Aug 2021 16:25:42 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DCCD2C07DD; Thu, 12 Aug 2021 16:09:34 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 16:09:34 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, mturquette@baylibre.com,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 0/9] MIPS: Migrate pistachio to generic kernel
+Message-ID: <20210812140934.GA9924@alpha.franken.de>
+References: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210812091941.GA3525@pc-23.home>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 12 August 2021 11:19:41 Guillaume Nault wrote:
-> On Wed, Aug 11, 2021 at 07:54:49PM +0200, Pali Rohár wrote:
-> > On Wednesday 11 August 2021 19:19:18 Guillaume Nault wrote:
-> > > On Tue, Aug 10, 2021 at 06:04:50PM +0200, Pali Rohár wrote:
-> > > > On Tuesday 10 August 2021 17:39:41 Guillaume Nault wrote:
-> > > > > On Mon, Aug 09, 2021 at 09:31:09PM +0200, Pali Rohár wrote:
-> > > > > > Better to wait. I would like hear some comments / review on this patch
-> > > > > > if this is the correct approach as it adds a new API/ABI for userspace.
-> > > > > 
-> > > > > Personally I don't understand the use case for setting the ppp unit at
-> > > > > creation time.
-> > > > 
-> > > > I know about two use cases:
-> > > > 
-> > > > * ppp unit id is used for generating network interface name. So if you
-> > > >   want interface name ppp10 then you request for unit id 10. It is
-> > > >   somehow common that when ppp interface has prefix "ppp" in its name
-> > > >   then it is followed by unit id. Seems that existing ppp applications
-> > > >   which use "ppp<num>" naming expects this. But of course you do not
-> > > >   have to use this convention and rename interfaces as you want.
-> > > 
-> > > Really, with the netlink API, the interface name has to be set with
-> > > IFLA_IFNAME. There's no point in adding a new attribute just to have a
-> > > side effect on the device name.
-> > 
-> > Yes, if you set IFLA_IFNAME then interface has name which you set. But
-> > if IFLA_IFNAME is not set then there is already API/ABI behavior how
-> > this interface name is generated. And all existing ppp software depends
-> > on it.
+On Fri, Jul 23, 2021 at 10:25:34AM +0800, Jiaxun Yang wrote:
+> I'm lucky enough to get a Creator CI40 board from dusts.
+> This patchset move it to gerneic kernel to reduce maintenance burden.
+> It have been tested with SD Card boot.
 > 
-> They depend on the ioctl api, which is not going to change.
-> The netlink api on the other hand is free to avoid propagating mistakes
-> from the past.
+> --
+> v2: Minor fixes
+> v3: Typo fixes and 0day testbot warning fix (Thanks to Sergei!)
+> v4: 01.org warning fix
 > 
-> > > > * Some of ppp ioctls use unit id. So you may want to use some specific
-> > > >   number for some network interface. So e.g. unit id 1 will be always
-> > > >   for /dev/ttyUSB1.
-> > > 
-> > > But what's the point of forcing unit id 1 for a particular interface?
-> > > One can easily get the assigned unit id with ioctl(PPPIOCGUNIT).
-> > 
-> > Same point as ability to assign any other id to objects. It is
-> > identifier and you may want to use specific identifier for specific
-> > objects.
+> Jiaxun Yang (9):
+>   MIPS: generic: Allow generating FIT image for Marduk board
+>   MIPS: DTS: Pistachio add missing cpc and cdmm
+>   clk: pistachio: Make it selectable for generic MIPS kernel
+>   clocksource/drivers/pistachio: Make it selectable for MIPS
+>   phy: pistachio-usb: Depend on MIPS || COMPILE_TEST
+>   pinctrl: pistachio: Make it as an option
+>   MIPS: config: generic: Add config for Marduk board
+>   MIPS: Retire MACH_PISTACHIO
+>   MIPS: Make a alias for pistachio_defconfig
 > 
-> Again, what's the use case? Unit ids are kernel internal identifiers.
-> The only purpose of setting them from user space was to influence the
-> name of the ppp device for legacy systems that couldn't do that in a
-> clean way. But any system with the netlink interface won't need this
-> work around.
-> 
-> > Old ioctl API provides a way how to set this custom unit id. Why should
-> > somebody use new rtnl API if it provides only half of features?
-> 
-> You still haven't provided any use case for setting the unit id in user
-> space, appart for influencing the interface name. Netlink also allows
-> to set the interface name and provides much more features (like
-> creating the device in a different netns).
-> 
-> > Existing
-> > software already use this feature to allow users / administrators to
-> > specify ids as they want.
-> 
-> And that was a mistake, as you realised when working on
-> https://lore.kernel.org/netdev/20210807160050.17687-1-pali@kernel.org/t/#u.
-> 
-> > > > And with unit id there also another issue:
-> > > > https://lore.kernel.org/netdev/20210807160050.17687-1-pali@kernel.org/t/#u
-> > > 
-> > > This patch shows why linking unit id and interface name are a bad idea.
-> > 
-> > Yea... It is not a good idea, but it is how ppp is implemented in
-> > kernel since beginning. And it affects both ioctl and rtnl APIs. So we
-> > cannot do anything with it due to backward compatibility :-(
-> 
-> Sorry, but I still hardly see the problem with the netlink api.
+>  arch/mips/Kbuild.platforms                    |   1 -
+>  arch/mips/Kconfig                             |  30 --
+>  arch/mips/Makefile                            |   3 +
+>  arch/mips/boot/dts/Makefile                   |   2 +-
+>  arch/mips/boot/dts/img/Makefile               |   3 +-
+>  arch/mips/boot/dts/img/pistachio.dtsi         |  10 +
+>  arch/mips/configs/generic/board-marduk.config |  53 +++
+>  arch/mips/configs/pistachio_defconfig         | 316 ------------------
+>  arch/mips/generic/Kconfig                     |   6 +
+>  arch/mips/generic/Platform                    |   1 +
+>  arch/mips/generic/board-marduk.its.S          |  22 ++
+>  arch/mips/pistachio/Kconfig                   |  14 -
+>  arch/mips/pistachio/Makefile                  |   2 -
+>  arch/mips/pistachio/Platform                  |   6 -
+>  arch/mips/pistachio/init.c                    | 125 -------
+>  arch/mips/pistachio/irq.c                     |  24 --
+>  arch/mips/pistachio/time.c                    |  55 ---
+>  drivers/clk/Kconfig                           |   1 +
+>  drivers/clk/Makefile                          |   2 +-
+>  drivers/clk/pistachio/Kconfig                 |   8 +
+>  drivers/clocksource/Kconfig                   |   3 +-
+>  drivers/phy/Kconfig                           |   2 +-
+>  drivers/pinctrl/Kconfig                       |   5 +-
+>  23 files changed, 114 insertions(+), 580 deletions(-)
+>  create mode 100644 arch/mips/configs/generic/board-marduk.config
+>  delete mode 100644 arch/mips/configs/pistachio_defconfig
+>  create mode 100644 arch/mips/generic/board-marduk.its.S
+>  delete mode 100644 arch/mips/pistachio/Kconfig
+>  delete mode 100644 arch/mips/pistachio/Makefile
+>  delete mode 100644 arch/mips/pistachio/Platform
+>  delete mode 100644 arch/mips/pistachio/init.c
+>  delete mode 100644 arch/mips/pistachio/irq.c
+>  delete mode 100644 arch/mips/pistachio/time.c
+>  create mode 100644 drivers/clk/pistachio/Kconfig
 
-The problem is that ppp from rtnl is of the same class as ppp from
-ioctl. And if you want to use ppp, you still have to use lot of ioctl
-calls as rtnl does not implement them. And these ioctl calls use ppp
-unit id, not interface id / interface name.
+series applied to mips-next.
 
-So in the end you can use RTM_NEWLINK and then control ppp via ioctls.
-And for controlling you have to known that ppp unit id.
+Thomas.
 
-If you are using ppp over serial devices, you can "simplify" it by
-forcing mapping that serial number device matches ppp unit id. And then
-you do not have to use dynamic ids (and need for call PPPIOCGUNIT).
-
-With dynamic unit id allocation (which is currently the only option when
-creating ppp via rtnl) for single ppp connection you need to know:
-* id of serial tty device
-* id of channel bound to tty device
-* id of network interface
-* id of ppp unit bound to network interface
-
-> I shouldn't have accepted to let the unit id influence the interface
-> name, true.
-
-I agree here. But it is too late.
-
-> But that doesn't seem to be what you're complaining about.
-> Also, it could be useful to add the unit id in netlink dumps. But we
-> already agreed on that.
-
-Yes!
-
-> > > Instead of adding more complexity with unit id, I'd prefer to have a
-> > > new netlink attribute that says "don't generate the interface name
-> > > based on the unit id". That's how the original implementation worked by
-> > > the way and I'm really sad I accepted to change it...
-> > 
-> > Main issue there is that kernel currently does not provide any way how
-> > to retrieve interface which was created by rtnl call. So matching
-> > interface name by string "ppp" followed by unit id is currently the only
-> > option.
-> 
-> Yes, that's an old limitation of rtnl. But it's a much more general
-> problem. A work around is to set the interface name in the netlink
-> request. I can't see how forcing the unit id could ever help.
-> 
-> > I must admit that ppp rtnl API was designed incorrectly. If it was able
-> > to solve this issue since beginning then this unit id <--> interface
-> > mapping did not have to been implemented in rtnl code path.
-> 
-> As I already proposed, we can add an attribute to make the interface
-> name independant from the unit id.
-> 
-> > But it is too late now, if rtnl API has to be backward compatible then
-> > its behavior needs to be as it is currently.
-> 
-> Adding a new attribute is always possible.
-
-I agree, that above proposal with a new attribute which makes interface
-name independent from the ppp unit id is a good idea. Probably it should
-have been default rtnl behavior (but now it is too late for changing
-default behavior).
-
-But prior adding this attribute, we first need a way how to retrieve
-interface name of newly created interface. Which we agreed that
-NLM_F_ECHO for RTM_NEWLINK/NLM_F_CREATE is needed.
-
-> > > > But due to how it is used we probably have to deal with it how ppp unit
-> > > > id are defined and assigned...
-> > > > 
-> > > 
-> > 
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
