@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17B83EAC70
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE953EAC71
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbhHLVh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:37:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45856 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233283AbhHLVhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:37:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CC7E8222C7;
-        Thu, 12 Aug 2021 21:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628804245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBC+Ip/ULJOXCNVRTtroamB32iZ5vBe8PL4RH2vYv3o=;
-        b=HLGXxVGCf6YaEjCo2QZAo/EHvXrH0eQE0chSY+I673C0XBPaTiAT0p1Ydx+okssmMpodDL
-        B5uePpPxqlWc28XTDS6QE/udqXBTNQitIVNK5d//88MVCRAuQ4fkuqZu7l/mlOEj477IPt
-        a+O8mTI0CRDESwQaAFm34AOOJDM7BQw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628804245;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBC+Ip/ULJOXCNVRTtroamB32iZ5vBe8PL4RH2vYv3o=;
-        b=LZwyrLR5hwCysoDLBEPMukibK8crqv4NdIFGFiPyA2kA2kHDDQ2wdWTeCZDdTaRgID4AIY
-        H6qfePrvlrb9ErCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB9D513C80;
-        Thu, 12 Aug 2021 21:37:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id D+YsKZWUFWHjbAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 21:37:25 +0000
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-To:     Clark Williams <williams@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
- <20210812151803.52f84aaf@theseus.lan>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <58e09984-31fa-2d9e-8c4d-c7813c1d8d54@suse.cz>
-Date:   Thu, 12 Aug 2021 23:36:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237163AbhHLVis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 17:38:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:48030 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233283AbhHLVip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 17:38:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC6C11063;
+        Thu, 12 Aug 2021 14:38:17 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C50D13F70D;
+        Thu, 12 Aug 2021 14:38:16 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [PATCH v3 05/13] genirq: Let purely flow-masked ONESHOT irqs through unmask_threaded_irq()
+In-Reply-To: <87wnoq90wx.wl-maz@kernel.org>
+References: <20210629125010.458872-1-valentin.schneider@arm.com> <20210629125010.458872-6-valentin.schneider@arm.com> <87bl639l8n.wl-maz@kernel.org> <875ywa944c.mognet@arm.com> <87wnoq90wx.wl-maz@kernel.org>
+Date:   Thu, 12 Aug 2021 22:38:11 +0100
+Message-ID: <87zgtm7398.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210812151803.52f84aaf@theseus.lan>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 10:18 PM, Clark Williams wrote:
-> On Tue, 10 Aug 2021 18:37:31 +0200
-> Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+On 12/08/21 15:45, Marc Zyngier wrote:
+> On Thu, 12 Aug 2021 14:36:35 +0100,
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
+>> 
+>> On 12/08/21 08:26, Marc Zyngier wrote:
+>> > On Tue, 29 Jun 2021 13:50:02 +0100,
+>> > Valentin Schneider <valentin.schneider@arm.com> wrote:
+>> >> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+>> >> index ef30b4762947..e6d6d32ddcbc 100644
+>> >> --- a/kernel/irq/manage.c
+>> >> +++ b/kernel/irq/manage.c
+>> >> @@ -1107,7 +1107,7 @@ static void irq_finalize_oneshot(struct irq_desc *desc,
+>> >>  	desc->threads_oneshot &= ~action->thread_mask;
+>> >>  
+>> >>  	if (!desc->threads_oneshot && !irqd_irq_disabled(&desc->irq_data) &&
+>> >> -	    irqd_irq_masked(&desc->irq_data))
+>> >> +	    (irqd_irq_masked(&desc->irq_data) | irqd_irq_flow_masked(&desc->irq_data)))
+>> >>  		unmask_threaded_irq(desc);
+>> >
+>> > The bitwise OR looks pretty odd. It is probably fine given that both
+>> > side of the expression are bool, but still. I can fix this locally.
+>> >
+>> 
+>> Thomas suggested that back in v1:
+>> 
+>>   https://lore.kernel.org/lkml/87v98v4lan.ffs@nanos.tec.linutronix.de/
+>> 
+>> I did look at the (arm64) disassembly diff back then and was convinced by
+>> what I saw, though I'd have to go do that again as I can't remember much
+>> else.
 >
-> Sebastian, et al,
-> 
-> Got the following panic running v5.14-rc5-rt8:
+> Ah, fair enough.
+>
 
-BTW, which was the last version that worked for you in this test?
-The SLUB changes in rt8 should have been minimal, and related to
-hotplug. On the other hand, if the previous working one was v5.14-rc4
-based, the problem could be in rc5...
+Either I didn't have my glasses on or had a different output back then, but
+I'm not so convinced anymore... (same result on both Ubuntu GCC 9.3.0 and
+10.2 GCC release from Arm):
+
+
+Logical OR:
+
+     8f8:	b9400020 	ldr	w0, [x1]
+     8fc:	3787fea0 	tbnz	w0, #16, 8d0 <irq_finalize_oneshot.part.0+0x60>
+     900:	37880040 	tbnz	w0, #17, 908 <irq_finalize_oneshot.part.0+0x98>
+     904:	36fffe60 	tbz	w0, #31, 8d0 <irq_finalize_oneshot.part.0+0x60>
+     908:	aa1303e0 	mov	x0, x19
+     90c:	94000000 	bl	0 <unmask_threaded_irq>
+
+Bitwise OR (aka the patch):
+
+     8f8:	b9400020 	ldr	w0, [x1]
+     8fc:	3787fea0 	tbnz	w0, #16, 8d0 <irq_finalize_oneshot.part.0+0x60>
+     900:	f26f001f 	tst	x0, #0x20000
+     904:	7a400801 	ccmp	w0, #0x0, #0x1, eq  // eq = none
+     908:	54fffe4a 	b.ge	8d0 <irq_finalize_oneshot.part.0+0x60>  // b.tcont
+     90c:	aa1303e0 	mov	x0, x19
+     910:	94000000 	bl	0 <unmask_threaded_irq>
+
+If I get this right...
+
+- TST sets the Z condition flag if bit 17 (masked) isn't set
+- CCMP sets the condition flags to
+  - the same as SUBS(flags, 0) if bit 17 wasn't set
+  - NZCV=0001 otherwise
+- B.GE branches if N==V
+
+Soooo
+
+- if we have bit 17 set, NZCV=0001, B.GE doesn't branch
+- if we don't have bit 17 but bit 31 (flow-masked), NZCV=1000 because
+  this is signed 32-bit, so having bit 31 set makes the result of
+  SUBS(flags, 0) negative, B.GE doesn't branch
+- if we have neither, NZCV=0XX0, B.GE branches
+
+So this does appear to do the right thing, at the cost of an extra
+instruction and a profound sense of dread to whoever stares at the
+disassembly. I guess it does save us a branch which could be
+mispredicted...
+
+> Thanks,
+>
+> 	M.
+>
+> -- 
+> Without deviation from the norm, progress is not possible.
