@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D6A3EA955
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFD23EA959
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhHLRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:19:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:28815 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhHLRTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:19:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215395118"
-X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
-   d="scan'208";a="215395118"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:18:40 -0700
-X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
-   d="scan'208";a="517535725"
-Received: from smachee-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.169.15])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:18:40 -0700
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
- <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
- <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
- <YQsX54MPVYFuLmFr@google.com>
- <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
- <YRTTZU3Pzm/1tH9M@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <486afc0e-0396-e57b-63fe-31a8433bd603@linux.intel.com>
-Date:   Thu, 12 Aug 2021 10:18:39 -0700
+        id S235496AbhHLRVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:21:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60532 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229905AbhHLRVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:21:15 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BCD111FF68;
+        Thu, 12 Aug 2021 17:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628788848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xFOkMXUXc2Yo2CGIvdkLteU8MEjRTfgofgAPOXF0g+8=;
+        b=BqTg8QyVh50D6CZMlAIqnyM8W/vDp9jk7r0ORSXzogdUTYah6PCO1LNvSbDujLoHcXKswq
+        RIH8dh0HH3JVjLeueLezRDc0DpX1nMcLk5g+sWIfV/2D26cBUVgiSEfJ3pfld7d3KaNYAP
+        oM4avVj9qR2q9va3bnuApXLtvaaqWCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628788848;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xFOkMXUXc2Yo2CGIvdkLteU8MEjRTfgofgAPOXF0g+8=;
+        b=uyJemG3clLbtK1qiCYfAZHKENc6bgN7uM1+xUlo1liygDQuHjiFxSvUcPICTP2jHIHvrnE
+        +k3ybvU/zzg0F6Ag==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9FAB613AC3;
+        Thu, 12 Aug 2021 17:20:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id DKTNJXBYFWFkDgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:20:48 +0000
+Subject: Re: [PATCH v14 082/138] mm/lru: Convert __pagevec_lru_add_fn to take
+ a folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-83-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <bbe515d8-c214-183a-9d37-ba9005c03eaf@suse.cz>
+Date:   Thu, 12 Aug 2021 19:20:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YRTTZU3Pzm/1tH9M@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210715033704.692967-83-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
+> This saves five calls to compound_head(), totalling 60 bytes of text.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-
-On 8/12/21 12:53 AM, Borislav Petkov wrote:
->>> Given amd_prot_guest_has(), my guess is Boris intended intel_prot_guest_has()...
-> Yap, exactly.
-
-I can implement intel_prot_guest_has() in arch/x86/kernel/cpu/intel.c. And call
-tdx_prot_guest_has() from it.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
