@@ -2,99 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCC33EA659
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2FB3EA65D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236913AbhHLORn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbhHLORk (ORCPT
+        id S237910AbhHLOSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:18:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35466 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhHLOSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:17:40 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910A5C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:17:15 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d17so7423147plr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pch++DVEjAnWg+xt4kEu7hkcd3VsPliA8XsFfWS3u4E=;
-        b=ChjtkxID7AdLnbi3aFhoaikWk0/pxeZO8Exgu09/SNasYOGHNvH7FXqOMGxMaTd0/m
-         zfFpHST0CxEGs1uxP7N1TQO6U+P9lmmlXdP1IUuucjxWA6DgOog6NxPp0clf5cGmaaJD
-         LAWIdnvEQA5Pym7GsZVS6tgW/saQxlGjVj5x9JEwTFwH+3wVMLMxaeVK/KNGm1WMD6kq
-         xFGoiYMf5o6KZzAon4+C4rGglTvAyG80tTkpm/vBTWMu6zi9kro2KoKuhLjmiAsRn+BF
-         /VCEhCxdQspNuiD2CDrFJwgX4Lj9A0/7wwWq4a/KQuYBSVpJOmwXuMKOl2dl10Lewa3X
-         yCjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Pch++DVEjAnWg+xt4kEu7hkcd3VsPliA8XsFfWS3u4E=;
-        b=gbSH8uKP27/cEQ8q80Dl8K1eZ4cBSqNo8f+6YH6FyWU5S1YdNjQsWb/lkFIQGs/42+
-         +XTspMbn3cCPIN7H17/OKf1rcUlUFZOtE1iBfEu7Boclnum9krNMIIDymkjR/HTr0a8K
-         6p8BYVPyt0N9NNA71rmeBwoZdSxNEwkOcUg/fRNC5luulkHXY4+MI6CpqQZ3hi1CNtYe
-         Z3IDfrNiLvT11RH1arfWXtbD3EtQYuHBwYjqFuoTp3q88LDO94Q4PXqUamJCNQsj/A2x
-         fiaGKVuDalDzp4yLNoN7OpuZ8aQVrYuDiMdpXJAb5rTk+/0RblpojEIIyte7wNfNPi5S
-         lrhg==
-X-Gm-Message-State: AOAM533Fq8psHMdu6OaOG87ac5ylKtKtKa0Yqz3z7EbBzdo0C5r50LQO
-        GIgkVxudAlWD7mWS12Fj4Kkerw==
-X-Google-Smtp-Source: ABdhPJwAx2Bev4ONYakSQQo212BVykUPU/0AphBThNhzYITS25wVGjv7nMvprYnW32Pe3fJdmuwIDQ==
-X-Received: by 2002:a17:90a:1108:: with SMTP id d8mr16654639pja.190.1628777834935;
-        Thu, 12 Aug 2021 07:17:14 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id t22sm3977702pgv.35.2021.08.12.07.17.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 07:17:14 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 07:17:14 -0700 (PDT)
-X-Google-Original-Date: Thu, 12 Aug 2021 07:17:12 PDT (-0700)
-Subject:     Re: linux-next: Fixes tags needs some work in the risc-v-fixes tree
-In-Reply-To: <20210812223006.642bb3a3@canb.auug.org.au>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, changbin.du@gmail.com,
-        alex@ghiti.fr, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-c97dfa08-8901-4de6-b692-beab38b5802a@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 12 Aug 2021 10:18:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4F2141FF47;
+        Thu, 12 Aug 2021 14:17:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628777857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LOq+1RQ1bTZ6xSCL5P+LUHz6PeiGtFp6lwo2Lqqi7Q=;
+        b=SyRasx6BYceomp5A+vWd4xR0dle1B5guJeUWfAt8MXCICkXDRM4Oz3QToHB6VB0i3wuklT
+        rD1ODhLj1qp3Gxa/cBNEn2uynbbVSk3bEWm1MvgSMO1+bSW5Vz10g7cH5ayULBga1nLnI0
+        F5UXM0ya2H7/DIFqNTn5zZVy+6MCS1k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628777857;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LOq+1RQ1bTZ6xSCL5P+LUHz6PeiGtFp6lwo2Lqqi7Q=;
+        b=GnzDUaCqYiTEgMmiYEgvAadtT34kHXqFeZpKyBC6BK2GN55zyPQnlN7MyWkUiuOme/CnH1
+        ZhReSiomtDrRUaDw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 6B05DA3F4E;
+        Thu, 12 Aug 2021 14:17:36 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 46CF11F2BA7; Thu, 12 Aug 2021 16:17:36 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 16:17:36 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 03/20] udf: Fix iocharset=utf8 mount option
+Message-ID: <20210812141736.GE14675@quack2.suse.cz>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-4-pali@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210808162453.1653-4-pali@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 05:30:06 PDT (-0700), Stephen Rothwell wrote:
-> Hi all,
->
-> In commit
->
->   007666bcc606 ("riscv: Fix comment regarding kernel mapping overlapping with IS_ERR_VALUE")
->
-> Fixes tag
->
->   Fixes: db6b84a368b4 ("riscv: Make sure the kernel mapping does not
->
-> has these problem(s):
->
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
->
-> Please do not split Fixes tags over more than one line.
->
-> In commit
->
->   589be135381f ("riscv: kexec: do not add '-mno-relax' flag if compiler doesn't support it")
->
-> Fixes tag
->
->   Fixes: fba8a8674f ("RISC-V: Add kexec support")
->
-> has these problem(s):
->
->   - SHA1 should be at least 12 digits long
->     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
->     or later) just making sure it is not set (or set to "auto").
+On Sun 08-08-21 18:24:36, Pali Rohár wrote:
+> Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
+> it is required to use utf8 mount option.
+> 
+> Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
+> option.
+> 
+> If UTF-8 as iocharset is used then s_nls_map is set to NULL. So simplify
+> code around, remove UDF_FLAG_NLS_MAP and UDF_FLAG_UTF8 flags as to
+> distinguish between UTF-8 and non-UTF-8 it is needed just to check if
+> s_nls_map set to NULL or not.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Thanks, these should be fixed.
+Thanks for the cleanup. It looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+Or should I take this patch through my tree?
+
+								Honza
+
+
+> ---
+>  fs/udf/super.c   | 50 ++++++++++++++++++------------------------------
+>  fs/udf/udf_sb.h  |  2 --
+>  fs/udf/unicode.c |  4 ++--
+>  3 files changed, 21 insertions(+), 35 deletions(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 2f83c1204e20..6e8c29107b04 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -349,10 +349,10 @@ static int udf_show_options(struct seq_file *seq, struct dentry *root)
+>  		seq_printf(seq, ",lastblock=%u", sbi->s_last_block);
+>  	if (sbi->s_anchor != 0)
+>  		seq_printf(seq, ",anchor=%u", sbi->s_anchor);
+> -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_UTF8))
+> -		seq_puts(seq, ",utf8");
+> -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP) && sbi->s_nls_map)
+> +	if (sbi->s_nls_map)
+>  		seq_printf(seq, ",iocharset=%s", sbi->s_nls_map->charset);
+> +	else
+> +		seq_puts(seq, ",iocharset=utf8");
+>  
+>  	return 0;
+>  }
+> @@ -558,19 +558,24 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
+>  			/* Ignored (never implemented properly) */
+>  			break;
+>  		case Opt_utf8:
+> -			uopt->flags |= (1 << UDF_FLAG_UTF8);
+> +			if (!remount) {
+> +				unload_nls(uopt->nls_map);
+> +				uopt->nls_map = NULL;
+> +			}
+>  			break;
+>  		case Opt_iocharset:
+>  			if (!remount) {
+> -				if (uopt->nls_map)
+> -					unload_nls(uopt->nls_map);
+> -				/*
+> -				 * load_nls() failure is handled later in
+> -				 * udf_fill_super() after all options are
+> -				 * parsed.
+> -				 */
+> +				unload_nls(uopt->nls_map);
+> +				uopt->nls_map = NULL;
+> +			}
+> +			/* When nls_map is not loaded then UTF-8 is used */
+> +			if (!remount && strcmp(args[0].from, "utf8") != 0) {
+>  				uopt->nls_map = load_nls(args[0].from);
+> -				uopt->flags |= (1 << UDF_FLAG_NLS_MAP);
+> +				if (!uopt->nls_map) {
+> +					pr_err("iocharset %s not found\n",
+> +						args[0].from);
+> +					return 0;
+> +				}
+>  			}
+>  			break;
+>  		case Opt_uforget:
+> @@ -2139,21 +2144,6 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+>  	if (!udf_parse_options((char *)options, &uopt, false))
+>  		goto parse_options_failure;
+>  
+> -	if (uopt.flags & (1 << UDF_FLAG_UTF8) &&
+> -	    uopt.flags & (1 << UDF_FLAG_NLS_MAP)) {
+> -		udf_err(sb, "utf8 cannot be combined with iocharset\n");
+> -		goto parse_options_failure;
+> -	}
+> -	if ((uopt.flags & (1 << UDF_FLAG_NLS_MAP)) && !uopt.nls_map) {
+> -		uopt.nls_map = load_nls_default();
+> -		if (!uopt.nls_map)
+> -			uopt.flags &= ~(1 << UDF_FLAG_NLS_MAP);
+> -		else
+> -			udf_debug("Using default NLS map\n");
+> -	}
+> -	if (!(uopt.flags & (1 << UDF_FLAG_NLS_MAP)))
+> -		uopt.flags |= (1 << UDF_FLAG_UTF8);
+> -
+>  	fileset.logicalBlockNum = 0xFFFFFFFF;
+>  	fileset.partitionReferenceNum = 0xFFFF;
+>  
+> @@ -2308,8 +2298,7 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+>  error_out:
+>  	iput(sbi->s_vat_inode);
+>  parse_options_failure:
+> -	if (uopt.nls_map)
+> -		unload_nls(uopt.nls_map);
+> +	unload_nls(uopt.nls_map);
+>  	if (lvid_open)
+>  		udf_close_lvid(sb);
+>  	brelse(sbi->s_lvid_bh);
+> @@ -2359,8 +2348,7 @@ static void udf_put_super(struct super_block *sb)
+>  	sbi = UDF_SB(sb);
+>  
+>  	iput(sbi->s_vat_inode);
+> -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> -		unload_nls(sbi->s_nls_map);
+> +	unload_nls(sbi->s_nls_map);
+>  	if (!sb_rdonly(sb))
+>  		udf_close_lvid(sb);
+>  	brelse(sbi->s_lvid_bh);
+> diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
+> index 758efe557a19..4fa620543d30 100644
+> --- a/fs/udf/udf_sb.h
+> +++ b/fs/udf/udf_sb.h
+> @@ -20,8 +20,6 @@
+>  #define UDF_FLAG_UNDELETE		6
+>  #define UDF_FLAG_UNHIDE			7
+>  #define UDF_FLAG_VARCONV		8
+> -#define UDF_FLAG_NLS_MAP		9
+> -#define UDF_FLAG_UTF8			10
+>  #define UDF_FLAG_UID_FORGET     11    /* save -1 for uid to disk */
+>  #define UDF_FLAG_GID_FORGET     12
+>  #define UDF_FLAG_UID_SET	13
+> diff --git a/fs/udf/unicode.c b/fs/udf/unicode.c
+> index 5fcfa96463eb..622569007b53 100644
+> --- a/fs/udf/unicode.c
+> +++ b/fs/udf/unicode.c
+> @@ -177,7 +177,7 @@ static int udf_name_from_CS0(struct super_block *sb,
+>  		return 0;
+>  	}
+>  
+> -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> +	if (UDF_SB(sb)->s_nls_map)
+>  		conv_f = UDF_SB(sb)->s_nls_map->uni2char;
+>  	else
+>  		conv_f = NULL;
+> @@ -285,7 +285,7 @@ static int udf_name_to_CS0(struct super_block *sb,
+>  	if (ocu_max_len <= 0)
+>  		return 0;
+>  
+> -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> +	if (UDF_SB(sb)->s_nls_map)
+>  		conv_f = UDF_SB(sb)->s_nls_map->char2uni;
+>  	else
+>  		conv_f = NULL;
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
