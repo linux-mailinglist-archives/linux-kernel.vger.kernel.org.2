@@ -2,208 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316213EA97E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFC33EA985
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbhHLRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbhHLRb4 (ORCPT
+        id S236067AbhHLRdP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Aug 2021 13:33:15 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:49972 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235761AbhHLRdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:31:56 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDCEC061756;
-        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id bo18so10982544pjb.0;
-        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
-        b=Ue5MKLSRbXzCOAY6QQQGD8iKv/ERXos1bKdb+w4oTJTLY526gD4sOXiPUiWGlfiUEn
-         FJ2csHMR4GvMjHtpJ0X4L773Ju55sxEaUa7llMKM3gq+nKnqd+bLE0QEkSRvXjPHO5Kh
-         5Dec9b61ELYl7Wu+3l9aQxPGLXDmOBnSCx8JIVdAu6c8Na8ZGbsfrKgu7tLyYjEqQMpr
-         hwWUYpG7LszTqS5pC5NMIk9twQ0r4YkqKJZR08VDU+CDOv4xxmjudj/OvtvyN/O7kMHq
-         JPbW9rvLIiDJ2RRaNKlHARLWUWQfzP1mQRC6KSR2YFESJgR0Nm3ewgBDHLlaQmtc1TQC
-         lV/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
-        b=DwqhWWzgNmVlnZqmkn1jct0Jc6tB7Tp384rjr1QMKrCbuVyP/PMShtpmqrP9aPuTR5
-         ssmxDCOUvVCoVSe5/J5F5rz/pQkvlnUVQ7AKUa60gxCKr8gqq0taGK73EQhhxKP6cAe1
-         wbNbFF6w+uk3cP36qtn1t+fKBZdgQ7Z20wWjWPfMuf1t0My6rZ461QOAIgq2aopxzEfR
-         zZZmma7RAMazh6ao+8S6RcnGmdYYprztd1ztCrUGguwPswhsbSzUJtvbLYJ3om4sxQzu
-         Di2ntmZfpMbPwL/yMf+a+oWda2Sai4zbaz8RY83MHUBz7/LOsXFrYZsaP2ih4g7E62Ko
-         syZw==
-X-Gm-Message-State: AOAM533KFFyFsAiR2nJF3KpRJDWn+R5GBoDGqhULb+v8edcxe1PTal3U
-        56Ugf8wpwDtxmuG+p0f5h/s=
-X-Google-Smtp-Source: ABdhPJxLh78LmXjViINrWmcaGjkKurD4OZxwOI8f6s2qMJRnPKh3vytXUKVirwW7ppftgZbydtS1yg==
-X-Received: by 2002:a17:902:b593:b0:12d:7aa5:de2d with SMTP id a19-20020a170902b59300b0012d7aa5de2dmr3547930pls.31.1628789491181;
-        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id a18sm3211465pjq.15.2021.08.12.10.31.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 10:31:30 -0700 (PDT)
-Subject: Re: [PATCH v2] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
- <20210812103851.GC5047@twin.jikos.cz>
- <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
- <20210812155032.GL5047@twin.jikos.cz>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
-Date:   Fri, 13 Aug 2021 01:31:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 13:33:14 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:46440)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mEEZP-00CYIS-Jm; Thu, 12 Aug 2021 11:32:44 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:43416 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mEEZN-00F2lu-Ss; Thu, 12 Aug 2021 11:32:43 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>, linux-unionfs@vger.kernel.org,
+        linux-api@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210812084348.6521-1-david@redhat.com>
+Date:   Thu, 12 Aug 2021 12:32:32 -0500
+In-Reply-To: <20210812084348.6521-1-david@redhat.com> (David Hildenbrand's
+        message of "Thu, 12 Aug 2021 10:43:41 +0200")
+Message-ID: <87o8a2d0wf.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210812155032.GL5047@twin.jikos.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1mEEZN-00F2lu-Ss;;;mid=<87o8a2d0wf.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19FI287iqwYMTwt6jRUCSjjYQLxeiHk7/Y=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.4 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,T_TooManySym_02,XM_B_SpammyWords,XM_B_Unicode
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;David Hildenbrand <david@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 979 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (1.2%), b_tie_ro: 10 (1.0%), parse: 1.34
+        (0.1%), extract_message_metadata: 84 (8.6%), get_uri_detail_list: 8
+        (0.9%), tests_pri_-1000: 171 (17.5%), tests_pri_-950: 1.61 (0.2%),
+        tests_pri_-900: 1.43 (0.1%), tests_pri_-90: 115 (11.7%), check_bayes:
+        105 (10.7%), b_tokenize: 28 (2.9%), b_tok_get_all: 25 (2.6%),
+        b_comp_prob: 5 (0.6%), b_tok_touch_all: 39 (4.0%), b_finish: 1.09
+        (0.1%), tests_pri_0: 576 (58.8%), check_dkim_signature: 0.68 (0.1%),
+        check_dkim_adsp: 4.4 (0.4%), poll_dns_idle: 0.05 (0.0%), tests_pri_10:
+        2.4 (0.2%), tests_pri_500: 11 (1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/21 11:50 pm, David Sterba wrote:
-> On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
->> On 12/8/21 6:38 pm, David Sterba wrote:
->>> On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
->>>> When removing a writeable device in __btrfs_free_extra_devids, the rw
->>>> device count should be decremented.
->>>>
->>>> This error was caught by Syzbot which reported a warning in
->>>> close_fs_devices because fs_devices->rw_devices was not 0 after
->>>> closing all devices. Here is the call trace that was observed:
->>>>
->>>>     btrfs_mount_root():
->>>>       btrfs_scan_one_device():
->>>>         device_list_add();   <---------------- device added
->>>>       btrfs_open_devices():
->>>>         open_fs_devices():
->>>>           btrfs_open_one_device();   <-------- writable device opened,
->>>> 	                                     rw device count ++
->>>>       btrfs_fill_super():
->>>>         open_ctree():
->>>>           btrfs_free_extra_devids():
->>>> 	  __btrfs_free_extra_devids();  <--- writable device removed,
->>>> 	                              rw device count not decremented
->>>> 	  fail_tree_roots:
->>>> 	    btrfs_close_devices():
->>>> 	      close_fs_devices();   <------- rw device count off by 1
->>>>
->>>> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
->>>> mount if we don't have replace item with target device"), rw_devices
->>>> was decremented on removing a writable device in
->>>> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
->>>> was not set for the device. However, this check does not need to be
->>>> reinstated as it is now redundant and incorrect.
->>>>
->>>> In __btrfs_free_extra_devids, we skip removing the device if it is the
->>>> target for replacement. This is done by checking whether device->devid
->>>> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
->>>> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
->>>> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
->>>> and so it's redundant to test for that bit.
->>>>
->>>> Additionally, following commit 82372bc816d7 ("Btrfs: make
->>>> the logic of source device removing more clear"), rw_devices is
->>>> incremented whenever a writeable device is added to the alloc
->>>> list (including the target device in btrfs_dev_replace_finishing), so
->>>> all removals of writable devices from the alloc list should also be
->>>> accompanied by a decrement to rw_devices.
->>>>
->>>> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
->>>> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
->>>> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
->>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
->>>> ---
->>>>    fs/btrfs/volumes.c | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index 807502cd6510..916c25371658 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->>>>    		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->>>>    			list_del_init(&device->dev_alloc_list);
->>>>    			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
->>>> +			fs_devices->rw_devices--;
->>>>    		}
->>>>    		list_del_init(&device->dev_list);
->>>>    		fs_devices->num_devices--;
->>>
->>> I've hit a crash on master branch with stacktrace very similar to one
->>> this bug was supposed to fix. It's a failed assertion on device close.
->>> This patch was the last one to touch it and it matches some of the
->>> keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
->>> the original patch but was not reinstated in your fix.
->>>
->>> I'm not sure how reproducible it is, right now I have only one instance
->>> and am hunting another strange problem. They could be related.
->>>
->>> assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
->>>
->>> https://susepaste.org/view/raw/18223056 full log with other stacktraces,
->>> possibly relatedg
->>>
->>
->> Looking at the logs, it seems that a dev_replace was started, then
->> suspended. But it wasn't canceled or resumed before the fs devices were
->> closed.
->>
->> I'll investigate further, just throwing some observations out there.
-> 
-> Thanks. I'm testing the patch revert, no crash after first loop, I'll
-> run a few more to be sure as it's not entirely reliable.
-> 
-> Sending the revert is option of last resort as we're approaching end of
-> 5.14 dev cycle and the crash prevents testing (unlike the fuzzer
-> warning).
-> 
+David Hildenbrand <david@redhat.com> writes:
 
-I might be missing something, so any thoughts would be appreciated. But 
-I don't think the assertion in btrfs_close_one_device is correct.
+> This series is based on v5.14-rc5 and corresponds code-wise to the
+> previously sent RFC [1] (the RFC still applied cleanly).
+>
+> This series removes all in-tree usage of MAP_DENYWRITE from the kernel
+> and removes VM_DENYWRITE. We stopped supporting MAP_DENYWRITE for
+> user space applications a while ago because of the chance for DoS.
+> The last renaming user is binfmt binary loading during exec and
+> legacy library loading via uselib().
+>
+> With this change, MAP_DENYWRITE is effectively ignored throughout the
+> kernel. Although the net change is small, I think the cleanup in mmap()
+> is quite nice.
+>
+> There are some (minor) user-visible changes with this series:
+> 1. We no longer deny write access to shared libaries loaded via legacy
+>    uselib(); this behavior matches modern user space e.g., via dlopen().
+> 2. We no longer deny write access to the elf interpreter after exec
+>    completed, treating it just like shared libraries (which it often is).
+> 3. We always deny write access to the file linked via /proc/pid/exe:
+>    sys_prctl(PR_SET_MM_EXE_FILE) will fail if write access to the file
+>    cannot be denied, and write access to the file will remain denied
+>    until the link is effectivel gone (exec, termination,
+>    PR_SET_MM_EXE_FILE) -- just as if exec'ing the file.
+>
+> I was wondering if we really care about permanently disabling write access
+> to the executable, or if it would be good enough to just disable write
+> access while loading the new executable during exec; but I don't know
+> the history of that -- and it somewhat makes sense to deny write access
+> at least to the main executable. With modern user space -- dlopen() -- we
+> can effectively modify the content of shared libraries while being
+> used.
 
- From what I see, this crash happens when close_ctree is called while a 
-dev_replace hasn't completed. In close_ctree, we suspend the 
-dev_replace, but keep the replace target around so that we can resume 
-the dev_replace procedure when we mount the root again. This is the call 
-trace:
+So I think what we really want to do is to install executables with
+and shared libraries without write permissions and immutable.  So that
+upgrades/replacements of the libraries and executables are forced to
+rename or unlink them.  We need the immutable bit as CAP_DAC_OVERRIDE
+aka being root ignores the writable bits when a file is opened for
+write.  However CAP_DAC_OVERRIDE does not override the immutable state
+of a file.
 
-   close_ctree():
-     btrfs_dev_replace_suspend_for_unmount();
-     btrfs_close_devices():
-       btrfs_close_fs_devices():
-         btrfs_close_one_device():
-           ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, 
-&device->dev_state));
+I believe that denying write access at exec mmap time is actually much
+to late in the process and making the denial of writing much larger in
+scope is fundamentally what we want to do.  Changing how we install the
+files, avoids the denial of service problems that MAP_DENYWRITE had.
+Making the denial always happen ensures that installation programs are
+never fooled into thinking a non-atomic update of an executable or
+shared library is ok.
 
-However, since the replace target sticks around, there is a device with 
-BTRFS_DEV_STATE_REPLACE_TGT set, and we fail the assertion in 
-btrfs_close_one_device.
+Still that is non-kernel work so I don't know who would make that
+change.
 
-Two options I can think of:
+As this fundamentally simplifies and a design mistake with very little
+functional change.
 
-- We could remove the assertion.
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-- Or we could clear the BTRFS_DEV_STATE_REPLACE_TGT bit in 
-btrfs_dev_replace_suspend_for_unmount. This is fine since the bit is set 
-again in btrfs_init_dev_replace if the dev_replace->replace_state is 
-BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED. But this approach strikes me as 
-a little odd because the device is still the replace target when 
-mounting in the future.
+For the entire series.
 
-Thoughts?
+
+> There is a related problem [2] with overlayfs, that should at least partly
+> be tackled by this series. I don't quite understand the interaction of
+> overlayfs and deny_write_access()/allow_write_access() at exec time:
+>
+> If we end up denying write access to the wrong file and not to the
+> realfile, that would be fundamentally broken. We would have to reroute
+> our deny_write_access()/ allow_write_access() calls for the exec file to
+> the realfile -- but I leave figuring out the details to overlayfs guys, as
+> that would be a related but different issue.
+>
+> RFC -> v1:
+> - "binfmt: remove in-tree usage of MAP_DENYWRITE"
+> -- Add a note that this should fix part of a problem with overlayfs
+>
+> [1] https://lore.kernel.org/r/20210423131640.20080-1-david@redhat.com/
+> [2] https://lore.kernel.org/r/YNHXzBgzRrZu1MrD@miu.piliscsaba.redhat.com/
+>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> Cc: Greg Ungerer <gerg@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Cc: Chinwen Chang <chinwen.chang@mediatek.com>
+> Cc: Michel Lespinasse <walken@google.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Feng Tang <feng.tang@intel.com>
+> Cc: Kevin Brodsky <Kevin.Brodsky@arm.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Shawn Anastasio <shawn@anastas.io>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
+> Cc: Thomas Cedeno <thomascedeno@google.com>
+> Cc: Collin Fijalkovich <cfijalkovich@google.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Chengguang Xu <cgxu519@mykernel.net>
+> Cc: "Christian König" <ckoenig.leichtzumerken@gmail.com>
+> Cc: linux-unionfs@vger.kernel.org
+> Cc: linux-api@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+>
+> David Hildenbrand (7):
+>   binfmt: don't use MAP_DENYWRITE when loading shared libraries via
+>     uselib()
+>   kernel/fork: factor out atomcially replacing the current MM exe_file
+>   kernel/fork: always deny write access to current MM exe_file
+>   binfmt: remove in-tree usage of MAP_DENYWRITE
+>   mm: remove VM_DENYWRITE
+>   mm: ignore MAP_DENYWRITE in ksys_mmap_pgoff()
+>   fs: update documentation of get_write_access() and friends
+>
+>  arch/x86/ia32/ia32_aout.c      |  8 ++--
+>  fs/binfmt_aout.c               |  7 ++--
+>  fs/binfmt_elf.c                |  6 +--
+>  fs/binfmt_elf_fdpic.c          |  2 +-
+>  fs/proc/task_mmu.c             |  1 -
+>  include/linux/fs.h             | 19 +++++----
+>  include/linux/mm.h             |  3 +-
+>  include/linux/mman.h           |  4 +-
+>  include/trace/events/mmflags.h |  1 -
+>  kernel/events/core.c           |  2 -
+>  kernel/fork.c                  | 75 ++++++++++++++++++++++++++++++----
+>  kernel/sys.c                   | 33 +--------------
+>  lib/test_printf.c              |  5 +--
+>  mm/mmap.c                      | 29 ++-----------
+>  mm/nommu.c                     |  2 -
+>  15 files changed, 98 insertions(+), 99 deletions(-)
+>
+>
+> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
