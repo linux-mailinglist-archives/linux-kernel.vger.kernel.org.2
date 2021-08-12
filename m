@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75D93EA23E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20623EA23F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbhHLJnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S235293AbhHLJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhHLJnG (ORCPT
+        with ESMTP id S234700AbhHLJnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:43:06 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA739C061765;
-        Thu, 12 Aug 2021 02:42:41 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id w20so12346219lfu.7;
-        Thu, 12 Aug 2021 02:42:41 -0700 (PDT)
+        Thu, 12 Aug 2021 05:43:13 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B00AC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:42:48 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id t66so5872833qkb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:42:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tf7xAURtCOwH3Y40n33NRhchLFsigaBEgUnQpYCj/rY=;
-        b=gnxWP2cSKbYc7CdxPIKzIgjKo+RRNKvcCjbopRTkJP0SADoOhtkyugvYoiYsH2H10Y
-         pE0YHZ9sTJJxDDZjtIqjTy4jAwY29laRQpDPs3RwedNRIbeOBepXzNjfmaQBot3QW//e
-         5gBHcqYwUI9RGRK/UN0VqMJQaqGQQiM7DYyWPFDuFl/4MZhUo/b5q9kI75T3LDkklTs2
-         HdiBjHYe91xnSYo5BAyDCP0vCso5Jyy6b3r0TcDq5e/1EX8+ivzlEpbdmNwWJ6Zxd6qN
-         9b8Hxpdbi5WC8h+AX3OGaAF4Lyl9Rf9hHQqRR49H8NWs7CrzdWx83SSrhSnJc85vZbe/
-         9GUA==
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=S0ZXnIFHzQgz3IvjBo/TWJ1o0KPQXsm3CIOd2F4wB+Y=;
+        b=Cx0N1y7jKrUhACTVdnTUv3PYt/cI2h9+YtQ70mHtZFsntTUMzU1L/tIZ7164HQrFaJ
+         CAOBEe0IaejcbEWFAE63/s01eTsknGfVu2nWOZ2LdqDDEFF6PTPx4URKMZahvdduwdab
+         GS6tKB3fHWKI0138A2sX9/PURM7qtF8RT9Cg48uZft/ZISHWdcaJER0xDHZiQIj+3W9o
+         76rd3O50xQdRxhBtxcRCf3eWLhIIe2yos16Ayi/qQ1pV+3NlraqLiyhfeW7sMLH6hyrK
+         szy045O7d+bpztfFpfxp469sHgUFpPG/NzOWT2NKyqvgp7T5Aefhpp7FUnARIgQ/lxPa
+         6nPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tf7xAURtCOwH3Y40n33NRhchLFsigaBEgUnQpYCj/rY=;
-        b=gcOorMrbxZ+giLeWw3J4nCRJEMQNQXAAD6xP1k0Jb9yxsr+EokY1ttqSbXAMUi/aI4
-         9Fwq1tGvc6ggfhTJMvyAAoH1jt57f0HqNCLZNFJNcXaQeVoPocw5bkBX43oz+pmKxofB
-         JD+U4coEDjNqtQb08zq5Dt6+MUyr7V9JOSjbAHFvYeOvx1N3kJ9BQktRZZ+M2Mcyl2B0
-         N5/doEkNt7CqhpOiiZZRjreVFQIaMKIB7O3TzESEu9+gHNp6fkOYgLxY8SHLz2VgdLJ3
-         +445Z6ViaFNnCFcqOXrFEnl4yqSKqYRyi1inXYSSaz8eDDuy59Twd0RkI/2ftvrwdNhI
-         6NhA==
-X-Gm-Message-State: AOAM530P+sLvRoQYbTb7ksWmkCYWNwiFJV2Cywp941JjHLaXu3PDd8FD
-        Z8je1SVwktLz1NhxqsJrxaA=
-X-Google-Smtp-Source: ABdhPJw3jwErXtsvDnYk1DOVEeUprNfJXKo6pGk3DyUdQRCE+F0Fzxqr31bUQbaznCPC7K30LKTokQ==
-X-Received: by 2002:a19:5e0e:: with SMTP id s14mr1991995lfb.534.1628761359660;
-        Thu, 12 Aug 2021 02:42:39 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id e21sm223581lfq.240.2021.08.12.02.42.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 02:42:39 -0700 (PDT)
-Subject: Re: [PATCH] block: nbd: add sanity check for first_minor
-To:     josef@toxicpanda.com, axboe@kernel.dk
-Cc:     hch@lst.de, linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
-References: <20210812091501.22648-1-paskripkin@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <7f9a6877-12d9-0177-d09a-6522e5a557ec@gmail.com>
-Date:   Thu, 12 Aug 2021 12:42:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210812091501.22648-1-paskripkin@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=S0ZXnIFHzQgz3IvjBo/TWJ1o0KPQXsm3CIOd2F4wB+Y=;
+        b=I2nCjiw1euHD4isOyL3iL94k/gB7GDxMRWDjYxKPcmzO+4SEFP0R6k1KIa2Gbh2943
+         1wJVtmzOQWdS+N0ulPKLVJHYQvXARH33jUl/FA3UHfLZCIKqJ+L4BGNAo9GKTUka1EDS
+         lU0qaOkdteEbVRjii/QSwBhESOk7SuFTOiOOMtUXUIjgu9aKHFhN5O2+25VOZc3D1jjC
+         QT2ykWGbr1+BvtJLf8Y8y+68Odqkr1/kivfsuPdqNk1ILuj9ESCtWr4mvrFMgMErZBRE
+         pLQUFgVfZnzA30Rr3RGKGKJO8UtBeQwQWQgZjjTcZ1+uhWDLMOw+RVsQqm7aBcSm+DnK
+         Cmxw==
+X-Gm-Message-State: AOAM530tygyaYG98z043f0O4WIYUzbdn19lh7fe4NCZk3ox5G6K0xggg
+        ZmtEqQwyZHWM3vvQZketcOQ=
+X-Google-Smtp-Source: ABdhPJwKhpKGv8qX7t17ii02a06K8Y0CY3RuBMbfqfcf8P9Oe6GSAQkie/OgPOaRQgHSNHkqmVM7ww==
+X-Received: by 2002:a37:e406:: with SMTP id y6mr3628142qkf.248.1628761367642;
+        Thu, 12 Aug 2021 02:42:47 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id v19sm835182qta.60.2021.08.12.02.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 02:42:47 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+Cc:     SeongJae Park <sjpark@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:
+Date:   Thu, 12 Aug 2021 09:42:40 +0000
+Message-Id: <20210812094240.4492-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <144813.1628760117@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 12:15 PM, Pavel Skripkin wrote:
-> Syzbot hit WARNING in internal_create_group(). The problem was in
-> too big disk->first_minor.
-> 
-> disk->first_minor is initialized by value, which comes from userspace
-> and there wasn't any sanity checks about value correctness. It can cause
-> duplicate creation of sysfs files/links, because disk->first_minor will
-> be passed to MKDEV() which causes truncation to byte. Since maximum
-> minor value is 0xff, let's check if first_minor is correct minor number.
-> 
-> NOTE: the root case of the reported warning was in wrong error handling
-> in register_disk(), but we can avoid passing knowingly wrong values to
-> sysfs API, because sysfs error messages can confuse users. For example:
-> user passed 1048576 as index, but sysfs complains about duplicate
-> creation of /dev/block/43:0. It's not obvious how 1048576 becomes 0.
-> Log and reproducer for above example can be found on syzkaller bug
-> report page.
-> 
-> Link: https://syzkaller.appspot.com/bug?id=03c2ae9146416edf811958d5fd7acfab75b143d1
-> Fixes: b0d9111a2d53 ("nbd: use an idr to keep track of nbd devices")
-> Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->   drivers/block/nbd.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index c38317979f74..600e9bab5d43 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -1725,7 +1725,17 @@ static int nbd_dev_add(int index)
->   	refcount_set(&nbd->refs, 1);
->   	INIT_LIST_HEAD(&nbd->list);
->   	disk->major = NBD_MAJOR;
-> +
-> +	/* Too big first_minor can cause duplicate creation of
-> +	 * sysfs files/links, since first_minor will be truncated to
-> +	 * byte in __device_add_disk().
-> +	 */
->   	disk->first_minor = index << part_shift;
-> +	if (disk->first_minor > 0xff) {
-> +		err = -EINVAL;
-> +		goto out_free_idr;
-> +	}
-> +
->   	disk->minors = 1 << part_shift;
->   	disk->fops = &nbd_fops;
->   	disk->private_data = nbd;
-> 
+From: SeongJae Park <sjpark@amazon.de>
 
-Fun thing: I got a reply to this email from
-nsd-public@police.gov.hk, which is Hong Kong Police office email. Does 
-anyone know what is going on? :) It's a bit scary...
+Hello Valdis,
+
+On Thu, 12 Aug 2021 05:21:57 -0400 "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu> wrote:
+
+> In this commit:
+> 
+> commit fedc37448fb1be5d03e420ca7791d4286893d5ec
+> Author: SeongJae Park <sjpark@amazon.de>
+> Date:   Tue Aug 10 16:55:51 2021 +1000
+> 
+>     mm/idle_page_tracking: make PG_idle reusable
+> 
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 504336de9a1e..d0b85dc12429 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -739,10 +739,18 @@ config DEFERRED_STRUCT_PAGE_INIT
+>           lifetime of the system until these kthreads finish the
+>           initialisation.
+> 
+> +config PAGE_IDLE_FLAG
+> +       bool "Add PG_idle and PG_young flags"
+> +       help
+> +         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> +         Accessed bit writers can set the state of the bit in the flags to let
+> +         other PTE Accessed bit readers don't disturbed.
+> 
+> This needs to be converted to proper, or at least comprehensible, English....
+
+Thank you for the comment.
+
+How about below?
+
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -743,9 +743,9 @@ config PAGE_IDLE_FLAG
+        bool "Add PG_idle and PG_young flags"
+        select PAGE_EXTENSION if !64BIT
+        help
+-         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+-         Accessed bit writers can set the state of the bit in the flags to let
+-         other PTE Accessed bit readers don't disturbed.
++         This feature adds 'PG_idle' and 'PG_young' flags in 'struct page'.
++         PTE Accessed bit writers can save the state of the bit in the flags
++         to let other PTE Accessed bit readers don't get disturbed.
 
 
-
-With regards,
-Pavel Skripkin
+Thanks,
+SeongJae Park
