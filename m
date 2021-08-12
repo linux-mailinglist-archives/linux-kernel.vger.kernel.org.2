@@ -2,185 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF533EA82E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6467C3EA831
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhHLQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        id S230035AbhHLQEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhHLQCi (ORCPT
+        with ESMTP id S229661AbhHLQEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:02:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF01C061756;
-        Thu, 12 Aug 2021 09:02:12 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id w20so14359746lfu.7;
-        Thu, 12 Aug 2021 09:02:12 -0700 (PDT)
+        Thu, 12 Aug 2021 12:04:20 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B212C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:03:55 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so15917304pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CS/Wz0hxjeRuV2qYV+d+qfHRa67sIp1agK0mKi6yjXs=;
-        b=G/04w7wtOmMZZgNy+CxIVz0nxaDfHpD+7kHnrDoRjVIwHAsvkcJREFCPUvXK6sO/DS
-         Bivh5JHOei5dqDLh8D+GOHXGCgQC4aodqLgv6m5REv+/YtBJnMA2WMJASgJ3IcGGxGeo
-         2U8gGoNExAMhVmVmoeE1Vq/quzRTv93y8pZsTEOm/iZ3sXzTWQDcRQP2/G5aosVTGitx
-         JWRKrSY6TYcrYxIYGDhFsyNfWAh/Ffep3QA7PhXEMb7xoOYnrzebIxbUWHWwKQ0wVhXz
-         gvlAcCaBcWwCa803aHAgiQhvWRJJlS4StaXLt3a7fdVgpcbQ11nLaXwTFyVe4e4l5Pzr
-         gwIg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jw52nCDfk6PbivT8d6VPc3xIqyMa3zncf4PBia2oVKk=;
+        b=H3r5cy3MrBDVsJkrOElcPo70wt8xUDs5X0BTUnWysXEwlEvnpJxkVryTsRurOPYv+w
+         mySje2f6KuJNnn8xOzBdHgARzapWpjR6bs7eXon8xS+6VL62LN7s7RiyP1pv8NEpp1Xp
+         VLuMeklT1W+7W9RvsnaIS1jbV+9JxFAnGlQX3yvIkIoTgJcyx7XxDdf5QyxKMwdhgEKb
+         DpLlDZFtbKTZzBMDvM/ryFmfVJRlxg6aId6MLYg+5fWuosOuiBEONhlFhT8mXqu0QUDt
+         zNAJ4E5O/UFFjWPUdX+Km8g+Z/xEUW68D6kM1v8vIp62iJbGeEvDqq0PElvCb+/GNrW+
+         MuFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CS/Wz0hxjeRuV2qYV+d+qfHRa67sIp1agK0mKi6yjXs=;
-        b=X9zPW/8hjVuZD25z1NJMdfRxjQgEXhmvHaogmkvgTWp01Udk3oc+txzkrkvXQh7q8C
-         KzxwJB5jHzm8XdjOM2NgqOAru5WBmEP2SbecFAeORbEuM53KzFa81K2ypseRFztho7J8
-         wYA/2X6tznd3ys6bydd4xOiVxvlbx/mHa8/Sd+HJzPT6DPHAeNr6g9CPfjNyPuyIOUF4
-         E8hl7clJtQoqY6SmW0AdXVe35LcETkGncmv9TIrHMcpTSwgmxGnhyzTVgMqb4GkzzBA0
-         aZ8M1uGzeOPgJsAyR7OwoM2zANizxXOQF82P3tCyXAxGT+QBhVVgKUdS0mmSEmIPEzZS
-         oDYw==
-X-Gm-Message-State: AOAM531ruIRBKFQftN0VdyNSRedAM0IiQf9qbSSt6zKXm4Esur6HJABb
-        UREBAd2MB4Oe4mik1yEWUcecl7sduOQ=
-X-Google-Smtp-Source: ABdhPJzK2Sht+mseJfZIZ/v+XP0+TKaOoHv7LK0oG0RYgQRDA+YFv07LFralo6/orE6GD6kTCEZlCg==
-X-Received: by 2002:ac2:5fe3:: with SMTP id s3mr2995322lfg.319.1628784131005;
-        Thu, 12 Aug 2021 09:02:11 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id k14sm299816lfo.262.2021.08.12.09.02.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 09:02:10 -0700 (PDT)
-Subject: Re: [PATCH v7 01/37] soc/tegra: pmc: Temporarily disable PMC state
- syncing
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210701232728.23591-1-digetx@gmail.com>
- <20210701232728.23591-2-digetx@gmail.com>
-Message-ID: <9a2fc1f7-5c10-eac3-97ad-303bc86c0666@gmail.com>
-Date:   Thu, 12 Aug 2021 19:02:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jw52nCDfk6PbivT8d6VPc3xIqyMa3zncf4PBia2oVKk=;
+        b=oGdKwuSZYt0HYcDNNPgZZpuL75R5SDRhSB/FoGGsMvTYoSosGb3z9eFbw5BcjEUgnB
+         +U2JCroI50aacLBjjC/wQL1u/9jgQ9H/ii22nB2+66TiA7EYSY62KR/8W9tPqXfg1LMV
+         yw0emSdJ/JxT+CmB0tmmauYstL+hb3LYGwIo9OYYiE5810Y9MzRZKNhMPFw8JyeSZJZl
+         IC97JX0eq0fFc7LOAO17v/62W2Q0oW6/OqhQVC8XoBDMgR7/Z1uIPTkw9oTxSzqQYGU6
+         BVUHNqOdS9Ndofi2xn/U/CsBfzS2QCXM02GkMDtdV7yjEgxqbzxNxUPUG352bOAFTdxe
+         SWFA==
+X-Gm-Message-State: AOAM533KtXc0t3f9gPlCUF2MFFeKGIUPcKZXuQ7PCmDAE8vUjEW1ianS
+        ddr+qXIJ11EjRYtzl5t4QW5ACA==
+X-Google-Smtp-Source: ABdhPJxYF6mPLK+4Te1+ZmNX4UolYHFV4rCufnVsXxC+MasZcm3W9m1P/Zy8jgBHrxgTpVrbOKZ5Xw==
+X-Received: by 2002:a17:90b:1b47:: with SMTP id nv7mr5073951pjb.70.1628784234345;
+        Thu, 12 Aug 2021 09:03:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b18sm3942394pft.201.2021.08.12.09.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 09:03:53 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 16:03:47 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: X86: Check pte present first in
+ __shadow_walk_next()
+Message-ID: <YRVGY1ZK8wl9ybBH@google.com>
+References: <20210812043630.2686-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210701232728.23591-2-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812043630.2686-1-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.07.2021 02:26, Dmitry Osipenko пишет:
-> Disable PMC state syncing in order to ensure that we won't break older
-> kernels once device-trees will be updated with the addition of the power
-> domains. Previously this was unnecessary because the plan was to make clk
-> device that will attach to the domain for each clock, but the plan changed
-> and now we're going make a better GENPD implementation that will require
-> to update each device driver with the runtime PM and OPP support before
-> we could safely enable the state syncing.
+On Thu, Aug 12, 2021, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/soc/tegra/pmc.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-> index ea62f84d1c8b..f63dfb2ca3f9 100644
-> --- a/drivers/soc/tegra/pmc.c
-> +++ b/drivers/soc/tegra/pmc.c
-> @@ -360,6 +360,7 @@ struct tegra_pmc_soc {
->  	unsigned int num_pmc_clks;
->  	bool has_blink_output;
->  	bool has_usb_sleepwalk;
-> +	bool supports_core_domain;
->  };
->  
->  /**
-> @@ -3029,6 +3030,7 @@ static void tegra20_pmc_setup_irq_polarity(struct tegra_pmc *pmc,
->  }
->  
->  static const struct tegra_pmc_soc tegra20_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = ARRAY_SIZE(tegra20_powergates),
->  	.powergates = tegra20_powergates,
->  	.num_cpu_powergates = 0,
-> @@ -3089,6 +3091,7 @@ static const char * const tegra30_reset_sources[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra30_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = ARRAY_SIZE(tegra30_powergates),
->  	.powergates = tegra30_powergates,
->  	.num_cpu_powergates = ARRAY_SIZE(tegra30_cpu_powergates),
-> @@ -3145,6 +3148,7 @@ static const u8 tegra114_cpu_powergates[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra114_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = ARRAY_SIZE(tegra114_powergates),
->  	.powergates = tegra114_powergates,
->  	.num_cpu_powergates = ARRAY_SIZE(tegra114_cpu_powergates),
-> @@ -3261,6 +3265,7 @@ static const struct pinctrl_pin_desc tegra124_pin_descs[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra124_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = ARRAY_SIZE(tegra124_powergates),
->  	.powergates = tegra124_powergates,
->  	.num_cpu_powergates = ARRAY_SIZE(tegra124_cpu_powergates),
-> @@ -3386,6 +3391,7 @@ static const struct tegra_wake_event tegra210_wake_events[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra210_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = ARRAY_SIZE(tegra210_powergates),
->  	.powergates = tegra210_powergates,
->  	.num_cpu_powergates = ARRAY_SIZE(tegra210_cpu_powergates),
-> @@ -3543,6 +3549,7 @@ static const struct tegra_wake_event tegra186_wake_events[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra186_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = 0,
->  	.powergates = NULL,
->  	.num_cpu_powergates = 0,
-> @@ -3677,6 +3684,7 @@ static const struct tegra_wake_event tegra194_wake_events[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra194_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = 0,
->  	.powergates = NULL,
->  	.num_cpu_powergates = 0,
-> @@ -3745,6 +3753,7 @@ static const char * const tegra234_reset_sources[] = {
->  };
->  
->  static const struct tegra_pmc_soc tegra234_pmc_soc = {
-> +	.supports_core_domain = false,
->  	.num_powergates = 0,
->  	.powergates = NULL,
->  	.num_cpu_powergates = 0,
-> @@ -3791,6 +3800,14 @@ static void tegra_pmc_sync_state(struct device *dev)
->  {
->  	int err;
->  
-> +	/*
-> +	 * Newer device-trees have power domains, but we need to prepare all
-> +	 * device drivers with runtime PM and OPP support first, otherwise
-> +	 * state syncing is unsafe.
-> +	 */
-> +	if (!pmc->soc->supports_core_domain)
-> +		return;
-> +
->  	/*
->  	 * Older device-trees don't have core PD, and thus, there are
->  	 * no dependencies that will block the state syncing. We shouldn't
-> 
+> So far, the loop bodies already ensure the pte is present before calling
+> __shadow_walk_next().  But checking pte present in __shadow_walk_next()
+> is a more prudent way of programing and loop bodies will not need
+> to always check it.  It allows us removing is_shadow_present_pte()
+> in the loop bodies.
 
-Thierry, could you please take this patch for 5.15? It should ease
-further applying of the rest of the patches, thanks.
+There needs to be more analysis in the changelog, as there are many more callers
+to __shadow_walk_next() than the three that are modified in the next patch.  It
+might even make sense to squash the two patches together, i.e. make it a "move"
+instead of an "add + remove", and then explicitly explain why it's ok to add the
+check for paths that do _not_ currently have a !is_shadow_present_pte() in the
+loop body.
+
+Specifically, FNAME(fetch) via shadow_walk_next() and __direct_map() via
+for_each_shadow_entry() do not currently terminate their walks with a !PRESENT,
+but they get away with it because they install present non-leaf SPTEs in the loop
+itself.
+
+The other argument for the audit (changelog+patch) of all users is that the next
+patch misses FNAME(invlpg), e.g. 
+
+@@ -977,7 +980,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+                        FNAME(update_pte)(vcpu, sp, sptep, &gpte);
+                }
+
+-               if (!is_shadow_present_pte(*sptep) || !sp->unsync_children)
++               if (!sp->unsync_children)
+                        break;
+        }
+        write_unlock(&vcpu->kvm->mmu_lock);
+
+It would also be worthwhile to document via the changelog that terminating on
+!is_shadow_present_pte() is 100% the correct behavior, as walking past a !PRESENT
+SPTE would lead to attempting to read a the next level SPTE from a garbage
+iter->shadow_addr.
+
+And for clarity and safety, I think it would be worth adding the patch below as
+a prep patch to document and enforce that walking the non-leaf SPTEs when faulting
+in a page should never terminate early.
+
+
+From 1c202a7e82b1931e4eb37b23aa9d7108340a6cd2 Mon Sep 17 00:00:00 2001
+From: Sean Christopherson <seanjc@google.com>
+Date: Thu, 12 Aug 2021 08:38:35 -0700
+Subject: [PATCH] KVM: x86/mmu: Verify shadow walk doesn't terminate early in
+ page faults
+
+WARN and bail if the shadow walk for faulting in a SPTE terminates early,
+i.e. doesn't reach the expected level because the walk encountered a
+terminal SPTE.  The shadow walks for page faults are subtle in that they
+install non-leaf SPTEs (zapping leaf SPTEs if necessary!) in the loop
+body, and consume the newly created non-leaf SPTE in the loop control,
+e.g. __shadow_walk_next().  In other words, the walks guarantee that the
+walk will stop if and only if the target level is reached by installing
+non-leaf SPTEs to guarantee the walk remains valid.
+
+Opportunistically use fault->goal-level instead of it.level in
+FNAME(fetch) to further clarify that KVM always installs the leaf SPTE at
+the target level.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c         | 3 +++
+ arch/x86/kvm/mmu/paging_tmpl.h | 7 +++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index a272ccbddfa1..2a243ae1d64c 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2992,6 +2992,9 @@ static int __direct_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ 			account_huge_nx_page(vcpu->kvm, sp);
+ 	}
+
++	if (WARN_ON_ONCE(it.level != fault->goal_level))
++		return -EFAULT;
++
+ 	ret = mmu_set_spte(vcpu, it.sptep, ACC_ALL,
+ 			   fault->write, fault->goal_level, base_gfn, fault->pfn,
+ 			   fault->prefault, fault->map_writable);
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index f70afecbf3a2..3a8a7b2f9979 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -749,9 +749,12 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+ 		}
+ 	}
+
++	if (WARN_ON_ONCE(it.level != fault->goal_level))
++		return -EFAULT;
++
+ 	ret = mmu_set_spte(vcpu, it.sptep, gw->pte_access, fault->write,
+-			   it.level, base_gfn, fault->pfn, fault->prefault,
+-			   fault->map_writable);
++			   fault->goal_level, base_gfn, fault->pfn,
++			   fault->prefault, fault->map_writable);
+ 	if (ret == RET_PF_SPURIOUS)
+ 		return ret;
+
+--
+2.33.0.rc1.237.g0d66db33f3-goog
