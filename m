@@ -2,185 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB793E9EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCBC3E9EB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhHLGfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:35:30 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44075 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhHLGf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:35:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GlcPH6BzXz9sRf;
-        Thu, 12 Aug 2021 16:34:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628750101;
-        bh=mgH3BL5eJH6UnVLbFgGbxe6ga9Q7rU2E2XVd+whIA/4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mVw1j03cQxZktmJS5Hddibfl75JSEixJ2HQTqqHRrkTz5QjTGgg2nVCAueJWVtFzL
-         K6ENKPVOM375UmO1GeetrkHO/L/rsE88EianJ5hx2pwyldLud8JHOt/LhOCViTtDnl
-         efbOWASIGYDsCYIaHE+FinCgAUfwXkwx7AoaoW6m+XgtW1bfP747tKIPCH3DnBeC/6
-         YziAPkptLs8fbIrFi4vVPuo27t6NGgSOZhCnl4/sKApldMB/bfVASWVoqO9dTXKsZ9
-         9V+UrFbwxCYJpnHOd/k7b1jDJ0NExm619J4e/UErCIApoxunk7dU3CB2e14JO4YmJg
-         fDhE8QM+1I+Zw==
-Date:   Thu, 12 Aug 2021 16:34:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Finn Behrens <me@kloenk.de>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: manual merge of the rust tree with the kbuild tree
-Message-ID: <20210812163458.37ba7ed3@canb.auug.org.au>
-In-Reply-To: <CAKwvOdkv+L6LQO2NPr7EmGS3mp3AN=5CBfFkS0v6YU4j4YAm6A@mail.gmail.com>
-References: <20210811172605.72d6650e@canb.auug.org.au>
-        <CAKwvOdkv+L6LQO2NPr7EmGS3mp3AN=5CBfFkS0v6YU4j4YAm6A@mail.gmail.com>
+        id S234399AbhHLGlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231253AbhHLGlA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:41:00 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A44AC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:40:35 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso6223620wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K41j9DktzdPkzZcW4NynOEKUrMsYRmyYnRWzSkHUVqU=;
+        b=BZR2HXeM/4OF9XwjtXbnFAq4p4tzJgIiiuo2QtCBlHh2W7k1/Ns/Lr3xn4sV6P1itN
+         o1/lGkA2GIcXXJIEhoQqwYdfDEw3Gv2FcKvjs+n1spGG6Fggnke/CN3t0ikCcbaIScEw
+         YyWKso+fbm3wX3ECf5tZLvOrhh5zk2Eo/80RebKPxU/X/48pUeI1OSctARmIXiaFYauc
+         dB1wuYx5JIQuNgNp6bKkzBTzZoEa5OG4ofE1CVIAQMiEPVtdCw8hBuGX4aq2vJTtbDSp
+         JZ6VDed9GFA2a6IVn6ailSjnBc4TSNSWbFbtC+/Nwql6u0ErkUGje5j3X76aPmZwuAsJ
+         eTHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K41j9DktzdPkzZcW4NynOEKUrMsYRmyYnRWzSkHUVqU=;
+        b=CLJLXtdESUzUXfvfU9VRgrBHwplalDkZdxrQwGwyieKhkQ/Qtgh2G4o+i7kkQRSMg1
+         mm7+RG76Jk1akQnhRs73chA5YG+e2kJIh9G4U8mwGB6Q1r0mWCb4qrq1Lm+obzF2oCGS
+         dPwD12wMflg8BKvOm8kl44p+gVWByBXbZXbD0DGspi9pHY2jpCk1fmS9bboWU2pzPqx6
+         WY2mOhIl6sf7XN2ohsQJTVU3/BNL0NO7BGJmr7OXfFwV0Afwq1zZiWT1whmVls8MNZ62
+         AfVrqX0ne6dTdXY8wuDA5M1VRDqooSy0aFsNC14ahImk+Ty7wv4Ig6aQNasxfdMWEUvm
+         bClA==
+X-Gm-Message-State: AOAM530Lo/Ni4a047g2ixURhxVTNy4zB45AYyrCrq+9spiSkrm3MqmG2
+        3m+/8bKCLnJcsYRJbMBFITzqABSGSsQO2AcHOes=
+X-Google-Smtp-Source: ABdhPJyoTvAq1oeHwSVJxr1FsguqOrH9G7PJDq3pl+utMSHcVhjPExw5pZV+4jhVq01zQfFcjkwz01Iq1Y8PyraQn2g=
+X-Received: by 2002:a05:600c:5108:: with SMTP id o8mr2232936wms.97.1628750434144;
+ Wed, 11 Aug 2021 23:40:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cWMm4Pn7qTSRkzXaG+4/ig8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210715065455.392923-2-zhang.lyra@gmail.com> <202108011431.Nx7sS0uY-lkp@intel.com>
+In-Reply-To: <202108011431.Nx7sS0uY-lkp@intel.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Thu, 12 Aug 2021 14:39:57 +0800
+Message-ID: <CAAfSe-vY9bkLb7Q2Tn=2ug6pau9VHkfZyvmoQNMqeKmxfquOHg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] drivers/clocksource/timer-of: Remove __init markings
+To:     kernel test robot <lkp@intel.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        Saravana Kannan <saravanak@google.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/cWMm4Pn7qTSRkzXaG+4/ig8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Nick,
-
-On Wed, 11 Aug 2021 10:04:36 -0700 Nick Desaulniers <ndesaulniers@google.co=
-m> wrote:
+On Sun, 1 Aug 2021 at 14:18, kernel test robot <lkp@intel.com> wrote:
 >
-> Thanks Stephen for taking the time to resolve this and send a patch.
-> We owe you one. We knew this conflict was coming.
->=20
-> Miguel, would you mind rolling this patch into your tree, then
-> crediting Stephen if possible (on the patch that adds
-> TENTATIVE_CLANG_FLAGS)?
->=20
-> I think the above `ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)`
-> should stay in the top level Makefile though. It does look nicer to
-> bury it in scripts/Makefile.clang, but I worry that someone doing a
-> GCC build might trip the $(error) in that file (if CROSS_COMPILE was
-> set and we're building a non-llvm-supported target).
+> Hi Chunyan,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on tip/timers/core]
+> [also build test ERROR on linux/master linus/master v5.14-rc3 next-20210730]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Chunyan-Zhang/Add-module-build-support-for-timer-driver/20210715-145711
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 2d0a9eb23ccfdf11308bec6db0bc007585d919d2
+> config: s390-buildonly-randconfig-r003-20210728 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project c49df15c278857adecd12db6bb1cdc96885f7079)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install s390 cross compiling tool for clang build
+>         # apt-get install binutils-s390x-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/8e3c2c4da32affdbca933979110050e564351c84
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Chunyan-Zhang/Add-module-build-support-for-timer-driver/20210715-145711
+>         git checkout 8e3c2c4da32affdbca933979110050e564351c84
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=s390 SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    s390x-linux-gnu-ld: drivers/tty/ipwireless/main.o: in function `ipwireless_attach':
+>    main.c:(.text+0x21a): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: main.c:(.text+0x270): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/tty/ipwireless/main.o: in function `ipwireless_detach':
+>    main.c:(.text+0x478): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: main.c:(.text+0x4d4): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/tty/ipwireless/main.o: in function `ipwireless_probe':
+>    main.c:(.text+0x70c): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: main.c:(.text+0x83e): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: main.c:(.text+0x8b6): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: main.c:(.text+0x93a): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
+>    xillybus_of.c:(.text+0x9a): undefined reference to `devm_platform_ioremap_resource'
+>    s390x-linux-gnu-ld: drivers/net/arcnet/arc-rimi.o: in function `check_mirror':
+>    arc-rimi.c:(.text+0x5c): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: arc-rimi.c:(.text+0xc2): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/net/arcnet/arc-rimi.o: in function `arc_rimi_exit':
+>    arc-rimi.c:(.exit.text+0x44): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/net/arcnet/arc-rimi.o: in function `arcrimi_found':
+>    arc-rimi.c:(.init.text+0x37c): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: arc-rimi.c:(.init.text+0x3c8): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: arc-rimi.c:(.init.text+0x614): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: arc-rimi.c:(.init.text+0x674): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: arc-rimi.c:(.init.text+0x6de): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/net/ethernet/fujitsu/fmvj18x_cs.o: in function `fmvj18x_probe':
+>    fmvj18x_cs.c:(.text+0x756): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: fmvj18x_cs.c:(.text+0x788): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: fmvj18x_cs.c:(.text+0x7e0): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/net/ethernet/fujitsu/fmvj18x_cs.o: in function `fmvj18x_detach':
+>    fmvj18x_cs.c:(.text+0xce0): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/net/ethernet/fujitsu/fmvj18x_cs.o: in function `fmvj18x_get_hwinfo':
+>    fmvj18x_cs.c:(.text+0x27d4): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: fmvj18x_cs.c:(.text+0x2940): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+>    cistpl.c:(.text+0x9c): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+>    cistpl.c:(.text+0x46c): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: cistpl.c:(.text+0x4a8): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: cistpl.c:(.text+0x4e6): undefined reference to `iounmap'
+>    s390x-linux-gnu-ld: cistpl.c:(.text+0x4f8): undefined reference to `ioremap'
+>    s390x-linux-gnu-ld: drivers/crypto/ccree/cc_driver.o: in function `ccree_probe':
+>    cc_driver.c:(.text+0x5a8): undefined reference to `devm_ioremap_resource'
+>    s390x-linux-gnu-ld: drivers/crypto/ccree/cc_debugfs.o: in function `cc_debugfs_init':
+>    cc_debugfs.c:(.text+0xac): undefined reference to `debugfs_create_regset32'
+>    s390x-linux-gnu-ld: cc_debugfs.c:(.text+0x190): undefined reference to `debugfs_create_regset32'
+>    s390x-linux-gnu-ld: drivers/clocksource/timer-of.o: in function `timer_of_init':
+>    timer-of.c:(.text+0x104): undefined reference to `of_iomap'
+> >> s390x-linux-gnu-ld: timer-of.c:(.text+0x306): undefined reference to `iounmap'
 
-OK, I have changed the patch today to be this:
+Seems TIMER_OF should depend on HAS_IOMEM, but this error is not
+related with changes in the above patch?
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 11 Aug 2021 17:18:36 +1000
-Subject: [PATCH] fixup for rust integration with Makefile.clang creation
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- Makefile               | 17 -----------------
- scripts/Makefile.clang | 19 +++++++++++++------
- 2 files changed, 13 insertions(+), 23 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 5d504a1dcb06..3638ce07f208 100644
---- a/Makefile
-+++ b/Makefile
-@@ -625,22 +625,7 @@ endif
- # and from include/config/auto.conf.cmd to detect the compiler upgrade.
- CC_VERSION_TEXT =3D $(subst $(pound),,$(shell LC_ALL=3DC $(CC) --version 2=
->/dev/null | head -n 1))
-=20
--TENTATIVE_CLANG_FLAGS :=3D -Werror=3Dunknown-warning-option
--
--ifneq ($(CROSS_COMPILE),)
--TENTATIVE_CLANG_FLAGS	+=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
--endif
--ifeq ($(LLVM_IAS),1)
--TENTATIVE_CLANG_FLAGS	+=3D -integrated-as
--else
--TENTATIVE_CLANG_FLAGS	+=3D -no-integrated-as
--GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
--TENTATIVE_CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS=
-_COMPILE))
--endif
--
--export TENTATIVE_CLANG_FLAGS
--
- ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
- include $(srctree)/scripts/Makefile.clang
- endif
-=20
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 3ae63bd35582..555b5255d9b3 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -12,24 +12,29 @@ CLANG_TARGET_FLAGS_s390		:=3D s390x-linux-gnu
- CLANG_TARGET_FLAGS_x86		:=3D x86_64-linux-gnu
- CLANG_TARGET_FLAGS		:=3D $(CLANG_TARGET_FLAGS_$(SRCARCH))
-=20
-+TENTATIVE_CLANG_FLAGS :=3D -Werror=3Dunknown-warning-option
-+
- ifeq ($(CROSS_COMPILE),)
- ifeq ($(CLANG_TARGET_FLAGS),)
- $(error Specify CROSS_COMPILE or add '--target=3D' option to scripts/Makef=
-ile.clang)
- else
--CLANG_FLAGS	+=3D --target=3D$(CLANG_TARGET_FLAGS)
-+TENTATIVE_CLANG_FLAGS	+=3D --target=3D$(CLANG_TARGET_FLAGS)
- endif # CLANG_TARGET_FLAGS
- else
--CLANG_FLAGS	+=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
-+TENTATIVE_CLANG_FLAGS	+=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
- endif # CROSS_COMPILE
-=20
- ifeq ($(LLVM_IAS),0)
--CLANG_FLAGS	+=3D -no-integrated-as
-+TENTATIVE_CLANG_FLAGS	+=3D -no-integrated-as
- GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
--CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-+TENTATIVE_CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS=
-_COMPILE))
- else
--CLANG_FLAGS	+=3D -integrated-as
-+TENTATIVE_CLANG_FLAGS	+=3D -integrated-as
- endif
--CLANG_FLAGS	+=3D -Werror=3Dunknown-warning-option
-+
-+export TENTATIVE_CLANG_FLAGS
-+
-+CLANG_FLAGS	+=3D $(TENTATIVE_CLANG_FLAGS)
- KBUILD_CFLAGS	+=3D $(CLANG_FLAGS)
- KBUILD_AFLAGS	+=3D $(CLANG_FLAGS)
- export CLANG_FLAGS
---=20
-2.30.2
-
-Please give it a spin when linux-next has been released.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/cWMm4Pn7qTSRkzXaG+4/ig8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEUwRIACgkQAVBC80lX
-0GwtZQf+JG+k/GeSyQCXPjmotR47CEAgwMkR5z5WNNrxmHRnx/WPK3s6XmcEOyeP
-9bjxXDjX7QsbjjkHZf++TTuJdMECHfS8BtxcgkSGlZ+965k0dJNOn98PUn7mfPj4
-bntuREgyQwgCrHz3LlL9DUBZzTfQu+LErAxHhzvE9jRcoE9z2vwhSSyKjWYul8tc
-eAQt0a8p67JOAofACXqAck2cJq7fcqnT4dzmBP7dpr1Y2Oa/ka6UBWHYr22aFhSN
-FZkVVw7S6Km/qOf3vLJqmD9d3QuHHxKx2UrrFuDjsSqFlIcTFoUqLehtCf5NQlfc
-+82zclFhp6qilLZNOaeyCp3S+X1Sgg==
-=OnXM
------END PGP SIGNATURE-----
-
---Sig_/cWMm4Pn7qTSRkzXaG+4/ig8--
+>    s390x-linux-gnu-ld: drivers/clocksource/timer-of.o: in function `timer_of_cleanup':
+>    timer-of.c:(.text+0x5f2): undefined reference to `iounmap'
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
