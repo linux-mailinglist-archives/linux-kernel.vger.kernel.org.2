@@ -2,124 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B043E9E27
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADC23E9E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhHLFuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 01:50:46 -0400
-Received: from mx.ucr.edu ([138.23.62.67]:1743 "EHLO mx5.ucr.edu"
+        id S234451AbhHLF4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 01:56:23 -0400
+Received: from mx2.ucr.edu ([138.23.62.3]:29119 "EHLO mx2.ucr.edu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231382AbhHLFup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:50:45 -0400
+        id S231382AbhHLF4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 01:56:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1628747422; x=1660283422;
-  h=mime-version:references:in-reply-to:from:date:message-id:
-   subject:to:cc;
-  bh=l3zfLLXduZiIZzfIz0+CTNmC/Omgz4giYTeAfSD4EzE=;
-  b=crCt8NFqPoZgcuiiTJtWeRn+8FguBHuHxtDXi2s83FGKNXPYAroIavo3
-   fDI+vpdvTQQ/3MbTatQdCvx380J8fSW41lfUMLopOhgtSC/aYhdjgdDbE
-   iJ37XFARTBV9J32Xh390ftRVzT9qcPsY6h6bis4/GVgx5EjFTInxgmsrv
-   Vr9D32jh7/AmI4bQSa+WYd3k5UpNeb+x7L2CKvs+5UfWe/z3s/bfzBP/d
-   Q8kyT31RumLZNa7J+GOwlaEttQ36256IaCOFt6k5x8NiLzOhFfslkUJ4J
-   wMplc8wJHqj8YkdtKaChmX79C7FyDZXKf6QBiv2C6ZDysm7dMjCcPwcDB
-   w==;
-IronPort-SDR: YRSKKDIx56y5WpGHJVp0jb5pwFeX/z5HNlIX91MLs2+gAyJ1Lh5I84eU18ux/klRf/ucpyTEhA
- 5suZ+CVj7y5Uw8hsEDOvC3MruVOJgfWROwkG1avlLOokD98AQtdS+EiDQ3hBxL7GXMqmpH6pA9
- oFtAZJY+xTr3zfYGIDjuglSboVClU+rikIOPlpIarUfnYiVUBnmL62Sek/1t+ivyiubFecJNQd
- FA8s3Ht+59LKjmA/prDDOftVu+13LEwESt7FPFfUNkIfJNHRbHB+Zv9sNeyRD7qLuifvIPsRjP
- D8wx3jiOYxBkMb5xhN1neTZP
-X-IPAS-Result: =?us-ascii?q?A2EqAwBQthRhf0jYVdFaHgE8DAILFYFZg3hshEiRcJtjg?=
- =?us-ascii?q?XwCCQEBAQ9BBAEBhFkCgmcCJTUIDgECBAEBAQEDAgMBAQEBAQEDAQEGAQEBA?=
- =?us-ascii?q?QEBBQQBAQIQAQGBIgtZC2OBT4F5BgQ9gjUpAYNsAQEBAQMSEVYQCwsKAwICJ?=
- =?us-ascii?q?gICIhIBBQEcBhMihVcFnhuBBD2KOHqBMYEBiBwBCQ2BYxJ+KocMhmQngimBS?=
- =?us-ascii?q?4JvPodbgmQEhUQPggOBGwEBAZNbiU2CCZsGghEBBgKDDhySS4wCK4NTox27R?=
- =?us-ascii?q?hAjgT8CghEzGiV/BmeBS00BAgECAQwCAQIBAgECAQIIAQEChmKWKiQvOAIGC?=
- =?us-ascii?q?wEBAwmJFgEB?=
-IronPort-PHdr: A9a23:jcLKYRCVTCoRcWtoqCkMUyQUekMY04WdBeb1wqQuh78GSKm/5ZOqZ
- BWZua81yg+TFtWHo9t/yMPu+5j6XmIB5ZvT+FsjS7drEyE/tMMNggY7C9SEA0CoZNTjbig9A
- dgQHAQ9pyLzPkdaAtvxaEPPqXOu8zESBg//NQ1oLejpB4Lelcu62/6u95HJYAhEmjWxbLB9I
- R6rsQjfq84ajJd4JK0s0BXJuHxIe+pXxWNsO12emgv369mz8pB+7Sleouot+MFcX6r0eaQ4V
- qFYAy89M28p/s3rtALMQhWJ63ABT2gZiBtIAwzC7BHnQpf8tzbxu+Rh1CWGO8D9UKs5Uiq+4
- ah1VBDoiT8HNz8n/2HRlsxwl79QrBa4qxBi34LYfISZOfxjda3fYNwaX3JMUclfVyNDAo2yY
- YgBAfcfM+lEtIT9u0cCoAGiCQWwGO/iyDlFjWL2060g1OQhFBnL0w4hH9MPsHTUsdL1P7oRX
- uC11qbIzCjIYvRW2Db86IjHaBEhre2QUb9+asfR1FUgFxnfglqOtIPlIiqY2+IQuGeU8+RuT
- /igi3I7qw5vuDivwN8hh4bNi48Ryl3K+zt1zYkxKNO3S0N2btCpHZteuiyGNoZ7XsIvTm9rt
- Son17AKpJ22cTYExZkoxBPSdvKJfpWU7x/lSe2fIi94iWp7dL6jgxu+60utx+3mWsWqzVpHr
- zBJn9vSun0Lyhfd8NKISuFn8UekwTuP0gfT5fxaLk0sjqrbLoIhwqY3lpoOrUTPBi/2l1vyj
- K+Rbkgk//Kn6+XjYrn/vp+cNZJ4hhjwMqkshMCzG+s4Mg8JX2iU/eSzyqfv8lH+QLVPlvE2k
- 6/Zv47GJckDuKK1HwtY3pwg5hu/FTuqzskUkHgdIF9HZh6Ll43pNEvPIPD8A/e/mVOskDJzy
- vHGP7zhAo/CLnnfnLv9c7tw8FNcxxYpzdxF+Z1bF6wBLOrpWkDtrNzYEgM5MwuszubjCdV90
- J4eWG2WDq+aLqzSq1mI6fwrI+SXeo8VtyjyK+I/6/7tk3A5g1kdcret3ZcNb3C4BPtmcA2lZ
- i/DmNoOWUQQuQM+CczjkkGHWDgbM3moUq0/5hk/CYS7HYnEW4ahiaCA2yH9GYdZMDNoEFeJR
- EbpZYWZXL8+aCuTaptwgDwNVOD5EKc83gvouQPnnek0ZtHI8zEV4MqwnON+4PfewFRrrWQcM
- g==
-IronPort-HdrOrdr: A9a23:ozsvWamZD/OkTHJZRIZBJOxNszHpDfIX3DAbv31ZSRFFG/FwWf
- re5cjztCWE8Ar5N0tQ/OxoVJPwI080sKQFgrX5Xo3CYOCFghrNEGgK1+KLqAEIWRefygc379
- YGT0ERMqyXMbG4t6vHCcuDeerIDOPpzElgv4ux80tQ
+  t=1628747757; x=1660283757;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Dih/syqAoRh+zFSVP5ghlcBWDYRkM3algk3/KHqQrKw=;
+  b=ej/DfU9Fhh5uniQAmRCTRSUeWeYGk1AA6HE8EL2IRzifNFPMAeVvbleS
+   k6Ch4gxyY+8Hjd0HOuvY8tVyt1MlkmAMiQ0NjY36YLQTO0QtQEExSBoqs
+   g0seFU6WRJvOfR9DZ2Ez6a3AWHHLYEUnQO0ZmgI+s4SalCXEekJkcRosL
+   c39kRqKomYGohRtxNvbJ/ObLqiyf1dnu+CR34IUUFXKhnrFEf0UDZ8DYI
+   yfJ76VvUCKgqsdIHNhPlOuN4+RBs9hCQaqwAKNRhXuPuVg7j4Uvz/Jno0
+   I6w3/UY0ZnPWRTdIjMics7nmglbtGwtNe5eOVNQ5063L1xn46jh6UrM2p
+   Q==;
+IronPort-SDR: +AThEPHZHm5zv9F3g8b6lXcUv33xWlV/bjrNOcUG4zTaQ9GN9tiSM9dvfm27RUF0rB9UsYBHid
+ 6jU/VEB8TJtwyh+Ggu1X9PB1wXzWJ6R9mLIUmhDukHsZ4WEJIgQ9GT9qYA9qyYAWOXkQjfyAqS
+ TsCmH4f7ExH+jofmFUNrfQM8sYQadncdkkWtrmqswisriVfnJSgyK0pBnOf6pfo9SpyW8sR4E0
+ 3zX3poJUZW0lpTReYexlTsrzTIwSZyrM6q674G7VbOChenCcdC5ltOGNOEbPmGUoA+bWHhntc9
+ mbMp6hma6ZamkkNapP70pkJz
+X-IPAS-Result: =?us-ascii?q?A2FmBABEtxRhf0jYVdFaHgE8DAILgW6DeVUWjUyTUYEah?=
+ =?us-ascii?q?nyIaIF8AgkBAQENAQFBBAEBhFkCgmcCJTQJDgECBAEBAQEDAgMBAQEBAQEDA?=
+ =?us-ascii?q?QEGAQEBAQEBBQQBAQIQAQGBIgtZC2OBT4F5BgQ9gjUpg2UJAgEDEhULAUYQU?=
+ =?us-ascii?q?TQBBQEcGSI5ghYBgweeHYEEPYwxMoEBiBwBCQ2BYwkBCIEoiH+EcSeCKYJQg?=
+ =?us-ascii?q?TN1h2+CUASDansTgimBUAEBAZA6G4MGAYtVgSabcQEGAoMOHJ4zRZVFkSu7L?=
+ =?us-ascii?q?QIKBwYQI4E9ghUzGiWBbAqBQU0BAgECAQwCAQIBAgECAQIIAQECnQwhMjgCB?=
+ =?us-ascii?q?gsBAQMJiRYB?=
+IronPort-PHdr: A9a23:4FLv9RSD/zjx4sc5cy/IdQOzi9psonWfAWYlg6HPa5pwe6iut67vI
+ FbYra00ygOTBcOLsbkU16L/iOPJYSQ4+5GPsXQPItRndiQuroEopTEmG9OPEkbhLfTnPGQQF
+ cVGU0J5rTngaRAGUMnxaEfPrXKs8DUcBgvwNRZvJuTyB4Xek9m72/q99pHNfwlEnjmwba19I
+ Bi1ogjaq9Ubj5ZlJqst0BXCv2FGe/5RxWNmJFKTmwjz68Kt95N98Cpepuws+ddYXar1Y6o3Q
+ 7pYDC87M28u/83kqQPDTQqU6XQCVGgdjwdFDBLE7BH+WZfxrzf6u+9g0ySUIcH6UbY5Uim54
+ qx1VBHnljsINz8h8GHWlMNwir5boAm8rBB72oLYfZ2ZOOZ7cq7beNMaRHFBXt1QVyxHDYO3c
+ pUBAfMcNuZWronyuV8OogajDgWoCu7j1jpEi3nx0qAm3ektDRzK0BU8E94TrX/YqMj5OacXX
+ e2z0aLGzyjMb+lO1Dn99obGbx4vr/KLU71yf8rexkYhGhjZgliTs4HpIymY2vgRv2Wd8uFuV
+ fivi2kiqwxpoDevx8YtionUhoIS11vL9iV5z5w0JdalT0N6Yd+lEJtKuCGbK4d6Xs0vTnp1u
+ Ckm0L0Ko4C0czUXyJk+wRPUdvOIfZSS7B35SOaRPSl3hGhjeL+nmxu/70euxO3zWMSp0VtHr
+ ipLn8fRu3wTyxHe99aLR+V+80qh1zuC2A/d5+FaLU47mqfWKposz6Mum5QdtUnOESn7k1j1g
+ q+Obkgo5PSk5uD9brjlppKQLZF4hhz/P6g0mMGzH/w0PhUPUmWf4+iwyrPu8E3jTLlUjPA6i
+ LfVvI7UKMkdu6W3GRVa0pw55Ba6Fzqm1dMYkmQZI19dYxKHipTpO0nJIPDlEfezm1Ssnylvx
+ /DBJrDhB4/CLnnHkLv4ZbZ96VNQxBM9zd1d+Z5YEL4BIPX0Wk/+sNzXEAU1PBCzw+biENl91
+ 4UeVnyTAqKBLq/erVuF6vgsLuSMfoMZpivxJvk/6/Psk3M1gVodcrOo3ZsTZnC4BPNmI0CBb
+ Hvsg9YBEX0FvgsiQOD2hlCPSiNTaGqoX64m+D40FZ+mAZ/ZRo+xmLyBwDu7HppOa2BCC1CMF
+ 2rodoqdV/cPdi2SOMlhnSIAVbW6VY8h2g+htBXgx7pkMOXU4CsYuozn1NRv4O3Tjx4ypnRaF
+ cOYhlCMXWFpmSs6RzY3lPRus0x0yw/bioBliOYeGNBOsaAaGjwmPILRmrQpQ+v5XRjMK5LUF
+ T6b
+IronPort-HdrOrdr: A9a23:Nv9LvKj61/xFCKJ59kbNdgbLyXBQXvMji2hC6mlwRA09TyVXrb
+ HKoB19726ItN9/YgBGpTntAtjifZqYz+8M3WBzB8bZYOCZghrPEGgK1+KLqF3d8m/Fh5VgPM
+ 9bEpSWY+eAaWSS4/yKgjVQ0OxM/DBEysqVbCvloEuFNTsaEp2IJj0UZDqmLg==
 X-IronPort-Anti-Spam-Filtered: true
 X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="231701847"
+   d="scan'208";a="170700629"
 Received: from mail-pj1-f72.google.com ([209.85.216.72])
-  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Aug 2021 22:50:21 -0700
-Received: by mail-pj1-f72.google.com with SMTP id m3-20020a17090b0683b0290178cb50bc1aso4228267pjz.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:50:20 -0700 (PDT)
+  by smtp2.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Aug 2021 22:55:55 -0700
+Received: by mail-pj1-f72.google.com with SMTP id o13-20020a17090a9f8db0290176ab79fd33so7223976pjp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:55:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+4OvCfZOoMFqcsG6QeShyHGwKu7LE5OaUGDpdUOU7Sw=;
-        b=rjwx3A3naz6dPyA6ya/O5A5WhBQHs47OzyNSDmGl/F6aF+ADKeoNGqNX+6ctOWxbt2
-         4E4YndJ2huCWbt+m3Nk8Hm/ei47DSY1RL9QEZgj7ThfBbiYfu15R3FebVGtfhrHHAzLo
-         zSgLBkquxRDRA/3VeQM27JtRhGtBbVCpawofFF6h2RgprxvtxzPFkHJiPSXqhk2BYrdT
-         i/CuSVqEtdt5/OU/ZdlFYEoO1PeFVZ2z/sqoLT5cTeEqi3bQDY9s4JOk2PeM8mVgalD6
-         iMcRJy5gmcovFVJ+8agQyFp5QpY7fWbzGUJGtltDyig28e5rTyNy1gzz8qF3z/uNr3bF
-         Vncg==
-X-Gm-Message-State: AOAM5339/hhHvFaI2NLG629fqtcsjB9jouhU/0LXwSFr2/hEPY4/6ujh
-        qPvxl57yrDcHyY6PiA+2bjyuxrQEf8X1qJKByn15TIO6gHs7qC1ZHBijYCOQn32vSyMLbw0MsWn
-        bAt/QJIVr/49qqasFZqCTi7hSw5OfCqVkknt9MJVqbw==
-X-Received: by 2002:a17:902:6a82:b029:12d:2431:94c1 with SMTP id n2-20020a1709026a82b029012d243194c1mr2218880plk.63.1628747419505;
-        Wed, 11 Aug 2021 22:50:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziwkiqjDIjmuU3dBBadKSg7FwSBsBGxojfwp4aZ97za34xeBhSer8/cICJlIdqG3lupuTxRl5mIIhZQ1ByBGw=
-X-Received: by 2002:a17:902:6a82:b029:12d:2431:94c1 with SMTP id
- n2-20020a1709026a82b029012d243194c1mr2218856plk.63.1628747419252; Wed, 11 Aug
- 2021 22:50:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723003607.64179-1-yzhai003@ucr.edu> <20210811035405.17382-1-yzhai003@ucr.edu>
- <YRN11JOX/JHpq8Yn@kroah.com>
-In-Reply-To: <YRN11JOX/JHpq8Yn@kroah.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rubSw9FCX3UYPP3qCFnQoWoTCnQrhAdQYI5e/tU4EqY=;
+        b=r8MO7Z3KCvzoVGeWiiUkF7dg+7JZf4nEjdcUyM/AX9w7VnR5bdMV+K0+ABDOYn6ms3
+         TN9oSKCh19FZ3dTeF6tikK3MLImPelnmTA0cPeE4hkL+Y7FWqDlnoHvibeezBBhP70UQ
+         l3gjTIuHR2SQMe3ZDKb881ijIeOo4BwtCT9ZPWoxIWFMvJGKdo9CGtoHo6cI+q5y/V3m
+         BzUcQlwBmnC0xVhGEDpGHxy7tZx8XzMMXiFzYuhQju5YPfGqv+i5QlqtffWKeI0xyBJT
+         EKaFUOgO0KxVMB2mqhFa3eS4tkJayeitLjGNIu51kQUHPrZJUmj/C0dQgRYvGG666zfe
+         3kkw==
+X-Gm-Message-State: AOAM530rzlFrBvuwdSc8yXDKLbFb/7nkNgTfirGYVIqADPFlJpH/EQSQ
+        PVDqJi2Z4QwsFksr234PB6UDUH6Be5pPe6LOFBv1K5+6z0BgjahG0AgUceckwejhd1epD+9DWvl
+        zS97iCrycQVklqnX43SKEZqL/Ag==
+X-Received: by 2002:a63:83c1:: with SMTP id h184mr2410938pge.37.1628747754102;
+        Wed, 11 Aug 2021 22:55:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOygrKV5WhARieKOIood/QYvjnnVnFyEKRNwCN5hxkQkZt74kl1r/JcDId5gGmRbEWFlUyOw==
+X-Received: by 2002:a63:83c1:: with SMTP id h184mr2410923pge.37.1628747753894;
+        Wed, 11 Aug 2021 22:55:53 -0700 (PDT)
+Received: from kq.cs.ucr.edu (kq.cs.ucr.edu. [169.235.27.223])
+        by smtp.googlemail.com with ESMTPSA id j6sm1659165pfn.107.2021.08.11.22.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 22:55:53 -0700 (PDT)
 From:   Yizhuo Zhai <yzhai003@ucr.edu>
-Date:   Wed, 11 Aug 2021 22:50:08 -0700
-Message-ID: <CABvMjLSFKVV_uC3n02t=p6X+qaptgZiCrVmy2875OMybN=e+Jw@mail.gmail.com>
-Subject: Re: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc:     Yizhuo Zhai <yzhai003@ucr.edu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
         linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
+Date:   Wed, 11 Aug 2021 22:54:17 -0700
+Message-Id: <20210812055421.44450-1-yzhai003@ucr.edu>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210723003607.64179-1-yzhai003@ucr.edu>
+References: <20210723003607.64179-1-yzhai003@ucr.edu>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg:
-Sorry for the inconvenience, let me fix this issue and send a new one, thanks.
+Inside function mt9m114_detect(), variable "retvalue" could
+be uninitialized if mt9m114_read_reg() returns error, however, it
+is used in the later if statement, which is potentially unsafe.
 
-On Wed, Aug 11, 2021 at 12:01 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 10, 2021 at 08:54:03PM -0700, Yizhuo Zhai wrote:
-> > From: Yizhuo <yzhai003@ucr.edu>
->
-> This name is not matching the name you use in your signed-off-by line :(
+The local variable "retvalue" is renamed to "model" to avoid
+confusion.
 
+Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+Signed-off-by: Yizhuo Zhai<yzhai003@ucr.edu>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..77293579a134 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+ static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
+ {
+ 	struct i2c_adapter *adapter = client->adapter;
+-	u32 retvalue;
++	u32 model;
++	int ret;
+ 
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "%s: i2c error", __func__);
+ 		return -ENODEV;
+ 	}
+-	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+-	dev->real_model_id = retvalue;
++	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
++	if (ret)
++		return ret;
++	dev->real_model_id = model;
+ 
+-	if (retvalue != MT9M114_MOD_ID) {
++	if (model != MT9M114_MOD_ID) {
+ 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+ 			__func__, client->addr);
+ 		return -ENODEV;
 -- 
-Kind Regards,
+2.25.1
 
-Yizhuo Zhai
-
-Computer Science, Graduate Student
-University of California, Riverside
