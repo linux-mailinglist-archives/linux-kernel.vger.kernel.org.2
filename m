@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B9B3EA526
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F293EA52A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhHLNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
+        id S236635AbhHLNJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbhHLNJT (ORCPT
+        with ESMTP id S235924AbhHLNJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:09:19 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B572C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:08:54 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id c6so5081403qtv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
+        Thu, 12 Aug 2021 09:09:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF120C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:09:07 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id w14so9387487pjh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
-        b=B5u5MqvyKhZf+vJdh29wKQ5uSD8KVQ0z4A9dz5siLPjFNEs9Fu1QKsbl48q8OWNNvx
-         X4ln3uTu9KiU3bN7egPX0wn4rWzwnfWkD4P/g0gFBxGIu9O1Sf6TYSlH8mdfIAz8mErj
-         6/PWaHr3fn5iEEtxLtwNcIJeYC4V2tN09GGiDZBWut3fVYh8EYt2ccqvTrlQ5K+ifegP
-         zuYsHO0Nxi7bVcC2bq4BgAnOB6jAhAvKK9q6TdUr1otRZFE0dUqedOfPUNXl6r1YTguv
-         vzFlBzPdQoSt6hcHDg2ohSM7NHejJkya7sFheFmnpVXUhaFzy2qGyo66NHt9MGVM9GaM
-         Q/yA==
+        bh=Q6Z6UzVTDDWo7owMVz+jZxN77Zwy3W8+Jm9Ls2OVAqQ=;
+        b=J4Zm05YX4kW8bJQh1gPPDFOqOZxOpFNotpYo8CzR4Mv9MYue5r0N+gS/T07ePDwEdK
+         i+SL38+PWqJ0JmwbfVx9E+yKUOrpmNIBMEHZY/a8b+7IqdcOtHoCdgPGVFaqIyFDqbRA
+         SDCfIbED326NRPlggvDpcWZLA+fVLyqKcC+wM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
-        b=M/5WsWaMxuFabDOX33u35U/n8UZ00DkYx5IJFiYWwfVkEmb/kIrta69m2p7jJaZlxO
-         +JqEsLLKvk9y6OQr88sI8g/QEc8d0vY38MNIutIIri0eMPBPKcaE/3JpG99fBXPEAd7q
-         m/WsFyf2entVXANdgcbeGuMxHp6FfIKLjYnpiMYpzF9cUcoZeelmRl0Nzx44vEjamRgz
-         Hobt551roHeqGvNDw9JVpmZF/SCpPXSLzixlcrXEalW2HvkSdWXGU3QI8fj8doFKIF9X
-         KFSkWmNAWk8BslyN0OUyPhciWl432xPQstSlB+dWf3A5+/biFVWoPy0ZEDSrpIEmCwqT
-         tiVA==
-X-Gm-Message-State: AOAM530pdFf3zPejbsuLTS2kcNF7vSN5kWd0/Ha8mWuzLLCy/5z49t8b
-        smoDm44y5qiiwnOC/2M0SzlqHg==
-X-Google-Smtp-Source: ABdhPJyD1sQnwutEBQEi934zsMk0rmVovkjcAHalsbe125JSWOsOzFGplbTIi19IH9KQ5jnc9Xrcvg==
-X-Received: by 2002:ac8:6b19:: with SMTP id w25mr3752598qts.222.1628773733005;
-        Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d9fa])
-        by smtp.gmail.com with ESMTPSA id d16sm1036744qte.3.2021.08.12.06.08.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 06:08:51 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:08:49 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
-Message-ID: <YRUdYQzxj8rswNyz@cmpxchg.org>
-References: <20210811195707.30851-1-longman@redhat.com>
+        bh=Q6Z6UzVTDDWo7owMVz+jZxN77Zwy3W8+Jm9Ls2OVAqQ=;
+        b=G3E5nl/Auik+JJItzRtBr5jggO3mTHDxRXpTlHVceLDiWfFsAyQBJ4pGZVbj1UXza6
+         DJzOsB+aqrtVyoD6xRzvYuYaJkXl3wdqy2WR6IBz9LGVbgyd6vHP9H40h9o+kc1w3EM/
+         cNsfB8dtIGbPcPN6HBSdbttBGD9h5FDa24awweV0m9aCLU1orvGj6Wz2fveU5Vf7vzWN
+         z5sDkkS1Ugw17RwY+UyrVNUezQ/btWYlzyKeFpDFBnEmVGjitbnS98ieuFYfqesTHXaq
+         aoE/Hvp2PircVyJkyoO8ob4bl6/9V4TL64P1Ue54ref/IR+lJetcDreXCSi7AujtjCnD
+         PrBg==
+X-Gm-Message-State: AOAM5316bzSJzXZXIgr3yf195gbc57A48+RyJZ5lQzL0Cb3vIbM4a3gi
+        l2AFEqkk4oDRE/zANLfFPWyYGw==
+X-Google-Smtp-Source: ABdhPJzdBdYfD7mqL89y1GLdQphWXqLRm0nyTQ8nfeb+BWsYjAkhlM7/IY4nNGbGPqDlPBhOag7d0A==
+X-Received: by 2002:a63:950a:: with SMTP id p10mr3783109pgd.362.1628773747415;
+        Thu, 12 Aug 2021 06:09:07 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:9d69:4059:b8a6:e36f])
+        by smtp.gmail.com with UTF8SMTPSA id 129sm3641138pfg.50.2021.08.12.06.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 06:09:07 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 06:09:05 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V5 1/7] arm64: dts: sc7280: Add QSPI node
+Message-ID: <YRUdccjvf+ivbqor@google.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
+ <1628754078-29779-2-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210811195707.30851-1-longman@redhat.com>
+In-Reply-To: <1628754078-29779-2-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 03:57:07PM -0400, Waiman Long wrote:
-> When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
-> to one of the new cpus if it is not there already. For memory, however,
-> they won't be migrated to the new nodes when cpuset.mems changes. This is
-> an inconsistency in behavior.
+On Thu, Aug 12, 2021 at 01:11:12PM +0530, Rajesh Patil wrote:
+> From: Roja Rani Yarubandi <rojay@codeaurora.org>
 > 
-> In cpuset v1, there is a memory_migrate control file to enable such
-> behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
-> for cpuset v2 so that we have a consistent set of behavior for both
-> cpus and memory.
+> Add QSPI DT node and qspi_opp_table for SC7280 SoC.
 > 
-> There is certainly a cost to make memory migration the default, but it
-> is a one time cost that shouldn't really matter as long as cpuset.mems
-> isn't changed frequenty.  Update the cgroup-v2.rst file to document the
-> new behavior and recommend against changing cpuset.mems frequently.
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 62 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
 > 
-> Since there won't be any concurrent access to the newly allocated cpuset
-> structure in cpuset_css_alloc(), we can use the cheaper non-atomic
-> __set_bit() instead of the more expensive atomic set_bit().
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 53a21d0..f8dd5ff 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -415,6 +415,25 @@
+>  		method = "smc";
+>  	};
+>  
+> +	qspi_opp_table: qspi-opp-table {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp-75000000 {
+> +			opp-hz = /bits/ 64 <75000000>;
+> +			required-opps = <&rpmhpd_opp_low_svs>;
+> +		};
+> +
+> +		opp-150000000 {
+> +			opp-hz = /bits/ 64 <150000000>;
+> +			required-opps = <&rpmhpd_opp_svs>;
+> +		};
+> +
+> +		opp-300000000 {
+> +			opp-hz = /bits/ 64 <300000000>;
+> +			required-opps = <&rpmhpd_opp_nom>;
+> +		};
+> +	};
+> +
 
-LGTM.
+From v3:
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+roja> Can we move this "qspi_opp_table" to / from /soc?
+
+bjorn> If you have made a proper attempt to convince Rob and Mark that
+bjorn> a child "opp-table" in a SPI master is not a SPI device - and the
+bjorn> conclusion is that this is not a good idea...then yes it should live
+bjorn> outside /soc.
+
+I didn't see a follow up on this, was such an attempt made? Is there a
+link to the discussion?
