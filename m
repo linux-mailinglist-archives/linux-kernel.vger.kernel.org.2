@@ -2,252 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5193EA45C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1043EA460
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234866AbhHLMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:16:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3643 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhHLMQC (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:16:02 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GllxY2vJLz6FFjn;
-        Thu, 12 Aug 2021 20:14:57 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 12 Aug 2021 14:15:35 +0200
-Received: from [10.47.80.186] (10.47.80.186) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 12 Aug
- 2021 13:15:34 +0100
-Subject: Re: [PATCH v4 1/2] perf pmu: Add PMU alias support
-To:     Jin Yao <yao.jin@linux.intel.com>, <acme@kernel.org>,
-        <jolsa@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <alexander.shishkin@linux.intel.com>
-CC:     <Linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <ak@linux.intel.com>, <kan.liang@intel.com>, <yao.jin@intel.com>,
-        <rickyman7@gmail.com>, Kan Liang <kan.liang@linux.intel.com>
-References: <20210811024827.9483-1-yao.jin@linux.intel.com>
- <20210811024827.9483-2-yao.jin@linux.intel.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8730872e-dae1-4d95-48aa-60b15dec2fa7@huawei.com>
-Date:   Thu, 12 Aug 2021 13:14:53 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S235630AbhHLMSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:18:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234942AbhHLMSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:18:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C7260FD7;
+        Thu, 12 Aug 2021 12:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628770676;
+        bh=hPO/RgigXZIs0Z1FajHF6364OnjOffqwUiOdt5UM+nY=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=JtNZuWjGBG9wnDAVj6jC6VLhI3i3WTJ384vlUBlruCSMI78HFPKISeU0PSHTNSW9Q
+         xgae88WAwRjEVp07Kp4nCI16VqohDclFllFTTDUEscbiStegVFwICiB02csZS4amJd
+         zqfQ3zfYTQfX3mlug0FZgxPS1xxHAyX63FV76wl/IOy3eANjF/Jyem5pgnXtMOaE15
+         35uFip7/exR/FqjlDPNVFWDKGEz7l+nR6KxKi4cqNEqMSxGfo6qCIDI7f7MrNjjr8Z
+         1Xo3ceJxiWH3ldQSqt0IbL5/ADzXOWCEFq+7mG4/vWZVVREBpdr7Xf2U4xVtml9a+l
+         i8pLiAjtR9riA==
+Subject: Re: [f2fs-dev] f2fs do DIO write make file corruption
+To:     Wu Bo <bo.wu@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <5b68208b-fd94-bf4e-fc4b-d79d13abf1c6@vivo.com>
+ <6519b8b7-1eb0-f286-7593-5c5ebbfb5554@kernel.org>
+ <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
+ <aa5f3225-6409-bc62-1021-107a18040384@kernel.org>
+ <df31a4be-55af-5944-77c8-a09daba02ccb@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <ed9de904-7552-e0a8-1111-cf9a5b11c0de@kernel.org>
+Date:   Thu, 12 Aug 2021 20:17:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210811024827.9483-2-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <df31a4be-55af-5944-77c8-a09daba02ccb@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.186]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf pmu: Add x86 PMU alias support
-
-> +char *pmu_find_real_name(const char *name)
-> +{
-> +	static bool cached_list;
-> +
-> +	if (cached_list)
-> +		return __pmu_find_real_name(name);
-> +
-> +	setup_pmu_alias_list();
-> +	cached_list = true;
-> +
-> +	return __pmu_find_real_name(name);
-> +}
-> +
-> +char *pmu_find_alias_name(const char *name)
-> +{
-> +	struct perf_pmu_alias_name *pmu;
-> +
-> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-> +		if (!strcmp(name, pmu->name))
-> +			return strdup(pmu->alias);
-
-I would not expect a function which does a "find" to duplicate the name.
-
-Same goes for all the other places which does similar.
-
-> +	}
-> +	return NULL;
-> +}
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index 9321bd0e2f76..d94e48e1ff9b 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
->   			if (!strncmp(name, "uncore_", 7) &&
->   			    strncmp($1, "uncore_", 7))
->   				name += 7;
-> -			if (!perf_pmu__match(pattern, name, $1)) {
-> +			if (!perf_pmu__match(pattern, name, $1) ||
-> +			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
->   				if (parse_events_copy_term_list(orig_terms, &terms))
->   					CLEANUP_YYABORT;
->   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index fc683bc41715..796a4be752f4 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -946,6 +946,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->   	return NULL;
->   }
->   
-> +char * __weak
-> +pmu_find_real_name(const char *name)
-> +{
-> +	return strdup(name);
-> +}
-
-That's not finding anything.
-
-> +
-> +char * __weak
-> +pmu_find_alias_name(const char *name __maybe_unused)
-> +{
-> +	return NULL;
- > +}
-> +
->   static int pmu_max_precise(const char *name)
->   {
->   	char path[PATH_MAX];
-> @@ -959,19 +971,25 @@ static int pmu_max_precise(const char *name)
->   	return max_precise;
->   }
->   
-> -static struct perf_pmu *pmu_lookup(const char *name)
-> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->   {
-> -	struct perf_pmu *pmu;
-> +	struct perf_pmu *pmu = NULL;
->   	LIST_HEAD(format);
->   	LIST_HEAD(aliases);
->   	__u32 type;
-> -	bool is_hybrid = perf_pmu__hybrid_mounted(name);
-> +	bool is_hybrid;
-> +	char *name = pmu_find_real_name(lookup_name);
-> +
-> +	if (!name)
-> +		return NULL;
-> +
-> +	is_hybrid = perf_pmu__hybrid_mounted(name);
->   
->   	/*
->   	 * Check pmu name for hybrid and the pmu may be invalid in sysfs
->   	 */
->   	if (!strncmp(name, "cpu_", 4) && !is_hybrid)
-> -		return NULL;
-> +		goto out;
->   
->   	/*
->   	 * The pmu data we store & need consists of the pmu
-> @@ -979,23 +997,24 @@ static struct perf_pmu *pmu_lookup(const char *name)
->   	 * now.
->   	 */
->   	if (pmu_format(name, &format))
-> -		return NULL;
-> +		goto out;
->   
->   	/*
->   	 * Check the type first to avoid unnecessary work.
->   	 */
->   	if (pmu_type(name, &type))
-> -		return NULL;
-> +		goto out;
->   
->   	if (pmu_aliases(name, &aliases))
-> -		return NULL;
-> +		goto out;
->   
->   	pmu = zalloc(sizeof(*pmu));
->   	if (!pmu)
-> -		return NULL;
-> +		goto out;
->   
->   	pmu->cpus = pmu_cpumask(name);
-> -	pmu->name = strdup(name);
-> +	pmu->name = name;
-> +	pmu->alias_name = pmu_find_alias_name(name);
->   	pmu->type = type;
->   	pmu->is_uncore = pmu_is_uncore(name);
->   	if (pmu->is_uncore)
-> @@ -1017,6 +1036,10 @@ static struct perf_pmu *pmu_lookup(const char *name)
->   
->   	pmu->default_config = perf_pmu__get_default_config(pmu);
->   
-> +out:
-> +	if (!pmu)
-> +		free(name);
-
-I don't understand this. There are lots of places this function can fail 
-, but we don't free memories allocated previously - why just free this one?
-
-> +
->   	return pmu;
->   }
->   
-> @@ -1025,7 +1048,8 @@ static struct perf_pmu *pmu_find(const char *name)
->   	struct perf_pmu *pmu;
->   
->   	list_for_each_entry(pmu, &pmus, list)
-> -		if (!strcmp(pmu->name, name))
-> +		if (!strcmp(pmu->name, name) ||
-> +		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->   			return pmu;
-
-I'd be inclined to use {} for the list_for_each_entry() call
-
->   
->   	return NULL;
-> @@ -1920,6 +1944,9 @@ bool perf_pmu__has_hybrid(void)
->   
->   int perf_pmu__match(char *pattern, char *name, char *tok)
->   {
-> +	if (!name)
-> +		return -1;
-> +
->   	if (fnmatch(pattern, name, 0))
->   		return -1;
->   
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 926da483a141..f6ca9f6a06ef 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -21,6 +21,7 @@ enum {
->   #define PERF_PMU_FORMAT_BITS 64
->   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->   #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
-> +#define MAX_PMU_NAME_LEN 128
->   
->   struct perf_event_attr;
->   
-> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->   
->   struct perf_pmu {
->   	char *name;
-> +	char *alias_name;	/* PMU alias name */
-
-useless comment
-
->   	char *id;
->   	__u32 type;
->   	bool selectable;
-> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->   bool perf_pmu__has_hybrid(void);
->   int perf_pmu__match(char *pattern, char *name, char *tok);
->   
-> +char *pmu_find_real_name(const char *name);
-> +char *pmu_find_alias_name(const char *name);
-> +
->   #endif /* __PMU_H */
+On 2021/8/12 10:55, Wu Bo wrote:
 > 
+> 在 2021/8/11 20:57, Chao Yu 写道:
+>> On 2021/8/11 11:28, Wu Bo wrote:
+>>>
+>>> 在 2021/8/11 11:03, Chao Yu 写道:
+>>>> On 2021/8/11 10:48, Wu Bo wrote:
+>>>>> I use the following command to create a file, the file may got
+>>>>> corruption:
+>>>>>       f2fs_io write 2 0 512 inc_num dio $path
+>>>>>
+>>>>> And when I use bio or to set the chunk size to 1 block, the file is
+>>>>> normal. The commands as following:
+>>>>>       f2fs_io write 2 0 512 inc_num buffered $path
+>>>>>       f2fs_io write 1 0 512 inc_num dio $path
+>>>>>
+>>>>> I find this bug on old kernel version 4.14.117, and not find on version
+>>>>> 4.19.152. So this bug is fixed. Can anyone can tell me which patch
+>>>>> fixed
+>>>>> this bug?
+>>>>
+>>>> Not sure,
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.19.y&id=7bae8b6b73e46c307fa355ce086800b7ad6610f8
+>>>>
+>>
+>> I didn't see this patch in 4.14 stable kernel of mailine, so do you mean
+>> 4.14 kernel
+>> maintained by Android?
+>>
+>> If so, f2fs codes in between 4.14 and 4.19 Android kernel are almost the
+>> same,
+>> see below link:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-stable.git/
+>>
+> 
+> Sorry, it's our old Android project code.So the kernel version may have
+> no reference value.
+> This project code last sync to Android common kernel is:
+> 	9f892496fc0b:f2fs: readahead encrypted block during GC[2018-09-05]
+> The code link is:
+> https://android.googlesource.com/kernel/common/+/9f892496fc0b
+> And after that, we applied some fixup patches.
 
+I think you can pick up patches from your 4.19 f2fs codes which are not in
+your 4.14 f2fs codes, and check each patch you picked to see whether there
+is a patch can fix that problem.
+
+Thanks,
+
+> 
+>> Thanks,
+>>
+>>>>
+>>>
+>>> This patch is applied. The issue occurs when f2fs dio try to preallocate
+>>> multiple blocks and got scattered disk blocks. The log as following:
+>>>          my_f2fs_io-13425 [002] ....   395.583637: el0_irq_naked:
+>>> 1:type:1,ino:40132,off:768,old_blk:0,new_blk:185764
+>>>          my_f2fs_io-13425 [002] ....   395.583710: el0_irq_naked:
+>>> 1:type:1,ino:40132,off:769,old_blk:0,new_blk:205824
+>>>          my_f2fs_io-13425 [002] ....   395.583721: f2fs_map_blocks: dev =
+>>> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
+>>> 0x2, err = 0
+>>>          my_f2fs_io-13425 [002] ....   395.583735: f2fs_map_blocks: dev =
+>>> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
+>>> 0x1, err = 0
+>>>          my_f2fs_io-13425 [002] ....   395.583741: f2fs_map_blocks: dev =
+>>> (259,23), ino = 40132, file offset = 769, start blkaddr = 0x32400, len =
+>>> 0x1, err = 0
+>>>
+>>> And if the blocks are continuously, the file data is normal:
+>>>        my_f2fs_io-13425 [002] ....   395.584037: el0_irq_naked:
+>>> 1:type:1,ino:40132,off:770,old_blk:0,new_blk:205825
+>>>          my_f2fs_io-13425 [002] ....   395.584066: el0_irq_naked:
+>>> 1:type:1,ino:40132,off:771,old_blk:0,new_blk:205826
+>>>          my_f2fs_io-13425 [002] ....   395.584077: f2fs_map_blocks: dev =
+>>> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
+>>> 0x2, err = 0
+>>>          my_f2fs_io-13425 [002] ....   395.584091: f2fs_map_blocks: dev =
+>>> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
+>>> 0x2, err = 0
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> Linux-f2fs-devel mailing list
+>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>>
+>>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>
+>>
