@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADFB3EAC22
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751A53EAC27
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhHLUyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
+        id S234283AbhHLU6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbhHLUyM (ORCPT
+        with ESMTP id S231217AbhHLU6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:54:12 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4151AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:53:46 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id z20so15911388lfd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:53:46 -0700 (PDT)
+        Thu, 12 Aug 2021 16:58:36 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671A6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:58:10 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c130so8293616qkg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9RfJTrGHwJUwvzLhHrIbGQA08huI6dzioQ3vdmozHz8=;
-        b=na6Fi0rSI2rLLK64yvV6CbdZqt7hkfyYZAYj0AwXG3vJy5/HfjDhtg9nXxK8j95c7T
-         dWfG6/cghm+y3wG5foWV0MC8XuwoBlAsTmNK4ysMaiCFDZnoNaX9edYR/Omz9goAIBaQ
-         LudzJ3LBHt659vx78zb3ru+03UAYUjVXr+fTY+xlrYlKDuKZrFGqQmNM5Yy7kMIVcHxK
-         1AyQivcokhPLzvOuqg+CwM1+S5AtOtHkuoMajCB/xbrsC+XyRn2XxlFFNFgX7IfKjCJU
-         s4333A5bIHbLDYq+5H8X7Ifs0grku54xMo96dRdUWBA4DU6t9kTOXZMUAhhcxXf6C9x9
-         PDhg==
+        bh=8poO9qbTswl4eqnW3A9uCrg2kT6adQeU51qtZPM+DAk=;
+        b=gk/CsYq+XN5/dfXyMvyrpVc4sby1TjVK90AINWd5uRj2jTbKY97tGgn1yCxOZYhXlz
+         x+M1bnYhB/d4zMvxNHVQwr3gH6T7YvOlo6CtGoQsqsFoil11wAE0OXYXkBU2eFOcqmKN
+         U0T3+NUaMDj0AKlGkolkg2MDJFhc6R718TPe8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9RfJTrGHwJUwvzLhHrIbGQA08huI6dzioQ3vdmozHz8=;
-        b=STGCQvt70jyKT/d4Wx3VbdDeXVa2PyQslXA7LNzm1fvUr4CdnWJulyWzNkeqXBcQke
-         zYDuQ+mXnx7yKoE9vzXhs+BLtlTasvlYr2gsCKXaTGZTwRWrThUQbMJXbWGntRzLOXAd
-         58zrhPclFRj3n/ucuSgVitfJv2p1IacA9jmObEIg1TzkL7hBLqPH+1WwRah0pHtbtp9g
-         5GS8B+VZHramFpzSpbyG+9qulaw7bGbgIbP5Io6E8qh4b8XO5W4VTdiK2+ftyCDbogyL
-         wjOvj7C3uHg4ltHfFKLiakiduC/2J8c0XK6iknEuyQN+uGylU0njZmwgxUcNpIAlfYvP
-         AAbw==
-X-Gm-Message-State: AOAM533FZjcAZHgSFwXy5KFd2fMkvpx7RRIYWWWp9RB1Hfcupbb+mx8Y
-        revFld6zCD1Sd44FomyJZ9UGB8Focl0dFyn88IYftw==
-X-Google-Smtp-Source: ABdhPJzSfb2zL6p4h6mr9zvtdf09aJL2UzLWyGpzFgoKtJP4f7uX8Ov4OP5v83ZcsQUbgZX+2v47ZLMJi3WTEJ2itIw=
-X-Received: by 2002:a05:6512:3989:: with SMTP id j9mr3957811lfu.73.1628801624318;
- Thu, 12 Aug 2021 13:53:44 -0700 (PDT)
+        bh=8poO9qbTswl4eqnW3A9uCrg2kT6adQeU51qtZPM+DAk=;
+        b=qvKvSe9xWSaWTT/aCMrDTDtie87a73S2l1EekCMpOblQbqekqxQr6en6JVI/slalaH
+         kMTk3haEOFsXHT7Pnd9ATqvBY2s354/KXMFSfWss+xvIWEVEkImFY+drSMFA1B4XReES
+         VxRrfviSwOkDEEAxxEUa8Q1GqAiFFsJ5YAiDcg2hUmhhuXAbP78uLYAuL05DMVL2zoYh
+         RFhbzm++kUbggQDWIEZYN/OMebaMHSvIlmV9L8tP3XA9GkkrvnHy1aXFj8hEzTU98iME
+         jcnx6qB58I8kWN8bsGEzcKdEieCM0MB/t3hY7VkncZsbWUkVM+Ko08+N5I4sTiZSaPsD
+         ryqQ==
+X-Gm-Message-State: AOAM533ZwnewXwo71s9O15YehrpmWN2AAp7TBRql0Vtyn/7Ynh1bCNMj
+        E8EUQVJgrJeLgQ9rDLGNupHCe5nBQbcdyxkMlHvChRxWpKw=
+X-Google-Smtp-Source: ABdhPJxxr80qSIG8NWRODL8POoOdYlduF3atwt6HEpn7vLX420nY/qnOYc7Iycq5lLjQqOwCHMNw9LQ5dzRpHiUD01g=
+X-Received: by 2002:a37:e50e:: with SMTP id e14mr6465631qkg.71.1628801889289;
+ Thu, 12 Aug 2021 13:58:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812204951.1551782-1-morbo@google.com>
-In-Reply-To: <20210812204951.1551782-1-morbo@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 12 Aug 2021 13:53:32 -0700
-Message-ID: <CAKwvOdm8R1zh-NPCRZX=_BZhUEey5v=0jjz=ca82tzMn2kFqYg@mail.gmail.com>
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-To:     Bill Wendling <morbo@google.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, itaru.kitayama@riken.jp
+References: <20210803173619.91539-1-pmalani@chromium.org>
+In-Reply-To: <20210803173619.91539-1-pmalani@chromium.org>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Thu, 12 Aug 2021 13:57:58 -0700
+Message-ID: <CACeCKadTnvghkJq26rFVnJcmhAqhvB6mbpuUx21hVD5K+=DNPw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec_proto: Update feature check
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 1:49 PM Bill Wendling <morbo@google.com> wrote:
->
-> The "-z notext" flag disables reporting an error if DT_TEXTREL is set on
-> PPC with CONFIG=kdump:
->
->   ld.lld: error: can't create dynamic relocation R_PPC64_ADDR64 against
->     local symbol in readonly segment; recompile object files with -fPIC
->     or pass '-Wl,-z,notext' to allow text relocations in the output
->   >>> defined in built-in.a(arch/powerpc/kernel/misc.o)
->   >>> referenced by arch/powerpc/kernel/misc.o:(.text+0x20) in archive
->       built-in.a
->
-> The BFD linker disables this by default (though it's configurable in
-> current versions). LLD enables this by default. So we add the flag to
-> keep LLD from emitting the error.
->
-> Signed-off-by: Bill Wendling <morbo@google.com>
+Friendly ping.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/811
-Reported-by: Itaru Kitayama <itaru.kitayama@riken.jp>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
+On Tue, Aug 3, 2021 at 10:36 AM Prashant Malani <pmalani@chromium.org> wrote:
 >
+> EC feature flags now require more than 32 bits to be represented. In
+> order to make cros_ec_check_features() usable for more recent features,
+> update it to account for the extra 32 bits of features.
+>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 > ---
-> The output of the "get_maintainer.pl" run just in case no one believes me. :-)
-
-LOL!
-
+> Changes in v2:
+> - No changes.
 >
-> $ ./scripts/get_maintainer.pl arch/powerpc/Makefile
-> Michael Ellerman <mpe@ellerman.id.au> (supporter:LINUX FOR POWERPC (32-BIT AND 64-BIT))
-> Benjamin Herrenschmidt <benh@kernel.crashing.org> (reviewer:LINUX FOR POWERPC (32-BIT AND 64-BIT))
-> Paul Mackerras <paulus@samba.org> (reviewer:LINUX FOR POWERPC (32-BIT AND 64-BIT))
-> Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT)
-> Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SUPPORT)
-> linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
-> linux-kernel@vger.kernel.org (open list)
-> clang-built-linux@googlegroups.com (open list:CLANG/LLVM BUILD SUPPORT)
-> ---
->  arch/powerpc/Makefile | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/platform/chrome/cros_ec_proto.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> index 6505d66f1193..17a9fbf9b789 100644
-> --- a/arch/powerpc/Makefile
-> +++ b/arch/powerpc/Makefile
-> @@ -122,6 +122,7 @@ endif
+> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+> index a7404d69b2d3..772edad80593 100644
+> --- a/drivers/platform/chrome/cros_ec_proto.c
+> +++ b/drivers/platform/chrome/cros_ec_proto.c
+> @@ -813,6 +813,7 @@ EXPORT_SYMBOL(cros_ec_get_host_event);
+>  int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+>  {
+>         struct cros_ec_command *msg;
+> +       u32 mask;
+>         int ret;
 >
->  LDFLAGS_vmlinux-y := -Bstatic
->  LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) := -pie
-> +LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) += -z notext
->  LDFLAGS_vmlinux        := $(LDFLAGS_vmlinux-y)
+>         if (ec->features[0] == -1U && ec->features[1] == -1U) {
+> @@ -839,7 +840,12 @@ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+>                 kfree(msg);
+>         }
 >
->  ifdef CONFIG_PPC64
+> -       return ec->features[feature / 32] & EC_FEATURE_MASK_0(feature);
+> +       if (feature >= 32)
+> +               mask = EC_FEATURE_MASK_1(feature);
+> +       else
+> +               mask = EC_FEATURE_MASK_0(feature);
+> +
+> +       return ec->features[feature / 32] & mask;
+>  }
+>  EXPORT_SYMBOL_GPL(cros_ec_check_features);
+>
 > --
-> 2.33.0.rc1.237.g0d66db33f3-goog
+> 2.32.0.554.ge1b32706d8-goog
 >
-
-
--- 
-Thanks,
-~Nick Desaulniers
