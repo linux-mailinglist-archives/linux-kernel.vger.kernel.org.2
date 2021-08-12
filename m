@@ -2,198 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E751E3EA1B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648073EA1B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235797AbhHLJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235770AbhHLJQG (ORCPT
+        id S234856AbhHLJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:16:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40053 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235744AbhHLJQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:16:06 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519AEC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:15:41 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id b1so4626246qtx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j+62UaqqgeDoZH7BF0vQ97XVYxQ3scOJGO1nBvJT+Tw=;
-        b=owNe+QJI0dMyLtavpwmx0wiNU02kH4ptszzGn4B8vR5K8WIM+ixcjZvDghxj8bEvsS
-         Mf02RIQ0YLTsVm4VLOAdPPds1PDB1YXMVH8U8hxHU4Cc7ZHiH5376Rk2YNjpZuL7WzPe
-         jKM3QbZtqjw8gbA9T98AvrJkWFp1p3SDZSYZV4tAnZ2zedgBUGkMbbzHA8/4yShUCrQM
-         /xhmT7Gbi22Be/Ba7I/mIARVKWQMSiCBm+psMPTCBkW8SGZKkXPn1mJDhDz0hb94ikUx
-         /mUXjRgGPAducqDuBDVQgRoy62OSeOD+6or4vOYvL5s6cATfJU4pkCO56nAN/wbjxdLK
-         R2SQ==
+        Thu, 12 Aug 2021 05:16:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628759735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGioJ+dEwrV1f/PBRvztKsgphzAhBarq1Kl4Gvot0Zo=;
+        b=KCBtFMX9hSd9I9GmjCeHp0lb+0YwdKn3bmBdrWjGPCvTc3zqyohw+MUZXRORvpH5pdssXM
+        rIZBQkcgoxbhCFcXJ3B75Jpn9DE23AYJTbpYfaQWKKTMqysCGsRjb3qnp/nuBfGf/JcUn5
+        pl4ZFY23vxm4VSKtDOTrUnW97bGwSV8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-QgaHYS7dMeet9YZi3Gkalg-1; Thu, 12 Aug 2021 05:15:34 -0400
+X-MC-Unique: QgaHYS7dMeet9YZi3Gkalg-1
+Received: by mail-ej1-f71.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso1559684ejc.22
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:15:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j+62UaqqgeDoZH7BF0vQ97XVYxQ3scOJGO1nBvJT+Tw=;
-        b=mfduQ7uOLNb71yCIpsa6ifv7a94SqJwu5XgF7v5eUEzdzTYNyh/j5ScmfPV+NBpuZw
-         uQPs7Zx0GPo5kEB114nOSZObzCsZXcfBUZpkD6axoTSGMd1I8oKNNxp4qjktN60D1k10
-         Ufth8ZOReNZeWGNsD4DxqIhqoz6cjMnMzukmQoH0Wlc44QO4Nm2SVybH7s9jTHw9zItX
-         inyvnnrY3kcltA/X1Zz4ophJwfbg5UYN1M6oJblBwscd2+1z0V/Z/dkWRVB7atHny+ls
-         9A9BnI5aeWOptvhx7VElsUYI2/BmCt1rWnYlUGRHsh1BvB5JNdba3P4M+sE6XUF/lLwd
-         UJiw==
-X-Gm-Message-State: AOAM531tKOfLRrxuvY8aoLLw6mDDmaRf0wvRZJZvD57fRC89DvA2JtjA
-        J6FIfeSQReWMi+TVuYIM13ZL7M+2NJy7QnM6j7xkOQ==
-X-Google-Smtp-Source: ABdhPJy/S9W0uNSmo1S+gB9shUiRSIaS18xglTXhGBp1pkIn9RMfwpaJdd+7r23a3luUUxWXbUeavKcpMQERoBOSvyw=
-X-Received: by 2002:ac8:6781:: with SMTP id b1mr2857198qtp.290.1628759740213;
- Thu, 12 Aug 2021 02:15:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CGioJ+dEwrV1f/PBRvztKsgphzAhBarq1Kl4Gvot0Zo=;
+        b=L8iiTBVoXYB8W84WuWpsGXtSil+Yb/XfzK17pZKk7n8jG2+ico0lMRZsNq/V4qvx9m
+         dDfbTZW8vY7xyXVjKLgvIDxEDCPW2l/SGihaGzogKggWP+qs3GFfU09KRQ4gqmGzfb72
+         Gpu6H0z0Iy4UwJPrRjEV7usNyn2nnE+StkUJW7Q3L2S9sp0rhfGS0fBwRIliOP71mdVC
+         ti84dkWzqT89dHwGudeSztJzNseHDiG07WX3OYXbgW51FQCDnwSs9tkQBONpgxOsxUJI
+         8LmJQ7kgTxdLcoUC8sEtripXPLmji1ZHVPBA6p6nWj7iWq9c8gGRDwWh6o7ny5Z9L9pS
+         3iEw==
+X-Gm-Message-State: AOAM531Lavec/9HugPlDxAIVo7kxt/VhQYgopcdJXLc1mj3ZbjhLKGGY
+        zX25b0AOScXvpLTVoVlbT+u6RU2iFvMkXOOtAmijm1EZtPh5dneDbMNV6c0VI9OvTRSCSSyTGql
+        j1IW4JnKolE8at/d8mRPqDQKC
+X-Received: by 2002:a17:906:504:: with SMTP id j4mr2614968eja.245.1628759732871;
+        Thu, 12 Aug 2021 02:15:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyxXzu+koWivjqR+GtlL3tlrkm4ADaA3XQuEeoSuNb6/hGd9H9XE2ON7BIl4vftbxLTGspTA==
+X-Received: by 2002:a17:906:504:: with SMTP id j4mr2614948eja.245.1628759732640;
+        Thu, 12 Aug 2021 02:15:32 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id b11sm567835eja.104.2021.08.12.02.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 02:15:32 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 11:15:30 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] perf tools: Allow to control synthesize during
+ record
+Message-ID: <YRTmshairdxxiFo2@krava>
+References: <20210811044658.1313391-1-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <CACT4Y+YvovgRNC5EFhN_d=jApwSAsWcNj35=FCJf1k867vBqfw@mail.gmail.com>
- <067b8eea-3c77-c1f0-8e68-b99e6bf0c033@leemhuis.info>
-In-Reply-To: <067b8eea-3c77-c1f0-8e68-b99e6bf0c033@leemhuis.info>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 12 Aug 2021 11:15:28 +0200
-Message-ID: <CACT4Y+byh0_z-+H3=-oojSLe+VesknKCXLPA5uVhue8zZaCb5A@mail.gmail.com>
-Subject: Re: finding regressions with syzkaller
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     regressions@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        automated-testing@yoctoproject.org,
-        Sasha Levin <sashalevin@google.com>,
-        Marco Elver <elver@google.com>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Mara Mihali <mihalimara22@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811044658.1313391-1-namhyung@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 13:25, Thorsten Leemhuis <linux@leemhuis.info> wrote:
->
-> [CCing Lukas]
->
-> Hi Dmitry!
->
-> On 10.08.21 19:08, Dmitry Vyukov wrote:
-> > [...]
-> > The idea is to generate random test programs (as syzkaller does) and
-> > then execute them on 2 different kernels and compare results (so
-> > called "differential fuzzing"). This has the potential of finding not
-> > just various "crashes" but also logical bugs and regressions.
->
-> Hmmm, interesting concept!
->
-> > The major issue is various false positive differences caused by
-> > timings, non-determinism, accumulated state, intentional and
-> > semi-intentional changes (e.g. subtle API extensions), etc. We learnt
-> > how to deal with some of these to some degree, but feasibility is
-> > still an open question.
->
-> Sounds complicated and like a lot of manual work.
->
-> Do you have in mind that Linus and hence many other Kernel developers
-> afaics only care about regressions someone actually observed in a
-> practice? Like a software or script breaking due to a kernel-side change?
->
-> To quote Linus from
-> https://lore.kernel.org/lkml/CA+55aFx3RswnjmCErk8QhCo0KrCvxZnuES3WALBR1NkPbUZ8qw@mail.gmail.com/
->
-> ```The Linux "no regressions" rule is not about some theoretical
-> "the ABI changed". It's about actual observed regressions.
->
-> So if we can improve the ABI without any user program or workflow
-> breaking, that's fine.```
->
-> His stance on that afaik has not changed since then.
->
-> Thus after ruling our all false positives syzkaller might find, there
-> will always be the follow-up question "well, does anything/anyone
-> actually care?". That might be hard to answer and requires yet more
-> manual work by some human. Maybe this working hours at least for now are
-> better spend in other areas.
+On Tue, Aug 10, 2021 at 09:46:57PM -0700, Namhyung Kim wrote:
+> Depending on the use case, it might require some kind of synthesize
+> and some not.  Make it controllable to turn off heavy operations like
+> MMAP for all tasks.
+> 
+> Currently all users are converted to enable all the synthesis by
+> default.  It'll be updated in the later patch.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Hi Thorsten,
+for both patches
 
-Good point. At this point the nature and volume of regressions such a
-system can find is unknown, so it's hard to make any conclusions.
-But some additional theoretical arguments in favor of such a system:
-1. Any regressions also need to be found quickly (ideally before the
-release). And as far as I understand currently lots of regressions are
-found only after 1-3 years when the new kernel reaches some distro and
-users update to the new version. Year-long latency has its own
-problems. In particular there may now be users of the new (implicit)
-API as well, and then it's simply not possible to resolve the breakage
-at all.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-2. As far as I understand most regressions happen due to patches that
-are not even known to change anything (the change wasn't
-known/described). So such a system could at least surface this
-information. For example, was it intentional/known/realized that this
-commit changes API?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d25e3a3de0d6fb2f660dbc7d643b2c632beb1743
-Amusingly the commit description says:
-"Retain compatibility with how attaching works, so that any attempt to
-attach to an fd that doesn't exist, or isn't an io_uring fd, will fail
-like it did before".
-which turns out to be false, it does not fail like it did before, it
-fails differently.
+thanks,
+jirka
 
-3. It may be possible to prioritize some API changes as more likely to
-be problematic (e.g. a change from errno 0 to some particular values,
-or changes file contents after the same sequence of syscalls). The
-importance can also be different for different kernels. For example,
-for LTS .1 -> .y I assume any changes may be worth being aware of.
+> ---
+>  tools/perf/bench/synthesize.c         |  4 +--
+>  tools/perf/builtin-kvm.c              |  2 +-
+>  tools/perf/builtin-record.c           |  6 ++--
+>  tools/perf/builtin-top.c              |  2 +-
+>  tools/perf/builtin-trace.c            |  4 +--
+>  tools/perf/tests/code-reading.c       |  3 +-
+>  tools/perf/tests/mmap-thread-lookup.c |  4 +--
+>  tools/perf/util/synthetic-events.c    | 45 ++++++++++++++++-----------
+>  tools/perf/util/synthetic-events.h    |  8 ++---
+>  9 files changed, 44 insertions(+), 34 deletions(-)
+> 
+> diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+> index 05f7c923c745..7401ebbac100 100644
+> --- a/tools/perf/bench/synthesize.c
+> +++ b/tools/perf/bench/synthesize.c
+> @@ -80,7 +80,7 @@ static int do_run_single_threaded(struct perf_session *session,
+>  						NULL,
+>  						target, threads,
+>  						process_synthesized_event,
+> -						data_mmap,
+> +						true, data_mmap,
+>  						nr_threads_synthesize);
+>  		if (err)
+>  			return err;
+> @@ -171,7 +171,7 @@ static int do_run_multi_threaded(struct target *target,
+>  						NULL,
+>  						target, NULL,
+>  						process_synthesized_event,
+> -						false,
+> +						true, false,
+>  						nr_threads_synthesize);
+>  		if (err) {
+>  			perf_session__delete(session);
+> diff --git a/tools/perf/builtin-kvm.c b/tools/perf/builtin-kvm.c
+> index aa1b127ffb5b..c6f352ee57e6 100644
+> --- a/tools/perf/builtin-kvm.c
+> +++ b/tools/perf/builtin-kvm.c
+> @@ -1456,7 +1456,7 @@ static int kvm_events_live(struct perf_kvm_stat *kvm,
+>  	perf_session__set_id_hdr_size(kvm->session);
+>  	ordered_events__set_copy_on_queue(&kvm->session->ordered_events, true);
+>  	machine__synthesize_threads(&kvm->session->machines.host, &kvm->opts.target,
+> -				    kvm->evlist->core.threads, false, 1);
+> +				    kvm->evlist->core.threads, true, false, 1);
+>  	err = kvm_live_open_events(kvm);
+>  	if (err)
+>  		goto out;
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 548c1dbde6c5..764e391e89f8 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1265,6 +1265,7 @@ static int record__synthesize_workload(struct record *rec, bool tail)
+>  	err = perf_event__synthesize_thread_map(&rec->tool, thread_map,
+>  						 process_synthesized_event,
+>  						 &rec->session->machines.host,
+> +						 true,
+>  						 rec->opts.sample_address);
+>  	perf_thread_map__put(thread_map);
+>  	return err;
+> @@ -1479,8 +1480,9 @@ static int record__synthesize(struct record *rec, bool tail)
+>  		f = process_locked_synthesized_event;
+>  	}
+>  
+> -	err = __machine__synthesize_threads(machine, tool, &opts->target, rec->evlist->core.threads,
+> -					    f, opts->sample_address,
+> +	err = __machine__synthesize_threads(machine, tool, &opts->target,
+> +					    rec->evlist->core.threads,
+> +					    f, true, opts->sample_address,
+>  					    rec->opts.nr_threads_synthesize);
+>  
+>  	if (rec->opts.nr_threads_synthesize > 1)
+> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+> index a3ae9176a83e..020c4f110c10 100644
+> --- a/tools/perf/builtin-top.c
+> +++ b/tools/perf/builtin-top.c
+> @@ -1271,7 +1271,7 @@ static int __cmd_top(struct perf_top *top)
+>  		pr_debug("Couldn't synthesize cgroup events.\n");
+>  
+>  	machine__synthesize_threads(&top->session->machines.host, &opts->target,
+> -				    top->evlist->core.threads, false,
+> +				    top->evlist->core.threads, true, false,
+>  				    top->nr_threads_synthesize);
+>  
+>  	if (top->nr_threads_synthesize > 1)
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 2bf21194c7b3..2f1d20553a0a 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -1628,8 +1628,8 @@ static int trace__symbols_init(struct trace *trace, struct evlist *evlist)
+>  		goto out;
+>  
+>  	err = __machine__synthesize_threads(trace->host, &trace->tool, &trace->opts.target,
+> -					    evlist->core.threads, trace__tool_process, false,
+> -					    1);
+> +					    evlist->core.threads, trace__tool_process,
+> +					    true, false, 1);
+>  out:
+>  	if (err)
+>  		symbol__exit();
+> diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+> index 9866cddebf23..3a4d932e7ffc 100644
+> --- a/tools/perf/tests/code-reading.c
+> +++ b/tools/perf/tests/code-reading.c
+> @@ -606,7 +606,8 @@ static int do_test_code_reading(bool try_kcore)
+>  	}
+>  
+>  	ret = perf_event__synthesize_thread_map(NULL, threads,
+> -						perf_event__process, machine, false);
+> +						perf_event__process, machine,
+> +						true, false);
+>  	if (ret < 0) {
+>  		pr_debug("perf_event__synthesize_thread_map failed\n");
+>  		goto out_err;
+> diff --git a/tools/perf/tests/mmap-thread-lookup.c b/tools/perf/tests/mmap-thread-lookup.c
+> index 8d9d4cbff76d..6f2da7a72f67 100644
+> --- a/tools/perf/tests/mmap-thread-lookup.c
+> +++ b/tools/perf/tests/mmap-thread-lookup.c
+> @@ -135,7 +135,7 @@ static int synth_all(struct machine *machine)
+>  {
+>  	return perf_event__synthesize_threads(NULL,
+>  					      perf_event__process,
+> -					      machine, 0, 1);
+> +					      machine, 1, 0, 1);
+>  }
+>  
+>  static int synth_process(struct machine *machine)
+> @@ -147,7 +147,7 @@ static int synth_process(struct machine *machine)
+>  
+>  	err = perf_event__synthesize_thread_map(NULL, map,
+>  						perf_event__process,
+> -						machine, 0);
+> +						machine, 1, 0);
+>  
+>  	perf_thread_map__put(map);
+>  	return err;
+> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+> index a7e981b2d7de..a7a2825356d6 100644
+> --- a/tools/perf/util/synthetic-events.c
+> +++ b/tools/perf/util/synthetic-events.c
+> @@ -715,7 +715,8 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+>  				      union perf_event *fork_event,
+>  				      union perf_event *namespaces_event,
+>  				      pid_t pid, int full, perf_event__handler_t process,
+> -				      struct perf_tool *tool, struct machine *machine, bool mmap_data)
+> +				      struct perf_tool *tool, struct machine *machine,
+> +				      bool needs_mmap, bool mmap_data)
+>  {
+>  	char filename[PATH_MAX];
+>  	struct dirent **dirent;
+> @@ -739,7 +740,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+>  		 * send mmap only for thread group leader
+>  		 * see thread__init_maps()
+>  		 */
+> -		if (pid == tgid &&
+> +		if (pid == tgid && needs_mmap &&
+>  		    perf_event__synthesize_mmap_events(tool, mmap_event, pid, tgid,
+>  						       process, machine, mmap_data))
+>  			return -1;
+> @@ -786,7 +787,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+>  			break;
+>  
+>  		rc = 0;
+> -		if (_pid == pid && !kernel_thread) {
+> +		if (_pid == pid && !kernel_thread && needs_mmap) {
+>  			/* process the parent's maps too */
+>  			rc = perf_event__synthesize_mmap_events(tool, mmap_event, pid, tgid,
+>  						process, machine, mmap_data);
+> @@ -806,7 +807,7 @@ int perf_event__synthesize_thread_map(struct perf_tool *tool,
+>  				      struct perf_thread_map *threads,
+>  				      perf_event__handler_t process,
+>  				      struct machine *machine,
+> -				      bool mmap_data)
+> +				      bool needs_mmap, bool mmap_data)
+>  {
+>  	union perf_event *comm_event, *mmap_event, *fork_event;
+>  	union perf_event *namespaces_event;
+> @@ -836,7 +837,7 @@ int perf_event__synthesize_thread_map(struct perf_tool *tool,
+>  					       fork_event, namespaces_event,
+>  					       perf_thread_map__pid(threads, thread), 0,
+>  					       process, tool, machine,
+> -					       mmap_data)) {
+> +					       needs_mmap, mmap_data)) {
+>  			err = -1;
+>  			break;
+>  		}
+> @@ -862,7 +863,7 @@ int perf_event__synthesize_thread_map(struct perf_tool *tool,
+>  						       fork_event, namespaces_event,
+>  						       comm_event->comm.pid, 0,
+>  						       process, tool, machine,
+> -						       mmap_data)) {
+> +						       needs_mmap, mmap_data)) {
+>  				err = -1;
+>  				break;
+>  			}
+> @@ -882,6 +883,7 @@ int perf_event__synthesize_thread_map(struct perf_tool *tool,
+>  static int __perf_event__synthesize_threads(struct perf_tool *tool,
+>  					    perf_event__handler_t process,
+>  					    struct machine *machine,
+> +					    bool needs_mmap,
+>  					    bool mmap_data,
+>  					    struct dirent **dirent,
+>  					    int start,
+> @@ -926,7 +928,7 @@ static int __perf_event__synthesize_threads(struct perf_tool *tool,
+>  		 */
+>  		__event__synthesize_thread(comm_event, mmap_event, fork_event,
+>  					   namespaces_event, pid, 1, process,
+> -					   tool, machine, mmap_data);
+> +					   tool, machine, needs_mmap, mmap_data);
+>  	}
+>  	err = 0;
+>  
+> @@ -945,6 +947,7 @@ struct synthesize_threads_arg {
+>  	struct perf_tool *tool;
+>  	perf_event__handler_t process;
+>  	struct machine *machine;
+> +	bool needs_mmap;
+>  	bool mmap_data;
+>  	struct dirent **dirent;
+>  	int num;
+> @@ -956,7 +959,8 @@ static void *synthesize_threads_worker(void *arg)
+>  	struct synthesize_threads_arg *args = arg;
+>  
+>  	__perf_event__synthesize_threads(args->tool, args->process,
+> -					 args->machine, args->mmap_data,
+> +					 args->machine,
+> +					 args->needs_mmap, args->mmap_data,
+>  					 args->dirent,
+>  					 args->start, args->num);
+>  	return NULL;
+> @@ -965,7 +969,7 @@ static void *synthesize_threads_worker(void *arg)
+>  int perf_event__synthesize_threads(struct perf_tool *tool,
+>  				   perf_event__handler_t process,
+>  				   struct machine *machine,
+> -				   bool mmap_data,
+> +				   bool needs_mmap, bool mmap_data,
+>  				   unsigned int nr_threads_synthesize)
+>  {
+>  	struct synthesize_threads_arg *args = NULL;
+> @@ -994,7 +998,8 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
+>  
+>  	if (thread_nr <= 1) {
+>  		err = __perf_event__synthesize_threads(tool, process,
+> -						       machine, mmap_data,
+> +						       machine,
+> +						       needs_mmap, mmap_data,
+>  						       dirent, base, n);
+>  		goto free_dirent;
+>  	}
+> @@ -1015,6 +1020,7 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
+>  		args[i].tool = tool;
+>  		args[i].process = process;
+>  		args[i].machine = machine;
+> +		args[i].needs_mmap = needs_mmap;
+>  		args[i].mmap_data = mmap_data;
+>  		args[i].dirent = dirent;
+>  	}
+> @@ -1775,26 +1781,27 @@ int perf_event__synthesize_id_index(struct perf_tool *tool, perf_event__handler_
+>  
+>  int __machine__synthesize_threads(struct machine *machine, struct perf_tool *tool,
+>  				  struct target *target, struct perf_thread_map *threads,
+> -				  perf_event__handler_t process, bool data_mmap,
+> -				  unsigned int nr_threads_synthesize)
+> +				  perf_event__handler_t process, bool needs_mmap,
+> +				  bool data_mmap, unsigned int nr_threads_synthesize)
+>  {
+>  	if (target__has_task(target))
+> -		return perf_event__synthesize_thread_map(tool, threads, process, machine, data_mmap);
+> +		return perf_event__synthesize_thread_map(tool, threads, process, machine,
+> +							 needs_mmap, data_mmap);
+>  	else if (target__has_cpu(target))
+> -		return perf_event__synthesize_threads(tool, process,
+> -						      machine, data_mmap,
+> +		return perf_event__synthesize_threads(tool, process, machine,
+> +						      needs_mmap, data_mmap,
+>  						      nr_threads_synthesize);
+>  	/* command specified */
+>  	return 0;
+>  }
+>  
+>  int machine__synthesize_threads(struct machine *machine, struct target *target,
+> -				struct perf_thread_map *threads, bool data_mmap,
+> -				unsigned int nr_threads_synthesize)
+> +				struct perf_thread_map *threads, bool needs_mmap,
+> +				bool data_mmap, unsigned int nr_threads_synthesize)
+>  {
+>  	return __machine__synthesize_threads(machine, NULL, target, threads,
+> -					     perf_event__process, data_mmap,
+> -					     nr_threads_synthesize);
+> +					     perf_event__process, needs_mmap,
+> +					     data_mmap, nr_threads_synthesize);
+>  }
+>  
+>  static struct perf_record_event_update *event_update_event__new(size_t size, u64 type, u64 id)
+> diff --git a/tools/perf/util/synthetic-events.h b/tools/perf/util/synthetic-events.h
+> index c845e2b9b444..44f72d56ca4d 100644
+> --- a/tools/perf/util/synthetic-events.h
+> +++ b/tools/perf/util/synthetic-events.h
+> @@ -53,8 +53,8 @@ int perf_event__synthesize_stat_events(struct perf_stat_config *config, struct p
+>  int perf_event__synthesize_stat_round(struct perf_tool *tool, u64 time, u64 type, perf_event__handler_t process, struct machine *machine);
+>  int perf_event__synthesize_stat(struct perf_tool *tool, u32 cpu, u32 thread, u64 id, struct perf_counts_values *count, perf_event__handler_t process, struct machine *machine);
+>  int perf_event__synthesize_thread_map2(struct perf_tool *tool, struct perf_thread_map *threads, perf_event__handler_t process, struct machine *machine);
+> -int perf_event__synthesize_thread_map(struct perf_tool *tool, struct perf_thread_map *threads, perf_event__handler_t process, struct machine *machine, bool mmap_data);
+> -int perf_event__synthesize_threads(struct perf_tool *tool, perf_event__handler_t process, struct machine *machine, bool mmap_data, unsigned int nr_threads_synthesize);
+> +int perf_event__synthesize_thread_map(struct perf_tool *tool, struct perf_thread_map *threads, perf_event__handler_t process, struct machine *machine, bool needs_mmap, bool mmap_data);
+> +int perf_event__synthesize_threads(struct perf_tool *tool, perf_event__handler_t process, struct machine *machine, bool needs_mmap, bool mmap_data, unsigned int nr_threads_synthesize);
+>  int perf_event__synthesize_tracing_data(struct perf_tool *tool, int fd, struct evlist *evlist, perf_event__handler_t process);
+>  int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc, struct perf_tool *tool, perf_event__handler_t process, struct machine *machine);
+>  pid_t perf_event__synthesize_comm(struct perf_tool *tool, union perf_event *event, pid_t pid, perf_event__handler_t process, struct machine *machine);
+> @@ -65,10 +65,10 @@ size_t perf_event__sample_event_size(const struct perf_sample *sample, u64 type,
+>  
+>  int __machine__synthesize_threads(struct machine *machine, struct perf_tool *tool,
+>  				  struct target *target, struct perf_thread_map *threads,
+> -				  perf_event__handler_t process, bool data_mmap,
+> +				  perf_event__handler_t process, bool needs_mmap, bool data_mmap,
+>  				  unsigned int nr_threads_synthesize);
+>  int machine__synthesize_threads(struct machine *machine, struct target *target,
+> -				struct perf_thread_map *threads, bool data_mmap,
+> +				struct perf_thread_map *threads, bool needs_mmap, bool data_mmap,
+>  				unsigned int nr_threads_synthesize);
+>  
+>  #ifdef HAVE_AUXTRACE_SUPPORT
+> -- 
+> 2.32.0.605.g8dce9f2422-goog
+> 
 
-
-
-> > Since this work is in very early stage, I only have very high-level questions:
-> >  - what do you think about feasibility/usefulness of this idea in general?
->
-> TBH I'm a bit sceptical due to the above factors. Don't get me wrong,
-> making syzkaller look out for regressions sounds great, but I wonder if
-> there are more pressing issues that are worth getting at first.
->
-> Another aspect: CI testing already finds quite a few regressions,
-
-Quite a few in absolute numbers or relative to the total number of
-regressions? :)
-
-> but
-> those that are harder to catch are afaics often in driver code. And you
-> often can't test that without the hardware, which makes me assume that
-> syzkaller wouldn't help here (or am I wrong?)
-
-It depends.
-syzbot runs on VMs at the moment, but anybody is free to run syzkaller
-on any h/w. And it's quite popular at least for Android phones as far
-as I understand.
-And at some point we may be getting more testable drivers than we have
-now (few).
-But also could anybody predict how many bugs syzkaller would find
-before it came into existence? So I would not give up on generic
-kernel code right away :)
-
-
-> >  - any suggestions on how to make the tool find more differences/bugs
-> > or how to make it more reliable?
-> >  - is there a list or pointers to some known past regressions that
-> > would be useful to find with such tool? (I've looked at the things
-> > reported on the regressions@ list, but it's mostly crashes/not
-> > booting, but that's what syzkaller can find already well)
->
-> I first wanted to tell you "look up the reports I compiled in 2017 in
-> the LKML archives", but I guess the way better solution is: just grep
-> for "regression" in the commit log.
-
-Good idea.
-It seems that something like this can give enough subsystem-targeted
-info for initial analysis:
-
-git log --no-merges --oneline --grep "fix.*regression" fs/ | grep -v
-"performance regression"
-
-> >  - anybody else we should CC?
->
-> I guess the people from the Elisa project might be interested in this,
-> that's why I CCed Lukas.
->
-> Ciao, Thorsten
