@@ -2,72 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DA43EA9C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E0B3EA9D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237081AbhHLRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229851AbhHLRub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 10F4D6101E;
-        Thu, 12 Aug 2021 17:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628790606;
-        bh=yYn4zzWSGvHEceN5sD+zPW+yq54/wjUSasxAUiEn3lg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qIK1FYBC4xk9mLZIoUzozIlxDFYTheheTuzP83i2sW9b0ttrQQ48wdFqT5Asov2DM
-         DpEsFoGBdLxmt9lfyacbb8aqwEV4KWhqGKf8KqkxZXS3lFcnZFWtTzv9n4ULBpHVnB
-         xTYW4UxDX74CDw1U34U/c8bKxZpwwHRMJjucQnoXR8o/PB9hgpn0gL3UiTqooZbaX3
-         JO1YaqIv/ynxrccTrOAg0M8dvos5VXkw65Pf9x3BuuIBqdsa3ktjtw0bNQdEYFc8T2
-         25U4wJSvw67LFg6ZeiCkp+svmIIMWZdKSQ0l6OS/uNPfyZMCCH+Pvl06tLWu3zEHxg
-         nEAQBG5ZaEVIQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0098160A69;
-        Thu, 12 Aug 2021 17:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237086AbhHLRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhHLRzg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:55:36 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34469C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:55:11 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d4so14881414lfk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DAW/6xmllsArdqmIkDcoorUsT0TSzTZwgbuuzKmFCGU=;
+        b=LArikgSoq0m8hTE7N72xjOeklwXi6WD7Rhj7U1lbDpdzRIKI3tKGXnSJla6rSNwInp
+         AcIMfNpu0yKUFi8PALqzJGvgziIGzYqJz2yEY35B2a6tCN/Mo2eNxAsaBOVN/eprh+aP
+         3PTmlvhvnDsTxm0JiNrPSLl1hxnTArQw+4znk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DAW/6xmllsArdqmIkDcoorUsT0TSzTZwgbuuzKmFCGU=;
+        b=Nzn00cOAat4bN3eMdLlWxXvYpBBJSw1Hm81lUKwVvuBq7v/4G315t+RLAVPL+Vjg92
+         dOc1I3EekgxD9KeLQkDi9u6uMWU5YrwaLmnUJ9HWcEfaKvGj/ZOvxJVi5lnFtKCc7EOO
+         zqqalIadWacvrS3+tAl27RTx6ltrLE9ZisL0zVeLIOCqCdyL83DpuRgaM57EZDiPUXBB
+         h0uZl1kxVJ964FQu/bHBcmUNtuzKIJwidCOVBmJakPhoZmS7LUJST9lI9vRjjTcdlIZI
+         MGxDsFA/Sv/9iD/l8zvyAS0OZr2bKUbJtbgziZoi2vvOW35V4GgM0aA213ADG3kf+eGZ
+         sWkA==
+X-Gm-Message-State: AOAM5311cVrzX6DYcOAE4ludlfNf6XHph9ZtJq875U7MUIWTg9uiNcBt
+        kfnsVaULuKdO4YetAnDxzhvLUl0lnpF1k51spFA=
+X-Google-Smtp-Source: ABdhPJy8j71RL+QX7ISM1MNRd5cXXyuX/8eo70cOo2LLQ5CfSBiIpjY1GtUvbbApMDLIP48++H5Grg==
+X-Received: by 2002:a05:6512:3c9c:: with SMTP id h28mr3353106lfv.7.1628790906012;
+        Thu, 12 Aug 2021 10:55:06 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id v8sm327384lfo.107.2021.08.12.10.55.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 10:55:05 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id m18so11762823ljo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:55:05 -0700 (PDT)
+X-Received: by 2002:a2e:944c:: with SMTP id o12mr3709757ljh.411.1628790904975;
+ Thu, 12 Aug 2021 10:55:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 net 1/1] wwan: core: Avoid returning NULL from
- wwan_create_dev()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162879060599.6809.15342160741755440449.git-patchwork-notify@kernel.org>
-Date:   Thu, 12 Aug 2021 17:50:05 +0000
-References: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     davem@davemloft.net, ryazanov.s.a@gmail.com,
-        loic.poulain@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, johannes@sipsolutions.net,
-        kuba@kernel.org
+References: <20210812112938.3748c7f5@oasis.local.home> <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
+ <20210812133306.1c480741@oasis.local.home>
+In-Reply-To: <20210812133306.1c480741@oasis.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 12 Aug 2021 07:54:48 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
+Message-ID: <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, Aug 12, 2021 at 7:33 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> That was my take too, when this was first addressed:
+>
+>   https://lore.kernel.org/lkml/20210730204050.46975ae2@oasis.local.home/
+>
+> >
+> > The commit message talks about "some compilers/analyzers" without any
+> > explanation, and the "Link:" thing doesn't link to anything useful
+> > either.
+>
+> I should have added the above link. :-/
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Even the above link doesn't explain it to me.
 
-On Wed, 11 Aug 2021 15:48:45 +0300 you wrote:
-> Make wwan_create_dev() to return either valid or error pointer,
-> In some cases it may return NULL. Prevent this by converting
-> it to the respective error pointer.
-> 
-> Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
-> 
-> [...]
+What is it that gives this crazy garbage warning?
 
-Here is the summary with links:
-  - [v3,net,1/1] wwan: core: Avoid returning NULL from wwan_create_dev()
-    https://git.kernel.org/netdev/net/c/d9d5b8961284
+It looks like Randy Dunlap compiles with the '-Wmain' flag, and then
+complains about it hurting.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+It's a classic case of "Doctor, doctor, it hurts when I hit myself in
+the head with an ice pick".
 
+The solution is not to take some Ibuprofen.
 
+The solution is DON'T DO THAT THEN.
+
+People who build with W=2 or some other crazy thing need to understand
+that the bad warnings it exposes are not kernel problems, they are
+THEIR problems.
+
+               Linus
