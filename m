@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91413EA779
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EE63EA77E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237974AbhHLPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:24:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238119AbhHLPYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628781836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ICQtW9GMphiP22attaVtlBOOoe4Tvs14BWMJu6ZDb8=;
-        b=Sn34wcunXuY7XcrhGr1tCDHfMGEKAnTRYvCIOcVLjKG0oftZijrTHn1JuFJsGi8WrhQqKW
-        WveJgEpy0R/NvMtdHf5XfAKCI1CvQYAHTCUEMlwcu/Xp6Hslcz5okCbovaMnzN6EVAH37X
-        67w0FWuF7AGc/LbxDkhswNro4f5UMGI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476--3Ql_obTNO6mMhUlGNf5vw-1; Thu, 12 Aug 2021 11:23:55 -0400
-X-MC-Unique: -3Ql_obTNO6mMhUlGNf5vw-1
-Received: by mail-ej1-f70.google.com with SMTP id a19-20020a1709063e93b0290551ea218ea2so1957930ejj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:23:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3ICQtW9GMphiP22attaVtlBOOoe4Tvs14BWMJu6ZDb8=;
-        b=YUr/Qtj2HevvsvrHx0RfW9w/cIs8hHZQkla8FgxvCvanr2I10nIWx1zSIHcgMWP9/+
-         PjNJRDo8ar6719IPuqfDKBVCXNDpNhgywzr0LbBG1zcvXpYK+1Ac+UzZvSTT6v3Pzc2X
-         MS1vrLIlTznXMnL4K9Y72ZMi3MDGrIotOqMFPUeYiYKfhEOVqhwOgAsnhHcJCK/Zao9t
-         DZE0KAnKDyq7r9PdYxGG68t21DPmquRaAQ22tTpY3ZRldhzmDnevWXVnargiXLCKa81V
-         ebOg3vTKGc0cdgbt3hZSm9wZyk5ILAanHyVi/fQj8LNcXr7IGKNJEJ4XZggJV1/55zNS
-         seqg==
-X-Gm-Message-State: AOAM532Yt0T0bKI5GiN+Mxq79Y9eEBwD8kiKY13PJ3sEc7Ov83IB6fN0
-        ZxlJRpiEwllmYAilFgAXu3fkiKQSjRq4tHNMgG1QXBndE/TILwo+wHrZKLui7pPSghDRMws4oYo
-        6a14HbNPiwAR72nqiT7qZHoKn
-X-Received: by 2002:a17:906:ad7:: with SMTP id z23mr4253650ejf.419.1628781833683;
-        Thu, 12 Aug 2021 08:23:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCZzG8+PZlSp0svnbgjoO0/j1tKqTl+9B+Ed/fosms1HkelKfHOublb8HnWPPAKep5ULVz2g==
-X-Received: by 2002:a17:906:ad7:: with SMTP id z23mr4253577ejf.419.1628781832888;
-        Thu, 12 Aug 2021 08:23:52 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id j27sm946533ejk.18.2021.08.12.08.23.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:23:52 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] Support for ASUS egpu, dpgu disable, panel
- overdrive
-To:     "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
-Cc:     mgross@linux.intel.com, pobrn@protonmail.com,
-        corentin.chary@gmail.com
-References: <20210807023656.25020-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <55ff17e9-b881-0f73-d8d1-47cfab1fba2e@redhat.com>
-Date:   Thu, 12 Aug 2021 17:23:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237966AbhHLP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:26:17 -0400
+Received: from mga09.intel.com ([134.134.136.24]:17063 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232854AbhHLP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:26:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215364362"
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="215364362"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 08:25:50 -0700
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="517494570"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 08:25:49 -0700
+Date:   Thu, 12 Aug 2021 08:25:48 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] mm,hwpoison: fix race with hugetlb page allocation
+Message-ID: <20210812152548.GA1579021@agluck-desk2.amr.corp.intel.com>
+References: <20210603233632.2964832-1-nao.horiguchi@gmail.com>
+ <20210603233632.2964832-2-nao.horiguchi@gmail.com>
+ <20210812042813.GA1576603@agluck-desk2.amr.corp.intel.com>
+ <20210812090303.GA153531@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20210807023656.25020-1-luke@ljones.dev>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210812090303.GA153531@hori.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Aug 12, 2021 at 09:03:04AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> Sorry for the failures. I think that the following patch (and dependencies)
+> should solve the issue.
+> https://lore.kernel.org/linux-mm/20210614021212.223326-6-nao.horiguchi@gmail.com/.
+> I'll submit the update (maybe the patchset will be smaller by feedbacks)
+> later soon.
 
-On 8/7/21 4:36 AM, Luke D. Jones wrote:
-> This patch series adds support for some functions that are found on newer
-> ASUS gaming laptops:
-> 
-> - Panel overdrive: Some laptops can drive the LCD matrix slightly faster
->   to eliminate or reduce ghosting artifacts
-> 
-> - dGPU disable: ASUS added a function in ACPI to disable or enable the dGPU
->   which removes it from the PCI bus. Presumably this was to help prevent
->   Windows apps from using the dGPU when the user didn't want them to but
->   because of how it works it also means that when rebooted to Linux the dGPU
->   no-longer exits. This patch enables a user to echo 0/1 to a WMI path to
->   re-enable it (or disable, but the drivers *must* be unloaded first).
-> 
-> - eGPU enable: The ASUS x-flow lpatop has an iGPU, a dGPU, and an optional
->   eGPU. This patch enables the user to echo 0/1 to a WMI path to enable or
->   disable the eGPU. In ACPI this also appears to remove the dGPU from the
->   PCI bus.
-> 
-> All of the above patches have been tested over the course of a few months.
-> There is a small possibility of user error perhaps, where the user tries to
-> enable or disable the dGPU/eGPU while drivers are loaded which would cause
-> a system hang, but it is expected that almost all users would be using the
-> `asusctl` daemon and dbus methods to manage the above which then eliminates
-> these issues.
+I was uncertain about which dependencies you meant. So I followed
+the advice in the cover letter for the patch series containing that
+patch and did:
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+$ git fetch https://github.com/nhoriguchi/linux hwpoison
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+This kernel still has some odd issues and the poison page
+did not get unmapped from my test user application.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+See git://git.kernel.org/pub/scm/linux/kernel/git/aegl/ras-tools.git
+for my test program. In this case I was just running with default settings
+to inject an error into a user data page and then consume it.
 
-Regards,
+Here's the dmesg output. There are multiple calls to memory_failure()
+because the poison address is signalled both by the memory controller
+(CMCI with UCNA signature) and the DCU (#MC with SRAR signature).
 
-Hans
+Note that the first message says: "recovery action for unknown page: Ignored"
 
+[   70.331253] EINJ: Error INJection is initialized.
+[   76.949490] process '/aegl/ras-tools/einj_mem_uc' started with executable stack
+[   77.481846] Disabling lock debugging due to kernel taint
+[   77.482004] mce: [Hardware Error]: Machine check events logged
+[   77.487176] mce: Uncorrected hardware memory error in user-access at 7e025e400
+[   77.493225] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 0
+[   77.508704] {1}[Hardware Error]: event severity: recoverable
+[   77.514361] {1}[Hardware Error]:  Error 0, type: recoverable
+[   77.520011] {1}[Hardware Error]:  fru_text: Card01, ChnG, DIMM0
+[   77.525921] {1}[Hardware Error]:   section_type: memory error
+[   77.531659] {1}[Hardware Error]:   error_status: 0x0000000000000400
+[   77.537914] {1}[Hardware Error]:   physical_address: 0x00000007e025e400
+[   77.544518] {1}[Hardware Error]:   node: 0 card: 6 module: 0 rank: 1 bank: 8 device: 0 row: 15105 column: 896
+[   77.554503] {1}[Hardware Error]:   error_type: 4, single-symbol chipkill ECC
+[   77.561548] {1}[Hardware Error]:   DIMM location: NODE 3 CPU0_DIMM_G1
+[   77.568135] Memory failure: 0x7e025e: recovery action for unknown page: Ignored
+[   77.575445] Memory failure: 0x7e025e: already hardware poisoned
+[   77.627894] EDAC skx MC3: HANDLING MCE MEMORY ERROR
+[   77.633600] EDAC skx MC3: CPU 0: Machine Check Event: 0x0 Bank 25: 0xac00000200a00090
+[   77.633601] EDAC skx MC3: TSC 0x18d57ce28f4f25
+[   77.633602] EDAC skx MC3: ADDR 0x7e025e400
+[   77.633603] EDAC skx MC3: MISC 0x9000201d809c086
+[   77.633603] EDAC skx MC3: PROCESSOR 0:0x606a6 TIME 1628780833 SOCKET 0 APIC 0x0
+[   77.633608] EDAC MC3: 1 UE memory read error on CPU_SrcID#0_MC#3_Chan#0_DIMM#0 (channel:0 slot:0 page:0x7e025e offset:0x400 grain:32 -  err_code:0x00a0:0x0090  SystemAddress:0x7e025e400 ProcessorSocketId:0x0 MemoryControllerId:0x3 ChannelAddress:0xec04bc00 ChannelId:0x0 RankAddress:0x76025c00 PhysicalRankId:0x1 DimmSlotId:0x0 Row:0x3b01 Column:0x380 Bank:0x0 BankGroup:0x2 ChipSelect:0x1 ChipId:0x0)
+[   77.633611] Memory failure: 0x7e025e: Sending SIGBUS to einj_mem_uc:12283 due to hardware memory corruption
+[   77.668827] mce: [Hardware Error]: Machine check events logged
+[   77.678605] Memory failure: 0x7e025e: already hardware poisoned
+[   77.736685] EDAC skx MC3: HANDLING MCE MEMORY ERROR
+[   77.742392] EDAC skx MC3: CPU 0: Machine Check Event: 0x0 Bank 255: 0xb40000000000009f
+[   77.742394] EDAC skx MC3: TSC 0x0
+[   77.742394] EDAC skx MC3: ADDR 0x7e025e400
+[   77.742395] EDAC skx MC3: MISC 0x0
+[   77.742395] EDAC skx MC3: PROCESSOR 0:0x606a6 TIME 1628780833 SOCKET 0 APIC 0x0
+[   77.742397] EDAC MC3: 1 UE memory read error on CPU_SrcID#0_MC#3_Chan#0_DIMM#0 (channel:0 slot:0 page:0x7e025e offset:0x400 grain:32 -  err_code:0x0000:0x009f  SystemAddress:0x7e025e400 ProcessorSocketId:0x0 MemoryControllerId:0x3 ChannelAddress:0xec04bc00 ChannelId:0x0 RankAddress:0x76025c00 PhysicalRankId:0x1 DimmSlotId:0x0 Row:0x3b01 Column:0x380 Bank:0x0 BankGroup:0x2 ChipSelect:0x1 ChipId:0x0)
+[   77.777612] Memory failure: 0x7e025e: already hardware poisoned
 
-> 
-> Luke D. Jones (3):
->   asus-wmi: Add panel overdrive functionality
->   asus-wmi: Add dgpu disable method
->   asus-wmi: Add egpu enable method
-> 
->  drivers/platform/x86/asus-wmi.c            | 289 +++++++++++++++++++++
->  include/linux/platform_data/x86/asus-wmi.h |   7 +
->  2 files changed, 296 insertions(+)
-> 
-> --
-> 2.31.1
-> 
-
+-Tony
