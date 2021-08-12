@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF523EA9BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE673EA9C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236838AbhHLRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235535AbhHLRqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:46:52 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583FDC0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:46:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so8624050pje.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MLzpz5FJ/bAh1Ll32cDrqfBMeLtXwbzVAN6uEI5IppM=;
-        b=So4//MqN3ifH/Aw1xop0UccL3tSLF258xwuGXpyGzzWNblqBSU8eaAu4YEJwmk0L8r
-         TYq37/F5s90Y8pSnMsiV+3lTcU9FP/oIdxaKk//JFyU3zPfQZw4a/4RU9Mh00UQxZ6Nb
-         qeTjiSs2o8wOlriF4J5CDF/n7Emc3+RFBKdju+fv/Hor3I92Ojm5/yRJfQPwB2+SVoTb
-         T76PMJ9LT6XjYVMPGXlGgJsJV/3sKdTH0f0il6o8Oga52up3hmJ3bMxsH7YLXfnSzN4z
-         E6aMSLeUBMnyo3NWsM3wJXZ+U9k3a9nsBbDv+GVzeSOhzPuzEc6gC0kQ4BSn80HYEFTL
-         K+wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MLzpz5FJ/bAh1Ll32cDrqfBMeLtXwbzVAN6uEI5IppM=;
-        b=QJfltWl4+aBxqCe6+FZPp5E5QCZZRk+8PLHKHOtOgAapOhoFjpB+Xv/R73YvMPXMlh
-         9fnr3wRu8vL1KMPzR7yqneATB9uuDXKg5uwq/l160K96ENycN+gP4jwg7bqAptkm6VIs
-         TGMNFI8FoafZbBscL3JdGvvX/xgqIN8uy2sw83PjPjlHcx6MHq7k0DdxL78PV2gb9tIZ
-         DnN1MRUaw9dPFpOMuYh5il37YzTtTuX7V6nQJJIxtygC1dpE6pzk7RfAP9Jtj0EGSjO4
-         nER2E9mGhSPJLNsjwncnAfGPnAsEd1bC0UU0UjrfZYCg/Tqk1opnyNzXd23f/rVdc/Xm
-         M4rw==
-X-Gm-Message-State: AOAM533Z3TD19R9s+ZNGWH7vlcgrj7UOv9aWRdDmuiQOvkoWyS8Uz3DD
-        bwOeet4mlTp4nJ1xUfHi8h9BrA==
-X-Google-Smtp-Source: ABdhPJxezDWsGATFWaXM1+RQG1qmr0dl+WiM8kXxSaSGJGAivcJbWBZoBEdVFEXQcXOWBJqGv3Lb+g==
-X-Received: by 2002:a17:90a:d709:: with SMTP id y9mr9585479pju.153.1628790386729;
-        Thu, 12 Aug 2021 10:46:26 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y3sm779568pgc.67.2021.08.12.10.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 10:46:26 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 17:46:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Don't step down in the TDP iterator
- when zapping all SPTEs
-Message-ID: <YRVebIjxEv87I55b@google.com>
-References: <20210812050717.3176478-1-seanjc@google.com>
- <20210812050717.3176478-3-seanjc@google.com>
- <CANgfPd8HSYZbqmi21XQ=XeMCndXJ0+Ld0eZNKPWLa1fKtutiBA@mail.gmail.com>
- <YRVVWC31fuZiw9tT@google.com>
- <928be04d-e60e-924c-1f3a-cb5fef8b0042@redhat.com>
- <YRVbamoQhvPmrEgK@google.com>
- <7a95b2f6-a7ad-5101-baa5-6a19194695a3@redhat.com>
+        id S236880AbhHLRsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:48:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229851AbhHLRso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:48:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D119E60FED;
+        Thu, 12 Aug 2021 17:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628790498;
+        bh=hP/339ZqVkiXxXmDbT5cZGbifJvy2J+ZAv1wWKZbOxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLRzb+hJIJSjc0JuOvlwwrJKSPEFw0kNkvr8cfkpZTBB0+g5+8+8oIhoQABfsbKHt
+         iJKgd/3hgOKnVM3XM8zy8ldDGeC7+JYcU+k0zDezfEOU9ofQjNUSwS2+jUI23nDwoQ
+         2WLN+HqxStGNfA2W/Zf/jM1M/cuH/Xq2xasj4gVLee5uOsVwZVyT/heAVoUweEw5lb
+         QgZuWiXcrXolxVmtmWqYYokOtI9F5Xq4N7ke0DmgZ4JroYfHKVxV1u4jb69/v8XIRn
+         NIJ0sMb02DvqjLUP7qrnTQtOXJjkss/p1+Cfx0sd2Fo8gNAozACXfhcScN1Fa1JTCr
+         l1ZsdJ1CaGQLQ==
+Date:   Thu, 12 Aug 2021 10:48:18 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        trond.myklebust@primarydata.com, darrick.wong@oracle.com,
+        jlayton@kernel.org, sfrench@samba.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use
+ ->direct_IO() not ->readpage()
+Message-ID: <20210812174818.GK3601405@magnolia>
+References: <20210812122104.GB18532@lst.de>
+ <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk>
+ <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
+ <3085432.1628773025@warthog.procyon.org.uk>
+ <YRVAvKPn8SjczqrD@casper.infradead.org>
+ <20210812170233.GA4987@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7a95b2f6-a7ad-5101-baa5-6a19194695a3@redhat.com>
+In-Reply-To: <20210812170233.GA4987@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021, Paolo Bonzini wrote:
-> On 12/08/21 19:33, Sean Christopherson wrote:
-> > On Thu, Aug 12, 2021, Paolo Bonzini wrote:
-> > > On 12/08/21 19:07, Sean Christopherson wrote:
-> > > > Yeah, I was/am on the fence too, I almost included a blurb in the cover letter
-> > > > saying as much.  I'll do that for v2 and let Paolo decide.
-> > > 
-> > > I think it makes sense to have it.  You can even use the ternary operator
+On Thu, Aug 12, 2021 at 07:02:33PM +0200, Christoph Hellwig wrote:
+> On Thu, Aug 12, 2021 at 04:39:40PM +0100, Matthew Wilcox wrote:
+> > I agree with David; we want something lower-level for swap to call into.
+> > I'd suggest aops->swap_rw and an implementation might well look
+> > something like:
 > > 
-> > Hah, yeah, I almost used a ternary op.  Honestly don't know why I didn't, guess
-> > my brain flipped a coin.
-> > 
-> > > 
-> > > 	/*
-> > > 	 * When zapping everything, all entries at the top level
-> > > 	 * ultimately go away, and the levels below go down with them.
-> > > 	 * So do not bother iterating all the way down to the leaves.
-> > 
-> > The subtle part is that try_step_down() won't actually iterate down because it
-> > explicitly rereads and rechecks the SPTE.
-> > 
-> > 	if (iter->level == iter->min_level)
-> > 		return false;
-> > 
-> > 	/*
-> > 	 * Reread the SPTE before stepping down to avoid traversing into page
-> > 	 * tables that are no longer linked from this entry.
-> > 	 */
-> > 	iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));  \
-> >                                                                       ---> this is the code that is avoided
-> > 	child_pt = spte_to_child_pt(iter->old_spte, iter->level);   /
-> > 	if (!child_pt)
-> > 		return false;
+> > static ssize_t ext4_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
+> > {
+> > 	return iomap_dio_rw(iocb, iter, &ext4_iomap_ops, NULL, 0);
+> > }
 > 
-> Ah, right - so I agree with Ben that it's not too important.
+> Yes, that might make sense and would also replace the awkward IOCB_SWAP
+> flag for the write side.
+> 
+> For file systems like ext4 and xfs that have an in-memory block mapping
+> tree this would be way better than the current version and also support
+> swap on say multi-device file systems properly.  We'd just need to be
+> careful to read the extent information in at extent_activate time,
+> by doing xfs_iread_extents for XFS or the equivalents in other file
+> systems.
 
-Ya.  There is a measurable performance improvement, but it's really only
-meaningful when there aren't many SPTEs to zap, otherwise the cost of zapping
-completely dominates the time.
+You'd still want to walk the extent map at activation time to reject
+swapfiles with holes, shared extents, etc., right?
 
-The one thing that makes me want to include the optimization is that it will kick
-in if userspace is constantly modifying memslots, e.g. for option ROMs, in which
-case many of the memslot-induced zaps will run with relatively few SPTEs.  The
-thread doing the zapping isn't a vCPU thread, but it still holds mmu_lock for
-read and thus can be a noisy neighbor of sorts.
+--D
