@@ -2,125 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEAE3EA1A9
+	by mail.lfdr.de (Postfix) with ESMTP id 3868D3EA1A8
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235651AbhHLJOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234895AbhHLJOh (ORCPT
+        id S235005AbhHLJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:14:38 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53928 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232796AbhHLJOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:14:37 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ABBC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:14:12 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id qk33so10142042ejc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AvGkITJdrDMMMnI3/BWEDQrqzv4MiM8BZMPQ8cJaAog=;
-        b=rBbpOT+Hrt+gcKzfmeSjx7vcqlbNcSr1NbtfctFuMvVzEfGUxdiHXa6sFk7nNq1vO2
-         bzWcIpHco2B0tq3kcAc0abkg/pHcsqo4LRdnuQz2Q/OwKXSHBHrfPD27h6Ms9cRUA73G
-         0GfgKieqcxyGEibwt+V5fRVvqWdfBDtUE4rKLeezgrN7yVEvlHcdv0Fo+QMumMNFh+3C
-         YKJRy5jdQLem9WrPZPZow83FeLbdjdhOBPdySr5pgaLUnhLTLiD+K+EY8BTbP0ita/tO
-         Ze17Aicy6ncNlYdcqFmfImU7BTCMgsoyuCwmgKJn9P7o/uqoAe6fC4Wy45wOpG0vrLZ2
-         WM8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AvGkITJdrDMMMnI3/BWEDQrqzv4MiM8BZMPQ8cJaAog=;
-        b=Hy9NeCEND4bLUgvXOs0GU6NZCbW9ZMyLw+4HYAM/T6V5u6t0dGD3lfbdGQdY7n77cX
-         vUaCbBJ6EQFMACA7TJtYvR25YWyLbvDrb1WFw5OM0EFw59XiA4BABon1vZOzMYjeA5nn
-         7pNcTLM8XjLmw5sfscwafCDEPVg6mDrqgoOjfyc10tlCm8nkWUw0qcW5JQtG9Igw5GL/
-         ouuNPPokC6uoBJHefgG/v3toCF1zDOXpA/tJjOSKoH8aTp66dH5FlewvW7Ck8OnC42Vy
-         gYXuRMvcMnGYSBJGtXIByfhMNRqzN9zalGTJDBmjM1fRzG5vZcbrHia0XTOnPUk4G2MT
-         RwXg==
-X-Gm-Message-State: AOAM531qFNcRCX36QDRqgBCI8C4szzF3OYx7t/IdWJm4XkZsNlG4aqYX
-        zZ+j4Wa1NvnG2AXPSZSScqKYL3E2esGM2v9KHN4=
-X-Google-Smtp-Source: ABdhPJyyqs7nY59vyUINOn7gF0lJ/tMsmOkfem1kM5zxVAqauTLN1o6Lq/jhKEVu34AnDzHL6PrL66558CYQZPt29eE=
-X-Received: by 2002:a17:906:9bf1:: with SMTP id de49mr2737284ejc.480.1628759651282;
- Thu, 12 Aug 2021 02:14:11 -0700 (PDT)
+        Thu, 12 Aug 2021 05:14:36 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uim5XHy_1628759649;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uim5XHy_1628759649)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 12 Aug 2021 17:14:09 +0800
+Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
+        Omar Sandoval <osandov@fb.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com>
+ <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
+ <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+ <f18d017b-d6f7-cf87-8859-8d6b50c7c289@linux.alibaba.com>
+ <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
+From:   Xianting TIan <xianting.tian@linux.alibaba.com>
+Message-ID: <a5bb4fbb-a9c4-9b9a-3cfe-09d3b99c7915@linux.alibaba.com>
+Date:   Thu, 12 Aug 2021 17:14:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <YRO5R0/N9KITjyY9@kroah.com> <20210812041930.28931-1-21cnbao@gmail.com>
- <YRTMuU4dE9RqyDC+@kroah.com>
-In-Reply-To: <YRTMuU4dE9RqyDC+@kroah.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 12 Aug 2021 21:13:59 +1200
-Message-ID: <CAGsJ_4xpidX79zO2LRxtUu-jBpa3F1Wra-41ZoaczrTv-A1QDA@mail.gmail.com>
-Subject: Re: [PATCH] platform-msi: Add ABI to show msi_irqs of platform devices
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com,
-        rafael@kernel.org, robin.murphy@arm.com,
-        song.bao.hua@hisilicon.com, wangzhou1@hisilicon.com,
-        will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 7:24 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Aug 12, 2021 at 04:19:30PM +1200, Barry Song wrote:
-> > > But why isn't this all handled by the MSI core code?  Why would each bus
-> > > need to have this logic in it?
-> >
-> > i think i can extract some common code for sysfs populate/destroy to msi core from pci and platform.
-> > but we still need some pci/platform specific code in pci-msi and platform-msi cores. for example,
-> > pci-msi has specific data which will be accessed in its show() entry.
-> >
-> > struct msi_desc {
-> >         ...
-> >         union {
-> >                 /* PCI MSI/X specific data */
-> >                 struct {
-> >                         u32 masked;
-> >                         struct {
-> >                                 u8      is_msix         : 1;
-> >                                 u8      multiple        : 3;
-> >                                 u8      multi_cap       : 3;
-> >                                 u8      maskbit         : 1;
-> >                                 u8      is_64           : 1;
-> >                                 u8      is_virtual      : 1;
-> >                                 u16     entry_nr;
-> >                                 unsigned default_irq;
-> >                         } msi_attrib;
-> >                         union {
-> >                                 u8      mask_pos;
-> >                                 void __iomem *mask_base;
-> >                         };
-> >                 };
-> >
-> >                 ...
-> >                 struct platform_msi_desc platform;
-> >                 ...
-> >         };
-> > };
-> >
-> > in addition, they are quite different in initialization/release and also need different places to save sysfs groups.
-> > so probably i can let msi cores provide msi_populate_sysfs() and msi_destroy_sysfs() APIs. And ask pci and platform
-> > to call msi_populate_sysfs() in their init code and save the groups in their specific pointers,  and then they can
-> > free sysfs in their release paths by calling msi_destroy_sysfs()
->
-> Ok, if this isn't easy then I guess it's not a big deal, but you should
-> go through the MSI developers first.
->
-> Why does a platform device have MSI interrupts?  I thought they were
-> only for PCI devices.
 
-I really don't know the story of hardware, but as long as a device can
-write some mmio address with some
-messages (interrupt-describing data) to generate interrupts instead of
-using a hardware interrupt line, MSI is
-supported :-)
-
+在 2021/8/12 下午4:54, Arnd Bergmann 写道:
+> On Thu, Aug 12, 2021 at 10:08 AM Xianting TIan
+> <xianting.tian@linux.alibaba.com> wrote:
+>> 在 2021/8/6 下午10:51, Arnd Bergmann 写道:
+>>> On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
+>>>> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
+>>> I think you need a higher alignment for DMA buffers, instead of sizeof(long),
+>>> I would suggest ARCH_DMA_MINALIGN.
+>> As some ARCH(eg, x86, riscv) doesn't define ARCH_DMA_MINALIG, so i think
+>> it 's better remain the code unchanged,
+>>
+>> I will send v5 patch soon.
+> I think you could just use "L1_CACHE_BYTES" as the alignment in this case.
+> This will make the structure slightly larger for architectures that do not have
+> alignment constraints on DMA buffers, but using a smaller alignment is
+> clearly wrong. Another option would be to use ARCH_KMALLOC_MINALIGN.
+yes, I unstand you, the align size must  L1_CACHE_BYTES at least.
 >
-> thanks,
+> Note that there is a patch to add ARCH_DMA_MINALIGN to riscv already,
+yes, I summited this patch, it is discussing, seems they don't want to 
+apply it.
+> as some implementations do not have coherent DMA. I had failed to
+> realized though that on x86 you do not get an ARCH_DMA_MINALIGN
+> definition.
+I didn't find the definition in arch/x86/include/asm/cache.h and other 
+place, x86 is dma coherent, it may doesn't need it.
 >
-> greg k-h
-
-Thanks
-Barry
+>         Arnd
