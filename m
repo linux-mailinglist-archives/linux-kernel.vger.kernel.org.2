@@ -2,204 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD85C3EA836
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342123EA83A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhHLQFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:05:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39438 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHLQFL (ORCPT
+        id S230431AbhHLQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhHLQGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:05:11 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5E6F5222AF;
-        Thu, 12 Aug 2021 16:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628784285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hd5YnS5VlsByO54UINflxFxM7cPEyatBOwZmq8q+1yw=;
-        b=YotCp8PjStL4i9ffUhS9OoZX8QnH2jB2T/zk6/oQWD3WHdpPYMmveaqDEw7oId8so/Esu4
-        F0HIeCyp+gdzwOqnaJj1VQj/1JZHQsE4Eazs6QU6BaXIQ2w+5dx2NziXeHfnuGaxFdrXmq
-        MaFZgG82KZeixNCbQrDWkj0vQf8kCsI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628784285;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hd5YnS5VlsByO54UINflxFxM7cPEyatBOwZmq8q+1yw=;
-        b=OQuQ6s6K3EktLNE86QftmfX7DWBZd9pvqvcwE+zzMBxxZMjI5KN0YAaXc6xsjREBlTbt8t
-        uj3+YfCflhWq/iCA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C8F1813ACC;
-        Thu, 12 Aug 2021 16:04:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 8uSJL5xGFWEDfAAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 16:04:44 +0000
-To:     Chester Lin <clin@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-3-clin@suse.com>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Subject: Re: [PATCH 2/8] dt-bindings: serial: fsl-linflexuart: convert to
- json-schema format
-Message-ID: <1ff13837-e6ca-c476-376d-b4f80450a259@suse.de>
-Date:   Thu, 12 Aug 2021 18:04:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 12:06:18 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13472C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:05:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id k2so7861950plk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Atv8Vvc8zmZs7qz1+cYK+lFIwWM1M7nG99JAbjLrF4E=;
+        b=YLBpW1dX3jsE7c7oMqrzlss5vSGGZs6u7+pnog4p6i2QHlY7s+MM8yFUpgnMjcnswI
+         ni53NkrUhey0mDGFIAAM44Gu5KJjoPDDc9/ZTF1wlR1sv0i/UsDLXsOePa6/LkOryX+c
+         TPtvVZVuubtiV8YUi6kELv08mDXeaxoCeEpbM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Atv8Vvc8zmZs7qz1+cYK+lFIwWM1M7nG99JAbjLrF4E=;
+        b=atoCEthk1tRkBLFcKPv6ET7wYnQ+4VA3CtB0VGGHdwQJMIuMAh9+iGXwJqhK+No5Jm
+         zm+sbHx0bcMLFEZn6ZYk/qIKR9HDOVXL0/reV8xq31LovnaamAulJOzU0LbOqUBzcQOm
+         4CcF9ONt+vs9n7yFPQ8D+AC1ckvw3mpCSolhI2Lm6cAvi/JdYFtqix9SgiV/WJN62h4s
+         TTpZ7zHGE+D7lGIZCjVIvK9P7c+P5rB5qb+PzyKa/u/Vn8um0K4KksSirqoBtUqTJjdQ
+         BKC3MZYizvh8LgBZsdEURK2VA56CbIgtlqQHwJdDUm1YM49uM0/ab0g8sL3GTuu+VWGa
+         QVBQ==
+X-Gm-Message-State: AOAM530U885C0c7jFYtnbnZ6bC2sMMpVVYAOpe0XEagzVf87rrubha/S
+        NtwzBTSC+5I/pMwX1DPzA/9JpA==
+X-Google-Smtp-Source: ABdhPJwMArqBGrrc5EDHc20ZZRFqVySoMYl6/C4HpJy4i1kKUF6QYYb5i+Gvtmzolcq+1zcng9ID9A==
+X-Received: by 2002:a63:ff51:: with SMTP id s17mr4473823pgk.415.1628784352580;
+        Thu, 12 Aug 2021 09:05:52 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6683:43e5:ba4c:d76c])
+        by smtp.gmail.com with UTF8SMTPSA id z9sm3723003pfa.2.2021.08.12.09.05.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 09:05:52 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:05:50 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org
+Subject: Re: [PATCH V5 5/7] arm64: dts: sc7280: Configure debug uart for
+ sc7280-idp
+Message-ID: <YRVG3sK82lZhTAGL@google.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
+ <1628754078-29779-6-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210805065429.27485-3-clin@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <1628754078-29779-6-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 08:54, Chester Lin wrote:
-> Convert the FSL LINFlexD UART binding to json-schema.
+On Thu, Aug 12, 2021 at 01:11:16PM +0530, Rajesh Patil wrote:
+> Configure uart5 as debug uart and split the pinctrl functions
+> to match with SoC dt.
 > 
-> Signed-off-by: Chester Lin <clin@suse.com>
-> ---
->  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
->  .../bindings/serial/fsl,s32-linflexuart.yaml  | 48 +++++++++++++++++++
->  2 files changed, 48 insertions(+), 22 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
->  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
 
-Thanks for your effort, Chester.
-
-> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
-> deleted file mode 100644
-> index f1bbe0826be5..000000000000
-> --- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
-> +++ /dev/null
-> @@ -1,22 +0,0 @@
-> -* Freescale LINFlexD UART
-> -
-> -The LINFlexD controller implements several LIN protocol versions, as well as
-> -support for full-duplex UART communication through 8-bit and 9-bit frames.
-> -
-> -See chapter 47 ("LINFlexD") in the reference manual[1].
-> -
-> -Required properties:
-> -- compatible :
-> -  - "fsl,s32v234-linflexuart" for LINFlexD configured in UART mode, which
-> -    is compatible with the one integrated on S32V234 SoC
-> -- reg : Address and length of the register set for the device
-> -- interrupts : Should contain uart interrupt
-> -
-> -Example:
-> -uart0: serial@40053000 {
-> -	compatible = "fsl,s32v234-linflexuart";
-> -	reg = <0x0 0x40053000 0x0 0x1000>;
-> -	interrupts = <0 59 4>;
-> -};
-> -
-> -[1] https://www.nxp.com/webapp/Download?colCode=S32V234RM
-> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
-> new file mode 100644
-> index 000000000000..acfe34706ccb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-
-Since this is dual-licensed and BSD-2-Clause would seem compatible with
-GPLv3, this could probably be s/GPL-2.0-only/GPL-2.0-or-later/ ? Not a
-blocker.
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/serial/fsl,s32-linflexuart.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale LINFlexD UART
-> +
-> +description: |
-> +  The LINFlexD controller implements several LIN protocol versions, as well
-> +  as support for full-duplex UART communication through 8-bit and 9-bit
-> +  frames. See chapter 47 ("LINFlexD") in the reference manual
-> +  https://www.nxp.com/webapp/Download?colCode=S32V234RM.
-> +
-> +maintainers:
-> +  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> +  - Rob Herring <robh@kernel.org>
-
-@Shawn: I assume we need both of them to ack this (or an S32V maintainer
-to volunteer), since they were not named in the .txt file before?
-
-> +
-> +allOf:
-> +  - $ref: "serial.yaml"
-> +
-> +properties:
-> +  compatible:
-> +    description: The LINFlexD controller on S32V234 SoC, which can be
-> +      configured in UART mode.
-> +    items:
-> +      - const: fsl,s32v234-linflexuart
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    serial@40053000 {
-> +        compatible = "fsl,s32v234-linflexuart";
-> +        reg = <0x40053000 0x1000>;
-> +        interrupts = <0 59 4>;
-> +    };
-
-Otherwise looking sane,
-
-Reviewed-by: Andreas Färber <afaerber@suse.de>
-
-Thanks,
-Andreas
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+As I mentioned on '[4/7] arm64: dts: sc7280: Update QUPv3 UART5 DT node',
+I think you need to squash the two patches to avoid breaking (temporarily)
+the SC7280 IDP DT due to the undefined node 'qup_uart5_default'
