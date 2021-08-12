@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FDE3EAD29
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 00:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457A23EAD31
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 00:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238280AbhHLWaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 18:30:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42422 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231392AbhHLWaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 18:30:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215191292"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
-   d="scan'208";a="215191292"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 15:29:46 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
-   d="scan'208";a="517642404"
-Received: from smachee-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.169.15])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 15:29:45 -0700
-Subject: Re: [PATCH v4 09/15] pci: Consolidate pci_iomap* and pci_iomap*wc
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20210812194330.GA2500473@bjorn-Precision-5520>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <fbce6e80-07e3-8b95-dff6-1ade6be58b29@linux.intel.com>
-Date:   Thu, 12 Aug 2021 15:29:42 -0700
+        id S238304AbhHLWcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 18:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234716AbhHLWcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 18:32:43 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361E3C061756;
+        Thu, 12 Aug 2021 15:32:18 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id a8so12313503pjk.4;
+        Thu, 12 Aug 2021 15:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zp/Nu1LAn/XaXn+xRvyj50vtQNNKFYSlvk+KUuxDY/s=;
+        b=V2n2+nFPhssWpCrvcty6gMGdM25fYZwPJZ7z59ttqSdVrsllum+d+YsA+kcJn0V2CS
+         llNmgS39mTtQcFlvqOSBlv04WRJ5xfbRQrZPNi9rwKbTLwJTwJHWjACM2qoH9MYg8S/7
+         QK9h0x2kkh65TtM27XnlBT7Dj9IZ3zwY+mxd4Pcxug9rmP9Nt1OgsgqSqdXMXTuK5YYB
+         V6mbgys4IQ1Otc14pXItEI+CTt+eeFQMyNdQCZtqGbUOgaF39A8wNbhhfBNfiwpUOpAN
+         x6Qc6LAzzN2qvFoyf7SaGIcysgYMBfb9oOmHwmpO1FxbgzFPUtV2+D/YlzirJ/zXov1x
+         4kSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zp/Nu1LAn/XaXn+xRvyj50vtQNNKFYSlvk+KUuxDY/s=;
+        b=fFYOQkO+f2to6EPSAaBl2KpLz4ybwUh8V3Nm6MnrJ7acZoHw15/DGVXbPzhECTw15b
+         DAt+Zj5hytimS9ZXpt5qzGmy/NnKIgiO/whtGdHhQa5WhnI8DC79jjVAENi44FMJbspx
+         8d3n4b/cWO6m7KDPTyNxxYRSiZyD3rEyFgYDjwuoFkOHUlldWbgBmOunJ+5rv18O3Bn/
+         OxPYtKthswVEqvuBbYb/5bv/fpkneeDN/mFb3B94sYVqxOyMlE/asMkRwUlAWdN/51BL
+         QNTfzGCF4eriRQoOMVJACQCxUxKXtdvI8PWs7TD9aToi9L7l54Q/CyK99jyR/uyMyUx3
+         hWfw==
+X-Gm-Message-State: AOAM532NQ8L3yfxvOs0q0rG/2mtUHEqnq4/9orU1kE4kY4rCTi3K425T
+        jTdLomcoN4KyNaRznYuShH4=
+X-Google-Smtp-Source: ABdhPJwzjP00qTgEN2zu69i939n05bXEqD4vw4Ds+VJAT5xY0msyPJzmbTnPHmIeoAtA1cZ3rpjSAg==
+X-Received: by 2002:a62:fb0b:0:b029:3ca:1345:9fd8 with SMTP id x11-20020a62fb0b0000b02903ca13459fd8mr6170274pfm.14.1628807537598;
+        Thu, 12 Aug 2021 15:32:17 -0700 (PDT)
+Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id x20sm4552303pfh.188.2021.08.12.15.32.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 15:32:16 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Questions re the new mount_setattr(2) manual page
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+ <20210810143255.2tjdskubryir2prp@wittgenstein>
+ <95c7683e-957a-5a78-6b81-2cb8e756315c@gmail.com>
+ <20210811100711.i3wwoc3bhrf7bvle@wittgenstein>
+ <ea2e81b7-10e1-88f3-bfcb-e36afc5567d6@gmail.com>
+ <20210812090805.qkwjxnjitgaihlep@wittgenstein>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <37a0c459-86f7-9686-4ae5-03316198d1cc@gmail.com>
+Date:   Fri, 13 Aug 2021 00:32:09 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210812194330.GA2500473@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210812090805.qkwjxnjitgaihlep@wittgenstein>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christian,
 
+[...]
 
-On 8/12/21 12:43 PM, Bjorn Helgaas wrote:
-> Is there a branch with all of this applied?  I was going to apply this
+Thanks for checking the various wordinfs.
 
-Its is maintained in following tree.
+[...]
 
-https://github.com/intel/tdx/commit/93fd5b655172ba9e3350487995102a8b2c41de27
-
-> to help take a look at it, but it doesn't apply to v5.14-rc1.  I know
-
-This patch can be applied independently. I have just applied it on top
-of v5.14-rc5, and it seems to apply clean. Can you try -rc5?
-
-> you listed some prereqs in the cover letter, but it's a fair amount of
-> work to sort all that out.
-> 
-> On Wed, Aug 04, 2021 at 05:52:12PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> From: Andi Kleen <ak@linux.intel.com>
-> 
-> If I were applying these, I would silently update the subject lines to
-> match previous commits.  Since these will probably be merged via a
-> different tree, you can update if there's a v5:
-> 
->    PCI: Consolidate pci_iomap_range(), pci_iomap_wc_range()
-
-Yes. I will fix this in next version.
-
-> 
-> Also applies to 11/15 and 12/15.
-
-Will do the same.
-
-> 
->> pci_iomap* and pci_iomap*wc are currently duplicated code, except
->> that the _wc variant does not support IO ports. Replace them
->> with a common helper and a callback for the mapping. I used
->> wrappers for the maps because some architectures implement ioremap
->> and friends with macros.
-> 
-> Maybe spell some of this out:
-> 
->    pci_iomap_range() and pci_iomap_wc_range() are currently duplicated
->    code, ...  Implement them using a common helper,
->    pci_iomap_range_map(), ...
-> 
-> Using "pci_iomap*" obscures the name and doesn't save any space.
-> 
-> Why is it safe to make pci_iomap_wc_range() support IO ports when it
-> didn't before?  That might be desirable, but I think it *is* a
-> functional change here.
-
-Agree. Commit log had to be updated. I will include these details
-in next submission.
-
-> 
-> IIUC, pci_iomap_wc_range() on an IO port range previously returned
-> NULL, and after this patch it will work the same as pci_iomap_range(),
-> i.e., it will return the result of __pci_ioport_map().
-> 
->> This will allow to add more variants without excessive code
->> duplications. This patch should have no behavior change.
+>>>>>>>           int fd_tree = open_tree(-EBADF, source,
+>>>>>>>                        OPEN_TREE_CLONE | OPEN_TREE_CLOEXEC |
+>>>>>>>                        AT_EMPTY_PATH | (recursive ? AT_RECURSIVE : 0));
+>>>>>>
+>>>>>> ???
+>>>>>> What is the significance of -EBADF here? As far as I can tell, it
+>>>>>> is not meaningful to open_tree()?
+>>>>>
+>>>>> I always pass -EBADF for similar reasons to [2]. Feel free to just use -1.
+>>>>
+>>>> ????
+>>>> But here, both -EBADF and -1 seem to be wrong. This argument 
+>>>> is a dirfd, and so should either be a file descriptor or the
+>>>> value AT_FDCWD, right?
+>>>
+>>> [1]: In this code "source" is expected to be absolute. If it's not
+>>>      absolute we should fail. This can be achieved by passing -1/-EBADF,
+>>>      afaict.
 >>
->> Signed-off-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>   lib/pci_iomap.c | 81 +++++++++++++++++++++++++++----------------------
->>   1 file changed, 44 insertions(+), 37 deletions(-)
+>> D'oh! Okay. I hadn't considered that use case for an invalid dirfd.
+>> (And now I've done some adjustments to openat(2),which contains a
+>> rationale for the *at() functions.)
 >>
+>> So, now I understand your purpose, but still the code is obscure,
+>> since
+>>
+>> * You use a magic value (-EBADF) rather than (say) -1.
+>> * There's no explanation (comment about) of the fact that you want
+>>   to prevent relative pathnames.
+>>
+>> So, I've changed the code to use -1, not -EBADF, and I've added some
+>> comments to explain that the intent is to prevent relative pathnames.
+>> Okay?
+> 
+> Sounds good.
+> 
+>>
+>> But, there is still the meta question: what's the problem with using
+>> a relative pathname?
+> 
+> Nothing per se. Ok, you asked so it's your fault:
+> When writing programs I like to never use relative paths with AT_FDCWD
+> because. Because making assumptions about the current working directory
+> of the calling process is just too easy to get wrong; especially when
+> pivot_root() or chroot() are in play.
+> My absolut preference (joke intended) is to open a well-known starting
+> point with an absolute path to get a dirfd and then scope all future
+> operations beneath that dirfd. This already works with old-style
+> openat() and _very_ cautious programming but openat2() and its
+> resolve-flag space have made this **chef's kiss**.
+> If I can't operate based on a well-known dirfd I use absolute paths with
+> a -EBADF dirfd passed to *at() functions.
+
+Thanks for the clarification. I've noted your rationale in a 
+comment in the manual page source so that future maintainers 
+will not be puzzled!
+
+Cheers,
+
+Michael
+
 
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
