@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65EC3EA10F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052D23EA114
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235212AbhHLIzG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Aug 2021 04:55:06 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:51139 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhHLIzE (ORCPT
+        id S235320AbhHLI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhHLI5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:55:04 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mow06-1mtD8a0ffi-00qVxq for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021
- 10:54:38 +0200
-Received: by mail-wr1-f45.google.com with SMTP id q10so7214363wro.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:54:38 -0700 (PDT)
-X-Gm-Message-State: AOAM531Gou1N3h4yRFKOzMsen8vmyCbgdJSsGin8aXFay9orXOdu0t2P
-        Bk/pKA8qOnmRifO2ejqPFq5oMZc0snmPgbUjyrc=
-X-Google-Smtp-Source: ABdhPJzZv/5OPQVMV4X72DNrEeILwE4MD89RT2+33mM5oD+u5NtsqZPGmxrUuRpkUtjSdyCe45aXAKV0gko4m0wLh/Y=
-X-Received: by 2002:adf:fd89:: with SMTP id d9mr701787wrr.361.1628758477814;
- Thu, 12 Aug 2021 01:54:37 -0700 (PDT)
+        Thu, 12 Aug 2021 04:57:09 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92338C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:44 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id a7-20020a9d5c870000b029050333abe08aso6825727oti.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I29wkPGgO6NQxXu1JpY/V8GMi3CkTzzZeeIK4bDLNvw=;
+        b=hPI9bp/GgD3uadRZs5kcsIl69srGX7pVP0jPT7j4+7TjdukraPt/2fC5KjSZdUtDK0
+         GwJ7Rw20XqSDVdVdK4127Esn7GOOo4CE+sF3/YDmj/5SRuplEtudLxg+D9CgUW5X3IlO
+         71a7suz8Q9qNFRjfauG2yppj9kMrIKV2cMlHCAf4ZPdfjUAF/T5N/OgDueZqHH5/k3/1
+         yvbYu6vuoUntbI02+V/qZbe+AUZNLNQ4niSrUa/LYj2ZZ7s8J7aiAMGH6EBhuqNa8D2s
+         2Erk+lofy/R3VUHm9Y0G44/X+Vybl/231VoIiHU+MjGRlTsaoVFUTowHhRidKYvrvcNB
+         9CsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I29wkPGgO6NQxXu1JpY/V8GMi3CkTzzZeeIK4bDLNvw=;
+        b=WsQwitabX6i4KxDHJ26tYYQxu1FnPr/bZGWEacY0S1eKgyfVN7ygBUF60Usu/U/v5/
+         wggXjNWNushbsuu9FLiIJ8RIE0BO1ka4AHT5FnsLM8oJ/4BjvnJNUiuw6+oqnCy/byYT
+         WWZVCDCk8RIh3SD5cyKi4jwr6R0YryHjswsslss2Vh30KSsDCBCUVY5M5qr7kBkqNHyC
+         VeRHEN/47Ey0vtqo3SIcQ3P0q6g+4X5I4Nd4n768DHm6t7OzidaCX14iBPqAAGjLySje
+         0aawulOy6z8cnXoWJP2WrTDkErRJ52OyfDDXkSYMtoaFh3aTVLLZZ3jZdB3ZBRPXgk7h
+         SIRQ==
+X-Gm-Message-State: AOAM531emt6qpczYq3EjJQCicJfu3fjH6oip2yt9iH22IDSXRo0QGEOr
+        lTy94d8agYaF5p+IVMQA4GQh8aaYKivMuGBJWF+8JA==
+X-Google-Smtp-Source: ABdhPJy8FvklqUSYdwBSErFoY2cJHDYfrxOpkSc5UNUD8X1LYr4yBN3B1qyJT2tNPqPct+1wdHhbKvh4i3PrtBTNtug=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr2632529otq.233.1628758603786;
+ Thu, 12 Aug 2021 01:56:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com>
- <20210806030138.123479-2-xianting.tian@linux.alibaba.com> <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
- <f18d017b-d6f7-cf87-8859-8d6b50c7c289@linux.alibaba.com>
-In-Reply-To: <f18d017b-d6f7-cf87-8859-8d6b50c7c289@linux.alibaba.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 12 Aug 2021 10:54:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
-Message-ID: <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Xianting TIan <xianting.tian@linux.alibaba.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, gregkh <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
-        Omar Sandoval <osandov@fb.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>
+References: <cover.1628709663.git.andreyknvl@gmail.com> <3773f984cbd64f008af9b03e82fc1b317cda9fda.1628709663.git.andreyknvl@gmail.com>
+In-Reply-To: <3773f984cbd64f008af9b03e82fc1b317cda9fda.1628709663.git.andreyknvl@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Aug 2021 10:56:32 +0200
+Message-ID: <CANpmjNMgkSG=QGKn-iOcUONTCxKtFHr2upbKcv46RsTYTcCx_Q@mail.gmail.com>
+Subject: Re: [PATCH 6/8] kasan: test: clean up ksize_uaf
+To:     andrey.konovalov@linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:BQoTlOxcHqA6Jtpz6G3I3iEkEbcUJNnHyR0h3BwaWv5nor11G/e
- PLoxk9dK0LwHMNkHlClRBDGKWtyOaPSjZHVTKpsd6v2dC97N3iRp5KbE5CoGpBMiQPLs3yx
- 9hpQ4SFJ9lUHe4to0Oh9N1yzyLqvJutjexWJ+FEP6UDCSb72Pl5tHmdmrEB9bRtEXCSIJv+
- 6GMkfVieEBNRLWHGOeF1A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BjMA3fbz6kw=:CyRb4FO92E5xxUMElyAPUF
- aRnGrM15tGTjfzAQFXeDt7dU44dduc49Mw5jiDlV1OBRS5i6tMI4NsHfVUcVpDnjd2l6QXp2O
- PeZ8r8gyjZN0sDF/3folLaRYBs5jIZ3GkbeW3Q0+smu0I87KEBmEi2kNZRUj12HtkpjWscx25
- ZgV4OulF6Ab3UQf9QYpSMN5c2CwHXlCSVM10xok/ZVsZa9CTDKdu4SnxGZFVM4x0zx9VS4EYj
- 3hhQ+mLHIHRpJXHx/j1nlIRnko2jDOE2egYsWt3i+WhtcUVKfQ1K/Hqb55wTVXzYnCsid6l7r
- /iFeoIPIWXx8ja2aSHM1+dzmAFKXGGYPNptskr7DI9CrpA/2ga9CDkvajt6VQ1OfQXyRSylnB
- O2y4atQ95WlVPNiiuS8S2oUrmm8stWpimhob7G1dQ6+WhVRJBGNPVcdRkEfRY3A17rGyM4DlT
- 56iIRtdeCEEDxRukWQHZlEjprxs6BPLSsnHUX+9xdl2KUTjfLV5f4aTiPhqaFc9YBE9nDSNXc
- U2Ee8el8dTxaABFY86c99JlaoCS6yvPdP1VlMPoJO15UvCJlTF/1LNzuszNlZpUjWqud9SveR
- at+8MNf/Q8rOzDHPdb4TLuvqxcXbdah9wAJLSZfeMYwPyPbXDC0EPSosd59+JgePg1KqhBjYx
- toW1CO8E14jQXs1U1q53ag0pu9LwazV87/GctFxtK8RhAq83TOrek9bzXCKUiRf57fUjnfS28
- G8HHJMCV9zLRgO+jnpLQp6tAaxKrQZ/g6n2gW4TOR25pf2VG7ME3Sy5oYqpqnj+1F3bbcHwMq
- j8QJWmfU/8TDyFqTgXBI2DLgsnQuURoV3rJZRqnFM7W3IHwsLCgVU/n6Xl5QV/7daawkc8fTH
- hTBcOjlORguiQAbfhYR5Ao5ACmDZ9uyPELRRtDh9dnsHBzTAiCbHoveO8lcojK14vOlK4kex6
- AyifyKgV5VJzzK48ec769bMJMHjbatbLUov+gIsXggmeTNBN+K0Ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:08 AM Xianting TIan
-<xianting.tian@linux.alibaba.com> wrote:
-> 在 2021/8/6 下午10:51, Arnd Bergmann 写道:
-> > On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
-> >> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
-> > I think you need a higher alignment for DMA buffers, instead of sizeof(long),
-> > I would suggest ARCH_DMA_MINALIGN.
+On Wed, 11 Aug 2021 at 21:23, <andrey.konovalov@linux.dev> wrote:
 >
-> As some ARCH(eg, x86, riscv) doesn't define ARCH_DMA_MINALIG, so i think
-> it 's better remain the code unchanged,
+> From: Andrey Konovalov <andreyknvl@gmail.com>
 >
-> I will send v5 patch soon.
+> Some KASAN tests use global variables to store function returns values
+> so that the compiler doesn't optimize away these functions.
+>
+> ksize_uaf() doesn't call any functions, so it doesn't need to use
+> kasan_int_result. Use volatile accesses instead, to be consistent with
+> other similar tests.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-I think you could just use "L1_CACHE_BYTES" as the alignment in this case.
-This will make the structure slightly larger for architectures that do not have
-alignment constraints on DMA buffers, but using a smaller alignment is
-clearly wrong. Another option would be to use ARCH_KMALLOC_MINALIGN.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Note that there is a patch to add ARCH_DMA_MINALIGN to riscv already,
-as some implementations do not have coherent DMA. I had failed to
-realized though that on x86 you do not get an ARCH_DMA_MINALIGN
-definition.
+Although I do wonder if the compiler might one day mess with the
+volatile reads. At least this way we might also catch if the compiler
+messes up volatile reads. ;-)
 
-       Arnd
+> ---
+>  lib/test_kasan.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index efd0da5c750f..e159d24b3b49 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -731,8 +731,8 @@ static void ksize_uaf(struct kunit *test)
+>         kfree(ptr);
+>
+>         KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
+> -       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
+> -       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
+> +       KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
+> +       KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
+>  }
+>
+>  static void kasan_stack_oob(struct kunit *test)
+> --
+> 2.25.1
+>
