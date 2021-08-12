@@ -2,267 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08903E9F77
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6513E9F7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhHLHea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:34:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231331AbhHLHe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:34:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628753644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mYH9IB8kLiUJPK2eGWH1AkGjFzTYCt4aUi+sk0Dhj6E=;
-        b=Vz3D6WBB28s8Ccqu1K+2Q9h84fW4iw0i8I9bIxbMfBJcQ7cmcawVzFdzmwAeWNTiyWdUyu
-        RN4Lz7jTMTaHNH++mkMB4meXikBNyEXdMu7H71VATqB3sdMjPFtGZ27rzgs4iw11daOyjj
-        6RR8wiqPSZoyfIhtzjs7nOPwGXHcvVc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-_p0_ghEoNDu2XcTPdiulkg-1; Thu, 12 Aug 2021 03:34:03 -0400
-X-MC-Unique: _p0_ghEoNDu2XcTPdiulkg-1
-Received: by mail-wm1-f71.google.com with SMTP id o26-20020a05600c511ab02902e6b1324690so1365225wms.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:34:02 -0700 (PDT)
+        id S234446AbhHLHf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:35:56 -0400
+Received: from mx.ucr.edu ([169.235.156.38]:8344 "EHLO mx-lax3-3.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231502AbhHLHfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:35:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1628753730; x=1660289730;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ih509MZfBFgCEEZtNiCc3rKR+7wk2Y1qBqpU/o2sR8I=;
+  b=eDCsTpKc72Wmivex7Ucy89Rlaut7cU0I/4xn9a+jmt6S41qSOKeXFzGY
+   OSEDq9mfExUsGJ1tIigFsmefjeR3Ri6VTQ41itXUXeNO/2eiN4U6VqitJ
+   QirKSM0rzgcadzT9VXMIOLb0++RqfLyQqhTstq9niLgeRqANVV92a1clp
+   wJJo5FTuoDCDS+1CGfmLPReOgj4brUNs+xZ33GR/ZQuMsdTviWqn/8Foe
+   iWe18ZTUdKcBtvj9q250U+QZTUpk+0gevxnrfM4FpEQKa+gjRn56IRBl6
+   NSqpu7/cXdsOYp4bQR5lTTkHWzx2EbeX+sS/xBPMc+BEFrtSvJ+qWaTfF
+   g==;
+IronPort-SDR: jmnrK9UjCkOrQplTKJIthzEEd4vq217xHIdaNQJD1xWJDVIlPuQExC29KGFEZdv7HodWoILm4z
+ TiMYVbxPg7JRvvdlsF8WeBVtWRpzuOhymBnRxjg4xpjbpsB/7zcRa8GLTfxm2fWvURoLmIDZpk
+ gaZ7L7R7tStXdg/sk/iYmK8knVllXs5WVMT15TwKvLJqsZL+nGYwhwDg1ELTFzXQ8zTiKjVpd3
+ eBBgxaqWtkOzGxdMCF16mvqd4EJB6AfjXh4s7E+Z6qxj3Wbr4U1A9UHuBccdfCoNtPZYDFxAId
+ DZv387wb76P391uaga7rHKPT
+X-IPAS-Result: =?us-ascii?q?A2E4DQBUzhRhh0bYVdFaHAEBATwBAQQEAQECAQEHAQGBb?=
+ =?us-ascii?q?gKDd1UWjUyTUYEahnyIaIF8AgkBAQENAQESExwEAQGEWQKCZwIlNAkOAQIEA?=
+ =?us-ascii?q?QEBAQMCAwEBAQEBAQMBAQYBAQEBAQEFBAEBAhABAQEBgSALWQtjgU+BeQYEP?=
+ =?us-ascii?q?YI1KYNlCQIBAxIVCwFGEFE0AQUBHBkiOYIWAYMHnhaBBD2MMTKBAYgcAQkNg?=
+ =?us-ascii?q?WMJAQiBKAGIfoRxJ4IpglCBM3WHb4JQBINqexOCKYFQAQEBkD0bgwYBi1iBJ?=
+ =?us-ascii?q?ptyAQYCgw4cnjNFlUeRLLsuAgoHBhAjgT2CFTMaJYFsCoFBTQECAQIBDAIBA?=
+ =?us-ascii?q?gECAQIBAggBAQKONY5XITI4AgYLAQEDCYkMAQ?=
+IronPort-PHdr: A9a23:YOeQZROnvVQMaoBTlggl6nbNDRdPi9zP1u491JMrhvp0f7i5+Ny6Z
+ QqDv60r3AWCDdmTwskHotKei7rnV20E7MTJm1E5W7sIaSU4j94LlRcrGs+PBB6zBvfraysnA
+ JYKDwc9rDm0PkdPBcnxeUDZrGGs4j4OABX/Mhd+KvjoFoLIgMm7yfy+94fQbglWizawYrx/J
+ wiqoAvMscUbnZFsIbsrxBvTpXtIdeVWxWd2Kl+Wgh3x+MS+8oN9/ipJo/4u+NJOXqv8f6QjU
+ LxXFy8mPHwv5M3qrhbMUw2C7WYBX2oMkxpIBw/F7AzmXpr0ryD3uPZx1DWcMMbrVr0/Ryis4
+ Ll3Rx/pkCcHNiA28GfLisxrkalXpAutqwFjz4LIZY2YMv9+fqLGfdMBRGpBWMlRXDFfDI2lc
+ oAPAesBMvhcr4bgulACqRWzCRWpCO7pzTBFmnH70bEn3+g4DQ3KwRErE9YTvHnUqdn4MroZX
+ +Kow6nS1TjNb+1Y1yrz5obLdR4uo/+MUr1/f8fK1UUiFBnIgkmKpID5Iz+Y0PkGvWiB7+pnU
+ OKik2woqwBwoziv28csjZTCiYEVyl/e9CVy3YE4JN25SU57e9GkEYdcuz2UOoZtX8MtX3tot
+ DwkxbIbpJ62ZS4Hw4koyBDDcfKIaZSI4g79W+aLJzd1nG5odaywiRiy/kat1+zxW8m03ltUs
+ ydJjMXBu20T2xHN6cWKSvVw80iu1zuPyQzd5e5JLEEwmKfGNZMvzLo9m5UVvE/eHSH2gF37g
+ LGKekgg4OSl6OTqbq/4qpOBNoJ4kAPzPrg2lsCiAOk1NhICU3aV9Om8zrHv40/0TK9UgvEon
+ KTUto3RK94Bqa6jGQBV154u6xO4Dzi7ztsVhWIHLFdZeBKfiIjpJk3OLOj4Dfihh1Ssly9mx
+ /XcMb3gBpXBN2DDkLX8cbpk5U5RyhY/wcpQ55JTDbEBL/bzVVHruNPECR85NhS4w+fhCNpjy
+ oMTQXyDDrOdPa/IslKF5vgjL/eRaIIUojrwKeQp6+brjXAjmF8deaep3YEQaHC9BvlnI0SYY
+ Xr2jdcADWsGogQzQff3iFKeSz5ffWi9UL8h5j0jEoKpEZ/DRpyxgLyGxCq7GpxWZmZbClGDC
+ HvodJuLW+0KaC2MJs9siSIEVbe/RI87zx2utxH1y6BhLuXK/i0Ur5Xj1MJ6576buws18GlFD
+ tadzmbFfWF9nytcVi021aEn+RdV11yZl6V0nqoLRpRo+/pVX1JiZtbnxOtgBoW3B1+pQw==
+IronPort-HdrOrdr: A9a23:pvLSYKoiPKvI1+afDkEXzFYaV5oCeYIsimQD101hICG9vPbo8v
+ xG+85rqCMc5wxhP03I9erwW5VoBEmsjaKdgrNhR4tKIjOW3ldARbsKheCD/9SjIVyEygc078
+ ZdmsNFebnN5DZB/KTHCcqDfurIAuPszEllv4jjJg9WPHhXgmhbg2lENjo=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="63066938"
+Received: from mail-pj1-f70.google.com ([209.85.216.70])
+  by smtp-lax3-3.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Aug 2021 00:35:29 -0700
+Received: by mail-pj1-f70.google.com with SMTP id 2-20020a17090a1742b0290178de0ca331so3652035pjm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:35:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=mYH9IB8kLiUJPK2eGWH1AkGjFzTYCt4aUi+sk0Dhj6E=;
-        b=lJutLeHH1aYoaN1oeHBLWBiw63AnqTxdr6lJgVAiJ5fJDX4f+0eNWYz7P7mEmvJpP3
-         6LP4nynQURIXGR/fAOsg5cg0kz5UYRTrwwXe4x9qSDV17MOeG5n5imbo1XT+hY4EmatG
-         S2VH7FTqw0WBRQHsjqj+w5rUbBFtPsK9h/IbZr2OEzyNuCMCrcbrihrA6yno8AJ3wIhc
-         P2JEeIiwUbeDTO/Pc3IVBQq7XlN0uu8nY4WMcs45JzB7Kn+yt4+9rHjrwTlXH01EV89W
-         Pscm3z/svi3O+n65GfDofeioUo2EcY4TdxbcO6DbMtqpZeUktjHWjjIVTTBQsBCCaBmb
-         RmyA==
-X-Gm-Message-State: AOAM530ftXj7Gb0yYuy/InN4vfUWiowCREWWLn7PmAva2SCS5heIwI2U
-        htcIj5inJk9K5JQUWAuOUtEFYHZB0E+CCWNt/ctPIRTaGHSAtrWDVk54DvbZF4GMQ3M5YYJviNm
-        DtIKoCp0VvQ/23Ei23dvPyguL
-X-Received: by 2002:a7b:c7d7:: with SMTP id z23mr2456017wmk.136.1628753641688;
-        Thu, 12 Aug 2021 00:34:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXDY4HnbdNw6PM31nv/QfI9ZkXgq7IZiHchMbUa+C8ozEvyCRTCvh51tc4Bi0fHK++AFiliw==
-X-Received: by 2002:a7b:c7d7:: with SMTP id z23mr2455999wmk.136.1628753641495;
-        Thu, 12 Aug 2021 00:34:01 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id n186sm9388381wme.40.2021.08.12.00.34.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 00:34:01 -0700 (PDT)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kccsi7K3Q0d7ZEGUYI767ae2qeNpNVR9x1RI+mNTwAU=;
+        b=uEQCw8/Br6mVmstOj346i6Ux3IYe88qDtYronBb1R2Kb2wpdYmbHONKP5FteFA6G+b
+         fdB29eGgoqo3ymTfm0zZudn7uizbLGA8YsXthvsqCRe/5wI8gm40hds0HVOT9fDNdusi
+         yvQnB5w/zaVuZLBiYncm/4O2FK5M+XASOlfZglPPIeUmT6TMzJTJgc7MktBn2P2xU/ze
+         WnLMa/lUrIJuZf0mp0N5geng0a4esXWxUgSPkmDcVtCBbf/7FGqvFqAQf5GbwzJMBZJ/
+         PrRK4XJvF52NLWShqgegfNAE2OdJdrR85Klz2P7ibhg26mkqbjg+FeXMLBSFJLOWlAzZ
+         e2oA==
+X-Gm-Message-State: AOAM531pfzJp30iPN2FF0TDN/UV+lBb/AC4dtUM+sG0D3bZH0Z3lvzBS
+        SKKXYz1ed3lMRLgmRX8cS37wbxLvuNL4/62/9HObztMaoPfEbr0AbLfqzFozpRLCSC4u1FJX+Ll
+        buY5DM1uGRMq1A6tZ8qrkgWJm0Q==
+X-Received: by 2002:a17:90a:1d05:: with SMTP id c5mr15695409pjd.175.1628753727678;
+        Thu, 12 Aug 2021 00:35:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlN3QIKxpfS3sp2zQl+zNyzHUDzfrTSRi+p5FZ6+O5COzp/wL3UQAMaJrRFiVp810LR6P+ow==
+X-Received: by 2002:a17:90a:1d05:: with SMTP id c5mr15695395pjd.175.1628753727504;
+        Thu, 12 Aug 2021 00:35:27 -0700 (PDT)
+Received: from kq.cs.ucr.edu (kq.cs.ucr.edu. [169.235.27.223])
+        by smtp.googlemail.com with ESMTPSA id s5sm1879447pji.56.2021.08.12.00.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 00:35:27 -0700 (PDT)
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Cc:     Yizhuo Zhai <yzhai003@ucr.edu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <20210811203612.138506-1-david@redhat.com>
- <20210811203612.138506-4-david@redhat.com>
- <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
- <37179df3-13d7-9b98-4cd8-13bb7f735129@redhat.com>
- <CAHp75VcU2_qE1xt397L5dpxVMejZdHwWq0D_-Bo57_eWMtmgig@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 3/3] kernel/resource: cleanup and optimize
- iomem_is_exclusive()
-Message-ID: <a2af90f4-5bce-df8d-2466-8dabe85dd4b7@redhat.com>
-Date:   Thu, 12 Aug 2021 09:34:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
+Date:   Thu, 12 Aug 2021 00:34:46 -0700
+Message-Id: <20210812073447.127193-1-yzhai003@ucr.edu>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210723003607.64179-1-yzhai003@ucr.edu>
+References: <20210723003607.64179-1-yzhai003@ucr.edu>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcU2_qE1xt397L5dpxVMejZdHwWq0D_-Bo57_eWMtmgig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.21 09:14, Andy Shevchenko wrote:
-> 
-> 
-> On Thursday, August 12, 2021, David Hildenbrand <david@redhat.com 
-> <mailto:david@redhat.com>> wrote:
-> 
->     On 11.08.21 22:47, Andy Shevchenko wrote:
-> 
-> 
-> 
->         On Wednesday, August 11, 2021, David Hildenbrand
->         <david@redhat.com <mailto:david@redhat.com>
->         <mailto:david@redhat.com <mailto:david@redhat.com>>> wrote:
-> 
->              Let's clean it up a bit, removing the unnecessary usage of
->         r_next() by
->              next_resource(), and use next_range_resource() in case we
->         are not
->              interested in a certain subtree.
-> 
->              Signed-off-by: David Hildenbrand <david@redhat.com
->         <mailto:david@redhat.com>
->              <mailto:david@redhat.com <mailto:david@redhat.com>>>
->              ---
->                kernel/resource.c | 19 +++++++++++--------
->                1 file changed, 11 insertions(+), 8 deletions(-)
-> 
->              diff --git a/kernel/resource.c b/kernel/resource.c
->              index 2938cf520ca3..ea853a075a83 100644
->              --- a/kernel/resource.c
->              +++ b/kernel/resource.c
->              @@ -1754,9 +1754,8 @@ static int strict_iomem_checks;
->                 */
->                bool iomem_is_exclusive(u64 addr)
->                {
->              -       struct resource *p = &iomem_resource;
->              +       struct resource *p;
->                       bool err = false;
->              -       loff_t l;
->                       int size = PAGE_SIZE;
-> 
->                       if (!strict_iomem_checks)
->              @@ -1765,27 +1764,31 @@ bool iomem_is_exclusive(u64 addr)
->                       addr = addr & PAGE_MASK;
-> 
->                       read_lock(&resource_lock);
->              -       for (p = p->child; p ; p = r_next(NULL, p, &l)) {
->              +       for (p = iomem_resource.child; p ;) {
-> 
-> 
->     Hi Andy,
-> 
-> 
->         I consider the ordinal part of p initialization is slightly
->         better and done outside of read lock.
-> 
->         Something like
->         p= &iomem_res...;
->         read lock
->         for (p = p->child; ...) {
-> 
-> 
->     Why should we care about doing that outside of the lock? That smells
->     like a micro-optimization the compiler will most probably overwrite
->     either way as the address of iomem_resource is just constant?
-> 
->     Also, for me it's much more readable and compact if we perform a
->     single initialization instead of two separate ones in this case.
-> 
->     We're using the pattern I use in, find_next_iomem_res() and
->     __region_intersects(), while we use the old pattern in
->     iomem_map_sanity_check(), where we also use the same unnecessary
->     r_next() call.
-> 
->     I might just cleanup iomem_map_sanity_check() in a similar way.
-> 
-> 
-> 
-> Yes, it’s like micro optimization. If you want your way I suggest then 
-> to add a macro
-> 
-> #define for_each_iomem_resource_child() \
->   for (iomem_resource...)
+Inside function mt9m114_detect(), variable "retvalue" could
+be uninitialized if mt9m114_read_reg() returns error, however, it
+is used in the later if statement, which is potentially unsafe.
 
-I think the only thing that really makes sense would be something like this on top (not compiled yet):
+The local variable "retvalue" is renamed to "model" to avoid
+confusion.
 
+Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+Signed-off-by: Yizhuo Zhai <yzhai003@ucr.edu>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/resource.c b/kernel/resource.c
-index ea853a075a83..35aaa72df0ce 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -80,6 +80,11 @@ static struct resource *next_resource_skip_children(struct resource *p)
-         return p->sibling;
-  }
-  
-+#define for_each_resource(_root, _p, _skip_children) \
-+       for ((_p) = (_root)->child; (_p); \
-+            (_p) = (_skip_children) ? next_resource_skip_children(_p) : \
-+                                      next_resource(_p))
-+
-  static void *r_next(struct seq_file *m, void *v, loff_t *pos)
-  {
-         struct resource *p = v;
-@@ -1714,16 +1719,16 @@ int iomem_map_sanity_check(resource_size_t addr, unsigned long size)
-  bool iomem_range_contains_excluded(u64 addr, u64 size)
-  {
-         const unsigned int flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_EXCLUSIVE;
--       bool excluded = false;
-+       bool skip_children, excluded = false;
-         struct resource *p;
-  
-         read_lock(&resource_lock);
--       for (p = iomem_resource.child; p ;) {
-+       for_each_resource(&iomem_resource, p, skip_children) {
-                 if (p->start >= addr + size)
-                         break;
-                 if (p->end < addr) {
-                         /* No need to consider children */
--                       p = next_resource_skip_children(p);
-+                       skip_children = true;
-                         continue;
-                 }
-                 /*
-@@ -1735,7 +1740,7 @@ bool iomem_range_contains_excluded(u64 addr, u64 size)
-                         excluded = true;
-                         break;
-                 }
--               p = next_resource(p);
-+               skip_children = false;
-         }
-         read_unlock(&resource_lock);
-  
-@@ -1755,7 +1760,7 @@ static int strict_iomem_checks;
-  bool iomem_is_exclusive(u64 addr)
-  {
-         struct resource *p;
--       bool err = false;
-+       bool skip_children, err = false;
-         int size = PAGE_SIZE;
-  
-         if (!strict_iomem_checks)
-@@ -1764,7 +1769,7 @@ bool iomem_is_exclusive(u64 addr)
-         addr = addr & PAGE_MASK;
-  
-         read_lock(&resource_lock);
--       for (p = iomem_resource.child; p ;) {
-+       for_each_resource(&iomem_resource, p, skip_children) {
-                 /*
-                  * We can probably skip the resources without
-                  * IORESOURCE_IO attribute?
-@@ -1773,7 +1778,7 @@ bool iomem_is_exclusive(u64 addr)
-                         break;
-                 if (p->end < addr) {
-                         /* No need to consider children */
--                       p = next_resource_skip_children(p);
-+                       skip_children = true;
-                         continue;
-                 }
-  
-@@ -1788,7 +1793,7 @@ bool iomem_is_exclusive(u64 addr)
-                         err = true;
-                         break;
-                 }
--               p = next_resource(p);
-+               skip_children = false;
-         }
-         read_unlock(&resource_lock);
-  
-
-
-Thoughts?
-
-
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..77293579a134 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+ static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
+ {
+ 	struct i2c_adapter *adapter = client->adapter;
+-	u32 retvalue;
++	u32 model;
++	int ret;
+ 
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "%s: i2c error", __func__);
+ 		return -ENODEV;
+ 	}
+-	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+-	dev->real_model_id = retvalue;
++	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
++	if (ret)
++		return ret;
++	dev->real_model_id = model;
+ 
+-	if (retvalue != MT9M114_MOD_ID) {
++	if (model != MT9M114_MOD_ID) {
+ 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+ 			__func__, client->addr);
+ 		return -ENODEV;
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
