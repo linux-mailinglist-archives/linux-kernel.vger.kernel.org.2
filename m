@@ -2,114 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF463EA7FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F33E3EA803
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238375AbhHLPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238365AbhHLPvd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:51:33 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C076C061756;
-        Thu, 12 Aug 2021 08:51:08 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z9so8893918wrh.10;
-        Thu, 12 Aug 2021 08:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7Ox8EA3msfn26kOfs3nfK6Ep7YttC7NK9mJ+afKsxEI=;
-        b=YUkvhqc+QAdePDaPdTt5Xjix4FY9Jwr63o0QwfgpzV/9lxY3A6Bzc6nuZ6tPeV+v3u
-         OnjDVGVxM/w/6yskm+0Hn3Lyt8V6CPVcn1AiuVgwLLh3dCnDwAprTdwaFnIIVoFIXuuL
-         mVoTcYnD4NTTNckm/Fzu/JJwELPRNV3wzxAOBtF8Q79ejWkfPhbKfbgtRoIGPLapOeXP
-         g6Ayk+eQR0uTWEoQaq1mMb8EU5SwMRFPFfvF+pYOndn79fsqIh8kEHl3ltpyy86G+VbU
-         j06cjJbGocqrZI28bKvAH1oV3xrrvU7ec8QvhjFs3Vko7Twm5625aM4r+lFqw3sl6Lhn
-         IiyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7Ox8EA3msfn26kOfs3nfK6Ep7YttC7NK9mJ+afKsxEI=;
-        b=Shg5XT+88fBr0ZsyAECe0y+1MXnpvVEdh/OSaTTmZYQGnh0j4xQzzTlBhytBoaoeRJ
-         UsYG3OPGR5QknHd3vzVPsMAmuWiyIWz9UXSwYhjloDeMwCtrC2ca2kLrse78/KCtlPI/
-         4VHU1jwhkHYyGpoQ12ucmipBxn7cH1oAgxiZgN1l86/iFA10GpVpZndXXeiZI7uQFmeI
-         wh543gKSPAmONAI36ggn5qtjjsMtczcdPNNAk5M7cXM57KDwL64uwVpHHCgTaNZyEosm
-         ePtyWdGpgthBZwLs+3aw4KKq2J7UT03hrhw6R1VTc4pSPZWMKuNwenFbi/Y0H/lkW4xZ
-         Dv4Q==
-X-Gm-Message-State: AOAM5322mzKZfi+dkucSxEp312KMXcqMcKZg9YpiRp6QcPG/Ls9RWmSO
-        8MVVEFFqRwQvNGnJ5reilRU=
-X-Google-Smtp-Source: ABdhPJzU5U5q4HQPY2Oh41ABzfk7GiiE8EOLu5Cy8IDSivIXWs+NS58kEtMKu+EAGKATFuxDupyQ8A==
-X-Received: by 2002:a5d:42c2:: with SMTP id t2mr4772060wrr.49.1628783466985;
-        Thu, 12 Aug 2021 08:51:06 -0700 (PDT)
-Received: from [10.0.0.18] ([37.165.40.60])
-        by smtp.gmail.com with ESMTPSA id y14sm3397044wrs.29.2021.08.12.08.51.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:51:06 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] udp: UDP socket send queue repair
-To:     Bui Quang Minh <minhquangbui99@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, willemb@google.com, pabeni@redhat.com,
-        avagin@gmail.com, alexander@mihalicyn.com,
-        lesedorucalin01@gmail.com
-References: <20210811154557.6935-1-minhquangbui99@gmail.com>
- <721a2e32-c930-ad6b-5055-631b502ed11b@gmail.com>
- <7f3ecbaf-7759-88ae-53d3-2cc5b1623aff@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <489f0200-b030-97de-cf3a-2d715b07dfa4@gmail.com>
-Date:   Thu, 12 Aug 2021 17:51:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238346AbhHLPwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238337AbhHLPwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:52:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C483160E93;
+        Thu, 12 Aug 2021 15:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628783497;
+        bh=uXlwixVhz3r12PQwZ371Hh89I7lhiqCjmhBVz7o2Ak4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cic9I+DISQwO/7rbHdOuiwhmdY0BtVKNXk4NBm2OtzaBHSzR4+x5sKzH7VkDpBbEQ
+         jObXE6oeSrJYmxR+Mn6HwvOD3dXHD7v2PFU+FQpw0w0FtlfZxm3O9qeEuYKSa5OeM+
+         mKzLVDIs3Lxx5JU2Alodr8Eg86SsQoRNQdryiH5OJzwmQPqkxMNWE7SBa+g0+pQyBg
+         BDpfvr/1lL1Rfccd+hk+7wBAoP06aokxoGmsIxfYoqs05btBmbrkbwGv41oidLMCuw
+         YkPC1ZsxTxjZ0pTqO+1S2V3prENsgAi0OqPoIG2PU2oVYAvkegeZo2aLOYU2u3vzwP
+         AJpTaH+M94ccg==
+Received: by pali.im (Postfix)
+        id 6086572F; Thu, 12 Aug 2021 17:51:34 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 17:51:34 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 03/20] udf: Fix iocharset=utf8 mount option
+Message-ID: <20210812155134.g67ncugjvruos3cy@pali>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-4-pali@kernel.org>
+ <20210812141736.GE14675@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <7f3ecbaf-7759-88ae-53d3-2cc5b1623aff@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210812141736.GE14675@quack2.suse.cz>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/12/21 3:46 PM, Bui Quang Minh wrote:
+On Thursday 12 August 2021 16:17:36 Jan Kara wrote:
+> On Sun 08-08-21 18:24:36, Pali Rohár wrote:
+> > Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
+> > it is required to use utf8 mount option.
+> > 
+> > Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
+> > option.
+> > 
+> > If UTF-8 as iocharset is used then s_nls_map is set to NULL. So simplify
+> > code around, remove UDF_FLAG_NLS_MAP and UDF_FLAG_UTF8 flags as to
+> > distinguish between UTF-8 and non-UTF-8 it is needed just to check if
+> > s_nls_map set to NULL or not.
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
 > 
+> Thanks for the cleanup. It looks good. Feel free to add:
 > 
-> On 8/11/2021 11:14 PM, Eric Dumazet wrote:
->>
->>
->> On 8/11/21 5:45 PM, Bui Quang Minh wrote:
->>> In this patch, I implement UDP_REPAIR sockoption and a new path in
->>> udp_recvmsg for dumping the corked packet in UDP socket's send queue.
->>>
->>> A userspace program can use recvmsg syscall to get the packet's data and
->>> the msg_name information of the packet. Currently, other related
->>> information in inet_cork that are set in cmsg are not dumped.
->>>
->>> While working on this, I was aware of Lese Doru Calin's patch and got some
->>> ideas from it.
->>
->>
->> What is the use case for this feature, adding a test in UDP fast path ?
+> Reviewed-by: Jan Kara <jack@suse.cz>
 > 
-> This feature is used to help CRIU to dump CORKed UDP packet in send queue. I'm sorry for being not aware of the performance perspective here.
+> Or should I take this patch through my tree?
 
-UDP is not reliable.
-
-I find a bit strange we add so many lines of code
-for a feature trying very hard to to drop _one_ packet.
-
-I think a much better changelog would be welcomed.
+Hello! Patches are just RFC, mostly untested and not ready for merging.
+I will wait for feedback and then I do more testing nad prepare new
+patch series.
 
 > 
->> IMO, TCP_REPAIR hijacking standard system calls was a design error,
->> we should have added new system calls.
+> 								Honza
 > 
-> You are right that adding new system calls is a better approach. What do you think about adding a new option in getsockopt approach?
 > 
-> Thanks,
-> Quang Minh.
+> > ---
+> >  fs/udf/super.c   | 50 ++++++++++++++++++------------------------------
+> >  fs/udf/udf_sb.h  |  2 --
+> >  fs/udf/unicode.c |  4 ++--
+> >  3 files changed, 21 insertions(+), 35 deletions(-)
+> > 
+> > diff --git a/fs/udf/super.c b/fs/udf/super.c
+> > index 2f83c1204e20..6e8c29107b04 100644
+> > --- a/fs/udf/super.c
+> > +++ b/fs/udf/super.c
+> > @@ -349,10 +349,10 @@ static int udf_show_options(struct seq_file *seq, struct dentry *root)
+> >  		seq_printf(seq, ",lastblock=%u", sbi->s_last_block);
+> >  	if (sbi->s_anchor != 0)
+> >  		seq_printf(seq, ",anchor=%u", sbi->s_anchor);
+> > -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_UTF8))
+> > -		seq_puts(seq, ",utf8");
+> > -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP) && sbi->s_nls_map)
+> > +	if (sbi->s_nls_map)
+> >  		seq_printf(seq, ",iocharset=%s", sbi->s_nls_map->charset);
+> > +	else
+> > +		seq_puts(seq, ",iocharset=utf8");
+> >  
+> >  	return 0;
+> >  }
+> > @@ -558,19 +558,24 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
+> >  			/* Ignored (never implemented properly) */
+> >  			break;
+> >  		case Opt_utf8:
+> > -			uopt->flags |= (1 << UDF_FLAG_UTF8);
+> > +			if (!remount) {
+> > +				unload_nls(uopt->nls_map);
+> > +				uopt->nls_map = NULL;
+> > +			}
+> >  			break;
+> >  		case Opt_iocharset:
+> >  			if (!remount) {
+> > -				if (uopt->nls_map)
+> > -					unload_nls(uopt->nls_map);
+> > -				/*
+> > -				 * load_nls() failure is handled later in
+> > -				 * udf_fill_super() after all options are
+> > -				 * parsed.
+> > -				 */
+> > +				unload_nls(uopt->nls_map);
+> > +				uopt->nls_map = NULL;
+> > +			}
+> > +			/* When nls_map is not loaded then UTF-8 is used */
+> > +			if (!remount && strcmp(args[0].from, "utf8") != 0) {
+> >  				uopt->nls_map = load_nls(args[0].from);
+> > -				uopt->flags |= (1 << UDF_FLAG_NLS_MAP);
+> > +				if (!uopt->nls_map) {
+> > +					pr_err("iocharset %s not found\n",
+> > +						args[0].from);
+> > +					return 0;
+> > +				}
+> >  			}
+> >  			break;
+> >  		case Opt_uforget:
+> > @@ -2139,21 +2144,6 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+> >  	if (!udf_parse_options((char *)options, &uopt, false))
+> >  		goto parse_options_failure;
+> >  
+> > -	if (uopt.flags & (1 << UDF_FLAG_UTF8) &&
+> > -	    uopt.flags & (1 << UDF_FLAG_NLS_MAP)) {
+> > -		udf_err(sb, "utf8 cannot be combined with iocharset\n");
+> > -		goto parse_options_failure;
+> > -	}
+> > -	if ((uopt.flags & (1 << UDF_FLAG_NLS_MAP)) && !uopt.nls_map) {
+> > -		uopt.nls_map = load_nls_default();
+> > -		if (!uopt.nls_map)
+> > -			uopt.flags &= ~(1 << UDF_FLAG_NLS_MAP);
+> > -		else
+> > -			udf_debug("Using default NLS map\n");
+> > -	}
+> > -	if (!(uopt.flags & (1 << UDF_FLAG_NLS_MAP)))
+> > -		uopt.flags |= (1 << UDF_FLAG_UTF8);
+> > -
+> >  	fileset.logicalBlockNum = 0xFFFFFFFF;
+> >  	fileset.partitionReferenceNum = 0xFFFF;
+> >  
+> > @@ -2308,8 +2298,7 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+> >  error_out:
+> >  	iput(sbi->s_vat_inode);
+> >  parse_options_failure:
+> > -	if (uopt.nls_map)
+> > -		unload_nls(uopt.nls_map);
+> > +	unload_nls(uopt.nls_map);
+> >  	if (lvid_open)
+> >  		udf_close_lvid(sb);
+> >  	brelse(sbi->s_lvid_bh);
+> > @@ -2359,8 +2348,7 @@ static void udf_put_super(struct super_block *sb)
+> >  	sbi = UDF_SB(sb);
+> >  
+> >  	iput(sbi->s_vat_inode);
+> > -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> > -		unload_nls(sbi->s_nls_map);
+> > +	unload_nls(sbi->s_nls_map);
+> >  	if (!sb_rdonly(sb))
+> >  		udf_close_lvid(sb);
+> >  	brelse(sbi->s_lvid_bh);
+> > diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
+> > index 758efe557a19..4fa620543d30 100644
+> > --- a/fs/udf/udf_sb.h
+> > +++ b/fs/udf/udf_sb.h
+> > @@ -20,8 +20,6 @@
+> >  #define UDF_FLAG_UNDELETE		6
+> >  #define UDF_FLAG_UNHIDE			7
+> >  #define UDF_FLAG_VARCONV		8
+> > -#define UDF_FLAG_NLS_MAP		9
+> > -#define UDF_FLAG_UTF8			10
+> >  #define UDF_FLAG_UID_FORGET     11    /* save -1 for uid to disk */
+> >  #define UDF_FLAG_GID_FORGET     12
+> >  #define UDF_FLAG_UID_SET	13
+> > diff --git a/fs/udf/unicode.c b/fs/udf/unicode.c
+> > index 5fcfa96463eb..622569007b53 100644
+> > --- a/fs/udf/unicode.c
+> > +++ b/fs/udf/unicode.c
+> > @@ -177,7 +177,7 @@ static int udf_name_from_CS0(struct super_block *sb,
+> >  		return 0;
+> >  	}
+> >  
+> > -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> > +	if (UDF_SB(sb)->s_nls_map)
+> >  		conv_f = UDF_SB(sb)->s_nls_map->uni2char;
+> >  	else
+> >  		conv_f = NULL;
+> > @@ -285,7 +285,7 @@ static int udf_name_to_CS0(struct super_block *sb,
+> >  	if (ocu_max_len <= 0)
+> >  		return 0;
+> >  
+> > -	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+> > +	if (UDF_SB(sb)->s_nls_map)
+> >  		conv_f = UDF_SB(sb)->s_nls_map->char2uni;
+> >  	else
+> >  		conv_f = NULL;
+> > -- 
+> > 2.20.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
