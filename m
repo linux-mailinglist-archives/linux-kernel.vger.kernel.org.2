@@ -2,127 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E733EA7C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D863EA7C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbhHLPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:41:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36183 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237413AbhHLPlx (ORCPT
+        id S238164AbhHLPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:42:04 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:26590 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238145AbhHLPmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:41:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628782887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wVAySSNkRIQjjk+QH2YkijF+uGWoxw5I4DLvZClTw1U=;
-        b=D134bOSUHTTA0PBGBrfxeua3cjVaITA/aBeygqqG9zTT1sBhyUKi2w0KPInxk3bKwqOzda
-        u1EV3dEohJvWbbo8vwT6klqVzAk0hvI/pwYaAxSyJm/zBxIB/ODa88m6P0j4NYOD9d2vrb
-        uM+rN2JHSIrzqz2iA+75RisxeW/qbCg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-wZL33MRCOdiRFLiRosI_kw-1; Thu, 12 Aug 2021 11:41:26 -0400
-X-MC-Unique: wZL33MRCOdiRFLiRosI_kw-1
-Received: by mail-ed1-f71.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so3211032edb.19
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:41:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wVAySSNkRIQjjk+QH2YkijF+uGWoxw5I4DLvZClTw1U=;
-        b=rV6J6AogI5miqXfyfLDz1Z1+PJunU2QE84mMz/sFPg8W0QBUEDxrM8/GfQ6D3hNZxi
-         sShg6+FQKeHOBL8VVNSiHg7HL483QMWsCMSrByj9ODvaWJ+2HoQlMG8SkvTcqwR5hqLq
-         LwoUyvcmJ0g8f4KUmtMrzotrJwk1CW5BYxQbEI9p5qG6pPGvQ/8t2x2W6TLJgmNHZnXM
-         SJlfx+Y9X40HViihiK71XqWbB8XuluvpNvwEWLYRVX/hPf3tKfcjH8jrBCB6SG17X0HU
-         xt0mudKOVHPODjmNIdjiPR/lO7XlJiTe/hQda8hUezzM3Tqv1xeNmhb1ak4ksT7CTMF6
-         h1Rw==
-X-Gm-Message-State: AOAM532GqyYFQTj67KgQRI6J/qes4WARf+U4ad76BIgodmklM7u/A2jY
-        h6CRCpqzVcS8EvTO8oT6Qp07BxDpQLWvRY17BvWurW3XYReyc/xTShrscw46teiKV4DOw4xUqUG
-        YbMdRbCM+dFrDhdE+EarfA/sR
-X-Received: by 2002:a50:ef11:: with SMTP id m17mr6095912eds.233.1628782885025;
-        Thu, 12 Aug 2021 08:41:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbkauFimraFjcUcxW/s5naeDzEHblJnwTGW5kN8SFMxVNVXXtWI2AkXQ1TgeG7maJbDTkRTw==
-X-Received: by 2002:a50:ef11:: with SMTP id m17mr6095860eds.233.1628782884809;
-        Thu, 12 Aug 2021 08:41:24 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s18sm988134ejh.12.2021.08.12.08.41.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:41:24 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] KVM: Refactor kvm_arch_vcpu_fault() to return a
- struct page pointer
-To:     David Hildenbrand <david@redhat.com>,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org
-References: <YRQcZqCWwVH8bCGc@google.com>
- <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
- <98adbd3c-ec6f-5689-1686-2a8a7909951a@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d29447d4-a1b4-7f12-7bbc-8dc24cb38b72@redhat.com>
-Date:   Thu, 12 Aug 2021 17:41:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 11:42:03 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CFVxjJ030727;
+        Thu, 12 Aug 2021 15:41:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2021-07-09;
+ bh=EFEX6ngznciEgnqnlZweQ0XsRsaD+hm3C0eiw4KaFvY=;
+ b=cris5ctgeUTvdu7yuCUbyfEomBaVYxNj4zr0y6b/q7dyWgbciYPCdiaeEESr3kb1DJve
+ WRjtKP8zNyKWFmsOtMNSzlNKaJBgz8UDQtb0i9JIaPEuRyaNX/zWS8F/Uoyz+kDi8et1
+ vv8lGG/55Th8R0NaQsBGUBbaLO7+vjUO4MRutoPeWqhSKGnkm0/KSGzOQ002Bt8X+z5p
+ 7e1Jy7slhMlH924EUUM2owvzghhrFwfyTs1CXJhYPa3r8y1GxurypRbsc82nadTWcesp
+ ergpbDc4GWAnsB3EjjatpmK2nPJINUpN2s64/tpXLPXiaZOFXWwVJGQUQn+Rj/Nbz6XL SQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=EFEX6ngznciEgnqnlZweQ0XsRsaD+hm3C0eiw4KaFvY=;
+ b=n4QOGFLtV21sJs0lYXyDx6gdBPI0PNskzPvbwk0PF8exWpt4xxOdr+57sEbw0/EZBLIR
+ htBeRjZdnqc7GbRcji4hRaTDAF3Wmi5lZYWXInbjga4k8xuR65JqGWFK+lG7S0t/vvgl
+ 1tPo7kL3GRtqoSw9SiGrLwfqrdPAINYRUabAJoxuTDbQIONnzPH8V8IL0teYJa+g95aC
+ MoIbyAX8yuksaCA0aB/lyBE8u2tWDd4eoHyBn8ojFl2eSxIWB3ixffty/yFymW9UlJI8
+ DYSha75lKV0JDK+9pxdjq/Ypz0MQpHMRE1HDwCcOghA4kd3dwCX+FcyubUIM+k7xo28I Xg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ad2ajgnvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 15:41:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17CFeTrH014663;
+        Thu, 12 Aug 2021 15:41:34 GMT
+Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
+        by aserp3020.oracle.com with ESMTP id 3accrcbxf9-1;
+        Thu, 12 Aug 2021 15:41:34 +0000
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH for-next] RDMA/core/sa_query: Retry SA queries
+Date:   Thu, 12 Aug 2021 17:41:31 +0200
+Message-Id: <1628782891-26471-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <98adbd3c-ec6f-5689-1686-2a8a7909951a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10074 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 spamscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108120101
+X-Proofpoint-ORIG-GUID: HjNDw7QXfHCtOv7fjmjzImA9j-0Gjm07
+X-Proofpoint-GUID: HjNDw7QXfHCtOv7fjmjzImA9j-0Gjm07
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/21 11:04, David Hildenbrand wrote:
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> 
-> But at the same time I wonder if we should just get rid of 
-> CONFIG_KVM_S390_UCONTROL and consequently kvm_arch_vcpu_fault().
-> 
-> In practice CONFIG_KVM_S390_UCONTROL, is never enabled in any reasonable 
-> kernel build and consequently it's never tested; further, exposing the 
-> sie_block to user space allows user space to generate random SIE 
-> validity intercepts.
-> 
-> CONFIG_KVM_S390_UCONTROL feels like something that should just be 
-> maintained out of tree by someone who really needs to hack deep into hw 
-> virtualization for testing purposes etc.
+A MAD packet is sent as an unreliable datagram (UD). SA requests are
+sent as MAD packets. As such, SA requests or responses may be silently
+dropped.
 
-I have no preference either way.  It should definitely have selftests, 
-but in x86 land there are some features that are not covered by QEMU and 
-were nevertheless accepted upstream with selftests.
+IB Core's MAD layer has a timeout and retry mechanism, which amongst
+other, is used by RDMA CM. But it is not used by SA queries. The lack
+of retries of SA queries leads to long specified timeout, and error
+being returned in case of packet loss. The ULP or user-land process
+has to perform the retry.
 
-Paolo
+Fix this by taking advantage of the MAD layer's retry mechanism.
+
+First, a check against a zero timeout is added in
+rdma_resolve_route(). In send_mad(), we set the MAD layer timeout to
+one tenth of the specified timeout and the number of retries to
+10. The special case when timeout is less than 10 is handled.
+
+With this fix:
+
+ # ucmatose -c 1000 -S 1024 -C 1
+
+runs stable on an Infiniband fabric. Without this fix, we see an
+intermittent behavior and it errors out with:
+
+cmatose: event: RDMA_CM_EVENT_ROUTE_ERROR, error: -110
+
+(110 is ETIMEDOUT)
+
+Fixes: f75b7a529494 ("[PATCH] IB: Add automatic retries to MAD layer")
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cma.c      | 3 +++
+ drivers/infiniband/core/sa_query.c | 9 ++++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 515a7e9..bbcbab7 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -3117,6 +3117,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
+ 	struct rdma_id_private *id_priv;
+ 	int ret;
+ 
++	if (timeout_ms)
++		return -EINVAL;
++
+ 	id_priv = container_of(id, struct rdma_id_private, id);
+ 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
+ 		return -EINVAL;
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index b61576f..5a56082 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1358,6 +1358,7 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
+ {
+ 	unsigned long flags;
+ 	int ret, id;
++	const int nmbr_sa_query_retries = 10;
+ 
+ 	xa_lock_irqsave(&queries, flags);
+ 	ret = __xa_alloc(&queries, &id, query, xa_limit_32b, gfp_mask);
+@@ -1365,7 +1366,13 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	query->mad_buf->timeout_ms  = timeout_ms;
++	query->mad_buf->timeout_ms  = timeout_ms / nmbr_sa_query_retries;
++	query->mad_buf->retries = nmbr_sa_query_retries;
++	if (!query->mad_buf->timeout_ms) {
++		/* Special case, very small timeout_ms */
++		query->mad_buf->timeout_ms = 1;
++		query->mad_buf->retries = timeout_ms;
++	}
+ 	query->mad_buf->context[0] = query;
+ 	query->id = id;
+ 
+-- 
+1.8.3.1
 
