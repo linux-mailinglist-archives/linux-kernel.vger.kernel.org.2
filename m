@@ -2,84 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880F93E9EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F23D3E9ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhHLGrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:47:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231253AbhHLGrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:47:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87E2460EB9;
-        Thu, 12 Aug 2021 06:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628750817;
-        bh=YsjAUE0JzYW/Ne5nsjhvS55vm6pDwGdT0PyX4b+w704=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GB7TGjcPQyWIxWGZvmqonkxPb9ZO52BjgHA1NPgr35nOb+YsYO5SUbhp8fSQSdSE5
-         HLAcOG/r/2lEMoiG3HAR3dbaxCzPjqoxH580p90ovRINFv2P87SpDUMGqk5YSywpLD
-         ZiWqO9BFY6wLW6sBJ0IQ0JQPEBPWqzktlt9pMToA=
-Date:   Thu, 12 Aug 2021 08:46:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] [v2,1/1] This aims to support Foxconn SDX55
-Message-ID: <YRTD3szluseOmv8f@kroah.com>
-References: <20210811085635.4699-1-slark_xiao@163.com>
- <YRO3nDjt52EF1uVz@kroah.com>
- <20ff1e24.a43.17b380ffaf4.Coremail.slark_xiao@163.com>
+        id S234613AbhHLGtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233567AbhHLGs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:48:59 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E69C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:48:34 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q11so6698825wrr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UshIVpP2R9dDxXh8PSnznKxFiyOJIY6JviOKz5SiS0g=;
+        b=IpGFzp8er2A3UqL8zF3eoy/mVO/4R2Od+ShM7sF3BfivC8KQyTEiRk3paLZgJw1t3p
+         SojyABmUQ0NhCU+t//DamNb8IJbjzimtOhW8P9Utr5XjuqGJgFvbIviO8oiLuiauSy4p
+         K+T9osIcDF+Obgi4OCazgvVqWEFUaIZ1TcQu8D7chcPQeO0ek4t3VyYfXpNSf0h+Pvb+
+         wUeyayQn09CQPTsfTbXFdtpDPY0zTsPh370oewrnzdEX1ygO0kRJ7nsYoceyjYKh+/Dp
+         eYQ3gGa40U4SYf0Gk3lAG9XYfjd87XM+A5zi3lsP85p+PHDRwGVRfpvPRnIKTNnpR+Oe
+         BDZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UshIVpP2R9dDxXh8PSnznKxFiyOJIY6JviOKz5SiS0g=;
+        b=P/Uu6WcCXtIUNYQpdjuEgQDGD+PrCDQbrpZiYitw1EWMd8fX1QtEGJIkYgUhT298br
+         wjIIFOk/3myEYfrH5Fth9MtNiABbwb1Wf7oQ6b061Q/a2jueqvgMQw3mCph0SxorTKej
+         51L0h8h1VgfI2PQz27QZGAGjhZhOGNG28i7pUDrZEAHwYoQ1vintYW3rBkr2C0WqX0S2
+         PrH9PikVYOS/bfJQT24H8+srxHurSfQle4I2doG8R4lToMmKixHtYvnbEDMVHmZs/Yl6
+         wXTD5RqhkYlIzB8B1GaRTtqQim6nEAHFId3wDla2SjJYqbxIY7IDuDos54wnM3dJgQX4
+         8Dlw==
+X-Gm-Message-State: AOAM532+xMs/XlKftz2iAsbm7DclQVpKL7kzWsA3UmdhYGlLVcaVq4Zu
+        HVyod7tYkpWICLuH7KFHvrFdBdt898X7eSX5an8nwg==
+X-Google-Smtp-Source: ABdhPJyeVCS2eY6jggYlV/svivM382frxpQsxDD9xE5IOU5fHe0xfZvYaB4mJXp9BsJgWVha8T335wV9GOzldsFpkeg=
+X-Received: by 2002:a5d:4090:: with SMTP id o16mr2143139wrp.176.1628750912699;
+ Wed, 11 Aug 2021 23:48:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20ff1e24.a43.17b380ffaf4.Coremail.slark_xiao@163.com>
+References: <20210805235145.2528054-1-dlatypov@google.com>
+In-Reply-To: <20210805235145.2528054-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 12 Aug 2021 14:48:21 +0800
+Message-ID: <CABVgOS=u9sOEbS-m63HtBmiBSqDdsX+kRgBMUWzx4T8_VXvZ8g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kunit: tool: make --raw_output support only
+ showing kunit output
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 09:52:56AM +0800, Slark Xiao wrote:
-> At 2021-08-11 19:42:20, "Greg KH" <gregkh@linuxfoundation.org> wrote:
-> >On Wed, Aug 11, 2021 at 04:56:35PM +0800, Slark Xiao wrote:
-> >> Foxconn SDX55 T77W175 device is working in PCIe mode normally.
-> >> You can find it in drivers/bus/mhi/pci_geneirc.c file.
-> >> But in some scenario, we need to capture the memory dump once it crashed.
-> >> So a diag port driver is needed.
-> >> 
-> >> Signed-off-by: Slark Xiao <slark_xiao@163.com>
-> >> ---
-> >>  drivers/usb/serial/qcserial.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >> 
-> >> diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
-> >> index 83da8236e3c8..d8b58aea3c60 100644
-> >> --- a/drivers/usb/serial/qcserial.c
-> >> +++ b/drivers/usb/serial/qcserial.c
-> >> @@ -111,6 +111,7 @@ static const struct usb_device_id id_table[] = {
-> >>  	{USB_DEVICE(0x16d8, 0x8002)},	/* CMDTech Gobi 2000 Modem device (VU922) */
-> >>  	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
-> >>  	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
-> >> +	{USB_DEVICE(0x05c6, 0x901d)},	/* Foxconn SDX55 QDL */
-> >
-> >Why is this not sorted?
-> >
-> >And the subject needs some work still...
-> >
-> >thanks,
-> >
-> >greg k-h
-> 
-> Hi Greg,
->   Sorry,  can you show me where should I put it at?
+On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> --raw_output is nice, but it would be nicer if could show only output
+> after KUnit tests have started.
+>
+> So change the flag to allow specifying a string ('kunit').
+> Make it so `--raw_output` alone will default to `--raw_output=all` and
+> have the same original behavior.
+>
+> Drop the small kunit_parser.raw_output() function since it feels wrong
+> to put it in "kunit_parser.py" when the point of it is to not parse
+> anything.
+>
+> E.g.
+>
+> $ ./tools/testing/kunit/kunit.py run --raw_output=kunit
+> ...
+> [15:24:07] Starting KUnit Kernel ...
+> TAP version 14
+> 1..1
+>     # Subtest: example
+>     1..3
+>     # example_simple_test: initializing
+>     ok 1 - example_simple_test
+>     # example_skip_test: initializing
+>     # example_skip_test: You should not see a line below.
+>     ok 2 - example_skip_test # SKIP this test should be skipped
+>     # example_mark_skipped_test: initializing
+>     # example_mark_skipped_test: You should see a line below.
+>     # example_mark_skipped_test: You should see this line.
+>     ok 3 - example_mark_skipped_test # SKIP this test should be skipped
+> ok 1 - example
+> [15:24:10] Elapsed time: 6.487s total, 0.001s configuring, 3.510s building, 0.000s running
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
-If it belongs in this list, then it should be in sorted order, which you
-did not do here, so that would be a good idea, right?
+Thanks: this is something I've secretly wanted for a long time, and I
+really like the interface here of "--raw_output=kunit". I do wonder if
+we want to make this behaviour the default, though...
 
->   According to Bjørn comment, I think I need to create a new layout for Foxconn SDX55 device.
+The only other note I'd have, though this was a problem with the
+previous version as well, is that the output still includes the other
+kunit_tool output lines, e.g.:
+[23:42:01] Configuring KUnit Kernel ...
+[23:42:01] Building KUnit Kernel ...
 
-That is up to you and Bjørn to work out :)
+This means that the "raw" output still can't easily just be redirected
+elsewhere and used. That's probably a separate fix though, and I still
+think this is a massive improvement over what we have.
 
-thanks,
+Reviewed-by: David Gow <davidgow@google.com>
 
-greg k-h
+-- David
+
+>  Documentation/dev-tools/kunit/kunit-tool.rst |  9 ++++++---
+>  tools/testing/kunit/kunit.py                 | 20 +++++++++++++++-----
+>  tools/testing/kunit/kunit_parser.py          |  4 ----
+>  tools/testing/kunit/kunit_tool_test.py       |  9 +++++++++
+>  4 files changed, 30 insertions(+), 12 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
+> index c7ff9afe407a..ae52e0f489f9 100644
+> --- a/Documentation/dev-tools/kunit/kunit-tool.rst
+> +++ b/Documentation/dev-tools/kunit/kunit-tool.rst
+> @@ -114,9 +114,12 @@ results in TAP format, you can pass the ``--raw_output`` argument.
+>
+>         ./tools/testing/kunit/kunit.py run --raw_output
+>
+> -.. note::
+> -       The raw output from test runs may contain other, non-KUnit kernel log
+> -       lines.
+> +The raw output from test runs may contain other, non-KUnit kernel log
+> +lines. You can see just KUnit output with ``--raw_output=kunit``:
+> +
+> +.. code-block:: bash
+> +
+> +       ./tools/testing/kunit/kunit.py run --raw_output=kunit
+>
+>  If you have KUnit results in their raw TAP format, you can parse them and print
+>  the human-readable summary with the ``parse`` command for kunit_tool. This
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 7174377c2172..5a931456e718 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -16,6 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+>
+>  from collections import namedtuple
+>  from enum import Enum, auto
+> +from typing import Iterable
+>
+>  import kunit_config
+>  import kunit_json
+> @@ -114,7 +115,16 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
+>                                               'Tests not Parsed.')
+>
+>         if request.raw_output:
+> -               kunit_parser.raw_output(request.input_data)
+> +               output: Iterable[str] = request.input_data
+> +               if request.raw_output == 'all':
+> +                       pass
+> +               elif request.raw_output == 'kunit':
+> +                       output = kunit_parser.extract_tap_lines(output)
+> +               else:
+> +                       print(f'Unknown --raw_output option "{request.raw_output}"', file=sys.stderr)
+> +               for line in output:
+> +                       print(line.rstrip())
+> +
+>         else:
+>                 test_result = kunit_parser.parse_run_tests(request.input_data)
+>         parse_end = time.time()
+> @@ -135,7 +145,6 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
+>         return KunitResult(KunitStatus.SUCCESS, test_result,
+>                                 parse_end - parse_start)
+>
+> -
+>  def run_tests(linux: kunit_kernel.LinuxSourceTree,
+>               request: KunitRequest) -> KunitResult:
+>         run_start = time.time()
+> @@ -181,7 +190,7 @@ def add_common_opts(parser) -> None:
+>         parser.add_argument('--build_dir',
+>                             help='As in the make command, it specifies the build '
+>                             'directory.',
+> -                            type=str, default='.kunit', metavar='build_dir')
+> +                           type=str, default='.kunit', metavar='build_dir')
+>         parser.add_argument('--make_options',
+>                             help='X=Y make option, can be repeated.',
+>                             action='append')
+> @@ -246,8 +255,9 @@ def add_exec_opts(parser) -> None:
+>                              action='append')
+>
+>  def add_parse_opts(parser) -> None:
+> -       parser.add_argument('--raw_output', help='don\'t format output from kernel',
+> -                           action='store_true')
+> +       parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
+> +                           'If set to --raw_output=kunit, filters to just KUnit output.',
+> +                           type=str, nargs='?', const='all', default=None)
+>         parser.add_argument('--json',
+>                             nargs='?',
+>                             help='Stores test results in a JSON, and either '
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index b88db3f51dc5..84938fefbac0 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -106,10 +106,6 @@ def extract_tap_lines(kernel_output: Iterable[str]) -> LineStream:
+>                                 yield line_num, line[prefix_len:]
+>         return LineStream(lines=isolate_kunit_output(kernel_output))
+>
+> -def raw_output(kernel_output) -> None:
+> -       for line in kernel_output:
+> -               print(line.rstrip())
+> -
+>  DIVIDER = '=' * 60
+>
+>  RESET = '\033[0;0m'
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 628ab00f74bc..619c4554cbff 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -399,6 +399,15 @@ class KUnitMainTest(unittest.TestCase):
+>                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+>                         self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+>
+> +       def test_run_raw_output_kunit(self):
+> +               self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> +               kunit.main(['run', '--raw_output=kunit'], self.linux_source_mock)
+> +               self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
+> +               self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
+> +               for call in self.print_mock.call_args_list:
+> +                       self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+> +                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+> +
+
+This is basically identical to test_run_raw_output(). Is there an easy
+way of making sure this test can distinguish between them?
+
+>         def test_exec_timeout(self):
+>                 timeout = 3453
+>                 kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
+>
+> base-commit: f684616e08e9cd9db3cd53fe2e068dfe02481657
+> --
+> 2.32.0.605.g8dce9f2422-goog
+>
