@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F283E9C1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A475D3E9C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 04:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233603AbhHLB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbhHLB4L (ORCPT
+        id S233538AbhHLCI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 22:08:29 -0400
+Received: from m1364.mail.163.com ([220.181.13.64]:12260 "EHLO
+        m1364.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhHLCI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:56:11 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3099C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:55:46 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t128so7779711oig.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l1TFGpQKbo9d6Zg3cXMrMAMjVR7np9Pm2fOo9b5VLkE=;
-        b=FLcKFZSCTWqYSbPbU/CKgWD2Iv58Le4xX78cuzcpPOgp/+At7ln28aVCXzNrM9hKwh
-         paI8zIz+aI0/BlEEVIyyi79iMlNN7cuPizSjGRneR2ztkS7gQ3lZT8FKQ1bAMVkNiQip
-         j4RGiz3AZYo0+6VHo6DGIvsQQ/MDn4hxIgALob91fnNBswQ1Ssnfv+UDzWj+CJLS00LU
-         7bI8LbpCyF13dA9s7gulor9PWP+Ks5i24qfWhNTZVp8bA1OGe6iido0zA8oap0nUG2xu
-         aj4HVoKhH6FHFlLI/rVXSu9wu2guBPx52A9UfP8fDSF2T1eCZfbFsCU2fCOfESxkO3/L
-         SqXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l1TFGpQKbo9d6Zg3cXMrMAMjVR7np9Pm2fOo9b5VLkE=;
-        b=SWOmkux9TK+JkKx1uh0XwnORiEpXwYcBGqFuSaCyRiADmNpkeZ6dXW+ewlKYnAxSzA
-         um/1AXhiI1SwmqWEBA1RVZiToWfnDQxsoAaOFWoaRXs6OmegbeiigB/k0UlZzfx3AJNG
-         Nv4NI4T2Q4BnNd167vVc8N/3jFdgsKOd5EIIshsDYm5IKnqjpOwh+3ZgmYD8pimanqAg
-         bR+ym+CK9aWUvl77ArCFciKdHOyy1ND/CNtmvsGT6Sm6Dd2tWan1ub90DVecNEk8IrGN
-         /r7PFeV2YB4427i6sx3Ep/d1f8HB9z0MTF9ZLEHjTOw5xxW0r+LE+CsdAgac3hEMN8TI
-         Dfpw==
-X-Gm-Message-State: AOAM531OyD5Ww8+ngrjlcmg3uxSXrZe//ZzKfV1xARGNOOH1uHfWX6vY
-        JGBu5JQG1dCMlTnWuAoYuKCKzJdvUsc=
-X-Google-Smtp-Source: ABdhPJy/KphdFc7XiR5guU8xcr1mCJHnEIKZz2vIN+OWYvuZbrNxzTlJfFFKoUGN0w4ILu0ZnEWIGw==
-X-Received: by 2002:a05:6808:3db:: with SMTP id o27mr1490366oie.114.1628733346063;
-        Wed, 11 Aug 2021 18:55:46 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id s10sm232546oog.14.2021.08.11.18.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 18:55:45 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH 0/3] staging: r8188eu: Clean up some smatch warnings and
- errors
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210811215806.20426-1-Larry.Finger@lwfinger.net>
- <CAA=Fs0=WeawmsS=Y+iEL7AMvkhyN3wuXRaxD2eC271zvdeBwUg@mail.gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <21ed5860-1449-bdba-b1d4-daf5673302f2@lwfinger.net>
-Date:   Wed, 11 Aug 2021 20:55:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 22:08:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=dAi21
+        qFtOUAZAZ7vWpi4qn+7g8lQn04g7RhRHrYS5aQ=; b=hNAIZeBv76OuSS+ZugSO8
+        qu7RvuwfW5fEkMIxH7Ua+Hcqp7fPA9iJj2cpbC+Fz0kh2mzy7bgpJIZ5oZfXb5HG
+        qNCqHvAG+SHtMZiz8DoFfMXAG1szyCDVlGeG88gOdMpZ/uW9Dh51V0OMcYnK/m24
+        fvVacFEARRVVcsXOYvTMm0=
+Received: from slark_xiao$163.com ( [223.104.68.9] ) by ajax-webmail-wmsvr64
+ (Coremail) ; Thu, 12 Aug 2021 10:07:09 +0800 (CST)
+X-Originating-IP: [223.104.68.9]
+Date:   Thu, 12 Aug 2021 10:07:09 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH] [v2,1/1] This aims to support Foxconn SDX55
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <875ywcfave.fsf@miraculix.mork.no>
+References: <20210811085635.4699-1-slark_xiao@163.com>
+ <875ywcfave.fsf@miraculix.mork.no>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <CAA=Fs0=WeawmsS=Y+iEL7AMvkhyN3wuXRaxD2eC271zvdeBwUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <24551753.bf2.17b381cff23.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: QMGowABXXs5PghRhNKPBAA--.5850W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBrRDsZF75bLMYbgABs6
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 7:00 PM, Phillip Potter wrote:
-> Dear Larry,
-> 
-> Sorry, but the third patch doesn't apply to my copy of the staging
-> tree with staging-testing tip as of now. Thanks.
-> 
-> Regards,
-> Phil
-
-Thanks for the notification. There was a conflict that arose between the time I 
-created the patch, and when it was received. I just submitted v2.
-
-Larry
+CgoKCgoKCgoKCgoKCgoKCkF0IDIwMjEtMDgtMTEgMjA6MDE6NTcsICJCasO4cm4gTW9yayIgPGJq
+b3JuQG1vcmsubm8+IHdyb3RlOgo+U2xhcmsgWGlhbyA8c2xhcmtfeGlhb0AxNjMuY29tPiB3cml0
+ZXM6Cj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jIGIvZHJp
+dmVycy91c2Ivc2VyaWFsL3Fjc2VyaWFsLmMKPj4gaW5kZXggODNkYTgyMzZlM2M4Li5kOGI1OGFl
+YTNjNjAgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jCj4+ICsr
+KyBiL2RyaXZlcnMvdXNiL3NlcmlhbC9xY3NlcmlhbC5jCj4+IEBAIC0xMTEsNiArMTExLDcgQEAg
+c3RhdGljIGNvbnN0IHN0cnVjdCB1c2JfZGV2aWNlX2lkIGlkX3RhYmxlW10gPSB7Cj4+ICAJe1VT
+Ql9ERVZJQ0UoMHgxNmQ4LCAweDgwMDIpfSwJLyogQ01EVGVjaCBHb2JpIDIwMDAgTW9kZW0gZGV2
+aWNlIChWVTkyMikgKi8KPj4gIAl7VVNCX0RFVklDRSgweDA1YzYsIDB4OTIwNCl9LAkvKiBHb2Jp
+IDIwMDAgUURMIGRldmljZSAqLwo+PiAgCXtVU0JfREVWSUNFKDB4MDVjNiwgMHg5MjA1KX0sCS8q
+IEdvYmkgMjAwMCBNb2RlbSBkZXZpY2UgKi8KPj4gKwl7VVNCX0RFVklDRSgweDA1YzYsIDB4OTAx
+ZCl9LAkvKiBGb3hjb25uIFNEWDU1IFFETCAqLwo+Cj5JIGFzc3VtZSB0aGlzIGRldmljZSB3aWxs
+IGV4cG9zZSBvdGhlciBzZXJpYWwgZnVuY3Rpb25zIHdoZW4gYm9vdGVkIGluCj5hcHBsaWNhdGlv
+biBVU0IgbW9kZT8gIEJ1dCBwcm9iYWJseSBub3Qgd2l0aCBhIEdvYmkgMmsgbGF5b3V0Li4uIE1h
+eWJlCj5hZGQgdGhlIGFwcGxpY2F0aW9uIGRldmljZSBJRCB0byBzb21lIFVTQiBzZXJpYWwgZHJp
+dmVyIHRvbywgYW5kIGluY2x1ZGUKPnRoZSBRREwgZGV2aWNlIElEIHRoZXJlIGFzIHdlbGwgdG8g
+cmVkdWNlIGNvbmZ1c2lvbj8KPgo+Q291bGQgeW91IHByb3ZpZGUgYSB2aWV3IG9mIHRoZSBkZWZh
+dWx0IFVTQiBkZXNjcmlwdG9ycyBpbiBib3RoIFFETCBhbmQKPmFwcGxpY2F0aW9uIG1vZGU/ICBF
+LmcgZnJvbSBsc3VzYiAtdiBvciAgL3N5cy9rZXJuZWwvZGVidWcvdXNiL2RldmljZXM/Cj4KPgo+
+QmrDuHJuCgpIaSBCasO4cm4sCiAgVGhhbmsgeW91IGZvciB5b3VyIGdvb2QgYWR2aWNlLiBBY3R1
+YWxseSBpdCdzIG15IHR5cG8gZm9yICdRREwnLiBJdCBzaG91bGQgYmUgJ0RpYWcnIHBvcnQuCiAg
+UGxlYXNlIHNlZSBteSBsb2NhbCBzZXR0aW5nIGZvciBQQ0lFK1VTQiBtb2RlOgoKIGpiZEBqYmQt
+VGhpbmtQYWQtUDEtR2VuLTQ6fi9naXQvbmV0LW5leHQkIGxzdXNiIHwgZ3JlcCAwNWM2CkJ1cyAw
+MDMgRGV2aWNlIDAwMzogSUQgMDVjNjo5MDFkIFF1YWxjb21tLCBJbmMuIFF1YWxjb21tIEhTLVVT
+QiBBbmRyb2lkIERpYWcgOTAxRApqYmRAamJkLVRoaW5rUGFkLVAxLUdlbi00On4kIGxzcGNpIHwg
+Z3JlcCBGb3hjb25uCjAwMDA6MDg6MDAuMCBXaXJlbGVzcyBjb250cm9sbGVyIFswZDQwXTogRm94
+Y29ubiBJbnRlcm5hdGlvbmFsLCBJbmMuIERldmljZSBlMGFiCgogIE9uZSBtb3JlLCBzaG91bGQg
+SSBhZGQgYSBuZXcgbGF5b3V0IGZvciBRdWFsY29tbSBTRFg1NSBwbGF0Zm9ybT8gQXMgdGhlcmUg
+YXJlIEcxSyxHMkssIFNJRVJSQSBhbmQgIEhVQVdFSSBsYXlvdXQsIG5vbmUgb2YgdGhlbSBpbmNs
+dWRlcyBRdWFsY29tbSBTRFg1NS4KClRoYW5rcwo=
