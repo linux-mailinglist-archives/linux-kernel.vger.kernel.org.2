@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218DB3E9D42
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529F83E9D44
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhHLEWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
+        id S233791AbhHLEWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHLEWC (ORCPT
+        with ESMTP id S229531AbhHLEWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:22:02 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7076DC061765;
-        Wed, 11 Aug 2021 21:21:38 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id c17so282290plz.2;
-        Wed, 11 Aug 2021 21:21:38 -0700 (PDT)
+        Thu, 12 Aug 2021 00:22:31 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6889BC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id a20so5631325plm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=rzIfPgU+iHWBSpnuOzwI+tb+zgZVbNg5XJGowiab0uM=;
-        b=hE+kDUUwVW0gsA5brzQZUsFwxGyhKekgHRx+YYEq4sQ2FJC7S3M3vYmI8hc7RcHdK9
-         xGoBfdHwLJEII6vW6leXG3Y7/L59mnLol4Q2bXJysBvda6ULoV513c91reejQ4Qn0urF
-         QxFTm9QW2nZTR+3TQGbzx9ZG4RPEBocGPpE1Z/InOfUn6Axa/GUG/QNX+1vMs3cJn3OB
-         Ouwr8aJttioX87ktD0hj25eQAzaRTx8V3hpKBEbX17Q03aAcnC4i8J9BCnCQMe/vyFXc
-         6uti4gnxEqc/fIRcv7/dYdYhPgfCCe+wkXgElOj4MshqaT4D6F1AXFgoVjgcwzF1qN1J
-         yDYA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=V2OoNgUgDhLYLo0G/A9MxruZCr+/VPFKnTGlfuhSRBg=;
+        b=Cp0YBwB3VoJ6c1xlgx8o0IXEBN7VUK7qeorVOgi6mSqV0k8cW0qYQ4PtF/hz4+mCeH
+         jfZnSgVzPWfbQQrVeIpbNEhi/mXhg+yTZAHgxHxdLws72JTAIEno2pU3Z22pk1Z3df0W
+         RUGEGrmMrxGeWGSG+fti9x2zWGFw+9eQwXxrm6BE2RkRnfE/f6Qwye48KJLKQ7wDb7vC
+         elcsOVs+mocn2d8dePThq1JD7OrEMittYEmcqOB8jnB0kNlPUXuFNxJvarKHwZYOmkQX
+         s0KaCTJ5VTGyx8QJix6/0NhOGitJntW9+Wqh8rk4mdrEcZdx9aUPrZNSKNviBkSItFJE
+         Aegg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=rzIfPgU+iHWBSpnuOzwI+tb+zgZVbNg5XJGowiab0uM=;
-        b=rPAnCnWxE/iFsrFOu9ag0xV1fQLA6LQsgwEuFtL4OEbFBqvG4ACH21uoYO3H/B9sBf
-         jSXZrjbP2uPY8mdIHIjH57RlIK8psrOhtNrscJ77XeGPq33fll71bSt7oa6iNCZy3d4X
-         4thaR5pwEaHka89Efvn8E3jtZFfaOMHrS6t85tEMTfO0GKbFcIQjJOQXtYCVhzCiyj1J
-         FwY8vPmh400GfX54D8enB4RHQiCtb0KYugPF88rmLPvOTobkpjN/6kpKYEya/x69cXki
-         bFv5Mgh3NNMCFqi21x0AGabit8inratxeMQZXoCvHcMz/Nq9WOICENDvYoTsX5FwCgyK
-         TRaQ==
-X-Gm-Message-State: AOAM530fDCfN+heyICtZl73yfBmh7xcVvG7uPI8v+Tie4JwdPoNI2j3v
-        chjHsTIWLR9e1bU7HR5aheY=
-X-Google-Smtp-Source: ABdhPJxRBqxoMId4E22yz1C+ubk21gLJ7FJsKhaOWBIvDxbrkcCmcET5eghsTtM+F5ffIVyfP23y/g==
-X-Received: by 2002:a65:6454:: with SMTP id s20mr2082856pgv.18.1628742098033;
-        Wed, 11 Aug 2021 21:21:38 -0700 (PDT)
-Received: from [10.157.0.26] ([85.203.23.10])
-        by smtp.gmail.com with ESMTPSA id g19sm8440629pjl.25.2021.08.11.21.21.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 21:21:37 -0700 (PDT)
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        christophe.jaillet@wanadoo.fr, tglx@linutronix.de
-Cc:     linux-media@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
-From:   Tuo Li <islituo@gmail.com>
-Subject: [media] cx25821: Is there a potential buffer-underflow in
- cx25821-core.c?
-Message-ID: <22f3bdcb-dc29-b6a7-941e-6218f0a8791d@gmail.com>
-Date:   Thu, 12 Aug 2021 12:21:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V2OoNgUgDhLYLo0G/A9MxruZCr+/VPFKnTGlfuhSRBg=;
+        b=GIXrBGmXgt9VGYVip8gRojmuIfn/MtiiMSq/2j+Ez/S3bfExmQoO0n9Q1r+P/UbQmD
+         Z6k7vWruKwS92zPpvgZ9Vacj7X46V6hG//M/qjeAPSEdob7/SJ7jnUOKZRcIwzdAqqqw
+         rJbWUO7qFZcXJdK0EbF+1qE0Xk1Zu7wztJoy26VEGQWoivAoLIXwukJjMDayqqCGk+An
+         1jWlwKxDPjrFL4LwyjRQWOzeKXnE05GH/8sqaAM8Ml+B7Zid608PVetYDlCu+T7U5yK4
+         JMm4fOA91/T0hVOT+6TzkdHWZBXXW7XQkeEk6+kfUhUgqLVb1q2uV1cWkxizfbwgvZjI
+         YfHA==
+X-Gm-Message-State: AOAM533b05o3QLrSiimZG5DMlHS3j4iHGw4+bJLuX7mqT4JLI4VY+48C
+        o9FPnCQzmuJDNm6+C24K0aSRYA==
+X-Google-Smtp-Source: ABdhPJySH0sOcWbvWBwKwwS9V1PFVMc96Xd12LGXhQOasIzv3HTUQxkmrRpQYi6FkNoPzJJILXNdLw==
+X-Received: by 2002:a63:7883:: with SMTP id t125mr2028840pgc.243.1628742127011;
+        Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id gz23sm1146608pjb.0.2021.08.11.21.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 21:22:06 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:52:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
+Message-ID: <20210812042204.lxugyjxa2cyz45ib@vireshk-i7>
+References: <cover.1628682874.git.viresh.kumar@linaro.org>
+ <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
+ <143a03df-d858-b2de-a2cc-983c35d71e53@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <143a03df-d858-b2de-a2cc-983c35d71e53@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11-08-21, 17:32, Lukasz Luba wrote:
+> 
+> 
+> On 8/11/21 12:58 PM, Viresh Kumar wrote:
+> > Set the newly added .register_em() callback to register with the EM
+> > after the cpufreq policy is properly initialized.
+> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >   drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
+> >   1 file changed, 32 insertions(+), 23 deletions(-)
+> 
+> > +static void scmi_cpufreq_register_em(struct cpufreq_policy *policy)
+> > +{
+> > +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
+> > +	bool power_scale_mw = perf_ops->power_scale_mw_get(ph);
+> > +	struct scmi_data *priv = policy->driver_data;
+> > +
+> > +	em_dev_register_perf_domain(get_cpu_device(policy->cpu), priv->nr_opp,
+> > +				    &em_cb, priv->opp_shared_cpus,
+> > +				    power_scale_mw);
+> 
+> I would free the priv->opp_shared_cpus mask here, since we don't
+> need it anymore and memory can be reclaimed.
 
-Our static analysis tool reports a possible buffer-underflow in 
-cx25821-core.c in Linux 5.14.0-rc3:
+Yes, we don't need it anymore, but this isn't a good place to undo
+what init() has done. Moreover, it is possible that register_em() may
+not get called at all, if some error has occurred after init() has
+successfully returned. It is always better to use exit() for such
+things. It won't hurt a lot to keep this around anyway.
 
-The variable channel_select is checked in:
-761:    if (channel_select <= 7 && channel_select >= 0)
+> Don't forget this
+> setup would be called N CPUs times, on this per-CPU policy platform.
 
-This indicates that channel_select can be negative.
-If so, a buffer-underflow will occur:
-765:    dev->channels[channel_select].pixel_formats = format;
+Yes, but EM will just ignore this call. Though I have made a change
+here now to check for non-zero nr_opp to avoid the unnecessary call.
 
-However, we checked this report manually, and found that the only call 
-site is in cx25821-video.c:
-394:    cx25821_set_pixel_format(dev, SRAM_CH00, pix_format);
+> If freed here, then also there wouldn't be a need to free it in
+> scmi_cpufreq_exit() so you can remove it from there.
 
-And SRAM_CH00 is not negative.
-
-I am not sure whether this negatvie-check is redundant or there is a 
-potential buffer-underflow.
-Any feedback would be appreciated, thanks!
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-Best wishes,
-Tuo Li
+-- 
+viresh
