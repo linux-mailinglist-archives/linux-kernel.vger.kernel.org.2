@@ -2,228 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9552A3EAA40
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17333EAA44
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhHLSaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbhHLSaO (ORCPT
+        id S233657AbhHLScR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:32:17 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55556 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233517AbhHLScQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:30:14 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE4DC0617A8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:29:48 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so8865541otl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8p/OCx8wfKLI1Vwr3WoruCyYyLDk0HKlG9q3THas0Ro=;
-        b=pCkiiuBcAuyJQfE4lgHO2ZNaNUHxyIZv+gkKlkHTrJLj5xvMeJrz9bWScyqw/CpS24
-         YZ+1Q8phMUIM9RivFHJsILLnwPWCWsXFbUTNrUi9gUfYWVUuUI93UEj1Ol6uwBY3alyn
-         P/deOXHX0+ZtYJfTnYvzFAIdZ79Y3niK8GIX0bATy2Pkv1WicFhfc75p31bOoAmQtr2D
-         siqWqJ2SiIxlmKmr+hg5DahX0u3DwOT83FVQtueF/qQKjhk3fEgSsQXcwi4U6OYnJhSQ
-         qxj1aJfTWJ/BGdp5X6hAdhaK1VFAYJDW6YItkYu5eOXSaEX0JWr3HsODbMbraE8ogrPl
-         kBlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8p/OCx8wfKLI1Vwr3WoruCyYyLDk0HKlG9q3THas0Ro=;
-        b=jA9AV1xRQCGfA55tYJ8cJWPdqwRBSCHdVQBEr9Q8cZGGPx1tZ5b9K5hvoFXnRsalgd
-         wL80WUBIRwSQ9J2xokPeF4vd1Jo/QgFBiEDqz77QJ0ZIy9IY4leILOyyANLwtxK+Vous
-         BENwoSsU5Vox1JX1Ha3/MshpSuz1hKl/ywNZYOxUYIAd3ZOycOZeSptdls5VA0RCgWzt
-         9ATOYkUuEZMoJliesTo8v/uznN6x+Jt5a0BVvkSSRWG6kn/r+1qNlJI5CgPiUL3H2DTi
-         p/85oKSE+ZIVopne2myNWcosqy9EW/x+qhFvcnk6x+ewPu46pJ6ZzRf+IszYfwBZRF2U
-         VaUA==
-X-Gm-Message-State: AOAM533SzXcTEcO6ZcmgeSJLtG1IH/7n/M1Y2zK3vyx2+11WgQi85SDY
-        xxj0g0sAsNHuIIs76N9+I0Nr+IrhEwRHRylBuUxqaQ==
-X-Google-Smtp-Source: ABdhPJwmK/AbZDsA28wYWSSvhqmGx87EEzk8m55h/Bl6sOe/aSIg0F5Q/OX5FkRbNMXJ6bvis0pEJwYbT6vvgpWqJyo=
-X-Received: by 2002:a05:6830:189:: with SMTP id q9mr4548874ota.313.1628792987226;
- Thu, 12 Aug 2021 11:29:47 -0700 (PDT)
+        Thu, 12 Aug 2021 14:32:16 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 86F9F209A3B0;
+        Thu, 12 Aug 2021 11:31:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 86F9F209A3B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1628793110;
+        bh=pkQbqTdl+/AZKnjeX+sJbAnQw1xnsGlyrS0T34UZnik=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=j1h1g0PF8YZ7gDVKimnoFOI37E5kP+2Jff0yGA12xSg/EfekAnFgYEr9/3XQZFkSl
+         3zXlXyGoYmhlrDiGRBGGJtEB0sQ3QeLLN5oL2wYUBmhrlP3UxcERnSJ5qTVZ+nkfVV
+         YrodXTOevxRV38iC3xIe7lvAKgYmdaVng/H53BbM=
+Subject: Re: [RFC PATCH v7 0/4] arm64: Reorganize the unwinder and implement
+ stack trace reliability checks
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com,
+        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
+ <20210812132435.6143-1-madvenka@linux.microsoft.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <3a71bd4a-dc3c-eb66-6555-2f96877499f4@linux.microsoft.com>
+Date:   Thu, 12 Aug 2021 13:31:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210812181815.3378104-1-seanjc@google.com>
-In-Reply-To: <20210812181815.3378104-1-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 12 Aug 2021 11:29:35 -0700
-Message-ID: <CANgfPd-SsnkBeAuZ0eVRknjLo3DNP2ZnzF88KQTkACj+sU55OQ@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: x86/mmu: Protect marking SPs unsync when using
- TDP MMU with spinlock
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210812132435.6143-1-madvenka@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 11:18 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Add yet another spinlock for the TDP MMU and take it when marking indirect
-> shadow pages unsync.  When using the TDP MMU and L1 is running L2(s) with
-> nested TDP, KVM may encounter shadow pages for the TDP entries managed by
-> L1 (controlling L2) when handling a TDP MMU page fault.  The unsync logic
-> is not thread safe, e.g. the kvm_mmu_page fields are not atomic, and
-> misbehaves when a shadow page is marked unsync via a TDP MMU page fault,
-> which runs with mmu_lock held for read, not write.
->
-> Lack of a critical section manifests most visibly as an underflow of
-> unsync_children in clear_unsync_child_bit() due to unsync_children being
-> corrupted when multiple CPUs write it without a critical section and
-> without atomic operations.  But underflow is the best case scenario.  The
-> worst case scenario is that unsync_children prematurely hits '0' and
-> leads to guest memory corruption due to KVM neglecting to properly sync
-> shadow pages.
->
-> Use an entirely new spinlock even though piggybacking tdp_mmu_pages_lock
-> would functionally be ok.  Usurping the lock could degrade performance when
-> building upper level page tables on different vCPUs, especially since the
-> unsync flow could hold the lock for a comparatively long time depending on
-> the number of indirect shadow pages and the depth of the paging tree.
->
-> For simplicity, take the lock for all MMUs, even though KVM could fairly
-> easily know that mmu_lock is held for write.  If mmu_lock is held for
-> write, there cannot be contention for the inner spinlock, and marking
-> shadow pages unsync across multiple vCPUs will be slow enough that
-> bouncing the kvm_arch cacheline should be in the noise.
->
-> Note, even though L2 could theoretically be given access to its own EPT
-> entries, a nested MMU must hold mmu_lock for write and thus cannot race
-> against a TDP MMU page fault.  I.e. the additional spinlock only _needs_ to
-> be taken by the TDP MMU, as opposed to being taken by any MMU for a VM
-> that is running with the TDP MMU enabled.  Holding mmu_lock for read also
-> prevents the indirect shadow page from being freed.  But as above, keep
-> it simple and always take the lock.
->
-> Alternative #1, the TDP MMU could simply pass "false" for can_unsync and
-> effectively disable unsync behavior for nested TDP.  Write protecting leaf
-> shadow pages is unlikely to noticeably impact traditional L1 VMMs, as such
-> VMMs typically don't modify TDP entries, but the same may not hold true for
-> non-standard use cases and/or VMMs that are migrating physical pages (from
-> L1's perspective).
->
-> Alternative #2, the unsync logic could be made thread safe.  In theory,
-> simply converting all relevant kvm_mmu_page fields to atomics and using
-> atomic bitops for the bitmap would suffice.  However, (a) an in-depth audit
-> would be required, (b) the code churn would be substantial, and (c) legacy
-> shadow paging would incur additional atomic operations in performance
-> sensitive paths for no benefit (to legacy shadow paging).
->
-> Fixes: a2855afc7ee8 ("KVM: x86/mmu: Allow parallel page faults for the TDP MMU")
-> Cc: stable@vger.kernel.org
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+The messages are not threaded properly.
+
+I will resend the whole series with proper threading.
+
+I apologize.
+
+Madhavan
+
+On 8/12/21 8:24 AM, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> 
+> Make all stack walking functions use arch_stack_walk()
+> ======================================================
+> 
+> Currently, there are multiple functions in ARM64 code that walk the
+> stack using start_backtrace() and unwind_frame(). Convert all of
+> them to use arch_stack_walk(). This makes maintenance easier.
+> 
+> Reorganize the unwinder code for better consistency and maintenance
+> ===================================================================
+> 
+> Rename unwinder functions to unwind_*() similar to other architectures
+> for naming consistency.
+> 
+> Annotate all of the unwind_*() functions with notrace so they cannot be
+> ftraced and NOKPROBE_SYMBOL() so they cannot be kprobed. Ftrace and Kprobe
+> code can call the unwinder.
+> 
+> Redefine the unwinder loop and make it similar to other architectures.
+> Define the following:
+> 
+> 	unwind_start(&frame, task, fp, pc);
+> 	while (unwind_consume(&frame, consume_entry, cookie))
+> 		unwind_next(&frame);
+> 	return !unwind_failed(&frame);
+> 
+> unwind_start()
+> 	Same as the original start_backtrace().
+> 
+> unwind_consume()
+> 	This new function does two things:
+> 
+> 	- Calls consume_entry() to consume the return PC.
+> 
+> 	- Implements checks to determine whether the unwind should continue
+> 	  or terminate.
+> 
+> unwind_next()
+> 	Same as the original unwind_frame() except:
+> 
+> 	- the stack trace termination check has been moved from here to
+> 	  unwind_consume(). So, unwind_next() assumes that the fp is valid.
+> 
+> 	- unwind_frame() used to return an error value. This function only
+> 	  sets internal state and does not return anything. The state is
+> 	  retrieved via a helper. See next.
+> 
+> unwind_failed()
+> 	Return a boolean to indicate whether the stack trace completed
+> 	successfully or failed. arch_stack_walk() ignores the return
+> 	value. But arch_stack_walk_reliable() in the future will look
+> 	at the return value.
+> 
+> Unwind status
+> 	Introduce a new flag called "failed" in struct stackframe. Set this
+> 	flag when an error is encountered. If this flag is set, terminate
+> 	the unwind. Also, let the unwinder return the status to the caller.
+> 
+> Reliability checks
+> ==================
+> 
+> There are some kernel features and conditions that make a stack trace
+> unreliable. Callers may require the unwinder to detect these cases.
+> E.g., livepatch.
+> 
+> Introduce a new function called unwind_is_reliable() that will detect
+> these cases and return a boolean.
+> 
+> Introduce a new argument to unwind() called "need_reliable" so a caller
+> can tell unwind() that it requires a reliable stack trace. For such a
+> caller, any unreliability in the stack trace must be treated as a fatal
+> error and the unwind must be aborted.
+> 
+> Call unwind_is_reliable() from unwind_consume() like this:
+> 
+> 	if (frame->need_reliable && !unwind_is_reliable(frame)) {
+> 		frame->failed = true;
+> 		return false;
+> 	}
+> 
+> arch_stack_walk() passes "false" for need_reliable because its callers
+> don't care about reliability. arch_stack_walk() is used for debug and
+> test purposes.
+> 
+> Introduce arch_stack_walk_reliable() for ARM64. This works like
+> arch_stack_walk() except for two things:
+> 
+> 	- It passes "true" for need_reliable.
+> 
+> 	- It returns -EINVAL if unwind() aborts.
+> 
+> Introduce the first reliability check in unwind_is_reliable() - If
+> a return PC is not a valid kernel text address, consider the stack
+> trace unreliable. It could be some generated code.
+> 
+> Other reliability checks will be added in the future. Until all of the
+> checks are in place, arch_stack_walk_reliable() may not be used by
+> livepatch. But it may be used by debug and test code.
+> 
+> SYM_CODE check
+> ==============
+> 
+> SYM_CODE functions do not follow normal calling conventions. They cannot
+> be unwound reliably using the frame pointer. Collect the address ranges
+> of these functions in a special section called "sym_code_functions".
+> 
+> In unwind_is_reliable(), check the return PC against these ranges. If a
+> match is found, then consider the stack trace unreliable. This is the
+> second reliability check introduced by this work.
+> 
+> Last stack frame
+> ----------------
+> 
+> If a SYM_CODE function occurs in the very last frame in the stack trace,
+> then the stack trace is not considered unreliable. This is because there
+> is no more unwinding to do. Examples:
+> 
+> 	- EL0 exception stack traces end in the top level EL0 exception
+> 	  handlers.
+> 
+> 	- All kernel thread stack traces end in ret_from_fork().
 > ---
->  Documentation/virt/kvm/locking.rst |  8 ++++----
->  arch/x86/include/asm/kvm_host.h    |  7 +++++++
->  arch/x86/kvm/mmu/mmu.c             | 28 ++++++++++++++++++++++++++++
->  3 files changed, 39 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-> index 8138201efb09..5d27da356836 100644
-> --- a/Documentation/virt/kvm/locking.rst
-> +++ b/Documentation/virt/kvm/locking.rst
-> @@ -31,10 +31,10 @@ On x86:
->
->  - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock
->
-> -- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock is
-> -  taken inside kvm->arch.mmu_lock, and cannot be taken without already
-> -  holding kvm->arch.mmu_lock (typically with ``read_lock``, otherwise
-> -  there's no need to take kvm->arch.tdp_mmu_pages_lock at all).
-> +- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock and
-> +  kvm->arch.mmu_unsync_pages_lock are taken inside kvm->arch.mmu_lock, and
-> +  cannot be taken without already holding kvm->arch.mmu_lock (typically with
-> +  ``read_lock`` for the TDP MMU, thus the need for additional spinlocks).
->
->  Everything else is a leaf: no other lock is taken inside the critical
->  sections.
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 20daaf67a5bf..cf32b87b6bd3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1036,6 +1036,13 @@ struct kvm_arch {
->         struct list_head lpage_disallowed_mmu_pages;
->         struct kvm_page_track_notifier_node mmu_sp_tracker;
->         struct kvm_page_track_notifier_head track_notifier_head;
-> +       /*
-> +        * Protects marking pages unsync during page faults, as TDP MMU page
-> +        * faults only take mmu_lock for read.  For simplicity, the unsync
-> +        * pages lock is always taken when marking pages unsync regardless of
-> +        * whether mmu_lock is held for read or write.
-> +        */
-> +       spinlock_t mmu_unsync_pages_lock;
->
->         struct list_head assigned_dev_head;
->         struct iommu_domain *iommu_domain;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a272ccbddfa1..cef526dac730 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2596,6 +2596,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->  int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->  {
->         struct kvm_mmu_page *sp;
-> +       bool locked = false;
->
->         /*
->          * Force write-protection if the page is being tracked.  Note, the page
-
-It might also be worth adding a note about how it's safe to use
-for_each_gfn_indirect_valid_sp under the MMU read lock because
-mmu_page_hash is only modified with the lock held for write.
-
-> @@ -2618,9 +2619,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->                 if (sp->unsync)
->                         continue;
->
-> +               /*
-> +                * TDP MMU page faults require an additional spinlock as they
-> +                * run with mmu_lock held for read, not write, and the unsync
-> +                * logic is not thread safe.  Take the spinklock regardless of
-> +                * the MMU type to avoid extra conditionals/parameters, there's
-> +                * no meaningful penalty if mmu_lock is held for write.
-> +                */
-> +               if (!locked) {
-> +                       locked = true;
-> +                       spin_lock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
-> +
-> +                       /*
-> +                        * Recheck after taking the spinlock, a different vCPU
-> +                        * may have since marked the page unsync.  A false
-> +                        * positive on the unprotected check above is not
-> +                        * possible as clearing sp->unsync _must_ hold mmu_lock
-> +                        * for write, i.e. unsync cannot transition from 0->1
-> +                        * while this CPU holds mmu_lock for read (or write).
-> +                        */
-> +                       if (READ_ONCE(sp->unsync))
-> +                               continue;
-> +               }
-> +
->                 WARN_ON(sp->role.level != PG_LEVEL_4K);
->                 kvm_unsync_page(vcpu, sp);
->         }
-> +       if (locked)
-> +               spin_unlock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
->
->         /*
->          * We need to ensure that the marking of unsync pages is visible
-> @@ -5604,6 +5630,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->  {
->         struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
->
-> +       spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
-> +
->         if (!kvm_mmu_init_tdp_mmu(kvm))
->                 /*
->                  * No smp_load/store wrappers needed here as we are in
-> --
-> 2.33.0.rc1.237.g0d66db33f3-goog
->
+> Changelog:
+> 
+> v7:
+> 	From Mark Rutland:
+> 
+> 	- Make the unwinder loop similar to other architectures.
+> 
+> 	- Keep details to within the unwinder functions and return a simple
+> 	  boolean to the caller.
+> 
+> 	- Convert some of the current code that contains unwinder logic to
+> 	  simply use arch_stack_walk(). I have converted all of them.
+> 
+> 	- Do not copy sym_code_functions[]. Just place it in rodata for now.
+> 
+> 	- Have the main loop check for termination conditions rather than
+> 	  having unwind_frame() check for them. In other words, let
+> 	  unwind_frame() assume that the fp is valid.
+> 
+> 	- Replace the big comment for SYM_CODE functions with a shorter
+> 	  comment.
+> 
+> 		/*
+> 		 * As SYM_CODE functions don't follow the usual calling
+> 		 * conventions, we assume by default that any SYM_CODE function
+> 		 * cannot be unwound reliably.
+> 		 *
+> 		 * Note that this includes:
+> 		 *
+> 		 * - Exception handlers and entry assembly
+> 		 * - Trampoline assembly (e.g., ftrace, kprobes)
+> 		 * - Hypervisor-related assembly
+> 		 * - Hibernation-related assembly
+> 		 * - CPU start-stop, suspend-resume assembly
+> 		 * - Kernel relocation assembly
+> 		 */
+> 
+> v6:
+> 	From Mark Rutland:
+> 
+> 	- The per-frame reliability concept and flag are acceptable. But more
+> 	  work is needed to make the per-frame checks more accurate and more
+> 	  complete. E.g., some code reorg is being worked on that will help.
+> 
+> 	  I have now removed the frame->reliable flag and deleted the whole
+> 	  concept of per-frame status. This is orthogonal to this patch series.
+> 	  Instead, I have improved the unwinder to return proper return codes
+> 	  so a caller can take appropriate action without needing per-frame
+> 	  status.
+> 
+> 	- Remove the mention of PLTs and update the comment.
+> 
+> 	  I have replaced the comment above the call to __kernel_text_address()
+> 	  with the comment suggested by Mark Rutland.
+> 
+> 	Other comments:
+> 
+> 	- Other comments on the per-frame stuff are not relevant because
+> 	  that approach is not there anymore.
+> 
+> v5:
+> 	From Keiya Nobuta:
+> 	
+> 	- The term blacklist(ed) is not to be used anymore. I have changed it
+> 	  to unreliable. So, the function unwinder_blacklisted() has been
+> 	  changed to unwinder_is_unreliable().
+> 
+> 	From Mark Brown:
+> 
+> 	- Add a comment for the "reliable" flag in struct stackframe. The
+> 	  reliability attribute is not complete until all the checks are
+> 	  in place. Added a comment above struct stackframe.
+> 
+> 	- Include some of the comments in the cover letter in the actual
+> 	  code so that we can compare it with the reliable stack trace
+> 	  requirements document for completeness. I have added a comment:
+> 
+> 	  	- above unwinder_is_unreliable() that lists the requirements
+> 		  that are addressed by the function.
+> 
+> 		- above the __kernel_text_address() call about all the cases
+> 		  the call covers.
+> 
+> v4:
+> 	From Mark Brown:
+> 
+> 	- I was checking the return PC with __kernel_text_address() before
+> 	  the Function Graph trace handling. Mark Brown felt that all the
+> 	  reliability checks should be performed on the original return PC
+> 	  once that is obtained. So, I have moved all the reliability checks
+> 	  to after the Function Graph Trace handling code in the unwinder.
+> 	  Basically, the unwinder should perform PC translations first (for
+> 	  rhe return trampoline for Function Graph Tracing, Kretprobes, etc).
+> 	  Then, the reliability checks should be applied to the resulting
+> 	  PC.
+> 
+> 	- Mark said to improve the naming of the new functions so they don't
+> 	  collide with existing ones. I have used a prefix "unwinder_" for
+> 	  all the new functions.
+> 
+> 	From Josh Poimboeuf:
+> 
+> 	- In the error scenarios in the unwinder, the reliable flag in the
+> 	  stack frame should be set. Implemented this.
+> 
+> 	- Some of the other comments are not relevant to the new code as
+> 	  I have taken a different approach in the new code. That is why
+> 	  I have not made those changes. E.g., Ard wanted me to add the
+> 	  "const" keyword to the global section array. That array does not
+> 	  exist in v4. Similarly, Mark Brown said to use ARRAY_SIZE() for
+> 	  the same array in a for loop.
+> 
+> 	Other changes:
+> 
+> 	- Add a new definition for SYM_CODE_END() that adds the address
+> 	  range of the function to a special section called
+> 	  "sym_code_functions".
+> 
+> 	- Include the new section under initdata in vmlinux.lds.S.
+> 
+> 	- Define an early_initcall() to copy the contents of the
+> 	  "sym_code_functions" section to an array by the same name.
+> 
+> 	- Define a function unwinder_blacklisted() that compares a return
+> 	  PC against sym_code_sections[]. If there is a match, mark the
+> 	  stack trace unreliable. Call this from unwind_frame().
+> 
+> v3:
+> 	- Implemented a sym_code_ranges[] array to contains sections bounds
+> 	  for text sections that contain SYM_CODE_*() functions. The unwinder
+> 	  checks each return PC against the sections. If it falls in any of
+> 	  the sections, the stack trace is marked unreliable.
+> 
+> 	- Moved SYM_CODE functions from .text and .init.text into a new
+> 	  text section called ".code.text". Added this section to
+> 	  vmlinux.lds.S and sym_code_ranges[].
+> 
+> 	- Fixed the logic in the unwinder that handles Function Graph
+> 	  Tracer return trampoline.
+> 
+> 	- Removed all the previous code that handles:
+> 		- ftrace entry code for traced function
+> 		- special_functions[] array that lists individual functions
+> 		- kretprobe_trampoline() special case
+> 
+> v2
+> 	- Removed the terminating entry { 0, 0 } in special_functions[]
+> 	  and replaced it with the idiom { /* sentinel */ }.
+> 
+> 	- Change the ftrace trampoline entry ftrace_graph_call in
+> 	  special_functions[] to ftrace_call + 4 and added explanatory
+> 	  comments.
+> 
+> 	- Unnested #ifdefs in special_functions[] for FTRACE.
+> 
+> v1
+> 	- Define a bool field in struct stackframe. This will indicate if
+> 	  a stack trace is reliable.
+> 
+> 	- Implement a special_functions[] array that will be populated
+> 	  with special functions in which the stack trace is considered
+> 	  unreliable.
+> 	
+> 	- Using kallsyms_lookup(), get the address ranges for the special
+> 	  functions and record them.
+> 
+> 	- Implement an is_reliable_function(pc). This function will check
+> 	  if a given return PC falls in any of the special functions. If
+> 	  it does, the stack trace is unreliable.
+> 
+> 	- Implement check_reliability() function that will check if a
+> 	  stack frame is reliable. Call is_reliable_function() from
+> 	  check_reliability().
+> 
+> 	- Before a return PC is checked against special_funtions[], it
+> 	  must be validates as a proper kernel text address. Call
+> 	  __kernel_text_address() from check_reliability().
+> 
+> 	- Finally, call check_reliability() from unwind_frame() for
+> 	  each stack frame.
+> 
+> 	- Add EL1 exception handlers to special_functions[].
+> 
+> 		el1_sync();
+> 		el1_irq();
+> 		el1_error();
+> 		el1_sync_invalid();
+> 		el1_irq_invalid();
+> 		el1_fiq_invalid();
+> 		el1_error_invalid();
+> 
+> 	- The above functions are currently defined as LOCAL symbols.
+> 	  Make them global so that they can be referenced from the
+> 	  unwinder code.
+> 
+> 	- Add FTRACE trampolines to special_functions[]:
+> 
+> 		ftrace_graph_call()
+> 		ftrace_graph_caller()
+> 		return_to_handler()
+> 
+> 	- Add the kretprobe trampoline to special functions[]:
+> 
+> 		kretprobe_trampoline()
+> 
+> Previous versions and discussion
+> ================================
+> 
+> v6: https://lore.kernel.org/linux-arm-kernel/20210630223356.58714-1-madvenka@linux.microsoft.com/
+> v5: https://lore.kernel.org/linux-arm-kernel/20210526214917.20099-1-madvenka@linux.microsoft.com/
+> v4: https://lore.kernel.org/linux-arm-kernel/20210516040018.128105-1-madvenka@linux.microsoft.com/
+> v3: https://lore.kernel.org/linux-arm-kernel/20210503173615.21576-1-madvenka@linux.microsoft.com/
+> v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
+> v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
+> Madhavan T. Venkataraman (4):
+>   arm64: Make all stack walking functions use arch_stack_walk()
+>   arm64: Reorganize the unwinder code for better consistency and
+>     maintenance
+>   arm64: Introduce stack trace reliability checks in the unwinder
+>   arm64: Create a list of SYM_CODE functions, check return PC against
+>     list
+> 
+>  arch/arm64/include/asm/linkage.h    |  12 ++
+>  arch/arm64/include/asm/sections.h   |   1 +
+>  arch/arm64/include/asm/stacktrace.h |  16 +-
+>  arch/arm64/kernel/perf_callchain.c  |   5 +-
+>  arch/arm64/kernel/process.c         |  39 ++--
+>  arch/arm64/kernel/return_address.c  |   6 +-
+>  arch/arm64/kernel/stacktrace.c      | 291 ++++++++++++++++++++--------
+>  arch/arm64/kernel/time.c            |  22 ++-
+>  arch/arm64/kernel/vmlinux.lds.S     |  10 +
+>  9 files changed, 277 insertions(+), 125 deletions(-)
+> 
+> 
+> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
+> 
