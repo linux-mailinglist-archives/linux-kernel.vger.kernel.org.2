@@ -2,249 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BC13EAA0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0ACD3EAA0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237567AbhHLSRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:17:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37446 "EHLO mail.kernel.org"
+        id S237750AbhHLSRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:17:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237425AbhHLSRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:17:09 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9369860F57;
-        Thu, 12 Aug 2021 18:16:43 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 14:16:36 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL v2] tracing: Fixes and clean ups for v5.14
-Message-ID: <20210812141636.35e41575@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237425AbhHLSRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:17:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F242E6108C;
+        Thu, 12 Aug 2021 18:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628792217;
+        bh=oLtrC58rdoMC0xs3g4iEEpKl1lyWBYmZLEZ7SZgb5vE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kz+R0+ydAdnR6mwEAL9hcrhF4tRVtIeGYhk/T0yO1EfZa91n3GWcGBnKR22614fuC
+         nC4+95T1UHjoNoCs3NmJ0YObQRmJ6OFnkG57IMzlR6FHTNSFsruOHHTH0CfdddRuFY
+         fbwdGHz5/t9V3uBhfbAWT2Y9FTqpRD/UmjGtTj7U9c4xo5v1vDrj2vBAlESRxxZqDP
+         x93ykMuprlv51ZOIbhrmzyeTv2QTinuhM4VPKG64XebRG7Iag31j2FrqnMQBQp3UD8
+         pI3ydVNaPBB3lOP1q7EFifG/5oI4o6u6I4UXa4RfYa4TE0FjgGtOMnKM/+UqJsIpMU
+         AJUc8A0Ljl16w==
+Received: by mail-ej1-f49.google.com with SMTP id z20so13292257ejf.5;
+        Thu, 12 Aug 2021 11:16:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531tJlE4RF7QWaEgP3cVbP+gy4clSf7KS679BjILdgBxBYcD7Xa5
+        yJSqgYYAayyddE93VrhtGT+5xpUXSADJFBOVjA==
+X-Google-Smtp-Source: ABdhPJzhy0rgdcARCdwK95CS+69vv/dyWaAQUi31VoBNdIc9NcTmkEiHaWD1Pl+qsvz6YjxpQFSQb+fW6SEXr/7wZOo=
+X-Received: by 2002:a17:906:519:: with SMTP id j25mr4793207eja.525.1628792215537;
+ Thu, 12 Aug 2021 11:16:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210728230230.1911468-1-robh@kernel.org> <20210728230230.1911468-3-robh@kernel.org>
+ <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org>
+In-Reply-To: <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 12 Aug 2021 13:16:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
+Message-ID: <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
+Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 12, 2021 at 11:50 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On 7/28/21 4:02 PM, Rob Herring wrote:
+> > Rather than controlling RDPMC access behind the scenes from switch_mm(),
+> > move RDPMC access controls to the PMU .enable() hook. The .enable() hook
+> > is called whenever the perf CPU or task context changes which is when
+> > the RDPMC access may need to change.
+> >
+> > This is the first step in moving the RDPMC state tracking out of the mm
+> > context to the perf context.
+>
+> Is this series supposed to be a user-visible change or not?  I'm confused.
 
-Linus,
+It should not be user-visible. Or at least not user-visible for what
+any user would notice. If an event is not part of the perf context on
+another thread sharing the mm, does that thread need rdpmc access? No
+access would be a user-visible change, but I struggle with how that's
+a useful scenario?
 
-[
-  Note. This version was only tested with one config and it passed the
-  ftracetests in the selftests directory. I didn't run my full test
-  suite as that takes forever to run, and the only thing that's
-  different from the version that went through that test suite is that
-  I dropped the "main" variable "fix" patch.
-]
+> If you intend to have an entire mm have access to RDPMC if an event is
+> mapped, then surely access needs to be context switched for the whole
+> mm.  If you intend to only have the thread to which the event is bound
+> have access, then the only reason I see to use IPIs is to revoke access
+> on munmap from the wrong thread.  But even that latter case could be
+> handled with a more targeted approach, not a broadcast to all of mm_cpumask.
 
-Fixes and clean ups to tracing:
+Right, that's what patch 3 does. When we mmap/munmap an event, then
+the perf core invokes the callback only on the active contexts in
+which the event resides.
 
-- Fix header alignment when PREEMPT_RT is enabled for osnoise tracer
+> Can you clarify what the overall intent is and what this particular
+> patch is trying to do?
+>
+> >
+> >       if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+> > -             on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
+> > +             on_each_cpu_mask(mm_cpumask(mm), x86_pmu_set_user_access_ipi, NULL, 1);
+>
+> Here you do something for the whole mm.
 
-- Inject "stop" event to see where osnoise stopped the trace
+It's just a rename of the callback though.
 
-- Define DYNAMIC_FTRACE_WITH_ARGS as some code had an #ifdef for it
+>
+> > -             on_each_cpu(cr4_update_pce, NULL, 1);
+> > +             on_each_cpu(x86_pmu_set_user_access_ipi, NULL, 1);
+>
+> Here too.
 
-- Fix erroneous message for bootconfig cmdline parameter
+It's not just the whole mm here as changing sysfs rdpmc permission is
+a global state.
 
-- Fix crash caused by not found variable in histograms
+> >  void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+> >                       struct task_struct *tsk)
+> >  {
+> > @@ -581,10 +556,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+> >       this_cpu_write(cpu_tlbstate.loaded_mm, next);
+> >       this_cpu_write(cpu_tlbstate.loaded_mm_asid, new_asid);
+> >
+> > -     if (next != real_prev) {
+> > -             cr4_update_pce_mm(next);
+> > +     if (next != real_prev)
+> >               switch_ldt(real_prev, next);
+> > -     }
+> >  }
+>
+> But if you remove this, then what handles context switching?
 
+perf. On a context switch, perf is going to context switch the events
+and set the access based on an event in the context being mmapped.
+Though I guess if rdpmc needs to be enabled without any events opened,
+this is not going to work. So maybe I need to keep the
+rdpmc_always_available_key and rdpmc_never_available_key cases here.
 
-Please pull the latest trace-v5.14-rc5-2 tree, which can be found at:
+The always available case is something we specifically don't want to
+support for arm64. I'm trying to start with access more locked down,
+rather than trying to lock it down after the fact as x86 is doing.
 
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.14-rc5-2
-
-Tag SHA1: 26ba5d9bdfa88208677132efa9e64b488420b461
-Head SHA1: 5acce0bff2a0420ce87d4591daeb867f47d552c2
-
-
-Daniel Bristot de Oliveira (3):
-      trace/osnoise: Add a header with PREEMPT_RT additional fields
-      trace/timerlat: Add a header with PREEMPT_RT additional fields
-      trace/osnoise: Print a stop tracing message
-
-Lukas Bulwahn (1):
-      tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
-
-Masami Hiramatsu (1):
-      init: Suppress wrong warning for bootconfig cmdline parameter
-
-Steven Rostedt (VMware) (1):
-      tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
-
-----
- init/main.c                      |  9 +++++--
- kernel/trace/Kconfig             |  5 ++++
- kernel/trace/trace_events_hist.c |  2 ++
- kernel/trace/trace_osnoise.c     | 56 +++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 69 insertions(+), 3 deletions(-)
----------------------------
-diff --git a/init/main.c b/init/main.c
-index f5b8246e8aa1..8d97aba78c3a 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
- 	return 0;
- }
- 
-+static int __init warn_bootconfig(char *str)
-+{
-+	/* The 'bootconfig' has been handled by bootconfig_params(). */
-+	return 0;
-+}
-+
- static void __init setup_boot_config(void)
- {
- 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
-@@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
- 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
- 	return 0;
- }
--early_param("bootconfig", warn_bootconfig);
--
- #endif
-+early_param("bootconfig", warn_bootconfig);
- 
- /* Change NUL term back to "=", to make "param" the whole string. */
- static void __init repair_env_string(char *param, char *val)
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index d567b1717c4c..3ee23f4d437f 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -219,6 +219,11 @@ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	depends on DYNAMIC_FTRACE_WITH_REGS
- 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 
-+config DYNAMIC_FTRACE_WITH_ARGS
-+	def_bool y
-+	depends on DYNAMIC_FTRACE
-+	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+
- config FUNCTION_PROFILER
- 	bool "Kernel function profiler"
- 	depends on FUNCTION_TRACER
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 949ef09dc537..a48aa2a2875b 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
- 			event = data->match_data.event;
- 		}
- 
-+		if (!event)
-+			goto free;
- 		/*
- 		 * At this point, we're looking at a field on another
- 		 * event.  Because we can't modify a hist trigger on
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index a7e3c24dee13..b61eefe5ccf5 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -253,10 +253,40 @@ static struct osnoise_data {
-  */
- static bool osnoise_busy;
- 
-+#ifdef CONFIG_PREEMPT_RT
- /*
-  * Print the osnoise header info.
-  */
- static void print_osnoise_headers(struct seq_file *s)
-+{
-+	if (osnoise_data.tainted)
-+		seq_puts(s, "# osnoise is tainted!\n");
-+
-+	seq_puts(s, "#                                _-------=> irqs-off\n");
-+	seq_puts(s, "#                               / _------=> need-resched\n");
-+	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-+	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-+	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-+	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-+	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-+
-+	seq_puts(s, "#                              |||||| /          ");
-+	seq_puts(s, "                                     MAX\n");
-+
-+	seq_puts(s, "#                              ||||| /                         ");
-+	seq_puts(s, "                    SINGLE      Interference counters:\n");
-+
-+	seq_puts(s, "#                              |||||||               RUNTIME   ");
-+	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
-+
-+	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    IN US    ");
-+	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
-+
-+	seq_puts(s, "#              | |         |   |||||||      |           |      ");
-+	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
-+}
-+#else /* CONFIG_PREEMPT_RT */
-+static void print_osnoise_headers(struct seq_file *s)
- {
- 	if (osnoise_data.tainted)
- 		seq_puts(s, "# osnoise is tainted!\n");
-@@ -279,6 +309,7 @@ static void print_osnoise_headers(struct seq_file *s)
- 	seq_puts(s, "#              | |         |   ||||      |           |      ");
- 	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
- }
-+#endif /* CONFIG_PREEMPT_RT */
- 
- /*
-  * osnoise_taint - report an osnoise error.
-@@ -323,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
- /*
-  * Print the timerlat header info.
-  */
-+#ifdef CONFIG_PREEMPT_RT
-+static void print_timerlat_headers(struct seq_file *s)
-+{
-+	seq_puts(s, "#                                _-------=> irqs-off\n");
-+	seq_puts(s, "#                               / _------=> need-resched\n");
-+	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-+	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-+	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-+	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-+	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-+	seq_puts(s, "#                              |||||| /\n");
-+	seq_puts(s, "#                              |||||||             ACTIVATION\n");
-+	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
-+	seq_puts(s, "       CONTEXT                LATENCY\n");
-+	seq_puts(s, "#              | |         |   |||||||      |         |      ");
-+	seq_puts(s, "            |                       |\n");
-+}
-+#else /* CONFIG_PREEMPT_RT */
- static void print_timerlat_headers(struct seq_file *s)
- {
- 	seq_puts(s, "#                                _-----=> irqs-off\n");
-@@ -336,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
- 	seq_puts(s, "#              | |         |   ||||      |         |      ");
- 	seq_puts(s, "            |                       |\n");
- }
-+#endif /* CONFIG_PREEMPT_RT */
- 
- /*
-  * Record an timerlat_sample into the tracer buffer.
-@@ -1025,9 +1075,13 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
- /*
-  * osnoise_stop_tracing - Stop tracing and the tracer.
-  */
--static void osnoise_stop_tracing(void)
-+static __always_inline void osnoise_stop_tracing(void)
- {
- 	struct trace_array *tr = osnoise_trace;
-+
-+	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
-+			"stop tracing hit on cpu %d\n", smp_processor_id());
-+
- 	tracer_tracing_off(tr);
- }
- 
+Rob
