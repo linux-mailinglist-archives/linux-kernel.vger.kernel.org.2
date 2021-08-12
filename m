@@ -2,164 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8DC3E9F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591053E9F0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233996AbhHLG6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhHLG6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:58:11 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AF2C061765;
-        Wed, 11 Aug 2021 23:57:46 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so9195007pjb.3;
-        Wed, 11 Aug 2021 23:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/oIkmpuRct1iuZiBlhfx+uUrzMQCcYf9oSBv+0fmA1E=;
-        b=iCrJ7xzmPU1n4CJ3A87AELaWWIZz9owuP9miS4FZSDUodOmBPEU4Ky8Gh2VB6t+T0l
-         6KiKhgn9SmkSEzB5DBFRWQqxqUu4eYwAn7GkFPpgpaXmY12Bd0K77+IB+oKIzw/XoRBZ
-         rdm2lFo4xfbYMeOjTk/N4WlgueSmRSaR0h/M1PnoETX0MsEPNOIB8dMxG7rr/RSWBFPS
-         QwrxjxkW8+8WKj73Kf0FEAc0KQDRu4gHPCbIxr/Qjt7wxr7GfQzaIw9Ww2rvQii1+cCb
-         QVcnZ7PQJqIQ30g5i32K8PGVMTC79nWCJcOrJ+aTXXz1opMXLnTQ11XgFwhOcZf+ETfI
-         r0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/oIkmpuRct1iuZiBlhfx+uUrzMQCcYf9oSBv+0fmA1E=;
-        b=CPQ/CyzVxaKdK12ReNvBtVpJ/JdwPXtwiBIg7VRMHcPI8Qz+rLRIbxlNfqZRBEaesH
-         Orj1PLWNVYcQ3OcRk3L5QYbba+gvUgqZ1rd2PuHsWs959vDHB5Ip32D1vD3O2Qpk7QnS
-         CcFX52T7Cud5jNpLe+NTs8yhlyBzvpeQRp0TAPUCSia9p8fWt5Vhy6XF/HAatlQzuB7w
-         26VIlvICrukKkaLH/UsnwLfxnttNQhzUqfu+e2wGGidly3F+EivIDf7QojZMwLC0Y+yZ
-         gtbXE/ju2U1tWsBLq35E3X2AGu1CPcik5R9dYt1KzKFvLdJOR9/DG0CQAX/sBrRjkcx/
-         3J1A==
-X-Gm-Message-State: AOAM530WP0zi7PlPQdFEYydjdLrQnkU5IgT5i+12KFhquXKjPHQcBmyq
-        vFqhHwgRceb0cDnRlLfQxCMdk3mL9xUBbDSjBJ8=
-X-Google-Smtp-Source: ABdhPJzaTT4uviarShkveSCxtxdmHkfpCbFQSrwwQHQQDR7jgtbi18faQXbtudIoV5qqIpljTQSoMA==
-X-Received: by 2002:aa7:8185:0:b029:3aa:29a2:39d3 with SMTP id g5-20020aa781850000b02903aa29a239d3mr2729500pfi.28.1628751465968;
-        Wed, 11 Aug 2021 23:57:45 -0700 (PDT)
-Received: from localhost.localdomain ([106.51.233.109])
-        by smtp.gmail.com with ESMTPSA id k197sm1910452pfd.190.2021.08.11.23.57.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 23:57:45 -0700 (PDT)
-From:   Nishad Kamdar <nishadkamdar@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>
-Cc:     Nishad Kamdar <nishadkamdar@gmail.com>,
+        id S234193AbhHLG7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230323AbhHLG7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F24AA601FD;
+        Thu, 12 Aug 2021 06:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628751560;
+        bh=YFMZTccB6r2mQUHMX3e0DwUnA6yRsuYhah5UQoES2qE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gqDKL6oFAWPfl+qrvP4ICkIiJuTj0zB5TnIo9v2jyftPMcesd9mebeUTOENH/WF4R
+         PBfqCrnjEHgRHt0O1dyCISfhSxmredSB9XxmW1Ns603miZy037IV2h2edGI81ldDzY
+         NqgDtvGktsfZul6wLbLg1Tgj9dX32EjsY3bdIRoj49WsQpGFdC5ZMg6zFcqteaJDkt
+         0uruPXpJRVzqwUCwDkAf6p3Y7H3f580IbJRG6NdyUWhatq3Gxbuq0XxYssVS/sjhOA
+         hChRFrKVbGxFTcFqXajSbSnyBDOxjDPh7zY8Sk+z4WzAiR3GMcSU98BQ+MjV7C6G/L
+         np4VR2Z/7QAFw==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mmc: core: Return correct emmc response in case of ioctl error
-Date:   Thu, 12 Aug 2021 12:27:30 +0530
-Message-Id: <20210812065730.3986-1-nishadkamdar@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Guenter Roeck <linux@roeck-us.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH v4 0/2] memblock: make memblock_find_in_range method private
+Date:   Thu, 12 Aug 2021 09:59:05 +0300
+Message-Id: <20210812065907.20046-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a read/write command is sent via ioctl to the kernel,
-and the command fails, the actual error response of the emmc
-is not sent to the user.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-IOCTL read/write tests are carried out using commands
-17 (Single BLock Read), 24 (Single Block Write),
-18 (Multi Block Read), 25 (Multi Block Write)
+Hi,
 
-The tests are carried out on a 64Gb emmc device. All of these
-tests try to access an "out of range" sector address (0x09B2FFFF).
+This is v4 of "memblock: make memblock_find_in_range method private" patch
+that essentially replaces memblock_find_in_range() + memblock_reserve()
+calls with equivalent calls to memblock_phys_alloc() and prevents usage of
+memblock_find_in_range() outside memblock itself.
 
-It is seen that without the patch the response received by the user
-is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
-JEDEC specification. After applying the patch proper response is seen.
-This is because the function returns without copying the response to
-the user in case of failure. This patch fixes the issue.
+The patch uncovered an issue with top down memory mapping on x86 and this
+version has a preparation patch that addresses this issue.
 
-The test code and the output of only the CMD17 is included in the
-commit to limit the message length.
+Guenter, I didn't add your Tested-by because the patch that addresses the
+crashes differs from the one you've tested.
 
-CMD17 (Test Code Snippet):
-==========================
-        printf("Forming CMD%d\n", opt_idx);
-        /*  single block read */
-        cmd.blksz = 512;
-        cmd.blocks = 1;
-        cmd.write_flag = 0;
-        cmd.opcode = 17;
-        //cmd.arg = atoi(argv[3]);
-        cmd.arg = 0x09B2FFFF;
-        /* Expecting response R1B */
-        cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+v4: 
+* Add patch that prevents the crashes reported by Guenter Roeck on x86/i386
+  on QEMU with 256M or 512M of memory and EFI boot enabled.
+* Add Acked-by and Reviewed-by, thanks everybidy!
 
-        memset(data, 0, sizeof(__u8) * 512);
-        mmc_ioc_cmd_set_data(cmd, data);
+v3: https://lore.kernel.org/lkml/20210803064218.6611-1-rppt@kernel.org
+* simplify check for exact crash kerenl allocation on arm, per Rob
+* make crash_max unsigned long long on arm64, per Rob
 
-        printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
-        if(ioctl(fd, MMC_IOC_CMD, &cmd))
-                perror("Error");
+v2: https://lore.kernel.org/lkml/20210802063737.22733-1-rppt@kernel.org
+* don't change error message in arm::reserve_crashkernel(), per Russell
 
-        printf("\nResponse: %08x\n", cmd.response[0]);
+v1: https://lore.kernel.org/lkml/20210730104039.7047-1-rppt@kernel.org
 
-CMD17 (Output without patch):
-=============================
-test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 0x09B2FFF]
-Forming CMD17
-Sending CMD17: ARG[0x09b2ffff]
-Error: Connection timed out
+Mike Rapoport (2):
+  x86/mm: memory_map_top_down: remove spurious reservation of upper 2M
+  memblock: make memblock_find_in_range method private
 
-Response: 00000000
-(Incorrect response)
+ arch/arm/kernel/setup.c           | 20 +++++---------
+ arch/arm64/kvm/hyp/reserved_mem.c |  9 +++----
+ arch/arm64/mm/init.c              | 36 ++++++++-----------------
+ arch/mips/kernel/setup.c          | 14 +++++-----
+ arch/riscv/mm/init.c              | 44 ++++++++++---------------------
+ arch/s390/kernel/setup.c          | 10 ++++---
+ arch/x86/kernel/aperture_64.c     |  5 ++--
+ arch/x86/mm/init.c                | 27 +++++++------------
+ arch/x86/mm/numa.c                |  5 ++--
+ arch/x86/mm/numa_emulation.c      |  5 ++--
+ arch/x86/realmode/init.c          |  2 +-
+ drivers/acpi/tables.c             |  5 ++--
+ drivers/base/arch_numa.c          |  5 +---
+ drivers/of/of_reserved_mem.c      | 12 ++++++---
+ include/linux/memblock.h          |  2 --
+ mm/memblock.c                     |  2 +-
+ 16 files changed, 76 insertions(+), 127 deletions(-)
 
-CMD17 (Output with patch):
-==========================
-test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-[sudo] password for test:
-Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
-Forming CMD17
-Sending CMD17: ARG[0x09b2ffff]
-Error: Connection timed out
 
-Response: 80000900
-(Correct OUT_OF_ERROR response as per JEDEC specification)
-
-Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
----
-Changes in v2:
-  - Make commit message clearer by adding test cases as outputs.
-Changes in v3:
-  - Shorten the commit message to include only CMD17 related
-    code and test.
-
- drivers/mmc/core/block.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index a9ad9f5fa9491..efa92aa7e2368 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -522,11 +522,13 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 	if (cmd.error) {
- 		dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
- 						__func__, cmd.error);
-+		memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
- 		return cmd.error;
- 	}
- 	if (data.error) {
- 		dev_err(mmc_dev(card->host), "%s: data error %d\n",
- 						__func__, data.error);
-+		memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
- 		return data.error;
- 	}
- 
+base-commit: ff1176468d368232b684f75e82563369208bc371
 -- 
-2.17.1
+2.28.0
 
