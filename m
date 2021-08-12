@@ -2,170 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F4B3EA3FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF9C3EA3FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbhHLLq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236969AbhHLLqz (ORCPT
+        id S236975AbhHLLsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:48:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58638 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235664AbhHLLsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:46:55 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3424C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:46:29 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a4so2689910uae.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Li6Qo5zcok5kTevKrkrYxFbzzzVN+1df3M6EKH96DQY=;
-        b=RNbWXlKWGUZ5Gu8YUajYcRIb+Xv4D8NceBjRRKNZhd1XG2IJ14TE9YhRRHfwXq4oBr
-         lexhVUQ2ZF5Ij4X6XE2Lsl+glyICNska4km8u56UbpytJfQtaLeWk2ZKoH8VARkl6xSi
-         07NCc8bTcW6i04nSwJL2TZW4dVXXIv3NYQpQBJgwjzPjdnE4G5LLwkWxOhtiTDQ0bV/K
-         ooBJLoNnBfU9P7xhLI/1Lf0y/9Dx14qI+4iFJPd23iyHpi+YdRIe7yxn13SlruURiPRd
-         y8TYyo7L8phdTya0qMNKBtc6bysO3nRJIuIRQrim9sGMeZqQbpQWBoZlISj9GeE4KrB9
-         S6XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Li6Qo5zcok5kTevKrkrYxFbzzzVN+1df3M6EKH96DQY=;
-        b=Hh3hmJoS8xWwPEwNdkvdRjnPSk04sgwpcJNWLXLSoIacJJhx8P1hDr5mEbD5Z1Ahki
-         5JIXKwtqv6FtnijjMIx33SNu0989pzLNd8m0BoFJgBO9Xe4pT/Fxr0Ysd3IiHL3nQj3c
-         TNmvg5Py0ukR+1dBVz3FhLhiarz6wcwWOeLsyJGN+OoR3E7ODvXkUZFMFaaiI8Bplhlm
-         ErlW+B1hjLOMgZRZx71v14tAC1y9tDqd65/rKOcySSncZhK1K06vFvEAjPQnyK++RGk1
-         Beb91yDbBl+6A27/nEqYKj/1P8MR86IXCKTTaczS8lhGyESH+AUxwb265WEknOxyf8mx
-         AEkw==
-X-Gm-Message-State: AOAM532IPO3VKB3/p6QU/nSHOVNBHQiS74kFzTuQsomBen+//qIOi7GC
-        ary/rOyeST8tw4IFV0W8qjKRyhScZBE1vhKC5h2A4Q==
-X-Google-Smtp-Source: ABdhPJzvNYxqQb9U2XzfKJb2/JItP1FPhUV8vpIOaA9YTfYMDRGdK0KfjV4OKmu7Lj/gbe7ApYmb8BRwlwsQK4OS04I=
-X-Received: by 2002:ab0:60c9:: with SMTP id g9mr1725311uam.100.1628768789146;
- Thu, 12 Aug 2021 04:46:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <1628767642-4008-1-git-send-email-rnayak@codeaurora.org> <1628767642-4008-3-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1628767642-4008-3-git-send-email-rnayak@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 12 Aug 2021 13:45:52 +0200
-Message-ID: <CAPDyKFqruKGya1tbPjzAA=eO5v3Gipt2DH6RBbMi6e_vXmA+dw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Dmitry Osipenko <digetx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 12 Aug 2021 07:48:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6025D1FF38;
+        Thu, 12 Aug 2021 11:47:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628768869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UsnGN8G6MbJhWNJtgd31YPMCzs62W5YWWfIm0pXOrbU=;
+        b=VrudGW0oJ+TBUCeEvUMhreCvashh+/6TubEqnieCxUXQLPbmVcvh/lfi0jMyuHxW16B2zm
+        uxJ+BC2Tg9A5Cvvy1X76F1mzVh7GTM+Bd44VYWz6Jvhu4cNYJGNWVCpDjDyD2Pb+Kw8ML+
+        luWdZjLmUq3gBDogiR8Lh+eDQLIIzDE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628768869;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UsnGN8G6MbJhWNJtgd31YPMCzs62W5YWWfIm0pXOrbU=;
+        b=kjGv5ndPGpcGN82ZM03CXYzsW8IpEKeGxQsG7uaYIC4ilRI96VDOrWuv47dy/0HKe0psX0
+        QwiewyPSIUO8alDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 581B2A3EF7;
+        Thu, 12 Aug 2021 11:47:49 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 13:47:49 +0200
+Message-ID: <s5hfsvej34q.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/27] ALSA: hda/cirrus: Split generic cirrus HDA codecs and CS8490 bridge into separate modules.
+In-Reply-To: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
+References: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 at 13:28, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
-> Some devices within power domains with performance states do not
-> support DVFS, but still need to vote on a default/static state
-> while they are active. They can express this using the 'required-opps'
-> property in device tree, which points to the phandle of the OPP
-> supported by the corresponding power-domains.
->
-> Add support to parse this information from DT and then set the
-> specified performance state during attach and drop it on detach.
-> runtime suspend/resume callbacks already have logic to drop/set
-> the vote as needed and should take care of dropping the default
-> perf state vote on runtime suspend and restore it back on runtime
-> resume.
->
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+On Wed, 11 Aug 2021 20:56:27 +0200,
+Vitaly Rodionov wrote:
+> 
+> This series of patches splits generic cirrus HDA codecs and CS8490 bridge
+> into separate modules, adds support for multiple companion codecs connected to
+> CS8409, and also adds support for new DELL HW platform.
+> 
+> CS8409 part is not really a HDA codec, it is a HDA bridge where companion codecs
+> (up to 16) can be attached. With growing number of supported configurations and 
+> platforms, patch_cirrus is getting less and less transparent and maintainable.
+> So, the logical step is to separate generic Cirrus HDA codecs support 
+> and Cirrus HDA bridge support.
+> 
+> Lots of improvements to existing functionality, code clean-up and refactoring,
+> remove duplicated/redundant code, improve I2C functions etc.
+> 
+> Add support for new DELL HW platform with 2 CS42L42 codecs for front and rear jacks.
+> 
+> Lucas Tanure (12):
+>   ALSA: hda/cirrus: Move CS8409 HDA bridge to separate module
+>   ALSA: hda/cs8409: Move arrays of configuration to a new file
+>   ALSA: hda/cs8409: Disable unsolicited response for the first boot
+>   ALSA: hda/cs8409: Prevent I2C access during suspend time
+>   ALSA: hda/cs8409: Generalize volume controls
+>   ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
+>   ALSA: hda/cs8409: Avoid setting the same I2C address for every access
+>   ALSA: hda/cs8409: Avoid re-setting the same page as the last access
+>   ALSA: hda/cs8409: Support i2c bulk read/write functions
+>   ALSA: hda/cs8409: Separate CS8409, CS42L42 and project functions
+>   ALSA: hda/cs8409: Move codec properties to its own struct
+>   ALSA: hda/cs8409: Add support for dolphin
+> 
+> Stefan Binding (15):
+>   ALSA: hda/cs8409: Use enums for register names and coefficients
+>   ALSA: hda/cs8409: Mask all CS42L42 interrupts on initialization
+>   ALSA: hda/cs8409: Reduce HS pops/clicks for Cyborg
+>   ALSA: hda/cs8409: Disable unnecessary Ring Sense for
+>     Cyborg/Warlock/Bullseye
+>   ALSA: hda/cs8409: Disable unsolicited responses during suspend
+>   ALSA: hda/cs8409: Mask CS42L42 wake events
+>   ALSA: hda/cs8409: Simplify CS42L42 jack detect.
+>   ALSA: hda/cs8409: Support multiple sub_codecs for Suspend/Resume/Unsol
+>     events
+>   ALSA: hda/cs8409: Add Support to disable jack type detection for
+>     CS42L42
+>   ALSA: hda/cs8409: Enable Full Scale Volume for Line Out Codec on
+>     Dolphin
+>   ALSA: hda/cs8409: Set fixed sample rate of 48kHz for CS42L42
+>   ALSA: hda/cs8409: Use timeout rather than retries for I2C transaction
+>     waits
+>   ALSA: hda/cs8409: Remove unnecessary delays
+>   ALSA: hda/cs8409: Follow correct CS42L42 power down sequence for
+>     suspend
+>   ALSA: hda/cs8409: Unmute/Mute codec when stream starts/stops
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Kind regards
-Uffe
+Thanks, applied now all 27 patches to for-next branch.
 
 
-> ---
->  drivers/base/power/domain.c | 30 ++++++++++++++++++++++++++++--
->  include/linux/pm_domain.h   |  1 +
->  2 files changed, 29 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index a934c67..e1c8994 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
->
->         dev_dbg(dev, "removing from PM domain %s\n", pd->name);
->
-> +       /* Drop the default performance state */
-> +       if (dev_gpd_data(dev)->default_pstate) {
-> +               dev_pm_genpd_set_performance_state(dev, 0);
-> +               dev_gpd_data(dev)->default_pstate = 0;
-> +       }
-> +
->         for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
->                 ret = genpd_remove_device(pd, dev);
->                 if (ret != -EAGAIN)
-> @@ -2637,6 +2643,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->  {
->         struct of_phandle_args pd_args;
->         struct generic_pm_domain *pd;
-> +       int pstate;
->         int ret;
->
->         ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
-> @@ -2675,10 +2682,29 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->                 genpd_unlock(pd);
->         }
->
-> -       if (ret)
-> +       if (ret) {
->                 genpd_remove_device(pd, dev);
-> +               return -EPROBE_DEFER;
-> +       }
->
-> -       return ret ? -EPROBE_DEFER : 1;
-> +       /* Set the default performance state */
-> +       pstate = of_get_required_opp_performance_state(dev->of_node, index);
-> +       if (pstate < 0 && pstate != -ENODEV) {
-> +               ret = pstate;
-> +               goto err;
-> +       } else if (pstate > 0) {
-> +               ret = dev_pm_genpd_set_performance_state(dev, pstate);
-> +               if (ret)
-> +                       goto err;
-> +               dev_gpd_data(dev)->default_pstate = pstate;
-> +       }
-> +       return 1;
-> +
-> +err:
-> +       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
-> +               pd->name, ret);
-> +       genpd_remove_device(pd, dev);
-> +       return ret;
->  }
->
->  /**
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 21a0577..67017c9 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
->         struct notifier_block *power_nb;
->         int cpu;
->         unsigned int performance_state;
-> +       unsigned int default_pstate;
->         unsigned int rpm_pstate;
->         ktime_t next_wakeup;
->         void *data;
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
->
+Takashi
