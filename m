@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB0E3EAC3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979583EAC3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhHLVJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56496 "EHLO
+        id S235724AbhHLVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 17:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhHLVJw (ORCPT
+        with ESMTP id S231270AbhHLVJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:09:52 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9C0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:27 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso10033274pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:27 -0700 (PDT)
+        Thu, 12 Aug 2021 17:09:54 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3DDC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:28 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id x5so6593986ybe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AwF9gPVb6rSLv8TfNn020arGyAKk62BBC6M1h4xTevU=;
-        b=IuuCgqYx4BPxjD5Pm0KgpVEiQmkLhiXA814N3a3j5+lrQsl3YG3LfIiWxoxd14hxZ0
-         4RGvWs4JohzN4HqAcSw10p+8j2AigtBErRFlpfywzQL/FDIY/lsOb0NG83DJ301td7tb
-         WelLBc/4DuPEX/BXWym6ag2QLgoy/ErPk+MHG/rIxDlThXDp0npeYsciBRX18jxuwDZa
-         wZbPHU0r1i1+zY3nLFegD8Q238XrKK8TrfacZDBmtO8GwOdufp9aXEukBKLQ58sH72Ez
-         2WJZYxnmYMek26CRaqs0OhCPihu8j1K0ESrFHEbb+kdiRX+MmSIDlZvF3cxErNVlacui
-         ioSQ==
+        bh=ZzXodZIvo99nif4/uO2l0vGH+4OrRkEZY+iwXxMdnBM=;
+        b=oUMnOR3FqO3n452BiuGaT2bq3JvamVONMQOVRemcSqQGxAmoGJvcS8KlEb5HfAeZ7b
+         DPVU3SluO9Pc6ftO6BGRRaTiLyWs1JyYsFF5AbNaYCZBfrVCI08d2vaHWIc5XiKDzMd6
+         a9o4o+/J0Bcmm5PDCQxlqqmuqCiUw9pIcl8CbDzVotdqCdzn64IU0KfypLJkjyZi8JO6
+         JKVjn3mpp6bHHlX63k/JOLY4S+/EKoFNc8rZpp6BQ/u5lT3KyxuMUhVPfPt+6K1rrF7Q
+         Q57sq2fFWym3aCZpu/zkPNjEnX0i3VAuDfHC6+nnL9dov64d00vxR3CyNO2quAnLUQMw
+         tnpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AwF9gPVb6rSLv8TfNn020arGyAKk62BBC6M1h4xTevU=;
-        b=j+1QfBAvuBG5LSFtGifZ3Ct8qO1xm1xZU6ewLGYhcYGkAlx2gzPHzh2CLaQ3G/9fRw
-         4HUWnLhAhB3FNI2wDNm/ClMZx7pl0g5UulLKNuaXegfSr0d5BLs2ksYrfWtgBlLOtP9n
-         oYOoFiN39yVijSJvLLMdvpr1TWyb9cikXlEpqLYfsRRFLPEYMD5S8E7ny0Hf1EHcfXJd
-         FaNgpUnp66fmoeljYxL2rUrZRbrCQ1EUXRRO2YJKGSsZar/kdQo5xQlxr74SP/JXcJrZ
-         vpL/AARtxiJl4q70kxJn73UJpUKkPk0qJ7cgJJ9NtVR52mNcASBLRRQLcXYvazm6W8KW
-         uXyw==
-X-Gm-Message-State: AOAM532V+HSsYEUoKthVtK3KVsHZ4uwjAsM4mYhALKr1lCXpITJ2I+st
-        JR4O8NzZvpSXcx60PCJWoG+asWFj8OPsYnroz/oyQQ==
-X-Google-Smtp-Source: ABdhPJxeGt+jyLedAnAFq7sXc5iu6NqpVBagtGh/H6ypybLGjl+PjfMszRQ60ZHPi49s39/oavnefbAWKC77Y7JrxoY=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr6086414pjq.217.1628802566538;
- Thu, 12 Aug 2021 14:09:26 -0700 (PDT)
+        bh=ZzXodZIvo99nif4/uO2l0vGH+4OrRkEZY+iwXxMdnBM=;
+        b=SorFtJPc4E6HfV7jOrgEPSpyybkarAwfN04cQchz1flaQ5cflJ2zcueDd8axwPta5U
+         yndlXjsVzknnO3ELvAY6+uIQGGsxwZzNg1k2N/XtpKqH6uU/7DaUvqQTlXycvhZoEg5u
+         8kK4OaafmVCVLPzK3WDJVntEXFl7OyqgTj80/sVvXAP5qWmEanHnhrBAjkFGNtHOCh3E
+         1L2CKbs5LptAOI17frWY3VIacAV3/cTstNPPd6sMC2JM2C9jk8irvOVrDm8QHC4M0W0j
+         Ng9ZilY8hDNvzp7Rh4+MZSeMes5WRBvDiqTmhac2Ae7ltYJG2/6Iw/FR2h5f9j4vsERr
+         yibg==
+X-Gm-Message-State: AOAM530XFW7Yvx2Oj1QRfNvga268aZmPDqbjiJTI0EcVwlT2c2Ijs23b
+        XiAJLGxlJt0Pc+Wj+affgbUpF5QivkEvaLoJ1jM35A==
+X-Google-Smtp-Source: ABdhPJwRTuh6FQhXxTiC76/Wl+dIoYJ4gSpt3M/EPd6X8sNVnJPHX8ClET9eQg9/SNGPB/JvGm2kuI/WJLyrrg0Ak0s=
+X-Received: by 2002:a25:2155:: with SMTP id h82mr6879793ybh.177.1628802567530;
+ Thu, 12 Aug 2021 14:09:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812204027.338872-1-nathan@kernel.org> <20210812204027.338872-3-nathan@kernel.org>
-In-Reply-To: <20210812204027.338872-3-nathan@kernel.org>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Thu, 12 Aug 2021 22:09:15 +0100
-Message-ID: <CAA=Fs0k=MeBAHeCK4kFd9p5S5mqER931DGs-mp6Di92rCmAJGg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] staging: r8188eu: Remove uninitialized use of
- ether_type in portctrl()
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
+References: <20210730020019.1487127-1-joshdon@google.com> <20210730020019.1487127-3-joshdon@google.com>
+ <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 12 Aug 2021 14:09:15 -0700
+Message-ID: <CABk29Ns8P9AGy7Tpo6duOeEh=ZFWM1jO8FnvhZhktfcA0GWOpw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] sched: adjust SCHED_IDLE interactions
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 at 21:40, Nathan Chancellor <nathan@kernel.org> wrote:
+> > @@ -697,8 +699,18 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> >                 slice = __calc_delta(slice, se->load.weight, load);
+> >         }
+> >
+> > -       if (sched_feat(BASE_SLICE))
+> > -               slice = max(slice, (u64)w);
+> > +       if (sched_feat(BASE_SLICE)) {
+> > +               /*
+> > +                * SCHED_IDLE entities are not subject to min_granularity if
+> > +                * they are competing with non SCHED_IDLE entities. As a result,
+> > +                * non SCHED_IDLE entities will have reduced latency to get back
+> > +                * on cpu, at the cost of increased context switch frequency of
+> > +                * SCHED_IDLE entities.
+> > +                */
 >
-> After commit 987219ad34a6 ("staging: r8188eu: remove lines from Makefile
-> that silence build warnings"), clang warns:
+> Ensuring that the entity will have a minimum runtime has been added to
+> ensure that we let enough time to move forward.
+> If you exclude sched_idle entities from this min runtime, the
+> sched_slice of an idle_entity will be really small.
+> I don't have details of your example above but I can imagine that it's
+> a 16 cpus system which means a sysctl_sched_min_granularity=3.75ms
+> which explains the 4ms running time of an idle entity
+> For a 16 cpus system, the sched_slice of an idle_entity in your
+> example in the cover letter is: 6*(1+log2(16))*3/1027=87us. Of course
+> this become even worse with more threads and cgroups or thread with
+> ncie prio -19
 >
-> drivers/staging/r8188eu/core/rtw_recv.c:499:8: warning: variable
-> 'ether_type' is uninitialized when used here [-Wuninitialized]
->                         if (ether_type == eapol_type)
->                             ^~~~~~~~~~
-> drivers/staging/r8188eu/core/rtw_recv.c:458:16: note: initialize the
-> variable 'ether_type' to silence this warning
->         u16     ether_type;
->                           ^
->                            = 0
-> 1 warning generated.
+> This value is then used to set the next hrtimer event in SCHED_HRTICK
+> and 87us is too small to make any progress
 >
-> This if statement sets the exact same assignment as above so just remove
-> it.
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  drivers/staging/r8188eu/core/rtw_recv.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-> index 9b3637e49052..8df38db9572c 100644
-> --- a/drivers/staging/r8188eu/core/rtw_recv.c
-> +++ b/drivers/staging/r8188eu/core/rtw_recv.c
-> @@ -495,10 +495,6 @@ static struct recv_frame *portctrl(struct adapter *adapter, struct recv_frame *p
->                         /* allowed */
->                         /* check decryption status, and decrypt the frame if needed */
->                         prtnframe = precv_frame;
-> -                       /* check is the EAPOL frame or not (Rekey) */
-> -                       if (ether_type == eapol_type)
-> -                               /* check Rekey */
-> -                               prtnframe = precv_frame;
->                 }
->         } else {
->                 prtnframe = precv_frame;
-> --
-> 2.33.0.rc2
->
+> The 1ms of your test comes from the tick which could be a good
+> candidate for a min value or the
+> normalized_sysctl_sched_min_granularity which has the advantage of not
+> increasing with number of CPU
 
-Thanks again.
+Fair point, this shouldn't completely ignore min granularity. Something like
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+unsigned int sysctl_sched_idle_min_granularity = NSEC_PER_MSEC;
 
-Regards,
-Phil
+(and still only using this value instead of the default
+min_granularity when the SCHED_IDLE entity is competing with normal
+entities)
+
+> > @@ -4216,7 +4228,15 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+> >                 if (sched_feat(GENTLE_FAIR_SLEEPERS))
+> >                         thresh >>= 1;
+> >
+> > -               vruntime -= thresh;
+> > +               /*
+> > +                * Don't give sleep credit to a SCHED_IDLE entity if we're
+> > +                * placing it onto a cfs_rq with non SCHED_IDLE entities.
+> > +                */
+> > +               if (!se_is_idle(se) ||
+> > +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
+>
+> Can't this condition above create unfairness between idle entities ?
+> idle thread 1 wake up while normal thread is running
+> normal thread thread sleeps immediately after
+> idle thread 2 wakes up just after and gets some credits compared to the 1st one.
+
+Yes, this sacrifices some idle<->idle fairness when there is a normal
+thread that comes and goes. One alternative is to simply further
+reduce thresh for idle entities. That will interfere with idle<->idle
+fairness when there are no normal threads, which is why I opted for
+the former. On second thought though, the former fairness issue seems
+more problematic. Thoughts on applying a smaller sleep credit
+threshold universally to idle entities?
