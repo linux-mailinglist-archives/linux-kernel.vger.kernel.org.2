@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529513E9D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72193E9D89
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhHLEdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:33:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:37429 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhHLEdV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:33:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="215303541"
-X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="215303541"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 21:32:56 -0700
-X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="517293211"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.249.174.184]) ([10.249.174.184])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 21:32:52 -0700
-Subject: Re: [PATCH v4 1/2] perf pmu: Add PMU alias support
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        rickyman7@gmail.com, Kan Liang <kan.liang@linux.intel.com>
-References: <20210811024827.9483-1-yao.jin@linux.intel.com>
- <20210811024827.9483-2-yao.jin@linux.intel.com> <YRQjreot69DL0xVV@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <6401ef3a-1a59-4575-7c1d-8065e8a2b5c6@linux.intel.com>
-Date:   Thu, 12 Aug 2021 12:32:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233999AbhHLEgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233659AbhHLEgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 00:36:11 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91217C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:35:46 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a20so5674132plm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxr+kN6SetTz50b/VYivr0ZuxkSNxFN7jKWgrcYWkys=;
+        b=S1St+GitlDcWedfmRSFXGJimehgFJFlFJwttWDdN3zwMXbC6pb4l3lsPKEyWRkGHT4
+         hj9LanR1X1hmDGTxbFNTh/HHOKWVEnuDZfgYbxGVXo3MUos0btzQLY1ssDN9j0N7AHhL
+         Pu44FndYuRVG9rtcQMyDyV4EmtQs4oqkIkFl+XfKvg6+Vao0c8+3kx8PqON9bX+JdMBl
+         aIq7jZYDN4rflT6LH0T9TIARx4Mxgc/yDJfjP//GgTvrgmSqM04S+JVjOmKlX7saeAp5
+         5ADWwmehJpMTRJ9Re+vvybV419/uXAoHdupfeo6URKjlLwTxfWFuma6Rv1rECl3+e0gB
+         0TEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxr+kN6SetTz50b/VYivr0ZuxkSNxFN7jKWgrcYWkys=;
+        b=ehdtK/ZUv7CmDJ0QSk7NKd+md0uI9aoVEvWN8SxfJzpBeUw6/RBBOkhbZ+fCiRxLv6
+         +Gr0M4ix/kVkdnWwh6k3MRgt9t96VjRWOQUfzvZLykH6UC61bdTF8JNF5WxnNIbP2XJ+
+         3CkKcPdNBymRm1vFoC+voQrRdKT26p7SWg31YktSsiz0RFHARdKrn2e3bYYhdEZIAOOe
+         gL9votFB055olTUkSwlHYdeoPn+jc07g3nz/cIT8t/OvMR5AUc1IB6nYxdLM1Oa0aQ31
+         F2cJjEjjAFcJyZGQeiJnZTs4BCgmOw1R21F75C/Z7FkON+PB4CMg1iIvrr5N2P07AlHk
+         ax8A==
+X-Gm-Message-State: AOAM533KFMiYZi4rmQrhlqwszTkCuOiREs56NamRYe1IQRZ3ORhxtcQM
+        YqrbO7jQC9wftiABusakxL6GrA==
+X-Google-Smtp-Source: ABdhPJydv+lAOJdvjzc80FCXMzAsQnjZgaDpNJlleVqm7BNMfhuu1ZD0GXkUb8D3PJVRnvy/JGxrcQ==
+X-Received: by 2002:a63:4423:: with SMTP id r35mr2089732pga.358.1628742945985;
+        Wed, 11 Aug 2021 21:35:45 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id z13sm8264118pjd.44.2021.08.11.21.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 21:35:45 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        lukasz.luba@arm.com, Quentin Perret <qperret@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: [PATCH V3 0/9] Add callback to register with energy model
+Date:   Thu, 12 Aug 2021 10:05:13 +0530
+Message-Id: <cover.1628742634.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <YRQjreot69DL0xVV@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Many cpufreq drivers register with the energy model for each policy and
+do exactly the same thing. Follow the footsteps of thermal-cooling, to
+get it done from the cpufreq core itself.
 
-On 8/12/2021 3:23 AM, Jiri Olsa wrote:
-> On Wed, Aug 11, 2021 at 10:48:26AM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->>   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index fc683bc41715..796a4be752f4 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -946,6 +946,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->>   	return NULL;
->>   }
->>   
->> +char * __weak
->> +pmu_find_real_name(const char *name)
->> +{
->> +	return strdup(name);
->> +}
-> hm, why does this need to return already strdup? it forces you
-> to add all those goto below.. could just return name and keep
-> the 'pmu->name = strdup(name);' below?
-> 
-> that should make the change simpler
-> 
-> jirka
-> 
+Provide a new callback, which will be called, if present, by the cpufreq
+core at the right moment (more on that in the code's comment). Also
+provide a generic implementation that uses dev_pm_opp_of_register_em().
 
-In x86 specific __pmu_find_real_name,
+This also allows us to register with the EM at a later point of time,
+compared to ->init(), from where the EM core can access cpufreq policy
+directly using cpufreq_cpu_get() type of helpers and perform other work,
+like marking few frequencies inefficient, this will be done separately.
 
-static char *__pmu_find_real_name(const char *name)
-{
-	struct perf_pmu_alias_name *pmu;
+This is build/boot tested by the bot for a couple of boards.
 
-	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-		if (!strcmp(name, pmu->alias))
-			return strdup(pmu->name);
-	}
+https://gitlab.com/vireshk/pmko/-/pipelines/351965580
 
-	return strdup(name);
-}
+FWIW, I have queued up the series for linux-next to get more testing, but your
+reviews are welcome. Thanks.
 
-We have returned with strdup(name).
+V2->V3:
+- Drop the auto-register part from all logs, this isn't called auto registration
+  anymore.
+- Call register_em() only for new policies.
+- Update scmi driver to register with EM only when required.
+- Add Rby tags.
 
-OK, I will change the code to:
+V1->V2:
+- Add a callback instead of flag.
+- Register before governor is initialized.
+- Update scmi driver as well.
+- Don't unregister from the EM core.
 
-static char *__pmu_find_real_name(const char *name)
-{
-	struct perf_pmu_alias_name *pmu;
+--
+Viresh
 
-	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-		if (!strcmp(name, pmu->alias))
-			return pmu->name;
-	}
+Viresh Kumar (9):
+  cpufreq: Add callback to register with energy model
+  cpufreq: dt: Use .register_em() to register with energy model
+  cpufreq: imx6q: Use .register_em() to register with energy model
+  cpufreq: mediatek: Use .register_em() to register with energy model
+  cpufreq: omap: Use .register_em() to register with energy model
+  cpufreq: qcom-cpufreq-hw: Use .register_em() to register with energy
+    model
+  cpufreq: scpi: Use .register_em() to register with energy model
+  cpufreq: vexpress: Use .register_em() to register with energy model
+  cpufreq: scmi: Use .register_em() to register with energy model
 
-	return name;
-}
+ drivers/cpufreq/cpufreq-dt.c           |  3 +-
+ drivers/cpufreq/cpufreq.c              | 13 ++++++
+ drivers/cpufreq/imx6q-cpufreq.c        |  2 +-
+ drivers/cpufreq/mediatek-cpufreq.c     |  3 +-
+ drivers/cpufreq/omap-cpufreq.c         |  2 +-
+ drivers/cpufreq/qcom-cpufreq-hw.c      |  3 +-
+ drivers/cpufreq/scmi-cpufreq.c         | 65 +++++++++++++++++---------
+ drivers/cpufreq/scpi-cpufreq.c         |  3 +-
+ drivers/cpufreq/vexpress-spc-cpufreq.c |  3 +-
+ include/linux/cpufreq.h                | 14 ++++++
+ 10 files changed, 76 insertions(+), 35 deletions(-)
 
-And keep 'pmu->name = strdup(name);' in pmu_lookup().
+-- 
+2.31.1.272.g89b43f80a514
 
-Thanks
-Jin Yao
