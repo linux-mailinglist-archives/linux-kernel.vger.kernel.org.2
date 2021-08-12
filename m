@@ -2,177 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5BE3EAC17
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8733EAC19
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbhHLUuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:50:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhHLUuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 856DF60560;
-        Thu, 12 Aug 2021 20:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628801387;
-        bh=1jFFI1mfz49g1sV9TwI8xebX1EbH0k/3dXkZktJuI5k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ji8MA6NdcDj7Ed4A7FPXDgErpY7OK63nis+ldVdluVXmXDiuaU+P1gA9B3ny7SV1y
-         6rnP+F/3URLGv50jQ796s3fAUiLMWRkSQjm+ajlQ322hYAkJfRjYotAwHuHgNK/yg7
-         yA5/+e6T6MDrhDKIjorkh52Pa92y4kGZmMxFrXZNwYId5C1JfkGri2/mnvYfxSaoR/
-         o7TnADoDEu4s1C4BPdXp3hYDskjV8dC8DJ13CgaQIc5a7rWgE40wBxGJYWJYXjsBgt
-         otUMGlB4hZSwm4a6qCqY16pltAQpjPU1wGbriml8aX8ZgOdwomxlewDwpjWW+wmu4R
-         p2tubOuN1zTCw==
-Date:   Thu, 12 Aug 2021 13:49:46 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
-Subject: Re: [PATCH v2] f2fs: compress: do sanity check on cluster
-Message-ID: <YRWJan4JTXHN3RFr@google.com>
-References: <20210806000250.39728-1-chao@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806000250.39728-1-chao@kernel.org>
+        id S234180AbhHLUuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233853AbhHLUuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 16:50:23 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6292C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:49:57 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id q11-20020a05620a05abb02903ca17a8eef8so4411794qkq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EEcmItRjp8Rm0JAsCYF3K+KT6iLKBKGG/FOXlRG+5Ik=;
+        b=eAMZXGbnFvLxMVhR3gp86mUMmYHWjrLDcz6rCE8M4HpdlL57YmicGVKFLMpfSwTyyo
+         Lo/0xfixfPgvJ6fclJdnhs48fKXYP5zydkg+2l4B/6QJDC8gnisa149VZ+eUcOx1woeV
+         ghTqQB6krRcP+VEmBgShd9dngIIz9qCDrlR14W7mpq5rtW332fC80ialeFYuuIjtm+zb
+         z6dLFQpBFk1oz1Bz/BsDoQ5G90N3h80UQgUOTFhp1oEOz01PQLix/43n3QbjIhFqet3Z
+         AqIloDHl2SDJsWYRD490aevx5dg5DizH8FRex/MFf/g7DysGwt5R6t8SCQJu1o31wJVJ
+         Y/GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EEcmItRjp8Rm0JAsCYF3K+KT6iLKBKGG/FOXlRG+5Ik=;
+        b=Uk+fsRNS5JWy9C1LDsJrjncoUFstWmHSG4zhgfFngLsSvGyZ++tHhpMNkwbJO/c5Zh
+         kC7NWYjZXaP0bDNUtNbG6IndEwX5SLHFUjttUGgiPn6gjBImq5l1yTCYREoSbeqcGb8F
+         De35ggNH1e4rmVu33tFegTBFGFK1DaP2EvqHYvOP0NkzlsIIk9QPAnDinawx2RM1e4ei
+         AEvz/T+e6XhfGoh6JapRPNs5yphiLR1Udxnk+tvVYj3HPAr4H9ztSWLn8Hv2tbmA6weD
+         gPbCcYDZjKTsV2RUNF163BVJ3nrzKHeGRh3UwZ7y3dCeUkn3NwmYv/3mwkwfZxQ3lfS4
+         Bz3Q==
+X-Gm-Message-State: AOAM5306de0LLQI2oEB0trjy5umUCAcbv+AQDydbFtqPRg6M6uP85bOU
+        1pGkcLWwKkYDMxWbPFV/FmNfPRjT
+X-Google-Smtp-Source: ABdhPJzYF7MyI9foK3XR/5POi74lS+GXilnDEKS8k7jS6nviaD6lyJyTJ+D2Jl6DyJhhGHTObKhsAzigXA==
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:d96:5aae:6b0e:adc6])
+ (user=morbo job=sendgmr) by 2002:a05:6214:892:: with SMTP id
+ cz18mr5870385qvb.60.1628801396999; Thu, 12 Aug 2021 13:49:56 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 13:49:51 -0700
+Message-Id: <20210812204951.1551782-1-morbo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH] ppc: add "-z notext" flag to disable diagnostic
+From:   Bill Wendling <morbo@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Cc:     Bill Wendling <morbo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06, Chao Yu wrote:
-> This patch adds f2fs_sanity_check_cluster() to support doing
-> sanity check on cluster of compressed file, it will be triggered
-> from below two paths:
-> 
-> - __f2fs_cluster_blocks()
-> - f2fs_map_blocks(F2FS_GET_BLOCK_FIEMAP)
-> 
-> And it can detect below three kind of cluster insanity status.
-> 
-> C: COMPRESS_ADDR
-> N: NULL_ADDR or NEW_ADDR
-> V: valid blkaddr
-> *: any value
-> 
-> 1. [*|C|*|*]
-> 2. [C|*|C|*]
-> 3. [C|N|N|V]
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
-> v2:
-> - cover all map_block cases
-> - give EFSCORRUPTED only when CHECK_FS is enabled for fiemap()
->  fs/f2fs/compress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/f2fs/data.c     |  9 ++++++++
->  fs/f2fs/f2fs.h     |  1 +
->  3 files changed, 63 insertions(+)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 7dbfd6965b97..f25b32a6893a 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -898,6 +898,54 @@ static bool cluster_has_invalid_data(struct compress_ctx *cc)
->  	return false;
->  }
->  
-> +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn)
-> +{
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
-> +	unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
-> +	bool compressed = dn->data_blkaddr == COMPRESS_ADDR;
-> +	int cluster_end = 0;
-> +	int i;
-> +	char *reason = "";
-> +
-> +	if (!compressed)
-> +		return false;
-> +
-> +	/* [..., COMPR_ADDR, ...] */
-> +	if (dn->ofs_in_node % cluster_size) {
-> +		reason = "[*|C|*|*]";
-> +		goto out;
-> +	}
-> +
-> +	for (i = 1; i < cluster_size; i++) {
-> +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
-> +							dn->ofs_in_node + i);
-> +
-> +		/* [COMPR_ADDR, ..., COMPR_ADDR] */
-> +		if (blkaddr == COMPRESS_ADDR) {
-> +			reason = "[C|*|C|*]";
-> +			goto out;
-> +		}
-> +		if (compressed) {
-> +			if (!__is_valid_data_blkaddr(blkaddr)) {
-> +				if (!cluster_end)
-> +					cluster_end = i;
-> +				continue;
-> +			}
-> +			/* [COMPR_ADDR, NULL_ADDR or NEW_ADDR, valid_blkaddr] */
-> +			if (cluster_end) {
-> +				reason = "[C|N|N|V]";
-> +				goto out;
-> +			}
-> +		}
-> +	}
-> +	return false;
-> +out:
-> +	f2fs_warn(sbi, "access invalid cluster, ino:%lu, nid:%u, ofs_in_node:%u, reason:%s",
-> +			dn->inode->i_ino, dn->nid, dn->ofs_in_node, reason);
-> +	set_sbi_flag(sbi, SBI_NEED_FSCK);
-> +	return true;
-> +}
-> +
->  static int __f2fs_cluster_blocks(struct inode *inode,
->  				unsigned int cluster_idx, bool compr)
->  {
-> @@ -915,6 +963,11 @@ static int __f2fs_cluster_blocks(struct inode *inode,
->  		goto fail;
->  	}
->  
-> +	if (f2fs_sanity_check_cluster(&dn)) {
-> +		ret = -EFSCORRUPTED;
-> +		goto fail;
-> +	}
-> +
->  	if (dn.data_blkaddr == COMPRESS_ADDR) {
->  		int i;
->  
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index df5e8d8c654e..d4c9aeba0842 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1552,6 +1552,15 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
->  			map->m_flags |= F2FS_MAP_NEW;
->  			blkaddr = dn.data_blkaddr;
->  		} else {
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+The "-z notext" flag disables reporting an error if DT_TEXTREL is set on
+PPC with CONFIG=kdump:
 
-I tried to remove ifdef. Please check f2fs/dev branch.
+  ld.lld: error: can't create dynamic relocation R_PPC64_ADDR64 against
+    local symbol in readonly segment; recompile object files with -fPIC
+    or pass '-Wl,-z,notext' to allow text relocations in the output
+  >>> defined in built-in.a(arch/powerpc/kernel/misc.o)
+  >>> referenced by arch/powerpc/kernel/misc.o:(.text+0x20) in archive
+      built-in.a
 
-> +			if (f2fs_compressed_file(inode) &&
-> +					f2fs_sanity_check_cluster(&dn) &&
-> +					(flag != F2FS_GET_BLOCK_FIEMAP ||
-> +					IS_ENABLED(CONFIG_F2FS_CHECK_FS))) {
-> +				err = -EFSCORRUPTED;
-> +				goto sync_out;
-> +			}
-> +#endif
->  			if (flag == F2FS_GET_BLOCK_BMAP) {
->  				map->m_pblk = 0;
->  				goto sync_out;
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index e97b4d8c5efc..3b368bcbc4d7 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -4074,6 +4074,7 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed,
->  							block_t blkaddr);
->  bool f2fs_cluster_is_empty(struct compress_ctx *cc);
->  bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
-> +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn);
->  void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
->  int f2fs_write_multi_pages(struct compress_ctx *cc,
->  						int *submitted,
-> -- 
-> 2.22.1
+The BFD linker disables this by default (though it's configurable in
+current versions). LLD enables this by default. So we add the flag to
+keep LLD from emitting the error.
+
+Signed-off-by: Bill Wendling <morbo@google.com>
+
+---
+The output of the "get_maintainer.pl" run just in case no one believes me. :-)
+
+$ ./scripts/get_maintainer.pl arch/powerpc/Makefile
+Michael Ellerman <mpe@ellerman.id.au> (supporter:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+Benjamin Herrenschmidt <benh@kernel.crashing.org> (reviewer:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+Paul Mackerras <paulus@samba.org> (reviewer:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+Nathan Chancellor <nathan@kernel.org> (supporter:CLANG/LLVM BUILD SUPPORT)
+Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD SUPPORT)
+linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+linux-kernel@vger.kernel.org (open list)
+clang-built-linux@googlegroups.com (open list:CLANG/LLVM BUILD SUPPORT)
+---
+ arch/powerpc/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index 6505d66f1193..17a9fbf9b789 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -122,6 +122,7 @@ endif
+ 
+ LDFLAGS_vmlinux-y := -Bstatic
+ LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) := -pie
++LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) += -z notext
+ LDFLAGS_vmlinux	:= $(LDFLAGS_vmlinux-y)
+ 
+ ifdef CONFIG_PPC64
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
+
