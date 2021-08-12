@@ -2,82 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEC73E9E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566253E9E1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhHLFmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 01:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbhHLFmG (ORCPT
+        id S234429AbhHLFtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 01:49:46 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:46606 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230377AbhHLFtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:42:06 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05297C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:41:42 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so2143597wma.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=rncRDKB4DU9qhENuipCw4tDszCNGSLCKP5orEvp1cWI=;
-        b=dXuFruq7lCDTRNnVaFujcdz0wTyQokilgVy2twiIvH3RT/EhsgHCgpAMPxGy3DPM8d
-         JpWr8Ku6CvQsbhTnjNE4ZEubVzgQAWWTxwoeK8bU9tMyaPWDXaTXhDUVpss+LHouDpBh
-         im6/q1l6SrocvB82xT1JwjLKJONDM/JY4fXlPX7Q7sokVwdtAHkG/uupeyEmIYOsto2D
-         cGSvVMnczI2vBDiVagaQkrUE90qXE4NtUzULP+8+d7IJP2DAXjt04VQP6WADAsAPidPA
-         MrUvmoiaUbwWMjJUa8vucJMwvnzlacJpLQe2obSswSSQRKixfPrD6BvUbO6tg29EFhab
-         zz/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=rncRDKB4DU9qhENuipCw4tDszCNGSLCKP5orEvp1cWI=;
-        b=F6Mz5rys5jqphgoLBsRmGUlVMvpRgerg3+FYAiOu13E4Qno8/wWCXW1A8QmPvVUY5K
-         HDL1Hq1npBAy4LNqxTNxd+bxZyPqy/gFbBjVqWu3W7qybRMLeAyNJ8gbSqMO5JhyaxkM
-         BsCsIWdeQFEX1Cqs5EskyjEXqefqQPnZbpIa72Tf+pUTEvlmbZVkZUv2m/9hNeidLXo/
-         ovegeD4iahMFYPxmN0UYIq/okCrQvHwfGmI6ZOO0zesBe6TZjIwvRMItWL1lU7sNWMpr
-         K8OwdjWq+i1UGYXEDQiMOSUR20c1GWvldSNO2Hrb9qPhdognSaKPDMGg8j0YV+V3jZM0
-         rUbQ==
-X-Gm-Message-State: AOAM5336SpTOKBMH/acfkR+WQLE3EosUJmzZTppEq5QXJoFzeVdydYze
-        zIm3uYtRm/trjVMcAqKvT/yfs8+HhR6/ZFdMBwP1w2O/SNQubQ==
-X-Google-Smtp-Source: ABdhPJxseI3t2x/knaEVYGiPdBrwSotqAyWl4kqDtlUxAM2XvSB739HTGblOGjlOI7bw6q/j0b8r1/Qw/YeT9kzjt3Q=
-X-Received: by 2002:a1c:5411:: with SMTP id i17mr1932655wmb.183.1628746900232;
- Wed, 11 Aug 2021 22:41:40 -0700 (PDT)
+        Thu, 12 Aug 2021 01:49:45 -0400
+X-UUID: ac7b4d3721684250a58decace1416389-20210812
+X-UUID: ac7b4d3721684250a58decace1416389-20210812
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <hui.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1699305085; Thu, 12 Aug 2021 13:49:18 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Aug 2021 13:49:17 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 12 Aug 2021 13:49:16 +0800
+From:   Hui Liu <hui.liu@mediatek.com>
+To:     <robh+dt@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>
+CC:     <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
+        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
+        <matthias.bgg@gmail.com>, <s.hauer@pengutronix.de>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v1 0/2] AUXADC: Mediatek auxadc driver
+Date:   Thu, 12 Aug 2021 13:48:42 +0800
+Message-ID: <20210812054844.30575-1-hui.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 12 Aug 2021 00:41:29 -0500
-Message-ID: <CAH2r5msrRdGmFGht+rN7_UgkmrpT8eaAoQ46EyLvxhm7M-fKmg@mail.gmail.com>
-Subject: signed integer overflow in atomic.h
-To:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-===============
-[   28.345189] UBSAN: signed-integer-overflow in
-./arch/x86/include/asm/atomic.h:165:11
-[   28.345196] 484501395 + 2024361625 cannot be represented in type 'int'
-[   28.345202] CPU: 6 PID: 987 Comm: nmbd Not tainted 5.11.22 #1
-[   28.345208] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-[   28.345212] Call Trace:
-[   28.345218]  dump_stack+0x8d/0xb5
-[   28.345233]  ubsan_epilogue+0x5/0x50
-[   28.345242]  handle_overflow+0xa3/0xb0
-[   28.345257]  ? rcu_read_lock_sched_held+0x39/0x80
-[   28.345270]  ip_idents_reserve+0x8d/0xb0
-[   28.345283]  __ip_select_ident+0x3f/0x70
-[   28.345292]  __ip_make_skb+0x279/0x450
-[   28.345302]  ? ip_reply_glue_bits+0x40/0x40
-[   28.345314]  ip_make_skb+0x10d/0x130
-[   28.345326]  ? ip_route_output_key_hash+0xee/0x190
-[   28.345344]  udp_sendmsg+0x79b/0x13b0
-[   28.345365]  ? ip_reply_glue_bits+0x40/0x40
-[   28.345403]  ? find_held_lock+0x29/0xb0
-[   28.345420]  ? sock_sendmsg+0x54/0x60
-[   28.345426]  sock_sendmsg+0x54/0x60
+This series includes two patchs:
+1.add support for case IIO_CHAN_INFO_RAW.
+2.update case IIO_CHAN_INFO_PROCESSED: convert raw data to voltage.
+
+Changes in patch v1:
+1)fix typo covert to convert in patch 2/2 description.
+
+Hui Liu (2):
+  iio: mtk-auxadc: add support IIO_CHAN_INFO_RAW case
+  iio: mtk-auxadc: update case IIO_CHAN_INFO_PROCESSED
+
+ drivers/iio/adc/mt6577_auxadc.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+--
+2.18.0
 
 
--- 
-Thanks,
 
-Steve
