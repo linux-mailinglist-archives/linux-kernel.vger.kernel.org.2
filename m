@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052D23EA114
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E8C3EA116
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235320AbhHLI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S235410AbhHLI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhHLI5J (ORCPT
+        with ESMTP id S231470AbhHLI5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:57:09 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92338C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:44 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id a7-20020a9d5c870000b029050333abe08aso6825727oti.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:44 -0700 (PDT)
+        Thu, 12 Aug 2021 04:57:21 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C4BC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:56 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id bf25so465483oib.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:56:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=I29wkPGgO6NQxXu1JpY/V8GMi3CkTzzZeeIK4bDLNvw=;
-        b=hPI9bp/GgD3uadRZs5kcsIl69srGX7pVP0jPT7j4+7TjdukraPt/2fC5KjSZdUtDK0
-         GwJ7Rw20XqSDVdVdK4127Esn7GOOo4CE+sF3/YDmj/5SRuplEtudLxg+D9CgUW5X3IlO
-         71a7suz8Q9qNFRjfauG2yppj9kMrIKV2cMlHCAf4ZPdfjUAF/T5N/OgDueZqHH5/k3/1
-         yvbYu6vuoUntbI02+V/qZbe+AUZNLNQ4niSrUa/LYj2ZZ7s8J7aiAMGH6EBhuqNa8D2s
-         2Erk+lofy/R3VUHm9Y0G44/X+Vybl/231VoIiHU+MjGRlTsaoVFUTowHhRidKYvrvcNB
-         9CsA==
+        bh=CpNbFyXnXHPCTrfQK9jrNKENE4zlP3yIY6h8yYZAoL0=;
+        b=XKyvMwXf6ld2suQ7v4o10/Mwzba2BnazQYjm/Mnva9F/4jx4nj2FjysWxq3ZQpPKs+
+         qcqWHbHCGNka/QHgern7puGDE0EdMCRkOYmgJw2oiPLTFMOwCXZtIiHVYjevSP70wb3y
+         oZDKnKBtwE6F9K6DHixs8ztsAOx5w5UHCUNsVjxjqxjdp8qPp/jsqj1PDMn/oYFRpeAV
+         I1iDgtnM1M4z7JMqs6Mio86xRD6mtDWHiAB8HVwxv5hUWbnG91XD+UOQ1NeEFqj43dJB
+         BG46n7EmY3Zm/dbe4i4iOELegT/bA3SVUCpIYpsdvwTxQeaNb8EkPWnpLigVaQNHK713
+         IfGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I29wkPGgO6NQxXu1JpY/V8GMi3CkTzzZeeIK4bDLNvw=;
-        b=WsQwitabX6i4KxDHJ26tYYQxu1FnPr/bZGWEacY0S1eKgyfVN7ygBUF60Usu/U/v5/
-         wggXjNWNushbsuu9FLiIJ8RIE0BO1ka4AHT5FnsLM8oJ/4BjvnJNUiuw6+oqnCy/byYT
-         WWZVCDCk8RIh3SD5cyKi4jwr6R0YryHjswsslss2Vh30KSsDCBCUVY5M5qr7kBkqNHyC
-         VeRHEN/47Ey0vtqo3SIcQ3P0q6g+4X5I4Nd4n768DHm6t7OzidaCX14iBPqAAGjLySje
-         0aawulOy6z8cnXoWJP2WrTDkErRJ52OyfDDXkSYMtoaFh3aTVLLZZ3jZdB3ZBRPXgk7h
-         SIRQ==
-X-Gm-Message-State: AOAM531emt6qpczYq3EjJQCicJfu3fjH6oip2yt9iH22IDSXRo0QGEOr
-        lTy94d8agYaF5p+IVMQA4GQh8aaYKivMuGBJWF+8JA==
-X-Google-Smtp-Source: ABdhPJy8FvklqUSYdwBSErFoY2cJHDYfrxOpkSc5UNUD8X1LYr4yBN3B1qyJT2tNPqPct+1wdHhbKvh4i3PrtBTNtug=
-X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr2632529otq.233.1628758603786;
- Thu, 12 Aug 2021 01:56:43 -0700 (PDT)
+        bh=CpNbFyXnXHPCTrfQK9jrNKENE4zlP3yIY6h8yYZAoL0=;
+        b=exiFXGkmpblTM5s2cDr8Cr+1sioPyhIzTQfohr4KZ0iUUMSOTQDdgLm0L3QJulTsXr
+         OJWqvpmylz632WfqAWgpHm2g01ms8Ivi/FhwBvwzHqYhr0zyEcq0kMNpl/1cBzYa1Bq3
+         V5iVq92pCNGTwZWpLzDNax4ovEGn39SFK/FZFywaTMz+ihv7BkhRCmRvuHJzE2Z57buT
+         Y9myr6XkL4kHMllGb8QVg+8riOGDw2t6xYMu4Ov4bPaO/z7FC3ltraBZh4iPqPEE22GR
+         67t2ec0eVYNbujFPx57HWol2tIt+Hn7dcunZKr395RBvF7l4Rh/UhFb3E+EgcP1dtjDw
+         yoxA==
+X-Gm-Message-State: AOAM5327gucmx9dv0RVS9jp8pqc9dSYQIFWPJEyP3krxwnzHU0a/E4pu
+        Jpo2d06HJksWkWmlQnNhE2dKFtRNOwLJJDxEfczxjw==
+X-Google-Smtp-Source: ABdhPJymXxOTmk35yp+1Yawr5fY7uG03snHwzVDeA1bE4jw7jms1BHO34si+giJK72JgJCcEloICZoJ0dCiPPSlgzyw=
+X-Received: by 2002:aca:2316:: with SMTP id e22mr2503665oie.172.1628758615724;
+ Thu, 12 Aug 2021 01:56:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1628709663.git.andreyknvl@gmail.com> <3773f984cbd64f008af9b03e82fc1b317cda9fda.1628709663.git.andreyknvl@gmail.com>
-In-Reply-To: <3773f984cbd64f008af9b03e82fc1b317cda9fda.1628709663.git.andreyknvl@gmail.com>
+References: <cover.1628709663.git.andreyknvl@gmail.com> <6e0ddf32ce140b9e8aaf127e9e40cbfff4430995.1628709663.git.andreyknvl@gmail.com>
+In-Reply-To: <6e0ddf32ce140b9e8aaf127e9e40cbfff4430995.1628709663.git.andreyknvl@gmail.com>
 From:   Marco Elver <elver@google.com>
-Date:   Thu, 12 Aug 2021 10:56:32 +0200
-Message-ID: <CANpmjNMgkSG=QGKn-iOcUONTCxKtFHr2upbKcv46RsTYTcCx_Q@mail.gmail.com>
-Subject: Re: [PATCH 6/8] kasan: test: clean up ksize_uaf
+Date:   Thu, 12 Aug 2021 10:56:43 +0200
+Message-ID: <CANpmjNMNMoPc8S_xTG3ANBZkVsanq=vnsAPkL=pe+cOXbTySzw@mail.gmail.com>
+Subject: Re: [PATCH 5/8] kasan: test: only do kmalloc_uaf_memset for generic mode
 To:     andrey.konovalov@linux.dev
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Konovalov <andreyknvl@gmail.com>,
@@ -64,44 +64,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 21:23, <andrey.konovalov@linux.dev> wrote:
->
+On Wed, 11 Aug 2021 at 21:21, <andrey.konovalov@linux.dev> wrote:
 > From: Andrey Konovalov <andreyknvl@gmail.com>
 >
-> Some KASAN tests use global variables to store function returns values
-> so that the compiler doesn't optimize away these functions.
+> kmalloc_uaf_memset() writes to freed memory, which is only safe with the
+> GENERIC mode (as it uses quarantine). For other modes, this test corrupts
+> kernel memory, which might result in a crash.
 >
-> ksize_uaf() doesn't call any functions, so it doesn't need to use
-> kasan_int_result. Use volatile accesses instead, to be consistent with
-> other similar tests.
+> Only enable kmalloc_uaf_memset() for the GENERIC mode.
 >
 > Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-Reviewed-by: Marco Elver <elver@google.com>
+Acked-by: Marco Elver <elver@google.com>
 
-Although I do wonder if the compiler might one day mess with the
-volatile reads. At least this way we might also catch if the compiler
-messes up volatile reads. ;-)
 
 > ---
->  lib/test_kasan.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  lib/test_kasan.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
 > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index efd0da5c750f..e159d24b3b49 100644
+> index 0b5698cd7d1d..efd0da5c750f 100644
 > --- a/lib/test_kasan.c
 > +++ b/lib/test_kasan.c
-> @@ -731,8 +731,8 @@ static void ksize_uaf(struct kunit *test)
->         kfree(ptr);
+> @@ -528,6 +528,12 @@ static void kmalloc_uaf_memset(struct kunit *test)
+>         char *ptr;
+>         size_t size = 33;
 >
->         KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
-> -       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
-> -       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
-> +       KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
->  }
+> +       /*
+> +        * Only generic KASAN uses quarantine, which is required to avoid a
+> +        * kernel memory corruption this test causes.
+> +        */
+> +       KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+> +
+>         ptr = kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
 >
->  static void kasan_stack_oob(struct kunit *test)
 > --
 > 2.25.1
->
