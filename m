@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77B93E9ED0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685D93E9ED7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbhHLGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:49:51 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45947 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233567AbhHLGtu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:49:50 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id DF8255C00EB;
-        Thu, 12 Aug 2021 02:49:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 12 Aug 2021 02:49:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=7tumxtnlUFmqcDNOcJ47r7kQUco
-        YA0a+Ye8p8V4K8f4=; b=g/5E8jn8FWxiDYkpiYRmkneKF9SN4WjUCz7ct7j0OQT
-        sEXB3cQ6CqMTn75GHh+X0oG5r7A9gYK2/dqC1rn0Nhy5ayMild9xn1wXIBsLgd8y
-        anuNOwQnpynWmuUy8c+Uo1GcsIEdvUhAVPM8Mx+VMUkqNaodprxX3PAUkgJsEz3a
-        mz9+b36kumggPgFKxL75s7i7FMlIQ2YFfBtcs+a8hQa0jWiiloqdMhQ1hRhfbRAs
-        lZUao9xbGY56Qwk/h6kpU7YBR+uF2j5K9s14BPS5yJ45VK2bqHUq3AMGzpVj4bDA
-        uj/SvD8hQ9D0XZyNgcoBugEoec9QdZWkXwaOsAaAOQA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7tumxt
-        nlUFmqcDNOcJ47r7kQUcoYA0a+Ye8p8V4K8f4=; b=nRfbpaXW0mrcWyOUxOA3Dp
-        cLQn9yUvRtuuhFejrpsoWoP8QCjyaEepM0FjKqIEprRgB5U9V942gJsPhbA5OnPt
-        VnvI5pq3ubX+9mg1mJUX/yA8kI1Nzw75+hFLKjMwYstjiwgr9SnMYyfpB35O5TJ2
-        U13ZSiqPajZGRXJhsp7h4rFjz9tT6Tt7eaDYVNSNO8cNjGsXYTD9c9+psFnApu/p
-        ehMKEsTBOZMVnIKYzLCAjgafiJTntwNyJOE6dGrgOUkU1saSU/AUPlFf2NrAbDPg
-        7JRmHqoSzVRyZ0iaY+Ys9/Suhq2wDCJK36K0sJuKTve8kF2BgmKkZjMXOZlQbSXg
-        ==
-X-ME-Sender: <xms:dMQUYQphzqRkZ2HiEbkss8afgKmhm_y0dfSSShNW0FupZyOq83qoUg>
-    <xme:dMQUYWppPADCfRGeS6-EHieeq9pKD4rpBBaDwM_DMEeTfMpqHKPDq3gR7C8AnLDHe
-    gWn37lFWx2YVw>
-X-ME-Received: <xmr:dMQUYVN2hnHJSi9WE7WZV8RFmB1-M34hLiBrtyhXBo0o3WY_U02oM4gANZEGTIHTGfmxmVLUzCEZDxmnHvPNfJC2uAM56Gst>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedvgddutdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:dMQUYX5f9ndG9qfz2Dl1Wm0Q6kbMiSyCMYapAkijLh-DuqIhQ2-B7g>
-    <xmx:dMQUYf6gHfaqoEV9-qyF49xF2elM8TvK0Ilom7aNjgZ5eAyk8_dbjg>
-    <xmx:dMQUYXhcUJjcEuM-RdCfZ_oiCzbaGRstggucEvkekK88_PWXBpMtHg>
-    <xmx:dMQUYZuZW9V_OZNExTQ16o9gYwhPkcat1JpG_lf29AM9NMK8WEon5A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Aug 2021 02:49:24 -0400 (EDT)
-Date:   Thu, 12 Aug 2021 08:49:21 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Utkarsh Verma <utkarshverma294@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Remove duplicate #ifdef in pci_try_set_mwi()
-Message-ID: <YRTEcd0S2/2XlL7p@kroah.com>
-References: <20210811234601.341947-1-utkarshverma294@gmail.com>
+        id S234647AbhHLGuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:50:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233567AbhHLGuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:50:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C19F461019;
+        Thu, 12 Aug 2021 06:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628751026;
+        bh=c+4J0FBEXZ/2tJWPz7C9GfE7YiH9bbjcw8SPYAJS6ro=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=GJ0TZ7WtpRHEqU1S1DGcFW6ofointi9Ktt2jnsFJ9MuJk9kmCdalPbTE4K+kGUop5
+         TRMDRvP7ty7D4KjrBIteDDIr0Yaq9ei88ekggTyNBe+XCJeom8qz8Y38G6nxGM8iu0
+         4r3mOwaUFy0vE6OZG+vCFrOlDA8mbR6zyUxBZ9pGZiIKJJ3uWzwGzTmimU/14q17RY
+         7RcirRQ7Nq2hx2WFJTVX9d5o2tpsh88QJhItKHtFqiAmPXmyxw/MxRen3f6Kk32oV/
+         W1IePoKNBNSUdIDtg6mU5M+8XQmzj2TZLLUmGTYQcVHQkDlOsbafrMo650ccj2iu/a
+         MSgnM/nyzex3g==
+References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1628739182-30089-2-git-send-email-chunfeng.yun@mediatek.com>
+User-agent: mu4e 1.6.2; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 2/6] usb: mtu3: fix the wrong HS mult value
+Date:   Thu, 12 Aug 2021 09:49:36 +0300
+In-reply-to: <1628739182-30089-2-git-send-email-chunfeng.yun@mediatek.com>
+Message-ID: <87pmujyx5f.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811234601.341947-1-utkarshverma294@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 05:16:01AM +0530, Utkarsh Verma wrote:
-> Remove the unnecessary #ifdef PCI_DISABLE_MWI, because pci_set_mwi()
-> performs the same check.
-> 
-> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> ---
->  drivers/pci/pci.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index aacf575c15cf..7d4c7c294ef2 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -4456,11 +4456,7 @@ EXPORT_SYMBOL(pcim_set_mwi);
->   */
->  int pci_try_set_mwi(struct pci_dev *dev)
->  {
-> -#ifdef PCI_DISABLE_MWI
-> -	return 0;
-> -#else
->  	return pci_set_mwi(dev);
-> -#endif
->  }
->  EXPORT_SYMBOL(pci_try_set_mwi);
 
-If this is the case, why do we even need pci_try_set_mwi()?  Why not
-just replace it with calls to pci_set_mwi() and then delete this one?
+Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
 
-thanks,
+> Use usb_endpoint_maxp() and usb_endpoint_maxp_mult() seperately
+> to get maxpacket and mult.
+> Meanwhile fix the bug that should use @mult but not @burst
+> to save mult value.
 
-greg k-h
+I really think you should split this into two patches. One which *only*
+fixes the bug and another (patch 2) which *only* corrects the use
+usb_endpoint_maxp()
+
+-- 
+balbi
