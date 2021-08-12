@@ -2,139 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979583EAC3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ED93EAC42
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbhHLVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhHLVJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:09:54 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3DDC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:28 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id x5so6593986ybe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:09:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzXodZIvo99nif4/uO2l0vGH+4OrRkEZY+iwXxMdnBM=;
-        b=oUMnOR3FqO3n452BiuGaT2bq3JvamVONMQOVRemcSqQGxAmoGJvcS8KlEb5HfAeZ7b
-         DPVU3SluO9Pc6ftO6BGRRaTiLyWs1JyYsFF5AbNaYCZBfrVCI08d2vaHWIc5XiKDzMd6
-         a9o4o+/J0Bcmm5PDCQxlqqmuqCiUw9pIcl8CbDzVotdqCdzn64IU0KfypLJkjyZi8JO6
-         JKVjn3mpp6bHHlX63k/JOLY4S+/EKoFNc8rZpp6BQ/u5lT3KyxuMUhVPfPt+6K1rrF7Q
-         Q57sq2fFWym3aCZpu/zkPNjEnX0i3VAuDfHC6+nnL9dov64d00vxR3CyNO2quAnLUQMw
-         tnpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzXodZIvo99nif4/uO2l0vGH+4OrRkEZY+iwXxMdnBM=;
-        b=SorFtJPc4E6HfV7jOrgEPSpyybkarAwfN04cQchz1flaQ5cflJ2zcueDd8axwPta5U
-         yndlXjsVzknnO3ELvAY6+uIQGGsxwZzNg1k2N/XtpKqH6uU/7DaUvqQTlXycvhZoEg5u
-         8kK4OaafmVCVLPzK3WDJVntEXFl7OyqgTj80/sVvXAP5qWmEanHnhrBAjkFGNtHOCh3E
-         1L2CKbs5LptAOI17frWY3VIacAV3/cTstNPPd6sMC2JM2C9jk8irvOVrDm8QHC4M0W0j
-         Ng9ZilY8hDNvzp7Rh4+MZSeMes5WRBvDiqTmhac2Ae7ltYJG2/6Iw/FR2h5f9j4vsERr
-         yibg==
-X-Gm-Message-State: AOAM530XFW7Yvx2Oj1QRfNvga268aZmPDqbjiJTI0EcVwlT2c2Ijs23b
-        XiAJLGxlJt0Pc+Wj+affgbUpF5QivkEvaLoJ1jM35A==
-X-Google-Smtp-Source: ABdhPJwRTuh6FQhXxTiC76/Wl+dIoYJ4gSpt3M/EPd6X8sNVnJPHX8ClET9eQg9/SNGPB/JvGm2kuI/WJLyrrg0Ak0s=
-X-Received: by 2002:a25:2155:: with SMTP id h82mr6879793ybh.177.1628802567530;
- Thu, 12 Aug 2021 14:09:27 -0700 (PDT)
+        id S235933AbhHLVKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 17:10:43 -0400
+Received: from mail-dm6nam11on2124.outbound.protection.outlook.com ([40.107.223.124]:17761
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231270AbhHLVKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 17:10:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HAFSKyy1Wwq/aEngCLmKgpGO2v96s7o6pZWUYhj47UfaYAtb1nFXqb93lAZ91LCDOWMsRzSbmk6fWcddpy1oRJEqS16alKnMNW18YDDSYSB8o/+K1+ldtqscgrnkF/fLmt5sD+wkE0THUviLZZc0BY87/Lsdkh8x0btJM3nC1RUijQrPpfr9TaJ6EM7OouRkkg9kg0Zr0PwTdBcK34UbrMy3hYg0h9r6nJsaFNAQEN/v+Z8Za2YTvi5xzx6MhLxbz0IS7IccYdozJjK+uNkZsCf03QusKYgaRcYG1YXK7xhea68dJ++pzN+uwuSkXrMdwRHc+NDjn4K1gYZKJaDi/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M0YAk3Z5trLg6GO81eYdvJZXwxwS/QbJTJ56Ic4R8to=;
+ b=foSgRqY7+JhYQLI6VVBfOorAAH9l0EcRJlh+F9LDo6Oaww4OyLyRUK+V2hyP5qF+aoaJHiHgqO3d6x9oNa2X104/4lQoWufQBrs7ZTh6QkIkvT6jMKH2MYqLx8ASOsDwbFe00NXEWqyZBnXwrLpn7HgSBPKjEe0JAWqMcm6iotGbsflg+o9sZQZpxbxNNYNTQ2qB4mtq0H9jv7TVgIU7fl/3VwFQ9eCz+GxA55tSHUnqdLKr9upbDlS/OyPvZucnbSM/h+6fyOWh8ookHUNbVyx+c4dxthlZnMAK8zOcZkw7sH2mDgmxO6PCs8CwrZKbiy0BDvBPsIJLAa1qNxiUTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M0YAk3Z5trLg6GO81eYdvJZXwxwS/QbJTJ56Ic4R8to=;
+ b=VfOrovqCfHN1M+Ezsfdr5sd6q2oV5uxX+TBB0Z7PN8ZU5F6R7VBPwmXFZ8iwja+GSwzYAhi5+rVGCK3LpGfrMvLaLROUX1SuIPJlXi7iqI0sOfnhhJdbAwVE3kWJJnLRkiDDnvdUW/1+38PfCaJuK6+mtu70uvGPABlgvscZuII=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1972.namprd21.prod.outlook.com (2603:10b6:303:7a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.4; Thu, 12 Aug
+ 2021 21:10:03 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55%2]) with mapi id 15.20.4436.012; Thu, 12 Aug 2021
+ 21:10:03 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "tj@kernel.org" <tj@kernel.org>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: RE: [PATCH V3 03/13] x86/HV: Add new hvcall guest address host
+ visibility support
+Thread-Topic: [PATCH V3 03/13] x86/HV: Add new hvcall guest address host
+ visibility support
+Thread-Index: AQHXjUfncf0WY7cz0E6uX1luWMHXpKtwXLrA
+Date:   Thu, 12 Aug 2021 21:10:03 +0000
+Message-ID: <MWHPR21MB1593764639725AA5B777F8DAD7F99@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-4-ltykernel@gmail.com>
+In-Reply-To: <20210809175620.720923-4-ltykernel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=467437d6-f82e-42f0-8c74-6bc6e6910b3c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-12T20:50:11Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4c40f350-fb33-4410-9cf8-08d95dd58db7
+x-ms-traffictypediagnostic: MW4PR21MB1972:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW4PR21MB1972A75CA89454C6D0972EF2D7F99@MW4PR21MB1972.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZH2QQTQ5QJlpRKPh9NNo3oZVxP+pmVI/xNE1unAfRsXcr9a7E60vukqXaEOk3sqMcC++8qdG2dhq5gmb+yPVZoUHxY6T2Ck3GD1FTVazmCb5a7sC4u/KVTGmL7gllnqsFjg+qfIWr5v5wmH4qxh9dWecVZsOewrjr2eRou75SjhnaqoE17cpSEHOHDieZbFHTZq6GATOrzISwcWQcy7g3Mcz7qRdvFbqstkKEOlX9T2q5vVpPvcQ1eLY3p50nLH5qz4Iz0aaVRSWwdQFiCWPR8FgYl23/2M+W2WSylhSIM4IjcSid2sdDMWlFMhOLTUcia6yhqKsN5rrTiZNi9ZWfQ1VBweHyXoFgmsZ6HbbT3OMroIR3/EwU8sjy63AnbCg2JYen8JvTO5oc2gWquOkSAdWb40pkRg3DrlGxEYjJbVSAWt2Hjo8+rgpyubDJyUHDo6nxkw/M/WggrJskW8PzjP+Fyy/eFBTs+THKHUonNjvEraX2UxJoASiIvHtSAEj7tNuIZB3KatA9uVi4nLvVd8kURDxPohiTex6dMYYNerRutxP+XFAHeoKcNdJlGYnHe3ROkWdAtnGGL05Ha1VVv5ArIlDadULltsA8b6xdYovTyt9rZYztLmkXay5OD9i6UO4JGCLZ0MKWjOG3Lpe8S+5k0zOejk4+g7H/f9IRcANswHAekk5gH3LpsUR2mOfV9rLHOY0C6zORLmT5TZhLKxRwuGz/Vye/z3ZeIf5ihzBwiX8nr9B3bEq6r5Ou+Sr6Nntt/f0IjG+Sn2v2aJ0cAnBNc7dV0AEJ5qsKDxycu+DZRvheCn01XJgHLKxXk4r
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(9686003)(38070700005)(82950400001)(110136005)(10290500003)(86362001)(316002)(71200400001)(64756008)(66556008)(82960400001)(66946007)(8936002)(66476007)(54906003)(26005)(66446008)(186003)(76116006)(55016002)(2906002)(7406005)(921005)(4326008)(8990500004)(5660300002)(7696005)(122000001)(6506007)(33656002)(7416002)(38100700002)(52536014)(966005)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GFUPMdIah5HICk16JE/lGvZF9aDaDEAoaJR3dV1rTGvzhQe0GLD0bT1S9VGp?=
+ =?us-ascii?Q?d3Tqq21ulLg59jmxst86678vsocurFjDr38mI8ArRilM+NuZ/ZBE3oCbXfg6?=
+ =?us-ascii?Q?tSmeDaF6dnko2fsMJK8YCE1Wo8wObavhrcDqPgdDJXbnlKdlNaolTo1Lxqdm?=
+ =?us-ascii?Q?9SVFP4xhq2wiuAoBh0MbXYKrEVIP9OBrMLZe9CWinoPZPXpXOPm6FEUsy+Tx?=
+ =?us-ascii?Q?zGG+HiLxcg0fN8E3ceoLPSXk7OrzNS/g7WaE8DYurq92lRV6oBcFX0E7rteH?=
+ =?us-ascii?Q?Q4/48glkXSTsnulh+GZR88yEs/60Ip3FTfsIJK10xSCRVQubNAlhRqLDUjka?=
+ =?us-ascii?Q?Olj+t9pw19CFaChsyhDSVA6jGTaJEBxLL1HjdODhTIqsMlzs37tEiMmODfOa?=
+ =?us-ascii?Q?TJeAUq7pPsN4EDQseiPUVHtFqLnBvoumoUOMd7XdEBRZQa7s3ktJYa4r+qMW?=
+ =?us-ascii?Q?UdJPdYy+MwfaHouDObdYVGRtWsfY3Knmw7nhfJ2xjpo/Xy3fkvk9xmg+foO7?=
+ =?us-ascii?Q?mPdDX63HLFjAmCNKz3Dd8NMgp3Yv+ZDS3IZ2nvNY1QJIyNedBBZZBc42yYRk?=
+ =?us-ascii?Q?rnt6ymQvmkqZMW8hWhFO/iY+EJVw0tcV0p0iR17DxUukwCmscs3yuTxraJqV?=
+ =?us-ascii?Q?HZlIZ73j3g4k1dtudPGnZx+ytnVnIweycbQaxDx+4aPT85ERd2DyZ91aWkQE?=
+ =?us-ascii?Q?F0xeDebGZ1zVZFnmde2zQQc+ejtbPdD2Imk0jDHaPhAPBg4UPcDpHVWk8eQm?=
+ =?us-ascii?Q?xHGtYyLYX8j79NA3l9WIw02AFxNHyDXNGQ76Q3zNc0aBSZbMLNrKHf5o6TKH?=
+ =?us-ascii?Q?HNfySZweqUNjTcZ5mU5dvJgo20qN7HCl7/6Db+sTKPYwTnBYAYJKi861PCnx?=
+ =?us-ascii?Q?PTwDxa5mSWcTxTL7oVPZVr/xZeyFPjMAaW+ppXvi1f2xlkP9EtPWXvNFwyQJ?=
+ =?us-ascii?Q?ksMAJ1IO9uj2adk2aqI4iVZHCdKygts9ek6WH8PBdZDZqiD+6gm7TUttKTt7?=
+ =?us-ascii?Q?IkVURoAAH/NzIghhzONXb51+5cMmbByVPMM46z9mg0YBrbm7VnWpWSpwEVEh?=
+ =?us-ascii?Q?c+3Qc53qtZCwIC1js6FKMhhaQllVetUXn5yXL6KZWFsNMlO2rLh1Z2oEZnRr?=
+ =?us-ascii?Q?8URRNZAcU3VVmQH5Gb9hUy782PmTFWQbhIK2T49Jb6zsblblqk/3zmuX/H/r?=
+ =?us-ascii?Q?UUVbPM8J5HpWH41t96kPhHbW+zawrigAyez9LOf8VzjUIqjk/o/ZZ3+Q1cKH?=
+ =?us-ascii?Q?9ygpENM+pyvRjqZRhi8yT7mxpRNvOKIzc1Z4y3QFKN4yIcMCbW0s5fviPz3G?=
+ =?us-ascii?Q?gDnO6Z20w1pIOmKvJyZtMCIi?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210730020019.1487127-1-joshdon@google.com> <20210730020019.1487127-3-joshdon@google.com>
- <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 12 Aug 2021 14:09:15 -0700
-Message-ID: <CABk29Ns8P9AGy7Tpo6duOeEh=ZFWM1jO8FnvhZhktfcA0GWOpw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched: adjust SCHED_IDLE interactions
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c40f350-fb33-4410-9cf8-08d95dd58db7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 21:10:03.4015
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bHTYbuxmShv7X3eptuEZ2EnHpyfYQCQZ/KOGBMymmy976HxPEgsvKyXHDX/CgTA4Djc+cG64qiZPGYbPeoFiWOVqJo6C/gJpYF9zJXRwWjY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1972
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -697,8 +699,18 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> >                 slice = __calc_delta(slice, se->load.weight, load);
-> >         }
-> >
-> > -       if (sched_feat(BASE_SLICE))
-> > -               slice = max(slice, (u64)w);
-> > +       if (sched_feat(BASE_SLICE)) {
-> > +               /*
-> > +                * SCHED_IDLE entities are not subject to min_granularity if
-> > +                * they are competing with non SCHED_IDLE entities. As a result,
-> > +                * non SCHED_IDLE entities will have reduced latency to get back
-> > +                * on cpu, at the cost of increased context switch frequency of
-> > +                * SCHED_IDLE entities.
-> > +                */
->
-> Ensuring that the entity will have a minimum runtime has been added to
-> ensure that we let enough time to move forward.
-> If you exclude sched_idle entities from this min runtime, the
-> sched_slice of an idle_entity will be really small.
-> I don't have details of your example above but I can imagine that it's
-> a 16 cpus system which means a sysctl_sched_min_granularity=3.75ms
-> which explains the 4ms running time of an idle entity
-> For a 16 cpus system, the sched_slice of an idle_entity in your
-> example in the cover letter is: 6*(1+log2(16))*3/1027=87us. Of course
-> this become even worse with more threads and cgroups or thread with
-> ncie prio -19
->
-> This value is then used to set the next hrtimer event in SCHED_HRTICK
-> and 87us is too small to make any progress
->
-> The 1ms of your test comes from the tick which could be a good
-> candidate for a min value or the
-> normalized_sysctl_sched_min_granularity which has the advantage of not
-> increasing with number of CPU
+From: Tianyu Lan <ltykernel@gmail.com> Sent: Monday, August 9, 2021 10:56 A=
+M
 
-Fair point, this shouldn't completely ignore min granularity. Something like
+[snip]
 
-unsigned int sysctl_sched_idle_min_granularity = NSEC_PER_MSEC;
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index ad8a5c586a35..1e4a0882820a 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -29,6 +29,8 @@
+>  #include <asm/proto.h>
+>  #include <asm/memtype.h>
+>  #include <asm/set_memory.h>
+> +#include <asm/hyperv-tlfs.h>
+> +#include <asm/mshyperv.h>
+>=20
+>  #include "../mm_internal.h"
+>=20
+> @@ -1980,15 +1982,11 @@ int set_memory_global(unsigned long addr, int num=
+pages)
+>  				    __pgprot(_PAGE_GLOBAL), 0);
+>  }
+>=20
+> -static int __set_memory_enc_dec(unsigned long addr, int numpages, bool e=
+nc)
+> +static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bo=
+ol enc)
+>  {
+>  	struct cpa_data cpa;
+>  	int ret;
+>=20
+> -	/* Nothing to do if memory encryption is not active */
+> -	if (!mem_encrypt_active())
+> -		return 0;
+> -
+>  	/* Should not be working on unaligned addresses */
+>  	if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", addr))
+>  		addr &=3D PAGE_MASK;
+> @@ -2023,6 +2021,17 @@ static int __set_memory_enc_dec(unsigned long addr=
+, int numpages, bool enc)
+>  	return ret;
+>  }
+>=20
+> +static int __set_memory_enc_dec(unsigned long addr, int numpages, bool e=
+nc)
+> +{
+> +	if (hv_is_isolation_supported())
+> +		return hv_set_mem_host_visibility(addr, numpages, !enc);
+> +
+> +	if (mem_encrypt_active())
+> +		return __set_memory_enc_pgtable(addr, numpages, enc);
+> +
+> +	return 0;
+> +}
+> +
 
-(and still only using this value instead of the default
-min_granularity when the SCHED_IDLE entity is competing with normal
-entities)
+FYI, this not-yet-accepted patch
+https://lore.kernel.org/lkml/ab5a7a983a943e7ca0a7ad28275a2d094c62c371.16234=
+21410.git.ashish.kalra@amd.com/
+looks to be providing a generic hook to notify the hypervisor when the
+encryption status of a memory range changes.
 
-> > @@ -4216,7 +4228,15 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
-> >                 if (sched_feat(GENTLE_FAIR_SLEEPERS))
-> >                         thresh >>= 1;
-> >
-> > -               vruntime -= thresh;
-> > +               /*
-> > +                * Don't give sleep credit to a SCHED_IDLE entity if we're
-> > +                * placing it onto a cfs_rq with non SCHED_IDLE entities.
-> > +                */
-> > +               if (!se_is_idle(se) ||
-> > +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
->
-> Can't this condition above create unfairness between idle entities ?
-> idle thread 1 wake up while normal thread is running
-> normal thread thread sleeps immediately after
-> idle thread 2 wakes up just after and gets some credits compared to the 1st one.
-
-Yes, this sacrifices some idle<->idle fairness when there is a normal
-thread that comes and goes. One alternative is to simply further
-reduce thresh for idle entities. That will interfere with idle<->idle
-fairness when there are no normal threads, which is why I opted for
-the former. On second thought though, the former fairness issue seems
-more problematic. Thoughts on applying a smaller sleep credit
-threshold universally to idle entities?
+Michael
