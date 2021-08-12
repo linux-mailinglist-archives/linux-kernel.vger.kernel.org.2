@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F043EA170
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049823EA124
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbhHLJBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:01:23 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59908 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235718AbhHLJA5 (ORCPT
+        id S235521AbhHLI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234600AbhHLI7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:00:57 -0400
-X-UUID: b1fe455f6aae481bbe45e0c8d0899ae8-20210812
-X-UUID: b1fe455f6aae481bbe45e0c8d0899ae8-20210812
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <dawei.chien@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1176892382; Thu, 12 Aug 2021 17:00:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Aug 2021 17:00:24 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Aug 2021 17:00:24 +0800
-From:   Dawei Chien <dawei.chien@mediatek.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Fan Chen <fan.chen@mediatek.com>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Dawei Chien <dawei.chien@mediatek.com>
-Subject: [V11,PATCH 19/19] arm64: dts: mt8195: add dvfsrc related nodes
-Date:   Thu, 12 Aug 2021 16:58:46 +0800
-Message-ID: <20210812085846.2628-20-dawei.chien@mediatek.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210812085846.2628-1-dawei.chien@mediatek.com>
-References: <20210812085846.2628-1-dawei.chien@mediatek.com>
+        Thu, 12 Aug 2021 04:59:23 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3549C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:58:58 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id bj40so9269167oib.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 01:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=glSRtZn0PFX+XapwdsQxtT//X4Ni5wcQnHCn2+naPE0=;
+        b=UHg5LO9a6h4YMLmtIURwo12v57QKDIMxCUykfKcMR4UqfxdWKLCkThvo4Zz4fnXZbO
+         oPTjDMSeqwgGAUFRZL47F7L7dDap+mM9lQrpEbdTj+V1PPl2mDD0sMqoAnar7gxzq2tK
+         cYaMYMloamBz+t6QO7cTKHRk51NzB+Ic6zfRoHcAdWbx7UP0vj/OSjR3aED9sEORUm1+
+         d6h08PAArp8Tk/cEYNCBdttUirJXx8yW2XhuJYG3BY/R9Mr5NJmGGc7ttrikeI+hVDfW
+         YTBcxefrIvMsjgjYk8LvEVO/pppWtOVwtsIA/SPDqkM6fJ5j3LKWu1cdAmt3vfEgrIYV
+         wQAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=glSRtZn0PFX+XapwdsQxtT//X4Ni5wcQnHCn2+naPE0=;
+        b=HvdGVLVV013TMvGY1Ayok7n2Hx+b3Ou4dGR/yN8Y9g5CmVzPWRNrGMbqo46ZszoNmM
+         i7XG8VU1PcAPa+Spv7bxF3WQajpzP2CJ+ohW1ReTivBxrzy97XBBwlDQgnPpAb1UxjHG
+         MlTanWogQqOMDaTTh2RWmhewR7Zuc9IIOf9tDKukuXX+KNuBRrorOyjFDCjW4UpDPDu7
+         t48zwMXid3Ai5bqSh7DYCT/gCGG5+3+AKkakS3vjUfKj8OItOyElzklI052QZg+eOXjs
+         uXq/g0kOOD3aVBLcH4ML/mT9TAn2bvJeeAPeeVcI5/hDHXVKlmX3vejLlYl3Wp0AEWz+
+         pu+g==
+X-Gm-Message-State: AOAM532j2Ylvb/jqFOtRpUbAb1TgJ/QJgejuk5Eth0DcEXFWtk+7sgHW
+        SVYBDZoS2op4/0Qx8PgazDWKXiGztGsQVCS9ExJY2Q==
+X-Google-Smtp-Source: ABdhPJztYAQ5HI2PE0ZBReSLN1qSUw8KPkARULQ7RPk0jCEXnuCUozSBipIHcxboDnnLJ/ZPkj/n3nWl76t4BMWSGYQ=
+X-Received: by 2002:aca:eb8a:: with SMTP id j132mr2513361oih.121.1628758737993;
+ Thu, 12 Aug 2021 01:58:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <cover.1628709663.git.andreyknvl@gmail.com>
+In-Reply-To: <cover.1628709663.git.andreyknvl@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 12 Aug 2021 10:58:46 +0200
+Message-ID: <CANpmjNO+mvUF4S5n8QSDrB+caU_V79MH8_iw2=3V_W=Eh+SAHQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] kasan: test: avoid crashing the kernel with HW_TAGS
+To:     andrey.konovalov@linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DDR EMI provider dictating dram interconnect bus performance
-found on MT8195-based platforms
+On Wed, 11 Aug 2021 at 21:21, <andrey.konovalov@linux.dev> wrote:
+>
+> From: Andrey Konovalov <andreyknvl@gmail.com>
+>
+> KASAN tests do out-of-bounds and use-after-free accesses. Running the
+> tests works fine for the GENERIC mode, as it uses qurantine and redzones.
+> But the HW_TAGS mode uses neither, and running the tests might crash
+> the kernel.
+>
+> Rework the tests to avoid corrupting kernel memory.
 
-Signed-off-by: Dawei Chien <dawei.chien@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for this!
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 19430f324ee1..b010aed83906 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -6,6 +6,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/clock/mt8195-clk.h>
-+#include <dt-bindings/interconnect/mtk,mt8195-emi.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/power/mt8195-power.h>
-@@ -689,6 +690,7 @@
- 		ddr_emi: dvfsrc@10012000 {
- 			compatible = "mediatek,mt8195-dvfsrc";
- 			reg = <0 0x10012000 0 0x1000>;
-+			#interconnect-cells = <1>;
- 		};
- 
- 		systimer: timer@10017000 {
--- 
-2.14.1
+I think only 1 change is questionable ("kasan: test: avoid corrupting
+memory via memset") because it no longer checks overlapping valid to
+invalid range writes.
 
+> Andrey Konovalov (8):
+>   kasan: test: rework kmalloc_oob_right
+>   kasan: test: avoid writing invalid memory
+>   kasan: test: avoid corrupting memory via memset
+>   kasan: test: disable kmalloc_memmove_invalid_size for HW_TAGS
+>   kasan: test: only do kmalloc_uaf_memset for generic mode
+>   kasan: test: clean up ksize_uaf
+>   kasan: test: avoid corrupting memory in copy_user_test
+>   kasan: test: avoid corrupting memory in kasan_rcu_uaf
+>
+>  lib/test_kasan.c        | 74 ++++++++++++++++++++++++++++-------------
+>  lib/test_kasan_module.c | 20 +++++------
+>  2 files changed, 60 insertions(+), 34 deletions(-)
+>
+> --
+> 2.25.1
+>
