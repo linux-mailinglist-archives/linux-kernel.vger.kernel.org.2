@@ -2,108 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806DD3EA71A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3AB3EA72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238327AbhHLPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:07:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232351AbhHLPH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:07:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E137D6044F;
-        Thu, 12 Aug 2021 15:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628780821;
-        bh=XmC/v8fVf6n7JtViHjG801eSHPt0/24C/EjG3TQ/RJ4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cbqADnnCUks4q+pfDCiAwsKjcs+jKFV2htk7CKHjCv6rOu+APnC7IG80Rk6jX2Iuj
-         tgYiR40R3RRfG2rRCAUwHSQX87Qs5pRcM6kHokCXUmg/ydVCgjycsQ3qUPoxayksJk
-         qDxOM70CXS/oAo21jaUWbOny9uqnjHtZaQKJxf4rDjoakGuj0WCFqAX9wyDCx7qleY
-         rJltz+jT7u7Dmk8TGycfBrgl5KY75bpUj6z8F128Vfv3kHJOnAi6VPE4dlBmDM+acV
-         I7L5OCga2h4mOccvWxyGdBn1LD5ntXbzEIQMvmMPJt/W5lS9/r+30NhqCjP4jekWxe
-         eAFJeuDTErMkg==
-Date:   Fri, 13 Aug 2021 00:06:59 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-Id: <20210813000659.48eafbcfeeaa30adcc8a5363@kernel.org>
-In-Reply-To: <20210812094439.56303efa@oasis.local.home>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
-        <20210811112249.555463f2@oasis.local.home>
-        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-        <20210812203110.3c82c040104e0fb488912ee1@kernel.org>
-        <20210812094439.56303efa@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S238390AbhHLPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237682AbhHLPJc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:09:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E20C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=bYb2ie6jMLMzND0qi3cawroT6axBFe5IDHItnoLWNfQ=; b=PSqKAk7KoY+Cz+5OSdXuT7DPbQ
+        /arIZDmC7pBItMpZPItoy2/r+fwZPx/+DsmWY/RwNSQVWg9HLlEZNiJu4W/otwkQWT+WHw4u49xAe
+        AO2EUfTZH2Ot81+fCO2uJtmG2JFXGTDC69tqN+HqVIrbr3S8C98Y8JjLzWKoqskBU/3qii8hdaOf8
+        TA0YOYTiuNkUSl3uEgiQFLTA6vMS0aieIcmZ5nrji2mD4sKGV4WOgIGcRCAIt1r/H3q4r+77ss+O/
+        6TrkuDGISLk7cW2ptKmKK+QDY5v58X6jdFHf0vNHXjvNeLYkYgPUifwFjBBv2tQkisZQ8r0Iof4Jb
+        eHTu9TBA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mECIu-00EhL3-7Q; Thu, 12 Aug 2021 15:07:47 +0000
+Date:   Thu, 12 Aug 2021 16:07:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Huang Ying <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Data corruption problem with swapfiles and THP
+Message-ID: <YRU5NAD+G9DVFYM/@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 09:44:39 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+There is an assumption in the swap writepage path that a THP is physically
+contiguous on swap:
 
-> On Thu, 12 Aug 2021 20:31:10 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > Yes, anyway we need a way to find loops on histogram/eprobe at last.  
-> > 
-> > BTW, what about using similar machanism of "current_kprobe()" to detect
-> > the reccursion? As an easy way, prepare a static per-cpu pointer which sets
-> > the current eprobe and if the eprobe handler detects that is already set,
-> > it may warn (or silently ignore) and reject it.
-> > (Of course it is better to detect the loop when user sets the hist-trigger
-> > by reverse link)
-> 
-> Thinking more about this, I believe there is a use case for synthetic
-> event on a eprobe. Basically:
-> 
->   normal_event -> eprobe (extracts struct data into $dat) -> onmax($dat) -> synthetic event
-> 
-> But I can not come up with any use case of:
-> 
->   eprobe -> synthetic event -> eprobe
-> 
-> or
-> 
->   synthetic event -> eprobe -> synthetic event
-> 
-> That's because once you have an eprobe, you can extract what you want,
-> and once you have that synthetic event, you can get the data you want.
-> 
-> Maybe we should prevent the above and allow one eprobe on a synthetic
-> event and one synthetic event on an eprobe.
-> 
-> Or just don't prevent it at all, and let the user shoot themselves in
-> the foot ;-)
-> 
-> The more I think about this, I'm thinking we just let them shoot
-> themselves if they want to.
+        bio->bi_iter.bi_sector = swap_page_sector(page);
+        bio->bi_opf = REQ_OP_WRITE | REQ_SWAP | wbc_to_write_flags(wbc);
+        bio->bi_end_io = end_write_func;
+        bio_add_page(bio, page, thp_size(page), 0);
 
-I agree. Or, at least we can prevent the loop at runtime as I said.
-BTW, does synthetic event itself detect and prevent loops? I think
-the key point is always synthetic event, so if the loop detector
-is implemented, it should be done on the synthetic event.
+As far as I can tell, this is not necessarily true.  If a file is not
+contiguous, we can have an extent which is 1MB long followed by an extent
+somewhere else on storage that's 1MB long.  When we try to write a 2MB
+page to swap, we overwrite whatever's on the block device after that
+first 1MB extent.
 
-> 
-> But I still agree that eprobes should not be attached to kprobes or
-> uprobes directly (although they may be able to be attached to a
-> synthetic event that is attached to one!)
-
-Yes.
-
-Thank you,
-
-
-> 
-> -- Steve
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+(Came across this by code examination while looking at getting rid of
+the bio path entirely; no attempt has been made to produce this problem;
+something else may prevent it from actually happening)
