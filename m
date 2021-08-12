@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC7F3EACCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B654D3EACD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhHLVv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbhHLVvz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:51:55 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BDDC061756;
-        Thu, 12 Aug 2021 14:51:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso17515710pjb.2;
-        Thu, 12 Aug 2021 14:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jH45JI3TRK33maJqrgZXXznOLgIkQBFryW79S8eId3M=;
-        b=Y9WHxm/HccEPeJfkiPBSqOtIQdiDsYdt/RUttWpOGC4h8GALHwr5TYVrcHS/FwHdAW
-         brH64YsniZ1m2CNdrbrRALQs4yxFN228FlIYSp3S0S81J4b6QJOTWS/mu0gD20utmJ4x
-         mB0yPjJdiz3mudogXhcCUvzXk7KEW3/afkG4GAVpFUIkWVh+DvpPNLLJu2S0RFYmI34h
-         2l3Qd9IzJRZjgCQqH93U+FiFNpHfZT5x9yWgcHrcG+V3oXyZa/BN7M+FKmnG3winetMh
-         U2i52F02EYfs7f0/kK4ctk7+orUAr3RLJDZxf9bOxVyu9FtRjPORwymlSEnsMzmX7cmf
-         Rq2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jH45JI3TRK33maJqrgZXXznOLgIkQBFryW79S8eId3M=;
-        b=UFWcEwc9mxWTxTEaSSvaPoYTsHj7xK81KpEQxWx4erOuT064tSaaH25IIU49vhY0zd
-         VTB8PdtxKw1WRDnGz31hBVTsN4pdR8F8LGratmYeImY2Nos3J1y/QZFrVTtSIXu3fNpe
-         CKKpfxnMGX+HSkuwkixrUeDWI2wQgKZQVymIu9bzcDrnqzmzj0pGWBbtKKy8VxBZ5V4L
-         S0d/CERgrefSODLEm0I+LPoYoGVJZUHjzBDvfARqAxWSMSwa/3cVMVYkTuS2lD0JtpGi
-         BhntUgyLn/Eo+DU7RaZ8wKR5XDUaihi0UWaKpQIgBHzF5cInxTgccuixw9E2ak3rZMXp
-         9/Zg==
-X-Gm-Message-State: AOAM533uIbjFfDwdoI6KCqFZRp1Z2nepJZxARnLLydyA2z1SNOld9cdE
-        fyfwhNt1kt+fYCxXKOF3hJ8=
-X-Google-Smtp-Source: ABdhPJwEXO2THTKS4vvUuPSEOfOrBsgd6SOTklUjz6kq5d0glnm2/Fvo+k2qec0LQGwZrRypvtx47w==
-X-Received: by 2002:a63:ef45:: with SMTP id c5mr5795654pgk.78.1628805089495;
-        Thu, 12 Aug 2021 14:51:29 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id u21sm5031925pgk.57.2021.08.12.14.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 14:51:28 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Aug 2021 11:51:27 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v4 4/6] cgroup/cpuset: Allow non-top parent partition
- root to distribute out all CPUs
-Message-ID: <YRWX3z6Nl41GsXR8@slm.duckdns.org>
-References: <20210811030607.13824-1-longman@redhat.com>
- <20210811030607.13824-5-longman@redhat.com>
- <YRQTTf+bJZ8f3O3+@slm.duckdns.org>
- <abfa6f2f-aa13-f18e-5a16-f568082d07bc@redhat.com>
- <YRQVFkNX5DcKixzy@slm.duckdns.org>
- <ef02d96b-325c-87f6-a6a3-d840feefef24@redhat.com>
+        id S237015AbhHLWAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 18:00:03 -0400
+Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:8032
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233038AbhHLWAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 18:00:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W3FjT92MBWFsq39xDLvXcfx8vYUFaBzDiUiZwdiAglbcCvvWJJEtgsq50BsNlBMfKtGckzKXzb+KDYLbJUg/h0rvcFf3G8K//rsElcC2yS7h8gQJrVywTOHU9VTafv/c2u0oaPN9mKubB1TBm2zTecZpKqJ1q5IurFsQf+HH0kOFlLiBtWqJI+jSF67kmGsN04pFyrqWehiJO4OLHKHcAm26FsiEIzy/fTJT6meRPZOqg9PlEm5Ajyx+1IOa2hKxiELe8BjHkKlVwqMrShjQbNt+9ATxqvYbMWM1TC3FI9rbPoONFCOwW1ArVsUIJrfjDA+atfMw2ciImOEsg4k4gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A0xxNGUGpNr4lI0ZcJKlHq1Xj5Bm4CcGn3hljN9NQXE=;
+ b=UymS1BKWTsYk9Ly/mXSz7Bo3Nv+4kmmIYNbFq1h7DkxwXaYPG+vHpJhGOQmmZxjxMuk9WnENlY/SkeHTPn2nQfYWS6qmiAdTQuAK1LtOX8ZoildZ/gNBWRseUDbOrasdjhjN6m/EQwR6PpJweHK91mWP4hH4rOnbjafZt69KHCHLLWSYprMGW+4VpShj5q/cgCt484wnv9wnWd1J0TsuL2ip52s4H69chp2ko8FfNst9PKpeP3wnJ2EW9+TO0WU6aPw5fZBW1FmYb8WFYMfWAlOcZsHXX9IrO6TfpsB5iumq6u/mkuTWvzbClj6FCItF5gehgoHboqXtHxGXvzxCMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A0xxNGUGpNr4lI0ZcJKlHq1Xj5Bm4CcGn3hljN9NQXE=;
+ b=X+kF/U6zLUsOa74WGTWDurA1Jon08CNJBQ8ufjsFZWt886y+WWD3FYr2hkKeQOoyPZbdqYFzlQDo33FEjZbTd+uC5wESWoGRoPAk3+9/1EOopUpuTDS6W02BwVo4vmZ+NtFBHsLRmoKSleq/rfBvKLgvmUx0jFjWbtwFHiXqTjI+vDpdWNGfJgIFlCaWC/BJvmqVGZ4fjURaY21aEBj8wbbe17ANLhX9bDSg7tMPYy02YVDQByOLMWgnCZVXLoj1z4GFrZ1h+5+xJXISkKgeZtT+QxUKXhnlMUk49sPn/8gKgT812TRYaKs/V7dQo25Dx1299oe6oJr3ddiqaUssUg==
+Received: from MWHPR21CA0032.namprd21.prod.outlook.com (2603:10b6:300:129::18)
+ by DM5PR12MB1738.namprd12.prod.outlook.com (2603:10b6:3:112::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Thu, 12 Aug
+ 2021 21:59:34 +0000
+Received: from CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:129:cafe::b3) by MWHPR21CA0032.outlook.office365.com
+ (2603:10b6:300:129::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.4 via Frontend
+ Transport; Thu, 12 Aug 2021 21:59:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT056.mail.protection.outlook.com (10.13.175.107) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4415.16 via Frontend Transport; Thu, 12 Aug 2021 21:59:34 +0000
+Received: from [10.2.93.240] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 12 Aug
+ 2021 21:59:33 +0000
+Subject: Re: [PATCH v2 2/3] mm/gup: small refactoring: simplify
+ try_grab_page()
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-s390@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210811070542.3403116-1-jhubbard@nvidia.com>
+ <20210811070542.3403116-3-jhubbard@nvidia.com> <20210812092043.GA4827@lst.de>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <37231e72-c6ad-0509-c284-e83015807f43@nvidia.com>
+Date:   Thu, 12 Aug 2021 14:59:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef02d96b-325c-87f6-a6a3-d840feefef24@redhat.com>
+In-Reply-To: <20210812092043.GA4827@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc714b14-aff6-4db5-d71b-08d95ddc7870
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1738:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB173865015C6B239AF4667A50A8F99@DM5PR12MB1738.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MQOD0kgP/cz1uEXVsEvi9ItGRgxWpkWT8b7D9WVixuq3UFht7JhEGw1nuDWMVTmgcLQhW//ojDlEkdVZga2lVkxRxztLayLO8y4l8299beAdYMFPomfTjrELqho6zROKzdUesSADCLk0ljq5o7c9fpZq7vIeVV2DH3YCW0zmPTDXaTBD5Rm8E5vP6o31j6nsuMdzHuU7bBGN1QCJiyYDmkT/Nc8lnmQUv7ka/7DVWWqDT08eVWnCxbD3AiKjr6eE5pChfG/miNPWMEi8VMdfO6KmZ7s66INohRncrAVOahlLj/XmGoql1gtYWDSwaYDWp7uB2z/l28Utf3FU90+ezbw1jCb6MmUjh0WwwGrhlL78vlCSD37CGePPinixPXoxxCyz60h5WObvtN5FA8Fzatf/CPQ4mMg+QOQ6lzxPespuPFVh9nlO4sqHaPxld0vjq2VUbY8+/AErGu3Fs/068dDx7KU7v+lAXR+NPqT8VqBZC2AYrIajULjx1Q4CjwTd8LCJTQWg1qSm+9D/Y5acAdMyOArDaGg8uaqBUlv9iiBx9vX2zXpssZmJ8qumjaae7U04UGc8SkBXeWUDXaTVtsMcyrkobp86HDZcMHKI0mHrWJgJWbpbONhWNR2SUG1OEBYeUyWw8YSbil+ztl/GnIdD4/gThKaa2H+9LvWIniKHQ91eSfjX34oLxN8lMvI4phyePCw72oSaZCS6Az/vC3dywNTOsAHwHXOnhidAVP8=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(36840700001)(46966006)(16526019)(70586007)(26005)(426003)(2906002)(82310400003)(70206006)(31686004)(186003)(7416002)(336012)(7636003)(2616005)(31696002)(36756003)(86362001)(356005)(36860700001)(82740400003)(6916009)(478600001)(4326008)(558084003)(316002)(47076005)(36906005)(16576012)(5660300002)(8936002)(54906003)(53546011)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 21:59:34.3335
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc714b14-aff6-4db5-d71b-08d95ddc7870
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1738
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 02:46:24PM -0400, Waiman Long wrote:
-> On 8/11/21 2:21 PM, Tejun Heo wrote:
-> > On Wed, Aug 11, 2021 at 02:18:17PM -0400, Waiman Long wrote:
-> > > I don't think that is true. A task can reside anywhere in the cgroup
-> > > hierarchy. I have encountered no problem moving tasks around.
-> > Oh, that shouldn't be happening with controllers enabled. Can you please
-> > share a repro?
+On 8/12/21 2:20 AM, Christoph Hellwig wrote:
+> Looks good,
 > 
-> I have done further testing. Enabling controllers won't prohibit moving a
-> task into a parent cgroup as long as the child cgroups have no tasks. Once
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Note: the __maybe_unused on try_grab_compound_head should be dropped now
+> that there is always a user.
 
-Should be "as long as there's no child cgroups".
 
-  root@test /s/f/cgroup# mkdir test
-  root@test /s/f/cgroup# mkdir -p test/A
-  root@test /s/f/cgroup# echo +io > test/cgroup.subtree_control 
-  root@test /s/f/cgroup# echo $fish_pid > test/cgroup.procs
-  write: Device or resource busy
+Good point, fixed in v3.
 
-> the child cgroup has task, moving another task to the parent is not allowed
-> (-EBUSY). Similarly if a parent cgroup has tasks, you can't put new tasks
-> into the child cgroup. I don't realize that we have such constraints as I
 
-You can't enable controller from a populated cgroup:
-
-  root@test /s/f/cgroup# mkdir test
-  root@test /s/f/cgroup# echo +io > test/cgroup.subtree_control 
-  root@test /s/f/cgroup# echo $fish_pid > test/cgroup.procs
-
-> usually do my testing with a cgroup hierarchy with no tasks initially.
-> Anyway, a new lesson learned.
-
-The invariant is that from each controller's POV, all cgroups with processes
-in them are leaves. This is all pretty well documented in cgroup-v2.rst.
-
-Thanks.
-
+thanks,
 -- 
-tejun
+John Hubbard
+NVIDIA
