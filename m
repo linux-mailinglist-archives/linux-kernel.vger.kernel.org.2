@@ -2,158 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA983EAAEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2029F3EAAF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhHLT0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhHLT0l (ORCPT
+        id S234686AbhHLT0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:26:51 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:55075 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233436AbhHLT0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:26:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C88C061756;
-        Thu, 12 Aug 2021 12:26:15 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AD590EE;
-        Thu, 12 Aug 2021 21:26:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1628796373;
-        bh=HbBlo2yWHVQ3aoOqeeRbXctYweM1HQRkPbkGnoGkmAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TrLHsZ2sWHkahSyRLDuG7pk/hVeRGE3yFQwfYRlo18c9+koVOxl747/uxFdPfVFrp
-         wkPcJgLLhzKwdUtC/iLt3hWQqZmY6m+knctxWOHMdanx3Epd59w3V7PEqegbi528Xb
-         dZE0Zp2YbzLBm7VJUqt475GlADrVCLoojE6ZslIE=
-Date:   Thu, 12 Aug 2021 22:26:09 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-Message-ID: <YRV10ew/Lr8GPzEv@pendragon.ideasonboard.com>
-References: <20210811235253.924867-1-robdclark@gmail.com>
- <20210811235253.924867-5-robdclark@gmail.com>
+        Thu, 12 Aug 2021 15:26:50 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id ADCAFE0002;
+        Thu, 12 Aug 2021 19:26:22 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 21:26:22 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Hari Prasath <Hari.PrasathGE@microchip.com>
+Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        robh@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk
+Subject: Re: [PATCH 2/2] ARM: at91: dts: at91-sama5d2_xplained: Add comments
+ for sama5d29
+Message-ID: <YRV13nfgpEEuOOxB@piout.net>
+References: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
+ <20210812140758.28273-2-Hari.PrasathGE@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811235253.924867-5-robdclark@gmail.com>
+In-Reply-To: <20210812140758.28273-2-Hari.PrasathGE@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello,
 
-Thank you for the patch.
-
-On Wed, Aug 11, 2021 at 04:52:50PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On 12/08/2021 19:37:58+0530, Hari Prasath wrote:
+> Add comments for the end user for modifying the DTS file for
+> instantiating the sama5d29 SoC.
 > 
-> Slightly awkward to fish out the display_info when we aren't creating
-> own connector.  But I don't see an obvious better way.
-
-We need a bit more than this, to support the NO_CONNECTOR case, the
-bridge has to implement a few extra operations, and set the bridge .ops
-field. I've submitted two patches to do so a while ago:
-
-- [RFC PATCH 08/11] drm/bridge: ti-sn65dsi86: Implement bridge connector operations ([1])
-- [RFC PATCH 09/11] drm/bridge: ti-sn65dsi86: Make connector creation optional ([2])
-
-The second patch is similar to the first half of this patch, but misses
-the cleanup code. I'll try to rebase this and resubmit, but it may take
-a bit of time.
-
-[1] https://lore.kernel.org/dri-devel/20210322030128.2283-9-laurent.pinchart+renesas@ideasonboard.com/
-[2] https://lore.kernel.org/dri-devel/20210322030128.2283-10-laurent.pinchart+renesas@ideasonboard.com/
-
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
 > ---
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 34 +++++++++++++++++++++++----
->  1 file changed, 29 insertions(+), 5 deletions(-)
+>  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 38dcc49eccaf..dc8112bab3d3 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -693,9 +693,11 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  		return ret;
->  	}
->  
-> -	ret = ti_sn_bridge_connector_init(pdata);
-> -	if (ret < 0)
-> -		goto err_conn_init;
-> +	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-> +		ret = ti_sn_bridge_connector_init(pdata);
-> +		if (ret < 0)
-> +			goto err_conn_init;
-> +	}
->  
->  	/*
->  	 * TODO: ideally finding host resource and dsi dev registration needs
-> @@ -757,7 +759,8 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  err_dsi_attach:
->  	mipi_dsi_device_unregister(dsi);
->  err_dsi_host:
-> -	drm_connector_cleanup(&pdata->connector);
-> +	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
-> +		drm_connector_cleanup(&pdata->connector);
->  err_conn_init:
->  	drm_dp_aux_unregister(&pdata->aux);
->  	return ret;
-> @@ -806,9 +809,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
->  	regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
->  }
->  
+> diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> index 627b7bf88d83..faa30063d9a9 100644
+> --- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> +++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> @@ -6,6 +6,11 @@
+>   *                2015 Nicolas Ferre <nicolas.ferre@atmel.com>
+>   */
+>  /dts-v1/;
 > +/*
-> + * Find the connector and fish out the bpc from display_info.  It would
-> + * be nice if we could get this instead from drm_bridge_state, but that
-> + * doesn't yet appear to be the case.
+> + * Replace the line below with "sama5d29.dtsi" in order to instantiate the
+> + * sama5d29 SoC of the sama5d2 family.Otherwise, leave it unchanged when
+> + * using sama5d27 SoC for instance.
 > + */
 
-This should be done with
+I guess it would be better to have a at91-sama5d29_xplained.dts (and we
+should have had a at91-sama5d27_xplained.dts), else, you can't create an
+image that will support both variants.
 
-	struct drm_atomic_state *state = old_bridge_state->base.state;
-	struct drm_connector *connector;
-
-	connector = drm_atomic_get_new_connector_for_encoder(state,
-							     bridge->encoder);
-
->  static unsigned int ti_sn_bridge_get_bpp(struct ti_sn65dsi86 *pdata)
->  {
-> -	if (pdata->connector.display_info.bpc <= 6)
-> +	struct drm_bridge *bridge = &pdata->bridge;
-> +	struct drm_connector_list_iter conn_iter;
-> +	struct drm_connector *connector;
-> +	unsigned bpc = 0;
-> +
-> +	drm_connector_list_iter_begin(bridge->dev, &conn_iter);
-> +	drm_for_each_connector_iter(connector, &conn_iter) {
-> +		if (drm_connector_has_possible_encoder(connector, bridge->encoder)) {
-> +			bpc = connector->display_info.bpc;
-> +			break;
-> +		}
-> +	}
-> +	drm_connector_list_iter_end(&conn_iter);
-> +
-> +	WARN_ON(bpc == 0);
-> +
-> +	if (bpc <= 6)
->  		return 18;
->  	else
->  		return 24;
 
 -- 
-Regards,
-
-Laurent Pinchart
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
