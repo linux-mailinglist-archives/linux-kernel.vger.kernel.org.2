@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC1E3EA20D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B213EA210
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhHLJbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S236099AbhHLJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235052AbhHLJbP (ORCPT
+        with ESMTP id S235823AbhHLJcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:31:15 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA5C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:30:49 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id w20so12289596lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:30:49 -0700 (PDT)
+        Thu, 12 Aug 2021 05:32:21 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C3FC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:31:56 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so14286092pjr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:31:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=epgC7K+n2/X6KUKBrCcOah3EpzEkojXbDo2MF6JX8Po=;
-        b=dCiBJO2WWr87RMNsBVrMDbxnySWA9MkXRmEO7aAGTRlLXQxAyhbo5tf8tPH/Bn86YR
-         GDqNPJw4volwsjrEBz2IR2X3Cfa5lqggF63+2yJIMWGYLzHpoczM7Y2uZKyMznPB0INt
-         aZBfzUQIDQJ7In7d2GsVdA5f1OdGkqMXxnNWOGitx+FszPXOOqhfgyFvi3vubWcSxh4C
-         Sj7oB1OqFQs1OkiVDFGb+4ql0FQdL9jYKD78SoM8N1DlOF290BnUR8/Ln50UFzK3F+7f
-         T+nrATKH4+WuXFXlWlgI6XoPHridFk1ti3n2OyoxCT+h1PlGqBUNFubDH/rVuJbeM/t4
-         XoqQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FVskKCl1yiOLa7tUE7ecSFjkdCcT3iQIU3DHdWUifrk=;
+        b=N2TulBv/LnNVY4R0n44Ryimm1NeBT5sGkW7wDOan3PefdEv6z8dCkKmVHCwRyf8hUY
+         w4D019j82RLvfDJtrxXZSYnRLvk4xMvipUw7KRs2m5VkLsNx4w7nSNL6tlFewsz8ZG1t
+         FjDJA0HYtqqXOB9vEsv81ledxzP5JQKTlugrA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=epgC7K+n2/X6KUKBrCcOah3EpzEkojXbDo2MF6JX8Po=;
-        b=GZaSRcCUtYm4rVacF+atr54Wx0yLYm4DmdEPdNG/3qt0MJ1WvemTfRTSKQN8Cj0jd8
-         RTECNhRhgLv30VGXBHJ9ObUvk50kUCMBNJpbSVR2jS5gjBlhmqhVYIYL6mtPOJ7HK3Oq
-         /07+nEMfr1ZhcHRZ7CTrdKvzU0fbVqSi+KirtqtJp/NHDusmsYcERiDf7gnGAR/EQD/N
-         9HR53Glo7+JP8RpOtSBSr+5Pzat/4xBBz7UyQ84ti6Sflt97efkrk+LSEsLct/8bRmR3
-         fEriWqb0R8UxYU3FrJUHZAYHwLw2/OYwZ3H61k6SCjh+sxn8VPl9HT1BAwxJVCqlvRNu
-         50wQ==
-X-Gm-Message-State: AOAM5300Thjw9obZ9opx2RMy5fBFbq/7u9atY7hlafkcGXbNCeV18ulY
-        o6+gpVj9L2KY4Uv5rFiTwfC5fH+QKR3nyg==
-X-Google-Smtp-Source: ABdhPJzrWlT05KtBefa7dk+4un2fPF5onmFZNan9LP4iUYmxGR1OkzFby/iXmQWGer8JKJNQIiijrw==
-X-Received: by 2002:a05:6512:23a6:: with SMTP id c38mr1995349lfv.268.1628760647574;
-        Thu, 12 Aug 2021 02:30:47 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id k17sm248789ljm.7.2021.08.12.02.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 02:30:47 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 11:30:46 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH v2] media: rcar-csi2: Add checking to
- rcsi2_start_receiver()
-Message-ID: <YRTqRhTTlgkEZAcg@oden.dyn.berto.se>
-References: <YRPUhqvcTxCVvnBG@oden.dyn.berto.se>
- <20210811171816.12012-1-lutovinova@ispras.ru>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FVskKCl1yiOLa7tUE7ecSFjkdCcT3iQIU3DHdWUifrk=;
+        b=qvXlb4GeYLYF5yIXZbsnpcQFJPnnKsjXW0TKH16KkVntlHHjJWyoHfeOmxcwa4fo+8
+         x6WslcHnjGFvPHh2vF9rJ/chn0utISosnLItksI2v+Fjtm/zzqpjPgtitmJjck5TqbCd
+         Ox8xjgQxur5e5HZtRhLL+TA3WadwO9Q6OcFK/LItPd7duG3sshtTAShdeoX5Q6D+Acyt
+         wT00nS8INKJBW6qDGQdJmpRz3wB/ikeuol2QoNJTsN3FRP/37teZLKVHLa/T++n59O5T
+         b0rBaCbN3No4IZy8BDwFEk+g2c6pLudyzIEMJgB8oUFTL5ZLDo3Glxk3fRSw8BAcumsj
+         4S/A==
+X-Gm-Message-State: AOAM53171IEpF9HE8jZjhbL4/XkEk1J+ApT6QQitV2D5Vi9zHTimFGmZ
+        ztN1OfwZ0X0Z+hl7kZ6tbJuG35z7k5S6ZUXE8kzaFQ==
+X-Google-Smtp-Source: ABdhPJw9SD7zM/iPzd2ZyOctgSD64+UEsMwbfhKhVAvg3OelRUv1hIF9x3rMFpFUEWWBokQYqGnseHeQKWptCVgE4gk=
+X-Received: by 2002:aa7:8d92:0:b029:3e0:8660:b9aa with SMTP id
+ i18-20020aa78d920000b02903e08660b9aamr2266006pfr.55.1628760716086; Thu, 12
+ Aug 2021 02:31:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210811171816.12012-1-lutovinova@ispras.ru>
+References: <20210809165904.RFC.1.I5165a4a8da5cac23c9928b1ec3c3a1a7383b7c23@changeid>
+ <YRDxTodNNqtnpPpn@kroah.com> <CAATdQgDSCzZtiDSQk94CYHfSb9Mq28OH7-RdaTZNv3oPrW3nkQ@mail.gmail.com>
+ <7b48f4c132a8b4b3819282e961fbe8b3ed753069.camel@mediatek.com>
+In-Reply-To: <7b48f4c132a8b4b3819282e961fbe8b3ed753069.camel@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Thu, 12 Aug 2021 17:31:45 +0800
+Message-ID: <CAATdQgD1paUUmWhiLVq-+zq0V6=RTJw89ggk=R6cBUZO+5dB-Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] usb: xhci-mtk: handle bandwidth table rollover
+To:     =?UTF-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= 
+        <Chunfeng.Yun@mediatek.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "mathias.nyman@intel.com" <mathias.nyman@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadezda,
+HI,
 
-Thanks for your patch.
+On Wed, Aug 11, 2021 at 5:02 PM Chunfeng Yun (=E4=BA=91=E6=98=A5=E5=B3=B0)
+<Chunfeng.Yun@mediatek.com> wrote:
+>
+> On Mon, 2021-08-09 at 17:42 +0800, Ikjoon Jang wrote:
+> > On Mon, Aug 9, 2021 at 5:11 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, Aug 09, 2021 at 04:59:29PM +0800, Ikjoon Jang wrote:
+> > > > xhci-mtk has 64 slots for periodic bandwidth calculations and
+> > > > each
+> > > > slot represents byte budgets on a microframe. When an endpoint's
+> > > > allocation sits on the boundary of the table, byte budgets' slot
+> > > > should be rolled over but the current implementation doesn't.
+> > > >
+> > > > This patch applies a 6 bits mask to the microframe index to
+> > > > handle
+> > > > its rollover 64 slots and prevent out-of-bounds array access.
+> > > >
+> > > > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> > > > ---
+> > > >
+> > > >  drivers/usb/host/xhci-mtk-sch.c | 79 +++++++++----------------
+> > > > --------
+> > > >  drivers/usb/host/xhci-mtk.h     |  1 +
+> > > >  2 files changed, 23 insertions(+), 57 deletions(-)
+> > >
+> > > Why is this "RFC"?  What needs to be addressed in this change
+> > > before it
+> > > can be accepted?
+> >
+> > sorry, I had to mention why this is RFC:
+> >
+> > I simply don't know about the details of the xhci-mtk internals.
+> > It was okay from my tests with mt8173 and I think this will be
+> > harmless
+> > as this is "better than before".
+> >
+> > But when I removed get_esit_boundary(), I really have no idea why
+> > it was there. I'm wondering if there was another reason of that
+> > function
+> > other than just preventing out-of-bounds. Maybe chunfeng can answer
+> > this?
+> We use @esit to prevent out-of-bounds array access. it's not a ring,
+> can't insert out-of-bounds value into head slot.
 
-On 2021-08-11 20:18:16 +0300, Nadezda Lutovinova wrote:
-> If rcsi2_code_to_fmt() return NULL, then null pointer dereference occurs 
-> in the next cycle. That should not be possible now but adding checking 
-> protects from future bugs.
-> The patch adds checking if format is NULL.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Thanks, so that function was only for out-of-bounds array access.
+then I think we just can remove that function and use it as a ring.
+Can you tell me _why_ it can't be used as a ring?
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+I think a transaction (e.g. esit_boundary =3D 7) can start its first SSPLIT
+from Y_7 (offset =3D 7). But will that allocation be matched with this?
 
-> ---
-> v2: fix subject and commit message, remove dev_err()
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e28eff039688..d28f83f7698b 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -553,6 +553,8 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
->  
->  	/* Code is validated in set_fmt. */
->  	format = rcsi2_code_to_fmt(priv->mf.code);
-> +	if (!format)
-> +		return -EINVAL;
->  
->  	/*
->  	 * Enable all supported CSI-2 channels with virtual channel and
-> -- 
-> 2.17.1
-> 
+-               if ((offset + sch_ep->num_budget_microframes) > esit_bounda=
+ry)
+-                       break;
 
--- 
-Regards,
-Niklas Söderlund
+I mean I'm not sure why this is needed.
+
+Until now, I couldn't find a way to accept the USB audio headset
+with a configuration of { INT-IN 64 + ISOC-OUT 384 + ISOC-IN 192 }
+without this patch.
+
+>
+> >
+> > Thanks!
+> >
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
