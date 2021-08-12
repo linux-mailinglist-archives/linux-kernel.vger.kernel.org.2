@@ -2,175 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217633EAB66
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426FD3EAB6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhHLT6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhHLT6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:58:35 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3CBC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:58:09 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id z20so15617878lfd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vlJqqfcdLLwPZcg4ot94LAiGieMmOlu7Safv+RWN6eI=;
-        b=lQLxO4XpOpmbiymUYoDPFDFIF6eqobdQfw3CiUZm5mOYdSGXVM21Ro2QlrJDLiCNvy
-         NPexXA0/Cq0DUHSHQN2yozrrvaxaP/jeaCtxHhXAeKIr/epahe+xMeo28PEon7VTA2vs
-         Uek7JhFpyG73IDYoCC1pzvXm/YEHS3i0y21ZGI8rCY4UNdZme78lokh0QKQ7z1VgT2Xe
-         lKcz0nRiUFhsog+TvuOM+k7cvFWGvbpM+WDsyFbCn6+RWOpRl+eXPQhvu7boDIVBnLWL
-         BJRNQQTzoMjcbrfMkF3XNJHcK9VxE0b+P2e2+dtwTqsY1aP2LouFfD8WxXhFGschM9oX
-         ZW6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vlJqqfcdLLwPZcg4ot94LAiGieMmOlu7Safv+RWN6eI=;
-        b=ehXneUWYKzTy+X/YzRH6vGKio2UuDy/WTc0fDoMgL6Gxc8LmPlhCqUSQJ7zUvI3HSW
-         M5+XijJOMwfzMG+kK04x/7igEAoIwSkCCEIQ9Wa68Ju3XjqtOfD0cX0hv1sVgosrV2b/
-         AHB6AqJWFvWDutGqnSpr8sHiWQOitzAaYjDjJCZjp91lILkm+x6eQ0EFlf98o0tg84fH
-         fEmGSXWxKNfG1YH7oamZuSGB50DboIJopNYGDb388Rb63Z3pD9wchojMQEPtH78p6C17
-         k10+uJ/5+rIunLP1tuyYatbpw6IMrW4b231WgKc4iAg/7pKphGZZfWsBkgq55EUSsTya
-         xZsg==
-X-Gm-Message-State: AOAM532QVEoVeYzDxfW9UzQtUmTn3zhgC0ZD9HNlf29etmRuth1JlQhu
-        QUOZmPdHVSKe0gTyshi5BrU8LwogJagC8w==
-X-Google-Smtp-Source: ABdhPJwV7gGm/JgIR69OGefUtKx/Ryuv7Lr5cuPcNKPTReYIFu9DezX09tKUTZM4xsUc/kK9Gx7CXw==
-X-Received: by 2002:a19:4f45:: with SMTP id a5mr3619655lfk.190.1628798288228;
-        Thu, 12 Aug 2021 12:58:08 -0700 (PDT)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id e17sm417997lji.38.2021.08.12.12.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 12:58:07 -0700 (PDT)
-Subject: Re: [PATCH 4/5] arm64: Warn on booting at EL2 with HVC disabled
-To:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-5-maz@kernel.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <c13ee5ca-84e2-6615-375f-9e7e7f6b490f@gmail.com>
-Date:   Thu, 12 Aug 2021 21:58:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S236349AbhHLT74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:59:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230171AbhHLT7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:59:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A137E60FBF;
+        Thu, 12 Aug 2021 19:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628798367;
+        bh=M9MyqYO47NUoI+rSK25M9cleAgWnxVJ7RNwXJaCJ784=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=S0sstHONAg47gnc8TuM9hdMaI4FuTs1ssboJ4GN5T8mHA68t/zt66QenDgukc3poP
+         7Cu2sGQ0rNJlPfWQeS9AvsoiYxHAnYfvXf6xAkh+ij3s4n3mSRtGAyLy6LWSK+LIvj
+         ktTJrQoJn0UBhc2u06NNNSfdeLzytl8dZ5MQFA65emz3+V5PnrdvcfMfeOG4U+Od10
+         5Hrz7WavVye8gbcn+lqvXJJNzaHVPqZZwhphJGmUb6s5iTMrRMocF11fOQsZJKZx3U
+         W1iOsn8cHPY3pqIJkzpTB0yH8hUthUs7TGrnbLq9ylbBqXAXb13rQ+VtzZSlmtoShY
+         vnreubjLEnGtA==
+Date:   Thu, 12 Aug 2021 14:59:25 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com,
+        maz@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxarm@huawei.com,
+        robin.murphy@arm.com, will@kernel.org, lorenzo.pieralisi@arm.com,
+        dwmw@amazon.co.uk, Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH v2 0/2] msi: extend msi_irqs sysfs entries to platform
+ devices
+Message-ID: <20210812195925.GA2503574@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210812190213.2601506-5-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812105341.51657-1-21cnbao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.2021 21:02, Marc Zyngier wrote:
-> Now that we are able to paper over the gigantic stupidity that
-> booting at EL2 with SCR_EL3.HCE==0 is, let's taint WARN_TAINT()
-> when detecting this situation.
+On Thu, Aug 12, 2021 at 10:53:39PM +1200, Barry Song wrote:
+> From: Barry Song <song.bao.hua@hisilicon.com>
 > 
-> Yes, this is *LOUD*.
+> Just like pci devices have msi_irqs which can be used by userspace irq affinity
+> tools or applications to bind irqs, platform devices also widely support msi
+> irqs.
+> For platform devices, for example ARM SMMU, userspaces also care about its msi
+> irqs as applications can know the mapping between devices and irqs and then
+> make smarter decision on handling irq affinity. For example, for SVA mode,
+> it is better to pin io page fault to the numa node applications are running
+> on. Otherwise, io page fault will get a remote page from the node iopf happens
+> rather than from the node applications are running on.
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> The first patch extracts the sysfs populate/destory code from PCI to
+> MSI core. The 2nd patch lets platform-msi export msi_irqs entry so that
+> userspace can know the mapping between devices and irqs for platform
+> devices.
+> 
+> -v2:
+>   extract common code for msi_irqs sysfs populate/destory from PCI to MSI core,
+>   platform_device can directly reuse common code;
+> 
+> -v1:
+>   https://lore.kernel.org/lkml/20210811105020.12980-1-song.bao.hua@hisilicon.com/
+> 
+> Barry Song (2):
+>   genirq/msi: extract common sysfs populate entries to msi core from pci
+>   platform-msi: Add ABI to show msi_irqs of platform devices
+> 
+>  Documentation/ABI/testing/sysfs-bus-platform |  14 +++
+>  drivers/base/platform-msi.c                  |  10 ++
+>  drivers/pci/msi.c                            | 124 ++-----------------------
+>  include/linux/msi.h                          |   4 +
+>  kernel/irq/msi.c                             | 134 +++++++++++++++++++++++++++
+>  5 files changed, 171 insertions(+), 115 deletions(-)
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+I assume the IRQ guys will take care of this.
 
-This replaces:
-CPU: All CPU(s) started at EL1
+For the drivers/pci/ part:
 
-with:
-------------[ cut here ]------------
-CPU: CPUs downgraded to EL1, HVC disabled
-WARNING: CPU: 0 PID: 1 at arch/arm64/kernel/smp.c:429 smp_cpus_done+0xac/0xe8
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc5-g86fc10657896 #41
-Hardware name: Asus GT-AC5300 (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-pc : smp_cpus_done+0xac/0xe8
-lr : smp_cpus_done+0xac/0xe8
-sp : ffffffc01002be00
-x29: ffffffc01002be00 x28: 0000000000000000 x27: 0000000000000000
-x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
-x23: ffffffc010ab4000 x22: 0000000000000000 x21: 0000000000000000
-x20: ffffffc0107b7e74 x19: ffffffc010a78000 x18: 0000000000000001
-x17: ffffffc010a9ee40 x16: 0000000000000000 x15: 000042496b0a18f2
-x14: fffffffffffc0f87 x13: 0000000000000039 x12: ffffff80010b03b0
-x11: 00000000ffffffea x10: ffffffc010a5eb50 x9 : 0000000000000001
-x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
-x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : 0000000000000000
-x2 : 00000000ffffffff x1 : a8d68d1fd96fdc00 x0 : 0000000000000000
-Call trace:
-  smp_cpus_done+0xac/0xe8
-  smp_init+0x68/0x78
-  kernel_init_freeable+0xd0/0x214
-  kernel_init+0x24/0x120
-  ret_from_fork+0x10/0x18
----[ end trace a7d4af835e9d6e6b ]---
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
+But I would update the commit logs to consistently capitalize
+initialisms.  Currently it's a mix of "PCI", "pci", "MSI", "msi",
+"numa", "irq", "io", etc.
 
-BEFORE:
-
-smp: Bringing up secondary CPUs ...
-Detected VIPT I-cache on CPU1
-CPU1: Booted secondary processor 0x0000000001 [0x420f1000]
-Detected VIPT I-cache on CPU2
-CPU2: Booted secondary processor 0x0000000002 [0x420f1000]
-Detected VIPT I-cache on CPU3
-CPU3: Booted secondary processor 0x0000000003 [0x420f1000]
-smp: Brought up 1 node, 4 CPUs
-SMP: Total of 4 processors activated.
-CPU features: detected: 32-bit EL0 Support
-CPU features: detected: 32-bit EL1 Support
-CPU features: detected: CRC32 instructions
-CPU: All CPU(s) started at EL1
-
-
-AFTER:
-
-smp: Bringing up secondary CPUs ...
-Detected VIPT I-cache on CPU1
-CPU1: Booted secondary processor 0x0000000001 [0x420f1000]
-Detected VIPT I-cache on CPU2
-CPU2: Booted secondary processor 0x0000000002 [0x420f1000]
-Detected VIPT I-cache on CPU3
-CPU3: Booted secondary processor 0x0000000003 [0x420f1000]
-smp: Brought up 1 node, 4 CPUs
-SMP: Total of 4 processors activated.
-CPU features: detected: 32-bit EL0 Support
-CPU features: detected: 32-bit EL1 Support
-CPU features: detected: CRC32 instructions
-------------[ cut here ]------------
-CPU: CPUs downgraded to EL1, HVC disabled
-WARNING: CPU: 0 PID: 1 at arch/arm64/kernel/smp.c:429 smp_cpus_done+0xac/0xe8
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc5-g86fc10657896 #41
-Hardware name: Asus GT-AC5300 (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-pc : smp_cpus_done+0xac/0xe8
-lr : smp_cpus_done+0xac/0xe8
-sp : ffffffc01002be00
-x29: ffffffc01002be00 x28: 0000000000000000 x27: 0000000000000000
-x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
-x23: ffffffc010ab4000 x22: 0000000000000000 x21: 0000000000000000
-x20: ffffffc0107b7e74 x19: ffffffc010a78000 x18: 0000000000000001
-x17: ffffffc010a9ee40 x16: 0000000000000000 x15: 000042496b0a18f2
-x14: fffffffffffc0f87 x13: 0000000000000039 x12: ffffff80010b03b0
-x11: 00000000ffffffea x10: ffffffc010a5eb50 x9 : 0000000000000001
-x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
-x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : 0000000000000000
-x2 : 00000000ffffffff x1 : a8d68d1fd96fdc00 x0 : 0000000000000000
-Call trace:
-  smp_cpus_done+0xac/0xe8
-  smp_init+0x68/0x78
-  kernel_init_freeable+0xd0/0x214
-  kernel_init+0x24/0x120
-  ret_from_fork+0x10/0x18
----[ end trace a7d4af835e9d6e6b ]---
+Also, if you rewrap the 2/2 commit log to fit in 75 columns, you won't
+have a line that becomes 83 columns when "git log" indents it.  Maybe
+also indent quoted things like the "ls" output by 2 spaces and add a
+blank line before so the text doesn't run into them.
