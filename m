@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8C83EA6EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7AA3EA6F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237443AbhHLO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:56:26 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48498 "EHLO ms.lwn.net"
+        id S237482AbhHLO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:57:11 -0400
+Received: from out1.migadu.com ([91.121.223.63]:27993 "EHLO out1.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237036AbhHLO4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:56:25 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id D3D6D2CC;
-        Thu, 12 Aug 2021 14:55:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D3D6D2CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1628780159; bh=1JQPA+fNH9JvXq6H5OcRxZpMwZyUA6KRvTyni3Isu5g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=s0epbSV/8A77bdTx/nB7b+sbLlpx+YDkrXS7G+U3Yh1LkZk4l5l3KDfq7+Bz29Ixm
-         sy176twIJZ4mZDPUeob0s/uCBOmtFb+CTsWLrEzAhMvLXdoDpLSbZ0oXfC28Y1SbNn
-         JcVK9P4XRDreUb0haSQ5cjcxTGscdFwvoM0KLwXCmOtwo/RTef0M4NvUChw7veIUqL
-         eQ1PzKXOo/UuW4lHXoPRgJqC3FhqFK/4yjzgNPteJw7asXGf8iesM/30oAakScpPev
-         qDPK+W+wPnd960XmUhE0AhVa8cIc9fEev7kyGmBQp20klppnQCQ362bj0yeH1pxTJk
-         8iRjAAc/JTNnw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Federico Vaga <federico.vaga@vaga.pv.it>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@vaga.pv.it>
-Subject: Re: [PATCH 1/2] doc: align Italian translation
-In-Reply-To: <20210731085513.11820-1-federico.vaga@vaga.pv.it>
-References: <20210731085513.11820-1-federico.vaga@vaga.pv.it>
-Date:   Thu, 12 Aug 2021 08:55:58 -0600
-Message-ID: <871r6y1zlt.fsf@meer.lwn.net>
+        id S236417AbhHLO5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:57:10 -0400
+X-Greylist: delayed 70504 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 10:57:09 EDT
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1628780204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wLYmxDSn8yRlvCuXwA7dhNRH5OHfdPThVfS1yzZfw8s=;
+        b=qyNj2/4L4qC1jYYMJ0qKJnAT7LSTH56iqndM1Ypp/eSyeGZ8vj56KPYO0gmbjJ+hov1PSm
+        N6RJjphfvkVM6uC2LTY76FoNbXcXNmLMDeJuuV43soDoOJ0sMahCEQsyhKV2oH/6JfpifJ
+        7X7z5dmbyyhErQjYsZ4UB8xulo/AbGI=
+From:   andrey.konovalov@linux.dev
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 6/8] kasan: test: clean up ksize_uaf
+Date:   Thu, 12 Aug 2021 16:56:41 +0200
+Message-Id: <a1fc34faca4650f4a6e4dfb3f8d8d82c82eb953a.1628779805.git.andreyknvl@gmail.com>
+In-Reply-To: <cover.1628779805.git.andreyknvl@gmail.com>
+References: <cover.1628779805.git.andreyknvl@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: andrey.konovalov@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Federico Vaga <federico.vaga@vaga.pv.it> writes:
+From: Andrey Konovalov <andreyknvl@gmail.com>
 
-> Translation for the following patches
->
-> commit 0ca0d55526d3 ("docs/core-api: Consistent code style")
-> commit 9912d0bb9dee ("docs: process: submitting-patches.rst: avoid using ReST :doc:`foo` markup")
-> commit 6349469a4f3c ("Documentation/submitting-patches: Document RESEND tag on patches")
-> commit dbbe7c962c3a ("docs: networking: drop special stable handling")
-> commit 7f3f7bfbbe02 ("docs: kernel-hacking: hacking.rst: avoid using ReST :doc:`foo` markup")
-> commit 6ab0493dfc62 ("deprecated.rst: Include details on "no_hash_pointers" ")
-> commit 77167b966b7e ("docs: submitting-patches: clarify the role of LKML ")
->
-> Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
-> ---
->  .../it_IT/core-api/symbol-namespaces.rst      | 26 ++++-----
->  .../it_IT/kernel-hacking/hacking.rst          |  4 +-
->  .../translations/it_IT/process/deprecated.rst |  8 ++-
->  .../it_IT/process/stable-kernel-rules.rst     |  6 --
->  .../it_IT/process/submitting-patches.rst      | 57 ++++++++++---------
->  5 files changed, 51 insertions(+), 50 deletions(-)
+Some KASAN tests use global variables to store function returns values
+so that the compiler doesn't optimize away these functions.
 
-Applied, thanks.
+ksize_uaf() doesn't call any functions, so it doesn't need to use
+kasan_int_result. Use volatile accesses instead, to be consistent with
+other similar tests.
 
-jon
+Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+---
+ lib/test_kasan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index 1dcba6dbfc97..30f2cde96e81 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -737,8 +737,8 @@ static void ksize_uaf(struct kunit *test)
+ 	kfree(ptr);
+ 
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
+-	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
+-	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
++	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
++	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
+ }
+ 
+ static void kasan_stack_oob(struct kunit *test)
+-- 
+2.25.1
+
