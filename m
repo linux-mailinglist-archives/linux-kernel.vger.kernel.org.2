@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89153EA648
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB7D3EA6BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237140AbhHLONl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:13:41 -0400
-Received: from mail.cybernetics.com ([173.71.130.66]:44210 "EHLO
-        mail.cybernetics.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhHLONk (ORCPT
+        id S238131AbhHLOpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:45:18 -0400
+Received: from gateway31.websitewelcome.com ([192.185.144.219]:46333 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236872AbhHLOpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:13:40 -0400
-X-Greylist: delayed 1156 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 10:13:40 EDT
-X-ASG-Debug-ID: 1628776402-0fb3b001bfc4d60001-xx1T2L
-Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id lkPLFyzvNeBjB96l; Thu, 12 Aug 2021 09:53:22 -0400 (EDT)
-X-Barracuda-Envelope-From: tonyb@cybernetics.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
-X-ASG-Whitelist: Client
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
-        bh=3MG1Vac5wpnbY+5A5viqd1Gyo97myoZFxF6zv1w1+9g=;
-        h=Content-Language:Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; b=RX51K6U8xQlg+QN
-        RLNyr5dNvKZR8TdbhL3l3evZdmekmZqhoPPh/QXcmu9csGzrZ5A1LPJwcA8/9ovJUJW5UWgzVPibx
-        z2td/2OUHibvIHBsteTfSXpOTuGOHIDcwDBAf+STR9mwmY8WTDPCp4MX9ef9CJiMsi5d2/oceFLgX
-        Fg=
-Received: from [10.157.2.224] (HELO [192.168.200.1])
-  by cybernetics.com (CommuniGate Pro SMTP 6.2.14)
-  with ESMTPS id 11066215; Thu, 12 Aug 2021 09:53:22 -0400
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
-To:     Jens Axboe <axboe@kernel.dk>,
-        Olivier Langlois <olivier@trillion01.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-X-ASG-Orig-Subj: Re: [PATCH] coredump: Limit what can interrupt coredumps
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
- <87eeda7nqe.fsf@disp2133>
- <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
- <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
- <87pmwmn5m0.fsf@disp2133>
- <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
- <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
- <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
-From:   Tony Battersby <tonyb@cybernetics.com>
-Message-ID: <7b201ca7-dd1d-61be-8586-5dbf7a3c9333@cybernetics.com>
-Date:   Thu, 12 Aug 2021 09:53:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 10:45:11 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id DDC8C170657
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:57:34 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id EBDCmVDkpMGeEEBDCmVXA2; Thu, 12 Aug 2021 08:57:34 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-56-204-120.retail.telecomitalia.it ([79.56.204.120]:54910 helo=f34.bristot.me)
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mEBDC-004IPl-1D; Thu, 12 Aug 2021 08:57:34 -0500
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/5] osnoise: Support multiple instances
+Date:   Thu, 12 Aug 2021 15:57:19 +0200
+Message-Id: <cover.1628775552.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Barracuda-Connect: UNKNOWN[10.10.4.126]
-X-Barracuda-Start-Time: 1628776402
-X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
-X-Barracuda-BRTS-Status: 1
-X-Virus-Scanned: by bsmtpd at cybernetics.com
-X-Barracuda-Scan-Msg-Size: 1053
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.56.204.120
+X-Source-L: No
+X-Exim-ID: 1mEBDC-004IPl-1D
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-56-204-120.retail.telecomitalia.it (f34.bristot.me) [79.56.204.120]:54910
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 7
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 9:55 PM, Jens Axboe wrote:
->
-> That is very interesting. Like Olivier mentioned, it's not that actual
-> commit, but rather the change of behavior implemented by it. Before that
-> commit, we'd hit the async workers more often, whereas after we do the
-> correct retry method where it's driven by the wakeup when the page is
-> unlocked. This is purely speculation, but perhaps the fact that the
-> process changes state potentially mid dump is why the dump ends up being
-> truncated?
->
-> I'd love to dive into this and try and figure it out. Absent a test
-> case, at least the above gives me an idea of what to try out. I'll see
-> if it makes it easier for me to create a case that does result in a
-> truncated core dump.
->
-If it helps, a "good" coredump from my program is about 350 MB
-compressed down to about 7 MB by bzip2.  A truncated coredump varies in
-size from about 60 KB to about 2 MB before compression.  The program
-that receives the coredump uses bzip2 to compress the data before
-writing it to disk.
+Currently, osnoise and timerlat run only on a single instance. To reduce
+this limitation, this series adds support for parallel instances of the
+same tracer. That is, it is possible to run two instances of osnoise
+tracer with different configurations. For example, one for the tracer
+output and another for a set of tracepoints.
 
-Tony
+Daniel Bristot de Oliveira (5):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+
+ kernel/trace/trace_osnoise.c | 410 ++++++++++++++++++++++++-----------
+ 1 file changed, 289 insertions(+), 121 deletions(-)
+
+-- 
+2.31.1
 
