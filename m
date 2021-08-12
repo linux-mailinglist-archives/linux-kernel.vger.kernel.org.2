@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2430A3EA780
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F323EA783
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237985AbhHLP1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:27:03 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:63624 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232854AbhHLP1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:27:02 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CFBcsL028122;
-        Thu, 12 Aug 2021 08:26:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=WB6DoJ7BBOGVQsPX8Zjhwmyob2kIUfsRdQP2drnnNWs=;
- b=cL7pIfCH6jk4VvrR1099Izc7iMWMSabc+XimX1G3TV0cAvrmaGvxPxoFGnbgb2uFrvKS
- VLoHR//cmBBfWx2xgbvUn6GozycMba1JIiynFA+W9JYgIA36I0A1Jbh9wOtYJa5kMtbC
- uE8l6GsVHK5qvejxcEoMQbDmw8817ncU7+vJM8fQWMclCaoz4hdLCpgre6iUSrdXdu8e
- R9UAT/Poz50Z6C7SuEnYY5Ulwlo+0HQNULY7MyqTT4k4Scy9NvZFdISibafdMkYwRWTr
- 9sFXk7IQIFZPEY5y0RIqNbH/dCBDHysaXEjqPST3xhuhzTtOP7pGRWALCnGtOKcEoKQa sg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3acrnp2m6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 08:26:28 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 12 Aug
- 2021 08:26:26 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 12 Aug 2021 08:26:26 -0700
-Received: from localhost.localdomain (unknown [10.110.150.250])
-        by maili.marvell.com (Postfix) with ESMTP id 65B583F709B;
-        Thu, 12 Aug 2021 08:26:26 -0700 (PDT)
-From:   Vasyl Gomonovych <vgomonovych@marvell.com>
-To:     <james.morse@arm.com>
-CC:     Vasyl Gomonovych <vgomonovych@marvell.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] firmware: arm_sdei: Print sdei event number in hex
-Date:   Thu, 12 Aug 2021 08:26:14 -0700
-Message-ID: <20210812152615.28930-1-vgomonovych@marvell.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: ZKTzeFA6iYzLEViGn0Mi61TJL-FkM5UF
-X-Proofpoint-ORIG-GUID: ZKTzeFA6iYzLEViGn0Mi61TJL-FkM5UF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_05:2021-08-12,2021-08-12 signatures=0
+        id S238029AbhHLP1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232854AbhHLP1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:27:09 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65506610A4;
+        Thu, 12 Aug 2021 15:26:44 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mECbS-004a9P-6o; Thu, 12 Aug 2021 16:26:42 +0100
+Date:   Thu, 12 Aug 2021 16:26:41 +0100
+Message-ID: <87v94a8z0u.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <YRUwMjeQnXH5RfoB@orome.fritz.box>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROpd450N+n6hYt2@orome.fritz.box>
+        <87pmuk9ku9.wl-maz@kernel.org>
+        <YRUwMjeQnXH5RfoB@orome.fritz.box>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, mcroce@linux.microsoft.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SDEI specified event numbers in hexadecimal format.
-Change event number format to hexadecimal to make
-it easier for the reader to recognize the proper event.
+On Thu, 12 Aug 2021 15:29:06 +0100,
+Thierry Reding <thierry.reding@gmail.com> wrote:
+> 
+> On Wed, Aug 11, 2021 at 02:23:10PM +0100, Marc Zyngier wrote:
 
-Signed-off-by: Vasyl Gomonovych <vgomonovych@marvell.com>
----
- drivers/firmware/arm_sdei.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+[...]
 
-diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-index a7e762c352f9..66d2869d03f7 100644
---- a/drivers/firmware/arm_sdei.c
-+++ b/drivers/firmware/arm_sdei.c
-@@ -496,7 +496,7 @@ int sdei_event_unregister(u32 event_num)
- 	mutex_lock(&sdei_events_lock);
- 	event = sdei_event_find(event_num);
- 	if (!event) {
--		pr_warn("Event %u not registered\n", event_num);
-+		pr_warn("Event 0x%x not registered\n", event_num);
- 		err = -ENOENT;
- 		goto unlock;
- 	}
-@@ -579,7 +579,7 @@ int sdei_event_register(u32 event_num, sdei_event_callback *cb, void *arg)
- 
- 	mutex_lock(&sdei_events_lock);
- 	if (sdei_event_find(event_num)) {
--		pr_warn("Event %u already registered\n", event_num);
-+		pr_warn("Event 0x%x already registered\n", event_num);
- 		err = -EBUSY;
- 		goto unlock;
- 	}
-@@ -587,7 +587,7 @@ int sdei_event_register(u32 event_num, sdei_event_callback *cb, void *arg)
- 	event = sdei_event_create(event_num, cb, arg);
- 	if (IS_ERR(event)) {
- 		err = PTR_ERR(event);
--		pr_warn("Failed to create event %u: %d\n", event_num, err);
-+		pr_warn("Failed to create event 0x%x: %d\n", event_num, err);
- 		goto unlock;
- 	}
- 
-@@ -605,7 +605,7 @@ int sdei_event_register(u32 event_num, sdei_event_callback *cb, void *arg)
- 
- 	if (err) {
- 		sdei_event_destroy(event);
--		pr_warn("Failed to register event %u: %d\n", event_num, err);
-+		pr_warn("Failed to register event 0x%x: %d\n", event_num, err);
- 		goto cpu_unlock;
- 	}
- 
-@@ -635,7 +635,7 @@ static int sdei_reregister_shared(void)
- 					sdei_entry_point, event->registered,
- 					SDEI_EVENT_REGISTER_RM_ANY, 0);
- 			if (err) {
--				pr_err("Failed to re-register event %u\n",
-+				pr_err("Failed to re-register event 0x%x\n",
- 				       event->event_num);
- 				sdei_event_destroy_llocked(event);
- 				break;
-@@ -645,7 +645,7 @@ static int sdei_reregister_shared(void)
- 		if (event->reenable) {
- 			err = sdei_api_event_enable(event->event_num);
- 			if (err) {
--				pr_err("Failed to re-enable event %u\n",
-+				pr_err("Failed to re-enable event 0x%x\n",
- 				       event->event_num);
- 				break;
- 			}
-@@ -670,7 +670,7 @@ static int sdei_cpuhp_down(unsigned int cpu)
- 
- 		err = sdei_do_local_call(_local_event_unregister, event);
- 		if (err) {
--			pr_err("Failed to unregister event %u: %d\n",
-+			pr_err("Failed to unregister event 0x%x: %d\n",
- 			       event->event_num, err);
- 		}
- 	}
-@@ -693,7 +693,7 @@ static int sdei_cpuhp_up(unsigned int cpu)
- 		if (event->reregister) {
- 			err = sdei_do_local_call(_local_event_register, event);
- 			if (err) {
--				pr_err("Failed to re-register event %u: %d\n",
-+				pr_err("Failed to re-register event 0x%x: %d\n",
- 				       event->event_num, err);
- 			}
- 		}
-@@ -701,7 +701,7 @@ static int sdei_cpuhp_up(unsigned int cpu)
- 		if (event->reenable) {
- 			err = sdei_do_local_call(_local_event_enable, event);
- 			if (err) {
--				pr_err("Failed to re-enable event %u: %d\n",
-+				pr_err("Failed to re-enable event 0x%x: %d\n",
- 				       event->event_num, err);
- 			}
- 		}
-@@ -1095,7 +1095,7 @@ int sdei_event_handler(struct pt_regs *regs,
- 
- 	err = arg->callback(event_num, regs, arg->callback_arg);
- 	if (err)
--		pr_err_ratelimited("event %u on CPU %u failed with error: %d\n",
-+		pr_err_ratelimited("event 0x%x on CPU 0x%x failed with error: %d\n",
- 				   event_num, smp_processor_id(), err);
- 
- 	return err;
+> > I love this machine... Did this issue occur with the Denver CPUs
+> > disabled?
+> 
+> Interestingly I've been doing some work on a newer device called Jetson
+> TX2 NX (which is kind of a trimmed-down version of Jetson TX2, in the
+> spirit of the Jetson Nano) and I can't seem to reproduce these failures
+> there (tested on next-20210812).
+> 
+> I'll go dig out my Jetson TX2 to run the same tests there, because I've
+> also been using a development version of the bootloader stack and
+> flashing tools and all that, so it's possible that something was fixed
+> at that level. I don't think I've ever tried disabling the Denver CPUs,
+> but then I've also never seen these issues myself.
+> 
+> Just out of curiosity, what version of the BSP have you been using to
+> flash?
+
+I've only used the BSP for a few weeks when I got the board last
+year. The only thing I use from it is u-boot to chainload an upstream
+u-boot, and boot Debian from there.
+
+> One other thing that I ran into: there's a known issue with the PHY
+> configuration. We mark the PHY on most devices as "rgmii-id" on most
+> devices and then the Marvell PHY driver needs to be enabled. Jetson TX2
+> has phy-mode = "rgmii", so it /should/ work okay.
+> 
+> Typically what we're seeing with that misconfiguration is that the
+> device fails to get an IP address, but it might still be worth trying to
+> switch Jetson TX2 to rgmii-id and using the Marvell PHY, to see if that
+> improves anything.
+
+I never failed to get an IP address. Overall, networking has been
+solid on this machine until this patch. I'll try and mess with this
+when I get time, but that's probably going to be next week now.
+
+[...]
+
+> > That'd be pretty annoying. Do you know if the Ethernet is a coherent
+> > device on this machine? or does it need active cache maintenance?
+> 
+> I don't think Ethernet is a coherent device on Tegra186. I think
+> Tegra194 had various improvements with regard to coherency, but most
+> devices on Tegra186 do need active cache maintenance.
+> 
+> Let me dig through some old patches and mailing list threads. I vaguely
+> recall prototyping a patch that did something special for outer cache
+> flushing, but that may have been Tegra132, not Tegra186. I also don't
+> think we ended up merging that because it turned out to not be needed.
+
+ARMv8 forbid any sort of *visible* outer cache, so I really hope this
+is not required. We wouldn't be able to support it.
+
+Thanks,
+
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
