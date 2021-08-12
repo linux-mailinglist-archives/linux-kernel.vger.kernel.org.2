@@ -2,152 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C683EA80A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8393EA80D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238474AbhHLPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238351AbhHLPyU (ORCPT
+        id S238483AbhHLPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:54:56 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:35485 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238351AbhHLPyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:54:20 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93031C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:55 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id k65so12610171yba.13
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9KW2/qijRYj1BOVATRIEUb5ZBc50beMYDjvUxmZFiRc=;
-        b=LHuXb9xzqe5DwhBYGOjusfcVLJLfxSrMOqgAdsG7OgbRVJdCX8A+FCQsg0LRpoz+Tu
-         AjQGQYHovApi+hFSLDN6rtlF9wmEBgVe6WbxXYtMJhWCS2fPc01sWMQwegW07LMbYBk1
-         g4TyhI5MbyZmvOgDgZnThyIOICYEFkcpi8FSs=
+        Thu, 12 Aug 2021 11:54:54 -0400
+Received: by mail-ej1-f50.google.com with SMTP id w5so12511546ejq.2;
+        Thu, 12 Aug 2021 08:54:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9KW2/qijRYj1BOVATRIEUb5ZBc50beMYDjvUxmZFiRc=;
-        b=uhRHLa7BdFW3ju4iB5k7KYjqudM/ESNPier5LYVE4iN0XCFie282u4cJPSLru0Z0ah
-         C4pBhpqx/6AvaS22Wsd1RoHVBLSLNCDYPuadr2/9aRH64V4zSRPMWw6/PQdgBDIzElcF
-         08qrFLPADRAuwmmhYLlCUnI+Pavm/0RV0ET4HNPkUNDlFMqrdjZWDxbSuz/rJNLV1muk
-         yY0Y5KGUlI4K0U2Ukhi9Z5pt1iYFUc659gm/cxhJa75L5SLls0kdnK9XuPeTJteUYDu0
-         wQv0xY8P6Tn44mFZ2HvBx1q8liWrUD0aMcouqBUkQctMH6DqNlfVNzBpr/z23tyACG4I
-         gvrQ==
-X-Gm-Message-State: AOAM533VWp96phHPh7RYclFL+zYjL6KA3fGbqNHf3MUo5izNYyJaDzyE
-        koFRPKqLj16Vy5eIgmhtBlpRxkJtx8fRQ5T8lQBa
-X-Google-Smtp-Source: ABdhPJzZO0OsNFC/A2UHECLysjbKOC4vzD4gZilL/H0m8nkpIdJjITRQ2A/fHwlHwXIJYbEXwrlmPAVUpj41KqSL3h8=
-X-Received: by 2002:a25:e094:: with SMTP id x142mr5068884ybg.147.1628783634885;
- Thu, 12 Aug 2021 08:53:54 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jHqYhReooo30zb8LL9lFKdY9y7F/PVOeVzdjs8SkhdY=;
+        b=CEz6cPrNISRWeebn1JShmPOdGdiUUvfWQMNZ6SSI+fhF/Y5MIBtEWeJqxapPNphuC6
+         frjAl/pOeIKhwp058MkYgMAksdsW58h4TQ9o4Ku4Je71fzyNLD+FFzB6uMmmjMljjsCC
+         RutaBmIwPR10C3kxf2T0uNdz71/A75SQVr3oZGF6nP+/7XQxTxbS/NLR3zR6VfTniC1j
+         MGP8bLycxaPsLhTMHIbpmWJL+3srwqnbKnn0s2pkm8Lh3z42fXKU3TybIV0Geg31Vrms
+         pU238l7+KNIE9pzs1sJIHtvGVnZoWDDWsB52qnTa1lAH7We12s5vt+0Jox4im6fHHHSX
+         53vg==
+X-Gm-Message-State: AOAM530xDrgEjsQdulhLdzeoq0W2JOj/RxFoyXfiQSE3yr76g2HL5lQ6
+        8JKWgCbSIEtqfIF+uRuPsqo=
+X-Google-Smtp-Source: ABdhPJz7ZDXm52HEpswiPiu6k4yJZib8V0zYLDvzytdiDCa4MewFXtlggPHQz+7453yfBwUBysQHZA==
+X-Received: by 2002:a17:906:3a46:: with SMTP id a6mr4301854ejf.147.1628783667346;
+        Thu, 12 Aug 2021 08:54:27 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.googlemail.com with ESMTPSA id r27sm1299893edb.66.2021.08.12.08.54.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 08:54:26 -0700 (PDT)
+To:     =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-9-clin@suse.com>
+ <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
+ <20210809080346.GO30984@dragon>
+ <3c65f75d-724f-a438-1e22-6baeb745a8e5@suse.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
+Message-ID: <fab0d8a6-515a-86a8-daa3-12f37bdf004d@kernel.org>
+Date:   Thu, 12 Aug 2021 17:54:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210812123433.27871-1-dimitri.ledkov@canonical.com>
-In-Reply-To: <20210812123433.27871-1-dimitri.ledkov@canonical.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 12 Aug 2021 08:53:44 -0700
-Message-ID: <CAOnJCULTxFmRbpw4wp7SYN8EJxFhSN5J04QDE=cfxLAB01ZOFA@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: prevent sbi_send_cpumask_ipi race with ftrace
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Pierce Andjelkovic <pierceandjelkovic@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3c65f75d-724f-a438-1e22-6baeb745a8e5@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 5:36 AM Dimitri John Ledkov
-<dimitri.ledkov@canonical.com> wrote:
->
-> From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->
-> ftrace will patch instructions in sbi_send_cpumask_ipi, which is going to
-> be used by flush_icache_range, leading to potential races and crashes like
-> this:
->
-> [    0.000000] ftrace: allocating 38893 entries in 152 pages
-> [    0.000000] Oops - illegal instruction [#1]
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-1014-generic #14-Ubuntu
-> [    0.000000] epc: ffffffe00000920e ra : ffffffe000009384 sp : ffffffe001803d30
-> [    0.000000]  gp : ffffffe001a14240 tp : ffffffe00180f440 t0 : ffffffe07fe38000
-> [    0.000000]  t1 : ffffffe0019cd338 t2 : 0000000000000000 s0 : ffffffe001803d70
-> [    0.000000]  s1 : 0000000000000000 a0 : ffffffe0000095aa a1 : 0000000000000001
-> [    0.000000]  a2 : 0000000000000002 a3 : 0000000000000000 a4 : 0000000000000000
-> [    0.000000]  a5 : 0000000000000000 a6 : 0000000000000004 a7 : 0000000052464e43
-> [    0.000000]  s2 : 0000000000000002 s3 : 0000000000000001 s4 : 0000000000000000
-> [    0.000000]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
-> [    0.000000]  s8 : ffffffe001a170c0 s9 : 0000000000000001 s10: 0000000000000001
-> [    0.000000]  s11: 00000000fffcc5d0 t3 : 0000000000000068 t4 : 000000000000000b
-> [    0.000000]  t5 : ffffffe0019cd3e0 t6 : ffffffe001803cd8
-> [    0.000000] status: 0000000200000100 badaddr: 000000000513f187 cause: 0000000000000002
-> [    0.000000] ---[ end trace f67eb9af4d8d492b ]---
-> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-> [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
->
-> Where ffffffe00000920e lies in the middle of sbi_send_cpumask_ipi.
->
-> Reproduced on Unmatched board using Ubuntu kernels. See
-> https://people.canonical.com/~xnox/lp1934548/ for sample images,
-> kernels, debug symbols.
->
-> BugLink: https://bugs.launchpad.net/bugs/1934548
-> Reported-by: Pierce Andjelkovic <pierceandjelkovic@gmail.com>
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-> cc: Paul Walmsley <paul.walmsley@sifive.com>
-> cc: linux-riscv@lists.infradead.org
-> cc: stable@vger.kernel.org
-> ---
->  arch/riscv/kernel/sbi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 7402a417f38e..158199865c68 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -562,7 +562,7 @@ long sbi_get_mimpid(void)
->         return __sbi_base_ecall(SBI_EXT_BASE_GET_MIMPID);
->  }
->
-> -static void sbi_send_cpumask_ipi(const struct cpumask *target)
-> +static void notrace sbi_send_cpumask_ipi(const struct cpumask *target)
->  {
->         struct cpumask hartid_mask;
->
+On 12/08/2021 17:30, Andreas Färber wrote:
+> Hello Shawn and Krzysztof,
+> 
+> On 09.08.21 10:03, Shawn Guo wrote:
+>> On Thu, Aug 05, 2021 at 09:49:51AM +0200, Krzysztof Kozlowski wrote:
+>>> On 05/08/2021 08:54, Chester Lin wrote:
+>>>> Add a new entry for the maintenance of NXP S32G2 DT files.
+>>>>
+>>>> Signed-off-by: Chester Lin <clin@suse.com>
+>>>> ---
+>>>>  MAINTAINERS | 6 ++++++
+>>>>  1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index 36aee8517ab0..3c6ba6cefd8f 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
+>>>>  F:	arch/arm/mach-npcm/wpcm450.c
+>>>>  F:	drivers/*/*wpcm*
+>>>>  
+>>>> +ARM/NXP S32G2 ARCHITECTURE
+> 
+> Suggestion from NXP is to use the broader S32G name.
+> 
+>>>> +M:	Chester Lin <clin@suse.com>
+>>>> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>>>> +S:	Maintained
+>>>> +F:	arch/arm64/boot/dts/freescale/s32g2*
+>>>
+>>> I support the idea of sub-sub-architecture maintainers but I think idea
+>>> of in-file addresses was preferred:
+>>> https://lore.kernel.org/lkml/20200830122922.3884-1-shawnguo@kernel.org/
+> 
+> I had specifically asked Chester to add a MAINTAINERS section.
+> 
+> Is your apparent suggestion of not accepting this MAINTAINERS patch
+> based on the assumption that we're dealing with only one email address
+> in three files? What do you see as the threshold to warrant a section?
+> 
+> From my point of view, above MAINTAINERS entry is incomplete, as we
+> should CC the full team working on S32G for patch review, not just
+> Chester himself.
+> So that would in my mind have been additional R: and L: entries in that
+> MAINTAINERS section.
 
-flush_icache_range doesn't invoke sbi_send_cpumask_ipi.
-flush_icache_range->flush_icache_all->sbi_remote_fence_i->__sbi_rfence->sbi_ecall
+I assumed this is a sub-sub-architecture (something coming from
+Layerscape or i.MX) but it seems it's not, therefore I don't mind having
+separate entry in MAINTAINERS. The idea of in-file maintainers was for
+specific boards and SoCs belonging to existing sub-architectures.
 
-Moreover, sbi.c should be removed from ftrace path as it is compiled
-with notrace flag after the patch [1]
+I agree with your following reasons.
 
-CFLAGS_REMOVE_sbi.o   = $(CC_FLAGS_FTRACE)
+> 
+>> Thanks for reminding that the patch didn't land.  I just resent it with
+>> your Reviewed-by tag added.  Thanks!
+> 
+> Your above patch does not make clear to me what syntax we should use for
+> adding email addresses to .dts[i] files now:
+> 
+> https://lore.kernel.org/lkml/20210809081033.GQ30984@dragon/
+> 
+> Especially when not dealing with file authors.
+> 
+> I get the impression it is not a replacement for an F: wildcard used in
+> MAINTAINERS, but rather a complement?
+> 
+> Please understand that this is not about a single .dts file, as your
+> patch suggests, but about a complete SoC family consisting of s32g*.dts*
+> as well as in the future drivers specific to this platform. It seems way
+> easier to specify the list of maintainers/reviewers in MAINTAINERS once
+> with suitable wildcard paths, than copying them into each and every
+> .dtsi and .dts file and driver .c/.h and later needing to sync multiple
+> places. If a bot or user has fixes or cleanups for the S32G code, we
+> want to know about it, so that NXP can consider it for their BSP
+> branches and SUSE for our SLE branches, and obviously for follow-up
+> patch series that are already in the works and waiting on this one.
+> 
+> Once merged, I would expect Chester or someone from NXP to set up an
+> S32G tree on kernel.org that gets integrated into linux-next and sends
+> pull requests to the SoC tree maintainers without bothering i.MX and
+> Layerscape maintainers. Did you handle that differently for S32V?
+> 
+> Thanks,
+> Andreas
+> 
+> P.S. Have you checked or considered whether your script change might
+> start to CC non-existing email addresses, since we wouldn't be allowed
+> to remove them from copyright or authorship statements to prevent that?
 
-This solution was proposed as a result of earlier discussion [2] last year.
+The same can happen for DT bindings maintainers.
 
-[1] https://patchwork.kernel.org/project/linux-riscv/patch/1608220905-1962-5-git-send-email-guoren@kernel.org/
-[2] https://lkml.org/lkml/2020/11/3/735
-
-The proposed fix probably hiding the root cause somehow.
-
-Do you have the patch[1] in your kernel ?
-
-
-> --
-> 2.30.2
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
--- 
-Regards,
-Atish
+Best regards,
+Krzysztof
