@@ -2,103 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76413EA5ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574F83EA5F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhHLNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236152AbhHLNqy (ORCPT
+        id S237744AbhHLNrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:47:20 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:55694 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237620AbhHLNrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:46:54 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A492C061756;
-        Thu, 12 Aug 2021 06:46:29 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so15254793pjb.3;
-        Thu, 12 Aug 2021 06:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WB183lguWhFDS87ehCBje+Fiih0eLoDWXJwZXtQEnJM=;
-        b=uxNPl+KgSeMlqAvP5yRaL+ww+r/qKjI+e/T18nAzB9BdKlmsaeGO4YU0LXLmSIVPDt
-         9ANube2JoOKKjr/A0f14gNfi8CZND8GrwCDiHzE1nIIvhMjs9ZIXmyPG0DUYzlgwoKkP
-         iS7zLVoY4UZ35o5rPxmH32dLT4JFMnF8isS+6t2D2k9JjjK65+mZjQgLvY0vCzUujcxU
-         KXuZUY5mjZeE7Ec/jF1WFvQvTKA+hvji1CfTWE/5T2ldGD93DnRZtMhLMaen5iMKs0Jr
-         Eb4wsKH4WP9pBBbERhElUz5co64a3iWP1TeMxiXDAjjcFTt8uiSfVSiMyYveMiw7BbhZ
-         YFBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WB183lguWhFDS87ehCBje+Fiih0eLoDWXJwZXtQEnJM=;
-        b=ezJH7wmlkAo8wer1VuJ2l1hIhClIHgC4UhZChsp6xonEKRCPzddKhN2EelMPGNfhmk
-         ePU9mp2yD8JHuxzumQnKh3tycrODy3BgU+dnndq3HoI7wb8Uh5WMB49NTwrMIyiHESJf
-         Bofx3rhkaEULpKgMz9+9vSNXICgq1C/XK9x29t+LQGFguC9Xk/62F91tO5k9Avc/t4is
-         q6Vs2tJsBtJH2XJkYul3R0oUDa4boNKuXRoLR/O0EjtncHUc3KZSYCD6rr5+f0qhOccP
-         b94QDFQ6cpxabfqnRa8lzR5DoNv/YcUPN0XqrIQ+evzCO3tsFMNwrwvkN0V9wg8FPS/T
-         HDDA==
-X-Gm-Message-State: AOAM532Yg7Wi7S/PpEorPVTdR7+i7Zn1XngcdnOJHpWqtUgroMuzyzI7
-        8mUOHsWMKdCbqoSQaRjxvVY=
-X-Google-Smtp-Source: ABdhPJzoKVXyZ/PTFLUw2x1Er7mVePAz6u27KJTyu05oXW4WKzqoD0b1ImRigJ1gmfSsl+lX18NOqA==
-X-Received: by 2002:a05:6a00:84e:b029:3ae:5c9:a48d with SMTP id q14-20020a056a00084eb02903ae05c9a48dmr4332754pfk.20.1628775988875;
-        Thu, 12 Aug 2021 06:46:28 -0700 (PDT)
-Received: from [192.168.0.109] ([123.20.118.31])
-        by smtp.gmail.com with ESMTPSA id g10sm3589100pfh.120.2021.08.12.06.46.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 06:46:28 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] udp: UDP socket send queue repair
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, willemb@google.com, pabeni@redhat.com,
-        avagin@gmail.com, alexander@mihalicyn.com,
-        lesedorucalin01@gmail.com
-References: <20210811154557.6935-1-minhquangbui99@gmail.com>
- <721a2e32-c930-ad6b-5055-631b502ed11b@gmail.com>
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-Message-ID: <7f3ecbaf-7759-88ae-53d3-2cc5b1623aff@gmail.com>
-Date:   Thu, 12 Aug 2021 20:46:23 +0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <721a2e32-c930-ad6b-5055-631b502ed11b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 12 Aug 2021 09:47:18 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 6DC82C285B;
+        Thu, 12 Aug 2021 21:46:49 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P4989T139771043112704S1628776006486981_;
+        Thu, 12 Aug 2021 21:46:48 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a56e99efda023e8b911ea052f72f0d7c>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v13 5/6] arm64: dts: rockchip: Add SFC to RK3308
+Date:   Thu, 12 Aug 2021 21:46:38 +0800
+Message-Id: <20210812134639.31586-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210812134546.31340-1-jon.lin@rock-chips.com>
+References: <20210812134546.31340-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chris Morgan <macromorgan@hotmail.com>
+
+Add a devicetree entry for the Rockchip SFC for the RK3308 SOC.
+
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
+
+Changes in v13: None
+Changes in v12: None
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi | 37 ++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+index a185901aba9a..ce6f4a28d169 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -731,6 +731,17 @@
+ 		status = "disabled";
+ 	};
+ 
++	sfc: spi@ff4c0000 {
++		compatible = "rockchip,sfc";
++		reg = <0x0 0xff4c0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++		clock-names = "clk_sfc", "hclk_sfc";
++		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
++
+ 	cru: clock-controller@ff500000 {
+ 		compatible = "rockchip,rk3308-cru";
+ 		reg = <0x0 0xff500000 0x0 0x1000>;
+@@ -1004,6 +1015,32 @@
+ 			};
+ 		};
+ 
++		sfc {
++			sfc_bus4: sfc-bus4 {
++				rockchip,pins =
++					<3 RK_PA0 3 &pcfg_pull_none>,
++					<3 RK_PA1 3 &pcfg_pull_none>,
++					<3 RK_PA2 3 &pcfg_pull_none>,
++					<3 RK_PA3 3 &pcfg_pull_none>;
++			};
++
++			sfc_bus2: sfc-bus2 {
++				rockchip,pins =
++					<3 RK_PA0 3 &pcfg_pull_none>,
++					<3 RK_PA1 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs0: sfc-cs0 {
++				rockchip,pins =
++					<3 RK_PA4 3 &pcfg_pull_none>;
++			};
++
++			sfc_clk: sfc-clk {
++				rockchip,pins =
++					<3 RK_PA5 3 &pcfg_pull_none>;
++			};
++		};
++
+ 		gmac {
+ 			rmii_pins: rmii-pins {
+ 				rockchip,pins =
+-- 
+2.17.1
 
 
-On 8/11/2021 11:14 PM, Eric Dumazet wrote:
-> 
-> 
-> On 8/11/21 5:45 PM, Bui Quang Minh wrote:
->> In this patch, I implement UDP_REPAIR sockoption and a new path in
->> udp_recvmsg for dumping the corked packet in UDP socket's send queue.
->>
->> A userspace program can use recvmsg syscall to get the packet's data and
->> the msg_name information of the packet. Currently, other related
->> information in inet_cork that are set in cmsg are not dumped.
->>
->> While working on this, I was aware of Lese Doru Calin's patch and got some
->> ideas from it.
-> 
-> 
-> What is the use case for this feature, adding a test in UDP fast path ?
 
-This feature is used to help CRIU to dump CORKed UDP packet in send queue. I'm 
-sorry for being not aware of the performance perspective here.
-
-> IMO, TCP_REPAIR hijacking standard system calls was a design error,
-> we should have added new system calls.
-
-You are right that adding new system calls is a better approach. What do you 
-think about adding a new option in getsockopt approach?
-
-Thanks,
-Quang Minh.
