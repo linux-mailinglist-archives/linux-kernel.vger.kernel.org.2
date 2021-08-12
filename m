@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A013EA739
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7652F3EA73D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbhHLPNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        id S238437AbhHLPNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237868AbhHLPN2 (ORCPT
+        with ESMTP id S237870AbhHLPN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 11:13:28 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE53EC0617AE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CC0C0613D9
         for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:13:02 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 15:12:57 -0000
+Date:   Thu, 12 Aug 2021 15:12:58 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628781178;
+        s=2020; t=1628781179;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L6Aq/2J2qO3uYUwXLq8NisCxczqndr2Nn2xJ8dL4WtY=;
-        b=OT6tB5kxcFs0/iff0m8EQ82iIxHPtIXhhaIbzX3ZpBBIs2zkDmF4Q4RbVtqj+D4Xoy0oYj
-        Al3xhiKx/4zlLyZiFtAVsCIDldMB6QeTlaIO+dQkoO0YHepv7z2zxOl+Fdihh3yjS8Z4IJ
-        TI3iNvUJr9KJN+G4qR7O2HXi/FY/s3NDwwuZuH3ZpEVfI+352+mLwL3Jfv5efmvSYIC4Mq
-        Vm2TELX094ti1CmUg+CDdpIG0FUiOg6HNSqDS/XcUoZoxDMjlUK7HscjOFRyLyUbJiYh5G
-        4Ar/jB1/7sYD2vocvA10rAgeUNqqR48t0w2pbzdtJVpBFRY5jUhvl5EnNeJjjA==
+        bh=3QsvYt24PDkSjkCqMAIAFauZzmrqQaFhV6WKi/7VXeU=;
+        b=Rk+j8FLvGiHaDY3kPPRHB0mdwWPsOL17D3uIdfptrPcW+z161I5/4s1VntRchbMuKOUItv
+        YxnHTX17YCGXdVPXt2q7VcOKBeqdd8Ik1HweJMMedKkL/9pv/3yjxEv4iE6jDOXB8mPQEP
+        SOKSyzT2q4bSFWjZDv+D3wmUh1DwUVAwLfiv8zpMaf6WeVnb3v8T3Yw3ZMpDGG4qss634T
+        SeNjIqPt4AZq1H7C9pd8UBSr0e/hn1S8b0V87XYkO3Eh0XxVTqW+qHK6qcX9bfgz9LxDuE
+        HGv7Q1ocXHrUPrvZys2WRLLzwjHKxI5VeGEwkx5YvdCvxTrS2y093JfRc/iIpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628781178;
+        s=2020e; t=1628781179;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L6Aq/2J2qO3uYUwXLq8NisCxczqndr2Nn2xJ8dL4WtY=;
-        b=EKrqs8Vh7cvOnN3W3W9eo5gu82eEaBNLrRvZYl1fMvzYD2CgTvcbStZBrTi4JlYfGO4BGu
-        hCV3gqBeEPaSY+Dg==
+        bh=3QsvYt24PDkSjkCqMAIAFauZzmrqQaFhV6WKi/7VXeU=;
+        b=qzEE5KgKkGqxKb0QmUvMznGrXow416kmZF2EkNrzwrXdti9ltAjF7dz8iKBGoop6a8q3M+
+        56Y00NQN/mgitOCQ==
 From:   "irqchip-bot for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3: Convert to
- handle_strict_flow_irq()
+Subject: [irqchip: irq/irqchip-next] irqchip/gic: Add .irq_ack() to GIC-based irqchips
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210629125010.458872-14-valentin.schneider@arm.com>
-References: <20210629125010.458872-14-valentin.schneider@arm.com>
+In-Reply-To: <20210629125010.458872-12-valentin.schneider@arm.com>
+References: <20210629125010.458872-12-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <162878117761.395.4737067549372035469.tip-bot2@tip-bot2>
+Message-ID: <162878117885.395.6124047796117034466.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,108 +60,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     3359fcab48b0467497883863e2e5538605c51c4a
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/3359fcab48b0467497883863e2e5538605c51c4a
+Commit-ID:     ff41d1016e84102a4363f9e85945a7404cf11cb7
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/ff41d1016e84102a4363f9e85945a7404cf11cb7
 Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Tue, 29 Jun 2021 13:50:10 +01:00
+AuthorDate:    Tue, 29 Jun 2021 13:50:08 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Thu, 12 Aug 2021 15:48:21 +01:00
 
-irqchip/gic-v3: Convert to handle_strict_flow_irq()
+irqchip/gic: Add .irq_ack() to GIC-based irqchips
 
-Now that the proper infrastructure is in place, convert the irq-gic-v3 chip
-to use handle_strict_flow_irq() along with IRQCHIP_AUTOMASKS_FLOW.
+Subsequent patches will make the GIC IRQs use a flow handler that issues an
+irq_ack(), thus irqchips of child domains need to have an .irq_ack() of
+their own.
 
-For EOImode=1, the Priority Drop is moved from gic_handle_irq() into
-chip->irq_ack(). This effectively pushes the EOIR write down into
-->handle_irq(), but doesn't change its ordering wrt the irqaction
-handling.
-
-The EOImode=1 irqchip also gains IRQCHIP_EOI_THREADED, which allows the
-->irq_eoi() call to be deferred to the tail of ONESHOT IRQ threads. This
-means a threaded ONESHOT IRQ can now be handled entirely without a single
-chip->irq_mask() call.
-
-Despite not having an Active state, LPIs are made to use
-handle_strict_flow_irq() as well. This lets them re-use
-gic_eoimode1_chip.irq_ack() as Priority Drop, rather than special-case them
-in gic_handle_irq().
-
-EOImode=0 handling remains unchanged.
+Most cases are covered by the default MSI callbacks, but nexus domains and
+other non-MSI domains still need tending do.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210629125010.458872-14-valentin.schneider@arm.com
+Link: https://lore.kernel.org/r/20210629125010.458872-12-valentin.schneider@arm.com
 ---
- drivers/irqchip/irq-gic-v3.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ drivers/irqchip/irq-gic-v2m.c    | 1 +
+ drivers/irqchip/irq-gic-v3-its.c | 3 +++
+ drivers/irqchip/irq-gic-v3-mbi.c | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index cdffffc..00bbb4d 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -626,8 +626,6 @@ static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
- 	if (irqs_enabled)
- 		nmi_enter();
- 
--	if (static_branch_likely(&supports_deactivate_key))
--		gic_write_eoir(irqnr);
- 	/*
- 	 * Leave the PSR.I bit set to prevent other NMIs to be
- 	 * received while handling this one.
-@@ -697,9 +695,11 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
- 		gic_arch_enable_irqs();
- 	}
- 
--	if (static_branch_likely(&supports_deactivate_key))
--		gic_write_eoir(irqnr);
--	else
-+	/*
-+	 * eoimode1 will give us an isb in handle_domain_irq(), before
-+	 * handle_irq_event().
-+	 */
-+	if (!static_branch_likely(&supports_deactivate_key))
- 		isb();
- 
- 	if (handle_domain_irq(gic_data.domain, irqnr, regs)) {
-@@ -1310,6 +1310,7 @@ static struct irq_chip gic_eoimode1_chip = {
- 	.name			= "GICv3",
- 	.irq_mask		= gic_eoimode1_mask_irq,
- 	.irq_unmask		= gic_unmask_irq,
-+	.irq_ack                = gic_eoi_irq,
- 	.irq_eoi		= gic_eoimode1_eoi_irq,
- 	.irq_set_type		= gic_set_type,
- 	.irq_set_affinity	= gic_set_affinity,
-@@ -1322,7 +1323,9 @@ static struct irq_chip gic_eoimode1_chip = {
- 	.ipi_send_mask		= gic_ipi_send_mask,
- 	.flags			= IRQCHIP_SET_TYPE_MASKED |
- 				  IRQCHIP_SKIP_SET_WAKE |
--				  IRQCHIP_MASK_ON_SUSPEND,
-+				  IRQCHIP_MASK_ON_SUSPEND |
-+				  IRQCHIP_AUTOMASKS_FLOW |
-+				  IRQCHIP_EOI_THREADED,
- };
- 
- static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
-@@ -1346,7 +1349,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
- 	case SPI_RANGE:
- 	case ESPI_RANGE:
- 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
--				    handle_fasteoi_irq, NULL, NULL);
-+				    static_branch_likely(&supports_deactivate_key) ?
-+				    handle_strict_flow_irq : handle_fasteoi_irq,
-+				    NULL, NULL);
- 		irq_set_probe(irq);
- 		irqd_set_single_target(irqd);
- 		break;
-@@ -1355,7 +1360,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
- 		if (!gic_dist_supports_lpis())
- 			return -EPERM;
- 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
--				    handle_fasteoi_irq, NULL, NULL);
-+				    static_branch_likely(&supports_deactivate_key) ?
-+				    handle_strict_flow_irq : handle_fasteoi_irq,
-+				    NULL, NULL);
- 		break;
- 
- 	default:
+diff --git a/drivers/irqchip/irq-gic-v2m.c b/drivers/irqchip/irq-gic-v2m.c
+index 27a97c7..b8cf3ff 100644
+--- a/drivers/irqchip/irq-gic-v2m.c
++++ b/drivers/irqchip/irq-gic-v2m.c
+@@ -126,6 +126,7 @@ static struct irq_chip gicv2m_irq_chip = {
+ 	.name			= "GICv2m",
+ 	.irq_mask		= irq_chip_mask_parent,
+ 	.irq_unmask		= irq_chip_unmask_parent,
++	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.irq_compose_msi_msg	= gicv2m_compose_msi_msg,
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index ba39668..8a372ac 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -1976,6 +1976,7 @@ static struct irq_chip its_irq_chip = {
+ 	.name			= "ITS",
+ 	.irq_mask		= its_mask_irq,
+ 	.irq_unmask		= its_unmask_irq,
++	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_affinity	= its_set_affinity,
+ 	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
+@@ -3997,6 +3998,7 @@ static struct irq_chip its_vpe_irq_chip = {
+ 	.name			= "GICv4-vpe",
+ 	.irq_mask		= its_vpe_mask_irq,
+ 	.irq_unmask		= its_vpe_unmask_irq,
++	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_affinity	= its_vpe_set_affinity,
+ 	.irq_retrigger		= its_vpe_retrigger,
+@@ -4152,6 +4154,7 @@ static struct irq_chip its_vpe_4_1_irq_chip = {
+ 	.name			= "GICv4.1-vpe",
+ 	.irq_mask		= its_vpe_4_1_mask_irq,
+ 	.irq_unmask		= its_vpe_4_1_unmask_irq,
++	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_affinity	= its_vpe_set_affinity,
+ 	.irq_set_vcpu_affinity	= its_vpe_4_1_set_vcpu_affinity,
+diff --git a/drivers/irqchip/irq-gic-v3-mbi.c b/drivers/irqchip/irq-gic-v3-mbi.c
+index a69ac29..b0e919f 100644
+--- a/drivers/irqchip/irq-gic-v3-mbi.c
++++ b/drivers/irqchip/irq-gic-v3-mbi.c
+@@ -33,6 +33,7 @@ static struct irq_chip mbi_irq_chip = {
+ 	.name			= "MBI",
+ 	.irq_mask		= irq_chip_mask_parent,
+ 	.irq_unmask		= irq_chip_unmask_parent,
++	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_eoi		= irq_chip_eoi_parent,
+ 	.irq_set_type		= irq_chip_set_type_parent,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
