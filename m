@@ -2,161 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457043EA0C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716C63EA0CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhHLIm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:42:58 -0400
-Received: from mail-eopbgr60042.outbound.protection.outlook.com ([40.107.6.42]:63085
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231786AbhHLIm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:42:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KYh21VA76298zTUOEvzPPWuIODP4Jdghk2GHVWA3dNss9ri8w3UJAmHj9fMgn8lbdIrsXwGC2i5evhQtjadjr2HgcJn5m/aISHSjqGSsUrQsDCwPolPW80hDOtl52/QkmqKDINDbWwnAVvwJTnjqQzzRIlHLC406QRdaUdBwz6676EKwK1Tsxq6ptKmXX6eIxqfb34RI4MWw/emehCmu2yzQMt/dp5fWRNFgTG88Bbe6LT38tzm/ctCA79EWu8FYbu4a2LmpfWQMsT034NRMzbWnpCrO2HkSbR0vHPbgNIjtmy6+VIWQvQeJwBKY9TIkA1/2xb2AAp4hgAaA0DApwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tAk9V9t/o0/aLWegjh45d1GfeSr+GY2ORW6YZNsZjxg=;
- b=dMs/woPM91agHH4b+mIFukatAerbkASBwBLkozQ6AbuTH0RNusz2YSkSp3gJaGKyLJRZuLGAZ1wNLnZkvVXsXe+f8t/Qseph71cm4gtofWUrnBEVRPK74fhkYEec4mquN+3yXLGKZAggCOBcnfdr15Y9deUpiX2B+drKNrIjRR4Ix08xkiEV5rjxCixNd6KzxIc48CZCrBOxIlKkU5sljve16byI0VVqaP9Hdg6tdwO8BQxqXaorkQpQZ26SclUDKUPuLtqwxzEvfuDTisNSXWcu6Lj0D+gFFzpo7HQF9aWtPW4S89KANFUhBT1SpnpQURPlNqJ2aJkB7tE15DMOSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tAk9V9t/o0/aLWegjh45d1GfeSr+GY2ORW6YZNsZjxg=;
- b=c+kO1BlxdW/FcshMib9v/d8TwkydFSar952qWxmHB+ynEPYN5vqGassuVi9tXWqxrpBu4CGidQCr0lXEzS6hVuK9gNqOgu5Lrn2ANU4PpzYEZcO/4HcNfwv8ILW7GsPVKMwe76Ux+O4BzegYrluNJcUstOFzwkCScA4lnryyv4Y=
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com (2603:10a6:209:3f::17)
- by AS8PR04MB7656.eurprd04.prod.outlook.com (2603:10a6:20b:29b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Thu, 12 Aug
- 2021 08:42:29 +0000
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::48d7:fb2c:38dc:4f5f]) by AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::48d7:fb2c:38dc:4f5f%4]) with mapi id 15.20.4394.023; Thu, 12 Aug 2021
- 08:42:29 +0000
-From:   "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 3/3] net: dpaa_eth: remove dead select in menuconfig
- FSL_DPAA_ETH
-Thread-Topic: [PATCH 3/3] net: dpaa_eth: remove dead select in menuconfig
- FSL_DPAA_ETH
-Thread-Index: AQHXj1VsNzsUTnII/UWblHLiVegTM6tvjQ9A
-Date:   Thu, 12 Aug 2021 08:42:29 +0000
-Message-ID: <AM6PR04MB3976A72707A65CB74B11AFFCECF99@AM6PR04MB3976.eurprd04.prod.outlook.com>
-References: <20210812083806.28434-1-lukas.bulwahn@gmail.com>
- <20210812083806.28434-4-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210812083806.28434-4-lukas.bulwahn@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ca91f74f-dc63-4c7d-172e-08d95d6d1e9e
-x-ms-traffictypediagnostic: AS8PR04MB7656:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AS8PR04MB7656A4CA521E06FED49BE561ADF99@AS8PR04MB7656.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JwCrSb/14379eX80iWHqMxPu938hk445coXwwbKYqDaTjADU8oWK4TlRMwOGXCIynJI4fGE7RLyZ1tATFWBUpBee/ZtJHC2AUFIYTK22QlC3BrUaSx+cEVk9TmGGC0Q97b95nyWWiqddsJ/RqQ7O1otCJWdlthdnStiuCUUmEBIdcXDFMJ0OERUDFzmGZItVIDn3vmwKacKAUdbef+J9KBCT/KPV5mgV59Tjlm2IRA8gTvW8SZB+AbBfVfODbCxoUAr4MKsTcxCVuMLNmIBCdd8y+U9uCm7N81tZlO23Q4f934+dHcZnU9mRwQS0YCD0VHdY1Gozs8QpL/Sx2jjcF+wzS+lUo08b6QW3XdT4ZbQ5Jlmp2G+GYXlerM+X+XLR7LxuqsjYiMDhuSEFJu5C92/3JUWSaaw2SoT2HlCyQsYs+gcDBXOclYdNL+WnteyNAjkD2oUSIQSuiwfp120Cc89lXe5NcY7Opo5b/Fv1cYDkTU3qSNRCNF3Xzs6UUnpbDDj8AU+tu9OD31c8dr1CspOicGBwwmPd8o7jgPHi/9DMnPytVdbJIyQtggKJNPn/qcC8/C9vVt3ecMWxatPXJng9DQehwH9xg+Z0mWieIFSD6ubTRCwM0sdLJHAbuj7lLvRyf1c8ZblY3TBLkfPV6oy11LkbZisMSWbPlKYzuAUDlfpXJ4MyW/+BH5PSKstkfhdnPFymsaeudFjs5+BDSQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3976.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(110136005)(83380400001)(7696005)(316002)(66446008)(66946007)(66476007)(86362001)(66556008)(64756008)(508600001)(33656002)(38100700002)(186003)(8936002)(122000001)(5660300002)(71200400001)(52536014)(6636002)(8676002)(76116006)(2906002)(38070700005)(55016002)(9686003)(4326008)(26005)(53546011)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+FznP6vCM8Kfsp+RWDYZOrriq6xcODjeDewllxY8lwVAgjtE1u+dBT36uMVb?=
- =?us-ascii?Q?zB6yEwyKvIkCGUpmCeYMCM3T0D2EVoeQyOyhUqzgdFRvcuzDyQ9htKbW9p2/?=
- =?us-ascii?Q?kMCZ9eFI+V3F+yX1BByNx9gh7Bk1uYfiHYnt/8NZzAsPmo8QLWvS9Uj1bVYH?=
- =?us-ascii?Q?DcBdLbSZ79G4HI3KZ5pNdKWIh9Yt8XcvHSFjywI7KXTgcZFVnW+XHtcHqoNa?=
- =?us-ascii?Q?LV1V+r8idYEcB3I05Bk3HFXYM+T+a+98PtSYYFSk/sJo6jROc6aogFOfw56g?=
- =?us-ascii?Q?yzvARf1jkH12eHNfGW6hziD4WV1bQkIoAowTVVgbcjGb00RN1qjKIbtdQGrS?=
- =?us-ascii?Q?0CsMQftEsOjyYV4FDUrBNUYF4eIPxsXq0maxmhwjOEnMQE56tb5xuuF7ODtU?=
- =?us-ascii?Q?q/96waLe/9fQRPUZSeW6W+lBEVjnKwXup+hYORH/AJcUTYsuitqN0B6KtiGo?=
- =?us-ascii?Q?kg99yLgKlKaZJzFizkN4sZrk4Wm+KKVTi5WNETZrvfc8pknQop/5N+cz9hgU?=
- =?us-ascii?Q?ZWyf3757OfeJh9CdQUFFlmtuJ88MEBvMo4a2iZxNZK+2utV683SdhR5AjwwS?=
- =?us-ascii?Q?tfPA4aGbj2UFhk5KeWTOL6N/iNhEzfJYSYmCeB93JsAJhUBuF4p5Wydz7BzE?=
- =?us-ascii?Q?ozFdODFKIidKfgzWpTMw7OB0CL95t2rneTnSYWdR7K/2YDO/PwXF6jLCSTs8?=
- =?us-ascii?Q?l9O6kPEB3gPVkZ8Dh8UbWoVZl8IuhGwJQpbXA9XM+RbQodunvsvAu2+4uciG?=
- =?us-ascii?Q?dnWddKMel4o9dLFoPooOicwy6Fz2pCie9u8IyfsPmdqw1+QaaxQXJz9tUJ2p?=
- =?us-ascii?Q?HThYdKP08j063ES925qYIeJyESchhi6qAlJxFf6kTqR6DyG7vNCRH+cqR8C1?=
- =?us-ascii?Q?y1YkM+dAeP35W+f5l5rwRqZ3sia+RxYcnTmzh9KQpzqLQDadj/l/PYERX8Gv?=
- =?us-ascii?Q?TsyndH2wc260Sc8EUe4mEbFUAEwfGFJoccTUeQI+OGnTkplw1x7AjvZFn5AG?=
- =?us-ascii?Q?Vt40o6CI891/sYZBiX4rmd15rnfhPSIiIvDKy9M3iN/hO7HJ253sR5qJTQX1?=
- =?us-ascii?Q?CvwyZZ9Afajh9ve/cQXgx2Xri+sb9oxHCJqgNedEMxgqtMs7oDjCrTuEpakt?=
- =?us-ascii?Q?zAZBqTNLXrqCEMX9z7KRmGCkdFuV/Id4OvOrK3nRU3+Cz7GvZHu+4JvuETwy?=
- =?us-ascii?Q?G7gJvozXhdJshcxJ6OkMO0PrYsxdsXK/h92ojDJ6SNFTUWUmxw4Z66ln2xKu?=
- =?us-ascii?Q?EKOsedruKGaL5LZjKZ/i59MKkcPeNbbGmGoVGndSfjJRSqjw+Q5x14ZRWlnc?=
- =?us-ascii?Q?OJROTwT3qzQKUeR3a7FE7pTj?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234808AbhHLIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:44:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231786AbhHLIol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 04:44:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628757855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M39zbsaS2KZL2Rdtv+g1mE9Yxte2yzqnEHMfKrq3Rbk=;
+        b=ZcN8zeGKG/MKsCYKJKQovLb1bz2A4nFqk+DPisr8h3ZU4eos2q/25ecsPIM6PXm9XVo8hn
+        2muxYOUfYIoPiK5t4urKE4uGaWFyfGGWRqS/5ZWywwyXmdANLYSlqzTTVpoRlMda772J/O
+        UFJAjasbxEd9oJLqLwtjdAqnGr0hV7Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-17-7fdL4v-iM_6gXav43YmE2Q-1; Thu, 12 Aug 2021 04:44:13 -0400
+X-MC-Unique: 7fdL4v-iM_6gXav43YmE2Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DDF21082926;
+        Thu, 12 Aug 2021 08:44:12 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.193.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C18B05C23A;
+        Thu, 12 Aug 2021 08:43:49 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>, linux-unionfs@vger.kernel.org,
+        linux-api@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Date:   Thu, 12 Aug 2021 10:43:41 +0200
+Message-Id: <20210812084348.6521-1-david@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3976.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca91f74f-dc63-4c7d-172e-08d95d6d1e9e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 08:42:29.5391
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hLZGDBL3980k5ZwQCXYzyCOJQ/JpNJntp3PbP7J+m5TrVANz785dHfDqQi6cqBUcvdIHgAZfOM4NnCi8XQmeOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7656
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Sent: 12 August 2021 11:38
-> To: David S . Miller <davem@davemloft.net>; Jakub Kicinski
-> <kuba@kernel.org>; netdev@vger.kernel.org
-> Cc: Madalin Bucur <madalin.bucur@nxp.com>; Randy Dunlap
-> <rdunlap@infradead.org>; kernel-janitors@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Subject: [PATCH 3/3] net: dpaa_eth: remove dead select in menuconfig
-> FSL_DPAA_ETH
->=20
-> The menuconfig FSL_DPAA_ETH selects config FSL_FMAN_MAC, but the config
-> FSL_FMAN_MAC never existed in the kernel tree.
->=20
-> Hence, ./scripts/checkkconfigsymbols.py warns:
->=20
-> FSL_FMAN_MAC
-> Referencing files: drivers/net/ethernet/freescale/dpaa/Kconfig
->=20
-> Remove this dead select in menuconfig FSL_DPAA_ETH.
->=20
-> Fixes: 9ad1a3749333 ("dpaa_eth: add support for DPAA Ethernet")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  drivers/net/ethernet/freescale/dpaa/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/freescale/dpaa/Kconfig
-> b/drivers/net/ethernet/freescale/dpaa/Kconfig
-> index 626ec58a0afc..0e1439fd00bd 100644
-> --- a/drivers/net/ethernet/freescale/dpaa/Kconfig
-> +++ b/drivers/net/ethernet/freescale/dpaa/Kconfig
-> @@ -4,7 +4,6 @@ menuconfig FSL_DPAA_ETH
->  	depends on FSL_DPAA && FSL_FMAN
->  	select PHYLIB
->  	select FIXED_PHY
-> -	select FSL_FMAN_MAC
->  	help
->  	  Data Path Acceleration Architecture Ethernet driver,
->  	  supporting the Freescale QorIQ chips.
-> --
-> 2.17.1
+This series is based on v5.14-rc5 and corresponds code-wise to the
+previously sent RFC [1] (the RFC still applied cleanly).
 
-Acked-by: Madalin Bucur <madalin.bucur@oss.nxp.com>
+This series removes all in-tree usage of MAP_DENYWRITE from the kernel
+and removes VM_DENYWRITE. We stopped supporting MAP_DENYWRITE for
+user space applications a while ago because of the chance for DoS.
+The last renaming user is binfmt binary loading during exec and
+legacy library loading via uselib().
+
+With this change, MAP_DENYWRITE is effectively ignored throughout the
+kernel. Although the net change is small, I think the cleanup in mmap()
+is quite nice.
+
+There are some (minor) user-visible changes with this series:
+1. We no longer deny write access to shared libaries loaded via legacy
+   uselib(); this behavior matches modern user space e.g., via dlopen().
+2. We no longer deny write access to the elf interpreter after exec
+   completed, treating it just like shared libraries (which it often is).
+3. We always deny write access to the file linked via /proc/pid/exe:
+   sys_prctl(PR_SET_MM_EXE_FILE) will fail if write access to the file
+   cannot be denied, and write access to the file will remain denied
+   until the link is effectivel gone (exec, termination,
+   PR_SET_MM_EXE_FILE) -- just as if exec'ing the file.
+
+I was wondering if we really care about permanently disabling write access
+to the executable, or if it would be good enough to just disable write
+access while loading the new executable during exec; but I don't know
+the history of that -- and it somewhat makes sense to deny write access
+at least to the main executable. With modern user space -- dlopen() -- we
+can effectively modify the content of shared libraries while being used.
+
+There is a related problem [2] with overlayfs, that should at least partly
+be tackled by this series. I don't quite understand the interaction of
+overlayfs and deny_write_access()/allow_write_access() at exec time:
+
+If we end up denying write access to the wrong file and not to the
+realfile, that would be fundamentally broken. We would have to reroute
+our deny_write_access()/ allow_write_access() calls for the exec file to
+the realfile -- but I leave figuring out the details to overlayfs guys, as
+that would be a related but different issue.
+
+RFC -> v1:
+- "binfmt: remove in-tree usage of MAP_DENYWRITE"
+-- Add a note that this should fix part of a problem with overlayfs
+
+[1] https://lore.kernel.org/r/20210423131640.20080-1-david@redhat.com/
+[2] https://lore.kernel.org/r/YNHXzBgzRrZu1MrD@miu.piliscsaba.redhat.com/
+
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Chinwen Chang <chinwen.chang@mediatek.com>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Kevin Brodsky <Kevin.Brodsky@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Shawn Anastasio <shawn@anastas.io>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
+Cc: Thomas Cedeno <thomascedeno@google.com>
+Cc: Collin Fijalkovich <cfijalkovich@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Chengguang Xu <cgxu519@mykernel.net>
+Cc: "Christian König" <ckoenig.leichtzumerken@gmail.com>
+Cc: linux-unionfs@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+Cc: x86@kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+David Hildenbrand (7):
+  binfmt: don't use MAP_DENYWRITE when loading shared libraries via
+    uselib()
+  kernel/fork: factor out atomcially replacing the current MM exe_file
+  kernel/fork: always deny write access to current MM exe_file
+  binfmt: remove in-tree usage of MAP_DENYWRITE
+  mm: remove VM_DENYWRITE
+  mm: ignore MAP_DENYWRITE in ksys_mmap_pgoff()
+  fs: update documentation of get_write_access() and friends
+
+ arch/x86/ia32/ia32_aout.c      |  8 ++--
+ fs/binfmt_aout.c               |  7 ++--
+ fs/binfmt_elf.c                |  6 +--
+ fs/binfmt_elf_fdpic.c          |  2 +-
+ fs/proc/task_mmu.c             |  1 -
+ include/linux/fs.h             | 19 +++++----
+ include/linux/mm.h             |  3 +-
+ include/linux/mman.h           |  4 +-
+ include/trace/events/mmflags.h |  1 -
+ kernel/events/core.c           |  2 -
+ kernel/fork.c                  | 75 ++++++++++++++++++++++++++++++----
+ kernel/sys.c                   | 33 +--------------
+ lib/test_printf.c              |  5 +--
+ mm/mmap.c                      | 29 ++-----------
+ mm/nommu.c                     |  2 -
+ 15 files changed, 98 insertions(+), 99 deletions(-)
+
+
+base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
+-- 
+2.31.1
+
