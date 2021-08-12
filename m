@@ -2,124 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CA93EA675
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604633EA685
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbhHLOWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237968AbhHLOWI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:22:08 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEDAC061756;
-        Thu, 12 Aug 2021 07:21:43 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d1so7502241pll.1;
-        Thu, 12 Aug 2021 07:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sfjh2TOrUQjWKK1WuaUcVyTMXiq8ArXgrYRkmZfmijU=;
-        b=FhCvezG0085J3wxcSiEtYzUXKlFc5dQ0hhlsg9IzzwYxm6PyVzWBfvD0MyZ+KWh7HB
-         Kyqoyddjar3UeuL+cpRXbIApFYRqd0gaFZaDgAudKc3UY625P7GXW2iTi/pmFaTXH7o5
-         iTMwNhRZLZgkqylizFg740UQxaP5flSrJW007zDgERXEREMxeG8J2lH/fTEsVxwnmzu0
-         jm38Ke/bNRBb8JoAoSH/TGR/VLXVN+CqMzuGJj9U9Fn+u1Ht52961SVp0bYp4byNwdlv
-         0yD1vQwlvnA/vr1ZS95F3RSMgXIE0D7yDAtw763uTbsacHpl0P7QR7bXcdoTN4vmqIra
-         E5Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sfjh2TOrUQjWKK1WuaUcVyTMXiq8ArXgrYRkmZfmijU=;
-        b=tX17akt4arQJ5PdLPiMoSECUXGhgqmI75UBSP8DqZDBYym50ERRCUvoygm8DqL1W7L
-         WqK2BLxR6FYm7D93oeB7UGgWXxw1DjyjOZAMsEUVLIhKo3OoRb+3D17ekFbympi0P+QI
-         ZFmar37sWSVLHBXSFJpyV+eJ5hqpLd5iBNFUStr6JdTa0hw555DLeepoCW2gsurZbJrg
-         1GN1AWzWXPX6lVyI4y/19comw2XzQJ9/07VDyFhB30e9LAt5EKouAOXHYoECEd4cOsRK
-         usAZuu1OXqXSPY6Ff/RkO1gUI4jiCYYxWThsOhNvRHWk5LRJEuOr7jqB6+3iqhvQu8Wv
-         IMwg==
-X-Gm-Message-State: AOAM531kCBDFEn/q1X/gNGah2AhvsNkmvJMN4A++YTlziY3JxpHYWMDN
-        lFfLwK9M8XbGviJho5MgfuNwa/FWhY8=
-X-Google-Smtp-Source: ABdhPJySJPZUuNQ6WNcFx1/Dn2zORy43XMmZhsxk3EmGeYBs8yTi58i/+NjWG7JrUlAauljrBHgJcA==
-X-Received: by 2002:a17:90a:d711:: with SMTP id y17mr4560278pju.74.1628778102743;
-        Thu, 12 Aug 2021 07:21:42 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id g3sm3582841pfi.197.2021.08.12.07.21.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Aug 2021 07:21:42 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH 2/2] KVM: X86: Remove the present check from for_each_shadow_entry* loop body
-Date:   Thu, 12 Aug 2021 12:36:30 +0800
-Message-Id: <20210812043630.2686-2-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210812043630.2686-1-jiangshanlai@gmail.com>
-References: <20210812043630.2686-1-jiangshanlai@gmail.com>
+        id S238010AbhHLOXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:23:54 -0400
+Received: from mail.pr-group.ru ([178.18.215.3]:62421 "EHLO mail.pr-group.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233282AbhHLOXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:23:54 -0400
+X-Greylist: delayed 1833 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 10:23:53 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+        d=metrotek.ru; s=mail;
+        h=from:subject:date:message-id:to:cc:mime-version:content-transfer-encoding;
+        bh=AlzlNWi2lS+3T947tdB8PTt/EsRAtcFczsyd1uMBrNY=;
+        b=NzASVu70JSXHVH0rKlcU2bEBPVYRyYE5nYw7b7VAM3iYhuyEsWnSI59nyLMykgy3SUtHbHNgjTNhO
+         gHi95anc1Ldl6M0CZXM8En9oX7U2P13yNHTZEkjB+SY8QAEEfBAjLIpbbIYp7mv8oNNt5H2PQkUWqf
+         MElEyByKBN+nRB8UubKTkNgnraS4xff4p84ZdjC7aHeYp1fSCppzFyJLTqjij2F2TDV54QP7arKLR8
+         uYaNhAjj8DiL6j7OboKQ4o3mBVTG0qCQhDpgslhzDArdG083h+QFP0zuUdHysKUOsU8DnRss6kfYX6
+         Kd1mI44096G10EsVnqn4bLXn9XCym7Q==
+X-Spam-Status: No, hits=0.0 required=3.4
+        tests=BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW, TOTAL_SCORE: -1.665,autolearn=ham
+X-Spam-Level: 
+X-Footer: bWV0cm90ZWsucnU=
+Received: from localhost.localdomain ([78.37.165.146])
+        (authenticated user i.bornyakov@metrotek.ru)
+        by mail.pr-group.ru with ESMTPSA
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
+        Thu, 12 Aug 2021 16:52:14 +0300
+From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
+Cc:     Ivan Bornyakov <i.bornyakov@metrotek.ru>, system@metrotek.ru,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: phy: marvell: add SFP support for 88E1510
+Date:   Thu, 12 Aug 2021 16:42:56 +0300
+Message-Id: <20210812134256.2436-1-i.bornyakov@metrotek.ru>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+Add support for SFP cages connected to the Marvell 88E1512 transceiver.
+88E1512 supports for SGMII/1000Base-X/100Base-FX media type with RGMII
+on system interface. Configure PHY to appropriate mode depending on the
+type of SFP inserted. On SFP removal configure PHY to the RGMII-copper
+mode so RJ-45 port can still work.
 
-The function __shadow_walk_next() for the for_each_shadow_entry* looping
-has the check and propagates the result to shadow_walk_okay().
-
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
 ---
- arch/x86/kvm/mmu/mmu.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/net/phy/marvell.c | 105 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 104 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c48ecb25d5f8..42eebba6782e 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3152,9 +3152,6 @@ static u64 *fast_pf_get_last_sptep(struct kvm_vcpu *vcpu, gpa_t gpa, u64 *spte)
- 	for_each_shadow_entry_lockless(vcpu, gpa, iterator, old_spte) {
- 		sptep = iterator.sptep;
- 		*spte = old_spte;
--
--		if (!is_shadow_present_pte(old_spte))
--			break;
- 	}
+diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+index 3de93c9f2744..ce0a7de1e08f 100644
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -32,6 +32,7 @@
+ #include <linux/marvell_phy.h>
+ #include <linux/bitfield.h>
+ #include <linux/of.h>
++#include <linux/sfp.h>
  
- 	return sptep;
-@@ -3694,9 +3691,6 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
- 		spte = mmu_spte_get_lockless(iterator.sptep);
+ #include <linux/io.h>
+ #include <asm/irq.h>
+@@ -46,6 +47,7 @@
+ #define MII_MARVELL_MISC_TEST_PAGE	0x06
+ #define MII_MARVELL_VCT7_PAGE		0x07
+ #define MII_MARVELL_WOL_PAGE		0x11
++#define MII_MARVELL_MODE_PAGE		0x12
  
- 		sptes[leaf] = spte;
--
--		if (!is_shadow_present_pte(spte))
--			break;
- 	}
+ #define MII_M1011_IEVENT		0x13
+ #define MII_M1011_IEVENT_CLEAR		0x0000
+@@ -176,7 +178,14 @@
  
- 	return leaf;
-@@ -3811,11 +3805,8 @@ static void shadow_page_table_clear_flood(struct kvm_vcpu *vcpu, gva_t addr)
- 	u64 spte;
+ #define MII_88E1510_GEN_CTRL_REG_1		0x14
+ #define MII_88E1510_GEN_CTRL_REG_1_MODE_MASK	0x7
++#define MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII	0x0	/* RGMII to copper */
+ #define MII_88E1510_GEN_CTRL_REG_1_MODE_SGMII	0x1	/* SGMII to copper */
++/* RGMII to 1000BASE-X */
++#define MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_1000X	0x2
++/* RGMII to 100BASE-FX */
++#define MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_100FX	0x3
++/* RGMII to SGMII */
++#define MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_SGMII	0x4
+ #define MII_88E1510_GEN_CTRL_REG_1_RESET	0x8000	/* Soft reset */
  
- 	walk_shadow_page_lockless_begin(vcpu);
--	for_each_shadow_entry_lockless(vcpu, addr, iterator, spte) {
-+	for_each_shadow_entry_lockless(vcpu, addr, iterator, spte)
- 		clear_sp_write_flooding_count(iterator.sptep);
--		if (!is_shadow_present_pte(spte))
--			break;
--	}
- 	walk_shadow_page_lockless_end(vcpu);
+ #define MII_VCT5_TX_RX_MDI0_COUPLING	0x10
+@@ -2701,6 +2710,100 @@ static int marvell_probe(struct phy_device *phydev)
+ 	return marvell_hwmon_probe(phydev);
  }
  
++static int m88e1510_sfp_insert(void *upstream, const struct sfp_eeprom_id *id)
++{
++	struct phy_device *phydev = upstream;
++	phy_interface_t interface;
++	struct device *dev;
++	int oldpage;
++	int ret = 0;
++	u16 mode;
++
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = { 0, };
++
++	dev = &phydev->mdio.dev;
++
++	sfp_parse_support(phydev->sfp_bus, id, supported);
++	interface = sfp_select_interface(phydev->sfp_bus, supported);
++
++	dev_info(dev, "%s SFP module inserted\n", phy_modes(interface));
++
++	switch (interface) {
++	case PHY_INTERFACE_MODE_1000BASEX:
++		mode = MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_1000X;
++
++		break;
++	case PHY_INTERFACE_MODE_100BASEX:
++		mode = MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_100FX;
++
++		break;
++	case PHY_INTERFACE_MODE_SGMII:
++		mode = MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII_SGMII;
++
++		break;
++	default:
++		dev_err(dev, "Incompatible SFP module inserted\n");
++
++		return -EINVAL;
++	}
++
++	oldpage = phy_select_page(phydev, MII_MARVELL_MODE_PAGE);
++	if (oldpage < 0)
++		goto error;
++
++	ret = __phy_modify(phydev, MII_88E1510_GEN_CTRL_REG_1,
++			   MII_88E1510_GEN_CTRL_REG_1_MODE_MASK, mode);
++	if (ret < 0)
++		goto error;
++
++	ret = __phy_set_bits(phydev, MII_88E1510_GEN_CTRL_REG_1,
++			     MII_88E1510_GEN_CTRL_REG_1_RESET);
++
++error:
++	return phy_restore_page(phydev, oldpage, ret);
++}
++
++static void m88e1510_sfp_remove(void *upstream)
++{
++	struct phy_device *phydev = upstream;
++	int oldpage;
++	int ret = 0;
++
++	oldpage = phy_select_page(phydev, MII_MARVELL_MODE_PAGE);
++	if (oldpage < 0)
++		goto error;
++
++	ret = __phy_modify(phydev, MII_88E1510_GEN_CTRL_REG_1,
++			   MII_88E1510_GEN_CTRL_REG_1_MODE_MASK,
++			   MII_88E1510_GEN_CTRL_REG_1_MODE_RGMII);
++	if (ret < 0)
++		goto error;
++
++	ret = __phy_set_bits(phydev, MII_88E1510_GEN_CTRL_REG_1,
++			     MII_88E1510_GEN_CTRL_REG_1_RESET);
++
++error:
++	phy_restore_page(phydev, oldpage, ret);
++}
++
++static const struct sfp_upstream_ops m88e1510_sfp_ops = {
++	.module_insert = m88e1510_sfp_insert,
++	.module_remove = m88e1510_sfp_remove,
++	.attach = phy_sfp_attach,
++	.detach = phy_sfp_detach,
++};
++
++static int m88e1510_probe(struct phy_device *phydev)
++{
++	int err;
++
++	err = marvell_probe(phydev);
++	if (err)
++		return err;
++
++	return phy_sfp_probe(phydev, &m88e1510_sfp_ops);
++}
++
+ static struct phy_driver marvell_drivers[] = {
+ 	{
+ 		.phy_id = MARVELL_PHY_ID_88E1101,
+@@ -2927,7 +3030,7 @@ static struct phy_driver marvell_drivers[] = {
+ 		.driver_data = DEF_MARVELL_HWMON_OPS(m88e1510_hwmon_ops),
+ 		.features = PHY_GBIT_FIBRE_FEATURES,
+ 		.flags = PHY_POLL_CABLE_TEST,
+-		.probe = marvell_probe,
++		.probe = m88e1510_probe,
+ 		.config_init = m88e1510_config_init,
+ 		.config_aneg = m88e1510_config_aneg,
+ 		.read_status = marvell_read_status,
 -- 
-2.19.1.6.gb485710b
+2.31.1
+
 
