@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BFD3EA196
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B123EA1A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbhHLJJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235131AbhHLJJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:09:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4850C061765;
-        Thu, 12 Aug 2021 02:08:37 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:08:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628759314;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w3eKGxrKPBp9ybTNWh9cI4JTd+/8+M2A56aoqQy1uvg=;
-        b=YyPjKSzbD9IXR20Ski5DFsMY9GRCcY1Rq6f6FrkEw5mXdJSw/BrwesuxIfQ02owQnU7v71
-        p7rV4Fv/BZzKlYTyTek4AFqDb7wX3r64hsR+Upf7PHmzCf5G0wfgtntj5h/gMQaJnElh6K
-        EdGAmHiqitXESrxVeYkqzrKyf/WEReWTjmjab3+1H0priSlGmxN7dWPhB/I4kn15z+9qD4
-        BxtRuJukFnow4kexQeteuQpo/InDFhrvi3J0bRwux9UwXxINQagC9ys+U/6KHaamQgI2qf
-        kdg+DLmOsKO/3g+1ItSj92OwFNWav8LWKr10OAtqbtylzNfa5UOQ9Q0tWm3aiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628759314;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w3eKGxrKPBp9ybTNWh9cI4JTd+/8+M2A56aoqQy1uvg=;
-        b=68JQSXOCz47BR4Ruu29zLkPbAP5nGIBo97B76VmA/NsRJRG4ksSaVpAkiyuE19fVxZVZb6
-        n/6Fs3VxQa9HehCw==
-From:   "tip-bot2 for Baokun Li" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/power: Fix kernel-doc warnings in cpu.c
-Cc:     Baokun Li <libaokun1@huawei.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210618022421.1595596-1-libaokun1@huawei.com>
-References: <20210618022421.1595596-1-libaokun1@huawei.com>
+        id S234859AbhHLJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:13:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:40576 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231392AbhHLJNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:13:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D29711FB;
+        Thu, 12 Aug 2021 02:12:44 -0700 (PDT)
+Received: from [10.163.68.17] (unknown [10.163.68.17])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA3543F718;
+        Thu, 12 Aug 2021 02:12:39 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [RFC V2 10/10] arm64/mm: Enable CONFIG_ARM64_PA_BITS_52 on
+ CONFIG_ARM64_[4K|16K]_PAGES
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
+        maz@kernel.org, james.morse@arm.com, steven.price@arm.com
+References: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
+ <1627281445-12445-11-git-send-email-anshuman.khandual@arm.com>
+ <20210805172314.GF6719@arm.com>
+Message-ID: <a3eb7cc3-8f31-c70b-1830-830e10605d50@arm.com>
+Date:   Thu, 12 Aug 2021 14:43:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <162875931350.395.2875981524074684728.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210805172314.GF6719@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     afc880cbb294026c2a43501cad26c21720f7078f
-Gitweb:        https://git.kernel.org/tip/afc880cbb294026c2a43501cad26c21720f7078f
-Author:        Baokun Li <libaokun1@huawei.com>
-AuthorDate:    Fri, 18 Jun 2021 10:24:21 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 12 Aug 2021 10:15:40 +02:00
 
-x86/power: Fix kernel-doc warnings in cpu.c
+On 8/5/21 10:53 PM, Catalin Marinas wrote:
+> On Mon, Jul 26, 2021 at 12:07:25PM +0530, Anshuman Khandual wrote:
+>> All required FEAT_LPA2 components for 52 bit PA range are already in place.
+>> Just enable CONFIG_ARM64_PA_BITS_52 on 4K and 16K pages which would select
+>> CONFIG_ARM64_PA_BITS_52_LPA2 activating 52 bit PA range via FEAT_LPA2.
+>>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index 1999ac6..ce139415 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -952,9 +952,9 @@ config ARM64_PA_BITS_48
+>>  
+>>  config ARM64_PA_BITS_52
+>>  	bool "52-bit (ARMv8.2)"
+>> -	depends on ARM64_64K_PAGES
+>>  	depends on ARM64_PAN || !ARM64_SW_TTBR0_PAN
+>>  	select ARM64_PA_BITS_52_LPA if ARM64_64K_PAGES
+>> +	select ARM64_PA_BITS_52_LPA2 if (ARM64_4K_PAGES  || ARM64_16K_PAGES)
+>>  	help
+>>  	  Enable support for a 52-bit physical address space, introduced as
+>>  	  part of the ARMv8.2-LPA extension.
+> 
+> If you do it this way, the text here needs updating and the 8.2
+> architecture version removed.
 
-Fixes the following kernel-doc warnings:
-
- arch/x86/power/cpu.c:76: warning: Function parameter or
-  member 'ctxt' not described in '__save_processor_state'
- arch/x86/power/cpu.c:192: warning: Function parameter or
-  member 'ctxt' not described in '__restore_processor_state'
-
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210618022421.1595596-1-libaokun1@huawei.com
----
- arch/x86/power/cpu.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
-index 3a070e7..6665f88 100644
---- a/arch/x86/power/cpu.c
-+++ b/arch/x86/power/cpu.c
-@@ -58,19 +58,20 @@ static void msr_restore_context(struct saved_context *ctxt)
- }
- 
- /**
-- *	__save_processor_state - save CPU registers before creating a
-- *		hibernation image and before restoring the memory state from it
-- *	@ctxt - structure to store the registers contents in
-+ * __save_processor_state() - Save CPU registers before creating a
-+ *                             hibernation image and before restoring
-+ *                             the memory state from it
-+ * @ctxt: Structure to store the registers contents in.
-  *
-- *	NOTE: If there is a CPU register the modification of which by the
-- *	boot kernel (ie. the kernel used for loading the hibernation image)
-- *	might affect the operations of the restored target kernel (ie. the one
-- *	saved in the hibernation image), then its contents must be saved by this
-- *	function.  In other words, if kernel A is hibernated and different
-- *	kernel B is used for loading the hibernation image into memory, the
-- *	kernel A's __save_processor_state() function must save all registers
-- *	needed by kernel A, so that it can operate correctly after the resume
-- *	regardless of what kernel B does in the meantime.
-+ * NOTE: If there is a CPU register the modification of which by the
-+ * boot kernel (ie. the kernel used for loading the hibernation image)
-+ * might affect the operations of the restored target kernel (ie. the one
-+ * saved in the hibernation image), then its contents must be saved by this
-+ * function.  In other words, if kernel A is hibernated and different
-+ * kernel B is used for loading the hibernation image into memory, the
-+ * kernel A's __save_processor_state() function must save all registers
-+ * needed by kernel A, so that it can operate correctly after the resume
-+ * regardless of what kernel B does in the meantime.
-  */
- static void __save_processor_state(struct saved_context *ctxt)
- {
-@@ -181,9 +182,9 @@ static void fix_processor_context(void)
- }
- 
- /**
-- * __restore_processor_state - restore the contents of CPU registers saved
-- *                             by __save_processor_state()
-- * @ctxt - structure to load the registers contents from
-+ * __restore_processor_state() - Restore the contents of CPU registers saved
-+ *                               by __save_processor_state()
-+ * @ctxt: Structure to load the registers contents from.
-  *
-  * The asm code that gets us here will have restored a usable GDT, although
-  * it will be pointing to the wrong alias.
+Sure, will update as required.
