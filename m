@@ -2,166 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F503EA807
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF463EA7FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238467AbhHLPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:53:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49974 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238195AbhHLPxw (ORCPT
+        id S238375AbhHLPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238365AbhHLPvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:53:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7B0261FF5E;
-        Thu, 12 Aug 2021 15:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628783606;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2q0A/coQFwqBSuVcyXsF0R7oesMeHAt0aGAIiyJS3Sg=;
-        b=Y8UCUtdVkeZZSD/b/zQelqCp4JuS78wwdZMcb9hTkXml99ZbVpbDguA66C399jbylXKMyN
-        uoBCaJ3qB7p6pvXjZ9teegJvmNHjyrebMlyUzNHb+geoVnWf8pwRtBZvFzjNz7Bit09O+j
-        S0p4174DzhYry4L6J9IgFA8IyQab+b8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628783606;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2q0A/coQFwqBSuVcyXsF0R7oesMeHAt0aGAIiyJS3Sg=;
-        b=bKPzILz34oRvqZbcLC8wu1iU4MBhVamsgVwm3iqEpg9414MmZB6eJ0A/qt3oD+ZZBqqsFW
-        7ZwWgOtq5SbgF5DQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 66933A3F74;
-        Thu, 12 Aug 2021 15:53:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D04B7DA733; Thu, 12 Aug 2021 17:50:32 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 17:50:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-Message-ID: <20210812155032.GL5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
- <20210812103851.GC5047@twin.jikos.cz>
- <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+        Thu, 12 Aug 2021 11:51:33 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C076C061756;
+        Thu, 12 Aug 2021 08:51:08 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z9so8893918wrh.10;
+        Thu, 12 Aug 2021 08:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7Ox8EA3msfn26kOfs3nfK6Ep7YttC7NK9mJ+afKsxEI=;
+        b=YUkvhqc+QAdePDaPdTt5Xjix4FY9Jwr63o0QwfgpzV/9lxY3A6Bzc6nuZ6tPeV+v3u
+         OnjDVGVxM/w/6yskm+0Hn3Lyt8V6CPVcn1AiuVgwLLh3dCnDwAprTdwaFnIIVoFIXuuL
+         mVoTcYnD4NTTNckm/Fzu/JJwELPRNV3wzxAOBtF8Q79ejWkfPhbKfbgtRoIGPLapOeXP
+         g6Ayk+eQR0uTWEoQaq1mMb8EU5SwMRFPFfvF+pYOndn79fsqIh8kEHl3ltpyy86G+VbU
+         j06cjJbGocqrZI28bKvAH1oV3xrrvU7ec8QvhjFs3Vko7Twm5625aM4r+lFqw3sl6Lhn
+         IiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7Ox8EA3msfn26kOfs3nfK6Ep7YttC7NK9mJ+afKsxEI=;
+        b=Shg5XT+88fBr0ZsyAECe0y+1MXnpvVEdh/OSaTTmZYQGnh0j4xQzzTlBhytBoaoeRJ
+         UsYG3OPGR5QknHd3vzVPsMAmuWiyIWz9UXSwYhjloDeMwCtrC2ca2kLrse78/KCtlPI/
+         4VHU1jwhkHYyGpoQ12ucmipBxn7cH1oAgxiZgN1l86/iFA10GpVpZndXXeiZI7uQFmeI
+         wh543gKSPAmONAI36ggn5qtjjsMtczcdPNNAk5M7cXM57KDwL64uwVpHHCgTaNZyEosm
+         ePtyWdGpgthBZwLs+3aw4KKq2J7UT03hrhw6R1VTc4pSPZWMKuNwenFbi/Y0H/lkW4xZ
+         Dv4Q==
+X-Gm-Message-State: AOAM5322mzKZfi+dkucSxEp312KMXcqMcKZg9YpiRp6QcPG/Ls9RWmSO
+        8MVVEFFqRwQvNGnJ5reilRU=
+X-Google-Smtp-Source: ABdhPJzU5U5q4HQPY2Oh41ABzfk7GiiE8EOLu5Cy8IDSivIXWs+NS58kEtMKu+EAGKATFuxDupyQ8A==
+X-Received: by 2002:a5d:42c2:: with SMTP id t2mr4772060wrr.49.1628783466985;
+        Thu, 12 Aug 2021 08:51:06 -0700 (PDT)
+Received: from [10.0.0.18] ([37.165.40.60])
+        by smtp.gmail.com with ESMTPSA id y14sm3397044wrs.29.2021.08.12.08.51.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 08:51:06 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] udp: UDP socket send queue repair
+To:     Bui Quang Minh <minhquangbui99@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, willemb@google.com, pabeni@redhat.com,
+        avagin@gmail.com, alexander@mihalicyn.com,
+        lesedorucalin01@gmail.com
+References: <20210811154557.6935-1-minhquangbui99@gmail.com>
+ <721a2e32-c930-ad6b-5055-631b502ed11b@gmail.com>
+ <7f3ecbaf-7759-88ae-53d3-2cc5b1623aff@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <489f0200-b030-97de-cf3a-2d715b07dfa4@gmail.com>
+Date:   Thu, 12 Aug 2021 17:51:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <7f3ecbaf-7759-88ae-53d3-2cc5b1623aff@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
-> On 12/8/21 6:38 pm, David Sterba wrote:
-> > On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> >> When removing a writeable device in __btrfs_free_extra_devids, the rw
-> >> device count should be decremented.
-> >>
-> >> This error was caught by Syzbot which reported a warning in
-> >> close_fs_devices because fs_devices->rw_devices was not 0 after
-> >> closing all devices. Here is the call trace that was observed:
-> >>
-> >>    btrfs_mount_root():
-> >>      btrfs_scan_one_device():
-> >>        device_list_add();   <---------------- device added
-> >>      btrfs_open_devices():
-> >>        open_fs_devices():
-> >>          btrfs_open_one_device();   <-------- writable device opened,
-> >> 	                                     rw device count ++
-> >>      btrfs_fill_super():
-> >>        open_ctree():
-> >>          btrfs_free_extra_devids():
-> >> 	  __btrfs_free_extra_devids();  <--- writable device removed,
-> >> 	                              rw device count not decremented
-> >> 	  fail_tree_roots:
-> >> 	    btrfs_close_devices():
-> >> 	      close_fs_devices();   <------- rw device count off by 1
-> >>
-> >> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
-> >> mount if we don't have replace item with target device"), rw_devices
-> >> was decremented on removing a writable device in
-> >> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
-> >> was not set for the device. However, this check does not need to be
-> >> reinstated as it is now redundant and incorrect.
-> >>
-> >> In __btrfs_free_extra_devids, we skip removing the device if it is the
-> >> target for replacement. This is done by checking whether device->devid
-> >> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
-> >> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
-> >> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
-> >> and so it's redundant to test for that bit.
-> >>
-> >> Additionally, following commit 82372bc816d7 ("Btrfs: make
-> >> the logic of source device removing more clear"), rw_devices is
-> >> incremented whenever a writeable device is added to the alloc
-> >> list (including the target device in btrfs_dev_replace_finishing), so
-> >> all removals of writable devices from the alloc list should also be
-> >> accompanied by a decrement to rw_devices.
-> >>
-> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
-> >> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-> >> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> >> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> >>   fs/btrfs/volumes.c | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> >> index 807502cd6510..916c25371658 100644
-> >> --- a/fs/btrfs/volumes.c
-> >> +++ b/fs/btrfs/volumes.c
-> >> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
-> >>   		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-> >>   			list_del_init(&device->dev_alloc_list);
-> >>   			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-> >> +			fs_devices->rw_devices--;
-> >>   		}
-> >>   		list_del_init(&device->dev_list);
-> >>   		fs_devices->num_devices--;
-> > 
-> > I've hit a crash on master branch with stacktrace very similar to one
-> > this bug was supposed to fix. It's a failed assertion on device close.
-> > This patch was the last one to touch it and it matches some of the
-> > keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
-> > the original patch but was not reinstated in your fix.
-> > 
-> > I'm not sure how reproducible it is, right now I have only one instance
-> > and am hunting another strange problem. They could be related.
-> > 
-> > assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
-> > 
-> > https://susepaste.org/view/raw/18223056 full log with other stacktraces,
-> > possibly relatedg
-> > 
-> 
-> Looking at the logs, it seems that a dev_replace was started, then 
-> suspended. But it wasn't canceled or resumed before the fs devices were 
-> closed.
-> 
-> I'll investigate further, just throwing some observations out there.
 
-Thanks. I'm testing the patch revert, no crash after first loop, I'll
-run a few more to be sure as it's not entirely reliable.
 
-Sending the revert is option of last resort as we're approaching end of
-5.14 dev cycle and the crash prevents testing (unlike the fuzzer
-warning).
+On 8/12/21 3:46 PM, Bui Quang Minh wrote:
+> 
+> 
+> On 8/11/2021 11:14 PM, Eric Dumazet wrote:
+>>
+>>
+>> On 8/11/21 5:45 PM, Bui Quang Minh wrote:
+>>> In this patch, I implement UDP_REPAIR sockoption and a new path in
+>>> udp_recvmsg for dumping the corked packet in UDP socket's send queue.
+>>>
+>>> A userspace program can use recvmsg syscall to get the packet's data and
+>>> the msg_name information of the packet. Currently, other related
+>>> information in inet_cork that are set in cmsg are not dumped.
+>>>
+>>> While working on this, I was aware of Lese Doru Calin's patch and got some
+>>> ideas from it.
+>>
+>>
+>> What is the use case for this feature, adding a test in UDP fast path ?
+> 
+> This feature is used to help CRIU to dump CORKed UDP packet in send queue. I'm sorry for being not aware of the performance perspective here.
+
+UDP is not reliable.
+
+I find a bit strange we add so many lines of code
+for a feature trying very hard to to drop _one_ packet.
+
+I think a much better changelog would be welcomed.
+
+> 
+>> IMO, TCP_REPAIR hijacking standard system calls was a design error,
+>> we should have added new system calls.
+> 
+> You are right that adding new system calls is a better approach. What do you think about adding a new option in getsockopt approach?
+> 
+> Thanks,
+> Quang Minh.
