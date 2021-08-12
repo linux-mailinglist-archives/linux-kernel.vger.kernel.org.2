@@ -2,138 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0614C3EA268
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E813EA26E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhHLJsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
+        id S236392AbhHLJtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236312AbhHLJs1 (ORCPT
+        with ESMTP id S236312AbhHLJtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:48:27 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79FDC061798
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:48:02 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so9915965pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:48:02 -0700 (PDT)
+        Thu, 12 Aug 2021 05:49:04 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A38C061798
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:48:40 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id e9so3443684vst.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jB/TE84bWOxCrkfpcM44aGTL4Nx8FVU95hRHwolk2mo=;
-        b=Pg/8Dspv4dzBLyQJJG14oj5ikSz2VqvTY47A8Ns3N/LDISxkJUdS0uVbJZYiY5lLXS
-         oBTvq2lBGaaxzNzrbjZ0LbPSjIgcDGsA+dfFQsvp3xMy9Zu/HFTT+oAcXRjpV3z1SICg
-         K2ba0fkJ9WA6LE+pFXriKCR0Il+76G0RaeOyM=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IbLr+U6kbsLYPUHrhyJnM589L4UyonbadE9DVH0+ERM=;
+        b=Cb1sc9wxSCmOmvEr0naKHwOEBQxsRJPZzXPY3/30OAHVmVCC9Vd+9EgJ8M7WgwXSOY
+         EIUvz7kwNMVBTuy9adl70cTdScJP2o1dFdxsz79HUbpNXAJcLBZSdwXLEj9pNBoaW9cv
+         cRL3NljtNs9Po1aUE/SfslCaGQSm6yYHn4+bNQjgLgccop1khDwIXk1+NrP9ZJmuonbe
+         287hUz+rLBAHrOcxQEAIDDIneYpPorv3svSztRTsu2l3s+rKoRDfq1d7IkEHBkXZgJe2
+         SizruHQsupdtvrM/6zThCvvMEauOoYyzLxfZwDbsCyg3HYM0tAoj8mg0NL9+fPq4eLdf
+         QMyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jB/TE84bWOxCrkfpcM44aGTL4Nx8FVU95hRHwolk2mo=;
-        b=FaFkuWref3sZNpDtPUdzlVpHTOOq2tm2ZepSn5HestrDfK/fZzlIT08XE58aB8XYYg
-         pKke+8+i3NbQ2t4X4uBi9y61jeM64j7LqZjnlWX2hSIBC9ypFHCOi06TkE53+BcgAmg0
-         pZHYyx9f2ezGxmA3kYujzhssJiM55AGbAbwN32zDUdMkvaPhoZ6i/hQzNySpSDGE4R5u
-         JYhYrjeL5ZyX0/XQI9XiU++68FAt07YGID62kYMGZKKmq/we0u/hIi1wku/irsHiqcws
-         FZZChCiEAFe2cXg6WEqrRXoqOrH2iVxCkL28zk6aNOMBmcdw2anRJpqdjWhlxmfdYNNs
-         2bxg==
-X-Gm-Message-State: AOAM5333XJeRqkhpdAieJclvqm3grYOSFZmOX88MUb3qL9XaO3/E9iqC
-        fxvotDBmPFiKJ2RHiZzwb8Akeg==
-X-Google-Smtp-Source: ABdhPJz8AxQKZxhllx159XJCed5gtH0lc1CYXmZnByhWqFEcqTnhGL3naVdON1DixxEMeHRSOTtdFw==
-X-Received: by 2002:a17:902:e8c4:b029:12d:1c9c:2e77 with SMTP id v4-20020a170902e8c4b029012d1c9c2e77mr2994145plg.48.1628761682281;
-        Thu, 12 Aug 2021 02:48:02 -0700 (PDT)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:8e0d:8032:9364:612c])
-        by smtp.gmail.com with ESMTPSA id z15sm2991052pgc.13.2021.08.12.02.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 02:48:01 -0700 (PDT)
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: rockchip: rk3399: Add gru-scarlet-dumo board
-Date:   Thu, 12 Aug 2021 17:47:53 +0800
-Message-Id: <20210812094753.2359087-3-wenst@chromium.org>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-In-Reply-To: <20210812094753.2359087-1-wenst@chromium.org>
-References: <20210812094753.2359087-1-wenst@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IbLr+U6kbsLYPUHrhyJnM589L4UyonbadE9DVH0+ERM=;
+        b=Sgk8sWjjayfKt+xiERGLcSzShr+9jf/ICXfxcGuIFRT9vOhQO7yzjj3fJa3kMvtmzv
+         GGE2XU0CQdJ9cvSC1wTstJX14U85v5Xd31iGoLzy9vq72J9sJrWx7mniAVVBCe4vP4s9
+         uA5zmVfk+A61CKM7AKhjufTwDU3GpWQJER8bD9btuY6F9npkczXxML0DIUdPyJO/KtBF
+         zZ7qN68ZKa4mZ4aF0lH7gfFpvP0S0qIr+A4PDA0N46/bvf+w+bYS3PZY/2qX+CCVi2VH
+         wUfs0VYTXGYC6NRvZLIPg5W4Ici98+uJvJwOsIlZRpMBi+9XjdVMxgIDriHl5Mc9GMzT
+         cbsQ==
+X-Gm-Message-State: AOAM531Dc391kLYBCefdpRKpygxhydM/a7YGTAciSAsRz0JeO1+w6L91
+        k94d4+PlQiwyXnSA0mM7+woePCqWDRiTaO6FQujwoA==
+X-Google-Smtp-Source: ABdhPJw51I5gnHwWq9GYyg15yW0e53urVKvvJQwgKLtCH00UUmyJOKAlXZJoRACLd3glOR57D91YqvUcYvoEz5EYcW4=
+X-Received: by 2002:a67:3212:: with SMTP id y18mr1412234vsy.19.1628761718985;
+ Thu, 12 Aug 2021 02:48:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org> <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk> <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
+ <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
+ <20210714164710.GC2719790@robh.at.kernel.org> <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
+ <YRKjQJc0yiQXFqCD@builder.lan>
+In-Reply-To: <YRKjQJc0yiQXFqCD@builder.lan>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 12 Aug 2021 11:48:02 +0200
+Message-ID: <CAPDyKFo+O34rvP7gbsC+ktd-p5QB9QAsbb+QEkWbiVqszChZJA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dumo is another variant of Scarlet, also known as the ASUS Chromebook
-Tablet CT100. This is almost the same as Scarlet-Innolux, but uses a
-board-specific calibration variant for the WiFi module.
+On Tue, 10 Aug 2021 at 18:03, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 10 Aug 06:55 CDT 2021, Ulf Hansson wrote:
+>
+> > On Wed, 14 Jul 2021 at 18:47, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
+> > > > Hi,
+> > > >
+> > > > On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > >
+> > > > > - Peter (the email was bouncing)
+> > > >
+> > > > + Peter's kernel.org address
+> > > >
+> > > > >
+> > > > > On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+> > > > > >
+> > > > > > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> > > > > > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+> > > > > >
+> > > > > > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > > > > > being controlled through the UART and WiFi being present on PCIe
+> > > > > > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > > > > > power sequencing of QCA6390/1.
+> > > > > >
+> > > > > > > Power sequencing of discoverable buses have been discussed several
+> > > > > > > times before at LKML. The last attempt [1] I am aware of, was in 2017
+> > > > > > > from Peter Chen. I don't think there is a common solution, yet.
+> > > > > >
+> > > > > > This feels a bit different to the power sequencing problem - it's not
+> > > > > > exposing the individual inputs to the device but rather is a block that
+> > > > > > manages everything but needs a bit of a kick to get things going (I'd
+> > > > > > guess that with ACPI it'd be triggered via AML).  It's in the same space
+> > > > > > but it's not quite the same issue I think, something that can handle
+> > > > > > control of the individual resources might still struggle with this.
+> > > > >
+> > > > > Well, to me it looks very similar to those resouses we could manage
+> > > > > with the mmc pwrseq, for SDIO. It's also typically the same kind of
+> > > > > combo-chips that moved from supporting SDIO to PCIe, for improved
+> > > > > performance I guess. More importantly, the same constraint to
+> > > > > pre-power on the device is needed to allow it to be discovered/probed.
+> > > >
+> > > > In our case we'd definitely use pwrseq for PCIe bus and we can also
+> > > > benefit from using pwrseq for serdev and for platform busses also (for
+> > > > the same story of WiFi+BT chips).
+> > > >
+> > > > I can take a look at rewriting pwrseq code to also handle the PCIe
+> > > > bus. Rewriting it to be a generic lib seems like an easy task,
+> > > > plugging it into PCIe code would be more fun.
+> > > >
+> > > > Platform and serdev... Definitely even more fun.
+> > >
+> > > I don't want to see pwrseq (the binding) expanded to other buses. If
+> > > that was the answer, we wouldn't be having this discussion. It was a
+> > > mistake for MMC IMO.
+> >
+> > Let's make sure we get your point correctly. I think we have discussed
+> > this in the past, but let's refresh our memories.
+> >
+> > If I recall correctly, you are against the mmc pwrseq DT bindings
+> > because we are using a separate pwrseq OF node, that we point to via a
+> > "mmc-pwrseq" property that contains a phandle from the mmc controller
+> > device node. Is that correct?
+> >
+> > If we would have encoded the power sequence specific properties, from
+> > within a child node for the mmc controller node, that would have been
+> > okay for you, right?
+> >
+>
+> In Dmitry's case, we have an external chip with that needs to be powered
+> on per a specific sequence, at which point the WiFi driver on PCIe and
+> BT driver on serdev will be able to communicate with the device.
 
-Add a new device tree for it.
+Thanks for sharing more details.
 
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
----
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../dts/rockchip/rk3399-gru-scarlet-dumo.dts  | 41 +++++++++++++++++++
- 2 files changed, 42 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
+So, not only do we have a discoverable device that needs to be powered
+on in a device specific way before probing, but in fact we have two
+consumers of that "combo chip", one (PCIe) for Wifi and one (serdev)
+for Bluetooth.
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 12a8b6cacdbd..479906f3ad7b 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -25,6 +25,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-ficus.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-firefly.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-bob.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-kevin.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-dumo.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-inx.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-kd.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-hugsun-x99.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
-new file mode 100644
-index 000000000000..853e88455e75
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Gru-Scarlet Rev5+ (SKU-0) board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "rk3399-gru-scarlet.dtsi"
-+
-+/ {
-+	model = "Google Scarlet";
-+	compatible = "google,scarlet-rev15-sku0", "google,scarlet-rev15",
-+		     "google,scarlet-rev14-sku0", "google,scarlet-rev14",
-+		     "google,scarlet-rev13-sku0", "google,scarlet-rev13",
-+		     "google,scarlet-rev12-sku0", "google,scarlet-rev12",
-+		     "google,scarlet-rev11-sku0", "google,scarlet-rev11",
-+		     "google,scarlet-rev10-sku0", "google,scarlet-rev10",
-+		     "google,scarlet-rev9-sku0",  "google,scarlet-rev9",
-+		     "google,scarlet-rev8-sku0",  "google,scarlet-rev8",
-+		     "google,scarlet-rev7-sku0",  "google,scarlet-rev7",
-+		     "google,scarlet-rev6-sku0",  "google,scarlet-rev6",
-+		     "google,scarlet-rev5-sku0",  "google,scarlet-rev5",
-+		     "google,scarlet", "google,gru", "rockchip,rk3399";
-+};
-+
-+&mipi_panel {
-+	compatible = "innolux,p097pfg";
-+	avdd-supply = <&ppvarp_lcd>;
-+	avee-supply = <&ppvarn_lcd>;
-+};
-+
-+&pci_rootport {
-+	wifi@0,0 {
-+		compatible = "qcom,ath10k";
-+		reg = <0x00010000 0x0 0x00000000 0x0 0x00000000>,
-+		      <0x03010010 0x0 0x00000000 0x0 0x00200000>;
-+		qcom,ath10k-calibration-variant = "GO_DUMO";
-+	};
-+};
--- 
-2.32.0.605.g8dce9f2422-goog
+>
+> The extended case of this is where we have an SDX55 modem soldered onto
+> the pcb next to the SoC, in which case the power sequencing is even more
+> complex and additionally there are incoming gpios used to detect things
+> such as the firmware of the modem has crashed and Linux needs to toggle
+> power and rescan the PCIe bus.
 
+That sounds very similar to what we manage for the SDIO bus already.
+
+We have a mmc pwrseq node to describe what resources that are needed
+to power on/off the external chip. The driver for the functional
+device (Wifi chip for example) may then call SDIO APIs provided by the
+mmc core to power on/off the device, in case some kind of reset would
+be needed.
+
+Additionally, we have a child node below the mmc controller node,
+allowing us to describe device specific things for the SDIO functional
+device, like an out-of-band IRQ line for example.
+
+Overall, this seems to work fine, even if the DT bindings may be questionable.
+
+>
+> In both of these cases it seems quite reasonable to represent that
+> external chip (and it's power needs) as a separate DT node. But we need
+> a way to link the functional devices to that thing.
+
+Don't get me wrong, I am not suggesting we should re-use the
+mmc-pwrseq DT bindings - but just trying to share our experience
+around them.
+
+In the cases you describe, it certainly sounds like we need some kind
+of minimal description in DT for these functional external devices.
+For GPIO pins, for example.
+
+How to describe this in DT is one thing, let's see if Rob can help to
+point us in some direction of what could make sense.
+
+When it comes to implementing a library/interface to manage these
+functional devices, I guess we just have to continue to explore
+various options. Perhaps just start simple with another subsystem,
+like PCIe and see where this brings us.
+
+>
+> Regards,
+> Bjorn
+>
+
+[...]
+
+Kind regards
+Uffe
