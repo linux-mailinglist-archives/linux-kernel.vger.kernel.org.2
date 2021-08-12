@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C303EAB3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5957C3EAB39
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhHLTrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:47:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13726 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229601AbhHLTrR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:47:17 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CJg770073156;
-        Thu, 12 Aug 2021 15:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+b7f8kmyAbEAYIPfbVpueDbEOKVt9EAqfwZVIomWLBs=;
- b=SQbXn9B9a5MiZQGrKoZMT/zWEPAlL5MXC/2k20PvJjujcKWFdKSiZf/g2PLAnP5cWubP
- I/NDYojcGnYGpEhIS8f8apDZEhgLzr7ZpO9mAWphVpqOaGCybeYIHSQVr5AJOod1zhX1
- ChFMFaty27s99dMGkhN2ZEDU3rze+XZi80OolEIr2/w2UA0u99H2FKe4E0wlJI+wDjzL
- Qi/nt5qWv14d8ODKr2Q4YknleALToB80XjVVJ8N/lIsV11ievfuMBRMoD60CNKyJ07M0
- CRJC/LERiVTOtY2/+tULIRxTG2Cbyp2zFh3yBqth2bNIpgw46Th/gwowuwHWYwLAuNOi kQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ad4hxt5n7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 15:46:17 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17CJgIxR076407;
-        Thu, 12 Aug 2021 15:46:17 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ad4hxt5me-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 15:46:16 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CJc5L3017821;
-        Thu, 12 Aug 2021 19:46:15 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3acn76afb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 19:46:14 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CJkCMe48890112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 19:46:12 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7484442052;
-        Thu, 12 Aug 2021 19:46:12 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9752242047;
-        Thu, 12 Aug 2021 19:46:06 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.76.214])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Aug 2021 19:46:06 +0000 (GMT)
-Message-ID: <58e6e03b69b8fadfb854669086020c633837be88.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 10/14] KEYS: change link restriction for secondary to
- also trust mok
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, konrad.wilk@oracle.com
-Date:   Thu, 12 Aug 2021 15:46:05 -0400
-In-Reply-To: <20210812021855.3083178-11-eric.snowberg@oracle.com>
-References: <20210812021855.3083178-1-eric.snowberg@oracle.com>
-         <20210812021855.3083178-11-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4vvybyiNZxsZ3JHqLfIuYe8NXFawec5W
-X-Proofpoint-GUID: p2xhzbzAUj0ugUT-yhXXK5xGCmJBi_tE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_06:2021-08-12,2021-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120127
+        id S232862AbhHLTrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhHLTrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:47:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD59560FBF;
+        Thu, 12 Aug 2021 19:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628797601;
+        bh=FB/3JXubUJqc+EUesD4OCWgL312JeTESVV+Ra/v4hdw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MJA8LHF5KUCiP0sTl4iurA3fDS7AgIYzwMkVRxQd6P+Zzc8ZakNgX4P3asf1FKDNB
+         UbXBHwUJdCJ6kdN6CbXHKvkkwoSlyh/19gNstxaAXvsIoYR37CipfOmHFcW7w/8zrJ
+         BlU1dv71mF+AmDc7QlexVfXwJMtQgVkPVu9vlnl+FQmMbbVQ8lV7z22x6q0rZbKh2q
+         TnrSVTKXCNgJs2nrqsXem3Iby46GXQTdXgicmdrfSsM1euQN+HrZ/l6Tb6ZFlyQT8E
+         iyRV/bO+EVrfGZgIcLVddiSAVDvWhB3qv7lUAWv4x86HaLDNshBdsr3l63+uODvXS2
+         mVdS96JaUFIDQ==
+Date:   Thu, 12 Aug 2021 14:46:39 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 10/15] asm/io.h: Add ioremap_shared fallback
+Message-ID: <20210812194639.GA2502520@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805005218.2912076-11-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Wed, Aug 04, 2021 at 05:52:13PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> From: Andi Kleen <ak@linux.intel.com>
+> 
+> This function is for declaring memory that should be shared with
+> a hypervisor in a confidential guest. If the architecture doesn't
+> implement it it's just ioremap.
 
-On Wed, 2021-08-11 at 22:18 -0400, Eric Snowberg wrote:
-> With the introduction of the mok keyring, the end-user may choose to
-> trust Machine Owner Keys (MOK) within the kernel. If they have chosen to
-> trust them, the .mok keyring will contain these keys.  If not, the mok
-> keyring will always be empty.  Update the restriction check to allow the
-> secondary trusted keyring to also trust mok keys.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+I would assume ioremap_shared() would "map" something, not "declare"
+it.
+
+> Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
-> v3: Initial version
-> ---
->  certs/system_keyring.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/alpha/include/asm/io.h    | 1 +
+>  arch/mips/include/asm/io.h     | 1 +
+>  arch/parisc/include/asm/io.h   | 1 +
+>  arch/sparc/include/asm/io_64.h | 1 +
+>  include/asm-generic/io.h       | 4 ++++
+>  5 files changed, 8 insertions(+)
 > 
-> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-> index cb773e09ea67..8cc19a1ff051 100644
-> --- a/certs/system_keyring.c
-> +++ b/certs/system_keyring.c
-> @@ -110,7 +110,7 @@ static __init struct key_restriction *get_builtin_and_secondary_restriction(void
->  	if (!restriction)
->  		panic("Can't allocate secondary trusted keyring restriction\n");
->  
-> -	restriction->check = restrict_link_by_builtin_and_secondary_trusted;
-> +	restriction->check = restrict_link_by_builtin_secondary_and_ca_trusted;
->  
->  	return restriction;
+> diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+> index 0fab5ac90775..701b44909b94 100644
+> --- a/arch/alpha/include/asm/io.h
+> +++ b/arch/alpha/include/asm/io.h
+> @@ -283,6 +283,7 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
 >  }
+>  
+>  #define ioremap_wc ioremap
+> +#define ioremap_shared ioremap
+>  #define ioremap_uc ioremap
+>  
+>  static inline void iounmap(volatile void __iomem *addr)
+> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+> index 6f5c86d2bab4..3713ff624632 100644
+> --- a/arch/mips/include/asm/io.h
+> +++ b/arch/mips/include/asm/io.h
+> @@ -179,6 +179,7 @@ void iounmap(const volatile void __iomem *addr);
+>  #define ioremap(offset, size)						\
+>  	ioremap_prot((offset), (size), _CACHE_UNCACHED)
+>  #define ioremap_uc		ioremap
+> +#define ioremap_shared		ioremap
+>  
+>  /*
+>   * ioremap_cache -	map bus memory into CPU space
+> diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+> index 0b5259102319..73064e152df7 100644
+> --- a/arch/parisc/include/asm/io.h
+> +++ b/arch/parisc/include/asm/io.h
+> @@ -129,6 +129,7 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
+>   */
+>  void __iomem *ioremap(unsigned long offset, unsigned long size);
+>  #define ioremap_wc			ioremap
+> +#define ioremap_shared			ioremap
+>  #define ioremap_uc			ioremap
+>  
+>  extern void iounmap(const volatile void __iomem *addr);
+> diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
+> index 5ffa820dcd4d..18cc656eb712 100644
+> --- a/arch/sparc/include/asm/io_64.h
+> +++ b/arch/sparc/include/asm/io_64.h
+> @@ -409,6 +409,7 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
+>  #define ioremap_uc(X,Y)			ioremap((X),(Y))
+>  #define ioremap_wc(X,Y)			ioremap((X),(Y))
+>  #define ioremap_wt(X,Y)			ioremap((X),(Y))
+> +#define ioremap_shared(X, Y)		ioremap((X), (Y))
+>  static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
+>  {
+>  	return NULL;
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index e93375c710b9..bfcaee1691c8 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -982,6 +982,10 @@ static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
+>  #define ioremap_wt ioremap
+>  #endif
+>  
+> +#ifndef ioremap_shared
+> +#define ioremap_shared ioremap
+> +#endif
 
-Not everyone needs to build a generic kernel, like the distros.  As
-previously discussed, not everyone is willing to trust the new MOK
-keyring nor the UEFI variable for enabling it.  For those environments,
-they should be able to totally disable the MOK keyring.
+"ioremap_shared" is a very generic term for a pretty specific thing:
+"memory shared with a hypervisor in a confidential guest".
 
-Please define a Kconfig similar to "CONFIG_SECONDARY_TRUSTED_KEYRING"
-for MOK.  The "restriction" would be based on the new Kconfig being
-enabled.
+Maybe deserves a comment with at least a hint here.  "Hypervisors in a
+confidential guest" isn't the first thing that comes to mind when I
+read "shared".
 
-thanks,
-
-Mimi
-
+>  /*
+>   * ioremap_uc is special in that we do require an explicit architecture
+>   * implementation.  In general you do not want to use this function in a
+> -- 
+> 2.25.1
+> 
