@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8826B3EA337
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F4F3EA339
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbhHLLBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:01:40 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:54308 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235696AbhHLLBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:01:35 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 3B0CA40A2BCD;
-        Thu, 12 Aug 2021 11:01:09 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: intel: Fix error handling in probe
-Date:   Thu, 12 Aug 2021 14:01:00 +0300
-Message-Id: <20210812110100.1279-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S236640AbhHLLCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235696AbhHLLCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:02:00 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B86C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:01:35 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id b7so6791543plh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=DDhtQcuUXCKgq8bSzq02Y00UE56X0SuRgSK70Eim4XM=;
+        b=d4sdlcw7YE/VfJgcdlLPCBuC2gCpccfOHVU3kK6kij74jirpezO90YeAtR5Q1CIFRQ
+         htiiMsgQar06AZWvqJQCfMTiLaytxaEqGCOE9eO5K5vAPWIYdOUR5L6jz16/gxLKYvR4
+         hXNaBP6bM3rMR6IVH8rcCdFhQM2NK04hdskqEiF5QtP/rrU6SDvVJWAun9UY368b+Ozk
+         F86drh6ecc44tL4P/Uq19ndgPbL+MJELVPtuQTgtRETtHWMNg0z0DWBdgKqIgESicRBK
+         fgrxBozUc/CbSLFU8y638qymYfHXEl7anT5U7n86lhJPG2DjHRzy4aGZEmK4mgvHS7/7
+         814g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DDhtQcuUXCKgq8bSzq02Y00UE56X0SuRgSK70Eim4XM=;
+        b=tz8jmbtgHn7qfRPbSaMUH3z3D2zeMYmXnku+LzzRTkY9KMloCZGZbb8BRdklLAu/vM
+         0c7600v5YR8QMtp2bYLlGLd+r6eS9l4qY7czk+u/nODmFEvRjk2pBu8JmCJnyvVY8ppX
+         grHVEj9xpNBFjoRwddRCmrC+nIKl6SeLZMqwbWaBcfv75GLTQ/EajR2w9qbtJJvSo9l8
+         uGIwASbYHRBOr4iGIOqU9g+soZcpYpdgSaJ7aJwXeF78tcaIBHWewJvHA6eFmZgu8uFx
+         M8NKwiZYGf2ohHpn0Td8iEB7+EXCN+oGs9Mp+2CaDSEYY7l4GXAABeKhHhhmVCnW20us
+         QKDA==
+X-Gm-Message-State: AOAM530Ou1XFZy04KIg3pNDspCXXOuO4ymTM13iduo8zeCmOAxkCHix4
+        b7I2EKacEolzqrd0pgvQ8UA0DC5WDY8FSA==
+X-Google-Smtp-Source: ABdhPJwhTGWJfHP1L7Xsaom5NR39UWbE+gu2q5ngSMcRIsKLOHmQ0bilIejQVi5Bx8Cf80be8fUtPg==
+X-Received: by 2002:a17:90b:3a8e:: with SMTP id om14mr3750992pjb.73.1628766094047;
+        Thu, 12 Aug 2021 04:01:34 -0700 (PDT)
+Received: from [192.168.1.153] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
+        by smtp.gmail.com with ESMTPSA id p21sm2915208pfo.8.2021.08.12.04.01.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 04:01:32 -0700 (PDT)
+Subject: Re: [PATCH 0/1] __asm_copy_to-from_user: Reduce more byte_copy
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Message-ID: <a70451d1-57ad-6b49-24c1-6408ef94a959@gmail.com>
+Date:   Thu, 12 Aug 2021 20:01:29 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebu_nand_probe() did not invoke ebu_dma_cleanup() and
-clk_disable_unprepare() on some error handling paths. The patch fixes
-that.
+Hi Guenter, Geert and Qiu,
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Would you mind testing this patch?
+Thanks,
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
----
- drivers/mtd/nand/raw/intel-nand-controller.c | 27 +++++++++++++-------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+Akira
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 8b49fd56cf96..29e8a546dcd6 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -631,19 +631,26 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
- 
- 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
--	if (IS_ERR(ebu_host->dma_tx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
--				     "failed to request DMA tx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_tx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
-+				    "failed to request DMA tx chan!.\n");
-+		goto err_disable_unprepare_clk;
-+	}
- 
- 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
--	if (IS_ERR(ebu_host->dma_rx))
--		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
--				     "failed to request DMA rx chan!.\n");
-+	if (IS_ERR(ebu_host->dma_rx)) {
-+		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
-+				    "failed to request DMA rx chan!.\n");
-+		ebu_host->dma_rx = NULL;
-+		goto err_cleanup_dma;
-+	}
- 
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
--	if (!res)
--		return -EINVAL;
-+	if (!res) {
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
-+	}
- 	ebu_host->cs[cs].addr_sel = res->start;
- 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
- 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
-@@ -653,7 +660,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	mtd = nand_to_mtd(&ebu_host->chip);
- 	if (!mtd->name) {
- 		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_cleanup_dma;
- 	}
- 
- 	mtd->dev.parent = dev;
-@@ -681,6 +689,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	nand_cleanup(&ebu_host->chip);
- err_cleanup_dma:
- 	ebu_dma_cleanup(ebu_host);
-+err_disable_unprepare_clk:
- 	clk_disable_unprepare(ebu_host->clk);
- 
- 	return ret;
--- 
-2.26.2
-
+On 7/30/2021 10:50 PM, Akira Tsukamoto wrote:
+> Adding none unrolling word_copy, which is used if the size is smaller
+> than 9*SZREG.
+> 
+> This patch is based on Palmer's past comment.
+>> My guess is that some workloads will want some smaller unrolling factors,
+> 
+> It will reduce the number of slow byte_copy being used when the 
+> size is small.
+> 
+> Have tested on qemu rv32, qemu rv64 and beaglev beta board.
+> 
+> In the future, I am planning to convert uaccess.S to inline assembly 
+> in .c file. Then it will be easier to optimize on both in-order core and
+> out-of-order core with #ifdef macro in c.
+> 
+> Akira Tsukamoto (1):
+>   riscv: __asm_copy_to-from_user: Improve using word copy if size <
+>     9*SZREG
+> 
+>  arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 42 insertions(+), 4 deletions(-)
+> 
