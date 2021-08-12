@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6B73EA609
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DF83EA612
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237755AbhHLNxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:53:46 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:42861 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhHLNxn (ORCPT
+        id S237716AbhHLN4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:56:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58074 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232351AbhHLN4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:53:43 -0400
-Received: by mail-io1-f70.google.com with SMTP id y10-20020a5e870a0000b029058d2e067004so3477304ioj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:53:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NHD5PuVjimqiuByepyLI1iYdpcKAnKHFp093aOhp+fc=;
-        b=Bj2naWXyiciF1+8G8qFm2+WV2Zcn8C3MnIVivByG3+ulbXMTGQZFrQ2vFSCPYpwydj
-         vWQWQP68/mmOXtkJsy/KF1PaGEQu0C+zQme7VTDPZvQEIpEaAhi1aKX3LhAHxwO8wK5b
-         0xPlWsGvGVgVJl+vtA5VYGOStuOp951SKO0YScVtGuIAkzTTTMPqsUUInOifWaSfLq9f
-         G4Ficy+dqH/ZkprB2dreyVeGiYQcosrWghrRdQLQa8Z29k93Agpzj+tpeQA51A8duHWi
-         a4jrKM9aT6Wnn1sv69ShngWeVZJnNTD8/dBDvhrgP9SvszTUHbAmnUY5dhh0hvYe689p
-         ljaA==
-X-Gm-Message-State: AOAM532U5nKB0TglS2RoupcsxIunbHy/JX3PSyZ37bykxqz8hT5EhbIG
-        U2qb284btA0C9QUPTzoVrModa8NbQQxoYcUShZpA7lSGVwen
-X-Google-Smtp-Source: ABdhPJx36dk15xIOglreLdknX9VSaCmfKbYSSAGlkETSNaqlt6hbhu0XHLE6tPr9u8iJoyh07RIkiewJJhf0cipeaxwFsdXKdXVV
+        Thu, 12 Aug 2021 09:56:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 165961FF48;
+        Thu, 12 Aug 2021 13:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628776533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmT1j6qqHbPM2jS2S8E/xfI9/JWiNOKmyXSgPPv98Co=;
+        b=XtpXglPcXvwy6s31knA1FcW3z8ni55RU5q6muMK6UMf6zDRGEkuJXMF9UU+ADYzotIidL4
+        JdscLBzXSjlwmvrCSqOI6q8jJs7oXvkMv1OFamIJ1G5dE9aN5pBEmYWaXD4wKcZdEsSqDd
+        g9nBNhwjJC5Vi7vSVm2/q/ACcM8Eq/s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628776533;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmT1j6qqHbPM2jS2S8E/xfI9/JWiNOKmyXSgPPv98Co=;
+        b=eWiABirBTr1iTjq5zL550BwS+SjtNWRuTwBZFXZ8lbYv60bjrXYdCxJB5lmJ+EEHrGNkJ8
+        jAW26dwEGiLVSbAw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id BAA2DA3F39;
+        Thu, 12 Aug 2021 13:55:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9236D1E14BC; Thu, 12 Aug 2021 15:55:29 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 15:55:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
+        dvyukov@google.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
+        tytso@mit.edu
+Subject: Re: [syzbot] possible deadlock in dquot_commit
+Message-ID: <20210812135529.GD14675@quack2.suse.cz>
+References: <000000000000a05b3b05baf9a856@google.com>
+ <20210810041100.3271-1-hdanton@sina.com>
+ <20210811041232.2449-1-hdanton@sina.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr3849512jak.91.1628776398374;
- Thu, 12 Aug 2021 06:53:18 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 06:53:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a4cc9405c95d0e1c@google.com>
-Subject: [syzbot] possible deadlock in fuse_reverse_inval_entry
-From:   syzbot <syzbot+9f747458f5990eaa8d43@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811041232.2449-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed 11-08-21 12:12:32, Hillf Danton wrote:
+> On Tue, 10 Aug 2021 11:21:42 +0200 Jan Kara wrote:
+> >
+> >I'm not quite sure what you are asking about but yes, dquot_acquire() grabs
+> 
+> It is hard to understand the rooms in mutex for two lock owners.
+> 
+> >dquot->dq_lock, then e.g. v2_write_dquot() acquires dqio_sem, then
+> >ext4_map_blocks() acquires i_data_sem/2 (special lock subclass for quota
+> >files).
+> >
+> >What is unexpected is the #0 trace where i_data_sem/2 is acquired
+> >by ext4_map_blocks() called from ext4_write_begin(). That shows that
+> >normal write(2) call was able to operate on quota file which is certainly
+> >wrong.
+> 
+> The change below can test your theory.
+> >
+> >My patch closed one path how this could happen and I'm puzzled how
+> >else this could happen. I'll try to reproduce the issue (I've already tried
+> >but so far failed) as see if I can find out more.
+> 
+> Actually there is one check for quota file near 100 lines of code lower,
+> and copy it to just before taking i_data_sem to avoid writing the file of
+> wrong type.
+> 
+> Now only for thoughts.
+> 
+> +++ x/fs/ext4/inode.c
+> @@ -616,6 +616,8 @@ found:
+>  		if (!(flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
+>  			return retval;
+>  
+> +	if (ext4_is_quota_file(inode))
+> +		return -EINVAL;
+>  	/*
+>  	 * Here we clear m_flags because after allocating an new extent,
+>  	 * it will be set again.
 
-syzbot found the following issue on:
+This would be certainly wrong. ext4_map_blocks() is used for accessing and
+allocating blocks for quota file. It is ext4_write_begin() that should not
+be called for the quota file. I've run the reproducer here for couple of
+hours but the problem didn't trigger for me. Strange.
 
-HEAD commit:    85a90500f9a1 Merge tag 'io_uring-5.14-2021-08-07' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bc00c2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=9f747458f5990eaa8d43
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1427c9aa300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1540a2f6300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9f747458f5990eaa8d43@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-5.14.0-rc4-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor799/8433 is trying to acquire lock:
-ffff888039930ed0 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
-ffff888039930ed0 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: fuse_reverse_inval_entry+0x1f5/0x530 fs/fuse/dir.c:1093
-
-but task is already holding lock:
-ffff888039930150 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
-ffff888039930150 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: fuse_reverse_inval_entry+0x4c/0x530 fs/fuse/dir.c:1074
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&type->i_mutex_dir_key#7);
-  lock(&type->i_mutex_dir_key#7);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor799/8433:
- #0: ffff888022b6bb38 (&fc->killsb){.+.+}-{3:3}, at: fuse_notify_delete fs/fuse/dev.c:1540 [inline]
- #0: ffff888022b6bb38 (&fc->killsb){.+.+}-{3:3}, at: fuse_notify fs/fuse/dev.c:1790 [inline]
- #0: ffff888022b6bb38 (&fc->killsb){.+.+}-{3:3}, at: fuse_dev_do_write+0x285f/0x2bd0 fs/fuse/dev.c:1865
- #1: ffff888039930150 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
- #1: ffff888039930150 (&type->i_mutex_dir_key#7){++++}-{3:3}, at: fuse_reverse_inval_entry+0x4c/0x530 fs/fuse/dir.c:1074
-
-stack backtrace:
-CPU: 1 PID: 8433 Comm: syz-executor799 Not tainted 5.14.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
- check_deadlock kernel/locking/lockdep.c:2987 [inline]
- validate_chain kernel/locking/lockdep.c:3776 [inline]
- __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- down_write+0x92/0x150 kernel/locking/rwsem.c:1406
- inode_lock include/linux/fs.h:774 [inline]
- fuse_reverse_inval_entry+0x1f5/0x530 fs/fuse/dir.c:1093
- fuse_notify_delete fs/fuse/dev.c:1541 [inline]
- fuse_notify fs/fuse/dev.c:1790 [inline]
- fuse_dev_do_write+0x287f/0x2bd0 fs/fuse/dev.c:1865
- fuse_dev_write+0x144/0x1d0 fs/fuse/dev.c:1949
- call_write_iter include/linux/fs.h:2114 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x75a/0xa40 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4455e9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f64ac9752f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004ce4e0 RCX: 00000000004455e9
-RDX: 000000000000002e RSI: 00000000200000c0 RDI: 0000000000000003
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
