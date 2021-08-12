@@ -2,208 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636313EAC6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D024F3EAC6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236863AbhHLVcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:32:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14356 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235105AbhHLVcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:32:53 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CL5TNb120866;
-        Thu, 12 Aug 2021 17:31:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=u0xsSYJQyJ0pKqapSDVIcdNmCBCQOnYdQkQA/AZLa8o=;
- b=OBqenXOTHUtbz9qSECe05pNAdkig/sX8T0NbbiUbmzSTh1nSnG3hWyX4nxpsIIONBpYG
- PQFxtK71pdZjBOxYwPrEPhlzdXT6mg04VldzYekdnjZKC2bUFsis20Td2DH+miVxqnly
- +RRUJOwksVQw4Uoi/mVuQps0uis9Vp6dRiI+/dZO07CRIFW+7WxGMId1MD1BUgCLXzVz
- 4tpRVNvLCqiZ5JKkVvpPlZMTTJy5+TezEA+oO61LYALrvzVFp/bUgD7X5HNLTp2Ki87+
- KDsQa7fgk6DQ8iGjsBTuDY9rIvidMCyZ9xJEadKaaHTdzm6eTpd63uCBryMSC/dplUxq LA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ad1r0t4r8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 17:31:57 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17CL5elI121740;
-        Thu, 12 Aug 2021 17:31:56 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ad1r0t4qc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 17:31:56 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CLDnqG000400;
-        Thu, 12 Aug 2021 21:31:53 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04fra.de.ibm.com with ESMTP id 3abujqv1uq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 21:31:53 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CLVoL147186370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 21:31:50 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A3B45AE045;
-        Thu, 12 Aug 2021 21:31:50 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C1131AE0F3;
-        Thu, 12 Aug 2021 21:31:45 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.41.31])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Aug 2021 21:31:45 +0000 (GMT)
-Message-ID: <34b12d8d47564a182f0a29a9592e203b17ccdd69.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 01/14] integrity: Introduce a Linux keyring for the
- Machine Owner Key (MOK)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, konrad.wilk@oracle.com
-Date:   Thu, 12 Aug 2021 17:31:44 -0400
-In-Reply-To: <20210812021855.3083178-2-eric.snowberg@oracle.com>
-References: <20210812021855.3083178-1-eric.snowberg@oracle.com>
-         <20210812021855.3083178-2-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        id S236945AbhHLVda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 17:33:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60771 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236618AbhHLVd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 17:33:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="276486761"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="276486761"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 14:33:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="446704442"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Aug 2021 14:33:02 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mEIJx-000N1x-T0; Thu, 12 Aug 2021 21:33:01 +0000
+Date:   Fri, 13 Aug 2021 05:32:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ afc880cbb294026c2a43501cad26c21720f7078f
+Message-ID: <61159361.Wp1Cjkf7kg7YwDjC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: gJivHVAd2HzB5FFjlTLtaWnxR-z5BuH6
-X-Proofpoint-ORIG-GUID: h7ggsBwvhDe_uO6JXTyStSLk3sqkEY3M
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_06:2021-08-12,2021-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108120137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: afc880cbb294026c2a43501cad26c21720f7078f  x86/power: Fix kernel-doc warnings in cpu.c
 
-On Wed, 2021-08-11 at 22:18 -0400, Eric Snowberg wrote:
-> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
-> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
-> Boot DB and MOK keys to validate the next step in the boot chain.  The
-> MOK facility can be used to import user generated keys.  These keys can
-> be used to sign an end-users development kernel build.  When Linux
-> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
-> .platform keyring.
-> 
-> Add a new Linux keyring called .mok.  This keyring shall contain just
-> MOK keys and not the remaining keys in the platform keyring. This new
-> .mok keyring will be used in follow on patches.  Unlike keys in the
-> platform keyring, keys contained in the .mok keyring will be trusted
-> within the kernel if the end-user has chosen to do so.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
-> v1: Initial version
-> v2: Removed destory keyring code
-> v3: Unmodified from v2
-> ---
->  security/integrity/Makefile                   |  3 ++-
->  security/integrity/digsig.c                   |  1 +
->  security/integrity/integrity.h                |  3 ++-
->  .../integrity/platform_certs/mok_keyring.c    | 21 +++++++++++++++++++
->  4 files changed, 26 insertions(+), 2 deletions(-)
->  create mode 100644 security/integrity/platform_certs/mok_keyring.c
-> 
-> diff --git a/security/integrity/Makefile b/security/integrity/Makefile
-> index 7ee39d66cf16..8e2e98cba1f6 100644
-> --- a/security/integrity/Makefile
-> +++ b/security/integrity/Makefile
-> @@ -9,7 +9,8 @@ integrity-y := iint.o
->  integrity-$(CONFIG_INTEGRITY_AUDIT) += integrity_audit.o
->  integrity-$(CONFIG_INTEGRITY_SIGNATURE) += digsig.o
->  integrity-$(CONFIG_INTEGRITY_ASYMMETRIC_KEYS) += digsig_asymmetric.o
-> -integrity-$(CONFIG_INTEGRITY_PLATFORM_KEYRING) += platform_certs/platform_keyring.o
-> +integrity-$(CONFIG_INTEGRITY_PLATFORM_KEYRING) += platform_certs/platform_keyring.o \
-> +						  platform_certs/mok_keyring.o
->  integrity-$(CONFIG_LOAD_UEFI_KEYS) += platform_certs/efi_parser.o \
->  				      platform_certs/load_uefi.o \
->  				      platform_certs/keyring_handler.o
-> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-> index 3b06a01bd0fd..e07334504ef1 100644
-> --- a/security/integrity/digsig.c
-> +++ b/security/integrity/digsig.c
-> @@ -30,6 +30,7 @@ static const char * const keyring_name[INTEGRITY_KEYRING_MAX] = {
->  	".ima",
->  #endif
->  	".platform",
-> +	".mok",
->  };
->  
->  #ifdef CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
-> diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-> index 547425c20e11..e0e17ccba2e6 100644
-> --- a/security/integrity/integrity.h
-> +++ b/security/integrity/integrity.h
-> @@ -151,7 +151,8 @@ int integrity_kernel_read(struct file *file, loff_t offset,
->  #define INTEGRITY_KEYRING_EVM		0
->  #define INTEGRITY_KEYRING_IMA		1
->  #define INTEGRITY_KEYRING_PLATFORM	2
-> -#define INTEGRITY_KEYRING_MAX		3
-> +#define INTEGRITY_KEYRING_MOK		3
-> +#define INTEGRITY_KEYRING_MAX		4
->  
->  extern struct dentry *integrity_dir;
->  
-> diff --git a/security/integrity/platform_certs/mok_keyring.c b/security/integrity/platform_certs/mok_keyring.c
-> new file mode 100644
-> index 000000000000..b1ee45b77731
-> --- /dev/null
-> +++ b/security/integrity/platform_certs/mok_keyring.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * MOK keyring routines.
-> + *
-> + * Copyright (c) 2021, Oracle and/or its affiliates.
-> + */
-> +
-> +#include "../integrity.h"
-> +
-> +static __init int mok_keyring_init(void)
-> +{
-> +	int rc;
-> +
-> +	rc = integrity_init_keyring(INTEGRITY_KEYRING_MOK);
-> +	if (rc)
-> +		return rc;
-> +
-> +	pr_notice("MOK Keyring initialized\n");
-> +	return 0;
-> +}
-> +device_initcall(mok_keyring_init);
+elapsed time: 728m
 
-The ordering of the patches in this patch set is not quite
-right.  Please first introduce the new keyring with the new Kconfig,
-new restriction, and loading the keys onto the new keyring.  Introduce
-the builitin_secondary_and_ca_trusted restriction and linking the new
-keyring to the secondary keyring.  Only after everything is in place,
-define and use the UEFI mok variable(s).
+configs tested: 105
+configs skipped: 64
 
-Originally, I asked you to "Separate each **logical change** into a
-separate patch."  After re-ordering the patches, see if merging some of
-them together now makes sense.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-thanks,
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210812
+i386                 randconfig-c001-20210813
+arm                    vt8500_v6_v7_defconfig
+openrisc                            defconfig
+powerpc                     taishan_defconfig
+ia64                             alldefconfig
+powerpc                     ppa8548_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+s390                          debug_defconfig
+openrisc                  or1klitex_defconfig
+arc                    vdk_hs38_smp_defconfig
+csky                                defconfig
+mips                           ip32_defconfig
+xtensa                              defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+arm                            hisi_defconfig
+x86_64                            allnoconfig
+m68k                        m5272c3_defconfig
+m68k                                defconfig
+arc                        vdk_hs38_defconfig
+riscv                    nommu_virt_defconfig
+arm                      pxa255-idp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210812
+x86_64               randconfig-a004-20210812
+x86_64               randconfig-a003-20210812
+x86_64               randconfig-a005-20210812
+x86_64               randconfig-a002-20210812
+x86_64               randconfig-a001-20210812
+i386                 randconfig-a004-20210812
+i386                 randconfig-a003-20210812
+i386                 randconfig-a002-20210812
+i386                 randconfig-a001-20210812
+i386                 randconfig-a006-20210812
+i386                 randconfig-a005-20210812
+i386                 randconfig-a004-20210811
+i386                 randconfig-a001-20210811
+i386                 randconfig-a002-20210811
+i386                 randconfig-a003-20210811
+i386                 randconfig-a006-20210811
+i386                 randconfig-a005-20210811
+i386                 randconfig-a011-20210812
+i386                 randconfig-a015-20210812
+i386                 randconfig-a013-20210812
+i386                 randconfig-a014-20210812
+i386                 randconfig-a016-20210812
+i386                 randconfig-a012-20210812
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Mimi
+clang tested configs:
+x86_64               randconfig-c001-20210812
+x86_64               randconfig-a011-20210812
+x86_64               randconfig-a013-20210812
+x86_64               randconfig-a012-20210812
+x86_64               randconfig-a016-20210812
+x86_64               randconfig-a015-20210812
+x86_64               randconfig-a014-20210812
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
