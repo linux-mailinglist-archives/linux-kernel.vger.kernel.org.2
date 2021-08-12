@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEFF3EAC01
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BD73EAC02
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237970AbhHLUmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S238015AbhHLUme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237876AbhHLUmZ (ORCPT
+        with ESMTP id S237894AbhHLUm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:42:25 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E511C061756;
-        Thu, 12 Aug 2021 13:42:00 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id y130so8264928qkb.6;
-        Thu, 12 Aug 2021 13:42:00 -0700 (PDT)
+        Thu, 12 Aug 2021 16:42:26 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91C8C0617AD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:00 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id t66so8327132qkb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ochq/82t5xUPXvIID1znrVTmhLe5E8Izsp9c+gWvjrs=;
-        b=Ed+L/+HybSvG4ub6uDGYR4D3031+XqS2vV/V6Zxga1iPxvcAIKPkTXPVoHkCVCs+Jc
-         OKUpjvQMuusgI+rqnw2LTK+aJ2VxMT5xjukAFHS3q+mwW19KSl6HlxU63WGj3x3RBAvr
-         MOxZmmj52Fo0YcckO8dSOhTrhBgiP/5R1ePBp9JKzIxrBtfztUWJVSOBO1JfHLFdW7Ba
-         hspMqOkcp9js009uvTsU7HDcdWMpXA0UoLF0DX8sgc+tZBK0fMs8MFs+UTAtwUJOk+IX
-         WwjfNLmZKGHiCxD4PV3ngGlugVyUsslMv0PxzSi4LsJAmzoGCndHxLA6WC6pg748Bk/W
-         oy/w==
+        bh=ggW256M3SIcZiGvGqGuspKz5dguh2TkojKgtWRP6iJo=;
+        b=t1W1hIvV0te5vPrxMds68WtR52qT21pqllsiWQ4EdrsevpXRuUZnxXIl5qHRbeUKud
+         9PN6GoVqsYPuDsx7pi32SNuSqOfURq9S31XUJV/AlJd0iywelRrQmbl/OkkSbSIU9aj1
+         Mtb23C5te0dfzD8gkBPfn7Zn7O1BmMZZ2Vj2ptM9z69YebxBooi4wimZ4liyXX2ddbch
+         OrYgutQBIxSZfehRX8I8oI6UUch0Re8p5DMgGbrbTH6AehG0dHunC65FbcJV2TSgrxQc
+         RbHAseLHF2JwHcI2FEDLV18o9MijWzchENcsVLda2q16CcVzVCETsEAeHlmbl+LQ+vxn
+         Es2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ochq/82t5xUPXvIID1znrVTmhLe5E8Izsp9c+gWvjrs=;
-        b=oKRw0+gfR4fL1EZjvBRuJmLoQ2MjSobVQ27/3TGbxGxm1Rh4fOgKG+txXP4j99WdsU
-         w2BBzuPCt3BvLgyPC7BowS8GiNXupYjjwwnUkwydLE14Jq4DbKGl0xusJqR2Q7avkghj
-         JZKVAHDMGtSQc7uDEYL2ReFujVcKdIfrV+NuvMySQPwWCSxvjG7eZkr9IZvpQhW91Abx
-         NRrWXQWZzldaxCP8seQ4aq8k7hn1XuH1wBfPkB8wWBqvS4Ng4gs5dec+8aidRrHuFUY5
-         5l5bbJqE6rSG3uR1xXe9ti1WEW6Je3nj2J+Bqec5U1L3eSnWyiDRujx8xte1UcpcT20M
-         2FPw==
-X-Gm-Message-State: AOAM530uOgAD+poJvr+oU9jwDWETMmnC64yvAgZt7jddZJpDMhY1ebEF
-        zYlM8kmUbVvhhoYZyFSn0iQ=
-X-Google-Smtp-Source: ABdhPJxc8txTOhaH5bN7e5C0ZZdy7/xbhS9z9tOTuYM+5y6GbHfXe3ZldmfmU/BYBbYY0BHqOmGbkQ==
-X-Received: by 2002:a37:43ca:: with SMTP id q193mr6552744qka.459.1628800919041;
-        Thu, 12 Aug 2021 13:41:59 -0700 (PDT)
+        bh=ggW256M3SIcZiGvGqGuspKz5dguh2TkojKgtWRP6iJo=;
+        b=gmMFLbJTZfNVZxwa5eRdWqdKfuOHMutyz5ALJGAyMO0M0lpXXPYZXYw0vFWkB4SGWB
+         ToVFTtqBbFQOkPmJWfUUt8DYnMrffZElMGO/4XuHLm7+3UlTSbRiJQQoDJ1y/p1TF6O8
+         ip6fMcDZbarYzmLqK/1FnTcJdmtT+yqCHEgztTV/YfQmWVQ6AM2PXxzyBMwN6XXF2kWS
+         2jtQYErZ20zDLQuL7jvtPMO8LBC3LBRExqBjFfr1MkMf2enLODkfBaxDL5SSkqnvw/j7
+         aKEtMd6MBeG+i1NCK0mmpl/YyVG2w5KFocNAkXANw2YgbTEuKNbZxhmd6OvRwqBiiv3b
+         ZbZQ==
+X-Gm-Message-State: AOAM531+ZZ04wR1Sa/I3QrJjemyL8HliQ9Kib0pZ8IOUtXqpjn+m8Wuc
+        GWItLONH6QjesKW2fhMunmc=
+X-Google-Smtp-Source: ABdhPJwz50s1sUzGtczLj6lnVE9J9Egy2qsDbNPpOk2wPPVMdrvu2dFxJKuLLxvmd8wuc8hmQwDo8Q==
+X-Received: by 2002:a37:9643:: with SMTP id y64mr6224821qkd.213.1628800920037;
+        Thu, 12 Aug 2021 13:42:00 -0700 (PDT)
 Received: from master-laptop.sparksnet ([2601:153:980:85b1:e89f:d077:9161:1bd7])
-        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.41.58
+        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.41.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 13:41:58 -0700 (PDT)
+        Thu, 12 Aug 2021 13:41:59 -0700 (PDT)
 From:   Peter Geis <pgwipeout@gmail.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
+        Vinod Koul <vkoul@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 Cc:     Peter Geis <pgwipeout@gmail.com>, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/8] dt-bindings: phy: phy-rockchip-inno-usb2: add rk3568 documentation
-Date:   Thu, 12 Aug 2021 16:41:10 -0400
-Message-Id: <20210812204116.2303617-3-pgwipeout@gmail.com>
+Subject: [PATCH v2 3/8] phy: phy-rockchip-inno-usb2: support #address_cells = 2
+Date:   Thu, 12 Aug 2021 16:41:11 -0400
+Message-Id: <20210812204116.2303617-4-pgwipeout@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210812204116.2303617-1-pgwipeout@gmail.com>
 References: <20210812204116.2303617-1-pgwipeout@gmail.com>
@@ -68,85 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rk3568 usb2phy node is a standalone node with a single muxed
-interrupt.
-Add documentation for it to phy-rockchip-inno-usb2.
+New Rockchip devices have the usb phy nodes as standalone devices.
+These nodes have register nodes with #address_cells = 2, but only use 32
+bit addresses.
+
+Adjust the driver to check if the returned address is "0", and adjust
+the index in that case.
 
 Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 ---
- .../bindings/phy/phy-rockchip-inno-usb2.yaml  | 31 ++++++++++++++++---
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-index 5bebd86bf8b6..d2a749c3f9a3 100644
---- a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-+++ b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-@@ -18,6 +18,7 @@ properties:
-       - rockchip,rk3328-usb2phy
-       - rockchip,rk3366-usb2phy
-       - rockchip,rk3399-usb2phy
-+      - rockchip,rk3568-usb2phy
-       - rockchip,rv1108-usb2phy
+diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+index beacac1dd253..5d2916143df7 100644
+--- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
++++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+@@ -1098,12 +1098,21 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
+ 		rphy->usbgrf = NULL;
+ 	}
  
-   reg:
-@@ -50,6 +51,9 @@ properties:
-     description:
-       Phandle to the extcon device providing the cable state for the otg phy.
+-	if (of_property_read_u32(np, "reg", &reg)) {
++	if (of_property_read_u32_index(np, "reg", 0, &reg)) {
+ 		dev_err(dev, "the reg property is not assigned in %pOFn node\n",
+ 			np);
+ 		return -EINVAL;
+ 	}
  
-+  interrupts:
-+    description: Muxed interrupt for both ports
++	/* support address_cells=2 */
++	if (reg == 0) {
++		if (of_property_read_u32_index(np, "reg", 1, &reg)) {
++			dev_err(dev, "the reg property is not assigned in %pOFn node\n",
++				np);
++			return -EINVAL;
++		}
++	}
 +
-   rockchip,usbgrf:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
-@@ -78,8 +82,6 @@ properties:
- 
-     required:
-       - "#phy-cells"
--      - interrupts
--      - interrupt-names
- 
-   otg-port:
-     type: object
-@@ -109,8 +111,6 @@ properties:
- 
-     required:
-       - "#phy-cells"
--      - interrupts
--      - interrupt-names
- 
- required:
-   - compatible
-@@ -120,6 +120,29 @@ required:
-   - host-port
-   - otg-port
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: rockchip,rk3568-usb2phy
-+      then:
-+        properties:
-+          interrupts:
-+            maxItems: 1
-+        required:
-+          - interrupts
-+      else:
-+        properties:
-+          host-port:
-+            required:
-+              - interrupts
-+              - interrupt-names
-+          otg-port:
-+            required:
-+              - interrupts
-+              - interrupt-names
-+
- additionalProperties: false
- 
- examples:
+ 	rphy->dev = dev;
+ 	phy_cfgs = match->data;
+ 	rphy->chg_state = USB_CHG_STATE_UNDEFINED;
 -- 
 2.25.1
 
