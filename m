@@ -2,99 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC243EA2D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2825B3EA2DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236173AbhHLKLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234677AbhHLKLH (ORCPT
+        id S235507AbhHLKOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:14:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21153 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236426AbhHLKOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:11:07 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B075C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:10:42 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id q11so283894ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bjc+CjLG6Iv82qU11Sfi0XGaTJtDXY6B92J7Iea/tYw=;
-        b=WL7h+MV3gO51xheRxT8M0nMS5lzCmgtaD0OyY8g8CyKDYAotSM8J9VUqWuOJyU0Z8H
-         OQiI7UZvXcorrJ0ZEnbbHf+v7AWpU8zRrYV6g3n2FDZJKnDcv4oajBfKEN71kU7lSxvh
-         oOiCD5Mbub1ynCHrmHqixEs1vXRZuTt3TQfj+KqRzqfzDE+E2pf45LumB176U2a0q6vh
-         2wKJmx21wyZ2ZUT/yy27mSAOwe31iUqreXYjEshEKDWJaS750hob2jSLZQ6+O6hdRG1l
-         zjq6reRdmSMGsTQ3vqQl8P8UMDMVz4Vt2PF2M53ESRwORGlOI7ab1UXVPb+SClSisSyu
-         Aq1Q==
+        Thu, 12 Aug 2021 06:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628763229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J8fNLHegk5RzvmFVmibZ710pAngI+WF9X5zWgbKhZ8g=;
+        b=TJwEb5GGr6u2YYcI3F2FXTd1YoDeBbXngd0o7bYp379yNm5huhyHAJEnmEZ+IN3Cz/uek4
+        lwoVrf3TML2aOccac8WuSm0TEnurIoVeIicq5agtFd+xwXc6JJKO7miayB6D7hdUHGKQ/v
+        UpDDQNLx5RfLWi9JahJDe1x2YEm+OLA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-rTaXK69gOWqZN3sVKMoaqg-1; Thu, 12 Aug 2021 06:13:48 -0400
+X-MC-Unique: rTaXK69gOWqZN3sVKMoaqg-1
+Received: by mail-wm1-f72.google.com with SMTP id l19-20020a05600c4f13b029025b036c91c6so1683275wmq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:13:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bjc+CjLG6Iv82qU11Sfi0XGaTJtDXY6B92J7Iea/tYw=;
-        b=XcUTqyVvog8fgI0SO7rS3hMAf/yhxyzAftP4Kx9SwOCup0DwNDrPOBNPsfSHnFv3YO
-         yl7a0Lr2VALFP1+Lpuzt6wvFt8jSNXTtiozgL1GAnJHKoiPw2p+IsY8WhbS2M46/jm5X
-         VRukRCbzGH/XqN9rXQS6APVXvEQwYQoT+TIvifmZtrei88sWEt74o/UIB9JzNMDZeAbU
-         z5Ut9I2ON7tFLjxEDhejqk1mLh7khNYdUu14WC9LxaTXgafd9kpSFcOARLVCLYO+53rq
-         3SEZmGpk3uodykPAfHjpq5uefaFzYIM4ZnCYublyEHsSHEvntrJjEK132ndNgSjkgyUI
-         0SBQ==
-X-Gm-Message-State: AOAM531T8dNjQ1crsGLduK6OUwrzl4cU53HRaN0PscGNb63VUkfuxHsN
-        DA+0EkOeDzkIp12DwQWxqOkYrQ==
-X-Google-Smtp-Source: ABdhPJz9RgDxEWcI/AR3ZUS5a0CZNaqrkDzjyU19l5Nj6+ycMvrg0eUGTdUs80D7X0HnPCmPykpnFg==
-X-Received: by 2002:a2e:97d8:: with SMTP id m24mr2396040ljj.156.1628763041059;
-        Thu, 12 Aug 2021 03:10:41 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id h17sm213210lfr.287.2021.08.12.03.10.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 03:10:40 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 112971028BC; Thu, 12 Aug 2021 13:10:54 +0300 (+03)
-Date:   Thu, 12 Aug 2021 13:10:54 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=J8fNLHegk5RzvmFVmibZ710pAngI+WF9X5zWgbKhZ8g=;
+        b=c3zaF5NZU4IM89w1OtWhCmct/m+K67zycBc3O/p+RlguOF36cPlYzabPSe6dDaMSsA
+         F4NHf3h0tbtJ9r5WWLAf+2G0KTrf/1TLZ4g/SNTJfoI0nk5dZJ3kGuQtUhWv7T7ylgmJ
+         y97uAA64EgqXM6J51rQVUxNXnX4rYBRQd5FhTy36b4HSqF87Skw0dj/z4M72ML6KCNq8
+         oigZOU4ZxDXxekcujpIp0p6nTaYnjIJaHmUiIWRoU6xhIYCsKDtPJ8v7Lw7N1pHJhyT+
+         MjfLaugdbuPTY5N2T/dEaunIcJxUm2ElYzptZyxquIrr+di7Hy9dZ8FFfNjgU3kBY0ag
+         KYgQ==
+X-Gm-Message-State: AOAM531dotIFKFgFCnE5NLgeAy2LOYnwVS4XUMirHFhkXstYmEDhNtX9
+        uWbEf5mi/a4r/9UKQmkoag54I7IEA6JKPyAcOUssMnZ3GI9dKsbSiXsX+LcjhxJPqN3Q85c6P3M
+        jJYZuFfVvMZ+qi4QfkRDsE2mp
+X-Received: by 2002:a05:600c:4f85:: with SMTP id n5mr3185717wmq.146.1628763227424;
+        Thu, 12 Aug 2021 03:13:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVPOFrEbL/sos2RT24E1z82P1IG5Ylm0/152IG6CScUCHtpvAEXWsNjyopV1zDkbIpjnwS6A==
+X-Received: by 2002:a05:600c:4f85:: with SMTP id n5mr3185661wmq.146.1628763227156;
+        Thu, 12 Aug 2021 03:13:47 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
+        by smtp.gmail.com with ESMTPSA id d15sm2768384wri.96.2021.08.12.03.13.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 03:13:46 -0700 (PDT)
+Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
+ MM exe_file
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
-Message-ID: <20210812101054.5y6oufwwnisebuyy@box.shutemov.name>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <YRTafEovVZme+KO9@suse.de>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Andrei Vagin <avagin@gmail.com>
+References: <20210812084348.6521-1-david@redhat.com>
+ <20210812084348.6521-4-david@redhat.com>
+ <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <1b6d27cf-2238-0c1c-c563-b38728fbabc2@redhat.com>
+Date:   Thu, 12 Aug 2021 12:13:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRTafEovVZme+KO9@suse.de>
+In-Reply-To: <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:23:24AM +0200, Joerg Roedel wrote:
-> Hi Kirill,
+On 12.08.21 12:05, Christian Brauner wrote:
+> [+Cc Andrei]
 > 
-> On Tue, Aug 10, 2021 at 09:26:21AM +0300, Kirill A. Shutemov wrote:
-> > Accepting happens via a protocol specific for the Virtrual Machine
-> > platform.
+> On Thu, Aug 12, 2021 at 10:43:44AM +0200, David Hildenbrand wrote:
+>> We want to remove VM_DENYWRITE only currently only used when mapping the
+>> executable during exec. During exec, we already deny_write_access() the
+>> executable, however, after exec completes the VMAs mapped
+>> with VM_DENYWRITE effectively keeps write access denied via
+>> deny_write_access().
+>>
+>> Let's deny write access when setting the MM exe_file. With this change, we
+>> can remove VM_DENYWRITE for mapping executables.
+>>
+>> This represents a minor user space visible change:
+>> sys_prctl(PR_SET_MM_EXE_FILE) can now fail if the file is already
+>> opened writable. Also, after sys_prctl(PR_SET_MM_EXE_FILE), the file
 > 
-> That sentence bothers me a bit. Can you explain what it VMM specific in
-> the acceptance protocol?
+> Just for completeness, this also affects PR_SET_MM_MAP when exe_fd is
+> set.
 
-For TDX we have a signle MapGPA hypercall to VMM plus TDAcceptPage for
-every accepted page to TDX Module. SEV-SNP has to something similar.
+Correct.
+
+> 
+>> cannot be opened writable. Note that we can already fail with -EACCES if
+>> the file doesn't have execute permissions.
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+> 
+> The biggest user I know and that I'm involved in is CRIU which heavily
+> uses PR_SET_MM_MAP (with a fallback to PR_SET_MM_EXE_FILE on older
+> kernels) during restore. Afair, criu opens the exe fd as an O_PATH
+> during dump and thus will use the same flag during restore when
+> opening it. So that should be fine.
+
+Yes.
+
+> 
+> However, if I understand the consequences of this change correctly, a
+> problem could be restoring workloads that hold a writable fd open to
+> their exe file at dump time which would mean that during restore that fd
+> would be reopened writable causing CRIU to fail when setting the exe
+> file for the task to be restored.
+
+If it's their exe file, then the existing VM_DENYWRITE handling would 
+have forbidden these workloads to open the fd of their exe file 
+writable, right? At least before doing any 
+PR_SET_MM_MAP/PR_SET_MM_EXE_FILE. But that should rule out quite a lot 
+of cases we might be worried about, right?
+
+> 
+> Which honestly, no idea how many such workloads exist. (I know at least
+> of runC and LXC need to sometimes reopen to rexec themselves (weird bug
+> to protect against attacking the exe file) and thus re-open
+> /proc/self/exe but read-only.)
+> 
+>>   kernel/fork.c | 39 ++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 34 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/fork.c b/kernel/fork.c
+>> index 6bd2e52bcdfb..5d904878f19b 100644
+>> --- a/kernel/fork.c
+>> +++ b/kernel/fork.c
+>> @@ -476,6 +476,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   {
+>>   	struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
+>>   	struct rb_node **rb_link, *rb_parent;
+>> +	struct file *exe_file;
+>>   	int retval;
+>>   	unsigned long charge;
+>>   	LIST_HEAD(uf);
+>> @@ -493,7 +494,10 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
+>>   
+>>   	/* No ordering required: file already has been exposed. */
+>> -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
+>> +	exe_file = get_mm_exe_file(oldmm);
+>> +	RCU_INIT_POINTER(mm->exe_file, exe_file);
+>> +	if (exe_file)
+>> +		deny_write_access(exe_file);
+>>   
+>>   	mm->total_vm = oldmm->total_vm;
+>>   	mm->data_vm = oldmm->data_vm;
+>> @@ -638,8 +642,13 @@ static inline void mm_free_pgd(struct mm_struct *mm)
+>>   #else
+>>   static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
+>>   {
+>> +	struct file *exe_file;
+>> +
+>>   	mmap_write_lock(oldmm);
+>> -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
+>> +	exe_file = get_mm_exe_file(oldmm);
+>> +	RCU_INIT_POINTER(mm->exe_file, exe_file);
+>> +	if (exe_file)
+>> +		deny_write_access(exe_file);
+>>   	mmap_write_unlock(oldmm);
+>>   	return 0;
+>>   }
+>> @@ -1163,11 +1172,19 @@ void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+>>   	 */
+>>   	old_exe_file = rcu_dereference_raw(mm->exe_file);
+>>   
+>> -	if (new_exe_file)
+>> +	if (new_exe_file) {
+>>   		get_file(new_exe_file);
+>> +		/*
+>> +		 * exec code is required to deny_write_access() successfully,
+>> +		 * so this cannot fail
+>> +		 */
+>> +		deny_write_access(new_exe_file);
+>> +	}
+>>   	rcu_assign_pointer(mm->exe_file, new_exe_file);
+>> -	if (old_exe_file)
+>> +	if (old_exe_file) {
+>> +		allow_write_access(old_exe_file);
+>>   		fput(old_exe_file);
+>> +	}
+>>   }
+>>   
+>>   int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+>> @@ -1194,10 +1211,22 @@ int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
+>>   	}
+>>   
+>>   	/* set the new file, lockless */
+>> +	ret = deny_write_access(new_exe_file);
+>> +	if (ret)
+>> +		return -EACCES;
+>>   	get_file(new_exe_file);
+>> +
+>>   	old_exe_file = xchg(&mm->exe_file, new_exe_file);
+>> -	if (old_exe_file)
+>> +	if (old_exe_file) {
+>> +		/*
+>> +		 * Don't race with dup_mmap() getting the file and disallowing
+>> +		 * write access while someone might open the file writable.
+>> +		 */
+>> +		mmap_read_lock(mm);
+>> +		allow_write_access(old_exe_file);
+>>   		fput(old_exe_file);
+>> +		mmap_read_unlock(mm);
+>> +	}
+>>   	return 0;
+>>   }
+>>   
+>> -- 
+>> 2.31.1
+>>
+> 
+
 
 -- 
- Kirill A. Shutemov
+Thanks,
+
+David / dhildenb
+
