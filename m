@@ -2,108 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9597B3E9DFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849983E9E08
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhHLFhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 01:37:48 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59962
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234416AbhHLFhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:37:46 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 61DE640C8D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628746641;
-        bh=lLP3PSQ1cyi3LClcOEB98n6hc5vl9XavCsPRRMlIR60=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=R/RVHvfx3j2arhmzpcvWWxcXNI2ydCP9BDS/LtZZmKrxVoZXWtHyiVTqf2uYiPnld
-         HotHtC7ru4TYDVkW2GHB8vqDvsJDGjfTv0ENwsVjxAX4TucRBH2LcqtR+kG69HqORO
-         OrAQd85Ua/oQeRFj3t3B+DexoWDl8afbfSZklu/VDlXRUj18OjC8nbZS7oFXEL86D8
-         ByTAhpKrRVJGL/dID9b+RqlYHy3tqpdfRXbIZvNgR2bv1qbtdcYQvOM7vKDFA97FQ3
-         9wUE98cWBvGiqNgUApg+zu5I4BxQunGcF0fT7oGu+DStqAroaR5f3O/uzgjIlmOWee
-         TS9h9+jhQ78Yg==
-Received: by mail-ot1-f69.google.com with SMTP id i15-20020a056830158fb02905025f3e48c9so1905746otr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:37:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lLP3PSQ1cyi3LClcOEB98n6hc5vl9XavCsPRRMlIR60=;
-        b=eb1e9w5i4xHBjfmozfy9gW4zSxvesrFalD6vpAidBLwx5vyrbWGsvGZ7/GDWJMrV1i
-         TTGIHWUSv5opKdpBqFIMDL/07lF2+uUucYa9MJufIFKh8o/sG+qHs5Nbt4SaXC1bmdj/
-         fm2dyaBbYBnnOXcP7Tlmbr3Yqsd0bIU++iaxy/crJt37kW3C27X02dAoOWw05AenvZVx
-         4NPT55CKHfeVd0WtYaL/4Q0/eDwMNGmIdmTfY7XtKg3rcDN4gVlrYRZJzJtsnidrKlSV
-         zaFcwaqFCIH+Ytsv7ymwwaXa9RAruOxCjGyh4zvqBjafrB+vVkqI5eqlF7I1zwwqqIfK
-         YDog==
-X-Gm-Message-State: AOAM533aUjrRULsKmk2ztihCHzMV0aAbfJdH8HpCNilWJIhbJjKmQ0UF
-        WPFB77J1fKweryKs4JlLOR3BPq/EMKzJjxf8l7f5Sz6Y9MwW00qd1hzDagkbqFpAn32ALeR7Gvj
-        tVUdO508wES/sg+eX0ALHsvfnGFK8IaUGNa6mB1/NCB0WvsLuYYhr9Bshrg==
-X-Received: by 2002:aca:34c4:: with SMTP id b187mr2051538oia.139.1628746640188;
-        Wed, 11 Aug 2021 22:37:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxO0aGh6aGuBGFSPUJ1KmdjnWuWBwT62mHXtoJD+Vh2YxX7I5H1TaPq6pL5kWcNm5a7qcE/GBEKFY/LYmWnVGY=
-X-Received: by 2002:aca:34c4:: with SMTP id b187mr2051524oia.139.1628746639935;
- Wed, 11 Aug 2021 22:37:19 -0700 (PDT)
+        id S234427AbhHLFlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 01:41:21 -0400
+Received: from thoth.sbs.de ([192.35.17.2]:55164 "EHLO thoth.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234370AbhHLFlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 01:41:20 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 17C5ehC6015961
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 07:40:43 +0200
+Received: from [167.87.241.87] ([167.87.241.87])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17C5egR6026855;
+        Thu, 12 Aug 2021 07:40:43 +0200
+Subject: Re: [PATCH] scripts/gdb: rework lx-symbols gdb script
+To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kieran Bingham <kbingham@kernel.org>
+References: <20210811133152.904945-1-mlevitsk@redhat.com>
+ <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
+ <6ebb9699530e245f33628c10bc774035fe7bfc84.camel@redhat.com>
+ <4d9e6fbf-48d6-58f9-98ae-ed2e7b72317f@siemens.com>
+ <5b593e0db73301bab605d75536309c94eb306292.camel@redhat.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <b38ecc05-d207-9627-13d4-681532b9bc10@siemens.com>
+Date:   Thu, 12 Aug 2021 07:40:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210812042305.277642-1-koba.ko@canonical.com> <4374EE78-86B9-43BF-B387-8C51C15CB943@holtmann.org>
-In-Reply-To: <4374EE78-86B9-43BF-B387-8C51C15CB943@holtmann.org>
-From:   Koba Ko <koba.ko@canonical.com>
-Date:   Thu, 12 Aug 2021 13:37:09 +0800
-Message-ID: <CAJB-X+W22r8sDhKj0LwtLCu9h2f1f=mX65nQtAN9nr=UujjDSw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: msft: add a bluetooth parameter, msft_enable
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Archie Pusaka <apusaka@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5b593e0db73301bab605d75536309c94eb306292.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 1:29 PM Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Koba,
->
-> > With Intel AC9560, follow this scenario and can't turn on bt since.
-> > 1. turn off BT
-> > 2. then suspend&resume multiple times
-> > 3. turn on BT
-> >
-> > Get this error message after turn on bt.
-> > [ 877.194032] Bluetooth: hci0: urb 0000000061b9a002 failed to resubmit (113)
-> > [ 886.941327] Bluetooth: hci0: Failed to read MSFT supported features (-110)
-> >
-> > Remove msft from compilation would be helpful.
-> > Turn off msft would be also helpful.
-> >
-> > Because msft is enabled as default and can't turn off without
-> > compliation,
-> > Introduce a bluetooth parameter, msft_enable, to control.
-> >
-> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> > ---
-> > include/net/bluetooth/hci_core.h |  1 +
-> > net/bluetooth/hci_core.c         | 16 ++++++++++++++++
-> > net/bluetooth/msft.c             | 30 +++++++++++++++++++++++++++++-
-> > 3 files changed, 46 insertions(+), 1 deletion(-)
->
-> NAK.
->
-> This is for the Intel guys to figure out. Otherwise I am going to disable MSFT extension for AC9560 completely. What is your hw_variant for that hardware?
-Would you please guide to dump hw_variant? thanks
->
-> Regards
->
-> Marcel
->
+On 11.08.21 22:41, Maxim Levitsky wrote:
+> On Wed, 2021-08-11 at 22:15 +0200, Jan Kiszka wrote:
+>> On 11.08.21 22:10, Maxim Levitsky wrote:
+>>> On Wed, 2021-08-11 at 21:01 +0200, Jan Kiszka wrote:
+>>>> On 11.08.21 15:31, Maxim Levitsky wrote:
+>>>>> Fix several issues that are present in lx-symbols script:
+>>>>>
+>>>>> * Track module unloads by placing another software breakpoint at
+>>>>>   'free_module'
+>>>>>   (force uninline this symbol just in case), and use remove-symbol-file
+>>>>>   gdb command to unload the symobls of the module that is unloading.
+>>>>>
+>>>>>   That gives the gdb a chance to mark all software breakpoints from
+>>>>>   this module as pending again.
+>>>>>   Also remove the module from the 'known' module list once it is unloaded.
+>>>>>
+>>>>> * Since we now track module unload, we don't need to reload all
+>>>>>   symbols anymore when 'known' module loaded again
+>>>>>   (that can't happen anymore).
+>>>>>   This allows reloading a module in the debugged kernel to finish
+>>>>>   much faster, while lx-symbols tracks module loads and unloads.
+>>>>>
+>>>>> * Disable/enable all gdb breakpoints on both module load and unload
+>>>>>   breakpoint hits, and not only in 'load_all_symbols' as was done before.
+>>>>>   (load_all_symbols is no longer called on breakpoint hit)
+>>>>>   That allows gdb to avoid getting confused about the state of the
+>>>>>   (now two) internal breakpoints we place.
+>>>>>   Otherwise it will leave them in the kernel code segment, when
+>>>>>   continuing which triggers a guest kernel panic as soon as it skips
+>>>>>   over the 'int3' instruction and executes the garbage tail of the optcode
+>>>>>   on which the breakpoint was placed.
+>>>>>
+>>>>> * Block SIGINT while the script is running as this seems to crash gdb
+>>>>>
+>>>>> * Add a basic check that kernel is already loaded into the guest memory
+>>>>>   to avoid confusing errors.
+>>>>>
+>>>>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>>>>> ---
+>>>>>  kernel/module.c              |   8 +-
+>>>>>  scripts/gdb/linux/symbols.py | 203 +++++++++++++++++++++++------------
+>>>>>  2 files changed, 143 insertions(+), 68 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/module.c b/kernel/module.c
+>>>>> index ed13917ea5f3..242bd4bb0b55 100644
+>>>>> --- a/kernel/module.c
+>>>>> +++ b/kernel/module.c
+>>>>> @@ -906,8 +906,12 @@ int module_refcount(struct module *mod)
+>>>>>  }
+>>>>>  EXPORT_SYMBOL(module_refcount);
+>>>>>  
+>>>>> -/* This exists whether we can unload or not */
+>>>>> -static void free_module(struct module *mod);
+>>>>> +/* This exists whether we can unload or not
+>>>>> + * Keep it uninlined to provide a reliable breakpoint target,
+>>>>> + * e.g. for the gdb helper command 'lx-symbols'.
+>>>>> + */
+>>>>> +
+>>>>> +static noinline void free_module(struct module *mod);
+>>>>>  
+>>>>>  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+>>>>>  		unsigned int, flags)
+>>>>
+>>>> You likely want and need to push that as separate patch, analogously to
+>>>> be02a1862304.
+>>>
+>>> I will do.
+>>>
+>>>> And as you are factoring the patch, maybe think about whether you can
+>>>> split the changes to symbols.py into logical steps as well. The commit
+>>>> messages suggests that, thought that might be misleading.
+>>>
+>>> I can try doing that.
+>>>
+>>>>> diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+>>>>> index 08d264ac328b..78e278fb4bad 100644
+>>>>> --- a/scripts/gdb/linux/symbols.py
+>>>>> +++ b/scripts/gdb/linux/symbols.py
+>>>>> @@ -14,45 +14,23 @@
+>>>>>  import gdb
+>>>>>  import os
+>>>>>  import re
+>>>>> +import signal
+>>>>>  
+>>>>>  from linux import modules, utils
+>>>>>  
+>>>>>  
+>>>>>  if hasattr(gdb, 'Breakpoint'):
+>>>>> -    class LoadModuleBreakpoint(gdb.Breakpoint):
+>>>>> -        def __init__(self, spec, gdb_command):
+>>>>> -            super(LoadModuleBreakpoint, self).__init__(spec, internal=True)
+>>>>> +
+>>>>> +    class BreakpointWrapper(gdb.Breakpoint):
+>>>>> +        def __init__(self, callback, **kwargs):
+>>>>> +            super(BreakpointWrapper, self).__init__(internal=True, **kwargs)
+>>>>>              self.silent = True
+>>>>> -            self.gdb_command = gdb_command
+>>>>> +            self.callback = callback
+>>>>>  
+>>>>>          def stop(self):
+>>>>> -            module = gdb.parse_and_eval("mod")
+>>>>> -            module_name = module['name'].string()
+>>>>> -            cmd = self.gdb_command
+>>>>> -
+>>>>> -            # enforce update if object file is not found
+>>>>> -            cmd.module_files_updated = False
+>>>>> -
+>>>>> -            # Disable pagination while reporting symbol (re-)loading.
+>>>>> -            # The console input is blocked in this context so that we would
+>>>>> -            # get stuck waiting for the user to acknowledge paged output.
+>>>>> -            show_pagination = gdb.execute("show pagination", to_string=True)
+>>>>> -            pagination = show_pagination.endswith("on.\n")
+>>>>> -            gdb.execute("set pagination off")
+>>>>> -
+>>>>> -            if module_name in cmd.loaded_modules:
+>>>>> -                gdb.write("refreshing all symbols to reload module "
+>>>>> -                          "'{0}'\n".format(module_name))
+>>>>> -                cmd.load_all_symbols()
+>>>>> -            else:
+>>>>> -                cmd.load_module_symbols(module)
+>>>>> -
+>>>>> -            # restore pagination state
+>>>>> -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
+>>>>> -
+>>>>> +            self.callback()
+>>>>>              return False
+>>>>>  
+>>>>> -
+>>>>>  class LxSymbols(gdb.Command):
+>>>>>      """(Re-)load symbols of Linux kernel and currently loaded modules.
+>>>>>  
+>>>>> @@ -61,15 +39,52 @@ are scanned recursively, starting in the same directory. Optionally, the module
+>>>>>  search path can be extended by a space separated list of paths passed to the
+>>>>>  lx-symbols command."""
+>>>>>  
+>>>>> -    module_paths = []
+>>>>> -    module_files = []
+>>>>> -    module_files_updated = False
+>>>>> -    loaded_modules = []
+>>>>> -    breakpoint = None
+>>>>> -
+>>>>>      def __init__(self):
+>>>>>          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
+>>>>>                                          gdb.COMPLETE_FILENAME)
+>>>>> +        self.module_paths = []
+>>>>> +        self.module_files = []
+>>>>> +        self.module_files_updated = False
+>>>>> +        self.loaded_modules = {}
+>>>>> +        self.internal_breakpoints = []
+>>>>> +
+>>>>> +    # prepare GDB for loading/unloading a module
+>>>>> +    def _prepare_for_module_load_unload(self):
+>>>>> +
+>>>>> +        self.blocked_sigint = False
+>>>>> +
+>>>>> +        # block SIGINT during execution to avoid gdb crash
+>>>>> +        sigmask = signal.pthread_sigmask(signal.SIG_BLOCK, [])
+>>>>> +        if not signal.SIGINT in sigmask:
+>>>>> +            self.blocked_sigint = True
+>>>>> +            signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+>>>>> +
+>>>>> +        # disable all breakpoints to workaround a GDB bug where it would
+>>>>> +        # not correctly resume from an internal breakpoint we placed
+>>>>> +        # in do_module_init/free_module (it leaves the int3
+>>>>
+>>>> Seems the comment ends prematurely.
+>>>
+>>> Yep, GDB leaves the int3 instruction in the guest memory, and the guest dies after
+>>> it encounters the truncated instruction that follows it.
+>>>
+>>>> Any reference to a gdb bug tracker entry? Or affected versions? The
+>>>> description is a bit too fuzzy.
+>>>
+>>> Well stricly speaking this isn't a GDB bug.
+>>> GDB documentation explictly prohibits what we are doing in this script.
+>>>
+>>> https://sourceware.org/gdb/current/onlinedocs/gdb/Breakpoints-In-Python.html
+>>>
+>>> "You should not alter the execution state of the inferior (i.e., step, next, etc.), alter the current frame context 
+>>> (i.e., change the current active frame), or alter, add or delete any breakpoint. 
+>>> As a general rule, you should not alter any data within GDB or the inferior at this time."
+>>>
+>>> However we are reloading the whole symbol table as a response to a breakpoint.
+>>>
+>>> However there is pretty much no other way to do what this script does so the next best thing
+>>> is to workaround this as was already partially done, and I just made it more robust.
+>>>
+>>> Same for blocking SIGINT which I added, which otherwise crashes GDB
+>>> while the symbols are reloading.
+>>> It probably will also be blamed on this.
+>>>
+>>> Do you think I might have some luck taking with GDB maintainers and asking them to support
+>>> this use case of updating symbol table when a breakpoint hits?
+>>>
+>>
+>> We should at least clarify if it's a GDB bug or our use case is outside
+>> of the envisioned ones, thus need to account for that. Then we should
+>> not call it a bug.
+> 
+> 100% agree.
+> 
+> Do you think it makes sense to CC gdb@sourceware.org to this discussion or
+> should I make a new post there. I do think I have some energy to try and discuss
+> this issue with them.
+
+Better start a new thread there, setting the full context and
+referencing this one.
+
+Jan
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
