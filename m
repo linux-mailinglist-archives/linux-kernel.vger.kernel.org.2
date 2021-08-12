@@ -2,120 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E1B3E9C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A5C3E9C07
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbhHLBkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S233385AbhHLBqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbhHLBkd (ORCPT
+        with ESMTP id S229851AbhHLBqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:40:33 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27B3C0613D5;
-        Wed, 11 Aug 2021 18:40:08 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id n7so8019982ljq.0;
-        Wed, 11 Aug 2021 18:40:08 -0700 (PDT)
+        Wed, 11 Aug 2021 21:46:02 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF5CC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:45:38 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id e14so4769961qkg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0MSveyJjLXImxpdu0C0hUm8m0UQzwOm1b1lGIh3ij04=;
-        b=kEvhNsPT1Mh5koxgm7JSi5bsT4K1jkqzm2sz4aUEorl7EezBk0pZo7NLctdYWuQjkT
-         FFXpPBc9HPFBov4bB1UIpGTzPtJP+vvfWLcKnugdCXkGvciV2gCfLQkgtjWMoPUX1tqp
-         GihIJhyKFrV2C4Yu5zm4PddYljKHLZKEX03IGVpO+IkvCBtqhtlReHb9mhX4SgRV+7MO
-         IyoZP68aD6PuncWbBTtRCisnb5AsFjC5F1+1HkCCkDKsJurt7+fmK4aNt4afYkGMej0J
-         q6FHiRf+RyJYNtE1VtcouOSTbgJPSkjKAYqP36qUyf+XAbYlcoHwW1NX/VwwWqs0Iy1t
-         W/OQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sVlaR7t/R94hd0zmYZq3g+CzewEHmfZEE8FNG6b25iA=;
+        b=nTPBIgSR1+DYRuTz126NpJG3MGlML74YM1Le2P962yisyrtzCnff17kwv/c5kyI7i5
+         k83aktakoC1RDga4lJ6tpulebc9ZSC51LDDl2Zq3S3sHSaqssdBI/jblrsHMO7MDGXNF
+         /nSk5dmIM+FwBtSIrNcRk0EI7SZSD1NCSYxz4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0MSveyJjLXImxpdu0C0hUm8m0UQzwOm1b1lGIh3ij04=;
-        b=YcGeRnqMDQ0s4FT6vANUAz0ChDfJ47iaVybMQXyGluzw3ceSDOCar1eq5q5VL2+MMU
-         +c/iuE2xJsM772f6mE741bRkiPrs2b/FPyqznkq8N1yxOgSRadAneRhSEAUs7KlxJfRu
-         vLxUAn3lNUxsKCWmbLPaJLCsV6Bjv9UCGuwWAb1Ai1KsFbRou/vWM/PP8STObXEvzyf9
-         pQBeEZ9QhEgzYradTbr3CD6RUXnZcuDYUb+vFxKHNIA1gN0yCPUx86B6oiIYsQ2YWJM+
-         eL5rL9vH2kSiK52v1gKP8IhumhOjge/s8Ma+0QYp2MqlQwA3UU6EuCpjTynDjLXQFuUH
-         pN0A==
-X-Gm-Message-State: AOAM532JfQB42oG2oKaMPk4T9I8VMMC0rLufyF8PThSNzLKckd6FexOo
-        PfRc4ZsUMaDXSTCunjEKEXflGWuND/g=
-X-Google-Smtp-Source: ABdhPJxyf3JPf06cPGGELMY241Zb0GE/+7If22YtmX0pWKEEVkdOW8zH47pzihPAXvxexIiIxh46Qw==
-X-Received: by 2002:a05:651c:b28:: with SMTP id b40mr1107549ljr.504.1628732406876;
-        Wed, 11 Aug 2021 18:40:06 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id p8sm122711ljn.108.2021.08.11.18.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 18:40:06 -0700 (PDT)
-Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
- domain drivers
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210701232728.23591-1-digetx@gmail.com>
- <20210701232728.23591-3-digetx@gmail.com>
- <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
- <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com>
- <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
- <a5dfdf59-f5b5-d28e-6b02-b0c860ba8d80@gmail.com>
- <CAPDyKFq+ExjbGrN=yUUXPKfN_fGrwY6EAYn9a6VUFFU_VjhC=g@mail.gmail.com>
- <6741262b-386b-7635-fd42-ebd4f877fddd@gmail.com>
- <CAPDyKFpJhX51rOnvbYTmj9Akd+xX+b7xcSWt87UDrvMEfYOZ7Q@mail.gmail.com>
- <aab38f90-f7b2-900f-897b-470b81d473f2@gmail.com>
- <8e110e08-1268-464c-6edb-0a3f640d43d6@gmail.com>
-Message-ID: <e21106ab-95ef-fc97-1744-dc58180e321a@gmail.com>
-Date:   Thu, 12 Aug 2021 04:40:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sVlaR7t/R94hd0zmYZq3g+CzewEHmfZEE8FNG6b25iA=;
+        b=Pu3I0VOv0+ufHebkpcQoBlmAbQ5SpCEvyphgzAWESizuweWoW0TGbeWWVKFoA/aTvJ
+         ib8O5M7QOHlN8g32qVfj+5ZxvNNSttrrj677i7Zm3aO0dGPpo3Glm/Uu6kFOSvXjDt+d
+         18gmQw+nCfEPAjDMh7V2I/1MMoxImWm1gcbkRmWeJIyrc3qZAM4/Oq8cJFPu6eRmnMMl
+         CNUnKGnS663BwWmQ4TRYEgTsjYF2AyPjUFdXth6WU0tcnbPrPGcoqLsAB/jOaiML85uF
+         E7fv6rDxs7PZfG7oLgM8vSzR+qgTo/+aaRlz0NDLVFrxDizfbt+ygyI7qYIy+C7jc7B4
+         EYpw==
+X-Gm-Message-State: AOAM532WcOA37c3sTpHfccv/md7ANzuImAjvX7IXXv5EO9mTs1R2YFt5
+        zF67Ma+GPPJFj2ulOMwzuukBInptP7jjzve0bNdjPg==
+X-Google-Smtp-Source: ABdhPJwC6Y9w83pWVs6KCrJupE+hkSFvjIO2mfTRLAyBQ2KctEfzgqHFI5pSOZvgZ0DFQfcOgMhPzyLR0BQnU31+3lE=
+X-Received: by 2002:a37:8505:: with SMTP id h5mr2116592qkd.241.1628732737520;
+ Wed, 11 Aug 2021 18:45:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8e110e08-1268-464c-6edb-0a3f640d43d6@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210811024247.1144246-1-stevensd@google.com> <20210811024247.1144246-6-stevensd@google.com>
+ <b5fff839-3242-7080-13f7-61c0e40af304@arm.com>
+In-Reply-To: <b5fff839-3242-7080-13f7-61c0e40af304@arm.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 12 Aug 2021 10:45:26 +0900
+Message-ID: <CAD=HUj7u71cdPfJ5t2tC8A26YOgwDe8H7i-h78f_MeRmuNUySQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] dma-iommu: account for min_align_mask
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.08.2021 01:41, Dmitry Osipenko пишет:
->>> I am not saying you should change the clock rate. The current code
->>> path that runs via devm_tegra_core_dev_init_opp_table() just calls
->>> clk_get_rate and then dev_pm_opp_set_rate() with the current rate to
->>> vote for the corresponding OPP level. Right?
->>>
->>> Isn't this exactly what you want? No?
->> I see now what you meant, it's actually a simpler variant and it works
->> too. Thank you for the suggestion, I'll prepare v8.
->>
-> My bad, it doesn't work at all. I actually need to use the rpm_pstate or
-> something else because performance state is coupled with the enable
-> state of the device. If device is never rpm-suspended by consumer
-> driver, then the initialized performance state is never dropped. Hence I
-> want to initialize the state which is set only when device is resumed.
-> 
-> I'll need to think more about it.
+On Thu, Aug 12, 2021 at 4:12 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-08-11 03:42, David Stevens wrote:
+> > From: David Stevens <stevensd@chromium.org>
+> >
+> > For devices which set min_align_mask, swiotlb preserves the offset of
+> > the original physical address within that mask. Since __iommu_dma_map
+> > accounts for non-aligned addresses, passing a non-aligned swiotlb
+> > address with the swiotlb aligned size results in the offset being
+> > accounted for twice in the size passed to iommu_map_atomic. The extra
+> > page exposed to DMA is also not cleaned up by __iommu_dma_unmap, since
+> > tht at function unmaps with the correct size. This causes mapping failures
+> > if the iova gets reused, due to collisions in the iommu page tables.
+> >
+> > To fix this, pass the original size to __iommu_dma_map, since that
+> > function already handles alignment.
+> >
+> > Additionally, when swiotlb returns non-aligned addresses, there is
+> > padding at the start of the bounce buffer that needs to be cleared.
+> >
+> > Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > ---
+> >   drivers/iommu/dma-iommu.c | 23 ++++++++++++-----------
+> >   1 file changed, 12 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index 89b689bf801f..ffa7e8ef5db4 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -549,9 +549,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+> >       struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> >       struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> >       struct iova_domain *iovad = &cookie->iovad;
+> > -     size_t aligned_size = org_size;
+> > -     void *padding_start;
+> > -     size_t padding_size;
+> > +     void *tlb_start;
+> > +     size_t aligned_size, iova_off, mapping_end_off;
+> >       dma_addr_t iova;
+> >
+> >       /*
+> > @@ -566,24 +565,26 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+> >               if (phys == DMA_MAPPING_ERROR)
+> >                       return DMA_MAPPING_ERROR;
+> >
+> > -             /* Cleanup the padding area. */
+> > -             padding_start = phys_to_virt(phys);
+> > -             padding_size = aligned_size;
+> > +             iova_off = iova_offset(iovad, phys);
+> > +             tlb_start = phys_to_virt(phys - iova_off);
+> >
+> > +             /* Cleanup the padding area. */
+> >               if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+> >                   (dir == DMA_TO_DEVICE ||
+> >                    dir == DMA_BIDIRECTIONAL)) {
+> > -                     padding_start += org_size;
+> > -                     padding_size -= org_size;
+> > +                     mapping_end_off = iova_off + org_size;
+> > +                     memset(tlb_start, 0, iova_off);
+> > +                     memset(tlb_start + mapping_end_off, 0,
+> > +                            aligned_size - mapping_end_off);
+> > +             } else {
+> > +                     memset(tlb_start, 0, aligned_size);
+> >               }
+> > -
+> > -             memset(padding_start, 0, padding_size);
+> >       }
+> >
+> >       if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> >               arch_sync_dma_for_device(phys, org_size, dir);
+> >
+> > -     iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
+> > +     iova = __iommu_dma_map(dev, phys, org_size, prot, dma_mask);
+>
+> This doesn't feel right - what if the IOVA granule was equal to or
+> smaller than min_align_mask, wouldn't you potentially end up mapping the
+> padding rather than the data?
 
-GENPD core has these false assumptions:
+The phys value returned by swiotlb_tbl_map_single is the address of
+the start of the data in the swiotlb buffer, so the range that needs
+to be mapped is [phys, phys + org_size). __iommu_dma_map will handle
+this the same as it handles a misaligned mapping in the non-swiotlb
+case. It might map memory before/after the desired range, but it will
+map the entire range and iova will be the mapped address of phys. Is
+there something I'm missing there?
 
-1. It assumes that by default all devices are at zero performance level
-at a boot time. This is not true for Tegra because hardware is
-pre-initialized independently from GENPD.
+That said, considering that memory before phys might be mapped, I
+think there is actually still a bug. The buffer allocated by swiotlb
+needs to be aligned to the granule size to ensure that preceding
+swiotlb slots aren't mapped. The swiotlb does align allocations larger
+than a page to PAGE_SIZE, but if IO_TLB_SIZE < IOVA granule <
+PAGE_SIZE, then there can be problems. That can't happen if PAGE_SIZE
+is 4k, but it can for larger page sizes. I'll add a fix for that to
+the next version of this series.
 
-2. It assumes that nothing depends on performance level and devices can
-operate at any level at any time. Not true for Tegra and other platforms
-where performance level is coupled with clocks state of attached
-devices. OPP framework glues clock and performance level together for
-us, which works good so far.
+-David
 
-Hence I either need to patch every driver to use dev_pm_opp_set_rate in
-order to sync clk rate with the perf level at device runtime, or I need
-to preset the rpm perf level to allow GENPD core to set the level before
-device is resumed.
+> Robin.
+>
+> >       if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
+> >               swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
+> >       return iova;
+> >
