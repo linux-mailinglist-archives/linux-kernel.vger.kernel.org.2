@@ -2,83 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE20C3E9D12
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BD23E9D24
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhHLDxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhHLDxo (ORCPT
+        id S230245AbhHLECw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:02:52 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39336 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229518AbhHLECu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:53:44 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA055C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso13093157pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bquCFNIcCvdCbwIly19HSfu6034c+GYMih/X5YZeEUc=;
-        b=FnDDISYVm2p6A4RVyJW8Sa32+5J7DpqcCegOdTwai4N/VkU/tKFXjF/2gQ7rFHbQlp
-         FwRRWU9n9DAvtbfPp5JT5ChcbeGb7riK9XjmUa3GMU40VHW+A+y0JnX+XdPCBlCi1xGd
-         gtieHNK5DXET5MnzZRK3eB8LndpICtygcequ0jEjiiPQ0TTMYNBLVxvo8jMXFgG0i+Ld
-         gy/ZRotP4Fu7lzD5PHxCuS8EMj7S6fJ1biEDtyd8LjQXa/FcZcIaPpdyx7gtY17qBhoK
-         fhiSM1M4UzEkXEd+TsMjtJc9jtoxCV58+SndupIDRsclXPV7hE+6p4TIoGNifnflzu5j
-         AKiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bquCFNIcCvdCbwIly19HSfu6034c+GYMih/X5YZeEUc=;
-        b=kGff3hEHiyDSrQUtalB5VL7pNQpA80pqOd5yi4sNBExMcJVZcfX/2NiKD4u6KF4cqT
-         KBdUm6Aesq0C0Gr2D/CaisOUrqCv4RUfevxWjNwTTYTk3Sq18DAFhI47Vob2n4z6pR9t
-         N8SqE/4mBNR8zu71C7/cYk3SvlJtpcLlM/BdxFiV871MuIwM5dngFd+divRhCYPyZ+e1
-         ymC5RyOa0Mlt1yiyLWI9XXRTWafkCNZENh3QQB0yWVcnMYXMUFHGV3QStYxorcbE7DQp
-         21Gd11SvfyPX3IGpEwlKLgFM7Q0T4Zg+f3NjrnaqDW0DpUIQS6fdoHan2Odesj+qLw/a
-         hCrw==
-X-Gm-Message-State: AOAM533Rdk1XHUn7VLNp9DgG8QlTM1Qq1Kk6PYFxxorlynka3NvPNMT1
-        6yUeGlKRZLPvmUObov4cnJ3YiA==
-X-Google-Smtp-Source: ABdhPJzgbdGIsXFDYBD0by0Ubi7BaLW73k/Bb4qfddZ5rXI4H4FjGzEYgpNxg5+S6pjYDThMf6DdAw==
-X-Received: by 2002:a17:902:dad0:b029:12c:83ca:fdd4 with SMTP id q16-20020a170902dad0b029012c83cafdd4mr1870821plx.77.1628740399104;
-        Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id c9sm1241024pgq.58.2021.08.11.20.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 20:53:18 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:23:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
-Message-ID: <20210812035316.jen62wsrl4tlbrpm@vireshk-i7>
-References: <cover.1628682874.git.viresh.kumar@linaro.org>
- <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
- <YRPN8zjp1wqkHg6t@google.com>
+        Thu, 12 Aug 2021 00:02:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0UikIOfn_1628740941;
+Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UikIOfn_1628740941)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 12 Aug 2021 12:02:21 +0800
+From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
+To:     kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org
+Subject: [PATCH v2 1/2] KVM: Refactor kvm_arch_vcpu_fault() to return a struct page pointer
+Date:   Thu, 12 Aug 2021 12:02:19 +0800
+Message-Id: <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YRQcZqCWwVH8bCGc@google.com>
+References: <YRQcZqCWwVH8bCGc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRPN8zjp1wqkHg6t@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-08-21, 14:17, Quentin Perret wrote:
-> Also, we can probably afford calling dev_pm_opp_get_opp_count() from the
-> em_register callback as it is not a hot path, which would avoid wasting
-> some 'resident' memory here that is only used during init.
+From: Sean Christopherson <seanjc@google.com>
 
-We also need to make sure that OPPs are available in init(), else we
-fail. So, we can't really move that out.
+Refactor kvm_arch_vcpu_fault() to return 'struct page *' instead of
+'vm_fault_t' to simplify architecture specific implementations that do
+more than return SIGBUS.  Currently this only applies to s390, but a
+future patch will move x86's pio_data handling into x86 where it belongs.
 
+No functional changed intended.
+
+Cc: Hou Wenlong <houwenlong93@linux.alibaba.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+---
+ arch/arm64/kvm/arm.c       |  4 ++--
+ arch/mips/kvm/mips.c       |  4 ++--
+ arch/powerpc/kvm/powerpc.c |  4 ++--
+ arch/s390/kvm/kvm-s390.c   | 12 ++++--------
+ arch/x86/kvm/x86.c         |  4 ++--
+ include/linux/kvm_host.h   |  2 +-
+ virt/kvm/kvm_main.c        |  5 ++++-
+ 7 files changed, 17 insertions(+), 18 deletions(-)
+
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e9a2b8f27792..83f4ffe3e4f2 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -161,9 +161,9 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	return ret;
+ }
+ 
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ {
+-	return VM_FAULT_SIGBUS;
++	return NULL;
+ }
+ 
+ 
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index af9dd029a4e1..ae79874e6fd2 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -1053,9 +1053,9 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
+ 	return -ENOIOCTLCMD;
+ }
+ 
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ {
+-	return VM_FAULT_SIGBUS;
++	return NULL;
+ }
+ 
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index be33b5321a76..b9c21f9ab784 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -2090,9 +2090,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	return r;
+ }
+ 
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ {
+-	return VM_FAULT_SIGBUS;
++	return NULL;
+ }
+ 
+ static int kvm_vm_ioctl_get_pvinfo(struct kvm_ppc_pvinfo *pvinfo)
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 02574d7b3612..e1b69833e228 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -4979,17 +4979,13 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	return r;
+ }
+ 
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ {
+ #ifdef CONFIG_KVM_S390_UCONTROL
+-	if ((vmf->pgoff == KVM_S390_SIE_PAGE_OFFSET)
+-		 && (kvm_is_ucontrol(vcpu->kvm))) {
+-		vmf->page = virt_to_page(vcpu->arch.sie_block);
+-		get_page(vmf->page);
+-		return 0;
+-	}
++	if (vmf->pgoff == KVM_S390_SIE_PAGE_OFFSET && kvm_is_ucontrol(vcpu->kvm))
++		return virt_to_page(vcpu->arch.sie_block);
+ #endif
+-	return VM_FAULT_SIGBUS;
++	return NULL;
+ }
+ 
+ /* Section: memory related */
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3cedc7cc132a..1e3bbe5cd33a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5347,9 +5347,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	return r;
+ }
+ 
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ {
+-	return VM_FAULT_SIGBUS;
++	return NULL;
+ }
+ 
+ static int kvm_vm_ioctl_set_tss_addr(struct kvm *kvm, unsigned long addr)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 492d183dd7d0..a949de534722 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -995,7 +995,7 @@ long kvm_arch_dev_ioctl(struct file *filp,
+ 			unsigned int ioctl, unsigned long arg);
+ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 			 unsigned int ioctl, unsigned long arg);
+-vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf);
++struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf);
+ 
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext);
+ 
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 30d322519253..f7d21418971b 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3448,7 +3448,10 @@ static vm_fault_t kvm_vcpu_fault(struct vm_fault *vmf)
+ 		    &vcpu->dirty_ring,
+ 		    vmf->pgoff - KVM_DIRTY_LOG_PAGE_OFFSET);
+ 	else
+-		return kvm_arch_vcpu_fault(vcpu, vmf);
++		page = kvm_arch_vcpu_fault(vcpu, vmf);
++	if (!page)
++		return VM_FAULT_SIGBUS;
++
+ 	get_page(page);
+ 	vmf->page = page;
+ 	return 0;
 -- 
-viresh
+2.31.1
+
