@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C8D3EA6BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5601D3EA6C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhHLOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:45:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
+        id S238120AbhHLOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:46:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236872AbhHLOpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:45:52 -0400
+        id S235298AbhHLOqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:46:18 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CA6C610A4;
-        Thu, 12 Aug 2021 14:45:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AE93610A4;
+        Thu, 12 Aug 2021 14:45:53 +0000 (UTC)
 Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1mEBxV-004ZhH-KC; Thu, 12 Aug 2021 15:45:25 +0100
-Date:   Thu, 12 Aug 2021 15:45:25 +0100
-Message-ID: <87y29690xm.wl-maz@kernel.org>
+        id 1mEBxv-004Zhc-8x; Thu, 12 Aug 2021 15:45:51 +0100
+Date:   Thu, 12 Aug 2021 15:45:50 +0100
+Message-ID: <87wnoq90wx.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
 To:     Valentin Schneider <valentin.schneider@arm.com>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [PATCH v3 02/13] genirq: Define ack_irq() and eoi_irq() helpers
-In-Reply-To: <877dgq9450.mognet@arm.com>
+Subject: Re: [PATCH v3 05/13] genirq: Let purely flow-masked ONESHOT irqs through unmask_threaded_irq()
+In-Reply-To: <875ywa944c.mognet@arm.com>
 References: <20210629125010.458872-1-valentin.schneider@arm.com>
-        <20210629125010.458872-3-valentin.schneider@arm.com>
-        <87a6ln9k7i.wl-maz@kernel.org>
-        <877dgq9450.mognet@arm.com>
+        <20210629125010.458872-6-valentin.schneider@arm.com>
+        <87bl639l8n.wl-maz@kernel.org>
+        <875ywa944c.mognet@arm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -48,53 +48,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 14:36:11 +0100,
+On Thu, 12 Aug 2021 14:36:35 +0100,
 Valentin Schneider <valentin.schneider@arm.com> wrote:
 > 
-> On 12/08/21 08:49, Marc Zyngier wrote:
-> > On Tue, 29 Jun 2021 13:49:59 +0100,
+> On 12/08/21 08:26, Marc Zyngier wrote:
+> > On Tue, 29 Jun 2021 13:50:02 +0100,
 > > Valentin Schneider <valentin.schneider@arm.com> wrote:
-> >> +void eoi_irq(struct irq_desc *desc)
-> >> +{
-> >> +	desc->irq_data.chip->irq_eoi(&desc->irq_data);
-> >> +
-> >> +	if (desc->irq_data.chip->flags & IRQCHIP_AUTOMASKS_FLOW)
-> >> +		irq_state_clr_flow_masked(desc);
+> >> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> >> index ef30b4762947..e6d6d32ddcbc 100644
+> >> --- a/kernel/irq/manage.c
+> >> +++ b/kernel/irq/manage.c
+> >> @@ -1107,7 +1107,7 @@ static void irq_finalize_oneshot(struct irq_desc *desc,
+> >>  	desc->threads_oneshot &= ~action->thread_mask;
+> >>  
+> >>  	if (!desc->threads_oneshot && !irqd_irq_disabled(&desc->irq_data) &&
+> >> -	    irqd_irq_masked(&desc->irq_data))
+> >> +	    (irqd_irq_masked(&desc->irq_data) | irqd_irq_flow_masked(&desc->irq_data)))
+> >>  		unmask_threaded_irq(desc);
 > >
-> > I just realised that this has a good chance to result in a mess with
-> > KVM, and specially the way we let the vGIC deactivate an interrupt
-> > directly from the guest, without any SW intervention (the magic HW bit
-> > in the LRs).
-> >
-> 
-> I didn't think to consider those. It can't ever be simple, can it...
-> 
-> > With this, interrupts routed to a guest (such as the timers) will
-> > always have the IRQD_IRQ_FLOW_MASKED flag set, which will never be
-> > cleared.
-> >
-> > I wonder whether this have a chance to interact badly with
-> > mask/unmask, or with the rest of the flow...
+> > The bitwise OR looks pretty odd. It is probably fine given that both
+> > side of the expression are bool, but still. I can fix this locally.
 > >
 > 
-> Isn't it the other way around? That is, eoi_irq() will clear
-> IRQD_IRQ_FLOW_MASKED regardless of what happens within chip->irq_eoi(),
-> so we would end up with !IRQD_IRQ_FLOW_MASKED even if the (physical) IRQ
-> remains Active (irqd_is_forwarded_to_vcpu() case).
+> Thomas suggested that back in v1:
+> 
+>   https://lore.kernel.org/lkml/87v98v4lan.ffs@nanos.tec.linutronix.de/
+> 
+> I did look at the (arm64) disassembly diff back then and was convinced by
+> what I saw, though I'd have to go do that again as I can't remember much
+> else.
 
-Ah, I missed (again) that we always clear the flag, no matter what.
-
-> This does not entirely match reality (if the IRQ is still Active then it is
-> still "flow-masked"), but AFAICT this doesn't impact our handling of
-> forwarded IRQs: IRQD_IRQ_FLOW_MASKED is only really relevant from ack_irq()
-> to eoi_irq(), and deactivation-from-the-guest (propagated via LR.HW=1)
-> happens after that.
-
-Right. So we can have an active interrupt that is not flow-masked.
-That's counter-intuitive, but that's the GIC architecture for you...
-
-I'll take the series for a ride in -next. If anything breaks, we
-should know pretty soon.
+Ah, fair enough.
 
 Thanks,
 
