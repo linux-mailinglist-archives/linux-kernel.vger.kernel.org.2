@@ -2,178 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF443EA58F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807F43EA597
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbhHLNXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237681AbhHLNVg (ORCPT
+        id S237859AbhHLNXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:23:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26759 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237713AbhHLNXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:21:36 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D276FC00EA84
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:21:10 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id h2so10538307lji.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yjZ/rfFZv9yz218MWmQe0cfR6IJjiAXfYaqScy1hjno=;
-        b=rDTzdG/m/QTa4eJgPkUCeC5RJseS2Zz/fq9jOKWkTMSYWZhDlp5ftM4xgBhvpZg2qX
-         594bbYnY1UsoTYoLNbrTbeUCw+cl89ayOYwTIYijQzIfmc3SoMmE9/WIUHN4iPAONAGD
-         WYhlVfjb7/6K5yHjV4TwHnSksm2/Rn5b0znQVgt9rBdm6RELohCx6lvsZFtbgI8vd3GW
-         AVRZFaMmEP1phjpu04/2tqIDUxsMiX+ymd4RMngkSj1j+o3g0w3ygP/qM7Qv/6z6XH72
-         kIWDM6aThkLQMmFMGGJzISorgAKe+NhB5JmF+iB1aphytoo61l92ekbVL2uJw+vMCk3l
-         MW7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yjZ/rfFZv9yz218MWmQe0cfR6IJjiAXfYaqScy1hjno=;
-        b=Tvyox6LmcmXOv3PYnH43yMt5fuh6PKpwoUqW2XmeNdgdy6bk0eGHBBKpZ5+90tr/kP
-         rC/Zuo0Q4Fu+4L08MAnXz9IPp/Dws95DBERvmzxij0o6IPIXuEZOxOpFgzyktYSmJmB2
-         vh4KL2K3ArlvBKKhPEIZgmE8IPElBBVoxVZG8wINNAKMmYvOhOanC9eZMsPphDxAwPaM
-         le/biYjFAKEEzpJ5a/hnlp3B61V9axcu7yTjgm1lTBfDoJWFWDIVUctHWIy7Y3GDxYQ6
-         ip4zUbZuU454xKwuPhRBRrYWaVRrCNkSY2w2FlSGAfAsE83J55SxxiBSY4PVbESj8C8p
-         zL3A==
-X-Gm-Message-State: AOAM53129XKKduN+8kg6sPIk4/MTY9UpMR1tDJPUjEfLQlj4WM2Dpgjp
-        dwzsy/yfVPnXVINidZIu7DLZVkU+TDp+fQ==
-X-Google-Smtp-Source: ABdhPJwD6ODMBgPaE5cXR1FoZjeCM22LtEudadyrDARL5mQ4ObYER8CTLSU8NPChYE4bmb94Mr+dBQ==
-X-Received: by 2002:a2e:a4d5:: with SMTP id p21mr2934156ljm.214.1628774468960;
-        Thu, 12 Aug 2021 06:21:08 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id c10sm262390lfb.136.2021.08.12.06.21.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 06:21:08 -0700 (PDT)
-Subject: Re: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually
- enable the domain
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <45bfb6ae-d131-10d7-1924-48c98a957667@linaro.org>
-Date:   Thu, 12 Aug 2021 16:21:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 09:23:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628774599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mtlBBB1F9pk9Pfv1s5MAjMAoMZ3oz0r19HRN+gKvS5Q=;
+        b=aNQzXT8+NhU0UYRC1wkVWpUGRPiqNVVLgjM3DN+Ll5inq72W3GjFpzqS/ncsI0m4Jo56f7
+        odHBtbX7sU3KfVp1fFajXe/chwA4C9BNbOTIrp+6DHQ2ir1uTxEUsLE8Rj5AyCTAgpGYq4
+        4ESWF+RjUagi/isFlMrWqwZDvTiy2lA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-uEiIYdvjOea4lIMjdeej8w-1; Thu, 12 Aug 2021 09:23:13 -0400
+X-MC-Unique: uEiIYdvjOea4lIMjdeej8w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65AA3190B2AF;
+        Thu, 12 Aug 2021 13:23:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2495A81F73;
+        Thu, 12 Aug 2021 13:23:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YRUbXoMzWVX9X/Vf@casper.infradead.org>
+References: <YRUbXoMzWVX9X/Vf@casper.infradead.org> <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk> <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, trond.myklebust@primarydata.com,
+        darrick.wong@oracle.com, hch@lst.de, jlayton@kernel.org,
+        sfrench@samba.org, torvalds@linux-foundation.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use ->direct_IO() not ->readpage()
 MIME-Version: 1.0
-In-Reply-To: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3088326.1628774588.1@warthog.procyon.org.uk>
+Date:   Thu, 12 Aug 2021 14:23:08 +0100
+Message-ID: <3088327.1628774588@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/2021 05:54, Bjorn Andersson wrote:
-> The general expectation is that powering on a power-domain should make
-> the power domain deliver some power, and if a specific performace state
-> is needed further requests has to be made.
-> 
-> But in contrast with other power-domain implementations (e.g. rpmpd) the
-> RPMh does not have an interface to enable the power, so the driver has
-> to vote for a particular corner (performance level) in rpmh_power_on().
-> 
-> But the corner is never initialized, so a typical request to simply
-> enable the power domain would not actually turn on the hardware. Further
-> more, when no more clients vote for a performance state (i.e. the
-> aggregated vote is 0) the power domain would be turn off.
-> 
-> Fix both of these issues by always voting for a corner with non-zero
-> value, when the power domain is enabled.
-> 
-> The tracking of the lowest non-zero corner is performed to handle the
-> corner case if there's ever a domain with a non-zero lowest corner, in
-> which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-> would be allowed to use this lowest corner.
-> 
-> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Resending because the hunk in rpmhpd_update_level_mapping() was left in the
-> index.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-So, colleagues, what is the fate of this patch? Is it going to be 
-applied? Or we agree that current approach (power_on + 
-set_performance_state) is the expected behaviour? My patches on gdsc 
-rework depend on this patch, but I can rework in them in favour of 
-required-opp approach.
-
+> After submitting the IO here ...
 > 
->   drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
+> > +	if (ret != -EIOCBQUEUED)
+> > +		swapfile_read_complete(&ki->iocb, ret, 0);
 > 
-> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-> index fa209b479ab3..76ea6b053ef0 100644
-> --- a/drivers/soc/qcom/rpmhpd.c
-> +++ b/drivers/soc/qcom/rpmhpd.c
-> @@ -30,6 +30,7 @@
->    * @active_only:	True if it represents an Active only peer
->    * @corner:		current corner
->    * @active_corner:	current active corner
-> + * @enable_corner:	lowest non-zero corner
->    * @level:		An array of level (vlvl) to corner (hlvl) mappings
->    *			derived from cmd-db
->    * @level_count:	Number of levels supported by the power domain. max
-> @@ -47,6 +48,7 @@ struct rpmhpd {
->   	const bool	active_only;
->   	unsigned int	corner;
->   	unsigned int	active_corner;
-> +	unsigned int	enable_corner;
->   	u32		level[RPMH_ARC_MAX_LEVELS];
->   	size_t		level_count;
->   	bool		enabled;
-> @@ -385,13 +387,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
->   static int rpmhpd_power_on(struct generic_pm_domain *domain)
->   {
->   	struct rpmhpd *pd = domain_to_rpmhpd(domain);
-> -	int ret = 0;
-> +	unsigned int corner;
-> +	int ret;
->   
->   	mutex_lock(&rpmhpd_lock);
->   
-> -	if (pd->corner)
-> -		ret = rpmhpd_aggregate_corner(pd, pd->corner);
-> -
-> +	corner = max(pd->corner, pd->enable_corner);
-> +	ret = rpmhpd_aggregate_corner(pd, corner);
->   	if (!ret)
->   		pd->enabled = true;
->   
-> @@ -436,6 +438,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
->   		i--;
->   
->   	if (pd->enabled) {
-> +		/* Ensure that the domain isn't turn off */
-> +		if (i < pd->enable_corner)
-> +			i = pd->enable_corner;
-> +
->   		ret = rpmhpd_aggregate_corner(pd, i);
->   		if (ret)
->   			goto out;
-> @@ -472,6 +478,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
->   	for (i = 0; i < rpmhpd->level_count; i++) {
->   		rpmhpd->level[i] = buf[i];
->   
-> +		/* Remember the first non-zero corner */
-> +		if (!rpmhpd->enable_corner)
-> +			rpmhpd->enable_corner = i;
-> +
->   		/*
->   		 * The AUX data may be zero padded.  These 0 valued entries at
->   		 * the end of the map must be ignored.
+> We only touch the 'ki' here ... if the caller didn't call read_complete
 > 
+> > +	swapfile_put_kiocb(ki);
+> 
+> Except for here, which is only touched in order to put the refcount.
+> 
+> So why can't swapfile_read_complete() do the work of freeing the ki?
 
+When I was doing something similar for cachefiles, I couldn't get it to work
+like that.  I'll have another look at that.
 
--- 
-With best wishes
-Dmitry
+David
+
