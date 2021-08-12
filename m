@@ -2,163 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A3D3EABF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C123EABFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237841AbhHLUl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
+        id S237855AbhHLUmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237746AbhHLUly (ORCPT
+        with ESMTP id S234884AbhHLUmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:41:54 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324E9C0617A8;
-        Thu, 12 Aug 2021 13:41:28 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l18so10096648wrv.5;
-        Thu, 12 Aug 2021 13:41:28 -0700 (PDT)
+        Thu, 12 Aug 2021 16:42:23 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D40C061756;
+        Thu, 12 Aug 2021 13:41:57 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id w10so6401316qtj.3;
+        Thu, 12 Aug 2021 13:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=syTDIp7PiP+AZjzDYgWMScbh9JnkTpS8wJ/cVx+Gs1M=;
-        b=Q5WRUJ3myVlg59GgTCXeJx00IHuP+JQt6euiBQoSPgwLoiKHe3doy6cRbgODFU/zbt
-         PctWu5EoqQPnZ0mNq9RaPWIpQXlRPIBciLriVDOig46D28yNGrx9VKSy9P17IkS2W5J5
-         JAR7qTrrQC7JKQJkuP3ev6nXOdoAh0hHFJzb9AteZ2hTrze331Caa7QXhfIDo/TyJCg4
-         fnX7mksG50YGQ7BQHOSv5JBgzgQ1wR4y6riU4BAEGj9HVcePywbIS2Oi47aaHRp5j2vn
-         Gvglw1UrNz2crqp4JP+jOA62ymhtF/HJIVc/7NfDNULlebqNwdkIJbNDYlntlCh6qAO/
-         B1Hw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=plMp/LjZg42NsXR6HAsNlOG32rI0PkLKt5n9XUzanC8=;
+        b=SYWnentim0D4AQARu53t814wnUXhtq4Sb0aZirAUhj4I1gyQ8R4vfPoX3B3JNW203S
+         9CTS6wKWKKWqBkjDelqRpK46K3F7T5tYup6ijwmPhLfA1sI4+kAAHOF8SZ+mhavdON3E
+         Q7v3RWOgQit45fY92Zlhc3Z1OTmzrymJ8u26CBmwZt/QBuo1Z3yp9hrt20QuOBv7HL6i
+         YTV/onyRQAq9YhIhZss1yxOF/qmZK6A5uf8HK4655djFoPcsQeZjgZg8a9kHVlU/ZLTT
+         06qrfZn3Fvt/J5ZMN+C2+Kn7Tws3kqnIES0agdtr4B4ZWeRYsKZtRnlV6pOLwGS9zP1b
+         4E6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=syTDIp7PiP+AZjzDYgWMScbh9JnkTpS8wJ/cVx+Gs1M=;
-        b=Z2v+oGEtdafqxOTWUDwCO1q6IXkSM9jW0Ke2eOeb0PVc6IQ5phTb7q61uOi236BRQX
-         6DWSD9alKMEG5rpspE73aum7FytQHHfqXnnGt7VQ4Cx6iFQTUQ6Lxzo3ZGGHxGO/lgO1
-         KN8Y4gUO9NHGSa7hFIzKow7TcDLENIbLlsfrkoOZeDmW9RnLocMmGB12maHrlrIbH+MD
-         alebtErpYg+ctacjWyiuntGy+o1iPKtAbDlhyigGqCA4wQP0IpzbiVchbYj5I5sCjvjK
-         LmynYFeHYVxyXlcYvWDYfdXf4y2hgn45LN589BefXGpWprtmaTzIVXnFvn/yjSKMJjcc
-         xiog==
-X-Gm-Message-State: AOAM533Zu7dzehVxDHLzEB2kaXttikK4w98Ne5St22XY5mH5bKvGkHLe
-        AlaBTVu/mqAfJmksJ/IZSeM=
-X-Google-Smtp-Source: ABdhPJw8cXFyTyLdG6JCAtbc4sjRmCNTK77Ir+mIF3DcL3bP6srisXk3GfWyXEwIMY1ekRG9lqltNg==
-X-Received: by 2002:adf:9d92:: with SMTP id p18mr5984751wre.20.1628800886867;
-        Thu, 12 Aug 2021 13:41:26 -0700 (PDT)
-Received: from localhost.localdomain ([148.252.132.210])
-        by smtp.gmail.com with ESMTPSA id i10sm10296556wmq.21.2021.08.12.13.41.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=plMp/LjZg42NsXR6HAsNlOG32rI0PkLKt5n9XUzanC8=;
+        b=bcy21QYjQFaZBiMrs6S5QlHmSC6vbYavqy3C8cYW5zjpryvVO1anuO3+rY21JAntkV
+         7YBy3Q8k7pFVVZwUn95cPDqRhnN1EXL+FxQNrK6tghM/AgV9PbywGRQD1nyQLc3xidkE
+         akWD6mXA0NuUSow3s4Cpfnk9hyLWq2c+NFnfzRqbvtoKBL55EoLoWodRAPapgOzvUfrC
+         jqUjIHx5GTa/6EWGQJreVuBTy99I47YhjsMvxpVkrfjnbkqNthLNHTuyrv4jxRYgPP0l
+         nWQVornwAFtSpYluBKWgA9AR7eS3ARQnF1NwYyGkdEj85wtTQVZFqo26oMMfvWAlTj0b
+         EYCQ==
+X-Gm-Message-State: AOAM533sqHHYiY6RPQQnrRJrD1r5gTtye4JD88zBYXxT+jyy3gsvhLRD
+        wA0pcJGjVniHiEU1FmH7E48=
+X-Google-Smtp-Source: ABdhPJwpLDUhYhoM8cXeQua02cls7C1TE2wnIM9nGfig9WAjj7XGJuKseD4/LaDR2rvwwYfODiwZ3Q==
+X-Received: by 2002:a05:622a:154:: with SMTP id v20mr5638983qtw.148.1628800916824;
+        Thu, 12 Aug 2021 13:41:56 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:e89f:d077:9161:1bd7])
+        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.41.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 13:41:26 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com,
-        asml.silence@gmail.com
-Subject: [PATCH v2 2/2] io_uring: don't retry with truncated iter
-Date:   Thu, 12 Aug 2021 21:40:47 +0100
-Message-Id: <71d0711b4e28d01cd06e2c96db5adf0b766ac27f.1628780390.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1628780390.git.asml.silence@gmail.com>
-References: <cover.1628780390.git.asml.silence@gmail.com>
+        Thu, 12 Aug 2021 13:41:56 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH v2 0/8] phy-rockchip-inno-usb2: support rk356x usb2phy
+Date:   Thu, 12 Aug 2021 16:41:08 -0400
+Message-Id: <20210812204116.2303617-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[   74.211232] BUG: KASAN: stack-out-of-bounds in iov_iter_revert+0x809/0x900
-[   74.212778] Read of size 8 at addr ffff888025dc78b8 by task
-syz-executor.0/828
-[   74.214756] CPU: 0 PID: 828 Comm: syz-executor.0 Not tainted
-5.14.0-rc3-next-20210730 #1
-[   74.216525] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[   74.219033] Call Trace:
-[   74.219683]  dump_stack_lvl+0x8b/0xb3
-[   74.220706]  print_address_description.constprop.0+0x1f/0x140
-[   74.224226]  kasan_report.cold+0x7f/0x11b
-[   74.226085]  iov_iter_revert+0x809/0x900
-[   74.227960]  io_write+0x57d/0xe40
-[   74.232647]  io_issue_sqe+0x4da/0x6a80
-[   74.242578]  __io_queue_sqe+0x1ac/0xe60
-[   74.245358]  io_submit_sqes+0x3f6e/0x76a0
-[   74.248207]  __do_sys_io_uring_enter+0x90c/0x1a20
-[   74.257167]  do_syscall_64+0x3b/0x90
-[   74.257984]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Good Afternoon,
 
-old_size = iov_iter_count();
-...
-iov_iter_revert(old_size - iov_iter_count());
+This is my series to support the usb2 phy devices on the rk356x.
+The rk356x phy has a single muxed interrupt and has moved the usb2phy
+nodes out of the grf and into their own nodes.
+The phy needs to tie back into the grf for register control, similar to
+the rv1108.
+By moving the phys into their own nodes, they now have full
+#address_cells = 2 register addresses, but they still reside below the 32bit
+mmio range.
 
-If iov_iter_revert() is done base on the initial size as above, and the
-iter is truncated and not reexpanded in the middle, it miscalculates
-borders causing problems. This trace is due to no one reexpanding after
-generic_write_checks().
+This driver series only supports the host configuration for the rk356x.
+I have have tested it on the following:
+rk3566 - Pine64 Quartz64 Model A
+rk3399 - Pine64 Rockpro64
 
-Avoid reverting truncated iterators, so io_uring would fail requests
-with EAGAIN instead of retrying them.
+Please provide feedback and comments as you see fit.
 
-Cc: stable@vger.kernel.org
-Reported-by: Palash Oswal <oswalpalash@gmail.com>
-Reported-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Reported-and-tested-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Changelog:
+v2:
+- correct the order of the usb2phy-grf dt-bindings patch, thanks Johan
+- correct the conditional requirements of phy-rockchip-inno-usb2, thanks
+  Johan
+- drop increase generic-ohci clocks patch, thanks Heiko
+- correct rk356x.dtsi ordering
+- fix a dtbs-check callout
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index efd818419014..2e168051262d 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2462,6 +2462,16 @@ static void kiocb_end_write(struct io_kiocb *req)
- 	}
- }
- 
-+static inline bool io_check_truncated(struct iov_iter *i, size_t len)
-+{
-+	if (unlikely(i->truncated)) {
-+		if (iov_iter_count(i) != len)
-+			return false;
-+		i->truncated = false;
-+	}
-+	return true;
-+}
-+
- #ifdef CONFIG_BLOCK
- static bool io_resubmit_prep(struct io_kiocb *req)
- {
-@@ -2469,6 +2479,8 @@ static bool io_resubmit_prep(struct io_kiocb *req)
- 
- 	if (!rw)
- 		return !io_req_prep_async(req);
-+	if (!io_check_truncated(&rw->iter, req->result))
-+		return false;
- 	/* may have left rw->iter inconsistent on -EIOCBQUEUED */
- 	iov_iter_revert(&rw->iter, req->result - iov_iter_count(&rw->iter));
- 	return true;
-@@ -3328,6 +3340,8 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
- 		/* no retry on NONBLOCK nor RWF_NOWAIT */
- 		if (req->flags & REQ_F_NOWAIT)
- 			goto done;
-+		if (!io_check_truncated(iter, io_size))
-+			goto done;
- 		/* some cases will consume bytes even on error returns */
- 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
- 		ret = 0;
-@@ -3467,6 +3481,8 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 		kiocb_done(kiocb, ret2, issue_flags);
- 	} else {
- copy_iov:
-+		if (!io_check_truncated(iter, io_size))
-+			goto done;
- 		/* some cases will consume bytes even on error returns */
- 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
- 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+Peter Geis (8):
+  dt-bindings: soc: rockchip: add rk3568-usb2phy-grf
+  dt-bindings: phy: phy-rockchip-inno-usb2: add rk3568 documentation
+  phy: phy-rockchip-inno-usb2: support #address_cells = 2
+  phy: phy-rockchip-inno-usb2: support standalone phy nodes
+  phy: phy-rockchip-inno-usb2: support muxed interrupts
+  phy: phy-rockchip-inno-usb2: add rk3568 support
+  arm64: dts: rockchip: add usb2 nodes to rk3568 device tree
+  arm64: dts: rockchip: add Quartz64-A usb2 support
+
+ .../bindings/phy/phy-rockchip-inno-usb2.yaml  |  31 ++-
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   1 +
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  52 ++++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      |  98 +++++++
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 259 ++++++++++++++----
+ 5 files changed, 383 insertions(+), 58 deletions(-)
+
 -- 
-2.32.0
+2.25.1
 
