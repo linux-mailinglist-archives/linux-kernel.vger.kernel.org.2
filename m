@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37BD3EA27F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7134D3EA289
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhHLJv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236473AbhHLJv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:51:27 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE91C061765;
-        Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id f91so2772188qva.9;
-        Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=htwOi/42dSt1MVAut+eNHPxAK4pGRot7RbkIWoqqfs0=;
-        b=OI4C/TjHmNznIdl1nugLFRonui4B/yt0SLYLlU4RaUCykGbJDTfw9h4EbACGlMp5nf
-         P06mcFjEkh7aKDQkTndzgvqIBEIduft8l/tO6KKz2atH6cwUrTnzKk4ApAqYeLRxPA9a
-         aTOs8z/66j7ixae2+TVdSqebZRl7gqSJmCu0+pfuem+DnLr8zPNLTld2N0bGbcppIjsi
-         dNnZmZrM4BEqIH3OJnDx2kdho3rIKkOXjzU2PU559iClDXhxhFOsltaD2hnn0bCPofFG
-         FGLQG57Cx/vMhP3NPz3+9ZGp7IXtbYL+xJ79EnX097dShRs7km2cn+zR0ULCVOK7GdAB
-         a9LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=htwOi/42dSt1MVAut+eNHPxAK4pGRot7RbkIWoqqfs0=;
-        b=VeUc1jrxFaYgTapin/nRyViigZ0xz8TUGrYYEDuc5lsml+3la8EjDpp8dT9JoUMynt
-         /oQSA8qvGBY/+ZPAdDh0zLb91S2SAz5f7cKwufhjzJU1PyosOm4hK1LiTYJMRlqa2lit
-         VQ9vB5CccTwE4xc4NsmzbmIc1tMrn7/BjdmR/YangoYzdo3dXVMv32Qg+t7S0ADGURNm
-         cTgnC1DNkKUiqc8RPzJ2BcM0iiktR8IDh9cGBt0csC9Gic1Y1nDAg8xl6DmypN38tbXR
-         Div2+MVvED9gwjY19Z7HO5Wuof3Ek/NiMFnkAS4GzJM4veM67FKTGFqGU++DqZ6HyZvb
-         KmYA==
-X-Gm-Message-State: AOAM533LozuZmJt1FykiOb8ykLwT7rVGquFb8ADw70E0QWWlumsbQ93w
-        nBqYFtd2qUFIqkhZaHMfJ8M=
-X-Google-Smtp-Source: ABdhPJyoFXgwZp/ypiOQ+eZrhgjZcdKI4XjJMPNoF8x/MxZo+MnToRU/W7UR6BVkfYYesdzKglyoiA==
-X-Received: by 2002:a0c:c78f:: with SMTP id k15mr3009456qvj.20.1628761862016;
-        Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id n10sm817684qtk.89.2021.08.12.02.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 02:51:01 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 2/2] Documentation/process/maintainer-pgp-guide: Replace broken link to PGP path finder
-Date:   Thu, 12 Aug 2021 09:50:30 +0000
-Message-Id: <20210812095030.4704-2-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210812095030.4704-1-sj38.park@gmail.com>
-References: <20210812095030.4704-1-sj38.park@gmail.com>
+        id S236564AbhHLJyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:54:36 -0400
+Received: from mga18.intel.com ([134.134.136.126]:22918 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236556AbhHLJy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:54:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="202481037"
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="202481037"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 02:53:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="676707067"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2021 02:53:53 -0700
+Subject: Re: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config
+ in preset value
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
+ <YQ6TEhMLXH/4r4BS@qmqm.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <38e93996-d815-1b62-8d93-8b9bbed384a6@intel.com>
+Date:   Thu, 12 Aug 2021 12:54:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <YQ6TEhMLXH/4r4BS@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On 7/08/21 5:05 pm, Micha³ Miros³aw wrote:
+> On Wed, Aug 04, 2021 at 01:52:21PM +0300, Adrian Hunter wrote:
+>> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
+>>> When host controller uses programmable clock presets but doesn't
+>>> advertise programmable clock support, we can only guess what frequency
+>>> it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
+>>> value in this case.
+>> If the preset value doesn't make sense, why use it at all?
+> 
+> If I understand the spec correctly, when the preset value is used the
+> values in Clock Control register are ignored by the module and so the
+> module can also actually use a different clock source than the ones
+> available to the driver directly.
 
-PGP pathfinder[1], which is suggested for finding a trust path to
-unknown PGP keys by 'maintainer-pgp-guide.rst', is not working now.
-This commit replaces it with other available tools.
+I don't remember, does it say that in the spec?
 
-[1] https://pgp.cs.uu.nl/
+>                                   So either way the driver can't be
+> sure of the exact frequencu used. This is a cleanup to remove a case
+> when the code ignores a bit's value based on other unspecified assumptions.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/process/maintainer-pgp-guide.rst | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+Is this fixing a real issue?  It seems like switching from one undefined
+scenario to another.  Are either of which known to have ever happened?
 
-diff --git a/Documentation/process/maintainer-pgp-guide.rst b/Documentation/process/maintainer-pgp-guide.rst
-index 8f8f1fee92b8..29e7d7b1cd44 100644
---- a/Documentation/process/maintainer-pgp-guide.rst
-+++ b/Documentation/process/maintainer-pgp-guide.rst
-@@ -944,12 +944,11 @@ have on your keyring::
-     uid           [ unknown] Linus Torvalds <torvalds@kernel.org>
-     sub   rsa2048 2011-09-20 [E]
- 
--Next, open the `PGP pathfinder`_. In the "From" field, paste the key
--fingerprint of Linus Torvalds from the output above. In the "To" field,
--paste the key-id you found via ``gpg --search`` of the unknown key, and
--check the results:
--
--- `Finding paths to Linus`_
-+Next, find a trust path from Linus Torvalds to the key-id you found via ``gpg
-+--search`` of the unknown key.  For this, you can use several tools including
-+https://github.com/mricon/wotmate,
-+https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs, and
-+https://the.earth.li/~noodles/pathfind.html.
- 
- If you get a few decent trust paths, then it's a pretty good indication
- that it is a valid key. You can add it to your keyring from the
-@@ -962,6 +961,3 @@ administrators of the PGP Pathfinder service to not be malicious (in
- fact, this goes against :ref:`devs_not_infra`). However, if you
- do not carefully maintain your own web of trust, then it is a marked
- improvement over blindly trusting keyservers.
--
--.. _`PGP pathfinder`: https://pgp.cs.uu.nl/
--.. _`Finding paths to Linus`: https://pgp.cs.uu.nl/paths/79BE3E4300411886/to/C94035C21B4F2AEB.html
--- 
-2.17.1
+Perhaps we should leave it as is.
+
+> 
+> [...]
+>>> --- a/drivers/mmc/host/sdhci.c
+>>> +++ b/drivers/mmc/host/sdhci.c
+>>> @@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>>>  
+>>>  			pre_val = sdhci_get_preset_value(host);
+>>>  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+>>> -			if (host->clk_mul &&
+>>> -				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
+>>> +			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
+>>>  				clk = SDHCI_PROG_CLOCK_MODE;
+>>>  				real_div = div + 1;
+>>>  				clk_mul = host->clk_mul;
+>>> +				if (!clk_mul) {
+>>> +					/* The clock frequency is unknown. Assume undivided base. */
+>>> +					clk_mul = 1;
+>>> +				}
+>>>  			} else {
+>>>  				real_div = max_t(int, 1, div << 1);
+>>>  			}
 
