@@ -2,416 +2,740 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17333EAA44
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91863EAA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhHLScR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:32:17 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55556 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhHLScQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:32:16 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 86F9F209A3B0;
-        Thu, 12 Aug 2021 11:31:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 86F9F209A3B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628793110;
-        bh=pkQbqTdl+/AZKnjeX+sJbAnQw1xnsGlyrS0T34UZnik=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=j1h1g0PF8YZ7gDVKimnoFOI37E5kP+2Jff0yGA12xSg/EfekAnFgYEr9/3XQZFkSl
-         3zXlXyGoYmhlrDiGRBGGJtEB0sQ3QeLLN5oL2wYUBmhrlP3UxcERnSJ5qTVZ+nkfVV
-         YrodXTOevxRV38iC3xIe7lvAKgYmdaVng/H53BbM=
-Subject: Re: [RFC PATCH v7 0/4] arm64: Reorganize the unwinder and implement
- stack trace reliability checks
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
- <20210812132435.6143-1-madvenka@linux.microsoft.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <3a71bd4a-dc3c-eb66-6555-2f96877499f4@linux.microsoft.com>
-Date:   Thu, 12 Aug 2021 13:31:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233763AbhHLSfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233436AbhHLSfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:35:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E481B60C3E;
+        Thu, 12 Aug 2021 18:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628793320;
+        bh=XRxYOPiOXG/gONhVlUm/qPqQ2+Pk71oZCUL+uNAywVk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=haDB9CZYQfE13H8pZvDoMoOgLa96QpejyMa+gR30/NO7gpZm67BMIEKVpoeUYP89m
+         t+vANeSQwPsdOf2kWDISnl2t/D8x0+iHCep+N7fs7EY/cAiMIFaRRt1eescsSrhqIN
+         BFlJq9YLLdh27UB4pao0i0MdKeG/tIiltoqqbWRIvOerOlFcwxcMOmtJ+7FYp3I8ZU
+         L/VX0M6AMlgQnyG3T5NubVW626BiSAgZggP3MUWn7LiZKHdi2RjvWviZtpziJt/yNg
+         jtRI3sW8oUibu20i6lsfV3TZoQZMdE44y29sv8GnDb1quniKJgVpZV+n6m16v4442I
+         66mZF3tNvk+QQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Shannon Nelson <snelson@pensando.io>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ethernet: fix PTP_1588_CLOCK dependencies
+Date:   Thu, 12 Aug 2021 20:33:58 +0200
+Message-Id: <20210812183509.1362782-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210812132435.6143-1-madvenka@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The messages are not threaded properly.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I will resend the whole series with proper threading.
+The 'imply' keyword does not do what most people think it does, it only
+politely asks Kconfig to turn on another symbol, but does not prevent
+it from being disabled manually or built as a loadable module when the
+user is built-in. In the ICE driver, the latter now causes a link failure:
 
-I apologize.
+aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_eth_ioctl':
+ice_main.c:(.text+0x13b0): undefined reference to `ice_ptp_get_ts_config'
+ice_main.c:(.text+0x13b0): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_get_ts_config'
+aarch64-linux-ld: ice_main.c:(.text+0x13bc): undefined reference to `ice_ptp_set_ts_config'
+ice_main.c:(.text+0x13bc): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_set_ts_config'
+aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_prepare_for_reset':
+ice_main.c:(.text+0x31fc): undefined reference to `ice_ptp_release'
+ice_main.c:(.text+0x31fc): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_release'
+aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_rebuild':
 
-Madhavan
+This is a recurring problem in many drivers, and we have discussed
+it several times befores, without reaching a consensus. I'm providing
+a link to the previous email thread for reference, which discusses
+some related problems.
 
-On 8/12/21 8:24 AM, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> Make all stack walking functions use arch_stack_walk()
-> ======================================================
-> 
-> Currently, there are multiple functions in ARM64 code that walk the
-> stack using start_backtrace() and unwind_frame(). Convert all of
-> them to use arch_stack_walk(). This makes maintenance easier.
-> 
-> Reorganize the unwinder code for better consistency and maintenance
-> ===================================================================
-> 
-> Rename unwinder functions to unwind_*() similar to other architectures
-> for naming consistency.
-> 
-> Annotate all of the unwind_*() functions with notrace so they cannot be
-> ftraced and NOKPROBE_SYMBOL() so they cannot be kprobed. Ftrace and Kprobe
-> code can call the unwinder.
-> 
-> Redefine the unwinder loop and make it similar to other architectures.
-> Define the following:
-> 
-> 	unwind_start(&frame, task, fp, pc);
-> 	while (unwind_consume(&frame, consume_entry, cookie))
-> 		unwind_next(&frame);
-> 	return !unwind_failed(&frame);
-> 
-> unwind_start()
-> 	Same as the original start_backtrace().
-> 
-> unwind_consume()
-> 	This new function does two things:
-> 
-> 	- Calls consume_entry() to consume the return PC.
-> 
-> 	- Implements checks to determine whether the unwind should continue
-> 	  or terminate.
-> 
-> unwind_next()
-> 	Same as the original unwind_frame() except:
-> 
-> 	- the stack trace termination check has been moved from here to
-> 	  unwind_consume(). So, unwind_next() assumes that the fp is valid.
-> 
-> 	- unwind_frame() used to return an error value. This function only
-> 	  sets internal state and does not return anything. The state is
-> 	  retrieved via a helper. See next.
-> 
-> unwind_failed()
-> 	Return a boolean to indicate whether the stack trace completed
-> 	successfully or failed. arch_stack_walk() ignores the return
-> 	value. But arch_stack_walk_reliable() in the future will look
-> 	at the return value.
-> 
-> Unwind status
-> 	Introduce a new flag called "failed" in struct stackframe. Set this
-> 	flag when an error is encountered. If this flag is set, terminate
-> 	the unwind. Also, let the unwinder return the status to the caller.
-> 
-> Reliability checks
-> ==================
-> 
-> There are some kernel features and conditions that make a stack trace
-> unreliable. Callers may require the unwinder to detect these cases.
-> E.g., livepatch.
-> 
-> Introduce a new function called unwind_is_reliable() that will detect
-> these cases and return a boolean.
-> 
-> Introduce a new argument to unwind() called "need_reliable" so a caller
-> can tell unwind() that it requires a reliable stack trace. For such a
-> caller, any unreliability in the stack trace must be treated as a fatal
-> error and the unwind must be aborted.
-> 
-> Call unwind_is_reliable() from unwind_consume() like this:
-> 
-> 	if (frame->need_reliable && !unwind_is_reliable(frame)) {
-> 		frame->failed = true;
-> 		return false;
-> 	}
-> 
-> arch_stack_walk() passes "false" for need_reliable because its callers
-> don't care about reliability. arch_stack_walk() is used for debug and
-> test purposes.
-> 
-> Introduce arch_stack_walk_reliable() for ARM64. This works like
-> arch_stack_walk() except for two things:
-> 
-> 	- It passes "true" for need_reliable.
-> 
-> 	- It returns -EINVAL if unwind() aborts.
-> 
-> Introduce the first reliability check in unwind_is_reliable() - If
-> a return PC is not a valid kernel text address, consider the stack
-> trace unreliable. It could be some generated code.
-> 
-> Other reliability checks will be added in the future. Until all of the
-> checks are in place, arch_stack_walk_reliable() may not be used by
-> livepatch. But it may be used by debug and test code.
-> 
-> SYM_CODE check
-> ==============
-> 
-> SYM_CODE functions do not follow normal calling conventions. They cannot
-> be unwound reliably using the frame pointer. Collect the address ranges
-> of these functions in a special section called "sym_code_functions".
-> 
-> In unwind_is_reliable(), check the return PC against these ranges. If a
-> match is found, then consider the stack trace unreliable. This is the
-> second reliability check introduced by this work.
-> 
-> Last stack frame
-> ----------------
-> 
-> If a SYM_CODE function occurs in the very last frame in the stack trace,
-> then the stack trace is not considered unreliable. This is because there
-> is no more unwinding to do. Examples:
-> 
-> 	- EL0 exception stack traces end in the top level EL0 exception
-> 	  handlers.
-> 
-> 	- All kernel thread stack traces end in ret_from_fork().
-> ---
-> Changelog:
-> 
-> v7:
-> 	From Mark Rutland:
-> 
-> 	- Make the unwinder loop similar to other architectures.
-> 
-> 	- Keep details to within the unwinder functions and return a simple
-> 	  boolean to the caller.
-> 
-> 	- Convert some of the current code that contains unwinder logic to
-> 	  simply use arch_stack_walk(). I have converted all of them.
-> 
-> 	- Do not copy sym_code_functions[]. Just place it in rodata for now.
-> 
-> 	- Have the main loop check for termination conditions rather than
-> 	  having unwind_frame() check for them. In other words, let
-> 	  unwind_frame() assume that the fp is valid.
-> 
-> 	- Replace the big comment for SYM_CODE functions with a shorter
-> 	  comment.
-> 
-> 		/*
-> 		 * As SYM_CODE functions don't follow the usual calling
-> 		 * conventions, we assume by default that any SYM_CODE function
-> 		 * cannot be unwound reliably.
-> 		 *
-> 		 * Note that this includes:
-> 		 *
-> 		 * - Exception handlers and entry assembly
-> 		 * - Trampoline assembly (e.g., ftrace, kprobes)
-> 		 * - Hypervisor-related assembly
-> 		 * - Hibernation-related assembly
-> 		 * - CPU start-stop, suspend-resume assembly
-> 		 * - Kernel relocation assembly
-> 		 */
-> 
-> v6:
-> 	From Mark Rutland:
-> 
-> 	- The per-frame reliability concept and flag are acceptable. But more
-> 	  work is needed to make the per-frame checks more accurate and more
-> 	  complete. E.g., some code reorg is being worked on that will help.
-> 
-> 	  I have now removed the frame->reliable flag and deleted the whole
-> 	  concept of per-frame status. This is orthogonal to this patch series.
-> 	  Instead, I have improved the unwinder to return proper return codes
-> 	  so a caller can take appropriate action without needing per-frame
-> 	  status.
-> 
-> 	- Remove the mention of PLTs and update the comment.
-> 
-> 	  I have replaced the comment above the call to __kernel_text_address()
-> 	  with the comment suggested by Mark Rutland.
-> 
-> 	Other comments:
-> 
-> 	- Other comments on the per-frame stuff are not relevant because
-> 	  that approach is not there anymore.
-> 
-> v5:
-> 	From Keiya Nobuta:
-> 	
-> 	- The term blacklist(ed) is not to be used anymore. I have changed it
-> 	  to unreliable. So, the function unwinder_blacklisted() has been
-> 	  changed to unwinder_is_unreliable().
-> 
-> 	From Mark Brown:
-> 
-> 	- Add a comment for the "reliable" flag in struct stackframe. The
-> 	  reliability attribute is not complete until all the checks are
-> 	  in place. Added a comment above struct stackframe.
-> 
-> 	- Include some of the comments in the cover letter in the actual
-> 	  code so that we can compare it with the reliable stack trace
-> 	  requirements document for completeness. I have added a comment:
-> 
-> 	  	- above unwinder_is_unreliable() that lists the requirements
-> 		  that are addressed by the function.
-> 
-> 		- above the __kernel_text_address() call about all the cases
-> 		  the call covers.
-> 
-> v4:
-> 	From Mark Brown:
-> 
-> 	- I was checking the return PC with __kernel_text_address() before
-> 	  the Function Graph trace handling. Mark Brown felt that all the
-> 	  reliability checks should be performed on the original return PC
-> 	  once that is obtained. So, I have moved all the reliability checks
-> 	  to after the Function Graph Trace handling code in the unwinder.
-> 	  Basically, the unwinder should perform PC translations first (for
-> 	  rhe return trampoline for Function Graph Tracing, Kretprobes, etc).
-> 	  Then, the reliability checks should be applied to the resulting
-> 	  PC.
-> 
-> 	- Mark said to improve the naming of the new functions so they don't
-> 	  collide with existing ones. I have used a prefix "unwinder_" for
-> 	  all the new functions.
-> 
-> 	From Josh Poimboeuf:
-> 
-> 	- In the error scenarios in the unwinder, the reliable flag in the
-> 	  stack frame should be set. Implemented this.
-> 
-> 	- Some of the other comments are not relevant to the new code as
-> 	  I have taken a different approach in the new code. That is why
-> 	  I have not made those changes. E.g., Ard wanted me to add the
-> 	  "const" keyword to the global section array. That array does not
-> 	  exist in v4. Similarly, Mark Brown said to use ARRAY_SIZE() for
-> 	  the same array in a for loop.
-> 
-> 	Other changes:
-> 
-> 	- Add a new definition for SYM_CODE_END() that adds the address
-> 	  range of the function to a special section called
-> 	  "sym_code_functions".
-> 
-> 	- Include the new section under initdata in vmlinux.lds.S.
-> 
-> 	- Define an early_initcall() to copy the contents of the
-> 	  "sym_code_functions" section to an array by the same name.
-> 
-> 	- Define a function unwinder_blacklisted() that compares a return
-> 	  PC against sym_code_sections[]. If there is a match, mark the
-> 	  stack trace unreliable. Call this from unwind_frame().
-> 
-> v3:
-> 	- Implemented a sym_code_ranges[] array to contains sections bounds
-> 	  for text sections that contain SYM_CODE_*() functions. The unwinder
-> 	  checks each return PC against the sections. If it falls in any of
-> 	  the sections, the stack trace is marked unreliable.
-> 
-> 	- Moved SYM_CODE functions from .text and .init.text into a new
-> 	  text section called ".code.text". Added this section to
-> 	  vmlinux.lds.S and sym_code_ranges[].
-> 
-> 	- Fixed the logic in the unwinder that handles Function Graph
-> 	  Tracer return trampoline.
-> 
-> 	- Removed all the previous code that handles:
-> 		- ftrace entry code for traced function
-> 		- special_functions[] array that lists individual functions
-> 		- kretprobe_trampoline() special case
-> 
-> v2
-> 	- Removed the terminating entry { 0, 0 } in special_functions[]
-> 	  and replaced it with the idiom { /* sentinel */ }.
-> 
-> 	- Change the ftrace trampoline entry ftrace_graph_call in
-> 	  special_functions[] to ftrace_call + 4 and added explanatory
-> 	  comments.
-> 
-> 	- Unnested #ifdefs in special_functions[] for FTRACE.
-> 
-> v1
-> 	- Define a bool field in struct stackframe. This will indicate if
-> 	  a stack trace is reliable.
-> 
-> 	- Implement a special_functions[] array that will be populated
-> 	  with special functions in which the stack trace is considered
-> 	  unreliable.
-> 	
-> 	- Using kallsyms_lookup(), get the address ranges for the special
-> 	  functions and record them.
-> 
-> 	- Implement an is_reliable_function(pc). This function will check
-> 	  if a given return PC falls in any of the special functions. If
-> 	  it does, the stack trace is unreliable.
-> 
-> 	- Implement check_reliability() function that will check if a
-> 	  stack frame is reliable. Call is_reliable_function() from
-> 	  check_reliability().
-> 
-> 	- Before a return PC is checked against special_funtions[], it
-> 	  must be validates as a proper kernel text address. Call
-> 	  __kernel_text_address() from check_reliability().
-> 
-> 	- Finally, call check_reliability() from unwind_frame() for
-> 	  each stack frame.
-> 
-> 	- Add EL1 exception handlers to special_functions[].
-> 
-> 		el1_sync();
-> 		el1_irq();
-> 		el1_error();
-> 		el1_sync_invalid();
-> 		el1_irq_invalid();
-> 		el1_fiq_invalid();
-> 		el1_error_invalid();
-> 
-> 	- The above functions are currently defined as LOCAL symbols.
-> 	  Make them global so that they can be referenced from the
-> 	  unwinder code.
-> 
-> 	- Add FTRACE trampolines to special_functions[]:
-> 
-> 		ftrace_graph_call()
-> 		ftrace_graph_caller()
-> 		return_to_handler()
-> 
-> 	- Add the kretprobe trampoline to special functions[]:
-> 
-> 		kretprobe_trampoline()
-> 
-> Previous versions and discussion
-> ================================
-> 
-> v6: https://lore.kernel.org/linux-arm-kernel/20210630223356.58714-1-madvenka@linux.microsoft.com/
-> v5: https://lore.kernel.org/linux-arm-kernel/20210526214917.20099-1-madvenka@linux.microsoft.com/
-> v4: https://lore.kernel.org/linux-arm-kernel/20210516040018.128105-1-madvenka@linux.microsoft.com/
-> v3: https://lore.kernel.org/linux-arm-kernel/20210503173615.21576-1-madvenka@linux.microsoft.com/
-> v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
-> v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
-> Madhavan T. Venkataraman (4):
->   arm64: Make all stack walking functions use arch_stack_walk()
->   arm64: Reorganize the unwinder code for better consistency and
->     maintenance
->   arm64: Introduce stack trace reliability checks in the unwinder
->   arm64: Create a list of SYM_CODE functions, check return PC against
->     list
-> 
->  arch/arm64/include/asm/linkage.h    |  12 ++
->  arch/arm64/include/asm/sections.h   |   1 +
->  arch/arm64/include/asm/stacktrace.h |  16 +-
->  arch/arm64/kernel/perf_callchain.c  |   5 +-
->  arch/arm64/kernel/process.c         |  39 ++--
->  arch/arm64/kernel/return_address.c  |   6 +-
->  arch/arm64/kernel/stacktrace.c      | 291 ++++++++++++++++++++--------
->  arch/arm64/kernel/time.c            |  22 ++-
->  arch/arm64/kernel/vmlinux.lds.S     |  10 +
->  9 files changed, 277 insertions(+), 125 deletions(-)
-> 
-> 
-> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
-> 
+To solve the dependency issue better than the 'imply' keyword, introduce a
+separate Kconfig symbol "CONFIG_PTP_1588_CLOCK_OPTIONAL" that any driver
+can depend on if it is able to use PTP support when available, but works
+fine without it. Whenever CONFIG_PTP_1588_CLOCK=m, those drivers are
+then prevented from being built-in, the same way as with a 'depends on
+PTP_1588_CLOCK || !PTP_1588_CLOCK' dependency that does the same trick,
+but that can be rather confusing when you first see it.
+
+Since this should cover the dependencies correctly, the IS_REACHABLE()
+hack in the header is no longer needed now, and can be turned back
+into a normal IS_ENABLED() check. Any driver that gets the dependency
+wrong will now cause a link time failure rather than being unable to use
+PTP support when that is in a loadable module.
+
+However, the two recently added ptp_get_vclocks_index() and
+ptp_convert_timestamp() interfaces are only called from builtin code with
+ethtool and socket timestamps, so keep the current behavior by stubbing
+those out completely when PTP is in a loadable module. This should be
+addressed properly in a follow-up.
+
+As Richard suggested, we may want to actually turn PTP support into a
+'bool' option later on, preventing it from being a loadable module
+altogether, which would be one way to solve the problem with the ethtool
+interface.
+
+Fixes: 06c16d89d2cb ("ice: register 1588 PTP clock device object for E810 devices")
+Link: https://lore.kernel.org/netdev/20210804121318.337276-1-arnd@kernel.org/
+Link: https://lore.kernel.org/netdev/CAK8P3a06enZOf=XyZ+zcAwBczv41UuCTz+=0FMf2gBz1_cOnZQ@mail.gmail.com/
+Link: https://lore.kernel.org/netdev/CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com/
+Link: https://lore.kernel.org/netdev/20210726084540.3282344-1-arnd@kernel.org/
+Acked-by: Shannon Nelson <snelson@pensando.io>
+Acked-by: Jacob Keller <jacob.e.keller@intel.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Changes in v6:
+- remove an uneeded dependency in MSCC_OCELOT_SWITCH_LIB
+
+Changes in v5:
+- remove a typo: extra '+'
+
+Changes in v4
+- drop the I2C dependency change that is no longer required
+- add a few more missing dependencies found in randconfig testing
+
+Changes in v3:
+- rewrite to introduce a new PTP_1588_CLOCK_OPTIONAL symbol
+- use it for all driver, not just Intel's
+- change IS_REACHABLE() to IS_ENABLED() in the header
+
+Changes in v2:
+- include a missing patch hunk
+- link to a previous discussion with Richard Cochran
+---
+ drivers/net/dsa/mv88e6xxx/Kconfig             |  1 +
+ drivers/net/dsa/ocelot/Kconfig                |  2 +
+ drivers/net/dsa/sja1105/Kconfig               |  1 +
+ drivers/net/ethernet/amd/Kconfig              |  2 +-
+ drivers/net/ethernet/broadcom/Kconfig         |  6 +--
+ drivers/net/ethernet/cadence/Kconfig          |  1 +
+ drivers/net/ethernet/cavium/Kconfig           |  4 +-
+ drivers/net/ethernet/chelsio/Kconfig          |  1 +
+ drivers/net/ethernet/freescale/Kconfig        |  2 +-
+ drivers/net/ethernet/hisilicon/Kconfig        |  2 +-
+ drivers/net/ethernet/intel/Kconfig            | 12 ++---
+ .../net/ethernet/marvell/octeontx2/Kconfig    |  2 +
+ drivers/net/ethernet/mellanox/mlx4/Kconfig    |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |  2 +-
+ drivers/net/ethernet/mellanox/mlxsw/Kconfig   |  2 +-
+ drivers/net/ethernet/microchip/Kconfig        |  1 +
+ drivers/net/ethernet/mscc/Kconfig             |  1 +
+ drivers/net/ethernet/oki-semi/pch_gbe/Kconfig |  1 +
+ drivers/net/ethernet/pensando/Kconfig         |  2 +-
+ drivers/net/ethernet/qlogic/Kconfig           |  2 +-
+ drivers/net/ethernet/renesas/Kconfig          |  2 +-
+ drivers/net/ethernet/samsung/Kconfig          |  2 +-
+ drivers/net/ethernet/sfc/Kconfig              |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  2 +-
+ drivers/net/phy/Kconfig                       |  2 +
+ drivers/ptp/Kconfig                           | 15 +++++-
+ drivers/ptp/ptp_vclock.c                      |  2 +
+ drivers/scsi/cxgbi/cxgb4i/Kconfig             |  1 +
+ include/linux/ptp_clock_kernel.h              | 48 +++++++++++--------
+ 29 files changed, 81 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/net/dsa/mv88e6xxx/Kconfig b/drivers/net/dsa/mv88e6xxx/Kconfig
+index 634a48e6616b..7a2445a34eb7 100644
+--- a/drivers/net/dsa/mv88e6xxx/Kconfig
++++ b/drivers/net/dsa/mv88e6xxx/Kconfig
+@@ -2,6 +2,7 @@
+ config NET_DSA_MV88E6XXX
+ 	tristate "Marvell 88E6xxx Ethernet switch fabric support"
+ 	depends on NET_DSA
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select IRQ_DOMAIN
+ 	select NET_DSA_TAG_EDSA
+ 	select NET_DSA_TAG_DSA
+diff --git a/drivers/net/dsa/ocelot/Kconfig b/drivers/net/dsa/ocelot/Kconfig
+index 932b6b6fe817..9948544ba1c4 100644
+--- a/drivers/net/dsa/ocelot/Kconfig
++++ b/drivers/net/dsa/ocelot/Kconfig
+@@ -5,6 +5,7 @@ config NET_DSA_MSCC_FELIX
+ 	depends on NET_VENDOR_MICROSEMI
+ 	depends on NET_VENDOR_FREESCALE
+ 	depends on HAS_IOMEM
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MSCC_OCELOT_SWITCH_LIB
+ 	select NET_DSA_TAG_OCELOT_8021Q
+ 	select NET_DSA_TAG_OCELOT
+@@ -19,6 +20,7 @@ config NET_DSA_MSCC_SEVILLE
+ 	depends on NET_DSA
+ 	depends on NET_VENDOR_MICROSEMI
+ 	depends on HAS_IOMEM
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MSCC_OCELOT_SWITCH_LIB
+ 	select NET_DSA_TAG_OCELOT_8021Q
+ 	select NET_DSA_TAG_OCELOT
+diff --git a/drivers/net/dsa/sja1105/Kconfig b/drivers/net/dsa/sja1105/Kconfig
+index b29d41e5e1e7..1291bba3f3b6 100644
+--- a/drivers/net/dsa/sja1105/Kconfig
++++ b/drivers/net/dsa/sja1105/Kconfig
+@@ -2,6 +2,7 @@
+ config NET_DSA_SJA1105
+ tristate "NXP SJA1105 Ethernet switch family support"
+ 	depends on NET_DSA && SPI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select NET_DSA_TAG_SJA1105
+ 	select PCS_XPCS
+ 	select PACKING
+diff --git a/drivers/net/ethernet/amd/Kconfig b/drivers/net/ethernet/amd/Kconfig
+index c6a3abec86f5..4786f0504691 100644
+--- a/drivers/net/ethernet/amd/Kconfig
++++ b/drivers/net/ethernet/amd/Kconfig
+@@ -170,11 +170,11 @@ config AMD_XGBE
+ 	tristate "AMD 10GbE Ethernet driver"
+ 	depends on ((OF_NET && OF_ADDRESS) || ACPI || PCI) && HAS_IOMEM
+ 	depends on X86 || ARM64 || COMPILE_TEST
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select BITREVERSE
+ 	select CRC32
+ 	select PHYLIB
+ 	select AMD_XGBE_HAVE_ECC if X86
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports the AMD 10GbE Ethernet device found on an
+ 	  AMD SoC.
+diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
+index 1a02ca600b71..56e0fb07aec7 100644
+--- a/drivers/net/ethernet/broadcom/Kconfig
++++ b/drivers/net/ethernet/broadcom/Kconfig
+@@ -122,8 +122,8 @@ config SB1250_MAC
+ config TIGON3
+ 	tristate "Broadcom Tigon3 support"
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select PHYLIB
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports Broadcom Tigon3 based gigabit Ethernet cards.
+ 
+@@ -140,7 +140,7 @@ config TIGON3_HWMON
+ config BNX2X
+ 	tristate "Broadcom NetXtremeII 10Gb support"
+ 	depends on PCI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select FW_LOADER
+ 	select ZLIB_INFLATE
+ 	select LIBCRC32C
+@@ -206,7 +206,7 @@ config SYSTEMPORT
+ config BNXT
+ 	tristate "Broadcom NetXtreme-C/E support"
+ 	depends on PCI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select FW_LOADER
+ 	select LIBCRC32C
+ 	select NET_DEVLINK
+diff --git a/drivers/net/ethernet/cadence/Kconfig b/drivers/net/ethernet/cadence/Kconfig
+index e432a68ac520..5b2a461dfd28 100644
+--- a/drivers/net/ethernet/cadence/Kconfig
++++ b/drivers/net/ethernet/cadence/Kconfig
+@@ -22,6 +22,7 @@ if NET_VENDOR_CADENCE
+ config MACB
+ 	tristate "Cadence MACB/GEM support"
+ 	depends on HAS_DMA && COMMON_CLK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select PHYLINK
+ 	select CRC32
+ 	help
+diff --git a/drivers/net/ethernet/cavium/Kconfig b/drivers/net/ethernet/cavium/Kconfig
+index 4875cdae622e..1c76c95b0b27 100644
+--- a/drivers/net/ethernet/cavium/Kconfig
++++ b/drivers/net/ethernet/cavium/Kconfig
+@@ -66,7 +66,7 @@ config LIQUIDIO
+ 	tristate "Cavium LiquidIO support"
+ 	depends on 64BIT && PCI
+ 	depends on PCI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select FW_LOADER
+ 	select LIBCRC32C
+ 	select NET_DEVLINK
+@@ -91,7 +91,7 @@ config OCTEON_MGMT_ETHERNET
+ config LIQUIDIO_VF
+ 	tristate "Cavium LiquidIO VF support"
+ 	depends on 64BIT && PCI_MSI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Cavium LiquidIO Intelligent Server Adapter
+ 	  based on CN23XX chips.
+diff --git a/drivers/net/ethernet/chelsio/Kconfig b/drivers/net/ethernet/chelsio/Kconfig
+index 8ba0e08e5e64..c931ec8cac40 100644
+--- a/drivers/net/ethernet/chelsio/Kconfig
++++ b/drivers/net/ethernet/chelsio/Kconfig
+@@ -69,6 +69,7 @@ config CHELSIO_T3
+ config CHELSIO_T4
+ 	tristate "Chelsio Communications T4/T5/T6 Ethernet support"
+ 	depends on PCI && (IPV6 || IPV6=n) && (TLS || TLS=n)
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select FW_LOADER
+ 	select MDIO
+ 	select ZLIB_DEFLATE
+diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
+index 2d1abdd58fab..e04e1c5cb013 100644
+--- a/drivers/net/ethernet/freescale/Kconfig
++++ b/drivers/net/ethernet/freescale/Kconfig
+@@ -25,10 +25,10 @@ config FEC
+ 	depends on (M523x || M527x || M5272 || M528x || M520x || M532x || \
+ 		   ARCH_MXC || SOC_IMX28 || COMPILE_TEST)
+ 	default ARCH_MXC || SOC_IMX28 if ARM
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select CRC32
+ 	select PHYLIB
+ 	imply NET_SELFTESTS
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  Say Y here if you want to use the built-in 10/100 Fast ethernet
+ 	  controller on some Motorola ColdFire and Freescale i.MX processors.
+diff --git a/drivers/net/ethernet/hisilicon/Kconfig b/drivers/net/ethernet/hisilicon/Kconfig
+index 094e4a37a295..87ab6044ef65 100644
+--- a/drivers/net/ethernet/hisilicon/Kconfig
++++ b/drivers/net/ethernet/hisilicon/Kconfig
+@@ -103,7 +103,7 @@ config HNS3_HCLGE
+ 	tristate "Hisilicon HNS3 HCLGE Acceleration Engine & Compatibility Layer Support"
+ 	default m
+ 	depends on PCI_MSI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This selects the HNS3_HCLGE network acceleration engine & its hardware
+ 	  compatibility layer. The engine would be used in Hisilicon hip08 family of
+diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+index 82744a7501c7..b0b6f90deb7d 100644
+--- a/drivers/net/ethernet/intel/Kconfig
++++ b/drivers/net/ethernet/intel/Kconfig
+@@ -58,8 +58,8 @@ config E1000
+ config E1000E
+ 	tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
+ 	depends on PCI && (!SPARC32 || BROKEN)
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select CRC32
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports the PCI-Express Intel(R) PRO/1000 gigabit
+ 	  ethernet family of adapters. For PCI or PCI-X e1000 adapters,
+@@ -87,7 +87,7 @@ config E1000E_HWTS
+ config IGB
+ 	tristate "Intel(R) 82575/82576 PCI-Express Gigabit Ethernet support"
+ 	depends on PCI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select I2C
+ 	select I2C_ALGOBIT
+ 	help
+@@ -159,9 +159,9 @@ config IXGB
+ config IXGBE
+ 	tristate "Intel(R) 10GbE PCI Express adapters support"
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MDIO
+ 	select PHYLIB
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports Intel(R) 10GbE PCI Express family of
+ 	  adapters.  For more information on how to identify your adapter, go
+@@ -239,7 +239,7 @@ config IXGBEVF_IPSEC
+ 
+ config I40E
+ 	tristate "Intel(R) Ethernet Controller XL710 Family support"
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	depends on PCI
+ 	select AUXILIARY_BUS
+ 	help
+@@ -295,11 +295,11 @@ config ICE
+ 	tristate "Intel(R) Ethernet Connection E800 Series Support"
+ 	default n
+ 	depends on PCI_MSI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select AUXILIARY_BUS
+ 	select DIMLIB
+ 	select NET_DEVLINK
+ 	select PLDMFW
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports Intel(R) Ethernet Connection E800 Series of
+ 	  devices.  For more information on how to identify your adapter, go
+@@ -317,7 +317,7 @@ config FM10K
+ 	tristate "Intel(R) FM10000 Ethernet Switch Host Interface Support"
+ 	default n
+ 	depends on PCI_MSI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Intel(R) FM10000 Ethernet Switch Host
+ 	  Interface.  For more information on how to identify your adapter,
+diff --git a/drivers/net/ethernet/marvell/octeontx2/Kconfig b/drivers/net/ethernet/marvell/octeontx2/Kconfig
+index 16caa02095fe..2aa0ae8abfbb 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/Kconfig
++++ b/drivers/net/ethernet/marvell/octeontx2/Kconfig
+@@ -12,6 +12,7 @@ config OCTEONTX2_AF
+ 	select NET_DEVLINK
+ 	depends on (64BIT && COMPILE_TEST) || ARM64
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Marvell's OcteonTX2 Resource Virtualization
+ 	  Unit's admin function manager which manages all RVU HW resources
+@@ -32,6 +33,7 @@ config OCTEONTX2_PF
+ 	select OCTEONTX2_MBOX
+ 	depends on (64BIT && COMPILE_TEST) || ARM64
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Marvell's OcteonTX2 NIC physical function.
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/Kconfig b/drivers/net/ethernet/mellanox/mlx4/Kconfig
+index 400e611ba041..1b4b1f642317 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlx4/Kconfig
+@@ -6,8 +6,8 @@
+ config MLX4_EN
+ 	tristate "Mellanox Technologies 1/10/40Gbit Ethernet support"
+ 	depends on PCI && NETDEVICES && ETHERNET && INET
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MLX4_CORE
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports Mellanox Technologies ConnectX Ethernet
+ 	  devices.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+index e1a5a79e27c7..92056452a9e3 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+@@ -10,7 +10,7 @@ config MLX5_CORE
+ 	select NET_DEVLINK
+ 	depends on VXLAN || !VXLAN
+ 	depends on MLXFW || !MLXFW
+-	depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	depends on PCI_HYPERV_INTERFACE || !PCI_HYPERV_INTERFACE
+ 	help
+ 	  Core driver for low level functionality of the ConnectX-4 and
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/Kconfig b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+index 12871c8dc7c1..d1ae248e125c 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+@@ -58,10 +58,10 @@ config MLXSW_SPECTRUM
+ 	depends on NET_IPGRE || NET_IPGRE=n
+ 	depends on IPV6_GRE || IPV6_GRE=n
+ 	depends on VXLAN || VXLAN=n
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select GENERIC_ALLOCATOR
+ 	select PARMAN
+ 	select OBJAGG
+-	imply PTP_1588_CLOCK
+ 	select NET_PTP_CLASSIFY if PTP_1588_CLOCK
+ 	default m
+ 	help
+diff --git a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
+index d54aa164c4e9..735eea1dacf1 100644
+--- a/drivers/net/ethernet/microchip/Kconfig
++++ b/drivers/net/ethernet/microchip/Kconfig
+@@ -45,6 +45,7 @@ config ENCX24J600
+ config LAN743X
+ 	tristate "LAN743x support"
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select PHYLIB
+ 	select CRC16
+ 	select CRC32
+diff --git a/drivers/net/ethernet/mscc/Kconfig b/drivers/net/ethernet/mscc/Kconfig
+index 2d3157e4d081..b1d68e197258 100644
+--- a/drivers/net/ethernet/mscc/Kconfig
++++ b/drivers/net/ethernet/mscc/Kconfig
+@@ -24,6 +24,7 @@ config MSCC_OCELOT_SWITCH_LIB
+ 
+ config MSCC_OCELOT_SWITCH
+ 	tristate "Ocelot switch driver"
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	depends on BRIDGE || BRIDGE=n
+ 	depends on NET_SWITCHDEV
+ 	depends on HAS_IOMEM
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
+index af84f72bf08e..4e18b64dceb9 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
+@@ -6,6 +6,7 @@
+ config PCH_GBE
+ 	tristate "OKI SEMICONDUCTOR IOH(ML7223/ML7831) GbE"
+ 	depends on PCI && (X86_32 || COMPILE_TEST)
++	depends on PTP_1588_CLOCK
+ 	select MII
+ 	select PTP_1588_CLOCK_PCH
+ 	select NET_PTP_CLASSIFY
+diff --git a/drivers/net/ethernet/pensando/Kconfig b/drivers/net/ethernet/pensando/Kconfig
+index 202973a82712..3f7519e435b8 100644
+--- a/drivers/net/ethernet/pensando/Kconfig
++++ b/drivers/net/ethernet/pensando/Kconfig
+@@ -20,7 +20,7 @@ if NET_VENDOR_PENSANDO
+ config IONIC
+ 	tristate "Pensando Ethernet IONIC Support"
+ 	depends on 64BIT && PCI
+-	depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select NET_DEVLINK
+ 	select DIMLIB
+ 	help
+diff --git a/drivers/net/ethernet/qlogic/Kconfig b/drivers/net/ethernet/qlogic/Kconfig
+index 98f430905ffa..1203353238e5 100644
+--- a/drivers/net/ethernet/qlogic/Kconfig
++++ b/drivers/net/ethernet/qlogic/Kconfig
+@@ -99,7 +99,7 @@ config QED_SRIOV
+ config QEDE
+ 	tristate "QLogic QED 25/40/100Gb Ethernet NIC"
+ 	depends on QED
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This enables the support for Marvell FastLinQ adapters family,
+ 	  ethernet driver.
+diff --git a/drivers/net/ethernet/renesas/Kconfig b/drivers/net/ethernet/renesas/Kconfig
+index 5a2a4af31812..8008b2f45934 100644
+--- a/drivers/net/ethernet/renesas/Kconfig
++++ b/drivers/net/ethernet/renesas/Kconfig
+@@ -32,11 +32,11 @@ config SH_ETH
+ config RAVB
+ 	tristate "Renesas Ethernet AVB support"
+ 	depends on ARCH_RENESAS || COMPILE_TEST
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select CRC32
+ 	select MII
+ 	select MDIO_BITBANG
+ 	select PHYLIB
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  Renesas Ethernet AVB device driver.
+ 	  This driver supports the following SoCs:
+diff --git a/drivers/net/ethernet/samsung/Kconfig b/drivers/net/ethernet/samsung/Kconfig
+index 0582e110b1c0..2a6c2658d284 100644
+--- a/drivers/net/ethernet/samsung/Kconfig
++++ b/drivers/net/ethernet/samsung/Kconfig
+@@ -20,9 +20,9 @@ if NET_VENDOR_SAMSUNG
+ config SXGBE_ETH
+ 	tristate "Samsung 10G/2.5G/1G SXGBE Ethernet driver"
+ 	depends on HAS_IOMEM && HAS_DMA
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select PHYLIB
+ 	select CRC32
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This is the driver for the SXGBE 10G Ethernet IP block found on
+ 	  Samsung platforms.
+diff --git a/drivers/net/ethernet/sfc/Kconfig b/drivers/net/ethernet/sfc/Kconfig
+index 5e37c8313725..97ce64079855 100644
+--- a/drivers/net/ethernet/sfc/Kconfig
++++ b/drivers/net/ethernet/sfc/Kconfig
+@@ -19,9 +19,9 @@ if NET_VENDOR_SOLARFLARE
+ config SFC
+ 	tristate "Solarflare SFC9000/SFC9100/EF100-family support"
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MDIO
+ 	select CRC32
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  This driver supports 10/40-gigabit Ethernet cards based on
+ 	  the Solarflare SFC9000-family and SFC9100-family controllers.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+index ac3c248d4f9b..929cfc22cd0c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
++++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+@@ -2,12 +2,12 @@
+ config STMMAC_ETH
+ 	tristate "STMicroelectronics Multi-Gigabit Ethernet driver"
+ 	depends on HAS_IOMEM && HAS_DMA
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	select MII
+ 	select PCS_XPCS
+ 	select PAGE_POOL
+ 	select PHYLINK
+ 	select CRC32
+-	imply PTP_1588_CLOCK
+ 	select RESET_CONTROLLER
+ 	help
+ 	  This is the driver for the Ethernet IPs built around a
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 7564ae0c1997..902495afcb38 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -236,6 +236,7 @@ config MICROCHIP_T1_PHY
+ config MICROSEMI_PHY
+ 	tristate "Microsemi PHYs"
+ 	depends on MACSEC || MACSEC=n
++	depends on PTP_1588_CLOCK_OPTIONAL || !NETWORK_PHY_TIMESTAMPING
+ 	select CRYPTO_LIB_AES if MACSEC
+ 	help
+ 	  Currently supports VSC8514, VSC8530, VSC8531, VSC8540 and VSC8541 PHYs
+@@ -253,6 +254,7 @@ config NATIONAL_PHY
+ 
+ config NXP_C45_TJA11XX_PHY
+ 	tristate "NXP C45 TJA11XX PHYs"
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  Enable support for NXP C45 TJA11XX PHYs.
+ 	  Currently supports only the TJA1103 PHY.
+diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+index 8b08745e1ca1..e82b4a678acb 100644
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -8,6 +8,7 @@ menu "PTP clock support"
+ config PTP_1588_CLOCK
+ 	tristate "PTP clock support"
+ 	depends on NET && POSIX_TIMERS
++	default ETHERNET
+ 	select PPS
+ 	select NET_PTP_CLASSIFY
+ 	help
+@@ -26,6 +27,18 @@ config PTP_1588_CLOCK
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called ptp.
+ 
++config PTP_1588_CLOCK_OPTIONAL
++	tristate
++	default y if PTP_1588_CLOCK=n
++	default PTP_1588_CLOCK
++	help
++	  Drivers that can optionally use the PTP_1588_CLOCK framework
++	  should depend on this symbol to prevent them from being built
++	  into vmlinux while the PTP support itself is in a loadable
++	  module.
++	  If PTP support is disabled, this dependency will still be
++	  met, and drivers refer to dummy helpers.
++
+ config PTP_1588_CLOCK_DTE
+ 	tristate "Broadcom DTE as PTP clock"
+ 	depends on PTP_1588_CLOCK
+@@ -91,7 +104,7 @@ config PTP_1588_CLOCK_PCH
+ 	tristate "Intel PCH EG20T as PTP clock"
+ 	depends on X86_32 || COMPILE_TEST
+ 	depends on HAS_IOMEM && NET
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK
+ 	help
+ 	  This driver adds support for using the PCH EG20T as a PTP
+ 	  clock. The hardware supports time stamping of PTP packets
+diff --git a/drivers/ptp/ptp_vclock.c b/drivers/ptp/ptp_vclock.c
+index e0f87c57749a..baee0379482b 100644
+--- a/drivers/ptp/ptp_vclock.c
++++ b/drivers/ptp/ptp_vclock.c
+@@ -149,6 +149,7 @@ void ptp_vclock_unregister(struct ptp_vclock *vclock)
+ 	kfree(vclock);
+ }
+ 
++#if IS_BUILTIN(CONFIG_PTP_1588_CLOCK)
+ int ptp_get_vclocks_index(int pclock_index, int **vclock_index)
+ {
+ 	char name[PTP_CLOCK_NAME_LEN] = "";
+@@ -217,3 +218,4 @@ void ptp_convert_timestamp(struct skb_shared_hwtstamps *hwtstamps,
+ 	hwtstamps->hwtstamp = ns_to_ktime(ns);
+ }
+ EXPORT_SYMBOL(ptp_convert_timestamp);
++#endif
+diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+index 8b0deece9758..63c8a0f3cd0c 100644
+--- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
++++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+@@ -2,6 +2,7 @@
+ config SCSI_CXGB4_ISCSI
+ 	tristate "Chelsio T4 iSCSI support"
+ 	depends on PCI && INET && (IPV6 || IPV6=n)
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	depends on THERMAL || !THERMAL
+ 	depends on ETHERNET
+ 	depends on TLS || TLS=n
+diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+index 71fac9237725..2e5565067355 100644
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@ -215,7 +215,7 @@ static inline long scaled_ppm_to_ppb(long ppm)
+ 	return (long)ppb;
+ }
+ 
+-#if IS_REACHABLE(CONFIG_PTP_1588_CLOCK)
++#if IS_ENABLED(CONFIG_PTP_1588_CLOCK)
+ 
+ /**
+  * ptp_clock_register() - register a PTP hardware clock driver
+@@ -307,6 +307,33 @@ int ptp_schedule_worker(struct ptp_clock *ptp, unsigned long delay);
+  */
+ void ptp_cancel_worker_sync(struct ptp_clock *ptp);
+ 
++#else
++static inline struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
++						   struct device *parent)
++{ return NULL; }
++static inline int ptp_clock_unregister(struct ptp_clock *ptp)
++{ return 0; }
++static inline void ptp_clock_event(struct ptp_clock *ptp,
++				   struct ptp_clock_event *event)
++{ }
++static inline int ptp_clock_index(struct ptp_clock *ptp)
++{ return -1; }
++static inline int ptp_find_pin(struct ptp_clock *ptp,
++			       enum ptp_pin_function func, unsigned int chan)
++{ return -1; }
++static inline int ptp_schedule_worker(struct ptp_clock *ptp,
++				      unsigned long delay)
++{ return -EOPNOTSUPP; }
++static inline void ptp_cancel_worker_sync(struct ptp_clock *ptp)
++{ }
++#endif
++
++#if IS_BUILTIN(CONFIG_PTP_1588_CLOCK)
++/*
++ * These are called by the network core, and don't work if PTP is in
++ * a loadable module.
++ */
++
+ /**
+  * ptp_get_vclocks_index() - get all vclocks index on pclock, and
+  *                           caller is responsible to free memory
+@@ -327,26 +354,7 @@ int ptp_get_vclocks_index(int pclock_index, int **vclock_index);
+  */
+ void ptp_convert_timestamp(struct skb_shared_hwtstamps *hwtstamps,
+ 			   int vclock_index);
+-
+ #else
+-static inline struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+-						   struct device *parent)
+-{ return NULL; }
+-static inline int ptp_clock_unregister(struct ptp_clock *ptp)
+-{ return 0; }
+-static inline void ptp_clock_event(struct ptp_clock *ptp,
+-				   struct ptp_clock_event *event)
+-{ }
+-static inline int ptp_clock_index(struct ptp_clock *ptp)
+-{ return -1; }
+-static inline int ptp_find_pin(struct ptp_clock *ptp,
+-			       enum ptp_pin_function func, unsigned int chan)
+-{ return -1; }
+-static inline int ptp_schedule_worker(struct ptp_clock *ptp,
+-				      unsigned long delay)
+-{ return -EOPNOTSUPP; }
+-static inline void ptp_cancel_worker_sync(struct ptp_clock *ptp)
+-{ }
+ static inline int ptp_get_vclocks_index(int pclock_index, int **vclock_index)
+ { return 0; }
+ static inline void ptp_convert_timestamp(struct skb_shared_hwtstamps *hwtstamps,
+-- 
+2.29.2
+
