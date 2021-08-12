@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D10A3EA0F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA2C3EA0F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhHLIrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:47:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234184AbhHLIrE (ORCPT
+        id S235326AbhHLIsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234086AbhHLIsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:47:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628757999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i29czw9Qyxt5GRshhvU4+ALP+14hXV/6g5fULUW9cSo=;
-        b=HDF0Dly19kBjq4Kf1pM+NFg2v5zQpcIV/Z9qYyjmob3NBks98u4muupNlpdIMxWjThXbcg
-        qDV4WWF4Aw7cb/pYkAQWnDjPzPRMiS/qnlBsmofw40nFr2qZIuy8o5tZ6t/qF1aiSId4ks
-        LEdyo5aRQy/VYqtGDIJxnMVSPBRvqfY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-YXqT7uE3O-CAxB4sXefWdg-1; Thu, 12 Aug 2021 04:46:36 -0400
-X-MC-Unique: YXqT7uE3O-CAxB4sXefWdg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C417107ACF5;
-        Thu, 12 Aug 2021 08:46:34 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.193.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A840B5C3E0;
-        Thu, 12 Aug 2021 08:46:14 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>, linux-unionfs@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v1 7/7] fs: update documentation of get_write_access() and friends
-Date:   Thu, 12 Aug 2021 10:43:48 +0200
-Message-Id: <20210812084348.6521-8-david@redhat.com>
-In-Reply-To: <20210812084348.6521-1-david@redhat.com>
-References: <20210812084348.6521-1-david@redhat.com>
+        Thu, 12 Aug 2021 04:48:37 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475D4C061765;
+        Thu, 12 Aug 2021 01:48:12 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so6501627wms.2;
+        Thu, 12 Aug 2021 01:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XFHOGWal8sj9+/NYHXBYiZDttgCo8MQmZS41UjmAkWM=;
+        b=TnjSaR4dryTzq1TobA28+orXVqNx8bWsy3a0BDE3S8ve2uQk0vvzGrrbjTMwiMYRSu
+         oVjzvVawcmA5v/FzG6o/huElHZV975CDYv739sdz/9JH5w0uUHoUSi7yi8jRBbn1uNTT
+         zvJsSwqBh8GTzIUL2tPTjPQqgUOXT3zMDi9/l9AAUyYP9dIqe26Np3bnJ8/i/5AHADWI
+         jbawWkZMCmsbQsJ6wwucKu6p68bSRUQai3WBFGBt5h21VQCTzbU6pCZs6bWK68urVxlu
+         y844gmcFrRUavm2O4zOoyiXRCizIHUYCHULo8yFjZXAWFWp0PVsiwkmnJvRMGMdF+zGo
+         nG2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XFHOGWal8sj9+/NYHXBYiZDttgCo8MQmZS41UjmAkWM=;
+        b=V1Ath9cMBrcXSNALHPEyYuWLn2i9XarB2k2NxDuQTIzndT2lQsGMF9tzqRUlVGW98c
+         iu5bk1NBXaftAfyJRlDJWsLQBZUbq+s9+J65vD8YExiem5R3+yWB6QeGorPnBAgINNSK
+         7kMJwB4wR3UM9q6OlhQk/y3Skmo/K9LvJlqQ6IrmuveK9WiantKAvYvawp1ZMEUuXgtS
+         GGEtl+t48FOFncB82WFp8i/zndMoeb3PEW+Ow2QXwlKPIrj7klc4XGPWf9eUNyGM+k8N
+         AnRot5coy1fGOlNYCWbHvEPJ4bSlEQSN2j9yfhM6gm8VZ9fEYPmbNxOZQrmnnHgBcH46
+         nN0g==
+X-Gm-Message-State: AOAM5306KXkyuMkN6PSgjTP2AARUu+JFfEyzcBgcY0gnvXd1297HbBxa
+        96LgM7VYCdMOX8Xyr5dN1Zg=
+X-Google-Smtp-Source: ABdhPJzLbsspJrb3pj55Dy1sQCs3nGpP1+jpQD1sc8n0LAnXOAo2LkmdkTVEl0CcnF8GI8etHTZAIw==
+X-Received: by 2002:a05:600c:b51:: with SMTP id k17mr2779184wmr.149.1628758090954;
+        Thu, 12 Aug 2021 01:48:10 -0700 (PDT)
+Received: from [10.0.0.18] ([37.165.173.167])
+        by smtp.gmail.com with ESMTPSA id p14sm8720305wmi.42.2021.08.12.01.48.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 01:48:10 -0700 (PDT)
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+ <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
+ <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+ <87o8a49idp.wl-maz@kernel.org>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+Date:   Thu, 12 Aug 2021 10:48:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <87o8a49idp.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As VM_DENYWRITE does no longer exists, let's spring-clean the
-documentation of get_write_access() and friends.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/fs.h | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 640574294216..e0dc3e96ed72 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3055,15 +3055,20 @@ static inline void file_end_write(struct file *file)
- }
- 
- /*
-+ * This is used for regular files where some users -- especially the
-+ * currently executed binary in a process, previously handled via
-+ * VM_DENYWRITE -- cannot handle concurrent write (and maybe mmap
-+ * read-write shared) accesses.
-+ *
-  * get_write_access() gets write permission for a file.
-  * put_write_access() releases this write permission.
-- * This is used for regular files.
-- * We cannot support write (and maybe mmap read-write shared) accesses and
-- * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode
-- * can have the following values:
-- * 0: no writers, no VM_DENYWRITE mappings
-- * < 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist
-- * > 0: (i_writecount) users are writing to the file.
-+ * deny_write_access() denies write access to a file.
-+ * allow_write_access() re-enables write access to a file.
-+ *
-+ * The i_writecount field of an inode can have the following values:
-+ * 0: no write access, no denied write access
-+ * < 0: (-i_writecount) users that denied write access to the file.
-+ * > 0: (i_writecount) users that have write access to the file.
-  *
-  * Normally we operate on that counter with atomic_{inc,dec} and it's safe
-  * except for the cases where we don't hold i_writecount yet. Then we need to
--- 
-2.31.1
+On 8/11/21 4:16 PM, Marc Zyngier wrote:
+> On Wed, 11 Aug 2021 13:53:59 +0100,
+> Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+>> Are you sure you do not need to adjust stmmac_set_bfsize(), 
+>> stmmac_rx_buf1_len() and stmmac_rx_buf2_len() ?
+>>
+>> Presumably DEFAULT_BUFSIZE also want to be increased by NET_SKB_PAD
+>>
+>> Patch for stmmac_rx_buf1_len() :
+>>
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>> index 7b8404a21544cf29668e8a14240c3971e6bce0c3..041a74e7efca3436bfe3e17f972dd156173957a9 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>> @@ -4508,12 +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct stmmac_priv *priv,
+>>  
+>>         /* First descriptor, not last descriptor and not split header */
+>>         if (status & rx_not_ls)
+>> -               return priv->dma_buf_sz;
+>> +               return priv->dma_buf_sz - NET_SKB_PAD - NET_IP_ALIGN;
+>>  
+>>         plen = stmmac_get_rx_frame_len(priv, p, coe);
+>>  
+>>         /* First descriptor and last descriptor and not split header */
+>> -       return min_t(unsigned int, priv->dma_buf_sz, plen);
+>> +       return min_t(unsigned int, priv->dma_buf_sz - NET_SKB_PAD - NET_IP_ALIGN, plen);
+>>  }
+>>  
+>>  static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+> 
+> Feels like a major deficiency of the original patch. Happy to test a
+> more complete patch if/when you have one.
+
+I wont have time in the immediate future.
+
+Matteo, if you do not work on a fix, I suggest we revert
+ a955318fe67ec0d962760b5ee58e74bffaf649b8 stmmac: align RX buffers
+
+before a more polished version can be submitted.
 
