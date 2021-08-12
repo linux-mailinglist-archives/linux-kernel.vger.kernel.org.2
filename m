@@ -2,90 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDED3EA6A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6993E3EA6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238086AbhHLOcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:32:16 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:18937 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238058AbhHLOcP (ORCPT
+        id S238030AbhHLOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236944AbhHLOdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:32:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1628778710; x=1660314710;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=hbf9rLHrArmbSu+dloBsDKqhL1YiXbeSamoElFGATd4=;
-  b=y4kcADqoKjs84cOL8j7hgm62GboSFmKvA87MtAoIvH1KHmltkI62qxzM
-   ZDFiVBTCoBvzhkVD3vJzBReojFEN2pJsTdpnJAuvoWay0MVyShxsXuqco
-   2bpTMzxhB7ejB4Ki8lLx1SY0IdfCZ8wYLE34CDDtbb81uH3TBEGfjA338
-   U=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 12 Aug 2021 07:31:49 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 07:31:49 -0700
-Received: from nasanex01c.na.qualcomm.com (10.47.97.222) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.15; Thu, 12 Aug 2021 07:31:48 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.15; Thu, 12 Aug 2021 07:31:48 -0700
-Received: from [10.111.167.185] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.15; Thu, 12 Aug
- 2021 07:31:47 -0700
-Subject: Re: [PATCH v5] arm pl011 serial: support multi-irq request
-To:     Bing Fan <hptsfb@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
-        <gregkh@linuxfoundation.org>, Bing Fan <tombinfan@tencent.com>
-CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
- <60f007b3-bb01-dd0a-b1a2-a6da62a486e5@quicinc.com>
- <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
- <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
- <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
- <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
- <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
- <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
-Date:   Thu, 12 Aug 2021 10:31:46 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 10:33:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EAEC061756;
+        Thu, 12 Aug 2021 07:32:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628778762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mIHYZ5fGW/DUwDGg+3IuVLf+ZAoE9UAQ5scG9d994PA=;
+        b=ItNEt3fw33zOCTai+BUa0CCmXbPLZvjfGC+ZFia1yQs/yKkIUS+Yht2CytQJ6TCnSQcusq
+        VOnwTAgPGPuW1ncDsMmXt/JppQhPoX3xhcvDEiZ+HQWNcEWB/yTHNsF1PhVu/U6T9kzNRj
+        3romADhGi2WFg362haisbi9xDzn9hrY1DCAzdbcaRUpXEj94Pym/BU/4Fs0qmB+TzSjQpj
+        HYneFQQFbOwrjUSQGF8iSw0QdHe5VAG+GyNODBmiNmSsa6+QI1O8Cio9Lnj2CFp+e40ZfC
+        rhFD3q7DWfLIle668KGSYrXbr9EYJxl/k+wNJ3J677OcneNYLXlTF1uiv+3lOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628778762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mIHYZ5fGW/DUwDGg+3IuVLf+ZAoE9UAQ5scG9d994PA=;
+        b=diq5C1ztwLdRQqoX/Ns3CTep2UT4Yq6la+TuTHdluhxk6UFiKNbtKd90aW1vQ3dmcGe3Au
+        +M9hgvP2gyZkOgBg==
+To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
+In-Reply-To: <87a6lmiwi0.ffs@tglx>
+References: <20210713135158.054424875@linutronix.de>
+ <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
+ <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
+ <87a6lmiwi0.ffs@tglx>
+Date:   Thu, 12 Aug 2021 16:32:41 +0200
+Message-ID: <877dgqivhy.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03f.na.qualcomm.com (10.85.0.47) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 12 2021 at 16:11, Thomas Gleixner wrote:
 
+> On Thu, Aug 12 2021 at 09:19, Mike Galbraith wrote:
+>> Greetings Peter, may your day get off to a better start than my box's
+>> did :)
+>>
+>> On Tue, 2021-08-10 at 16:02 +0000, tip-bot2 for Peter Zijlstra wrote:
+>>> The following commit has been merged into the timers/core branch of tip:
+>>>
+>>> Commit-ID:=C2=A0=C2=A0=C2=A0=C2=A0 b14bca97c9f5c3e3f133445b01c723e95490=
+d843
+>>> Gitweb:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://git.kernel.or=
+g/tip/b14bca97c9f5c3e3f133445b01c723e95490d843
+>>> Author:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Peter Zijlstra <peter=
+z@infradead.org>
+>>> AuthorDate:=C2=A0=C2=A0=C2=A0 Tue, 13 Jul 2021 15:39:47 +02:00
+>>> Committer:=C2=A0=C2=A0=C2=A0=C2=A0 Thomas Gleixner <tglx@linutronix.de>
+>>> CommitterDate: Tue, 10 Aug 2021 17:57:22 +02:00
+>>>
+>>> hrtimer: Consolidate reprogramming code
+>>
+>> Per git-bisect, this is the tip.today commit that's bricking my box
+>> early in boot.
+>
+> Let me stare at that.
 
-On 7/26/2021 10:57 PM, Bing Fan wrote:
-> hello,
-> 
-> Thanks very much for analysis. And i have get the cause of the problem.
-> 
-> I will add pl011_allocate_multi_irqs/pl011_release_multi_irqs functions for amba drivers,
-> 
-> and call them in pl011_startup/pl011_shutdown respectively.
-> 
-> 
-> Reserved pl011_allocate_irq/pl011_release_irq functions for platform drivers.
-> 
-> Please help to confirm, is this ok?
+Can you please test whether the below fixes it for you?
 
-Bing, are you still working on this? It is getting annoying that this commit will also
-cause the whole serial console useless and the system unable to login. I am happy to
-help if needed.
+I have yet to find a machine which reproduces it as I really want to
+understand which particular part is causing this.
 
+Thanks,
+
+        tglx
+---
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -652,24 +652,10 @@ static inline int hrtimer_hres_active(vo
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
+ }
+=20
+-static void
+-__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
+-		    struct hrtimer *next_timer, ktime_t expires_next)
++static void __hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base,
++				struct hrtimer *next_timer,
++				ktime_t expires_next)
+ {
+-	/*
+-	 * If the hrtimer interrupt is running, then it will reevaluate the
+-	 * clock bases and reprogram the clock event device.
+-	 */
+-	if (cpu_base->in_hrtirq)
+-		return;
+-
+-	if (expires_next > cpu_base->expires_next)
+-		return;
+-
+-	if (skip_equal && expires_next =3D=3D cpu_base->expires_next)
+-		return;
+-
+-	cpu_base->next_timer =3D next_timer;
+ 	cpu_base->expires_next =3D expires_next;
+=20
+ 	/*
+@@ -707,8 +693,10 @@ hrtimer_force_reprogram(struct hrtimer_c
+=20
+ 	expires_next =3D hrtimer_update_next_event(cpu_base);
+=20
+-	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
+-			    expires_next);
++	if (skip_equal && expires_next =3D=3D cpu_base->expires_next)
++		return;
++
++	__hrtimer_reprogram(cpu_base, cpu_base->next_timer, expires_next);
+ }
+=20
+ /* High resolution timer related functions */
+@@ -863,7 +851,19 @@ static void hrtimer_reprogram(struct hrt
+ 	if (base->cpu_base !=3D cpu_base)
+ 		return;
+=20
+-	__hrtimer_reprogram(cpu_base, true, timer, expires);
++	if (expires >=3D cpu_base->expires_next)
++		return;
++
++	/*
++	 * If the hrtimer interrupt is running, then it will reevaluate the
++	 * clock bases and reprogram the clock event device.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
++
++	cpu_base->next_timer =3D timer;
++
++	__hrtimer_reprogram(cpu_base, timer, expires);
+ }
+=20
+ static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
