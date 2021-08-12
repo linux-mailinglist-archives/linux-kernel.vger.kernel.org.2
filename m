@@ -2,115 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529F83E9D44
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC63E9D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhHLEWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHLEWb (ORCPT
+        id S233902AbhHLEXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:23:41 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:55936
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233426AbhHLEXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:22:31 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6889BC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id a20so5631325plm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=V2OoNgUgDhLYLo0G/A9MxruZCr+/VPFKnTGlfuhSRBg=;
-        b=Cp0YBwB3VoJ6c1xlgx8o0IXEBN7VUK7qeorVOgi6mSqV0k8cW0qYQ4PtF/hz4+mCeH
-         jfZnSgVzPWfbQQrVeIpbNEhi/mXhg+yTZAHgxHxdLws72JTAIEno2pU3Z22pk1Z3df0W
-         RUGEGrmMrxGeWGSG+fti9x2zWGFw+9eQwXxrm6BE2RkRnfE/f6Qwye48KJLKQ7wDb7vC
-         elcsOVs+mocn2d8dePThq1JD7OrEMittYEmcqOB8jnB0kNlPUXuFNxJvarKHwZYOmkQX
-         s0KaCTJ5VTGyx8QJix6/0NhOGitJntW9+Wqh8rk4mdrEcZdx9aUPrZNSKNviBkSItFJE
-         Aegg==
+        Thu, 12 Aug 2021 00:23:39 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 9E37240C84
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628742189;
+        bh=+L442i3SxtCcWzJaUttW6ED4hZuYNad+jI36fQtKVDY=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=j6/qJiIPE2mUv/U1CK6fX8j71JttKgDDK2vP5ihW7dzzf9SF/iE3azn0UdYOpvX0g
+         HB6tBu4bGsVgg1g4u5ffsoa47hIZiV7Pa/MDVZofYKzjnZsrLapfrPXSbyMs2qU8ba
+         nKV0r0DtXOLgOumQDLqz10fG/+pVb5e3aNh+Rpt9LfhWY5icSk8l1jkGbfRsL+xLRC
+         uzdRGkW3ctN1In3EpJaiq3/b/gsAWdQz6CyJRxtQnOuJebmfTBl7LBfTmbeBI2QOZZ
+         NQznDUs7Gw/vVEqCfzK5/8qd8jo5cNI5UsYUWik0lRJpilC7FZyh+rAw3tZtuAw9TL
+         U+mNLE7ZNn1aA==
+Received: by mail-pl1-f197.google.com with SMTP id b15-20020a170902d50fb029012d51b0ed75so2880024plg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:23:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=V2OoNgUgDhLYLo0G/A9MxruZCr+/VPFKnTGlfuhSRBg=;
-        b=GIXrBGmXgt9VGYVip8gRojmuIfn/MtiiMSq/2j+Ez/S3bfExmQoO0n9Q1r+P/UbQmD
-         Z6k7vWruKwS92zPpvgZ9Vacj7X46V6hG//M/qjeAPSEdob7/SJ7jnUOKZRcIwzdAqqqw
-         rJbWUO7qFZcXJdK0EbF+1qE0Xk1Zu7wztJoy26VEGQWoivAoLIXwukJjMDayqqCGk+An
-         1jWlwKxDPjrFL4LwyjRQWOzeKXnE05GH/8sqaAM8Ml+B7Zid608PVetYDlCu+T7U5yK4
-         JMm4fOA91/T0hVOT+6TzkdHWZBXXW7XQkeEk6+kfUhUgqLVb1q2uV1cWkxizfbwgvZjI
-         YfHA==
-X-Gm-Message-State: AOAM533b05o3QLrSiimZG5DMlHS3j4iHGw4+bJLuX7mqT4JLI4VY+48C
-        o9FPnCQzmuJDNm6+C24K0aSRYA==
-X-Google-Smtp-Source: ABdhPJySH0sOcWbvWBwKwwS9V1PFVMc96Xd12LGXhQOasIzv3HTUQxkmrRpQYi6FkNoPzJJILXNdLw==
-X-Received: by 2002:a63:7883:: with SMTP id t125mr2028840pgc.243.1628742127011;
-        Wed, 11 Aug 2021 21:22:07 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id gz23sm1146608pjb.0.2021.08.11.21.22.05
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+L442i3SxtCcWzJaUttW6ED4hZuYNad+jI36fQtKVDY=;
+        b=jqmMduHHsbYyr68qSCpaJRUr2nU5gYeIR4jj0uEkTlWI48ZNcZe2EG2FxJw8xq5aWN
+         t1MrB/lY7HZwAcGelYvS5xs799q9FR1tidSJBH5izWzpEbIP90COYgUStLnX3SEVyt/r
+         i8KsxndcQ2kijZ3sUDQLG49LHwtWLpP2xnyqVJBQ0F24dQRaq1kB9fpEI/GbyvLFifqf
+         n5wbBB2vczAF4dRMSo+CHNYY/ISn14O+PxVr/w2CPtB1as7j4+/slO3S/CIBW+YLPx/b
+         IIZXSmT+0A9Au+YOcohJ/6w/hUdaNbNC46k5CVzyRHSfn2sc5x1eBopOWSWpBYvPXJP1
+         /bBA==
+X-Gm-Message-State: AOAM530VXSg4OXtotyNTvgxgUvj2VXA6gtQvwbApALQ1+5hwIkwBajJQ
+        e3w8b7TI9xlS30bcVmfbtwV/Jyif9F/8jSZhF2B0aGZyJ2tKN8W8v/kcXyrloimCgPvJMT12qoy
+        ytEegp3jvHrOOcRW0ibUpod+NotxXE56UZWC4gXsfqQ==
+X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr2320616pju.127.1628742187456;
+        Wed, 11 Aug 2021 21:23:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXjpzEwVLP/zQsF6dW6uJ5sYNGe1SPeFYLPOiehRNPqCxY0kzQvYXusthspuWxSYsiqLixyA==
+X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr2320591pju.127.1628742187163;
+        Wed, 11 Aug 2021 21:23:07 -0700 (PDT)
+Received: from canonical.com (61-220-137-34.HINET-IP.hinet.net. [61.220.137.34])
+        by smtp.gmail.com with ESMTPSA id dw15sm1092861pjb.42.2021.08.11.21.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 21:22:06 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:52:04 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
-Message-ID: <20210812042204.lxugyjxa2cyz45ib@vireshk-i7>
-References: <cover.1628682874.git.viresh.kumar@linaro.org>
- <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
- <143a03df-d858-b2de-a2cc-983c35d71e53@arm.com>
+        Wed, 11 Aug 2021 21:23:06 -0700 (PDT)
+From:   Koba Ko <koba.ko@canonical.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, apusaka@google.com
+Subject: [PATCH] Bluetooth: msft: add a bluetooth parameter, msft_enable
+Date:   Thu, 12 Aug 2021 12:23:05 +0800
+Message-Id: <20210812042305.277642-1-koba.ko@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <143a03df-d858-b2de-a2cc-983c35d71e53@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-08-21, 17:32, Lukasz Luba wrote:
-> 
-> 
-> On 8/11/21 12:58 PM, Viresh Kumar wrote:
-> > Set the newly added .register_em() callback to register with the EM
-> > after the cpufreq policy is properly initialized.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >   drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
-> >   1 file changed, 32 insertions(+), 23 deletions(-)
-> 
-> > +static void scmi_cpufreq_register_em(struct cpufreq_policy *policy)
-> > +{
-> > +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-> > +	bool power_scale_mw = perf_ops->power_scale_mw_get(ph);
-> > +	struct scmi_data *priv = policy->driver_data;
-> > +
-> > +	em_dev_register_perf_domain(get_cpu_device(policy->cpu), priv->nr_opp,
-> > +				    &em_cb, priv->opp_shared_cpus,
-> > +				    power_scale_mw);
-> 
-> I would free the priv->opp_shared_cpus mask here, since we don't
-> need it anymore and memory can be reclaimed.
+With Intel AC9560, follow this scenario and can't turn on bt since.
+1. turn off BT
+2. then suspend&resume multiple times
+3. turn on BT
 
-Yes, we don't need it anymore, but this isn't a good place to undo
-what init() has done. Moreover, it is possible that register_em() may
-not get called at all, if some error has occurred after init() has
-successfully returned. It is always better to use exit() for such
-things. It won't hurt a lot to keep this around anyway.
+Get this error message after turn on bt.
+[ 877.194032] Bluetooth: hci0: urb 0000000061b9a002 failed to resubmit (113)
+[ 886.941327] Bluetooth: hci0: Failed to read MSFT supported features (-110)
 
-> Don't forget this
-> setup would be called N CPUs times, on this per-CPU policy platform.
+Remove msft from compilation would be helpful.
+Turn off msft would be also helpful.
 
-Yes, but EM will just ignore this call. Though I have made a change
-here now to check for non-zero nr_opp to avoid the unnecessary call.
+Because msft is enabled as default and can't turn off without
+compliation,
+Introduce a bluetooth parameter, msft_enable, to control.
 
-> If freed here, then also there wouldn't be a need to free it in
-> scmi_cpufreq_exit() so you can remove it from there.
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
+---
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/hci_core.c         | 16 ++++++++++++++++
+ net/bluetooth/msft.c             | 30 +++++++++++++++++++++++++++++-
+ 3 files changed, 46 insertions(+), 1 deletion(-)
 
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index a7d06d7da602..002753db936a 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1229,6 +1229,7 @@ static inline void *hci_get_priv(struct hci_dev *hdev)
+ 	return (char *)hdev + sizeof(*hdev);
+ }
+ 
++void hci_set_msft(bool enable);
+ struct hci_dev *hci_dev_get(int index);
+ struct hci_dev *hci_get_route(bdaddr_t *dst, bdaddr_t *src, u8 src_type);
+ 
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index cb2e9e513907..9e1bdaea20a8 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1045,6 +1045,22 @@ static int hci_linkpol_req(struct hci_request *req, unsigned long opt)
+ 	return 0;
+ }
+ 
++void hci_set_msft(bool enable)
++{
++	struct hci_dev *hdev = NULL, *d;
++
++	read_lock(&hci_dev_list_lock);
++	list_for_each_entry(d, &hci_dev_list, list) {
++		hdev = hci_dev_hold(d);
++		if (enable)
++			msft_do_open(hdev);
++		else
++			msft_do_close(hdev);
++		hci_dev_put(hdev);
++	}
++	read_unlock(&hci_dev_list_lock);
++}
++
+ /* Get HCI device by index.
+  * Device is held on return. */
+ struct hci_dev *hci_dev_get(int index)
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index b4bfae41e8a5..0bb50ee11bf8 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -97,6 +97,34 @@ struct msft_data {
+ 	__u8 filter_enabled;
+ };
+ 
++static bool msft_enable = true;
++
++static int msft_set_enable(const char *s, const struct kernel_param *kp)
++{
++	bool do_enable;
++	int ret;
++
++	if (!s)
++		return 0;
++
++	ret = strtobool(s, &do_enable);
++	if (ret || msft_enable == do_enable)
++		return ret;
++
++	hci_set_msft(do_enable);
++
++	msft_enable = do_enable;
++
++	return ret;
++}
++
++static const struct kernel_param_ops msft_enable_ops = {
++	.set = msft_set_enable,
++	.get = param_get_bool,
++};
++
++module_param_cb(msft_enable, &msft_enable_ops, &msft_enable, 0644);
++
+ static int __msft_add_monitor_pattern(struct hci_dev *hdev,
+ 				      struct adv_monitor *monitor);
+ 
+@@ -186,7 +214,7 @@ void msft_do_open(struct hci_dev *hdev)
+ {
+ 	struct msft_data *msft;
+ 
+-	if (hdev->msft_opcode == HCI_OP_NOP)
++	if (!msft_enable || hdev->msft_opcode == HCI_OP_NOP)
+ 		return;
+ 
+ 	bt_dev_dbg(hdev, "Initialize MSFT extension");
 -- 
-viresh
+2.25.1
+
