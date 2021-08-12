@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5864C3E9D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A554C3E9D0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhHLDep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbhHLDeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:34:31 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB47C0617A2;
-        Wed, 11 Aug 2021 20:34:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S233832AbhHLDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 23:47:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229729AbhHLDrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 23:47:14 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GlXNQ2CNxz9t1s;
-        Thu, 12 Aug 2021 13:33:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628739239;
-        bh=MDW5JG3QUepMTkkbws2wR/QLbVdmmzCINThfadO3/Mo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=c+OAikLP81pwKkGaIR/ALoJY/aBEimgvSYUtYdJBODdfrN4wRh6Z8c3+5MerQkLtZ
-         +tfH8L0rDfbkexDnld87DhxX5/97Jk9NR1IufFwCLRPJl9lkFbzfW1y42nLkY/EOHv
-         kzjTHMIOm0e6ndYXqWf2rX3k9Dq25OFGPYG9kHwG06xBwTmyXCR+ANNpmm+aZUioM5
-         3VzPlxc7dXTL8nVKt+M/hTpegKgdXOizCxKAjiXVJqFSVW07d27uM1CcymsVmSDdL9
-         341hqbxmCCegG7DXSOLKuWAlttQosF2/iGYkcOCWTZ7nw4B2iqzSCfSeeZ1xDZpJvq
-         xaJhmvgfO586A==
-Date:   Thu, 12 Aug 2021 13:33:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-Message-ID: <20210812133356.68d2afb8@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BE0760FE6;
+        Thu, 12 Aug 2021 03:46:49 +0000 (UTC)
+Date:   Wed, 11 Aug 2021 23:46:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-ID: <20210811234648.4f847ac2@rorschach.local.home>
+In-Reply-To: <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+        <20210811112249.555463f2@oasis.local.home>
+        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/d==gHFVtmTCLz_3V0TC_yyy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/d==gHFVtmTCLz_3V0TC_yyy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 12 Aug 2021 10:27:35 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Hi all,
+> Let me confirm this, so eprobes can be attached to synthetic event?
+> IMHO, I rather like to prevent attaching eprobe_event on the other
+> dynamic events. It makes hard to check when removing the base dynamic
+> events...
+> 
+> For the above example, we can rewrite it as below to trace filename
+> without attaching eprobe_events on the synthetic event.
+> 
+>   echo 'my_open pid_t pid; char file[]' > synthetic_events
+> 
+>   echo 'e:myopen syscalls.sys_enter_open file=+0($filename):ustring' > dynamic_events
+>   echo 'e:myopen_ret syscalls.sys_exit_open ret=$ret' > dynamic_events
+>  
+>   echo 'hist:keys=common_pid:fname=file' > events/eprobes/myopen/trigger
+>   echo 'hist:keys=common_pid:fname=$fname:onmatch(eprobes.myopen).trace(my_open,common_pid,$fname)' > events/eprobes/myopen_ret
+> 
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+The problem is that the above wont work :-(
 
-  arch/arm64/include/asm/sysreg.h
+For example, I can use this program:
 
-between commit:
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
 
-  79d82cbcbb3d ("arm64/kexec: Test page size support with new TGRAN range v=
-alues")
+static const char *file = "/etc/passwd";
 
-from the arm64 tree and commit:
+int main (int argc, char **argv)
+{
+	int fd;
 
-  b31578f62717 ("arm64/mm: Define ID_AA64MMFR0_TGRAN_2_SHIFT")
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		perror(file);
+	close(fd);
+	return 0;
+}
 
-from the kvm-arm tree.
+Which if you do the above, all you'll get from the myopen is "(null)".
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+That's because the "/etc/passwd" is not paged in at the start of the
+system call, and because tracepoints can not fault, the "ustring" will
+not be mapped yet, it can not give you the content of the file pointer.
+This was the entire reason we are working on eprobes to attach to
+synthetic events in the first place.
 
---=20
-Cheers,
-Stephen Rothwell
+The trick is to use the synthetic event to pass the filename pointer to
+the exit of the system call, which the system call itself would map the
+pointer to "file", and when the eprobe reads it with ":ustring" from
+the exit of the system call it gets "/etc/passwd" instead of "(null)".
 
-diff --cc arch/arm64/include/asm/sysreg.h
-index f2e06e7c0a31,943d31d92b5b..000000000000
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@@ -1032,16 -1028,19 +1032,19 @@@
- =20
-  #if defined(CONFIG_ARM64_4K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN4_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN4_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX
-  #elif defined(CONFIG_ARM64_16K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN16_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN16_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0xF
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED_M=
-IN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN16_SUPPORTED_M=
-AX
-  #elif defined(CONFIG_ARM64_64K_PAGES)
-  #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN64_SHIFT
-+ #define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN64_2_SHIFT
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED
- -#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED_M=
-IN
- +#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN64_SUPPORTED_M=
-AX
-  #endif
- =20
-  #define MVFR2_FPMISC_SHIFT		4
+Your above example doesn't fix this.
 
---Sig_/d==gHFVtmTCLz_3V0TC_yyy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEUlqQACgkQAVBC80lX
-0GyVxgf/fJ9uXPweJsnBnyaEsG4sazx6/DylK5XbU8EVBcBMuHxniADviFdojVf0
-+jO2Bi7VDGXoEgOeSwuGrY8THbGBxITjR1i6FrY/ou0MOoVUtATGcDJ6JYOixC0e
-FnjDM+5Le6NYWU/m3yZQUY1LgzC3ZzzgQ11K0TOQOLuXKFAWmkWtU52oGvIEw/Ub
-oYJRxhTBCvHGGsnIHGozSufWUkLB7dSWHDkD19xS5rUNrQPsh4SJzCS5R8KCwIgt
-97PqhWXEzD5ObgYQ2GgURou5oNW/fVi9biNHKb+AYtYtPqvywLXbXwiMGU8Rkyr1
-NZCWwYiZhN5UOcZgYOjP+pcb8n+2gA==
-=CEQG
------END PGP SIGNATURE-----
-
---Sig_/d==gHFVtmTCLz_3V0TC_yyy--
+-- Steve
