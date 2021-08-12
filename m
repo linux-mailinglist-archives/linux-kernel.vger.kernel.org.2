@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C2F3EA4F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D83EA4FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237561AbhHLM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:57:24 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:43733 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhHLM5X (ORCPT
+        id S237571AbhHLM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:57:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48461 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237350AbhHLM5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:57:23 -0400
-Received: by mail-ot1-f42.google.com with SMTP id r16-20020a0568304190b02904f26cead745so7563243otu.10;
-        Thu, 12 Aug 2021 05:56:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Dn1hE2ukpz/WECVCplI+uSk9eP83Ym70szgfvUF3Ew=;
-        b=E/L/+q+kpH61k3Z+SzMUkFXlxIOZK4yb1KaGUtDpweA8kSMS2+DiaJj7TsVRAoBQzD
-         0kIzTFf1OJw+nXXclxCbGw3li/5O4GcRLkUkGXkI+/KogCCJb3IQbZLKSb+fkeEhBJKA
-         KB+Iimp+4+LTE3e9NvAjgjAdZK5jSp1fhVRab+xcJ5r9ab75ggRyMXIVBc4FqShgY0dF
-         mw141bcvbQmBGUyj1+fwP/HGlxd0ZrV3cKHLvJGTY3xLIqlJcT+1IrR9bb6QrA/W+C+E
-         hL7f5ANoIZUMKrsdU1DLpK5K6NEco+DnnUeAWhUCBk9BavsunNM69+lwCGzBiT+AdCjI
-         XKCw==
-X-Gm-Message-State: AOAM530G4KF74mgGCZYjBKptI22cEAw5JopqBWIOI6MLtnUCqhQRh7Dx
-        0RNKAZfH+Cv0QvetJ3ZEnQ==
-X-Google-Smtp-Source: ABdhPJyYec/VgtswnBEuZftjOY/B95EXc8HL+d/1/ZZhKfJ0OjKyRLmPhayd9j8kaFtttlHgnA2WNg==
-X-Received: by 2002:a05:6830:1108:: with SMTP id w8mr3321893otq.88.1628773017952;
-        Thu, 12 Aug 2021 05:56:57 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d2sm592888otl.32.2021.08.12.05.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 05:56:57 -0700 (PDT)
-Received: (nullmailer pid 1259131 invoked by uid 1000);
-        Thu, 12 Aug 2021 12:56:56 -0000
-Date:   Thu, 12 Aug 2021 07:56:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: PCI: kirin: fix HiKey970 example
-Message-ID: <YRUamNF18ese0DYw@robh.at.kernel.org>
-References: <cover.1628754620.git.mchehab+huawei@kernel.org>
- <655e21422a14620ae2d55335eb72bcaa66f5384d.1628754620.git.mchehab+huawei@kernel.org>
+        Thu, 12 Aug 2021 08:57:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628773033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCn72IsR7SruuxmCk9O65PvV6CJhIOfP9bZiMHWXYvw=;
+        b=K8IWMSjCT9P0LzkYsTsLVVKIBeTnAXkbOPs/E/WR+xAjOvwU5G+2gzUHjzYYok9UkEv58l
+        ucJeuigSgEJpNJHVK4ziI2TEdHwIxrH12jRJM/tKBkOLHjIeFTkn+mUCIzwd0VLfNJjvqc
+        d54Ra2WGvOflfc4+XwsX79MzLhn+5yU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-hBfPyN1kPIaWh0iRWiHLJw-1; Thu, 12 Aug 2021 08:57:10 -0400
+X-MC-Unique: hBfPyN1kPIaWh0iRWiHLJw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D465E8799EC;
+        Thu, 12 Aug 2021 12:57:08 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C811060C05;
+        Thu, 12 Aug 2021 12:57:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210812122104.GB18532@lst.de>
+References: <20210812122104.GB18532@lst.de> <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk> <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, willy@infradead.org,
+        trond.myklebust@primarydata.com, darrick.wong@oracle.com,
+        jlayton@kernel.org, sfrench@samba.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use ->direct_IO() not ->readpage()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <655e21422a14620ae2d55335eb72bcaa66f5384d.1628754620.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3085431.1628773025.1@warthog.procyon.org.uk>
+Date:   Thu, 12 Aug 2021 13:57:05 +0100
+Message-ID: <3085432.1628773025@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 09:55:52AM +0200, Mauro Carvalho Chehab wrote:
-> The given example doesn't produce all of_nodes at sysfs.
-> Update it to reflect what's actually working.
+Christoph Hellwig <hch@lst.de> wrote:
+
+> On Thu, Aug 12, 2021 at 12:57:58PM +0100, David Howells wrote:
+> > Make swap_readpage(), when accessing a swap file (SWP_FS_OPS) use
+> > the ->direct_IO() method on the filesystem rather then ->readpage().
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 64 +++++++++++--------
->  1 file changed, 36 insertions(+), 28 deletions(-)
+> ->direct_IO is just a helper for ->read_iter and ->write_iter, so please
+> don't call it directly.  It actually is slowly on its way out, with at
+> at least all of the iomap implementations not using it, as well as various
+> other file systems.
+
+[Note that __swap_writepage() uses ->direct_IO().]
+
+Calling ->write_iter is probably a bad idea here.  Imagine that it goes
+through, say, generic_file_write_iter(), then __generic_file_write_iter() and
+then generic_file_direct_write().  It adds a number of delays into the system,
+including:
+
+	- Taking the inode lock
+	- Removing file privs
+	- Cranking mtime, ctime, file version
+	  - Doing mnt_want_write
+	  - Setting the inode dirty
+	- Waiting on pages in the range that are being written 
+	- Walking over the pagecache to invalidate the range
+	- Redoing the invalidation (can't be skipped since page 0 is pinned)
+
+that we might want to skip as they'll end up being done for every page swapped
+out.
+
+> > +	ki = kzalloc(sizeof(*ki), GFP_KERNEL);
+> > +	if (!ki)
+> > +		return -ENOMEM;
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> index d05deebe9dbb..668a09e27139 100644
-> --- a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> @@ -97,7 +97,6 @@ examples:
->                <0x0 0xfc180000 0x0 0x1000>,
->                <0x0 0xf5000000 0x0 0x2000>;
->          reg-names = "dbi", "apb", "config";
-> -        msi-parent = <&its_pcie>;
->          #address-cells = <3>;
->          #size-cells = <2>;
->          device_type = "pci";
-> @@ -116,43 +115,52 @@ examples:
->                          <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
->          reset-gpios = <&gpio7 0 0>;
->          hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>, <&gpio20 6 0>;
-> -
-> -        pcie@0 { // Lane 0: PCIe switch: Bus 1, Device 0
-> -          reg = <0 0 0 0 0>;
-> +        pcie@0,0 { // Lane 0: PCIe switch: Bus 1, Device 0
-> +          reg = <0x80 0 0 0 0>;
->            compatible = "pciclass,0604";
->            device_type = "pci";
->            #address-cells = <3>;
->            #size-cells = <2>;
->            ranges;
-> -          pcie@1,0 { // Lane 4: M.2
-> -            reg = <0x800 0 0 0 0>;
-> +          msi-parent = <&its_pcie>;
+> for the synchronous case we could avoid this allocation and just use
+> arguments on stack.
 
-Why do we need this change? Adding the child nodes shouldn't change 
-the behavior here. I'd expect that we'd walk the parent nodes until we 
-find a 'msi-parent' much like 'interrupt-parent'.
+True.
 
-It looks like we walk PCI bus parents to get the MSI domain, but we 
-don't walk the DT node parents. 
+David
 
-Adding Marc for his thoughts.
-
-Rob
