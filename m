@@ -2,203 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63FD3EA4C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD403EA4CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237090AbhHLMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:39:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236323AbhHLMja (ORCPT
+        id S237156AbhHLMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236323AbhHLMmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:39:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628771945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sbqGKseWRRYhbY2LGrYsEOQPjgQ6ehV+W5zF3jgNGfg=;
-        b=cyMImLTLaArjT4LGx0T0mtmk4mEV59XFkyZlVepb5PTUKQ5Gz+CPnKK/jbEVGrNMNCULJi
-        mwb+8sUz1bUgBg7zwlaQ3Crzv+m+rI+x5UMgxGlByD8YL5/sCeWQh9mN9dNKdTtavREJvA
-        0rfno5rxB+EptaNxrLi0ttX+qKyisfY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-R3j17TpIPfCilmewsBh9pw-1; Thu, 12 Aug 2021 08:39:04 -0400
-X-MC-Unique: R3j17TpIPfCilmewsBh9pw-1
-Received: by mail-wm1-f70.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so3310597wml.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:39:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=sbqGKseWRRYhbY2LGrYsEOQPjgQ6ehV+W5zF3jgNGfg=;
-        b=r/Pxrec1VTqMeK2atHGswB+U6rIRg/wu0JD9PSCx66FHJfjS9c7K/Lg+hG1teyL7I6
-         17ocQA+KfRiVjC30gnMc9jcV9ZTU7TiSbCDUU2gpizaZqzoFcqtCdgfLOR48YUguGGDw
-         TNXUzff1rE3TeX1g1ajuMv7CxZtgQN0cbltdoxEVVelVWWkA7GZS5+3vH+Ej76rywU/z
-         hJCrBIVh0PkEm0fbwFL+K4HFCMAbEN4xrCAkEAzqPB3sDaN/ctxBIxEBqtG9BjozayLm
-         uljTo+hZRXQPR15ZJShMZ+HXkiHCvIYAIZekEVlaDkNtHkCCCtd4TQe8STwSjomKyNQu
-         NvXg==
-X-Gm-Message-State: AOAM532j6517hObv16QVq38BbAYteMaOPTXUBBD6ZEToSR55pDfV9X36
-        HuwU1akjnkHdVEC6RQcB1MuolCt/POuGDgyF6Sl5V9tK+AjE++paUIcVLX6Hht3VHUx0wt+81nu
-        RyPOwGz2zGghS8BrXkhFBhdXQ
-X-Received: by 2002:adf:db83:: with SMTP id u3mr3880791wri.363.1628771942743;
-        Thu, 12 Aug 2021 05:39:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDcYmjDSU043EHzDh1omoow7kdOXdSFpNIKh9fkmzaYfVhQ8MrQo4AHUXle/AZphgQiUXdsA==
-X-Received: by 2002:adf:db83:: with SMTP id u3mr3880754wri.363.1628771942458;
-        Thu, 12 Aug 2021 05:39:02 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id d18sm2297940wrb.16.2021.08.12.05.38.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 05:39:01 -0700 (PDT)
-Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
- MM exe_file
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Thu, 12 Aug 2021 08:42:36 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8DBC061765;
+        Thu, 12 Aug 2021 05:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=xC/TZD3ZIXMs1cMiTUUAC6x6j656qE6poOPOz0bbgp4=; b=BIIYYrXJ3Ew+Z1Zm5diqSi/De
+        z9wV3zfjmSLaZp7CLzV+GZVzZq7gHn4aYTS+otHAxBF57P3sG+08JwSPBCdCFZWJ+W/a7Uq2nG6dR
+        Ha2YFBjZclMZJYIiXKlQ1gLB8ZCdS8B9uEW3WbpCbGK0H/IdQLdkF8gVEx0au/w4sNkwsnJxOlaJN
+        3F0T/x1fYsMd3E4PDbHDx53iR0C3e0RKKbXsP6YegqA39Ad4vclW52rD2Iu/mHbjVJqRpkjlhVtux
+        jBq7gk1O4Rj655JZe+cFH0MNa946zYFR94AnA24dA5R1E6RDmcUCiw2sBMgZdt0NLZen6d2vGXuXM
+        pATOPCJUw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47224)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mEA24-0002Bw-KA; Thu, 12 Aug 2021 13:42:00 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mEA1l-00049N-O0; Thu, 12 Aug 2021 13:41:41 +0100
+Date:   Thu, 12 Aug 2021 13:41:41 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org,
+        linux-mm@kvack.org, Vineet Gupta <vgupta@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Andrei Vagin <avagin@gmail.com>
-References: <20210812084348.6521-1-david@redhat.com>
- <20210812084348.6521-4-david@redhat.com>
- <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
- <1b6d27cf-2238-0c1c-c563-b38728fbabc2@redhat.com>
- <20210812123239.trksnm57owzwzokj@wittgenstein>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <59b6be94-c7d0-0535-1348-4e9c7f188d20@redhat.com>
-Date:   Thu, 12 Aug 2021 14:38:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <palmerdabbelt@google.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH -next] trap: Cleanup trap_init()
+Message-ID: <20210812124141.GY22278@shell.armlinux.org.uk>
+References: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210812123239.trksnm57owzwzokj@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.21 14:32, Christian Brauner wrote:
-> On Thu, Aug 12, 2021 at 12:13:44PM +0200, David Hildenbrand wrote:
->> On 12.08.21 12:05, Christian Brauner wrote:
->>> [+Cc Andrei]
->>>
->>> On Thu, Aug 12, 2021 at 10:43:44AM +0200, David Hildenbrand wrote:
->>>> We want to remove VM_DENYWRITE only currently only used when mapping the
->>>> executable during exec. During exec, we already deny_write_access() the
->>>> executable, however, after exec completes the VMAs mapped
->>>> with VM_DENYWRITE effectively keeps write access denied via
->>>> deny_write_access().
->>>>
->>>> Let's deny write access when setting the MM exe_file. With this change, we
->>>> can remove VM_DENYWRITE for mapping executables.
->>>>
->>>> This represents a minor user space visible change:
->>>> sys_prctl(PR_SET_MM_EXE_FILE) can now fail if the file is already
->>>> opened writable. Also, after sys_prctl(PR_SET_MM_EXE_FILE), the file
->>>
->>> Just for completeness, this also affects PR_SET_MM_MAP when exe_fd is
->>> set.
->>
->> Correct.
->>
->>>
->>>> cannot be opened writable. Note that we can already fail with -EACCES if
->>>> the file doesn't have execute permissions.
->>>>
->>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>> ---
->>>
->>> The biggest user I know and that I'm involved in is CRIU which heavily
->>> uses PR_SET_MM_MAP (with a fallback to PR_SET_MM_EXE_FILE on older
->>> kernels) during restore. Afair, criu opens the exe fd as an O_PATH
->>> during dump and thus will use the same flag during restore when
->>> opening it. So that should be fine.
->>
->> Yes.
->>
->>>
->>> However, if I understand the consequences of this change correctly, a
->>> problem could be restoring workloads that hold a writable fd open to
->>> their exe file at dump time which would mean that during restore that fd
->>> would be reopened writable causing CRIU to fail when setting the exe
->>> file for the task to be restored.
->>
->> If it's their exe file, then the existing VM_DENYWRITE handling would have
->> forbidden these workloads to open the fd of their exe file writable, right?
+On Thu, Aug 12, 2021 at 08:36:02PM +0800, Kefeng Wang wrote:
+> There are some empty trap_init() in different ARCHs, introduce
+> a new weak trap_init() function to cleanup them.
 > 
-> Yes.
-> 
->> At least before doing any PR_SET_MM_MAP/PR_SET_MM_EXE_FILE. But that should
->> rule out quite a lot of cases we might be worried about, right?
-> 
-> Yes, it rules out the most obvious cases. The problem is really just
-> that we don't know how common weirder cases are. But that doesn't mean
-> we shouldn't try and risk it. This is a nice cleanup and playing
-> /proc/self/exe games isn't super common.
-> 
+> Cc: Vineet Gupta <vgupta@kernel.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Paul Walmsley <palmerdabbelt@google.com>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-Right, and having the file your executing opened writable isn't 
-something very common as well.
+For 32-bit arm:
 
-If we really run into problems, we could not protect the new file when 
-issuing PR_SET_MM_MAP/PR_SET_MM_EXE_FILE. But I'd like to avoid that, if 
-possible, because it feels like working around something that never 
-should have worked that way and is quite inconsistent.
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+Thanks!
 
 -- 
-Thanks,
-
-David / dhildenb
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
