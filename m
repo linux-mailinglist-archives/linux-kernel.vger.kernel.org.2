@@ -2,214 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE2F3EA898
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ABC3EA89B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbhHLQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhHLQgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:36:46 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C423C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:36:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f8300207fa77f9285c0b6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:8300:207f:a77f:9285:c0b6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6B7AE1EC01A2;
-        Thu, 12 Aug 2021 18:36:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628786175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=iXg+2fsq+rRbwFOnhH5hGZGFEHEg8DqH78cmJkdjAhk=;
-        b=LeQuzGk4nhB0GoobNN0egdKPlwPm5OKTc5g9r80Dl5WZga8bkNOoLcNrlchQghK4cNWukx
-        smVngCEVNEDRo4oV/aLLzMtzSQmohxHT5xkIWlvqUW1XQuMxbPTopoP2PzDqhUccquJkPE
-        QJ5Xl/8EkOSg8JWagCypgyIn4uqGHis=
-Date:   Thu, 12 Aug 2021 18:36:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 06/26] x86/fpu/xstate: Calculate and remember dynamic
- XSTATE buffer sizes
-Message-ID: <YRVOJgss1VhVkycu@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-7-chang.seok.bae@intel.com>
+        id S232671AbhHLQiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:38:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232621AbhHLQiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 12:38:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C13A603E7;
+        Thu, 12 Aug 2021 16:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628786274;
+        bh=SpN/Z09ejna3Bhd4vpJNnGWmQbFcrh/2v1tDaruVhxU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cw8u0V8Ci2MQRfFc8uY4HFU2pONVcyKy4yz/A0L8NEJ2GH+qMfUvzhOsvXcKlPXNm
+         nTK8TXQJ08m5fFJDT78sGELJf4zZPxuwjzK/akHYwPbPQ6NLzLLMpZ95YkQTdC5FTy
+         TRxhRoIxMllFFjUP8z9yzG1iRso4rdkljqmi13D395/Y2NbXAGTfKXCd8Z24DEO9Na
+         apkTinu6OKQML8LZhdeG36seVfNb5cfm6DRnqsS2kiAIclGcEhLZPyLFJ7HisiOsqr
+         nU1WigV/LbsKuNk0NbghdHkalN+ysbTlveODj3olT1D4eU6XN3bo51zl4Dg2qka+hW
+         5Qd/uyjcuTufA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 001265C0355; Thu, 12 Aug 2021 09:37:53 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:37:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        kernel-team@fb.com, ak@linux.intel.com, rong.a.chen@intel.com,
+        sboyd@kernel.org
+Subject: Re: [GIT PULL clocksource] Clocksource watchdog commits for v5.15
+Message-ID: <20210812163753.GW4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210812000133.GA402890@paulmck-ThinkPad-P17-Gen-1>
+ <87czqiixml.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210730145957.7927-7-chang.seok.bae@intel.com>
+In-Reply-To: <87czqiixml.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:59:37AM -0700, Chang S. Bae wrote:
-> The CPUID instruction separately enumerates sizes and alignments of
-> individual xfeatures. It independently enumerates the required size of an
-> entire XSAVE buffer to store all enabled features.
+On Thu, Aug 12, 2021 at 03:46:42PM +0200, Thomas Gleixner wrote:
+> On Wed, Aug 11 2021 at 17:01, Paul E. McKenney wrote:
+> > This pull request contains a single change that prevents clocksource
+> > watchdog testing on systems with HZ < 100, thus preventing the integer
+> > underflow that can occur on leisurely HZed systems.  This has been
+> > posted to LKML:
+> >
+> > https://lore.kernel.org/lkml/20210721212755.GA2066078@paulmck-ThinkPad-P17-Gen-1/
 > 
-> calculate_xstate_sizes() currently uses the individual feature
-> size/alignment enumeration to independently recalculate the required XSAVE
-> buffer size. This is compared against the CPUID-provided value.
+> So with HZ < 100 .mult overflows, but why not simply adjusting the
+> mult, shift value to be
 > 
-> Extend the function to accept an option to exclude dynamic states. With
-> that, calculate the maximum size that contains all the enabled states, and
-> the minimum size that fits in the statically-allocated buffer by excluding
-> dynamic states.
-
-This explains *what* this patch does but not *why*. *What* I can more or
-less see but for *why* I'd need my crystal ball...
-
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 12caf1a56ce0..cd709408efb5 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -591,24 +591,28 @@ static void check_xstate_against_struct(int nr)
->  	}
->  }
->  
-> -/*
-> - * This essentially double-checks what the cpu told us about
-> - * how large the XSAVE buffer needs to be.  We are recalculating
-> - * it to be safe.
-
-Why are you removing that comment? Are we not recalculating anymore?
-
-> +/**
-> + * calculate_xstate_size - Calculate the xstate per-task buffer size.
-> + *
-> + * Independent XSAVE features allocate their own buffers and are always
-> + * excluded. Only the size of the buffer for task->fpu is checked here.
->   *
-> - * Independent XSAVE features allocate their own buffers and are not
-> - * covered by these checks. Only the size of the buffer for task->fpu
-> - * is checked here.
-> + * @include_dynamic_states:	A knob to include dynamic states or not.
-> + *
-> + * Return:			The calculated xstate size.
->   */
-> -static void do_extra_xstate_size_checks(void)
-> +static unsigned int calculate_xstate_size(bool include_dynamic_states)
->  {
-> -	int paranoid_xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
-> +	unsigned int xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
->  	int i;
->  
->  	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
->  		if (!xfeature_enabled(i))
->  			continue;
->  
-> +		if (!include_dynamic_states && (xfeatures_mask_user_dynamic & BIT_ULL(i)))
-
-The order should be flipped: if (dynamic_state and !include_dynamic_states)
-
-> +			continue;
-> +
->  		check_xstate_against_struct(i);
->  		/*
->  		 * Supervisor state components can be managed only by
-> @@ -619,7 +623,7 @@ static void do_extra_xstate_size_checks(void)
->  
->  		/* Align from the end of the previous feature */
->  		if (xfeature_is_aligned(i))
-> -			paranoid_xstate_size = ALIGN(paranoid_xstate_size, 64);
-> +			xstate_size = ALIGN(xstate_size, 64);
->  		/*
->  		 * The offset of a given state in the non-compacted
->  		 * format is given to us in a CPUID leaf.  We check
-> @@ -627,18 +631,15 @@ static void do_extra_xstate_size_checks(void)
->  		 * setup_xstate_features(). XSAVES uses compacted format.
->  		 */
->  		if (!cpu_feature_enabled(X86_FEATURE_XSAVES))
-> -			paranoid_xstate_size = xfeature_uncompacted_offset(i);
-> +			xstate_size = xfeature_uncompacted_offset(i);
->  		/*
->  		 * The compacted-format offset always depends on where
->  		 * the previous state ended.
->  		 */
-> -		paranoid_xstate_size += xfeature_size(i);
-> +		xstate_size += xfeature_size(i);
->  	}
-> -	/*
-> -	 * The size accounts for all the possible states reserved in the
-> -	 * per-task buffer.  Check against the maximum size.
-> -	 */
-> -	XSTATE_WARN_ON(paranoid_xstate_size != get_xstate_config(XSTATE_MAX_SIZE));
-> +
-> +	return xstate_size;
->  }
->  
->  
-
-<--- You can remove one of the newlines here, while at it.
-
-> @@ -723,7 +724,7 @@ static bool is_supported_xstate_size(unsigned int test_xstate_size)
->  static int __init init_xstate_size(void)
->  {
->  	/* Recompute the context size for enabled features: */
-> -	unsigned int possible_xstate_size;
-> +	unsigned int possible_xstate_size, xstate_size;
->  	unsigned int xsave_size;
->  
->  	xsave_size = get_xsave_size();
-> @@ -734,23 +735,23 @@ static int __init init_xstate_size(void)
->  		possible_xstate_size = xsave_size;
->  
->  	/*
-> -	 * The size accounts for all the possible states reserved in the
-> -	 * per-task buffer.  Set the maximum with this value.
-> +	 * Calculate xstate size for all the possible states by setting
-> +	 * 'true' to include dynamic states.
-
-"Calculate the maximum xstate size, including the dynamic states."
-
-> Cross-check with the CPUID-
-> +	 * provided size and record it.
->  	 */
-> +	xstate_size = calculate_xstate_size(true);
-> +	XSTATE_WARN_ON(possible_xstate_size != xstate_size);
->  	set_xstate_config(XSTATE_MAX_SIZE, possible_xstate_size);
->  
-> -	/* Perform an extra check for the maximum size. */
-> -	do_extra_xstate_size_checks();
-> -
->  	/*
-> -	 * Set the minimum to be the same as the maximum. The dynamic
-> -	 * user states are not supported yet.
-> +	 * Calculate the xstate size without dynamic states by setting
-> +	 * 'false' to exclude dynamic states.
-
-"Calculate the minimum xstate size, i.e., excluding the dynamic xstates."
-
-> Ensure the size fits in
-> +	 * the statically-allocated buffer and record it.
->  	 */
-> -	set_xstate_config(XSTATE_MIN_SIZE, possible_xstate_size);
-> -
-> -	/* Ensure the minimum size fits in the statically-allocated buffer: */
-> -	if (!is_supported_xstate_size(get_xstate_config(XSTATE_MIN_SIZE)))
-> +	xstate_size = calculate_xstate_size(false);
-> +	if (!is_supported_xstate_size(xstate_size))
->  		return -EINVAL;
-
-<---- newline here.
-
-> +	set_xstate_config(XSTATE_MIN_SIZE, xstate_size);
->  
->  	/*
->  	 * User space is always in standard format.
-> -- 
-> 2.17.1
+>       .mult	= TICK_NSEC,
+>       .shift	= 0,
 > 
+> which is effectively the same as
+> 
+>       .mult	= TICK_NSEC << 8,
+>       .shift	= 8,
+> 
+> Hmm?
 
--- 
-Regards/Gruss,
-    Boris.
+Another option would be for me to be less lazy and to move this code:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+	/* Since jiffies uses a simple TICK_NSEC multiplier
+	 * conversion, the .shift value could be zero. However
+	 * this would make NTP adjustments impossible as they are
+	 * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
+	 * shift both the nominator and denominator the same
+	 * amount, and give ntp adjustments in units of 1/2^8
+	 *
+	 * The value 8 is somewhat carefully chosen, as anything
+	 * larger can result in overflows. TICK_NSEC grows as HZ
+	 * shrinks, so values greater than 8 overflow 32bits when
+	 * HZ=100.
+	 */
+	#if HZ < 34
+	#define JIFFIES_SHIFT	6
+	#elif HZ < 67
+	#define JIFFIES_SHIFT	7
+	#else
+	#define JIFFIES_SHIFT	8
+	#endif
+
+from kernel/time/jiffies.c to include/linux/clocksource.h.
+
+Then remove this from kernel/time/clocksource-wdtest.c:
+
+	/* Assume HZ > 100. */
+	#define JIFFIES_SHIFT	8
+
+Then I could get rid of the HZ < 100 restriction.
+
+So how about as shown below?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 413933be37676419414fc7cd03e333c8eaf8a2db
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Aug 12 09:31:28 2021 -0700
+
+    clocksource: Make clocksource-wdtest.c safe for slow-HZ systems
+    
+    Currently, clocksource-wdtest.c sets a local JIFFIES_SHIFT macro for
+    operation at HZ>=67, which can cause this test suite to fail on systems
+    with HZ<67.  Therefore, move the HZ-based definitions of JIFFIES_SHIFT
+    from kernel/time/jiffies.c to include/linux/clocksource.h, allowing
+    the local JIFFIES_SHIFT macro to be removed from clocksource-wdtest.c
+    in favor of a properly HZ-based definition.  This in turn makes
+    clocksource-wdtest.c safe for slow-HZ systems.
+    
+    Cc: John Stultz <john.stultz@linaro.org>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Stephen Boyd <sboyd@kernel.org>
+    Cc: Rong Chen <rong.a.chen@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 1d42d4b173271..61b9a132a7e00 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -294,4 +294,24 @@ static inline void timer_probe(void) {}
+ extern ulong max_cswd_read_retries;
+ void clocksource_verify_percpu(struct clocksource *cs);
+ 
++/* Since jiffies uses a simple TICK_NSEC multiplier
++ * conversion, the .shift value could be zero. However
++ * this would make NTP adjustments impossible as they are
++ * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
++ * shift both the nominator and denominator the same
++ * amount, and give ntp adjustments in units of 1/2^8
++ *
++ * The value 8 is somewhat carefully chosen, as anything
++ * larger can result in overflows. TICK_NSEC grows as HZ
++ * shrinks, so values greater than 8 overflow 32bits when
++ * HZ=100.
++ */
++#if HZ < 34
++#define JIFFIES_SHIFT	6
++#elif HZ < 67
++#define JIFFIES_SHIFT	7
++#else
++#define JIFFIES_SHIFT	8
++#endif
++
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+index b72a969f7b938..781d8dc69be47 100644
+--- a/kernel/time/clocksource-wdtest.c
++++ b/kernel/time/clocksource-wdtest.c
+@@ -34,9 +34,6 @@ static u64 wdtest_jiffies_read(struct clocksource *cs)
+ 	return (u64)jiffies;
+ }
+ 
+-/* Assume HZ > 100. */
+-#define JIFFIES_SHIFT	8
+-
+ static struct clocksource clocksource_wdtest_jiffies = {
+ 	.name			= "wdtest-jiffies",
+ 	.rating			= 1, /* lowest valid rating*/
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index 01935aafdb460..74f4b292900d1 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -12,26 +12,6 @@
+ #include "timekeeping.h"
+ 
+ 
+-/* Since jiffies uses a simple TICK_NSEC multiplier
+- * conversion, the .shift value could be zero. However
+- * this would make NTP adjustments impossible as they are
+- * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
+- * shift both the nominator and denominator the same
+- * amount, and give ntp adjustments in units of 1/2^8
+- *
+- * The value 8 is somewhat carefully chosen, as anything
+- * larger can result in overflows. TICK_NSEC grows as HZ
+- * shrinks, so values greater than 8 overflow 32bits when
+- * HZ=100.
+- */
+-#if HZ < 34
+-#define JIFFIES_SHIFT	6
+-#elif HZ < 67
+-#define JIFFIES_SHIFT	7
+-#else
+-#define JIFFIES_SHIFT	8
+-#endif
+-
+ static u64 jiffies_read(struct clocksource *cs)
+ {
+ 	return (u64) jiffies;
