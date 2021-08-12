@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEA33E9D01
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A483E9CFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbhHLDei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:34:38 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36192 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233855AbhHLDeQ (ORCPT
+        id S234049AbhHLDe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 23:34:28 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42516 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230373AbhHLDeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:34:16 -0400
-X-UUID: f1d63e48cbfd47a48968f3541cc8e9c4-20210812
-X-UUID: f1d63e48cbfd47a48968f3541cc8e9c4-20210812
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Wed, 11 Aug 2021 23:34:15 -0400
+X-UUID: 797047cfd71d4d25bd5f2f8cb6cfc30f-20210812
+X-UUID: 797047cfd71d4d25bd5f2f8cb6cfc30f-20210812
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1164244284; Thu, 12 Aug 2021 11:33:48 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1191795830; Thu, 12 Aug 2021 11:33:49 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Aug 2021 11:33:47 +0800
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Aug 2021 11:33:48 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Aug 2021 11:33:46 +0800
+ Transport; Thu, 12 Aug 2021 11:33:47 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Felipe Balbi <balbi@kernel.org>
@@ -42,9 +42,9 @@ CC:     Pawel Laszczak <pawell@cadence.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH 5/6] usb: gadget: bdc: remove unnecessary AND operation when get ep maxp
-Date:   Thu, 12 Aug 2021 11:33:01 +0800
-Message-ID: <1628739182-30089-5-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH 6/6] usb: gadget: remove unnecessary AND operation when get ep maxp
+Date:   Thu, 12 Aug 2021 11:33:02 +0800
+Message-ID: <1628739182-30089-6-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -60,21 +60,22 @@ AND 0x7ff.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/gadget/udc/bdc/bdc_cmd.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/usb/gadget.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_cmd.c b/drivers/usb/gadget/udc/bdc/bdc_cmd.c
-index 995f79c79f96..67887316a1a6 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_cmd.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_cmd.c
-@@ -153,7 +153,6 @@ int bdc_config_ep(struct bdc *bdc, struct bdc_ep *ep)
- 	si = clamp_val(si, 1, 16) - 1;
+diff --git a/include/linux/usb/gadget.h b/include/linux/usb/gadget.h
+index 75c7538e350a..f181c84310b6 100644
+--- a/include/linux/usb/gadget.h
++++ b/include/linux/usb/gadget.h
+@@ -491,7 +491,7 @@ extern char *usb_get_gadget_udc_name(void);
+  */
+ static inline size_t usb_ep_align(struct usb_ep *ep, size_t len)
+ {
+-	int max_packet_size = (size_t)usb_endpoint_maxp(ep->desc) & 0x7ff;
++	int max_packet_size = (size_t)usb_endpoint_maxp(ep->desc);
  
- 	mps = usb_endpoint_maxp(desc);
--	mps &= 0x7ff;
- 	param2 |= mps << MP_SHIFT;
- 	param2 |= usb_endpoint_type(desc) << EPT_SHIFT;
- 
+ 	return round_up(len, max_packet_size);
+ }
 -- 
 2.25.1
 
