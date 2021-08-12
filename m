@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8863EA5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB18A3EA5D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbhHLNmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236152AbhHLNmN (ORCPT
+        id S233731AbhHLNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:43:43 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:42705 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhHLNnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:42:13 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0942BC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:41:48 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id t35so10340152oiw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w8ByNvmcER+djVrwXEK9pUfCYkOH6rFbdfIhJ/tSBvA=;
-        b=MNipbIQlWMXcHHMJ/+LhWIi2OgJ76yGlWDEmKM/0Bjhpqrf2ZfrIV/O3VG1gs20c4o
-         0EYw/Tnt/Q4Lg1N6gTrwRaJsOsvzgPOD6e6Eq5BtewSI1ZZyWF9JqjskwJUjqXK2bHvg
-         B3hJGt4+1R1Un8lVAHbXDIQ4XQCJxsbOMKWdPR98mTKJZTCIP/Faj5t+h1vQepdd2qgV
-         oVRNCnpRl4SzwP0WctbMN8MytglLzukvw5/g6CbEGp8RdK2HnlnqHOkpJ0PT4TwFa/v9
-         H5E7pAeX/h/QR3y7F62jTyKc4Sj6idE4suFcsW1HMpnSVEYwixuntgwctDS3LatpU9kW
-         geJg==
+        Thu, 12 Aug 2021 09:43:41 -0400
+Received: by mail-io1-f70.google.com with SMTP id y10-20020a5e870a0000b029058d2e067004so3461169ioj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:43:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w8ByNvmcER+djVrwXEK9pUfCYkOH6rFbdfIhJ/tSBvA=;
-        b=JnnkjfZqk363trYBh3/Ptxm8JJWlkjr8CNAH134o/kSXCcFfPq84h1MMHEJP0ctud7
-         16l5GyxFQPJ6AOLBe/+wh6symy0De4ZKehKSqInwyiMPXTAegKkmNaUe0PTPhgPwQWeT
-         kI9tOGO4H0It1fROSnXwFrs9NV92TMY+44XSisC6dIxpAW94+QshEkUG9irWZrz9e+MM
-         vnszEWb52bgcJdCKuk2XFxF10YU1rFCmuYtZ2fDQcFRrW3SdnbDyirQlohid3S0Ba9dE
-         moXQzyUnEB9w8ADyzaU57ccvcAwrcZZnSya1vr/WU0sVNeD9S0WAYRp6I0cMfp0w4QR2
-         i4ig==
-X-Gm-Message-State: AOAM532hikd0QjxwbC1dLCPEiCxYP4eD6xHIDDecRGVWdlgI1Szs+kC5
-        yTMQGyoICTen3PO7jRCKfaM=
-X-Google-Smtp-Source: ABdhPJxtwTGZdGVnSxCjpIEUVaQED8UOsBJIekT5sFbgESHHxcYCdesYT3483WIUoZCvGvi50HCaGw==
-X-Received: by 2002:a05:6808:144e:: with SMTP id x14mr3316950oiv.28.1628775707346;
-        Thu, 12 Aug 2021 06:41:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z21sm613612oto.46.2021.08.12.06.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 06:41:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 12 Aug 2021 06:41:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] riscv: __asm_copy_to-from_user: Improve using word
- copy if size < 9*SZREG
-Message-ID: <20210812134145.GA4132779@roeck-us.net>
-References: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
- <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cGNJ1xbk5GNRdimlzJb+r5AxJewAsHWKddCCIaqm2a8=;
+        b=r97mq9FvFHoLRq/lA0Fg4dyUxbbSZj+HtbmIwj45IYU5hW8avitfOtV5/F3YH6PAhb
+         ovdfQbq5drT+vck26J0od4Hfl6knlDDIGbgtbMSgIMZLA034FGrki4NGTjQltrBM3w6T
+         HAhre6ZREqXJwKRP+KmqHmrvLvocNSWlkPfPi3O0ZFmhG1zidOTZyg8ko6YAv5dMsZaY
+         kzgmpNCqOlrI6UmG6ruoZoUOwU/xkMtI5Je1QkkoAjHMrCNeJTj25LXMwrangbVdtpXj
+         5t1GSVCELWK1P7w1RNX/g1RHP+XwE2/gMw8eDywfv/740i5qHpHBMoDD2xGlelB2ABcn
+         wzdg==
+X-Gm-Message-State: AOAM533QiykDN0cMy85rlAhFtninw99ZojgHsDnZ5uU/MTZYFEahV2Q7
+        fCgGv0ZZawLrNRfWM9BRsAf4e1nLOnTHj04HCEInROdokHxo
+X-Google-Smtp-Source: ABdhPJyUfYG6OpAHCdWPHWu23lGWRgH9yis8VyXZIwQvLe/s+stmd06Tp6zCppFyNhCjRvztHHvP1g5wSKo5eMiJL7BKPRnGGJrM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
+X-Received: by 2002:a6b:f813:: with SMTP id o19mr3027821ioh.49.1628775796433;
+ Thu, 12 Aug 2021 06:43:16 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 06:43:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c3e60005c95cea4b@google.com>
+Subject: [syzbot] KASAN: stack-out-of-bounds Read in iov_iter_revert
+From:   syzbot <syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 10:52:44PM +0900, Akira Tsukamoto wrote:
-> Reduce the number of slow byte_copy when the size is in between
-> 2*SZREG to 9*SZREG by using none unrolled word_copy.
-> 
-> Without it any size smaller than 9*SZREG will be using slow byte_copy
-> instead of none unrolled word_copy.
-> 
-> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Hello,
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+syzbot found the following issue on:
 
-> ---
->  arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
->  1 file changed, 42 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-> index 63bc691cff91..6a80d5517afc 100644
-> --- a/arch/riscv/lib/uaccess.S
-> +++ b/arch/riscv/lib/uaccess.S
-> @@ -34,8 +34,10 @@ ENTRY(__asm_copy_from_user)
->  	/*
->  	 * Use byte copy only if too small.
->  	 * SZREG holds 4 for RV32 and 8 for RV64
-> +	 * a3 - 2*SZREG is minimum size for word_copy
-> +	 *      1*SZREG for aligning dst + 1*SZREG for word_copy
->  	 */
-> -	li	a3, 9*SZREG /* size must be larger than size in word_copy */
-> +	li	a3, 2*SZREG
->  	bltu	a2, a3, .Lbyte_copy_tail
->  
->  	/*
-> @@ -66,9 +68,40 @@ ENTRY(__asm_copy_from_user)
->  	andi	a3, a1, SZREG-1
->  	bnez	a3, .Lshift_copy
->  
-> +.Lcheck_size_bulk:
-> +	/*
-> +	 * Evaluate the size if possible to use unrolled.
-> +	 * The word_copy_unlrolled requires larger than 8*SZREG
-> +	 */
-> +	li	a3, 8*SZREG
-> +	add	a4, a0, a3
-> +	bltu	a4, t0, .Lword_copy_unlrolled
-> +
->  .Lword_copy:
-> -        /*
-> -	 * Both src and dst are aligned, unrolled word copy
-> +	/*
-> +	 * Both src and dst are aligned
-> +	 * None unrolled word copy with every 1*SZREG iteration
-> +	 *
-> +	 * a0 - start of aligned dst
-> +	 * a1 - start of aligned src
-> +	 * t0 - end of aligned dst
-> +	 */
-> +	bgeu	a0, t0, .Lbyte_copy_tail /* check if end of copy */
-> +	addi	t0, t0, -(SZREG) /* not to over run */
-> +1:
-> +	REG_L	a5, 0(a1)
-> +	addi	a1, a1, SZREG
-> +	REG_S	a5, 0(a0)
-> +	addi	a0, a0, SZREG
-> +	bltu	a0, t0, 1b
-> +
-> +	addi	t0, t0, SZREG /* revert to original value */
-> +	j	.Lbyte_copy_tail
-> +
-> +.Lword_copy_unlrolled:
-> +	/*
-> +	 * Both src and dst are aligned
-> +	 * Unrolled word copy with every 8*SZREG iteration
->  	 *
->  	 * a0 - start of aligned dst
->  	 * a1 - start of aligned src
-> @@ -97,7 +130,12 @@ ENTRY(__asm_copy_from_user)
->  	bltu	a0, t0, 2b
->  
->  	addi	t0, t0, 8*SZREG /* revert to original value */
-> -	j	.Lbyte_copy_tail
-> +
-> +	/*
-> +	 * Remaining might large enough for word_copy to reduce slow byte
-> +	 * copy
-> +	 */
-> +	j	.Lcheck_size_bulk
->  
->  .Lshift_copy:
->  
+HEAD commit:    1746f4db5135 Merge tag 'orphans-v5.14-rc6' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=111065fa300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
+dashboard link: https://syzkaller.appspot.com/bug?extid=9671693590ef5aad8953
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119dcaf6300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=120d216e300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: stack-out-of-bounds in iov_iter_revert lib/iov_iter.c:1093 [inline]
+BUG: KASAN: stack-out-of-bounds in iov_iter_revert+0x803/0x900 lib/iov_iter.c:1033
+Read of size 8 at addr ffffc9000cf478b0 by task syz-executor673/8439
+
+CPU: 0 PID: 8439 Comm: syz-executor673 Not tainted 5.14.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
+ iov_iter_revert lib/iov_iter.c:1093 [inline]
+ iov_iter_revert+0x803/0x900 lib/iov_iter.c:1033
+ io_write+0x57b/0xed0 fs/io_uring.c:3459
+ io_issue_sqe+0x28c/0x6920 fs/io_uring.c:6181
+ __io_queue_sqe+0x1ac/0xf00 fs/io_uring.c:6464
+ io_queue_sqe fs/io_uring.c:6507 [inline]
+ io_submit_sqe fs/io_uring.c:6662 [inline]
+ io_submit_sqes+0x63ea/0x7bc0 fs/io_uring.c:6778
+ __do_sys_io_uring_enter+0xb03/0x1d40 fs/io_uring.c:9389
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43f8a9
+Code: 28 c3 e8 1a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffcc6759968 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000043f8a9
+RDX: 0000000000000000 RSI: 00000000000052fe RDI: 0000000000000003
+RBP: 00007ffcc6759988 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffcc6759990
+R13: 0000000000000000 R14: 00000000004ae018 R15: 0000000000400488
+
+
+addr ffffc9000cf478b0 is located in stack of task syz-executor673/8439 at offset 152 in frame:
+ io_write+0x0/0xed0 fs/io_uring.c:3335
+
+this frame has 3 objects:
+ [48, 56) 'iovec'
+ [80, 120) '__iter'
+ [160, 288) 'inline_vecs'
+
+Memory state around the buggy address:
+ ffffc9000cf47780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc9000cf47800: 00 00 00 f1 f1 f1 f1 00 00 00 f2 f2 f2 00 00 00
+>ffffc9000cf47880: 00 00 f2 f2 f2 f2 f2 00 00 00 00 00 00 00 00 00
+                                     ^
+ ffffc9000cf47900: 00 00 00 00 00 00 00 f3 f3 f3 f3 00 00 00 00 00
+ ffffc9000cf47980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
