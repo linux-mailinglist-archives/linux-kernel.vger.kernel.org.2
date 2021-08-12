@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420993E9F2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9083E9F3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbhHLHEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:04:53 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:14362 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhHLHEw (ORCPT
+        id S234643AbhHLHJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234626AbhHLHJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:04:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628751868; x=1660287868;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yXS7WGCykLk3FUewGcpr1XuvvQftDJHoYif2PcgFrW0=;
-  b=2Xhzp6hbGo0qRsi1LiB6yYNO8cguJSkV09AvymbESwizoNwWDnREB9H2
-   NYWPJT73ffYZ/LA+bPUh+CjnXvo79xvRgvOS62afy98DiHGBtp6K0D+2H
-   5Sv6BGDHkBmxVYY5ptbvjSuFHzbK7+sDmR/WS4DetI40apyYuPiI6rxgW
-   87tjh9JrSLy+R12mwv9zU59Hv8xU7sAvU7AkSve+m8bREBQ4BrDacNG+s
-   0MyFihvdr1q7pGmkDmZqlExNMOUviJ7fEqvtxJD5yzwzp+l5405SOE13G
-   I2+xR1dI0p+jn2qO+EKloxw58HBper4UPA6xuDE1wyqOrOXc8AMfittgr
-   A==;
-IronPort-SDR: zMr99bGI7x3dohffRlPCC9uRYu3WtdDefoqGDNUUPxEflEN3i4q4fkNfFHbAUm7Qym977OgCQS
- PBf4xhchfu+rimc5jHSj+s82mHDNSW8Ovw2frBNgQb0OUTOJ/xOzffCIsqQ5kyz6dsjWBAzhNB
- dUagUz5lT7won7EoSN490NrK3LTCiL9m4K2LXLvxrGkSAvoPvs5+GHjRTErzvlMcC+qUUT6ZJZ
- gLR8njfWChzECutMfrtXh6NYDAROuWpCnefEkLoan0TXqoYr8oRYNyZQ+170x7eghLHl2JgyoN
- oCi68IBwHPC5YScF56Xhb7N5
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="139783698"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Aug 2021 00:04:27 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 12 Aug 2021 00:04:26 -0700
-Received: from [10.205.21.35] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 12 Aug 2021 00:04:25 -0700
-Message-ID: <e37f35e5ec73a7b7a3d6f692e0764411e74c7486.camel@microchip.com>
-Subject: Re: [PATCH net-next 1/2] net: sparx5: switchdev: adding frame DMA
- functionality
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Date:   Thu, 12 Aug 2021 09:04:24 +0200
-In-Reply-To: <20210811153132.63480934@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210811075909.543633-1-steen.hegelund@microchip.com>
-         <20210811075909.543633-2-steen.hegelund@microchip.com>
-         <20210811153132.63480934@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        Thu, 12 Aug 2021 03:09:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E3CC061765;
+        Thu, 12 Aug 2021 00:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B2gGP1VQRHCk6MX5le6+GSdI6v6K4Z0HHWZKFL10rE0=; b=KWqNs2MzE3TrEoFEQpnBVNyN0g
+        3jwYoTV2xVF97Q4jfnPDewLohje/W5KP+UVtzf70pRbNyVa0L9JR/HRVX++AjDpqrnODvsCq3iI6s
+        s5hWoJJ7ZlojfvWMh/XXqY102KCc4s+2CULMGqM9r9FaqMI/S9tVa1ufKTY3vmbMdC+GxCI/13mMB
+        m5AdxVnPALV6Jdrsa+eStgqDvqaVf+z0JdxyAI+Vm+PhT8v18Xohd1mTScUog28GAzhZYHaRa8eH8
+        1bRc8324eOnZjmhS5fyzGdF12l4kFva4VJYN6JiZH4nOA3O5IbcKjh1RosqC6FmXil2UqOXUOVEK3
+        /vMn+JfQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mE4oC-00EGqD-Lh; Thu, 12 Aug 2021 07:07:34 +0000
+Date:   Thu, 12 Aug 2021 08:07:20 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, kernel@pengutronix.de,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rafa?? Mi??ecki <zajec5@gmail.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Michael Buesch <m@bues.ch>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@corigine.com
+Subject: Re: [PATCH v3 4/8] PCI: replace pci_dev::driver usage that gets the
+ driver name
+Message-ID: <YRTIqGm5Dr8du7a7@infradead.org>
+References: <20210811080637.2596434-1-u.kleine-koenig@pengutronix.de>
+ <20210811080637.2596434-5-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811080637.2596434-5-u.kleine-koenig@pengutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hej Jacub,
+On Wed, Aug 11, 2021 at 10:06:33AM +0200, Uwe Kleine-K??nig wrote:
+>  static inline const char *eeh_driver_name(struct pci_dev *pdev)
+>  {
+> -	return (pdev && pdev->driver) ? pdev->driver->name : "<null>";
+> +	const char *drvstr = pdev ? dev_driver_string(&pdev->dev) : "";
+> +
+> +	if (*drvstr == '\0')
+> +		return "<null>";
+> +
+> +	return drvstr;
 
-On Wed, 2021-08-11 at 15:31 -0700, Jakub Kicinski wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Wed, 11 Aug 2021 09:59:08 +0200 Steen Hegelund wrote:
-> > This add frame DMA functionality to the Sparx5 platform.
-> > 
-> > Ethernet frames can be extracted or injected autonomously to or from the
-> > device’s DDR3/DDR3L memory and/or PCIe memory space. Linked list data
-> > structures in memory are used for injecting or extracting Ethernet frames.
-> > The FDMA generates interrupts when frame extraction or injection is done
-> > and when the linked lists need updating.
-> 
-> Something to fix:
-> 
-> drivers/net/ethernet/microchip/sparx5/sparx5_fdma.c: In function ‘sparx5_fdma_start’:
-> drivers/net/ethernet/microchip/sparx5/sparx5_fdma.c:544:6: warning: variable ‘proc_ctrl’ set but
-> not used [-Wunused-but-set-variable]
->   544 |  u32 proc_ctrl;
->       |      ^~~~~~~~~
+This looks rather obsfucated due to the fact that dev_driver_string
+never returns '\0', and due to the strange mix of a tenary operation
+and the if on a related condition.
 
-Will do.
 
-Thanks for the review.
+>  }
+>  
+>  #endif /* CONFIG_EEH */
+> diff --git a/drivers/bcma/host_pci.c b/drivers/bcma/host_pci.c
+> index 69c10a7b7c61..dc2ffa686964 100644
+> --- a/drivers/bcma/host_pci.c
+> +++ b/drivers/bcma/host_pci.c
+> @@ -175,9 +175,10 @@ static int bcma_host_pci_probe(struct pci_dev *dev,
+>  	if (err)
+>  		goto err_kfree_bus;
+>  
+> -	name = dev_name(&dev->dev);
+> -	if (dev->driver && dev->driver->name)
+> -		name = dev->driver->name;
+> +	name = dev_driver_string(&dev->dev);
+> +	if (*name == '\0')
+> +		name = dev_name(&dev->dev);
 
-BR
-Steen
+Where does this '\0' check come from?
 
+> +
+> +	name = dev_driver_string(&dev->dev);
+> +	if (*name == '\0')
+> +		name = dev_name(&dev->dev);
+> +
+
+More of this weirdness.
