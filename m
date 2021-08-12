@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DF83EA612
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FD53EA618
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237716AbhHLN4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:56:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58074 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhHLN4B (ORCPT
+        id S237727AbhHLOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:00:12 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:37284 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232351AbhHLOAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:56:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 165961FF48;
-        Thu, 12 Aug 2021 13:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628776533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BmT1j6qqHbPM2jS2S8E/xfI9/JWiNOKmyXSgPPv98Co=;
-        b=XtpXglPcXvwy6s31knA1FcW3z8ni55RU5q6muMK6UMf6zDRGEkuJXMF9UU+ADYzotIidL4
-        JdscLBzXSjlwmvrCSqOI6q8jJs7oXvkMv1OFamIJ1G5dE9aN5pBEmYWaXD4wKcZdEsSqDd
-        g9nBNhwjJC5Vi7vSVm2/q/ACcM8Eq/s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628776533;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BmT1j6qqHbPM2jS2S8E/xfI9/JWiNOKmyXSgPPv98Co=;
-        b=eWiABirBTr1iTjq5zL550BwS+SjtNWRuTwBZFXZ8lbYv60bjrXYdCxJB5lmJ+EEHrGNkJ8
-        jAW26dwEGiLVSbAw==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id BAA2DA3F39;
-        Thu, 12 Aug 2021 13:55:32 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9236D1E14BC; Thu, 12 Aug 2021 15:55:29 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 15:55:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
-        dvyukov@google.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: [syzbot] possible deadlock in dquot_commit
-Message-ID: <20210812135529.GD14675@quack2.suse.cz>
-References: <000000000000a05b3b05baf9a856@google.com>
- <20210810041100.3271-1-hdanton@sina.com>
- <20210811041232.2449-1-hdanton@sina.com>
+        Thu, 12 Aug 2021 10:00:11 -0400
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id E484A72C8FB;
+        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 931454A46F1;
+        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
+Date:   Thu, 12 Aug 2021 16:59:43 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+Subject: Re: [PATCH 1/3] crypto: tcrypt - Fix the wrong position of return
+ value test statement
+Message-ID: <20210812135943.mnuce4252wp4xi52@altlinux.org>
+References: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
+ <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
-In-Reply-To: <20210811041232.2449-1-hdanton@sina.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 11-08-21 12:12:32, Hillf Danton wrote:
-> On Tue, 10 Aug 2021 11:21:42 +0200 Jan Kara wrote:
-> >
-> >I'm not quite sure what you are asking about but yes, dquot_acquire() grabs
+Tianjia,
+
+On Thu, Aug 12, 2021 at 09:17:46PM +0800, Tianjia Zhang wrote:
+> The position of the return value test statement of crypto_aead_setkey()
+> is wrong, adjust to make it work properly.
+
+This commit message does not explain anything. It's nearly equivalent to
+"fix".
+
 > 
-> It is hard to understand the rooms in mutex for two lock owners.
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  crypto/tcrypt.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 > 
-> >dquot->dq_lock, then e.g. v2_write_dquot() acquires dqio_sem, then
-> >ext4_map_blocks() acquires i_data_sem/2 (special lock subclass for quota
-> >files).
-> >
-> >What is unexpected is the #0 trace where i_data_sem/2 is acquired
-> >by ext4_map_blocks() called from ext4_write_begin(). That shows that
-> >normal write(2) call was able to operate on quota file which is certainly
-> >wrong.
-> 
-> The change below can test your theory.
-> >
-> >My patch closed one path how this could happen and I'm puzzled how
-> >else this could happen. I'll try to reproduce the issue (I've already tried
-> >but so far failed) as see if I can find out more.
-> 
-> Actually there is one check for quota file near 100 lines of code lower,
-> and copy it to just before taking i_data_sem to avoid writing the file of
-> wrong type.
-> 
-> Now only for thoughts.
-> 
-> +++ x/fs/ext4/inode.c
-> @@ -616,6 +616,8 @@ found:
->  		if (!(flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
->  			return retval;
+> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+> index d73a42fdaa9b..73c97e085baf 100644
+> --- a/crypto/tcrypt.c
+> +++ b/crypto/tcrypt.c
+> @@ -612,6 +612,12 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>  				}
+>  			}
+>  			ret = crypto_aead_setkey(tfm, key, *keysize);
+
+Perhaps, you would say that return value of crypto_aead_setkey was lost.
+
+> +			if (ret) {
+> +				pr_err("setkey() failed flags=%x\n",
+> +						crypto_aead_get_flags(tfm));
+> +				goto out;
+> +			}
+> +
+>  			ret = crypto_aead_setauthsize(tfm, authsize);
+
+But, isn't now return value of crypto_aead_setauthsize is lost?
+
+Thanks,
+
 >  
-> +	if (ext4_is_quota_file(inode))
-> +		return -EINVAL;
->  	/*
->  	 * Here we clear m_flags because after allocating an new extent,
->  	 * it will be set again.
-
-This would be certainly wrong. ext4_map_blocks() is used for accessing and
-allocating blocks for quota file. It is ext4_write_begin() that should not
-be called for the quota file. I've run the reproducer here for couple of
-hours but the problem didn't trigger for me. Strange.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  			iv_len = crypto_aead_ivsize(tfm);
+> @@ -622,15 +628,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>  			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
+>  					i, *keysize * 8, bs);
+>  
+> -
+>  			memset(tvmem[0], 0xff, PAGE_SIZE);
+>  
+> -			if (ret) {
+> -				pr_err("setkey() failed flags=%x\n",
+> -						crypto_aead_get_flags(tfm));
+> -				goto out;
+> -			}
+> -
+>  			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
+>  				     assoc, aad_size);
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
