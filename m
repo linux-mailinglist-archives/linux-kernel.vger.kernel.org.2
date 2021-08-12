@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE76A3EAADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204E13EAAE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhHLTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhHLTXH (ORCPT
+        id S234316AbhHLTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:24:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28012 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232877AbhHLTYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:23:07 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE94C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:22:41 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d17so8556863plr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qb+FI0jSCsZyHH1Ia4kbzXwLXCw4sowjg/unRazGFOw=;
-        b=j8cQMpokfQuLRgHm07RR5lcnPohAYewhPt1EspVbwh4WNHr7GGQvDm3kmECAFwxwW8
-         jhbPlSAsren8SdoC+d8S8uO8TfchuQSUWI0bK9y+pjIJBSt5nSr77a9k+j+Tq1b1NGAS
-         tTE9TMfvEPFduwrbXRQDM01A2S6J85S2QCkPs=
+        Thu, 12 Aug 2021 15:24:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628796246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8N86vzBdNfGIw1497CO2pBCfWWqdNZr9GKs8Sj+sQpI=;
+        b=LIpTaVRmcRILJgdF0PAQaWjGXprX7N0Ib8w/me6HXxfiG5JqvllOzvBf3KB22UwKtmcoth
+        0Hc1VCIb9yaOba/LX/p1yvhQWH9xaGC1LHn5+dk6NbqGQ4yZC4fuAMl+v3mGSS1BAGjOlg
+        a5fGl4gM6ydAsVcsvsxOHr9yoLeyRiE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-hIFDkxYVPt2s7J_Mf8U8bw-1; Thu, 12 Aug 2021 15:24:05 -0400
+X-MC-Unique: hIFDkxYVPt2s7J_Mf8U8bw-1
+Received: by mail-wm1-f70.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so3728191wml.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:24:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qb+FI0jSCsZyHH1Ia4kbzXwLXCw4sowjg/unRazGFOw=;
-        b=no6TSw3zKnPX3yrjFCIdExLmNDHnVOwic1LcrcLUEBJypyuFMh6J7Jk/hvMBhTYM7P
-         5DdWLzB6+HSi4lgz3fdq2QXOC0Cdl9cT6G9WPWdr+rcCtbkju47KPe5CHNT6wO8EHOKb
-         //ECg1q9PG4pyNl787BWteoKAs0ky4LNkXl6A4MdCzn83CAlcJQvbFmcXyQP4q5hQ8qq
-         8hBkl9s3WglwpsCeVo8hClkgGnq8Ksr24ERM8pF1rBhFSfb1NC/Jjlxra0JYhAHc7EHq
-         jHKvaqEqoZkGWTmvaH1ZEEdHA1FzbGtdec25LdNr4s9gt5wVuYGjsDQiiaBP+Hjy/RXQ
-         EQ2w==
-X-Gm-Message-State: AOAM533Ag9f9Vrjk0zQfLALVgEGu5qZoAEG1LD/5fEqxlo7pC8aAp9I7
-        c7JRU0NEIKItAMpw447xELPWPA==
-X-Google-Smtp-Source: ABdhPJwPH80t5d7F/jYCYlTC6qaJ9oXn39f+IjkD6biu7WuSZq9ZoVowWfDG6IADtOsKsh6cCUYT5A==
-X-Received: by 2002:a05:6a00:1c71:b029:3e0:4537:a1d4 with SMTP id s49-20020a056a001c71b02903e04537a1d4mr5590743pfw.1.1628796161176;
-        Thu, 12 Aug 2021 12:22:41 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6683:43e5:ba4c:d76c])
-        by smtp.gmail.com with UTF8SMTPSA id j22sm4434963pgb.62.2021.08.12.12.22.40
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8N86vzBdNfGIw1497CO2pBCfWWqdNZr9GKs8Sj+sQpI=;
+        b=l+w9fa8D0a9Ome/NJQOjn0123OzlfgdWw0OxqPB8cn3Qili26OUo6c2WUwz8EI43yh
+         oYdi47yP5YF8OLcGharXZI6v3m3Ph3+fWjNNDCPWNIMsKj9+aejLmxo5YQJl7pYX5yb0
+         Vm/rNGt0b7+puYuIcOyAqqfhEmKo9ukju0/n96k7FJOD+7gCCKhnwdynfrpU5mhp9IzS
+         jXj5jl5urMLdiYf5gudjSqSS1oSvkwhw86SSyBvmSXCmf8CZa2oGTV/bMu3pbpIRjswj
+         98PGK3WJ0J7YTHYSp/xyoarHec/W4LKsLLNEZLj4U1FoaYTpE31NCIJ6fIIxeVnvJWgV
+         HFpg==
+X-Gm-Message-State: AOAM53048xNJ+Oa8U4siCH07Omqo43AtdlgQ+15dWe5GYT95cYPt2smC
+        Tz/bNLqzsdD9O3Af8TT+trkjVGErmJaR9Zyukwbysp29b/LGRAzZ7OWwLMdC2A5Phdv4ys1pRa7
+        g5cqAXoO4Hs0XzmMzG6+8k7UZ
+X-Received: by 2002:a05:600c:1552:: with SMTP id f18mr160544wmg.40.1628796243850;
+        Thu, 12 Aug 2021 12:24:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoi73TjuPhfXBY9qVs1gNFHq5iS0Cg54p1SYixusgscxJCJ6YZqkOPk8ytKcP9LVXjwJLvRw==
+X-Received: by 2002:a05:600c:1552:: with SMTP id f18mr160487wmg.40.1628796243648;
+        Thu, 12 Aug 2021 12:24:03 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
+        by smtp.gmail.com with ESMTPSA id m10sm3080907wro.63.2021.08.12.12.24.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 12:22:40 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 12:22:39 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
-Subject: Re: [PATCH V5 6/7] arm64: dts: sc7280: Configure uart7 to support
- bluetooth on sc7280-idp
-Message-ID: <YRV0/8qtlMyVSDRI@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-7-git-send-email-rajpat@codeaurora.org>
+        Thu, 12 Aug 2021 12:24:02 -0700 (PDT)
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+ <87lf56bllc.fsf@disp2133>
+ <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <0ab1a811-4040-2657-7b48-b39ada300749@redhat.com>
+Date:   Thu, 12 Aug 2021 21:24:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1628754078-29779-7-git-send-email-rajpat@codeaurora.org>
+In-Reply-To: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:11:17PM +0530, Rajesh Patil wrote:
-> Add bluetooth uart pin configuration for sc7280-idp.
+On 12.08.21 20:10, Linus Torvalds wrote:
+> On Thu, Aug 12, 2021 at 7:48 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Given that MAP_PRIVATE for shared libraries is our strategy for handling
+>> writes to shared libraries perhaps we just need to use MAP_POPULATE or a
+>> new related flag (perhaps MAP_PRIVATE_NOW)
 > 
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> No. That would be horrible for the usual bloated GUI libraries. It
+> might help some (dynamic page faults are not cheap either), but it
+> would hurt a lot.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Right, we most certainly don't want to waste system ram / swap space, 
+memory for page tables, and degrade performance just because some 
+corner-case nasty user space could harm itself.
+
+> 
+> This is definitely a "if you overwrite a system library while it's
+> being used, you get to keep both pieces" situation.
+
+Right, play stupid games, win stupid prices. I agree that if there would 
+be an efficient way to detect+handle such overwrites gracefully, it 
+would be great to have the kernel support that. ETXTBUSY as implemented 
+with this series (but also before this series) is really only a 
+minimalistic approach to help detect some issues regarding the main 
+executable.
+
+-- 
+Thanks,
+
+David / dhildenb
+
