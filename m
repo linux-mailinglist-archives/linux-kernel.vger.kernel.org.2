@@ -2,287 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4145F3EA6B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536143EA61B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbhHLOpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:45:11 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:16978 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233079AbhHLOpK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:45:10 -0400
-X-Greylist: delayed 1502 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 10:45:10 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id CC018268F
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:57:44 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id EBDMmVDxoMGeEEBDMmVXNN; Thu, 12 Aug 2021 08:57:44 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-56-204-120.retail.telecomitalia.it ([79.56.204.120]:54910 helo=f34.bristot.me)
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mEBDM-004IPl-1O; Thu, 12 Aug 2021 08:57:44 -0500
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S237783AbhHLOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:00:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232351AbhHLOAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:00:39 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 505C76104F;
+        Thu, 12 Aug 2021 14:00:12 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 10:00:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yordan Karadzhov <y.karadz@gmail.com>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org
-Subject: [PATCH 5/5] trace/osnoise: Allow multiple instances of the same tracer
-Date:   Thu, 12 Aug 2021 15:57:24 +0200
-Message-Id: <b2772fa3455fb4ed7ce82af3525975943439e6e7.1628775552.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628775552.git.bristot@kernel.org>
-References: <cover.1628775552.git.bristot@kernel.org>
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH 1/2] libtracefs: Add random number to keep synthetic
+ variables unique
+Message-ID: <20210812100010.0f3922d1@oasis.local.home>
+In-Reply-To: <13bed3a6-7e39-eec2-2421-a80081302a81@gmail.com>
+References: <20210812005546.910833-1-rostedt@goodmis.org>
+        <20210812005546.910833-2-rostedt@goodmis.org>
+        <13bed3a6-7e39-eec2-2421-a80081302a81@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.56.204.120
-X-Source-L: No
-X-Exim-ID: 1mEBDM-004IPl-1O
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-56-204-120.retail.telecomitalia.it (f34.bristot.me) [79.56.204.120]:54910
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 42
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow more than one instance of the same tracer. The workload will
-start when the first trace_array (instance) is registered and will
-stop when the last instance is unregistered.
+On Thu, 12 Aug 2021 11:34:57 +0300
+Yordan Karadzhov <y.karadz@gmail.com> wrote:
 
-Osnoise and timerlat are still mutually exclusive because of the
-different behavior of the osnoise: tracepoints.
+> > @@ -957,7 +960,15 @@ static char *new_arg(struct tracefs_synth *synth)
+> >   	char *arg;
+> >   	int ret;
+> >   
+> > -	ret = asprintf(&arg, "__arg__%d", cnt);
+> > +	/* Create a unique argument name */
+> > +	if (!synth->arg_name[0]) {
+> > +		srand(time(NULL));  
+> 
+> Nit: Have in mind that time(NULL) has 1 second resolution. Fast consecutive calls (within a second) of this function can 
+> generate identical random numbers.
+> This can be mitigated if we do something like this:
+> 
+> 		struct timeval now;
+> 
+> 		gettimeofday(&now, NULL);
+> 		srand(now.tv_usec);
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira (Red Hat) <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 106 ++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 26 deletions(-)
+So you are saying that if one thread created two synthetic events
+within a second, then this could give the same value. Yeah, I can see
+that could happen. I was hoping to avoid the declaring the "now" and
+calling gettimeofday().
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 9193c256377e..5f09fb55b359 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
- 					list);
- }
- 
-+/*
-+ * osnoise_instance_registered - check if a tr is already registered
-+ */
-+static int osnoise_instance_registered(struct trace_array *tr)
-+{
-+	struct osnoise_instance *inst;
-+	int found = 0;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
-+		if (inst->tr == tr)
-+			found = 1;
-+	}
-+	rcu_read_unlock();
-+
-+	return found;
-+}
-+
- /*
-  * osnoise_register_instance - register a new trace instance
-  *
-@@ -106,10 +124,8 @@ static void osnoise_unregister_instance(struct trace_array *tr)
- 	}
- 	rcu_read_unlock();
- 
--	if (!found) {
--		WARN("osnoise unregister did not find tr %s\n", tr->name);
-+	if (!found)
- 		return;
--	}
- 
- 	synchronize_rcu();
- 	kfree(inst);
-@@ -1190,6 +1206,7 @@ static __always_inline void osnoise_stop_tracing(void)
- 				"stop tracing hit on cpu %d\n", smp_processor_id());
- 
- 		tracer_tracing_off(tr);
-+
- 	}
- 	rcu_read_unlock();
- }
-@@ -2041,6 +2058,16 @@ static int osnoise_workload_start(void)
- {
- 	int retval;
- 
-+	/*
-+	 * Instances need to be registered after calling workload
-+	 * start. Hence, if there is already an instance, the
-+	 * workload was already registered. Otherwise, this
-+	 * code is on the way to register the first instance,
-+	 * and the workload will start.
-+	 */
-+	if (osnoise_has_registered_instances())
-+		return 0;
-+
- 	osn_var_reset_all();
- 
- 	retval = osnoise_hook_events();
-@@ -2066,6 +2093,13 @@ static int osnoise_workload_start(void)
-  */
- static void osnoise_workload_stop(void)
- {
-+	/*
-+	 * Instances need to be unregistered before calling
-+	 * stop. Hence, if there is a registered instance, more
-+	 * than one instance is running, and the workload will not
-+	 * yet stop. Otherwise, this code is on the way to disable
-+	 * the last instance, and the workload can stop.
-+	 */
- 	if (osnoise_has_registered_instances())
- 		return;
- 
-@@ -2083,7 +2117,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
- 	retval = osnoise_workload_start();
-@@ -2095,18 +2133,17 @@ static void osnoise_tracer_start(struct trace_array *tr)
- 
- static void osnoise_tracer_stop(struct trace_array *tr)
- {
--	if (!osnoise_has_registered_instances())
--		return;
--
- 	osnoise_unregister_instance(tr);
- 	osnoise_workload_stop();
- }
- 
- static int osnoise_tracer_init(struct trace_array *tr)
- {
--
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow osnoise tracer if timerlat tracer is not running
-+	 * already.
-+	 */
-+	if (osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
- 	tr->max_latency = 0;
-@@ -2135,45 +2172,55 @@ static void timerlat_tracer_start(struct trace_array *tr)
- {
- 	int retval;
- 
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * If the instance is already registered, there is no need to
-+	 * register it again.
-+	 */
-+	if (osnoise_instance_registered(tr))
- 		return;
- 
--	osnoise_data.timerlat_tracer = 1;
--
- 	retval = osnoise_workload_start();
- 	if (retval)
--		goto out_err;
-+		pr_err(BANNER "Error starting timerlat tracer\n");
- 
- 	osnoise_register_instance(tr);
- 
- 	return;
--out_err:
--	pr_err(BANNER "Error starting timerlat tracer\n");
- }
- 
- static void timerlat_tracer_stop(struct trace_array *tr)
- {
- 	int cpu;
- 
--	if (!osnoise_has_registered_instances())
--		return;
--
--	for_each_online_cpu(cpu)
--		per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
-+	osnoise_unregister_instance(tr);
- 
--	osnoise_tracer_stop(tr);
-+	/*
-+	 * Instruct the threads to stop only if this is the last instance.
-+	 */
-+	if (!osnoise_has_registered_instances()) {
-+		for_each_online_cpu(cpu)
-+			per_cpu(per_cpu_osnoise_var, cpu).sampling = 0;
-+	}
- 
--	osnoise_data.timerlat_tracer = 0;
-+	osnoise_workload_stop();
- }
- 
- static int timerlat_tracer_init(struct trace_array *tr)
- {
--	/* Only allow one instance to enable this */
--	if (osnoise_has_registered_instances())
-+	/*
-+	 * Only allow timerlat tracer if osnoise tracer is not running already.
-+	 */
-+	if (osnoise_has_registered_instances() && !osnoise_data.timerlat_tracer)
- 		return -EBUSY;
- 
--	tr->max_latency = 0;
-+	/*
-+	 * If this is the first instance, set timerlat_tracer to block
-+	 * osnoise tracer start.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 1;
- 
-+	tr->max_latency = 0;
- 	timerlat_tracer_start(tr);
- 
- 	return 0;
-@@ -2182,6 +2229,13 @@ static int timerlat_tracer_init(struct trace_array *tr)
- static void timerlat_tracer_reset(struct trace_array *tr)
- {
- 	timerlat_tracer_stop(tr);
-+
-+	/*
-+	 * If this is the last instance, reset timerlat_tracer allowing
-+	 * osnoise to be started.
-+	 */
-+	if (!osnoise_has_registered_instances())
-+		osnoise_data.timerlat_tracer = 0;
- }
- 
- static struct tracer timerlat_tracer __read_mostly = {
--- 
-2.31.1
+Also, looking more into this, I see that rand() is not safe in thread
+context (it may not be a problem, but there's no guarantee), and
+perhaps we should just open code it, to be on the safe side.
 
+Thanks for the review.
+
+-- Steve
