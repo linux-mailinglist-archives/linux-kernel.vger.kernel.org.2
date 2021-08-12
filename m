@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F93E3E9B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551283E9B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhHLAZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 20:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        id S233105AbhHLAZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 20:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhHLAZg (ORCPT
+        with ESMTP id S230072AbhHLAZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:25:36 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B5FC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:25:12 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id a7-20020a9d5c870000b029050333abe08aso5543974oti.13
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:25:12 -0700 (PDT)
+        Wed, 11 Aug 2021 20:25:49 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED025C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:25:24 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id cf5so6656564edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 17:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=aBF5XsmOwLOwhoJ7V4vA+C2s7+F6s8RQ06qQNUqSroI=;
-        b=h+56UWETmWksgXZ6odjCSUhkS60nq9twTFk5O3iDfPkw9SlJ2Q9MC4k1YZ13wA9QSI
-         cz2Pc3wlRcNYEKwZ643eM+MtGzStloEbEFNy4YhjnGGkil5U0nH2pe9f1iubEMhKDwtU
-         PwWNtWc+gGsmqzXBvFg2DTN9n6mT6P+9a9T3Y=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CGtwjMXEH5QqVf/PuaMPCPlbM6Xuiuly2nloQLXYWxU=;
+        b=VDkCydvbt3qx0iDm6nh5tklcsyQUcuEJZQsS6x8YEhCpWNj4QsLNudxCJfiuJ4sKXh
+         3SiwLAR+86gV11J/VNhJgOpDiHw9vhtJOArfLNZboxyy/fY9+tCKZf7OYjmrgJZ0cYvG
+         QRgja/ZsfzPItTD/mm3Sj7fkuyDFfTKGPQjctgm+m6tBXJn3iYGdQGSNGykuxXrv8TC1
+         BpDal6gYvhY65FAPSRm7gX++5vHJWyUVXw28rwh9GrZElFZQ6lVRRsAd/WDjEsRH54Om
+         anB3CrhTBlxAWiZ2U7xlv4YAqaBYrKrWOfwcPBL5VL9aOniztGKrKsZ7S3SO14B8PcU3
+         rs0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=aBF5XsmOwLOwhoJ7V4vA+C2s7+F6s8RQ06qQNUqSroI=;
-        b=pjJc0OAtKE6EnWi27Qkg57YPx7h/LDEz/YXePB9iG8NIXlMsegxvd9j6xAl4qsLkWb
-         yki2uQzpe1xuxmtNmXjjz+HErFAahlf5VnyYpEGpvFBDgOuNeiuHzJjkHB7P9c2ft/+9
-         TpbUfxQE3uPmSyLJpN1ggxSHSs/BjAnUoOOsKAZaX+25mSgVyLZm+yVpSuUU0NwApGK8
-         PEpYcs4PfD/H5plgXYydUzlJgtoPs9lKxho9wicDrXh4mthsBweAJrL7/PCy/ShxtSxQ
-         PGAF957ZZNW5z+1TbVS01IglP3dfhPgDMtYCIhXghXq8CR0CMEE2Jq6QgJK+FOIxeznY
-         Wb+w==
-X-Gm-Message-State: AOAM531lFdxVa5K4dPQaQ3PsIC/SgsyoePJSk7rZYTLqJYDNQcodiDDY
-        K/hdzDpWOKmtcQbQpmDoPWC/pBl8Q9h2ggcpKvyzVA==
-X-Google-Smtp-Source: ABdhPJx0FoYmfQ9zAKiWN4L09yMr9AcpGP2BwH3WsltDn0CSuMhuEFOx+zQVeSaXHI+pNsLrGV3maXsnDszKO/B14Ss=
-X-Received: by 2002:a9d:5542:: with SMTP id h2mr1268834oti.25.1628727911938;
- Wed, 11 Aug 2021 17:25:11 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 11 Aug 2021 17:25:11 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CGtwjMXEH5QqVf/PuaMPCPlbM6Xuiuly2nloQLXYWxU=;
+        b=SBikREqsgn9UXUrr1n0zJ3XThClcBiqEkD+xU+BA0DriSOmY3pq2qW3A0szTeOIWSx
+         ojSvhCEzgOHBA8I1aKsSbXjLFVD0dPzSp+BZMBDLHFbkxfUxcTfMmWbRvsKcqNyCTWTj
+         ENMCaK4QWhlYwRLaOGEIRNnbLF9wKP05s1UBpXleOA9YREGjQQJPhbg2ZEADXyDHW87E
+         Ad+POdcKGpqSp92fpmZf6M8gV0atAdP6OX+EV3sKf0G0IPSSTTzqGJUrAKFz5HcKUl4C
+         F29u4ETZgV+NKX667mv00vdloxNLOR3hq9wOhu6me50470L6VKATp7vsBBs9RGHAuhqN
+         0AKA==
+X-Gm-Message-State: AOAM5312zWgZnNY91Z/V18jVtTnxWJalSIgR60DdErbAr0AlMb0Ni9IP
+        okEeUJv71+YRQURwdcSwuyk=
+X-Google-Smtp-Source: ABdhPJwHk0TDrhlYSnm3cGo+D/URg1r46fSkj45jMILM/LeWXmQ0x8aUnKFbYY0WNySLYdm9YBZeZQ==
+X-Received: by 2002:a50:afe4:: with SMTP id h91mr2022426edd.326.1628727923521;
+        Wed, 11 Aug 2021 17:25:23 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id l20sm265048ejb.23.2021.08.11.17.25.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 17:25:23 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH 0/3] staging: r8188eu: Remove 5GHz band related code
+Date:   Thu, 12 Aug 2021 02:25:16 +0200
+Message-Id: <20210812002519.23678-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210811235253.924867-2-robdclark@gmail.com>
-References: <20210811235253.924867-1-robdclark@gmail.com> <20210811235253.924867-2-robdclark@gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 11 Aug 2021 17:25:11 -0700
-Message-ID: <CAE-0n51mqTwUdT1cmL=ubcFppFZ8GwerPBWCJ2QsyRtzG9vkjw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] drm/bridge: ti-sn65dsi86: Avoid creating multiple connectors
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Clark (2021-08-11 16:52:47)
-> From: Rob Clark <robdclark@chromium.org>
->
-> If we created our own connector because the driver does not support the
-> NO_CONNECTOR flag, we don't want the downstream bridge to *also* create
-> a connector.  And if this driver did pass the NO_CONNECTOR flag (and we
-> supported that mode) this would change nothing.
->
-> Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
+This series removes code only needed for 5 GHz because the r8188eu
+driver is meant to work with chips that are only capable to operate on
+2.4 GHz band with 14 channels.
 
-Thanks for saving me the packaging effort.
+This driver has been (quickly) tested with an ASUS USB N10 Nano, however
+I think it needs some more testing by more experienced users and
+programmers.
 
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Thanks to Fabio Aiuto <fabioaiuto83@gmail.com> who gave me the
+inspiration to address this work, since he made a (more extended) 
+removal of 5 GHz code from rtl8723bs:
+https://lore.kernel.org/linux-staging/cover.1624367071.git.fabioaiuto83@gmail.com/.
+
+Fabio M. De Francesco (3):
+  staging: r8188eu: Remove all 5GHz network types
+  staging: r8188eu: Remove code related to unsupported channel
+    bandwidths
+  staging: r8188eu: Remove no more necessary definitions and code
+
+ drivers/staging/r8188eu/core/rtw_ap.c         | 13 ++--------
+ drivers/staging/r8188eu/core/rtw_debug.c      | 25 +------------------
+ drivers/staging/r8188eu/core/rtw_ieee80211.c  | 19 +++-----------
+ drivers/staging/r8188eu/core/rtw_ioctl_set.c  |  4 +--
+ drivers/staging/r8188eu/core/rtw_mlme.c       | 10 --------
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   | 13 +++-------
+ drivers/staging/r8188eu/core/rtw_p2p.c        |  2 +-
+ drivers/staging/r8188eu/core/rtw_wlan_util.c  | 15 ++---------
+ drivers/staging/r8188eu/hal/odm.c             | 20 +++------------
+ drivers/staging/r8188eu/hal/rtl8188e_phycfg.c |  3 ---
+ .../staging/r8188eu/include/Hal8188EPhyCfg.h  |  4 ---
+ drivers/staging/r8188eu/include/ieee80211.h   | 23 ++---------------
+ drivers/staging/r8188eu/include/odm.h         |  8 ------
+ .../staging/r8188eu/include/rtl8188e_spec.h   |  5 ----
+ .../staging/r8188eu/include/rtw_mlme_ext.h    |  1 -
+ drivers/staging/r8188eu/include/rtw_rf.h      |  3 ---
+ drivers/staging/r8188eu/include/wifi.h        |  2 +-
+ drivers/staging/r8188eu/include/wlan_bssdef.h |  2 +-
+ 18 files changed, 21 insertions(+), 151 deletions(-)
+
+-- 
+2.32.0
+
