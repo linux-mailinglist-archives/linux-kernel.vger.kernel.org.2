@@ -2,156 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071F3E9F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45C63E9F3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbhHLHIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:08:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36440 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234577AbhHLHIL (ORCPT
+        id S234660AbhHLHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234648AbhHLHJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:08:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628752066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QgOG1KaHZGrp2vIMn7queyr7qSVpNW7VY1VTdadCTbg=;
-        b=LdvzkUTiq5XQqUvuZn4KJ9VBAERgr2x+yGG3MAwVYzTFDLy1b9khYJWyS+Wdzz7w6oPhdI
-        UIr1RW1nFPl4KGg+6ELjxfR4BdfiSWuDh7ALiGYWhYA6XntT67PyvsBJ8M34puqVEEDYpz
-        GyJ2x0T3QWuxWCdGL54hklk8sY7dzU0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-0TcqXWiJPde3e_iCy1TedA-1; Thu, 12 Aug 2021 03:07:44 -0400
-X-MC-Unique: 0TcqXWiJPde3e_iCy1TedA-1
-Received: by mail-wm1-f69.google.com with SMTP id l19-20020a05600c4f13b029025b036c91c6so1541152wmq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:07:44 -0700 (PDT)
+        Thu, 12 Aug 2021 03:09:46 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B5DC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:09:21 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l18so6790633wrv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ENuRC1sKFN/2rIqlshnIbbFqmsJH1/ok7osy11Vqvaw=;
+        b=HDQZTCSD3tyH0k6NpShG5PAswcXV3WEL3Va5HPSFKYGtqUKd1EaFmjfQa5nSQRDExQ
+         jaJk/eVMxUW9azv9Y7Tcl7xUMVQjpauvvRtogtKjXbHhioxO8xrUx2b4xLpfqFzbEXiF
+         vDkUaFLjOTuIIhnox43MSaIYG5gtBCMydrLEYxddwFPFlCd+yMhvz3E5ipJbD1W8ks3V
+         gn7Q5SLAlypbGKwXZdNCuaGMd2tLIxNvJLRcZ4BsOvvABIXBKaKElWft9OwPCLWf5bct
+         RRBgC2lhFsDBQgUNGAfts0goyaMkek3PmjmKc4v6wqntzfn5YgsJU90h426q3eBBN3k/
+         IU/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QgOG1KaHZGrp2vIMn7queyr7qSVpNW7VY1VTdadCTbg=;
-        b=lzmarT/UCHKa23F/NFzcFYqWaf8wVYOiIZ1fRQJvHIsPeZ1ULPr2x+FW8RExy4rm5M
-         RtmkwQtNC8z8Eus+sPp3CAksvd3CR87/uz8Wd7t5M5OSO5OC56xzuxqUuRpQCfx9J7oI
-         Ya2NutRtVk5B76jqqTZbrEbsiyRxwLaqCsmN3q6SC2BRL3qqPADrFZGQEnrH2eAgHMb4
-         7J54y1NA+lRizd03VgELW/dVsy1s82AR1Vq0R+YCSxpnFBZC1vEQWSsZR5cqUrfwiwq6
-         l4JFdhbK6B/Lt/PRdDqp8wPqgh3T4KwBYitYHkMCnBaD/JxxxT1MLXT3b1sulGoZQpnq
-         NOlA==
-X-Gm-Message-State: AOAM5332wyWqj9NmlrboxnAyoD+5KZEAiLGmeKoteHCspzWplzaMWmj0
-        UydHtsZb+DrjFiRDbcJIP3G1QS70MaaSn9bisdpTkIN7tGhskwzLjb3A+J0DMI3wAfOg1HwebS7
-        tzAn+fuU3ECurEiw21MDKdxdb
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr2323933wmp.52.1628752063499;
-        Thu, 12 Aug 2021 00:07:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/dQjmzRpVnjhu2nYG+mODfNo/0E2cQXbxEhmzGgBMgSVGnSaxBpdZxfEwooDN34fMK4D4Zw==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr2323911wmp.52.1628752063241;
-        Thu, 12 Aug 2021 00:07:43 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id i10sm8311155wmq.21.2021.08.12.00.07.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 00:07:42 -0700 (PDT)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <20210811203612.138506-1-david@redhat.com>
- <20210811203612.138506-4-david@redhat.com>
- <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 3/3] kernel/resource: cleanup and optimize
- iomem_is_exclusive()
-Message-ID: <37179df3-13d7-9b98-4cd8-13bb7f735129@redhat.com>
-Date:   Thu, 12 Aug 2021 09:07:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENuRC1sKFN/2rIqlshnIbbFqmsJH1/ok7osy11Vqvaw=;
+        b=COZyq9oiJQSgY8noLENfBkLO2smsZE7/JRIgz1vlNfcHJqOzHkVC8jtKFGBzSEk4Ar
+         IAxMQpAJQ1O6YBrZsvQ1dMhbIi6a1Zjlvvyrhtq1XWiPeVD0fSw+5sOCWZZj4nAxMBNJ
+         4tYJwX+e1dtTxgDDqh5LHcQ4iJI3x2AKn0DgQHFJSZRm8W3ZrZnrLlzgyW9BwzkDCxcN
+         OQqZ4mkwTJcUjcqOX/3C8fDE63xbhZjLfKbLGRByseVmGjpUB+cFk7yvMf+k2WQ3gvka
+         0EkJzpe0IM/Bo6qQu+TEiqm56h24+D+aY3dLttzzUBaK/5Wz+bd9eyXMMgsP7CyFimdm
+         Awtw==
+X-Gm-Message-State: AOAM532GS4XruZEcPLMyDrV5w5OmqfRQm41a+F+pfiWdp2SFPtHiOAIf
+        R33kmpIXjbEwg1SLPZlVNzgAOS3/h1UQbbq/3OcKWA==
+X-Google-Smtp-Source: ABdhPJzriVaHMXK0J+1stLFfu6dz0hPAsCb0zCgKeBuYijlX8B4WWAQAjautVTL6Lmva25BZ54YzqQNTy1pzI+GC0bA=
+X-Received: by 2002:a5d:4090:: with SMTP id o16mr2234008wrp.176.1628752159438;
+ Thu, 12 Aug 2021 00:09:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210805235145.2528054-1-dlatypov@google.com> <20210805235145.2528054-2-dlatypov@google.com>
+In-Reply-To: <20210805235145.2528054-2-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 12 Aug 2021 15:09:07 +0800
+Message-ID: <CABVgOSmoNaYVcckw3PX7Cf32NjYPSpX3JqGESCqYJvTi6dwAsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kunit: add 'kunit.action' param to allow listing
+ out tests
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e98e1005c95769a4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.21 22:47, Andy Shevchenko wrote:
-> 
-> 
-> On Wednesday, August 11, 2021, David Hildenbrand <david@redhat.com 
-> <mailto:david@redhat.com>> wrote:
-> 
->     Let's clean it up a bit, removing the unnecessary usage of r_next() by
->     next_resource(), and use next_range_resource() in case we are not
->     interested in a certain subtree.
-> 
->     Signed-off-by: David Hildenbrand <david@redhat.com
->     <mailto:david@redhat.com>>
->     ---
->       kernel/resource.c | 19 +++++++++++--------
->       1 file changed, 11 insertions(+), 8 deletions(-)
-> 
->     diff --git a/kernel/resource.c b/kernel/resource.c
->     index 2938cf520ca3..ea853a075a83 100644
->     --- a/kernel/resource.c
->     +++ b/kernel/resource.c
->     @@ -1754,9 +1754,8 @@ static int strict_iomem_checks;
->        */
->       bool iomem_is_exclusive(u64 addr)
->       {
->     -       struct resource *p = &iomem_resource;
->     +       struct resource *p;
->              bool err = false;
->     -       loff_t l;
->              int size = PAGE_SIZE;
-> 
->              if (!strict_iomem_checks)
->     @@ -1765,27 +1764,31 @@ bool iomem_is_exclusive(u64 addr)
->              addr = addr & PAGE_MASK;
-> 
->              read_lock(&resource_lock);
->     -       for (p = p->child; p ; p = r_next(NULL, p, &l)) {
->     +       for (p = iomem_resource.child; p ;) {
-> 
+--000000000000e98e1005c95769a4
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Andy,
+On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Context:
+> It's difficult to map a given .kunitconfig => set of enabled tests.
+>
+> Having a standard, easy way of getting the list could be useful in a
+> number of ways. For example, if we also extended kunit.filter_glob to
+> allow filtering on tests, this would allow users to run tests cases one
+> by one if they wanted to debug hermeticity issues.
+>
+> This patch:
+> * adds a kunit.action module param with one valid non-null value, "list"
+> * for the "list" action, it simply prints out "<suite>.<test>"
+> * does not itself introduce kunit.py changes to make use of this [1].
 
-> 
-> I consider the ordinal part of p initialization is slightly better and 
-> done outside of read lock.
-> 
-> Something like
-> p= &iomem_res...;
-> read lock
-> for (p = p->child; ...) {
+I really like this feature, and could live with the implementation,
+but do feel like we should probably have a more detailed idea of how
+the kunit_tool changes are going to work before settling on it for
+sure.
 
-Why should we care about doing that outside of the lock? That smells 
-like a micro-optimization the compiler will most probably overwrite 
-either way as the address of iomem_resource is just constant?
+In particular, is the "<suite>.<test>" format the best way of giving
+test information, or do we want something more (K)TAP-like. (e.g., a
+test hierarchy with all tests marked SKIPed, or otherwise limited in
+some way). Maybe that'd allow some of the parser code to be re-used,
+and have fewer issues with having two separate ways of representing
+the test hierarchy. (What if, e.g., there were test or suite names
+with '.' in them?)
 
-Also, for me it's much more readable and compact if we perform a single 
-initialization instead of two separate ones in this case.
+On the other hand, this format does make it easier to use the
+filter_glob stuff, so it could go either way...
 
-We're using the pattern I use in, find_next_iomem_res() and 
-__region_intersects(), while we use the old pattern in 
-iomem_map_sanity_check(), where we also use the same unnecessary 
-r_next() call.
+> Note: kunit.filter_glob is respected for this and all future actions.
+> Note: we need a TAP header for kunit.py to isolate the KUnit output.
 
-I might just cleanup iomem_map_sanity_check() in a similar way.
+I don't mind having a TAP header here, but we could either:
+(a) have a separate header for a test list, and have kunit_tool look
+for that as well, to avoid treating this as TAP when it isn't; or
+(b) try to standardise a "test list" format as part of KTAP:
+https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
 
--- 
-Thanks,
+>
+> Go with a more generic "action" param, since it seems like we might
+> eventually have more modes besides just running or listing tests, e.g.
+> * perhaps a benchmark mode that reruns test cases and reports timing
+> * perhaps a deflake mode that reruns test cases that failed
+> * perhaps a mode where we randomize test order to try and catch
+>   hermeticity bugs like "test a only passes if run after test b"
+>
 
-David / dhildenb
+The "action" parameter is fine by me. Do we want to give the default
+"run" action a name as well as making it the default?
 
+> Tested:
+> $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
+> ...
+> TAP version 14
+> 1..1
+
+I really don't like the test plan line combined with the
+"<suite>.<test>" format, particularly since this example notes that
+there's only one test (presumably the suite), and then proceeds to
+have three top-level things afterwards. It seems pretty misleading to
+me.
+
+> example.example_simple_test
+> example.example_skip_test
+> example.example_mark_skipped_test
+> reboot: System halted
+>
+> [1] The interface for this can work in a few ways. We could add a
+> --list_tests flag or a new subcommand. But this change is enough to
+> allow people to split each suite into its own invocation, e.g. via a
+> short script like:
+>
+>   #!/bin/bash
+>
+>   cd $(git rev-parse --show-toplevel)
+>
+>   for suite in $(
+>     ./tools/testing/kunit/kunit.py run --kernel_args=kunit.action=list --raw_output=kunit |
+>     sed -n '/^TAP version/,$p' | grep -P -o '^[a-z][a-z0-9_-]+\.' | tr -d '.' | sort -u);
+>   do
+>     ./tools/testing/kunit/kunit.py run "${suite}"
+>   done
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
+> v1 -> v2: write about potential other "actions" in commit desc.
+> ---
+>  lib/kunit/executor.c | 46 +++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 41 insertions(+), 5 deletions(-)
+>
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index acd1de436f59..77d99ee5ed64 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>
+>  static char *filter_glob_param;
+> +static char *action_param;
+> +
+>  module_param_named(filter_glob, filter_glob_param, charp, 0);
+>  MODULE_PARM_DESC(filter_glob,
+> -               "Filter which KUnit test suites run at boot-time, e.g. list*");
+> +                "Filter which KUnit test suites run at boot-time, e.g. list*");
+> +module_param_named(action, action_param, charp, 0);
+> +MODULE_PARM_DESC(action,
+> +                "Changes KUnit executor behavior, valid values are:\n"
+> +                "<none>: run the tests like normal\n"
+> +                "'list' to list test names instead of running them.\n");
+>
+>  static char *kunit_shutdown;
+>  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> @@ -109,6 +116,33 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
+>         pr_info("1..%d\n", num_of_suites);
+>  }
+>
+> +static void kunit_exec_run_tests(struct suite_set *suite_set)
+> +{
+> +       struct kunit_suite * const * const *suites;
+> +
+> +       kunit_print_tap_header(suite_set);
+> +
+> +       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> +               __kunit_test_suites_init(*suites);
+> +}
+> +
+> +static void kunit_exec_list_tests(struct suite_set *suite_set)
+> +{
+> +       unsigned int i;
+> +       struct kunit_suite * const * const *suites;
+> +       struct kunit_case *test_case;
+> +
+> +       /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
+> +       kunit_print_tap_header(suite_set);
+> +
+> +       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> +               for (i = 0; (*suites)[i] != NULL; i++) {
+> +                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
+> +                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
+> +                       }
+> +               }
+> +}
+> +
+>  int kunit_run_all_tests(void)
+>  {
+>         struct kunit_suite * const * const *suites;
+> @@ -120,10 +154,12 @@ int kunit_run_all_tests(void)
+>         if (filter_glob_param)
+>                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
+>
+> -       kunit_print_tap_header(&suite_set);
+> -
+> -       for (suites = suite_set.start; suites < suite_set.end; suites++)
+> -               __kunit_test_suites_init(*suites);
+> +       if (!action_param)
+> +               kunit_exec_run_tests(&suite_set);
+> +       else if (strcmp(action_param, "list") == 0)
+> +               kunit_exec_list_tests(&suite_set);
+> +       else
+> +               pr_err("kunit executor: unknown action '%s'\n", action_param);
+>
+>         if (filter_glob_param) { /* a copy was made of each array */
+>                 for (suites = suite_set.start; suites < suite_set.end; suites++)
+> --
+> 2.32.0.605.g8dce9f2422-goog
+>
+
+--000000000000e98e1005c95769a4
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnAYJKoZIhvcNAQcCoIIPjTCCD4kCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz2MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+/nKVAPkPCzwfEPbL1262MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwgZoGCCsGAQUF
+BwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
+bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
+bS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouseLHIb
+0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vY2Ev
+Z3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA+XCDyl6gdUzbfGv+D
+Xg1PhWeHLeXCPc9+sNLwRPD9AYET0o6RJYqNAVFC77sI4quIUtKk+H44VwMwNOhX3PY+69dzUd2E
+XLgutq81YK/Kt/wRUdEbgvDhvjumsVENI6xc4xZzAXAZqJLK+AR5oNtx0o9GC2el89ZF3yPI8KqH
+1aOYvtgDisoXXmst9rm6Njnt9AitTax0LwWdl1yGwnA6cqJfq8h7Ehg+6X3TGW4wMM1RsB9tLL2d
+osQsJT49+adAbU2yODf/XkIQevor0sIhJuxYkLay9G2GK1DCEmqUfbXWF5yQRxBkhVXHodFI2+V1
+OPxk5TOVVOId6G/60Hq4MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAyMDIw
+AhABeyW1Dfueu+w9B/G1jwK+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC6m4Du
+l5xOgjrxsAJgKRp8KY1ppnQwnxQ4y8aax9dROzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
+CSqGSIb3DQEJBTEPFw0yMTA4MTIwNzA5MTlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqG
+SIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAH+ySI7QbUrCGRPjfFOlbXGJF
+t6EOKf1Ox6BYVqcMNnM8lySaaUs4fd2j6BX279qJH96crPIx3CAIx5cWbpox3wvHqWKp8gsWb+sy
+9gzIg7+2L+7VRO7m/0C4FC9xx+m6Ih+V+kvjElL1e97ZvhtRzP+HGj+4LlLf/NLH1CfxLTolvtgR
+kti9nxoDo98Wte63h2y0ft4mfBs4GrYgoJeCJxhfL80atJWMeLDZmPgAg9Tc8rQmWa435hAWqCc2
+YHNE1Enlq9H1VkZcnPgW50OM+2fMFaweKfHsNLjWwuhtzeBkRE3fPyHaR0bq2Wmsf0ZUjRofs70u
+l0lrDqYeeAofGw==
+--000000000000e98e1005c95769a4--
