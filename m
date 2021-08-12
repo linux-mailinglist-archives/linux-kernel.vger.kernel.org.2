@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521B13E9D9B
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBD23E9D9C
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhHLEgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        id S234164AbhHLEgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234004AbhHLEgc (ORCPT
+        with ESMTP id S234048AbhHLEgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 00:36:32 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0200FC0617A3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:03 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b7so5619954plh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:02 -0700 (PDT)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9530C0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q2so5591760plr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JOkHp31PCeB99M1dSxN1Du6uw4AQKsapMxFixRcFEa0=;
-        b=Kh7hj4I7h5CBlthAjIqogCoHqEsTXGwRK33ywj/3LXMyBATvxFhFWnw3YPLcQN7O8w
-         7QjH4GDLQShi7mobqrYD8nw0176v1Xpc5uvJUorIClB9Ym8UAEYjVryjjeHzLIYX9dpl
-         XGvTT0EZ5f0r/28shwGhJzElGs0BnhohuWx5xkLbOaLjK1oS54dDiYl2A5x04CNBGlZu
-         gvCRC/3zVpYzUhuhHpDUYiRT+01GNbz1NU8XhIgcTJJT62iN2wRbkCxN5P+svmojj6lk
-         XezXTEQcRWc3vVYfXyVyRPh/4X/EwnCyDiMg69Rn7Hc5vqSuNtSqiH72uRlZNV8Lw1pE
-         C9Ew==
+        bh=6wofbpP2XHH8vKqCJvAlC0rsCzyQ6IN16xqpsQAu78c=;
+        b=kcTGTOMugFVsFi9+hhyJu2RhkTevTNPQoau6mbfxI1ob4Xd98YMMTlWa4HAVxbnYZF
+         0zCmJXMZXbZw00yPhX2lYZyZua96iQxKSmxYzxFaQxfoHY2L3Ye9awQnnl4E874fpAvy
+         TqV1TxaMgS0kcmXxjvAOJbK9Eryr8xabf7A5CjzFtJ2YM7UI8zxqXn0EpKJDfFGjGHWJ
+         tf6goZyfThDvJNaFZRj008upYFfeQoE6+ngyRrnr910bX800SG1RDMvpXi7lK7uRfnK/
+         PK08nYK1MomznKkiawoMEmkuE7JCXNp8mnV3w3z1Wlb2WwZYV6b6j6PMFIAQ8OfYaZrs
+         jFrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JOkHp31PCeB99M1dSxN1Du6uw4AQKsapMxFixRcFEa0=;
-        b=R/2UnjvVoJAEOBHQ4Xt21UdWJq5uf35KkHNtx1HL3QfpckCN0ibjHOrLXF+dmwEbTE
-         A/NHmtKPkBNDW7P9KtyLkV2D0wJltzNAAPFQuCC6Omkmd8pXTpCPRaQIdbgE24DcfPYj
-         2V88lbsLF1mNzaJ+bRZOL7gsd/29VlFHEgjpRpEaP3wdYsLjupVzs3LMvM4JPjhvsYA6
-         trLDOCGOG6ZlqxqfTZcAI5UjtRDwO2TwA4caR7ShqVtYwQHCFandnfssnqLzv8u9AgdR
-         Asz6AdXxYtgEV6b0IErxmXtIrpfS0J3V9T2EScx/vy+5/fHIbUjuCeU9nu6YA01Ypsgp
-         Ndrg==
-X-Gm-Message-State: AOAM531a7NQhLkYrlxxmFWn9x848qTkb/qlX+IWzTNW3EXfZcTp3bsf+
-        smfMQOMdczXGydiYAuy73IGsRw==
-X-Google-Smtp-Source: ABdhPJyhc1Uy3xlMY0GVY5KMgo/dRuIuPuycji44bvvw6HvVyeQ3uW/K2q+eVg1ubLke2ab2XFSL1g==
-X-Received: by 2002:a17:90a:4285:: with SMTP id p5mr2373269pjg.162.1628742962600;
-        Wed, 11 Aug 2021 21:36:02 -0700 (PDT)
+        bh=6wofbpP2XHH8vKqCJvAlC0rsCzyQ6IN16xqpsQAu78c=;
+        b=eNgUHiawSccFon8eDiKg2SEHACXk3qFl/Z4axKCHgD127DQHw9vOtu6RIsIz1ZWHfD
+         WrSrRkztqIZ09+S2kasUG3d/EVArgHiReyL1bz7UP7KOc30hT63Losz3+iOUQu9EP2j8
+         fkn/pgD4P66HIYOO1eVzNH8MNbYTIuPO8KcJk57jBlmZDtAd/weGyPlhVcofu8I9PELV
+         i6it+8s9+F2HP+HpWj9LVyWVzWTx+O9BXMEsvOFNwSWUSkov1L+W5PUAjRyG7j8Q2AFP
+         P2c0cJXdfWEuyg8I3E96Mmwl42d+FlhMTD35bNgt08/NPHePR1CbPDv7nWZtigPPfCu+
+         iRKw==
+X-Gm-Message-State: AOAM530DCGGpvLnlUZpz+rIPgnTd/dKiWs+ksLAT6CYAmiBpnpf/L3Tv
+        xrhJYiLVqrf/vSVOGxUrZOz0XQ==
+X-Google-Smtp-Source: ABdhPJxOyxfx5OgUlraC7cspL4slIMF78gy/l9Iz2XJBgeRFFX7HGChu5G1uG7HxFAKOJXmQPNG7RA==
+X-Received: by 2002:a65:690c:: with SMTP id s12mr2110775pgq.401.1628742965215;
+        Wed, 11 Aug 2021 21:36:05 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id z131sm1353426pfc.159.2021.08.11.21.36.01
+        by smtp.gmail.com with ESMTPSA id z15sm1402647pgc.13.2021.08.11.21.36.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 21:36:02 -0700 (PDT)
+        Wed, 11 Aug 2021 21:36:04 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Vincent Donnefort <vincent.donnefort@arm.com>,
         lukasz.luba@arm.com, Quentin Perret <qperret@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 6/9] cpufreq: qcom-cpufreq-hw: Use .register_em() to register with energy model
-Date:   Thu, 12 Aug 2021 10:05:19 +0530
-Message-Id: <e96c2153d0fc0a1c218bf5ba149ccdf75d19a275.1628742634.git.viresh.kumar@linaro.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 7/9] cpufreq: scpi: Use .register_em() to register with energy model
+Date:   Thu, 12 Aug 2021 10:05:20 +0530
+Message-Id: <a214649dfcbc812ddf6b3906315da166caf01964.1628742634.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1628742634.git.viresh.kumar@linaro.org>
 References: <cover.1628742634.git.viresh.kumar@linaro.org>
@@ -75,30 +75,30 @@ cpufreq_register_em_with_opp() to register with the EM core.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/qcom-cpufreq-hw.c | 3 +--
+ drivers/cpufreq/scpi-cpufreq.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index f86859bf76f1..c2e71c430fbf 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -362,8 +362,6 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 		goto error;
- 	}
+diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
+index d6a698a1b5d1..bda3e7d42964 100644
+--- a/drivers/cpufreq/scpi-cpufreq.c
++++ b/drivers/cpufreq/scpi-cpufreq.c
+@@ -163,8 +163,6 @@ static int scpi_cpufreq_init(struct cpufreq_policy *policy)
+ 
+ 	policy->fast_switch_possible = false;
  
 -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
 -
- 	if (policy_has_boost_freq(policy)) {
- 		ret = cpufreq_enable_boost_support();
- 		if (ret)
-@@ -412,6 +410,7 @@ static struct cpufreq_driver cpufreq_qcom_hw_driver = {
- 	.get		= qcom_cpufreq_hw_get,
- 	.init		= qcom_cpufreq_hw_cpu_init,
- 	.exit		= qcom_cpufreq_hw_cpu_exit,
+ 	return 0;
+ 
+ out_free_cpufreq_table:
+@@ -200,6 +198,7 @@ static struct cpufreq_driver scpi_cpufreq_driver = {
+ 	.init	= scpi_cpufreq_init,
+ 	.exit	= scpi_cpufreq_exit,
+ 	.target_index	= scpi_cpufreq_set_target,
 +	.register_em	= cpufreq_register_em_with_opp,
- 	.fast_switch    = qcom_cpufreq_hw_fast_switch,
- 	.name		= "qcom-cpufreq-hw",
- 	.attr		= qcom_cpufreq_hw_attr,
+ };
+ 
+ static int scpi_cpufreq_probe(struct platform_device *pdev)
 -- 
 2.31.1.272.g89b43f80a514
 
