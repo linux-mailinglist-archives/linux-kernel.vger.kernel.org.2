@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6643E9F8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963933E9FAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhHLHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:42:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234118AbhHLHmZ (ORCPT
+        id S234771AbhHLHpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:45:00 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:33196 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232348AbhHLHo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:42:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628754120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u4TpO8iJibyPxP/Isv1KfPXChojva1yiR6ZPzSTMnXo=;
-        b=gtAHdIQmc8G6PwKLOvNixLe26Ix5oPsvIpuP2BhEIfEoW074NeREv2Kj+Bslm6pL63djOA
-        NZBCREhmbQz6pX7JBAEttVDiUE9K28vqvCz0Sin95/IZf1LPJiqB4u8kYvYHdVYzDJvag0
-        ZvcREVPWe0m7IogO45WFsG0A3yeA6u4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-kGVgusB3MrGLSozZaboD_g-1; Thu, 12 Aug 2021 03:41:55 -0400
-X-MC-Unique: kGVgusB3MrGLSozZaboD_g-1
-Received: by mail-ed1-f71.google.com with SMTP id m16-20020a056402511000b003bead176527so95114edd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:41:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u4TpO8iJibyPxP/Isv1KfPXChojva1yiR6ZPzSTMnXo=;
-        b=Txh6E24XdBGeIwfzC2Lh6RrjJKWI141DoUC2CNl0wChsg8yeWTd2h4D+2y+VXnI0It
-         mfh7BlBQEl+cpb0Nn8RbfpMqww0zhjUmgGyBL56T8sZsrxnBZ9a9O4ePX7ESjuakDANP
-         QaCzdJ4jL3GXmsLxgWv+9fvV5+weCcj9t4oUjDu+3CJv6PSLUhHAt1RoHbqjMlDm/x0r
-         Lel0cNKya7sCYVMOoIVRNnR3jV48Nt+2xiVYG9QjG5uqcV3y6wplwUXi6BKlYSiLcqG/
-         /QE3pZMAQCu61bjPrFO0gPnealXWcBFUzjzr1nL5TVL9Z89oKWZ52sbptEeOlA26sw9U
-         TImw==
-X-Gm-Message-State: AOAM533/omT3Oz5cBMS9+txmyWN5bXVePTImTbaazbAtg/zIfue0rs4y
-        a+iduenzawmtsWjxyO183flEhOv1BlWvQEKGOo6IxQM1J7k6N4M/3Y01/PGP1gggv7jy9WHCkmd
-        TpGkwnLo16CEeIaxfVy9+cDSE
-X-Received: by 2002:a17:906:551:: with SMTP id k17mr2361849eja.391.1628754114674;
-        Thu, 12 Aug 2021 00:41:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyv5hHff6uRU/Ik2WW3csB/wvz4oYxpyyIYPf+uZAO6Be3jJaOO0j0iG3axT0YOjaZHnHVFqA==
-X-Received: by 2002:a17:906:551:: with SMTP id k17mr2361838eja.391.1628754114537;
-        Thu, 12 Aug 2021 00:41:54 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f8sm737462edy.57.2021.08.12.00.41.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 00:41:54 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: ISST: Fix optimization with use of numa
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au
-References: <20210811033633.1204567-1-srinivas.pandruvada@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <119ab09f-9aab-9980-c1d3-72decff43488@redhat.com>
-Date:   Thu, 12 Aug 2021 09:41:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 03:44:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1628754271; x=1660290271;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=LR8LWE1CYZvg3jg13iK01DDmUkN7vvjsZ05D6kFuE2c=;
+  b=nSr88czzact6X7+INpa6SGnUswWUP4U/rNmWnxiCEwu+nRCYwTq/TifY
+   M066vECcwHIfADEzhN3ZB+iDPDHeDiOSGbeSyNRTzX/e0mSCmLQbtS4MW
+   GoTaPIqKzkpzYZUFHKp9SJyUjrMJmGdg5knIogHZvxFF7lLWTbdc2FwA7
+   PJrbpabEUB4bmkp58OrPjf5GvkfBT2cEY/sLSmjJlUFLoHGuSELWniEEt
+   0APzZIE1bWD3mM+kGMso8Nh1RinWs9XTjyqABq/08IqpVnANb3KKVbK0J
+   19RCXGziM/SoFPLsWXeIVGNCFKYlfZqsfhK5r9P2VaBWD4DcMi9PtcCu+
+   A==;
+IronPort-SDR: JR9/pWOEuAoC9x+PzmZbeGeGU9f25/AAKXPRjHw2Ctg4P4PXKCrYZqz39n7T+GVSlf7gD4DFuk
+ RJ93ki3TYKS68R4UZUsSy51Y3j8Jy+ui2uxm6XCbXvtu2o4MAeh3GwsNye3f64s0stG2gGUZ+c
+ iV+AlFfyCB6ZLrYRWkF9r6SA+ee7Nkde47zVjdFRVDBRxef1TPSScatthU9qBY7YfXQ4tCDoVN
+ zmC0sdocUUsidsu86ZaGoXTQMCwHuNYMas0ga4t5uvW8JBuvKZ8fQ6L0zWivnp2peOxpSf2O7m
+ 3MysDY+1jcy5bs43nD5x4dt9
+X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
+   d="scan'208";a="139788973"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Aug 2021 00:44:30 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 00:44:30 -0700
+Received: from che-lt-i63539u.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 12 Aug 2021 00:44:25 -0700
+From:   Hari Prasath <Hari.PrasathGE@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <linux@armlinux.org.uk>,
+        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <mpuswlinux@microchip.com>, <Hari.PrasathGE@microchip.com>
+Subject: [PATCH net-next 1/2] net: macb: Add PTP support for SAMA5D29
+Date:   Thu, 12 Aug 2021 13:14:21 +0530
+Message-ID: <20210812074422.13487-1-Hari.PrasathGE@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210811033633.1204567-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add PTP capability to the macb config object for sama5d29.
 
-On 8/11/21 5:36 AM, Srinivas Pandruvada wrote:
-> When numa is used to map CPU to PCI device, the optimized path to read
-> from cached data is not working and still calls _isst_if_get_pci_dev().
-> 
-> The reason is that when caching the mapping, numa information is not
-> available as it is read later. So move the assignment of
-> isst_cpu_info[cpu].numa_node before calling _isst_if_get_pci_dev().
-> 
-> Fixes: aa2ddd242572 ("platform/x86: ISST: Use numa node id for cpu pci dev mapping")
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> v2:
-> Fixed "Fixes tag" as suggested by Stephen Rothwell
+Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
+---
+ drivers/net/ethernet/cadence/macb_main.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Thanks, but I just fixed this myself in the pdx86/for-next tree and I've
-done a forced-push of for-next with the fixed Fixes tag.
-
-Either way this is resolved now :)
-
-Regards,
-
-Hans
-
-
-
-
-> 
-> Update:
-> 	The fixes tag was wrong
-> This patch can wait for next merge window as these systems are not
-> shipped.
-> 
->  drivers/platform/x86/intel_speed_select_if/isst_if_common.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> index 6f0cc679c8e5..8a4d52a9028d 100644
-> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.c
-> @@ -379,6 +379,8 @@ static int isst_if_cpu_online(unsigned int cpu)
->  	u64 data;
->  	int ret;
->  
-> +	isst_cpu_info[cpu].numa_node = cpu_to_node(cpu);
-> +
->  	ret = rdmsrl_safe(MSR_CPU_BUS_NUMBER, &data);
->  	if (ret) {
->  		/* This is not a fatal error on MSR mailbox only I/F */
-> @@ -397,7 +399,6 @@ static int isst_if_cpu_online(unsigned int cpu)
->  		return ret;
->  	}
->  	isst_cpu_info[cpu].punit_cpu_id = data;
-> -	isst_cpu_info[cpu].numa_node = cpu_to_node(cpu);
->  
->  	isst_restore_msr_local(cpu);
->  
-> 
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 181ebc235925..d13fb1d31821 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -4533,6 +4533,14 @@ static const struct macb_config sama5d2_config = {
+ 	.usrio = &macb_default_usrio,
+ };
+ 
++static const struct macb_config sama5d29_config = {
++	.caps = MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII | MACB_CAPS_GEM_HAS_PTP,
++	.dma_burst_length = 16,
++	.clk_init = macb_clk_init,
++	.init = macb_init,
++	.usrio = &macb_default_usrio,
++};
++
+ static const struct macb_config sama5d3_config = {
+ 	.caps = MACB_CAPS_SG_DISABLED | MACB_CAPS_GIGABIT_MODE_AVAILABLE
+ 	      | MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII | MACB_CAPS_JUMBO,
+@@ -4610,6 +4618,7 @@ static const struct of_device_id macb_dt_ids[] = {
+ 	{ .compatible = "cdns,gem", .data = &pc302gem_config },
+ 	{ .compatible = "cdns,sam9x60-macb", .data = &at91sam9260_config },
+ 	{ .compatible = "atmel,sama5d2-gem", .data = &sama5d2_config },
++	{ .compatible = "atmel,sama5d29-gem", .data = &sama5d29_config },
+ 	{ .compatible = "atmel,sama5d3-gem", .data = &sama5d3_config },
+ 	{ .compatible = "atmel,sama5d3-macb", .data = &sama5d3macb_config },
+ 	{ .compatible = "atmel,sama5d4-gem", .data = &sama5d4_config },
+-- 
+2.17.1
 
