@@ -2,152 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0CA3EAB11
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F1B3EAB20
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbhHLTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:33:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhHLTdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1606103E;
-        Thu, 12 Aug 2021 19:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628796800;
-        bh=YI8Ka6ZHWlucnyLQIu6sspluqaLo4KckF0oA5V5Hkaw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=M+XvW7qnRmgxRCv6QtS5ZAp99QDaaS2Lgz4GOc7j47iAdJRLYJK9JzsuMCaxPGAZa
-         Lcu6OqN08Jq65mi8wtjrWUA9YW1fWIivJ80KL63MRNlNB0+8shC1zr1Ery57DKoHtT
-         bfKeutBPXt07b7Qacdzq7dmhnu68CLbQgR2qd58GKOY9qIn4itwbUfRYhlxIErh6Bj
-         F+QL28E62rdvsHipNQ4h1xQFbwJZEmY1M+4qZYxcAr1KffYlV3v7Ic6o1MRZCj4BND
-         +LdX1SlRM2CQvOVnGiXTqg4N462M9S14pO7NqNGuJ+FYTt2b0OVN0OSosLBtsDkDMd
-         1tZrg5ew99h+w==
-Content-Type: text/plain; charset="utf-8"
+        id S234942AbhHLTjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234700AbhHLTjf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:39:35 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E46AC061756;
+        Thu, 12 Aug 2021 12:39:09 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f12-20020a05600c4e8c00b002e6bdd6ffe2so2156821wmq.5;
+        Thu, 12 Aug 2021 12:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3NK0OQXBHDRnA/2ov9TC3rzj5ii4gRC8qeON0K+8PYk=;
+        b=YUzxSaStkUygWWfJjkm25k3dudZxdgf9xmSLmrQjhiHkdBjMzvEw2GXG/+YYj++EUd
+         YSJ5h0zQi/A3/gCSyqa+/dFUF0AYn44Y8qQHHRzNstmOKfMtkrDe2tqa5vOFdeix1p+4
+         cHuGEtH+ajrXWYIOC30ewABjlonSxYabVRc4exeK+NvGZt01R7h6jMGZ7LlUPqCMBMae
+         7QAxC3rUTKJbxELFXNm99QC1//6eE5sBtJ8r6BRpbPVnIKmx9s/vx+JZt1KWIPoFmDM9
+         cbLxBBcbT4JgeJmsptn+/8kdW1RVjw5cpcESIBLqeL5X2rgujxnP/tEj9e8f91NjQZZi
+         bj3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3NK0OQXBHDRnA/2ov9TC3rzj5ii4gRC8qeON0K+8PYk=;
+        b=iuSpbZ4dNgls5n58uVYH8G5llmiLD4V1cIDkcucR4SYYNOQGyznImrqR/Gh1HmmhXv
+         2Ktp596Msa2oJdWTM4fjpGGaqNeLQt4w6odEkLX6lP7mYwV192wRhjsmI/N7eOFvlBnx
+         6hhViSK4ZXLV61YemTGxPevZAnyzqbtcxEKr51tTGXQRRJJAQjqbCiSk3PRR0Z1Sw8hH
+         W/0rlJyQYiCgwOaK+YijYq/SkT5xXxPzSgOB+hfC1AkwLyE8oN4YQ6Ni/otosQHzvTDk
+         hlY9AXEVhIKoMk2lgO3Q4M3cW/gAWAdnYLXyd7ND7kFnonwWA+HGXHz3Cb1X0gB4VhnA
+         9HwQ==
+X-Gm-Message-State: AOAM530k+xjDlsCpA4RAYbNLNlPbWW+U9mXDGweqzmDol5Dw8F0N3LjF
+        fw7YrS1MUxQdawy2Re+yHc9zBuphAGQNKQ==
+X-Google-Smtp-Source: ABdhPJx496e+J29s0jS1neri08H+KunFHq/4Ox68FR6q1avN90DE3coaQ4/Bkk6a2q+g20c/y4f7Zg==
+X-Received: by 2002:a1c:20c5:: with SMTP id g188mr194019wmg.142.1628797147909;
+        Thu, 12 Aug 2021 12:39:07 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f10:c200:5c12:d692:d13:24d5? (p200300ea8f10c2005c12d6920d1324d5.dip0.t-ipconnect.de. [2003:ea:8f10:c200:5c12:d692:d13:24d5])
+        by smtp.googlemail.com with ESMTPSA id h14sm3875188wrp.55.2021.08.12.12.39.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 12:39:07 -0700 (PDT)
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, nic_swsd@realtek.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH v2 1/2] r8169: Implement dynamic ASPM mechanism
+Message-ID: <875e7304-20a1-0bca-ee07-41b16f07152a@gmail.com>
+Date:   Thu, 12 Aug 2021 21:34:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210806082818.k3awj72j2yb2bbhe@pali>
-References: <20210624224909.6350-1-pali@kernel.org> <20210802144529.1520-1-pali@kernel.org> <20210802144529.1520-4-pali@kernel.org> <162820981926.19113.12529765873453602213@swboyd.mtv.corp.google.com> <20210806082818.k3awj72j2yb2bbhe@pali>
-Subject: Re: [PATCH v4 3/6] dt-bindings: mvebu-uart: document DT bindings for marvell,armada-3700-uart-clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>, kabel@kernel.org,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-To:     <pali@kernel.org>
-Date:   Thu, 12 Aug 2021 12:33:19 -0700
-Message-ID: <162879679919.19113.10297499909721773583@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Pali (2021-08-06 01:28:18)
-> On Thursday 05 August 2021 17:30:19 Stephen Boyd wrote:
-> > > diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-=
-clock.yaml b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.=
-yaml
-> > > new file mode 100644
-> > > index 000000000000..5ef04f3affda
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.y=
-aml
-> > > @@ -0,0 +1,49 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/clock/marvell,armada-3700-uart-cl=
-ock#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +title: Marvell Armada 3720 UART clocks
-> >=20
-> > Please add a newline here
-> >=20
-> > > +properties:
-> > > +  compatible:
-> > > +    const: marvell,armada-3700-uart-clock
-> >=20
-> > Please add a newline here
-> >=20
-> > > +  reg:
-> > > +    items:
-> > > +      - description: UART Clock Control Register
-> > > +      - description: UART 2 Baud Rate Divisor Register
-> >=20
-> > Please add a newline here
-> >=20
-> > > +  clocks:
-> > > +    description: |
-> > > +      List of parent clocks suitable for UART from following set:
-> > > +        "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"
-> > > +      UART clock can use one from this set and when more are provided
-> > > +      then kernel would choose and configure the most suitable one.
-> > > +      It is suggest to specify at least one TBG clock to achieve
-> > > +      baudrates above 230400 and also to specify clock which bootloa=
-der
-> > > +      used for UART (most probably xtal) for smooth boot log on UART.
-> >=20
-> > Please use items and const like clock-names for the clocks property.
->=20
-> It is already there, see below.
->=20
-> > The description makes me feel like the DT is configuring the choices
-> > available.
->=20
-> See description. It is kernel (driver) who is choosing one clock from
-> the set and then configure it a UART clock.
+On 12.08.2021 17:53, Kai-Heng Feng wrote:
+> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> Same issue can be observed with older vendor drivers.
+> 
+> The issue is however solved by the latest vendor driver. There's a new
+> mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> more than 10 packets, and vice versa.
+> 
+> Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
+> use dynamic ASPM under Windows. So implement the same mechanism here to
+> resolve the issue.
+> 
+Realtek using something in their Windows drivers isn't really a proof of
+quality. Still my concerns haven't been addressed. If ASPM is enabled and
+there's a congestion in the chip it may take up to a second until ASPM
+gets disabled. In this second traffic very likely is heavily affected.
+Who takes care in case of problem reports?
 
-Can that be done with assigned-clock-parents?
+This is a massive change for basically all chip versions. And experience
+shows that in case of problem reports Realtek never cares, even though
+they are listed as maintainers. All I see is that they copy more and more
+code from r8169 into their own drivers. This seems to indicate that they
+consider quality of their own drivers as not sufficient.
 
->=20
-> > Ideally, the clocks and clock-names properties are fixed in
-> > length and never change unless the compatible changes.
-> >=20
-> > Please add a newline here
-> >=20
-> > > +  clock-names:
-> > > +    items:
-> > > +      - const: TBG-A-P
-> > > +      - const: TBG-B-P
-> > > +      - const: TBG-A-S
-> > > +      - const: TBG-B-S
-> > > +      - const: xtal
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> >=20
-> > Please add a newline here
-> >=20
-> > > +  '#clock-cells':
-> > > +    const: 1
-> >=20
-> > Please add a newline here
-> >=20
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - clocks
-> > > +  - clock-names
-> > > +  - '#clock-cells'
-> >=20
-> > Please add a newline here
-> >=20
-> > > +additionalProperties: false
-> >=20
-> > Please add a newline here
-> >=20
-> > > +examples:
-> > > +  - |
-> > > +    uartclk: uartclk@12000 {
-> > > +      compatible =3D "marvell,armada-3700-uart-clock";
-> > > +      reg =3D <0x12010 0x4>, <0x12210 0x4>;
+Still my proposal: Apply this downstream, and if there are no complaints
+after a few months it may be considered for mainline.
 
-The reg property looks like this is poking a mux that is part of a
-larger device. What device is this actually part of? The uart hardware?
+Last but not least the formal issues:
+- no cover letter
+- no net/net-next annotation
 
-> > > +      clocks =3D <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-> > > +      clock-names =3D "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "x=
-tal";
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2: 
+>  - Use delayed_work instead of timer_list to avoid interrupt context
+>  - Use mutex to serialize packet counter read/write
+>  - Wording change
+> 
+>  drivers/net/ethernet/realtek/r8169_main.c | 45 +++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index c7af5bc3b8af..7ab2e841dc69 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -624,6 +624,11 @@ struct rtl8169_private {
+>  
+>  	unsigned supports_gmii:1;
+>  	unsigned aspm_manageable:1;
+> +	unsigned aspm_enabled:1;
+> +	struct delayed_work aspm_toggle;
+> +	struct mutex aspm_mutex;
+> +	u32 aspm_packet_count;
+> +
+>  	dma_addr_t counters_phys_addr;
+>  	struct rtl8169_counters *counters;
+>  	struct rtl8169_tc_offsets tc_offset;
+> @@ -2671,6 +2676,8 @@ static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+>  		RTL_W8(tp, Config5, RTL_R8(tp, Config5) & ~ASPM_en);
+>  	}
+>  
+> +	tp->aspm_enabled = enable;
+> +
+>  	udelay(10);
+>  }
+>  
+> @@ -4408,6 +4415,9 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+>  
+>  	dirty_tx = tp->dirty_tx;
+>  
+> +	mutex_lock(&tp->aspm_mutex);
+
+We are in soft irq context here, therefore you shouldn't sleep.
+
+> +	tp->aspm_packet_count += tp->cur_tx - dirty_tx;
+> +	mutex_unlock(&tp->aspm_mutex);
+>  	while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+>  		unsigned int entry = dirty_tx % NUM_TX_DESC;
+>  		u32 status;
+> @@ -4552,6 +4562,10 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+>  		rtl8169_mark_to_asic(desc);
+>  	}
+>  
+> +	mutex_lock(&tp->aspm_mutex);
+> +	tp->aspm_packet_count += count;
+> +	mutex_unlock(&tp->aspm_mutex);
+> +
+>  	return count;
+>  }
+>  
+> @@ -4659,8 +4673,33 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
+>  	return 0;
+>  }
+>  
+> +#define ASPM_PACKET_THRESHOLD 10
+> +#define ASPM_TOGGLE_INTERVAL 1000
+> +
+> +static void rtl8169_aspm_toggle(struct work_struct *work)
+> +{
+> +	struct rtl8169_private *tp = container_of(work, struct rtl8169_private,
+> +						  aspm_toggle.work);
+> +	bool enable;
+> +
+> +	mutex_lock(&tp->aspm_mutex);
+> +	enable = tp->aspm_packet_count <= ASPM_PACKET_THRESHOLD;
+> +	tp->aspm_packet_count = 0;
+> +	mutex_unlock(&tp->aspm_mutex);
+> +
+> +	if (tp->aspm_enabled != enable) {
+> +		rtl_unlock_config_regs(tp);
+> +		rtl_hw_aspm_clkreq_enable(tp, enable);
+> +		rtl_lock_config_regs(tp);
+> +	}
+> +
+> +	schedule_delayed_work(&tp->aspm_toggle, ASPM_TOGGLE_INTERVAL);
+> +}
+> +
+>  static void rtl8169_down(struct rtl8169_private *tp)
+>  {
+> +	cancel_delayed_work_sync(&tp->aspm_toggle);
+> +
+>  	/* Clear all task flags */
+>  	bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
+>  
+> @@ -4687,6 +4726,8 @@ static void rtl8169_up(struct rtl8169_private *tp)
+>  	rtl_reset_work(tp);
+>  
+>  	phy_start(tp->phydev);
+> +
+> +	schedule_delayed_work(&tp->aspm_toggle, ASPM_TOGGLE_INTERVAL);
+
+In the first version you used msecs_to_jiffies(ASPM_TIMER_INTERVAL).
+Now you use 1000 jiffies what is a major difference.
+
+>  }
+>  
+>  static int rtl8169_close(struct net_device *dev)
+> @@ -5347,6 +5388,10 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  
+>  	INIT_WORK(&tp->wk.work, rtl_task);
+>  
+> +	INIT_DELAYED_WORK(&tp->aspm_toggle, rtl8169_aspm_toggle);
+> +
+> +	mutex_init(&tp->aspm_mutex);
+> +
+>  	rtl_init_mac_address(tp);
+>  
+>  	dev->ethtool_ops = &rtl8169_ethtool_ops;
+> 
+
