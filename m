@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEED53EA7A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D6C3EA7AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbhHLPi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:38:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234287AbhHLPi0 (ORCPT
+        id S238119AbhHLPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234287AbhHLPjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:38:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628782680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ByUoQOtxeYxFzmcMgIXeMfGeccgiL3xQnZZbAvg/590=;
-        b=JEgCoVzjHYKo5xzMVmEBrJdriuTaQuq12M+paEVGiIB0bogkXScjfe1AcLJ/rdGyZllDwY
-        NT+9fjTyr44N7UTSObOeElYPi8YDdrCtoDSIym06hb0WS95bIbQacivE845rZjB00UNybc
-        aIDnsyb/l+tnd6wR9T/STV/1m05zoo4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-2QDY4rQ-P6CE3ju0W2dQVA-1; Thu, 12 Aug 2021 11:37:59 -0400
-X-MC-Unique: 2QDY4rQ-P6CE3ju0W2dQVA-1
-Received: by mail-ej1-f69.google.com with SMTP id r21-20020a1709067055b02904be5f536463so1987123ejj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:37:58 -0700 (PDT)
+        Thu, 12 Aug 2021 11:39:09 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB17C061756;
+        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d1so7837491pll.1;
+        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JDlSeWOgXcTARSX0Sb/7iqT+nIM3mRl7e9seVpJTDsQ=;
+        b=eKwdoqgzbDwCSyrgnVW4fQAzUSWeoRx/kyQpFmKK+Fp7BDnr2/nHtS2A8lP7dy74pV
+         DhjbUbYBUBvR9ptLkWXPFGdb66asLd49SRfdmf9wxKJzWqlZ8T7NSu4mDDdOyr8QYGjC
+         0lNFiTw2Utqsdhq+i1tE7yKdLkrhwYJ4GcUjf5y7cP+4awTK44NJV01YV+BxlT3oQexu
+         0CRKAKLjxtq43dNgpQlyRzLdedFvCS41p+H+3bYjSaKBrgs7oVUsW9kyJWLlM734zPxy
+         UEVzFvb9jP9wMt2dE2D+cHyIUPC4b4v/Fn8lr0Ong2WornEq8pHks9kPtVFyDLYSburS
+         y7eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ByUoQOtxeYxFzmcMgIXeMfGeccgiL3xQnZZbAvg/590=;
-        b=dMtc89NSJ7k3RL3laMLarpHRavK1L3wVYap+ro6xhLCC1raoVDLwbTv03X/P6PJvUe
-         5BxuKlMrcV+03XsrO107Ad2ylcsY3/5NU+VXFunfgsUxNvEPcxubfG5b/fuVzZUuexv7
-         M7/g8K4fwsfGu/NAthqUzGpjjdOmqof+X5HuRL32BIj+xfaSZ5mbZFuP3UH4IHRb3lwh
-         vsPcAobj/XpZkbahbXbD08OI2AHSy3trExzWRzM7TYsky5crKyNQz6gHJvMLanOm0ncK
-         eaxyGuR8pUxoGRhb4uIaOvfNg9P08i/y0qfqIX/l1ItFa27ssLWkW/kx+QVqHn0+S8jb
-         NuGg==
-X-Gm-Message-State: AOAM530yH6ROqteEnt3Fy2sTTLYE1tce6FZ+MNudPJpFB67/nhY0uJHL
-        L9FnJQPF0J1X/XWfaf8M8NeYH1kaAm16j8iYkTSXnu+Ij8XmTFD1/4bhCOi1WnecsUgLHx0piqN
-        oOpl93DeH2gbRB0TFKf/e9LsJ
-X-Received: by 2002:aa7:d40f:: with SMTP id z15mr6179054edq.113.1628782678030;
-        Thu, 12 Aug 2021 08:37:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+3q2i97Ek3hR3UQ1VhW4AN51TdDvstEeNblLjcEoh3VkQBDKRob9YTlUFKgqA+9J1ZKEHdA==
-X-Received: by 2002:aa7:d40f:: with SMTP id z15mr6179026edq.113.1628782677771;
-        Thu, 12 Aug 2021 08:37:57 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v1sm1282779edx.69.2021.08.12.08.37.56
+        bh=JDlSeWOgXcTARSX0Sb/7iqT+nIM3mRl7e9seVpJTDsQ=;
+        b=hJM2eKZLuZWUGB1ZtYM8wIiGMxjrCxMiW8u7lE1hFTvrP8+0ra24mXUBHibngk+tEl
+         VQ5BjEmaA/xjwH1pnIA8isw4jKFnHG9NR1BnFQLkQvBmwb/oe45twLb22dqWGeuJtLF2
+         EzK7E5Yan3jWQkbmv5bPeK4HK9dHKtYKW3YjSdIeLwCvu3U7M4EM/QRmoIqxnMiI9Kob
+         /jyyw4/zqn0DkARto5BXYYHE6GJofaBpqbOmsJr/MuQ1loD9veIqsNgctoZ7Hbcin3Py
+         OSNla+20BPGXPB/3duAIOSw+aeRJMlj8hW5QZyTlexSg0GYhb+xYlafuGHhrm/ULzryv
+         whog==
+X-Gm-Message-State: AOAM531lCJB/VtPrvzReAuDOevNIq+02KskgqcOvIJR24csxf9ar/okT
+        pKeCX4OOPOMDqeI3EMSzdxI=
+X-Google-Smtp-Source: ABdhPJzM/sI+FsioyGJB+Q38ExsQyZIIBjJUHCnSB8L/yQaI33b3CkRfajWOppoDj5zZgXKq84mYaQ==
+X-Received: by 2002:a17:90a:648b:: with SMTP id h11mr5000375pjj.141.1628782723341;
+        Thu, 12 Aug 2021 08:38:43 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id y7sm4139094pfp.102.2021.08.12.08.38.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 08:37:56 -0700 (PDT)
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Protect marking SPs unsync when using
- TDP MMU with spinlock
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-References: <20210810224554.2978735-1-seanjc@google.com>
- <20210810224554.2978735-2-seanjc@google.com>
- <74bb6910-4a0c-4d2f-e6b5-714a3181638e@redhat.com>
- <YRPyLagRbw5QKoNc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <591a0b05-da95-3782-0a71-2b9bb7875b7f@redhat.com>
-Date:   Thu, 12 Aug 2021 17:37:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 08:38:42 -0700 (PDT)
+Subject: Re: [PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_unmap_encrypted()
+ function
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-10-ltykernel@gmail.com>
+ <20210812122657.GB19050@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <0598906d-9a47-34a9-16bf-4bacff7fa058@gmail.com>
+Date:   Thu, 12 Aug 2021 23:38:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YRPyLagRbw5QKoNc@google.com>
+In-Reply-To: <20210812122657.GB19050@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,56 +90,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/21 17:52, Sean Christopherson wrote:
-> All that said, I do not have a strong preference.  Were you thinking something
-> like this?
 
-Yes, pretty much this.
 
-Paolo
-
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index d574c68cbc5c..b622e8a13b8b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2595,6 +2595,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->   int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->   {
->          struct kvm_mmu_page *sp;
-> +       bool locked = false;
+On 8/12/2021 8:26 PM, Christoph Hellwig wrote:
+> On Mon, Aug 09, 2021 at 01:56:13PM -0400, Tianyu Lan wrote:
+>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>
+>> In Hyper-V Isolation VM with AMD SEV, swiotlb boucne buffer
+>> needs to be mapped into address space above vTOM and so
+>> introduce dma_map_decrypted/dma_unmap_encrypted() to map/unmap
+>> bounce buffer memory. The platform can populate man/unmap callback
+>> in the dma memory decrypted ops.
 > 
->          /*
->           * Force write-protection if the page is being tracked.  Note, the page
-> @@ -2617,9 +2618,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->                  if (sp->unsync)
->                          continue;
+> Nothing here looks actually DMA related, and the names are horribly
+> confusing vs the actual dma_map_* calls.
 > 
-> +               /*
-> +                * TDP MMU page faults require an additional spinlock as they
-> +                * run with mmu_lock held for read, not write, and the unsync
-> +                * logic is not thread safe.  Take the spinklock regardless of
-> +                * the MMU type to avoid extra conditionals/parameters, there's
-> +                * no meaningful penalty if mmu_lock is held for write.
-> +                */
-> +               if (!locked) {
-> +                       locked = true;
-> +                       spin_lock(&kvm->arch.mmu_unsync_pages_lock);
-> +
-> +                       /*
-> +                        * Recheck after taking the spinlock, a different vCPU
-> +                        * may have since marked the page unsync.  A false
-> +                        * positive on the unprotected check above is not
-> +                        * possible as clearing sp->unsync_must_  hold mmu_lock
-> +                        * for write, i.e. unsync cannot transition from 0->1
-> +                        * while this CPU holds mmu_lock for read.
-> +                        */
-> +                       if (READ_ONCE(sp->unsync))
-> +                               continue;
-> +               }
-> +
->                  WARN_ON(sp->role.level != PG_LEVEL_4K);
->                  kvm_unsync_page(vcpu, sp);
->          }
-> +       if (locked)
-> +               spin_unlock(&kvm->arch.mmu_unsync_pages_lock);
 
+OK. So this still need to keep in the set_memory.c file.
