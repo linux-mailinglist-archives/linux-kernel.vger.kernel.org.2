@@ -2,78 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAE43EA1FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7183EA1C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236157AbhHLJZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:25:30 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:57953 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhHLJZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:25:17 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 5F419CD329;
-        Thu, 12 Aug 2021 09:15:41 +0000 (UTC)
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 1DE18FF80C;
-        Thu, 12 Aug 2021 09:15:15 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 11:16:03 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH v2] media: rcar-csi2: Add checking to
- rcsi2_start_receiver()
-Message-ID: <20210812091603.ahguetst2v354nla@uno.localdomain>
-References: <YRPUhqvcTxCVvnBG@oden.dyn.berto.se>
- <20210811171816.12012-1-lutovinova@ispras.ru>
+        id S235871AbhHLJRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:17:10 -0400
+Received: from verein.lst.de ([213.95.11.211]:43585 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235954AbhHLJRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:17:06 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5AB5667373; Thu, 12 Aug 2021 11:16:39 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 11:16:39 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@lst.de,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+Subject: Re: [PATCH] block: nbd: add sanity check for first_minor
+Message-ID: <20210812091639.GA4695@lst.de>
+References: <20210812091501.22648-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811171816.12012-1-lutovinova@ispras.ru>
+In-Reply-To: <20210812091501.22648-1-paskripkin@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nadezda,
+Looks good,
 
-On Wed, Aug 11, 2021 at 08:18:16PM +0300, Nadezda Lutovinova wrote:
-> If rcsi2_code_to_fmt() return NULL, then null pointer dereference occurs
-> in the next cycle. That should not be possible now but adding checking
-> protects from future bugs.
-> The patch adds checking if format is NULL.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
-
-Thanks
-   j
-
-> ---
-> v2: fix subject and commit message, remove dev_err()
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e28eff039688..d28f83f7698b 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -553,6 +553,8 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
->
->  	/* Code is validated in set_fmt. */
->  	format = rcsi2_code_to_fmt(priv->mf.code);
-> +	if (!format)
-> +		return -EINVAL;
->
->  	/*
->  	 * Enable all supported CSI-2 channels with virtual channel and
-> --
-> 2.17.1
->
+Reviewed-by: Christoph Hellwig <hch@lst.de>
