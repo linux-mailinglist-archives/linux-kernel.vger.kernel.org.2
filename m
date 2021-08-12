@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6D13EA9C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DA43EA9C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236986AbhHLRs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:48:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52570 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhHLRs5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:48:57 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 991BA221F8;
-        Thu, 12 Aug 2021 17:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628790511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nt13wCC1vTCNH5LpjxYew01TnAzZbKvQXsUqzFCe7IU=;
-        b=pDbunGNVt4PAAzII8myrj+MEsYwGrC+ERYPFticrMA3x4bH3XG5yS/G0/Ik2NbU9ZSMN53
-        z7rkkGMKgkEDOPNtK1thM4w4iYB0i7LPde98MQ2ZfND0x9t5M9BTM0D7mDtd/uyg4w6bgJ
-        ja5Z46DgzQ+BqdlBnhVrqCuUo/Slu6M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628790511;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nt13wCC1vTCNH5LpjxYew01TnAzZbKvQXsUqzFCe7IU=;
-        b=4XC//al3bI2/RnL8kSyIQe+zllUq5N4zyhl1Pi6nvx3BNT/3cwcJX5D/5ChmDB5u6kqIKO
-        YW5SWMUgTla47BBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7D94313AC3;
-        Thu, 12 Aug 2021 17:48:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id yoJfHe9eFWE1FAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:48:31 +0000
-Subject: Re: [PATCH v14 089/138] mm/filemap: Add FGP_STABLE
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-90-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <98fae935-a50c-c604-82de-2dab5e18b6b0@suse.cz>
-Date:   Thu, 12 Aug 2021 19:48:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237081AbhHLRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229851AbhHLRub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:50:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 10F4D6101E;
+        Thu, 12 Aug 2021 17:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628790606;
+        bh=yYn4zzWSGvHEceN5sD+zPW+yq54/wjUSasxAUiEn3lg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qIK1FYBC4xk9mLZIoUzozIlxDFYTheheTuzP83i2sW9b0ttrQQ48wdFqT5Asov2DM
+         DpEsFoGBdLxmt9lfyacbb8aqwEV4KWhqGKf8KqkxZXS3lFcnZFWtTzv9n4ULBpHVnB
+         xTYW4UxDX74CDw1U34U/c8bKxZpwwHRMJjucQnoXR8o/PB9hgpn0gL3UiTqooZbaX3
+         JO1YaqIv/ynxrccTrOAg0M8dvos5VXkw65Pf9x3BuuIBqdsa3ktjtw0bNQdEYFc8T2
+         25U4wJSvw67LFg6ZeiCkp+svmIIMWZdKSQ0l6OS/uNPfyZMCCH+Pvl06tLWu3zEHxg
+         nEAQBG5ZaEVIQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0098160A69;
+        Thu, 12 Aug 2021 17:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-90-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 net 1/1] wwan: core: Avoid returning NULL from
+ wwan_create_dev()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162879060599.6809.15342160741755440449.git-patchwork-notify@kernel.org>
+Date:   Thu, 12 Aug 2021 17:50:05 +0000
+References: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     davem@davemloft.net, ryazanov.s.a@gmail.com,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, johannes@sipsolutions.net,
+        kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
-> Allow filemap_get_folio() to wait for writeback to complete (if the
-> filesystem wants that behaviour).  This is the folio equivalent of
-> grab_cache_page_write_begin(), which is moved into the folio-compat
-> file as a reminder to migrate all the code using it.  This paves the
-> way for getting rid of AOP_FLAG_NOFS once grab_cache_page_write_begin()
-> is removed.
-> 
-> Kernel grows by 11 bytes.  filemap_get_folio() grows by 33 bytes but
-> grab_cache_page_write_begin() shrinks by 22 bytes to make up for it.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Hello:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed, 11 Aug 2021 15:48:45 +0300 you wrote:
+> Make wwan_create_dev() to return either valid or error pointer,
+> In some cases it may return NULL. Prevent this by converting
+> it to the respective error pointer.
+> 
+> Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,net,1/1] wwan: core: Avoid returning NULL from wwan_create_dev()
+    https://git.kernel.org/netdev/net/c/d9d5b8961284
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
