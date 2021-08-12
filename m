@@ -2,225 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EA83EA40C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4893EA418
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236113AbhHLLwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhHLLwH (ORCPT
+        id S237085AbhHLLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:54:04 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59600 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236390AbhHLLyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:52:07 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212D6C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:51:42 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id q11so657396ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:51:42 -0700 (PDT)
+        Thu, 12 Aug 2021 07:54:03 -0400
+X-UUID: 43321bd03e89406cb9c625ba1db4694e-20210812
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=9X+d9ipaC4DI3imyMU0YeXUjpU8joI8VjZd+ChOXIoA=;
+        b=MMy8MiXcaniLPUzoCFCh8LQY+J0uE7vNU2w4WeR8ugyiMVG1nqwRErZPZ3/1ZbV8M9pxMDEsGcS04/YbfNx0YK2k+1GGCgrfgU+eSloY6J9W1OEGzYBkN6EjzDLdZ6Xczv7P6viYourfPRmdtzkkmmNoVI1lhMBtYKNKPor2DWo=;
+X-UUID: 43321bd03e89406cb9c625ba1db4694e-20210812
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 885576350; Thu, 12 Aug 2021 19:53:35 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Aug 2021 19:53:33 +0800
+Received: from APC01-PU1-obe.outbound.protection.outlook.com (172.21.101.239)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Thu, 12 Aug 2021 19:53:33 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VGK3rRpDdywzy3RhsTh5OemC4fLp/Wmw3TqjgfRtMSuFWmNx/zffVn01ubCTxZCN5c6XwpOZV52cYlNQ1/1yum8rBaQOgpiHhfR5QJx/45wushHpgwegvG84MhEHrU72F9kIuYw1go8Akju9LF5i/nuwlGNssnqTOa/QfWWAnXkPlnFUsWfchT6XYFLo8R6DrXsafm4qe4JeTYCFE1xY0VosX9v0xEc/mbZTPF1wOCcKY+c1ckruXn2w3eaSmR9s/afIG14zTR20mh0P9nN2dLxgeBDKU7X2oS24Lu3tbS7oQJDNaC3steCUEiWp03HhZfwNy6HLdzjvXZB3BMnJdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9X+d9ipaC4DI3imyMU0YeXUjpU8joI8VjZd+ChOXIoA=;
+ b=d4i+G0iruXaslYSktuFaLiPpliXQbQ00A/szIEoPUKrxtYz1r1TCi4e7EEAJgy6Badi2b12JkkfIgwSmvKimOOeo+fZOlmxOtIspzDOAPeZ8rc0a4kUSdMK7b1bw5Xo9r3on8Ap5ugmqXVbIr+4VQrK6VpmOTBat/l51K0VSAmtPWj2DqgyhA06IxGEDOPHPjaoc8zMNQrIIiwuyc86I1q302yTv0IQomq6nbUipgj8uM1gj2ewpLBIkcUDUdtwrVfEdjoiU9DBzJALJlnbAnCEsCwhbZgzCKrNm3gaVFivWVH1w5D6TtTyyb4arTpkzG5HjpeNmU6hkiFY6WvoHYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rlpdpuyXj6YcNBgZUFrzgm9MUoy7FdsTwlVLZC96hnM=;
-        b=e8lal5KGHnYw27Nzezea4mPqS8PsL8syAdJLEzc7WSQamFLN7O+qo/grxGSjgYJDH2
-         43qh6N1fpxrYO92R0/tCL6V2jPa9PdLFphVpSKVji3ntNZKRznd467OTrpJQGmtyjINI
-         KxRX223o+nHAkva7iO3g3el91+XJk+PCWWzODif/QK4BrX9fi0oUPgNfAP2iHdfC7KSc
-         Jpei27UAMcx1/2l4PPTbuNjCBS7h8RsmIi6PdfV4VbGJNOBo5hUVjvZ/81lG5KIqWzLM
-         Jt7P/uO1qkHUK0q948a9AUrFzONbqXm+zqxfRwRVBnv8L2PJk8Yh0178bYNfiaG8WVlX
-         s7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rlpdpuyXj6YcNBgZUFrzgm9MUoy7FdsTwlVLZC96hnM=;
-        b=cVYQugQabcg+Dcg2xHKKb+f0jerhpyC3znR3RIzJ1CtLY93KsguVSnSwHkiiFtuV3z
-         3kKWm1tRw18a88BD5SLx0M6oYcTPVYHEh43cvmhIKnFIyP0z8/4+sOML7RMfiBflJzxi
-         6asxhqG4QRw3CZOIf/TK15qR+kSkicofbY8yNYJB+MnG1wyM7xmXI8arwq9xHxueIPQO
-         oCtRGRoJUVuq5EIRu2jym9eizGKHVH95jvF45CIIapktnBSgw/pZcqq2WKYz7PNEqRDW
-         7BUvlFYCezeOTJHJkbRdlJo9LpieWwWc+HOCp8n2dKv7MrxhBjOKQy4N/vJV6vSCgXUL
-         eL7A==
-X-Gm-Message-State: AOAM5306UvxfnPY5XHPqnoinUSFmpDZvBs6K4pq9JoN7Ko3QYHNO6sd2
-        ukT/0TpDniTim1kyp7ertTt1mw==
-X-Google-Smtp-Source: ABdhPJzql9g5fBF4mq+NLEY566G+mWwLgg8dtZ4uSst93znXBx6EANp13aunHuiohly4Q6dSPuiZHQ==
-X-Received: by 2002:a2e:bc19:: with SMTP id b25mr2634281ljf.374.1628769100450;
-        Thu, 12 Aug 2021 04:51:40 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id n18sm239038lft.267.2021.08.12.04.51.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 04:51:40 -0700 (PDT)
-Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
- powerup sequence
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
- <20210706115517.GB4529@sirena.org.uk>
- <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
- <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
- <20210714164710.GC2719790@robh.at.kernel.org>
- <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
- <YRKjQJc0yiQXFqCD@builder.lan>
- <CAPDyKFo+O34rvP7gbsC+ktd-p5QB9QAsbb+QEkWbiVqszChZJA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <a053aef6-5f15-7b7c-7991-a4e74fb714ed@linaro.org>
-Date:   Thu, 12 Aug 2021 14:51:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9X+d9ipaC4DI3imyMU0YeXUjpU8joI8VjZd+ChOXIoA=;
+ b=R2sjvZpZhgEYi9e6Dgj2pl091bOpttKfpiipnA/ykXqmpY9tgXcngrJH4KczFfzi8eb7782ZFjZAq7ZmLNlPTRlDrlZO1T7ZMGBmQP+nXhppAH0AMqxCsoWwxAR0hlhHgQByPndxq+UY2rklxG3UNQDF1MGY2CBP1ZGjJUn9VqM=
+Received: from KL1PR03MB5062.apcprd03.prod.outlook.com (2603:1096:820:1a::22)
+ by KL1PR03MB6227.apcprd03.prod.outlook.com (2603:1096:820:8d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.9; Thu, 12 Aug
+ 2021 11:53:22 +0000
+Received: from KL1PR03MB5062.apcprd03.prod.outlook.com
+ ([fe80::3ce4:e30e:bb67:c608]) by KL1PR03MB5062.apcprd03.prod.outlook.com
+ ([fe80::3ce4:e30e:bb67:c608%7]) with mapi id 15.20.4415.017; Thu, 12 Aug 2021
+ 11:53:22 +0000
+From:   =?utf-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= 
+        <Chunfeng.Yun@mediatek.com>
+To:     "balbi@kernel.org" <balbi@kernel.org>
+CC:     "rikard.falkeborn@gmail.com" <rikard.falkeborn@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?RWRkaWUgSHVuZyAo5rSq5q2j6ZGrKQ==?= 
+        <Eddie.Hung@mediatek.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "alcooperx@gmail.com" <alcooperx@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "pawell@cadence.com" <pawell@cadence.com>
+Subject: Re: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or
+ intr
+Thread-Topic: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or
+ intr
+Thread-Index: AQHXjyrdXjsluDJx2U2joaBrEorD3qtvbn+AgABUdwA=
+Date:   Thu, 12 Aug 2021 11:53:22 +0000
+Message-ID: <65f6dfdf98632bc93ad0d1a894c479d5067695bb.camel@mediatek.com>
+References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1628739182-30089-3-git-send-email-chunfeng.yun@mediatek.com>
+         <87mtpnyx3g.fsf@kernel.org>
+In-Reply-To: <87mtpnyx3g.fsf@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d96a48e2-e07b-48c0-0280-08d95d87c8f1
+x-ms-traffictypediagnostic: KL1PR03MB6227:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <KL1PR03MB62276018A00DF5A56E25F657FDF99@KL1PR03MB6227.apcprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2JdEQbmGdJ/39JsGJfoepDQwcg5ReHGNgZoPg+MmoG5bcA4gtmz6tCxPM8gcw2G0/Vq7lW3SiWASK0L3eXcNuU86BgJ0GYai86tTVKmRxI2gDA5PK9iJzy+iwS8orJAXwpQ03DGv0xb1WpA4HyVKZGSj2G+5Q4L0XNPjyEF2Ji0U+gdbP/dsiR7x08Y7JlIsgmnwIW3RLDdiG+s+REe13a6UQKNOGtqnjvjeX5TKisLY00XlH17NcbPwQnV46uM7yAC8hPKVnYlPbCPUk11pFyh6daql9RF5Y4hkgExGNsbV5lY6SIa/pecMqC7YtZ2bvJXuefqEc4McssXl/b6Ko8SG0jCRYWb9PJoWek9O+qCuF362TB6HhxsqTX8Ddm9ulAgcAN5Z+ZLeTeeArRvi4uDuyNrSBd/S3FicEbPSkodyCDoUWgH1gNySkExGgLCM8iYw/Cwj7BLm3JxSUs6lNVswXb61ljvR86bM2b4VCzqWf6iKxpMRwXvAZWcdAPKL8kKGrt62GszU5/GFlvSvAe3/Z1m5CY4BR7KQiv/ZzzGtQMWo9jJsrBuWRRJybFiP/8RapsvelswlNIdKXiYjRQUNPt3PphXJIzSOSMdZCsP2B4IeX4eDkUsgtJwn602/LXKCCDpkBYnVhb9palgVaX0igf/Q2+Xs+OY0zOBstG+rjMFiydprsgrzFg0V06VeGSDqsJMevzuTA66I9OhXIA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB5062.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(86362001)(66946007)(85182001)(7416002)(6486002)(4326008)(2616005)(6512007)(316002)(26005)(36756003)(83380400001)(6916009)(91956017)(66446008)(54906003)(5660300002)(6506007)(71200400001)(38070700005)(66476007)(64756008)(186003)(66556008)(38100700002)(8936002)(508600001)(8676002)(2906002)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RSs2L04yT3JranU5d3ZJMWdrSVg5Z2s1RVlYZ0hEcWEwNFZpQ3BmVDYvTzZ3?=
+ =?utf-8?B?R0ZHanhhRjN1NFZhYXdCdzJRbU5nakZzeDVMdXF2b1gyM0I2NC95c2FWbHpk?=
+ =?utf-8?B?VVNlYkZNcm1XU2s3bERIOUtGMXQ4SzgvYzlZSkM4d2RVenZycVUvRFJZdndy?=
+ =?utf-8?B?SDd2a0tSL0ZYZ3BiUnZwNDhnZDJzYjUrOGtvNEduWVFmK0NyaktnNHV3TVdN?=
+ =?utf-8?B?TXJDWVh6dllLYnhqNWwrdUxScEVUSjVBSUo3WGM5ZjJaQll6L0FFeEgxMCtr?=
+ =?utf-8?B?U2ZXZXpCc21xREFuS0VKTUlxYWNGU0h4eUxHcXhaS3FXajFOdGN2UE1qTzBY?=
+ =?utf-8?B?M2hqbXFWLzlIN2FpcVE2WWR0ejRCMG5Cc2JKZ2V4SzlpN01KMno0ZkV2L2pP?=
+ =?utf-8?B?VitJQmFweTBLN0NMb0w2RUl6SEwveTlKZE9yVFZpdTh6RWtFbExPamZaODZz?=
+ =?utf-8?B?aHhYNWRYMER1WUM3UnM0bml6aEFLcUNSclgyMkNPY201Sk9KeWxQeWhGaEZh?=
+ =?utf-8?B?Y01NeG15R0x1QmNISGtuMTdkUjYyT1pmdVB1cWh1dENNRjhHZXpHekxhb1Rs?=
+ =?utf-8?B?MkI0SkZqV1VRaFNkN3UxeFlDdkF0azZxd0RheStxUFE0NnY3NU9GaXRmSkxY?=
+ =?utf-8?B?NGQrMHVZWXhZL2FUOFRZT3o3VnVRaEVOZWVQMVZDTVBrTmdVSGFmRDJNV2M1?=
+ =?utf-8?B?TXVnUFR2VnpyWS96YThGa2V0UnJ1cThFejN3bTRzOGYyWW10a3ZlS0R4b3pJ?=
+ =?utf-8?B?b3psSUUyc080QUJNWGVJVU9NYmFaVHYza3VwalFPR01rZHZ4UkFXcjBkRC9l?=
+ =?utf-8?B?bzZ5U0xjZ3pVSWx4d0x4RFdTQ2VhZ3VkdE5hSEhtQnVkYmFJZUpFT2pOVGRR?=
+ =?utf-8?B?VEJQU2w2S2gvTFZyWVFEeFFwRzJubXNUejRBY3YwZzBqaEVoVXZqcTZ0YVp1?=
+ =?utf-8?B?MTZUeTZ4WlBhMldLWUVzOHNydGx6VmcwZmNWUkZGd2Vod21yUlpJQ1BSYndB?=
+ =?utf-8?B?NktsWU44dmdXU3N4ckFnZ1grYmNGcG83U1hySDVBZDNBTEljdlYzNUJqS1lm?=
+ =?utf-8?B?Q2JOdE5ZTEUyRmg4WTJXUVB5YTM0dFRiMzNkeEViSnpkNmp1eEhBTzhuTC8v?=
+ =?utf-8?B?QUkxMTY2OW9peGVOdC9RbEtLSkFYNFpBWEhSTGZZd2VoU2gxTjlNVG54dWVK?=
+ =?utf-8?B?WlF3UENqMFlaUHJjaVNybUh0RFVtYmJVdDJwTkU3UC9zMGxIVkpUdy82S3dC?=
+ =?utf-8?B?cjA4bEVGUGxQdTFadmJrODdPRlgxUGpmK3VDVHVDVFBEaHlPay9lQjNlSXlK?=
+ =?utf-8?B?RkdYVTFYRysrb0thdEtUWkpXVzV6RnNqMnZvbWY4Q2RnUUdIZWZSYjBLYjZO?=
+ =?utf-8?B?VFNTSzJZLzQ2WWxiSXBsNGNPcWFDcVZFeGhPVHNDeHg5eFpuQTBYUEt0Q1NM?=
+ =?utf-8?B?OVR4K2NoM1RsUzFmRSt3UTBDZUtMbkFCd2s4KzNJSlA1OTVhcW5KNGRLeFpm?=
+ =?utf-8?B?VU8zdXV4VDd3S2RGRHkvdHVnUEVIMndscEVhaDhURVBIRVNXMDBTakJmRC9O?=
+ =?utf-8?B?ckU1K3orNVlnVWdUbFpLVEVSLzZQYUZGS25scHU1UmJUdk1UcTlZRXV3WU9B?=
+ =?utf-8?B?SUxOL0pyWk1lcE10WUNmdDRUSTQwb3k5WHkvdVB4M1NwR0lVMmJaNHZWTXY3?=
+ =?utf-8?B?QSt4N3VxM1Y2blpMeGMyeUphY0xxYitQMjRxUkEwRDhQanc1NUVFbVVLVUxi?=
+ =?utf-8?Q?rYLdH2GA81xJHEmrAdX88JDaY4FNiwanOo5T7N2?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D9607A41FA773547ACA80757D6A5CEEB@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFo+O34rvP7gbsC+ktd-p5QB9QAsbb+QEkWbiVqszChZJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB5062.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d96a48e2-e07b-48c0-0280-08d95d87c8f1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 11:53:22.0823
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y6+oqgyu74UM7jsd1vcBctwucsmtuT7UBBn5at/SR3MuBnBHNjvqU02tb8BMD9F+fEUrmKy7nM7gijUI6rnER4p7j11DfMySBi4HarF8CAU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB6227
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/2021 12:48, Ulf Hansson wrote:
-> On Tue, 10 Aug 2021 at 18:03, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
->>
->> On Tue 10 Aug 06:55 CDT 2021, Ulf Hansson wrote:
->>
->>> On Wed, 14 Jul 2021 at 18:47, Rob Herring <robh@kernel.org> wrote:
->>>>
->>>> On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
->>>>> Hi,
->>>>>
->>>>> On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->>>>>>
->>>>>> - Peter (the email was bouncing)
->>>>>
->>>>> + Peter's kernel.org address
->>>>>
->>>>>>
->>>>>> On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
->>>>>>>
->>>>>>> On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
->>>>>>>> On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
->>>>>>>
->>>>>>>>> Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
->>>>>>>>> being controlled through the UART and WiFi being present on PCIe
->>>>>>>>> bus. Both blocks share common power sources. Add device driver handling
->>>>>>>>> power sequencing of QCA6390/1.
->>>>>>>
->>>>>>>> Power sequencing of discoverable buses have been discussed several
->>>>>>>> times before at LKML. The last attempt [1] I am aware of, was in 2017
->>>>>>>> from Peter Chen. I don't think there is a common solution, yet.
->>>>>>>
->>>>>>> This feels a bit different to the power sequencing problem - it's not
->>>>>>> exposing the individual inputs to the device but rather is a block that
->>>>>>> manages everything but needs a bit of a kick to get things going (I'd
->>>>>>> guess that with ACPI it'd be triggered via AML).  It's in the same space
->>>>>>> but it's not quite the same issue I think, something that can handle
->>>>>>> control of the individual resources might still struggle with this.
->>>>>>
->>>>>> Well, to me it looks very similar to those resouses we could manage
->>>>>> with the mmc pwrseq, for SDIO. It's also typically the same kind of
->>>>>> combo-chips that moved from supporting SDIO to PCIe, for improved
->>>>>> performance I guess. More importantly, the same constraint to
->>>>>> pre-power on the device is needed to allow it to be discovered/probed.
->>>>>
->>>>> In our case we'd definitely use pwrseq for PCIe bus and we can also
->>>>> benefit from using pwrseq for serdev and for platform busses also (for
->>>>> the same story of WiFi+BT chips).
->>>>>
->>>>> I can take a look at rewriting pwrseq code to also handle the PCIe
->>>>> bus. Rewriting it to be a generic lib seems like an easy task,
->>>>> plugging it into PCIe code would be more fun.
->>>>>
->>>>> Platform and serdev... Definitely even more fun.
->>>>
->>>> I don't want to see pwrseq (the binding) expanded to other buses. If
->>>> that was the answer, we wouldn't be having this discussion. It was a
->>>> mistake for MMC IMO.
->>>
->>> Let's make sure we get your point correctly. I think we have discussed
->>> this in the past, but let's refresh our memories.
->>>
->>> If I recall correctly, you are against the mmc pwrseq DT bindings
->>> because we are using a separate pwrseq OF node, that we point to via a
->>> "mmc-pwrseq" property that contains a phandle from the mmc controller
->>> device node. Is that correct?
->>>
->>> If we would have encoded the power sequence specific properties, from
->>> within a child node for the mmc controller node, that would have been
->>> okay for you, right?
->>>
->>
->> In Dmitry's case, we have an external chip with that needs to be powered
->> on per a specific sequence, at which point the WiFi driver on PCIe and
->> BT driver on serdev will be able to communicate with the device.
-> 
-> Thanks for sharing more details.
-> 
-> So, not only do we have a discoverable device that needs to be powered
-> on in a device specific way before probing, but in fact we have two
-> consumers of that "combo chip", one (PCIe) for Wifi and one (serdev)
-> for Bluetooth.
-> 
->>
->> The extended case of this is where we have an SDX55 modem soldered onto
->> the pcb next to the SoC, in which case the power sequencing is even more
->> complex and additionally there are incoming gpios used to detect things
->> such as the firmware of the modem has crashed and Linux needs to toggle
->> power and rescan the PCIe bus.
-> 
-> That sounds very similar to what we manage for the SDIO bus already.
-> 
-> We have a mmc pwrseq node to describe what resources that are needed
-> to power on/off the external chip. The driver for the functional
-> device (Wifi chip for example) may then call SDIO APIs provided by the
-> mmc core to power on/off the device, in case some kind of reset would
-> be needed.
-> 
-> Additionally, we have a child node below the mmc controller node,
-> allowing us to describe device specific things for the SDIO functional
-> device, like an out-of-band IRQ line for example.
-> 
-> Overall, this seems to work fine, even if the DT bindings may be questionable.
-> 
->>
->> In both of these cases it seems quite reasonable to represent that
->> external chip (and it's power needs) as a separate DT node. But we need
->> a way to link the functional devices to that thing.
-> 
-> Don't get me wrong, I am not suggesting we should re-use the
-> mmc-pwrseq DT bindings - but just trying to share our experience
-> around them.
-> 
-> In the cases you describe, it certainly sounds like we need some kind
-> of minimal description in DT for these functional external devices.
-> For GPIO pins, for example.
-> 
-> How to describe this in DT is one thing, let's see if Rob can help to
-> point us in some direction of what could make sense.
-> 
-> When it comes to implementing a library/interface to manage these
-> functional devices, I guess we just have to continue to explore
-> various options. Perhaps just start simple with another subsystem,
-> like PCIe and see where this brings us.
-
-Thank you for your opinion and suggestions. In fact I'm probably going 
-to start working on non-discoverable busses first (by chaning support 
-for few other BT+WiFi Qualcomm chips), later shifting the attention to 
-the PCIe part. While this may seem like a longer path, I'd like to 
-narrow pwrseq subsystem first, before going into PCIe details.
-
-
--- 
-With best wishes
-Dmitry
+T24gVGh1LCAyMDIxLTA4LTEyIGF0IDA5OjUxICswMzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+
+IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JpdGVzOg0KPiANCj4g
+PiB1c2JfZW5kcG9pbnRfbWF4cCgpIG9ubHkgcmV0dXJucyB0aGUgYml0WzEwOjBdIG9mIHdNYXhQ
+YWNrZXRTaXplDQo+ID4gb2YgZW5kcG9pbnQgZGVzY3JpcHRvciwgbm90IGluY2x1ZGUgYml0WzEy
+OjExXSBhbnltb3JlLCBzbyB1c2UNCj4gPiB1c2JfZW5kcG9pbnRfbWF4cF9tdWx0KCkgaW5zdGVh
+ZC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBt
+ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdXNiL2NkbnMzL2NkbnNwLW1lbS5j
+IHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
+LSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtbWVtLmMN
+Cj4gPiBiL2RyaXZlcnMvdXNiL2NkbnMzL2NkbnNwLW1lbS5jDQo+ID4gaW5kZXggYTQ3OTQ4YTE2
+MjNmLi5hZDlhZWUzZjFlMzkgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy91c2IvY2RuczMvY2Ru
+c3AtbWVtLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9jZG5zMy9jZG5zcC1tZW0uYw0KPiA+IEBA
+IC04ODIsNyArODgyLDcgQEAgc3RhdGljIHUzMiBjZG5zcF9nZXRfZW5kcG9pbnRfbWF4X2J1cnN0
+KHN0cnVjdA0KPiA+IHVzYl9nYWRnZXQgKmcsDQo+ID4gIAlpZiAoZy0+c3BlZWQgPT0gVVNCX1NQ
+RUVEX0hJR0ggJiYNCj4gPiAgCSAgICAodXNiX2VuZHBvaW50X3hmZXJfaXNvYyhwZXAtPmVuZHBv
+aW50LmRlc2MpIHx8DQo+ID4gIAkgICAgIHVzYl9lbmRwb2ludF94ZmVyX2ludChwZXAtPmVuZHBv
+aW50LmRlc2MpKSkNCj4gPiAtCQlyZXR1cm4gKHVzYl9lbmRwb2ludF9tYXhwKHBlcC0+ZW5kcG9p
+bnQuZGVzYykgJiAweDE4MDApDQo+ID4gPj4gMTE7DQo+ID4gKwkJcmV0dXJuIHVzYl9lbmRwb2lu
+dF9tYXhwX211bHQocGVwLT5lbmRwb2ludC5kZXNjKSAtIDE7DQo+IA0KPiB0aGlzIGxvb2tzIGxp
+a2UgYSBidWdmaXguIERvIHdlIG5lZWQgdG8gQ2Mgc3RhYmxlIGhlcmU/DQpJdCdzIGJldHRlciB0
+byBDYyBzdGFibGUsIHdpbGwgZG8gaXQsIHRoYW5rcw0KDQo+IA0KPiBJbiBhbnkgY2FzZToNCj4g
+DQo+IEFja2VkLWJ5OiBGZWxpcGUgQmFsYmkgPGJhbGJpQGtlcm5lbC5vcmc+DQo+IA0K
