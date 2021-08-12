@@ -2,193 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0CD3EA936
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2F33EA938
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhHLRMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:12:54 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:47185 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhHLRMt (ORCPT
+        id S235051AbhHLROO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235003AbhHLRON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:12:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628788344; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=uEmi5V6gGqQLIMtybEuP9G2G3UWbtuAyTLxZ9xJUlAo=; b=IlGH+Xt80Lvu1PQGYvQ6vgQfHq8YF/IqXeHnagBGuu94mYFB3GnUFvi4CtZT/rvrb0lR/1nr
- CjG5cw5iAgrlX/9fTbIiI2JIecwFFCe9/emO14SORcz+Arsajl3ELVIWSvpYz4Ec1hZiTDUy
- stzcGQqe107qFZ++cao5wmkXTDI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61155667f746c298d93fa7f9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 17:12:07
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A4451C43217; Thu, 12 Aug 2021 17:12:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.26] (075-140-094-099.biz.spectrum.com [75.140.94.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24553C433F1;
-        Thu, 12 Aug 2021 17:12:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 24553C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [RFC][PATCH] usb: dwc3: usb: dwc3: Force stop EP0 transfers
- during pullup disable
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jackp@codeauora.org" <jackp@codeauora.org>
-References: <1628648608-15239-1-git-send-email-wcheng@codeaurora.org>
- <bcc8ff30-5c49-bddd-2f61-05da859b2647@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <3edf74ba-d167-0589-a7ab-827b57aa5d9c@codeaurora.org>
-Date:   Thu, 12 Aug 2021 10:12:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 13:14:13 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B0EC0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:13:48 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h1so9326249iol.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C+kw6KEtW6hmma6EoO3CJHDh9sg5PN6QFZ9PAKAzm0Q=;
+        b=Rr8e0EBvWZ+YbwgmhRww1PZdSx8dyi2XQ+4O+T6zKcZnPJ/rsWfWp8MsHHFGhohoR5
+         DKtBawbVRfJg0+hXv/ZCSYAbs/NvZLksGeVRFN/pKWcKwSQhCu315QWDrhEoE5S+6hD/
+         C0WQygVgR/3CfOUWtKDurnIrpDOwv2HuaNehWTEa+n7a9bUrPd1Om0v1oY8PTjekd3dh
+         wIgZF2zPHwEvPsB0zahLuv6fNfS0wd55Gasu4nKTJSrBz+OGn134foQRq4EXsT2iuGkc
+         bOAmajGlvCwbFS2Bq691IqrAIWZnX2bpaEQOTZOSx/a1WFBzFnIGTFdNDjjI1x8KrEKy
+         VFtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C+kw6KEtW6hmma6EoO3CJHDh9sg5PN6QFZ9PAKAzm0Q=;
+        b=rU02CeetZp92E3e13JsvO/aJOXq2lFj/TR9b5BK3edigpUv3UsnBfit+92grca/XSF
+         +khEzn9wQHmtpn4s6Q0U9sYM2CYnUmRT6LKHz6xAiEtglVrqijFyTAsI2NDBcZdeiD7w
+         v+mpuKLMtEh3zUcvXxBFzUOoHGcF4e2Qzx51eUzfgNR2d7v50ohk6MMMNW7jNEOUUwUP
+         +qjMIhje6khM0+rOXVbDHjZZxKLe5dY968aYCSfG0B+LWddN67JAeGy+ykdIe2lVC5CF
+         +bXI+AeqxOBUdG7XGH2EaaFklol/XIEBRk3APwS8EDnChSYMoWCRopMN+tkXg2VcS0Yx
+         b27g==
+X-Gm-Message-State: AOAM533S+2hn/xOKyK7BehDwwnD27hHNjtwbx6OqMuaZ8XhLcJ+ymIyb
+        XABi8LcNqyY2Fd3rvd6ut9h2kZ0F9/ZywxZ78p9K8Q==
+X-Google-Smtp-Source: ABdhPJxWAOKK3OAmEb2NC2KNtZMoGydS8sA/K3D7jRGe71nWWLOTTrhfL+kQGmHq2X/baJMtVWzdSMNitYRNE6TG/nM=
+X-Received: by 2002:a02:6a24:: with SMTP id l36mr4650319jac.4.1628788427511;
+ Thu, 12 Aug 2021 10:13:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bcc8ff30-5c49-bddd-2f61-05da859b2647@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210805235145.2528054-1-dlatypov@google.com> <CABVgOS=u9sOEbS-m63HtBmiBSqDdsX+kRgBMUWzx4T8_VXvZ8g@mail.gmail.com>
+In-Reply-To: <CABVgOS=u9sOEbS-m63HtBmiBSqDdsX+kRgBMUWzx4T8_VXvZ8g@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 12 Aug 2021 10:13:36 -0700
+Message-ID: <CAGS_qxqVZy4QvP3X3H1Ww=pFZD-j=hgYzYSXz-az+QMJ+CxdgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kunit: tool: make --raw_output support only
+ showing kunit output
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thinh,
+On Wed, Aug 11, 2021 at 11:48 PM David Gow <davidgow@google.com> wrote:
+>
+> On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > --raw_output is nice, but it would be nicer if could show only output
+> > after KUnit tests have started.
+> >
+> > So change the flag to allow specifying a string ('kunit').
+> > Make it so `--raw_output` alone will default to `--raw_output=all` and
+> > have the same original behavior.
+> >
+> > Drop the small kunit_parser.raw_output() function since it feels wrong
+> > to put it in "kunit_parser.py" when the point of it is to not parse
+> > anything.
+> >
+> > E.g.
+> >
+> > $ ./tools/testing/kunit/kunit.py run --raw_output=kunit
+> > ...
+> > [15:24:07] Starting KUnit Kernel ...
+> > TAP version 14
+> > 1..1
+> >     # Subtest: example
+> >     1..3
+> >     # example_simple_test: initializing
+> >     ok 1 - example_simple_test
+> >     # example_skip_test: initializing
+> >     # example_skip_test: You should not see a line below.
+> >     ok 2 - example_skip_test # SKIP this test should be skipped
+> >     # example_mark_skipped_test: initializing
+> >     # example_mark_skipped_test: You should see a line below.
+> >     # example_mark_skipped_test: You should see this line.
+> >     ok 3 - example_mark_skipped_test # SKIP this test should be skipped
+> > ok 1 - example
+> > [15:24:10] Elapsed time: 6.487s total, 0.001s configuring, 3.510s building, 0.000s running
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+>
+> Thanks: this is something I've secretly wanted for a long time, and I
+> really like the interface here of "--raw_output=kunit". I do wonder if
+> we want to make this behaviour the default, though...
 
-On 8/11/2021 5:47 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->> During a USB cable disconnect, or soft disconnect scenario, a pending
->> SETUP transaction may not be completed, leading to the following
->> error:
->>
->>     dwc3 a600000.dwc3: timed out waiting for SETUP phase
-> 
-> How could it be a case of cable disconnect? The pullup(0) only applies
-> for soft-disconnect scenario. If the device initiated a disconnect, then
+I personally would like it to be, but I don't really know who else is
+using --raw_output and why.
+Maybe they want to see non-KUnit output since they're debugging
+something not coming up on UML, etc.
 
-Thanks for the response.  I guess this is specific for some use cases,
-but some applications such as ADB will close the FFS EP files after it
-gets the disconnection event, leading to this pullup disable as well.
-So its specific to that particular use case.
+>
+> The only other note I'd have, though this was a problem with the
+> previous version as well, is that the output still includes the other
+> kunit_tool output lines, e.g.:
+> [23:42:01] Configuring KUnit Kernel ...
+> [23:42:01] Building KUnit Kernel ...
+>
+> This means that the "raw" output still can't easily just be redirected
+> elsewhere and used. That's probably a separate fix though, and I still
+> think this is a massive improvement over what we have.
 
-> the driver should wait for the control request to complete. If it times
-> out, something is already wrong here. The programming guide only
-> mentions that we should wait for completion, but it doesn't say about
-> recovery in a case of hung transfer. I need to check internally but it
-> should be safe to issue End Transfer.
-> 
+Yes, this is an annoyance to me as well.
+I was wondering if we should make those go to stderr or something so
+users could pipe just stdout?
 
-Yes, what I did was modify a device running the Linux XHCI stack w/o
-reading/sending out the SETUP DATA phase, so that on the device end we'd
-always run into that situation where there's still a pending EP0 TRB queued.
+But yeah, it feels like a change for another patch.
+I was not hindered by this in making the hacky shell script in the
+second patch (to run each suite individually), but other consumers of
+the output might be.
 
-We're running multiple devices with this fix as well, and doing device
-initiated disconnect.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> -- David
+>
+> >  Documentation/dev-tools/kunit/kunit-tool.rst |  9 ++++++---
+> >  tools/testing/kunit/kunit.py                 | 20 +++++++++++++++-----
+> >  tools/testing/kunit/kunit_parser.py          |  4 ----
+> >  tools/testing/kunit/kunit_tool_test.py       |  9 +++++++++
+> >  4 files changed, 30 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
+> > index c7ff9afe407a..ae52e0f489f9 100644
+> > --- a/Documentation/dev-tools/kunit/kunit-tool.rst
+> > +++ b/Documentation/dev-tools/kunit/kunit-tool.rst
+> > @@ -114,9 +114,12 @@ results in TAP format, you can pass the ``--raw_output`` argument.
+> >
+> >         ./tools/testing/kunit/kunit.py run --raw_output
+> >
+> > -.. note::
+> > -       The raw output from test runs may contain other, non-KUnit kernel log
+> > -       lines.
+> > +The raw output from test runs may contain other, non-KUnit kernel log
+> > +lines. You can see just KUnit output with ``--raw_output=kunit``:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       ./tools/testing/kunit/kunit.py run --raw_output=kunit
+> >
+> >  If you have KUnit results in their raw TAP format, you can parse them and print
+> >  the human-readable summary with the ``parse`` command for kunit_tool. This
+> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> > index 7174377c2172..5a931456e718 100755
+> > --- a/tools/testing/kunit/kunit.py
+> > +++ b/tools/testing/kunit/kunit.py
+> > @@ -16,6 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+> >
+> >  from collections import namedtuple
+> >  from enum import Enum, auto
+> > +from typing import Iterable
+> >
+> >  import kunit_config
+> >  import kunit_json
+> > @@ -114,7 +115,16 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
+> >                                               'Tests not Parsed.')
+> >
+> >         if request.raw_output:
+> > -               kunit_parser.raw_output(request.input_data)
+> > +               output: Iterable[str] = request.input_data
+> > +               if request.raw_output == 'all':
+> > +                       pass
+> > +               elif request.raw_output == 'kunit':
+> > +                       output = kunit_parser.extract_tap_lines(output)
+> > +               else:
+> > +                       print(f'Unknown --raw_output option "{request.raw_output}"', file=sys.stderr)
+> > +               for line in output:
+> > +                       print(line.rstrip())
+> > +
+> >         else:
+> >                 test_result = kunit_parser.parse_run_tests(request.input_data)
+> >         parse_end = time.time()
+> > @@ -135,7 +145,6 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
+> >         return KunitResult(KunitStatus.SUCCESS, test_result,
+> >                                 parse_end - parse_start)
+> >
+> > -
+> >  def run_tests(linux: kunit_kernel.LinuxSourceTree,
+> >               request: KunitRequest) -> KunitResult:
+> >         run_start = time.time()
+> > @@ -181,7 +190,7 @@ def add_common_opts(parser) -> None:
+> >         parser.add_argument('--build_dir',
+> >                             help='As in the make command, it specifies the build '
+> >                             'directory.',
+> > -                            type=str, default='.kunit', metavar='build_dir')
+> > +                           type=str, default='.kunit', metavar='build_dir')
+> >         parser.add_argument('--make_options',
+> >                             help='X=Y make option, can be repeated.',
+> >                             action='append')
+> > @@ -246,8 +255,9 @@ def add_exec_opts(parser) -> None:
+> >                              action='append')
+> >
+> >  def add_parse_opts(parser) -> None:
+> > -       parser.add_argument('--raw_output', help='don\'t format output from kernel',
+> > -                           action='store_true')
+> > +       parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
+> > +                           'If set to --raw_output=kunit, filters to just KUnit output.',
+> > +                           type=str, nargs='?', const='all', default=None)
+> >         parser.add_argument('--json',
+> >                             nargs='?',
+> >                             help='Stores test results in a JSON, and either '
+> > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> > index b88db3f51dc5..84938fefbac0 100644
+> > --- a/tools/testing/kunit/kunit_parser.py
+> > +++ b/tools/testing/kunit/kunit_parser.py
+> > @@ -106,10 +106,6 @@ def extract_tap_lines(kernel_output: Iterable[str]) -> LineStream:
+> >                                 yield line_num, line[prefix_len:]
+> >         return LineStream(lines=isolate_kunit_output(kernel_output))
+> >
+> > -def raw_output(kernel_output) -> None:
+> > -       for line in kernel_output:
+> > -               print(line.rstrip())
+> > -
+> >  DIVIDER = '=' * 60
+> >
+> >  RESET = '\033[0;0m'
+> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> > index 628ab00f74bc..619c4554cbff 100755
+> > --- a/tools/testing/kunit/kunit_tool_test.py
+> > +++ b/tools/testing/kunit/kunit_tool_test.py
+> > @@ -399,6 +399,15 @@ class KUnitMainTest(unittest.TestCase):
+> >                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+> >                         self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+> >
+> > +       def test_run_raw_output_kunit(self):
+> > +               self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> > +               kunit.main(['run', '--raw_output=kunit'], self.linux_source_mock)
+> > +               self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
+> > +               self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
+> > +               for call in self.print_mock.call_args_list:
+> > +                       self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+> > +                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+> > +
+>
+> This is basically identical to test_run_raw_output(). Is there an easy
+> way of making sure this test can distinguish between them?
 
->>
->> If this occurs, then the entire pullup disable routine is skipped and
->> proper cleanup and halting of the controller does not complete.
->> Instead of returning an error (which is ignored from the UDC
->> perspective), do what is mentioned in the comments and force the
->> transaction to complete and put the ep0state back to the SETUP phase.
->>
->> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->> ---
->>  drivers/usb/dwc3/ep0.c    | 4 ++--
->>  drivers/usb/dwc3/gadget.c | 6 +++++-
->>  drivers/usb/dwc3/gadget.h | 3 +++
->>  3 files changed, 10 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
->> index 6587394..abfc42b 100644
->> --- a/drivers/usb/dwc3/ep0.c
->> +++ b/drivers/usb/dwc3/ep0.c
->> @@ -218,7 +218,7 @@ int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
->>  	return ret;
->>  }
->>  
->> -static void dwc3_ep0_stall_and_restart(struct dwc3 *dwc)
->> +void dwc3_ep0_stall_and_restart(struct dwc3 *dwc)
->>  {
->>  	struct dwc3_ep		*dep;
->>  
->> @@ -1073,7 +1073,7 @@ void dwc3_ep0_send_delayed_status(struct dwc3 *dwc)
->>  	__dwc3_ep0_do_control_status(dwc, dwc->eps[direction]);
->>  }
->>  
->> -static void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep)
->> +void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep)
->>  {
->>  	struct dwc3_gadget_ep_cmd_params params;
->>  	u32			cmd;
->> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->> index 54c5a08..a0e2e4d 100644
->> --- a/drivers/usb/dwc3/gadget.c
->> +++ b/drivers/usb/dwc3/gadget.c
->> @@ -2437,7 +2437,11 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
->>  				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
->>  		if (ret == 0) {
->>  			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
->> -			return -ETIMEDOUT;
->> +			spin_lock_irqsave(&dwc->lock, flags);
->> +			dwc3_ep0_end_control_data(dwc, dwc->eps[0]);
->> +			dwc3_ep0_end_control_data(dwc, dwc->eps[1]);
-> 
-> End transfer command takes time, need to wait for it to complete before
-> issuing Start transfer again. Also, why restart again when it's about to
-> be disconnected.
+It is identical.
+And the answer is no, not really right now.
 
-I can try without restarting it again, and see if that works.  Instead
-of waiting for the command complete event, can we set the ForceRM bit,
-similar to what we do for dwc3_remove_requests()?
+We'd have to redo the other test to be more thorough in order to
+distinguish the two different flag values, which is a bit more than I
+wanted to go into this particular patch.
 
-> 
-> We'd also need to watch out for soft-connect in quick succession before
-> the End Transfer command completes.
-> 
->> +			dwc3_ep0_stall_and_restart(dwc);
->> +			spin_unlock_irqrestore(&dwc->lock, flags);
->>  		}
->>  	}
->>  
->> diff --git a/drivers/usb/dwc3/gadget.h b/drivers/usb/dwc3/gadget.h
->> index 77df4b6..632f7b7 100644
->> --- a/drivers/usb/dwc3/gadget.h
->> +++ b/drivers/usb/dwc3/gadget.h
->> @@ -114,6 +114,9 @@ int __dwc3_gadget_ep0_set_halt(struct usb_ep *ep, int value);
->>  int dwc3_gadget_ep0_set_halt(struct usb_ep *ep, int value);
->>  int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
->>  		gfp_t gfp_flags);
->> +void dwc3_ep0_stall_and_restart(struct dwc3 *dwc);
->> +void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep);
->> +
->>  int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol);
->>  void dwc3_ep0_send_delayed_status(struct dwc3 *dwc);
->>  
->>
-> 
-> BR,
-> Thinh
-> 
-
-Thanks
-Wesley Cheng
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+>
+> >         def test_exec_timeout(self):
+> >                 timeout = 3453
+> >                 kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
+> >
+> > base-commit: f684616e08e9cd9db3cd53fe2e068dfe02481657
+> > --
+> > 2.32.0.605.g8dce9f2422-goog
+> >
