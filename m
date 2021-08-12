@@ -2,142 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85BA3EAC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D3C3EAC15
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhHLUse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:48:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51245 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233024AbhHLUsc (ORCPT
+        id S233949AbhHLUtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhHLUs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:48:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628801285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XaXJ+kisbU7RF44zBuHYJFOtJx6fm37DGb251FmYx3Q=;
-        b=CNrvlVdavlUDc90vwAkwuTuqs/hcu5WMIUit6q9wjCA6vRWyOUva/EQyN6XMuoOl3RPInL
-        HFQPbTb1v5lnpa9hu747PSMrlhvBgex/rTUJPvJCHvWc4YWYKexEh6yaH6lN3Sh6L6zDrq
-        abg/MHP2s1tVduj8hp+X52b1FRIbCxM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-vrcMW8cdOh2glB2SgLT-hA-1; Thu, 12 Aug 2021 16:48:02 -0400
-X-MC-Unique: vrcMW8cdOh2glB2SgLT-hA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D3A487D541;
-        Thu, 12 Aug 2021 20:48:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 158125D9D5;
-        Thu, 12 Aug 2021 20:47:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YRVHLu3OAwylCONm@casper.infradead.org>
-References: <YRVHLu3OAwylCONm@casper.infradead.org> <2408234.1628687271@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC][PATCH] netfs, afs, ceph: Use folios
+        Thu, 12 Aug 2021 16:48:58 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D472C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:48:33 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id e19so8917259pla.10
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WZtJjyJUTegQi3wtal7UFzYebMO2uoYzz3xW5Q9+lNM=;
+        b=xJYMhr371aaJjypYVWjnTM0IqjW8glBa79jTURUd9BuX4UySQyLRSCJdXCy/+o8s3s
+         l3htzamHMjgR9S4yl/mpWjIyhdSwD6AbAxc9zCAzAYGt++hYSdBom0e4d5ap1SwdNvec
+         3nBi4wNDbrwqRV6RAIypQGvIsblw7ZSDfyo4r6sB75a9ONrRSp0xSlZ2kfoE+PRugjnU
+         fWKWlwR1IEKQjSoJD9got2vfRtLfI+bYXo3Kw/ibIHNgU7/cfBZ3n9ffzMxem6H3KcsL
+         lWrPaxmpIUS9NBHfHiw6HqWnHHsrp22/BdYYuV2IKrQcQotidIZ01XeE9HlH4+lMR5zP
+         li+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WZtJjyJUTegQi3wtal7UFzYebMO2uoYzz3xW5Q9+lNM=;
+        b=kDZOthlxMNGApnEfPkzazU/+s9alxWXVBt0/isprZdNCxQZw7A5m/Nn7eAveWGsNPi
+         zxyVDJan1h/OT6EB9OFN/SdG/4OSkGeOvetNEjm0q/Tq5JlHHpbMnh8HbVy0uXrSwOkL
+         dw2AIg/dwpAvOarQ82B3bdoFerdUxwaCsEFPm2Mh73OeWcsuWfKZS4vtp6duSZ3MxynH
+         LAfE4LSkdyXYS2ZamBCO11fPMhbN0RJsWhmaJy+SrdltjelTscp1B974Iw9u63fraxSA
+         tDrR7p0FTqcgfPIG7ImsM+4AYDUchi/s4nclu/1pR5tndGbBuyFCtfont+vUR4Jb/Lu4
+         p/uA==
+X-Gm-Message-State: AOAM533SyNBEbR9J1rPVxysn57GoU7Q89hE3XcgC38YK/zRQvgDHw87w
+        F3Jt1fyMVtUHsqfUCTdoMjhcGc9WdzyEVRcd4mWrqg==
+X-Google-Smtp-Source: ABdhPJxPw98RMdkQuhmUls7t9NhJ8obMPDiruC8nzoIoNzH58LUl196AhTQStq0hVEUd9U+FUAwZU6ra+FdqIoWdF+w=
+X-Received: by 2002:aa7:90d4:0:b029:3b3:2746:5449 with SMTP id
+ k20-20020aa790d40000b02903b327465449mr5856929pfk.81.1628801312873; Thu, 12
+ Aug 2021 13:48:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3308342.1628801274.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 12 Aug 2021 21:47:54 +0100
-Message-ID: <3308343.1628801274@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210812132057.22579-1-straube.linux@gmail.com>
+In-Reply-To: <20210812132057.22579-1-straube.linux@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Thu, 12 Aug 2021 21:48:21 +0100
+Message-ID: <CAA=Fs0=6xJtTBo5n4_JAvFezZZ1zGnRDZAbh4ExWko=o2sPR6g@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: replace custom hwaddr_aton_i() with mac_pton()
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Martin Kaiser <martin@kaiser.cx>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Thu, 12 Aug 2021 at 14:21, Michael Straube <straube.linux@gmail.com> wrote:
+>
+> Replace custom hwaddr_aton_i() with mac_pton() in core/ioctl_linux.c
+> and remove the now unused functions hwaddr_aton_i() and hex2num_i().
+>
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 40 +-------------------
+>  1 file changed, 1 insertion(+), 39 deletions(-)
+>
+> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> index d059b738b348..38ee41f9d2ba 100644
+> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> @@ -89,44 +89,6 @@ static const char * const iw_operation_mode[] = {
+>         "Secondary", "Monitor"
+>  };
+>
+> -static int hex2num_i(char c)
+> -{
+> -       if (c >= '0' && c <= '9')
+> -               return c - '0';
+> -       if (c >= 'a' && c <= 'f')
+> -               return c - 'a' + 10;
+> -       if (c >= 'A' && c <= 'F')
+> -               return c - 'A' + 10;
+> -       return -1;
+> -}
+> -
+> -/**
+> - * hwaddr_aton - Convert ASCII string to MAC address
+> - * @txt: MAC address as a string (e.g., "00:11:22:33:44:55")
+> - * @addr: Buffer for the MAC address (ETH_ALEN = 6 bytes)
+> - * Returns: 0 on success, -1 on failure (e.g., string not a MAC address)
+> - */
+> -static int hwaddr_aton_i(const char *txt, u8 *addr)
+> -{
+> -       int i;
+> -
+> -       for (i = 0; i < 6; i++) {
+> -               int a, b;
+> -
+> -               a = hex2num_i(*txt++);
+> -               if (a < 0)
+> -                       return -1;
+> -               b = hex2num_i(*txt++);
+> -               if (b < 0)
+> -                       return -1;
+> -               *addr++ = (a << 4) | b;
+> -               if (i < 5 && *txt++ != ':')
+> -                       return -1;
+> -       }
+> -
+> -       return 0;
+> -}
+> -
+>  void indicate_wx_scan_complete_event(struct adapter *padapter)
+>  {
+>         union iwreq_data wrqu;
+> @@ -2512,7 +2474,7 @@ static int rtw_get_ap_info(struct net_device *dev,
+>         while (phead != plist) {
+>                 pnetwork = container_of(plist, struct wlan_network, list);
+>
+> -               if (hwaddr_aton_i(data, bssid)) {
+> +               if (!mac_pton(data, bssid)) {
+>                         DBG_88E("Invalid BSSID '%s'.\n", (u8 *)data);
+>                         spin_unlock_bh(&pmlmepriv->scanned_queue.lock);
+>                         return -EINVAL;
+> --
+> 2.32.0
+>
 
-> >  (*) Can page_endio() be split into two separate functions, one for re=
-ad
-> >      and one for write?  If seems a waste of time to conditionally swi=
-tch
-> >      between two different branches.
-> =
+Dear Michael,
 
-> At this point I'm thinking ...
-> =
+Looks good, thanks.
 
-> static inline void folio_end_read(struct folio *folio, int err)
-> {
-> 	if (!err)
-> 		folio_set_uptodate(folio);
-> 	folio_unlock(folio);
-> }
-> =
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
-> Clearly the page isn't uptodate at this point, or ->readpage wouldn't've
-> been called.  So there's no need to clear it.  And PageError is
-> completely useless.
-
-Seems reasonable.
-
-> > -	*_page =3D page;
-> > +	*_page =3D &folio->page;
-> =
-
-> Can't do anything about this one; the write_begin API needs to be fixed.
-
-That's fine.  I expected things like this at this stage.
-
-> > @@ -174,40 +175,32 @@ static void afs_kill_pages(struct address_space =
-*mapping,
-> [...]
-> > +		folio_clear_uptodate(folio);
-> > +		folio_end_writeback(folio);
-> > +		folio_lock(folio);
-> > +		generic_error_remove_page(mapping, &folio->page);
-> > +		folio_unlock(folio);
-> > +		folio_put(folio);
-> =
-
-> This one I'm entirely missing.  It's awkward.  I'll work on it.
-
-afs_kill_pages() is just a utility to end writeback, clear uptodate and do
-generic_error_remove_page() over a range of pages and afs_redirty_pages() =
-is a
-utility that to end writeback and redirty a range of pages - hence why I w=
-as
-thinking it might make sense to put them into common code.
-
-> > -			index +=3D thp_nr_pages(page);
-> > -			if (!pagevec_add(&pvec, page))
-> > +			index +=3D folio_nr_pages(folio);
-> > +			if (!pagevec_add(&pvec, &folio->page))
-> =
-
-> Pagevecs are also awkward.  I haven't quite figured out how to
-> transition them to folios.
-
-Maybe provide pagevec_add_folio(struct pagevec *, struct folio *)?
-
-> >  zero_out:
-> > -	zero_user_segments(page, 0, offset, offset + len, thp_size(page));
-> > +	zero_user_segments(&folio->page, 0, offset, offset + len, folio_size=
-(folio));
-> =
-
-> Yeah, that's ugly.
-
-Maybe:
-
-	folio_clear_around(folio, keep_from, keep_to);
-
-clearing the bits of the folio outside the specified section?
-
-David
-
+Regards,
+Phil
