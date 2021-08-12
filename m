@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31293E9B75
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3252F3E9B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhHLAB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 20:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232704AbhHLAB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:01:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C2FE6101E;
-        Thu, 12 Aug 2021 00:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628726493;
-        bh=fb3N6otN2O1cErcbcnTHP0VOJ/XxcCC8CJvEONjJUfY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=fjPqSbszPGo9IDZPoVcUsrfk7G+Esw1lKgFejTiNzzSTa4/VhwW1N9FXtd+bllFzJ
-         x+O7sshgvChMho+U1yNufK7Uum0udGERmhKznUDl6iLrupkcDTvU6Y2RsVnDzf6koO
-         PnKNUMoS19G3j5XgRO0GV3Q2nFdISUC3XwlUPJJR2z/SrKe3bBYpVk8kPe+PyTTQZ2
-         69kVNpW3PG12YIBrvuFbmXjvRVp8AExnnJ128t94GdJhqtd9P3ItE9nmTT682GeDQS
-         amCyA/08Hr7cVAmyKoxYrp1Yi9PSpMmeP/uyIWbVHHf4F0OiJWUU+xCTxhX7hjlWj0
-         zcOvTJ1wWKnYQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 53A665C0981; Wed, 11 Aug 2021 17:01:33 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 17:01:33 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        kernel-team@fb.com, ak@linux.intel.com, rong.a.chen@intel.com,
-        sboyd@kernel.org
-Subject: [GIT PULL clocksource] Clocksource watchdog commits for v5.15
-Message-ID: <20210812000133.GA402890@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S232948AbhHLAJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 20:09:21 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:3966 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232704AbhHLAJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 20:09:19 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 11 Aug 2021 17:08:55 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Aug 2021 17:08:54 -0700
+X-QCInternal: smtphost
+Received: from sbillaka-linux.qualcomm.com ([10.204.66.13])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 12 Aug 2021 05:38:20 +0530
+Received: by sbillaka-linux.qualcomm.com (Postfix, from userid 2305739)
+        id D1693220EC; Thu, 12 Aug 2021 05:38:18 +0530 (IST)
+From:   Sankeerth Billakanti <sbillaka@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Sankeerth Billakanti <sbillaka@codeaurora.org>,
+        robdclark@gmail.com, seanpaul@chromium.org, swboyd@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: [PATCH v1 0/2] Add support for eDP on SC7280
+Date:   Thu, 12 Aug 2021 05:38:00 +0530
+Message-Id: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Thomas,
+	This series will add eDP controller support for Qualcomm SC7280
+platform. These patches are baseline changes with which we can enable
+eDP display on sc7280. The sc7280 eDP controller can also support
+additional features such as backlight control, PSR etc. which will be
+enabled in subsequent patch series.
 
-This pull request contains a single change that prevents clocksource
-watchdog testing on systems with HZ < 100, thus preventing the integer
-underflow that can occur on leisurely HZed systems.  This has been
-posted to LKML:
+	This is based on Bjorn's changes in the below mentioned series
+to support both eDP and DP programming through the same driver:
+v1 of https://patchwork.freedesktop.org/series/92860/
+v1 of https://patchwork.freedesktop.org/series/92992/
 
-https://lore.kernel.org/lkml/20210721212755.GA2066078@paulmck-ThinkPad-P17-Gen-1/
+Summary of changes:
+Add support for eDP on SC7280 platform.
+Add the new compatible string to documentation.
 
-This has been tested by Rong Chen of Intel.  It has also been subjected
-to subjected to the kbuild test robot and -next testing, and are available
-in the git repository based on v5.14-rc2 at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
+Sankeerth Billakanti (2):
+  drm/msm/dp: Add support for SC7280 eDP
+  dt-bindings: Add SC7280 compatible string
 
-for you to fetch changes up to 9b073961afabcf70d0804e472ea02fc6c739dcce:
+ .../bindings/display/msm/dp-controller.yaml        |  3 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |  4 +--
+ drivers/gpu/drm/msm/dp/dp_ctrl.c                   | 19 +++++++++++++
+ drivers/gpu/drm/msm/dp/dp_display.c                | 32 ++++++++++++++++++++--
+ drivers/gpu/drm/msm/dp/dp_parser.c                 | 31 +++++++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_parser.h                 |  5 ++++
+ 6 files changed, 90 insertions(+), 4 deletions(-)
 
-  clocksource: Prohibit clocksource watchdog test when HZ<100 (2021-07-20 13:54:34 -0700)
+-- 
+The Qualcomm Innovatin Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-----------------------------------------------------------------
-Paul E. McKenney (1):
-      clocksource: Prohibit clocksource watchdog test when HZ<100
-
- lib/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
