@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7781B3EA942
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1713EA94E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhHLRQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:16:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49638 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbhHLRQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:16:47 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 03070222A8;
-        Thu, 12 Aug 2021 17:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628788581; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I9SAsYIoDHG5K0UlAd6yx51Dzm/eMC3YEULS2iCENOg=;
-        b=xNL1kWk1xcUGl1T/J5MTUWu3omDEjpMRi7dlYmvkNdSzA9YQOyeofue70mCffr4nwtAUzL
-        EQy6qoESvN+d8Hy862v87M+kqgz2f1tN7gKaAnA+VTNLafvtQ0ZUPhnYlbm3AjOEVdssq5
-        dIPyE95IBxj5LBdZtM8QUyWS5RHY5bc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628788581;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I9SAsYIoDHG5K0UlAd6yx51Dzm/eMC3YEULS2iCENOg=;
-        b=kZLSMAeUuCq8ZLTc39JZfTwGuFBv5fxMyX089Z1y2SWloaHdIDjKZKOXZRFvL/mrv5bU3g
-        s0fFGstx2gXaEwAQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D568713AC3;
-        Thu, 12 Aug 2021 17:16:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id nXwkM2RXFWFzDQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:16:20 +0000
-Subject: Re: [PATCH v14 080/138] mm/workingset: Convert workingset_refault()
- to take a folio
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-81-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <e85f5d04-a780-622d-d6e3-80369896e7e1@suse.cz>
-Date:   Thu, 12 Aug 2021 19:16:20 +0200
+        id S235044AbhHLRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:17:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:2719 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234251AbhHLRRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:17:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="300990980"
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="300990980"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:17:13 -0700
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="517535256"
+Received: from smachee-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.169.15])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:17:12 -0700
+Subject: Re: [PATCH v5 01/12] x86/paravirt: Move halt paravirt calls under
+ CONFIG_PARAVIRT
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YRTLO0eQOEChETId@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <350e2b27-0691-9e63-1ad7-33172e0e0e98@linux.intel.com>
+Date:   Thu, 12 Aug 2021 10:17:10 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-81-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YRTLO0eQOEChETId@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
-> This nets us 178 bytes of savings from removing calls to compound_head.
-> The three callers all grow a little, but each of them will be converted
-> to use folios soon, so that's fine.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+On 8/12/21 12:18 AM, Borislav Petkov wrote:
+> and CC also the supporters - I'm pretty sure at least Juergen would like
+> to be kept up-to-date on pv changes. I'll CC him and the others now and
+> leave in the whole diff but make sure you do that in the future please.
+
+Sure. I will do so in future submissions.
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
