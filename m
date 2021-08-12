@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C2E3EAC10
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85BA3EAC14
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhHLUry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhHLUrw (ORCPT
+        id S233836AbhHLUse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:48:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233024AbhHLUsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:47:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48853C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ch4LpkenjgvM+jLuLH64Rw7nwNErPJ6Ps9VOGo3tOyE=; b=1O3Vgk+hcKb0ObMwnhX2K7xhd9
-        162B9UNXMi0A62AiZDBdKUAtH8Vo7Ax5Mje2lVl2a1cE637OfEQw5VqOqLMbAcv/LJN0zUjizleK6
-        FV4OG0fmnxzHQ0AvDTNpFTTeMvN4NUdlEXhPy+xu1jR/4UggyEFcup+/sUcdM3SQSOO6tbLePbZw0
-        D1BdsxU2zbGyNpm/Bk3UdogHqwimYWxTsqG3/Mu656lUQGyFXtxaWoZ6xzx/FDAiAwmL3PigLobXN
-        gBkJ1gMvt8jtNuR4VIpd3b7DXxSiscKZhwgCx+kuEkasYWFHL7/rF8m2wVWkBzwUQ2QjVR3FJ2svr
-        YHjYWHmQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEHbp-00BE1w-41; Thu, 12 Aug 2021 20:47:25 +0000
-Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20210812112938.3748c7f5@oasis.local.home>
- <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
- <20210812133306.1c480741@oasis.local.home>
- <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
- <cef5b624-b5f8-7729-3b05-3543578c6e3e@infradead.org>
- <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
- <a294a454-89c8-d32c-3b0a-1c53480a8ab6@infradead.org>
-Message-ID: <2f39ab4d-695f-c5ed-5991-82a3aeacdba0@infradead.org>
-Date:   Thu, 12 Aug 2021 13:47:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 16:48:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628801285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XaXJ+kisbU7RF44zBuHYJFOtJx6fm37DGb251FmYx3Q=;
+        b=CNrvlVdavlUDc90vwAkwuTuqs/hcu5WMIUit6q9wjCA6vRWyOUva/EQyN6XMuoOl3RPInL
+        HFQPbTb1v5lnpa9hu747PSMrlhvBgex/rTUJPvJCHvWc4YWYKexEh6yaH6lN3Sh6L6zDrq
+        abg/MHP2s1tVduj8hp+X52b1FRIbCxM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-vrcMW8cdOh2glB2SgLT-hA-1; Thu, 12 Aug 2021 16:48:02 -0400
+X-MC-Unique: vrcMW8cdOh2glB2SgLT-hA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D3A487D541;
+        Thu, 12 Aug 2021 20:48:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 158125D9D5;
+        Thu, 12 Aug 2021 20:47:54 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YRVHLu3OAwylCONm@casper.infradead.org>
+References: <YRVHLu3OAwylCONm@casper.infradead.org> <2408234.1628687271@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC][PATCH] netfs, afs, ceph: Use folios
 MIME-Version: 1.0
-In-Reply-To: <a294a454-89c8-d32c-3b0a-1c53480a8ab6@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3308342.1628801274.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 12 Aug 2021 21:47:54 +0100
+Message-ID: <3308343.1628801274@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 11:57 AM, Randy Dunlap wrote:
-> On 8/12/21 11:17 AM, Linus Torvalds wrote:
->> On Thu, Aug 12, 2021 at 8:04 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> I just used some default settings. I didn't choose to use -Wmain.
->>
->> What broken distro, what broken gcc version?
-> 
-> openSUSE 15.3
-> gcc (SUSE Linux) 7.5.0
-> 
->> We can certainly add a -Wno-main for this case. We already do that for
->> a lot of other idiotic warnings like -Wno-pointer-sign.
-> 
-> That's what my first patch did, but Steven didn't like it.
-> 
->> But when we do so, I want the exact tool and distro version named and
->> shamed. Because I sure don't see that warning, and from what I can
->> tell, most other people don't see it either.
->>
->> So it's almost certainly your distro that has configured the gcc
->> install incorrectly - or some new gcc version that makes new insane
->> defaults. The commit message should talk about those kinds of details,
->> exactly so that people like me get an explanation for why we'd need
->> that odd '-Wno-main' flag.
->>
->> Maybe even the line in the Makefile should have it. Like that
->> -Wno-pointer-sign thing does:
->>
->>    # disable pointer signed / unsigned warnings in gcc 4.0
->>    KBUILD_CFLAGS += -Wno-pointer-sign
->>
->> just because unexplained random compiler flags are a bad thing (the
->> same way unexplained random code changes due to them are bad)
+Matthew Wilcox <willy@infradead.org> wrote:
 
-I probably misread that a bit. To be clear, my patch only set -Wno-main
-for this one source file, not for the entire kernel tree, whereas Steven
-wanted it to be set to the full kernel tree.
+> >  (*) Can page_endio() be split into two separate functions, one for re=
+ad
+> >      and one for write?  If seems a waste of time to conditionally swi=
+tch
+> >      between two different branches.
+> =
 
+> At this point I'm thinking ...
+> =
 
--- 
-~Randy
+> static inline void folio_end_read(struct folio *folio, int err)
+> {
+> 	if (!err)
+> 		folio_set_uptodate(folio);
+> 	folio_unlock(folio);
+> }
+> =
+
+> Clearly the page isn't uptodate at this point, or ->readpage wouldn't've
+> been called.  So there's no need to clear it.  And PageError is
+> completely useless.
+
+Seems reasonable.
+
+> > -	*_page =3D page;
+> > +	*_page =3D &folio->page;
+> =
+
+> Can't do anything about this one; the write_begin API needs to be fixed.
+
+That's fine.  I expected things like this at this stage.
+
+> > @@ -174,40 +175,32 @@ static void afs_kill_pages(struct address_space =
+*mapping,
+> [...]
+> > +		folio_clear_uptodate(folio);
+> > +		folio_end_writeback(folio);
+> > +		folio_lock(folio);
+> > +		generic_error_remove_page(mapping, &folio->page);
+> > +		folio_unlock(folio);
+> > +		folio_put(folio);
+> =
+
+> This one I'm entirely missing.  It's awkward.  I'll work on it.
+
+afs_kill_pages() is just a utility to end writeback, clear uptodate and do
+generic_error_remove_page() over a range of pages and afs_redirty_pages() =
+is a
+utility that to end writeback and redirty a range of pages - hence why I w=
+as
+thinking it might make sense to put them into common code.
+
+> > -			index +=3D thp_nr_pages(page);
+> > -			if (!pagevec_add(&pvec, page))
+> > +			index +=3D folio_nr_pages(folio);
+> > +			if (!pagevec_add(&pvec, &folio->page))
+> =
+
+> Pagevecs are also awkward.  I haven't quite figured out how to
+> transition them to folios.
+
+Maybe provide pagevec_add_folio(struct pagevec *, struct folio *)?
+
+> >  zero_out:
+> > -	zero_user_segments(page, 0, offset, offset + len, thp_size(page));
+> > +	zero_user_segments(&folio->page, 0, offset, offset + len, folio_size=
+(folio));
+> =
+
+> Yeah, that's ugly.
+
+Maybe:
+
+	folio_clear_around(folio, keep_from, keep_to);
+
+clearing the bits of the folio outside the specified section?
+
+David
 
