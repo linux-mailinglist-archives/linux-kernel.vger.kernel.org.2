@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE953EA628
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23D03EA62D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237812AbhHLOFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        id S237840AbhHLOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbhHLOFD (ORCPT
+        with ESMTP id S235893AbhHLOGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:05:03 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45235C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:04:38 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id n1-20020a9d1e810000b0290514da4485e4so5083068otn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:04:38 -0700 (PDT)
+        Thu, 12 Aug 2021 10:06:04 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9905CC061756;
+        Thu, 12 Aug 2021 07:05:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 6so4591420wme.5;
+        Thu, 12 Aug 2021 07:05:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bvOIAvHT/Lw36eIDHwbsiEEXIRoETITJHslQj5KEmLc=;
-        b=kDoK2sQdm8oPn8jph/Zcj+Eg2ChbwYjfa4vuLLDbXb/gz1jEZuY/DjCDZ6c0vdIDS4
-         vi5WRkncaSkvvFgm4/Y5EUDZtEfkJqjfN68Lt4cYbtcNB4i4SBp1w8meYFwZru2MbU8T
-         P5nCHIBNDsBONv++52Z6TJZk8oHOZGjYeSeHfWSIQAjdWd0/BPNxRt/V4rbRAHCsIFVx
-         sashmc8hcMYRHoXU+ybN+YRJtLbyXJ9OBdp5WWmk8HTBv2gvt6k4Qa+acDP2aV0LmccF
-         iFCwza8wFNhT6BPa33yFr5q+hDhybjDDm8JLxQUBNJV0gClnHf4Knf4dI/k3e1hGw349
-         nErg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gCDjSdGmMmFayqS/w0wcH67gpjms1ttBauqoja6I+GM=;
+        b=T2zV3h5wi4ux23VQLa6j0Mmae1jNVqAE8g1rUN4zn42xmUCrbtDZfGrxb18YEqDFX0
+         +ngapgWCpayR5qpyK/6gBCp+hUKLBBioEB1xDXo7eZ1bJH9mNOitW4x1rI9DrNbfTcsL
+         ZlnM9AjU+B8d5IL8ItB0wcBeGo8iO2SOQt0ejwGwbbe9vhGWNZkWmdpdB1tQoEeRpX+3
+         I8xbPid0R19Ql8ZsB5Bym+r+lTwtbeQHLbx8NsxtRv2/QAKMPL+P5i9pBZ7NxOU7v0yi
+         BvvYZaH3eQdu3cM6K4RPy2oF10N/eIDDiLaCTSc1TKXGbQ5xda938RkAc2c5Sy61mqOm
+         GX9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bvOIAvHT/Lw36eIDHwbsiEEXIRoETITJHslQj5KEmLc=;
-        b=gSFY4wjRCr6ieZoLzPh3vcFZC+RBRhAyW70Y9+lEpjxvwiNUcdwvGpbYoM0PN66Br0
-         ypVqeFEgSZp6JxS/dC5G52QSSr01XNbXKGbi3HJefJ8SlihtjuCvitAbt9BSUgw/bwfD
-         8/JCMNk3Px6n1+hJCxjwXfiOjW4EPZAv2SZr8BQ9QoOBwnvvPwGUGxZ1I0YfZ5P0h2pt
-         TZKHv/dJHOCRk8z0nEjndaIw0UMlNONMGrTTlQgBAqM5tEvQZVvDfWTSK4YM6s5n3PY2
-         0+yVvFpsjCMah9G1dMv+HG8ky71br1N5QvApmmMir10I/3EH6cL/V5oeYdUJTQ2TW125
-         gDUw==
-X-Gm-Message-State: AOAM531Py/tV7XBqsuW4AX0IxaJIX8HlortmslbithK/a3CNcOfkYg1a
-        xaBxErUxMjdKqjscHczBwIkfvO7791pwQGOWFAuYWg==
-X-Google-Smtp-Source: ABdhPJyrAiMLL38/2/8rWitXvAiAWxhRViM0OOLTm9cXU+/yOu6n8WBSItFKsFepBIuytaX2YmKOyF/al8Krz8Lj34w=
-X-Received: by 2002:a9d:6f99:: with SMTP id h25mr3589241otq.17.1628777077440;
- Thu, 12 Aug 2021 07:04:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gCDjSdGmMmFayqS/w0wcH67gpjms1ttBauqoja6I+GM=;
+        b=l6+3SyKilbXlK4uV+EATSZO1RgJQ6jc3jIEH0Jwn1TRfT9jmnIA3DARBSTp09Ljd3b
+         vho2kPlgu/sn0W8wV87s/J+kxx0XNk1ZGT8OUbCgTlWJgGRn9cQDPEN64n26dSxEo3/r
+         K8fUKuH3De3UeY+8xGjDMbLns8N/ektJM6bKQ1gM3TvwzG0jjbpLSiJif8JAD6YjgdT3
+         /RT6OL6terjU0TvLPJ1S8ozUEvgQjIi+fnWJIWNK86C07YT4+EkrRcstaS5tYpPEFUeM
+         R43ru7kPKDLAJQuKv35UuLNDC+kB+T817dINaqTeXx+33m7ZgRBmdRaxK3pTe8dcE3Jw
+         KlHw==
+X-Gm-Message-State: AOAM533Nvjxyd5SO4qpjKWWxsNyr8+PSuRR08iysDmikxGq22LS0Xc81
+        zzzB4inY7JkJB1L5+6KdOTY=
+X-Google-Smtp-Source: ABdhPJz9EMI76kP6P5Vj6wrELsLVExFUAgms1NhbkcsyHnLo9tqBbiA5y5COhe83quSgMBLooq/LmA==
+X-Received: by 2002:a05:600c:1ca7:: with SMTP id k39mr16343721wms.115.1628777137205;
+        Thu, 12 Aug 2021 07:05:37 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id t1sm9776873wma.25.2021.08.12.07.05.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 07:05:35 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 16:05:34 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: tegra: stop using seq_get_buf
+Message-ID: <YRUqrla4ifUklyQu@orome.fritz.box>
+References: <20210810155439.1813109-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200604145635.21565-1-elver@google.com> <20200604152537.GD3976@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200604152537.GD3976@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 12 Aug 2021 16:04:25 +0200
-Message-ID: <CANpmjNMAZiW-Er=2QDgGP+_3hg1LOvPYcbfGSPMv=aR6MVTB-g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] kcov, objtool: Make runtime functions noinstr-compatible
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0qiiN2Cz4uGRsY22"
+Content-Disposition: inline
+In-Reply-To: <20210810155439.1813109-1-hch@lst.de>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[-Cc most]
-[+Cc Mark]
 
-On Thu, 4 Jun 2020 at 17:25, Peter Zijlstra <peterz@infradead.org> wrote:
-[...]
-> I would feel very much better with those actually in noinstr, because
-> without it, there is nothing stopping us from adding a kprobe/hw-
-> breakpoint or other funny to the function.
->
-> Even if they almost instra-return, having a kprobe on the function entry
-> or condition check is enough to utterly wreck things.
->
-> So something like:
->
-> void noinstr __sanitizer_cov_trace_*(...)
-> {
->         if (within_noinstr_section(ip))
->                 return;
->
->         instrumentation_begin();
->         write_comp_data(...);
->         instrumentation_end();
-> }
+--0qiiN2Cz4uGRsY22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Apologies for resurrecting this. :-)
+On Tue, Aug 10, 2021 at 05:54:39PM +0200, Christoph Hellwig wrote:
+> Opencode a copy of mrq_debug_read in bpmp_debug_show so that it
+> can use seq_write directly instead of poking holes into the seq_file
+> abstractions using seq_get_buf.
+>=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/firmware/tegra/bpmp-debugfs.c | 58 ++++++++++++++++++++++-----
+>  1 file changed, 47 insertions(+), 11 deletions(-)
 
-It seems I'll need to use this approach soon for upcoming KCSAN
-instrumentation for memory barriers. I'm able to use the same objtool
-feature that erases __sanitizer_cov* calls on x86 to erase memory
-barrier instrumentation, but arm64 will still be a problem because of
-lack of objtool support.
+Applied, thanks.
 
-Mark, on arm64, is the approach above that Peter proposed ~1y ago
-acceptable in general to make instrumentation noinstr-safe?
+Thierry
 
-Thanks,
--- Marco
+--0qiiN2Cz4uGRsY22
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEVKqsACgkQ3SOs138+
+s6GNRxAAjDj8BNmeet39DjxT0LACH41W6JaSq8XDFTBl+DdquwBbi2mj8H5K4x/+
+EWl9TomDS/Ex+EcinNQxDLwRuz/j7xpv2TomAOZHKfZVxHVjJmbhuc5cP44wxRUj
+ypA+T7r9gmbyPcvdqU7OZJoyDJevWDVNyJKvtWrsHcriJuzBSRkcxAWJyvAQQV+8
+7cLKn/eUlXcoS3t1If7S58sinL9cM+ZbvVhQDTl0OrWdkoozanZlz32ikObchbJ0
+V/WY8HiBwvnmNbL3YJwosUUPbpWjsWwDHYuciW0FzpcWCIAbpKclPKd22zaZ7DXQ
+o726Q2LJ+H3y3aViyiEFzTK9zTW2s3AcsDErOpGEujLk4wRr/6On3mRp68bfLZBQ
+LBl3zHGWZ9T50g8TiT1G3gqwg273Tlxb/RvVnoJ2rr24z5crCZWI4I9QPoJiliaE
+yCIMUt6u6Ev9H5F7K1OIgiq8NlTNHdWcJ8zhNmg2khwRaeDwafb+9zMCCN5gFW4M
+D/uyAtfUW4Ki4N7aYrcl/omQmm+g09zHdOtDCdwR/E2xyXaXGpU3iBIM3nduRWk+
+6oMBTotYqzcrn9chVnMFaGj6sybGByfZrQ1JurgskU1tElckQ2Hodi2vQHY+WAq9
+s+u0bsR6zdKa89skJUkyj9YCI3iuWu6O+OQOkN214aPKFXNpTMU=
+=tDO2
+-----END PGP SIGNATURE-----
+
+--0qiiN2Cz4uGRsY22--
