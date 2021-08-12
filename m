@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0FB3EAA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E623EAA80
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbhHLS6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhHLS6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:58:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 362056103A;
-        Thu, 12 Aug 2021 18:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628794671;
-        bh=9lyFwGGuyLf5GdDUz/aKvERlOFF1uWuGiPBbUIAEKfE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VwLU2IBE7pm2CpqhWrWcs09zHfDgGQQ+XwYJ0x4NJ+OYptETg8cUHpeJuXviSEb8m
-         hZwv3aN1LfVIwHZVS+UQ7mB1srMgVxwRZcSfRTFv67A2WL07AvZbrPj/Jz8MICDjiz
-         tSsLyZBkRPIi4PEfw72QWFlCzfTyNhyHc6hoJdLtBX/ALr48Ij7oskYZxfFb8gVUAz
-         MdoO56PMOMA1qSMNTQQWl/YJOfRCSFiinLi5nd/tFripDrfTPOSzz5IN+8rkyBTJL5
-         ClZ1UH9RZQQUjhvz/MyHpPFG2IOOryYDriDcsJsaN4YgRfyjgsTyLvyz3NzaOYphUa
-         cYgcKsD4gQWUw==
-Subject: Re: [PATCH -next] trap: Cleanup trap_init()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-mm@kvack.org
-Cc:     Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <palmerdabbelt@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
-From:   Vineet Gupta <vgupta@kernel.org>
-Message-ID: <b49eed44-0837-906c-8779-4fffb5609653@kernel.org>
-Date:   Thu, 12 Aug 2021 11:57:49 -0700
+        id S234839AbhHLS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234700AbhHLS6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:58:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9F3C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=2TMktU68VItlfLVKEQGEsWCkv9G1cvfENhrTJPhMk+Y=; b=hdljJWzE1+eLjhxjK6o0lAS2Rc
+        YyMEJq5b9lYg40sXOacxryKEQeLtc9667oVgrivlbMov5bQyhSxYUoM38eJg5J2ju8z9scLYE7Dy6
+        U7HDP/AGemfiuRSBkVuSPp+u0yIaqBGcdOvRd9RS4emi9BHX9dzwoxy8H3XR4b3eambTEqAkiI5xu
+        3vjOUOknONlsqygQuTBMSgNoNi7l7V0W522aImsTitrP84CS/0brDARCA8BJwu4oIuT+21vtGRyor
+        TUwi11NaQQS7AufrXHahZHdBOksFGQeRHk4Bcba/u5DJ+kfcnY6hCcpS6lCPu+LIS5bFzroMO9nnm
+        PR2oairg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mEFtq-00AwWB-61; Thu, 12 Aug 2021 18:57:54 +0000
+Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+References: <20210812112938.3748c7f5@oasis.local.home>
+ <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
+ <20210812133306.1c480741@oasis.local.home>
+ <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
+ <cef5b624-b5f8-7729-3b05-3543578c6e3e@infradead.org>
+ <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a294a454-89c8-d32c-3b0a-1c53480a8ab6@infradead.org>
+Date:   Thu, 12 Aug 2021 11:57:52 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 5:36 AM, Kefeng Wang wrote:
-> There are some empty trap_init() in different ARCHs, introduce
-> a new weak trap_init() function to cleanup them.
->
-> Cc: Vineet Gupta<vgupta@kernel.org>
-> Cc: Russell King<linux@armlinux.org.uk>
-> Cc: Yoshinori Sato<ysato@users.sourceforge.jp>
-> Cc: Ley Foon Tan<ley.foon.tan@intel.com>
-> Cc: Jonas Bonn<jonas@southpole.se>
-> Cc: Stefan Kristiansson<stefan.kristiansson@saunalahti.fi>
-> Cc: Stafford Horne<shorne@gmail.com>
-> Cc: James E.J. Bottomley<James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller<deller@gmx.de>
-> Cc: Michael Ellerman<mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt<benh@kernel.crashing.org>
-> Cc: Paul Mackerras<paulus@samba.org>
-> Cc: Paul Walmsley<palmerdabbelt@google.com>
-> Cc: Jeff Dike<jdike@addtoit.com>
-> Cc: Richard Weinberger<richard@nod.at>
-> Cc: Anton Ivanov<anton.ivanov@cambridgegreys.com>
-> Cc: Andrew Morton<akpm@linux-foundation.org>
-> Signed-off-by: Kefeng Wang<wangkefeng.wang@huawei.com>
-> ---
->   arch/arc/kernel/traps.c      | 5 -----
+On 8/12/21 11:17 AM, Linus Torvalds wrote:
+> On Thu, Aug 12, 2021 at 8:04 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> I just used some default settings. I didn't choose to use -Wmain.
+> 
+> What broken distro, what broken gcc version?
 
-Acked-by: Vineet Gupta <vgupt@kernel.org>  #arch/arc
+openSUSE 15.3
+gcc (SUSE Linux) 7.5.0
+
+> We can certainly add a -Wno-main for this case. We already do that for
+> a lot of other idiotic warnings like -Wno-pointer-sign.
+
+That's what my first patch did, but Steven didn't like it.
+
+> But when we do so, I want the exact tool and distro version named and
+> shamed. Because I sure don't see that warning, and from what I can
+> tell, most other people don't see it either.
+> 
+> So it's almost certainly your distro that has configured the gcc
+> install incorrectly - or some new gcc version that makes new insane
+> defaults. The commit message should talk about those kinds of details,
+> exactly so that people like me get an explanation for why we'd need
+> that odd '-Wno-main' flag.
+> 
+> Maybe even the line in the Makefile should have it. Like that
+> -Wno-pointer-sign thing does:
+> 
+>    # disable pointer signed / unsigned warnings in gcc 4.0
+>    KBUILD_CFLAGS += -Wno-pointer-sign
+> 
+> just because unexplained random compiler flags are a bad thing (the
+> same way unexplained random code changes due to them are bad)
+
+
+-- 
+~Randy
+
