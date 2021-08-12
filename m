@@ -2,75 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B123EA1A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEAE3EA1A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbhHLJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:13:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:40576 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231392AbhHLJNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:13:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D29711FB;
-        Thu, 12 Aug 2021 02:12:44 -0700 (PDT)
-Received: from [10.163.68.17] (unknown [10.163.68.17])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA3543F718;
-        Thu, 12 Aug 2021 02:12:39 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [RFC V2 10/10] arm64/mm: Enable CONFIG_ARM64_PA_BITS_52 on
- CONFIG_ARM64_[4K|16K]_PAGES
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
-        maz@kernel.org, james.morse@arm.com, steven.price@arm.com
-References: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
- <1627281445-12445-11-git-send-email-anshuman.khandual@arm.com>
- <20210805172314.GF6719@arm.com>
-Message-ID: <a3eb7cc3-8f31-c70b-1830-830e10605d50@arm.com>
-Date:   Thu, 12 Aug 2021 14:43:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235651AbhHLJOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234895AbhHLJOh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:14:37 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ABBC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:14:12 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qk33so10142042ejc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 02:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AvGkITJdrDMMMnI3/BWEDQrqzv4MiM8BZMPQ8cJaAog=;
+        b=rBbpOT+Hrt+gcKzfmeSjx7vcqlbNcSr1NbtfctFuMvVzEfGUxdiHXa6sFk7nNq1vO2
+         bzWcIpHco2B0tq3kcAc0abkg/pHcsqo4LRdnuQz2Q/OwKXSHBHrfPD27h6Ms9cRUA73G
+         0GfgKieqcxyGEibwt+V5fRVvqWdfBDtUE4rKLeezgrN7yVEvlHcdv0Fo+QMumMNFh+3C
+         YKJRy5jdQLem9WrPZPZow83FeLbdjdhOBPdySr5pgaLUnhLTLiD+K+EY8BTbP0ita/tO
+         Ze17Aicy6ncNlYdcqFmfImU7BTCMgsoyuCwmgKJn9P7o/uqoAe6fC4Wy45wOpG0vrLZ2
+         WM8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AvGkITJdrDMMMnI3/BWEDQrqzv4MiM8BZMPQ8cJaAog=;
+        b=Hy9NeCEND4bLUgvXOs0GU6NZCbW9ZMyLw+4HYAM/T6V5u6t0dGD3lfbdGQdY7n77cX
+         vUaCbBJ6EQFMACA7TJtYvR25YWyLbvDrb1WFw5OM0EFw59XiA4BABon1vZOzMYjeA5nn
+         7pNcTLM8XjLmw5sfscwafCDEPVg6mDrqgoOjfyc10tlCm8nkWUw0qcW5JQtG9Igw5GL/
+         ouuNPPokC6uoBJHefgG/v3toCF1zDOXpA/tJjOSKoH8aTp66dH5FlewvW7Ck8OnC42Vy
+         gYXuRMvcMnGYSBJGtXIByfhMNRqzN9zalGTJDBmjM1fRzG5vZcbrHia0XTOnPUk4G2MT
+         RwXg==
+X-Gm-Message-State: AOAM531qFNcRCX36QDRqgBCI8C4szzF3OYx7t/IdWJm4XkZsNlG4aqYX
+        zZ+j4Wa1NvnG2AXPSZSScqKYL3E2esGM2v9KHN4=
+X-Google-Smtp-Source: ABdhPJyyqs7nY59vyUINOn7gF0lJ/tMsmOkfem1kM5zxVAqauTLN1o6Lq/jhKEVu34AnDzHL6PrL66558CYQZPt29eE=
+X-Received: by 2002:a17:906:9bf1:: with SMTP id de49mr2737284ejc.480.1628759651282;
+ Thu, 12 Aug 2021 02:14:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210805172314.GF6719@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YRO5R0/N9KITjyY9@kroah.com> <20210812041930.28931-1-21cnbao@gmail.com>
+ <YRTMuU4dE9RqyDC+@kroah.com>
+In-Reply-To: <YRTMuU4dE9RqyDC+@kroah.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Thu, 12 Aug 2021 21:13:59 +1200
+Message-ID: <CAGsJ_4xpidX79zO2LRxtUu-jBpa3F1Wra-41ZoaczrTv-A1QDA@mail.gmail.com>
+Subject: Re: [PATCH] platform-msi: Add ABI to show msi_irqs of platform devices
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com,
+        rafael@kernel.org, robin.murphy@arm.com,
+        song.bao.hua@hisilicon.com, wangzhou1@hisilicon.com,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 12, 2021 at 7:24 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Aug 12, 2021 at 04:19:30PM +1200, Barry Song wrote:
+> > > But why isn't this all handled by the MSI core code?  Why would each bus
+> > > need to have this logic in it?
+> >
+> > i think i can extract some common code for sysfs populate/destroy to msi core from pci and platform.
+> > but we still need some pci/platform specific code in pci-msi and platform-msi cores. for example,
+> > pci-msi has specific data which will be accessed in its show() entry.
+> >
+> > struct msi_desc {
+> >         ...
+> >         union {
+> >                 /* PCI MSI/X specific data */
+> >                 struct {
+> >                         u32 masked;
+> >                         struct {
+> >                                 u8      is_msix         : 1;
+> >                                 u8      multiple        : 3;
+> >                                 u8      multi_cap       : 3;
+> >                                 u8      maskbit         : 1;
+> >                                 u8      is_64           : 1;
+> >                                 u8      is_virtual      : 1;
+> >                                 u16     entry_nr;
+> >                                 unsigned default_irq;
+> >                         } msi_attrib;
+> >                         union {
+> >                                 u8      mask_pos;
+> >                                 void __iomem *mask_base;
+> >                         };
+> >                 };
+> >
+> >                 ...
+> >                 struct platform_msi_desc platform;
+> >                 ...
+> >         };
+> > };
+> >
+> > in addition, they are quite different in initialization/release and also need different places to save sysfs groups.
+> > so probably i can let msi cores provide msi_populate_sysfs() and msi_destroy_sysfs() APIs. And ask pci and platform
+> > to call msi_populate_sysfs() in their init code and save the groups in their specific pointers,  and then they can
+> > free sysfs in their release paths by calling msi_destroy_sysfs()
+>
+> Ok, if this isn't easy then I guess it's not a big deal, but you should
+> go through the MSI developers first.
+>
+> Why does a platform device have MSI interrupts?  I thought they were
+> only for PCI devices.
 
+I really don't know the story of hardware, but as long as a device can
+write some mmio address with some
+messages (interrupt-describing data) to generate interrupts instead of
+using a hardware interrupt line, MSI is
+supported :-)
 
-On 8/5/21 10:53 PM, Catalin Marinas wrote:
-> On Mon, Jul 26, 2021 at 12:07:25PM +0530, Anshuman Khandual wrote:
->> All required FEAT_LPA2 components for 52 bit PA range are already in place.
->> Just enable CONFIG_ARM64_PA_BITS_52 on 4K and 16K pages which would select
->> CONFIG_ARM64_PA_BITS_52_LPA2 activating 52 bit PA range via FEAT_LPA2.
->>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index 1999ac6..ce139415 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -952,9 +952,9 @@ config ARM64_PA_BITS_48
->>  
->>  config ARM64_PA_BITS_52
->>  	bool "52-bit (ARMv8.2)"
->> -	depends on ARM64_64K_PAGES
->>  	depends on ARM64_PAN || !ARM64_SW_TTBR0_PAN
->>  	select ARM64_PA_BITS_52_LPA if ARM64_64K_PAGES
->> +	select ARM64_PA_BITS_52_LPA2 if (ARM64_4K_PAGES  || ARM64_16K_PAGES)
->>  	help
->>  	  Enable support for a 52-bit physical address space, introduced as
->>  	  part of the ARMv8.2-LPA extension.
-> 
-> If you do it this way, the text here needs updating and the 8.2
-> architecture version removed.
+>
+> thanks,
+>
+> greg k-h
 
-Sure, will update as required.
+Thanks
+Barry
