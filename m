@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987B63E9BCA
+	by mail.lfdr.de (Postfix) with ESMTP id E1F3D3E9BCB
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhHLBCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:02:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40112 "EHLO mga01.intel.com"
+        id S233217AbhHLBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:02:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53156 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229724AbhHLBCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229773AbhHLBCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 21:02:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="237280297"
+X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="215240227"
 X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="237280297"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 18:01:53 -0700
+   d="scan'208";a="215240227"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 18:01:53 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
-   d="scan'208";a="673264698"
+   d="scan'208";a="446184948"
 Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2021 18:01:52 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2021 18:01:52 -0700
 Received: from kbuild by d053b881505b with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mDz6V-000MFe-JV; Thu, 12 Aug 2021 01:01:51 +0000
-Date:   Thu, 12 Aug 2021 09:00:56 +0800
+        id 1mDz6V-000MFa-IB; Thu, 12 Aug 2021 01:01:51 +0000
+Date:   Thu, 12 Aug 2021 09:01:00 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:smp/core] BUILD SUCCESS
- 49b3bd213a9f3d685784913c255c6a2cb3d1fcce
-Message-ID: <611472c8.2YBEHOnEHTTZ0Fi5%lkp@intel.com>
+Subject: [tip:irq/core] BUILD SUCCESS
+ 3b35e7e6daef5a8b4819e2bd2d15898b9b4d1669
+Message-ID: <611472cc.9xvHHA10Kl/qCq70%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,10 +39,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
-branch HEAD: 49b3bd213a9f3d685784913c255c6a2cb3d1fcce  smp: Fix all kernel-doc warnings
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 3b35e7e6daef5a8b4819e2bd2d15898b9b4d1669  genirq: Fix kernel-doc warnings in pm.c, msi.c and ipi.c
 
-elapsed time: 724m
+elapsed time: 725m
 
 configs tested: 142
 configs skipped: 3
