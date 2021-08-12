@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23D03EA62D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB7E3EA632
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237840AbhHLOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbhHLOGE (ORCPT
+        id S237852AbhHLOH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:07:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50462 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236956AbhHLOH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:06:04 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9905CC061756;
-        Thu, 12 Aug 2021 07:05:38 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 6so4591420wme.5;
-        Thu, 12 Aug 2021 07:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gCDjSdGmMmFayqS/w0wcH67gpjms1ttBauqoja6I+GM=;
-        b=T2zV3h5wi4ux23VQLa6j0Mmae1jNVqAE8g1rUN4zn42xmUCrbtDZfGrxb18YEqDFX0
-         +ngapgWCpayR5qpyK/6gBCp+hUKLBBioEB1xDXo7eZ1bJH9mNOitW4x1rI9DrNbfTcsL
-         ZlnM9AjU+B8d5IL8ItB0wcBeGo8iO2SOQt0ejwGwbbe9vhGWNZkWmdpdB1tQoEeRpX+3
-         I8xbPid0R19Ql8ZsB5Bym+r+lTwtbeQHLbx8NsxtRv2/QAKMPL+P5i9pBZ7NxOU7v0yi
-         BvvYZaH3eQdu3cM6K4RPy2oF10N/eIDDiLaCTSc1TKXGbQ5xda938RkAc2c5Sy61mqOm
-         GX9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gCDjSdGmMmFayqS/w0wcH67gpjms1ttBauqoja6I+GM=;
-        b=l6+3SyKilbXlK4uV+EATSZO1RgJQ6jc3jIEH0Jwn1TRfT9jmnIA3DARBSTp09Ljd3b
-         vho2kPlgu/sn0W8wV87s/J+kxx0XNk1ZGT8OUbCgTlWJgGRn9cQDPEN64n26dSxEo3/r
-         K8fUKuH3De3UeY+8xGjDMbLns8N/ektJM6bKQ1gM3TvwzG0jjbpLSiJif8JAD6YjgdT3
-         /RT6OL6terjU0TvLPJ1S8ozUEvgQjIi+fnWJIWNK86C07YT4+EkrRcstaS5tYpPEFUeM
-         R43ru7kPKDLAJQuKv35UuLNDC+kB+T817dINaqTeXx+33m7ZgRBmdRaxK3pTe8dcE3Jw
-         KlHw==
-X-Gm-Message-State: AOAM533Nvjxyd5SO4qpjKWWxsNyr8+PSuRR08iysDmikxGq22LS0Xc81
-        zzzB4inY7JkJB1L5+6KdOTY=
-X-Google-Smtp-Source: ABdhPJz9EMI76kP6P5Vj6wrELsLVExFUAgms1NhbkcsyHnLo9tqBbiA5y5COhe83quSgMBLooq/LmA==
-X-Received: by 2002:a05:600c:1ca7:: with SMTP id k39mr16343721wms.115.1628777137205;
-        Thu, 12 Aug 2021 07:05:37 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id t1sm9776873wma.25.2021.08.12.07.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 07:05:35 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 16:05:34 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        Thu, 12 Aug 2021 10:07:56 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 25579221DA;
+        Thu, 12 Aug 2021 14:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628777250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=70lfViDjSLp9djdpWufs6r68Wzu9SAenpLs48/HVGgk=;
+        b=V2BSEDxe676eLo/G0hmMkDFKWZlZRQmsh0FfGNhqqQP4mZDDvQMBn5lduViaqwkBljkEi6
+        X+UGp5KseaZbLk130snnreLh1rQBFehG3vAfuOOrvjZUT+bfm0aKKJdMD+Z1SAIJMA//ms
+        jBrd6a6GjOW0z3jQ2hKffLyrdyjPvN8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628777250;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=70lfViDjSLp9djdpWufs6r68Wzu9SAenpLs48/HVGgk=;
+        b=QaI+kazOdaLDjFB5TiGLVSfp1yhFLpCYGZAXsdwWnlXTLYnmsv/ayuiki9R5dXA68gQf+D
+        s+a0p6qD2nyEEBBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0C1C213A90;
+        Thu, 12 Aug 2021 14:07:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id WzM+AiIrFWF4XgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 14:07:30 +0000
+Subject: Re: [PATCH v14 065/138] mm/writeback: Change __wb_writeout_inc() to
+ __wb_writeout_add()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: tegra: stop using seq_get_buf
-Message-ID: <YRUqrla4ifUklyQu@orome.fritz.box>
-References: <20210810155439.1813109-1-hch@lst.de>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-66-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9c22a18d-85e6-9d7c-b90a-b50af6e3a66b@suse.cz>
+Date:   Thu, 12 Aug 2021 16:07:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0qiiN2Cz4uGRsY22"
-Content-Disposition: inline
-In-Reply-To: <20210810155439.1813109-1-hch@lst.de>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <20210715033704.692967-66-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Allow for accounting N pages at once instead of one page at a time.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
---0qiiN2Cz4uGRsY22
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-On Tue, Aug 10, 2021 at 05:54:39PM +0200, Christoph Hellwig wrote:
-> Opencode a copy of mrq_debug_read in bpmp_debug_show so that it
-> can use seq_write directly instead of poking holes into the seq_file
-> abstractions using seq_get_buf.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/firmware/tegra/bpmp-debugfs.c | 58 ++++++++++++++++++++++-----
->  1 file changed, 47 insertions(+), 11 deletions(-)
+>  mm/page-writeback.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index f55f2ebdd9a9..e542ea37d605 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -562,12 +562,12 @@ static unsigned long wp_next_time(unsigned long cur_time)
+>  	return cur_time;
+>  }
+>  
+> -static void wb_domain_writeout_inc(struct wb_domain *dom,
+> +static void wb_domain_writeout_add(struct wb_domain *dom,
+>  				   struct fprop_local_percpu *completions,
+> -				   unsigned int max_prop_frac)
+> +				   unsigned int max_prop_frac, long nr)
+>  {
+>  	__fprop_add_percpu_max(&dom->completions, completions,
+> -			       max_prop_frac, 1);
+> +			       max_prop_frac, nr);
+>  	/* First event after period switching was turned off? */
+>  	if (unlikely(!dom->period_time)) {
+>  		/*
+> @@ -585,18 +585,18 @@ static void wb_domain_writeout_inc(struct wb_domain *dom,
+>   * Increment @wb's writeout completion count and the global writeout
+>   * completion count. Called from test_clear_page_writeback().
+>   */
+> -static inline void __wb_writeout_inc(struct bdi_writeback *wb)
+> +static inline void __wb_writeout_add(struct bdi_writeback *wb, long nr)
+>  {
+>  	struct wb_domain *cgdom;
+>  
+> -	inc_wb_stat(wb, WB_WRITTEN);
+> -	wb_domain_writeout_inc(&global_wb_domain, &wb->completions,
+> -			       wb->bdi->max_prop_frac);
+> +	wb_stat_mod(wb, WB_WRITTEN, nr);
+> +	wb_domain_writeout_add(&global_wb_domain, &wb->completions,
+> +			       wb->bdi->max_prop_frac, nr);
+>  
+>  	cgdom = mem_cgroup_wb_domain(wb);
+>  	if (cgdom)
+> -		wb_domain_writeout_inc(cgdom, wb_memcg_completions(wb),
+> -				       wb->bdi->max_prop_frac);
+> +		wb_domain_writeout_add(cgdom, wb_memcg_completions(wb),
+> +				       wb->bdi->max_prop_frac, nr);
+>  }
+>  
+>  void wb_writeout_inc(struct bdi_writeback *wb)
+> @@ -604,7 +604,7 @@ void wb_writeout_inc(struct bdi_writeback *wb)
+>  	unsigned long flags;
+>  
+>  	local_irq_save(flags);
+> -	__wb_writeout_inc(wb);
+> +	__wb_writeout_add(wb, 1);
+>  	local_irq_restore(flags);
+>  }
+>  EXPORT_SYMBOL_GPL(wb_writeout_inc);
+> @@ -2751,7 +2751,7 @@ int test_clear_page_writeback(struct page *page)
+>  				struct bdi_writeback *wb = inode_to_wb(inode);
+>  
+>  				dec_wb_stat(wb, WB_WRITEBACK);
+> -				__wb_writeout_inc(wb);
+> +				__wb_writeout_add(wb, 1);
+>  			}
+>  		}
+>  
+> 
 
-Applied, thanks.
-
-Thierry
-
---0qiiN2Cz4uGRsY22
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEVKqsACgkQ3SOs138+
-s6GNRxAAjDj8BNmeet39DjxT0LACH41W6JaSq8XDFTBl+DdquwBbi2mj8H5K4x/+
-EWl9TomDS/Ex+EcinNQxDLwRuz/j7xpv2TomAOZHKfZVxHVjJmbhuc5cP44wxRUj
-ypA+T7r9gmbyPcvdqU7OZJoyDJevWDVNyJKvtWrsHcriJuzBSRkcxAWJyvAQQV+8
-7cLKn/eUlXcoS3t1If7S58sinL9cM+ZbvVhQDTl0OrWdkoozanZlz32ikObchbJ0
-V/WY8HiBwvnmNbL3YJwosUUPbpWjsWwDHYuciW0FzpcWCIAbpKclPKd22zaZ7DXQ
-o726Q2LJ+H3y3aViyiEFzTK9zTW2s3AcsDErOpGEujLk4wRr/6On3mRp68bfLZBQ
-LBl3zHGWZ9T50g8TiT1G3gqwg273Tlxb/RvVnoJ2rr24z5crCZWI4I9QPoJiliaE
-yCIMUt6u6Ev9H5F7K1OIgiq8NlTNHdWcJ8zhNmg2khwRaeDwafb+9zMCCN5gFW4M
-D/uyAtfUW4Ki4N7aYrcl/omQmm+g09zHdOtDCdwR/E2xyXaXGpU3iBIM3nduRWk+
-6oMBTotYqzcrn9chVnMFaGj6sybGByfZrQ1JurgskU1tElckQ2Hodi2vQHY+WAq9
-s+u0bsR6zdKa89skJUkyj9YCI3iuWu6O+OQOkN214aPKFXNpTMU=
-=tDO2
------END PGP SIGNATURE-----
-
---0qiiN2Cz4uGRsY22--
