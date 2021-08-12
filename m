@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA38F3E9DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F6D3E9DA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbhHLEgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 00:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
+        id S234202AbhHLEhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhHLEgs (ORCPT
+        with ESMTP id S233944AbhHLEhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:36:48 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3D5C061799;
-        Wed, 11 Aug 2021 21:36:23 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id e1so2431294qvs.13;
-        Wed, 11 Aug 2021 21:36:23 -0700 (PDT)
+        Thu, 12 Aug 2021 00:37:19 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809B3C061765;
+        Wed, 11 Aug 2021 21:36:54 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b7so5622562plh.7;
+        Wed, 11 Aug 2021 21:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jpZ0477C5cf3o49NC+s1PqZcr5VpzD9GwW2JUzF4Esc=;
-        b=VIGNX7lXtRH+fbiLDv8GZQsTQBtM61/hRQB4WlWwIfHR5v+z4adEzVbAwmF2ZJRdQp
-         0TafmiJceYrSr1J1uh8qb18PiVpKRMujCQruk6D7f+M+NO5aoElMRd7OM8dX+jTwIVOy
-         JL3medSFGsSxjSPTP5O3YIVaBb2pymmAdNizhGdBAwo6etys79jzF33xm06YKrjouy5D
-         25yKAWus9tOf6UnYVKIpPdXgw1K7zcaUM0tOPy/abZkM7kCaKbDo1lV+R44SyKf36qNz
-         HHVBvDBTlVVrKZdrpl/KvBTQ1m0rO39p17isoqf1e2T/hBuLS64em5GHrZJsbxiSO4lq
-         aiXg==
+        bh=Xaj8kqlp1ggNrNt1fsWQYeeZnV1wGuQKD/BDozzpsHQ=;
+        b=PlguRCx/bjsKIoqgtqehUYdY1EjGaPLpnj1JZ4xQZwXEtKVtCB2Z3mrlj/djr1QwrI
+         LfAqeqG7q0sYnOUCaMaE5XzUd8QmtZoktNiwywuqe6zKzDYHHJzelAMwC/qHAYxo2b7h
+         M7mXmb1EvuZ1H6XXF99iKsMPwT7buNPB3muxTX0YWhyYFRG0bYYeCPirDWXPQDwyBrD3
+         surFuMJBVi7u7093xfhbOCctvSPDQ5y/5RskzBgzdLQJtARXiwtAjd5441tb1VYc+5st
+         1M/xvzOXXgrLx2HrP8Kxp6OopethkgtMUNbqNugvCqr4DCmL2BJ1jRF42Fmq4UIZpMLH
+         tiuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jpZ0477C5cf3o49NC+s1PqZcr5VpzD9GwW2JUzF4Esc=;
-        b=S9FG+Hv0AvWZQ0aWExberG4T8HopbxftK0ew8dMYW0Z5EPKSgqSrZqmPxbU1RQ2uB8
-         LD99I6rnZDkwmFVTngUitmFhkfXrmqeJo17fphkAWHl8EfmFq67bRjyB2PrHqFMTt376
-         C5xQzNd2c6JTpvsCZpwUqQ3D6rOqSXxdxrPhzEbixE7iSXMlsuI9w1NjV32w9Jb+SnIq
-         EVmSwSuc4FPT/aLHdCUSoTbpcOys7mdYqJxMHJ+nSsjMI0Xu1nGT0WAO+vz83Itgw8sn
-         SfBJPILYS6kd1ftiFq75ML/gEhAm/wDvratrgA755Ni7qe1shpO69ov7hs0SUs9fepr3
-         bbTA==
-X-Gm-Message-State: AOAM532nLmGs191HVJSz2d3nW3z+rk0+6LKxGQ7MjizMDzrgPyC0LLFe
-        LjuKpWXcDP1LFwAD21IE0U0=
-X-Google-Smtp-Source: ABdhPJxXTmu10YgComYrKxSwN+Azc2Fes+HG7vUAU4AW67kaceFtqrErJyaRenVQ7lIAyFB3Pt5mfA==
-X-Received: by 2002:a0c:e883:: with SMTP id b3mr2178998qvo.23.1628742983133;
-        Wed, 11 Aug 2021 21:36:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 18sm683769qkm.128.2021.08.11.21.36.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xaj8kqlp1ggNrNt1fsWQYeeZnV1wGuQKD/BDozzpsHQ=;
+        b=NnDehuaqmq2cZ99gI0l0wp5CMOgZCDhK4lIuMgYE474be7retgi0YJHPk2GsSPbLb7
+         gtOS6kCSHBIhLlYG4OLr3/WG2PJ4g4ya+GKIixRIdQ5mNySH5o5T6DowpzTDoWy2bEyE
+         rF9sx82SXtmvESZlfePsL99BbOiSoZEaNX5ZtgM7dd6EV5+a0JxhGjI4zBoWAhcdyPZP
+         KKazr8Qcf5FyjiiTw4vSQ/EuXd620Zp4YpfI3uRM9FNrAZ6wxG3zW4VcK2mPplcOyMyf
+         B5Na7cX2LB/m2HlIdund85Lc4Vcb2K1gUjRHmZuMX872iHyL4hZtbQUUIdDI1egeyS4n
+         BAyA==
+X-Gm-Message-State: AOAM533zmSE3yZKelPiPaxj2QrWUuRPxeXDDXJKqm6sjGib8DqS3jWFA
+        8CQ18TlseiCj+aoLwNLkJA4=
+X-Google-Smtp-Source: ABdhPJz/RBm1XY5TjUDbVSmHXH7DpbOP+vSACxWwNrHDZlF2fal69iSXyN+cuMHJyAlrLWyuT3xEVg==
+X-Received: by 2002:a17:90b:2313:: with SMTP id mt19mr14417168pjb.230.1628743014002;
+        Wed, 11 Aug 2021 21:36:54 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id j23sm8747218pjn.12.2021.08.11.21.36.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 21:36:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 11 Aug 2021 21:36:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Brandon Wyman <bjwyman@gmail.com>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
-Subject: Re: [PATCH v2] hwmon: (pmbus/ibm-cffps) Fix write bits for LED
- control
-Message-ID: <20210812043621.GA1115124@roeck-us.net>
-References: <20210806225131.1808759-1-bjwyman@gmail.com>
+        Wed, 11 Aug 2021 21:36:53 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 10:06:46 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        willemb@google.com, xie.he.0141@gmail.com, gustavoars@kernel.org,
+        wanghai38@huawei.com, tannerlove@google.com, eyal.birger@gmail.com,
+        rsanger@wand.net.nz, jiapeng.chong@linux.alibaba.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Can a valid vnet header have both csum_start and csum_offset 0?
+Message-ID: <YRSlXr2bsFfZOBgw@fedora>
+References: <YRLONiYsdqKLeja3@fedora>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806225131.1808759-1-bjwyman@gmail.com>
+In-Reply-To: <YRLONiYsdqKLeja3@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 10:51:31PM +0000, Brandon Wyman wrote:
-> When doing a PMBus write for the LED control on the IBM Common Form
-> Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
-> be low and bit 6 be high in order to indicate that you are truly
-> attempting to do a write.
+On Wed, Aug 11, 2021 at 12:36:38AM +0530, Shreyansh Chouhan wrote:
+> Hi,
 > 
-> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-
-Applied.
-
-Thanks,
-Guenter
-
-> ---
-> V1 -> V2: Use full name instead of initials in Signed-off-by line.
-> ---
->  drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> When parsing the vnet header in __packet_snd_vnet_parse[1], we do not
+> check for if the values of csum_start and csum_offset given in the
+> header are both 0.
 > 
-> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-> index 5668d8305b78..df712ce4b164 100644
-> --- a/drivers/hwmon/pmbus/ibm-cffps.c
-> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-> @@ -50,9 +50,9 @@
->  #define CFFPS_MFR_VAUX_FAULT			BIT(6)
->  #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
->  
-> -#define CFFPS_LED_BLINK				BIT(0)
-> -#define CFFPS_LED_ON				BIT(1)
-> -#define CFFPS_LED_OFF				BIT(2)
-> +#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
-> +#define CFFPS_LED_ON				(BIT(1) | BIT(6))
-> +#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
->  #define CFFPS_BLINK_RATE_MS			250
->  
->  enum {
+> Having both these values 0, however, causes a crash[2] further down the
+> gre xmit code path. In the function ipgre_xmit, we pull the ip header
+> and gre header from skb->data, this results in an invalid
+> skb->csum_start which was calculated from the vnet header. The
+> skb->csum_start offset in this case turns out to be lower than
+> skb->transport_header. This causes us to pass a negative number as an
+> argument to csum_partial[3] and eventually to do_csum[4], which then causes
+> a kernel oops in the while loop.
+> 
+> I do not understand what should the correct behavior be in this
+> scenario, should we consider this vnet header as invalid?
+
+Something like the following diff:
+
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 57a1971f29e5..65bff1c8f75c 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -2479,13 +2479,17 @@ static void tpacket_destruct_skb(struct sk_buff *skb)
+ 
+ static int __packet_snd_vnet_parse(struct virtio_net_hdr *vnet_hdr, size_t len)
+ {
++	__u16 csum_start = __virtio16_to_cpu(vio_le(), vnet_hdr->csum_start);
++	__u16 csum_offset = __virtio16_to_cpu(vio_le(), vnet_hdr->csum_offset);
++	__u16 hdr_len = __virtio16_to_cpu(vio_le(), vnet_hdr->hdr_len);
++
++	if (csum_start + csum_offset == 0)
++		return -EINVAL;
++
+ 	if ((vnet_hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) &&
+-	    (__virtio16_to_cpu(vio_le(), vnet_hdr->csum_start) +
+-	     __virtio16_to_cpu(vio_le(), vnet_hdr->csum_offset) + 2 >
+-	      __virtio16_to_cpu(vio_le(), vnet_hdr->hdr_len)))
++	    csum_start + csum_offset + 2 > hdr_len)
+ 		vnet_hdr->hdr_len = __cpu_to_virtio16(vio_le(),
+-			 __virtio16_to_cpu(vio_le(), vnet_hdr->csum_start) +
+-			__virtio16_to_cpu(vio_le(), vnet_hdr->csum_offset) + 2);
++				csum_start + csum_offset + 2);
+ 
+ 	if (__virtio16_to_cpu(vio_le(), vnet_hdr->hdr_len) > len)
+ 		return -EINVAL;
+
+> Or should we rather accomodate for both csum_start
+> and csum_offset values to be 0 in ipgre_xmit?
+> 
+> Regards,
+> Shreyansh Chouhan
+> 
+> --
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/packet/af_packet.c#n2480
+> [2] https://syzkaller.appspot.com/bug?id=c391f74aac26dd8311c45743ae618f9d5e38b674
+> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/skbuff.h#n4662
+> [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/lib/csum-partial_64.c#n35
