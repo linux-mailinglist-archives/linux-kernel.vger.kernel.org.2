@@ -2,130 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E31D3EA421
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2DB3EA422
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbhHLL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:56:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17008 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236383AbhHLL4v (ORCPT
+        id S236383AbhHLL44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:56:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51118 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236425AbhHLL4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 07:56:51 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GllRt3R2rzb19W;
-        Thu, 12 Aug 2021 19:52:42 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 12 Aug 2021 19:56:22 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 12 Aug
- 2021 19:56:22 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 2/2] crypto: hisilicon/sec - modify the hardware endian configuration
-Date:   Thu, 12 Aug 2021 19:55:21 +0800
-Message-ID: <1628769321-25192-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628769321-25192-1-git-send-email-yekai13@huawei.com>
-References: <1628769321-25192-1-git-send-email-yekai13@huawei.com>
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 77A7D22201;
+        Thu, 12 Aug 2021 11:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628769384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6/GPY4+bapPOd1ChiVHOPE1vdPBIG+lFx1zYMMhhGLc=;
+        b=f+WYP7PFYMC/dl/+RJ0fTYpSqBVqngL0S1o8IWPwpEzsBmK+BiGh/mC9VP+KsPPgKLfJgD
+        uZdqIhPLRLrBZ18yTah9m6BzxgsiwKI4S+sle5OgTUh75Ky3Z3szoy2121k98eCNIbLLl6
+        U0B03c5rwl3SZTqPRDNSUzqLwwQN2qk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628769384;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6/GPY4+bapPOd1ChiVHOPE1vdPBIG+lFx1zYMMhhGLc=;
+        b=Dq4VDVt1Ac6dV6iTN8VeZ2Kop/ALi3KiMr4y/diLRrzvcL9rkfDM/6TkI2Co6f22Y55Xdt
+        oAJESFNXwfhfqhCg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 626F313A90;
+        Thu, 12 Aug 2021 11:56:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id xVpPF2gMFWHAPQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 11:56:24 +0000
+Subject: Re: [PATCH v14 062/138] mm/migrate: Add folio_migrate_copy()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-63-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <b9c3038a-56af-95e9-b5dd-8e88f508719e@suse.cz>
+Date:   Thu, 12 Aug 2021 13:56:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210715033704.692967-63-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the endian configuration of the hardware is abnormal, it will
-cause the SEC engine is faulty that reports empty message. And it
-will affect the normal function of the hardware. Currently the soft
-configuration method can't restore the faulty device. The endian
-needs to be configured according to the system properties. So fix it.
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> This is the folio equivalent of migrate_page_copy(), which is retained
+> as a wrapper for filesystems which are not yet converted to folios.
+> Also convert copy_huge_page() to folio_copy().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
- drivers/crypto/hisilicon/sec2/sec_main.c | 31 +++++++++----------------------
- 2 files changed, 9 insertions(+), 27 deletions(-)
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 018415b..d97cf02 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -157,11 +157,6 @@ struct sec_ctx {
- 	struct device *dev;
- };
- 
--enum sec_endian {
--	SEC_LE = 0,
--	SEC_32BE,
--	SEC_64BE
--};
- 
- enum sec_debug_file_index {
- 	SEC_CLEAR_ENABLE,
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 8addbd7..a0cc46b 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -312,31 +312,20 @@ static const struct pci_device_id sec_dev_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sec_dev_ids);
- 
--static u8 sec_get_endian(struct hisi_qm *qm)
-+static void sec_set_endian(struct hisi_qm *qm)
- {
- 	u32 reg;
- 
--	/*
--	 * As for VF, it is a wrong way to get endian setting by
--	 * reading a register of the engine
--	 */
--	if (qm->pdev->is_virtfn) {
--		dev_err_ratelimited(&qm->pdev->dev,
--				    "cannot access a register in VF!\n");
--		return SEC_LE;
--	}
- 	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	/* BD little endian mode */
--	if (!(reg & BIT(0)))
--		return SEC_LE;
-+	reg &= ~(BIT(1) | BIT(0));
-+	if (!IS_ENABLED(CONFIG_64BIT))
-+		reg |= BIT(1);
- 
--	/* BD 32-bits big endian mode */
--	else if (!(reg & BIT(1)))
--		return SEC_32BE;
- 
--	/* BD 64-bits big endian mode */
--	else
--		return SEC_64BE;
-+	if (!IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
-+		reg |= BIT(0);
-+
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static void sec_open_sva_prefetch(struct hisi_qm *qm)
-@@ -429,9 +418,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 		       qm->io_base + SEC_BD_ERR_CHK_EN_REG3);
- 
- 	/* config endian */
--	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	reg |= sec_get_endian(qm);
--	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
-+	sec_set_endian(qm);
- 
- 	return 0;
- }
--- 
-2.7.4
-
+The way folio_copy() avoids cond_resched() for single page would IMHO deserve a
+comment though, so it's not buried only in this thread.
