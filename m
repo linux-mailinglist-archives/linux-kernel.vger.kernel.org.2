@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776033EA605
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8EC3EA601
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237722AbhHLNxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhHLNw5 (ORCPT
+        id S237702AbhHLNwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:52:17 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13267 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhHLNwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:52:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA962C061756;
-        Thu, 12 Aug 2021 06:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FSEsyOd/4VgGNCa1AqMwPM0EjAO09/FKI4Y/RKgJ9oc=; b=PB5TN4rKLBFyrXRJ8+IpPQ6GFx
-        2HZerN1HTd63PeshnKhem+nljRBmLxaui/i1om21F1sWmP+hMjDDJS55xmhS4oxKnXpp00KnpzlE2
-        6tQVDF8Pd76VOg9hA0cSJAVGBbnv7LS9wdSGk8uZBVHe2WoYmsCL9EPrsjzBwNlB7m9OA+qWOBH1G
-        DTyJpos7StYMPNb6UNL6IuKFA0DUtnHaaEuEKWdoAYnmFSKoMzx36cch7maZBd4MaeMtpzgCwzvbB
-        9o5RCPCZF/Z5mBKHgCxOE1L3ECk8GErwIJcu9ZXSzHn3MSgCYAsxdlO5JdfXXv/TKXFzWMqGvGsxv
-        lm77IDCQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEB6d-00Ed87-Bu; Thu, 12 Aug 2021 13:50:55 +0000
-Date:   Thu, 12 Aug 2021 14:50:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     trond.myklebust@primarydata.com, darrick.wong@oracle.com,
-        hch@lst.de, jlayton@kernel.org, sfrench@samba.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: Make swap_readpage() for SWP_FS_OPS use
- ->direct_IO() not ->readpage()
-Message-ID: <YRUnN+Y2CQ0qcjO6@casper.infradead.org>
-References: <3088327.1628774588@warthog.procyon.org.uk>
- <YRUbXoMzWVX9X/Vf@casper.infradead.org>
- <162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk>
- <162876947840.3068428.12591293664586646085.stgit@warthog.procyon.org.uk>
- <3088958.1628775479@warthog.procyon.org.uk>
+        Thu, 12 Aug 2021 09:52:15 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Glp4z5Xchz1CVcp;
+        Thu, 12 Aug 2021 21:51:31 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 21:51:48 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 21:51:47 +0800
+Subject: Re: [PATCH v3 0/6] ARM: mm: cleanup page fault and fix pxn process
+ issue
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>,
+        Will Deacon <will@kernel.org>
+References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+ <a0c4b967-0dba-24eb-1c8d-580de1948e1c@huawei.com>
+Message-ID: <a0f57e1f-0777-b072-ac5f-4cc4789cee9f@huawei.com>
+Date:   Thu, 12 Aug 2021 21:51:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3088958.1628775479@warthog.procyon.org.uk>
+In-Reply-To: <a0c4b967-0dba-24eb-1c8d-580de1948e1c@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 02:37:59PM +0100, David Howells wrote:
-> David Howells <dhowells@redhat.com> wrote:
-> 
-> > Matthew Wilcox <willy@infradead.org> wrote:
-> > 
-> > > After submitting the IO here ...
-> > > 
-> > > > +	if (ret != -EIOCBQUEUED)
-> > > > +		swapfile_read_complete(&ki->iocb, ret, 0);
-> > > 
-> > > We only touch the 'ki' here ... if the caller didn't call read_complete
-> > > 
-> > > > +	swapfile_put_kiocb(ki);
-> > > 
-> > > Except for here, which is only touched in order to put the refcount.
-> > > 
-> > > So why can't swapfile_read_complete() do the work of freeing the ki?
-> > 
-> > When I was doing something similar for cachefiles, I couldn't get it to work
-> > like that.  I'll have another look at that.
-> 
-> Ah, yes.  generic_file_direct_write() accesses in the kiocb *after* calling
-> ->direct_IO(), so the kiocb *must not* go away until after
-> generic_file_direct_write() has returned.
 
-This is a read, not a write ... but we don't care about ki_pos being
-updated, so that store can be conditioned on IOCB_SWAP being clear.
-Or instead of storing directly to ki_pos, we take a pointer to ki_pos
-and then redirect that pointer somewhere harmless.
+On 2021/7/31 14:42, Kefeng Wang wrote:
+>
+> On 2021/6/10 20:35, Kefeng Wang wrote:
+>> The patchset cleanup ARM page fault handle to improve readability,
+>> fix the page table entries printing and fix infinite loop in the
+>> page fault handler when user code execution with privilege mode if
+>> ARM_LPAE enabled.
+>
+> Hi  Russell， I make some changes according your advise, could you give 
+> me
+>
+> some comments about this patchset, I want to make sure that whether they
+>
+> can be sent to  the ARM patch system,  many thanks.
+
+Keep ping...
+
+>
+>> v3:
+>> - drop the fix about page table printing
+>> - kill page table base print instead of printing the physical address
+>> - only die when permission fault both kernel-mode and user code 
+>> execution
+>>    with privilege mode
+>> - drop LPAE specific
+>>
