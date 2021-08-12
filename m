@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F3F3EA85D
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE6C3EA85E
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhHLQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:16:36 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52032 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232611AbhHLQOy (ORCPT
+        id S232601AbhHLQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232422AbhHLQPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:14:54 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 298E31FF61;
-        Thu, 12 Aug 2021 16:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628784863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbKpH3fObpqF4YoutZpZCXlOx6vnUfgj3EGpl5lhHJE=;
-        b=gVnMmlBdln6b8Pzg9FVVu3DYRCvmcSfTU/lSasolqjxbCkTUI+A3KL+cUADf+mt627WClb
-        pNX7SmxGBTv0UuUsujpISDFK95JtJDoaqVIN+Z5c5dK+babdebAZYLU4HgNRfBff6i8nmw
-        jPoXY43K2bQtbN22stNjfPd2F33K3+g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628784863;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbKpH3fObpqF4YoutZpZCXlOx6vnUfgj3EGpl5lhHJE=;
-        b=YkfeMqGbvDhNvt+a691HrPiuV6yKoiZ0Zr2H/FN/8BXXr1NQxSHJcsPMp3hNzmmpKiv5Ql
-        +2iaVZqrJsZELjDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 13F3B13ACC;
-        Thu, 12 Aug 2021 16:14:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id yCE/BN9IFWEpfgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:14:23 +0000
-Subject: Re: [PATCH v14 072/138] mm/writeback: Add folio_account_cleaned()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-73-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ea89a40c-68b3-c54d-8e7f-3c09757ddd8d@suse.cz>
-Date:   Thu, 12 Aug 2021 18:14:22 +0200
+        Thu, 12 Aug 2021 12:15:37 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1688CC0617AE;
+        Thu, 12 Aug 2021 09:15:06 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id n7so11429648ljq.0;
+        Thu, 12 Aug 2021 09:15:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=q1kP8IDfWs3KYwhhLGYrvublLDH8i7aJatyFRJI0aDQ=;
+        b=O2nG2V6paudkRTLvKKBvSW4Vzfdiqn7OBX0xqWqsk4KJFuZFlfV7qIIY0RnpjQspV6
+         JZxD+D1sXcF6B9cBMHcrG+rtbo1eaHJg5+u6FtbJAAMt1+EHhPEAfIrGS2baPavi2ULQ
+         gJFy+ugYFJ2KAZWQsUZk5Vrp3wH22DbiT0nIOETuFQQ7n5MZbVzwWTeqxx5RU+nBVD0m
+         6T3kMvrUIrGLrwvjCgwAY7o6OwaTJ/XgC960HZiZEU3RhGJmh3kN2/+9zYhSYhCncceh
+         o0ThDntonzjPShFU3ywxcfVh01s8IN4VKcGxR/T/ouSZRB6o5VEoNG1XqXjaklAZ0F1D
+         Tx7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q1kP8IDfWs3KYwhhLGYrvublLDH8i7aJatyFRJI0aDQ=;
+        b=QT6GiEIPhqLZsuNKTIk3BZSR2K3/Gst5CTc6FcomzTeQZBclnlPS1tt4kEphl7UN2e
+         awTOLTozsN0J89sMabuH1vbntzu4aKM2/Vwk/eQxmMT8xNptYMPawbF14HrmG3fc5M2/
+         Bkm6Zc6N/2F1Dm+eyN5I3/oPpWxft7w7dc1iDqDXKmx36hk/wikyxwQRABYwYoNj2o7+
+         ARKoy8oHZfEWNOY5RAdQ9DL36JWJpyftkInEB3+8VBqkF4DmfFE0bVoUGBAkHcrSC9Cw
+         tSqThsMtbp2fnHUh4z+cXBbh3Qr7sr+OKHVaT6taYYsXsvCuTjOCsGcbpdsB1k0iUmpH
+         Ocrg==
+X-Gm-Message-State: AOAM5311y6TQfNp/hNA600LjxWF9QQG7o/1TCdagiCYC2bzZ7qiw/wTB
+        WbphlwXvhWaQ7RztTgMf7xc=
+X-Google-Smtp-Source: ABdhPJw8Y+4oboFgVDcsxDZ5DafHZB6Fmy0rHyftgqwU1KidVKdYV7L6Oq0+j6F4JOqgaGTP6nwKjw==
+X-Received: by 2002:a2e:a70f:: with SMTP id s15mr3366180lje.343.1628784904468;
+        Thu, 12 Aug 2021 09:15:04 -0700 (PDT)
+Received: from [192.168.1.102] ([178.176.76.126])
+        by smtp.gmail.com with ESMTPSA id d17sm346650lji.102.2021.08.12.09.15.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 09:15:04 -0700 (PDT)
+Subject: Re: [PATCH v2 6/7] usb: gadget: bdc: remove unnecessary AND operation
+ when get ep maxp
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>
+References: <1628774283-475-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1628774283-475-6-git-send-email-chunfeng.yun@mediatek.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <4e751ea2-7e42-3378-397f-7bf913752da2@gmail.com>
+Date:   Thu, 12 Aug 2021 19:15:01 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-73-willy@infradead.org>
+In-Reply-To: <1628774283-475-6-git-send-email-chunfeng.yun@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,49 +83,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Get the statistics right; compound pages were being accounted as a
-> single page.  This didn't matter before now as no filesystem which
-> supported compound pages did writeback.  Also move the declaration
-> to filemap.h since this is part of the page cache.  Add a wrapper for
+On 8/12/21 4:18 PM, Chunfeng Yun wrote:
 
-Seems to be pagemap.h :)
+> usb_endpoint_maxp() already returns actual max packet size, no need
 
-> account_page_cleaned().
+  "No ndeed to", perhaps?
+
+> AND 0x7ff.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Felipe Balbi <balbi@kernel.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+[...]
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-Nit below:
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index bd97c461d499..792a83bd3917 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2453,14 +2453,15 @@ static void folio_account_dirtied(struct folio *folio,
->   *
->   * Caller must hold lock_page_memcg().
->   */
-> -void account_page_cleaned(struct page *page, struct address_space *mapping,
-> +void folio_account_cleaned(struct folio *folio, struct address_space *mapping,
->  			  struct bdi_writeback *wb)
->  {
->  	if (mapping_can_writeback(mapping)) {
-> -		dec_lruvec_page_state(page, NR_FILE_DIRTY);
-> -		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-> -		dec_wb_stat(wb, WB_RECLAIMABLE);
-> -		task_io_account_cancelled_write(PAGE_SIZE);
-> +		long nr = folio_nr_pages(folio);
-> +		lruvec_stat_mod_folio(folio, NR_FILE_DIRTY, -nr);
-> +		zone_stat_mod_folio(folio, NR_ZONE_WRITE_PENDING, -nr);
-> +		wb_stat_mod(wb, WB_RECLAIMABLE, -nr);
-> +		task_io_account_cancelled_write(folio_size(folio));
-
-In "mm/writeback: Add __folio_mark_dirty()" you used nr*PAGE_SIZE. Consistency?
-
->  	}
->  }
->  
-> 
-
+MBR, Sergei
