@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84C43EA966
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258503EA969
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhHLRX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234975AbhHLRXz (ORCPT
+        id S235670AbhHLRZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:25:28 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32768 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234975AbhHLRZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:23:55 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A75C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:23:29 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id r72so9434950iod.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:23:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JRwzKSay2n+yQfmhBPOFfDNxmLPMQg6PC0lXLvxAvL8=;
-        b=Bh074U0YkS72TlAp7BoXqHTJFFM+Kpvlod9cHdGDbEvZxvD/WDOg3Uc8bwHw0XuXHR
-         gR6QY2KTEoTvpqCgEQpyiOdXq/Y0PNq6zEbZywP4dsfckhwXLli67gfBLkr1fxY8sSCu
-         ZZY3+cfWMnUPqp74qIF2TVpKDoMx3ryHreSAU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JRwzKSay2n+yQfmhBPOFfDNxmLPMQg6PC0lXLvxAvL8=;
-        b=JWajenvFB6D6DnuGMXlfXlA0lT2wKOtufKOMoRKeqmAUIn6HQnkeQEpOIiFs81oDKj
-         0xx0eGVL2D8epOHS7DySX0sGMCxID/QqIZeLlEhiqk4FYCxB37VZ8VMYGIDvm0GJIOgS
-         MbsWEP6u5riS7kpaHjWKVcf46FbM3pVVZvBY4xmRF6IhzszlWxw2ZrQI+ZeJEHsnpPPP
-         SIhLQpRXunzOYEy1PmaJxoZljR00/CIa48tbIJiT1YvjGdV+pbw2PZ0YkF+M/okRz7IN
-         nxgcP+mLQyvjqwYd2VscHDDHorqW4pthq0ABBrccKLl+3omOSQ601YFf20af83hn2bCx
-         84kA==
-X-Gm-Message-State: AOAM532Y/JVQhfD/8Nf/qcIZit15MHJW4KJpk0z8NXveHCwpG1P0MYaW
-        3CsuL/VIha+2T8dt2bJsH0w6mMnylOUT4Q==
-X-Google-Smtp-Source: ABdhPJy8KBmql2gBaK8/sUsgMS4DyvmV/HjweeK0u3LEpOTJT4S3kncNFzQ/Gd5oUtkiRArERfbMlw==
-X-Received: by 2002:a02:698b:: with SMTP id e133mr4680273jac.125.1628789008951;
-        Thu, 12 Aug 2021 10:23:28 -0700 (PDT)
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
-        by smtp.gmail.com with ESMTPSA id e1sm1850093ils.76.2021.08.12.10.23.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 10:23:27 -0700 (PDT)
-Received: by mail-il1-f180.google.com with SMTP id i9so7772335ilk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:23:27 -0700 (PDT)
-X-Received: by 2002:a92:d84f:: with SMTP id h15mr3825806ilq.12.1628789006912;
- Thu, 12 Aug 2021 10:23:26 -0700 (PDT)
+        Thu, 12 Aug 2021 13:25:27 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3265A1FF68;
+        Thu, 12 Aug 2021 17:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628789101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkieCM8gHFiQA/zfOvuoQceM8wmzHr2Y9ESa0hqjH0k=;
+        b=KvooY0WEwmmdEXfpMS9Gzv9mYbR+WT4gucRhUBy1NgoCprtYA2jT3r3f+wv4wLG5rHPFsA
+        mHvnZbrzh9M2cNojHDhGW9+ySB3Xa/YuT1eToWOm2Chc+opwkncNoVeism8vE0cEjtsQx6
+        fMaZs7RyR+WVEZUdDV92LtP3M/TwMPE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628789101;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkieCM8gHFiQA/zfOvuoQceM8wmzHr2Y9ESa0hqjH0k=;
+        b=ZLtArrYEhg6E99DN7FB3MZVwWtblZrh8gb7q3F8oN0yBxsKjmDSXu9LBJQNLmTW0d8cAWg
+        tU+IugZ1FbnQt4CQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1552B13AC3;
+        Thu, 12 Aug 2021 17:25:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 0cktBG1ZFWFUDwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:25:01 +0000
+Subject: Re: [PATCH v14 084/138] mm/page_alloc: Add folio allocation functions
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-85-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <89d1ce73-42cc-adef-1bfa-6eafb33e7b1b@suse.cz>
+Date:   Thu, 12 Aug 2021 19:25:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210811235253.924867-1-robdclark@gmail.com> <20210811235253.924867-4-robdclark@gmail.com>
-In-Reply-To: <20210811235253.924867-4-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 12 Aug 2021 10:23:15 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U__Ge_6MkvxmcOQe49Q7NG94Bi3T2xNNiec-NF9J8tJg@mail.gmail.com>
-Message-ID: <CAD=FV=U__Ge_6MkvxmcOQe49Q7NG94Bi3T2xNNiec-NF9J8tJg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] drm/bridge: ti-sn65dsi86: Implement bridge->mode_valid()
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210715033704.692967-85-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
+> The __folio_alloc(), __folio_alloc_node() and folio_alloc() functions
+> are mostly for type safety, but they also ensure that the page allocator
+> allocates a compound page and initialises the deferred list if the page
+> is large enough to have one.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-On Wed, Aug 11, 2021 at 4:51 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> For the brave new world of bridges not creating their own connectors, we
-> need to implement the max clock limitation via bridge->mode_valid()
-> instead of connector->mode_valid().
->
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
-
-This looks good to me. I'll plan to land this together with the next
-patch into drm-misc-next sometime next week unless someone beats me to
-it.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
