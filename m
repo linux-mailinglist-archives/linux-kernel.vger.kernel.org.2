@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2E33EA43F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D6D3EA440
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237271AbhHLMEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:04:23 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8013 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237236AbhHLMES (ORCPT
+        id S237338AbhHLMEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:04:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8403 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237237AbhHLMET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:04:18 -0400
+        Thu, 12 Aug 2021 08:04:19 -0400
 Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GllhR52DHzYlWH;
-        Thu, 12 Aug 2021 20:03:35 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GllcB4W95z86nT;
+        Thu, 12 Aug 2021 19:59:54 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
  (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 12
- Aug 2021 20:03:51 +0800
+ Aug 2021 20:03:52 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>, <hughd@google.com>
 CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH 3/4] shmem: remove unneeded function forward declaration
-Date:   Thu, 12 Aug 2021 20:03:49 +0800
-Message-ID: <20210812120350.49801-4-linmiaohe@huawei.com>
+Subject: [PATCH 4/4] shmem: include header file to declare swap_info
+Date:   Thu, 12 Aug 2021 20:03:50 +0800
+Message-ID: <20210812120350.49801-5-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210812120350.49801-1-linmiaohe@huawei.com>
 References: <20210812120350.49801-1-linmiaohe@huawei.com>
@@ -40,28 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The forward declaration for shmem_should_replace_page() and
-shmem_replace_page() is unnecessary. Remove them.
+It's bad to extern swap_info[] in .c. Include corresponding header
+file instead.
 
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- mm/shmem.c | 3 ---
- 1 file changed, 3 deletions(-)
+ mm/shmem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/mm/shmem.c b/mm/shmem.c
-index 41d2900153d9..ccef5fad0049 100644
+index ccef5fad0049..b9cebf074367 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -135,9 +135,6 @@ static unsigned long shmem_default_max_inodes(void)
- }
- #endif
+@@ -38,6 +38,7 @@
+ #include <linux/hugetlb.h>
+ #include <linux/frontswap.h>
+ #include <linux/fs_parser.h>
++#include <linux/swapfile.h>
  
--static bool shmem_should_replace_page(struct page *page, gfp_t gfp);
--static int shmem_replace_page(struct page **pagep, gfp_t gfp,
--				struct shmem_inode_info *info, pgoff_t index);
- static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 			     struct page **pagep, enum sgp_type sgp,
- 			     gfp_t gfp, struct vm_area_struct *vma,
+ static struct vfsmount *shm_mnt;
+ 
+@@ -1152,8 +1153,6 @@ static void shmem_evict_inode(struct inode *inode)
+ 	clear_inode(inode);
+ }
+ 
+-extern struct swap_info_struct *swap_info[];
+-
+ static int shmem_find_swap_entries(struct address_space *mapping,
+ 				   pgoff_t start, unsigned int nr_entries,
+ 				   struct page **entries, pgoff_t *indices,
 -- 
 2.23.0
 
