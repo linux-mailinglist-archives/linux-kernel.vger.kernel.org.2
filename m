@@ -2,50 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE6E3EA749
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585183EA752
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhHLPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235730AbhHLPPS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:15:18 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31445C061756;
-        Thu, 12 Aug 2021 08:14:53 -0700 (PDT)
+        id S236651AbhHLPQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:16:53 -0400
+Received: from ms.lwn.net ([45.79.88.28]:48894 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233554AbhHLPQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:16:45 -0400
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id DF7E52CC;
-        Thu, 12 Aug 2021 15:14:52 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net DF7E52CC
+        by ms.lwn.net (Postfix) with ESMTPSA id DD75644A;
+        Thu, 12 Aug 2021 15:16:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net DD75644A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1628781293; bh=zTi3JZ2hzc1lT/Vj6KKa1g4uFSkByqMdcflCMODKAn8=;
+        t=1628781380; bh=CnvYqSEF0ZWvynhGAoWUNAnqtMunsVqwTJ7qnUGujvk=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=tFVycUJdkpz8j/ZNyfUOB64cdsKFgs9s4Fu3wGX2biAU6/BBojS/4zP1i84/nIqeU
-         YGZdW+DJ7q3fYN1BKSIdPoG+k9tLw9/UMbk8O4cH/pppKGlNdEPTelYxzAmH7My5SU
-         hxQTHTI3gb3d6w1fUbmlaVSkDxvsGVm0K4qtV+pleD6aNesOqhOE3rB36TBM8yYZv/
-         0cqSRFOe8bfvGFlsVxX1aJ1BavCeSjgoCcrERv6+hWe9L+Z2W6MHUrt1bSeOWZLLw4
-         /USjaWCHM1+q9gQCYdObp4MDUr+TrWuhUAZvWi2COFlnPu6lDLpGuiGvvPlotfFAvN
-         vxT7JgMLVMosw==
+        b=mkHWVwrrjYw8Y3fFGXG1CnA7lRIaEVMLWXv7WgYCYNGsLUvDKxx/GeyCMzpkhHfFq
+         rL0N+IO4Se3x/p0a7Z1IykHbaiXIgCzKur2J6G5bcii2oTmIVVhQKG25UG/JdKH+qn
+         gvN1fGMigOCoECOs+S16n5Md3Mvc7+J4C0XBxgAA22I/mkVcTDWO6Y1Ntm+2i34hnU
+         761T8pg+miQZuoRu64fUQcsJpOU866769qCyqtQqMNfh1IuvaRsz7rP1aU3U+gp++z
+         99OweVEUzmjtviyDorE6wqLtXx6ClabEBpd/dUTbr4+3knJxnW7Q6LcFXsoeE529r8
+         eMxE20XbKllfQ==
 From:   Jonathan Corbet <corbet@lwn.net>
 To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
-        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v3 6/9] docs: pdfdocs: One-half spacing for CJK
- translations
-In-Reply-To: <af64d80c-c1f7-7d32-9b28-e4b883dbe6e8@gmail.com>
-References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
- <a1c19fe1-2960-1c4b-b355-7e6da13b9630@gmail.com>
- <8e70e5ed-c0d9-a0f0-6640-a0f1ebdda6d4@gmail.com>
- <87im0a207r.fsf@meer.lwn.net>
- <af64d80c-c1f7-7d32-9b28-e4b883dbe6e8@gmail.com>
-Date:   Thu, 12 Aug 2021 09:14:52 -0600
-Message-ID: <87k0kqzocz.fsf@meer.lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH v2] docs: sphinx-requirements: Move sphinx_rtd_theme to top
+In-Reply-To: <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
+References: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
+ <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
+Date:   Thu, 12 Aug 2021 09:16:19 -0600
+Message-ID: <87fsvezoak.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -54,45 +45,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Akira Yokosawa <akiyks@gmail.com> writes:
 
-> On Thu, 12 Aug 2021 08:42:48 -0600, Jonathan Corbet wrote:
->> Akira Yokosawa <akiyks@gmail.com> writes:
->> 
->>> On Mon, 2 Aug 2021 18:56:16 +0900, Akira Yokosawa wrote:
->>>> CJK documents are much easier to read with a wider baseline stretch.
->>>> Applying the onehalfspacing option of "setspace" package looks
->>>> reasonable.
->>>>
->>>> Note: \usepackage{setspace} needs to be before that of hyperref in the
->>>> preamble.  The 'extrapackages' key (available since Sphinx 2.3) is for
->>>> this purpose.
->>>
->>> Sphinx versions < 2.3 ignore 'extrapackages' and generate LaTeX
->>> sources without setspace package.
->>> Obviously, building such LaTeX sources will end up in the error of:
->>>
->>>     ! Undefined control sequence.
->>>     \kerneldocCJKoff ...exeCJKinactive \singlespacing
->>>
->>> Current requirement to build pdfdocs is Sphinx 2.4.4, but LaTeX
->>> sources generated by 1.7.9 can at least be built prior to this change.
->>>
->>> Jon, Mauro, do you think this is a regression?
->> 
->> Having the build just fail that way isn't really a good thing...it would
->> be far better to do the baseline tweaking only with versions of sphinx
->> that support it or, failing that, to at least refuse to build with a
->> suitably informative message.
+> sphinx_rtd_theme 0.5.2 has "docutils<0.17" in its requirements.
+> docutils 0.17 released this April caused regression in
+> sphinx_rtd_theme 0.5.1 [1].
 >
-> Hi Jon,
+> By removing docutils and moving sphinx_rtd_theme before Sphinx in
+> requirements.txt, the requirement of "docutils<0.17" can be met
+> naturally.
 >
-> This issue is fixed in v4 of the patch set.
-> Can you please consider pulling v4?
+> [1]: https://github.com/readthedocs/sphinx_rtd_theme/issues/1112
 >
-> I have tested it against Sphinx versions 1.7.9, 2.4.4, and 4.1.2.
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> ---
+> Hi,
+>
+> It is better to keep requirements as minimal as possible.
+> Let's leave the dependency to the sphinx_rtd_theme package.
+>
+> Changes in v1 [2] -> v2:
+>
+>     o Remove docutils entry.
+>     o Move sphinx_rtd_theme to top.
+>     o Adjust patch title.
+>
+> [2]: https://lore.kernel.org/linux-doc/974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com/
 
-Ouch, weird...I definitely got v4, but somehow it managed to evade my
-docs folder.  Apologies for that; I've just applied that version.
-
-Thanks,
+Applied, thanks.
 
 jon
