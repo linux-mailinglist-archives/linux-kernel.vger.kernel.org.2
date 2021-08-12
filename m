@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788493EA772
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8001D3EA778
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbhHLPW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235728AbhHLPWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:22:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B156FC061756;
-        Thu, 12 Aug 2021 08:22:30 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628781749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jrg8BoginmIWT80KAp60mYuc3nXoFJZV7qu1CCM8wZg=;
-        b=e7gXoSgmDdXOmwz9EjwZoYE2nuJOEt9ZoruyVnn72o7AzQorqvIi1zol1ie2vqaZKH3PWN
-        xtjpQaOjZTcIgFZMdNGMVxqComhFg0M91ax8e7JK2+v+k7w5NMkIBY6Gsc+5DF/eYPyTUt
-        an+vZgKqp7PEarJjJIL95FEZzCLYk9skZbZzE9z8JSlkti/MfQYUIIrp8t4/sTsl5BPf+C
-        Qbb9lKw77SkcZet15ITerpAtZWR5ApVFuZHvgru+Qyg//f9/0g2eLdXS16hFGmkYHB0FWT
-        syt3bw4VRTLVyPa2nTdiB2naQT2LKc52dRkmJwtOx7N6mVNG6EpIVWAEeDjEvA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628781749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jrg8BoginmIWT80KAp60mYuc3nXoFJZV7qu1CCM8wZg=;
-        b=wP8KaWssTL2dW5QxiVk8cO3frdKQGmSt46Xojm9YGQmTPb4NwXjsSf56+/S4/v77xiE7hz
-        EB8ELejdkXiBhrDw==
-To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
-In-Reply-To: <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
-References: <20210713135158.054424875@linutronix.de>
- <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
- <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
- <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
- <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
-Date:   Thu, 12 Aug 2021 17:22:28 +0200
-Message-ID: <87v94ahemj.ffs@tglx>
+        id S238012AbhHLPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237954AbhHLPYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:24:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC686108C;
+        Thu, 12 Aug 2021 15:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628781830;
+        bh=acZbYeX5MRjY4RKNfZCIAUPWLL4YXsg1dpIXXPKpKg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LaZJDMpq/mWuV4Z09OXtrLBxe0UEvA+4POyheCUlXFI43HEVfdMy8XitdzrrJTGRi
+         kI4CtEPDr+yielPnHG1CUEpzu4Zr2ShVqm5ZW3fvCNuxPJVlgRgAoDMel8Jx3kvrhC
+         NF6HDw9ly0YAZNT2JBmxAkFcBXKe8T5TJd8hnSdReeLY6Qz4Zhty2BngShZbWDZFuU
+         EaLJuxOBDZcIieX7ICNOXTeFG5z1g4H7lAfdJ6gZ3qYK30fT1L9QzBUhOqAqTHn8S/
+         2K5NEpfjQW9C312PRaYqv2AOWdaiUaiMU2JzT028r7l8I+XMPSi4KuJmjPwxPqGpJS
+         p7u1GALb1Dv1Q==
+Date:   Thu, 12 Aug 2021 16:23:31 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v7 1/4] arm64: Make all stack walking functions use
+ arch_stack_walk()
+Message-ID: <20210812152331.GA4239@sirena.org.uk>
+References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
+ <20210812132435.6143-1-madvenka@linux.microsoft.com>
+ <20210812132435.6143-2-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
+In-Reply-To: <20210812132435.6143-2-madvenka@linux.microsoft.com>
+X-Cookie: Vote anarchist.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12 2021 at 17:04, Mike Galbraith wrote:
 
-> On Thu, 2021-08-12 at 16:32 +0200, Thomas Gleixner wrote:
->> 
->> Can you please test whether the below fixes it for you?
->
-> Yes, that boots.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Not that I'm surprised, but I still do not know why :)
+On Thu, Aug 12, 2021 at 08:24:32AM -0500, madvenka@linux.microsoft.com wrot=
+e:
 
->> I have yet to find a machine which reproduces it as I really want to
->> understand which particular part is causing this.
->
-> Config attached just in case.
+> Here is the list of functions:
+>=20
+> 	perf_callchain_kernel()
+> 	get_wchan()
+> 	return_address()
+> 	dump_backtrace()
+> 	profile_pc()
 
-I rather assume it's a hardware dependency. What kind of machine are you
-using?
+I've not actually gone through this properly yet but my first thought is
+that for clarity this should be split out into a patch per user plus one
+to delete the old interface  - I'd not worry about it unless it needs to
+get resubmitted though.
 
-Thanks,
+It'll definitely be good to get this done!
 
-        tglx
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEVPPIACgkQJNaLcl1U
+h9AePgf/VA+EigJwvwMqUEGijo5q4SHHlgzCEwAGXA9qCpe8ShyFjxQQdOTHb3R6
+10ASH1AJEhmkXF4N95StpyTR/r5CyNnPPQJAldoKEgtoSV6QfIZm16kud8XlXWks
+aQZjcbUwBLGXcQSLMnbVoqzM6Fk5ViivuYWfN96Z/nlciSMpg3grkMPrj+7PhJnt
+ZVgN4L2GQWKjFU59CZhYtmp7886MiASDJ3jo34mJRmoCtbq+mMje0GpWrwX7c6Xk
+0FNOYMNZ/I4KVNExxyQSu7DCxJ/K98Y08d1WXOCgNNO4bSpgC0pyJSTbGCpYoXbS
+A/GpZiCia9Lt5U7a+6HzXwiFj0Cx6A==
+=C9+3
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--
