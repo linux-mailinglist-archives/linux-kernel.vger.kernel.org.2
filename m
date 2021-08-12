@@ -2,109 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E7F3E9F47
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAF43E9F4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhHLHNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:13:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234281AbhHLHNW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:13:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628752377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r1z8oCJ5otLeJGBN/vU9nWn4UXFrvOTRJOJmiwu3d0Y=;
-        b=ipTCpo3BCM2RXa/8XEyKvoKpyZUUv+AcYw3gSv6h8jIT8a0fYPVl//fUWAAOJASiMQ7EYY
-        WpEd3sKqjZAqJY2VTL42iAwYSeAf8qVndaLKKjL6/TWus6+Ci2RrGAsyYd2DsknoWfNj8Q
-        zR+tMQwngXtD/mcTFnlZdmwoZo5lA38=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-QNt7q5lIOjS1UBO1F_a0ng-1; Thu, 12 Aug 2021 03:12:56 -0400
-X-MC-Unique: QNt7q5lIOjS1UBO1F_a0ng-1
-Received: by mail-wr1-f69.google.com with SMTP id o10-20020a5d684a0000b0290154758805bcso1502584wrw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:12:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=r1z8oCJ5otLeJGBN/vU9nWn4UXFrvOTRJOJmiwu3d0Y=;
-        b=b9G7j5JL76hYLSCuLXwwQEB2nhVxBksN5F9UEy/bm1bhz/bInFOvGbDMjOhcoLdGvA
-         3C6TcFy9nFQlj6XkxdGXKrx4SXxsQrY86t7y8DZyQ3vHBHFOU55OpER95E9waiU9InZ4
-         8+q4o9UcVPdq4Q/FAzZL2fw6aUPAzdiDEyGO/ga7d+WiuKJHIb1DAF28ScBmW7+Yx//B
-         9wBmIbp4AkKCAoy6A0LRToM0FBKA/tufcTZsrasz5EBafOc+ovW5dZJtHs1ZfTDhCW66
-         Ksnf8J0MXl++vHiRxKUGwNcLsqeWH7rYNSkq2+ftgf85gTxnGBHFt8VS3nM/j+EXcEnd
-         CZTQ==
-X-Gm-Message-State: AOAM532OrPNQ892wV+Vt08pjXjIpcbGQG5zcnAMB9XJMqdlNy0rwC41H
-        nOlMBDW6Pzfo5xpd9XhzTY0CbIH1By/xxB9Ex2J4Ig62rMqu24gs15h1zjillAT8ko+0FZiBsxj
-        rI4lCBPJkoOtMxuJ2cIsPGEc+
-X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr14011556wml.187.1628752374745;
-        Thu, 12 Aug 2021 00:12:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwN8jmtH/cqMqGBW6lyfCsmyqhk628hKW3fRFyYAuqGvYPYW2AgLBL/d4G6Tz1Np7sZb4928g==
-X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr14011529wml.187.1628752374538;
-        Thu, 12 Aug 2021 00:12:54 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id m39sm7731910wms.28.2021.08.12.00.12.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 00:12:54 -0700 (PDT)
-Subject: Re: mmap denywrite mess (Was: [GIT PULL] overlayfs fixes for
- 5.14-rc6)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org
-References: <YRPaodsBm3ambw8z@miu.piliscsaba.redhat.com>
- <c13de127-a7f0-c2c3-cb21-24fce2c90c11@redhat.com>
- <CAHk-=wg6AAX-uXHZnh_Fy=3dMTQYm_j6PKT3m=7xu-FdJOCxng@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <a540ba9f-6d3b-4d49-0424-b100bcdf38bf@redhat.com>
-Date:   Thu, 12 Aug 2021 09:12:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234688AbhHLHNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:13:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37992 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234658AbhHLHNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 03:13:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628752398; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=E1QdHLZ0oxrRgaZAm7gQOCDfJqgmbLn+4sMn2tfI2Uc=;
+ b=qXMbi6dTXqONL3SuboZjiFDyLdxN4vl24xRRWgzuOHtm27Kaq2AKpPyF1ax6BSHnRk4z5qHx
+ /qHJv5LEwGL+LBnXy6fMAURvrRpGyXfMdPFTDy6MmmUwjkr8K3GHsIk1W31eY2o9SBY4PbZS
+ cNaHOqHL9ywK0jhdEC2zxVxiVyg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6114ca0a454b7a558fbcab1a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 07:13:14
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 955C2C43217; Thu, 12 Aug 2021 07:13:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BD122C433F1;
+        Thu, 12 Aug 2021 07:13:11 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wg6AAX-uXHZnh_Fy=3dMTQYm_j6PKT3m=7xu-FdJOCxng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 12 Aug 2021 12:43:11 +0530
+From:   rajpat@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+In-Reply-To: <YRPkI8AQAjjFuXcf@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+ <YP7cmkayoajJ+1yj@google.com>
+ <bdfd39def9a11104c043090d920ef4df@codeaurora.org>
+ <YRPkI8AQAjjFuXcf@google.com>
+Message-ID: <71fd47e7a83e2c56c96e2638004a7812@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.21 18:20, Linus Torvalds wrote:
-> On Wed, Aug 11, 2021 at 4:45 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> I proposed a while ago to get rid of VM_DENYWRITE completely:
->>
->> https://lkml.kernel.org/r/20210423131640.20080-1-david@redhat.com
->>
->> I haven't looked how much it still applies to current upstream, but
->> maybe that might help cleaning up that code.
+On 2021-08-11 20:22, Matthias Kaehlcke wrote:
+> On Wed, Aug 11, 2021 at 05:43:48PM +0530, rajpat@codeaurora.org wrote:
+>> On 2021-07-26 21:32, Matthias Kaehlcke wrote:
+>> > On Mon, Jul 26, 2021 at 07:10:45PM +0530, Rajesh Patil wrote:
+>> > > From: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> > >
+>> > > Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
+>> > >
+>> > > Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+>> > > ---
+>> > > Changes in V4:
+>> > >  - As per Bjorn's comment, added QUP Wrapper_0 nodes
+>> > >    other than debug-uart node
+>> > >  - Dropped interconnect votes for wrapper_0 node
+>> > >
+>> > > Changes in V3:
+>> > >  - Broken the huge V2 patch into 3 smaller patches.
+>> > >    1. QSPI DT nodes
+>> > >    2. QUP wrapper_0 DT nodes
+>> > >    3. QUP wrapper_1 DT nodes
+>> > >
+>> > > Changes in V2:
+>> > >  - As per Doug's comments removed pinmux/pinconf subnodes.
+>> > >  - As per Doug's comments split of SPI, UART nodes has been done.
+>> > >  - Moved QSPI node before aps_smmu as per the order.
+>> > >
+>> > >  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  84 ++++
+>> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 720
+>> > > ++++++++++++++++++++++++++++++++
+>> > >  2 files changed, 804 insertions(+)
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > index b0bfd8e..f63cf51 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> > > @@ -358,6 +358,16 @@
+>> > >  	vdda18-supply = <&vreg_l1c_1p8>;
+>> > >  };
+>> > >
+>> > > +&uart7 {
+>> > > +	status = "okay";
+>> > > +
+>> > > +	/delete-property/interrupts;
+>> > > +	interrupts-extended = <&intc GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>,
+>> > > +				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+>> > > +	pinctrl-names = "default", "sleep";
+>> > > +	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>,
+>> > > <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+>> > > +};
+>> > > +
+>> > >  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> > >
+>> > >  &qspi_cs0 {
+>> > > @@ -428,3 +438,77 @@
+>> > >  		bias-pull-up;
+>> > >  	};
+>> > >  };
+>> > > +&qup_uart7_cts {
+>> > > +	/*
+>> > > +	 * Configure a pull-down on CTS to match the pull of
+>> > > +	 * the Bluetooth module.
+>> > > +	 */
+>> > > +	bias-pull-down;
+>> > > +};
+>> > > +
+>> > > +&qup_uart7_rts {
+>> > > +	/* We'll drive RTS, so no pull */
+>> > > +	drive-strength = <2>;
+>> > > +	bias-disable;
+>> > > +};
+>> > > +
+>> > > +&qup_uart7_tx {
+>> > > +	/* We'll drive TX, so no pull */
+>> > > +	drive-strength = <2>;
+>> > > +	bias-disable;
+>> > > +};
+>> > > +
+>> > > +&qup_uart7_rx {
+>> > > +	/*
+>> > > +	 * Configure a pull-up on RX. This is needed to avoid
+>> > > +	 * garbage data when the TX pin of the Bluetooth module is
+>> > > +	 * in tri-state (module powered off or not driving the
+>> > > +	 * signal yet).
+>> > > +	 */
+>> > > +	bias-pull-up;
+>> > > +};
+>> > > +
+>> > > +&tlmm {
+>> > > +	qup_uart7_sleep_cts: qup-uart7-sleep-cts {
+>> > > +		pins = "gpio28";
+>> > > +		function = "gpio";
+>> > > +		/*
+>> > > +		 * Configure a pull-down on CTS to match the pull of
+>> > > +		 * the Bluetooth module.
+>> > > +		 */
+>> > > +		bias-pull-down;
+>> > > +	};
+>> > > +
+>> > > +	qup_uart7_sleep_rts: qup-uart7-sleep-rts {
+>> > > +		pins = "gpio29";
+>> > > +		function = "gpio";
+>> > > +		/*
+>> > > +		 * Configure pull-down on RTS. As RTS is active low
+>> > > +		 * signal, pull it low to indicate the BT SoC that it
+>> > > +		 * can wakeup the system anytime from suspend state by
+>> > > +		 * pulling RX low (by sending wakeup bytes).
+>> > > +		 */
+>> > > +		bias-pull-down;
+>> > > +	};
+>> > > +
+>> > > +	qup_uart7_sleep_tx: qup-uart7-sleep-tx {
+>> > > +		pins = "gpio30";
+>> > > +		function = "gpio";
+>> > > +		/*
+>> > > +		 * Configure pull-up on TX when it isn't actively driven
+>> > > +		 * to prevent BT SoC from receiving garbage during sleep.
+>> > > +		 */
+>> > > +		bias-pull-up;
+>> > > +	};
+>> > >
+>> > > +	qup_uart7_sleep_rx: qup-uart7-sleep-rx {
+>> > > +		pins = "gpio31";
+>> > > +		function = "gpio";
+>> > > +		/*
+>> > > +		 * Configure a pull-up on RX. This is needed to avoid
+>> > > +		 * garbage data when the TX pin of the Bluetooth module
+>> > > +		 * is floating which may cause spurious wakeups.
+>> > > +		 */
+>> > > +		bias-pull-up;
+>> > > +	};
+>> > > +};
+>> >
+>> > How the patches of this series are split strikes me as a bit odd.
+>> > Supposedly
+>> > this patch adds the QUPv3 wrapper_0 DT nodes for the SC7280, however the
+>> > above is the pin configuration for the Bluetooth UART of the SC7280 IDP
+>> > board.
+>> > I don't see a good reason why that should be part of this patch. It
+>> > should be
+>> > a separate change whose subject indicates that it configures the
+>> > Bluetooth UART
+>> > of the SC7280 IDP.
+>> >
+>> 
+>> Okay will split this up.
+>> 
+>> > Without this conflation of SoC and board DT it would seem perfectly
+>> > reasonable
+>> > to squash this patch and '[4/4] arm64: dts: sc7280: Add QUPv3 wrapper_1
+>> > nodes'
+>> > into a single one, they are essentially doing the same thing, I see no
+>> > need to
+>> > have different patches for the wrapper 0 and 1 nodes.
+>> 
+>> Previously when QUP wrapper 0 and wrapper 1 nodes were added in single
+>> patch, we faced some git issues as the patch was huge. Hence we split 
+>> it up.
+>> https://partnerissuetracker.corp.google.com/issues/177045897#comment12
 > 
-> I like it.
+> That bug tracker entry isn't public, this is what the comment says:
 > 
-> I agree that we could - and probably should - just do it this way.
+>> I suspect that diff is just having a hard time since your patch 
+>> touches so
+>> much stuff. Presumably you could make it happier if you broke your 
+>> patch
+>> into smaller changes. For instance:
+>> 
+>> One patch that adds the quad SPI. After all the quad SPI isn't really
+>> related to the other QUP stuff. One patch that fixes up the existing
+>> "uart5" and the QUP it's on to be how it's supposed to be. One patch
+>> that adds all the new stuff.
 > 
-> We don't expose MAP_DENYWRITE to user space any more - and the old
-> legacy library loading code certainly isn't worth it - and so
-> effectively the only way to set it is with execve().
-> 
-> And yes, it gets rid of all the silly games with the per-mapping flags.
+> If I understand correctly the problem wasn't that the QUP wrappers are
+> added in a single patch (which should be pretty straightforward to
+> review), but that the previous patch(es) do too many things at once.
+> Adding both QUP wrappers is conceptionally a single thing, the problem
+> is intermingling that with adding board specific Bluetooth nodes, board
+> flash nodes, pinconf for UART, etc
 
-I'll rebase, retest and resend, putting you on cc. Then we can discuss 
-if/how/when we might want to go that path.
+Even after splitting the patches as suggested(i.e., additions and 
+modifications separately), if I add qup wrapper0 and wrapper1 nodes in 
+single patch the git diff is getting messed up. pasted the diff for 
+reference
 
--- 
-Thanks,
 
-David / dhildenb
++                       qup_spi14_cs_gpio: qup-spi14-cs_gpio {
++                               pins = "gpio59";
++                               function = "gpio";
++                       };
+
+-                       assigned-clocks = <&gcc 
+GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+-                                         <&gcc 
+GCC_USB30_PRIM_MASTER_CLK>;
+-                       assigned-clock-rates = <19200000>, <200000000>;
++                       qup_spi15_data_clk: qup-spi15-data-clk {
++                               pins = "gpio60", "gpio61", "gpio62";
++                               function = "qup17";
++                       };
+
+-                       interrupts-extended = <&intc GIC_SPI 131 
+IRQ_TYPE_LEVEL_HIGH>,
+-                                             <&pdc 14 
+IRQ_TYPE_EDGE_BOTH>,
+-                                             <&pdc 15 
+IRQ_TYPE_EDGE_BOTH>,
+-                                             <&pdc 17 
+IRQ_TYPE_LEVEL_HIGH>;
+-                       interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
+-                                         "dm_hs_phy_irq", "ss_phy_irq";
++                       qup_spi15_cs: qup-spi15-cs {
++                               pins = "gpio63";
++                               function = "qup17";
++                       };
+
+
+-                       power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
++                       qup_spi15_cs_gpio: qup-spi15-cs_gpio {
++                               pins = "gpio63";
++                               function = "gpio";
++                       };
 
