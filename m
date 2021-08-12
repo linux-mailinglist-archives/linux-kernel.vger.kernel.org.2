@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4A33EA5C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50213EA5C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237471AbhHLNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:37:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:43236 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233260AbhHLNhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:37:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 156EF1042;
-        Thu, 12 Aug 2021 06:36:39 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 300E93F70D;
-        Thu, 12 Aug 2021 06:36:38 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [PATCH v3 05/13] genirq: Let purely flow-masked ONESHOT irqs through unmask_threaded_irq()
-In-Reply-To: <87bl639l8n.wl-maz@kernel.org>
-References: <20210629125010.458872-1-valentin.schneider@arm.com> <20210629125010.458872-6-valentin.schneider@arm.com> <87bl639l8n.wl-maz@kernel.org>
-Date:   Thu, 12 Aug 2021 14:36:35 +0100
-Message-ID: <875ywa944c.mognet@arm.com>
+        id S237585AbhHLNh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233260AbhHLNhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 09:37:25 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342B6C061756;
+        Thu, 12 Aug 2021 06:36:59 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so7772324otl.1;
+        Thu, 12 Aug 2021 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lxEYcLoSmKcwAqq6lEWUTNh1J0BSQ5RJ+tPc70kIvv8=;
+        b=N+l05ozxyD1NG1dkZUngFULf3v7jhRSbnR3bHLqfiz9dby07s+mONwlfvcPK0q4TpC
+         7TiWQGQOBdoF1zE3c/2Gu2F+K4pOTl/yJy7prAkKAgeKH9paMe+57QeOsB1Sw8iBuDgf
+         Bg7Lnbtyiqb+chBrZwjK1IQMznYfVvO7//56Eb19UoWrGfVEesfIKpwXICsLwFDGNkOT
+         LBXWVs6EteP/0VimsFRXf7DXL7R4RVLFWiIewc/ERmTBNu76kb7rS5cQ+lxfBSfozlXq
+         mhnZAoTGxU5l0sh9IM0Vh4vNMDkUmbcaFnAZsSxbEemP4+e0WlFJJyZTB9PmygkiPE6E
+         BNLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lxEYcLoSmKcwAqq6lEWUTNh1J0BSQ5RJ+tPc70kIvv8=;
+        b=c2GMvXlR+NPe0arf2wBqdbfN0p7Si6KcNaI+n1eDYLTdNvqL1oeDsco3CHgNczU3WJ
+         awkIfBhxsWNbwYnOVG/UBPtCGN8vKweyaekKcfN9zsqRMwtk26GNzTSXdLwkseBDBG6v
+         bgr4tx4ZQPckfoY5hM17+e4jFYgwEDuj8FOGLhhqbqC4bGV1K13dtQzny/Su0kooTaEY
+         4sODyt8M+M8WEmrxTN2Z95nV+cKFtgq2GyRPGDt26WPnJzNYrLgvZSEKCsY536cq3vK6
+         PBnEOwqstZ7BOMt4YhbZXr/lLU30RAILK2wYZT+8m39WX0ogIQ230N87ITDqoRaGRjL3
+         gmXQ==
+X-Gm-Message-State: AOAM531yKqupX1IKQFco+95/3UgygzzPQNIm69NFNRDceAak+vW5+XGI
+        wYohEarxv35iOs1matKFjA==
+X-Google-Smtp-Source: ABdhPJwSEJIsmvBs2Ju7id/07iwZC6CGzdrHno0A3fxPpp0tLpTJfwR7oTj/F4lF6MngczX5vwnTPg==
+X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr3478948ott.202.1628775418413;
+        Thu, 12 Aug 2021 06:36:58 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.156.158])
+        by smtp.gmail.com with ESMTPSA id r16sm605716otu.26.2021.08.12.06.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 06:36:57 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:39aa:3f67:e568:698d])
+        by serve.minyard.net (Postfix) with ESMTPSA id 4F1F1180058;
+        Thu, 12 Aug 2021 13:36:56 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 08:36:55 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [Openipmi-developer] [PATCH v5 1/3] i2c: aspeed: Add
+ slave_enable() to toggle slave mode
+Message-ID: <20210812133655.GT3406@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210714033833.11640-1-quan@os.amperecomputing.com>
+ <20210714033833.11640-2-quan@os.amperecomputing.com>
+ <YRTQP9sX0hkTJMTx@shikoro>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRTQP9sX0hkTJMTx@shikoro>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/21 08:26, Marc Zyngier wrote:
-> On Tue, 29 Jun 2021 13:50:02 +0100,
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
->> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
->> index ef30b4762947..e6d6d32ddcbc 100644
->> --- a/kernel/irq/manage.c
->> +++ b/kernel/irq/manage.c
->> @@ -1107,7 +1107,7 @@ static void irq_finalize_oneshot(struct irq_desc *desc,
->>  	desc->threads_oneshot &= ~action->thread_mask;
->>  
->>  	if (!desc->threads_oneshot && !irqd_irq_disabled(&desc->irq_data) &&
->> -	    irqd_irq_masked(&desc->irq_data))
->> +	    (irqd_irq_masked(&desc->irq_data) | irqd_irq_flow_masked(&desc->irq_data)))
->>  		unmask_threaded_irq(desc);
->
-> The bitwise OR looks pretty odd. It is probably fine given that both
-> side of the expression are bool, but still. I can fix this locally.
->
+On Thu, Aug 12, 2021 at 09:39:43AM +0200, Wolfram Sang wrote:
+> Hi all,
+> 
+> On Wed, Jul 14, 2021 at 10:38:31AM +0700, Quan Nguyen wrote:
+> > Slave needs time to prepare the response data before Master could
+> > enquiry via read transaction. However, there is no mechanism for
+> > i2c-aspeed Slave to notify Master that it needs more time to process
+> > and this make Master side to time out when trying to get the response.
+> > 
+> > This commit introduces the slave_enable() callback in struct
+> > i2c_algorithm for Slave to temporary stop the Slave mode while working
+> > on the response and re-enable the Slave when response data ready.
+> 
+> Sorry that I couldn't chime in earlier, but NAK!
+> 
+> >  include/linux/i2c.h             |  2 ++
+> 
+> @Corey: Please do not change this file without my ACK. It is not a
+> trivial change but an API extenstion and that should really be acked by
+> the subsystem maintainer, in this case me. I was really surprised to see
+> this in linux-next already.
 
-Thomas suggested that back in v1:
+I am sorry, I'll pull it out.
 
-  https://lore.kernel.org/lkml/87v98v4lan.ffs@nanos.tec.linutronix.de/
+-corey
 
-I did look at the (arm64) disassembly diff back then and was convinced by
-what I saw, though I'd have to go do that again as I can't remember much
-else.
+> 
+> @all: Plus, I neither like the API (because it doesn't look generic to
+> me but mostly handling one issue needed here) nor do I fully understand
+> the use case. Normally, when a read is requested and the backend needs
+> time to deliver the data, the hardware should stretch the SCL clock
+> until some data register is finally written to. If it doesn't do it for
+> whatever reason, this is a quirky hardware in my book and needs handling
+> in the driver only. So, what is special with this HW? Can't we solve it
+> differently?
+> 
+> All the best,
+> 
+>    Wolfram
+> 
 
-> Thanks,
->
-> 	M.
->
-> -- 
-> Without deviation from the norm, progress is not possible.
+
+
+
+> _______________________________________________
+> Openipmi-developer mailing list
+> Openipmi-developer@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
+
