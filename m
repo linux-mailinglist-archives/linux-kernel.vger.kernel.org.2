@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA39A3E9CF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF793E9CFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhHLDeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:34:14 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36016 "EHLO
+        id S233992AbhHLDeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 23:34:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36154 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230373AbhHLDeM (ORCPT
+        with ESMTP id S233832AbhHLDeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:34:12 -0400
-X-UUID: c62a52dab10e4453a81c2bbbc96b1a8c-20210812
-X-UUID: c62a52dab10e4453a81c2bbbc96b1a8c-20210812
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Wed, 11 Aug 2021 23:34:15 -0400
+X-UUID: 312ef83b167b4f038d6c1000c5123c83-20210812
+X-UUID: 312ef83b167b4f038d6c1000c5123c83-20210812
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 767130957; Thu, 12 Aug 2021 11:33:45 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2080571688; Thu, 12 Aug 2021 11:33:46 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Aug 2021 11:33:43 +0800
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 12 Aug 2021 11:33:45 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Aug 2021 11:33:42 +0800
+ Transport; Thu, 12 Aug 2021 11:33:44 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Felipe Balbi <balbi@kernel.org>
@@ -41,11 +41,10 @@ CC:     Pawel Laszczak <pawell@cadence.com>,
         <linux-tegra@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH 2/6] usb: mtu3: fix the wrong HS mult value
-Date:   Thu, 12 Aug 2021 11:32:58 +0800
-Message-ID: <1628739182-30089-2-git-send-email-chunfeng.yun@mediatek.com>
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or intr
+Date:   Thu, 12 Aug 2021 11:32:59 +0800
+Message-ID: <1628739182-30089-3-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -56,47 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use usb_endpoint_maxp() and usb_endpoint_maxp_mult() seperately
-to get maxpacket and mult.
-Meanwhile fix the bug that should use @mult but not @burst
-to save mult value.
+usb_endpoint_maxp() only returns the bit[10:0] of wMaxPacketSize
+of endpoint descriptor, not include bit[12:11] anymore, so use
+usb_endpoint_maxp_mult() instead.
 
-Fixes: 4d79e042ed8b ("usb: mtu3: add support for usb3.1 IP")
-Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/mtu3/mtu3_gadget.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/cdns3/cdnsp-mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/mtu3/mtu3_gadget.c b/drivers/usb/mtu3/mtu3_gadget.c
-index 5e21ba05ebf0..a399fd84c71f 100644
---- a/drivers/usb/mtu3/mtu3_gadget.c
-+++ b/drivers/usb/mtu3/mtu3_gadget.c
-@@ -64,14 +64,12 @@ static int mtu3_ep_enable(struct mtu3_ep *mep)
- 	u32 interval = 0;
- 	u32 mult = 0;
- 	u32 burst = 0;
--	int max_packet;
- 	int ret;
+diff --git a/drivers/usb/cdns3/cdnsp-mem.c b/drivers/usb/cdns3/cdnsp-mem.c
+index a47948a1623f..ad9aee3f1e39 100644
+--- a/drivers/usb/cdns3/cdnsp-mem.c
++++ b/drivers/usb/cdns3/cdnsp-mem.c
+@@ -882,7 +882,7 @@ static u32 cdnsp_get_endpoint_max_burst(struct usb_gadget *g,
+ 	if (g->speed == USB_SPEED_HIGH &&
+ 	    (usb_endpoint_xfer_isoc(pep->endpoint.desc) ||
+ 	     usb_endpoint_xfer_int(pep->endpoint.desc)))
+-		return (usb_endpoint_maxp(pep->endpoint.desc) & 0x1800) >> 11;
++		return usb_endpoint_maxp_mult(pep->endpoint.desc) - 1;
  
- 	desc = mep->desc;
- 	comp_desc = mep->comp_desc;
- 	mep->type = usb_endpoint_type(desc);
--	max_packet = usb_endpoint_maxp(desc);
--	mep->maxp = max_packet & GENMASK(10, 0);
-+	mep->maxp = usb_endpoint_maxp(desc);
- 
- 	switch (mtu->g.speed) {
- 	case USB_SPEED_SUPER:
-@@ -92,7 +90,7 @@ static int mtu3_ep_enable(struct mtu3_ep *mep)
- 				usb_endpoint_xfer_int(desc)) {
- 			interval = desc->bInterval;
- 			interval = clamp_val(interval, 1, 16) - 1;
--			burst = (max_packet & GENMASK(12, 11)) >> 11;
-+			mult = usb_endpoint_maxp_mult(desc) - 1;
- 		}
- 		break;
- 	default:
+ 	return 0;
+ }
 -- 
 2.25.1
 
