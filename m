@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0210F3E9BE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477503E9BEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhHLBVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
+        id S233319AbhHLBYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhHLBVb (ORCPT
+        with ESMTP id S233250AbhHLBYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:21:31 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C17C061765;
-        Wed, 11 Aug 2021 18:21:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GlTQy70Gbz9t2b;
-        Thu, 12 Aug 2021 11:20:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628731262;
-        bh=NyX7NxhdTqFuLiEuNiYUkkM6Iaiv9G/1RgaK5DhFUTs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SPIB2sKXPA7HuocgGyGwSxssuZlScSVSuhhalfnrlcWWBFyJY9ZeHIs/nCLoGk9S4
-         nQBoi69hpR4AUuCThV6wAyGvxtsT85DMIZAgEF1N8VlnWqozpca21s3ajcVNXB7yeF
-         vXo/ffgBb8MFdKFhyHwL5RRH83eaNNy/dAvPJ/jk/eSC+/vx3TpfmyceQ0DC9mnoKj
-         ZjAwInnqe1nPZce018v3YC9vBRsonFm5EfLERhTs0XwJsNapMvj1pmwyNPNCp6ML5w
-         pHp5rU5yKPWcRQL30qoi8PxqDJPF/oKM1qWUfgR+Heuou4xju74U7wmIvCtKsB3Jw2
-         K5sqHRPu2jZig==
-Date:   Thu, 12 Aug 2021 11:20:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: linux-next: manual merge of the drm tree with Linus' tree
-Message-ID: <20210812112056.0e6fa4fd@canb.auug.org.au>
+        Wed, 11 Aug 2021 21:24:16 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373F7C061765;
+        Wed, 11 Aug 2021 18:23:52 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id i7so6212733iow.1;
+        Wed, 11 Aug 2021 18:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=YRObm59cjW4mPv2dUb0C1++B3DtkugJeydgUsYgRRPM=;
+        b=WHAlLg9ohkG813Q1TWwD7YRLqbWJO8dOX4v9wHAFZmcD1RZPyGeC1gpkgBfKxgJvw2
+         EGGzFabxOOgs6JREgvq/WoAY/2WmEALv5+Y58bbBzVjMUZ0LurC9jxpjXZxu8mIvq/0k
+         96YybilFkxL0fq5e0gKHrSw90URpZcgoaKXleG14U/X8ie0YEYvKsqV9+9o3oKBq43qG
+         s8OlAg01Ui2E91xjfqDHbuc3Me5hwjJOAI5aRPSccEoOnfmWJVZlJQSO7HNJFEqoeSN6
+         ka30FptXOr2FGryl5qJXdkzm24s7X5UGuRMihGracJN4wDs+syEzd/5YKmCe4DH/QhTV
+         SDtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=YRObm59cjW4mPv2dUb0C1++B3DtkugJeydgUsYgRRPM=;
+        b=d1a+vZnp7uSMiyj0Votwtj5vR9PHeQ04k13+moFYUzbUumekRPvj5FR3b2kHecpALd
+         XaUareo3i+lPzgfUzDPab/EoW3u1Vk8bXs0ASlkelVNCU/plHbEYGOFncag88FwF/VpX
+         X2u0RXTDRowk5CNgd5JxIAzctJpgjDmS2hCZy5DwJCo+nZG/lB4nQhRyv9uEDqbplSCF
+         +SdQForSVKoQXKnAg/evl1M8tDRE2y/b4pcXnS7WpUUdYNz9nqOtJ6ccUI7xMK3yhDSf
+         Lw2k5iP32exjTRO8oPrnVjfZEiepJSa4WHKqFZD/DU9M/M/rPWQtuTVW9Ao7hDIhGP1v
+         MSpw==
+X-Gm-Message-State: AOAM532ZHbGpX89VnYsSxuoHzV+9RPRxHWTVvAIuORPOM2jgTM7ttHFL
+        KaTVpnK9bftDIQeuCVxLZht/JolF+4V9dCOfMQI=
+X-Google-Smtp-Source: ABdhPJwac8bfGP0DN27pXt2mjduCWrdFapg50/Wx6BbbRcQxgeb5tHNgq9SdNaTU5BgumIVHbxbEGZ/qvGGXyo9L3XA=
+X-Received: by 2002:a6b:cf15:: with SMTP id o21mr1116471ioa.132.1628731431579;
+ Wed, 11 Aug 2021 18:23:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UZR4JNYLxTvVTQMXYhxdip9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210719021755.883182-1-yury.norov@gmail.com> <20210719021755.883182-3-yury.norov@gmail.com>
+ <YRN+dmd0lKtYNe5N@ninjato>
+In-Reply-To: <YRN+dmd0lKtYNe5N@ninjato>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 11 Aug 2021 18:23:40 -0700
+Message-ID: <CAAH8bW-+-e+Qevcjiucqa0PtQwhFd+BGe=VH2QG9-12pZcGRJg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bitmap: unify find_bit operations
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tejun Heo <tj@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UZR4JNYLxTvVTQMXYhxdip9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 11, 2021 at 12:38 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> On Sun, Jul 18, 2021 at 07:17:53PM -0700, Yury Norov wrote:
+> > bitmap_for_each_{set,clear}_region() are similar to for_each_bit()
+> > macros in include/linux/find.h, but interface and implementation
+> > of them are different.
+> >
+> > This patch adds for_each_bitrange() macros and drops unused
+> > bitmap_*_region() API in sake of unification.
+> >
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+>
+> I fetched your bitmap-20210716 branch and tested it on a Renesas
+> Salvator-XS board with an R-Car M3-N SoC with some debug output added.
+> Still works and values make sense, so:
+>
+> Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Hi all,
-
-Today's linux-next merge of the drm tree got a conflict in:
-
-  drivers/gpu/drm/i915/i915_globals.c
-
-between commits:
-
-  1354d830cb8f ("drm/i915: Call i915_globals_exit() if pci_register_device(=
-) fails")
-  a07296453bf2 ("drm/i915: fix i915_globals_exit() section mismatch error")
-
-from Linus' tree and commit:
-
-  bb13ea282535 ("drm/i915: Remove i915_globals")
-
-from the drm tree.
-
-I fixed it up (I just removed the file) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UZR4JNYLxTvVTQMXYhxdip9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEUd3gACgkQAVBC80lX
-0Gw9LQgAgv3cYm5Xrt0JvYyyYrFIY9pP5sG6Ifrf32s9YwWcRYyiBcy3tDP/LSTB
-C7S9v31itFXiBwdpP6JCGLMJWD89Nj97cQ9W5QFv3ynnumB11zzAvM2SJpRIR0PK
-YtYL83wmkJzQZ8kWMP1oWfpKTjev3UxlYSjGtDcmncymXcEJD5sizaGqlr08LuO4
-GacWdeBmzzaPtADs7KjVOj1Am5l4HKwg6MDqcTcB0Tm7FLC9+DJdDL8DFCmvMRWM
-lhjOV3godDhtYFGkiFS7xxrsmdl1OcBCdqLm3a/63P9Tm6nbUJ3DcWxEFYFGTKi/
-XQb3jrFQ44B9NDIcg5uFJBmsMzp4KQ==
-=ez8E
------END PGP SIGNATURE-----
-
---Sig_/UZR4JNYLxTvVTQMXYhxdip9--
+Thank you Wolfram for looking into this. I'll resend all the series
+this weekend.
