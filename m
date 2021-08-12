@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE953EAC71
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2029D3EAC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 23:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhHLVis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 17:38:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:48030 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233283AbhHLVip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 17:38:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC6C11063;
-        Thu, 12 Aug 2021 14:38:17 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C50D13F70D;
-        Thu, 12 Aug 2021 14:38:16 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [PATCH v3 05/13] genirq: Let purely flow-masked ONESHOT irqs through unmask_threaded_irq()
-In-Reply-To: <87wnoq90wx.wl-maz@kernel.org>
-References: <20210629125010.458872-1-valentin.schneider@arm.com> <20210629125010.458872-6-valentin.schneider@arm.com> <87bl639l8n.wl-maz@kernel.org> <875ywa944c.mognet@arm.com> <87wnoq90wx.wl-maz@kernel.org>
-Date:   Thu, 12 Aug 2021 22:38:11 +0100
-Message-ID: <87zgtm7398.mognet@arm.com>
+        id S237264AbhHLVi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 17:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237073AbhHLVi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 17:38:57 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9DFC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:38:31 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id q2so9100640plr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 14:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zfF8/Nsamf3gvlzzJDOp8kdlxHU7XATBW3Znyt06h8s=;
+        b=WGhh/zN0AhUSZ/Of+jVjg62dYsndSFONf9oP8kDje/H6VqyU+3u3YkWLm+ucSUNOTo
+         KwRZcCwqLtfIi7pTYCuVlc7oJB8Fc8ce3SMGzDOaT5bMeTleDh6ud3x6+USYe/zeJhv6
+         8atJ6XZpzP1eCtep4r9apCAkE71oVy858ulnb02Ujgh3OcC8sGapDKYLb6qUyH5nli0T
+         6iwN7/3wk7zUneLV6tjAF0ZByMgDdHHIom+tkIDpUSk1fJDm5+ZeYZNIEMZ3vCMpawQQ
+         rqVSJIiTlcxs3v7Y8AM/gP4JkWVe+PS6+w7Jf3JEhrx9R0a9YptVyZu8xKDOW960WgSH
+         u4vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zfF8/Nsamf3gvlzzJDOp8kdlxHU7XATBW3Znyt06h8s=;
+        b=V+Du1gSpR1CIF0OjEnsi0Iz72K7sD0UNKgN0wE+SlnJ/HN5ZYR22nJ05GOQeA6YixE
+         xBUByBd1UVpAU/hGPQwOl2i58myy0A5QawQ3vduN8WFBwvkpC0uTjs4ViJfjLOSbv60q
+         LAfwJ1vXPIvnNpimdTW4j5oicWy77qgjhl+GX9Xz4EnnA9ord149Py4u0G+x9VTe/o0v
+         K36wSJEHSCqgsiBIkN2CDszD59wmaPgtb8lE++7EluLgXvxiYC1EYzTXSLDy/X6Unsbl
+         z/QC2+tFRtR4521S0qkoLZ2SRDC0ZYn5tFO+Xzmb9vAeVmHv9wyJnXnhfaQ3rgDknj3r
+         6g2A==
+X-Gm-Message-State: AOAM533xkRMRQpX+37Xu0giPF+/WZ6AeONHxefbdcv1D98HACDAG/DgF
+        9dK1MPxIfgN2Ze2nw9aUHFo=
+X-Google-Smtp-Source: ABdhPJxzUV+E6x2NsvqoerGW6WDd1xj+03g4JZ0FKVHawFpxbgWhwnsUasg7J51v84euyBRbjQrXBg==
+X-Received: by 2002:a17:902:c401:b0:12d:8258:e07e with SMTP id k1-20020a170902c40100b0012d8258e07emr3107434plk.51.1628804310886;
+        Thu, 12 Aug 2021 14:38:30 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id f66sm4594547pfa.21.2021.08.12.14.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 14:38:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 Aug 2021 11:38:29 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     peterz@infradead.org, anderson@cs.unc.edu, baruah@wustl.edu,
+        bsegall@google.com, dietmar.eggemann@arm.com,
+        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
+        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
+        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
+        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH 0/2] Add statistics and ducument for cfs bandwidth burst
+Message-ID: <YRWU1avTzLoCqivI@slm.duckdns.org>
+References: <20210730070956.44019-1-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730070956.44019-1-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/21 15:45, Marc Zyngier wrote:
-> On Thu, 12 Aug 2021 14:36:35 +0100,
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
->> 
->> On 12/08/21 08:26, Marc Zyngier wrote:
->> > On Tue, 29 Jun 2021 13:50:02 +0100,
->> > Valentin Schneider <valentin.schneider@arm.com> wrote:
->> >> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
->> >> index ef30b4762947..e6d6d32ddcbc 100644
->> >> --- a/kernel/irq/manage.c
->> >> +++ b/kernel/irq/manage.c
->> >> @@ -1107,7 +1107,7 @@ static void irq_finalize_oneshot(struct irq_desc *desc,
->> >>  	desc->threads_oneshot &= ~action->thread_mask;
->> >>  
->> >>  	if (!desc->threads_oneshot && !irqd_irq_disabled(&desc->irq_data) &&
->> >> -	    irqd_irq_masked(&desc->irq_data))
->> >> +	    (irqd_irq_masked(&desc->irq_data) | irqd_irq_flow_masked(&desc->irq_data)))
->> >>  		unmask_threaded_irq(desc);
->> >
->> > The bitwise OR looks pretty odd. It is probably fine given that both
->> > side of the expression are bool, but still. I can fix this locally.
->> >
->> 
->> Thomas suggested that back in v1:
->> 
->>   https://lore.kernel.org/lkml/87v98v4lan.ffs@nanos.tec.linutronix.de/
->> 
->> I did look at the (arm64) disassembly diff back then and was convinced by
->> what I saw, though I'd have to go do that again as I can't remember much
->> else.
->
-> Ah, fair enough.
->
+On Fri, Jul 30, 2021 at 03:09:54PM +0800, Huaixin Chang wrote:
+> Huaixin Chang (2):
+>   sched/fair: Add cfs bandwidth burst statistics
+>   sched/fair: Add document for burstable CFS bandwidth
 
-Either I didn't have my glasses on or had a different output back then, but
-I'm not so convinced anymore... (same result on both Ubuntu GCC 9.3.0 and
-10.2 GCC release from Arm):
+Acked-by: Tejun Heo <tj@kernel.org>
 
+Thanks.
 
-Logical OR:
-
-     8f8:	b9400020 	ldr	w0, [x1]
-     8fc:	3787fea0 	tbnz	w0, #16, 8d0 <irq_finalize_oneshot.part.0+0x60>
-     900:	37880040 	tbnz	w0, #17, 908 <irq_finalize_oneshot.part.0+0x98>
-     904:	36fffe60 	tbz	w0, #31, 8d0 <irq_finalize_oneshot.part.0+0x60>
-     908:	aa1303e0 	mov	x0, x19
-     90c:	94000000 	bl	0 <unmask_threaded_irq>
-
-Bitwise OR (aka the patch):
-
-     8f8:	b9400020 	ldr	w0, [x1]
-     8fc:	3787fea0 	tbnz	w0, #16, 8d0 <irq_finalize_oneshot.part.0+0x60>
-     900:	f26f001f 	tst	x0, #0x20000
-     904:	7a400801 	ccmp	w0, #0x0, #0x1, eq  // eq = none
-     908:	54fffe4a 	b.ge	8d0 <irq_finalize_oneshot.part.0+0x60>  // b.tcont
-     90c:	aa1303e0 	mov	x0, x19
-     910:	94000000 	bl	0 <unmask_threaded_irq>
-
-If I get this right...
-
-- TST sets the Z condition flag if bit 17 (masked) isn't set
-- CCMP sets the condition flags to
-  - the same as SUBS(flags, 0) if bit 17 wasn't set
-  - NZCV=0001 otherwise
-- B.GE branches if N==V
-
-Soooo
-
-- if we have bit 17 set, NZCV=0001, B.GE doesn't branch
-- if we don't have bit 17 but bit 31 (flow-masked), NZCV=1000 because
-  this is signed 32-bit, so having bit 31 set makes the result of
-  SUBS(flags, 0) negative, B.GE doesn't branch
-- if we have neither, NZCV=0XX0, B.GE branches
-
-So this does appear to do the right thing, at the cost of an extra
-instruction and a profound sense of dread to whoever stares at the
-disassembly. I guess it does save us a branch which could be
-mispredicted...
-
-> Thanks,
->
-> 	M.
->
-> -- 
-> Without deviation from the norm, progress is not possible.
+-- 
+tejun
