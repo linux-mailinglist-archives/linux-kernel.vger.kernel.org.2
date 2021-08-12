@@ -2,187 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F963EAA38
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9552A3EAA40
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhHLS1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:27:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233027AbhHLS1Q (ORCPT
+        id S233545AbhHLSaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233436AbhHLSaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:27:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628792811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qYXg2tlqyoci4gGaxK6MgW8sEbsOw0KF5DADu56IPRk=;
-        b=LseV1ozeINWdrpaxIcoDPVRp7AZQbNv3fglYuwKm8Xt2QS2PYaWurFS9yaI8I+7EPPZvQ6
-        I0TbPtHD0qllZxyF9J4UkcRmZw+buhsT69DkX2CNEjZVvQZPZOhtwavcf61M0n/5fPLa1R
-        zZL3eBu7PrnR9leulYfbAJlWhe1CWbk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-yyJLKPVzMgq9IuujX4TdKw-1; Thu, 12 Aug 2021 14:26:49 -0400
-X-MC-Unique: yyJLKPVzMgq9IuujX4TdKw-1
-Received: by mail-wr1-f70.google.com with SMTP id d12-20020a056000186cb02901548bff164dso2107205wri.18
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:26:49 -0700 (PDT)
+        Thu, 12 Aug 2021 14:30:14 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE4DC0617A8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:29:48 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so8865541otl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8p/OCx8wfKLI1Vwr3WoruCyYyLDk0HKlG9q3THas0Ro=;
+        b=pCkiiuBcAuyJQfE4lgHO2ZNaNUHxyIZv+gkKlkHTrJLj5xvMeJrz9bWScyqw/CpS24
+         YZ+1Q8phMUIM9RivFHJsILLnwPWCWsXFbUTNrUi9gUfYWVUuUI93UEj1Ol6uwBY3alyn
+         P/deOXHX0+ZtYJfTnYvzFAIdZ79Y3niK8GIX0bATy2Pkv1WicFhfc75p31bOoAmQtr2D
+         siqWqJ2SiIxlmKmr+hg5DahX0u3DwOT83FVQtueF/qQKjhk3fEgSsQXcwi4U6OYnJhSQ
+         qxj1aJfTWJ/BGdp5X6hAdhaK1VFAYJDW6YItkYu5eOXSaEX0JWr3HsODbMbraE8ogrPl
+         kBlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qYXg2tlqyoci4gGaxK6MgW8sEbsOw0KF5DADu56IPRk=;
-        b=cJXSGT/zBrbRLj72M70GA8PlvYtDAKLl6UZP/jkxrgaP5KZX/YR1ukkFmZFRO5Lxbm
-         Vqn+wxVzEp7uEo6ynhkPXmDfji6r0B8iyO54chqIDfCMXnNgnr4F6ODUCFoCPxQF84hO
-         8qI/rl5aJ9nVOifi02piRhy3adxXIsPedfrFx1yv5HZGyYSk/lcvIm8BmSd71XtgRqas
-         jc+oLaa5d6XzpP7JQ4rUdERTuSj1XTf3y2KghKu1GTRbF4pzeShwdTEZcP2GpTgdBZst
-         vWQmILxl/LX8b0ShtleIR3dOrx+hCzosWPvWS2LQwLGX5fQMmPw2rDXrb5avKt5Ghs9k
-         R38g==
-X-Gm-Message-State: AOAM531y0e5nLEODOFH6OWhK5JYA1fgy9XzxEcCAQlr2YxyVparD+tWS
-        MD0HfFhfRqj2Nu4QLQbQoMDsRbXxZsWvno67f1iTEklGn5jbkAhesJaiDuOCQsTARsdOm+/EnI7
-        3+jMdOzeRiSvjdAUwa1MfxOOj
-X-Received: by 2002:adf:b350:: with SMTP id k16mr5508895wrd.37.1628792808597;
-        Thu, 12 Aug 2021 11:26:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyI8bjv53j2gMWyLBTbdBlwhit3AlIGikq1BbrwBmCe4oPno7y2Y8w6UodzIx+Snr43nhZqLA==
-X-Received: by 2002:adf:b350:: with SMTP id k16mr5508882wrd.37.1628792808350;
-        Thu, 12 Aug 2021 11:26:48 -0700 (PDT)
-Received: from pc-23.home (2a01cb058d01b600c841afd12834a14e.ipv6.abo.wanadoo.fr. [2a01:cb05:8d01:b600:c841:afd1:2834:a14e])
-        by smtp.gmail.com with ESMTPSA id w29sm4035148wra.88.2021.08.12.11.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 11:26:47 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 20:26:45 +0200
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     James Carlson <carlsonj@workingcode.com>,
-        Chris Fowler <cfowler@outpostsentinel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210812182645.GA10725@pc-23.home>
-References: <20210809122546.758e41de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210809193109.mw6ritfdu27uhie7@pali>
- <20210810153941.GB14279@pc-32.home>
- <BN0P223MB0327A247724B7AE211D2E84EA7F79@BN0P223MB0327.NAMP223.PROD.OUTLOOK.COM>
- <20210810171626.z6bgvizx4eaafrbb@pali>
- <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
- <20210811173811.GE15488@pc-32.home>
- <20210811180401.owgmie36ydx62iep@pali>
- <20210812092847.GB3525@pc-23.home>
- <20210812134845.npj3m3vzkrmhx6uy@pali>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8p/OCx8wfKLI1Vwr3WoruCyYyLDk0HKlG9q3THas0Ro=;
+        b=jA9AV1xRQCGfA55tYJ8cJWPdqwRBSCHdVQBEr9Q8cZGGPx1tZ5b9K5hvoFXnRsalgd
+         wL80WUBIRwSQ9J2xokPeF4vd1Jo/QgFBiEDqz77QJ0ZIy9IY4leILOyyANLwtxK+Vous
+         BENwoSsU5Vox1JX1Ha3/MshpSuz1hKl/ywNZYOxUYIAd3ZOycOZeSptdls5VA0RCgWzt
+         9ATOYkUuEZMoJliesTo8v/uznN6x+Jt5a0BVvkSSRWG6kn/r+1qNlJI5CgPiUL3H2DTi
+         p/85oKSE+ZIVopne2myNWcosqy9EW/x+qhFvcnk6x+ewPu46pJ6ZzRf+IszYfwBZRF2U
+         VaUA==
+X-Gm-Message-State: AOAM533SzXcTEcO6ZcmgeSJLtG1IH/7n/M1Y2zK3vyx2+11WgQi85SDY
+        xxj0g0sAsNHuIIs76N9+I0Nr+IrhEwRHRylBuUxqaQ==
+X-Google-Smtp-Source: ABdhPJwmK/AbZDsA28wYWSSvhqmGx87EEzk8m55h/Bl6sOe/aSIg0F5Q/OX5FkRbNMXJ6bvis0pEJwYbT6vvgpWqJyo=
+X-Received: by 2002:a05:6830:189:: with SMTP id q9mr4548874ota.313.1628792987226;
+ Thu, 12 Aug 2021 11:29:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210812134845.npj3m3vzkrmhx6uy@pali>
+References: <20210812181815.3378104-1-seanjc@google.com>
+In-Reply-To: <20210812181815.3378104-1-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 12 Aug 2021 11:29:35 -0700
+Message-ID: <CANgfPd-SsnkBeAuZ0eVRknjLo3DNP2ZnzF88KQTkACj+sU55OQ@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM: x86/mmu: Protect marking SPs unsync when using
+ TDP MMU with spinlock
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 03:48:45PM +0200, Pali Rohár wrote:
-> On Thursday 12 August 2021 11:28:47 Guillaume Nault wrote:
-> > On Wed, Aug 11, 2021 at 08:04:01PM +0200, Pali Rohár wrote:
-> > > ifname is not atomic (first it creates ppp<id> interface and later it is
-> > > renamed) and have issues. Due to bug described here:
-> > > https://lore.kernel.org/netdev/20210807160050.17687-1-pali@kernel.org/
-> > > you may get your kernel into state in which it is not possible to create
-> > > a new ppp interface. And this issue does not happen when using "unit"
-> > > argument.
-> > 
-> > This is specific to the ioctl api. Netlink doesn't have this problem.
-> 
-> netlink does not have problem with implementing ifname option
-> atomically. That is why I started looking at netlink how to avoid
-> problems with renaming. As on some systems I see that some udev rules or
-> NetworkManager tries to query newly created interfaces, but based on
-> name (not id). So early renaming cause issues to these tools...
-> 
-> But netlink is affected by above bug when "ifname" is not specified.
+On Thu, Aug 12, 2021 at 11:18 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Add yet another spinlock for the TDP MMU and take it when marking indirect
+> shadow pages unsync.  When using the TDP MMU and L1 is running L2(s) with
+> nested TDP, KVM may encounter shadow pages for the TDP entries managed by
+> L1 (controlling L2) when handling a TDP MMU page fault.  The unsync logic
+> is not thread safe, e.g. the kvm_mmu_page fields are not atomic, and
+> misbehaves when a shadow page is marked unsync via a TDP MMU page fault,
+> which runs with mmu_lock held for read, not write.
+>
+> Lack of a critical section manifests most visibly as an underflow of
+> unsync_children in clear_unsync_child_bit() due to unsync_children being
+> corrupted when multiple CPUs write it without a critical section and
+> without atomic operations.  But underflow is the best case scenario.  The
+> worst case scenario is that unsync_children prematurely hits '0' and
+> leads to guest memory corruption due to KVM neglecting to properly sync
+> shadow pages.
+>
+> Use an entirely new spinlock even though piggybacking tdp_mmu_pages_lock
+> would functionally be ok.  Usurping the lock could degrade performance when
+> building upper level page tables on different vCPUs, especially since the
+> unsync flow could hold the lock for a comparatively long time depending on
+> the number of indirect shadow pages and the depth of the paging tree.
+>
+> For simplicity, take the lock for all MMUs, even though KVM could fairly
+> easily know that mmu_lock is held for write.  If mmu_lock is held for
+> write, there cannot be contention for the inner spinlock, and marking
+> shadow pages unsync across multiple vCPUs will be slow enough that
+> bouncing the kvm_arch cacheline should be in the noise.
+>
+> Note, even though L2 could theoretically be given access to its own EPT
+> entries, a nested MMU must hold mmu_lock for write and thus cannot race
+> against a TDP MMU page fault.  I.e. the additional spinlock only _needs_ to
+> be taken by the TDP MMU, as opposed to being taken by any MMU for a VM
+> that is running with the TDP MMU enabled.  Holding mmu_lock for read also
+> prevents the indirect shadow page from being freed.  But as above, keep
+> it simple and always take the lock.
+>
+> Alternative #1, the TDP MMU could simply pass "false" for can_unsync and
+> effectively disable unsync behavior for nested TDP.  Write protecting leaf
+> shadow pages is unlikely to noticeably impact traditional L1 VMMs, as such
+> VMMs typically don't modify TDP entries, but the same may not hold true for
+> non-standard use cases and/or VMMs that are migrating physical pages (from
+> L1's perspective).
+>
+> Alternative #2, the unsync logic could be made thread safe.  In theory,
+> simply converting all relevant kvm_mmu_page fields to atomics and using
+> atomic bitops for the bitmap would suffice.  However, (a) an in-depth audit
+> would be required, (b) the code churn would be substantial, and (c) legacy
+> shadow paging would incur additional atomic operations in performance
+> sensitive paths for no benefit (to legacy shadow paging).
+>
+> Fixes: a2855afc7ee8 ("KVM: x86/mmu: Allow parallel page faults for the TDP MMU")
+> Cc: stable@vger.kernel.org
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  Documentation/virt/kvm/locking.rst |  8 ++++----
+>  arch/x86/include/asm/kvm_host.h    |  7 +++++++
+>  arch/x86/kvm/mmu/mmu.c             | 28 ++++++++++++++++++++++++++++
+>  3 files changed, 39 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+> index 8138201efb09..5d27da356836 100644
+> --- a/Documentation/virt/kvm/locking.rst
+> +++ b/Documentation/virt/kvm/locking.rst
+> @@ -31,10 +31,10 @@ On x86:
+>
+>  - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock
+>
+> -- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock is
+> -  taken inside kvm->arch.mmu_lock, and cannot be taken without already
+> -  holding kvm->arch.mmu_lock (typically with ``read_lock``, otherwise
+> -  there's no need to take kvm->arch.tdp_mmu_pages_lock at all).
+> +- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock and
+> +  kvm->arch.mmu_unsync_pages_lock are taken inside kvm->arch.mmu_lock, and
+> +  cannot be taken without already holding kvm->arch.mmu_lock (typically with
+> +  ``read_lock`` for the TDP MMU, thus the need for additional spinlocks).
+>
+>  Everything else is a leaf: no other lock is taken inside the critical
+>  sections.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 20daaf67a5bf..cf32b87b6bd3 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1036,6 +1036,13 @@ struct kvm_arch {
+>         struct list_head lpage_disallowed_mmu_pages;
+>         struct kvm_page_track_notifier_node mmu_sp_tracker;
+>         struct kvm_page_track_notifier_head track_notifier_head;
+> +       /*
+> +        * Protects marking pages unsync during page faults, as TDP MMU page
+> +        * faults only take mmu_lock for read.  For simplicity, the unsync
+> +        * pages lock is always taken when marking pages unsync regardless of
+> +        * whether mmu_lock is held for read or write.
+> +        */
+> +       spinlock_t mmu_unsync_pages_lock;
+>
+>         struct list_head assigned_dev_head;
+>         struct iommu_domain *iommu_domain;
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a272ccbddfa1..cef526dac730 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2596,6 +2596,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+>  int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+>  {
+>         struct kvm_mmu_page *sp;
+> +       bool locked = false;
+>
+>         /*
+>          * Force write-protection if the page is being tracked.  Note, the page
 
-As disscussed in another part of the thread, let's fix that with a new
-netlink attribute.
+It might also be worth adding a note about how it's safe to use
+for_each_gfn_indirect_valid_sp under the MMU read lock because
+mmu_page_hash is only modified with the lock held for write.
 
-> > > To fix above issue it is needed to migrate pppd from ioctl API to rtnl.
-> > 
-> > It would have helped a lot if you had explained that before.
-> > 
-> > > But this would be possible only after rtnl API starts providing all
-> > > features, including specifying custom "unit" argument...
-> > 
-> > You can already simulate the "unit" option by setting the interface
-> > name as "ppp${unit}" and retrieving the kernel assigned id with
-> > ioctl(PPPIOCGUNIT). What's wrong with that?
-> 
-> This is possible to implement. But then unit part from "ppp${unit}"
-> would not match PPPIOCGUNIT number - like it is currently. And it is
-> something which applications expect. Basically there is no difference
-> between ppp interface created by ioctl and ppp interface created by
-> rtnl. You can use other rtnl commands on ppp interface created by ioctl
-> and also you can use other ppp ioctls on ppp interface created by rtnl.
-
-But the application knows if it created the ppp device with a specified
-unit id or not. So it knows if an ioctl(PPPIOCGUNIT) call is necessary
-to get the unit id. And if we allow the interface name to be unrelated
-to the unit id, the application will also know that, because it
-explicitely requested it.
-
-> But I understand your arguments. You are looking at ppp unit id as some
-> internal kernel number; which should probably stay in kernel.
-
-Well, it has to be exported, but it should be opaque to user space
-(appart from the ioctl() api which is established behaviour).
-
-> My point of view is that this is legacy identifier bound to the every
-> ppp network interface, and which is exported to userspace. And because
-> there is API for userspace how userspace can force particular id for
-> particular ppp interface, it means that userspace have full control how
-> these ids are generated. Even it is "internal" kernel number. And it
-> does not matter how are ppp interfaces created, via which method. It is
-> bounded to every ppp interface independently how ppp was created.
-> 
-> By this design, userspace application may choose to create mapping
-> between /dev/ttyUSB<N> and ppp unit <id> by having <N> == <id>.
-> 
-> This ppp unit id is used for some operations, so it is required to know
-> it. And if application is doing e.g. above assumption (it does not use
-> PPPIOCGUNIT, but derive ppp unit id from /dev/ttyUSB* name) which
-> current ioctl API allows, then this application cannot be migrated from
-> ioctl to rtnl API without rewriting code which uses above assumption.
-
-Migrating such application requires writing the netlink code for the new
-api. How could a simple ioctl(PPPIOCGUNIT) call prevent such migration?
-BTW, using PPPIOCGUNIT is much cleaner an more robust that parsing the
-device name, so it's a win in any case. And the application is still
-able to name the ppp interface ppp<N> to keep things simple for its
-users.
-
-> I'm not saying if this is a good or bad idea, just I'm describing what
-> ioctl API allows and what does not. (And yes, in my opinion it is a bad
-> idea, but ppp is designed to allow it).
-> 
-> If I was designing ppp again, I would have probably used interface id as
-> ppp unit id...
-
-With all the building blocks we have now in the Linux kernel, there's
-much more that I'd change. But the landscape and constraints were
-obviously very different at the time.
-
-> > > I hit above problem, so now I'm migrating all pppd setups from "ifname"
-> > > to "unit" option.
-> > 
-> > Why did you write 3125f26c51482 ("ppp: Fix generating ppp unit id when
-> > ifname is not specified") then?
-> 
-> Well, I hope that this kernel fix propagates into kernels used on
-> affected machines. But it will take some time. And until it happens this
-> migration is needed. Lets say it is workaround for unspecific time
-> period.
-
-Makes sense.
-
+> @@ -2618,9 +2619,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+>                 if (sp->unsync)
+>                         continue;
+>
+> +               /*
+> +                * TDP MMU page faults require an additional spinlock as they
+> +                * run with mmu_lock held for read, not write, and the unsync
+> +                * logic is not thread safe.  Take the spinklock regardless of
+> +                * the MMU type to avoid extra conditionals/parameters, there's
+> +                * no meaningful penalty if mmu_lock is held for write.
+> +                */
+> +               if (!locked) {
+> +                       locked = true;
+> +                       spin_lock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
+> +
+> +                       /*
+> +                        * Recheck after taking the spinlock, a different vCPU
+> +                        * may have since marked the page unsync.  A false
+> +                        * positive on the unprotected check above is not
+> +                        * possible as clearing sp->unsync _must_ hold mmu_lock
+> +                        * for write, i.e. unsync cannot transition from 0->1
+> +                        * while this CPU holds mmu_lock for read (or write).
+> +                        */
+> +                       if (READ_ONCE(sp->unsync))
+> +                               continue;
+> +               }
+> +
+>                 WARN_ON(sp->role.level != PG_LEVEL_4K);
+>                 kvm_unsync_page(vcpu, sp);
+>         }
+> +       if (locked)
+> +               spin_unlock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
+>
+>         /*
+>          * We need to ensure that the marking of unsync pages is visible
+> @@ -5604,6 +5630,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
+>  {
+>         struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
+>
+> +       spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
+> +
+>         if (!kvm_mmu_init_tdp_mmu(kvm))
+>                 /*
+>                  * No smp_load/store wrappers needed here as we are in
+> --
+> 2.33.0.rc1.237.g0d66db33f3-goog
+>
