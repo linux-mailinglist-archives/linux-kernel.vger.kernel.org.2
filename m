@@ -2,244 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E89E3EA4C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A1C3EA4C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237056AbhHLMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233956AbhHLMdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:33:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D1E560724;
-        Thu, 12 Aug 2021 12:32:41 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 14:32:39 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Andrei Vagin <avagin@gmail.com>
-Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
- MM exe_file
-Message-ID: <20210812123239.trksnm57owzwzokj@wittgenstein>
-References: <20210812084348.6521-1-david@redhat.com>
- <20210812084348.6521-4-david@redhat.com>
- <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
- <1b6d27cf-2238-0c1c-c563-b38728fbabc2@redhat.com>
+        id S237050AbhHLMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:35:16 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:53704
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235563AbhHLMfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:35:15 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 7D2AA40C9C
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628771689;
+        bh=fXksQPpDuH6T7x4BT558ZGGix2k0x0Rejn/yRv3oga8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=IIhG2uAXgGCTKLClJVk//cM5thqXj+TdlzM2/jqpIYBYA1N791/3SJ2bnhMEN/zbW
+         tjvF1ja4XkFs8xhGqhVwHwKt1t9WREiv7gTJaurgDysK1HueEF9TCAa3uDnU1b3kG2
+         f0d2M6EV5DxSVFoR3Y0fdFV9B2BUmyLnGbjaUhgEdbfYljrCcltdx/+3ZjhULjo5hD
+         oTVVLSj+T+/9YG0YU8bHXBuxGJVHvzi6c0vLJxicDswgdgn4lF3zI84JvV/w1ELHs0
+         PCgB1yqQxOt8H0Zq+ZvmKkYMhCOLANJPKGB8s6kIXg6dylq9R33KKQCEe19fWFtYAY
+         HSHE0fPBmsRJA==
+Received: by mail-wr1-f72.google.com with SMTP id d12-20020a056000186cb02901548bff164dso1770008wri.18
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:34:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fXksQPpDuH6T7x4BT558ZGGix2k0x0Rejn/yRv3oga8=;
+        b=ZSmUEL6r/+/H3//BTeQ7zpRDTTcjNlzl95toB/UY4fup8Xbj5TlT0PhVOT9kZJRwTn
+         KqVO3zWV1xUs1nyYg2z6riijNNJuXM08TmhhSmUcGf5ckQXtoH7vcSQnQLp1al/wAYfD
+         aZBEzWCQRjcsQvOERp/dU9nQBnK3YM8HzoJ21WgT7MVF0GW8c1bHcxVluup0RJGUidz4
+         buMCqfsYN7QY5P4YWDq30cuJKz6bjL/Jkra6LHvMG6hVNLp1/e4K+VVUx+LixLZfQFH9
+         KXE9lhL7YmGvcp6FiBSeNyKzVZpb7gkypnhLyHOvYbOR3ZsT18S0QZutTvnfzZca+Ee7
+         pVmA==
+X-Gm-Message-State: AOAM532E5/lKIesKOIM5mnsVpGn91hUGb+npPb/dFzJcoDSbCLlFtpXr
+        nTowjmeN+YWXlTb5IWN8nk1S//2P3FREtEi8+I+9KLj1CZG0MNl7l7o8YKGKwilgDm25o3ZdBIA
+        lDdONPlqTuBbOfcU7H++hMxX+QDL2wQVOCPOUf8aVaQ==
+X-Received: by 2002:adf:f08e:: with SMTP id n14mr3655708wro.427.1628771688823;
+        Thu, 12 Aug 2021 05:34:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyF/ZR5C1BtBNd4kJJCPmKateoDi+EtUFQPs23ytvlz7wdG1g2X3iPF4mV40XLyvZ9KL1CdDg==
+X-Received: by 2002:adf:f08e:: with SMTP id n14mr3655691wro.427.1628771688574;
+        Thu, 12 Aug 2021 05:34:48 -0700 (PDT)
+Received: from localhost ([2a01:4b00:85fd:d700:1220:9591:5798:fefe])
+        by smtp.gmail.com with ESMTPSA id 129sm2646812wmz.26.2021.08.12.05.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 05:34:48 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Pierce Andjelkovic <pierceandjelkovic@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH] RISC-V: prevent sbi_send_cpumask_ipi race with ftrace
+Date:   Thu, 12 Aug 2021 13:34:33 +0100
+Message-Id: <20210812123433.27871-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1b6d27cf-2238-0c1c-c563-b38728fbabc2@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:13:44PM +0200, David Hildenbrand wrote:
-> On 12.08.21 12:05, Christian Brauner wrote:
-> > [+Cc Andrei]
-> > 
-> > On Thu, Aug 12, 2021 at 10:43:44AM +0200, David Hildenbrand wrote:
-> > > We want to remove VM_DENYWRITE only currently only used when mapping the
-> > > executable during exec. During exec, we already deny_write_access() the
-> > > executable, however, after exec completes the VMAs mapped
-> > > with VM_DENYWRITE effectively keeps write access denied via
-> > > deny_write_access().
-> > > 
-> > > Let's deny write access when setting the MM exe_file. With this change, we
-> > > can remove VM_DENYWRITE for mapping executables.
-> > > 
-> > > This represents a minor user space visible change:
-> > > sys_prctl(PR_SET_MM_EXE_FILE) can now fail if the file is already
-> > > opened writable. Also, after sys_prctl(PR_SET_MM_EXE_FILE), the file
-> > 
-> > Just for completeness, this also affects PR_SET_MM_MAP when exe_fd is
-> > set.
-> 
-> Correct.
-> 
-> > 
-> > > cannot be opened writable. Note that we can already fail with -EACCES if
-> > > the file doesn't have execute permissions.
-> > > 
-> > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > > ---
-> > 
-> > The biggest user I know and that I'm involved in is CRIU which heavily
-> > uses PR_SET_MM_MAP (with a fallback to PR_SET_MM_EXE_FILE on older
-> > kernels) during restore. Afair, criu opens the exe fd as an O_PATH
-> > during dump and thus will use the same flag during restore when
-> > opening it. So that should be fine.
-> 
-> Yes.
-> 
-> > 
-> > However, if I understand the consequences of this change correctly, a
-> > problem could be restoring workloads that hold a writable fd open to
-> > their exe file at dump time which would mean that during restore that fd
-> > would be reopened writable causing CRIU to fail when setting the exe
-> > file for the task to be restored.
-> 
-> If it's their exe file, then the existing VM_DENYWRITE handling would have
-> forbidden these workloads to open the fd of their exe file writable, right?
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 
-Yes.
+ftrace will patch instructions in sbi_send_cpumask_ipi, which is going to
+be used by flush_icache_range, leading to potential races and crashes like
+this:
 
-> At least before doing any PR_SET_MM_MAP/PR_SET_MM_EXE_FILE. But that should
-> rule out quite a lot of cases we might be worried about, right?
+[    0.000000] ftrace: allocating 38893 entries in 152 pages
+[    0.000000] Oops - illegal instruction [#1]
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-1014-generic #14-Ubuntu
+[    0.000000] epc: ffffffe00000920e ra : ffffffe000009384 sp : ffffffe001803d30
+[    0.000000]  gp : ffffffe001a14240 tp : ffffffe00180f440 t0 : ffffffe07fe38000
+[    0.000000]  t1 : ffffffe0019cd338 t2 : 0000000000000000 s0 : ffffffe001803d70
+[    0.000000]  s1 : 0000000000000000 a0 : ffffffe0000095aa a1 : 0000000000000001
+[    0.000000]  a2 : 0000000000000002 a3 : 0000000000000000 a4 : 0000000000000000
+[    0.000000]  a5 : 0000000000000000 a6 : 0000000000000004 a7 : 0000000052464e43
+[    0.000000]  s2 : 0000000000000002 s3 : 0000000000000001 s4 : 0000000000000000
+[    0.000000]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+[    0.000000]  s8 : ffffffe001a170c0 s9 : 0000000000000001 s10: 0000000000000001
+[    0.000000]  s11: 00000000fffcc5d0 t3 : 0000000000000068 t4 : 000000000000000b
+[    0.000000]  t5 : ffffffe0019cd3e0 t6 : ffffffe001803cd8
+[    0.000000] status: 0000000200000100 badaddr: 000000000513f187 cause: 0000000000000002
+[    0.000000] ---[ end trace f67eb9af4d8d492b ]---
+[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+[    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
 
-Yes, it rules out the most obvious cases. The problem is really just
-that we don't know how common weirder cases are. But that doesn't mean
-we shouldn't try and risk it. This is a nice cleanup and playing
-/proc/self/exe games isn't super common.
+Where ffffffe00000920e lies in the middle of sbi_send_cpumask_ipi.
 
-> 
-> > 
-> > Which honestly, no idea how many such workloads exist. (I know at least
-> > of runC and LXC need to sometimes reopen to rexec themselves (weird bug
-> > to protect against attacking the exe file) and thus re-open
-> > /proc/self/exe but read-only.)
-> > 
-> > >   kernel/fork.c | 39 ++++++++++++++++++++++++++++++++++-----
-> > >   1 file changed, 34 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/kernel/fork.c b/kernel/fork.c
-> > > index 6bd2e52bcdfb..5d904878f19b 100644
-> > > --- a/kernel/fork.c
-> > > +++ b/kernel/fork.c
-> > > @@ -476,6 +476,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
-> > >   {
-> > >   	struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
-> > >   	struct rb_node **rb_link, *rb_parent;
-> > > +	struct file *exe_file;
-> > >   	int retval;
-> > >   	unsigned long charge;
-> > >   	LIST_HEAD(uf);
-> > > @@ -493,7 +494,10 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
-> > >   	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
-> > >   	/* No ordering required: file already has been exposed. */
-> > > -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
-> > > +	exe_file = get_mm_exe_file(oldmm);
-> > > +	RCU_INIT_POINTER(mm->exe_file, exe_file);
-> > > +	if (exe_file)
-> > > +		deny_write_access(exe_file);
-> > >   	mm->total_vm = oldmm->total_vm;
-> > >   	mm->data_vm = oldmm->data_vm;
-> > > @@ -638,8 +642,13 @@ static inline void mm_free_pgd(struct mm_struct *mm)
-> > >   #else
-> > >   static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
-> > >   {
-> > > +	struct file *exe_file;
-> > > +
-> > >   	mmap_write_lock(oldmm);
-> > > -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
-> > > +	exe_file = get_mm_exe_file(oldmm);
-> > > +	RCU_INIT_POINTER(mm->exe_file, exe_file);
-> > > +	if (exe_file)
-> > > +		deny_write_access(exe_file);
-> > >   	mmap_write_unlock(oldmm);
-> > >   	return 0;
-> > >   }
-> > > @@ -1163,11 +1172,19 @@ void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
-> > >   	 */
-> > >   	old_exe_file = rcu_dereference_raw(mm->exe_file);
-> > > -	if (new_exe_file)
-> > > +	if (new_exe_file) {
-> > >   		get_file(new_exe_file);
-> > > +		/*
-> > > +		 * exec code is required to deny_write_access() successfully,
-> > > +		 * so this cannot fail
-> > > +		 */
-> > > +		deny_write_access(new_exe_file);
-> > > +	}
-> > >   	rcu_assign_pointer(mm->exe_file, new_exe_file);
-> > > -	if (old_exe_file)
-> > > +	if (old_exe_file) {
-> > > +		allow_write_access(old_exe_file);
-> > >   		fput(old_exe_file);
-> > > +	}
-> > >   }
-> > >   int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
-> > > @@ -1194,10 +1211,22 @@ int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
-> > >   	}
-> > >   	/* set the new file, lockless */
-> > > +	ret = deny_write_access(new_exe_file);
-> > > +	if (ret)
-> > > +		return -EACCES;
-> > >   	get_file(new_exe_file);
-> > > +
-> > >   	old_exe_file = xchg(&mm->exe_file, new_exe_file);
-> > > -	if (old_exe_file)
-> > > +	if (old_exe_file) {
-> > > +		/*
-> > > +		 * Don't race with dup_mmap() getting the file and disallowing
-> > > +		 * write access while someone might open the file writable.
-> > > +		 */
-> > > +		mmap_read_lock(mm);
-> > > +		allow_write_access(old_exe_file);
-> > >   		fput(old_exe_file);
-> > > +		mmap_read_unlock(mm);
-> > > +	}
-> > >   	return 0;
-> > >   }
-> > > -- 
-> > > 2.31.1
-> > > 
-> > 
-> 
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
+Reproduced on Unmatched board using Ubuntu kernels. See
+https://people.canonical.com/~xnox/lp1934548/ for sample images,
+kernels, debug symbols.
+
+BugLink: https://bugs.launchpad.net/bugs/1934548
+Reported-by: Pierce Andjelkovic <pierceandjelkovic@gmail.com>
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+cc: Paul Walmsley <paul.walmsley@sifive.com>
+cc: linux-riscv@lists.infradead.org
+cc: stable@vger.kernel.org
+---
+ arch/riscv/kernel/sbi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index 7402a417f38e..158199865c68 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -562,7 +562,7 @@ long sbi_get_mimpid(void)
+ 	return __sbi_base_ecall(SBI_EXT_BASE_GET_MIMPID);
+ }
+ 
+-static void sbi_send_cpumask_ipi(const struct cpumask *target)
++static void notrace sbi_send_cpumask_ipi(const struct cpumask *target)
+ {
+ 	struct cpumask hartid_mask;
+ 
+-- 
+2.30.2
+
