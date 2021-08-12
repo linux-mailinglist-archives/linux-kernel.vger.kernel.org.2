@@ -2,88 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754A93EA9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DB33EA9DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237234AbhHLSAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231547AbhHLSAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:00:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E47E960EFE;
-        Thu, 12 Aug 2021 17:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628791189;
-        bh=5NlNRK7GbGfOxlxibHmrBh/2i8xLoUExwx+XWk8jif4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b4gFh/vNbIpYfa+B9kFQ5iwm47A44iZiC5sZJGmAHZBp5Vm0/Zf+IcoOcw5IKKJnH
-         Gv6sOPCzAmERu+D5U05I2GR9KhYtZfB+HvlvYFochnj2PHEMGH/IGmxhdp1ZX01lpa
-         0q85A+07Q3Ffa29iVp7tAUB8warzmSt8AZdygnSUhMXbyCkTAXISx6yhNhPduYSC9q
-         Q4n50MG2dSN+iN9LvW104M/FJHYON3S+G24gH072Sx/i+ZwT8TfjnR/eRtKUl4kzww
-         GqOvocImKM4nOOadr16eodPgbye4Q/809dsMkCnYpuHJ+ueJ5eoIYZfxzbnbOqPegq
-         dDUGn0AtYvxsQ==
-Date:   Thu, 12 Aug 2021 10:59:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     "Longpeng(Mike)" <longpeng2@huawei.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        arei.gonglei@huawei.com, linux-kernel@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH resend] vsock/virtio: avoid potential deadlock when
- vsock device remove
-Message-ID: <20210812105948.013eb67e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210812080332.o4vxw72gn5uuqtik@steredhat>
-References: <20210812053056.1699-1-longpeng2@huawei.com>
-        <20210812080332.o4vxw72gn5uuqtik@steredhat>
+        id S237280AbhHLSAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:00:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35566 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237277AbhHLSA3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:00:29 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ABE8E1FF6E;
+        Thu, 12 Aug 2021 18:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628791202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mPq75eCxT+YlAg6XI9cL9LjIMlQFz2YZeURX6oXUIhI=;
+        b=yB/GEREBwDkn0vphDmIqlIB8noRASPCoWKQ8EXtlkYni/wjHChRfolqSKkeZ2TLvcLBlbm
+        I2ig2kbOxRwTj4ZSPIhyQeIZ1U4LkjkkjYf7c7lDyXPKd2yAly0yNMfS5mQnFW5mk3sGX9
+        gA5Tdxjzj0Nu7ICIPLNIO6aU5U8/Krg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628791202;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mPq75eCxT+YlAg6XI9cL9LjIMlQFz2YZeURX6oXUIhI=;
+        b=DpQVkf1E51sIL8bPK9bsh8EKOktkw0jeYmdro+ANhja9hqt26NDFLn85g5gudxklTOO0aQ
+        QRYUSMr/jXTpRHAQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 16A2A13AC3;
+        Thu, 12 Aug 2021 18:00:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id vkHZA6JhFWGlFgAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 18:00:02 +0000
+To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        s32@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-7-clin@suse.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Subject: Re: [PATCH 6/8] arm64: dts: s32g2: add VNP-EVB and VNP-RDB2 support
+Message-ID: <aef2fab4-078e-330b-28d0-1da964985f83@suse.de>
+Date:   Thu, 12 Aug 2021 20:00:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210805065429.27485-7-clin@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 10:03:32 +0200 Stefano Garzarella wrote:
-> On Thu, Aug 12, 2021 at 01:30:56PM +0800, Longpeng(Mike) wrote:
-> >There's a potential deadlock case when remove the vsock device or
-> >process the RESET event:
-> >
-> >  vsock_for_each_connected_socket:
-> >      spin_lock_bh(&vsock_table_lock) ----------- (1)
-> >      ...
-> >          virtio_vsock_reset_sock:
-> >              lock_sock(sk) --------------------- (2)
-> >      ...
-> >      spin_unlock_bh(&vsock_table_lock)
-> >
-> >lock_sock() may do initiative schedule when the 'sk' is owned by
-> >other thread at the same time, we would receivce a warning message
-> >that "scheduling while atomic".
-> >
-> >Even worse, if the next task (selected by the scheduler) try to
-> >release a 'sk', it need to request vsock_table_lock and the deadlock
-> >occur, cause the system into softlockup state.
-> >  Call trace:
-> >   queued_spin_lock_slowpath
-> >   vsock_remove_bound
-> >   vsock_remove_sock
-> >   virtio_transport_release
-> >   __vsock_release
-> >   vsock_release
-> >   __sock_release
-> >   sock_close
-> >   __fput
-> >   ____fput
-> >
-> >So we should not require sk_lock in this case, just like the behavior
-> >in vhost_vsock or vmci.  
->
-> We should add:
-> Fixes: 0ea9e1d3a9e3 ("VSOCK: Introduce virtio_transport.ko")
+Hi Chester et al.,
 
-Added.
+On 05.08.21 08:54, Chester Lin wrote:
+> Add initial device-trees of NXP S32G2's Evaluation Board (S32G-VNP-EVB)
+> and Reference Design 2 Board (S32G-VNP-RDB2).
 
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+"Reference Design Board 2"?
 
-And applied, thanks!
+> 
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile        |  2 ++
+>  .../arm64/boot/dts/freescale/s32g274a-evb.dts | 21 ++++++++++++++++
+>  .../boot/dts/freescale/s32g274a-rdb2.dts      | 25 +++++++++++++++++++
+>  3 files changed, 48 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+>  create mode 100644 arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index 4b4785d86324..2886ddd42894 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -67,4 +67,6 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-eval-v3.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
+>  
+> +dtb-$(CONFIG_ARCH_S32) += s32g274a-evb.dtb
+> +dtb-$(CONFIG_ARCH_S32) += s32g274a-rdb2.dtb
+
+@NXP: Note that since there's no distinction between S32V and S32G on
+the Kconfig level, we decided not to add a white line here. If you wish
+to visually separate them, that could be changed.
+
+For reference:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/Kconfig.platforms
+
+speaks about S32 (without V), so did not need to get updated for S32G2.
+
+>  dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb
+> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+> new file mode 100644
+> index 000000000000..a1ae5031730a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 SUSE LLC
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "s32g2.dtsi"
+> +
+> +/ {
+> +	model = "NXP S32G2 Evaluation Board (S32G-VNP-EVB)";
+> +	compatible = "fsl,s32g274a-evb", "fsl,s32g2";
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> +
+
+Is there any marking on the PCB that a /* ... */ comment could reference
+here? Right now uart0 is close to stdout-path above, but that will
+change once more device nodes get added and enabled alphabetically.
+
+> +&uart0 {
+> +	status = "okay";
+
+No clock-frequency or clocks property needed?
+
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> new file mode 100644
+> index 000000000000..b2faae306b70
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 SUSE LLC
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "s32g2.dtsi"
+> +
+> +/ {
+> +	model = "NXP S32G2 Reference Design 2 (S32G-VNP-RDB2)";
+
+"Board" missing.
+
+> +	compatible = "fsl,s32g274a-rdb2", "fsl,s32g2";
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> +
+
+Comment please.
+
+> +&uart0 {
+> +	status = "okay";
+
+No clock-frequency or clocks property needed?
+
+> +};
+> +
+> +&uart1 {
+> +	status = "okay";
+> +};
+
+What is uart1? Please add a comment. Does it actually work without
+clocks property?
+
+Thanks,
+Andreas
+
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
