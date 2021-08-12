@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDB63EA35D
+	by mail.lfdr.de (Postfix) with ESMTP id 05A193EA35C
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhHLLQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:16:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28663 "EHLO mga18.intel.com"
+        id S236758AbhHLLQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:16:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhHLLQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:16:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="202492232"
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="202492232"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 04:16:04 -0700
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="469725505"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 04:16:01 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mE8gk-008Z2D-MY; Thu, 12 Aug 2021 14:15:54 +0300
-Date:   Thu, 12 Aug 2021 14:15:54 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v1 3/3] kernel/resource: cleanup and optimize
- iomem_is_exclusive()
-Message-ID: <YRUC6p+9jKmXu/NT@smile.fi.intel.com>
-References: <20210811203612.138506-1-david@redhat.com>
- <20210811203612.138506-4-david@redhat.com>
- <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
- <37179df3-13d7-9b98-4cd8-13bb7f735129@redhat.com>
- <CAHp75VcU2_qE1xt397L5dpxVMejZdHwWq0D_-Bo57_eWMtmgig@mail.gmail.com>
- <a2af90f4-5bce-df8d-2466-8dabe85dd4b7@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a2af90f4-5bce-df8d-2466-8dabe85dd4b7@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S232081AbhHLLQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:16:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E08866103A;
+        Thu, 12 Aug 2021 11:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628766962;
+        bh=cCVIUQ7Xk/SQ17zPIQDuEBSetuylwimgtn2vHvloNHs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BAs+F1H7AvfbtgGUT4jp53i50YkiLcCbnJFvDl2bDAxrtZrkVIHhEpJvYP+sZeask
+         kjELib1IsxOgIu6ivL/jRwaO2x5pD5pfWMj5SXfMaLjGLTGmrfHN5UnVMH3Pq/yWZm
+         CIkd18SzcyOpfZnSvyCi8Emeui3diQ2bo1JTmoX0yq0dGPl/4A47QmdNgB4sSpeCK7
+         Cm19dUuWBPovHA58hya7fSAn7a3zEohE2k+I6Sr+xWgCa82jaXSUh6+fLVp5or0yq+
+         vLlYJZgr7a+ONg11RUXgLtEj+4WMlaxjS2zlm/ycie9n5Zaf/nYWlYif/dpv0pKbNT
+         dUg0YV72ZhD6Q==
+Date:   Thu, 12 Aug 2021 20:15:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-Id: <20210812201559.31f5e520923d768049c8906d@kernel.org>
+In-Reply-To: <20210812000225.68d72f4a@rorschach.local.home>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+        <20210811112249.555463f2@oasis.local.home>
+        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
+        <20210812000225.68d72f4a@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 09:34:00AM +0200, David Hildenbrand wrote:
-> On 12.08.21 09:14, Andy Shevchenko wrote:
-> > On Thursday, August 12, 2021, David Hildenbrand <david@redhat.com
-> > <mailto:david@redhat.com>> wrote:
-> >     On 11.08.21 22:47, Andy Shevchenko wrote:
-> >         On Wednesday, August 11, 2021, David Hildenbrand
-> >         <david@redhat.com <mailto:david@redhat.com>
-> >         <mailto:david@redhat.com <mailto:david@redhat.com>>> wrote:
+On Thu, 12 Aug 2021 00:02:25 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> > Yes, it’s like micro optimization. If you want your way I suggest then
-> > to add a macro
-> > 
-> > #define for_each_iomem_resource_child() \
-> >   for (iomem_resource...)
+> On Thu, 12 Aug 2021 10:27:35 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> I think the only thing that really makes sense would be something like this on top (not compiled yet):
+> > I like to prohibit latter one. It is my feeling, but I think it is
+> > natural that the eprobe is only for the static events, and I also think
+> > dereferencing a pointer-type field in raw-event is more reliable than
+> > dereferencing a digit value passed to the synthetic event.
+> 
+> Although I believe we need to attach eprobes to synthetic events, for
+> the reasons I stated in my previous email. I'm perfectly happy to
+> forbid them from attaching to kprobe or uprobe events. Because,
+> honestly, eprobes do not give you anything that a kprobe nor uprobe can
+> give you.
 
-Makes sense to me, thanks, go for it!
+Agreed. It is meaningless to put eprobes on kprobes or uprobes.
+
+Thank you,
+
+> 
+> -- Steve
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Masami Hiramatsu <mhiramat@kernel.org>
