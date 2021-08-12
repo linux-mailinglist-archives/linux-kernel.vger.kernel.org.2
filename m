@@ -2,147 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB7E3EA632
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA4D3EA634
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237852AbhHLOH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:07:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50462 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236956AbhHLOH4 (ORCPT
+        id S237869AbhHLOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:08:33 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:7727 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236956AbhHLOIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:07:56 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 25579221DA;
-        Thu, 12 Aug 2021 14:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628777250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=70lfViDjSLp9djdpWufs6r68Wzu9SAenpLs48/HVGgk=;
-        b=V2BSEDxe676eLo/G0hmMkDFKWZlZRQmsh0FfGNhqqQP4mZDDvQMBn5lduViaqwkBljkEi6
-        X+UGp5KseaZbLk130snnreLh1rQBFehG3vAfuOOrvjZUT+bfm0aKKJdMD+Z1SAIJMA//ms
-        jBrd6a6GjOW0z3jQ2hKffLyrdyjPvN8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628777250;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=70lfViDjSLp9djdpWufs6r68Wzu9SAenpLs48/HVGgk=;
-        b=QaI+kazOdaLDjFB5TiGLVSfp1yhFLpCYGZAXsdwWnlXTLYnmsv/ayuiki9R5dXA68gQf+D
-        s+a0p6qD2nyEEBBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0C1C213A90;
-        Thu, 12 Aug 2021 14:07:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id WzM+AiIrFWF4XgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 14:07:30 +0000
-Subject: Re: [PATCH v14 065/138] mm/writeback: Change __wb_writeout_inc() to
- __wb_writeout_add()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-66-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9c22a18d-85e6-9d7c-b90a-b50af6e3a66b@suse.cz>
-Date:   Thu, 12 Aug 2021 16:07:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 12 Aug 2021 10:08:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1628777287; x=1660313287;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=p0EZrYR3bmKudOTePlI57y+XvEl2pslcz4rbLPhHVW0=;
+  b=T/YUscArP2chnoPBBdVUeUGkC5ZWBQl3/+g3vrYqeLtk6drYfGNWNGf2
+   VSPG2nQcx47cn5OzBikMRcGOmZ/RlghEGpnZnB1vF+n8MwdVsjm/c+BG2
+   LikNkHaS+tBufKU5GK90PsB4LwVXscg/FlE5jv4HRUk+HsFTc2Gt7uLrv
+   xK7fec7mWdo9j6rZN9ioYLshqxc4xx3W4seu9G1/fyQk1h7pafm3Alnm8
+   tpD1Xlj9EPzVUQvONX6x3lWEs8KNINuwRRFppMJummZWMH1Jd8QITptg4
+   6ohC9IIlqCekWJarDMgIo78PjYMhBv/LwfYQiZzsjoMd82r72nMZ2gIYo
+   Q==;
+IronPort-SDR: INc926UWL/x9IkCie/fyCB58bKtFh1I/jq1RbOcE0m8Cunty/Xbw4eRd6mcEZRRmywDPHRsNiC
+ wXvP0LjRRaKcTBNmYptCdws4cegarndo/bMM3/V8/4MhHs5oUYVd1V8NLdVb10QeEVBRL7wc4z
+ Vq7tRhmqbC/Kp9sdwWVIqXcCGj/6UTl+asoF84cF+l5IlZmlkmnX3gcj39WQsfZ7BaX7OKaP3h
+ 58OQ/d+5Mhw+Pr6CWS/kIkICL0tZ0EujrEMGnQHiuDrvdnbbeRt+PRs+Kk3qg3K14vLHP4ZSh5
+ XM9BtpJAbYHJEpgVVIqaQpJ/
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="139830325"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Aug 2021 07:08:06 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 07:08:05 -0700
+Received: from che-lt-i63539u.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 12 Aug 2021 07:08:01 -0700
+From:   Hari Prasath <Hari.PrasathGE@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <Hari.PrasathGE@microchip.com>
+Subject: [PATCH 1/2] ARM: at91: dts: sama5d29: Add dtsi file for sama5d29
+Date:   Thu, 12 Aug 2021 19:37:57 +0530
+Message-ID: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-66-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Allow for accounting N pages at once instead of one page at a time.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+A new dtsi file for sama5d29 SoC is added which basically inherits the sama5d2
+dtsi with the mac controller compatible property updated.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
+---
+ arch/arm/boot/dts/sama5d29.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+ create mode 100644 arch/arm/boot/dts/sama5d29.dtsi
 
-> ---
->  mm/page-writeback.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index f55f2ebdd9a9..e542ea37d605 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -562,12 +562,12 @@ static unsigned long wp_next_time(unsigned long cur_time)
->  	return cur_time;
->  }
->  
-> -static void wb_domain_writeout_inc(struct wb_domain *dom,
-> +static void wb_domain_writeout_add(struct wb_domain *dom,
->  				   struct fprop_local_percpu *completions,
-> -				   unsigned int max_prop_frac)
-> +				   unsigned int max_prop_frac, long nr)
->  {
->  	__fprop_add_percpu_max(&dom->completions, completions,
-> -			       max_prop_frac, 1);
-> +			       max_prop_frac, nr);
->  	/* First event after period switching was turned off? */
->  	if (unlikely(!dom->period_time)) {
->  		/*
-> @@ -585,18 +585,18 @@ static void wb_domain_writeout_inc(struct wb_domain *dom,
->   * Increment @wb's writeout completion count and the global writeout
->   * completion count. Called from test_clear_page_writeback().
->   */
-> -static inline void __wb_writeout_inc(struct bdi_writeback *wb)
-> +static inline void __wb_writeout_add(struct bdi_writeback *wb, long nr)
->  {
->  	struct wb_domain *cgdom;
->  
-> -	inc_wb_stat(wb, WB_WRITTEN);
-> -	wb_domain_writeout_inc(&global_wb_domain, &wb->completions,
-> -			       wb->bdi->max_prop_frac);
-> +	wb_stat_mod(wb, WB_WRITTEN, nr);
-> +	wb_domain_writeout_add(&global_wb_domain, &wb->completions,
-> +			       wb->bdi->max_prop_frac, nr);
->  
->  	cgdom = mem_cgroup_wb_domain(wb);
->  	if (cgdom)
-> -		wb_domain_writeout_inc(cgdom, wb_memcg_completions(wb),
-> -				       wb->bdi->max_prop_frac);
-> +		wb_domain_writeout_add(cgdom, wb_memcg_completions(wb),
-> +				       wb->bdi->max_prop_frac, nr);
->  }
->  
->  void wb_writeout_inc(struct bdi_writeback *wb)
-> @@ -604,7 +604,7 @@ void wb_writeout_inc(struct bdi_writeback *wb)
->  	unsigned long flags;
->  
->  	local_irq_save(flags);
-> -	__wb_writeout_inc(wb);
-> +	__wb_writeout_add(wb, 1);
->  	local_irq_restore(flags);
->  }
->  EXPORT_SYMBOL_GPL(wb_writeout_inc);
-> @@ -2751,7 +2751,7 @@ int test_clear_page_writeback(struct page *page)
->  				struct bdi_writeback *wb = inode_to_wb(inode);
->  
->  				dec_wb_stat(wb, WB_WRITEBACK);
-> -				__wb_writeout_inc(wb);
-> +				__wb_writeout_add(wb, 1);
->  			}
->  		}
->  
-> 
+diff --git a/arch/arm/boot/dts/sama5d29.dtsi b/arch/arm/boot/dts/sama5d29.dtsi
+new file mode 100644
+index 000000000000..e8cc73c0619f
+--- /dev/null
++++ b/arch/arm/boot/dts/sama5d29.dtsi
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * sama5d29.dtsi - Device Tree Include file for SAMA5D29 SoC of the SAMA5D2
++ * family.
++ *
++ *  Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
++ *
++ *  Author: Hari Prasath <Hari.PrasathGE@microchip.com>
++ *
++ */
++
++#include "sama5d2.dtsi"
++
++&macb0 {
++compatible = "atmel,sama5d29-gem";
++};
+-- 
+2.17.1
 
