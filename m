@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E0D3EAC05
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EBD3EAC08
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238091AbhHLUmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S237979AbhHLUmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbhHLUm3 (ORCPT
+        with ESMTP id S238021AbhHLUmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:42:29 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D66C0617AD
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:04 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id m3so3989018qvu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:42:03 -0700 (PDT)
+        Thu, 12 Aug 2021 16:42:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC3DC0612A5;
+        Thu, 12 Aug 2021 13:42:05 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id az7so8272924qkb.5;
+        Thu, 12 Aug 2021 13:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4fH6A/BcmiXnSJNIz36CupSiUjhhUBPUWUzzeHlruOE=;
-        b=egHFOLfly8AjKOqcXJyLVExDLf6LQcj/wgdtZZlG5HWIU+cPfiscKiz0rCyST76G8o
-         R29ekx00ati+bx0XNynb2U9MyzPCgFER6DrNzBCe6sx/4JmE0BzGTabFbGP5POS1kmdG
-         sRFtNYWNtS2yP9Q9bMekpEjPMEb7VsysanYbWDUQE5LjXew+VClPpizjFVE20Zn+q7OL
-         ygoF7ioTB1CcezHpNHEQqB6ZU17m5K6EEtO2sIp0+RarAbhJRdF7B3hYIIQiPlvi8Uqn
-         AjREhqExwBJMw02IxVR3Ewz6TBNy/Jf6zIZ2I4/gPIZjqaU/21pyGuV5gjL4WQ82k1YA
-         ge/A==
+        bh=iWmyzD0AHOmumLrqKa3ZHpzPnn/EcIn8wTUKFzr+kYQ=;
+        b=hmVe7sT1hGvRwzQ/slSq+rQUvVQrRh1nihHPENrDIwE45CYMPD1Z/x4jTcP/THIFWH
+         L7dvuCIKD6w0WovygtCTVvp9YRhyNeh7Y2h1/qCUaf+lEhfhO1BIZVJstUNTgzsSXTjN
+         M78TsYn3IbNYZYNOCoXzs2OCAEAI12RYEl3+NPbER6ZEyHLk5gZlX8OnVpHLMaiLkOEP
+         18ywaxXNt7T0LZ6g8naFFBHJJwc3lJuQMzGEndkIwptE9RHU7M0ubYe7o9Leol5I/7Mp
+         DK9kKQ3xw+v4Qs3GvVaEwUYraILJ60aZvNV0Qphx7TLCaAv+IKfTyA4T3lmEMHFwF9UE
+         Kt2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4fH6A/BcmiXnSJNIz36CupSiUjhhUBPUWUzzeHlruOE=;
-        b=uTYMuBcnupx1olGW1QK++NXYB6tz3EsIMvGT6lyXzDoDayZa8EOt5ZLp4zW0FmIBVU
-         T3cOaUQIx64AtonpUCiqoJVak8mJlAwnzpmaJtXYF5zTGwZx7fGkuMtBVKcNwgjryLCU
-         fmJr7nmtqL5lfbDmZ+nFpxdmH+01195/zkknxEO7jhO6WhuEQaMazN5/+NzJfdxBduM0
-         emRWHYrFdDrGu0MT851YIyCRtyFg0nT/1IdcUSIg7jcZzEg6b8LrSYKXKxJuLgfElJPO
-         3Fb1JT/08OxmnobFwHQl5RWczYxca2ueh1s+4bNUbfX03EtOFfz0KiU8Ob7FXoutZPeM
-         nAcQ==
-X-Gm-Message-State: AOAM530OayArjv9XPhogQyLY0WyiNC6X/qPKMDsoKnA8jkdjxhaeNWj5
-        HGYanFzREgRFlRcsWz6/3u8=
-X-Google-Smtp-Source: ABdhPJwO8BKYR3rqA3vonlPaweauwBXBAV9qhXKsuNnD9drM/Byn6GLIlelcDUcBbLDmR3/VIErhxg==
-X-Received: by 2002:a05:6214:dce:: with SMTP id 14mr5852702qvt.34.1628800923135;
-        Thu, 12 Aug 2021 13:42:03 -0700 (PDT)
+        bh=iWmyzD0AHOmumLrqKa3ZHpzPnn/EcIn8wTUKFzr+kYQ=;
+        b=hlvvvw3aNT0S03nQZMng7tfGZADrv5YdpWu1bfOEjjFipkq6QwHbUk4ghfEgObLGA5
+         Szq59SvrsaEPdmBTnnBoahuoJSIVgwPuxusm2f0NNYEGEympyPEB22gSi9F7qqY0O+t+
+         B927oyq2OIIhI/iID2lZkcXDQGR7Ng3kywjfa9KpTIU7aQ1HowjAU0vb4e5GFvb7FLtO
+         hXMUjB5x8KmW6ux5PYs9wq3sMQ+GL7KbBjvNVexoKlPrxq2zdKo3krueAjPo0slwdCgj
+         Sf1S70iuH3lqbZuwhgHhHl1m8egCF7V1LmOgFw2qQKvFrvDTNvsJB7vh19ZppQgP9z+k
+         prCQ==
+X-Gm-Message-State: AOAM532IePJYeCJnbJqau+svh6kBeuIsCM7tUEqVP+S+R1EOxQRCM2WK
+        3awge/pXwuYOtMolOL+e/FQ=
+X-Google-Smtp-Source: ABdhPJy4HK8JMBANtT1Uwyh3IIemb3X75giy3d/8yXVQoIEBVbULOvqq2B9tZfz3t2WBRgS8QeVx9Q==
+X-Received: by 2002:a05:620a:5b7:: with SMTP id q23mr6568553qkq.386.1628800924115;
+        Thu, 12 Aug 2021 13:42:04 -0700 (PDT)
 Received: from master-laptop.sparksnet ([2601:153:980:85b1:e89f:d077:9161:1bd7])
-        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.42.02
+        by smtp.gmail.com with ESMTPSA id m16sm1940361qki.19.2021.08.12.13.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 13:42:02 -0700 (PDT)
+        Thu, 12 Aug 2021 13:42:03 -0700 (PDT)
 From:   Peter Geis <pgwipeout@gmail.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Peter Geis <pgwipeout@gmail.com>, linux-phy@lists.infradead.org,
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/8] phy: phy-rockchip-inno-usb2: add rk3568 support
-Date:   Thu, 12 Aug 2021 16:41:14 -0400
-Message-Id: <20210812204116.2303617-7-pgwipeout@gmail.com>
+Subject: [PATCH v2 7/8] arm64: dts: rockchip: add usb2 nodes to rk3568 device tree
+Date:   Thu, 12 Aug 2021 16:41:15 -0400
+Message-Id: <20210812204116.2303617-8-pgwipeout@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210812204116.2303617-1-pgwipeout@gmail.com>
 References: <20210812204116.2303617-1-pgwipeout@gmail.com>
@@ -66,104 +65,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rk3568 usb2phy is a standalone device with a single muxed interrupt.
-Add support for the registers to the usb2phy driver.
+Add the requisite nodes to the rk3568 device tree to enable the usb2
+device controllers.
+Includes the usb2phy nodes, usb2phy grf nodes, and usb2 controller
+nodes.
 
 Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 ---
- drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi | 98 ++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-index fdeb2e7c937a..74420c439a07 100644
---- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-+++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-@@ -1100,6 +1100,7 @@ static int rockchip_usb2phy_otg_port_init(struct rockchip_usb2phy *rphy,
- 	if (ret) {
- 		dev_err(rphy->dev, "failed to init irq for host port\n");
- 		goto out;
-+	}
+diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+index 322971318d5a..2abd9241c91f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+@@ -200,6 +200,50 @@ gic: interrupt-controller@fd400000 {
+ 		msi-controller;
+ 	};
  
- 	if (!IS_ERR(rphy->edev)) {
- 		rport->event_nb.notifier_call = rockchip_otg_event;
-@@ -1509,6 +1510,69 @@ static const struct rockchip_usb2phy_cfg rk3399_phy_cfgs[] = {
- 	{ /* sentinel */ }
- };
- 
-+static const struct rockchip_usb2phy_cfg rk3568_phy_cfgs[] = {
-+	{
-+		.reg = 0xfe8a0000,
-+		.num_ports	= 2,
-+		.clkout_ctl	= { 0x0008, 4, 4, 1, 0 },
-+		.port_cfgs	= {
-+			[USB2PHY_PORT_OTG] = {
-+				.phy_sus	= { 0x0000, 8, 0, 0, 0x1d1 },
-+				.bvalid_det_en	= { 0x0080, 2, 2, 0, 1 },
-+				.bvalid_det_st	= { 0x0084, 2, 2, 0, 1 },
-+				.bvalid_det_clr = { 0x0088, 2, 2, 0, 1 },
-+				.utmi_avalid	= { 0x00c0, 10, 10, 0, 1 },
-+				.utmi_bvalid	= { 0x00c0, 9, 9, 0, 1 },
-+			},
-+			[USB2PHY_PORT_HOST] = {
-+				/* Select suspend control from controller */
-+				.phy_sus	= { 0x0004, 8, 0, 0x1d2, 0x1d2 },
-+				.ls_det_en	= { 0x0080, 1, 1, 0, 1 },
-+				.ls_det_st	= { 0x0084, 1, 1, 0, 1 },
-+				.ls_det_clr	= { 0x0088, 1, 1, 0, 1 },
-+				.utmi_ls	= { 0x00c0, 17, 16, 0, 1 },
-+				.utmi_hstdet	= { 0x00c0, 19, 19, 0, 1 }
-+			}
-+		},
-+		.chg_det = {
-+			.opmode		= { 0x0000, 3, 0, 5, 1 },
-+			.cp_det		= { 0x00c0, 24, 24, 0, 1 },
-+			.dcp_det	= { 0x00c0, 23, 23, 0, 1 },
-+			.dp_det		= { 0x00c0, 25, 25, 0, 1 },
-+			.idm_sink_en	= { 0x0008, 8, 8, 0, 1 },
-+			.idp_sink_en	= { 0x0008, 7, 7, 0, 1 },
-+			.idp_src_en	= { 0x0008, 9, 9, 0, 1 },
-+			.rdm_pdwn_en	= { 0x0008, 10, 10, 0, 1 },
-+			.vdm_src_en	= { 0x0008, 12, 12, 0, 1 },
-+			.vdp_src_en	= { 0x0008, 11, 11, 0, 1 },
-+		},
-+	},
-+	{
-+		.reg = 0xfe8b0000,
-+		.num_ports	= 2,
-+		.clkout_ctl	= { 0x0008, 4, 4, 1, 0 },
-+		.port_cfgs	= {
-+			[USB2PHY_PORT_OTG] = {
-+				.phy_sus	= { 0x0000, 8, 0, 0x1d2, 0x1d1 },
-+				.ls_det_en	= { 0x0080, 0, 0, 0, 1 },
-+				.ls_det_st	= { 0x0084, 0, 0, 0, 1 },
-+				.ls_det_clr	= { 0x0088, 0, 0, 0, 1 },
-+				.utmi_ls	= { 0x00c0, 5, 4, 0, 1 },
-+				.utmi_hstdet	= { 0x00c0, 7, 7, 0, 1 }
-+			},
-+			[USB2PHY_PORT_HOST] = {
-+				.phy_sus	= { 0x0004, 8, 0, 0x1d2, 0x1d1 },
-+				.ls_det_en	= { 0x0080, 1, 1, 0, 1 },
-+				.ls_det_st	= { 0x0084, 1, 1, 0, 1 },
-+				.ls_det_clr	= { 0x0088, 1, 1, 0, 1 },
-+				.utmi_ls	= { 0x00c0, 17, 16, 0, 1 },
-+				.utmi_hstdet	= { 0x00c0, 19, 19, 0, 1 }
-+			}
-+		},
-+	},
-+	{ /* sentinel */ }
-+};
++	usb_host0_ehci: usb@fd800000 {
++		compatible = "generic-ehci";
++		reg = <0x0 0xfd800000 0x0 0x40000>;
++		interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_USB2HOST0>, <&cru HCLK_USB2HOST0_ARB>,
++			 <&cru PCLK_USB>;
++		phys = <&u2phy1_otg>;
++		phy-names = "usb";
++		status = "disabled";
++	};
 +
- static const struct rockchip_usb2phy_cfg rv1108_phy_cfgs[] = {
- 	{
- 		.reg = 0x100,
-@@ -1558,6 +1622,7 @@ static const struct of_device_id rockchip_usb2phy_dt_match[] = {
- 	{ .compatible = "rockchip,rk3328-usb2phy", .data = &rk3328_phy_cfgs },
- 	{ .compatible = "rockchip,rk3366-usb2phy", .data = &rk3366_phy_cfgs },
- 	{ .compatible = "rockchip,rk3399-usb2phy", .data = &rk3399_phy_cfgs },
-+	{ .compatible = "rockchip,rk3568-usb2phy", .data = &rk3568_phy_cfgs },
- 	{ .compatible = "rockchip,rv1108-usb2phy", .data = &rv1108_phy_cfgs },
- 	{}
- };
++	usb_host0_ohci: usb@fd840000 {
++		compatible = "generic-ohci";
++		reg = <0x0 0xfd840000 0x0 0x40000>;
++		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_USB2HOST0>, <&cru HCLK_USB2HOST0_ARB>,
++			 <&cru PCLK_USB>;
++		phys = <&u2phy1_otg>;
++		phy-names = "usb";
++		status = "disabled";
++	};
++
++	usb_host1_ehci: usb@fd880000 {
++		compatible = "generic-ehci";
++		reg = <0x0 0xfd880000 0x0 0x40000>;
++		interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_USB2HOST1>, <&cru HCLK_USB2HOST1_ARB>,
++			 <&cru PCLK_USB>;
++		phys = <&u2phy1_host>;
++		phy-names = "usb";
++		status = "disabled";
++	};
++
++	usb_host1_ohci: usb@fd8c0000 {
++		compatible = "generic-ohci";
++		reg = <0x0 0xfd8c0000 0x0 0x40000>;
++		interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_USB2HOST1>, <&cru HCLK_USB2HOST1_ARB>,
++			 <&cru PCLK_USB>;
++		phys = <&u2phy1_host>;
++		phy-names = "usb";
++		status = "disabled";
++	};
++
+ 	pmugrf: syscon@fdc20000 {
+ 		compatible = "rockchip,rk3568-pmugrf", "syscon", "simple-mfd";
+ 		reg = <0x0 0xfdc20000 0x0 0x10000>;
+@@ -210,6 +254,16 @@ grf: syscon@fdc60000 {
+ 		reg = <0x0 0xfdc60000 0x0 0x10000>;
+ 	};
+ 
++	usb2phy0_grf: syscon@fdca0000 {
++		compatible = "rockchip,rk3568-usb2phy-grf", "syscon";
++		reg = <0x0 0xfdca0000 0x0 0x8000>;
++	};
++
++	usb2phy1_grf: syscon@fdca8000 {
++		compatible = "rockchip,rk3568-usb2phy-grf", "syscon";
++		reg = <0x0 0xfdca8000 0x0 0x8000>;
++	};
++
+ 	pmucru: clock-controller@fdd00000 {
+ 		compatible = "rockchip,rk3568-pmucru";
+ 		reg = <0x0 0xfdd00000 0x0 0x1000>;
+@@ -738,6 +792,50 @@ saradc: saradc@fe720000 {
+ 		status = "disabled";
+ 	};
+ 
++	usb2phy0: usb2-phy@fe8a0000 {
++		compatible = "rockchip,rk3568-usb2phy";
++		reg = <0x0 0xfe8a0000 0x0 0x10000>;
++		clocks = <&pmucru CLK_USBPHY0_REF>;
++		clock-names = "phyclk";
++		clock-output-names = "clk_usbphy0_480m";
++		interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
++		rockchip,usbgrf = <&usb2phy0_grf>;
++		#clock-cells = <0>;
++		status = "disabled";
++
++		u2phy0_host: host-port {
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++
++		u2phy0_otg: otg-port {
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++	};
++
++	usb2phy1: usb2-phy@fe8b0000 {
++		compatible = "rockchip,rk3568-usb2phy";
++		reg = <0x0 0xfe8b0000 0x0 0x10000>;
++		clocks = <&pmucru CLK_USBPHY1_REF>;
++		clock-names = "phyclk";
++		clock-output-names = "clk_usbphy1_480m";
++		interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
++		rockchip,usbgrf = <&usb2phy1_grf>;
++		#clock-cells = <0>;
++		status = "disabled";
++
++		u2phy1_host: host-port {
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++
++		u2phy1_otg: otg-port {
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++	};
++
+ 	pinctrl: pinctrl {
+ 		compatible = "rockchip,rk3568-pinctrl";
+ 		rockchip,grf = <&grf>;
 -- 
 2.25.1
 
