@@ -2,91 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5803EAB63
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217633EAB66
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbhHLTxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234130AbhHLTx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:53:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A773B60C3E;
-        Thu, 12 Aug 2021 19:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628797984;
-        bh=TCwtM6BWv0H577BZzyIaqETTaYr/bgz/aJyZLq9lAls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NkKW9BUoAPhUftqcNV6MTHaY+EeyjqdCv1tF5z7IN9BOA97okh///miMz1rz5Cwot
-         r+Ll3UP2iPGmzZwvPjqFU89T5KgM6u0GMiTQJpFpFj232+AojAFTePs/zyG6Wl1C4F
-         Wjo1IzK34BeJ2wiBe+uvjWt58v4XNqXv1umO+9sGT8QI/hI2TAOmVFsFiVxBvgIofs
-         mxT7Ik0aJllGLWH4Glw9OmmmSeGriwACOTlzE49r9zr5SVFM3uOqw/U8BHa8LFll1c
-         ueOgUr4J//TrWrTSyuUc2hVnHV+PPlqGKItqj6YzPa1SNH9KDKhir0/3U2D6DqI03r
-         /D62e/ePwFAxg==
-Date:   Thu, 12 Aug 2021 22:53:01 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH RFC v3] x86/sgx: Add /proc/sys/kernel/sgx/total_mem
-Message-ID: <20210812195301.jqnhvosfpqncl3jg@kernel.org>
-References: <20210811032133.853680-1-jarkko@kernel.org>
- <0c935066-008d-b023-7dc3-f4e0ac1b3d20@intel.com>
+        id S234620AbhHLT6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhHLT6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:58:35 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3CBC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:58:09 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z20so15617878lfd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vlJqqfcdLLwPZcg4ot94LAiGieMmOlu7Safv+RWN6eI=;
+        b=lQLxO4XpOpmbiymUYoDPFDFIF6eqobdQfw3CiUZm5mOYdSGXVM21Ro2QlrJDLiCNvy
+         NPexXA0/Cq0DUHSHQN2yozrrvaxaP/jeaCtxHhXAeKIr/epahe+xMeo28PEon7VTA2vs
+         Uek7JhFpyG73IDYoCC1pzvXm/YEHS3i0y21ZGI8rCY4UNdZme78lokh0QKQ7z1VgT2Xe
+         lKcz0nRiUFhsog+TvuOM+k7cvFWGvbpM+WDsyFbCn6+RWOpRl+eXPQhvu7boDIVBnLWL
+         BJRNQQTzoMjcbrfMkF3XNJHcK9VxE0b+P2e2+dtwTqsY1aP2LouFfD8WxXhFGschM9oX
+         ZW6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vlJqqfcdLLwPZcg4ot94LAiGieMmOlu7Safv+RWN6eI=;
+        b=ehXneUWYKzTy+X/YzRH6vGKio2UuDy/WTc0fDoMgL6Gxc8LmPlhCqUSQJ7zUvI3HSW
+         M5+XijJOMwfzMG+kK04x/7igEAoIwSkCCEIQ9Wa68Ju3XjqtOfD0cX0hv1sVgosrV2b/
+         AHB6AqJWFvWDutGqnSpr8sHiWQOitzAaYjDjJCZjp91lILkm+x6eQ0EFlf98o0tg84fH
+         fEmGSXWxKNfG1YH7oamZuSGB50DboIJopNYGDb388Rb63Z3pD9wchojMQEPtH78p6C17
+         k10+uJ/5+rIunLP1tuyYatbpw6IMrW4b231WgKc4iAg/7pKphGZZfWsBkgq55EUSsTya
+         xZsg==
+X-Gm-Message-State: AOAM532QVEoVeYzDxfW9UzQtUmTn3zhgC0ZD9HNlf29etmRuth1JlQhu
+        QUOZmPdHVSKe0gTyshi5BrU8LwogJagC8w==
+X-Google-Smtp-Source: ABdhPJwV7gGm/JgIR69OGefUtKx/Ryuv7Lr5cuPcNKPTReYIFu9DezX09tKUTZM4xsUc/kK9Gx7CXw==
+X-Received: by 2002:a19:4f45:: with SMTP id a5mr3619655lfk.190.1628798288228;
+        Thu, 12 Aug 2021 12:58:08 -0700 (PDT)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id e17sm417997lji.38.2021.08.12.12.58.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 12:58:07 -0700 (PDT)
+Subject: Re: [PATCH 4/5] arm64: Warn on booting at EL2 with HVC disabled
+To:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+References: <20210812190213.2601506-1-maz@kernel.org>
+ <20210812190213.2601506-5-maz@kernel.org>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <c13ee5ca-84e2-6615-375f-9e7e7f6b490f@gmail.com>
+Date:   Thu, 12 Aug 2021 21:58:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c935066-008d-b023-7dc3-f4e0ac1b3d20@intel.com>
+In-Reply-To: <20210812190213.2601506-5-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 07:30:13AM -0700, Dave Hansen wrote:
-> On 8/10/21 8:21 PM, Jarkko Sakkinen wrote:
-> > +The following sysctl files can be found in the ``/proc/sys/kernel/sgx/`` directory:
-> > +
-> > +``total_mem``
-> > +	The total amount of SGX protected memory in bytes available in the system
-> > +	available for use. In other words, it describes the size of the Enclave
-> > +	Page Cache (EPC).
+On 12.08.2021 21:02, Marc Zyngier wrote:
+> Now that we are able to paper over the gigantic stupidity that
+> booting at EL2 with SCR_EL3.HCE==0 is, let's taint WARN_TAINT()
+> when detecting this situation.
 > 
-> I've been acting as if /proc is deprecated for new stuff.  Shouldn't
-> this be going in sysfs?
-
-Are sysctl variables deprecated too?
-
-> I figured, at some point, someone is going to ask for NUMA statistics.
-> That would tend to point in the direction of us needing something in:
+> Yes, this is *LOUD*.
 > 
-> 	/sys/devices/system/node/nodeN/
-> 
-> Maybe 'sgxinfo' or 'sgxstat' to go along with 'meminfo'.
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Is conetents of meminfo freezed or can a new line added, e.g.
+Tested-by: Rafał Miłecki <rafal@milecki.pl>
 
-Node 0 SgxMemTotal:    32825700 kB
+This replaces:
+CPU: All CPU(s) started at EL1
 
-If a new file is needed, I would name it as "sgxmeminfo"
+with:
+------------[ cut here ]------------
+CPU: CPUs downgraded to EL1, HVC disabled
+WARNING: CPU: 0 PID: 1 at arch/arm64/kernel/smp.c:429 smp_cpus_done+0xac/0xe8
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc5-g86fc10657896 #41
+Hardware name: Asus GT-AC5300 (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+pc : smp_cpus_done+0xac/0xe8
+lr : smp_cpus_done+0xac/0xe8
+sp : ffffffc01002be00
+x29: ffffffc01002be00 x28: 0000000000000000 x27: 0000000000000000
+x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+x23: ffffffc010ab4000 x22: 0000000000000000 x21: 0000000000000000
+x20: ffffffc0107b7e74 x19: ffffffc010a78000 x18: 0000000000000001
+x17: ffffffc010a9ee40 x16: 0000000000000000 x15: 000042496b0a18f2
+x14: fffffffffffc0f87 x13: 0000000000000039 x12: ffffff80010b03b0
+x11: 00000000ffffffea x10: ffffffc010a5eb50 x9 : 0000000000000001
+x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
+x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : 0000000000000000
+x2 : 00000000ffffffff x1 : a8d68d1fd96fdc00 x0 : 0000000000000000
+Call trace:
+  smp_cpus_done+0xac/0xe8
+  smp_init+0x68/0x78
+  kernel_init_freeable+0xd0/0x214
+  kernel_init+0x24/0x120
+  ret_from_fork+0x10/0x18
+---[ end trace a7d4af835e9d6e6b ]---
 
-> But, we'll probably also end up needing some stats for other things.
-> Folks have, for instance, asked for a counter of the number of
-> instantiated enclaves.
-> 
-> We could also use the drivers' namespaces:
-> 
-> 	/sys/class/misc/sgx_enclave
-> 	/sys/class/misc/sgx_provision
-> 	/sys/class/misc/sgx_vepc
-> 
-> although that is a bit awkward for reporting global resources like memory.
 
-I think these stats should be available when the driver is not enabled.
+BEFORE:
 
-It would be best to find a global solution for the long-run.
+smp: Bringing up secondary CPUs ...
+Detected VIPT I-cache on CPU1
+CPU1: Booted secondary processor 0x0000000001 [0x420f1000]
+Detected VIPT I-cache on CPU2
+CPU2: Booted secondary processor 0x0000000002 [0x420f1000]
+Detected VIPT I-cache on CPU3
+CPU3: Booted secondary processor 0x0000000003 [0x420f1000]
+smp: Brought up 1 node, 4 CPUs
+SMP: Total of 4 processors activated.
+CPU features: detected: 32-bit EL0 Support
+CPU features: detected: 32-bit EL1 Support
+CPU features: detected: CRC32 instructions
+CPU: All CPU(s) started at EL1
 
-/Jarkko
+
+AFTER:
+
+smp: Bringing up secondary CPUs ...
+Detected VIPT I-cache on CPU1
+CPU1: Booted secondary processor 0x0000000001 [0x420f1000]
+Detected VIPT I-cache on CPU2
+CPU2: Booted secondary processor 0x0000000002 [0x420f1000]
+Detected VIPT I-cache on CPU3
+CPU3: Booted secondary processor 0x0000000003 [0x420f1000]
+smp: Brought up 1 node, 4 CPUs
+SMP: Total of 4 processors activated.
+CPU features: detected: 32-bit EL0 Support
+CPU features: detected: 32-bit EL1 Support
+CPU features: detected: CRC32 instructions
+------------[ cut here ]------------
+CPU: CPUs downgraded to EL1, HVC disabled
+WARNING: CPU: 0 PID: 1 at arch/arm64/kernel/smp.c:429 smp_cpus_done+0xac/0xe8
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc5-g86fc10657896 #41
+Hardware name: Asus GT-AC5300 (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+pc : smp_cpus_done+0xac/0xe8
+lr : smp_cpus_done+0xac/0xe8
+sp : ffffffc01002be00
+x29: ffffffc01002be00 x28: 0000000000000000 x27: 0000000000000000
+x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+x23: ffffffc010ab4000 x22: 0000000000000000 x21: 0000000000000000
+x20: ffffffc0107b7e74 x19: ffffffc010a78000 x18: 0000000000000001
+x17: ffffffc010a9ee40 x16: 0000000000000000 x15: 000042496b0a18f2
+x14: fffffffffffc0f87 x13: 0000000000000039 x12: ffffff80010b03b0
+x11: 00000000ffffffea x10: ffffffc010a5eb50 x9 : 0000000000000001
+x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
+x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : 0000000000000000
+x2 : 00000000ffffffff x1 : a8d68d1fd96fdc00 x0 : 0000000000000000
+Call trace:
+  smp_cpus_done+0xac/0xe8
+  smp_init+0x68/0x78
+  kernel_init_freeable+0xd0/0x214
+  kernel_init+0x24/0x120
+  ret_from_fork+0x10/0x18
+---[ end trace a7d4af835e9d6e6b ]---
