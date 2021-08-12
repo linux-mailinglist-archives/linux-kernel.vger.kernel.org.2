@@ -2,130 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC753EA893
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE2F3EA898
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhHLQbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:31:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43754 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhHLQbS (ORCPT
+        id S232586AbhHLQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhHLQgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:31:18 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 12 Aug 2021 12:36:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C423C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:36:21 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f8300207fa77f9285c0b6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:8300:207f:a77f:9285:c0b6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CEE4212B7;
-        Thu, 12 Aug 2021 16:30:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628785852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YxuPaNjfhrjo4LhBp5zhOFW0FadYhKOG2QHOBoJTqeo=;
-        b=BYDnA+nRAAPMRth0t5EufVhWK4BTEIYdre8edDOViAOk/T8vMEGzSZOyBrtRSs7O1Qa+zq
-        lAnV+2Pidt+7q62qUByxWe1wS3eUMaJwgnhp2CXtUxPvPse21ylgPpu6W6K4/cUMq0Xr6E
-        DTHyHpoVmkOQBmqh0eBNkU8IRn5h/TM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628785852;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YxuPaNjfhrjo4LhBp5zhOFW0FadYhKOG2QHOBoJTqeo=;
-        b=PzucL5xuMX7VMoQHJ0R8xzjg/thLXnzNg/IUL8aMJfdpdMdB/CeZqD+7VEZJmpCZyTJSHj
-        KTEx2y9cJ0Z0d6Dw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 36C3613ACC;
-        Thu, 12 Aug 2021 16:30:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ZyKbDLxMFWFDAwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:30:52 +0000
-Subject: Re: [PATCH v14 076/138] mm/writeback: Add
- folio_redirty_for_writepage()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-77-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <249863ea-8b4b-df38-545a-5f083502270d@suse.cz>
-Date:   Thu, 12 Aug 2021 18:30:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6B7AE1EC01A2;
+        Thu, 12 Aug 2021 18:36:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628786175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iXg+2fsq+rRbwFOnhH5hGZGFEHEg8DqH78cmJkdjAhk=;
+        b=LeQuzGk4nhB0GoobNN0egdKPlwPm5OKTc5g9r80Dl5WZga8bkNOoLcNrlchQghK4cNWukx
+        smVngCEVNEDRo4oV/aLLzMtzSQmohxHT5xkIWlvqUW1XQuMxbPTopoP2PzDqhUccquJkPE
+        QJ5Xl/8EkOSg8JWagCypgyIn4uqGHis=
+Date:   Thu, 12 Aug 2021 18:36:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 06/26] x86/fpu/xstate: Calculate and remember dynamic
+ XSTATE buffer sizes
+Message-ID: <YRVOJgss1VhVkycu@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-7-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-77-willy@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210730145957.7927-7-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
-> Reimplement redirty_page_for_writepage() as a wrapper around
-> folio_redirty_for_writepage().  Account the number of pages in the
-> folio, add kernel-doc and move the prototype to writeback.h.
+On Fri, Jul 30, 2021 at 07:59:37AM -0700, Chang S. Bae wrote:
+> The CPUID instruction separately enumerates sizes and alignments of
+> individual xfeatures. It independently enumerates the required size of an
+> entire XSAVE buffer to store all enabled features.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> calculate_xstate_sizes() currently uses the individual feature
+> size/alignment enumeration to independently recalculate the required XSAVE
+> buffer size. This is compared against the CPUID-provided value.
+> 
+> Extend the function to accept an option to exclude dynamic states. With
+> that, calculate the maximum size that contains all the enabled states, and
+> the minimum size that fits in the statically-allocated buffer by excluding
+> dynamic states.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+This explains *what* this patch does but not *why*. *What* I can more or
+less see but for *why* I'd need my crystal ball...
 
-Nit:
-
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2558,21 +2558,31 @@ void folio_account_redirty(struct folio *folio)
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index 12caf1a56ce0..cd709408efb5 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -591,24 +591,28 @@ static void check_xstate_against_struct(int nr)
+>  	}
 >  }
->  EXPORT_SYMBOL(folio_account_redirty);
 >  
 > -/*
-> - * When a writepage implementation decides that it doesn't want to write this
-> - * page for some reason, it should redirty the locked page via
-> - * redirty_page_for_writepage() and it should then unlock the page and return 0
+> - * This essentially double-checks what the cpu told us about
+> - * how large the XSAVE buffer needs to be.  We are recalculating
+> - * it to be safe.
+
+Why are you removing that comment? Are we not recalculating anymore?
+
 > +/**
-> + * folio_redirty_for_writepage - Decline to write a dirty folio.
-> + * @wbc: The writeback control.
-> + * @folio: The folio.
+> + * calculate_xstate_size - Calculate the xstate per-task buffer size.
 > + *
-> + * When a writepage implementation decides that it doesn't want to write
-> + * @folio for some reason, it should call this function, unlock @folio and
-> + * return 0.
-
-s/0/false
-
+> + * Independent XSAVE features allocate their own buffers and are always
+> + * excluded. Only the size of the buffer for task->fpu is checked here.
+>   *
+> - * Independent XSAVE features allocate their own buffers and are not
+> - * covered by these checks. Only the size of the buffer for task->fpu
+> - * is checked here.
+> + * @include_dynamic_states:	A knob to include dynamic states or not.
 > + *
-> + * Return: True if we redirtied the folio.  False if someone else dirtied
-> + * it first.
+> + * Return:			The calculated xstate size.
 >   */
-> -int redirty_page_for_writepage(struct writeback_control *wbc, struct page *page)
-> +bool folio_redirty_for_writepage(struct writeback_control *wbc,
-> +		struct folio *folio)
+> -static void do_extra_xstate_size_checks(void)
+> +static unsigned int calculate_xstate_size(bool include_dynamic_states)
 >  {
-> -	int ret;
-> +	bool ret;
-> +	unsigned nr = folio_nr_pages(folio);
+> -	int paranoid_xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
+> +	unsigned int xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
+>  	int i;
+>  
+>  	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
+>  		if (!xfeature_enabled(i))
+>  			continue;
+>  
+> +		if (!include_dynamic_states && (xfeatures_mask_user_dynamic & BIT_ULL(i)))
+
+The order should be flipped: if (dynamic_state and !include_dynamic_states)
+
+> +			continue;
 > +
-> +	wbc->pages_skipped += nr;
-> +	ret = filemap_dirty_folio(folio->mapping, folio);
-> +	folio_account_redirty(folio);
+>  		check_xstate_against_struct(i);
+>  		/*
+>  		 * Supervisor state components can be managed only by
+> @@ -619,7 +623,7 @@ static void do_extra_xstate_size_checks(void)
 >  
-> -	wbc->pages_skipped++;
-> -	ret = __set_page_dirty_nobuffers(page);
-> -	account_page_redirty(page);
->  	return ret;
+>  		/* Align from the end of the previous feature */
+>  		if (xfeature_is_aligned(i))
+> -			paranoid_xstate_size = ALIGN(paranoid_xstate_size, 64);
+> +			xstate_size = ALIGN(xstate_size, 64);
+>  		/*
+>  		 * The offset of a given state in the non-compacted
+>  		 * format is given to us in a CPUID leaf.  We check
+> @@ -627,18 +631,15 @@ static void do_extra_xstate_size_checks(void)
+>  		 * setup_xstate_features(). XSAVES uses compacted format.
+>  		 */
+>  		if (!cpu_feature_enabled(X86_FEATURE_XSAVES))
+> -			paranoid_xstate_size = xfeature_uncompacted_offset(i);
+> +			xstate_size = xfeature_uncompacted_offset(i);
+>  		/*
+>  		 * The compacted-format offset always depends on where
+>  		 * the previous state ended.
+>  		 */
+> -		paranoid_xstate_size += xfeature_size(i);
+> +		xstate_size += xfeature_size(i);
+>  	}
+> -	/*
+> -	 * The size accounts for all the possible states reserved in the
+> -	 * per-task buffer.  Check against the maximum size.
+> -	 */
+> -	XSTATE_WARN_ON(paranoid_xstate_size != get_xstate_config(XSTATE_MAX_SIZE));
+> +
+> +	return xstate_size;
 >  }
-> -EXPORT_SYMBOL(redirty_page_for_writepage);
-> +EXPORT_SYMBOL(folio_redirty_for_writepage);
 >  
->  /**
->   * folio_mark_dirty - Mark a folio as being modified.
+>  
+
+<--- You can remove one of the newlines here, while at it.
+
+> @@ -723,7 +724,7 @@ static bool is_supported_xstate_size(unsigned int test_xstate_size)
+>  static int __init init_xstate_size(void)
+>  {
+>  	/* Recompute the context size for enabled features: */
+> -	unsigned int possible_xstate_size;
+> +	unsigned int possible_xstate_size, xstate_size;
+>  	unsigned int xsave_size;
+>  
+>  	xsave_size = get_xsave_size();
+> @@ -734,23 +735,23 @@ static int __init init_xstate_size(void)
+>  		possible_xstate_size = xsave_size;
+>  
+>  	/*
+> -	 * The size accounts for all the possible states reserved in the
+> -	 * per-task buffer.  Set the maximum with this value.
+> +	 * Calculate xstate size for all the possible states by setting
+> +	 * 'true' to include dynamic states.
+
+"Calculate the maximum xstate size, including the dynamic states."
+
+> Cross-check with the CPUID-
+> +	 * provided size and record it.
+>  	 */
+> +	xstate_size = calculate_xstate_size(true);
+> +	XSTATE_WARN_ON(possible_xstate_size != xstate_size);
+>  	set_xstate_config(XSTATE_MAX_SIZE, possible_xstate_size);
+>  
+> -	/* Perform an extra check for the maximum size. */
+> -	do_extra_xstate_size_checks();
+> -
+>  	/*
+> -	 * Set the minimum to be the same as the maximum. The dynamic
+> -	 * user states are not supported yet.
+> +	 * Calculate the xstate size without dynamic states by setting
+> +	 * 'false' to exclude dynamic states.
+
+"Calculate the minimum xstate size, i.e., excluding the dynamic xstates."
+
+> Ensure the size fits in
+> +	 * the statically-allocated buffer and record it.
+>  	 */
+> -	set_xstate_config(XSTATE_MIN_SIZE, possible_xstate_size);
+> -
+> -	/* Ensure the minimum size fits in the statically-allocated buffer: */
+> -	if (!is_supported_xstate_size(get_xstate_config(XSTATE_MIN_SIZE)))
+> +	xstate_size = calculate_xstate_size(false);
+> +	if (!is_supported_xstate_size(xstate_size))
+>  		return -EINVAL;
+
+<---- newline here.
+
+> +	set_xstate_config(XSTATE_MIN_SIZE, xstate_size);
+>  
+>  	/*
+>  	 * User space is always in standard format.
+> -- 
+> 2.17.1
 > 
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
