@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C9E3EAB59
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5803EAB63
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237006AbhHLTvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236319AbhHLTvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:51:12 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA15C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:50:44 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id d22so9969355ioy.11
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pVDXj/c2GhrmP3JpxAGc+59S/Eh6qUoCDMrEnYN38ig=;
-        b=Qu6hMONKHaomHVzVDk6h4d9M7HVT/cFdSqp48XMihTQ1wme3tBEzYfaYsLulMcH6L6
-         EpNwWR5pwiQUTEC8RpgY2saOsqfd9athwfhrY6wJzsU3r/DWoMJX7KfjBq03QwPG7wGl
-         u8yTVqWyj7p0WUvIdIJSQSMQhp/t5QJ/II0KGcTW386p7MNryUBVeXj75FQSxkPF0ViQ
-         p2icnL69wR1soSjAmsdXZcEWsJzRdDCVDTT1N3gcgfRe8FlVGwNPX3MEsXI7YSL68hJO
-         3c7n6f8b8bTkK8fSDErufEVZTIYpk1yAwIrjKlLPJc2ILQmYyFGhBnxSy/Q7P/fa6oPe
-         dFng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pVDXj/c2GhrmP3JpxAGc+59S/Eh6qUoCDMrEnYN38ig=;
-        b=Apn9YZ34G2hiZndBy8ib+OxQMilSN3PyeLJWFfp+kpoWRAga21B+nHu7VK/ZE1I96s
-         JCMECPFeQG6ERp0M6+ZFLrzAnlUuA/Myl32AaxL/nSV/x5h/rgM95AuEdEShPpo3kroj
-         /4TZQnndhbSMjDNiKyRya8jJuLwVTowrz865HOuktTJLiWcTuAnaZ29froMWxmPW5yqO
-         OfsUEcj0J1D3sPYWl4XegueHvsTYEskvAX+Lf2GbMcca/D18vuj+9ViWGDjZ8qWjuCyB
-         VWsUNHgj5ZVeiNwcr07TF9p3i+Z2x1917aDNwfoeIHF371/8Yz3s2ZNtseOI6YsahSjO
-         voWg==
-X-Gm-Message-State: AOAM532Z8xOPbJ1N7cKhNl5Mqqt+HoCumQR92Mw/5pXnYR7XQb/2Y6rT
-        dOGj+aZ5flYU7uB5Cq3YgflqoA==
-X-Google-Smtp-Source: ABdhPJxGLQX1l8eQk4HU3flD0jYpAd5arWtHOC2qNRKLZwPne/9jjlVO0Yrb60cf4P6Kq48sUmzSSA==
-X-Received: by 2002:a5e:8f43:: with SMTP id x3mr4318023iop.206.1628797843642;
-        Thu, 12 Aug 2021 12:50:43 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id s16sm2058821iln.5.2021.08.12.12.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 12:50:43 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: don't hold clock reference while netdev open
-Date:   Thu, 12 Aug 2021 14:50:35 -0500
-Message-Id: <20210812195035.2816276-7-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210812195035.2816276-1-elder@linaro.org>
-References: <20210812195035.2816276-1-elder@linaro.org>
+        id S236065AbhHLTxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234130AbhHLTx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 15:53:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A773B60C3E;
+        Thu, 12 Aug 2021 19:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628797984;
+        bh=TCwtM6BWv0H577BZzyIaqETTaYr/bgz/aJyZLq9lAls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NkKW9BUoAPhUftqcNV6MTHaY+EeyjqdCv1tF5z7IN9BOA97okh///miMz1rz5Cwot
+         r+Ll3UP2iPGmzZwvPjqFU89T5KgM6u0GMiTQJpFpFj232+AojAFTePs/zyG6Wl1C4F
+         Wjo1IzK34BeJ2wiBe+uvjWt58v4XNqXv1umO+9sGT8QI/hI2TAOmVFsFiVxBvgIofs
+         mxT7Ik0aJllGLWH4Glw9OmmmSeGriwACOTlzE49r9zr5SVFM3uOqw/U8BHa8LFll1c
+         ueOgUr4J//TrWrTSyuUc2hVnHV+PPlqGKItqj6YzPa1SNH9KDKhir0/3U2D6DqI03r
+         /D62e/ePwFAxg==
+Date:   Thu, 12 Aug 2021 22:53:01 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH RFC v3] x86/sgx: Add /proc/sys/kernel/sgx/total_mem
+Message-ID: <20210812195301.jqnhvosfpqncl3jg@kernel.org>
+References: <20210811032133.853680-1-jarkko@kernel.org>
+ <0c935066-008d-b023-7dc3-f4e0ac1b3d20@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0c935066-008d-b023-7dc3-f4e0ac1b3d20@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently a clock reference is taken whenever the ->ndo_open
-callback for the modem netdev is called.  That reference is dropped
-when the device is closed, in ipa_stop().
+On Wed, Aug 11, 2021 at 07:30:13AM -0700, Dave Hansen wrote:
+> On 8/10/21 8:21 PM, Jarkko Sakkinen wrote:
+> > +The following sysctl files can be found in the ``/proc/sys/kernel/sgx/`` directory:
+> > +
+> > +``total_mem``
+> > +	The total amount of SGX protected memory in bytes available in the system
+> > +	available for use. In other words, it describes the size of the Enclave
+> > +	Page Cache (EPC).
+> 
+> I've been acting as if /proc is deprecated for new stuff.  Shouldn't
+> this be going in sysfs?
 
-We no longer need this, because ipa_start_xmit() now handles the
-situation where the hardware power state is not active.
+Are sysctl variables deprecated too?
 
-Drop the clock reference in ipa_open() when we're done, and take a
-new reference in ipa_stop() before we begin closing the interface.
+> I figured, at some point, someone is going to ask for NUMA statistics.
+> That would tend to point in the direction of us needing something in:
+> 
+> 	/sys/devices/system/node/nodeN/
+> 
+> Maybe 'sgxinfo' or 'sgxstat' to go along with 'meminfo'.
 
-Finally (and unrelated, but trivial), change the return type of
-ipa_start_xmit() to be netdev_tx_t instead of int.
+Is conetents of meminfo freezed or can a new line added, e.g.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_modem.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Node 0 SgxMemTotal:    32825700 kB
 
-diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
-index b176910d72868..c8724af935b85 100644
---- a/drivers/net/ipa/ipa_modem.c
-+++ b/drivers/net/ipa/ipa_modem.c
-@@ -65,6 +65,8 @@ static int ipa_open(struct net_device *netdev)
- 
- 	netif_start_queue(netdev);
- 
-+	(void)ipa_clock_put(ipa);
-+
- 	return 0;
- 
- err_disable_tx:
-@@ -80,12 +82,17 @@ static int ipa_stop(struct net_device *netdev)
- {
- 	struct ipa_priv *priv = netdev_priv(netdev);
- 	struct ipa *ipa = priv->ipa;
-+	int ret;
-+
-+	ret = ipa_clock_get(ipa);
-+	if (WARN_ON(ret < 0))
-+		goto out_clock_put;
- 
- 	netif_stop_queue(netdev);
- 
- 	ipa_endpoint_disable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
- 	ipa_endpoint_disable_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
--
-+out_clock_put:
- 	(void)ipa_clock_put(ipa);
- 
- 	return 0;
-@@ -99,7 +106,8 @@ static int ipa_stop(struct net_device *netdev)
-  * NETDEV_TX_OK: Success
-  * NETDEV_TX_BUSY: Error while transmitting the skb. Try again later
-  */
--static int ipa_start_xmit(struct sk_buff *skb, struct net_device *netdev)
-+static netdev_tx_t
-+ipa_start_xmit(struct sk_buff *skb, struct net_device *netdev)
- {
- 	struct net_device_stats *stats = &netdev->stats;
- 	struct ipa_priv *priv = netdev_priv(netdev);
--- 
-2.27.0
+If a new file is needed, I would name it as "sgxmeminfo"
 
+> But, we'll probably also end up needing some stats for other things.
+> Folks have, for instance, asked for a counter of the number of
+> instantiated enclaves.
+> 
+> We could also use the drivers' namespaces:
+> 
+> 	/sys/class/misc/sgx_enclave
+> 	/sys/class/misc/sgx_provision
+> 	/sys/class/misc/sgx_vepc
+> 
+> although that is a bit awkward for reporting global resources like memory.
+
+I think these stats should be available when the driver is not enabled.
+
+It would be best to find a global solution for the long-run.
+
+/Jarkko
