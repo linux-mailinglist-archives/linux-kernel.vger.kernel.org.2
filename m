@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1764A3EA03E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD33EA04A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 10:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhHLIFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 04:05:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62852 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235039AbhHLIFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:05:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628755506; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=BTZa5fePxxkz3HSgkb8loFU1bJ39a9DfwrlgYrh6H10=; b=qKpYyg8bgsyjZwR3vJngJ4T4zZMRSE2M5rvqop6p0oVa6CqxNPp+2HET3XimS0HDOs32N14d
- 0ue8LUBFj4ya7FlRDBqPoUMpYqQXzn54kdZDCpU0xvqzSxF7QAVQo6PgAPVuL0SlHFXkOvL9
- 9KbSC7Tvh9reEt5slqIK1g9C/sA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6114d631b14e7e2ecb11d587 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 08:05:05
- GMT
-Sender: smagar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0E41CC43460; Thu, 12 Aug 2021 08:05:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: smagar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BA76C433F1;
-        Thu, 12 Aug 2021 08:05:04 +0000 (UTC)
+        id S234944AbhHLII2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 04:08:28 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:58651 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231584AbhHLII0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 04:08:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UiluUWC_1628755679;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UiluUWC_1628755679)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 12 Aug 2021 16:07:59 +0800
+Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
+        Omar Sandoval <osandov@fb.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com>
+ <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
+ <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+From:   Xianting TIan <xianting.tian@linux.alibaba.com>
+Message-ID: <f18d017b-d6f7-cf87-8859-8d6b50c7c289@linux.alibaba.com>
+Date:   Thu, 12 Aug 2021 16:07:58 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 12 Aug 2021 13:35:04 +0530
-From:   smagar@codeaurora.org
-To:     linux-firmware@kernel.org, jwboyer@kernel.org
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluethoth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantg@codeaurora.org, abhishekpandit@chromium.org,
-        bgodavar@codeaurora.org, adhudase@codeaurora.org,
-        sampnimm@codeaurora.org
-Subject: Request to update WCN3991 FW file
-Message-ID: <0a05c2062052704d788511cf7edd874d@codeaurora.org>
-X-Sender: smagar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Team,
 
+在 2021/8/6 下午10:51, Arnd Bergmann 写道:
+> On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
+> <xianting.tian@linux.alibaba.com> wrote:
+>> @@ -163,6 +155,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>>          if (vtermnos[index] == -1)
+>>                  return;
+>>
+>> +       list_for_each_entry(hp, &hvc_structs, next)
+>> +               if (hp->vtermno == vtermnos[index])
+>> +                       break;
+>> +
+>> +       c = hp->c;
+>> +
+>> +       spin_lock_irqsave(&hp->c_lock, flags);
+> The loop looks like it might race against changes to the list. It seems strange
+> that the print function has to actually search for the structure here.
+>
+> It may be better to have yet another array for the buffer pointers next to
+> the cons_ops[] and vtermnos[] arrays.
+>
+>> +/*
+>> + * These sizes are most efficient for vio, because they are the
+>> + * native transfer size. We could make them selectable in the
+>> + * future to better deal with backends that want other buffer sizes.
+>> + */
+>> +#define N_OUTBUF       16
+>> +#define N_INBUF                16
+>> +
+>> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
+> I think you need a higher alignment for DMA buffers, instead of sizeof(long),
+> I would suggest ARCH_DMA_MINALIGN.
 
-Please include updated firmware bins for WCN3991. Change includes 
-updated TLV file.
+As some ARCH(eg, x86, riscv) doesn't define ARCH_DMA_MINALIG, so i think 
+it 's better remain the code unchanged,
 
-Snapshot of pull request is as below, let me know if anything is 
-missing.
+I will send v5 patch soon.
 
-
-
-The following changes since commit 
-168452ee695b5edb9deb641059bc110b9c5e8fc7:
-
-   Merge tag 'iwlwifi-fw-2021-07-19' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware 
-into main (2021-07-19 14:35:47 -0400)
-
-are available in the git repository at:
-
-   https://github.com/suraj714/linux-firmware-BT master
-
-for you to fetch changes up to 6a3a985022e1194045fc46a249ca29f8bf2fb427:
-
-   QCA : Updated firmware files for WCN3991 (2021-08-12 10:03:49 +0530)
-
-----------------------------------------------------------------
-smagar (1):
-       QCA : Updated firmware files for WCN3991
-
-  qca/crbtfw32.tlv | Bin 126772 -> 126036 bytes
-  1 file changed, 0 insertions(+), 0 deletions(-)
-
-
-Regards,
-Suraj Magar
+>
+>         Arnd
