@@ -2,421 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E34D3EAAC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6613EAAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbhHLTSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:18:12 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34096 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbhHLTSL (ORCPT
+        id S233714AbhHLTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:18:18 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:60898 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233593AbhHLTSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:18:11 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 74CEE20C13EE;
-        Thu, 12 Aug 2021 12:17:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 74CEE20C13EE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628795865;
-        bh=004Roolhj+4OKMd073Vi+NWSYwe4Rw+3k1j+PuM9SAo=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=PsFOS6lwd4pKe1f/12WwQaPCJyA4b4pLOAkKiyzdKb8NGZpVbLkVVoO+LcjUUPZaB
-         Zi+qyzXU9BiJB7kACdDtWO0uKLcPp8+dXg9RQ4CSTeTYmQZA9C4SWuYFTujekXfwnj
-         zAQ9PbZCUbN5Y/AEtQC5XeMODACIe7m5Ijo9QOeo=
-Subject: Re: [RFC PATCH v8 0/4] arm64: Reorganize the unwinder and implement
- stack trace reliability checks
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
- <20210812190603.25326-1-madvenka@linux.microsoft.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <5b832c8c-3b8f-9cb4-0c3c-85a6cca52d43@linux.microsoft.com>
-Date:   Thu, 12 Aug 2021 14:17:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 15:18:15 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 529A9EE;
+        Thu, 12 Aug 2021 21:17:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1628795868;
+        bh=TWW79F57UGZaMYBF0Q9p1yrePqna1CBLge7LfxvzIbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EEqsh/dhGecZeeNNVwxkA393Rb9YQVaeo4a/kr64ON1gPSjK0FxGvvwNcPbcn2Kb5
+         0L+eTiIVKnEBlN2K9oAWLl6iUaGk7an/eK+iXBFNdFpvD19BcoqkoLpYOHQPtoyYmX
+         ZLfZFxqshDGMumVXqXooOVXR97FRx9pa+NG/wQVI=
+Date:   Thu, 12 Aug 2021 22:17:44 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] drm/bridge: ti-sn65dsi86: Implement
+ bridge->mode_valid()
+Message-ID: <YRVz2MN4EDyHZYka@pendragon.ideasonboard.com>
+References: <20210811235253.924867-1-robdclark@gmail.com>
+ <20210811235253.924867-4-robdclark@gmail.com>
+ <YRVr/3A6UJIFiVWj@pendragon.ideasonboard.com>
+ <CAF6AEGs8g2miQz=upd0LMPg109JR7gMeEGyd1u1jQ2WYR=oWtQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210812190603.25326-1-madvenka@linux.microsoft.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGs8g2miQz=upd0LMPg109JR7gMeEGyd1u1jQ2WYR=oWtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK. So, this time the threading is proper. Please review version 8.
-It is identical to version 7 except for the version number and
-threading.
+Hi Rob,
 
-Please disregard all emails sent as RFC PATCH v7 for this series. Again,
-apologies for screwing the threading up.
+On Thu, Aug 12, 2021 at 12:09:12PM -0700, Rob Clark wrote:
+> On Thu, Aug 12, 2021 at 11:44 AM Laurent Pinchart wrote:
+> > On Wed, Aug 11, 2021 at 04:52:49PM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > For the brave new world of bridges not creating their own connectors, we
+> > > need to implement the max clock limitation via bridge->mode_valid()
+> > > instead of connector->mode_valid().
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 24 +++++++++++++++++++-----
+> > >  1 file changed, 19 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > index 5d3b30b2f547..38dcc49eccaf 100644
+> > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > @@ -595,6 +595,15 @@ static struct auxiliary_driver ti_sn_aux_driver = {
+> > >       .id_table = ti_sn_aux_id_table,
+> > >  };
+> > >
+> > > +static enum drm_mode_status check_mode(const struct drm_display_mode *mode)
+> > > +{
+> > > +     /* maximum supported resolution is 4K at 60 fps */
+> > > +     if (mode->clock > 594000)
+> > > +             return MODE_CLOCK_HIGH;
+> > > +
+> > > +     return MODE_OK;
+> > > +}
+> > > +
+> > >  /* -----------------------------------------------------------------------------
+> > >   * DRM Connector Operations
+> > >   */
+> > > @@ -616,11 +625,7 @@ static enum drm_mode_status
+> > >  ti_sn_bridge_connector_mode_valid(struct drm_connector *connector,
+> > >                                 struct drm_display_mode *mode)
+> > >  {
+> > > -     /* maximum supported resolution is 4K at 60 fps */
+> > > -     if (mode->clock > 594000)
+> > > -             return MODE_CLOCK_HIGH;
+> > > -
+> > > -     return MODE_OK;
+> > > +     return check_mode(mode);
+> >
+> > Do we need to implement the connector .mode_valid() operation, given
+> > that the bridge is linked in the chain ?
+> 
+> My understanding is that we need to keep it for display drivers that
+> are not converted to NO_CONNECTOR..
+> 
+> But AFAIK snapdragon is the only upstream user of this bridge, so
+> after the drm/msm/dsi patch lands we could probably garbage collect
+> the connector support.
 
-Madhavan
+Even in the !NO_CONNECTOR case, the bridge will still be linked in the
+chain, so the atomic helpers should call the bridge .mode_valid() in
+addition to the connector .mode_valid(). I think the connector operation
+is redundant.
 
-On 8/12/21 2:05 PM, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> Make all stack walking functions use arch_stack_walk()
-> ======================================================
-> 
-> Currently, there are multiple functions in ARM64 code that walk the
-> stack using start_backtrace() and unwind_frame(). Convert all of
-> them to use arch_stack_walk(). This makes maintenance easier.
-> 
-> Reorganize the unwinder code for better consistency and maintenance
-> ===================================================================
-> 
-> Rename unwinder functions to unwind_*() similar to other architectures
-> for naming consistency.
-> 
-> Annotate all of the unwind_*() functions with notrace so they cannot be
-> ftraced and NOKPROBE_SYMBOL() so they cannot be kprobed. Ftrace and Kprobe
-> code can call the unwinder.
-> 
-> Redefine the unwinder loop and make it similar to other architectures.
-> Define the following:
-> 
-> 	unwind_start(&frame, task, fp, pc);
-> 	while (unwind_consume(&frame, consume_entry, cookie))
-> 		unwind_next(&frame);
-> 	return !unwind_failed(&frame);
-> 
-> unwind_start()
-> 	Same as the original start_backtrace().
-> 
-> unwind_consume()
-> 	This new function does two things:
-> 
-> 	- Calls consume_entry() to consume the return PC.
-> 
-> 	- Implements checks to determine whether the unwind should continue
-> 	  or terminate.
-> 
-> unwind_next()
-> 	Same as the original unwind_frame() except:
-> 
-> 	- the stack trace termination check has been moved from here to
-> 	  unwind_consume(). So, unwind_next() assumes that the fp is valid.
-> 
-> 	- unwind_frame() used to return an error value. This function only
-> 	  sets internal state and does not return anything. The state is
-> 	  retrieved via a helper. See next.
-> 
-> unwind_failed()
-> 	Return a boolean to indicate whether the stack trace completed
-> 	successfully or failed. arch_stack_walk() ignores the return
-> 	value. But arch_stack_walk_reliable() in the future will look
-> 	at the return value.
-> 
-> Unwind status
-> 	Introduce a new flag called "failed" in struct stackframe. Set this
-> 	flag when an error is encountered. If this flag is set, terminate
-> 	the unwind. Also, let the unwinder return the status to the caller.
-> 
-> Reliability checks
-> ==================
-> 
-> There are some kernel features and conditions that make a stack trace
-> unreliable. Callers may require the unwinder to detect these cases.
-> E.g., livepatch.
-> 
-> Introduce a new function called unwind_is_reliable() that will detect
-> these cases and return a boolean.
-> 
-> Introduce a new argument to unwind() called "need_reliable" so a caller
-> can tell unwind() that it requires a reliable stack trace. For such a
-> caller, any unreliability in the stack trace must be treated as a fatal
-> error and the unwind must be aborted.
-> 
-> Call unwind_is_reliable() from unwind_consume() like this:
-> 
-> 	if (frame->need_reliable && !unwind_is_reliable(frame)) {
-> 		frame->failed = true;
-> 		return false;
-> 	}
-> 
-> arch_stack_walk() passes "false" for need_reliable because its callers
-> don't care about reliability. arch_stack_walk() is used for debug and
-> test purposes.
-> 
-> Introduce arch_stack_walk_reliable() for ARM64. This works like
-> arch_stack_walk() except for two things:
-> 
-> 	- It passes "true" for need_reliable.
-> 
-> 	- It returns -EINVAL if unwind() aborts.
-> 
-> Introduce the first reliability check in unwind_is_reliable() - If
-> a return PC is not a valid kernel text address, consider the stack
-> trace unreliable. It could be some generated code.
-> 
-> Other reliability checks will be added in the future. Until all of the
-> checks are in place, arch_stack_walk_reliable() may not be used by
-> livepatch. But it may be used by debug and test code.
-> 
-> SYM_CODE check
-> ==============
-> 
-> SYM_CODE functions do not follow normal calling conventions. They cannot
-> be unwound reliably using the frame pointer. Collect the address ranges
-> of these functions in a special section called "sym_code_functions".
-> 
-> In unwind_is_reliable(), check the return PC against these ranges. If a
-> match is found, then consider the stack trace unreliable. This is the
-> second reliability check introduced by this work.
-> 
-> Last stack frame
-> ----------------
-> 
-> If a SYM_CODE function occurs in the very last frame in the stack trace,
-> then the stack trace is not considered unreliable. This is because there
-> is no more unwinding to do. Examples:
-> 
-> 	- EL0 exception stack traces end in the top level EL0 exception
-> 	  handlers.
-> 
-> 	- All kernel thread stack traces end in ret_from_fork().
-> ---
-> Changelog:
-> 
-> v8:
-> 	From Mark Rutland:
-> 
-> 	- Make the unwinder loop similar to other architectures.
-> 
-> 	- Keep details to within the unwinder functions and return a simple
-> 	  boolean to the caller.
-> 
-> 	- Convert some of the current code that contains unwinder logic to
-> 	  simply use arch_stack_walk(). I have converted all of them.
-> 
-> 	- Do not copy sym_code_functions[]. Just place it in rodata for now.
-> 
-> 	- Have the main loop check for termination conditions rather than
-> 	  having unwind_frame() check for them. In other words, let
-> 	  unwind_frame() assume that the fp is valid.
-> 
-> 	- Replace the big comment for SYM_CODE functions with a shorter
-> 	  comment.
-> 
-> 		/*
-> 		 * As SYM_CODE functions don't follow the usual calling
-> 		 * conventions, we assume by default that any SYM_CODE function
-> 		 * cannot be unwound reliably.
-> 		 *
-> 		 * Note that this includes:
-> 		 *
-> 		 * - Exception handlers and entry assembly
-> 		 * - Trampoline assembly (e.g., ftrace, kprobes)
-> 		 * - Hypervisor-related assembly
-> 		 * - Hibernation-related assembly
-> 		 * - CPU start-stop, suspend-resume assembly
-> 		 * - Kernel relocation assembly
-> 		 */
-> 
-> v7:
-> 	The Mailer screwed up the threading on this. So, I have resent this
-> 	same series as version 8 with proper threading to avoid confusion.
-> v6:
-> 	From Mark Rutland:
-> 
-> 	- The per-frame reliability concept and flag are acceptable. But more
-> 	  work is needed to make the per-frame checks more accurate and more
-> 	  complete. E.g., some code reorg is being worked on that will help.
-> 
-> 	  I have now removed the frame->reliable flag and deleted the whole
-> 	  concept of per-frame status. This is orthogonal to this patch series.
-> 	  Instead, I have improved the unwinder to return proper return codes
-> 	  so a caller can take appropriate action without needing per-frame
-> 	  status.
-> 
-> 	- Remove the mention of PLTs and update the comment.
-> 
-> 	  I have replaced the comment above the call to __kernel_text_address()
-> 	  with the comment suggested by Mark Rutland.
-> 
-> 	Other comments:
-> 
-> 	- Other comments on the per-frame stuff are not relevant because
-> 	  that approach is not there anymore.
-> 
-> v5:
-> 	From Keiya Nobuta:
-> 	
-> 	- The term blacklist(ed) is not to be used anymore. I have changed it
-> 	  to unreliable. So, the function unwinder_blacklisted() has been
-> 	  changed to unwinder_is_unreliable().
-> 
-> 	From Mark Brown:
-> 
-> 	- Add a comment for the "reliable" flag in struct stackframe. The
-> 	  reliability attribute is not complete until all the checks are
-> 	  in place. Added a comment above struct stackframe.
-> 
-> 	- Include some of the comments in the cover letter in the actual
-> 	  code so that we can compare it with the reliable stack trace
-> 	  requirements document for completeness. I have added a comment:
-> 
-> 	  	- above unwinder_is_unreliable() that lists the requirements
-> 		  that are addressed by the function.
-> 
-> 		- above the __kernel_text_address() call about all the cases
-> 		  the call covers.
-> 
-> v4:
-> 	From Mark Brown:
-> 
-> 	- I was checking the return PC with __kernel_text_address() before
-> 	  the Function Graph trace handling. Mark Brown felt that all the
-> 	  reliability checks should be performed on the original return PC
-> 	  once that is obtained. So, I have moved all the reliability checks
-> 	  to after the Function Graph Trace handling code in the unwinder.
-> 	  Basically, the unwinder should perform PC translations first (for
-> 	  rhe return trampoline for Function Graph Tracing, Kretprobes, etc).
-> 	  Then, the reliability checks should be applied to the resulting
-> 	  PC.
-> 
-> 	- Mark said to improve the naming of the new functions so they don't
-> 	  collide with existing ones. I have used a prefix "unwinder_" for
-> 	  all the new functions.
-> 
-> 	From Josh Poimboeuf:
-> 
-> 	- In the error scenarios in the unwinder, the reliable flag in the
-> 	  stack frame should be set. Implemented this.
-> 
-> 	- Some of the other comments are not relevant to the new code as
-> 	  I have taken a different approach in the new code. That is why
-> 	  I have not made those changes. E.g., Ard wanted me to add the
-> 	  "const" keyword to the global section array. That array does not
-> 	  exist in v4. Similarly, Mark Brown said to use ARRAY_SIZE() for
-> 	  the same array in a for loop.
-> 
-> 	Other changes:
-> 
-> 	- Add a new definition for SYM_CODE_END() that adds the address
-> 	  range of the function to a special section called
-> 	  "sym_code_functions".
-> 
-> 	- Include the new section under initdata in vmlinux.lds.S.
-> 
-> 	- Define an early_initcall() to copy the contents of the
-> 	  "sym_code_functions" section to an array by the same name.
-> 
-> 	- Define a function unwinder_blacklisted() that compares a return
-> 	  PC against sym_code_sections[]. If there is a match, mark the
-> 	  stack trace unreliable. Call this from unwind_frame().
-> 
-> v3:
-> 	- Implemented a sym_code_ranges[] array to contains sections bounds
-> 	  for text sections that contain SYM_CODE_*() functions. The unwinder
-> 	  checks each return PC against the sections. If it falls in any of
-> 	  the sections, the stack trace is marked unreliable.
-> 
-> 	- Moved SYM_CODE functions from .text and .init.text into a new
-> 	  text section called ".code.text". Added this section to
-> 	  vmlinux.lds.S and sym_code_ranges[].
-> 
-> 	- Fixed the logic in the unwinder that handles Function Graph
-> 	  Tracer return trampoline.
-> 
-> 	- Removed all the previous code that handles:
-> 		- ftrace entry code for traced function
-> 		- special_functions[] array that lists individual functions
-> 		- kretprobe_trampoline() special case
-> 
-> v2
-> 	- Removed the terminating entry { 0, 0 } in special_functions[]
-> 	  and replaced it with the idiom { /* sentinel */ }.
-> 
-> 	- Change the ftrace trampoline entry ftrace_graph_call in
-> 	  special_functions[] to ftrace_call + 4 and added explanatory
-> 	  comments.
-> 
-> 	- Unnested #ifdefs in special_functions[] for FTRACE.
-> 
-> v1
-> 	- Define a bool field in struct stackframe. This will indicate if
-> 	  a stack trace is reliable.
-> 
-> 	- Implement a special_functions[] array that will be populated
-> 	  with special functions in which the stack trace is considered
-> 	  unreliable.
-> 	
-> 	- Using kallsyms_lookup(), get the address ranges for the special
-> 	  functions and record them.
-> 
-> 	- Implement an is_reliable_function(pc). This function will check
-> 	  if a given return PC falls in any of the special functions. If
-> 	  it does, the stack trace is unreliable.
-> 
-> 	- Implement check_reliability() function that will check if a
-> 	  stack frame is reliable. Call is_reliable_function() from
-> 	  check_reliability().
-> 
-> 	- Before a return PC is checked against special_funtions[], it
-> 	  must be validates as a proper kernel text address. Call
-> 	  __kernel_text_address() from check_reliability().
-> 
-> 	- Finally, call check_reliability() from unwind_frame() for
-> 	  each stack frame.
-> 
-> 	- Add EL1 exception handlers to special_functions[].
-> 
-> 		el1_sync();
-> 		el1_irq();
-> 		el1_error();
-> 		el1_sync_invalid();
-> 		el1_irq_invalid();
-> 		el1_fiq_invalid();
-> 		el1_error_invalid();
-> 
-> 	- The above functions are currently defined as LOCAL symbols.
-> 	  Make them global so that they can be referenced from the
-> 	  unwinder code.
-> 
-> 	- Add FTRACE trampolines to special_functions[]:
-> 
-> 		ftrace_graph_call()
-> 		ftrace_graph_caller()
-> 		return_to_handler()
-> 
-> 	- Add the kretprobe trampoline to special functions[]:
-> 
-> 		kretprobe_trampoline()
-> 
-> Previous versions and discussion
-> ================================
-> 
-> v7: Mailer screwed up the threading. Sent the same as v8 with proper threading.
-> v6: https://lore.kernel.org/linux-arm-kernel/20210630223356.58714-1-madvenka@linux.microsoft.com/
-> v5: https://lore.kernel.org/linux-arm-kernel/20210526214917.20099-1-madvenka@linux.microsoft.com/
-> v4: https://lore.kernel.org/linux-arm-kernel/20210516040018.128105-1-madvenka@linux.microsoft.com/
-> v3: https://lore.kernel.org/linux-arm-kernel/20210503173615.21576-1-madvenka@linux.microsoft.com/
-> v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
-> v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
-> Madhavan T. Venkataraman (4):
->   arm64: Make all stack walking functions use arch_stack_walk()
->   arm64: Reorganize the unwinder code for better consistency and
->     maintenance
->   arm64: Introduce stack trace reliability checks in the unwinder
->   arm64: Create a list of SYM_CODE functions, check return PC against
->     list
-> 
->  arch/arm64/include/asm/linkage.h    |  12 ++
->  arch/arm64/include/asm/sections.h   |   1 +
->  arch/arm64/include/asm/stacktrace.h |  16 +-
->  arch/arm64/kernel/perf_callchain.c  |   5 +-
->  arch/arm64/kernel/process.c         |  39 ++--
->  arch/arm64/kernel/return_address.c  |   6 +-
->  arch/arm64/kernel/stacktrace.c      | 291 ++++++++++++++++++++--------
->  arch/arm64/kernel/time.c            |  22 ++-
->  arch/arm64/kernel/vmlinux.lds.S     |  10 +
->  9 files changed, 277 insertions(+), 125 deletions(-)
-> 
-> 
-> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
-> 
+> > >  }
+> > >
+> > >  static struct drm_connector_helper_funcs ti_sn_bridge_connector_helper_funcs = {
+> > > @@ -763,6 +768,14 @@ static void ti_sn_bridge_detach(struct drm_bridge *bridge)
+> > >       drm_dp_aux_unregister(&bridge_to_ti_sn65dsi86(bridge)->aux);
+> > >  }
+> > >
+> > > +static enum drm_mode_status
+> > > +ti_sn_bridge_mode_valid(struct drm_bridge *bridge,
+> > > +                     const struct drm_display_info *info,
+> > > +                     const struct drm_display_mode *mode)
+> > > +{
+> > > +     return check_mode(mode);
+> > > +}
+> > > +
+> > >  static void ti_sn_bridge_disable(struct drm_bridge *bridge)
+> > >  {
+> > >       struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
+> > > @@ -1118,6 +1131,7 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+> > >  static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
+> > >       .attach = ti_sn_bridge_attach,
+> > >       .detach = ti_sn_bridge_detach,
+> > > +     .mode_valid = ti_sn_bridge_mode_valid,
+> > >       .pre_enable = ti_sn_bridge_pre_enable,
+> > >       .enable = ti_sn_bridge_enable,
+> > >       .disable = ti_sn_bridge_disable,
+
+-- 
+Regards,
+
+Laurent Pinchart
