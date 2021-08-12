@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F043EA73B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8104A3EA740
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238409AbhHLPNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237862AbhHLPN2 (ORCPT
+        id S238454AbhHLPNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:13:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59132 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237875AbhHLPN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:13:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E42C0617AD
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:13:02 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 15:13:00 -0000
+        Thu, 12 Aug 2021 11:13:29 -0400
+Date:   Thu, 12 Aug 2021 15:13:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628781181;
+        s=2020; t=1628781182;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8A+eRJ5Z+TgcoKS1FgvA5KW5oEBi8DTvze4qYrJXMzo=;
-        b=GW0s2HkH5sL/En45xlYqTMeXniFUedZU8eh9nRZ+o5JPvu0l4Zii2QqETCHAA2WSDLnzzA
-        kj5OPc9dMt7WQiuBp5TqD57Jx/osAUshf+knQt3JOckbv4xrhQHqMhxQY/ZO6V98M03NAb
-        nv95qVNIYl2l46itVy1YigBqIFty/iXDLSFxczKhWLeRBElOBvPbkXV0FxVzm0HSNVKyIk
-        vpI7K+jH26Hmme6dZ67kigTvxjCGWXetnfy00+krhEPu6hg8E/97N2YrijchXFBhQ4nlrn
-        cuqOVr2pyZCEdm0b1FgHcqywyAu79TOill3rISou+eir7BsICTY3lKoDXYN7kw==
+        bh=YBrXdQJHrHv14jlMCVxQ09o/PMH01GRp5d0QHSEUFxM=;
+        b=IswOXFXkq+jTBY/jORdAMy74TbqvMTvMG24++YfqGmjl4PTC9WN3AZjWTETJhcqJvSwaEA
+        hm3AFUssdaJbUAy8ltPy5Shx5J1PpxpojSzKYrmvnOWqakrDZw9FW67jc8hXNGO3SnPNG8
+        VBzNYBwS6+rJiSg5Sc0+cqnQPmy7kAy30Au4KBSdXnsCa2EXyCNuUteAyKMyPIL/ryJ/Gr
+        66YP8uF/yVvV5Yr08X5vLHqgmKyKzjFH9eFOVoVoq6BfQ38ZPEyGFQdei1QrkFdYLKyUAq
+        Aqrley5R6T2+v8wI2fBx2HaDr+MD0AG/PrVOUrlBg4Tm2mgwVZn7j/Bf8hBVbg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628781181;
+        s=2020e; t=1628781182;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8A+eRJ5Z+TgcoKS1FgvA5KW5oEBi8DTvze4qYrJXMzo=;
-        b=MBHXc8hY2ztF36yDlMA3HgcUQd5lmIahOJXgpzYWtPGXZOFIX+ldwl7D/dCp/RIUl1Yg28
-        +JoH3GdjT460VzAQ==
+        bh=YBrXdQJHrHv14jlMCVxQ09o/PMH01GRp5d0QHSEUFxM=;
+        b=lYebG/aI5KVelHKBKjUFj6ENEpiCUPPLtQGZfZz5bu2gJ/vfoq6X9PdDxp0td+xbbP3dQ/
+        99RWHEXsSZHjD0BA==
 From:   "irqchip-bot for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] genirq/msi: Provide default .irq_eoi()
- for MSI chips
+Subject: [irqchip: irq/irqchip-next] genirq: Don't mask IRQ within flow
+ handler if IRQ is flow-masked
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210629125010.458872-9-valentin.schneider@arm.com>
-References: <20210629125010.458872-9-valentin.schneider@arm.com>
+In-Reply-To: <20210629125010.458872-7-valentin.schneider@arm.com>
+References: <20210629125010.458872-7-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <162878118052.395.18205379902168224404.tip-bot2@tip-bot2>
+Message-ID: <162878118167.395.5608150458715480528.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,51 +58,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     9b632bd34cea53fcfd3f41f89596d87573676050
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9b632bd34cea53fcfd3f41f89596d87573676050
+Commit-ID:     32797fe1c8ee8b9ccbefa14ae5540d4f020a3387
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/32797fe1c8ee8b9ccbefa14ae5540d4f020a3387
 Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Tue, 29 Jun 2021 13:50:05 +01:00
+AuthorDate:    Tue, 29 Jun 2021 13:50:03 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Thu, 12 Aug 2021 15:48:20 +01:00
 
-genirq/msi: Provide default .irq_eoi() for MSI chips
+genirq: Don't mask IRQ within flow handler if IRQ is flow-masked
 
-Currently only platform-MSI irqchips get a default .irq_eoi() when
-MSI_FLAG_USE_DEF_CHIP_OPS is set. There's no reason PCI-MSI irqchips
-couldn't benefit from this too, so let all MSI irqchips benefit from this
-default.
+mask_irq() lets an IRQ with IRQD_IRQ_FLOW_MASKED set be further masked via
+chip->irq_mask(). This is necessary for unhandled IRQs as we want to keep
+them masked beyond eoi_irq() (which clears IRQD_IRQ_FLOW_MASKED).
+
+This is however not necessary in paths that do end up handling the IRQ and
+are bounded by a final eoi_irq() - this is the case for chips with
+IRQCHIP_AUTOMASKS_FLOW and IRQCHIP_EOI_THREADED.
+
+Make handle_strict_flow_irq() leverage IRQCHIP_AUTOMASKS_FLOW and issue an
+ack_irq() rather than a mask_ack_irq() when possible.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210629125010.458872-9-valentin.schneider@arm.com
+Link: https://lore.kernel.org/r/20210629125010.458872-7-valentin.schneider@arm.com
 ---
- drivers/base/platform-msi.c | 2 --
- kernel/irq/msi.c            | 2 ++
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/irq/chip.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 0b72b13..659881d 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -101,8 +101,6 @@ static void platform_msi_update_chip_ops(struct msi_domain_info *info)
- 		chip->irq_mask = irq_chip_mask_parent;
- 	if (!chip->irq_unmask)
- 		chip->irq_unmask = irq_chip_unmask_parent;
--	if (!chip->irq_eoi)
--		chip->irq_eoi = irq_chip_eoi_parent;
- 	if (!chip->irq_set_affinity)
- 		chip->irq_set_affinity = msi_domain_set_affinity;
- 	if (!chip->irq_write_msi_msg)
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index c41965e..c975909 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -274,6 +274,8 @@ static void msi_domain_update_chip_ops(struct msi_domain_info *info)
- 	BUG_ON(!chip || !chip->irq_mask || !chip->irq_unmask);
- 	if (!chip->irq_set_affinity)
- 		chip->irq_set_affinity = msi_domain_set_affinity;
-+	if (!chip->irq_eoi)
-+		chip->irq_eoi = irq_chip_eoi_parent;
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index 699e70b..c2ca6b7 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -896,6 +896,12 @@ out_eoi:
  }
+ #endif
  
++/*
++ * AUTOMASKS_FLOW tells us ack/eoi handle the masking, EOI_THREADED tells us
++ * that masking will persist until irq_finalize_oneshot()
++ */
++#define ONESHOT_AUTOMASK_FLAGS (IRQCHIP_AUTOMASKS_FLOW | IRQCHIP_EOI_THREADED)
++
  /**
+  *	handle_strict_flow_irq - irq handler for strict controllers
+  *	@desc:	the interrupt description structure for this irq
+@@ -909,10 +915,9 @@ void handle_strict_flow_irq(struct irq_desc *desc)
+ 	struct irq_chip *chip = desc->irq_data.chip;
+ 
+ 	raw_spin_lock(&desc->lock);
+-	mask_ack_irq(desc);
+ 
+ 	if (!irq_may_run(desc))
+-		goto out;
++		goto out_mask;
+ 
+ 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
+ 
+@@ -922,10 +927,20 @@ void handle_strict_flow_irq(struct irq_desc *desc)
+ 	 */
+ 	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
+ 		desc->istate |= IRQS_PENDING;
+-		goto out;
++		goto out_mask;
+ 	}
+ 
+ 	kstat_incr_irqs_this_cpu(desc);
++	/*
++	 * Masking is required if IRQ is ONESHOT and we can't rely on the
++	 * flow-masking persisting down to irq_finalize_oneshot()
++	 * (in the IRQ thread).
++	 */
++	if ((desc->istate & IRQS_ONESHOT) &&
++	    ((chip->flags & ONESHOT_AUTOMASK_FLAGS) != ONESHOT_AUTOMASK_FLAGS))
++		mask_ack_irq(desc);
++	else
++		ack_irq(desc);
+ 
+ 	handle_irq_event(desc);
+ 
+@@ -933,7 +948,8 @@ void handle_strict_flow_irq(struct irq_desc *desc)
+ 
+ 	raw_spin_unlock(&desc->lock);
+ 	return;
+-out:
++out_mask:
++	mask_ack_irq(desc);
+ 	/*
+ 	 * XXX: this is where IRQCHIP_EOI_IF_HANDLED would be checked, but
+ 	 * it's conceptually incompatible with this handler (it breaks the
