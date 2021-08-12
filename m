@@ -2,73 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8D13EA809
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2C73EA810
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238508AbhHLPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238488AbhHLPyG (ORCPT
+        id S238520AbhHLPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:55:13 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38248
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238351AbhHLPzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:54:06 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AB4C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:41 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id r5so11022166oiw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=YcXaUw4eDPSG+MibJUQlx8InS98N6ju4q2yiypQBbR0=;
-        b=eY2VUXIqGp8kazDeOfHaMJ+g18TUO57eZ+LYouhkM9bLOIZGIQqdthPR9pXUSzOXAs
-         JFyAknP7G/UmIXDn2QHn+S62dxwxfp41XkIYXCnsVAo/5CU5rsaPnneRg/+oZz8D7g8M
-         DxzXd8KWkIbl6MeMzFskY63SMJLPnlyyMZ3lM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=YcXaUw4eDPSG+MibJUQlx8InS98N6ju4q2yiypQBbR0=;
-        b=UgASKKr1fa7sVBhkZs9DB0IspxzBfULRDHIjqPODV1a/CXgHtNurPSlW3wQWbeECC2
-         /kvSyM4RnW8h6hqobGFlX4Iw5s5pDcng0NjT6jNxzl1XefNPZnCq5bypdm7fxaaVV3ph
-         tuHXMxRJJPt2h19XiyqwKK6To8bK6byoDyiAw+CoJ4BvzVw+ZqOG5VWeYDwVrXHhSZVS
-         db+a/BagtEHLci3fF5pkwd0VsCTJ+8jtC1zKKTLkiIMGIKBKdn+LIoEFofKjH7X0P7LA
-         nc59Lu9Ur2PHXQHZgvM2stWMK7x/QENITnYB28ewcAMQMs0LaA6sWHdp2HeiYZqv/WGQ
-         3BYg==
-X-Gm-Message-State: AOAM531W7KoMjaCJkSKIXinxHoSkA63/6QRDibNzKNuCYZRJOjpBGzyb
-        sa/7HCYtsRtMnYc6DrCMQYrT29uSXFWwHeLySMGIaQ==
-X-Google-Smtp-Source: ABdhPJynWHO9zzPKC9hMvlzNYdBNJqkKMc8hbKB5pdaY4JwKaHf1iPyzqrcRrL0iBn+5uP91BLlKpVvZ7fP36VKpn7I=
-X-Received: by 2002:a05:6808:2193:: with SMTP id be19mr5050704oib.166.1628783620592;
- Thu, 12 Aug 2021 08:53:40 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 12 Aug 2021 08:53:40 -0700
+        Thu, 12 Aug 2021 11:55:12 -0400
+Received: from localhost.localdomain (1.general.khfeng.us.vpn [10.172.68.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9B2223F361;
+        Thu, 12 Aug 2021 15:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628783686;
+        bh=g7fffiyI+X9n230LWqj+hlksotyPWg3/QPgjjGTFyIQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=QjMFiNlWSA8ciPbMCVp9ulCkLwFDDYkt0BtlolB13eOGjiF7ezJjmrQId7xig+Y1l
+         tOicONzOc2mc7iS7BQg2F0DHu0EdYahxWK05CfIIbpGBMTiBOkKIw/GQUMqvgDJDRm
+         M/WHYZSoIbQlZ8Z6HX0JXhOdtIH8YAp4nt4vSjbfuRylVFHkp4kSGU4alp3UpL/fvp
+         C6iNeHX88tbfPcDbOUNTTWfy5RaYHLNxQA5lFGkm0cT9dOj1GmC8Xx5Sc+8cN82fUk
+         TMj8XJmp07rfsQvmd1iuFA/mFt5oCUVlMLDJ3+ly1xogdHHH9iNZidGlVdHyc4fV6K
+         we15bpwmOKF6g==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     hkallweit1@gmail.com, nic_swsd@realtek.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:8169 10/100/1000 GIGABIT ETHERNET
+        DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] r8169: Implement dynamic ASPM mechanism
+Date:   Thu, 12 Aug 2021 23:53:40 +0800
+Message-Id: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
-References: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 12 Aug 2021 08:53:40 -0700
-Message-ID: <CAE-0n52=8UnRMRS698TvTKG2bpFHqmLp5r4xc_dmSTA1V269oQ@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
- cpufreq driver flag
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Taniya Das <tdas@codeaurora.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-08-12 07:19:15)
-> As remote cpufreq updates are supported on QCOM platforms, set
-> dvfs_possible_from_any_cpu cpufreq driver flag.
->
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
+r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+Same issue can be observed with older vendor drivers.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+The issue is however solved by the latest vendor driver. There's a new
+mechanism, which disables r8169's internal ASPM when the NIC traffic has
+more than 10 packets, and vice versa.
+
+Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
+use dynamic ASPM under Windows. So implement the same mechanism here to
+resolve the issue.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2: 
+ - Use delayed_work instead of timer_list to avoid interrupt context
+ - Use mutex to serialize packet counter read/write
+ - Wording change
+
+ drivers/net/ethernet/realtek/r8169_main.c | 45 +++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index c7af5bc3b8af..7ab2e841dc69 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -624,6 +624,11 @@ struct rtl8169_private {
+ 
+ 	unsigned supports_gmii:1;
+ 	unsigned aspm_manageable:1;
++	unsigned aspm_enabled:1;
++	struct delayed_work aspm_toggle;
++	struct mutex aspm_mutex;
++	u32 aspm_packet_count;
++
+ 	dma_addr_t counters_phys_addr;
+ 	struct rtl8169_counters *counters;
+ 	struct rtl8169_tc_offsets tc_offset;
+@@ -2671,6 +2676,8 @@ static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+ 		RTL_W8(tp, Config5, RTL_R8(tp, Config5) & ~ASPM_en);
+ 	}
+ 
++	tp->aspm_enabled = enable;
++
+ 	udelay(10);
+ }
+ 
+@@ -4408,6 +4415,9 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+ 
+ 	dirty_tx = tp->dirty_tx;
+ 
++	mutex_lock(&tp->aspm_mutex);
++	tp->aspm_packet_count += tp->cur_tx - dirty_tx;
++	mutex_unlock(&tp->aspm_mutex);
+ 	while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+ 		unsigned int entry = dirty_tx % NUM_TX_DESC;
+ 		u32 status;
+@@ -4552,6 +4562,10 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+ 		rtl8169_mark_to_asic(desc);
+ 	}
+ 
++	mutex_lock(&tp->aspm_mutex);
++	tp->aspm_packet_count += count;
++	mutex_unlock(&tp->aspm_mutex);
++
+ 	return count;
+ }
+ 
+@@ -4659,8 +4673,33 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
+ 	return 0;
+ }
+ 
++#define ASPM_PACKET_THRESHOLD 10
++#define ASPM_TOGGLE_INTERVAL 1000
++
++static void rtl8169_aspm_toggle(struct work_struct *work)
++{
++	struct rtl8169_private *tp = container_of(work, struct rtl8169_private,
++						  aspm_toggle.work);
++	bool enable;
++
++	mutex_lock(&tp->aspm_mutex);
++	enable = tp->aspm_packet_count <= ASPM_PACKET_THRESHOLD;
++	tp->aspm_packet_count = 0;
++	mutex_unlock(&tp->aspm_mutex);
++
++	if (tp->aspm_enabled != enable) {
++		rtl_unlock_config_regs(tp);
++		rtl_hw_aspm_clkreq_enable(tp, enable);
++		rtl_lock_config_regs(tp);
++	}
++
++	schedule_delayed_work(&tp->aspm_toggle, ASPM_TOGGLE_INTERVAL);
++}
++
+ static void rtl8169_down(struct rtl8169_private *tp)
+ {
++	cancel_delayed_work_sync(&tp->aspm_toggle);
++
+ 	/* Clear all task flags */
+ 	bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
+ 
+@@ -4687,6 +4726,8 @@ static void rtl8169_up(struct rtl8169_private *tp)
+ 	rtl_reset_work(tp);
+ 
+ 	phy_start(tp->phydev);
++
++	schedule_delayed_work(&tp->aspm_toggle, ASPM_TOGGLE_INTERVAL);
+ }
+ 
+ static int rtl8169_close(struct net_device *dev)
+@@ -5347,6 +5388,10 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	INIT_WORK(&tp->wk.work, rtl_task);
+ 
++	INIT_DELAYED_WORK(&tp->aspm_toggle, rtl8169_aspm_toggle);
++
++	mutex_init(&tp->aspm_mutex);
++
+ 	rtl_init_mac_address(tp);
+ 
+ 	dev->ethtool_ops = &rtl8169_ethtool_ops;
+-- 
+2.32.0
+
