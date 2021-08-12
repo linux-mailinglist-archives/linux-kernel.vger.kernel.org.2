@@ -2,98 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957A3EA9F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE893EA9F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237431AbhHLSKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S237237AbhHLSLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhHLSKc (ORCPT
+        with ESMTP id S229508AbhHLSLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:10:32 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E275C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:10:07 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id bo18so11185378pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:10:06 -0700 (PDT)
+        Thu, 12 Aug 2021 14:11:15 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C9DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:10:49 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id n6so11757351ljp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N2dWSLSbLjgvwtcICDrMscnb8WmsPjpe/if0pvyyNis=;
-        b=jbRVdF0HUZEmLetXKhzfsy/ysCJz2gavsf2bevGNRLbJkso7bGeDYJdSUek/IXEc2F
-         sUCuz61EFRUtTC0igW+jIWtH/AMmRQ/l6q2TmhFMJ8lxDr/2RijgQVpDy9CCzbj/CiSq
-         KQ3GYdga1vgAxcrPj5T07EO5GQnjt4nADuVX5DvrhYWfSztBwVNoo2jomfQr52jRGzV6
-         oDsdewfDeXDozQA/MLk9VevKqZAm4yNgDJj1J0ihnkJ+0TWwbzszYIXJ0NkzX1QaHioT
-         Vt6HPPGzi7T/bnsEfNcOBmPVQWvHUK7M6xmAQC1hZbFjxb7Ki2peLi89h8JwQgbIj3w3
-         qEqg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kMjoLlvtmb7mlrSdQknNJvuiNoe+cD5cNxWCgcmURzw=;
+        b=fAel4ZlqluiDbK7XT2TN285OpKL/k74SaHM+ukhLXBOh8aUgDoAGzVcLvAOBNcLwL7
+         LW/VCMiZKL3GYhssOvLPpOPnx2NT/Qr4lb/26QY9QP4lDZrSUO3zX9NqiJlhGgoC6/lS
+         /Ep9k9BaQCUABA+deLmcEAO5Iol8v4ErYRRpM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N2dWSLSbLjgvwtcICDrMscnb8WmsPjpe/if0pvyyNis=;
-        b=j+D7R/FJCTkvlK+ynJTPbUZwOaa9bRYPV9WLImSK5EjAimN8qQU5doI/lvRzI9xRbq
-         5pM44567hbDmjDTdI3VN1pLcONqlAA+oBeI79mTTgLr0uRuehlvWqeJ7+xpDoshzzW5j
-         fvtC8UYsXwIDntYuO19Ddv0nH0tP3/ONf9GPFqxVF2dE/n0FZjMrZl+ktpcKLN7RXY7Q
-         nd4HaorBQnaxA3d5JjNcmA4VNYwl+j40uQeqj0VsvwYMe+DZFg0iZFxrhSv8stdRF/OM
-         30G/hEyptbDLa3c3SwUuJUg2trAfbN2SUYe5EDp1112JSJaE63agKWQm5g++cDdpCt9c
-         pgNw==
-X-Gm-Message-State: AOAM530FE9+CHZ5C6cHxmYWki+qjv7DQJNbC223RHJLU/yuduaUZitpb
-        ShJ7ch/9NPwzSy4bSwGLxKYN/w==
-X-Google-Smtp-Source: ABdhPJwd+RmktKVVt21eiBLulY34PfVu38z11uoaiIc5FIlhrUDNTdquM9efVeRVWbCQz257dwXMDg==
-X-Received: by 2002:a65:690c:: with SMTP id s12mr4943068pgq.401.1628791806320;
-        Thu, 12 Aug 2021 11:10:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i5sm10776583pjk.47.2021.08.12.11.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 11:10:05 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 18:09:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Don't skip non-leaf SPTEs when zapping
- all SPTEs
-Message-ID: <YRVj94P6it0ow8J+@google.com>
-References: <20210812050717.3176478-1-seanjc@google.com>
- <20210812050717.3176478-2-seanjc@google.com>
- <01b22936-49b0-638e-baf8-269ba93facd8@redhat.com>
- <YRVPxCv2RtyXi+XO@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kMjoLlvtmb7mlrSdQknNJvuiNoe+cD5cNxWCgcmURzw=;
+        b=a2Mni5vwbr3PCG+tnxa9LCI/gTAFni5h0ZnJAblNujXi663Riuo7v60Zje6rjwxTWX
+         SSgDAe+oScoxe6F+Ob8zrYJ8HMcr1RALZOhj0Rfif+rEAt/3fCCnOkUcDkawhUtET++C
+         GCpPSL2nhUWF6G4rDlPHa1sJFXljj8jOEkFMLEOs8pIP7Or8zpPs/HKX9nJV6tk5rjfe
+         4xcGhw83SRd5jWSRVmeZd9d5geifP88xe2Xq9tDMcWyN6UFxMr7l7zGIzqHQNoGEwTq/
+         BZUlbk+sEBER1R2Wm4PkGvKNfS7F/SQ10eQQcyeE5QpeR6fntyb6LnUk8EMA6pn8WZQz
+         1l7Q==
+X-Gm-Message-State: AOAM533ZkK8poOKkOMy3c2Bk85dorl1zoI9LlYprP0+8SbAVmhEpSeVM
+        VelQDOf50AC4QdYJGVr99N3hNq0vOI82UarjemQ=
+X-Google-Smtp-Source: ABdhPJxRlky8uL1FmziS0cMAr7engRIetcxfrX7ltuyYKSevwqsugfiQuQvq8At376d5CbGRnWH2HA==
+X-Received: by 2002:a05:651c:883:: with SMTP id d3mr3782504ljq.17.1628791847538;
+        Thu, 12 Aug 2021 11:10:47 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id h17sm327859lfr.287.2021.08.12.11.10.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 11:10:45 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id g30so15049970lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:10:44 -0700 (PDT)
+X-Received: by 2002:a05:6512:2091:: with SMTP id t17mr3426901lfr.253.1628791844375;
+ Thu, 12 Aug 2021 11:10:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRVPxCv2RtyXi+XO@google.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com> <87lf56bllc.fsf@disp2133>
+In-Reply-To: <87lf56bllc.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 12 Aug 2021 08:10:28 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+Message-ID: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021, Sean Christopherson wrote:
-> On Thu, Aug 12, 2021, Paolo Bonzini wrote:
-> > On 12/08/21 07:07, Sean Christopherson wrote:
-> > > @@ -739,8 +749,16 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> > >   			  gfn_t start, gfn_t end, bool can_yield, bool flush,
-> > >   			  bool shared)
-> > >   {
-> > > +	bool zap_all = (end == ZAP_ALL_END);
-> > >   	struct tdp_iter iter;
-> > > +	/*
-> > > +	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
-> > > +	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
-> > > +	 * and so KVM will never install a SPTE for such addresses.
-> > > +	 */
-> > > +	end = min(end, 1ULL << (shadow_phys_bits - PAGE_SHIFT));
-> > 
-> > Then zap_all need not have any magic value.  You can use 0/-1ull, it's
-> > readable enough.  ZAP_ALL_END is also unnecessary here if you do:
-> > 
-> > 	gfn_t max_gfn_host = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
-> > 	bool zap_all = (start == 0 && end >= max_gfn_host);
-> 
-> Aha!  Nice.  I was both too clever and yet not clever enough.
+On Thu, Aug 12, 2021 at 7:48 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Given that MAP_PRIVATE for shared libraries is our strategy for handling
+> writes to shared libraries perhaps we just need to use MAP_POPULATE or a
+> new related flag (perhaps MAP_PRIVATE_NOW)
 
-And as a bonus, this also works for kvm_post_set_cr0(), which calls the common
-kvm_zap_gfn_range() with 0 - ALL_ONES.
+No. That would be horrible for the usual bloated GUI libraries. It
+might help some (dynamic page faults are not cheap either), but it
+would hurt a lot.
+
+This is definitely a "if you overwrite a system library while it's
+being used, you get to keep both pieces" situation.
+
+The kernel ETXTBUSY thing is purely a courtesy feature, and as people
+have noticed it only really works for the main executable because of
+various reasons. It's not something user space should even rely on,
+it's more of a "ok, you're doing something incredibly stupid, and
+we'll help you avoid shooting yourself in the foot when we notice".
+
+Any distro should make sure their upgrade tools don't just
+truncate/write to random libraries executables.
+
+And if they do, it's really not a kernel issue.
+
+This patch series basically takes this very historical error return,
+and simplifies and clarifies the implementation, and in the process
+might change some very subtle corner case (unmapping the original
+executable entirely?). I hope (and think) it wouldn't matter exactly
+because this is a "courtesy error" rather than anything that a sane
+setup would _depend_ on, but hey, insane setups clearly exist.
+
+               Linus
