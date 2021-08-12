@@ -2,96 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DDE3E9E38
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA763E9E41
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhHLGEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
+        id S234516AbhHLGHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233511AbhHLGEo (ORCPT
+        with ESMTP id S234367AbhHLGHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:04:44 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C00C061765;
-        Wed, 11 Aug 2021 23:04:19 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id c17so603836plz.2;
-        Wed, 11 Aug 2021 23:04:19 -0700 (PDT)
+        Thu, 12 Aug 2021 02:07:51 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED07C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:07:26 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id bo18so7752182pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 23:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=nKkNOKnR0BjeJ53ALM7gQ03JCstACfSRC5kNtfzT4yk=;
-        b=P0XbE8UYynS6GdhVuBw2y3O0dZ+pvc02m/UylndyPNK85wfDC6Gq59QMnx+hMXD4nI
-         yCmncJO5qEPDBI0Y9J84bgG6LxAOOx+WTVY8OLTgn1KYIyLATAWYU2FuapnCogqrjuO/
-         rBckONFW6CLiyURRvVq4zBgjBcfyOA06tcb0Lrk4f4VPPd3ZK7QMsVYUi+F+P9OJAAoX
-         wXH4q72e3n7sZQqX5TPQKpGhmQWalzjvSnKs+DjrTRnKrmjLtdQtnINr85PSLhnsvKzC
-         IbirWZdD7XapV5M0ZEMmq36msmXy9bwiBNuChoaDNSmxmHCj0hqb3Ch8xkfvo/tM+c+n
-         ZqaA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jxvZ4r0pteSM6HzfJsNa9GwmkQjms4iL9SLGUdON+FA=;
+        b=L3BNLlV1DJYBzbryMeY/ipN3UsCdCKMYPT1t3MxLhvMYMds6zUVaJ0oVvUnyf0Tvek
+         QqY+xVhO9YzYbkUCSBkAXmJI+3+yti9Sk0n44YGISBuk3WWiJfoOONGuxxw4M/l1bXKc
+         7gc0t4KK/T00wmoTZqeDxw9OJFXZWMf2kzDpgia/mBMwG2GFc1qa/4hS/jTiqQsVP0KJ
+         8WPIX5juf0+6IA7ExogzZ8BwNlQKhx37eGgDaHO9Kuktcjdvn9NaE3WyNt+QndFsnwkG
+         yEiqUYUXtB5VyLhxcUhdECrGCQPEVWYlaXOYTHapI5UXIWf72jZf919jabiibrRCg3kg
+         v12w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=nKkNOKnR0BjeJ53ALM7gQ03JCstACfSRC5kNtfzT4yk=;
-        b=fqkQvFl7TuDugobx7zb3253UAGwDKZEix/Nez96Ag9+SNNAKbmeR9nSL0p+PiVlUFj
-         tXXDqac1uYAuJkWertfJZrKOhR+fGN5Tctw2bsWzNraEf+cclioFhUTPHFnUgcSsl9Iz
-         UBXZXif7Mam0yWRCRySVin6vgHfHlXF1morQb03aqGP+6J1XCXeAKB3Mz/qs1kGUFygs
-         GlxXX2QOobNBQQcCrx9vgSJOhegqhdDfpVLcHmKFgat7Cub/S5Ljh7uFaTsY5LUNmqjY
-         UDdhXNrv1xS1L6FozeV3H194kucPRlUZjRgg9IH803F7QOjgotCQEca7vDTus/CNXmDZ
-         gWlw==
-X-Gm-Message-State: AOAM530bbChX12lRp/MkLzBLxP5Gjf9G2Bhf9NmqHEC0ELmRX6lD0iPq
-        jZYf5rku3Xwx7STFOHbZ65I=
-X-Google-Smtp-Source: ABdhPJzFYLWTNVJ+SHnUGsH+wt/Q9EbQiiyLesQa6R68Ta19VJ20+YhgGgRwnBotLuVURb0jPWYH8w==
-X-Received: by 2002:a65:641a:: with SMTP id a26mr2428982pgv.340.1628748259363;
-        Wed, 11 Aug 2021 23:04:19 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id p21sm1666469pfo.8.2021.08.11.23.04.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jxvZ4r0pteSM6HzfJsNa9GwmkQjms4iL9SLGUdON+FA=;
+        b=p7WDsqU9zdpTPXMC/WGJHntW8/e5yRnkZVH2CHLisB9YbyF/F1jFprK7rZ4Zp6oP5A
+         6fgvjv6fDSr4GPrYS7TnAcbIl9JWPEGLppGMxT09V3kFA0RXJwcV/IqfFxRDo6rh6Yzu
+         bRcuL9QY4A8eTeTTT/C0qsxscKp4hQoiwikYS1QfCDGpByKiTldixw4ajarKwlIf2Ne0
+         FeWuho5xMM0Pc1OE12Wb1IUlCLK7SiPRqhD6snYZKXAVzskvfP0xPhkprSm1HhHm/ngl
+         zRlNF56CLMZELa5zPMKWkAMQxCEEt1fWG+K2O3PbUlu4cd5VlsJfpDdiGbxWQfQhvpdp
+         47TA==
+X-Gm-Message-State: AOAM533dfc+mf5Jed/8Pfk4A2KzdjHnOryDJ4iH4PWl++HXVwGWvr8Cw
+        thMgT+51Hm0j3heqBulPH5rW
+X-Google-Smtp-Source: ABdhPJytJCiYCZMVQB30pm7a5Wf2Kx9WqwfjKNHdBjNKY9En3Mx2K+TLR7Tzz2FN3vjkJZEyndxE7w==
+X-Received: by 2002:a17:90a:cb12:: with SMTP id z18mr2693481pjt.84.1628748445743;
+        Wed, 11 Aug 2021 23:07:25 -0700 (PDT)
+Received: from thinkpad ([2409:4072:99a:700c:52f1:f031:1fc2:c301])
+        by smtp.gmail.com with ESMTPSA id e31sm1521612pjk.19.2021.08.11.23.07.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 23:04:18 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Ido Schimmel <idosch@idosch.org>, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
-        "open list:ETHERNET BRIDGE" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH net-next] net: bridge: switchdev: allow port isolation to be offloaded
-Date:   Thu, 12 Aug 2021 14:04:10 +0800
-Message-Id: <20210812060410.1848228-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210811215833.yst5tzgfvih2q4y2@skbuf>
-References: <20210811135247.1703496-1-dqfext@gmail.com> <YRRDcGWaWHgBkNhQ@shredder> <20210811214506.4pf5t3wgabs5blqj@skbuf> <YRRGsL60WeDGQOnv@shredder> <20210811215833.yst5tzgfvih2q4y2@skbuf>
+        Wed, 11 Aug 2021 23:07:25 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 11:37:15 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
+Subject: Re: [PATCH v5 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY
+ related nodes
+Message-ID: <20210812060715.GA72145@thinkpad>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:58:33AM +0300, Vladimir Oltean wrote:
-> On Thu, Aug 12, 2021 at 12:52:48AM +0300, Ido Schimmel wrote:
-> > 
-> > If the purpose is correctness, then this is not the only flag that was
-> > missed. BR_HAIRPIN_MODE is also relevant for the data path, for example.
+On Tue, Aug 10, 2021 at 09:38:34AM +0530, Prasad Malisetty wrote:
+> Add PCIe controller and PHY nodes for sc7280 SOC.
 > 
-> I never wanted to suggest that I'm giving a comprehensive answer, I just
-> answered Qingfang's punctual question here:
-> https://lore.kernel.org/netdev/CALW65jbotyW0MSOd-bd1TH_mkiBWhhRCQ29jgn+d12rXdj2pZA@mail.gmail.com/
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 126 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
 > 
-> Tobias also pointed out the same issue about BR_MULTICAST_TO_UNICAST in
-> conjunction with tx_fwd_offload (although the same is probably true even
-> without it):
-> https://patchwork.kernel.org/project/netdevbpf/cover/20210426170411.1789186-1-tobias@waldekranz.com/
-> 
-> > Anyway, the commit message needs to be reworded to reflect the true
-> > purpose of the patch.
-> 
-> Agree, and potentially extended with all the bridge port flags which are
-> broken without switchdev driver intervention.
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 53a21d0..4500d88 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -16,6 +16,7 @@
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  
+>  / {
+>  	interrupt-parent = <&intc>;
+> @@ -586,6 +587,119 @@
+>  			qcom,bcm-voters = <&apps_bcm_voter>;
+>  		};
+>  
+> +		pcie1: pci@1c08000 {
+> +			compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", "snps,dw-pcie";
 
-So, what else flags should be added to BR_PORT_FLAGS_HW_OFFLOAD?
+Why 2 fallbacks? Fallbacks are meant to be used when the "fallback" compatible
+driver can fully support the hw. In this case, neither "qcom,pcie-sm8250" nor "snps,dw-pcie"
+can work properly, right?
+
+I did the same mistake for SM8250 though... But please get rid of them.
+
+> +			reg = <0 0x01c08000 0 0x3000>,
+> +			      <0 0x40000000 0 0xf1d>,
+> +			      <0 0x40000f20 0 0xa8>,
+> +			      <0 0x40001000 0 0x1000>,
+> +			      <0 0x40100000 0 0x100000>;
+> +
+> +			reg-names = "parf", "dbi", "elbi", "atu", "config";
+> +			device_type = "pci";
+> +			linux,pci-domain = <1>;
+> +			bus-range = <0x00 0xff>;
+> +			num-lanes = <2>;
+> +			pipe-clk-source-switch;
+
+Did you document this property in binding? You need to add "qcom" prefix since
+this is a qcom specific one and not a generic PCI property.
+
+Thanks,
+Mani
+
+> +
+> +			#address-cells = <3>;
+> +			#size-cells = <2>;
+> +
+> +			ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
+> +				 <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
+> +
+> +			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "msi";
+> +			#interrupt-cells = <1>;
+> +			interrupt-map-mask = <0 0 0 0x7>;
+> +			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
+> +				 <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
+> +				 <&pcie1_lane 0>,
+> +				 <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&gcc GCC_PCIE_1_AUX_CLK>,
+> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
+> +				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
+> +				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
+> +				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
+> +				 <&gcc GCC_DDRSS_PCIE_SF_CLK>;
+> +
+> +			clock-names = "pipe",
+> +				      "pipe_mux",
+> +				      "phy_pipe",
+> +				      "ref",
+> +				      "aux",
+> +				      "cfg",
+> +				      "bus_master",
+> +				      "bus_slave",
+> +				      "slave_q2a",
+> +				      "tbu",
+> +				      "ddrss_sf_tbu";
+> +
+> +			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
+> +			assigned-clock-rates = <19200000>;
+> +
+> +			resets = <&gcc GCC_PCIE_1_BCR>;
+> +			reset-names = "pci";
+> +
+> +			power-domains = <&gcc GCC_PCIE_1_GDSC>;
+> +
+> +			phys = <&pcie1_lane>;
+> +			phy-names = "pciephy";
+> +
+> +			perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> +			pinctrl-names = "default";
+> +			pinctrl-0 = <&pcie1_default_state>;
+> +
+> +			iommus = <&apps_smmu 0x1c80 0x1>;
+> +
+> +			iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+> +				    <0x100 &apps_smmu 0x1c81 0x1>;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		pcie1_phy: phy@1c0e000 {
+> +			compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
+> +			reg = <0 0x01c0e000 0 0x1c0>;
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +				 <&gcc GCC_PCIE_CLKREF_EN>,
+> +				 <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
+> +
+> +			resets = <&gcc GCC_PCIE_1_PHY_BCR>;
+> +			reset-names = "phy";
+> +
+> +			assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +			assigned-clock-rates = <100000000>;
+> +
+> +			status = "disabled";
+> +
+> +			pcie1_lane: lanes@1c0e200 {
+> +				reg = <0 0x01c0e200 0 0x170>,
+> +				      <0 0x01c0e400 0 0x200>,
+> +				      <0 0x01c0ea00 0 0x1f0>,
+> +				      <0 0x01c0e600 0 0x170>,
+> +				      <0 0x01c0e800 0 0x200>,
+> +				      <0 0x01c0ee00 0 0xf4>;
+> +				clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +				clock-names = "pipe0";
+> +
+> +				#phy-cells = <0>;
+> +				#clock-cells = <1>;
+> +				clock-output-names = "pcie_1_pipe_clk";
+> +			};
+> +		};
+> +
+>  		ipa: ipa@1e40000 {
+>  			compatible = "qcom,sc7280-ipa";
+>  
+> @@ -1598,6 +1712,18 @@
+>  					bias-bus-hold;
+>  				};
+>  			};
+> +
+> +			pcie1_default_state: pcie1-default-state {
+> +				clkreq {
+> +					pins = "gpio79";
+> +					function = "pcie1_clkreqn";
+> +				};
+> +
+> +				wake-n {
+> +					pins = "gpio3";
+> +					function = "gpio";
+> +				};
+> +			};
+>  		};
+>  
+>  		apps_smmu: iommu@15000000 {
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
