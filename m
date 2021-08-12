@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125463EA92C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494CB3EA931
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbhHLRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        id S235253AbhHLRMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhHLRJU (ORCPT
+        with ESMTP id S234825AbhHLRMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:09:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3652C061756;
-        Thu, 12 Aug 2021 10:08:54 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f8300207fa77f9285c0b6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:8300:207f:a77f:9285:c0b6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56FA21EC04FB;
-        Thu, 12 Aug 2021 19:08:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628788129;
+        Thu, 12 Aug 2021 13:12:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC0EC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:11:57 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628788315;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=V/K6iCeE0MoLZTtP5W4vJ+sANgh83kvWLuTqE8TAOjY=;
-        b=TxI0FczNkTrobUxyNi31De7NeNnHXcA/OxKDy4SzpvAUR4q6cJdbt4sqiueXMvti7Z3uDc
-        e2fFGhelJhkznEs9cDg97rSkOeK4T3OxOGK7nO4g88MHMA7JRWYckpiS9mMF3CIK5elgEE
-        8+G2AwFPfbXeQfE0TtLhgx+eO5tlUkY=
-Date:   Thu, 12 Aug 2021 19:09:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v9 07/26] x86/fpu/xstate: Convert the struct fpu 'state'
- field to a pointer
-Message-ID: <YRVVyI2RDVzFplnn@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-8-chang.seok.bae@intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=x4G/CDaKl4xD5/KukuYOsU/+e61W8kEpp2VUM1xeZ+U=;
+        b=SU+yPaIm8pao6osRILEewSy983GXgWJ8cju0IrgA7RhDtWvoUTowU7Xd4M5hErXEdsRVx+
+        fuYv46CEh/bmST0biZnPnnzBwrQ4aKFXXl4WN7gNKvHOp6N78RCrkmFZqg1XQ/cGXqaPGt
+        FdiUug1Br+1rrLE9n/NMICy/4ZwBxjHfyOPbOtstUG7cbD1Wmlb45pPysYiM4peRTRmrpO
+        MhkZ+7hYdSNGm2hLrao4Ir0i3iSJ0LLcRPPmWO5ZYLkRhAFVmgFu1V8oIZtwSCB83l3beF
+        Ngxb99RovepDXmGkVfLtPoIYBjd5+fTXHJ+2rKYUMSAc+8uJS1UeBByfNn/9LA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628788315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x4G/CDaKl4xD5/KukuYOsU/+e61W8kEpp2VUM1xeZ+U=;
+        b=rmIbcCPhV9thsl05FgEWEnq/rkMdqDNm8OUnjMKiUpD+d7j6ECd67Ys0mDfoo+Nqh31M7K
+        9CFyE34Lra/Me1Bg==
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        kernel-team@fb.com, ak@linux.intel.com, rong.a.chen@intel.com,
+        sboyd@kernel.org
+Subject: Re: [GIT PULL clocksource] Clocksource watchdog commits for v5.15
+In-Reply-To: <20210812163753.GW4126399@paulmck-ThinkPad-P17-Gen-1>
+References: <20210812000133.GA402890@paulmck-ThinkPad-P17-Gen-1>
+ <87czqiixml.ffs@tglx>
+ <20210812163753.GW4126399@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 12 Aug 2021 19:11:55 +0200
+Message-ID: <87mtpmh9k4.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210730145957.7927-8-chang.seok.bae@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:59:38AM -0700, Chang S. Bae wrote:
-> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-> index f5a38a5f3ae1..c7826708f27f 100644
-> --- a/arch/x86/include/asm/fpu/types.h
-> +++ b/arch/x86/include/asm/fpu/types.h
-> @@ -339,13 +339,30 @@ struct fpu {
->  	/*
->  	 * @state:
->  	 *
-> -	 * In-memory copy of all FPU registers that we save/restore
-> -	 * over context switches. If the task is using the FPU then
-> -	 * the registers in the FPU are more recent than this state
-> -	 * copy. If the task context-switches away then they get
-> -	 * saved here and represent the FPU state.
-> +	 * A pointer to indicate the in-memory copy of all FPU registers
-> +	 * that are saved/restored over context switches.
-> +	 *
-> +	 * Initially @state points to @__default_state. When dynamic states
-> +	 * get used, a memory is allocated for the larger state copy and
-> +	 * @state is updated to point to it. Then, the state in ->state
-> +	 * supersedes and invalidates the state in @__default_state.
-> +	 *
-> +	 * In general, if the task is using the FPU then the registers in
-> +	 * the FPU are more recent than the state copy. If the task
-> +	 * context-switches away then they get saved in ->state and
-> +	 * represent the FPU state.
-> +	 */
-> +	union fpregs_state		*state;
-> +
-> +	/*
-> +	 * @__default_state:
-> +	 *
-> +	 * Initial in-memory copy of all FPU registers that saved/restored
-> +	 * over context switches. When the task is switched to dynamic
-> +	 * states, this copy is replaced with the new in-memory copy in
-> +	 * ->state.
->  	 */
-> -	union fpregs_state		state;
-> +	union fpregs_state		__default_state;
->  	/*
->  	 * WARNING: 'state' is dynamically-sized.  Do not put
-		    ^^^^^^
+On Thu, Aug 12 2021 at 09:37, Paul E. McKenney wrote:
 
-that needs to be __default_state as it is which is dynamically-sized.
+> On Thu, Aug 12, 2021 at 03:46:42PM +0200, Thomas Gleixner wrote:
+>> On Wed, Aug 11 2021 at 17:01, Paul E. McKenney wrote:
+>> > This pull request contains a single change that prevents clocksource
+>> > watchdog testing on systems with HZ < 100, thus preventing the integer
+>> > underflow that can occur on leisurely HZed systems.  This has been
+>> > posted to LKML:
+>> >
+>> > https://lore.kernel.org/lkml/20210721212755.GA2066078@paulmck-ThinkPad-P17-Gen-1/
+>> 
+>> So with HZ < 100 .mult overflows, but why not simply adjusting the
+>> mult, shift value to be
+>> 
+>>       .mult	= TICK_NSEC,
+>>       .shift	= 0,
+>> 
+>> which is effectively the same as
+>> 
+>>       .mult	= TICK_NSEC << 8,
+>>       .shift	= 8,
+>> 
+>> Hmm?
+>
+> Another option would be for me to be less lazy and to move this code:
+>
+> 	/* Since jiffies uses a simple TICK_NSEC multiplier
+> 	 * conversion, the .shift value could be zero. However
+> 	 * this would make NTP adjustments impossible as they are
+> 	 * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
+> 	 * shift both the nominator and denominator the same
+> 	 * amount, and give ntp adjustments in units of 1/2^8
+> 	 *
+> 	 * The value 8 is somewhat carefully chosen, as anything
+> 	 * larger can result in overflows. TICK_NSEC grows as HZ
+> 	 * shrinks, so values greater than 8 overflow 32bits when
+> 	 * HZ=100.
+> 	 */
+> 	#if HZ < 34
+> 	#define JIFFIES_SHIFT	6
+> 	#elif HZ < 67
+> 	#define JIFFIES_SHIFT	7
+> 	#else
+> 	#define JIFFIES_SHIFT	8
+> 	#endif
+>
+> from kernel/time/jiffies.c to include/linux/clocksource.h.
 
--- 
-Regards/Gruss,
-    Boris.
+No need to expose this globaly.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+  kernel/time/tick-internal.h or kernel/time/jiffies.h
+
+Thanks,
+
+        tglx
