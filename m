@@ -2,147 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1893EA358
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F143EA3AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbhHLLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhHLLPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:15:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE9E961038;
-        Thu, 12 Aug 2021 11:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628766890;
-        bh=IO433ygNCz081em0Q6RD0WZZk6/2eqF5zDqgtJZPmCQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=a9crY1hGfesdtuzWMw1BP9+Ak4De4hyS1BuFOwXf4jy+uXkXJVK7PqCTwaTJjSw4g
-         CwYRLyLoITMIfoyAJ4ceBOI8x00R2dTscApdAk66bW5GSuAXdn7LDV4QYeQqTDB1ZZ
-         q8VoykTqqzjILBQQH+YPusu+tmuz9eZFVHUaELDJrPcssJEVyd2VRG12xeBZrKZI2s
-         WV1qfP4LdOv5ii/nKyQorD2UBRSQ/mLe2Cai3W0JfPI8euCcDnY25sh7kEyaItD6Cj
-         LJY+89z8asD+vce0JoGGcnmPGSAyzqccjPrDgrvcBphDMgPAOVB+wZh4xnYKVV+USj
-         p6rFoYysbyqWg==
-Date:   Thu, 12 Aug 2021 20:14:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-Id: <20210812201447.0b04d20abacb84ecec1ad6b5@kernel.org>
-In-Reply-To: <20210812184429.176d1416ff922ade4b5342fb@kernel.org>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
-        <20210811112249.555463f2@oasis.local.home>
-        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-        <20210811234648.4f847ac2@rorschach.local.home>
-        <20210812184429.176d1416ff922ade4b5342fb@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S236756AbhHLLZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:25:41 -0400
+Received: from pi.codeconstruct.com.au ([203.29.241.158]:40708 "EHLO
+        codeconstruct.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236766AbhHLLZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:25:39 -0400
+X-Greylist: delayed 586 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Aug 2021 07:25:39 EDT
+Received: from pecola.lan (unknown [159.196.93.152])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 091382012C;
+        Thu, 12 Aug 2021 19:15:25 +0800 (AWST)
+Message-ID: <63a6e8ad8a8ae908aa73a3f910b98692c1a9aa37.camel@codeconstruct.com.au>
+Subject: Re: [PATCH net-next v3 01/16] mctp: Add MCTP base
+From:   Jeremy Kerr <jk@codeconstruct.com.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>, netdev@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matt Johnston <matt@codeconstruct.com.au>,
+        Andrew Jeffery <andrew@aj.id.au>
+Date:   Thu, 12 Aug 2021 19:15:24 +0800
+In-Reply-To: <alpine.DEB.2.22.394.2108121139490.530553@ramsan.of.borg>
+References: <20210723082932.3570396-1-jk@codeconstruct.com.au>
+         <20210723082932.3570396-2-jk@codeconstruct.com.au>
+         <alpine.DEB.2.22.394.2108121139490.530553@ramsan.of.borg>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 18:44:29 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi Geert,
 
-> On Wed, 11 Aug 2021 23:46:48 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Thu, 12 Aug 2021 10:27:35 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > > Let me confirm this, so eprobes can be attached to synthetic event?
-> > > IMHO, I rather like to prevent attaching eprobe_event on the other
-> > > dynamic events. It makes hard to check when removing the base dynamic
-> > > events...
-> > > 
-> > > For the above example, we can rewrite it as below to trace filename
-> > > without attaching eprobe_events on the synthetic event.
-> > > 
-> > >   echo 'my_open pid_t pid; char file[]' > synthetic_events
-> > > 
-> > >   echo 'e:myopen syscalls.sys_enter_open file=+0($filename):ustring' > dynamic_events
-> > >   echo 'e:myopen_ret syscalls.sys_exit_open ret=$ret' > dynamic_events
-> > >  
-> > >   echo 'hist:keys=common_pid:fname=file' > events/eprobes/myopen/trigger
-> > >   echo 'hist:keys=common_pid:fname=$fname:onmatch(eprobes.myopen).trace(my_open,common_pid,$fname)' > events/eprobes/myopen_ret
-> > > 
-> > 
-> > The problem is that the above wont work :-(
-> > 
-> > For example, I can use this program:
-> > 
-> > #include <stdio.h>
-> > #include <unistd.h>
-> > #include <fcntl.h>
-> > #include <sys/types.h>
-> > 
-> > static const char *file = "/etc/passwd";
-> > 
-> > int main (int argc, char **argv)
-> > {
-> > 	int fd;
-> > 
-> > 	fd = open(file, O_RDONLY);
-> > 	if (fd < 0)
-> > 		perror(file);
-> > 	close(fd);
-> > 	return 0;
-> > }
-> > 
-> > Which if you do the above, all you'll get from the myopen is "(null)".
-> > 
-> > That's because the "/etc/passwd" is not paged in at the start of the
-> > system call, and because tracepoints can not fault, the "ustring" will
-> > not be mapped yet, it can not give you the content of the file pointer.
-> > This was the entire reason we are working on eprobes to attach to
-> > synthetic events in the first place.
-> 
-> I think that is another limitation. If you run this program,
-> 
-> static const char *file = "/etc/passwd";
-> 
-> int main (int argc, char **argv)
-> {
-> 	char buf[BUFSIZE];
-> 	int fd;
-> 
-> 	strlcpy(buf, file, BUFSIZE);
-> 	fd = open(buf, O_RDONLY);
-> 	if (fd < 0)
-> 		perror(file);
-> 	read(fd, buf, BUFSIZE);
-> 	close(fd);
-> 	return 0;
-> }
-> 
-> you'll not see any filename from the "myopen_ret" or the synthetic event.
-> Thus, the user-space page fault must be handled by the other way. (e.g.
-> making a special worker thread and run it before the task returns to
-> user space.)
-> Using eprobe over synthetic event does not solve the root cause (and
-> it can introduce another issue.)
+Thanks for the testing!
 
-Oops, I missed that is the exit of open(), not close(). OK so filename 
-should be accessible at that point.
+> When building an allmodconfig kernel, I got:
 
-> > 
-> > The trick is to use the synthetic event to pass the filename pointer to
-> > the exit of the system call, which the system call itself would map the
-> > pointer to "file", and when the eprobe reads it with ":ustring" from
-> > the exit of the system call it gets "/etc/passwd" instead of "(null)".
-> > 
-> > Your above example doesn't fix this.
+[...]
 
-OK, I got it.
+I don't see this on a clean allmodconfig build, nor when building the
+previous commit then the MCTP commit with something like:
 
-Thanks, 
+  git checkout bc49d81^
+  make O=obj.allmodconfig allmodconfig
+  make O=obj.allmodconfig -j16
+  git checkout bc49d81
+  make O=obj.allmodconfig -j16
+
+- but it seems like it might be up to the ordering of a parallel build.
+
+From your description, it does sound like it's not regenerating flask.h;
+the kbuild rules would seem to have a classmap.h -> flask.h dependency:
+
+  $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
+  
+  quiet_cmd_flask = GEN     $(obj)/flask.h $(obj)/av_permissions.h
+        cmd_flask = scripts/selinux/genheaders/genheaders $(obj)/flask.h $(obj)/av_permissions.h
+  
+  targets += flask.h av_permissions.h
+  $(obj)/flask.h: $(src)/include/classmap.h FORCE
+  	$(call if_changed,flask)
+
+however, classmap.h is #include-ed as part of the genheaders binary
+build, rather than read at runtime; maybe $(obj)/flask.h should depend
+on the genheaders binary, rather than $(src)/include/classmap.h ?
+
+If you can reproduce, can you compare the ctimes with:
+
+  stat scripts/selinux/genheaders/genheaders security/selinux/flask.h
+
+in your object dir?
+
+Cheers,
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Jeremy
+
