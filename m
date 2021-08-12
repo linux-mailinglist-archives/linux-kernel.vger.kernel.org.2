@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126863E9DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BB13E9DE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 07:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234312AbhHLFXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 01:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        id S234333AbhHLFXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 01:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233763AbhHLFXt (ORCPT
+        with ESMTP id S233763AbhHLFXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:23:49 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F08C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:23:24 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so8948717pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:23:24 -0700 (PDT)
+        Thu, 12 Aug 2021 01:23:50 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F109BC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:23:25 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id a20so5831582plm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 22:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=qatbrqDegqmZ0+XHzQ+4gx0yhVxDkAp+fv5tGls4q3I=;
-        b=aimghCwh9vSL4Px6zMdUVf3mo1lXg/6Gd8Vw/3AKWsade5m36h3rThJDbDzsTIQbrV
-         NXjzGIJB/YohR2b4TjkNOlnPcvm+wPdfaV5G09FPfhDJ/Os7Tc9co90VBQRNulvXA/va
-         DmqKWzOPNY5uhMd/+8EuhISnJKpdPv433h8wzN95n06mxtO+R9QNPJeqMUe+e0aJpTnf
-         sK+FSkBwpB5aLmot0IA8RbDWBdEAau2/S0PPUneUn2O2HO2hvAPamZlGWvy6JLy4eS5K
-         iq4ARlrI7+5rfK3UJFIv5F3rFiPsoc4o4qUYO3/Y79opEdtoan+6yCb+WHURdelH0hp/
-         G15g==
+        bh=bQrl411Cthqt6pIHr/hant9kt/vOifGny5MEgIFUvls=;
+        b=T84Kc/z9q+vHcpHvLIkoCJUyMDs96A0EO2OHme82NSs3xI2gKCVBV7ic09BrGiaqfV
+         owlWmGhzA877enYL54ze9LYMseOpAmKkSjq4XSaPVjkeYnDkpVcEXyzJQSgFCSmRG0QB
+         rFbT5eYN2MY7iAJhl8WIfabRth4JLCwQP/isGczfWhSbeotdeO/NbZMrGXK4tLKA1WYf
+         1impM3Ypm18+EYY4p68OCq0GX17xBxmWHs7w1YVn8tzNKf72DygeCQX76T+9cckyjlGA
+         1yCIRLncfqyG6noT6hP4AOnIlN5O/2lhVJm6zGF1ij5VfMXV2pZcKqSSTxgj6jINhMoW
+         r+Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=qatbrqDegqmZ0+XHzQ+4gx0yhVxDkAp+fv5tGls4q3I=;
-        b=JDJ5Y1g+Z/bz+yOQnOBpTN0peUI9OAftyef0XEqbAGY6kG6/vbXNzJNNGiI98b8d0o
-         ZKS3RdS/Du1Z0CEgYvBec8i7glHg037SPBNgeFRDoiAsX9SSiXJ/3ySzh4iq0fVlBkcC
-         hoThO3DQPq3eRtGDQ77hmJO03uHvviKk1QI3eh3BEq6lSzOpJTiCmCX8n7QF4rbFLahK
-         qi/owbPRiCKgN9iKIo3ekUIdWsBjiZRHku0mUSLPSfiFFbtRZ1PmGWuP1rMfBAM5ilIX
-         KQ6ChNDj7kPjB2nFRuDINj6ZBOdyxxLyDChKhERpP/ff/9pXQwNukCVW5uHLv6Nw0n3Y
-         OeSg==
-X-Gm-Message-State: AOAM532SaSTqd+20LhFqMKp1gE+yj0GJFU3B7bB8FKm98cDAp1f7Vldt
-        kExJ7Bsssxyz2fjya1fcY6lwbA==
-X-Google-Smtp-Source: ABdhPJzzE9kdJxFxrdvD8weA+y1+kdPfk94xSZIF/eB3RohGlvu/88yy+uZu2owJ2D9IOE8Rx1ByeA==
-X-Received: by 2002:aa7:800e:0:b029:3a9:e527:c13 with SMTP id j14-20020aa7800e0000b02903a9e5270c13mr2417512pfi.42.1628745803836;
-        Wed, 11 Aug 2021 22:23:23 -0700 (PDT)
+        bh=bQrl411Cthqt6pIHr/hant9kt/vOifGny5MEgIFUvls=;
+        b=K/notOGCypn6DrVovj4PNowX9Z9i41nc2TUNE+dCEU2AWkur1xllPFV3FJcIOQHfUt
+         Ys+5fw0q1IsBr9WEgm0ketfo24vbDdZu/4vZzaKaAAkBkIXbgq66onaSLnbqDvzHstIN
+         KobMFE8dZv2BY3cSpRqWr35QjUZlrq5gJSgcXg9kfo/d/7E/8OITPVJqhwHOHTbiFPnq
+         ldfM4Kp2g6amWu1EyGPQWnNMNkCfl1bYM+SbBvX+wgjYzP4/kZ2OloGXg5YDmRXGrdKp
+         bsNA+riZLm8+Fl2mbugJ49YfnGH7T45E34lpf5sv3ckZ+xzl7J6VnT/uFATEQq5I44Kl
+         fhMw==
+X-Gm-Message-State: AOAM533UVMsys8Kco3IosM/UlLAczAZovSBjq46pvlvTZAnDHjUYWzlM
+        sq/ZbnxpMa7pDwvoY4pKBbEV8A==
+X-Google-Smtp-Source: ABdhPJx3HD960snankcmEtYZ/kpTb1TVul2ICB91HEVhe10nex0sfnUsxnhn3Cd2ImnxMgbSUIzsGA==
+X-Received: by 2002:a17:902:e8c4:b029:12d:1c9c:2e77 with SMTP id v4-20020a170902e8c4b029012d1c9c2e77mr2218679plg.48.1628745805478;
+        Wed, 11 Aug 2021 22:23:25 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y9sm1631753pgr.10.2021.08.11.22.23.22
+        by smtp.gmail.com with ESMTPSA id b9sm663873pfo.175.2021.08.11.22.23.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 22:23:23 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 22:23:23 -0700 (PDT)
-X-Google-Original-Date: Wed, 11 Aug 2021 18:42:22 PDT (-0700)
-Subject:     Re: [PATCH] riscv: kexec: do not add '-mno-relax' flag if compiler doesn't support it
-In-Reply-To: <20210722021715.127066-1-changbin.du@gmail.com>
+        Wed, 11 Aug 2021 22:23:24 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 22:23:24 -0700 (PDT)
+X-Google-Original-Date: Wed, 11 Aug 2021 21:47:49 PDT (-0700)
+Subject:     Re: [PATCH -fixes 3/3] riscv: Optimize kernel virtual address conversion macro
+In-Reply-To: <39a1fa85-1885-effe-1670-ec9cf34099f5@ghiti.fr>
 CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        changbin.du@gmail.com
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     changbin.du@gmail.com
-Message-ID: <mhng-d9c7d4ea-1842-41c9-90f0-a7324b883689@palmerdabbelt-glaptop>
+To:     alex@ghiti.fr
+Message-ID: <mhng-48d9e47f-a43b-4dac-808c-61078c2b77d9@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -65,35 +64,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 19:17:15 PDT (-0700), changbin.du@gmail.com wrote:
-> The RISC-V special option '-mno-relax' which to disable linker relaxations
-> is supported by GCC8+. For GCC7 and lower versions do not support this
-> option.
+On Sat, 07 Aug 2021 12:31:24 PDT (-0700), alex@ghiti.fr wrote:
+> Le 7/08/2021 à 18:36, Palmer Dabbelt a écrit :
+>> On Wed, 21 Jul 2021 00:59:37 PDT (-0700), alex@ghiti.fr wrote:
+>>> The current test in kernel_mapping_va_to_pa only applies when
+>>> CONFIG_XIP_KERNEL is set, so use IS_ENABLED to optimize this macro at
+>>> compile-time in standard kernels that do not require this test.
+>>>
+>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>>> ---
+>>>  arch/riscv/include/asm/page.h | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/page.h
+>>> b/arch/riscv/include/asm/page.h
+>>> index b0ca5058e7ae..10dc063868f6 100644
+>>> --- a/arch/riscv/include/asm/page.h
+>>> +++ b/arch/riscv/include/asm/page.h
+>>> @@ -123,7 +123,7 @@ extern phys_addr_t phys_ram_base;
+>>>  #define linear_mapping_va_to_pa(x)    ((unsigned long)(x) -
+>>> kernel_map.va_pa_offset)
+>>>  #define kernel_mapping_va_to_pa(y) ({                        \
+>>>      unsigned long _y = y;                            \
+>>> -    (_y < kernel_map.virt_addr + XIP_OFFSET) ?                    \
+>>> +    (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr +
+>>> XIP_OFFSET) ?    \
+>>>          ((unsigned long)(_y) - kernel_map.va_kernel_xip_pa_offset)
+>>> :        \
+>>>          ((unsigned long)(_y) - kernel_map.va_kernel_pa_offset -
+>>> XIP_OFFSET);    \
+>>>      })
+>>
+>> IIUC this isn't actually a fix?  The other two are, though, so they're
+>> on fixes.
+>
+> Indeed this is not a fix, this is symmetrical to what I have done in
+> patch 1 so that seemed natural to land in the same patchset. Let me know
+> if you want me to resend it on its own.
 
-I would not trust GCC 7 on RISC-V, that was a long time ago and there's 
-been a lot fixed since then.
-
->
-> Fixes: fba8a8674f ("RISC-V: Add kexec support")
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  arch/riscv/kernel/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index d3081e4d9600..3397ddac1a30 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -11,7 +11,7 @@ endif
->  CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
->
->  ifdef CONFIG_KEXEC
-> -AFLAGS_kexec_relocate.o := -mcmodel=medany -mno-relax
-> +AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
->  endif
->
->  extra-y += head.o
-
-This is on fixes.
+That's fine, it was just explicitly called out as a fix in the subject 
+line so I wanted to make sure I wasn't missing something.  This is on 
+for-next.
 
 Thanks!
