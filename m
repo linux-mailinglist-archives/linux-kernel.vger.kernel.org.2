@@ -2,244 +2,646 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443CB3EAA58
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FF03EAA60
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhHLSjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbhHLSjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:39:21 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E208C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:38:56 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r14-20020a0c8d0e0000b02902e82df307f0so3426532qvb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=vF0sL0fF9hkrbzST732Pf1ePejYOAKjxRopYSg2L7GI=;
-        b=ftmg5/kzgPCbtDKLvOXGUxAwgCyGmQz0FjyxE5ReqXet/Q3aA1zLsnxWPlB9wBt+pN
-         K36M/laOaTJCahnaYG+LNZAf7hopKfo/T+Woj0Lqtbqu8pUOV08Rgb1uTcba1TJr0CsM
-         pIaP6y6TJZPdNQC4tqbrFxivJPv7+MSF1WXFvYLcnk9PYVB16yaHqxW2lm2zhBpIOK1h
-         50U6BCKLsA18+Vj6lm9LmvdlfTSSlVnaBtXrWZqcWMnMAKMPMD32u7dtfSsqBLeKG8i0
-         jZ1p4P4C5/fUOMLRZN8BUZUng1f5AJdXFoKWvPMWGX9zD4QQPl1J08H98tOdXaO+4cWa
-         +tzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=vF0sL0fF9hkrbzST732Pf1ePejYOAKjxRopYSg2L7GI=;
-        b=dGm5sRRnUAw8fytVnNmenFwHp6XDUZ1IpSqgorSbcQJ4qT//kMAnF8KPfp8dnmTJW8
-         R/h43itbkMKVePQ2iLRpMOAxvAmkd5Uv+xwi0SFQn5bUmyFwWPFmS8rThcZKDx+GgMv+
-         603ucK0QgwFDgQeRIzpTT38pQewEhGlc8mZ4jF+K4SorkedmqP1Iz+Yd2CWdmYuuk/s9
-         YAAqDDm4oBzajlUo28kpVQUGalK4+8e+IOw1TZlTic6KMctNniP4EaWfCr5IZq1kGInK
-         BKhLRCbtopTcmOXaJ/ljdKo9y537N3PWsoffzUvIWdQ+WlxaFgH0DDq8jVzako0D6OFZ
-         c2LA==
-X-Gm-Message-State: AOAM530BiG82ZcZKfg+6gMagg8kj1b8nBAtv4Gy8fFhiTEqVOp9K4QA+
-        RI7JqXHzkVx+yGe3ruyCGghM4xfSBjk28H+b/m0=
-X-Google-Smtp-Source: ABdhPJwEMgPpcsPo8OyjMcTQ93JyDKLoZMXUBpm95iKTMbDwHElvwnHRCWgHnUP9ul8VWThpXNeyoIM91UlK6m0wk90=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:2e44:5ff0:453:5647])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:c441:: with SMTP id
- t1mr5209159qvi.25.1628793535171; Thu, 12 Aug 2021 11:38:55 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 11:38:48 -0700
-Message-Id: <20210812183848.1519994-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v2] x86/build: remove stale cc-option checks
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S235074AbhHLSlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:41:23 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:35346 "EHLO meesny.iki.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234921AbhHLSlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:41:19 -0400
+Received: from hillosipuli.retiisi.eu (dbd1vftgng281pd4yskly-3.rev.dnainternet.fi [IPv6:2001:14ba:8eb:1240:ab2d:b956:f00:7a12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 70B002004E;
+        Thu, 12 Aug 2021 21:40:45 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1628793645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cTvJN8eDupZQcQkX/kIZrQ0vsfDMIP+YqKHvLpEVYoM=;
+        b=BVvFqbcX/OBLA/KPeKR6y8VVwMflEx9HvZgxjxvAlTr+NAqFVeT3AkAPyz4zUZALu28qqa
+        zSaS5pu9uHdSkLCi/lOxlZNcNDlLi++kI7DaWktVy7J6SPiCF9C6o69lgTGp/ljJFVP10M
+        asFIdE/jT7Chjtygy6qsd4uTahPu1SM=
+Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id A9B12634C87;
+        Thu, 12 Aug 2021 21:38:54 +0300 (EEST)
+Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
+        by valkosipuli.localdomain with esmtp (Exim 4.92)
+        (envelope-from <sakari.ailus@iki.fi>)
+        id 1mEFd3-0004S7-BC; Thu, 12 Aug 2021 21:40:33 +0300
+Date:   Thu, 12 Aug 2021 21:40:33 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] media: staging: max96712: Add basic support for MAX96712
+ GMSL2 deserializer
+Message-ID: <20210812184033.GV3@valkosipuli.retiisi.eu>
+References: <20210413171815.2513216-1-niklas.soderlund+renesas@ragnatech.se>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413171815.2513216-1-niklas.soderlund+renesas@ragnatech.se>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1628793645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cTvJN8eDupZQcQkX/kIZrQ0vsfDMIP+YqKHvLpEVYoM=;
+        b=sr3Sm2+h6rRpENI+e0m8i0DN8sXBlXgJM6v2bIFYGRD82D1Ra4M1ME/vrczwOqdCShac3E
+        KzOg4+NlSY1sbgkc59vCJryW8HFz2wj8SmTPv8wC/lDoyM6inC5jsOO8Sr7jMd8Zn3nX7n
+        bjYD8+eqTSh4Laa05M3fELu6YNLexGY=
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1628793645; a=rsa-sha256; cv=none;
+        b=u1QsBIefECvM0iP7Lt2AAaeITQ9Av6mBUuT5mUoKVOcfDYicRC5sC7UiP85NSCG7Ci0j7Z
+        iyWKQ6iEdxXiaaZfjVingjdXX4+ctswzx3EJ/TcXPoO3AKV44/ep8LHHX86buevVKoEzHJ
+        BdgzuvBTBQr+EY4wVXrFltxkV5HJ5l8=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc-option, __cc-option, cc-option-yn, and cc-disable-warning all invoke
-the compiler during build time, and can slow down the build when these
-checks become stale for our supported compilers, whose minimally
-supported versions increases over time. See
-Documentation/process/changes.rst for the current supported minimal
-versions (GCC 4.9+, clang 10.0.1+). Compiler version support for these
-flags may be verified on godbolt.org.
+Hejssan Niklas,
 
-The following flags are supported by all supported versions of GCC and
-Clang. Remove their cc-option, __cc-option, and cc-option-yn tests.
-* -Wno-address-of-packed-member
-* -mno-avx
-* -m32
-* -mno-80387
-* -march=k8
-* -march=nocona
-* -march=core2
-* -march=atom
-* -mtune=generic
-* -mfentry
+Tack för den här lappan.
 
--mpreferred-stack-boundary= is specific to GCC, while
--mstack-alignment= is specific to Clang. Rather than test for this three
-times via cc-option and __cc-option, rely on CONFIG_CC_IS_* from
-Kconfig.
+On Tue, Apr 13, 2021 at 07:18:15PM +0200, Niklas Söderlund wrote:
+> Add basic support for Maxim MAX96712 quad GMSL2 deserializers. The
+> driver is capable of powering on the device and configuring the MIPI
+> CSI-2 bus in a DPHY 4-lane configuration as well as operating the
+> internal VTG (Video Timing Generator) and VPG (Video Pattern Generator).
+> 
+> Using these features the driver is able to act as a 1080p @ 30 fps V4L2
+> video source. Producing either a checkerboard or gradient pattern on the
+> CSI-2 bus, selectable thru a V4L2 control.
+> 
+> While the driver is useful as-is and have been used to prove the correct
+> operation of the MAX96712 itself and "downstream" devices using the
+> MAX96712 as a video source there are a lot of features missing. Most
+> notably the ability to operate the GMSL bus.
+> 
+> Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> ---
+>  MAINTAINERS                               |   6 +
+>  drivers/staging/media/Kconfig             |   2 +
+>  drivers/staging/media/Makefile            |   1 +
+>  drivers/staging/media/max96712/Kconfig    |  13 +
+>  drivers/staging/media/max96712/Makefile   |   2 +
+>  drivers/staging/media/max96712/max96712.c | 429 ++++++++++++++++++++++
+>  6 files changed, 453 insertions(+)
+>  create mode 100644 drivers/staging/media/max96712/Kconfig
+>  create mode 100644 drivers/staging/media/max96712/Makefile
+>  create mode 100644 drivers/staging/media/max96712/max96712.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cb727179826b1996..b265a7ba60e709f3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10831,6 +10831,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+>  F:	drivers/media/i2c/max9286.c
+>  
+> +MAX96712 QUAD GMSL2 DESERIALIZER DRIVER
+> +M:	Niklas Söderlund <niklas.soderlund@ragnatech.se>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/staging/media/max96712/max96712.c
+> +
+>  MAX9860 MONO AUDIO VOICE CODEC DRIVER
+>  M:	Peter Rosin <peda@axentia.se>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
+> index ca59986b20f8a898..f104da4b5a358ffe 100644
+> --- a/drivers/staging/media/Kconfig
+> +++ b/drivers/staging/media/Kconfig
+> @@ -26,6 +26,8 @@ source "drivers/staging/media/hantro/Kconfig"
+>  
+>  source "drivers/staging/media/imx/Kconfig"
+>  
+> +source "drivers/staging/media/max96712/Kconfig"
+> +
+>  source "drivers/staging/media/meson/vdec/Kconfig"
+>  
+>  source "drivers/staging/media/omap4iss/Kconfig"
+> diff --git a/drivers/staging/media/Makefile b/drivers/staging/media/Makefile
+> index 716929a1a313000f..37e0b1f85b5f7286 100644
+> --- a/drivers/staging/media/Makefile
+> +++ b/drivers/staging/media/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_INTEL_ATOMISP)     += atomisp/
+>  obj-$(CONFIG_VIDEO_IMX_MEDIA)	+= imx/
+> +obj-$(CONFIG_VIDEO_MAX96712)	+= max96712/
+>  obj-$(CONFIG_VIDEO_MESON_VDEC)	+= meson/vdec/
+>  obj-$(CONFIG_VIDEO_OMAP4)	+= omap4iss/
+>  obj-$(CONFIG_VIDEO_ROCKCHIP_VDEC)	+= rkvdec/
+> diff --git a/drivers/staging/media/max96712/Kconfig b/drivers/staging/media/max96712/Kconfig
+> new file mode 100644
+> index 0000000000000000..258d47644cbd8459
+> --- /dev/null
+> +++ b/drivers/staging/media/max96712/Kconfig
+> @@ -0,0 +1,13 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +config VIDEO_MAX96712
+> +	tristate "Maxim MAX96712 Quad GMSL2 Deserializer support"
+> +	depends on I2C
+> +	depends on OF_GPIO
+> +	select V4L2_FWNODE
+> +	select VIDEO_V4L2_SUBDEV_API
+> +	select MEDIA_CONTROLLER
+> +	help
+> +	  This driver supports the Maxim MAX96712 Quad GMSL2 Deserializer.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called max96712.
+> diff --git a/drivers/staging/media/max96712/Makefile b/drivers/staging/media/max96712/Makefile
+> new file mode 100644
+> index 0000000000000000..70c1974ce3f05fe4
+> --- /dev/null
+> +++ b/drivers/staging/media/max96712/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_VIDEO_MAX96712) += max96712.o
+> diff --git a/drivers/staging/media/max96712/max96712.c b/drivers/staging/media/max96712/max96712.c
+> new file mode 100644
+> index 0000000000000000..6a993e8ee9259fda
+> --- /dev/null
+> +++ b/drivers/staging/media/max96712/max96712.c
+> @@ -0,0 +1,429 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Maxim MAX9286 Quad GMSL2 Deserializer Driver
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corporation
+> + * Copyright (C) 2021 Niklas Söderlund
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-subdev.h>
+> +
+> +#define MAX96712_ID 0x20
+> +
+> +#define MAX96712_DPLL_FREQ 1000
+> +
+> +enum max96712_pattern {
+> +	MAX96712_PATTERN_CHECKERBOARD = 0,
+> +	MAX96712_PATTERN_GRADIENT,
+> +};
+> +
+> +struct max96712_priv {
+> +	struct i2c_client *client;
+> +	struct regmap *regmap;
+> +	struct gpio_desc *gpiod_pwdn;
+> +
+> +	struct v4l2_fwnode_bus_mipi_csi2 mipi;
+> +
+> +	struct v4l2_subdev sd;
+> +	struct v4l2_ctrl_handler ctrl_handler;
+> +	struct media_pad pads[1];
+> +
+> +	enum max96712_pattern pattern;
+> +};
+> +
+> +static int max96712_read(struct max96712_priv *priv, int reg)
+> +{
+> +	int ret, val;
+> +
+> +	ret = regmap_read(priv->regmap, reg, &val);
+> +	if (ret) {
+> +		dev_err(&priv->client->dev, "read 0x%04x failed\n", reg);
+> +		return ret;
+> +	}
+> +
+> +	return val;
+> +}
+> +
+> +static int max96712_write(struct max96712_priv *priv, unsigned int reg, u8 val)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_write(priv->regmap, reg, val);
+> +	if (ret)
+> +		dev_err(&priv->client->dev, "write 0x%04x failed\n", reg);
+> +
+> +	return ret;
+> +}
+> +
+> +static int max96712_update_bits(struct max96712_priv *priv, unsigned int reg,
+> +				u8 mask, u8 val)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(priv->regmap, reg, mask, val);
+> +	if (ret)
+> +		dev_err(&priv->client->dev, "update 0x%04x failed\n", reg);
+> +
+> +	return ret;
+> +}
+> +
+> +static int max96712_write_bulk(struct max96712_priv *priv, unsigned int reg,
+> +			       const void *val, size_t val_count)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_bulk_write(priv->regmap, reg, val, val_count);
+> +	if (ret)
+> +		dev_err(&priv->client->dev, "bulk write 0x%04x failed\n", reg);
+> +
+> +	return ret;
+> +}
+> +
+> +static int max96712_write_bulk_value(struct max96712_priv *priv,
+> +				     unsigned int reg, unsigned int val,
+> +				     size_t val_count)
+> +{
+> +	unsigned int i;
+> +	u8 values[4];
+> +
+> +	for (i = 1; i <= val_count; i++)
+> +		values[i - 1] = (val >> ((val_count - i) * 8)) & 0xff;
+> +
+> +	return max96712_write_bulk(priv, reg, &values, val_count);
+> +}
+> +
+> +static void max96712_reset(struct max96712_priv *priv)
+> +{
+> +	max96712_update_bits(priv, 0x13, 0x40, 0x40);
+> +	mdelay(10);
 
-GCC did not support values less than 4 for -mpreferred-stack-boundary=
-until GCC 7+. Change the cc-option test to check for a value of 2,
-rather than 4.
+Why not msleep()?
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1436
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v1 -> v2:
-* Change -mpreferred-stack-boundary= cc-option test to check 2 rather
-  than 4, noting that in the commit message.
-* Rebase on tip/master.
-* Carry forward Nathan's RB tag.
+> +}
+> +
+> +static void max96712_mipi_enable(struct max96712_priv *priv, bool enable)
+> +{
+> +	if (enable) {
+> +		max96712_update_bits(priv, 0x40b, 0x02, 0x02);
+> +		max96712_update_bits(priv, 0x8a0, 0x80, 0x80);
+> +	} else {
+> +		max96712_update_bits(priv, 0x8a0, 0x80, 0x00);
+> +		max96712_update_bits(priv, 0x40b, 0x02, 0x00);
+> +	}
+> +}
+> +
+> +static void max96712_mipi_configure(struct max96712_priv *priv)
+> +{
+> +	unsigned int i;
+> +	u8 phy5 = 0;
+> +
+> +	max96712_mipi_enable(priv, false);
+> +
+> +	/* Select 2x4 mode. */
+> +	max96712_write(priv, 0x8a0, 0x04);
+> +
+> +	/* Configure a 4-lane DPHY using PHY0 and PHY1. */
+> +	/* TODO: Add support for 2-lane and 1-lane configurations. */
+> +	/* TODO: Add support CPHY mode. */
+> +	max96712_write(priv, 0x94a, 0xc0);
+> +
+> +	/* Configure lane mapping for PHY0 and PHY1. */
+> +	/* TODO: Add support for lane swapping. */
+> +	max96712_write(priv, 0x8a3, 0xe4);
+> +
+> +	/* Configure lane polarity for PHY0 and PHY1. */
+> +	for (i = 0; i < priv->mipi.num_data_lanes + 1; i++)
+> +		if (priv->mipi.lane_polarities[i])
+> +			phy5 |= BIT(i == 0 ? 5 : i < 3 ? i - 1 : i);
+> +	max96712_write(priv, 0x8a5, phy5);
+> +
+> +	/* Set link frequency for PHY0 and PHY1. */
+> +	max96712_update_bits(priv, 0x415, 0x3f,
+> +			     ((MAX96712_DPLL_FREQ / 100) & 0x1f) | BIT(5));
+> +	max96712_update_bits(priv, 0x418, 0x3f,
+> +			     ((MAX96712_DPLL_FREQ / 100) & 0x1f) | BIT(5));
+> +
+> +	/* Enable PHY0 and PHY1 */
+> +	max96712_update_bits(priv, 0x8a2, 0xf0, 0x30);
+> +}
+> +
+> +static void max96712_pattern_enable(struct max96712_priv *priv, bool enable)
+> +{
+> +	const u32 h_active = 1920;
+> +	const u32 h_fp = 88;
+> +	const u32 h_sw = 44;
+> +	const u32 h_bp = 148;
+> +	const u32 h_tot = h_active + h_fp + h_sw + h_bp;
+> +
+> +	const u32 v_active = 1080;
+> +	const u32 v_fp = 4;
+> +	const u32 v_sw = 5;
+> +	const u32 v_bp = 36;
+> +	const u32 v_tot = v_active + v_fp + v_sw + v_bp;
+> +
+> +	if (!enable) {
+> +		max96712_write(priv, 0x1051, 0x00);
+> +		return;
+> +	}
+> +
+> +	/* PCLK 75MHz. */
+> +	max96712_write(priv, 0x0009, 0x01);
+> +
+> +	/* Configure Video Timing Generator for 1920x1080 @ 30 fps. */
+> +	max96712_write_bulk_value(priv, 0x1052, 0, 3);
+> +	max96712_write_bulk_value(priv, 0x1055, v_sw * h_tot, 3);
+> +	max96712_write_bulk_value(priv, 0x1058,
+> +				  (v_active + v_fp + + v_bp) * h_tot, 3);
+> +	max96712_write_bulk_value(priv, 0x105b, 0, 3);
+> +	max96712_write_bulk_value(priv, 0x105e, h_sw, 2);
+> +	max96712_write_bulk_value(priv, 0x1060, h_active + h_fp + h_bp, 2);
+> +	max96712_write_bulk_value(priv, 0x1062, v_tot, 2);
+> +	max96712_write_bulk_value(priv, 0x1064,
+> +				  h_tot * (v_sw + v_bp) + (h_sw + h_bp), 3);
+> +	max96712_write_bulk_value(priv, 0x1067, h_active, 2);
+> +	max96712_write_bulk_value(priv, 0x1069, h_fp + h_sw + h_bp, 2);
+> +	max96712_write_bulk_value(priv, 0x106b, v_active, 2);
+> +
+> +	/* Generate VS, HS and DE in free-running mode. */
+> +	max96712_write(priv, 0x1050, 0xfb);
+> +
+> +	/* Configure Video Pattern Generator. */
+> +	if (priv->pattern == MAX96712_PATTERN_CHECKERBOARD) {
+> +		/* Set checkerboard pattern size. */
+> +		max96712_write(priv, 0x1074, 0x3c);
+> +		max96712_write(priv, 0x1075, 0x3c);
+> +		max96712_write(priv, 0x1076, 0x3c);
+> +
+> +		/* Set checkerboard pattern colors. */
+> +		max96712_write_bulk_value(priv, 0x106e, 0xfecc00, 3);
+> +		max96712_write_bulk_value(priv, 0x1071, 0x006aa7, 3);
+> +
+> +		/* Generate checkerboard pattern. */
+> +		max96712_write(priv, 0x1051, 0x10);
+> +	} else {
+> +		/* Set gradient increment. */
+> +		max96712_write(priv, 0x106d, 0x10);
+> +
+> +		/* Generate gradient pattern. */
+> +		max96712_write(priv, 0x1051, 0x20);
+> +	}
+> +}
+> +
+> +static int max96712_s_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct max96712_priv *priv = v4l2_get_subdevdata(sd);
+> +
+> +	if (enable) {
+> +		max96712_pattern_enable(priv, true);
+> +		max96712_mipi_enable(priv, true);
+> +	} else {
+> +		max96712_mipi_enable(priv, false);
+> +		max96712_pattern_enable(priv, false);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_video_ops max96712_video_ops = {
+> +	.s_stream = max96712_s_stream,
+> +};
+> +
+> +static int max96712_get_pad_format(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_pad_config *cfg,
+> +				   struct v4l2_subdev_format *format)
+> +{
+> +	format->format.width = 1920;
+> +	format->format.height = 1080;
+> +	format->format.code = MEDIA_BUS_FMT_RGB888_1X24;
+> +	format->format.field = V4L2_FIELD_NONE;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_pad_ops max96712_pad_ops = {
+> +	.get_fmt = max96712_get_pad_format,
 
- arch/x86/Makefile | 53 +++++++++++++++++------------------------------
- 1 file changed, 19 insertions(+), 34 deletions(-)
+Please use the same for .set_fmt.
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 307fd0000a83..0d33ba013683 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -14,10 +14,13 @@ endif
- 
- # For gcc stack alignment is specified with -mpreferred-stack-boundary,
- # clang has the option -mstack-alignment for that purpose.
--ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
-+ifdef CONFIG_CC_IS_GCC
-+ifneq ($(call cc-option, -mpreferred-stack-boundary=2),)
-       cc_stack_align4 := -mpreferred-stack-boundary=2
-       cc_stack_align8 := -mpreferred-stack-boundary=3
--else ifneq ($(call cc-option, -mstack-alignment=16),)
-+endif
-+endif
-+ifdef CONFIG_CC_IS_CLANG
-       cc_stack_align4 := -mstack-alignment=4
-       cc_stack_align8 := -mstack-alignment=8
- endif
-@@ -31,8 +34,8 @@ REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
- 
- REALMODE_CFLAGS += -ffreestanding
- REALMODE_CFLAGS += -fno-stack-protector
--REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
--REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-+REALMODE_CFLAGS += -Wno-address-of-packed-member
-+REALMODE_CFLAGS += $(cc_stack_align4)
- REALMODE_CFLAGS += $(CLANG_FLAGS)
- export REALMODE_CFLAGS
- 
-@@ -48,8 +51,7 @@ export BITS
- #
- #    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
- #
--KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
--KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
-+KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
- 
- # Intel CET isn't enabled in the kernel
- KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-@@ -59,9 +61,8 @@ ifeq ($(CONFIG_X86_32),y)
-         UTS_MACHINE := i386
-         CHECKFLAGS += -D__i386__
- 
--        biarch := $(call cc-option,-m32)
--        KBUILD_AFLAGS += $(biarch)
--        KBUILD_CFLAGS += $(biarch)
-+        KBUILD_AFLAGS += -m32
-+        KBUILD_CFLAGS += -m32
- 
-         KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
- 
-@@ -72,7 +73,7 @@ ifeq ($(CONFIG_X86_32),y)
-         # Align the stack to the register width instead of using the default
-         # alignment of 16 bytes. This reduces stack usage and the number of
-         # alignment instructions.
--        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
-+        KBUILD_CFLAGS += $(cc_stack_align4)
- 
-         # CPU-specific tuning. Anything which can be shared with UML should go here.
-         include arch/x86/Makefile_32.cpu
-@@ -93,7 +94,6 @@ else
-         UTS_MACHINE := x86_64
-         CHECKFLAGS += -D__x86_64__
- 
--        biarch := -m64
-         KBUILD_AFLAGS += -m64
-         KBUILD_CFLAGS += -m64
- 
-@@ -104,7 +104,7 @@ else
-         KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
- 
-         # Don't autogenerate traditional x87 instructions
--        KBUILD_CFLAGS += $(call cc-option,-mno-80387)
-+        KBUILD_CFLAGS += -mno-80387
-         KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
- 
-         # By default gcc and clang use a stack alignment of 16 bytes for x86.
-@@ -114,20 +114,17 @@ else
-         # default alignment which keep the stack *mis*aligned.
-         # Furthermore an alignment to the register width reduces stack usage
-         # and the number of alignment instructions.
--        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align8))
-+        KBUILD_CFLAGS += $(cc_stack_align8)
- 
- 	# Use -mskip-rax-setup if supported.
- 	KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
- 
-         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
--        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
--        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
--
--        cflags-$(CONFIG_MCORE2) += \
--                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
--	cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
--		$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
--        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-+        cflags-$(CONFIG_MK8)		+= -march=k8
-+        cflags-$(CONFIG_MPSC)		+= -march=nocona
-+        cflags-$(CONFIG_MCORE2)		+= -march=core2
-+        cflags-$(CONFIG_MATOM)		+= -march=atom
-+        cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
-         KBUILD_CFLAGS += $(cflags-y)
- 
-         KBUILD_CFLAGS += -mno-red-zone
-@@ -158,18 +155,6 @@ export CONFIG_X86_X32_ABI
- ifdef CONFIG_FUNCTION_GRAPH_TRACER
-   ifndef CONFIG_HAVE_FENTRY
- 	ACCUMULATE_OUTGOING_ARGS := 1
--  else
--    ifeq ($(call cc-option-yn, -mfentry), n)
--	ACCUMULATE_OUTGOING_ARGS := 1
--
--	# GCC ignores '-maccumulate-outgoing-args' when used with '-Os'.
--	# If '-Os' is enabled, disable it and print a warning.
--        ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
--          undefine CONFIG_CC_OPTIMIZE_FOR_SIZE
--          $(warning Disabling CONFIG_CC_OPTIMIZE_FOR_SIZE.  Your compiler does not have -mfentry so you cannot optimize for size with CONFIG_FUNCTION_GRAPH_TRACER.)
--        endif
--
--    endif
-   endif
- endif
- 
-@@ -193,7 +178,7 @@ ifdef CONFIG_RETPOLINE
-   # only been fixed starting from gcc stable version 8.4.0 and
-   # onwards, but not for older ones. See gcc bug #86952.
-   ifndef CONFIG_CC_IS_CLANG
--    KBUILD_CFLAGS += $(call cc-option,-fno-jump-tables)
-+    KBUILD_CFLAGS += -fno-jump-tables
-   endif
- endif
- 
+> +};
+> +
+> +static struct v4l2_subdev_ops max96712_subdev_ops = {
+> +	.video = &max96712_video_ops,
+> +	.pad = &max96712_pad_ops,
+> +};
+> +
+> +static const char * const max96712_test_pattern[] = {
+> +	"Checkerboard",
+> +	"Gradient",
+> +};
+> +
+> +static int max96712_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct max96712_priv *priv =
+> +		container_of(ctrl->handler, struct max96712_priv, ctrl_handler);
+> +
+> +	switch (ctrl->id) {
+> +	case V4L2_CID_TEST_PATTERN:
+> +		priv->pattern = ctrl->val ?
+> +			MAX96712_PATTERN_GRADIENT :
+> +			MAX96712_PATTERN_CHECKERBOARD;
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops max96712_ctrl_ops = {
+> +	.s_ctrl = max96712_s_ctrl,
+> +};
+> +
+> +static int max96712_v4l2_register(struct max96712_priv *priv)
+> +{
+> +	long pixel_rate;
+> +	int ret;
+> +
+> +	v4l2_i2c_subdev_init(&priv->sd, priv->client, &max96712_subdev_ops);
+> +	priv->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +	priv->sd.entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
+> +
+> +	v4l2_ctrl_handler_init(&priv->ctrl_handler, 2);
 
-base-commit: c5ee8ababa9be56241c949d5c3b9e29a1d0300d6
+You'll need to free the control handler below on error paths.
+
+> +
+> +	pixel_rate = MAX96712_DPLL_FREQ / priv->mipi.num_data_lanes * 1000000;
+
+What does this value signify?
+
+The pixel rate control has been re-purposed as follows:
+
+``V4L2_CID_PIXEL_RATE (64-bit integer)``
+    Pixel sampling rate in the device's pixel array. This control is
+    read-only and its unit is pixels / second.
+
+    Some devices use horizontal and vertical balanking to configure the frame
+    rate. The frame rate can be calculated from the pixel rate, analogue crop
+    rectangle as well as horizontal and vertical blanking. The pixel rate
+    control may be present in a different sub-device than the blanking controls
+    and the analogue crop rectangle configuration.
+
+    The configuration of the frame rate is performed by selecting the desired
+    horizontal and vertical blanking. The unit of this control is Hz.
+
+Could you use the LINK_FREQ control instead?
+
+> +	v4l2_ctrl_new_std(&priv->ctrl_handler, NULL, V4L2_CID_PIXEL_RATE,
+> +			  pixel_rate, pixel_rate, 1, pixel_rate);
+> +
+> +	v4l2_ctrl_new_std_menu_items(&priv->ctrl_handler, &max96712_ctrl_ops,
+> +				     V4L2_CID_TEST_PATTERN,
+> +				     ARRAY_SIZE(max96712_test_pattern) - 1,
+> +				     0, 0, max96712_test_pattern);
+> +
+> +	priv->sd.ctrl_handler = &priv->ctrl_handler;
+> +	ret = priv->ctrl_handler.error;
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->pads[0].flags = MEDIA_PAD_FL_SOURCE;
+> +	ret = media_entity_pads_init(&priv->sd.entity, 1, priv->pads);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v4l2_set_subdevdata(&priv->sd, priv);
+> +
+> +	ret = v4l2_async_register_subdev(&priv->sd);
+> +	if (ret < 0)
+> +		dev_err(&priv->client->dev, "Unable to register subdevice\n");
+> +
+> +	return ret;
+> +}
+> +
+> +static int max96712_parse_dt(struct max96712_priv *priv)
+> +{
+> +	struct fwnode_handle *ep;
+> +	struct v4l2_fwnode_endpoint v4l2_ep = {
+> +		.bus_type = V4L2_MBUS_CSI2_DPHY
+> +	};
+> +	int ret;
+> +
+> +	ep = fwnode_graph_get_endpoint_by_id(dev_fwnode(&priv->client->dev), 4,
+> +					     0, 0);
+> +	if (!ep) {
+> +		dev_err(&priv->client->dev, "Not connected to subdevice\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = v4l2_fwnode_endpoint_parse(ep, &v4l2_ep);
+> +	fwnode_handle_put(ep);
+> +	if (ret) {
+> +		dev_err(&priv->client->dev, "Could not parse v4l2 endpoint\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (v4l2_ep.bus.mipi_csi2.num_data_lanes != 4) {
+> +		dev_err(&priv->client->dev, "Only 4 data lanes supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	priv->mipi = v4l2_ep.bus.mipi_csi2;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct regmap_config max96712_i2c_regmap = {
+> +	.reg_bits = 16,
+> +	.val_bits = 8,
+> +	.max_register = 0x1f00,
+> +};
+> +
+> +static int max96712_probe(struct i2c_client *client)
+> +{
+> +	struct max96712_priv *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->client = client;
+> +	i2c_set_clientdata(client, priv);
+> +
+> +	priv->regmap = devm_regmap_init_i2c(client, &max96712_i2c_regmap);
+> +	if (IS_ERR(priv->regmap))
+> +		return PTR_ERR(priv->regmap);
+> +
+> +	priv->gpiod_pwdn = devm_gpiod_get_optional(&client->dev, "enable",
+> +						   GPIOD_OUT_HIGH);
+> +	if (IS_ERR(priv->gpiod_pwdn))
+> +		return PTR_ERR(priv->gpiod_pwdn);
+> +
+> +	gpiod_set_consumer_name(priv->gpiod_pwdn, "max96712-pwdn");
+> +	gpiod_set_value_cansleep(priv->gpiod_pwdn, 1);
+> +
+> +	if (priv->gpiod_pwdn)
+> +		usleep_range(4000, 5000);
+> +
+> +	if (max96712_read(priv, 0x4a) != MAX96712_ID)
+> +		return -ENODEV;
+> +
+> +	max96712_reset(priv);
+> +
+> +	ret = max96712_parse_dt(priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	max96712_mipi_configure(priv);
+> +
+> +	return max96712_v4l2_register(priv);
+> +}
+> +
+> +static int max96712_remove(struct i2c_client *client)
+> +{
+> +	struct max96712_priv *priv = i2c_get_clientdata(client);
+> +
+> +	v4l2_async_unregister_subdev(&priv->sd);
+> +
+> +	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id max96712_of_table[] = {
+> +	{ .compatible = "maxim,max96712" },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, max96712_of_table);
+> +
+> +static struct i2c_driver max96712_i2c_driver = {
+> +	.driver	= {
+> +		.name = "max96712",
+> +		.of_match_table	= of_match_ptr(max96712_of_table),
+> +	},
+> +	.probe_new = max96712_probe,
+> +	.remove = max96712_remove,
+> +};
+> +
+> +module_i2c_driver(max96712_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("Maxim MAX96712 Quad GMSL2 Deserializer Driver");
+> +MODULE_AUTHOR("Niklas Söderlund <niklas.soderlund@ragnatech.se>");
+> +MODULE_LICENSE("GPL");
+
 -- 
-2.33.0.rc1.237.g0d66db33f3-goog
+Trevliga hälsningar,
 
+Sakari Ailus
