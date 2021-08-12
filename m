@@ -2,155 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5113E9BBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987B63E9BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhHLA4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 20:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
+        id S233168AbhHLBCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:02:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:40112 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233085AbhHLA4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:56:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 592A46104F;
-        Thu, 12 Aug 2021 00:55:49 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mDz0e-003oyX-3I; Wed, 11 Aug 2021 20:55:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 2/2] libtracefs: Have end event variables not be the end event field name
-Date:   Wed, 11 Aug 2021 20:55:46 -0400
-Message-Id: <20210812005546.910833-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210812005546.910833-1-rostedt@goodmis.org>
-References: <20210812005546.910833-1-rostedt@goodmis.org>
+        id S229724AbhHLBCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 21:02:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="237280297"
+X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
+   d="scan'208";a="237280297"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 18:01:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,314,1620716400"; 
+   d="scan'208";a="673264698"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2021 18:01:52 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mDz6V-000MFe-JV; Thu, 12 Aug 2021 01:01:51 +0000
+Date:   Thu, 12 Aug 2021 09:00:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:smp/core] BUILD SUCCESS
+ 49b3bd213a9f3d685784913c255c6a2cb3d1fcce
+Message-ID: <611472c8.2YBEHOnEHTTZ0Fi5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
+branch HEAD: 49b3bd213a9f3d685784913c255c6a2cb3d1fcce  smp: Fix all kernel-doc warnings
 
-Currently we have:
+elapsed time: 724m
 
- # sqlhist -n wakeup 'select end.next_pid, (end.TIMESTAMP - start.TIMESTAMP) as lat
-   from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+configs tested: 142
+configs skipped: 3
 
-produces:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
- echo 'wakeup s32 next_pid; u64 lat;' > /sys/kernel/tracing/synthetic_events
- echo 'hist:keys=pid:__arg_18871_1=common_timestamp' > /sys/kernel/tracing/events/sched/sched_waking/trigger
- echo 'hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmatch(sched.sched_waking).trace(wakeup,$next_pid,$lat)' > /sys/kernel/tracing/events/sched/sched_switch/trigger
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210810
+s390                       zfcpdump_defconfig
+sh                                  defconfig
+xtensa                generic_kc705_defconfig
+powerpc                     tqm8555_defconfig
+sh                              ul2_defconfig
+sh                               j2_defconfig
+mips                          rb532_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                      acadia_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                      makalu_defconfig
+arm                          imote2_defconfig
+arm                       omap2plus_defconfig
+sh                          landisk_defconfig
+m68k                        m5307c3_defconfig
+alpha                            allyesconfig
+m68k                             alldefconfig
+powerpc                    adder875_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7712_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     pseries_defconfig
+m68k                       m5208evb_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                   lite5200b_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                         cobalt_defconfig
+arc                    vdk_hs38_smp_defconfig
+sparc64                             defconfig
+x86_64                            allnoconfig
+powerpc                   currituck_defconfig
+arm                       aspeed_g4_defconfig
+mips                         bigsur_defconfig
+sh                          sdk7786_defconfig
+sh                        dreamcast_defconfig
+sh                            hp6xx_defconfig
+arc                     nsimosci_hs_defconfig
+xtensa                           allyesconfig
+powerpc                      walnut_defconfig
+arm                           h3600_defconfig
+arm                          lpd270_defconfig
+mips                        nlm_xlp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210810
+i386                 randconfig-a002-20210810
+i386                 randconfig-a001-20210810
+i386                 randconfig-a003-20210810
+i386                 randconfig-a006-20210810
+i386                 randconfig-a005-20210810
+i386                 randconfig-a004-20210811
+i386                 randconfig-a001-20210811
+i386                 randconfig-a002-20210811
+i386                 randconfig-a003-20210811
+i386                 randconfig-a006-20210811
+i386                 randconfig-a005-20210811
+x86_64               randconfig-a004-20210810
+x86_64               randconfig-a006-20210810
+x86_64               randconfig-a003-20210810
+x86_64               randconfig-a005-20210810
+x86_64               randconfig-a002-20210810
+x86_64               randconfig-a001-20210810
+i386                 randconfig-a011-20210811
+i386                 randconfig-a015-20210811
+i386                 randconfig-a014-20210811
+i386                 randconfig-a013-20210811
+i386                 randconfig-a016-20210811
+i386                 randconfig-a012-20210811
+i386                 randconfig-a011-20210810
+i386                 randconfig-a015-20210810
+i386                 randconfig-a013-20210810
+i386                 randconfig-a014-20210810
+i386                 randconfig-a016-20210810
+i386                 randconfig-a012-20210810
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-The issue is that we have "next_pid=next_pid" where if we want to change
-the above to use the "save" action:
+clang tested configs:
+x86_64               randconfig-c001-20210811
+x86_64               randconfig-c001-20210810
+x86_64               randconfig-a013-20210810
+x86_64               randconfig-a011-20210810
+x86_64               randconfig-a012-20210810
+x86_64               randconfig-a016-20210810
+x86_64               randconfig-a014-20210810
+x86_64               randconfig-a015-20210810
+x86_64               randconfig-a016-20210809
+x86_64               randconfig-a012-20210809
+x86_64               randconfig-a013-20210809
+x86_64               randconfig-a011-20210809
+x86_64               randconfig-a014-20210809
+x86_64               randconfig-a015-20210809
+x86_64               randconfig-a004-20210811
+x86_64               randconfig-a006-20210811
+x86_64               randconfig-a003-20210811
+x86_64               randconfig-a002-20210811
+x86_64               randconfig-a005-20210811
+x86_64               randconfig-a001-20210811
 
- hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
-
-It fails with:
-
-   hist:sched:sched_switch: error: Couldn't find field
-    Command: hist:keys=next_pid:next_pid=next_pid,lat=common_timestamp-$__arg_18871_1:onmax($lat).save(next_pid)
-                                                                       ^
-
-But by having the end vars be unique, then the above "save" works.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-hist.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 8783ef4364bd..1e6bde7880f2 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -851,16 +851,19 @@ struct tracefs_synth *tracefs_synth_init(struct tep_handle *tep,
- 
- static int add_synth_fields(struct tracefs_synth *synth,
- 			    const struct tep_format_field *field,
--			    const char *name)
-+			    const char *name, const char *var)
- {
- 	char **list;
- 	char *str;
- 	int ret;
- 
--	str = add_synth_field(field, name);
-+	str = add_synth_field(field, name ? : field->name);
- 	if (!str)
- 		return -1;
- 
-+	if (!name)
-+		name = var;
-+
- 	list = tracefs_list_add(synth->synthetic_fields, str);
- 	free(str);
- 	if (!list)
-@@ -942,7 +945,7 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 	if (ret < 0)
- 		goto pop_lists;
- 
--	ret = add_synth_fields(synth, key_field, name);
-+	ret = add_synth_fields(synth, key_field, name, NULL);
- 	if (ret < 0)
- 		goto pop_lists;
- 
-@@ -1061,7 +1064,7 @@ int tracefs_synth_add_compare_field(struct tracefs_synth *synth,
- 	if (ret < 0)
- 		goto out_free;
- 
--	ret = add_synth_fields(synth, start_field, name);
-+	ret = add_synth_fields(synth, start_field, name, NULL);
- 	if (ret < 0)
- 		goto out_free;
- 
-@@ -1106,7 +1109,7 @@ __hidden int synth_add_start_field(struct tracefs_synth *synth,
- 	if (ret)
- 		goto out_free;
- 
--	ret = add_synth_fields(synth, field, name);
-+	ret = add_synth_fields(synth, field, name, NULL);
- 	if (ret)
- 		goto out_free;
- 
-@@ -1178,6 +1181,7 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 				const char *name)
- {
- 	const struct tep_format_field *field;
-+	char *tmp_var = NULL;
- 	int ret;
- 
- 	if (!synth || !end_field) {
-@@ -1186,17 +1190,17 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 	}
- 
- 	if (!name)
--		name = end_field;
-+		tmp_var = new_arg(synth);
- 
- 	if (!trace_verify_event_field(synth->end_event, end_field, &field))
- 		return -1;
- 
--	ret = add_var(&synth->end_vars, name, end_field, false);
-+	ret = add_var(&synth->end_vars, name ? : tmp_var, end_field, false);
- 	if (ret)
- 		goto out;
- 
--	ret = add_synth_fields(synth, field, name);
--
-+	ret = add_synth_fields(synth, field, name, tmp_var);
-+	free(tmp_var);
-  out:
- 	return ret;
- }
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
