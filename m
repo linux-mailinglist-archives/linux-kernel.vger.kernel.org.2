@@ -2,109 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E070D3EA2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07273EA2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236419AbhHLKO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235530AbhHLKOV (ORCPT
+        id S236180AbhHLKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:17:13 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51039 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234093AbhHLKRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:14:21 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDB9C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:13:56 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id o123so540807qkf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=Y5sKw1spZ/O052U+fiJjGsh9m/MwWP/zNdlJTCR4120=;
-        b=eAO0pz65etfgqrV3nsqSG1PJsMOsHoNHdhWxYpIA9bhJ3mIJnnAMMLI8zTGlbFK9qm
-         pKqQAGoLadXNkr4eWt9F65IReAnZ4d7d83W7CF4l4PMtYu4BItrjuTOdO5AQoEHhQzf8
-         Oj5/EbVkZ8Ya3sKrbWEg8r34vpuzd2MQCLQjiJJwSUaYX6A4zjhJDf7gVfbjFLXFV5n4
-         r+1Ttj0XuWsv/fhgkOXyh5AHlo4PjLY4EWy/uATnST2mJJle2f4axO9xTnwL43SrvzDr
-         3luHLqOMoV+DBBGMtsMuhxMKS1H873/TIhMgUdDJ6RVVPftM4a0bdN7BT8WqVggDnII5
-         dhGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=Y5sKw1spZ/O052U+fiJjGsh9m/MwWP/zNdlJTCR4120=;
-        b=RVGx185uKRU/qQ5OMzPzy8r9mgSuzTfOrz2BuWebhDwR5Vsa+2Pf2J/9zWUj03ab07
-         fKASiwKbhOeGohTOPX5vxSOpw8BKjp7QnM7ZmV2Ig0m4fyh9Gf7owK6xh2nGOYagKqki
-         XEfCvBDA0gyz6iywin79n4DhAPAzHamYJj2iVseuh7J0UzBpA306MXMiSrhnotDWb6L2
-         QL9R6oL4y0pUi7C3+YAjOgsNAsaamRhUYA15xRRTDMiHkmCSUvXz9xVcetpIyba6Hy27
-         3rByWsEKR+f1hTgxn949ietJrVjhtowOqLNCuY4QV2My6G/v42r00OJWxxjgazlcBlXN
-         ipcw==
-X-Gm-Message-State: AOAM533UxTNrYyG74wslbZSFEnxVq+xqCILt9UzH8IGTT1/KQsPk0vCc
-        oLzpx6fOxcjyexmm3llI543jwQ==
-X-Google-Smtp-Source: ABdhPJyxu/56TB7XXCkE/p4dsejcIlhOfQFi56EpBSXF+DnC3fdruMHMQOsfXNgpqETdNtXvzJDxGw==
-X-Received: by 2002:a37:9244:: with SMTP id u65mr3747424qkd.46.1628763236076;
-        Thu, 12 Aug 2021 03:13:56 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id s69sm1000540qka.102.2021.08.12.03.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 03:13:55 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Muni Sekhar <munisekharrms@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: LDD 3rd ed. - It was: Re: read() via USB bus
-In-Reply-To: <13470108.apdoE9Qb8s@localhost.localdomain>
-References: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com> <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com> <YRDq530N/9uu2J0x@kroah.com>
- <13470108.apdoE9Qb8s@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1628763234_131750P";
-         micalg=pgp-sha256; protocol="application/pgp-signature"
+        Thu, 12 Aug 2021 06:17:11 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210812101644euoutp0105ab8bc20ca37ab5232c6909a8e44f72~ah6-kJrru2896428964euoutp01Q
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:16:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210812101644euoutp0105ab8bc20ca37ab5232c6909a8e44f72~ah6-kJrru2896428964euoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628763404;
+        bh=aDvlDTc5Am/kM4t+3zxEGs4PSPS4JExoeer8kWPVcXQ=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=b+U+Wl7SEQSWP9L56jD69u+OrXNqzaBR3lJUx2+GCjwXsDD2vewB6AA88SL4hX6O9
+         8TbcOvkoS5sMepTqNv8n45HRU9Ayls92mmVMLVXPG5EGRjebnsDfhkiVWQtYybLs/Y
+         /6QyG3c/5n2jR2irjGM38pTrdmwrVhUQ3YzD1Oac=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210812101643eucas1p2602dae638bdeb05ad8913d66aeaa5a3b~ah6_VOf6m0721807218eucas1p2D;
+        Thu, 12 Aug 2021 10:16:43 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1E.49.56448.B05F4116; Thu, 12
+        Aug 2021 11:16:43 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210812101642eucas1p25c06a8060377dd8da6631c93c7ccb6ce~ah69zY1Tb0181701817eucas1p2J;
+        Thu, 12 Aug 2021 10:16:42 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210812101642eusmtrp12f72c6b88de41052408511a9508a30cd~ah69ygLqH2835028350eusmtrp1T;
+        Thu, 12 Aug 2021 10:16:42 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-61-6114f50b3c09
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 66.51.31287.A05F4116; Thu, 12
+        Aug 2021 11:16:42 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210812101641eusmtip248f8edcccd67a41b4d6b5b62f4283cd8~ah68_4J6h2895628956eusmtip2d;
+        Thu, 12 Aug 2021 10:16:41 +0000 (GMT)
+Subject: Re: [PATCH v2] media: camss: vfe: Don't call hw_version() before
+ its dependencies are met
+To:     Robert Foss <robert.foss@linaro.org>, todor.too@gmail.com,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux Kernel Functional Testing <lkft@linaro.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <4f2e8d19-8c89-53d4-37d3-97dead170065@samsung.com>
+Date:   Thu, 12 Aug 2021 12:16:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210812092152.726874-1-robert.foss@linaro.org>
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 12 Aug 2021 06:13:54 -0400
-Message-ID: <147449.1628763234@turing-police>
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djP87rcX0USDX7uFrU49/g3i8Xp/e9Y
+        LC7OvMtiMXH/WXaLy7vmsFn0bNjKavH1AJfFsk1/mCxufeK3+DTrIbPFoSnT2By4PXbOusvu
+        sWlVJ5vHnWt72Dw+b5LzOPX1M3sAaxSXTUpqTmZZapG+XQJXxoRrE5gK5nJXfNncxNbAuJCz
+        i5GTQ0LARGLa0desXYxcHEICKxglLmxZwAjhfGGU2H1yGjuE85lR4uKCA0wwLXsWvWKCSCxn
+        lDi7opMVJCEk8JFRoqUvH8QWFkiRmNk2AWyUiMAKJonbm3pZQBLMAqYSPzbvZQex2QQMJbre
+        drF1MXJw8ArYSTydngYSZhFQlVj59SdYiahAssTEJ5PA5vMKCEqcnPkEbAyngK3E2/MPoEbK
+        S2x/O4cZwhaXuPVkPthxEgI/OCSeXLrGDnG1i8SZ/nVQtrDEq+NboGwZidOTe1ggGpoZJR6e
+        W8sO4fQwSlxumsEIUWUtcefcL7BLmQU0Jdbv0ocIO0osmzaPHSQsIcAnceOtIMQRfBKTtk1n
+        hgjzSnS0CUFUq0nMOr4Obu3BC5eYJzAqzULy2iwk78xC8s4shL0LGFlWMYqnlhbnpqcWG+el
+        lusVJ+YWl+al6yXn525iBCaq0/+Of93BuOLVR71DjEwcjIcYJTiYlUR4d8oJJQrxpiRWVqUW
+        5ccXleakFh9ilOZgURLn3bV1TbyQQHpiSWp2ampBahFMlomDU6qBKV/Bsm3ngdW97S9q3E4J
+        nGVIn9MvGpcYcsHKj0Nz6QuXLSc8P91mkF/BfDA2paDMIc3t5p+DmRI2r4XEbZ46nS+asOX9
+        qeBVx5MENJZ8NShYtnHRHm/mP/k92eXz7CKunJuz7KbB7uv71oecOMUgMLN/i+Ht6/my/HOc
+        ZlaVqs+ddox7od7EL5cefnwwoUJIN3jnz+6VZgkcDl4TnOO47CdPPa9x8aq5wh6Hp99XWHNF
+        nC6ZknQ9/0Pk0ryEsup3WnNO+GxOe6y9tDPDov3NnJ0CVy4v7fru6VQvopybKaDy7L5zQadp
+        xBrlmWvz4rwuKZb8t57Q/O2QQqm5WC/fBsHKiTZxWT7qLz8xpix7oMRSnJFoqMVcVJwIALMv
+        fajDAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsVy+t/xe7pcX0USDea907E49/g3i8Xp/e9Y
+        LC7OvMtiMXH/WXaLy7vmsFn0bNjKavH1AJfFsk1/mCxufeK3+DTrIbPFoSnT2By4PXbOusvu
+        sWlVJ5vHnWt72Dw+b5LzOPX1M3sAa5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXms
+        lZGpkr6dTUpqTmZZapG+XYJexoRrE5gK5nJXfNncxNbAuJCzi5GTQ0LARGLPoldMXYxcHEIC
+        SxklDn/6wQiRkJE4Oa2BFcIWlvhzrYsNoug9o8SKnplACQ4OYYEUib9XI0HiIgIrmCS2zvzC
+        DtLALGAq8WPzXnaIhgmMEl17X4NNYhMwlOh6CzKJg4NXwE7i6fQ0kDCLgKrEyq8/wXpFBZIl
+        PpxeClbOKyAocXLmExYQm1PAVuLt+QcsEPPNJOZtfsgMYctLbH87B8oWl7j1ZD7TBEahWUja
+        ZyFpmYWkZRaSlgWMLKsYRVJLi3PTc4sN9YoTc4tL89L1kvNzNzECI3PbsZ+bdzDOe/VR7xAj
+        EwfjIUYJDmYlEd6dckKJQrwpiZVVqUX58UWlOanFhxhNgf6ZyCwlmpwPTA15JfGGZgamhiZm
+        lgamlmbGSuK8W+euiRcSSE8sSc1OTS1ILYLpY+LglGpg0i64+vLIu5ydLFXOeTYf7Vh6dJc/
+        53UUtE54W2fn6CXdxeu3YiNbeKXsh60TvjYabhWqY9p+ONR21ZEFdT7WrIynbxSuO1nY83t1
+        2+oTvkLP17C/7di4NkBIkL1ZqE0mfNX5+LKV/DNnPfXxjWy57lcbLXFmy7tnR69rb9j6aSpD
+        tN+bTRW5daGtH66vvrNxdUThK8Zk1aV87xZ8vvPmjt7UZwd9UuM7v95c7cnoUJhx5pWNXMDX
+        eDv/LYfs1dvavaJXXopYdtrH9c6NyVZBaxp6Z31KfH2o5B2DiEQf7/tXfHuPNiZkzpskFfiK
+        VX8tm/769z6L/Q3k/1w+l8rLkpElX1Adqqn7d59/w3VPJZbijERDLeai4kQAwqJ0KFUDAAA=
+X-CMS-MailID: 20210812101642eucas1p25c06a8060377dd8da6631c93c7ccb6ce
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210812092201eucas1p1ba2165a230084f99e3a858827788cf54
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210812092201eucas1p1ba2165a230084f99e3a858827788cf54
+References: <CGME20210812092201eucas1p1ba2165a230084f99e3a858827788cf54@eucas1p1.samsung.com>
+        <20210812092152.726874-1-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1628763234_131750P
-Content-Type: text/plain; charset=us-ascii
+On 12.08.2021 11:21, Robert Foss wrote:
+> vfe->ops->hw_version(vfe) is being called before vfe->base has been
+> assigned, and before the hardware has been powered up.
+>
+> Fixes: b10b5334528a9 ("media: camss: vfe: Don't read hardware version needlessly")
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/media/platform/qcom/camss/camss-vfe.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+> index 6b2f33fc9be2..71f78b40e7f5 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> @@ -604,6 +604,8 @@ static int vfe_get(struct vfe_device *vfe)
+>   		vfe_reset_output_maps(vfe);
+>   
+>   		vfe_init_outputs(vfe);
+> +
+> +		vfe->ops->hw_version(vfe);
+>   	} else {
+>   		ret = vfe_check_clock_rates(vfe);
+>   		if (ret < 0)
+> @@ -1299,7 +1301,6 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+>   		return -EINVAL;
+>   	}
+>   	vfe->ops->subdev_init(dev, vfe);
+> -	vfe->ops->hw_version(vfe);
+>   
+>   	/* Memory */
+>   
 
-On Thu, 12 Aug 2021 11:45:45 +0200, "Fabio M. De Francesco" said:
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-> I've heard that your book, LDD 3rd edition, has become obsolete a long time
-> ago and most sample code cannot anymore build. Reading what you wrote above
-> seems to contradict what I've been told by others... I must admit that I've
-> just had a print copy of it that I have not yet opened for reading, therefore
-> maybe that I'm totally wrong in assuming the above.
-
-The APIs have all changed a lot since the 3rd edition.
-
-The concepts haven't changed that much. And given that the in-kernel APIs
-have *always* been a moving target, being able to deal with the fact that
-a given function now takes a 'struct foo*' rather than a 'struct bar *' is a very
-necessary skill for anybody who's planning to do serious kernel work.
-
-
-
---==_Exmh_1628763234_131750P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQEcBAEBCAAGBQJhFPRhAAoJEI0DS38y7CIcAf4H/ivD8eGOum+x8xNhmxiOl6iM
-sWRLy6LceExHtenqGEqwgi55DBdK3fk0ermW5suUzGZBah6dEHqEgxPjU1d9KS3M
-P5/yfx8vQU+r3/3mFa69MVGOgW3ijZhkBoE9CxUS2BcqOD/9yTs+CYZs5FE7CkCN
-IIUVNayBYr5ZvF0UlJjg0VHQn7YxpFwwSjPpdJbdQySjdtezxDjCq6Nfw70jBq5J
-/B87plonfrjrrJymISpBvVn6pangCThJ04XnAh3raOMWYtUDFeqjcL218EP1C119
-Otf1IBp0by969VYXwhbEkYAFKVX5BGeN6LBTHAyCJ+4kHCaBQuRifcyPK1MPuzU=
-=qRru
------END PGP SIGNATURE-----
-
---==_Exmh_1628763234_131750P--
