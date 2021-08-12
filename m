@@ -2,148 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83793EAA1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1469D3EAA25
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237805AbhHLSUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhHLSUN (ORCPT
+        id S237872AbhHLSUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:20:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60186 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhHLSUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:20:13 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7C3C061756;
-        Thu, 12 Aug 2021 11:19:48 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id w5so13297529ejq.2;
-        Thu, 12 Aug 2021 11:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nzZyrKMG5TvZzfbf2DLNKR6Jtfcs5c5EesoZusA2AY=;
-        b=T9KK0Hg/ncYGvFpuJf1onKvfAmh032mxqNoQxxDccdXc/LZQyFFuQ3vB6xNpz8szEg
-         PX23xmhiSis4EHAeZY9QHbnay9hENt9ixpzGFNjMCHRVD8wcJnQAgYtsngVaBlf7ZZ32
-         Z90sESGr+S82m+dmANG/y67aKAHecjvzbzutg7COYRcQrouY5yhuSDisolLuuWcycnxz
-         JA59o02qWy9dhI6tzvm5ATAYtYLzXPn8x62EzJzOe9zAFQQTc6Pb2CNk0PP/XZgRyaG2
-         eOQGWp+Ma6wAQp9ZYddxWtaxM1h35yGBjtDgIZwnAMz7z3pkAwRBO3XmEX4y2zO8bqW2
-         t2vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nzZyrKMG5TvZzfbf2DLNKR6Jtfcs5c5EesoZusA2AY=;
-        b=C3+V2wPyqKNpCrO53skLwO7RHEVArt4VUlVGNZKeI5lHWIKvyQ+ndKXOFYjGyqlk8R
-         c5ar6YUBGW3xF/qEQwmVfH8Y0o1IIS889LM26I23vjpkOiLPjMQH615RKyeeRoYSh2W+
-         rbwKgY4RrnV++O7MuHMzfQuySpNe3dT1jB0BV6QXs4hhSFqsr0ukAounKdOLtsK+kqq+
-         r+03OqYxIpquvnE9bD1BhPH90VLIDapUhbYaCv9p3J2tjuyD9G8qvxAr4hCqT7TIS4Ot
-         Eqpe0QIhJbNPqY/OLdct2Kr1dUrJrn5qO9/66iv937zwf9vydnDVXbpQxo3NcEcaBROg
-         8cIg==
-X-Gm-Message-State: AOAM5320xq8+jrlVyGpHpuiaHijFEQMGokrMIE0c937fJFQiLYJYMBn/
-        eZY+klvJNYPBxAMgR/G1O9ZYzNgOSzFVWqridnk=
-X-Google-Smtp-Source: ABdhPJzVb8Ly7AuiUHCY8iVDKVjkusJJzpLqX0GR+dzzhsa0I2l70v548ZkgUFHNHkulXbMmvrnJb/V7KyfLVsjBK1Y=
-X-Received: by 2002:a17:906:491a:: with SMTP id b26mr5005149ejq.25.1628792386664;
- Thu, 12 Aug 2021 11:19:46 -0700 (PDT)
+        Thu, 12 Aug 2021 14:20:49 -0400
+Date:   Thu, 12 Aug 2021 18:20:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628792423;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wdSEWpA4eYdj6EDd4MZ9kRKF2N2wRdJ7VjjHq4d3yn4=;
+        b=fIvpDgiOlNZfP95qC5IAjViDOSGbrQEQTQFd4H1HIbfJit4uWtqy6lWZpPOA8K5G6qPnzn
+        Vl3jcBGiakEwUxYYmKXYH/xRSYnJLVjq6L9sMjaKf/CIL7gNPjohMxtOHKtrJerGmrG5qd
+        d+4D9hWRjBVP3uwzXBe0h75YL2IrEa1LqU5zuD0+tYbHfIVO1HJWOpBznBjSWi7Tkv1kfY
+        b3zZoJcgNCBiAuXUtCeyWWlGWFa0cF8iJSo11lvcJ5LPgeAxHU5h6mzmM/X4wsfiM3n2b/
+        VqunhrVmcFvBKbSmUIyj6fHqZcUfcF19RgvTGvLqLLgOYllHHX+AtP0HUq0ZEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628792423;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wdSEWpA4eYdj6EDd4MZ9kRKF2N2wRdJ7VjjHq4d3yn4=;
+        b=QNwTi7nVJ9sEXkW6WtqL7ZigQ40sUoOxCtViGV78Y3nt0HXm3b92xgN7jHKSeAhPlkBJEs
+        PiwZ/UndmZfsrKBw==
+From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Fix default monitoring groups reporting
+Cc:     pawel.szulik@intel.com, Babu Moger <Babu.Moger@amd.com>,
+        Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <162793309296.9224.15871659871696482080.stgit@bmoger-ubuntu>
+References: <162793309296.9224.15871659871696482080.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
- <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com>
- <e7374d7e-4773-aba1-763-8fa2c953f917@google.com> <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com>
- <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
- <749bcf72-efbd-d6c-db30-e9ff98242390@google.com> <CAHbLzkou+6m+htMNzSQrHfd6U0yURWiewK=Pvg30XSdiW=t+-w@mail.gmail.com>
-In-Reply-To: <CAHbLzkou+6m+htMNzSQrHfd6U0yURWiewK=Pvg30XSdiW=t+-w@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 12 Aug 2021 11:19:34 -0700
-Message-ID: <CAHbLzkpd1r1kLhNP7=Una_Fxpdgx7vE9aeyBgqHRE8M5e9j-qQ@mail.gmail.com>
-Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162879242193.395.18004814397189147411.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 10:57 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Thu, Aug 5, 2021 at 10:43 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > On Thu, 5 Aug 2021, Yang Shi wrote:
-> > >
-> > > By rereading the code, I think you are correct. Both cases do work
-> > > correctly without leaking. And the !CONFIG_NUMA case may carry the
-> > > huge page indefinitely.
-> > >
-> > > I think it is because khugepaged may collapse memory for another NUMA
-> > > node in the next loop, so it doesn't make too much sense to carry the
-> > > huge page, but it may be an optimization for !CONFIG_NUMA case.
-> >
-> > Yes, that is its intention.
-> >
-> > >
-> > > However, as I mentioned in earlier email the new pcp implementation
-> > > could cache THP now, so we might not need keep this convoluted logic
-> > > anymore. Just free the page if collapse is failed then re-allocate
-> > > THP. The carried THP might improve the success rate a little bit but I
-> > > doubt how noticeable it would be, may be not worth for the extra
-> > > complexity at all.
-> >
-> > It would be great if the new pcp implementation is good enough to
-> > get rid of khugepaged's confusing NUMA=y/NUMA=n differences; and all
-> > the *hpage stuff too, I hope.  That would be a welcome cleanup.
->
->  The other question is if that optimization is worth it nowadays or
-> not. I bet not too many users build NUMA=n kernel nowadays even though
-> the kernel is actually running on a non-NUMA machine. Some small
-> devices may run NUMA=n kernel, but I don't think they actually use
-> THP. So such code complexity could be removed from this point of view
-> too.
->
-> >
-> > > > > Collapse failure is not uncommon and leaking huge pages gets noticed.
-> >
-> > After writing that, I realized how I'm almost always testing a NUMA=y
-> > kernel (though on non-NUMA machines), and seldom try the NUMA=n build.
-> > So did so to check no leak, indeed; but was surprised, when comparing
-> > vmstats, that the NUMA=n run had done 5 times as much thp_collapse_alloc
-> > as the NUMA=y run.  I've merely made a note to look into that one day:
-> > maybe it was just a one-off oddity, or maybe the incrementing of stats
-> > is wrong down one path or the other.
+The following commit has been merged into the x86/urgent branch of tip:
 
-I came up with a patch to remove !CONFIG_NUMA case, and my test found
-the same problem. NUMA=n run had done 5 times as much
-thp_collapse_alloc as NUMA=y run with vanilla kernel just exactly as
-what you saw.
+Commit-ID:     064855a69003c24bd6b473b367d364e418c57625
+Gitweb:        https://git.kernel.org/tip/064855a69003c24bd6b473b367d364e418c=
+57625
+Author:        Babu Moger <Babu.Moger@amd.com>
+AuthorDate:    Mon, 02 Aug 2021 14:38:58 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 12 Aug 2021 20:12:20 +02:00
 
-A quick look shows the huge page allocation timing is different for
-the two cases. For NUMA=n, the huge page is allocated by
-khugepaged_prealloc_page() before scanning the address space, so it
-means huge page may be allocated even though there is no suitable
-range for collapsing. Then the page would be just freed if khugepaged
-already made enough progress then try to reallocate again. The problem
-should be more noticeable if you have a shorter scan interval
-(scan_sleep_millisecs). I set it to 100ms for my test.
+x86/resctrl: Fix default monitoring groups reporting
 
-We could carry the huge page across scan passes for NUMA=n, but this
-would make the code more complicated. I don't think it is really
-worth, so just removing the special case for NUMA=n sounds more
-reasonable to me.
+Creating a new sub monitoring group in the root /sys/fs/resctrl leads to
+getting the "Unavailable" value for mbm_total_bytes and mbm_local_bytes
+on the entire filesystem.
 
->
-> Yeah, probably.
->
-> >
-> > Hugh
+Steps to reproduce:
+
+  1. mount -t resctrl resctrl /sys/fs/resctrl/
+
+  2. cd /sys/fs/resctrl/
+
+  3. cat mon_data/mon_L3_00/mbm_total_bytes
+     23189832
+
+  4. Create sub monitor group:
+  mkdir mon_groups/test1
+
+  5. cat mon_data/mon_L3_00/mbm_total_bytes
+     Unavailable
+
+When a new monitoring group is created, a new RMID is assigned to the
+new group. But the RMID is not active yet. When the events are read on
+the new RMID, it is expected to report the status as "Unavailable".
+
+When the user reads the events on the default monitoring group with
+multiple subgroups, the events on all subgroups are consolidated
+together. Currently, if any of the RMID reads report as "Unavailable",
+then everything will be reported as "Unavailable".
+
+Fix the issue by discarding the "Unavailable" reads and reporting all
+the successful RMID reads. This is not a problem on Intel systems as
+Intel reports 0 on Inactive RMIDs.
+
+Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
+Reported-by: Pawe=C5=82 Szulik <pawel.szulik@intel.com>
+Signed-off-by: Babu Moger <Babu.Moger@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D213311
+Link: https://lkml.kernel.org/r/162793309296.9224.15871659871696482080.stgit@=
+bmoger-ubuntu
+---
+ arch/x86/kernel/cpu/resctrl/monitor.c | 27 ++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resc=
+trl/monitor.c
+index f07c10b..57e4bb6 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -285,15 +285,14 @@ static u64 mbm_overflow_count(u64 prev_msr, u64 cur_msr=
+, unsigned int width)
+ 	return chunks >>=3D shift;
+ }
+=20
+-static int __mon_event_count(u32 rmid, struct rmid_read *rr)
++static u64 __mon_event_count(u32 rmid, struct rmid_read *rr)
+ {
+ 	struct mbm_state *m;
+ 	u64 chunks, tval;
+=20
+ 	tval =3D __rmid_read(rmid, rr->evtid);
+ 	if (tval & (RMID_VAL_ERROR | RMID_VAL_UNAVAIL)) {
+-		rr->val =3D tval;
+-		return -EINVAL;
++		return tval;
+ 	}
+ 	switch (rr->evtid) {
+ 	case QOS_L3_OCCUP_EVENT_ID:
+@@ -305,12 +304,6 @@ static int __mon_event_count(u32 rmid, struct rmid_read =
+*rr)
+ 	case QOS_L3_MBM_LOCAL_EVENT_ID:
+ 		m =3D &rr->d->mbm_local[rmid];
+ 		break;
+-	default:
+-		/*
+-		 * Code would never reach here because
+-		 * an invalid event id would fail the __rmid_read.
+-		 */
+-		return -EINVAL;
+ 	}
+=20
+ 	if (rr->first) {
+@@ -361,23 +354,29 @@ void mon_event_count(void *info)
+ 	struct rdtgroup *rdtgrp, *entry;
+ 	struct rmid_read *rr =3D info;
+ 	struct list_head *head;
++	u64 ret_val;
+=20
+ 	rdtgrp =3D rr->rgrp;
+=20
+-	if (__mon_event_count(rdtgrp->mon.rmid, rr))
+-		return;
++	ret_val =3D __mon_event_count(rdtgrp->mon.rmid, rr);
+=20
+ 	/*
+-	 * For Ctrl groups read data from child monitor groups.
++	 * For Ctrl groups read data from child monitor groups and
++	 * add them together. Count events which are read successfully.
++	 * Discard the rmid_read's reporting errors.
+ 	 */
+ 	head =3D &rdtgrp->mon.crdtgrp_list;
+=20
+ 	if (rdtgrp->type =3D=3D RDTCTRL_GROUP) {
+ 		list_for_each_entry(entry, head, mon.crdtgrp_list) {
+-			if (__mon_event_count(entry->mon.rmid, rr))
+-				return;
++			if (__mon_event_count(entry->mon.rmid, rr) =3D=3D 0)
++				ret_val =3D 0;
+ 		}
+ 	}
++
++	/* Report error if none of rmid_reads are successful */
++	if (ret_val)
++		rr->val =3D ret_val;
+ }
+=20
+ /*
