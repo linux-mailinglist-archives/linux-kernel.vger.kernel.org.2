@@ -2,703 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326F13EA7E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0B03EA7E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238168AbhHLPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232854AbhHLPpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:45:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3E560F91;
-        Thu, 12 Aug 2021 15:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628783091;
-        bh=I3B4/SE7mScresjGc5FHVC7F16GndqaTAWwl0bIeWJg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gbOJSZRTGpiUtwsZX72qRHlHeibLP1t+6cKkW0lzG8LsMdm+pcER7y3fpyxyzmimA
-         ECu5zkksi8ZAe3tQ4LZXiG8IMRK/yxap1KxvVc7TDXcszqtbtwCS6kcbp19nIRkuBQ
-         qi7+rI01d5QM1FiMoJIWAbBGu0jG4EylHn2oZENkQ6EuK3a8qPmH0WPP1hXpXpk/99
-         ubCKCcRUy9fPOfy5tGcpY4BTZWN25pvbBBxANfSwTRehqcsZaWMsm0r9ijXDZGSy4C
-         TuTCMbs3Lq3b2H4/c3iyIHZfSi+fQ1jfvdcZ1xgj7O+9el8+viaoyMNPlDonzU/a2N
-         KkgjNk/QH+etA==
-Date:   Fri, 13 Aug 2021 00:44:48 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-Id: <20210813004448.51c7de69ce432d338f4d226b@kernel.org>
-In-Reply-To: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S238241AbhHLPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:46:02 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:35548 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232854AbhHLPqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:46:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=CFn0e2H7AIgFYK5bRsMKv9jVtbaIb5udBqIFG
+        gq5fX8=; b=Q2pUGaKMRpGjkBQzPQryMm6mF3Z43D8KmDSjO579IjIBDk0DZHlcd
+        MA/n3M0dc5uQoB7wjP8+lBu9/bZ0N0wIyHUJ1OWV8njpBNYBfu+fNcXI7pR1p/qw
+        Rj2ilF6fDCpMO9byu2TcVN6FdK3PP+Fty/9Th5s/QDY8SF6HoODMmw=
+Received: from [0.0.0.0] (unknown [113.251.11.184])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgAXJAMcQhVh7FInAA--.9551S3;
+        Thu, 12 Aug 2021 23:45:33 +0800 (CST)
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Hu Haowen <src.res@email.cn>
+Subject: [GIT PULL] docs: zh_TW translation fixes
+Message-ID: <b19c4d3f-9a36-c217-c4ad-0f818f8e864a@email.cn>
+Date:   Thu, 12 Aug 2021 23:45:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: LCKnCgAXJAMcQhVh7FInAA--.9551S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3JFW7Jw1xXF17Gr4kKF4kJFb_yoW7ArW8p3
+        WSkr13Ja47Jr1xJr13Kr17Jry5AF1xGw4UGF17X3Z5try8Ar4Fqrs0qr9FgFy3JrW8XF40
+        qr1Utr1Uur12yrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUglb7Iv0xC_tr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
+        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY4
+        87MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+        xhVjvjDU0xZFpf9x07UjhFxUUUUU=
+X-Originating-IP: [113.251.11.184]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following changes since commit ff17578e267c74db1619b6643a98e8a83ff6b996:
 
-Here is my code review.
+  docs/zh_TW: add translations for zh_TW/process (2021-07-27 23:08:50 +0800)
 
-On Wed, 11 Aug 2021 17:14:33 +0300
-"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
-[...]
-> +
-> +static struct trace_eprobe *to_trace_eprobe(struct dyn_event *ev)
-> +{
-> +	return container_of(ev, struct trace_eprobe, devent);
-> +}
-> +
-> +static int trace_eprobe_find(struct trace_eprobe *ep)
+are available in the Git repository at:
 
-This function name is a bit easy to mislead. If I were you,
-I call it 'trace_eprobe_setup_event()'.
-Or, I'll make it returns 'struct trace_event_call *' and set
-ep->event outside of this function. Moreover, I recommend you
-to call this before alloc_event_probe() and pass the result to it.
-e.g.
+  https://github.com/srcres258/linux-doc.git doc-zh-tw
 
-... /* parse the target system and event */
+for you to fetch changes up to d9b28270985fdc551cf4aaae3d8a5b3e9ae2ee9e:
 
-event_call = find_and_get_event(sys_name, sys_event);
-if (!event_call)
-   goto error;
+  docs/zh_TW: add translations for zh_TW/filesystems (2021-08-12 22:54:51 +0800)
 
-ep = alloc_event_probe(group, event, sys_name, sys_event, event_call, argc - 2);
-if (IS_ERR(ep))
-   ...
+----------------------------------------------------------------
+Hu Haowen (3):
+      docs/zh_TW: add translations for zh_TW/arm64
+      docs/zh_TW: add translations for zh_TW/cpu-freq
+      docs/zh_TW: add translations for zh_TW/filesystems
 
-> +{
-> +	struct trace_event_call *tp_event;
-> +	int ret = -ENOENT;
-> +	const char *name;
-> +
-> +	mutex_lock(&event_mutex);
-> +	list_for_each_entry(tp_event, &ftrace_events, list) {
-> +		if (tp_event->flags & TRACE_EVENT_FL_IGNORE_ENABLE)
-> +			continue;
-> +		if (!tp_event->class->system ||
-> +		    strcmp(ep->event_system, tp_event->class->system))
-> +			continue;
-> +		name = trace_event_name(tp_event);
-> +		if (!name ||
-> +		    strcmp(ep->event_name, name))
-> +			continue;
-> +		if (!try_module_get(tp_event->mod)) {
-> +			ret = -ENODEV;
-> +			break;
-> +		}
+ Documentation/translations/zh_TW/arm64/amu.rst                 | 104 +++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/booting.txt             | 251 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/elf_hwcaps.rst          | 244 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/hugetlbpage.rst         |  49 ++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/index.rst               |  23 ++++++++
+ Documentation/translations/zh_TW/arm64/legacy_instructions.txt |  77 +++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/memory.txt              | 119 ++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/perf.rst                |  88 +++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/silicon-errata.txt      |  79 ++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/arm64/tagged-pointers.txt     |  57 ++++++++++++++++++++
+ Documentation/translations/zh_TW/cpu-freq/core.rst             | 108 ++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst      | 256 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst    | 132 ++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/cpu-freq/index.rst            |  47 +++++++++++++++++
+ Documentation/translations/zh_TW/filesystems/debugfs.rst       | 224 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/filesystems/index.rst         |  31 +++++++++++
+ Documentation/translations/zh_TW/filesystems/sysfs.txt         | 377 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/filesystems/tmpfs.rst         | 148 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Documentation/translations/zh_TW/filesystems/virtiofs.rst      |  61 ++++++++++++++++++++++
+ Documentation/translations/zh_TW/index.rst                     |  13 ++++-
+ 20 files changed, 2486 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/translations/zh_TW/arm64/amu.rst
+ create mode 100644 Documentation/translations/zh_TW/arm64/booting.txt
+ create mode 100644 Documentation/translations/zh_TW/arm64/elf_hwcaps.rst
+ create mode 100644 Documentation/translations/zh_TW/arm64/hugetlbpage.rst
+ create mode 100644 Documentation/translations/zh_TW/arm64/index.rst
+ create mode 100644 Documentation/translations/zh_TW/arm64/legacy_instructions.txt
+ create mode 100644 Documentation/translations/zh_TW/arm64/memory.txt
+ create mode 100644 Documentation/translations/zh_TW/arm64/perf.rst
+ create mode 100644 Documentation/translations/zh_TW/arm64/silicon-errata.txt
+ create mode 100644 Documentation/translations/zh_TW/arm64/tagged-pointers.txt
+ create mode 100644 Documentation/translations/zh_TW/cpu-freq/core.rst
+ create mode 100644 Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst
+ create mode 100644 Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst
+ create mode 100644 Documentation/translations/zh_TW/cpu-freq/index.rst
+ create mode 100644 Documentation/translations/zh_TW/filesystems/debugfs.rst
+ create mode 100644 Documentation/translations/zh_TW/filesystems/index.rst
+ create mode 100644 Documentation/translations/zh_TW/filesystems/sysfs.txt
+ create mode 100644 Documentation/translations/zh_TW/filesystems/tmpfs.rst
+ create mode 100644 Documentation/translations/zh_TW/filesystems/virtiofs.rst
 
-BTW, this can lock the static events (because the module in where the
-event is locked), but can not lock the other dynamic events.
-Maybe we need 2 more patches.
-
-1) introduce TRACE_EVENT_FL_PROBE and set the flag in alloc_trace_k/uprobe().
-   (and eprobe will skip it)
-2) introduce refcount for the trace_event_call, which prevent removing
-   synthetic event.
-
-
-> +		ep->event = tp_event;
-> +		ret = 0;
-> +		break;
-> +	}
-> +	mutex_unlock(&event_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int eprobe_dyn_event_create(const char *raw_command)
-> +{
-> +	return trace_probe_create(raw_command, __trace_eprobe_create);
-> +}
-> +
-[...]
-> +
-> +static struct trace_eprobe *alloc_event_probe(const char *group,
-> +					      const char *event,
-> +					      const char *sys_name,
-> +					      const char *sys_event,
-> +					      int nargs)
-> +{
-> +	struct trace_eprobe *ep;
-> +	int ret = -ENOMEM;
-> +
-> +	ep = kzalloc(SIZEOF_TRACE_EPROBE(nargs), GFP_KERNEL);
-> +	if (!ep)
-> +		goto error;
-> +	ep->event_name = kstrdup(sys_event, GFP_KERNEL);
-> +	if (!ep->event_name)
-> +		goto error;
-> +	ep->event_system = kstrdup(sys_name, GFP_KERNEL);
-> +	if (!ep->event_system)
-> +		goto error;
-> +
-> +	ret = trace_probe_init(&ep->tp, event, group, false);
-> +	if (ret < 0)
-> +		goto error;
-> +
-> +	dyn_event_init(&ep->devent, &eprobe_dyn_event_ops);
-> +	return ep;
-> +error:
-> +	trace_event_probe_cleanup(ep);
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +static int trace_eprobe_tp_arg_find(struct trace_eprobe *ep, int i)
-
-I think 'trace_eprobe_tp_arg_update()' will be better name.
-Also, 'if (ep->tp.args[i].code->op == FETCH_OP_TP_ARG)' check
-is moved inside in this function for hiding inside of the tp.args.
-
-> +{
-> +	struct probe_arg *parg = &ep->tp.args[i];
-> +	struct ftrace_event_field *field;
-> +	struct list_head *head;
-> +
-> +	head = trace_get_fields(ep->event);
-> +	list_for_each_entry(field, head, link) {
-> +		if (!strcmp(parg->code->data, field->name)) {
-> +			kfree(parg->code->data);
-> +			parg->code->data = field;
-> +			return 0;
-> +		}
-> +	}
-> +	kfree(parg->code->data);
-> +	parg->code->data = NULL;
-> +	return -ENOENT;
-> +}
-> +
-> +static int kprobe_event_define_fields(struct trace_event_call *event_call)
-
-you meant 'eprobe_event_define_fields()' ? :)
-
-> +{
-> +	int ret;
-> +	struct kprobe_trace_entry_head field;
-> +	struct trace_probe *tp;
-> +
-> +	tp = trace_probe_primary_from_call(event_call);
-> +	if (WARN_ON_ONCE(!tp))
-> +		return -ENOENT;
-> +
-> +	DEFINE_FIELD(unsigned long, ip, FIELD_STRING_IP, 0);
-
-Would you really need this 'ip' field? I think you can record the
-original event ID (call->event.type) instead of ip.
-
-> +
-> +	return traceprobe_define_arg_fields(event_call, sizeof(field), tp);
-> +}
-> +
-> +static struct trace_event_fields eprobe_fields_array[] = {
-> +	{ .type = TRACE_FUNCTION_TYPE,
-> +	  .define_fields = kprobe_event_define_fields },
-
-Ditto.
-
-> +	{}
-> +};
-> +
-> +/* Event entry printers */
-> +static enum print_line_t
-> +print_eprobe_event(struct trace_iterator *iter, int flags,
-> +		   struct trace_event *event)
-> +{
-> +	struct kprobe_trace_entry_head *field;
-> +	struct trace_seq *s = &iter->seq;
-> +	struct trace_probe *tp;
-> +
-> +	field = (struct kprobe_trace_entry_head *)iter->ent;
-> +	tp = trace_probe_primary_from_call(
-> +		container_of(event, struct trace_event_call, event));
-> +	if (WARN_ON_ONCE(!tp))
-> +		goto out;
-> +
-> +	trace_seq_printf(s, "%s: (", trace_probe_name(tp));
-> +
-> +	if (!seq_print_ip_sym(s, field->ip, flags | TRACE_ITER_SYM_OFFSET))
-> +		goto out;
-
-Here, you can show the original event name from the event ID.
-
-> +
-> +	trace_seq_putc(s, ')');
-> +
-> +	if (print_probe_args(s, tp->args, tp->nr_args,
-> +			     (u8 *)&field[1], field) < 0)
-> +		goto out;
-> +
-> +	trace_seq_putc(s, '\n');
-> + out:
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static unsigned long get_event_field(struct fetch_insn *code, void *rec)
-> +{
-> +	struct ftrace_event_field *field = code->data;
-> +	unsigned long val;
-> +	void *addr;
-> +
-> +	addr = rec + field->offset;
-> +
-> +	switch (field->size) {
-> +	case 1:
-> +		if (field->is_signed)
-> +			val = *(char *)addr;
-> +		else
-> +			val = *(unsigned char *)addr;
-> +		break;
-> +	case 2:
-> +		if (field->is_signed)
-> +			val = *(short *)addr;
-> +		else
-> +			val = *(unsigned short *)addr;
-> +		break;
-> +	case 4:
-> +		if (field->is_signed)
-> +			val = *(int *)addr;
-> +		else
-> +			val = *(unsigned int *)addr;
-> +		break;
-> +	default:
-> +		if (field->is_signed)
-> +			val = *(long *)addr;
-> +		else
-> +			val = *(unsigned long *)addr;
-> +		break;
-> +	}
-> +	return val;
-> +}
-> +
-> +static int get_eprobe_size(struct trace_probe *tp, void *rec)
-> +{
-> +	struct probe_arg *arg;
-> +	int i, len, ret = 0;
-> +
-> +	for (i = 0; i < tp->nr_args; i++) {
-> +		arg = tp->args + i;
-> +		if (unlikely(arg->dynamic)) {
-> +			unsigned long val;
-> +
-> +			val = get_event_field(arg->code, rec);
-> +			len = process_fetch_insn_bottom(arg->code + 1, val, NULL, NULL);
-> +			if (len > 0)
-> +				ret += len;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/* Kprobe specific fetch functions */
-[...]
-> +static nokprobe_inline int
-> +probe_mem_read(void *dest, void *src, size_t size)
-> +{
-> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> +	if ((unsigned long)src < TASK_SIZE)
-> +		return probe_mem_read_user(dest, src, size);
-> +#endif
-> +	return copy_from_kernel_nofault(dest, src, size);
-> +}
-
-Hmm, these "fetch_args for kernel" APIs should finally unified with
-kprobe events. But at this step, this is good.
-
-> +
-> +/* eprobe handler */
-> +static inline void
-> +__eprobe_trace_func(struct eprobe_data *edata, void *rec)
-> +{
-> +	struct kprobe_trace_entry_head *entry;
-> +	struct trace_event_call *call = trace_probe_event_call(&edata->ep->tp);
-> +	struct trace_event_buffer fbuffer;
-> +	int dsize;
-> +
-> +	WARN_ON(call != edata->file->event_call);
-> +
-> +	if (trace_trigger_soft_disabled(edata->file))
-> +		return;
-> +
-> +	fbuffer.trace_ctx = tracing_gen_ctx();
-> +	fbuffer.trace_file = edata->file;
-> +
-> +	dsize = get_eprobe_size(&edata->ep->tp, rec);
-> +	fbuffer.regs = NULL;
-> +
-> +	fbuffer.event =
-> +		trace_event_buffer_lock_reserve(&fbuffer.buffer, edata->file,
-> +					call->event.type,
-> +					sizeof(*entry) + edata->ep->tp.size + dsize,
-> +					fbuffer.trace_ctx);
-> +	if (!fbuffer.event)
-> +		return;
-> +
-> +	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
-> +	entry->ip = 0;
-
-Here, you can trace edata->ep->event->event.type instead of 0.
-
-> +	store_trace_args(&entry[1], &edata->ep->tp, rec, sizeof(*entry), dsize);
-> +
-> +	trace_event_buffer_commit(&fbuffer);
-> +}
-> +
-> +/*
-> + * The event probe implementation uses event triggers to get access to
-> + * the event it is attached to, but is not an actual trigger. The below
-> + * functions are just stubs to fulfill what is needed to use the trigger
-> + * infrastructure.
-> + */
-
-OK, I got it. So eprobe is implemented on the trigger action framework.
-
-[...]
-> +
-> +static int enable_eprobe(struct trace_eprobe *ep,
-> +			 struct trace_event_file *eprobe_file)
-> +{
-> +	struct event_trigger_data *trigger;
-> +	struct trace_event_file *file;
-> +	struct trace_array *tr = eprobe_file->tr;
-> +
-> +	file = find_event_file(tr, ep->event_system, ep->event_name);
-> +	if (!file)
-> +		return -ENOENT;
-> +	trigger = new_eprobe_trigger(ep, eprobe_file);
-> +	if (IS_ERR(trigger))
-> +		return PTR_ERR(trigger);
-> +
-> +	list_add_tail_rcu(&trigger->list, &file->triggers);
-> +
-> +	trace_event_trigger_enable_disable(file, 1);
-> +	update_cond_flag(file);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct trace_event_functions eprobe_funcs = {
-> +	.trace		= print_eprobe_event
-> +};
-> +
-> +static int disable_eprobe(struct trace_eprobe *ep,
-> +			  struct trace_array *tr)
-> +{
-> +	struct event_trigger_data *trigger;
-> +	struct trace_event_file *file;
-> +	struct eprobe_data *edata;
-> +
-> +	file = find_event_file(tr, ep->event_system, ep->event_name);
-> +	if (!file)
-> +		return -ENOENT;
-> +
-> +	list_for_each_entry(trigger, &file->triggers, list) {
-> +		if (!(trigger->flags & EVENT_TRIGGER_FL_PROBE))
-> +			continue;
-> +		edata = trigger->private_data;
-> +		if (edata->ep == ep)
-> +			break;
-> +	}
-> +	if (list_entry_is_head(trigger, &file->triggers, list))
-> +		return -ENODEV;
-> +
-> +	list_del_rcu(&trigger->list);
-> +
-> +	trace_event_trigger_enable_disable(file, 0);
-> +	update_cond_flag(file);
-> +	return 0;
-> +}
-> +
-> +static int enable_trace_eprobe(struct trace_event_call *call,
-> +			       struct trace_event_file *file)
-> +{
-> +	struct trace_probe *pos, *tp;
-> +	struct trace_eprobe *ep;
-> +	bool enabled;
-> +	int ret = 0;
-> +
-> +	tp = trace_probe_primary_from_call(call);
-> +	if (WARN_ON_ONCE(!tp))
-> +		return -ENODEV;
-> +	enabled = trace_probe_is_enabled(tp);
-> +
-> +	/* This also changes "enabled" state */
-> +	if (file) {
-> +		ret = trace_probe_add_file(tp, file);
-> +		if (ret)
-> +			return ret;
-> +	} else
-> +		trace_probe_set_flag(tp, TP_FLAG_PROFILE);
-> +
-> +	if (enabled)
-> +		return 0;
-> +
-> +	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> +		ep = container_of(pos, struct trace_eprobe, tp);
-> +		ret = enable_eprobe(ep, file);
-> +		if (ret)
-> +			break;
-> +		enabled = true;
-> +	}
-> +
-> +	if (ret) {
-> +		/* Failed to enable one of them. Roll back all */
-> +		if (enabled)
-> +			disable_eprobe(ep, file->tr);
-> +		if (file)
-> +			trace_probe_remove_file(tp, file);
-> +		else
-> +			trace_probe_clear_flag(tp, TP_FLAG_PROFILE);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int disable_trace_eprobe(struct trace_event_call *call,
-> +				struct trace_event_file *file)
-> +{
-> +	struct trace_probe *pos, *tp;
-> +	struct trace_eprobe *ep;
-> +
-> +	tp = trace_probe_primary_from_call(call);
-> +	if (WARN_ON_ONCE(!tp))
-> +		return -ENODEV;
-> +
-> +	if (file) {
-> +		if (!trace_probe_get_file_link(tp, file))
-> +			return -ENOENT;
-> +		if (!trace_probe_has_single_file(tp))
-> +			goto out;
-> +		trace_probe_clear_flag(tp, TP_FLAG_TRACE);
-> +	} else
-> +		trace_probe_clear_flag(tp, TP_FLAG_PROFILE);
-> +
-> +	if (!trace_probe_is_enabled(tp)) {
-> +		list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> +			ep = container_of(pos, struct trace_eprobe, tp);
-> +			disable_eprobe(ep, file->tr);
-> +		}
-> +	}
-> +
-> + out:
-> +	if (file)
-> +		/*
-> +		 * Synchronization is done in below function. For perf event,
-> +		 * file == NULL and perf_trace_event_unreg() calls
-> +		 * tracepoint_synchronize_unregister() to ensure synchronize
-> +		 * event. We don't need to care about it.
-> +		 */
-> +		trace_probe_remove_file(tp, file);
-> +
-> +	return 0;
-> +}
-> +
-> +static int eprobe_register(struct trace_event_call *event,
-> +			   enum trace_reg type, void *data)
-> +{
-> +	struct trace_event_file *file = data;
-> +
-> +	switch (type) {
-> +	case TRACE_REG_REGISTER:
-> +		return enable_trace_eprobe(event, file);
-> +	case TRACE_REG_UNREGISTER:
-> +		return disable_trace_eprobe(event, file);
-> +#ifdef CONFIG_PERF_EVENTS
-> +	case TRACE_REG_PERF_REGISTER:
-> +	case TRACE_REG_PERF_UNREGISTER:
-
-Doesn't this support perf? In that case, you can simplify enable_trace_eprobe()
-and disable_trace_eprobe(), because 'file' is always not NULL.
-
-> +	case TRACE_REG_PERF_OPEN:
-> +	case TRACE_REG_PERF_CLOSE:
-> +	case TRACE_REG_PERF_ADD:
-> +	case TRACE_REG_PERF_DEL:
-> +		return 0;
-> +#endif
-> +	}
-> +	return 0;
-> +}
-> +
-> +static inline void init_trace_eprobe_call(struct trace_eprobe *ep)
-> +{
-> +	struct trace_event_call *call = trace_probe_event_call(&ep->tp);
-> +
-> +	call->flags = TRACE_EVENT_FL_EPROBE;
-> +	call->event.funcs = &eprobe_funcs;
-> +	call->class->fields_array = eprobe_fields_array;
-> +	call->class->reg = eprobe_register;
-> +}
-> +
-> +static int __trace_eprobe_create(int argc, const char *argv[])
-> +{
-> +	/*
-> +	 * Argument syntax:
-> +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]
-
-Ah, OK. ENAME is also omittable.
-
-
-> +	 * Fetch args:
-> +	 *  <name>=$<field>[:TYPE]
-> +	 */
-> +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
-> +	unsigned int flags = TPARG_FL_KERNEL | TPARG_FL_TPOINT;
-> +	const char *sys_event = NULL, *sys_name = NULL;
-> +	struct trace_eprobe *ep = NULL;
-> +	char buf1[MAX_EVENT_NAME_LEN];
-> +	char buf2[MAX_EVENT_NAME_LEN];
-> +	char *tmp = NULL;
-> +	int ret = 0;
-> +	int i;
-> +
-> +	if (argc < 2)
-> +		return -ECANCELED;
-> +
-> +	trace_probe_log_init("event_probe", argc, argv);
-> +
-> +	event = strchr(&argv[0][1], ':');
-> +	if (event) {
-> +		event++;
-> +		ret = traceprobe_parse_event_name(&event, &group, buf1,
-> +						  event - argv[0], '/');
-> +		if (ret)
-> +			goto parse_error;
-> +	} else {
-> +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
-> +		sanitize_event_name(buf1);
-> +		event = buf1;
-> +	}
-> +	if (!is_good_name(event) || !is_good_name(group))
-> +		goto parse_error;
-> +
-> +	sys_event = argv[1];
-> +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
-> +					  sys_event - argv[1], '.');
-> +	if (ret || !sys_name)
-> +		goto parse_error;
-> +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
-> +		goto parse_error;
-> +	ep = alloc_event_probe(group, event, sys_name, sys_event, argc - 2);
-> +	if (IS_ERR(ep)) {
-> +		ret = PTR_ERR(ep);
-> +		/* This must return -ENOMEM, else there is a bug */
-> +		WARN_ON_ONCE(ret != -ENOMEM);
-> +		goto error;	/* We know ep is not allocated */
-> +	}
-> +	ret = trace_eprobe_find(ep);
-> +	if (ret)
-> +		goto error;
-
-As I said above, this can be called before "alloc_event_probe()".
-
-> +
-> +	argc -= 2; argv += 2;
-> +	/* parse arguments */
-> +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
-> +		tmp = kstrdup(argv[i], GFP_KERNEL);
-> +		if (!tmp) {
-> +			ret = -ENOMEM;
-> +			goto error;
-> +		}
-> +		ret = traceprobe_parse_probe_arg(&ep->tp, i, tmp, flags);
-> +		if (ret == -EINVAL)
-> +			kfree(tmp);
-> +		if (ret)
-> +			goto error;	/* This can be -ENOMEM */
-> +		if (ep->tp.args[i].code->op == FETCH_OP_TP_ARG) {
-> +			ret = trace_eprobe_tp_arg_find(ep, i);
-
-Here, as I said above too, below code will be better encapsulated.
-
-  /* (code->op check is done inside below function) */
- ret = trace_eprobe_tp_arg_update(ep, i);
- if (ret)
-    goto error;
-
-> +			if (ret)
-> +				goto error;
-> +		}
-> +	}
-> +	ret = traceprobe_set_print_fmt(&ep->tp, false);
-> +	if (ret < 0)
-> +		goto error;
-> +	init_trace_eprobe_call(ep);
-> +	mutex_lock(&event_mutex);
-> +	ret = trace_probe_register_event_call(&ep->tp);
-> +	if (ret)
-> +		goto out_unlock;
-> +	ret = dyn_event_add(&ep->devent);
-> +out_unlock:
-> +	mutex_unlock(&event_mutex);
-> +	return ret;
-> +
-> +parse_error:
-> +	ret = -EINVAL;
-> +error:
-> +	trace_event_probe_cleanup(ep);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Register dynevent at core_initcall. This allows kernel to setup eprobe
-> + * events in postcore_initcall without tracefs.
-> + */
-> +static __init int trace_events_eprobe_init_early(void)
-> +{
-> +	int err = 0;
-> +
-> +	err = dyn_event_register(&eprobe_dyn_event_ops);
-> +	if (err)
-> +		pr_warn("Could not register eprobe_dyn_event_ops\n");
-> +
-> +	return err;
-> +}
-> +core_initcall(trace_events_eprobe_init_early);
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 949ef09dc537..45f5392fb35c 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -66,7 +66,8 @@
->  	C(EMPTY_SORT_FIELD,	"Empty sort field"),			\
->  	C(TOO_MANY_SORT_FIELDS,	"Too many sort fields (Max = 2)"),	\
->  	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
-> -	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),
-> +	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),  \
-> +	C(SYNTH_ON_EPROBE,	"Synthetic event on eprobe is not supported"),
-
-As I and Steve discussed, I think this can be allowed and loops should be
-detected and avoided in the other way. Anyway, this part will be better in
-the separated patch.
-[...]
-
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index 15413ad7cef2..5a97317e91fb 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -227,12 +227,12 @@ int traceprobe_split_symbol_offset(char *symbol, long *offset)
->  
->  /* @buf must has MAX_EVENT_NAME_LEN size */
->  int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
-> -				char *buf, int offset)
-> +				char *buf, int offset, int delim)
->  {
->  	const char *slash, *event = *pevent;
->  	int len;
->  
-> -	slash = strchr(event, '/');
-> +	slash = strchr(event, delim);
-
-As I pointed another mail, I'm OK to use both '/' and '.' as delimiter for
-kprobes/uprobes too. But it must be a separated patch.
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
