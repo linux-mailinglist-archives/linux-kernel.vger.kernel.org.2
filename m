@@ -2,45 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CE03EA320
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5883EA31E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhHLKtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:49:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57716 "EHLO
+        id S236605AbhHLKtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:49:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57694 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbhHLKra (ORCPT
+        with ESMTP id S236293AbhHLKrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:47:30 -0400
-Date:   Thu, 12 Aug 2021 10:47:04 -0000
+        Thu, 12 Aug 2021 06:47:31 -0400
+Date:   Thu, 12 Aug 2021 10:47:05 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628765224;
+        s=2020; t=1628765225;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4E9rWL37QichCWyZIdOp9jiOeLPsXtAMC0kZsRfXobo=;
-        b=HMrGo3DnNw29oc0nQBgT/1DHt3ySJixpI75/9c0/haKYB/sRtBUb1EsijLcyQPl20+73yX
-        sNH0iwyWtYEfJEY/C1EMG+J3U4ry/nCAklu94Heuqg6jIMNnqmn/p/ru/ZJSt+LxExfXpq
-        sShH2F4gOayCtjeIOKzv7aHCLcHfKM6Oo4o0THQ+ctU6K6HP27b8XQzFbWJL1tuMstf9nE
-        sv5MfqyYAaQocCHl80EUsUMt3lCBsZbVHfDYfW1bKoXV+PZF6mmGHUyYido/Ed8OEREbAs
-        OaJVlsgVe5JNx3t4bfDYWNAsfyyl90GJ82pd+t2hr8YJUEA0Gin8o/KVa4jW9A==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UubHqxy6TJUbrt++LfEVb28dSBCm6q91ZpkMVqTYiFk=;
+        b=y/JZuaJtAqhN31YggQ8hSHVPEZmBn/FCwcPuSXksbvcLcLRZt/p5vKCl2vGZF4yMrRTgJ5
+        V4AQ12GMLz3zpbcLdShH41qbL5M8tPg8KL7/b+ro4CFKv+azJgFMv0UrrN9uUtXR6Zqyo0
+        6imQVwaatZsbhM3Isdw1oj82T2/BguTyIEo/58QS1wjSqxERnFwGrcr/MZrYYixxqfB0Jp
+        eCbebMd33t5UUoMOs+CNDO1v8w7wPoE6fovCVsASaqZZhscDZAkJhLRkkZEjrm/moj7Asw
+        P1aDeQAvHhwRmdv0tSY1PrD7IiSOKmdC9v/GozvRN5g+96e4w/enk/qpaBy/aw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628765224;
+        s=2020e; t=1628765225;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4E9rWL37QichCWyZIdOp9jiOeLPsXtAMC0kZsRfXobo=;
-        b=QyIPdqg9YSBDItKeyj6g8G0c4tXRUftC/RNer518vG7GFqkjuzYtBEISZLxG88KLgohNhF
-        i31IBVx5/m0QmQDw==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UubHqxy6TJUbrt++LfEVb28dSBCm6q91ZpkMVqTYiFk=;
+        b=+rsYCyJPh/SXOBVhxMhUP5drIoyz/+x+R5O8mbZLFYM+qm/DyFZUOj3rGNguZIw3bSb8q+
+        +qes9RMNG0BoB1Aw==
+From:   "irqchip-bot for Huacai Chen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] Documentation: Update irq_domain.rst with
- new lookup APIs
-Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+Subject: [irqchip: irq/irqchip-next] irqchip/loongson-pch-pic: Improve edge
+ triggered interrupt support
+Cc:     Chen Zhu <zhuchen@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20210805132216.3539007-1-chenhuacai@loongson.cn>
+References: <20210805132216.3539007-1-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-Message-ID: <162876522413.395.1066055895290644679.tip-bot2@tip-bot2>
+Message-ID: <162876522520.395.12694110235509755781.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,74 +59,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     991007ba6ccad588504cbd1eadf19fbf15c67ace
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/991007ba6ccad588504cbd1eadf19fbf15c67ace
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sat, 24 Jul 2021 12:40:23 +01:00
+Commit-ID:     e5dec38ac5d05d17a7110c8045aa101015281e4d
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/e5dec38ac5d05d17a7110c8045aa101015281e4d
+Author:        Huacai Chen <chenhuacai@loongson.cn>
+AuthorDate:    Thu, 05 Aug 2021 21:22:16 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 12 Aug 2021 11:39:38 +01:00
+CommitterDate: Thu, 12 Aug 2021 07:57:23 +01:00
 
-Documentation: Update irq_domain.rst with new lookup APIs
+irqchip/loongson-pch-pic: Improve edge triggered interrupt support
 
-Catch up with the recent irqdomain updates, and document
-{generic_,}handle_domain_irq(), irq_resolve_mapping() as well
-as the deprecation of some of the older APIs.
+Edge-triggered mode and level-triggered mode need different handlers,
+and edge-triggered mode need a specific ack operation. So improve it.
 
+Fixes: ef8c01eb64ca6719da449dab0 ("irqchip: Add Loongson PCH PIC controller")
+Signed-off-by: Chen Zhu <zhuchen@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210805132216.3539007-1-chenhuacai@loongson.cn
 ---
- Documentation/core-api/irq/irq-domain.rst | 28 +++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-loongson-pch-pic.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-index 53283b3..6979b4a 100644
---- a/Documentation/core-api/irq/irq-domain.rst
-+++ b/Documentation/core-api/irq/irq-domain.rst
-@@ -55,8 +55,24 @@ exist then it will allocate a new Linux irq_desc, associate it with
- the hwirq, and call the .map() callback so the driver can perform any
- required hardware setup.
+diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
+index f790ca6..a4eb8a2 100644
+--- a/drivers/irqchip/irq-loongson-pch-pic.c
++++ b/drivers/irqchip/irq-loongson-pch-pic.c
+@@ -92,18 +92,22 @@ static int pch_pic_set_type(struct irq_data *d, unsigned int type)
+ 	case IRQ_TYPE_EDGE_RISING:
+ 		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
+ 		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
++		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
+ 	case IRQ_TYPE_EDGE_FALLING:
+ 		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
+ 		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
++		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
+ 	case IRQ_TYPE_LEVEL_HIGH:
+ 		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
+ 		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
++		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 	case IRQ_TYPE_LEVEL_LOW:
+ 		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
+ 		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
++		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -113,11 +117,24 @@ static int pch_pic_set_type(struct irq_data *d, unsigned int type)
+ 	return ret;
+ }
  
--When an interrupt is received, irq_find_mapping() function should
--be used to find the Linux IRQ number from the hwirq number.
-+Once a mapping has been established, it can be retrieved or used via a
-+variety of methods:
++static void pch_pic_ack_irq(struct irq_data *d)
++{
++	unsigned int reg;
++	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
 +
-+- irq_resolve_mapping() returns a pointer to the irq_desc structure
-+  for a given domain and hwirq number, and NULL if there was no
-+  mapping.
-+- irq_find_mapping() returns a Linux IRQ number for a given domain and
-+  hwirq number, and 0 if there was no mapping
-+- irq_linear_revmap() is now identical to irq_find_mapping(), and is
-+  deprecated
-+- generic_handle_domain_irq() handles an interrupt described by a
-+  domain and a hwirq number
-+- handle_domain_irq() does the same thing for root interrupt
-+  controllers and deals with the set_irq_reg()/irq_enter() sequences
-+  that most architecture requires
++	reg = readl(priv->base + PCH_PIC_EDGE + PIC_REG_IDX(d->hwirq) * 4);
++	if (reg & BIT(PIC_REG_BIT(d->hwirq))) {
++		writel(BIT(PIC_REG_BIT(d->hwirq)),
++			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
++	}
++	irq_chip_ack_parent(d);
++}
 +
-+Note that irq domain lookups must happen in contexts that are
-+compatible with a RCU read-side critical section.
- 
- The irq_create_mapping() function must be called *atleast once*
- before any call to irq_find_mapping(), lest the descriptor will not
-@@ -137,7 +153,9 @@ required.  Calling irq_create_direct_mapping() will allocate a Linux
- IRQ number and call the .map() callback so that driver can program the
- Linux IRQ number into the hardware.
- 
--Most drivers cannot use this mapping.
-+Most drivers cannot use this mapping, and it is now gated on the
-+CONFIG_IRQ_DOMAIN_NOMAP option. Please refrain from introducing new
-+users of this API.
- 
- Legacy
- ------
-@@ -157,6 +175,10 @@ for IRQ numbers that are passed to struct device registrations.  In that
- case the Linux IRQ numbers cannot be dynamically assigned and the legacy
- mapping should be used.
- 
-+As the name implies, the *_legacy() functions are deprecated and only
-+exist to ease the support of ancient platforms. No new users should be
-+added.
-+
- The legacy map assumes a contiguous range of IRQ numbers has already
- been allocated for the controller and that the IRQ number can be
- calculated by adding a fixed offset to the hwirq number, and
+ static struct irq_chip pch_pic_irq_chip = {
+ 	.name			= "PCH PIC",
+ 	.irq_mask		= pch_pic_mask_irq,
+ 	.irq_unmask		= pch_pic_unmask_irq,
+-	.irq_ack		= irq_chip_ack_parent,
++	.irq_ack		= pch_pic_ack_irq,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.irq_set_type		= pch_pic_set_type,
+ };
