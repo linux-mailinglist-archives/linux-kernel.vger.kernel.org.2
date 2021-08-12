@@ -2,339 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3D43EA9F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2C33EAA03
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhHLSNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
+        id S237646AbhHLSOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhHLSNR (ORCPT
+        with ESMTP id S237398AbhHLSOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:13:17 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D55C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:12:52 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id n6so11766241ljp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:12:52 -0700 (PDT)
+        Thu, 12 Aug 2021 14:14:47 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1323C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:14:19 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n200-20020a25d6d10000b02905935ac4154aso6767613ybg.23
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3IBmrG9EcDzssiR9dY8YvqnK3/P6vQnXnwNHy7NXG/k=;
-        b=PlfAVLvuNc6jHEPbPFgM44WkQ88pFCwSTly6DaMvO6LslArYLa2GXaxCOLdDQCvoRR
-         oqnnON+xFf8WVTINtLj9fl2ez+E2jHjru57cMVZdicymTW/pXF+lzSr80TmaP2xi3Ldc
-         GJBLnMqM/hBw5kmRFdzgG92f+EoOQ/f6StlfQ2pQyA1nai6B+kiKBmDO9D6qBGBuOU+5
-         8OZNsWirzY7N6CQ1UJjW1kJypmfPITQkJU6BS9/p0KHNF7pr9OsP/V8mKGHblbJVWFk+
-         9TPQGuZiKzKkBYVreW4RHw8Q3j1RJngjJsRVtC6H3c1PFl5n8QLPpmm6oZdStlh7dp8f
-         U3kw==
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=PaSEFkv8nY5W54B7TNXDIBLFRXOHOQ5fVhWGiqJIlhw=;
+        b=FvTv0MfDjkfbfLUitgb3JrTe3A8KG8l5ZdZ0WBE+5JOHiJrnH56LYlBVYMOhSzleca
+         EbDuAQZYD42ab5gfyzzQMq6Hkn4AP/Tpo+jgNxahi/Yik5E4no+yPtPt68yE3z/nzbAh
+         rRSTAdWXm4kbPAz+F4GsUwwT25DtRG9mjxHiyKeMX2ZZvWxPebv7gGBcb4z1BjUxiBba
+         Z+xk02xo+bVeSOVJElGeu8LU6XQ3CooUuiu5FAEO50SaChzHzA6CEz1cuc/Q5peFjCh7
+         2WGdWTtCHyEZJPRisJM6v7D0FsARCvt4fSrE5zgBEs6IwAcI8AGqxvGHzt0yH6vMsK7J
+         kMAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3IBmrG9EcDzssiR9dY8YvqnK3/P6vQnXnwNHy7NXG/k=;
-        b=mMBORhcUVVpqJhK/zxPWc1LcWvUPAvMG238zi6fs1x3qiM83wmMK+SVLOY6sbjiGe0
-         dlyZlxDVB4MYec6XtcUXkdTxX0yviiS2vR2mnC47bdp1yraWsnBDhOJ02Z6O+rQ2X1pF
-         oTnZlEKZXEP1YHtyrvQhebmtdxs9Vc3BvZWdLwtK2ecxEA5iaDId4cJ306befkLE0zHs
-         DRm5D1iQYgi7oTnIOf3T32k2RbRxw+TBs31A04znJHpHYgKROG3BwW4bjZ8K4BInzx6A
-         QEgYMA3Zud62ilzGzrhDI0+79ezDtqfRmsIop0tZPx8F7bWSpKWJGPh4xeQGQ0MvwYJ0
-         wkQA==
-X-Gm-Message-State: AOAM5319yo78hUB70D2gTfKJ9pL2JGIUYcUyjS7+bIK3HZYPVdWu755o
-        OaGeFF0d6PEd5bbSECQOdBKlZ4IRsmJ1rWwtWdFjCA==
-X-Google-Smtp-Source: ABdhPJwNIbPyauYgPanl0IavUisSfmfdQnkFz6j64zcXJ2xb6P6xRGL05iZxUjPfhmk91DMZ52lczsPQKghAqZCCCrU=
-X-Received: by 2002:a2e:b0d1:: with SMTP id g17mr3914413ljl.153.1628791969964;
- Thu, 12 Aug 2021 11:12:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210809172207.3890697-1-richardsonnick@google.com>
- <20210809172207.3890697-2-richardsonnick@google.com> <20210809140505.30388445@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210809140505.30388445@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Nick Richardson <richardsonnick@google.com>
-Date:   Thu, 12 Aug 2021 14:12:38 -0400
-Message-ID: <CAGr-3gkzarg=1sqYJ+T-grcGFA_sfR8aWNp0i38rUUHZWns94A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pktgen: Parse internet mix (imix) input
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, nrrichar@ncsu.edu,
-        Arun Kalyanasundaram <arunkaly@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Di Zhu <zhudi21@huawei.com>, Ye Bin <yebin10@huawei.com>,
-        Leesoo Ahn <dev@ooseel.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philip Romanov <promanov@google.com>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=PaSEFkv8nY5W54B7TNXDIBLFRXOHOQ5fVhWGiqJIlhw=;
+        b=inNo9nGzLBSrkhmUuQ5xkMaNNzC1CRDwpo2LWV5jv7RJmtCD6VYSyBGRp8i9sAQJgc
+         CIJR4N1tUyH2tTaLbjsMG/2FA4WBntRcvIRoST+CAuntyhPRlf2AdW1U+/VJyXyexYOL
+         d/vlo049hQ1fxCv5PvUDO/FKU7JceAT94WbdRtqN+DUW4jNZBJvzS4BQ+ERAv5EZPEb3
+         yP6QE65hgOfGJU9t5kBDpBfvII2MnLw5Fdlo4PsEIykkFgRSJyz1AiN9BxzrKoS54rQJ
+         cK8KPiAi3GOoDHKPJGm2A7/LuiS+QnGJwNpY6mgB8eGBNAUKS4vykRNLuicscX4zGnsQ
+         EikQ==
+X-Gm-Message-State: AOAM530DOps/ISHV/8uzjX46dD4Hinno1PomYvTmMNT1MO2rnLl99pzf
+        ebj2zOGjVBZwxur8k4c0rXg4FAD3qe8=
+X-Google-Smtp-Source: ABdhPJy+Fj4AxkozJVWqQ1ecr6dzxUVj2Ju0s8v9C3yenHVw7nAymBPFVQNdUxa8M1n4IlckdfsrQnvvAJ0=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f150:c3bd:5e7f:59bf])
+ (user=seanjc job=sendgmr) by 2002:a25:bc10:: with SMTP id i16mr6048991ybh.73.1628792058982;
+ Thu, 12 Aug 2021 11:14:18 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 12 Aug 2021 11:14:12 -0700
+Message-Id: <20210812181414.3376143-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH v2 0/2] KVM: x86/mmu: Fix a TDP MMU leak and optimize zap all
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jakub, thanks for the quick response!
+Patch 1 fixes a leak of root-1 shadow pages, patch 2 is a minor
+optimization to the zap all flow that avoids re-reading and re-checking
+the root-1 SPTEs after they've been zapped by "zap all" flows.
 
-> > +
-> > +             len = num_arg(&buffer[i], max_digits, &size);
-> > +             if (len < 0)
-> > +                     return len;
-> > +             i += len;
-> > +             if (get_user(c, &buffer[i]))
-> > +                     return -EFAULT;
-> > +             /* Check for comma between size_i and weight_i */
-> > +             if (c != ',')
-> > +                     return -EINVAL;
-> > +             i++;
-> > +
-> > +             if (size < 14 + 20 + 8)
-> > +                     size = 14 + 20 + 8;
->
-> Why overwrite instead of rejecting?
+I'm still somewhat on the fence for patch 2, feel free to drop it.
 
-I overwrite here to keep behavior similar to when pkt_size is set directly.
-When the pkt_size command is used the size value is overwritten to the
-minimum packet size (14 + 8 + 20).
-See the pkt_size section in pktgen_if_write().
+v2:
+ - Replaced magic number silliness with Paolo's much more clever suggestion.
+ - Elaborated on the benefits of the optimization.
+ - Add Ben's somewhat reluctant review for the optimization.
 
->
-> > +             len = num_arg(&buffer[i], max_digits, &weight);
-> > +             if (len < 0)
-> > +                     return len;
-> > +             if (weight <= 0)
-> > +                     return -EINVAL;
-> > +
-> > +             pkt_dev->imix_entries[pkt_dev->n_imix_entries].size = size;
-> > +             pkt_dev->imix_entries[pkt_dev->n_imix_entries].weight = weight;
-> > +
-> > +             i += len;
-> > +             if (get_user(c, &buffer[i]))
-> > +                     return -EFAULT;
->
-> What if this is the last entry?
+v1: https://lkml.kernel.org/r/20210812050717.3176478-1-seanjc@google.com
 
-If this is the last entry then the line terminating character is read.
-Similar code can be found in the get_labels() function in pktgen.c
+Sean Christopherson (2):
+  KVM: x86/mmu: Don't leak non-leaf SPTEs when zapping all SPTEs
+  KVM: x86/mmu: Don't step down in the TDP iterator when zapping all
+    SPTEs
 
-
-On Mon, Aug 9, 2021 at 5:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon,  9 Aug 2021 17:22:02 +0000 Nicholas Richardson wrote:
-> > From: Nick Richardson <richardsonnick@google.com>
-> >
-> > Adds "imix_weights" command for specifying internet mix distribution.
-> >
-> > The command is in this format:
-> > "imix_weights size_1,weight_1 size_2,weight_2 ... size_n,weight_n"
-> > where the probability that packet size_i is picked is:
-> > weight_i / (weight_1 + weight_2 + .. + weight_n)
-> >
-> > The user may provide up to 20 imix entries (size_i,weight_i) in this
-> > command.
-> >
-> > The user specified imix entries will be displayed in the "Params"
-> > section of the interface output.
-> >
-> > Values for clone_skb > 0 is not supported in IMIX mode.
-> >
-> > Summary of changes:
-> > Add flag for enabling internet mix mode.
-> > Add command (imix_weights) for internet mix input.
-> > Return -ENOTSUPP when clone_skb > 0 in IMIX mode.
-> > Display imix_weights in Params.
-> > Create data structures to store imix entries and distribution.
-> >
-> > Signed-off-by: Nick Richardson <richardsonnick@google.com>
-> > ---
-> >  net/core/pktgen.c | 95 +++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 95 insertions(+)
-> >
-> > diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-> > index 7e258d255e90..83c83e1b5f28 100644
-> > --- a/net/core/pktgen.c
-> > +++ b/net/core/pktgen.c
-> > @@ -175,6 +175,8 @@
-> >  #define IP_NAME_SZ 32
-> >  #define MAX_MPLS_LABELS 16 /* This is the max label stack depth */
-> >  #define MPLS_STACK_BOTTOM htonl(0x00000100)
-> > +/* Max number of internet mix entries that can be specified in imix_weights. */
-> > +#define MAX_IMIX_ENTRIES 20
-> >
-> >  #define func_enter() pr_debug("entering %s\n", __func__);
-> >
-> > @@ -242,6 +244,12 @@ static char *pkt_flag_names[] = {
-> >  #define VLAN_TAG_SIZE(x) ((x)->vlan_id == 0xffff ? 0 : 4)
-> >  #define SVLAN_TAG_SIZE(x) ((x)->svlan_id == 0xffff ? 0 : 4)
-> >
-> > +struct imix_pkt {
-> > +     __u64 size;
-> > +     __u64 weight;
-> > +     __u64 count_so_far;
->
-> no need for the __ prefix outside of uAPI.
->
-> > +};
-> > +
-> >  struct flow_state {
-> >       __be32 cur_daddr;
-> >       int count;
-> > @@ -343,6 +351,10 @@ struct pktgen_dev {
-> >       __u8 traffic_class;  /* ditto for the (former) Traffic Class in IPv6
-> >                               (see RFC 3260, sec. 4) */
-> >
-> > +     /* IMIX */
-> > +     unsigned int n_imix_entries;
-> > +     struct imix_pkt imix_entries[MAX_IMIX_ENTRIES];
-> > +
-> >       /* MPLS */
-> >       unsigned int nr_labels; /* Depth of stack, 0 = no MPLS */
-> >       __be32 labels[MAX_MPLS_LABELS];
-> > @@ -552,6 +564,16 @@ static int pktgen_if_show(struct seq_file *seq, void *v)
-> >                  (unsigned long long)pkt_dev->count, pkt_dev->min_pkt_size,
-> >                  pkt_dev->max_pkt_size);
-> >
-> > +     if (pkt_dev->n_imix_entries > 0) {
-> > +             seq_printf(seq, "     imix_weights: ");
-> > +             for (i = 0; i < pkt_dev->n_imix_entries; i++) {
-> > +                     seq_printf(seq, "%llu,%llu ",
-> > +                                pkt_dev->imix_entries[i].size,
-> > +                                pkt_dev->imix_entries[i].weight);
-> > +             }
-> > +             seq_printf(seq, "\n");
->
-> seq_puts()
->
-> > +     }
-> > +
-> >       seq_printf(seq,
-> >                  "     frags: %d  delay: %llu  clone_skb: %d  ifname: %s\n",
-> >                  pkt_dev->nfrags, (unsigned long long) pkt_dev->delay,
-> > @@ -792,6 +814,61 @@ static int strn_len(const char __user * user_buffer, unsigned int maxlen)
-> >       return i;
-> >  }
-> >
-> > +static ssize_t get_imix_entries(const char __user *buffer,
-> > +                             struct pktgen_dev *pkt_dev)
-> > +{
-> > +     /* Parses imix entries from user buffer.
-> > +      * The user buffer should consist of imix entries separated by spaces
-> > +      * where each entry consists of size and weight delimited by commas.
-> > +      * "size1,weight_1 size2,weight_2 ... size_n,weight_n" for example.
-> > +      */
->
-> This comments belongs before the function.
->
-> > +     long len;
-> > +     char c;
-> > +     int i = 0;
-> > +     const int max_digits = 10;
->
-> Please order these lines longest to shortest (reverse xmas tree).
->
-> > +     pkt_dev->n_imix_entries = 0;
-> > +
-> > +     do {
-> > +             unsigned long size;
-> > +             unsigned long weight;
->
-> same
->
-> > +
-> > +             len = num_arg(&buffer[i], max_digits, &size);
-> > +             if (len < 0)
-> > +                     return len;
-> > +             i += len;
-> > +             if (get_user(c, &buffer[i]))
-> > +                     return -EFAULT;
-> > +             /* Check for comma between size_i and weight_i */
-> > +             if (c != ',')
-> > +                     return -EINVAL;
-> > +             i++;
-> > +
-> > +             if (size < 14 + 20 + 8)
-> > +                     size = 14 + 20 + 8;
->
-> Why overwrite instead of rejecting?
->
-> > +             len = num_arg(&buffer[i], max_digits, &weight);
-> > +             if (len < 0)
-> > +                     return len;
-> > +             if (weight <= 0)
-> > +                     return -EINVAL;
-> > +
-> > +             pkt_dev->imix_entries[pkt_dev->n_imix_entries].size = size;
-> > +             pkt_dev->imix_entries[pkt_dev->n_imix_entries].weight = weight;
-> > +
-> > +             i += len;
-> > +             if (get_user(c, &buffer[i]))
-> > +                     return -EFAULT;
->
-> What if this is the last entry?
->
-> > +             i++;
-> > +             pkt_dev->n_imix_entries++;
-> > +
-> > +             if (pkt_dev->n_imix_entries > MAX_IMIX_ENTRIES)
-> > +                     return -E2BIG;
-> > +     } while (c == ' ');
->
-> empty line here
->
-> > +     return i;
-> > +}
-> > +
-> >  static ssize_t get_labels(const char __user *buffer, struct pktgen_dev *pkt_dev)
-> >  {
-> >       unsigned int n = 0;
-> > @@ -960,6 +1037,18 @@ static ssize_t pktgen_if_write(struct file *file,
-> >               return count;
-> >       }
-> >
-> > +     if (!strcmp(name, "imix_weights")) {
-> > +             if (pkt_dev->clone_skb > 0)
-> > +                     return -ENOTSUPP;
->
-> ENOTSUPP should not be returned to user space, please use a different
-> one.
->
-> > +             len = get_imix_entries(&user_buffer[i], pkt_dev);
-> > +             if (len < 0)
-> > +                     return len;
-> > +
-> > +             i += len;
-> > +             return count;
-> > +     }
-> > +
-> >       if (!strcmp(name, "debug")) {
-> >               len = num_arg(&user_buffer[i], 10, &value);
-> >               if (len < 0)
-> > @@ -1082,10 +1171,16 @@ static ssize_t pktgen_if_write(struct file *file,
-> >               len = num_arg(&user_buffer[i], 10, &value);
-> >               if (len < 0)
-> >                       return len;
-> > +             /* clone_skb is not supported for netif_receive xmit_mode and
-> > +              * IMIX mode.
-> > +              */
-> >               if ((value > 0) &&
-> >                   ((pkt_dev->xmit_mode == M_NETIF_RECEIVE) ||
-> >                    !(pkt_dev->odev->priv_flags & IFF_TX_SKB_SHARING)))
-> >                       return -ENOTSUPP;
-> > +             if (value > 0 && pkt_dev->n_imix_entries > 0)
-> > +                     return -ENOTSUPP;
->
-> ditto
->
-> >               i += len;
-> >               pkt_dev->clone_skb = value;
-> >
->
-
+ arch/x86/kvm/mmu/tdp_mmu.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
 -- 
+2.33.0.rc1.237.g0d66db33f3-goog
 
-
-
-
-
-Nick Richardson (he/him/his)
-
-SWE Intern
-
-1 (919) 410 3510
-
-careers.google.com/students
-
-
-|Learn more about our candidate privacy policy.|
