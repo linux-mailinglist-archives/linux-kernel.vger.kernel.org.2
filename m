@@ -2,275 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2F33EA938
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BC33EA93E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbhHLROO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235003AbhHLRON (ORCPT
+        id S235125AbhHLRPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:15:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234570AbhHLRPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:14:13 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B0EC0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:13:48 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id h1so9326249iol.9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C+kw6KEtW6hmma6EoO3CJHDh9sg5PN6QFZ9PAKAzm0Q=;
-        b=Rr8e0EBvWZ+YbwgmhRww1PZdSx8dyi2XQ+4O+T6zKcZnPJ/rsWfWp8MsHHFGhohoR5
-         DKtBawbVRfJg0+hXv/ZCSYAbs/NvZLksGeVRFN/pKWcKwSQhCu315QWDrhEoE5S+6hD/
-         C0WQygVgR/3CfOUWtKDurnIrpDOwv2HuaNehWTEa+n7a9bUrPd1Om0v1oY8PTjekd3dh
-         wIgZF2zPHwEvPsB0zahLuv6fNfS0wd55Gasu4nKTJSrBz+OGn134foQRq4EXsT2iuGkc
-         bOAmajGlvCwbFS2Bq691IqrAIWZnX2bpaEQOTZOSx/a1WFBzFnIGTFdNDjjI1x8KrEKy
-         VFtg==
+        Thu, 12 Aug 2021 13:15:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628788506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hl2q/IBeDF11InTwkjo+Q88yO1GQYT5aRVKT9ieIQAI=;
+        b=FT+ry8+qt1epauQX3tA7iZAI3cisYNrBewW2C/2M3Fd8o9ofEBJjAX2nKbT7u6wjpUuX8I
+        2wCmA6OqgMHoqgVkJdLrBARE5hLgT0lcZDDoEIcNHw5lzpdU4FptFDdywwvTKQtMxWMiI7
+        qMpaa5S8lnUxjZxOAbAk2H+xhlqoTSE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-m95tS8d9ONu6M2gPJHwmIw-1; Thu, 12 Aug 2021 13:15:05 -0400
+X-MC-Unique: m95tS8d9ONu6M2gPJHwmIw-1
+Received: by mail-ej1-f69.google.com with SMTP id ja25-20020a1709079899b02905b2a2bf1a62so2087709ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:15:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C+kw6KEtW6hmma6EoO3CJHDh9sg5PN6QFZ9PAKAzm0Q=;
-        b=rU02CeetZp92E3e13JsvO/aJOXq2lFj/TR9b5BK3edigpUv3UsnBfit+92grca/XSF
-         +khEzn9wQHmtpn4s6Q0U9sYM2CYnUmRT6LKHz6xAiEtglVrqijFyTAsI2NDBcZdeiD7w
-         v+mpuKLMtEh3zUcvXxBFzUOoHGcF4e2Qzx51eUzfgNR2d7v50ohk6MMMNW7jNEOUUwUP
-         +qjMIhje6khM0+rOXVbDHjZZxKLe5dY968aYCSfG0B+LWddN67JAeGy+ykdIe2lVC5CF
-         +bXI+AeqxOBUdG7XGH2EaaFklol/XIEBRk3APwS8EDnChSYMoWCRopMN+tkXg2VcS0Yx
-         b27g==
-X-Gm-Message-State: AOAM533S+2hn/xOKyK7BehDwwnD27hHNjtwbx6OqMuaZ8XhLcJ+ymIyb
-        XABi8LcNqyY2Fd3rvd6ut9h2kZ0F9/ZywxZ78p9K8Q==
-X-Google-Smtp-Source: ABdhPJxWAOKK3OAmEb2NC2KNtZMoGydS8sA/K3D7jRGe71nWWLOTTrhfL+kQGmHq2X/baJMtVWzdSMNitYRNE6TG/nM=
-X-Received: by 2002:a02:6a24:: with SMTP id l36mr4650319jac.4.1628788427511;
- Thu, 12 Aug 2021 10:13:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hl2q/IBeDF11InTwkjo+Q88yO1GQYT5aRVKT9ieIQAI=;
+        b=pAREIUL2bVXtm/LfHt9Uk3Phs9fob/hw6Fnc0CVeQE3OzyHOS0z/3qfkfywDNwrwnC
+         uEMU+fHxK5CX5D1/BWQhtUo2xdWdIlQFvItmTD/ZYPgrQwBrA/twazZ5NNBLd9bNzJtt
+         yUHtwzHjJ5V6el++lfDMCzPpGAXQNKu7EU3JQx8pafHvgHPlvi8ljUpt7Fyh8t3s8STd
+         D5ofOBLWVW8/iA/oyeY+tv7fA0mD/LNPgOuEz5oI9aIOPah4evYyzGNSpZIGqDuy7/X6
+         NEbQRXt43KVpQ578OorsJ6QKFhvEwZXyU8mH92c/2lXoyoQjvjvK0N68TNFQoiqY/RZa
+         rGlg==
+X-Gm-Message-State: AOAM531dd97HuPivjRvQ1lI7VSTPb7d88smETG+h8v+ggclLH2Ybgm1N
+        aAokq74bv68pGO+w/E1gtdllhXWWjWMWCPFgBCaiv8R89Jp6T0/GJdtqUq7urxrrBFMgaugGaJb
+        16DM3hv/yeg3bLjzysVHdhFX4cI2Tp5uyTF6t9pmCe0Kigogottqp6AskGqN/lqJRO4g9hs/MsY
+        MH
+X-Received: by 2002:a17:906:27c2:: with SMTP id k2mr4767566ejc.83.1628788503934;
+        Thu, 12 Aug 2021 10:15:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxEeKcRzmOwBpp9BraLT3nidE1aRoYWBwP+lWqClH2qMMa+9atOOooDHgiCXS/nS9PCTgByA==
+X-Received: by 2002:a17:906:27c2:: with SMTP id k2mr4767524ejc.83.1628788503613;
+        Thu, 12 Aug 2021 10:15:03 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n26sm1408416eds.63.2021.08.12.10.15.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 10:15:02 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Don't step down in the TDP iterator
+ when zapping all SPTEs
+To:     Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210812050717.3176478-1-seanjc@google.com>
+ <20210812050717.3176478-3-seanjc@google.com>
+ <CANgfPd8HSYZbqmi21XQ=XeMCndXJ0+Ld0eZNKPWLa1fKtutiBA@mail.gmail.com>
+ <YRVVWC31fuZiw9tT@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <928be04d-e60e-924c-1f3a-cb5fef8b0042@redhat.com>
+Date:   Thu, 12 Aug 2021 19:15:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210805235145.2528054-1-dlatypov@google.com> <CABVgOS=u9sOEbS-m63HtBmiBSqDdsX+kRgBMUWzx4T8_VXvZ8g@mail.gmail.com>
-In-Reply-To: <CABVgOS=u9sOEbS-m63HtBmiBSqDdsX+kRgBMUWzx4T8_VXvZ8g@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 12 Aug 2021 10:13:36 -0700
-Message-ID: <CAGS_qxqVZy4QvP3X3H1Ww=pFZD-j=hgYzYSXz-az+QMJ+CxdgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] kunit: tool: make --raw_output support only
- showing kunit output
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRVVWC31fuZiw9tT@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 11:48 PM David Gow <davidgow@google.com> wrote:
->
-> On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > --raw_output is nice, but it would be nicer if could show only output
-> > after KUnit tests have started.
-> >
-> > So change the flag to allow specifying a string ('kunit').
-> > Make it so `--raw_output` alone will default to `--raw_output=all` and
-> > have the same original behavior.
-> >
-> > Drop the small kunit_parser.raw_output() function since it feels wrong
-> > to put it in "kunit_parser.py" when the point of it is to not parse
-> > anything.
-> >
-> > E.g.
-> >
-> > $ ./tools/testing/kunit/kunit.py run --raw_output=kunit
-> > ...
-> > [15:24:07] Starting KUnit Kernel ...
-> > TAP version 14
-> > 1..1
-> >     # Subtest: example
-> >     1..3
-> >     # example_simple_test: initializing
-> >     ok 1 - example_simple_test
-> >     # example_skip_test: initializing
-> >     # example_skip_test: You should not see a line below.
-> >     ok 2 - example_skip_test # SKIP this test should be skipped
-> >     # example_mark_skipped_test: initializing
-> >     # example_mark_skipped_test: You should see a line below.
-> >     # example_mark_skipped_test: You should see this line.
-> >     ok 3 - example_mark_skipped_test # SKIP this test should be skipped
-> > ok 1 - example
-> > [15:24:10] Elapsed time: 6.487s total, 0.001s configuring, 3.510s building, 0.000s running
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> Thanks: this is something I've secretly wanted for a long time, and I
-> really like the interface here of "--raw_output=kunit". I do wonder if
-> we want to make this behaviour the default, though...
+On 12/08/21 19:07, Sean Christopherson wrote:
+> Yeah, I was/am on the fence too, I almost included a blurb in the cover letter
+> saying as much.  I'll do that for v2 and let Paolo decide.
 
-I personally would like it to be, but I don't really know who else is
-using --raw_output and why.
-Maybe they want to see non-KUnit output since they're debugging
-something not coming up on UML, etc.
+I think it makes sense to have it.  You can even use the ternary operator
 
->
-> The only other note I'd have, though this was a problem with the
-> previous version as well, is that the output still includes the other
-> kunit_tool output lines, e.g.:
-> [23:42:01] Configuring KUnit Kernel ...
-> [23:42:01] Building KUnit Kernel ...
->
-> This means that the "raw" output still can't easily just be redirected
-> elsewhere and used. That's probably a separate fix though, and I still
-> think this is a massive improvement over what we have.
+	/*
+	 * When zapping everything, all entries at the top level
+	 * ultimately go away, and the levels below go down with them.
+	 * So do not bother iterating all the way down to the leaves.
+	 */
+	int min_level = zap_all ? root->role.level : PG_LEVEL_4K;
 
-Yes, this is an annoyance to me as well.
-I was wondering if we should make those go to stderr or something so
-users could pipe just stdout?
+Paolo
 
-But yeah, it feels like a change for another patch.
-I was not hindered by this in making the hacky shell script in the
-second patch (to run each suite individually), but other consumers of
-the output might be.
-
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> -- David
->
-> >  Documentation/dev-tools/kunit/kunit-tool.rst |  9 ++++++---
-> >  tools/testing/kunit/kunit.py                 | 20 +++++++++++++++-----
-> >  tools/testing/kunit/kunit_parser.py          |  4 ----
-> >  tools/testing/kunit/kunit_tool_test.py       |  9 +++++++++
-> >  4 files changed, 30 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
-> > index c7ff9afe407a..ae52e0f489f9 100644
-> > --- a/Documentation/dev-tools/kunit/kunit-tool.rst
-> > +++ b/Documentation/dev-tools/kunit/kunit-tool.rst
-> > @@ -114,9 +114,12 @@ results in TAP format, you can pass the ``--raw_output`` argument.
-> >
-> >         ./tools/testing/kunit/kunit.py run --raw_output
-> >
-> > -.. note::
-> > -       The raw output from test runs may contain other, non-KUnit kernel log
-> > -       lines.
-> > +The raw output from test runs may contain other, non-KUnit kernel log
-> > +lines. You can see just KUnit output with ``--raw_output=kunit``:
-> > +
-> > +.. code-block:: bash
-> > +
-> > +       ./tools/testing/kunit/kunit.py run --raw_output=kunit
-> >
-> >  If you have KUnit results in their raw TAP format, you can parse them and print
-> >  the human-readable summary with the ``parse`` command for kunit_tool. This
-> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > index 7174377c2172..5a931456e718 100755
-> > --- a/tools/testing/kunit/kunit.py
-> > +++ b/tools/testing/kunit/kunit.py
-> > @@ -16,6 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
-> >
-> >  from collections import namedtuple
-> >  from enum import Enum, auto
-> > +from typing import Iterable
-> >
-> >  import kunit_config
-> >  import kunit_json
-> > @@ -114,7 +115,16 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
-> >                                               'Tests not Parsed.')
-> >
-> >         if request.raw_output:
-> > -               kunit_parser.raw_output(request.input_data)
-> > +               output: Iterable[str] = request.input_data
-> > +               if request.raw_output == 'all':
-> > +                       pass
-> > +               elif request.raw_output == 'kunit':
-> > +                       output = kunit_parser.extract_tap_lines(output)
-> > +               else:
-> > +                       print(f'Unknown --raw_output option "{request.raw_output}"', file=sys.stderr)
-> > +               for line in output:
-> > +                       print(line.rstrip())
-> > +
-> >         else:
-> >                 test_result = kunit_parser.parse_run_tests(request.input_data)
-> >         parse_end = time.time()
-> > @@ -135,7 +145,6 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
-> >         return KunitResult(KunitStatus.SUCCESS, test_result,
-> >                                 parse_end - parse_start)
-> >
-> > -
-> >  def run_tests(linux: kunit_kernel.LinuxSourceTree,
-> >               request: KunitRequest) -> KunitResult:
-> >         run_start = time.time()
-> > @@ -181,7 +190,7 @@ def add_common_opts(parser) -> None:
-> >         parser.add_argument('--build_dir',
-> >                             help='As in the make command, it specifies the build '
-> >                             'directory.',
-> > -                            type=str, default='.kunit', metavar='build_dir')
-> > +                           type=str, default='.kunit', metavar='build_dir')
-> >         parser.add_argument('--make_options',
-> >                             help='X=Y make option, can be repeated.',
-> >                             action='append')
-> > @@ -246,8 +255,9 @@ def add_exec_opts(parser) -> None:
-> >                              action='append')
-> >
-> >  def add_parse_opts(parser) -> None:
-> > -       parser.add_argument('--raw_output', help='don\'t format output from kernel',
-> > -                           action='store_true')
-> > +       parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
-> > +                           'If set to --raw_output=kunit, filters to just KUnit output.',
-> > +                           type=str, nargs='?', const='all', default=None)
-> >         parser.add_argument('--json',
-> >                             nargs='?',
-> >                             help='Stores test results in a JSON, and either '
-> > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> > index b88db3f51dc5..84938fefbac0 100644
-> > --- a/tools/testing/kunit/kunit_parser.py
-> > +++ b/tools/testing/kunit/kunit_parser.py
-> > @@ -106,10 +106,6 @@ def extract_tap_lines(kernel_output: Iterable[str]) -> LineStream:
-> >                                 yield line_num, line[prefix_len:]
-> >         return LineStream(lines=isolate_kunit_output(kernel_output))
-> >
-> > -def raw_output(kernel_output) -> None:
-> > -       for line in kernel_output:
-> > -               print(line.rstrip())
-> > -
-> >  DIVIDER = '=' * 60
-> >
-> >  RESET = '\033[0;0m'
-> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > index 628ab00f74bc..619c4554cbff 100755
-> > --- a/tools/testing/kunit/kunit_tool_test.py
-> > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > @@ -399,6 +399,15 @@ class KUnitMainTest(unittest.TestCase):
-> >                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
-> >                         self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
-> >
-> > +       def test_run_raw_output_kunit(self):
-> > +               self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
-> > +               kunit.main(['run', '--raw_output=kunit'], self.linux_source_mock)
-> > +               self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
-> > +               self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
-> > +               for call in self.print_mock.call_args_list:
-> > +                       self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
-> > +                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
-> > +
->
-> This is basically identical to test_run_raw_output(). Is there an easy
-> way of making sure this test can distinguish between them?
-
-It is identical.
-And the answer is no, not really right now.
-
-We'd have to redo the other test to be more thorough in order to
-distinguish the two different flag values, which is a bit more than I
-wanted to go into this particular patch.
-
->
-> >         def test_exec_timeout(self):
-> >                 timeout = 3453
-> >                 kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
-> >
-> > base-commit: f684616e08e9cd9db3cd53fe2e068dfe02481657
-> > --
-> > 2.32.0.605.g8dce9f2422-goog
-> >
