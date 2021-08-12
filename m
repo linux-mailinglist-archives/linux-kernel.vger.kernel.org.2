@@ -2,165 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4193F3E9EFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8DC3E9F06
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbhHLGyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:54:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:14073 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232784AbhHLGyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:54:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="237320886"
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="237320886"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 23:54:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="469661236"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2021 23:54:17 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 11 Aug 2021 23:54:17 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 11 Aug 2021 23:54:16 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Wed, 11 Aug 2021 23:54:16 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Wed, 11 Aug 2021 23:54:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PLJ7sqNfYuk/VAgU4GvdMaeiLDx13d5K+rqaLI6olUL+lob6by0hLWdHT7QiX3V7T6PKWgMU/wsj8u9yPmfxjfnptOb1tc17gU96mDY5Y2TDcqxV4VqboadjFNPcCOIL+LyEHg2FOrx8TUGPdVh/RAty+BIstkDU1eBKrne2xrQ0pxuYcUYhuKPlemIHSrjERIxcIeIM/4MBZB35t+Uz+GLxzsI2dJYbMekYxvL6tArra6j5ttSwDtJFFZWdAq0Pc/ZQmdZB2DUD7cBCY0irKrGnMtP1Xc3UwGxUeW0elT0EVATYZZ+jGmSEbc8dLvIJT1WxNLzlbJpjiOlFowq7ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcLUPN1T0lbzlXHQtpamllBoqgJNPdKpv2CU31y2LaM=;
- b=GjqGiibVH9/xiUoqbEYR53HlnmpoHzQX9vkyICNGrgPZGcVjid2aOZoOaKIeoxePP0lUOqMAbNE2lX7b19QEh15KYhIukbfTf/YEvMf9qvExCpeRox8MMHpDIJtWbhjGQXMmfH05MChEHe/QlTydqFcflHLL3zZjBBnCRoOLFk3e93SAMIPPmMI8Db2QgQ9/poJDCRpc+sUfMkWJZ1XyAYUNIbe6YKnL7ChRP3AUVMAugLA9kiEu1tm6wzH9ofu19tgI1SDkczz4iKzl3viA7Sl/FFWw9CMRzfS84mprwL5+BS9XXH1YmhIXoEnE+Vnlsh8qWHMdSnm7dYckoXa7BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcLUPN1T0lbzlXHQtpamllBoqgJNPdKpv2CU31y2LaM=;
- b=agjP71QvfC1cNVyek8XltbJlOn5GTaY1zX0dMt6N1bGkeAnMwH4CSsvi9LwXT++kg8rWe+vhdNY2+1NBEUlffhiKYQoFqBXdxTeUmV/mxypM4cxHZjuYPFssfgfqZGARduagU195aSkQ48J9NiK1+LycL4nDGzpkUhfkDUQz1g4=
-Received: from BL3PR11MB5699.namprd11.prod.outlook.com (2603:10b6:208:33e::8)
- by BL0PR11MB3137.namprd11.prod.outlook.com (2603:10b6:208:73::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Thu, 12 Aug
- 2021 06:54:15 +0000
-Received: from BL3PR11MB5699.namprd11.prod.outlook.com
- ([fe80::694d:3b35:3c46:64b7]) by BL3PR11MB5699.namprd11.prod.outlook.com
- ([fe80::694d:3b35:3c46:64b7%8]) with mapi id 15.20.4415.017; Thu, 12 Aug 2021
- 06:54:15 +0000
-From:   "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>
-Subject: RE: [PATCH v4 0/2] Add pinctrl support for Intel Keem Bay SoC
-Thread-Topic: [PATCH v4 0/2] Add pinctrl support for Intel Keem Bay SoC
-Thread-Index: AQHXis851/ivp1GxZ023t4kSlwVI06tuT8gAgAAxBfA=
-Date:   Thu, 12 Aug 2021 06:54:14 +0000
-Message-ID: <BL3PR11MB5699258A36F846692578C42DC4F99@BL3PR11MB5699.namprd11.prod.outlook.com>
-References: <20210806142527.29113-1-lakshmi.sowjanya.d@intel.com>
- <CACRpkdb2B-=nkp075+DvZzXYKOEXaUDBdktFSTxqRLwTVDg=Ng@mail.gmail.com>
-In-Reply-To: <CACRpkdb2B-=nkp075+DvZzXYKOEXaUDBdktFSTxqRLwTVDg=Ng@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a79fd3f7-3994-454c-36b3-08d95d5dff97
-x-ms-traffictypediagnostic: BL0PR11MB3137:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR11MB3137777D06A135A872CDBA3DC4F99@BL0PR11MB3137.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AZjEfY012sixFLLFLDhc5RUC+Yz4MBQMdFnkeXdkeN+fjc0MIC+Bj6El9nOUMCVQHrNGAwPmsic/0qxiU97brQ7ms1BPFdfWr2D8zxJU70uM60LielOKNaSuoIx03z9mftDQxPiXk6B6wLCZH2LP9nTqWOUcbzZei2iMXbcEPUt9eMSVCY+ngQU+IyV5kfQstEvQykw2pR5z8+eRxptD14QbcH6BwSmw2zgEH8tpkD3qsQpxEuAD+F3CJVaOkAyQpXlnINNOT+YVYk11mV8bEANRO9R7vaSDA5r9kVoflH1DATRrH+T4EpwUJe1TwVEsPpjEu+0lK/i+0jxCqGJpSdl7G5yiI0GDUqdM51PkmWMWGM/kB2FdkVce7uZUTTy+oW0erUSya44nIY85yrDZ1OhF3uHWx53fAtQ0nrRNXNiGM68Yf418j33hUpa5q4Yhjf87LUfwjQiTH9ldFghhTom/0YtGoiwOZRo3GV3wnY6mHCBCRkPDLPpoSm9ch9WuEoJzKlGr4wzIbR7V36aZ7tEoNL4QpqoT4gyVPlQN8SAI5rW/TLcDDrHr+7LBF0vm7G913yhC7BFj76baAshJfoBIymOymmTYN6FIIYUbH75RTx0bwwidPb0Ejeh2Q08Nf+N4zEA4M48fTpQxZk164EFqji9R8q9aDaT7uh6UO5VroZJB6k+WAZscXsNSh5YrsErAJ5KnuiDS2+zdXKYaBw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB5699.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(366004)(396003)(52536014)(4744005)(83380400001)(66946007)(76116006)(6916009)(55016002)(9686003)(33656002)(5660300002)(8676002)(86362001)(53546011)(122000001)(6506007)(66446008)(7696005)(478600001)(2906002)(66556008)(64756008)(316002)(38070700005)(4326008)(54906003)(8936002)(71200400001)(186003)(38100700002)(26005)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V2UwUStER0ZOSHRSaEtWeTZocDF2NWxoclpSYXVYMU8vdWovbEVjc011dkxo?=
- =?utf-8?B?elpIeEV0OG5DdmxGYmdtbWRDc3k5a042TzVLUytwRlhVdWFyQVd1TjFxQ1ZH?=
- =?utf-8?B?RkVMeUNqR01wczB3OEg0azNhRHF5OFZ0aitBTCtJaFkybWxHQ01XU1B5ZW9i?=
- =?utf-8?B?M1ZCRTJXZllkV3puSGJyWE56dGpaZUFmUzFrbkZ4Um4wMGtYeUhiaGUzMFc0?=
- =?utf-8?B?YmhGWXJSaVpGUERrS1RLYTZqV2dPbVRYSWswb3pIcHJZc0UwN2crYURVcHdl?=
- =?utf-8?B?YzRtSGs5MkVxSXlTWitSQzBzR3JhNklNL0VwN3JNbnpSTG5Rd1FFcG9XbjN4?=
- =?utf-8?B?UFdOMUFMSWljNnkwQjl6UGp2U2ZMaDZBY0RTdEtjWTVxR0VoVWRqYTVNZHR6?=
- =?utf-8?B?aXpOM2FhRERLbDV3YkxyanBWT2UvNnZJS2orakcxVm1YYkdudEEwQ3RJamNB?=
- =?utf-8?B?SlBOWlpQNnhJR2oya1MwSUZLUDRtK1dpS1lXcGl3azhpTWJZeXdaSUhaSmln?=
- =?utf-8?B?aXhiQ2l1TGRSYzR3SHFRUjh5TkFwVGNsZVlCR0wvcFZXRGNUMzJRRFFHL3Zz?=
- =?utf-8?B?UnpiRkNBVnJsdjZQcDZlTkNoRXNycmVTbmVFSHFuRjI4bG9lQTVxSUVGR3d6?=
- =?utf-8?B?cFR1SXpwWkpvcFdpbGc1V2lrNVgzSkNETGFMa3VxSFZ3Ny9QcnA0Ny9UZURo?=
- =?utf-8?B?bVVKOWFXMFJMKzBPbG4xWTl1VWczT1JKL2RBOFRhSmJ0WGJya3R3YUZuQXV5?=
- =?utf-8?B?SElTendGOTVEcnFPKzA4VitYUVZKUVM1czEvWXdyNFR5OGFTSlVuL1ZyV3A1?=
- =?utf-8?B?SnRSRGlGU1dZT1VLTWNPbnROREcvRDZzOWcyNnRwdi9hMG9DSWZrZlpIWjRC?=
- =?utf-8?B?TTl4bkFaMkFwYjI5TGhJTURsV1RDbWlkOXdPcVRyNGVtaldVQUVSWFZRT3VV?=
- =?utf-8?B?Y1ZwcUhyYzJrb0ovS1Z3T2d5eFBzOExidG52bXlFSXVKWjZKMVZ0SzFZbmN1?=
- =?utf-8?B?WkJGWDhYVnBtZFVrSXEvQWtoU0xIZXpHTWt0TVhZczdMZ2ZYT3NHQzI3d252?=
- =?utf-8?B?UHVJU1RCOFhUd2F0U3hWdzFENE1aWDVKcVpRQkFvNjdJeGJoSHVZZ29OSysw?=
- =?utf-8?B?dGcwQkNlaDFYZmF4YmdrU1MyR1dTdDd5TkdwdXd6aFNnY3JNUWtwcHRIckJo?=
- =?utf-8?B?TXo5SzhYZzBRT2Vxa1VxTzVRRHRJV252bjh1Ym5MWjAwaExCekErZlhKRUN0?=
- =?utf-8?B?MTVUd0xEZWtvYmh5NDdNWEg1ZGNHR2NZMUJtamNjNzgwVGdXNWhZRGh6SmEz?=
- =?utf-8?B?a3RUdjNVR0hxUWREQXFUME54ZEFLVGk1K2Z3azIrNkRsZUkwVTFkdzl0Q3VZ?=
- =?utf-8?B?YmNkaWlEZkhRbjJNcUtFTkJvN2tvVUJIUTViUjk3OFJMS1pmV2Jpd0grQWFX?=
- =?utf-8?B?M2E2aUt6WlJEczdmMGFGYnYzRmdyUnM5aWdBaW5JRWswMnVFOEdtdlBwTXJX?=
- =?utf-8?B?eU9Wdm0wNUh6dGxMdzNXOUpBM0VlOGlVdHBIZ2tnLzVvNjRHaFRqUERBRnFW?=
- =?utf-8?B?UGZVeW8yWGM0Z0dHOWQ2aUNkWXVhTEcwd0ZwZU1wUXpsdXIrc241RGtNZ0hB?=
- =?utf-8?B?SFp6c0grcEFhazJNT2xpNW54QXNaMStFWDVMOGhLSDlHVUEwUytVbDRXbE1X?=
- =?utf-8?B?Qk93dE9wMWhqSnhqZEw3KzRZeWE4OUxvMlhwL25MTGdIWU5sSk1hYkErWEM3?=
- =?utf-8?Q?xxDATVq6pmTYDazCwD5M9k0CAii6QrNVTiUdgYu?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB5699.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a79fd3f7-3994-454c-36b3-08d95d5dff97
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 06:54:14.9584
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SWz2KpP82qWcPMxkJkgSVcVhvqZbYUizJwFUVo4kCZsQIcikEB9lMs9PIUMmpd7aK9Ns8Kii6RZeYLQNfVa08I3fW7iwH1qF+e/eBunFWsI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB3137
-X-OriginatorOrg: intel.com
+        id S233996AbhHLG6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231184AbhHLG6L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:58:11 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AF2C061765;
+        Wed, 11 Aug 2021 23:57:46 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so9195007pjb.3;
+        Wed, 11 Aug 2021 23:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/oIkmpuRct1iuZiBlhfx+uUrzMQCcYf9oSBv+0fmA1E=;
+        b=iCrJ7xzmPU1n4CJ3A87AELaWWIZz9owuP9miS4FZSDUodOmBPEU4Ky8Gh2VB6t+T0l
+         6KiKhgn9SmkSEzB5DBFRWQqxqUu4eYwAn7GkFPpgpaXmY12Bd0K77+IB+oKIzw/XoRBZ
+         rdm2lFo4xfbYMeOjTk/N4WlgueSmRSaR0h/M1PnoETX0MsEPNOIB8dMxG7rr/RSWBFPS
+         QwrxjxkW8+8WKj73Kf0FEAc0KQDRu4gHPCbIxr/Qjt7wxr7GfQzaIw9Ww2rvQii1+cCb
+         QVcnZ7PQJqIQ30g5i32K8PGVMTC79nWCJcOrJ+aTXXz1opMXLnTQ11XgFwhOcZf+ETfI
+         r0lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/oIkmpuRct1iuZiBlhfx+uUrzMQCcYf9oSBv+0fmA1E=;
+        b=CPQ/CyzVxaKdK12ReNvBtVpJ/JdwPXtwiBIg7VRMHcPI8Qz+rLRIbxlNfqZRBEaesH
+         Orj1PLWNVYcQ3OcRk3L5QYbba+gvUgqZ1rd2PuHsWs959vDHB5Ip32D1vD3O2Qpk7QnS
+         CcFX52T7Cud5jNpLe+NTs8yhlyBzvpeQRp0TAPUCSia9p8fWt5Vhy6XF/HAatlQzuB7w
+         26VIlvICrukKkaLH/UsnwLfxnttNQhzUqfu+e2wGGidly3F+EivIDf7QojZMwLC0Y+yZ
+         gtbXE/ju2U1tWsBLq35E3X2AGu1CPcik5R9dYt1KzKFvLdJOR9/DG0CQAX/sBrRjkcx/
+         3J1A==
+X-Gm-Message-State: AOAM530WP0zi7PlPQdFEYydjdLrQnkU5IgT5i+12KFhquXKjPHQcBmyq
+        vFqhHwgRceb0cDnRlLfQxCMdk3mL9xUBbDSjBJ8=
+X-Google-Smtp-Source: ABdhPJzaTT4uviarShkveSCxtxdmHkfpCbFQSrwwQHQQDR7jgtbi18faQXbtudIoV5qqIpljTQSoMA==
+X-Received: by 2002:aa7:8185:0:b029:3aa:29a2:39d3 with SMTP id g5-20020aa781850000b02903aa29a239d3mr2729500pfi.28.1628751465968;
+        Wed, 11 Aug 2021 23:57:45 -0700 (PDT)
+Received: from localhost.localdomain ([106.51.233.109])
+        by smtp.gmail.com with ESMTPSA id k197sm1910452pfd.190.2021.08.11.23.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 23:57:45 -0700 (PDT)
+From:   Nishad Kamdar <nishadkamdar@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>
+Cc:     Nishad Kamdar <nishadkamdar@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mmc: core: Return correct emmc response in case of ioctl error
+Date:   Thu, 12 Aug 2021 12:27:30 +0530
+Message-Id: <20210812065730.3986-1-nishadkamdar@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXMgV2FsbGVpaiA8
-bGludXMud2FsbGVpakBsaW5hcm8ub3JnPg0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAxMSwg
-MjAyMSA2OjQ0IFBNDQo+IFRvOiBELCBMYWtzaG1pIFNvd2phbnlhIDxsYWtzaG1pLnNvd2phbnlh
-LmRAaW50ZWwuY29tPg0KPiBDYzogb3BlbiBsaXN0OkdQSU8gU1VCU1lTVEVNIDxsaW51eC1ncGlv
-QHZnZXIua2VybmVsLm9yZz47IGxpbnV4LWtlcm5lbA0KPiA8bGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZz47IEFuZHkgU2hldmNoZW5rbw0KPiA8YW5kcml5LnNoZXZjaGVua29AbGludXguaW50
-ZWwuY29tPjsgUmFqYSBTdWJyYW1hbmlhbiwgTGFrc2htaSBCYWkNCj4gPGxha3NobWkuYmFpLnJh
-amEuc3VicmFtYW5pYW5AaW50ZWwuY29tPjsgU2FoYSwgVGFtYWwNCj4gPHRhbWFsLnNhaGFAaW50
-ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY0IDAvMl0gQWRkIHBpbmN0cmwgc3VwcG9y
-dCBmb3IgSW50ZWwgS2VlbSBCYXkgU29DDQo+IA0KPiBPbiBGcmksIEF1ZyA2LCAyMDIxIGF0IDQ6
-MjUgUE0gPGxha3NobWkuc293amFueWEuZEBpbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gPiBUaGlz
-IHBhdGNoIHNldCBlbmFibGVzIHRoZSBzdXBwb3J0IGZvciB0aGUgaW50ZWdyYXRlZCBwaW4gY29u
-dHJvbGxlcg0KPiA+IGluIHRoZSBJbnRlbCBLZWVtIEJheSBTb0MuDQo+ID4NCj4gPiBQYXRjaCAx
-IGhvbGRzIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBwaW5jdHJsIGRyaXZlci4NCj4gPiBQYXRjaCAy
-IGhvbGRzIHRoZSByZWxldmFudCBEZXZpY2UgVHJlZSBiaW5kaW5ncyBkb2N1bWVudGF0aW9uIGFu
-ZCBhbg0KPiA+IGVudHJ5IGluIE1BSU5UQUlORVJTIGZpbGUNCj4gDQo+IFBhdGNoZXMgYXBwbGll
-ZCENCj4gDQo+IFlvdXJzLA0KPiBMaW51cyBXYWxsZWlqDQoNClRoYW5rIHlvdSAhIQ0KDQpSZWdh
-cmRzLA0KU293amFueWENCg==
+When a read/write command is sent via ioctl to the kernel,
+and the command fails, the actual error response of the emmc
+is not sent to the user.
+
+IOCTL read/write tests are carried out using commands
+17 (Single BLock Read), 24 (Single Block Write),
+18 (Multi Block Read), 25 (Multi Block Write)
+
+The tests are carried out on a 64Gb emmc device. All of these
+tests try to access an "out of range" sector address (0x09B2FFFF).
+
+It is seen that without the patch the response received by the user
+is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
+JEDEC specification. After applying the patch proper response is seen.
+This is because the function returns without copying the response to
+the user in case of failure. This patch fixes the issue.
+
+The test code and the output of only the CMD17 is included in the
+commit to limit the message length.
+
+CMD17 (Test Code Snippet):
+==========================
+        printf("Forming CMD%d\n", opt_idx);
+        /*  single block read */
+        cmd.blksz = 512;
+        cmd.blocks = 1;
+        cmd.write_flag = 0;
+        cmd.opcode = 17;
+        //cmd.arg = atoi(argv[3]);
+        cmd.arg = 0x09B2FFFF;
+        /* Expecting response R1B */
+        cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+
+        memset(data, 0, sizeof(__u8) * 512);
+        mmc_ioc_cmd_set_data(cmd, data);
+
+        printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+        if(ioctl(fd, MMC_IOC_CMD, &cmd))
+                perror("Error");
+
+        printf("\nResponse: %08x\n", cmd.response[0]);
+
+CMD17 (Output without patch):
+=============================
+test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
+Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 0x09B2FFF]
+Forming CMD17
+Sending CMD17: ARG[0x09b2ffff]
+Error: Connection timed out
+
+Response: 00000000
+(Incorrect response)
+
+CMD17 (Output with patch):
+==========================
+test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
+[sudo] password for test:
+Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
+Forming CMD17
+Sending CMD17: ARG[0x09b2ffff]
+Error: Connection timed out
+
+Response: 80000900
+(Correct OUT_OF_ERROR response as per JEDEC specification)
+
+Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+---
+Changes in v2:
+  - Make commit message clearer by adding test cases as outputs.
+Changes in v3:
+  - Shorten the commit message to include only CMD17 related
+    code and test.
+
+ drivers/mmc/core/block.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index a9ad9f5fa9491..efa92aa7e2368 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -522,11 +522,13 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
+ 	if (cmd.error) {
+ 		dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
+ 						__func__, cmd.error);
++		memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+ 		return cmd.error;
+ 	}
+ 	if (data.error) {
+ 		dev_err(mmc_dev(card->host), "%s: data error %d\n",
+ 						__func__, data.error);
++		memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+ 		return data.error;
+ 	}
+ 
+-- 
+2.17.1
+
