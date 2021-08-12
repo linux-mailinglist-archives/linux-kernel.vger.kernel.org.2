@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4350A3E9F80
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131D43E9F81
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhHLHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S234223AbhHLHjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbhHLHgX (ORCPT
+        with ESMTP id S231496AbhHLHjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:36:23 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4981C061765;
-        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id nt11so8004254pjb.2;
-        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=GlUzBZlaOoOtYGy1tVlXbHFbHEq0/VdkpbsBXQi4TMY=;
-        b=eqzi9gvT2lMC9XqsL+9KpCm38Ft48Q5vTN2LNQunBNY5dW+mN7sBmRpoAvQgjPo2pA
-         64YjMmxoBFejoJihn7watvLSvOBtwndYX1APMpqs402Lnizlg3eKvD2xjuzykNw8oEHU
-         /q62loPDvoYUnfGFAzRaxNTaKoU1B0vWtLWXZTNLo2W3qNuI6ij0PehPSoyqgD/d7GzL
-         B3aS8TwDjEXp7FCg6j6mcMHwfune2lQAdZsx7/UaVDIpAstGngNWS7fzmGlJF73FGpcc
-         ZGTxufCmMiOc8XyVl9TG0JbD6neUpa7KJ13Bihd3CTZwdPwlKuClpoYL8Td9/syoVLQi
-         Qr7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=GlUzBZlaOoOtYGy1tVlXbHFbHEq0/VdkpbsBXQi4TMY=;
-        b=kYbeV8XZElSoI74lnXvhIZ79ZE2PTekeKxPijrwi4zKRP1fA26L7Epz+IBcz2I9/27
-         sCNA4LgcXKda+OGJlF4XvwnqM/J9qQUmrMT2eo0TY0+IwFDPPJpqkwGfpzjiFwjTW3B3
-         kXAyWUMqumkD3ntK+rqkS3yEqUfx5L/PEhGBwbOhfswMLEIhda5UEB+NRg5Kol2IZx7M
-         /Xw+eMefUDVgvIQo8hPyCmlrjLzO7y942VL4upMHsYap/Gmv7uB5UhvBFvbk7WEgE6Oe
-         zBHRZ3GK0+dh2JE1SmLG1VAQophfRPpSC6uWl83OMdkPKpYKvuAqoqzlPyXknC1Gw4SS
-         qU1w==
-X-Gm-Message-State: AOAM533wf/RYwCcZc5lPOgaLODzZEksTIczR+ia23zgPWvjwluoxvLa6
-        8UxaIdxiJFLbDxrmtJ3sGG2GCLm5WV8Zpcymb+8=
-X-Google-Smtp-Source: ABdhPJzLvF5GeBGD6qJ04CbntLI8Wbna4sVs6a9G+KgpV7iCvYz6tzggA19z5mnap57WWgY8zVCglQ==
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id j11-20020aa7800b0000b0290330455f57a8mr2851456pfi.7.1628753758367;
-        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
-Received: from [10.178.0.26] ([85.203.23.37])
-        by smtp.gmail.com with ESMTPSA id y4sm1783698pjw.57.2021.08.12.00.35.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 00:35:57 -0700 (PDT)
-To:     "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
-From:   Tuo Li <islituo@gmail.com>
-Subject: [BUG] RDMA/hw/qib/qib_iba6120: possible buffer underflow in
- rcvctrl_6120_mod()
-Message-ID: <9c03a5f4-865b-000e-0206-9e01f876261a@gmail.com>
-Date:   Thu, 12 Aug 2021 15:35:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 12 Aug 2021 03:39:04 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEA0C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:38:39 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f8300af8ada8aa61ab0b3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:8300:af8a:da8a:a61a:b0b3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DD87E1EC0345;
+        Thu, 12 Aug 2021 09:38:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628753914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=U7zDuVQZvHg7gLqCIXtag5XTcA/ubrNjsPzIY7b4b1I=;
+        b=fu57R1hashdIUFdhLEzSRrdG/XMYlTRhi/e8pv7XEELos1ZPP0pMdMZNHCNpop7RikyWmN
+        ZNhgeRkKsMIWbVaCoyKGwtQOjn2vUuQIiLIfDdzMxG7KztMR78xWbDVgph3/2Rhhs92uwA
+        54R7/m5gxwW7suiJobefopjTqkbYRjA=
+Date:   Thu, 12 Aug 2021 09:39:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 03/12] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YRTQH9kFYUC1HqbK@zn.tnic>
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210804181329.2899708-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Aug 04, 2021 at 11:13:20AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +static inline bool cpuid_has_tdx_guest(void)
+> +{
+> +	u32 eax, sig[3];
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+> +		return false;
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
 
-Our static analysis tool reports a possible buffer underflow in 
-qib_iba6120.c in Linux 5.14.0-rc3:
+Ok, good, in the meantime you've caught that the order was wrong - you
+had:
 
-The variable ctxt is checked in:
-2110:    if (ctxt < 0)
+	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[1], &sig[2]);
 
-This indicates that ctxt can be negative.
-If so, possible buffer underflows will occur:
-2120:    qib_write_kreg_ctxt(dd, kr_rcvhdrtailaddr, ctxt, 
-dd->rcd[ctxt]->rcvhdrqtailaddr_phys);
-2122:    qib_write_kreg_ctxt(dd, kr_rcvhdraddr, ctxt, 
-dd->rcd[ctxt]->rcvhdrq_phys);
+but that would've been "Inte    lTDX"
 
-However, I am not sure whether ctxt < 0 and op & QIB_RCVCTRL_CTXT_ENB 
-can be true at the same time.
+:-)
 
-Any feedback would be appreciated, thanks!
+-- 
+Regards/Gruss,
+    Boris.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-Best wishes,
-Tuo Li
+https://people.kernel.org/tglx/notes-about-netiquette
