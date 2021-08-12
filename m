@@ -2,179 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6467C3EA831
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD85C3EA836
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhHLQEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhHLQEU (ORCPT
+        id S230459AbhHLQFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:05:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39438 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhHLQFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:04:20 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B212C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:03:55 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so15917304pji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jw52nCDfk6PbivT8d6VPc3xIqyMa3zncf4PBia2oVKk=;
-        b=H3r5cy3MrBDVsJkrOElcPo70wt8xUDs5X0BTUnWysXEwlEvnpJxkVryTsRurOPYv+w
-         mySje2f6KuJNnn8xOzBdHgARzapWpjR6bs7eXon8xS+6VL62LN7s7RiyP1pv8NEpp1Xp
-         VLuMeklT1W+7W9RvsnaIS1jbV+9JxFAnGlQX3yvIkIoTgJcyx7XxDdf5QyxKMwdhgEKb
-         DpLlDZFtbKTZzBMDvM/ryFmfVJRlxg6aId6MLYg+5fWuosOuiBEONhlFhT8mXqu0QUDt
-         zNAJ4E5O/UFFjWPUdX+Km8g+Z/xEUW68D6kM1v8vIp62iJbGeEvDqq0PElvCb+/GNrW+
-         MuFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jw52nCDfk6PbivT8d6VPc3xIqyMa3zncf4PBia2oVKk=;
-        b=oGdKwuSZYt0HYcDNNPgZZpuL75R5SDRhSB/FoGGsMvTYoSosGb3z9eFbw5BcjEUgnB
-         +U2JCroI50aacLBjjC/wQL1u/9jgQ9H/ii22nB2+66TiA7EYSY62KR/8W9tPqXfg1LMV
-         yw0emSdJ/JxT+CmB0tmmauYstL+hb3LYGwIo9OYYiE5810Y9MzRZKNhMPFw8JyeSZJZl
-         IC97JX0eq0fFc7LOAO17v/62W2Q0oW6/OqhQVC8XoBDMgR7/Z1uIPTkw9oTxSzqQYGU6
-         BVUHNqOdS9Ndofi2xn/U/CsBfzS2QCXM02GkMDtdV7yjEgxqbzxNxUPUG352bOAFTdxe
-         SWFA==
-X-Gm-Message-State: AOAM533KtXc0t3f9gPlCUF2MFFeKGIUPcKZXuQ7PCmDAE8vUjEW1ianS
-        ddr+qXIJ11EjRYtzl5t4QW5ACA==
-X-Google-Smtp-Source: ABdhPJxYF6mPLK+4Te1+ZmNX4UolYHFV4rCufnVsXxC+MasZcm3W9m1P/Zy8jgBHrxgTpVrbOKZ5Xw==
-X-Received: by 2002:a17:90b:1b47:: with SMTP id nv7mr5073951pjb.70.1628784234345;
-        Thu, 12 Aug 2021 09:03:54 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b18sm3942394pft.201.2021.08.12.09.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 09:03:53 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 16:03:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: X86: Check pte present first in
- __shadow_walk_next()
-Message-ID: <YRVGY1ZK8wl9ybBH@google.com>
-References: <20210812043630.2686-1-jiangshanlai@gmail.com>
+        Thu, 12 Aug 2021 12:05:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5E6F5222AF;
+        Thu, 12 Aug 2021 16:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628784285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hd5YnS5VlsByO54UINflxFxM7cPEyatBOwZmq8q+1yw=;
+        b=YotCp8PjStL4i9ffUhS9OoZX8QnH2jB2T/zk6/oQWD3WHdpPYMmveaqDEw7oId8so/Esu4
+        F0HIeCyp+gdzwOqnaJj1VQj/1JZHQsE4Eazs6QU6BaXIQ2w+5dx2NziXeHfnuGaxFdrXmq
+        MaFZgG82KZeixNCbQrDWkj0vQf8kCsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628784285;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hd5YnS5VlsByO54UINflxFxM7cPEyatBOwZmq8q+1yw=;
+        b=OQuQ6s6K3EktLNE86QftmfX7DWBZd9pvqvcwE+zzMBxxZMjI5KN0YAaXc6xsjREBlTbt8t
+        uj3+YfCflhWq/iCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C8F1813ACC;
+        Thu, 12 Aug 2021 16:04:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 8uSJL5xGFWEDfAAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 16:04:44 +0000
+To:     Chester Lin <clin@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-3-clin@suse.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Subject: Re: [PATCH 2/8] dt-bindings: serial: fsl-linflexuart: convert to
+ json-schema format
+Message-ID: <1ff13837-e6ca-c476-376d-b4f80450a259@suse.de>
+Date:   Thu, 12 Aug 2021 18:04:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812043630.2686-1-jiangshanlai@gmail.com>
+In-Reply-To: <20210805065429.27485-3-clin@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 05.08.21 08:54, Chester Lin wrote:
+> Convert the FSL LINFlexD UART binding to json-schema.
 > 
-> So far, the loop bodies already ensure the pte is present before calling
-> __shadow_walk_next().  But checking pte present in __shadow_walk_next()
-> is a more prudent way of programing and loop bodies will not need
-> to always check it.  It allows us removing is_shadow_present_pte()
-> in the loop bodies.
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
+>  .../bindings/serial/fsl,s32-linflexuart.yaml  | 48 +++++++++++++++++++
+>  2 files changed, 48 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
 
-There needs to be more analysis in the changelog, as there are many more callers
-to __shadow_walk_next() than the three that are modified in the next patch.  It
-might even make sense to squash the two patches together, i.e. make it a "move"
-instead of an "add + remove", and then explicitly explain why it's ok to add the
-check for paths that do _not_ currently have a !is_shadow_present_pte() in the
-loop body.
+Thanks for your effort, Chester.
 
-Specifically, FNAME(fetch) via shadow_walk_next() and __direct_map() via
-for_each_shadow_entry() do not currently terminate their walks with a !PRESENT,
-but they get away with it because they install present non-leaf SPTEs in the loop
-itself.
+> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+> deleted file mode 100644
+> index f1bbe0826be5..000000000000
+> --- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -* Freescale LINFlexD UART
+> -
+> -The LINFlexD controller implements several LIN protocol versions, as well as
+> -support for full-duplex UART communication through 8-bit and 9-bit frames.
+> -
+> -See chapter 47 ("LINFlexD") in the reference manual[1].
+> -
+> -Required properties:
+> -- compatible :
+> -  - "fsl,s32v234-linflexuart" for LINFlexD configured in UART mode, which
+> -    is compatible with the one integrated on S32V234 SoC
+> -- reg : Address and length of the register set for the device
+> -- interrupts : Should contain uart interrupt
+> -
+> -Example:
+> -uart0: serial@40053000 {
+> -	compatible = "fsl,s32v234-linflexuart";
+> -	reg = <0x0 0x40053000 0x0 0x1000>;
+> -	interrupts = <0 59 4>;
+> -};
+> -
+> -[1] https://www.nxp.com/webapp/Download?colCode=S32V234RM
+> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> new file mode 100644
+> index 000000000000..acfe34706ccb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 
-The other argument for the audit (changelog+patch) of all users is that the next
-patch misses FNAME(invlpg), e.g. 
+Since this is dual-licensed and BSD-2-Clause would seem compatible with
+GPLv3, this could probably be s/GPL-2.0-only/GPL-2.0-or-later/ ? Not a
+blocker.
 
-@@ -977,7 +980,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
-                        FNAME(update_pte)(vcpu, sp, sptep, &gpte);
-                }
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/serial/fsl,s32-linflexuart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale LINFlexD UART
+> +
+> +description: |
+> +  The LINFlexD controller implements several LIN protocol versions, as well
+> +  as support for full-duplex UART communication through 8-bit and 9-bit
+> +  frames. See chapter 47 ("LINFlexD") in the reference manual
+> +  https://www.nxp.com/webapp/Download?colCode=S32V234RM.
+> +
+> +maintainers:
+> +  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> +  - Rob Herring <robh@kernel.org>
 
--               if (!is_shadow_present_pte(*sptep) || !sp->unsync_children)
-+               if (!sp->unsync_children)
-                        break;
-        }
-        write_unlock(&vcpu->kvm->mmu_lock);
+@Shawn: I assume we need both of them to ack this (or an S32V maintainer
+to volunteer), since they were not named in the .txt file before?
 
-It would also be worthwhile to document via the changelog that terminating on
-!is_shadow_present_pte() is 100% the correct behavior, as walking past a !PRESENT
-SPTE would lead to attempting to read a the next level SPTE from a garbage
-iter->shadow_addr.
+> +
+> +allOf:
+> +  - $ref: "serial.yaml"
+> +
+> +properties:
+> +  compatible:
+> +    description: The LINFlexD controller on S32V234 SoC, which can be
+> +      configured in UART mode.
+> +    items:
+> +      - const: fsl,s32v234-linflexuart
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    serial@40053000 {
+> +        compatible = "fsl,s32v234-linflexuart";
+> +        reg = <0x40053000 0x1000>;
+> +        interrupts = <0 59 4>;
+> +    };
 
-And for clarity and safety, I think it would be worth adding the patch below as
-a prep patch to document and enforce that walking the non-leaf SPTEs when faulting
-in a page should never terminate early.
+Otherwise looking sane,
 
+Reviewed-by: Andreas Färber <afaerber@suse.de>
 
-From 1c202a7e82b1931e4eb37b23aa9d7108340a6cd2 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Thu, 12 Aug 2021 08:38:35 -0700
-Subject: [PATCH] KVM: x86/mmu: Verify shadow walk doesn't terminate early in
- page faults
+Thanks,
+Andreas
 
-WARN and bail if the shadow walk for faulting in a SPTE terminates early,
-i.e. doesn't reach the expected level because the walk encountered a
-terminal SPTE.  The shadow walks for page faults are subtle in that they
-install non-leaf SPTEs (zapping leaf SPTEs if necessary!) in the loop
-body, and consume the newly created non-leaf SPTE in the loop control,
-e.g. __shadow_walk_next().  In other words, the walks guarantee that the
-walk will stop if and only if the target level is reached by installing
-non-leaf SPTEs to guarantee the walk remains valid.
-
-Opportunistically use fault->goal-level instead of it.level in
-FNAME(fetch) to further clarify that KVM always installs the leaf SPTE at
-the target level.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c         | 3 +++
- arch/x86/kvm/mmu/paging_tmpl.h | 7 +++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a272ccbddfa1..2a243ae1d64c 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2992,6 +2992,9 @@ static int __direct_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
- 			account_huge_nx_page(vcpu->kvm, sp);
- 	}
-
-+	if (WARN_ON_ONCE(it.level != fault->goal_level))
-+		return -EFAULT;
-+
- 	ret = mmu_set_spte(vcpu, it.sptep, ACC_ALL,
- 			   fault->write, fault->goal_level, base_gfn, fault->pfn,
- 			   fault->prefault, fault->map_writable);
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index f70afecbf3a2..3a8a7b2f9979 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -749,9 +749,12 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 		}
- 	}
-
-+	if (WARN_ON_ONCE(it.level != fault->goal_level))
-+		return -EFAULT;
-+
- 	ret = mmu_set_spte(vcpu, it.sptep, gw->pte_access, fault->write,
--			   it.level, base_gfn, fault->pfn, fault->prefault,
--			   fault->map_writable);
-+			   fault->goal_level, base_gfn, fault->pfn,
-+			   fault->prefault, fault->map_writable);
- 	if (ret == RET_PF_SPURIOUS)
- 		return ret;
-
---
-2.33.0.rc1.237.g0d66db33f3-goog
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
