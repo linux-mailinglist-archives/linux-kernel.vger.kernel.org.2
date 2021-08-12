@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345E33E9BE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0210F3E9BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 03:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhHLBWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 21:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S233235AbhHLBVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 21:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhHLBWr (ORCPT
+        with ESMTP id S229773AbhHLBVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:22:47 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D2AC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:22:22 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id e11so2403472ljq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 18:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=prestigetransportation-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YgmCb/M36G7y/F9n7pqOEX0jUkjwsODoD9HmSF/j27M=;
-        b=Z8wLcIgju1YXAogPl4GXFufU95L35sHnKOrG6YRyJonvs80+KjOVokDMr1y/Y4yWPq
-         76lkI74Wk6/frOe9Qqv+RyXfSiA6UvlzeUXm87zF30RPpey9fc/KWmE07Gb6IgLN5N9V
-         GAXp+4g7+ISAPVmdIVOri98PGfmJOn9/rhpZqZSV/89QGSpoZoFLBNreI7nuiCqr5lsv
-         CNexvlefGKhwqvfnpDjtJ+k700kaJzkmNkzmQEDln3HaS5nAG9KbSspj/XddIG/fqVRi
-         Xi81qUxaLNGdCXKHuX1+YcEALa7lWIr/uQ2c/8Cd6Az/oNvvEWDAaxOMcnk7X1PCccMB
-         qIkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YgmCb/M36G7y/F9n7pqOEX0jUkjwsODoD9HmSF/j27M=;
-        b=HJLA0/2bI8V0jUcDCub80AHnB2xp+acOb+epCNpZVlrqCRK8FIJSJ14NjIrhXglG6L
-         rGqUadW+NLc04g80mcVx9JJvH6ox0/uMlsl8IDQ1VpO8e7fJQEB9exvVrrtVqSGfMARV
-         mV+3NIx8ms19kEcNQqhNh8fJ42UeNh2qvaJD9biU4eF2chlUbCqwi69KFF/vPh08FPUL
-         KUU67NXhRcVSZlSUBTs1n1UVraYMSS17syFLWRfkbOngnwdfQjMyheppRuVmwDOiR5kX
-         RAJMnEZJrDVGu4xMytGY7UOItMSbehMzyaNN5O5jML4afqWks4HiLsmPIiedhw+3M9qo
-         2iyQ==
-X-Gm-Message-State: AOAM5322j9NM09828wYJqtSoBLfI0eKOyG9kMGmJhU5GK6n/pmVHqgsu
-        xy9YumEKFFbx2qvu+C/wO5S5M/WcczR1VLl2KxGt3g==
-X-Google-Smtp-Source: ABdhPJyk5iqyFP+Bcouz1m9nylkSZB5oddh7QHUWidMhBkm9ZyQVFp9l5u3C17ylQCvqvO7UAcKs8nN4ZkPemdMLQfU=
-X-Received: by 2002:a2e:7a0e:: with SMTP id v14mr693188ljc.324.1628731341207;
- Wed, 11 Aug 2021 18:22:21 -0700 (PDT)
+        Wed, 11 Aug 2021 21:21:31 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C17C061765;
+        Wed, 11 Aug 2021 18:21:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GlTQy70Gbz9t2b;
+        Thu, 12 Aug 2021 11:20:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628731262;
+        bh=NyX7NxhdTqFuLiEuNiYUkkM6Iaiv9G/1RgaK5DhFUTs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SPIB2sKXPA7HuocgGyGwSxssuZlScSVSuhhalfnrlcWWBFyJY9ZeHIs/nCLoGk9S4
+         nQBoi69hpR4AUuCThV6wAyGvxtsT85DMIZAgEF1N8VlnWqozpca21s3ajcVNXB7yeF
+         vXo/ffgBb8MFdKFhyHwL5RRH83eaNNy/dAvPJ/jk/eSC+/vx3TpfmyceQ0DC9mnoKj
+         ZjAwInnqe1nPZce018v3YC9vBRsonFm5EfLERhTs0XwJsNapMvj1pmwyNPNCp6ML5w
+         pHp5rU5yKPWcRQL30qoi8PxqDJPF/oKM1qWUfgR+Heuou4xju74U7wmIvCtKsB3Jw2
+         K5sqHRPu2jZig==
+Date:   Thu, 12 Aug 2021 11:20:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20210812112056.0e6fa4fd@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210811081623.9832-1-jasowang@redhat.com>
-In-Reply-To: <20210811081623.9832-1-jasowang@redhat.com>
-From:   ivan <ivan@prestigetransportation.com>
-Date:   Wed, 11 Aug 2021 20:20:03 -0500
-Message-ID: <CACFia2dOarWzZ-FfOgA-n3Puxhw4zacdEPtabzbbveyeuV3YBA@mail.gmail.com>
-Subject: Re: [RFC PATCH] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Ivan <ivan@prestigetransportation.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/UZR4JNYLxTvVTQMXYhxdip9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 3:16 AM Jason Wang <jasowang@redhat.com> wrote:
->
-> Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO") tries to
-> advertise LRO on behalf of the guest offloading features and allow the
-> administrator to enable and disable those features via ethtool.
->
-> This may lead several issues:
->
-> - For the device that doesn't support control guest offloads, the
->   "LRO" can't be disabled so we will get a warn in the
->   dev_disable_lro()
-> - For the device that have the control guest offloads, the guest
->   offloads were disabled in the case of bridge etc which may slow down
->   the traffic.
->
-> Try to fix this by using NETIF_F_GRO_HW instead so we're not
-> guaranteed to be re-segmented as original. Or we may want a new netdev
-> feature like RX_GSO since the guest offloads for virtio-net is
-> actually to receive GSO packet.
->
-> Or we can try not advertise LRO is control guest offloads is not
-> enabled. This solves the warning but will still slow down the traffic.
->
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/net/virtio_net.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 0416a7e00914..10c382b08bce 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
->         VIRTIO_NET_F_GUEST_CSUM
->  };
->
-> -#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
-> +#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
->                                 (1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
->                                 (1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
->                                 (1ULL << VIRTIO_NET_F_GUEST_UFO))
-> @@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
->                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
->                 virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
-> -               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
-> +               NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
->                 return -EOPNOTSUPP;
->         }
->
-> @@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
->         u64 offloads;
->         int err;
->
-> -       if ((dev->features ^ features) & NETIF_F_LRO) {
-> +       if ((dev->features ^ features) & NETIF_F_GRO_HW) {
->                 if (vi->xdp_enabled)
->                         return -EBUSY;
->
-> -               if (features & NETIF_F_LRO)
-> +               if (features & NETIF_F_GRO_HW)
->                         offloads = vi->guest_offloads_capable;
->                 else
->                         offloads = vi->guest_offloads_capable &
-> -                                  ~GUEST_OFFLOAD_LRO_MASK;
-> +                                  ~GUEST_OFFLOAD_GRO_HW_MASK;
->
->                 err = virtnet_set_guest_offloads(vi, offloads);
->                 if (err)
-> @@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
->                 dev->features |= NETIF_F_RXCSUM;
->         if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
->             virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
-> -               dev->features |= NETIF_F_LRO;
-> +               dev->features |= NETIF_F_GRO_HW;
->         if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
-> -               dev->hw_features |= NETIF_F_LRO;
-> +               dev->hw_features |= NETIF_F_GRO_HW;
->
->         dev->vlan_features = dev->features;
->
-> --
+--Sig_/UZR4JNYLxTvVTQMXYhxdip9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I applied this patch, recompiled the kernel, and tested it.
-The warning messages are gone. Network speed is normal.
-I can now enable forwarding, and nothing bad happens.
-So far, so good.
+Hi all,
 
-Thank you.
+Today's linux-next merge of the drm tree got a conflict in:
+
+  drivers/gpu/drm/i915/i915_globals.c
+
+between commits:
+
+  1354d830cb8f ("drm/i915: Call i915_globals_exit() if pci_register_device(=
+) fails")
+  a07296453bf2 ("drm/i915: fix i915_globals_exit() section mismatch error")
+
+from Linus' tree and commit:
+
+  bb13ea282535 ("drm/i915: Remove i915_globals")
+
+from the drm tree.
+
+I fixed it up (I just removed the file) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/UZR4JNYLxTvVTQMXYhxdip9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEUd3gACgkQAVBC80lX
+0Gw9LQgAgv3cYm5Xrt0JvYyyYrFIY9pP5sG6Ifrf32s9YwWcRYyiBcy3tDP/LSTB
+C7S9v31itFXiBwdpP6JCGLMJWD89Nj97cQ9W5QFv3ynnumB11zzAvM2SJpRIR0PK
+YtYL83wmkJzQZ8kWMP1oWfpKTjev3UxlYSjGtDcmncymXcEJD5sizaGqlr08LuO4
+GacWdeBmzzaPtADs7KjVOj1Am5l4HKwg6MDqcTcB0Tm7FLC9+DJdDL8DFCmvMRWM
+lhjOV3godDhtYFGkiFS7xxrsmdl1OcBCdqLm3a/63P9Tm6nbUJ3DcWxEFYFGTKi/
+XQb3jrFQ44B9NDIcg5uFJBmsMzp4KQ==
+=ez8E
+-----END PGP SIGNATURE-----
+
+--Sig_/UZR4JNYLxTvVTQMXYhxdip9--
