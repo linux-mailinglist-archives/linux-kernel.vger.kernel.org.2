@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791353EA543
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493943EA552
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237642AbhHLNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:12:54 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33186 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235864AbhHLNMq (ORCPT
+        id S237209AbhHLNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236983AbhHLNPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:12:46 -0400
-X-UUID: 32a59205d6df44ff8315ebc737cb39bc-20210812
-X-UUID: 32a59205d6df44ff8315ebc737cb39bc-20210812
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1465097445; Thu, 12 Aug 2021 21:12:16 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 12 Aug 2021 21:12:14 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 12 Aug 2021 21:12:13 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
-CC:     Pawel Laszczak <pawell@cadence.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH v2 3/7] usb: mtu3: fix the wrong HS mult value
-Date:   Thu, 12 Aug 2021 21:11:31 +0800
-Message-ID: <1628773895-304-3-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1628773895-304-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1628773895-304-1-git-send-email-chunfeng.yun@mediatek.com>
+        Thu, 12 Aug 2021 09:15:34 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF2EC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:15:08 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id a5so7231877plh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rxvB9dcy/txvnHNxJhX3D5OkaulqSBgQCbhDE63hZwY=;
+        b=NpfJihwbHd4SEhhb6V3gozh0M3KnY7R7+3oWMP8vyYkdDMFYxGVtREjVuiY6nx6n3F
+         G/pwXSHFU2Jz28MNk72xJGKZ5DpfEqk0O+fzd1G8K7iJHRMwr4+nle3hgbCRZYHGqcvt
+         7M20IIwRMGYkH6Hhv6qx5LB6k6hLnd+a0bHZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rxvB9dcy/txvnHNxJhX3D5OkaulqSBgQCbhDE63hZwY=;
+        b=WGBKBLpvFZ5B/8MB4OOGXHNO0IOWO0bdCRLYC+1i/RW0LWXcM5CpDT38g5vEErLFpj
+         bNwYbPpmryI7aG0zvNmFStUBV2CL+Q8yThIe1aNhXVHNFHmjQjKWlnfBAr2N4FqpROAe
+         IVdesu1U4IZx1B/5oBafKMzqyAotJh8IA8lgIV/oVkpS7gph3N/WOBivd7ncbVTVeWj2
+         HSVBO2cZhc/jnh0DqH/01ya3ey3nQv6rWok/TGpjPHGBeF40OIdnad9A2DRycui3Edok
+         RoBHWNiS39/bEB1g99Ein30N8Y5nK/GrLQhD8u5I4dGNUT658xCimIaQZXtmzpUtQDPF
+         D1+g==
+X-Gm-Message-State: AOAM531JbpXdCesL7wr1USBh+znWx9oSXg6bpgXh13w2hP+007uX3Vud
+        Eoy4FSNhvo+9NI5KVDEqb7E2lY60LJkMww==
+X-Google-Smtp-Source: ABdhPJyDHzlGgeEB+Ee0G7CbDRFYzgG5MeVOMvYuZ3QGRHXUhf/2B2scSNe0pVT6jfcjpdFUcjpaug==
+X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id h3-20020a170902f703b029012c0982c9aemr3681365plo.20.1628774108339;
+        Thu, 12 Aug 2021 06:15:08 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:9d69:4059:b8a6:e36f])
+        by smtp.gmail.com with UTF8SMTPSA id a11sm4052706pgj.75.2021.08.12.06.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 06:15:08 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 06:15:06 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org
+Subject: Re: [PATCH V5 2/7] arm64: dts: sc7280: Configure SPI-NOR FLASH for
+ sc7280-idp
+Message-ID: <YRUe2qgbGTA18WkH@google.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
+ <1628754078-29779-3-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1628754078-29779-3-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_endpoint_maxp() returns actual max packet size, @mult will
-always be zero, fix it by using usb_endpoint_maxp_mult() instead
-to get mult.
+On Thu, Aug 12, 2021 at 01:11:13PM +0530, Rajesh Patil wrote:
+> Add spi-nor flash node and pinctrl configurations for the same.
 
-Fixes: 4d79e042ed8b ("usb: mtu3: add support for usb3.1 IP")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2: split two patch [v2 2/7],[v2 3/7] suggested by Felipe
----
- drivers/usb/mtu3/mtu3_gadget.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+nit: better name SC7280 IDP explicitly rather than saying 'the same'.
 
-diff --git a/drivers/usb/mtu3/mtu3_gadget.c b/drivers/usb/mtu3/mtu3_gadget.c
-index 635ad277cb13..a399fd84c71f 100644
---- a/drivers/usb/mtu3/mtu3_gadget.c
-+++ b/drivers/usb/mtu3/mtu3_gadget.c
-@@ -64,14 +64,12 @@ static int mtu3_ep_enable(struct mtu3_ep *mep)
- 	u32 interval = 0;
- 	u32 mult = 0;
- 	u32 burst = 0;
--	int max_packet;
- 	int ret;
- 
- 	desc = mep->desc;
- 	comp_desc = mep->comp_desc;
- 	mep->type = usb_endpoint_type(desc);
--	max_packet = usb_endpoint_maxp(desc);
--	mep->maxp = max_packet & GENMASK(10, 0);
-+	mep->maxp = usb_endpoint_maxp(desc);
- 
- 	switch (mtu->g.speed) {
- 	case USB_SPEED_SUPER:
-@@ -92,7 +90,7 @@ static int mtu3_ep_enable(struct mtu3_ep *mep)
- 				usb_endpoint_xfer_int(desc)) {
- 			interval = desc->bInterval;
- 			interval = clamp_val(interval, 1, 16) - 1;
--			mult = (max_packet & GENMASK(12, 11)) >> 11;
-+			mult = usb_endpoint_maxp_mult(desc) - 1;
- 		}
- 		break;
- 	default:
--- 
-2.18.0
+> 
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
 
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
