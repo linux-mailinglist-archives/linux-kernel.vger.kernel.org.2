@@ -2,82 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88E63E9D23
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004E33E9D25
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 06:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhHLECv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231128AbhHLECx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 00:02:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229460AbhHLECv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 00:02:51 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34600 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229460AbhHLECt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 00:02:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=houwenlong93@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UikIOfv_1628740942;
-Received: from localhost(mailfrom:houwenlong93@linux.alibaba.com fp:SMTPD_---0UikIOfv_1628740942)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Aug 2021 12:02:22 +0800
-From:   Hou Wenlong <houwenlong93@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] kvm: x86: move architecture specific code into kvm_arch_vcpu_fault
-Date:   Thu, 12 Aug 2021 12:02:20 +0800
-Message-Id: <146fab9b48eb8554202f91785d0e009757439baf.1628739116.git.houwenlong93@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
-References: <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F43F6108C;
+        Thu, 12 Aug 2021 04:02:26 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 00:02:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-ID: <20210812000225.68d72f4a@rorschach.local.home>
+In-Reply-To: <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+        <20210811112249.555463f2@oasis.local.home>
+        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function kvm_arch_vcpu_fault can handle architecture specific
-case, so move x86's pio_data hanlding into it.
+On Thu, 12 Aug 2021 10:27:35 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
----
- arch/x86/kvm/x86.c  | 2 ++
- virt/kvm/kvm_main.c | 4 ----
- 2 files changed, 2 insertions(+), 4 deletions(-)
+> I like to prohibit latter one. It is my feeling, but I think it is
+> natural that the eprobe is only for the static events, and I also think
+> dereferencing a pointer-type field in raw-event is more reliable than
+> dereferencing a digit value passed to the synthetic event.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1e3bbe5cd33a..25c0752d6cd9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5349,6 +5349,8 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 
- struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
- {
-+	if (vmf->pgoff == KVM_PIO_PAGE_OFFSET)
-+		return virt_to_page(vcpu->arch.pio_data);
- 	return NULL;
- }
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index f7d21418971b..43064df5ad87 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3435,10 +3435,6 @@ static vm_fault_t kvm_vcpu_fault(struct vm_fault *vmf)
- 
- 	if (vmf->pgoff == 0)
- 		page = virt_to_page(vcpu->run);
--#ifdef CONFIG_X86
--	else if (vmf->pgoff == KVM_PIO_PAGE_OFFSET)
--		page = virt_to_page(vcpu->arch.pio_data);
--#endif
- #ifdef CONFIG_KVM_MMIO
- 	else if (vmf->pgoff == KVM_COALESCED_MMIO_PAGE_OFFSET)
- 		page = virt_to_page(vcpu->kvm->coalesced_mmio_ring);
--- 
-2.31.1
+Although I believe we need to attach eprobes to synthetic events, for
+the reasons I stated in my previous email. I'm perfectly happy to
+forbid them from attaching to kprobe or uprobe events. Because,
+honestly, eprobes do not give you anything that a kprobe nor uprobe can
+give you.
 
+-- Steve
