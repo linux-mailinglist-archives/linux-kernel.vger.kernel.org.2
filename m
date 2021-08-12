@@ -2,138 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4976C3EAA09
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BC13EAA0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 20:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237538AbhHLSQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 14:16:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233283AbhHLSQd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 14:16:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628792167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S+E4q/M54NKHA7t+0+yZiG5e1rXRHCWENhzfTmuDkeE=;
-        b=GqZ+WDpefX3W/oKDLXRKiYP0ZwfUA7HnkgsyqftD75NLNcWBAokzTggJ8vPepAb3jHP+4q
-        Zk+VTHr9Sx/eU7Qy/8XOiMfy6/52whqXRy02s2ip3wXIneJbR1GiVmCWZIykcpdZqtDAW+
-        wlkdQiyeK1s0vD43uj0o08GqfMnOakI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-gDhWt0HiO3W_TydA5ZQu8w-1; Thu, 12 Aug 2021 14:16:04 -0400
-X-MC-Unique: gDhWt0HiO3W_TydA5ZQu8w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S237567AbhHLSRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 14:17:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237425AbhHLSRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 14:17:09 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A87080124F;
-        Thu, 12 Aug 2021 18:16:03 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.194.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB15D1017CE5;
-        Thu, 12 Aug 2021 18:15:42 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     ebiederm@xmission.com (Eric W. Biederman)
-Cc:     "Andy Lutomirski" <luto@kernel.org>,
-        "David Hildenbrand" <david@redhat.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Alexey Dobriyan" <adobriyan@gmail.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        "Jiri Olsa" <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "Petr Mladek" <pmladek@suse.com>,
-        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
-        "Chinwen Chang" <chinwen.chang@mediatek.com>,
-        "Michel Lespinasse" <walken@google.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Huang Ying" <ying.huang@intel.com>,
-        "Jann Horn" <jannh@google.com>, "Feng Tang" <feng.tang@intel.com>,
-        "Kevin Brodsky" <Kevin.Brodsky@arm.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Shawn Anastasio" <shawn@anastas.io>,
-        "Steven Price" <steven.price@arm.com>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Christian Brauner" <christian.brauner@ubuntu.com>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
-        "Peter Xu" <peterx@redhat.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        "Marco Elver" <elver@google.com>,
-        "Daniel Jordan" <daniel.m.jordan@oracle.com>,
-        "Nicolas Viennot" <Nicolas.Viennot@twosigma.com>,
-        "Thomas Cedeno" <thomascedeno@google.com>,
-        "Collin Fijalkovich" <cfijalkovich@google.com>,
-        "Michal Hocko" <mhocko@suse.com>,
-        "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Chengguang Xu" <cgxu519@mykernel.net>,
-        Christian =?utf-8?Q?K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>, linux-unionfs@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
-        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
-        <87lf56bllc.fsf@disp2133>
-Date:   Thu, 12 Aug 2021 20:15:40 +0200
-In-Reply-To: <87lf56bllc.fsf@disp2133> (Eric W. Biederman's message of "Thu,
-        12 Aug 2021 12:48:31 -0500")
-Message-ID: <87lf56edgz.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9369860F57;
+        Thu, 12 Aug 2021 18:16:43 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 14:16:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL v2] tracing: Fixes and clean ups for v5.14
+Message-ID: <20210812141636.35e41575@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Eric W. Biederman:
 
-> Given that MAP_PRIVATE for shared libraries is our strategy for handling
-> writes to shared libraries perhaps we just need to use MAP_POPULATE or a
-> new related flag (perhaps MAP_PRIVATE_NOW) that just makes certain that
-> everything mapped from the executable is guaranteed to be visible from
-> the time of the mmap, and any changes from the filesystem side after
-> that are guaranteed to cause a copy on write.
+Linus,
 
-I think this is called MAP_COPY:
+[
+  Note. This version was only tested with one config and it passed the
+  ftracetests in the selftests directory. I didn't run my full test
+  suite as that takes forever to run, and the only thing that's
+  different from the version that went through that test suite is that
+  I dropped the "main" variable "fix" patch.
+]
 
-  <https://www.gnu.org/software/hurd/glibc/mmap.html>
+Fixes and clean ups to tracing:
 
-If we could get that functionality, we would certainly use it in the
-glibc dynamic loader.  And it's not just dynamic loaders that would
-benefit.
+- Fix header alignment when PREEMPT_RT is enabled for osnoise tracer
 
-But I assume there are some rather thorny issues around semantics.  If
-the changed areas of the file are in the page cache already, everything
-is okay.  But if parts of the file are changed or discarded that are
-not, they would have to be read in first, which is rather awkward.
+- Inject "stop" event to see where osnoise stopped the trace
 
-That's why I suggested the signal for all future accesses.  It seems
-more tractable and addresses the largest issue (the difficulty of
-figuring out why some processes crash occasionally).
+- Define DYNAMIC_FTRACE_WITH_ARGS as some code had an #ifdef for it
 
-Thanks,
-Florian
+- Fix erroneous message for bootconfig cmdline parameter
 
+- Fix crash caused by not found variable in histograms
+
+
+Please pull the latest trace-v5.14-rc5-2 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.14-rc5-2
+
+Tag SHA1: 26ba5d9bdfa88208677132efa9e64b488420b461
+Head SHA1: 5acce0bff2a0420ce87d4591daeb867f47d552c2
+
+
+Daniel Bristot de Oliveira (3):
+      trace/osnoise: Add a header with PREEMPT_RT additional fields
+      trace/timerlat: Add a header with PREEMPT_RT additional fields
+      trace/osnoise: Print a stop tracing message
+
+Lukas Bulwahn (1):
+      tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
+
+Masami Hiramatsu (1):
+      init: Suppress wrong warning for bootconfig cmdline parameter
+
+Steven Rostedt (VMware) (1):
+      tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
+
+----
+ init/main.c                      |  9 +++++--
+ kernel/trace/Kconfig             |  5 ++++
+ kernel/trace/trace_events_hist.c |  2 ++
+ kernel/trace/trace_osnoise.c     | 56 +++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 69 insertions(+), 3 deletions(-)
+---------------------------
+diff --git a/init/main.c b/init/main.c
+index f5b8246e8aa1..8d97aba78c3a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
+ 	return 0;
+ }
+ 
++static int __init warn_bootconfig(char *str)
++{
++	/* The 'bootconfig' has been handled by bootconfig_params(). */
++	return 0;
++}
++
+ static void __init setup_boot_config(void)
+ {
+ 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+@@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
+ 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
+ 	return 0;
+ }
+-early_param("bootconfig", warn_bootconfig);
+-
+ #endif
++early_param("bootconfig", warn_bootconfig);
+ 
+ /* Change NUL term back to "=", to make "param" the whole string. */
+ static void __init repair_env_string(char *param, char *val)
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index d567b1717c4c..3ee23f4d437f 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -219,6 +219,11 @@ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	depends on DYNAMIC_FTRACE_WITH_REGS
+ 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 
++config DYNAMIC_FTRACE_WITH_ARGS
++	def_bool y
++	depends on DYNAMIC_FTRACE
++	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
++
+ config FUNCTION_PROFILER
+ 	bool "Kernel function profiler"
+ 	depends on FUNCTION_TRACER
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 949ef09dc537..a48aa2a2875b 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
+ 			event = data->match_data.event;
+ 		}
+ 
++		if (!event)
++			goto free;
+ 		/*
+ 		 * At this point, we're looking at a field on another
+ 		 * event.  Because we can't modify a hist trigger on
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index a7e3c24dee13..b61eefe5ccf5 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -253,10 +253,40 @@ static struct osnoise_data {
+  */
+ static bool osnoise_busy;
+ 
++#ifdef CONFIG_PREEMPT_RT
+ /*
+  * Print the osnoise header info.
+  */
+ static void print_osnoise_headers(struct seq_file *s)
++{
++	if (osnoise_data.tainted)
++		seq_puts(s, "# osnoise is tainted!\n");
++
++	seq_puts(s, "#                                _-------=> irqs-off\n");
++	seq_puts(s, "#                               / _------=> need-resched\n");
++	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
++	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
++	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
++	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
++	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
++
++	seq_puts(s, "#                              |||||| /          ");
++	seq_puts(s, "                                     MAX\n");
++
++	seq_puts(s, "#                              ||||| /                         ");
++	seq_puts(s, "                    SINGLE      Interference counters:\n");
++
++	seq_puts(s, "#                              |||||||               RUNTIME   ");
++	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
++
++	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    IN US    ");
++	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
++
++	seq_puts(s, "#              | |         |   |||||||      |           |      ");
++	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
++}
++#else /* CONFIG_PREEMPT_RT */
++static void print_osnoise_headers(struct seq_file *s)
+ {
+ 	if (osnoise_data.tainted)
+ 		seq_puts(s, "# osnoise is tainted!\n");
+@@ -279,6 +309,7 @@ static void print_osnoise_headers(struct seq_file *s)
+ 	seq_puts(s, "#              | |         |   ||||      |           |      ");
+ 	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
+ }
++#endif /* CONFIG_PREEMPT_RT */
+ 
+ /*
+  * osnoise_taint - report an osnoise error.
+@@ -323,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+ /*
+  * Print the timerlat header info.
+  */
++#ifdef CONFIG_PREEMPT_RT
++static void print_timerlat_headers(struct seq_file *s)
++{
++	seq_puts(s, "#                                _-------=> irqs-off\n");
++	seq_puts(s, "#                               / _------=> need-resched\n");
++	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
++	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
++	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
++	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
++	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
++	seq_puts(s, "#                              |||||| /\n");
++	seq_puts(s, "#                              |||||||             ACTIVATION\n");
++	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
++	seq_puts(s, "       CONTEXT                LATENCY\n");
++	seq_puts(s, "#              | |         |   |||||||      |         |      ");
++	seq_puts(s, "            |                       |\n");
++}
++#else /* CONFIG_PREEMPT_RT */
+ static void print_timerlat_headers(struct seq_file *s)
+ {
+ 	seq_puts(s, "#                                _-----=> irqs-off\n");
+@@ -336,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
+ 	seq_puts(s, "#              | |         |   ||||      |         |      ");
+ 	seq_puts(s, "            |                       |\n");
+ }
++#endif /* CONFIG_PREEMPT_RT */
+ 
+ /*
+  * Record an timerlat_sample into the tracer buffer.
+@@ -1025,9 +1075,13 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
+ /*
+  * osnoise_stop_tracing - Stop tracing and the tracer.
+  */
+-static void osnoise_stop_tracing(void)
++static __always_inline void osnoise_stop_tracing(void)
+ {
+ 	struct trace_array *tr = osnoise_trace;
++
++	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
++			"stop tracing hit on cpu %d\n", smp_processor_id());
++
+ 	tracer_tracing_off(tr);
+ }
+ 
