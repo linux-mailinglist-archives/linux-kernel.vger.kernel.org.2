@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBFC3EA717
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5843EA719
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238313AbhHLPGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:06:15 -0400
-Received: from out1.migadu.com ([91.121.223.63]:30844 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234850AbhHLPGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:06:14 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628780748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ikZnRm2MVtJHm0Ia+fXtL9BHvKn2N23olNLH7huqioo=;
-        b=QSI/+PvPlE003ZXaIEqU/DOlYJI1rrLbLbUubnyaViGSpo+8aAep5PhhqhhoBSDWxq8+b3
-        vbAI5SHLL5NIic42TlY3BI2I1Wm0p6LKwx869q3DoOGai632ePiZX6cfuaRjXRpU6WDRah
-        TSFmj37nTZtZ21WJ1XFqjFhjkjgWlk0=
-From:   andrey.konovalov@linux.dev
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        id S238321AbhHLPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238317AbhHLPGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:06:31 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5403C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:06:05 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id x14so10135941edr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QEmLCQfmQOuhAIlIo7tcPafee51VNGzdqFJimZNT+qM=;
+        b=KaHfVQvX5t1Gl/ExbaOUje9GfbDNpJxy3O9DDDPK6lqgCRBEspMsuS319Rj3tvxXZu
+         rgg5Dwt0FFu1SsPKItfNcLL+qMjYHNU5khYAm/MFKguqHz+kWovaAVVeZH/IEuy3yJv/
+         Q1Mch9uD/zrMePWc9us4UQqGcpOGQAFClqnDQ3CMbUgm1a5zjyxy0py54n84rEF+yJo3
+         EjLufgWVPmsd2j2vYCkJK9dfddOYC7nDEsFq7x2eU55SDH36kskyAmQgetwzsSDuyFfU
+         A2XXlTBpe0eag3MJP1isBUN1KGxKf0OIoGaV82cBaTDStXNtcIeFdSjsONtF4KNj19ys
+         7IbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QEmLCQfmQOuhAIlIo7tcPafee51VNGzdqFJimZNT+qM=;
+        b=E8NcFppPd3KJZSYQGen/pIF1sLBwxMfrXqae1szOOfHIsXM/zEqECP0gqt5wRx+5G8
+         iIwOYApcRNVtViJFj61D48DRFz0pptWGtqcbqbI/tlcUBjppYGtb9ENMiTrRDrWg0TwR
+         IYjhd1LpHbbd0ICbRDgSVZhe21V76+6QTif52Y9HSZ0ftXSR7shVm1a4D9a+Z43pxXwp
+         K2a3ipWjN4dBC6zzRMBNhCQ9PudrbeozgBOjnPlqTrqRj66gNx//MDMc1WYY0sEg5slT
+         1DXBDhVbMwb+Gbkga1cgWbTla9MCrxqEa+S5om1Bl6SVHAhuxVRrjT2gb3UViHiTIa4q
+         Y6tA==
+X-Gm-Message-State: AOAM530AeUL04Znoi05d00ZLYYZlSUp8f9ZzK4XMgTmeZ5joS5Zqfksq
+        O5u2rmMVpmJm+jiZSlhBw7m/KPnuCu1cTj1Zb+Y=
+X-Google-Smtp-Source: ABdhPJxbJBh/xZnW8LR9jaTOd4+Z93lHVquS+4vlVqdDc1G8LajwvQL4lEQ/ckbptOQhaz+p/Zfs/YPOiX5fcx6umwY=
+X-Received: by 2002:a05:6402:1299:: with SMTP id w25mr6232247edv.30.1628780764189;
+ Thu, 12 Aug 2021 08:06:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1628779805.git.andreyknvl@gmail.com>
+In-Reply-To: <cover.1628779805.git.andreyknvl@gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Thu, 12 Aug 2021 17:05:53 +0200
+Message-ID: <CA+fCnZfjsfiAsfnOxJhMaP0i7LaDgsVSkrw_Ut66_E_wQ3hE_g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] kasan: test: avoid crashing the kernel with HW_TAGS
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] kasan: test: avoid corrupting memory in kasan_rcu_uaf
-Date:   Thu, 12 Aug 2021 17:05:46 +0200
-Message-Id: <b6f2c3bf712d2457c783fa59498225b66a634f62.1628779805.git.andreyknvl@gmail.com>
-In-Reply-To: <cover.1628779805.git.andreyknvl@gmail.com>
-References: <cover.1628779805.git.andreyknvl@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: andrey.konovalov@linux.dev
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, andrey.konovalov@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
+On Thu, Aug 12, 2021 at 4:53 PM <andrey.konovalov@linux.dev> wrote:
+>
+> From: Andrey Konovalov <andreyknvl@gmail.com>
+>
+> KASAN tests do out-of-bounds and use-after-free accesses. Running the
+> tests works fine for the GENERIC mode, as it uses qurantine and redzones.
+> But the HW_TAGS mode uses neither, and running the tests might crash
+> the kernel.
+>
+> Rework the tests to avoid corrupting kernel memory.
+>
+> Changes v1->v2:
+> - Touch both good and bad memory in memset tests as suggested by Marco.
 
-kasan_rcu_uaf() writes to freed memory via kasan_rcu_reclaim(), which is
-only safe with the GENERIC mode (as it uses quarantine). For other modes,
-this test corrupts kernel memory, which might result in a crash.
+Ah, I forgot to include your reviews/acks, Marco.
 
-Turn the write into a read.
+Perhaps you can give one for the whole series now.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
----
- lib/test_kasan_module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-index fa73b9df0be4..7ebf433edef3 100644
---- a/lib/test_kasan_module.c
-+++ b/lib/test_kasan_module.c
-@@ -71,7 +71,7 @@ static noinline void __init kasan_rcu_reclaim(struct rcu_head *rp)
- 						struct kasan_rcu_info, rcu);
- 
- 	kfree(fp);
--	fp->i = 1;
-+	((volatile struct kasan_rcu_info *)fp)->i;
- }
- 
- static noinline void __init kasan_rcu_uaf(void)
--- 
-2.25.1
-
+Thanks!
