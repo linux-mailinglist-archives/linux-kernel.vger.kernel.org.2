@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC253EA8C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372D73EA8CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhHLQvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233442AbhHLQvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:51:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEEB160F57;
-        Thu, 12 Aug 2021 16:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628787043;
-        bh=MMQsxh6VWVq+fupL985dZZlxsg7x7bCSJmg0HZ5KAPI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pt+GzlIWPUjvN1FKuS5Y2/IT/zDean7E5jRFJMDVSdForr8hHIkFcvxvIgA1VLxr5
-         pCdN8z00KhbjHiAA4irL4DFIfFrkNwygyuY6uBv6V0rRCvfnV7XcHbYbAXxI8zlFIh
-         WNC2/eOQy6Ql9nKTNxoA2m4yhbJ9AMxX2IE3nBrOUc9czsoAkh5+522i9Ls1Bd80x9
-         QEgqgWdXXx0HGNZa5q968gd6UF/+4XrH/jdFZi0de4rMIeXbG23lCX51NKut68f/NO
-         muWhaLjjPWfBhhYuJqCvFaZlkfmA0nxNijwNi0WjY+k+ywxi/JjQy1Ejfvu4bKjIzQ
-         obGlL6971gNAw==
-Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
-To:     Rob Herring <robh@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-perf-users@vger.kernel.org
-References: <20210728230230.1911468-1-robh@kernel.org>
- <20210728230230.1911468-3-robh@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org>
-Date:   Thu, 12 Aug 2021 09:50:39 -0700
+        id S233298AbhHLQw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233065AbhHLQwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 12:52:24 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840D5C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:51:59 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id bj40so11335877oib.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3nZhQBQZAFuZeyMMh9wAk0QRVnEl4mK3J5oxqpsPDGA=;
+        b=s44o90YdwWv47AUg9xZNd+Q1YhF9J/90SzniZZIOLTAw2mhEr3imCqGbgnQ2r9VJF0
+         XRjp89OCwbrLpRTaESbByW9lUndobbcnxxV2bKGnxCUtgxwOnXsKDNVElxSNy4HbTUDP
+         w9hJy9th8Ax/Eufq8/E7YaO1+b7LDTpiCzA1nIOuLwdczmeOOihq76m1+dvCdM+aeJZU
+         07tK4v3FccaPmZybaVLfYGy5vhMUaRGpsnbtWSHjhtLBerURt1Bsy1uIWC4G2/z6eDzx
+         JQ+f41I9UZ//xoovNLJvGGEle/q63fYoferhXG/me0PQcxhxJfTnf7miMEgLBLQplObS
+         LOzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3nZhQBQZAFuZeyMMh9wAk0QRVnEl4mK3J5oxqpsPDGA=;
+        b=b9ARGjx7q92fyAialGwP3mg26Mpzb82RsUzFa4JRoy5Xo/riXWIpg51UAxiA4TB03v
+         uFvPux6eAjOYo1YzW7eS1GJF7vTGpUKE2rOoh+vkCzj0DGjYn9OCHyEuIiI0wtRink7b
+         OxB/5Pjg9arbMx07CYn3e+e4hMvIurU2NI70fpafmuDvgANY8Oo8n/I4CZTi9+8bZMAO
+         9Lg3XK3+UvQ0gwUSi0PlNPzpSZ1MazVyZKdlSuVOULwLsiyERp5Kbq32/au+08AURX9/
+         YqZLk1NI/vslWExsMr56iKchuAIh9fZ/3zfm+4maIrXKAJfMm07/5ULIPqx62Yyc/d+G
+         RehA==
+X-Gm-Message-State: AOAM532qC1P4/P08HCLtFyT9CB6dcx50IHPdn57dzdYAl4PC9TlSraHY
+        nKescEZIohbxktREJJhJQ4agbt/d0wk=
+X-Google-Smtp-Source: ABdhPJz28+uja9Jx05gFq3wV0qI/AUpOEgCmsPRXN39vcPrrGRgh/R8G/+44iGp8LRFdvmytuF/T2w==
+X-Received: by 2002:a05:6808:10c8:: with SMTP id s8mr4150838ois.92.1628787118660;
+        Thu, 12 Aug 2021 09:51:58 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
+        by smtp.gmail.com with ESMTPSA id bi18sm748321oib.54.2021.08.12.09.51.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 09:51:58 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: remove cfg80211 residuals
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210812132725.18404-1-fabioaiuto83@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <c2abe840-98b4-cddd-e427-2243d456ec19@lwfinger.net>
+Date:   Thu, 12 Aug 2021 11:51:56 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210728230230.1911468-3-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210812132725.18404-1-fabioaiuto83@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 4:02 PM, Rob Herring wrote:
-> Rather than controlling RDPMC access behind the scenes from switch_mm(),
-> move RDPMC access controls to the PMU .enable() hook. The .enable() hook
-> is called whenever the perf CPU or task context changes which is when
-> the RDPMC access may need to change.
+On 8/12/21 8:27 AM, Fabio Aiuto wrote:
+> remove cfg80211 implementation residuals:
+> an headeer file and build condition in Kconfig
+> file.
 > 
-> This is the first step in moving the RDPMC state tracking out of the mm
-> context to the perf context.
+> Signed-off-by: Fabio Aiuto<fabioaiuto83@gmail.com>
+> ---
+> Dear Greg and Larry,
+> I thought that cfg80211 had been implemented.
+> Should we add a TODO file telling developers to
+> do it in the near future? Is that a condition
+> for mainlining r8188eu? If so please drop this
+> patch and sorry for noise.
 
-Is this series supposed to be a user-visible change or not?  I'm confused.
+I thought so too, but something has gone very wrong. Please hold off on this 
+patch until I figure out why cfg80211 is not being used.
 
-If you intend to have an entire mm have access to RDPMC if an event is
-mapped, then surely access needs to be context switched for the whole
-mm.  If you intend to only have the thread to which the event is bound
-have access, then the only reason I see to use IPIs is to revoke access
-on munmap from the wrong thread.  But even that latter case could be
-handled with a more targeted approach, not a broadcast to all of mm_cpumask.
-
-Can you clarify what the overall intent is and what this particular
-patch is trying to do?
-
-> 
->  	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
-> -		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
-> +		on_each_cpu_mask(mm_cpumask(mm), x86_pmu_set_user_access_ipi, NULL, 1);
-
-Here you do something for the whole mm.
-
-> -		on_each_cpu(cr4_update_pce, NULL, 1);
-> +		on_each_cpu(x86_pmu_set_user_access_ipi, NULL, 1);
-
-Here too.
-
->  void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
->  			struct task_struct *tsk)
->  {
-> @@ -581,10 +556,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
->  	this_cpu_write(cpu_tlbstate.loaded_mm, next);
->  	this_cpu_write(cpu_tlbstate.loaded_mm_asid, new_asid);
-> 
-> -	if (next != real_prev) {
-> -		cr4_update_pce_mm(next);
-> +	if (next != real_prev)
->  		switch_ldt(real_prev, next);
-> -	}
->  }
-
-But if you remove this, then what handles context switching?
-
-> 
->  /*
-> --
-> 2.27.0
-> 
+Larry
 
