@@ -2,128 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140133EA330
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6243EA332
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbhHLK4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236442AbhHLK4O (ORCPT
+        id S236620AbhHLK4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:56:36 -0400
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:36055 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236442AbhHLK4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:56:14 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052C9C061765;
-        Thu, 12 Aug 2021 03:55:50 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e19so6748921pla.10;
-        Thu, 12 Aug 2021 03:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eq9Xh1F7xdY3qhY4IzprUVHF5yW7bLehYY5/rO8uEeA=;
-        b=GJOkBGonE+ybwwOlKpANl+y0qg5PXXeou55G7E5sGB25X97XoOQ54LoA0xAFS2XrFC
-         kY2LA0BtFa1QII2X6O8kmiuleMpLKt7ZG+ABldp3wLqx7gDKO+IOg+TwxZ5fz9zm2GU/
-         rpGNu1dVjC115xDXeTe3zAKYLpHiySWQod3s4pcIBxvaeoq/DB7rjcgVcDhsFAuFk4UA
-         ix0yacAO1vOLUllzUvR4aRHLEgW9bFxzz6tYtqRrEpQXizwYkW+/uw+ygQvsC6W7Mkd6
-         ACo1KAebCYYIcgxHraY6s1qTf8mhVDcroXpkRvK2EwWTNJzdYPXYVcEbtbYxlge/7dsJ
-         LdYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eq9Xh1F7xdY3qhY4IzprUVHF5yW7bLehYY5/rO8uEeA=;
-        b=rDzlDexZZbX9Kag22EzlCuFPgpjNaF2/Ivo6B2Wl7kQTyZyu+zcoNUGob4jSFbL9at
-         tEcT9g4ao6fjVfwm26hCAPsqCwM8pn+DD2B91Y+b8bStQQ7tx7Of91j007PKjS5fHdJg
-         kwaQJ/q1pvq3OwaIjtPJSeh2dJsXTEasDTcb230iB0ua2wP2fHG3j7f/qr3SOuxwmcrQ
-         3A0HPZtkkbkhREc9ugr9Wctb1KM1bAlqNwByIkqkkjj4wgBIBFI2clICLVRaTREEJflG
-         DrPdzbvk3fw5oshyPNQ/zPS7KwlKMOmi07YlCzcgCVnth7V3LkY9DoIMPeCZyiyCADbv
-         R36Q==
-X-Gm-Message-State: AOAM531/9iMYIKtNP0knIDGPJRofGpu54HernopKOz0laPymxxGKPxAG
-        npTFi/IX0ddPUCVRjNColnwgFUa+Ze/Xs4fL5hA=
-X-Google-Smtp-Source: ABdhPJyb+lVLZvTwmpYzxubeLGi3KVZEZfje3QngJArxyahIJNOVk58p4KTNvs4FIxI9O7eornU8xA==
-X-Received: by 2002:a17:902:bf48:b0:12d:8409:48ca with SMTP id u8-20020a170902bf4800b0012d840948camr680721pls.9.1628765749254;
-        Thu, 12 Aug 2021 03:55:49 -0700 (PDT)
-Received: from uver-laptop ([2405:201:6006:a148:da50:248a:1651:e22d])
-        by smtp.gmail.com with ESMTPSA id j5sm3219757pgg.41.2021.08.12.03.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 03:55:48 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 16:25:37 +0530
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] PCI: Remove duplicate #ifdef in pci_try_set_mwi()
-Message-ID: <20210812105537.GA9541@uver-laptop>
-References: <20210811234601.341947-1-utkarshverma294@gmail.com>
- <YRTEcd0S2/2XlL7p@kroah.com>
+        Thu, 12 Aug 2021 06:56:35 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 58F9F1E45
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 11:56:09 +0100 (IST)
+Received: (qmail 10232 invoked from network); 12 Aug 2021 10:56:09 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Aug 2021 10:56:09 -0000
+Date:   Thu, 12 Aug 2021 11:56:07 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Doug Berger <opendmb@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: don't corrupt pcppage_migratetype
+Message-ID: <20210812105607.GK6464@techsingularity.net>
+References: <20210811182917.2607994-1-opendmb@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <YRTEcd0S2/2XlL7p@kroah.com>
+In-Reply-To: <20210811182917.2607994-1-opendmb@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 08:49:21AM +0200, Greg KH wrote:
-> On Thu, Aug 12, 2021 at 05:16:01AM +0530, Utkarsh Verma wrote:
-> > Remove the unnecessary #ifdef PCI_DISABLE_MWI, because pci_set_mwi()
-> > performs the same check.
-> > 
-> > Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> > ---
-> >  drivers/pci/pci.c | 4 ----
-> >  1 file changed, 4 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index aacf575c15cf..7d4c7c294ef2 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -4456,11 +4456,7 @@ EXPORT_SYMBOL(pcim_set_mwi);
-> >   */
-> >  int pci_try_set_mwi(struct pci_dev *dev)
-> >  {
-> > -#ifdef PCI_DISABLE_MWI
-> > -	return 0;
-> > -#else
-> >  	return pci_set_mwi(dev);
-> > -#endif
-> >  }
-> >  EXPORT_SYMBOL(pci_try_set_mwi);
+On Wed, Aug 11, 2021 at 11:29:17AM -0700, Doug Berger wrote:
+> When placing pages on a pcp list, migratetype values over
+> MIGRATE_PCPTYPES get added to the MIGRATE_MOVABLE pcp list.
 > 
-> If this is the case, why do we even need pci_try_set_mwi()?  Why not
-> just replace it with calls to pci_set_mwi() and then delete this one?
+> However, the actual migratetype is preserved in the page and
+> should not be changed to MIGRATE_MOVABLE or the page may end
+> up on the wrong free_list.
+> 
+> Fixes: df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
 
-The only difference between the pci_set_mwi() and pci_try_set_mwi() is
-that, pci_set_mwi() is declared as __must_check which forces return
-value checking.
+Oops, yes. The impact is that HIGHATOMIC or CMA pages getting bulk freed
+from the PCP lists could potentially end up on the wrong buddy list.
+There are various consequences but minimally NR_FREE_CMA_PAGES accounting
+could get screwed up.
 
-The reason why pci_try_set_mwi() was introduced in the first place was
-because it gives the drivers both options:
-(1) most of the drivers don't require checking the return value, and
-they can safely ignore the errors values returned if any, so
-pci_try_set_mwi() can be used.
-(2) But for some of the drivers it is nice to check the return values,
-and generate proper warnings for error handling. By using the
-pci_set_mwi(), we force the driver for proper error checking.
+Thanks Doug
 
-So both the functions are similar but have different purposes, and it
-seems a more appropriate design.
-The whole argument about adding this function:
-https://lore.kernel.org/linux-ide/20070404213704.224128ec.randy.dunlap@oracle.com/
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Also earlier there was a patch that removed the pci_try_set_mwi() and
-__must_check attribute from pci_set_mwi(), just like you wanted,
-https://lore.kernel.org/linux-pci/4d535d35-6c8c-2bd8-812b-2b53194ce0ec@gmail.com/
-But it was not accepted because Bjorn wasn't convinced and he also gave
-the above argument and that we should not break something in the name of
-cleaning it up.
-
-But it is safe to only remove the duplicate #ifdef block inside the
-pci_try_set_mwi().
-
-
-Best Regards,
-Utkarsh Verma
+-- 
+Mel Gorman
+SUSE Labs
