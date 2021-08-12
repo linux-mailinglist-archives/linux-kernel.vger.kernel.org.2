@@ -2,82 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1353EA787
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04623EA78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237948AbhHLP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:27:49 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48341 "EHLO mout.gmx.net"
+        id S238023AbhHLPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236311AbhHLP1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:27:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628782024;
-        bh=IPvNKh09inpaXW5LaA5b8dgjgWRcuoeA0B1o+H8XlT0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=gbpG3Vc8lYIN0F75dZolAvQ9BFgyazz8wJPRUM7i631Cl+UwhrGqg9wZLP0AQMXwx
-         Oy10ihM0Xw54KjqBpZbsCIdolxcffwUS05z9qmncqZoJNHtXkVFF8eho7oH8+7Jenk
-         SmmByG8OKnKU9aF7/bT1duIeIS4i2bdFBAuMQQDA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.219.67]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MhD6g-1mjfkQ1S0g-00eJnI; Thu, 12
- Aug 2021 17:27:04 +0200
-Message-ID: <4e1febb4d812ce89c818e4615ce6d151c205f728.camel@gmx.de>
-Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Date:   Thu, 12 Aug 2021 17:27:03 +0200
-In-Reply-To: <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
-References: <20210713135158.054424875@linutronix.de>
-         <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
-         <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
-         <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
-         <bc6b74396cd6b5a4eb32ff90bcc1cb059216e0f3.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S236028AbhHLPaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:30:11 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A518610A3;
+        Thu, 12 Aug 2021 15:29:45 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 11:29:38 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] tracing: Fixes and clean ups for v5.14
+Message-ID: <20210812112938.3748c7f5@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZRJfg6qbiKy4dpW0uJb+4Ksm3SaqmX/2wDCHA5G4sFjYV8s+aX4
- VK7FcmSCouMcCIgdN1JpoBEumLhuXcuxHWgZ0HNOzq/nZrSm/9QKInk77UEj5E8mtRXQg0E
- pt5vTsBi4le962skyrwhq/Tg1e+5O+b73gI8UimWaKiJOSQBTaqNgXon+NIQloOCY/MRrrk
- TwbQX4SPaLHtelqz2yI8w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y5ziwgZThRg=:lPekU0vgf1abr4nFJLXYHW
- xKbNwYAJaopDLioy0kQjbAK1bzlABOpL/OMFaO7deNotP+zZcoMOSrHIJL7CnVAzgjV57mf2A
- fwdVvb88Tj/cIDqX3eSrqExROOyhp23UmfdwV55NN7QUDbSv/oTw72M6MuUL5wBbAPtooLDsL
- hTec9IcXinX4+NQpbOFAhnR9j6XFDAOYtZamRaISbVXWaV1x8A1/KG3iYjv/l0e6yldJCafP/
- EMjg7nZxTVroP1RHDwvWm8AxDxqOgZQssMfxHBJWZ+qDsSXfJuGf2kwJIwGliTKNxGZ75D3eQ
- frCkwa3pmXV5+RQbMMYUOruQAr5AjhqvjHMJ7Svs0LXsdbTUP0mcbO8zw8dUbiStw5lN1yCeo
- 9AgzmuarS1I0zUGcywr8XwgySlDaXAGanQServIAAN1Ko2V/ztmFfK1JLWBEFFTaDcW5ppvnz
- PaWr3lKeEcNreNIglSHkyKgJPRCm3yvCkHN8DaddIjRj4VB8WrqSLv9sX9fEj9/bGetIdZZL9
- IwKuqmC9ZdDU0SU7AZ9RomRDoJt46/qbvqfYX9rCa8rqCgvOUkmqzqEyJbcDCFk0CPwO1QwsW
- 6jxyJCpG4LGJ/h2OWfIdQ/6LrASOxGN52RS0f5z4jV2pmPcd7RgfN+xG60Jaur4gCYSxqGbVi
- KY3aB+t9Zd0xLKNapg3MysJW1CfMaRfOibTQPtUlY5LCjzoAhfd0RTLHj6GXsbSRomEnpXlmR
- hoS6ZEe+YH1OtP6oxLt9X/4dbyGKG1xRr9JLsWRs5Yc7UwmkCXwp63vewl2JqqBipRzqvT+HC
- oZgc42CFJDHP2yg79L2O009VKGLxX2dqe4hP3zPWjbmQY53VlpxXgnxj0ncwGd+8BIzggQzqH
- 0irzw7vVmlRboA55xEAdrRCsNgOxL08ktJMKczjv//WbsMvuJLiNsKmoQTv1DeBk40wrMnFJF
- YQSWszd14GXE8IvuLR03Rz1WjnQxGLb6RPMAeCVYoEySEuWSdJfaPTI5DcGIKWEEo3AntnPXd
- NDEXBZb7h9ohnlOu8X4B8ZglPNFjRzRoqoDuz4nk9LZA47kaSlJHf11CBxdnnWt4RiqkHf1eH
- 8C8kmEq69OTSiUeKgwgTQlikx7RSnUHz3lI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-12 at 17:04 +0200, Mike Galbraith wrote:
-> On Thu, 2021-08-12 at 16:32 +0200, Thomas Gleixner wrote:
-> >
-> > Can you please test whether the below fixes it for you?
->
-> Yes, that boots.
->
-> > I have yet to find a machine which reproduces it as I really want to
-> > understand which particular part is causing this.
->
-> Config attached just in case.
 
-My HP lappy bricks as well, and with tip-rt. Fix verified there too.
+Linus,
 
-	-Mike
+Fixes and clean ups to tracing:
 
+- Fix warning for use of "main" variable in osnoise tracer
+
+- Fix header alignment when PREEMPT_RT is enabled for osnoise tracer
+
+- Inject "stop" event to see where osnoise stopped the trace
+
+- Define DYNAMIC_FTRACE_WITH_ARGS as some code had an #ifdef for it
+
+- Fix erroneous message for bootconfig cmdline parameter
+
+- Fix crash caused by not found variable in histograms
+
+
+Please pull the latest trace-v5.14-rc5 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.14-rc5
+
+Tag SHA1: a580741e941446efd9bc43d74e34fca7b9e3bd2c
+Head SHA1: c5bcfacca8ad9c00aafdbbc5145b30cb31a22fb3
+
+
+Daniel Bristot de Oliveira (4):
+      trace/osnoise: Rename main variable to tracer_main
+      trace/osnoise: Add a header with PREEMPT_RT additional fields
+      trace/timerlat: Add a header with PREEMPT_RT additional fields
+      trace/osnoise: Print a stop tracing message
+
+Lukas Bulwahn (1):
+      tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
+
+Masami Hiramatsu (1):
+      init: Suppress wrong warning for bootconfig cmdline parameter
+
+Steven Rostedt (VMware) (1):
+      tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
+
+----
+ init/main.c                      |  9 ++++--
+ kernel/trace/Kconfig             |  5 ++++
+ kernel/trace/trace_events_hist.c |  2 ++
+ kernel/trace/trace_osnoise.c     | 62 +++++++++++++++++++++++++++++++++++++---
+ 4 files changed, 72 insertions(+), 6 deletions(-)
+---------------------------
+diff --git a/init/main.c b/init/main.c
+index f5b8246e8aa1..8d97aba78c3a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
+ 	return 0;
+ }
+ 
++static int __init warn_bootconfig(char *str)
++{
++	/* The 'bootconfig' has been handled by bootconfig_params(). */
++	return 0;
++}
++
+ static void __init setup_boot_config(void)
+ {
+ 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+@@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
+ 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
+ 	return 0;
+ }
+-early_param("bootconfig", warn_bootconfig);
+-
+ #endif
++early_param("bootconfig", warn_bootconfig);
+ 
+ /* Change NUL term back to "=", to make "param" the whole string. */
+ static void __init repair_env_string(char *param, char *val)
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index d567b1717c4c..3ee23f4d437f 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -219,6 +219,11 @@ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	depends on DYNAMIC_FTRACE_WITH_REGS
+ 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 
++config DYNAMIC_FTRACE_WITH_ARGS
++	def_bool y
++	depends on DYNAMIC_FTRACE
++	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
++
+ config FUNCTION_PROFILER
+ 	bool "Kernel function profiler"
+ 	depends on FUNCTION_TRACER
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 949ef09dc537..a48aa2a2875b 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
+ 			event = data->match_data.event;
+ 		}
+ 
++		if (!event)
++			goto free;
+ 		/*
+ 		 * At this point, we're looking at a field on another
+ 		 * event.  Because we can't modify a hist trigger on
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index a7e3c24dee13..b576e96d9741 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -253,10 +253,40 @@ static struct osnoise_data {
+  */
+ static bool osnoise_busy;
+ 
++#ifdef CONFIG_PREEMPT_RT
+ /*
+  * Print the osnoise header info.
+  */
+ static void print_osnoise_headers(struct seq_file *s)
++{
++	if (osnoise_data.tainted)
++		seq_puts(s, "# osnoise is tainted!\n");
++
++	seq_puts(s, "#                                _-------=> irqs-off\n");
++	seq_puts(s, "#                               / _------=> need-resched\n");
++	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
++	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
++	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
++	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
++	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
++
++	seq_puts(s, "#                              |||||| /          ");
++	seq_puts(s, "                                     MAX\n");
++
++	seq_puts(s, "#                              ||||| /                         ");
++	seq_puts(s, "                    SINGLE      Interference counters:\n");
++
++	seq_puts(s, "#                              |||||||               RUNTIME   ");
++	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
++
++	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    IN US    ");
++	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
++
++	seq_puts(s, "#              | |         |   |||||||      |           |      ");
++	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
++}
++#else /* CONFIG_PREEMPT_RT */
++static void print_osnoise_headers(struct seq_file *s)
+ {
+ 	if (osnoise_data.tainted)
+ 		seq_puts(s, "# osnoise is tainted!\n");
+@@ -279,6 +309,7 @@ static void print_osnoise_headers(struct seq_file *s)
+ 	seq_puts(s, "#              | |         |   ||||      |           |      ");
+ 	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
+ }
++#endif /* CONFIG_PREEMPT_RT */
+ 
+ /*
+  * osnoise_taint - report an osnoise error.
+@@ -323,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+ /*
+  * Print the timerlat header info.
+  */
++#ifdef CONFIG_PREEMPT_RT
++static void print_timerlat_headers(struct seq_file *s)
++{
++	seq_puts(s, "#                                _-------=> irqs-off\n");
++	seq_puts(s, "#                               / _------=> need-resched\n");
++	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
++	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
++	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
++	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
++	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
++	seq_puts(s, "#                              |||||| /\n");
++	seq_puts(s, "#                              |||||||             ACTIVATION\n");
++	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
++	seq_puts(s, "       CONTEXT                LATENCY\n");
++	seq_puts(s, "#              | |         |   |||||||      |         |      ");
++	seq_puts(s, "            |                       |\n");
++}
++#else /* CONFIG_PREEMPT_RT */
+ static void print_timerlat_headers(struct seq_file *s)
+ {
+ 	seq_puts(s, "#                                _-----=> irqs-off\n");
+@@ -336,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
+ 	seq_puts(s, "#              | |         |   ||||      |         |      ");
+ 	seq_puts(s, "            |                       |\n");
+ }
++#endif /* CONFIG_PREEMPT_RT */
+ 
+ /*
+  * Record an timerlat_sample into the tracer buffer.
+@@ -1025,9 +1075,13 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
+ /*
+  * osnoise_stop_tracing - Stop tracing and the tracer.
+  */
+-static void osnoise_stop_tracing(void)
++static __always_inline void osnoise_stop_tracing(void)
+ {
+ 	struct trace_array *tr = osnoise_trace;
++
++	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
++			"stop tracing hit on cpu %d\n", smp_processor_id());
++
+ 	tracer_tracing_off(tr);
+ }
+ 
+@@ -1458,20 +1512,20 @@ static void stop_per_cpu_kthreads(void)
+ static int start_kthread(unsigned int cpu)
+ {
+ 	struct task_struct *kthread;
+-	void *main = osnoise_main;
++	void *tracer_main = osnoise_main;
+ 	char comm[24];
+ 
+ #ifdef CONFIG_TIMERLAT_TRACER
+ 	if (osnoise_data.timerlat_tracer) {
+ 		snprintf(comm, 24, "timerlat/%d", cpu);
+-		main = timerlat_main;
++		tracer_main = timerlat_main;
+ 	} else {
+ 		snprintf(comm, 24, "osnoise/%d", cpu);
+ 	}
+ #else
+ 	snprintf(comm, 24, "osnoise/%d", cpu);
+ #endif
+-	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
++	kthread = kthread_create_on_cpu(tracer_main, NULL, cpu, comm);
+ 
+ 	if (IS_ERR(kthread)) {
+ 		pr_err(BANNER "could not start sampling thread\n");
