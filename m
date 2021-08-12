@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D781F3EA9B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE1C3EA9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhHLRos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:44:48 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36063 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232025AbhHLRor (ORCPT
+        id S235533AbhHLRo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:44:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34220 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhHLRor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 13:44:47 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17CHiGR1016019
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 13:44:17 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BB0D415C37C1; Thu, 12 Aug 2021 13:44:16 -0400 (EDT)
-Date:   Thu, 12 Aug 2021 13:44:16 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        adilger.kernel@dilger.ca
-Subject: Re: [PATCH V3 2/5] ext4: add new helper interface
- ext4_try_to_trim_range()
-Message-ID: <YRVd8CCjhkpGJ/tb@mit.edu>
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-3-jianchao.wan9@gmail.com>
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 74BD01FF6B;
+        Thu, 12 Aug 2021 17:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628790261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GjLy5j1wsZgYsAkLWE9gwStplnP2fdyuvJK9X16Uwc8=;
+        b=lIGzCv0I8YlOs2Tk2VETsdI2n1dTG/ArBJfNeNJFTeMjmkytmU7iuhnI4Hah/yIKhWdE28
+        gLQyvfbqGHLzxnlKFj9KAEfaJh3iyx6gZqwWDvdHjF1cx0Np6YOSWfDUm3gHF/dJLnXzTy
+        ipCbzwnH4F+u5qrGq6VOQm/cMHY0EBQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628790261;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GjLy5j1wsZgYsAkLWE9gwStplnP2fdyuvJK9X16Uwc8=;
+        b=I/Uzb8Q04U6W2dEIIemlNVY5uSsyU6ekttk7DxiEItevPv0hjzKqeecSVS9qlZFo8NwDdV
+        MRb0px56gIljIiAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5229D13AC3;
+        Thu, 12 Aug 2021 17:44:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id H6AHE/VdFWFcEwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 17:44:21 +0000
+Subject: Re: [PATCH v14 088/138] mm/filemap: Add filemap_get_folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-89-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <8117c1fa-deeb-c90e-be11-a445d314caed@suse.cz>
+Date:   Thu, 12 Aug 2021 19:44:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724074124.25731-3-jianchao.wan9@gmail.com>
+In-Reply-To: <20210715033704.692967-89-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 03:41:21PM +0800, Wang Jianchao wrote:
-> From: Wang Jianchao <wangjianchao@kuaishou.com>
+On 7/15/21 5:36 AM, Matthew Wilcox (Oracle) wrote:
+> filemap_get_folio() is a replacement for find_get_page().
+> Turn pagecache_get_page() into a wrapper around __filemap_get_folio().
+> Remove find_lock_head() as this use case is now covered by
+> filemap_get_folio().
 > 
-> There is no functional change in this patch but just split the
-> codes, which serachs free block and does trim, into a new function
-> ext4_try_to_trim_range. This is preparing for the following async
-> backgroup discard.
+> Reduces overall kernel size by 209 bytes.  __filemap_get_folio() is
+> 316 bytes shorter than pagecache_get_page() was, but the new
+> pagecache_get_page() is 99 bytes.
 > 
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
-> ---
->  fs/ext4/mballoc.c | 102 ++++++++++++++++++++++++++--------------------
->  1 file changed, 57 insertions(+), 45 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 018d5d3c6eeb..e3844152a643 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6218,6 +6218,54 @@ __acquires(bitlock)
->  	return ret;
->  }
->  
-> +static int ext4_try_to_trim_range(struct super_block *sb,
-> +		struct ext4_buddy *e4b, ext4_grpblk_t start,
-> +		ext4_grpblk_t max, ext4_grpblk_t minblocks)
-> +{
-> +	ext4_grpblk_t next, count, free_count;
-> +	void *bitmap;
-> +	int ret = 0;
-> +
-> +	bitmap = e4b->bd_bitmap;
-> +	start = (e4b->bd_info->bb_first_free > start) ?
-> +		e4b->bd_info->bb_first_free : start;
-> +	count = 0;
-> +	free_count = 0;
-> +
-> +	while (start <= max) {
-> +		start = mb_find_next_zero_bit(bitmap, max + 1, start);
-> +		if (start > max)
-> +			break;
-> +		next = mb_find_next_bit(bitmap, max + 1, start);
-> +
-> +		if ((next - start) >= minblocks) {
-> +			ret = ext4_trim_extent(sb, start, next - start, e4b);
-> +			if (ret && ret != -EOPNOTSUPP)
-> +				break;
-> +			ret = 0;
-> +			count += next - start;
-> +		}
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-"ret" is only used inside the if statement, so this might be better as:
-
-> +		if ((next - start) >= minblocks) {
-> +			int ret = ext4_trim_extent(sb, start, next - start, e4b);
-> +
-> +			if (ret && ret != -EOPNOTSUPP)
-> +				break;
-> +			count += next - start;
-> +		}
-
-... and then drop the "int ret = 0" above.
-
-Otherwise, looks good.
-
-						- Ted
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
