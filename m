@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98C83EA956
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D6A3EA955
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbhHLRTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbhHLRTV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:19:21 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67FBC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:18:55 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id h2so11606224lji.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u4g2Aqom+BNA6EFZNYAedbMkfxJn0eCYGbMW5+veCEE=;
-        b=A73tiXilkiAVjlqmotQW2c2YZ2F8VOkrBnxZaROGpt6k9qrvrVjQ3MKppq8qjrlyzR
-         HKCwgz39i5LR6knPJwB8/CcKpJmy0ewZ/GiQnIVaVsIa3B6yywtdE+jtFj31YZ74Dznq
-         tCelAlcxb5p0rtS4TeHjzQUUCBoyrYiJNLL9Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u4g2Aqom+BNA6EFZNYAedbMkfxJn0eCYGbMW5+veCEE=;
-        b=IEqITK8ktyhTQNDG2XiHICwM9/vgM3CB2wN+BGhc6GuckMuIPaxz8YJBmx+DNSpXrZ
-         9PhrJSff1SIPuGkZA9s1ASYVqmdUvl4KvZVlxJNkGtW8rehrK6l2Sp04OkOieUSUes2E
-         zVsVLyPiktH8Rx3SGNIypJpMvIoeKFw+C3+VH9bCztOylVfwn1WwfGgcvb8nN31P2SpT
-         Dku2VmaQ1EVtVsFGsu800cPJwpQIxLkB12NP4WfC3d5907Nq4cPB/zim6hObXcT1WXwe
-         hr6zufeg9fXBEzJH/1M2v8qvKzaHqwAiQKF+ZyZPAcOIFeIcUifB5OsC33fvZxDxNIcg
-         CpiQ==
-X-Gm-Message-State: AOAM532+4bMKzZJCLIiwyl5wqTx5YEjnZmzdcBIa8PJrz3gmnSdDxBh0
-        vE+atr1xS/4Vhl8DlH70GK6zMtUZOW/tNnCWg2Q=
-X-Google-Smtp-Source: ABdhPJzCJjXsXf61a5umGMhvg++yZgK/8665DCwX3FN1FNaQ06AfU3jhmwVMLn2rx3vq+V762VO5jg==
-X-Received: by 2002:a2e:9907:: with SMTP id v7mr3574403lji.113.1628788734023;
-        Thu, 12 Aug 2021 10:18:54 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id a22sm316857lfb.253.2021.08.12.10.18.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 10:18:53 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id u13so11604774lje.5
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:18:53 -0700 (PDT)
-X-Received: by 2002:a2e:557:: with SMTP id 84mr3739225ljf.507.1628788733014;
- Thu, 12 Aug 2021 10:18:53 -0700 (PDT)
+        id S235451AbhHLRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:19:07 -0400
+Received: from mga09.intel.com ([134.134.136.24]:28815 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhHLRTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 13:19:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215395118"
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="215395118"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:18:40 -0700
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; 
+   d="scan'208";a="517535725"
+Received: from smachee-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.169.15])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 10:18:40 -0700
+Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
+ guest
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQsNpG55v7dhFqIb@google.com>
+ <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
+ <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
+ <YQsX54MPVYFuLmFr@google.com>
+ <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
+ <YRTTZU3Pzm/1tH9M@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <486afc0e-0396-e57b-63fe-31a8433bd603@linux.intel.com>
+Date:   Thu, 12 Aug 2021 10:18:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210812112938.3748c7f5@oasis.local.home>
-In-Reply-To: <20210812112938.3748c7f5@oasis.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Aug 2021 07:18:37 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
-Message-ID: <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRTTZU3Pzm/1tH9M@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 5:29 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> - Fix warning for use of "main" variable in osnoise tracer
 
-Honestly, I refuse to pull this kind of inexplicable garbage.
 
-The commit message talks about "some compilers/analyzers" without any
-explanation, and the "Link:" thing doesn't link to anything useful
-either.
+On 8/12/21 12:53 AM, Borislav Petkov wrote:
+>>> Given amd_prot_guest_has(), my guess is Boris intended intel_prot_guest_has()...
+> Yap, exactly.
 
-Those compilers/analyzers are clearly complete and utter crap, and my
-reaction is that I want a *lot* more explanation why we should care
-about other peoples crap.
+I can implement intel_prot_guest_has() in arch/x86/kernel/cpu/intel.c. And call
+tdx_prot_guest_has() from it.
 
-I do NOT want to see people caring about warnings that make no sense,
-certainly not without extensive explanations about why we should care
-about broken tools.
-
-Fix the tool. Add a "--Wno-warn-about-stupid-issues" flag to the tool
-usage. Don't make pointless changes to the kernel to work around other
-peoples garbage.
-
-                    Linus
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
