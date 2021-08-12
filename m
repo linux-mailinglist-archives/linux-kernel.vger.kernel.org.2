@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3868D3EA1A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E6A3EA1B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbhHLJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:14:38 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53928 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232796AbhHLJOg (ORCPT
+        id S235732AbhHLJPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234895AbhHLJPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:14:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uim5XHy_1628759649;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uim5XHy_1628759649)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 12 Aug 2021 17:14:09 +0800
-Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
-        Omar Sandoval <osandov@fb.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>
-References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com>
- <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
- <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
- <f18d017b-d6f7-cf87-8859-8d6b50c7c289@linux.alibaba.com>
- <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
-From:   Xianting TIan <xianting.tian@linux.alibaba.com>
-Message-ID: <a5bb4fbb-a9c4-9b9a-3cfe-09d3b99c7915@linux.alibaba.com>
-Date:   Thu, 12 Aug 2021 17:14:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Thu, 12 Aug 2021 05:15:34 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7DAC0613D5;
+        Thu, 12 Aug 2021 02:15:08 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x27so12232352lfu.5;
+        Thu, 12 Aug 2021 02:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iNZvgEwzNlv74EhPdPOrR7WRv0hD45zwdbp38WU3FKg=;
+        b=h+hLzT97yAPBswp6hlz/ItmWV82FKo/j+KipuGYmmIkHRfMdCpQ4nRsjYf/G2s4IUg
+         vqOnTqFl99HsyPm7PSqdTBXXD92aSpv/v99/qAlIHe/lwu7BiqG5hQKEej6P/b0T2NV4
+         Udz6ivLrGOfK56DTIbmUd174WN8GtlnNBbxR8orB/XeIqCVgK3TtdHqCZ5GJr2LfmMCD
+         7A6Wa7loVfIzoBSBXoYU7AHWix5PR28hudeN7AAJZIAZB5SBuDT52j8hI9mgDGC98C4j
+         x9lIik0UvW9/+8AOxMk5NPWf6yTiSD1k8xc8iWBNi219thpwwFED9gL5D5F7jv8jnqKq
+         hTZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iNZvgEwzNlv74EhPdPOrR7WRv0hD45zwdbp38WU3FKg=;
+        b=OaTMlvSpX+AlBHKCuQbzxdQpBIb1fCH0etR3FLO83SoHY7/fMKAgeaKv9fUOZRxBLz
+         lcMCD3WuhvKcgGRYM7mvldYgN6+Ewurjrg0x2+wb7kg0cqNR3C3GKpgLm+O1M5Tz7uB6
+         Nzlf52VOvyBPMvg2MnEDHpAIjZS8ZflS+D0IiznnhtS3DFg3LpSSLvaaKWSyCG69t6xM
+         SEpZabaSl8x9aKoLrPqdQX8+dX54xeP8mDjiLhz+ABar0O5jwNlzLvcB09oj5mRo2usi
+         pzBrN42wxKkGigstnJ/Bqb8jA43Wsw6vvC3nAejPYCJp6g1D29m8kKP/Q5NxeCXdidsY
+         +bnQ==
+X-Gm-Message-State: AOAM530WfC9Couhl5wm1B5mdgyZ+v3n1xu+E7eP/PTNASrxGHOrqd5rk
+        Z823s8c52GxjHEWJfrEGsdc=
+X-Google-Smtp-Source: ABdhPJxVB+cmqliIX3pFzzoc6Q63jgJhn4JTxvzkGi0+AkKwc7iI4rwUk/r3BxhQZ79Dfg7ticWITQ==
+X-Received: by 2002:ac2:4e8c:: with SMTP id o12mr1925327lfr.374.1628759706519;
+        Thu, 12 Aug 2021 02:15:06 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id q66sm246264ljb.83.2021.08.12.02.15.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 02:15:06 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     josef@toxicpanda.com, axboe@kernel.dk
+Cc:     hch@lst.de, linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+Subject: [PATCH] block: nbd: add sanity check for first_minor
+Date:   Thu, 12 Aug 2021 12:15:01 +0300
+Message-Id: <20210812091501.22648-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2ykLvJkhX+wDAOHdyLHjPFAfhOxi5BNM9kTKv_8F7VQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Syzbot hit WARNING in internal_create_group(). The problem was in
+too big disk->first_minor.
 
-在 2021/8/12 下午4:54, Arnd Bergmann 写道:
-> On Thu, Aug 12, 2021 at 10:08 AM Xianting TIan
-> <xianting.tian@linux.alibaba.com> wrote:
->> 在 2021/8/6 下午10:51, Arnd Bergmann 写道:
->>> On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
->>>> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
->>> I think you need a higher alignment for DMA buffers, instead of sizeof(long),
->>> I would suggest ARCH_DMA_MINALIGN.
->> As some ARCH(eg, x86, riscv) doesn't define ARCH_DMA_MINALIG, so i think
->> it 's better remain the code unchanged,
->>
->> I will send v5 patch soon.
-> I think you could just use "L1_CACHE_BYTES" as the alignment in this case.
-> This will make the structure slightly larger for architectures that do not have
-> alignment constraints on DMA buffers, but using a smaller alignment is
-> clearly wrong. Another option would be to use ARCH_KMALLOC_MINALIGN.
-yes, I unstand you, the align size must  L1_CACHE_BYTES at least.
->
-> Note that there is a patch to add ARCH_DMA_MINALIGN to riscv already,
-yes, I summited this patch, it is discussing, seems they don't want to 
-apply it.
-> as some implementations do not have coherent DMA. I had failed to
-> realized though that on x86 you do not get an ARCH_DMA_MINALIGN
-> definition.
-I didn't find the definition in arch/x86/include/asm/cache.h and other 
-place, x86 is dma coherent, it may doesn't need it.
->
->         Arnd
+disk->first_minor is initialized by value, which comes from userspace
+and there wasn't any sanity checks about value correctness. It can cause
+duplicate creation of sysfs files/links, because disk->first_minor will
+be passed to MKDEV() which causes truncation to byte. Since maximum
+minor value is 0xff, let's check if first_minor is correct minor number.
+
+NOTE: the root case of the reported warning was in wrong error handling
+in register_disk(), but we can avoid passing knowingly wrong values to
+sysfs API, because sysfs error messages can confuse users. For example:
+user passed 1048576 as index, but sysfs complains about duplicate
+creation of /dev/block/43:0. It's not obvious how 1048576 becomes 0.
+Log and reproducer for above example can be found on syzkaller bug
+report page.
+
+Link: https://syzkaller.appspot.com/bug?id=03c2ae9146416edf811958d5fd7acfab75b143d1
+Fixes: b0d9111a2d53 ("nbd: use an idr to keep track of nbd devices")
+Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/block/nbd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index c38317979f74..600e9bab5d43 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1725,7 +1725,17 @@ static int nbd_dev_add(int index)
+ 	refcount_set(&nbd->refs, 1);
+ 	INIT_LIST_HEAD(&nbd->list);
+ 	disk->major = NBD_MAJOR;
++
++	/* Too big first_minor can cause duplicate creation of
++	 * sysfs files/links, since first_minor will be truncated to
++	 * byte in __device_add_disk().
++	 */
+ 	disk->first_minor = index << part_shift;
++	if (disk->first_minor > 0xff) {
++		err = -EINVAL;
++		goto out_free_idr;
++	}
++
+ 	disk->minors = 1 << part_shift;
+ 	disk->fops = &nbd_fops;
+ 	disk->private_data = nbd;
+-- 
+2.32.0
+
