@@ -2,290 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4746D3EA97A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316213EA97E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235959AbhHLRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
+        id S235980AbhHLRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234997AbhHLRbO (ORCPT
+        with ESMTP id S235761AbhHLRb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:31:14 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799D8C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:30:49 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id n17so7926762ioc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:30:49 -0700 (PDT)
+        Thu, 12 Aug 2021 13:31:56 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDCEC061756;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id bo18so10982544pjb.0;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9bU1TEUKnSS2Vb5WitiqttPECUCgD2Zox5kX0NxOhxs=;
-        b=GgYERin3f6czP7m1aj3Pzmd5a5FhEu2VzwdjijONGPqsVxgP4epz62VObPzK2f5DfA
-         MnYE1v9kLBrJwNlyHPBgPHWfn9CNBP4TJdCb7Vl+bgWFqrd0B/eUooITqfiXdTCVUahS
-         YA0gETJRL9e+wzRY67xgtJz8kwwDJ0QWAIKivF1PQ9MWrGBFjOHT7d3Wei4WHwZdXVXG
-         LkR5d5OaV//FfM0nk2+0lzREYcjyhd1YIokAEoEluka6MJ8Ut0eDDRt4g+M5kpIjU/GK
-         C8sX2xEHKcjw3yLbQFv4AdwYNGY4BiXLWxUDn2Yj0fVIp62fs291s1xWU+RUQjYeudU3
-         V2eA==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
+        b=Ue5MKLSRbXzCOAY6QQQGD8iKv/ERXos1bKdb+w4oTJTLY526gD4sOXiPUiWGlfiUEn
+         FJ2csHMR4GvMjHtpJ0X4L773Ju55sxEaUa7llMKM3gq+nKnqd+bLE0QEkSRvXjPHO5Kh
+         5Dec9b61ELYl7Wu+3l9aQxPGLXDmOBnSCx8JIVdAu6c8Na8ZGbsfrKgu7tLyYjEqQMpr
+         hwWUYpG7LszTqS5pC5NMIk9twQ0r4YkqKJZR08VDU+CDOv4xxmjudj/OvtvyN/O7kMHq
+         JPbW9rvLIiDJ2RRaNKlHARLWUWQfzP1mQRC6KSR2YFESJgR0Nm3ewgBDHLlaQmtc1TQC
+         lV/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9bU1TEUKnSS2Vb5WitiqttPECUCgD2Zox5kX0NxOhxs=;
-        b=i97tgnANeMeCty54Oise3NM0MO20P7Ua4wZoG+sjVW+PN85vYpe+wfCTWwsvXSrzQG
-         +K+RGoOoo+xBRK8uv7v1iGyavcLY6fnZUi3YIDjclzTTSqD3drkpygM47K6yXlVqIXrs
-         dy743TO0eGnS9dvFuPoCc8xNwbItOwewKgR0OeSBmdBe4RPh5M/3nCiN/r3MDeO4EdqX
-         tiEu2SgFNN6Swl8DY2ekwaoMuIDfgvDmSJPYlgIZm/p69g28Q0dM3YQHsAWHIXJ7dZlo
-         gcyICBBH0yaCOXhpjrdB/luwkDfRgC+PTOba+WT/p64mjpn+4YyuiUJoDX6EgvwfFAtT
-         YAlQ==
-X-Gm-Message-State: AOAM530zf2F/wPsR5C03H8zPGoiavk8upGb3TQmfvAbGLA7y0REpXQU8
-        uLLbnAzBv9b8UKk5ughlMnz86bGnNdcow3/5eQ+P0g==
-X-Google-Smtp-Source: ABdhPJxf+4hkz4MdlAPctqxAB/dvL35GV9zmiToS7vB9pdow7QCCHr/qplf9lz+N4YHFRA5gtT87tfLTmzN6oUqJW3c=
-X-Received: by 2002:a05:6638:11cd:: with SMTP id g13mr4544213jas.66.1628789448695;
- Thu, 12 Aug 2021 10:30:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
+        b=DwqhWWzgNmVlnZqmkn1jct0Jc6tB7Tp384rjr1QMKrCbuVyP/PMShtpmqrP9aPuTR5
+         ssmxDCOUvVCoVSe5/J5F5rz/pQkvlnUVQ7AKUa60gxCKr8gqq0taGK73EQhhxKP6cAe1
+         wbNbFF6w+uk3cP36qtn1t+fKBZdgQ7Z20wWjWPfMuf1t0My6rZ461QOAIgq2aopxzEfR
+         zZZmma7RAMazh6ao+8S6RcnGmdYYprztd1ztCrUGguwPswhsbSzUJtvbLYJ3om4sxQzu
+         Di2ntmZfpMbPwL/yMf+a+oWda2Sai4zbaz8RY83MHUBz7/LOsXFrYZsaP2ih4g7E62Ko
+         syZw==
+X-Gm-Message-State: AOAM533KFFyFsAiR2nJF3KpRJDWn+R5GBoDGqhULb+v8edcxe1PTal3U
+        56Ugf8wpwDtxmuG+p0f5h/s=
+X-Google-Smtp-Source: ABdhPJxLh78LmXjViINrWmcaGjkKurD4OZxwOI8f6s2qMJRnPKh3vytXUKVirwW7ppftgZbydtS1yg==
+X-Received: by 2002:a17:902:b593:b0:12d:7aa5:de2d with SMTP id a19-20020a170902b59300b0012d7aa5de2dmr3547930pls.31.1628789491181;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id a18sm3211465pjq.15.2021.08.12.10.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 10:31:30 -0700 (PDT)
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+ <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+Date:   Fri, 13 Aug 2021 01:31:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210805235145.2528054-1-dlatypov@google.com> <20210805235145.2528054-2-dlatypov@google.com>
- <CABVgOSmoNaYVcckw3PX7Cf32NjYPSpX3JqGESCqYJvTi6dwAsQ@mail.gmail.com>
-In-Reply-To: <CABVgOSmoNaYVcckw3PX7Cf32NjYPSpX3JqGESCqYJvTi6dwAsQ@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 12 Aug 2021 10:30:37 -0700
-Message-ID: <CAGS_qxqJ9TNbyKg2B2XP75VSBnvCyL+Xbz=TUGNOuHkEoCgGjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kunit: add 'kunit.action' param to allow listing
- out tests
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210812155032.GL5047@twin.jikos.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:09 AM David Gow <davidgow@google.com> wrote:
->
-> On Fri, Aug 6, 2021 at 7:51 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > Context:
-> > It's difficult to map a given .kunitconfig => set of enabled tests.
-> >
-> > Having a standard, easy way of getting the list could be useful in a
-> > number of ways. For example, if we also extended kunit.filter_glob to
-> > allow filtering on tests, this would allow users to run tests cases one
-> > by one if they wanted to debug hermeticity issues.
-> >
-> > This patch:
-> > * adds a kunit.action module param with one valid non-null value, "list"
-> > * for the "list" action, it simply prints out "<suite>.<test>"
-> > * does not itself introduce kunit.py changes to make use of this [1].
->
-> I really like this feature, and could live with the implementation,
-> but do feel like we should probably have a more detailed idea of how
-> the kunit_tool changes are going to work before settling on it for
-> sure.
->
-> In particular, is the "<suite>.<test>" format the best way of giving
-> test information, or do we want something more (K)TAP-like. (e.g., a
-> test hierarchy with all tests marked SKIPed, or otherwise limited in
-> some way). Maybe that'd allow some of the parser code to be re-used,
-> and have fewer issues with having two separate ways of representing
-> the test hierarchy. (What if, e.g., there were test or suite names
-> with '.' in them?)
->
-> On the other hand, this format does make it easier to use the
-> filter_glob stuff, so it could go either way...
+On 12/8/21 11:50 pm, David Sterba wrote:
+> On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
+>> On 12/8/21 6:38 pm, David Sterba wrote:
+>>> On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
+>>>> When removing a writeable device in __btrfs_free_extra_devids, the rw
+>>>> device count should be decremented.
+>>>>
+>>>> This error was caught by Syzbot which reported a warning in
+>>>> close_fs_devices because fs_devices->rw_devices was not 0 after
+>>>> closing all devices. Here is the call trace that was observed:
+>>>>
+>>>>     btrfs_mount_root():
+>>>>       btrfs_scan_one_device():
+>>>>         device_list_add();   <---------------- device added
+>>>>       btrfs_open_devices():
+>>>>         open_fs_devices():
+>>>>           btrfs_open_one_device();   <-------- writable device opened,
+>>>> 	                                     rw device count ++
+>>>>       btrfs_fill_super():
+>>>>         open_ctree():
+>>>>           btrfs_free_extra_devids():
+>>>> 	  __btrfs_free_extra_devids();  <--- writable device removed,
+>>>> 	                              rw device count not decremented
+>>>> 	  fail_tree_roots:
+>>>> 	    btrfs_close_devices():
+>>>> 	      close_fs_devices();   <------- rw device count off by 1
+>>>>
+>>>> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
+>>>> mount if we don't have replace item with target device"), rw_devices
+>>>> was decremented on removing a writable device in
+>>>> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
+>>>> was not set for the device. However, this check does not need to be
+>>>> reinstated as it is now redundant and incorrect.
+>>>>
+>>>> In __btrfs_free_extra_devids, we skip removing the device if it is the
+>>>> target for replacement. This is done by checking whether device->devid
+>>>> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
+>>>> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
+>>>> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
+>>>> and so it's redundant to test for that bit.
+>>>>
+>>>> Additionally, following commit 82372bc816d7 ("Btrfs: make
+>>>> the logic of source device removing more clear"), rw_devices is
+>>>> incremented whenever a writeable device is added to the alloc
+>>>> list (including the target device in btrfs_dev_replace_finishing), so
+>>>> all removals of writable devices from the alloc list should also be
+>>>> accompanied by a decrement to rw_devices.
+>>>>
+>>>> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+>>>> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+>>>> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+>>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>>>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>>> ---
+>>>>    fs/btrfs/volumes.c | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>>> index 807502cd6510..916c25371658 100644
+>>>> --- a/fs/btrfs/volumes.c
+>>>> +++ b/fs/btrfs/volumes.c
+>>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>>>>    		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>>>>    			list_del_init(&device->dev_alloc_list);
+>>>>    			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>>>> +			fs_devices->rw_devices--;
+>>>>    		}
+>>>>    		list_del_init(&device->dev_list);
+>>>>    		fs_devices->num_devices--;
+>>>
+>>> I've hit a crash on master branch with stacktrace very similar to one
+>>> this bug was supposed to fix. It's a failed assertion on device close.
+>>> This patch was the last one to touch it and it matches some of the
+>>> keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
+>>> the original patch but was not reinstated in your fix.
+>>>
+>>> I'm not sure how reproducible it is, right now I have only one instance
+>>> and am hunting another strange problem. They could be related.
+>>>
+>>> assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
+>>>
+>>> https://susepaste.org/view/raw/18223056 full log with other stacktraces,
+>>> possibly relatedg
+>>>
+>>
+>> Looking at the logs, it seems that a dev_replace was started, then
+>> suspended. But it wasn't canceled or resumed before the fs devices were
+>> closed.
+>>
+>> I'll investigate further, just throwing some observations out there.
+> 
+> Thanks. I'm testing the patch revert, no crash after first loop, I'll
+> run a few more to be sure as it's not entirely reliable.
+> 
+> Sending the revert is option of last resort as we're approaching end of
+> 5.14 dev cycle and the crash prevents testing (unlike the fuzzer
+> warning).
+> 
 
-Yeah, the main point of this is to be consistent with filter_glob and
-test-level filtering.
-If we can come up with a more generic, "TAP-like" identifier for
-tests, we could use that for here and for filtering.
+I might be missing something, so any thoughts would be appreciated. But 
+I don't think the assertion in btrfs_close_one_device is correct.
 
-Using "suite.test" seems to be relatively standard, hence why I've
-gone with that for both.
-E.g. in python:
-https://docs.python.org/3/library/unittest.html#command-line-interface
+ From what I see, this crash happens when close_ctree is called while a 
+dev_replace hasn't completed. In close_ctree, we suspend the 
+dev_replace, but keep the replace target around so that we can resume 
+the dev_replace procedure when we mount the root again. This is the call 
+trace:
 
-$ python -m unittest test_module.TestClass.test_method
+   close_ctree():
+     btrfs_dev_replace_suspend_for_unmount();
+     btrfs_close_devices():
+       btrfs_close_fs_devices():
+         btrfs_close_one_device():
+           ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, 
+&device->dev_state));
 
-Though I've only ever used that without "test_module" as
+However, since the replace target sticks around, there is a device with 
+BTRFS_DEV_STATE_REPLACE_TGT set, and we fail the assertion in 
+btrfs_close_one_device.
 
-$ ./tools/testing/kunit/kunit_tool_test.py KconfigTest
-...
-----------------------------------------------------------------------
-Ran 3 tests in 0.001s
+Two options I can think of:
 
-OK
-$ ./tools/testing/kunit/kunit_tool_test.py KconfigTest.test_is_subset_of
-.
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
+- We could remove the assertion.
 
-OK
+- Or we could clear the BTRFS_DEV_STATE_REPLACE_TGT bit in 
+btrfs_dev_replace_suspend_for_unmount. This is fine since the bit is set 
+again in btrfs_init_dev_replace if the dev_replace->replace_state is 
+BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED. But this approach strikes me as 
+a little odd because the device is still the replace target when 
+mounting in the future.
 
-So I'd really prefer we stick with the current format, tbh.
-
->
-> > Note: kunit.filter_glob is respected for this and all future actions.
-> > Note: we need a TAP header for kunit.py to isolate the KUnit output.
->
-> I don't mind having a TAP header here, but we could either:
-> (a) have a separate header for a test list, and have kunit_tool look
-> for that as well, to avoid treating this as TAP when it isn't; or
-> (b) try to standardise a "test list" format as part of KTAP:
-> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-
-b. feels a bit overkill.
-
-I agree it's very hacky.
-I didn't want to mess around too much with the parser code while Rae
-was working on it.
-
-But we could change the parser code:
-* `func extract_tap_lines()` => `func extract_kunit_lines()`
-* kunit_start_re => `TAP...|KUNIT OTHER OUTPUT START MARKER`
-
-and use that marker here.
-
-I'm fine with adding a new marker, but I assumed we'd probably need to
-spend a good amount of time bikeshedding what exactly this new header
-would be :P
-Whereas this works right now and is ugly in a way that I don't think
-most people would notice.
-
->
-> >
-> > Go with a more generic "action" param, since it seems like we might
-> > eventually have more modes besides just running or listing tests, e.g.
-> > * perhaps a benchmark mode that reruns test cases and reports timing
-> > * perhaps a deflake mode that reruns test cases that failed
-> > * perhaps a mode where we randomize test order to try and catch
-> >   hermeticity bugs like "test a only passes if run after test b"
-> >
->
-> The "action" parameter is fine by me. Do we want to give the default
-> "run" action a name as well as making it the default?
-
-I originally did that, but then realized we'd probably never use an
-explicit "run" action ever.
-I've added it back in locally and will include it in a v2.
-
->
-> > Tested:
-> > $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
-> > ...
-> > TAP version 14
-> > 1..1
->
-> I really don't like the test plan line combined with the
-> "<suite>.<test>" format, particularly since this example notes that
-> there's only one test (presumably the suite), and then proceeds to
-> have three top-level things afterwards. It seems pretty misleading to
-> me.
->
-> > example.example_simple_test
-> > example.example_skip_test
-> > example.example_mark_skipped_test
-> > reboot: System halted
-> >
-> > [1] The interface for this can work in a few ways. We could add a
-> > --list_tests flag or a new subcommand. But this change is enough to
-> > allow people to split each suite into its own invocation, e.g. via a
-> > short script like:
-> >
-> >   #!/bin/bash
-> >
-> >   cd $(git rev-parse --show-toplevel)
-> >
-> >   for suite in $(
-> >     ./tools/testing/kunit/kunit.py run --kernel_args=kunit.action=list --raw_output=kunit |
-> >     sed -n '/^TAP version/,$p' | grep -P -o '^[a-z][a-z0-9_-]+\.' | tr -d '.' | sort -u);
-> >   do
-> >     ./tools/testing/kunit/kunit.py run "${suite}"
-> >   done
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
-> > v1 -> v2: write about potential other "actions" in commit desc.
-> > ---
-> >  lib/kunit/executor.c | 46 +++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 41 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> > index acd1de436f59..77d99ee5ed64 100644
-> > --- a/lib/kunit/executor.c
-> > +++ b/lib/kunit/executor.c
-> > @@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
-> >  #if IS_BUILTIN(CONFIG_KUNIT)
-> >
-> >  static char *filter_glob_param;
-> > +static char *action_param;
-> > +
-> >  module_param_named(filter_glob, filter_glob_param, charp, 0);
-> >  MODULE_PARM_DESC(filter_glob,
-> > -               "Filter which KUnit test suites run at boot-time, e.g. list*");
-> > +                "Filter which KUnit test suites run at boot-time, e.g. list*");
-> > +module_param_named(action, action_param, charp, 0);
-> > +MODULE_PARM_DESC(action,
-> > +                "Changes KUnit executor behavior, valid values are:\n"
-> > +                "<none>: run the tests like normal\n"
-> > +                "'list' to list test names instead of running them.\n");
-> >
-> >  static char *kunit_shutdown;
-> >  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-> > @@ -109,6 +116,33 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
-> >         pr_info("1..%d\n", num_of_suites);
-> >  }
-> >
-> > +static void kunit_exec_run_tests(struct suite_set *suite_set)
-> > +{
-> > +       struct kunit_suite * const * const *suites;
-> > +
-> > +       kunit_print_tap_header(suite_set);
-> > +
-> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> > +               __kunit_test_suites_init(*suites);
-> > +}
-> > +
-> > +static void kunit_exec_list_tests(struct suite_set *suite_set)
-> > +{
-> > +       unsigned int i;
-> > +       struct kunit_suite * const * const *suites;
-> > +       struct kunit_case *test_case;
-> > +
-> > +       /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
-> > +       kunit_print_tap_header(suite_set);
-> > +
-> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> > +               for (i = 0; (*suites)[i] != NULL; i++) {
-> > +                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
-> > +                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
-> > +                       }
-> > +               }
-> > +}
-> > +
-> >  int kunit_run_all_tests(void)
-> >  {
-> >         struct kunit_suite * const * const *suites;
-> > @@ -120,10 +154,12 @@ int kunit_run_all_tests(void)
-> >         if (filter_glob_param)
-> >                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
-> >
-> > -       kunit_print_tap_header(&suite_set);
-> > -
-> > -       for (suites = suite_set.start; suites < suite_set.end; suites++)
-> > -               __kunit_test_suites_init(*suites);
-> > +       if (!action_param)
-> > +               kunit_exec_run_tests(&suite_set);
-> > +       else if (strcmp(action_param, "list") == 0)
-> > +               kunit_exec_list_tests(&suite_set);
-> > +       else
-> > +               pr_err("kunit executor: unknown action '%s'\n", action_param);
-> >
-> >         if (filter_glob_param) { /* a copy was made of each array */
-> >                 for (suites = suite_set.start; suites < suite_set.end; suites++)
-> > --
-> > 2.32.0.605.g8dce9f2422-goog
-> >
+Thoughts?
