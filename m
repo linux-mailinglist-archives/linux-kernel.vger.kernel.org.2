@@ -2,222 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3BF3EA664
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79EF3EA668
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbhHLOSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:18:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52732 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237259AbhHLOSi (ORCPT
+        id S237546AbhHLOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhHLOTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:18:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EC51F221FB;
-        Thu, 12 Aug 2021 14:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628777891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QR0JcWHj1RZ/z/tKtiOSkgL8u32xy5MinF2YRbQktU0=;
-        b=izsYXAnlwq0cGmtUOspRecEZb1InAmamvsaIRayjGFS8M/0ZUexNZY+S1duUgzZ9cgRU2F
-        lMB4RgYEhtYLESL387fUGSs0Gdl+5Zl7dXAu8UfhNUpeilQL4NbxuVecsgPFCfTxnpaEj/
-        tP+nvArHEd0UO6nsAqx6WPY5UTvfctk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628777891;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QR0JcWHj1RZ/z/tKtiOSkgL8u32xy5MinF2YRbQktU0=;
-        b=lZX0QR0k/mtDnK8yXBjujF70H9W/NQkcE9hOMI+uSGHq9AV0G1WW8UCC17IilVLgrlIH8w
-        vC6oiDC00FnWprDQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id D7944A3F4E;
-        Thu, 12 Aug 2021 14:18:11 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BEA981F2BA7; Thu, 12 Aug 2021 16:18:11 +0200 (CEST)
-Date:   Thu, 12 Aug 2021 16:18:11 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 04/20] isofs: joliet: Fix iocharset=utf8 mount option
-Message-ID: <20210812141811.GF14675@quack2.suse.cz>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-5-pali@kernel.org>
+        Thu, 12 Aug 2021 10:19:12 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BF6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:18:47 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so10975415pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 07:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BYIEVqAwtUQet5A0SgR3uxf9S0vFKIdFocOOg6UEHvc=;
+        b=sZjJmMgs/qL5hh52BRvV7+VDIbNIvxy75sTex2lp1gz7Dy6zjw7u/ZJcYjFeGEqr3j
+         EO4clORky0VgE26w1ua1vEagYaQB7OuahuAGnDfN+yPsrPf2iDnrsflisqTEeSk+ZiTO
+         qgq8LmRLs2MtXn4KWqKmwgZ5SL8bUytKCv9KE6vN+TweSx4G7QCuiF6sXUX3zt3FzwPy
+         bK2AXNWvgfZ01jLRXUD11ONVMnRNsCskQSnn5yphCxvjfbOn+THOmF8KraziQohUn5hQ
+         1AAJaB0DNuqbI0Fdj5vwbGf4PkMktVAPr57SPkP9b6V64uFMqzdyCMJ4RKNhe/MF7fz5
+         dlnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BYIEVqAwtUQet5A0SgR3uxf9S0vFKIdFocOOg6UEHvc=;
+        b=uBL8BhMoCHpV+LmBlVpWNcjANwLDiAtvmn6tKdIIMzpT7gT7wQCCJfm3V82d6WpabB
+         aosG10mKUDC2fTeAFoZ7B2t+0hpnOb6AfYnmfcQbSqdHTv7TUrZrQYAwuLILt6+E6dYS
+         N9zXelqE9o0d21kRTPaatUsp4LypGxNNudz8Ioly4jxKuDbDK6q/XtDMXKwFnxr26/lf
+         j2RA93u/OJrQoFFlJbpIih8dA3/wVpb41HGz7zE+4IQOlJ0O8rzlVKXnziQ4l9bXaW7S
+         Bdp1bqYGAFqKbpWCosoADiZNKNZ7Ohv+obbohlGa62FNuPU1XyW28zmGnEgItBPSLcns
+         cjFQ==
+X-Gm-Message-State: AOAM530fglS02IRMbCqNM/t+Bb70oevCKI61i89y4ZVgLYVfuX5Uwz+a
+        iKrVi5rZmdZN9ZEsJEHH4N5N
+X-Google-Smtp-Source: ABdhPJw6FoC6XUQlLIUFbTLhHX7pIBFRmHDm5S+hGtJ/FJbTjlF73jJSPu5m90BuVOp54j24GS1efA==
+X-Received: by 2002:a63:88c7:: with SMTP id l190mr4036320pgd.438.1628777926652;
+        Thu, 12 Aug 2021 07:18:46 -0700 (PDT)
+Received: from workstation ([120.138.12.52])
+        by smtp.gmail.com with ESMTPSA id b9sm2836554pfo.175.2021.08.12.07.18.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 12 Aug 2021 07:18:46 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 19:48:41 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, robh@kernel.org,
+        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, smohanad@codeaurora.org,
+        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
+        skananth@codeaurora.org, vpernami@codeaurora.org,
+        vbadigan@codeaurora.org
+Subject: Re: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
+Message-ID: <20210812141841.GD7897@workstation>
+References: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
+ <2a0b7f85-dcd7-fc87-8e02-37725f66b9cf@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210808162453.1653-5-pali@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2a0b7f85-dcd7-fc87-8e02-37725f66b9cf@ti.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 08-08-21 18:24:37, Pali Rohár wrote:
-> Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
-> it is required to use utf8 mount option.
-> 
-> Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
-> option.
-> 
-> If UTF-8 as iocharset is used then s_nls_iocharset is set to NULL. So
-> simplify code around, remove s_utf8 field as to distinguish between UTF-8
-> and non-UTF-8 it is needed just to check if s_nls_iocharset is set to NULL
-> or not.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
+Hi Kishon,
 
-Looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-I can also take this patch through my tree if you want.
-
-								Honza
-
-> ---
->  fs/isofs/inode.c  | 27 +++++++++++++--------------
->  fs/isofs/isofs.h  |  1 -
->  fs/isofs/joliet.c |  4 +---
->  3 files changed, 14 insertions(+), 18 deletions(-)
+On Tue, Aug 03, 2021 at 10:57:00AM +0530, Kishon Vijay Abraham I wrote:
+> Hi Manivannan,
 > 
-> diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-> index 21edc423b79f..678e2c51b855 100644
-> --- a/fs/isofs/inode.c
-> +++ b/fs/isofs/inode.c
-> @@ -155,7 +155,6 @@ struct iso9660_options{
->  	unsigned int overriderockperm:1;
->  	unsigned int uid_set:1;
->  	unsigned int gid_set:1;
-> -	unsigned int utf8:1;
->  	unsigned char map;
->  	unsigned char check;
->  	unsigned int blocksize;
-> @@ -356,7 +355,6 @@ static int parse_options(char *options, struct iso9660_options *popt)
->  	popt->gid = GLOBAL_ROOT_GID;
->  	popt->uid = GLOBAL_ROOT_UID;
->  	popt->iocharset = NULL;
-> -	popt->utf8 = 0;
->  	popt->overriderockperm = 0;
->  	popt->session=-1;
->  	popt->sbsector=-1;
-> @@ -389,10 +387,13 @@ static int parse_options(char *options, struct iso9660_options *popt)
->  		case Opt_cruft:
->  			popt->cruft = 1;
->  			break;
-> +#ifdef CONFIG_JOLIET
->  		case Opt_utf8:
-> -			popt->utf8 = 1;
-> +			kfree(popt->iocharset);
-> +			popt->iocharset = kstrdup("utf8", GFP_KERNEL);
-> +			if (!popt->iocharset)
-> +				return 0;
->  			break;
-> -#ifdef CONFIG_JOLIET
->  		case Opt_iocharset:
->  			kfree(popt->iocharset);
->  			popt->iocharset = match_strdup(&args[0]);
-> @@ -495,7 +496,6 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
->  	if (sbi->s_nocompress)		seq_puts(m, ",nocompress");
->  	if (sbi->s_overriderockperm)	seq_puts(m, ",overriderockperm");
->  	if (sbi->s_showassoc)		seq_puts(m, ",showassoc");
-> -	if (sbi->s_utf8)		seq_puts(m, ",utf8");
->  
->  	if (sbi->s_check)		seq_printf(m, ",check=%c", sbi->s_check);
->  	if (sbi->s_mapping)		seq_printf(m, ",map=%c", sbi->s_mapping);
-> @@ -518,9 +518,10 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
->  		seq_printf(m, ",fmode=%o", sbi->s_fmode);
->  
->  #ifdef CONFIG_JOLIET
-> -	if (sbi->s_nls_iocharset &&
-> -	    strcmp(sbi->s_nls_iocharset->charset, CONFIG_NLS_DEFAULT) != 0)
-> +	if (sbi->s_nls_iocharset)
->  		seq_printf(m, ",iocharset=%s", sbi->s_nls_iocharset->charset);
-> +	else
-> +		seq_puts(m, ",iocharset=utf8");
->  #endif
->  	return 0;
->  }
-> @@ -863,14 +864,13 @@ static int isofs_fill_super(struct super_block *s, void *data, int silent)
->  	sbi->s_nls_iocharset = NULL;
->  
->  #ifdef CONFIG_JOLIET
-> -	if (joliet_level && opt.utf8 == 0) {
-> +	if (joliet_level) {
->  		char *p = opt.iocharset ? opt.iocharset : CONFIG_NLS_DEFAULT;
-> -		sbi->s_nls_iocharset = load_nls(p);
-> -		if (! sbi->s_nls_iocharset) {
-> -			/* Fail only if explicit charset specified */
-> -			if (opt.iocharset)
-> +		if (strcmp(p, "utf8") != 0) {
-> +			sbi->s_nls_iocharset = opt.iocharset ?
-> +				load_nls(opt.iocharset) : load_nls_default();
-> +			if (!sbi->s_nls_iocharset)
->  				goto out_freesbi;
-> -			sbi->s_nls_iocharset = load_nls_default();
->  		}
->  	}
->  #endif
-> @@ -886,7 +886,6 @@ static int isofs_fill_super(struct super_block *s, void *data, int silent)
->  	sbi->s_gid = opt.gid;
->  	sbi->s_uid_set = opt.uid_set;
->  	sbi->s_gid_set = opt.gid_set;
-> -	sbi->s_utf8 = opt.utf8;
->  	sbi->s_nocompress = opt.nocompress;
->  	sbi->s_overriderockperm = opt.overriderockperm;
->  	/*
-> diff --git a/fs/isofs/isofs.h b/fs/isofs/isofs.h
-> index 055ec6c586f7..dcdc191ed183 100644
-> --- a/fs/isofs/isofs.h
-> +++ b/fs/isofs/isofs.h
-> @@ -44,7 +44,6 @@ struct isofs_sb_info {
->  	unsigned char s_session;
->  	unsigned int  s_high_sierra:1;
->  	unsigned int  s_rock:2;
-> -	unsigned int  s_utf8:1;
->  	unsigned int  s_cruft:1; /* Broken disks with high byte of length
->  				  * containing junk */
->  	unsigned int  s_nocompress:1;
-> diff --git a/fs/isofs/joliet.c b/fs/isofs/joliet.c
-> index be8b6a9d0b92..c0f04a1e7f69 100644
-> --- a/fs/isofs/joliet.c
-> +++ b/fs/isofs/joliet.c
-> @@ -41,14 +41,12 @@ uni16_to_x8(unsigned char *ascii, __be16 *uni, int len, struct nls_table *nls)
->  int
->  get_joliet_filename(struct iso_directory_record * de, unsigned char *outname, struct inode * inode)
->  {
-> -	unsigned char utf8;
->  	struct nls_table *nls;
->  	unsigned char len = 0;
->  
-> -	utf8 = ISOFS_SB(inode->i_sb)->s_utf8;
->  	nls = ISOFS_SB(inode->i_sb)->s_nls_iocharset;
->  
-> -	if (utf8) {
-> +	if (!nls) {
->  		len = utf16s_to_utf8s((const wchar_t *) de->name,
->  				de->name_len[0] >> 1, UTF16_BIG_ENDIAN,
->  				outname, PAGE_SIZE);
-> -- 
-> 2.20.1
+> On 22/07/21 5:42 pm, Manivannan Sadhasivam wrote:
+> > Hello,
+> > 
+> > This series adds support for Qualcomm PCIe Endpoint controller found
+> > in platforms like SDX55. The Endpoint controller is based on the designware
+> > core with additional Qualcomm wrappers around the core.
+> > 
+> > The driver is added separately unlike other Designware based drivers that
+> > combine RC and EP in a single driver. This is done to avoid complexity and
+> > to maintain this driver autonomously.
+> > 
+> > The driver has been validated with an out of tree MHI function driver on
+> > SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Can you also validate it with in-kernel pci-endpoint-test?
+> 
+
+The Qcom EP driver or the DWC IP is designed to work only for MHI bus
+that has the fixed BAR address and register layout etc...
+
+So we can't use the pci-endpoint-test driver to validate the EP driver.
+But I do have an out of tree MHI EPF driver and validated using that.
+
+> It would also help if you can test your patches after
+> https://lore.kernel.org/r/20210803050310.27122-1-kishon@ti.com
+> 
+
+I added below patches (v7) on top and verified that the EP driver works fine.
+
+PCI: endpoint: Add virtual function number in pci_epc ops
+PCI: endpoint: Add support to link a physical function to a virtual function
+PCI: endpoint: Add support to add virtual function in endpoint core
+
+Thanks,
+Mani
+
+> Not expecting any dependencies but just to cross check.
+> 
+> Thanks
+> Kishon
+> 
+> > 
+> > Thanks,
+> > Mani
+> > 
+> > Changes in v7:
+> > 
+> > * Used existing naming convention for callback functions
+> > * Used active low state for PERST# gpio
+> > 
+> > Changes in v6:
+> > 
+> > * Removed status property in DT and added reviewed tag from Rob
+> > * Switched to _relaxed variants as suggested by Rob
+> > 
+> > Changes in v5:
+> > 
+> > * Removed the DBI register settings that are not needed
+> > * Used the standard definitions available in pci_regs.h
+> > * Added defines for all the register fields
+> > * Removed the left over code from previous iteration
+> > 
+> > Changes in v4:
+> > 
+> > * Removed the active_config settings needed for IPA integration
+> > * Switched to writel for couple of relaxed versions that sneaked in
+> > 
+> > Changes in v3:
+> > 
+> > * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+> > * Noticeable changes are:
+> >   - Got rid of _relaxed calls and used readl/writel
+> >   - Got rid of separate TCSR memory region and used syscon for getting the
+> >     register offsets for Perst registers
+> >   - Changed the wake gpio handling logic
+> >   - Added remove() callback and removed "suppress_bind_attrs"
+> >   - stop_link() callback now just disables PERST IRQ
+> > * Added MMIO region and doorbell interrupt to the binding
+> > * Added logic to write MMIO physicall address to MHI base address as it is
+> >   for the function driver to work
+> > 
+> > Changes in v2:
+> > 
+> > * Addressed the comments from Rob on bindings patch
+> > * Modified the driver as per binding change
+> > * Fixed the warnings reported by Kbuild bot
+> > * Removed the PERST# "enable_irq" call from probe()
+> > 
+> > Manivannan Sadhasivam (3):
+> >   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+> >     controller
+> >   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+> >   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+> > 
+> >  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+> >  MAINTAINERS                                   |  10 +-
+> >  drivers/pci/controller/dwc/Kconfig            |  10 +
+> >  drivers/pci/controller/dwc/Makefile           |   1 +
+> >  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+> >  5 files changed, 888 insertions(+), 1 deletion(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > 
