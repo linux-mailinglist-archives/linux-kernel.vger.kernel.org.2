@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B667A3EABE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED5E3EABE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237598AbhHLUkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhHLUkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:40:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04363C061756;
-        Thu, 12 Aug 2021 13:40:13 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 20:40:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628800810;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GEGvNJf5wejFR3UHreZQY6CKvNVQ7vg8tEuQa7f8Abw=;
-        b=jxTCXGkMmxjZOUYBAR26KXKNaK7+E4PJyRkxP9yMKxfg2I4ZxOJ/XNK9wzZyNW2EPCBs/+
-        h2jkcL/eShkiGEIUjxwTZG9YfZbDseXAvEEy8t/gCaXZDIcv5t8bcWCJ4/k4l31T1U8FUd
-        HvBpI8unvvRrPtDl8YAtL9yHUolUL0HIP/KqM8AsQ2Gj44XOwLfaisyxXXYbYJlHqkQqeB
-        2E0DCczbNlpOEAvXoILgY+FXA5wMd5KjGj8mcrU9gFSPGH0KwxthH6enTI9eW6lSDzeneI
-        Mat+8dOlGKf02c1uVyXAPrcRHDC5myFmHrDTNOtqb0oSsI5j9C+j1b09V5joVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628800810;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GEGvNJf5wejFR3UHreZQY6CKvNVQ7vg8tEuQa7f8Abw=;
-        b=7fHTUyiXUwazXpOk5dMf7GBipvZ9SKxQ9GeGfNBmgSt2sYf1RvdacpV7L/3vY8Mi7iIk76
-        5QwQnjH8BG4yvKBw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] hrtimer: Use raw_cpu_ptr() in clock_was_set()
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <875ywacsmb.ffs@tglx>
-References: <875ywacsmb.ffs@tglx>
+        id S234899AbhHLUlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232796AbhHLUlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 16:41:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 390CA610A8;
+        Thu, 12 Aug 2021 20:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628800841;
+        bh=pOWEY6Ktdp1G7W+1ThMMk8U6CvERPSJjoDwDwD8AddM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=alr8zDCrwIhpMD5GkS3UlyRFebHIL2K6RWJhHlD82FT046cufN7ZgBt3ommH/6Ay+
+         aWRFAt92K4shVGFNLY7/r/UqGCX+tn1CkhUeFq3VBvtNoq/bPgz8gI9y0jXn8cPC2s
+         GS/HHvVqHHeDNrsfUBeEWnrOodJiNJkLUsmsq4SpphGdXkk3O0oLPgP9G6bjlYdxLC
+         ukPsfe7NXVu72ZEtzxVN5TNeDjTNlqndYKUEfFc6Iownc/UyPNoWlNCm7cHrWBalH1
+         qj66G6niAXBjufoZKjtvluaI42egcir8reTklUU2dKmaKifVbTetEFviwuIoSleMK7
+         1jh34mL53G6uA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/3] staging: r8188eu: Fix -Wuninitialized instances from clang
+Date:   Thu, 12 Aug 2021 13:40:24 -0700
+Message-Id: <20210812204027.338872-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc2
 MIME-Version: 1.0
-Message-ID: <162880080996.395.7066106924439766648.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Hi all,
 
-Commit-ID:     9482fd71dbb8f0d1a61821a83e467dc0a9d7b429
-Gitweb:        https://git.kernel.org/tip/9482fd71dbb8f0d1a61821a83e467dc0a9d7b429
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 12 Aug 2021 22:31:24 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 12 Aug 2021 22:34:40 +02:00
+Commit 987219ad34a6 ("staging: r8188eu: remove lines from Makefile that
+silence build warnings") exposed some instances of -Wuninitialized in
+this driver. This series cleans them up. This passes my build tests with
+GCC and clang against x86_64 allmodconfig.
 
-hrtimer: Use raw_cpu_ptr() in clock_was_set()
+Cheers,
+Nathan
 
-clock_was_set() can be invoked from preemptible context. Use raw_cpu_ptr()
-to check whether high resolution mode is active or not. It does not matter
-whether the task migrates after acquiring the pointer.
+Nathan Chancellor (3):
+  staging: r8188eu: Remove unused static inline functions in rtw_recv.h
+  staging: r8188eu: Remove uninitialized use of ether_type in portctrl()
+  staging: r8188eu: Reorganize error handling in rtw_drv_init()
 
-Fixes: e71a4153b7c2 ("hrtimer: Force clock_was_set() handling for the HIGHRES=n, NOHZ=y case")
-Reported-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/875ywacsmb.ffs@tglx
+ drivers/staging/r8188eu/core/rtw_recv.c    |  4 --
+ drivers/staging/r8188eu/include/rtw_recv.h | 46 ----------------------
+ drivers/staging/r8188eu/os_dep/usb_intf.c  | 20 +++++-----
+ 3 files changed, 10 insertions(+), 60 deletions(-)
 
----
- kernel/time/hrtimer.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 88aefc3..33b00e2 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -944,10 +944,11 @@ static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
-  */
- void clock_was_set(unsigned int bases)
- {
-+	struct hrtimer_cpu_base *cpu_base = raw_cpu_ptr(&hrtimer_bases);
- 	cpumask_var_t mask;
- 	int cpu;
- 
--	if (!hrtimer_hres_active() && !tick_nohz_active)
-+	if (!__hrtimer_hres_active(cpu_base) && !tick_nohz_active)
- 		goto out_timerfd;
- 
- 	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-@@ -958,9 +959,9 @@ void clock_was_set(unsigned int bases)
- 	/* Avoid interrupting CPUs if possible */
- 	cpus_read_lock();
- 	for_each_online_cpu(cpu) {
--		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
- 		unsigned long flags;
- 
-+		cpu_base = &per_cpu(hrtimer_bases, cpu);
- 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
- 
- 		if (update_needs_ipi(cpu_base, bases))
+base-commit: 626520f4ba27d92c8caaf2d1f70c4bca4ea3f9de
+-- 
+2.33.0.rc2
+
