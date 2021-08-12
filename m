@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AE13EA73E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C0E3EA741
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238462AbhHLPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237883AbhHLPN2 (ORCPT
+        id S238459AbhHLPOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:14:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59144 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237905AbhHLPN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:13:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F947C0617AF
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 08:13:03 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 15:13:01 -0000
+        Thu, 12 Aug 2021 11:13:29 -0400
+Date:   Thu, 12 Aug 2021 15:13:02 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628781181;
+        s=2020; t=1628781183;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uuUiL3yiyRQ/gc3VHDD9g+NiKKDuSGDSsL0PewhWnmE=;
-        b=r5McXeixDeyNn4/OydG31VL0vpInLhlUwNhQkjhUvSWbOs6pAP9TFzGSjjKDBZIcLIVY7e
-        mDKx9r0GucyUb8dFige0PKI5S/8zBCDAsE62gLrPxppFPdDeXaeClkdGKQB4SrHKfm8wkI
-        9n7V6fOSn9KXSk6pEf3QuWDKLwqyNfIWHUjIdysYN0gTg1wfZJHdRhS7NbYigkBTbk+qkk
-        1jDVp+EPXfJpdevG6mtiFB1qq9h5HCGhr8ms6cpTfhZ1zLRdBLCKejYhnqCjUAvbETIYtW
-        VDQXrDkIsH9uJcu9Iwc8lwSjQwKj5T6Oh0GL+TEER4z1qK6bXJFBXmTckfJ8YA==
+        bh=w2rnuiEvzjOsgWYxMNSCVAXMs+Tw4JTNQpwt6qoA5HY=;
+        b=vm6fu7r01sPTyUrZsD8BFekCboxp0/sO5DjzeK333R5blASnv117rYonJj/qJva1hvZHgh
+        auagUZ6pLgN/4bmqzpfSnolZGloPfvHSYKqJtdfVgVdn3Yuc7fZDpDom4SqvSzgeLooVn/
+        GPrWTT5CLer3KE8K2Jdp/pmj70j2FcyNSputxWCdzoUBBbE/7bG8dlu7v1kIJWpXNTcSQT
+        8vqVQMG3dDuyXMjkNmGv6b3OK+zsf/ARUq4nXDD4avsXgJyARncnw7YjiO+BYpeFS+RyS0
+        6JbSVXzj8aBeHF0dYZIKlOqJMkTZN88P1gQ6ihkntszaZgbgEkj5Y5cuWW8EMg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628781181;
+        s=2020e; t=1628781183;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uuUiL3yiyRQ/gc3VHDD9g+NiKKDuSGDSsL0PewhWnmE=;
-        b=XO9Mb62bAL7W25hrrbn9AhDTqLUEB/1g7JakTtEMozdQaOCm16hxn/9T2ZymnYqawxy9fv
-        IW+9flA4zTe/17Dg==
+        bh=w2rnuiEvzjOsgWYxMNSCVAXMs+Tw4JTNQpwt6qoA5HY=;
+        b=UDFLbw+xrq2l6zPKqlsnrX09qGnSJuyMuJL5io4Evbrp+QefpKLQMuEIY64puuNQmzPBHi
+        3v0+8Z9up0o6UABw==
 From:   "irqchip-bot for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] genirq, irq-gic-v3: Make NMI flow
- handlers use ->irq_ack() if available
+Subject: [irqchip: irq/irqchip-next] genirq: Add handle_strict_flow_irq() flow handler
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210629125010.458872-8-valentin.schneider@arm.com>
-References: <20210629125010.458872-8-valentin.schneider@arm.com>
+In-Reply-To: <20210629125010.458872-5-valentin.schneider@arm.com>
+References: <20210629125010.458872-5-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <162878118109.395.10790736982071982547.tip-bot2@tip-bot2>
+Message-ID: <162878118280.395.16422884377783289280.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,134 +57,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     56707bb845f573a1ae2fc3fc57f1ecb4869c7c89
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/56707bb845f573a1ae2fc3fc57f1ecb4869c7c89
+Commit-ID:     9d76bea7b1b4d664ff1f165c783b70c5bbaaf23b
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9d76bea7b1b4d664ff1f165c783b70c5bbaaf23b
 Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Tue, 29 Jun 2021 13:50:04 +01:00
+AuthorDate:    Tue, 29 Jun 2021 13:50:01 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Thu, 12 Aug 2021 15:48:20 +01:00
 
-genirq, irq-gic-v3: Make NMI flow handlers use ->irq_ack() if available
+genirq: Add handle_strict_flow_irq() flow handler
 
-Subsequent patches will make the gic-v3 irqchip use an ->irq_ack()
-callback. As a preparation, make the NMI flow handlers call said callback
-if it is available.
+The GIC family of irqchips have been so far treated as "fasteoi"
+chips. As handle_fasteoi_irq() states, this implies:
 
-Since this departs from the fasteoi scheme of only issuing a suffix
-->eoi(), rename the NMI flow handlers.
+ *	Only a single callback will be issued to the chip: an ->eoi()
+ *	call when the interrupt has been serviced.
+
+However, the GICs have an operating mode (EOImode=1) which requires an
+additional chip interaction during the IRQ handling. Said operating mode
+already has some uses with virtualization, but could also be leveraged to
+slightly optimize ONESHOT IRQs.
+
+This extra interaction is currently hidden away in the drivers, but further
+exploiting its effects (see IRQD_IRQ_FLOW_MASKED) requires lifting it from
+the driver code into core code. It so happens that it fits the role of
+->irq_ack(); unfortunately, the GICs require both callbacks to be strictly
+paired with one another: for a given IRQ activation, there must be a single
+->irq_ack() followed by a single ->irq_eoi(). No more, no less, and in that
+order.
+
+Introduce a new flow handler which guarantees said ack / eoi pairing. Note
+that it is strikingly similar to handle_fasteoi_mask_irq() for now, but
+will be further modified in later patches
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210629125010.458872-8-valentin.schneider@arm.com
+Link: https://lore.kernel.org/r/20210629125010.458872-5-valentin.schneider@arm.com
 ---
- drivers/irqchip/irq-gic-v3.c |  4 ++--
- include/linux/irq.h          |  4 ++--
- kernel/irq/chip.c            | 25 ++++++++++++++-----------
- 3 files changed, 18 insertions(+), 15 deletions(-)
+ include/linux/irq.h |  1 +-
+ kernel/irq/chip.c   | 48 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 49 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index e0f4deb..cdffffc 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -484,10 +484,10 @@ static int gic_irq_nmi_setup(struct irq_data *d)
- 		/* Setting up PPI as NMI, only switch handler for first NMI */
- 		if (!refcount_inc_not_zero(&ppi_nmi_refs[idx])) {
- 			refcount_set(&ppi_nmi_refs[idx], 1);
--			desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
-+			desc->handle_irq = handle_percpu_devid_nmi;
- 		}
- 	} else {
--		desc->handle_irq = handle_fasteoi_nmi;
-+		desc->handle_irq = handle_nmi;
- 	}
- 
- 	gic_irq_set_prio(d, GICD_INT_NMI_PRI);
 diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 3707592..0b45e42 100644
+index ef17924..3707592 100644
 --- a/include/linux/irq.h
 +++ b/include/linux/irq.h
-@@ -669,8 +669,8 @@ extern void handle_percpu_devid_irq(struct irq_desc *desc);
+@@ -663,6 +663,7 @@ extern void handle_edge_irq(struct irq_desc *desc);
+ extern void handle_edge_eoi_irq(struct irq_desc *desc);
+ extern void handle_simple_irq(struct irq_desc *desc);
+ extern void handle_untracked_irq(struct irq_desc *desc);
++extern void handle_strict_flow_irq(struct irq_desc *desc);
+ extern void handle_percpu_irq(struct irq_desc *desc);
+ extern void handle_percpu_devid_irq(struct irq_desc *desc);
  extern void handle_bad_irq(struct irq_desc *desc);
- extern void handle_nested_irq(unsigned int irq);
- 
--extern void handle_fasteoi_nmi(struct irq_desc *desc);
--extern void handle_percpu_devid_fasteoi_nmi(struct irq_desc *desc);
-+extern void handle_nmi(struct irq_desc *desc);
-+extern void handle_percpu_devid_nmi(struct irq_desc *desc);
- 
- extern int irq_chip_compose_msi_msg(struct irq_data *data, struct msi_msg *msg);
- extern int irq_chip_pm_get(struct irq_data *data);
 diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index c2ca6b7..099bc7e 100644
+index 4d3bde5..699e70b 100644
 --- a/kernel/irq/chip.c
 +++ b/kernel/irq/chip.c
-@@ -748,18 +748,16 @@ out:
- EXPORT_SYMBOL_GPL(handle_fasteoi_irq);
+@@ -897,6 +897,54 @@ out_eoi:
+ #endif
  
  /**
-- *	handle_fasteoi_nmi - irq handler for NMI interrupt lines
-+ *	handle_nmi - irq handler for NMI interrupt lines
++ *	handle_strict_flow_irq - irq handler for strict controllers
++ *	@desc:	the interrupt description structure for this irq
++ *
++ *      Ensures strict pairing of ->ack() and ->eoi() for any IRQ passing
++ *      through here. The ->eoi() may be deferred to the tail of the IRQ thread
++ *      for ONESHOT IRQs.
++ */
++void handle_strict_flow_irq(struct irq_desc *desc)
++{
++	struct irq_chip *chip = desc->irq_data.chip;
++
++	raw_spin_lock(&desc->lock);
++	mask_ack_irq(desc);
++
++	if (!irq_may_run(desc))
++		goto out;
++
++	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
++
++	/*
++	 * If it's disabled or no action available then keep it masked and
++	 * get out of here:
++	 */
++	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
++		desc->istate |= IRQS_PENDING;
++		goto out;
++	}
++
++	kstat_incr_irqs_this_cpu(desc);
++
++	handle_irq_event(desc);
++
++	cond_unmask_eoi_irq(desc, chip);
++
++	raw_spin_unlock(&desc->lock);
++	return;
++out:
++	/*
++	 * XXX: this is where IRQCHIP_EOI_IF_HANDLED would be checked, but
++	 * it's conceptually incompatible with this handler (it breaks the
++	 * strict pairing)
++	 */
++	eoi_irq(desc);
++	raw_spin_unlock(&desc->lock);
++}
++EXPORT_SYMBOL_GPL(handle_strict_flow_irq);
++
++/**
+  *	handle_percpu_irq - Per CPU local irq handler
   *	@desc:	the interrupt description structure for this irq
   *
-  *	A simple NMI-safe handler, considering the restrictions
-  *	from request_nmi.
-  *
-- *	Only a single callback will be issued to the chip: an ->eoi()
-- *	call when the interrupt has been serviced. This enables support
-- *	for modern forms of interrupt handlers, which handle the flow
-- *	details in hardware, transparently.
-+ *      An ->ack() callback will be issued before servicing the interrupt,
-+ *      followed by an ->eoi() call.
-  */
--void handle_fasteoi_nmi(struct irq_desc *desc)
-+void handle_nmi(struct irq_desc *desc)
- {
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irqaction *action = desc->action;
-@@ -768,6 +766,9 @@ void handle_fasteoi_nmi(struct irq_desc *desc)
- 
- 	__kstat_incr_irqs_this_cpu(desc);
- 
-+	if (chip->irq_ack)
-+		chip->irq_ack(&desc->irq_data);
-+
- 	trace_irq_handler_entry(irq, action);
- 	/*
- 	 * NMIs cannot be shared, there is only one action.
-@@ -778,7 +779,7 @@ void handle_fasteoi_nmi(struct irq_desc *desc)
- 	if (chip->irq_eoi)
- 		chip->irq_eoi(&desc->irq_data);
- }
--EXPORT_SYMBOL_GPL(handle_fasteoi_nmi);
-+EXPORT_SYMBOL_GPL(handle_nmi);
- 
- /**
-  *	handle_edge_irq - edge type IRQ handler
-@@ -1032,14 +1033,13 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
- }
- 
- /**
-- * handle_percpu_devid_fasteoi_nmi - Per CPU local NMI handler with per cpu
-+ * handle_percpu_devid_nmi - Per CPU local NMI handler with per cpu
-  *				     dev ids
-  * @desc:	the interrupt description structure for this irq
-  *
-- * Similar to handle_fasteoi_nmi, but handling the dev_id cookie
-- * as a percpu pointer.
-+ * Similar to handle_nmi, but handling the dev_id cookie as a percpu pointer.
-  */
--void handle_percpu_devid_fasteoi_nmi(struct irq_desc *desc)
-+void handle_percpu_devid_nmi(struct irq_desc *desc)
- {
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irqaction *action = desc->action;
-@@ -1048,6 +1048,9 @@ void handle_percpu_devid_fasteoi_nmi(struct irq_desc *desc)
- 
- 	__kstat_incr_irqs_this_cpu(desc);
- 
-+	if (chip->irq_ack)
-+		chip->irq_ack(&desc->irq_data);
-+
- 	trace_irq_handler_entry(irq, action);
- 	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
- 	trace_irq_handler_exit(irq, action, res);
