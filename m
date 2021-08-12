@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604C43EA27E
+	by mail.lfdr.de (Postfix) with ESMTP id C37BD3EA27F
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhHLJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S236501AbhHLJv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235854AbhHLJv1 (ORCPT
+        with ESMTP id S236473AbhHLJv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 05:51:27 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A38C061765;
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE91C061765;
         Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id n11so998736qkk.1;
+Received: by mail-qv1-xf35.google.com with SMTP id f91so2772188qva.9;
         Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5+Ex4M/WVmsJrPcs5phjc6Esb1xB2cb0aVJHoij0E+Y=;
-        b=VoLz81yapzJNBaZBJDTBZQoiAweeL7Hcya0fYeAtf7nnnLV3YcPJxsL3xYiN1zQs/q
-         qjaMwAN7ACQx3e9NsVIyjEhd2sEvr+FrA9Mji4L+qufNW41wLZbsQQVvXyK+YcjYBn90
-         PTonhsQiOGjqOFeNy2gIxrB2X+WQ9YGXtF3Jpsz3u4lOMHr1PzpAPbFAqVQgno2OXQY3
-         5Hou7HuIg1E8STcD2s1lZj6BzWS7pb7/zSwK9q8/beIrRpnqFLrKAtHWOE+5PJXBUycv
-         s48uj0JC9lkmO9Su9P+7rBru1XWlc2fKELSB8iBKM59TrBI//wGmEwWRqdiJFhLU6ZFJ
-         GgQQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=htwOi/42dSt1MVAut+eNHPxAK4pGRot7RbkIWoqqfs0=;
+        b=OI4C/TjHmNznIdl1nugLFRonui4B/yt0SLYLlU4RaUCykGbJDTfw9h4EbACGlMp5nf
+         P06mcFjEkh7aKDQkTndzgvqIBEIduft8l/tO6KKz2atH6cwUrTnzKk4ApAqYeLRxPA9a
+         aTOs8z/66j7ixae2+TVdSqebZRl7gqSJmCu0+pfuem+DnLr8zPNLTld2N0bGbcppIjsi
+         dNnZmZrM4BEqIH3OJnDx2kdho3rIKkOXjzU2PU559iClDXhxhFOsltaD2hnn0bCPofFG
+         FGLQG57Cx/vMhP3NPz3+9ZGp7IXtbYL+xJ79EnX097dShRs7km2cn+zR0ULCVOK7GdAB
+         a9LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5+Ex4M/WVmsJrPcs5phjc6Esb1xB2cb0aVJHoij0E+Y=;
-        b=JfDghUp8b1lG6jUu8ROm1BrIuMAGpQKi4otYfgeT8CkHx/0FYxc1wbckqtDdfvCQ7Z
-         dScHnF35lZf9KeS4nYVNc4+Xu9tfWEiwtMBNJ8bbPB0ay2wBhOBF6I5w+a1VTixk14uJ
-         7mrbuk6x9HIMc/n0wyjDMbwBL3HU2uvaVnRYHvdBARIFOYTp87O+AlVQN8/pz9fX+YQz
-         wCQL9u17IST2WR3OOb/EvaoT2Cgh2oggg/na3bSdIeNhGZPJmr6fTuU0exQ8msMGDVuQ
-         WHEmnYqn3ljb3+8xKLssIYAd4hlY/diHIwyhcW5UNdxyw5Y8OTMbPWYxs+XlsA82t0OM
-         RHVg==
-X-Gm-Message-State: AOAM53210O8lPTGGjIZgFGEzNl1b8XZsmy+FdBo3DCvElhA2cBRxoFxV
-        wI73lr53AeOaaZdrcNN/6rg=
-X-Google-Smtp-Source: ABdhPJy86Kc7Esb+9oNstDewCabJ1WtL/GR2y10YUv3X1zy3P5Gn1F4aWXOrEazOSromiiucPXsREw==
-X-Received: by 2002:a37:a482:: with SMTP id n124mr3530903qke.175.1628761861332;
-        Thu, 12 Aug 2021 02:51:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=htwOi/42dSt1MVAut+eNHPxAK4pGRot7RbkIWoqqfs0=;
+        b=VeUc1jrxFaYgTapin/nRyViigZ0xz8TUGrYYEDuc5lsml+3la8EjDpp8dT9JoUMynt
+         /oQSA8qvGBY/+ZPAdDh0zLb91S2SAz5f7cKwufhjzJU1PyosOm4hK1LiTYJMRlqa2lit
+         VQ9vB5CccTwE4xc4NsmzbmIc1tMrn7/BjdmR/YangoYzdo3dXVMv32Qg+t7S0ADGURNm
+         cTgnC1DNkKUiqc8RPzJ2BcM0iiktR8IDh9cGBt0csC9Gic1Y1nDAg8xl6DmypN38tbXR
+         Div2+MVvED9gwjY19Z7HO5Wuof3Ek/NiMFnkAS4GzJM4veM67FKTGFqGU++DqZ6HyZvb
+         KmYA==
+X-Gm-Message-State: AOAM533LozuZmJt1FykiOb8ykLwT7rVGquFb8ADw70E0QWWlumsbQ93w
+        nBqYFtd2qUFIqkhZaHMfJ8M=
+X-Google-Smtp-Source: ABdhPJyoFXgwZp/ypiOQ+eZrhgjZcdKI4XjJMPNoF8x/MxZo+MnToRU/W7UR6BVkfYYesdzKglyoiA==
+X-Received: by 2002:a0c:c78f:: with SMTP id k15mr3009456qvj.20.1628761862016;
+        Thu, 12 Aug 2021 02:51:02 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id n10sm817684qtk.89.2021.08.12.02.51.00
+        by smtp.gmail.com with ESMTPSA id n10sm817684qtk.89.2021.08.12.02.51.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 02:51:00 -0700 (PDT)
+        Thu, 12 Aug 2021 02:51:01 -0700 (PDT)
 From:   SeongJae Park <sj38.park@gmail.com>
 To:     corbet@lwn.net
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 1/2] Documentation/process/applying-patches: Activate linux-next man hyperlink
-Date:   Thu, 12 Aug 2021 09:50:29 +0000
-Message-Id: <20210812095030.4704-1-sj38.park@gmail.com>
+Subject: [PATCH 2/2] Documentation/process/maintainer-pgp-guide: Replace broken link to PGP path finder
+Date:   Thu, 12 Aug 2021 09:50:30 +0000
+Message-Id: <20210812095030.4704-2-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210812095030.4704-1-sj38.park@gmail.com>
+References: <20210812095030.4704-1-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-There is a url for linux-next in the 'applying-patches.rst', but it's
-surrounded by backquotes.  So the url doesn't have a hyperlink in the
-built document.  To let readers easily move to the page, this commit
-puts the url outside of the backquotes so that a hyperlink to the url
-can be automatically made.
+PGP pathfinder[1], which is suggested for finding a trust path to
+unknown PGP keys by 'maintainer-pgp-guide.rst', is not working now.
+This commit replaces it with other available tools.
+
+[1] https://pgp.cs.uu.nl/
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- Documentation/process/applying-patches.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/process/maintainer-pgp-guide.rst | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/process/applying-patches.rst b/Documentation/process/applying-patches.rst
-index 2e7017bef4b8..c2121c1e55d7 100644
---- a/Documentation/process/applying-patches.rst
-+++ b/Documentation/process/applying-patches.rst
-@@ -389,7 +389,7 @@ The -mm patches are experimental patches released by Andrew Morton.
+diff --git a/Documentation/process/maintainer-pgp-guide.rst b/Documentation/process/maintainer-pgp-guide.rst
+index 8f8f1fee92b8..29e7d7b1cd44 100644
+--- a/Documentation/process/maintainer-pgp-guide.rst
++++ b/Documentation/process/maintainer-pgp-guide.rst
+@@ -944,12 +944,11 @@ have on your keyring::
+     uid           [ unknown] Linus Torvalds <torvalds@kernel.org>
+     sub   rsa2048 2011-09-20 [E]
  
- In the past, -mm tree were used to also test subsystem patches, but this
- function is now done via the
--`linux-next <https://www.kernel.org/doc/man-pages/linux-next.html>`
-+`linux-next` (https://www.kernel.org/doc/man-pages/linux-next.html)
- tree. The Subsystem maintainers push their patches first to linux-next,
- and, during the merge window, sends them directly to Linus.
+-Next, open the `PGP pathfinder`_. In the "From" field, paste the key
+-fingerprint of Linus Torvalds from the output above. In the "To" field,
+-paste the key-id you found via ``gpg --search`` of the unknown key, and
+-check the results:
+-
+-- `Finding paths to Linus`_
++Next, find a trust path from Linus Torvalds to the key-id you found via ``gpg
++--search`` of the unknown key.  For this, you can use several tools including
++https://github.com/mricon/wotmate,
++https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs, and
++https://the.earth.li/~noodles/pathfind.html.
  
+ If you get a few decent trust paths, then it's a pretty good indication
+ that it is a valid key. You can add it to your keyring from the
+@@ -962,6 +961,3 @@ administrators of the PGP Pathfinder service to not be malicious (in
+ fact, this goes against :ref:`devs_not_infra`). However, if you
+ do not carefully maintain your own web of trust, then it is a marked
+ improvement over blindly trusting keyservers.
+-
+-.. _`PGP pathfinder`: https://pgp.cs.uu.nl/
+-.. _`Finding paths to Linus`: https://pgp.cs.uu.nl/paths/79BE3E4300411886/to/C94035C21B4F2AEB.html
 -- 
 2.17.1
 
