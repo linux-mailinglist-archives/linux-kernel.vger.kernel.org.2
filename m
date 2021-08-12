@@ -2,134 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6623E9F33
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1071F3E9F35
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 09:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhHLHIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 03:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234252AbhHLHIC (ORCPT
+        id S234596AbhHLHIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 03:08:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36440 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234577AbhHLHIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:08:02 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2C6C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:07:38 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id k11so9760008ybf.6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qNbadYpEdJVuH8IgME6HLnqMP9VEAKKImPC7HomiMdE=;
-        b=EZh5Vi7dnJV+CsZFIWmVlgH8ElUJ+2gtNAZh5NOT7HwuyPBTzLSN1M5eX/k0PSey87
-         E3sObwmwcGZaXoaW1c8/RW7SUPRYJbu6iL6EwjeP0wTiE24/siJnc7Lhj5CF/KeZVCtP
-         fBaG66NmQ6h6FTRheBv+pz1Tu0n1reibJy9QdvO4uOxnrwxf2AO/MMafwAJNWVT/ocxX
-         2Tiz3AWP8qeJ8JlFry8IvgiW1h2wTtZl4Bp3qULM2EbcWtU7EHOfVtnPuoeaVNe988l6
-         4LXMPCrCBPTynZFuDZf6q03wNx+20itUZrEcihJ9TQNSkaq/GIDEyeeoy0+90D3egGDn
-         6Nhg==
+        Thu, 12 Aug 2021 03:08:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628752066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QgOG1KaHZGrp2vIMn7queyr7qSVpNW7VY1VTdadCTbg=;
+        b=LdvzkUTiq5XQqUvuZn4KJ9VBAERgr2x+yGG3MAwVYzTFDLy1b9khYJWyS+Wdzz7w6oPhdI
+        UIr1RW1nFPl4KGg+6ELjxfR4BdfiSWuDh7ALiGYWhYA6XntT67PyvsBJ8M34puqVEEDYpz
+        GyJ2x0T3QWuxWCdGL54hklk8sY7dzU0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-0TcqXWiJPde3e_iCy1TedA-1; Thu, 12 Aug 2021 03:07:44 -0400
+X-MC-Unique: 0TcqXWiJPde3e_iCy1TedA-1
+Received: by mail-wm1-f69.google.com with SMTP id l19-20020a05600c4f13b029025b036c91c6so1541152wmq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 00:07:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qNbadYpEdJVuH8IgME6HLnqMP9VEAKKImPC7HomiMdE=;
-        b=cTVhDme49NbLy7f+WJnOXNGtuJJZicgqNY4LtgbAxa63wPIvqr46B3WOPu66Q84S6/
-         7S6s8HqLi2yDiW1ES1fHRIq/6c0xL1bYyX2eQHTxjb2mXEf3niiumaKwIOVqB1V+V/ig
-         9xDfngBV6q3Lz+Y3q+yoxAdPunyE+8W5aAyc3h72+ArMXl7YJQHyuOTtaxZ4P7c5gP8w
-         ynrpqxdmuz3Rtr5bTwNa4W5yST8S16qfPRckbikjL+SD0qoIAg+CtE1c8RCL0OB94HTA
-         aTizeJhzFnAjkZIJycpGoVs9oJ4FHkHv7IUPTVTgH0bGNZKTCxoZtER4SS1w9NuDfbU/
-         XC2w==
-X-Gm-Message-State: AOAM533avwchFpDCUM5/9SmMIBmOJTiiU98KtD3dMVVaV0qDkWvX4HF2
-        HhpjZBX7bC+F0y2YFWtgwI+dI8sg7I9/cTPnxN/7ug==
-X-Google-Smtp-Source: ABdhPJz4R9WwiWRLBaxIdLeSpTQe1Orbq+PuyORfqX/1JHJwCICUFP6LIBDpoLgZ9L+Z5WysNNJSVOWKhNAHK6H7dZo=
-X-Received: by 2002:a25:ea51:: with SMTP id o17mr2748444ybe.253.1628752056761;
- Thu, 12 Aug 2021 00:07:36 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QgOG1KaHZGrp2vIMn7queyr7qSVpNW7VY1VTdadCTbg=;
+        b=lzmarT/UCHKa23F/NFzcFYqWaf8wVYOiIZ1fRQJvHIsPeZ1ULPr2x+FW8RExy4rm5M
+         RtmkwQtNC8z8Eus+sPp3CAksvd3CR87/uz8Wd7t5M5OSO5OC56xzuxqUuRpQCfx9J7oI
+         Ya2NutRtVk5B76jqqTZbrEbsiyRxwLaqCsmN3q6SC2BRL3qqPADrFZGQEnrH2eAgHMb4
+         7J54y1NA+lRizd03VgELW/dVsy1s82AR1Vq0R+YCSxpnFBZC1vEQWSsZR5cqUrfwiwq6
+         l4JFdhbK6B/Lt/PRdDqp8wPqgh3T4KwBYitYHkMCnBaD/JxxxT1MLXT3b1sulGoZQpnq
+         NOlA==
+X-Gm-Message-State: AOAM5332wyWqj9NmlrboxnAyoD+5KZEAiLGmeKoteHCspzWplzaMWmj0
+        UydHtsZb+DrjFiRDbcJIP3G1QS70MaaSn9bisdpTkIN7tGhskwzLjb3A+J0DMI3wAfOg1HwebS7
+        tzAn+fuU3ECurEiw21MDKdxdb
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr2323933wmp.52.1628752063499;
+        Thu, 12 Aug 2021 00:07:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/dQjmzRpVnjhu2nYG+mODfNo/0E2cQXbxEhmzGgBMgSVGnSaxBpdZxfEwooDN34fMK4D4Zw==
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr2323911wmp.52.1628752063241;
+        Thu, 12 Aug 2021 00:07:43 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
+        by smtp.gmail.com with ESMTPSA id i10sm8311155wmq.21.2021.08.12.00.07.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 00:07:42 -0700 (PDT)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <20210811203612.138506-1-david@redhat.com>
+ <20210811203612.138506-4-david@redhat.com>
+ <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 3/3] kernel/resource: cleanup and optimize
+ iomem_is_exclusive()
+Message-ID: <37179df3-13d7-9b98-4cd8-13bb7f735129@redhat.com>
+Date:   Thu, 12 Aug 2021 09:07:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210811235959.1099333-1-phind.uet@gmail.com>
-In-Reply-To: <20210811235959.1099333-1-phind.uet@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 12 Aug 2021 09:07:25 +0200
-Message-ID: <CANn89iLQj4Xm-6Bcygtkd5QqDzmJBDALznL8mEJrF1Fh_W32iQ@mail.gmail.com>
-Subject: Re: [PATCH] net: drop skbs in napi->rx_list when removing the napi context.
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        memxor@gmail.com, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75VdQ_FkvBH4rw63mzm-4MymCWD2Ke_7Rf8T3Zmef3FeQVQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 2:00 AM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
->
-> The napi->rx_list is used to hold the GRO_NORMAL skbs before passing
-> them to the stack, these skbs only passed to stack at the flush time or
-> when the list's weight matches the predefined condition. In case the
-> rx_list contains pending skbs when we remove the napi context, we need
-> to clean out this list, otherwise, a memory leak will happen.
->
-> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-> Reported-by: syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
+On 11.08.21 22:47, Andy Shevchenko wrote:
+> 
+> 
+> On Wednesday, August 11, 2021, David Hildenbrand <david@redhat.com 
+> <mailto:david@redhat.com>> wrote:
+> 
+>     Let's clean it up a bit, removing the unnecessary usage of r_next() by
+>     next_resource(), and use next_range_resource() in case we are not
+>     interested in a certain subtree.
+> 
+>     Signed-off-by: David Hildenbrand <david@redhat.com
+>     <mailto:david@redhat.com>>
+>     ---
+>       kernel/resource.c | 19 +++++++++++--------
+>       1 file changed, 11 insertions(+), 8 deletions(-)
+> 
+>     diff --git a/kernel/resource.c b/kernel/resource.c
+>     index 2938cf520ca3..ea853a075a83 100644
+>     --- a/kernel/resource.c
+>     +++ b/kernel/resource.c
+>     @@ -1754,9 +1754,8 @@ static int strict_iomem_checks;
+>        */
+>       bool iomem_is_exclusive(u64 addr)
+>       {
+>     -       struct resource *p = &iomem_resource;
+>     +       struct resource *p;
+>              bool err = false;
+>     -       loff_t l;
+>              int size = PAGE_SIZE;
+> 
+>              if (!strict_iomem_checks)
+>     @@ -1765,27 +1764,31 @@ bool iomem_is_exclusive(u64 addr)
+>              addr = addr & PAGE_MASK;
+> 
+>              read_lock(&resource_lock);
+>     -       for (p = p->child; p ; p = r_next(NULL, p, &l)) {
+>     +       for (p = iomem_resource.child; p ;) {
+> 
 
-Thank you for working on this.
+Hi Andy,
 
-Please add a Fixes: tag, otherwise you are asking maintainers and
-stable teams to find the original bug,
-while you are in a much better position, since you spent time on
-fixing the issue.
+> 
+> I consider the ordinal part of p initialization is slightly better and 
+> done outside of read lock.
+> 
+> Something like
+> p= &iomem_res...;
+> read lock
+> for (p = p->child; ...) {
 
-Also I object to this fix.
+Why should we care about doing that outside of the lock? That smells 
+like a micro-optimization the compiler will most probably overwrite 
+either way as the address of iomem_resource is just constant?
 
-If packets have been stored temporarily in GRO, they should be
-released at some point,
-normally at the end of a napi poll.
+Also, for me it's much more readable and compact if we perform a single 
+initialization instead of two separate ones in this case.
 
-By released, I mean that these packets should reach the upper stack,
-instead of being dropped without
-any notification.
+We're using the pattern I use in, find_next_iomem_res() and 
+__region_intersects(), while we use the old pattern in 
+iomem_map_sanity_check(), where we also use the same unnecessary 
+r_next() call.
 
-It seems a call to gro_normal_list() is missing somewhere.
+I might just cleanup iomem_map_sanity_check() in a similar way.
 
-Can you find where ?
+-- 
+Thanks,
 
-Thanks !
+David / dhildenb
 
-> ---
->  net/core/dev.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index b51e41d0a7fe..319fffc62ce6 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -7038,6 +7038,13 @@ void __netif_napi_del(struct napi_struct *napi)
->         list_del_rcu(&napi->dev_list);
->         napi_free_frags(napi);
->
-> +       if (napi->rx_count) {
-> +               struct sk_buff *skb, *n;
-> +
-> +               list_for_each_entry_safe(skb, n, &napi->rx_list, list)
-> +                       kfree_skb(skb);
-> +       }
-> +
->         flush_gro_hash(napi);
->         napi->gro_bitmask = 0;
->
-> --
-> 2.25.1
->
