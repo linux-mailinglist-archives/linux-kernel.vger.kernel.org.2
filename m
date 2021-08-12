@@ -2,98 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7134D3EA289
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68193EA28E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236564AbhHLJyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:54:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:22918 "EHLO mga18.intel.com"
+        id S236615AbhHLJ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:58:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:41452 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236556AbhHLJy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:54:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10073"; a="202481037"
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="202481037"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 02:53:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,315,1620716400"; 
-   d="scan'208";a="676707067"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2021 02:53:53 -0700
-Subject: Re: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config
- in preset value
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
- <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
- <YQ6TEhMLXH/4r4BS@qmqm.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <38e93996-d815-1b62-8d93-8b9bbed384a6@intel.com>
-Date:   Thu, 12 Aug 2021 12:54:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S236556AbhHLJ6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:58:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14F831042;
+        Thu, 12 Aug 2021 02:57:43 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D66923F718;
+        Thu, 12 Aug 2021 02:57:41 -0700 (PDT)
+Subject: Re: [PATCH v3 5/5] dma-iommu: account for min_align_mask
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210811024247.1144246-1-stevensd@google.com>
+ <20210811024247.1144246-6-stevensd@google.com>
+ <b5fff839-3242-7080-13f7-61c0e40af304@arm.com>
+ <CAD=HUj7u71cdPfJ5t2tC8A26YOgwDe8H7i-h78f_MeRmuNUySQ@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e69aa3e9-00c6-4551-2362-c88eb5f88721@arm.com>
+Date:   Thu, 12 Aug 2021 10:57:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YQ6TEhMLXH/4r4BS@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=HUj7u71cdPfJ5t2tC8A26YOgwDe8H7i-h78f_MeRmuNUySQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/08/21 5:05 pm, Micha³ Miros³aw wrote:
-> On Wed, Aug 04, 2021 at 01:52:21PM +0300, Adrian Hunter wrote:
->> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
->>> When host controller uses programmable clock presets but doesn't
->>> advertise programmable clock support, we can only guess what frequency
->>> it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
->>> value in this case.
->> If the preset value doesn't make sense, why use it at all?
+On 2021-08-12 02:45, David Stevens wrote:
+> On Thu, Aug 12, 2021 at 4:12 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2021-08-11 03:42, David Stevens wrote:
+>>> From: David Stevens <stevensd@chromium.org>
+>>>
+>>> For devices which set min_align_mask, swiotlb preserves the offset of
+>>> the original physical address within that mask. Since __iommu_dma_map
+>>> accounts for non-aligned addresses, passing a non-aligned swiotlb
+>>> address with the swiotlb aligned size results in the offset being
+>>> accounted for twice in the size passed to iommu_map_atomic. The extra
+>>> page exposed to DMA is also not cleaned up by __iommu_dma_unmap, since
+>>> tht at function unmaps with the correct size. This causes mapping failures
+>>> if the iova gets reused, due to collisions in the iommu page tables.
+>>>
+>>> To fix this, pass the original size to __iommu_dma_map, since that
+>>> function already handles alignment.
+>>>
+>>> Additionally, when swiotlb returns non-aligned addresses, there is
+>>> padding at the start of the bounce buffer that needs to be cleared.
+>>>
+>>> Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
+>>> Signed-off-by: David Stevens <stevensd@chromium.org>
+>>> ---
+>>>    drivers/iommu/dma-iommu.c | 23 ++++++++++++-----------
+>>>    1 file changed, 12 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>>> index 89b689bf801f..ffa7e8ef5db4 100644
+>>> --- a/drivers/iommu/dma-iommu.c
+>>> +++ b/drivers/iommu/dma-iommu.c
+>>> @@ -549,9 +549,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>>>        struct iommu_domain *domain = iommu_get_dma_domain(dev);
+>>>        struct iommu_dma_cookie *cookie = domain->iova_cookie;
+>>>        struct iova_domain *iovad = &cookie->iovad;
+>>> -     size_t aligned_size = org_size;
+>>> -     void *padding_start;
+>>> -     size_t padding_size;
+>>> +     void *tlb_start;
+>>> +     size_t aligned_size, iova_off, mapping_end_off;
+>>>        dma_addr_t iova;
+>>>
+>>>        /*
+>>> @@ -566,24 +565,26 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>>>                if (phys == DMA_MAPPING_ERROR)
+>>>                        return DMA_MAPPING_ERROR;
+>>>
+>>> -             /* Cleanup the padding area. */
+>>> -             padding_start = phys_to_virt(phys);
+>>> -             padding_size = aligned_size;
+>>> +             iova_off = iova_offset(iovad, phys);
+>>> +             tlb_start = phys_to_virt(phys - iova_off);
+>>>
+>>> +             /* Cleanup the padding area. */
+>>>                if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+>>>                    (dir == DMA_TO_DEVICE ||
+>>>                     dir == DMA_BIDIRECTIONAL)) {
+>>> -                     padding_start += org_size;
+>>> -                     padding_size -= org_size;
+>>> +                     mapping_end_off = iova_off + org_size;
+>>> +                     memset(tlb_start, 0, iova_off);
+>>> +                     memset(tlb_start + mapping_end_off, 0,
+>>> +                            aligned_size - mapping_end_off);
+>>> +             } else {
+>>> +                     memset(tlb_start, 0, aligned_size);
+>>>                }
+>>> -
+>>> -             memset(padding_start, 0, padding_size);
+>>>        }
+>>>
+>>>        if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>>>                arch_sync_dma_for_device(phys, org_size, dir);
+>>>
+>>> -     iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
+>>> +     iova = __iommu_dma_map(dev, phys, org_size, prot, dma_mask);
+>>
+>> This doesn't feel right - what if the IOVA granule was equal to or
+>> smaller than min_align_mask, wouldn't you potentially end up mapping the
+>> padding rather than the data?
 > 
-> If I understand the spec correctly, when the preset value is used the
-> values in Clock Control register are ignored by the module and so the
-> module can also actually use a different clock source than the ones
-> available to the driver directly.
+> The phys value returned by swiotlb_tbl_map_single is the address of
+> the start of the data in the swiotlb buffer, so the range that needs
+> to be mapped is [phys, phys + org_size). __iommu_dma_map will handle
+> this the same as it handles a misaligned mapping in the non-swiotlb
+> case. It might map memory before/after the desired range, but it will
+> map the entire range and iova will be the mapped address of phys. Is
+> there something I'm missing there?
 
-I don't remember, does it say that in the spec?
+No, my bad - I overlooked that phys got rewritten, so that aspect is OK, 
+but...
 
->                                   So either way the driver can't be
-> sure of the exact frequencu used. This is a cleanup to remove a case
-> when the code ignores a bit's value based on other unspecified assumptions.
+> That said, considering that memory before phys might be mapped, I
+> think there is actually still a bug. The buffer allocated by swiotlb
+> needs to be aligned to the granule size to ensure that preceding
+> swiotlb slots aren't mapped. The swiotlb does align allocations larger
+> than a page to PAGE_SIZE, but if IO_TLB_SIZE < IOVA granule <
+> PAGE_SIZE, then there can be problems. That can't happen if PAGE_SIZE
+> is 4k, but it can for larger page sizes. I'll add a fix for that to
+> the next version of this series.
 
-Is this fixing a real issue?  It seems like switching from one undefined
-scenario to another.  Are either of which known to have ever happened?
+I was mainly thinking that we still need to map aligned_size (where that 
+also accounts for min_align_mask) from tlb_start in order to guarantee 
+that the buffer ends up at the right offset in IOVA space. I suppose 
+technically we could be cleverer about only padding one thing or the 
+other depending on the IOVA granule, but I'm not sure it's worth the 
+bother of decoupling the IOMMU mapping from the IOVA allocation just for 
+this niche case.
 
-Perhaps we should leave it as is.
-
-> 
-> [...]
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->>>  
->>>  			pre_val = sdhci_get_preset_value(host);
->>>  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
->>> -			if (host->clk_mul &&
->>> -				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
->>> +			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
->>>  				clk = SDHCI_PROG_CLOCK_MODE;
->>>  				real_div = div + 1;
->>>  				clk_mul = host->clk_mul;
->>> +				if (!clk_mul) {
->>> +					/* The clock frequency is unknown. Assume undivided base. */
->>> +					clk_mul = 1;
->>> +				}
->>>  			} else {
->>>  				real_div = max_t(int, 1, div << 1);
->>>  			}
-
+Robin.
