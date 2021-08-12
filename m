@@ -2,122 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE3C3EA9A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3903EA9AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236551AbhHLRnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:43:02 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:16404 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236584AbhHLRnA (ORCPT
+        id S236775AbhHLRnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:43:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51760 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236627AbhHLRnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:43:00 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CHeLup002904;
-        Thu, 12 Aug 2021 10:42:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=27km6BLaqTM88ajb5evxxkzs+BLoc/l1AZ4ZPx1/DFU=;
- b=jRHhJI+BQV9wup7+JxZK2b7nhzUd8l7I1o8Ga/ve9Dk/F4OYZc396DqrVaBnRf42gMtP
- QUyxdenxCyIEeja61AOW+Y/NMHcYhe2wD6bZjmC3FuiXkMHx5tYDoskOh6HHYlEXXHLz
- v89eWsHq4/VE176Q4KAXxFfK/97H7VpQPEc01FWjw3QqE9hhMCwZ9eyRQi5tdmaFPw+j
- vQxfbiR19imxqWTH56vnHhrK0WMfdJmAPsYzJRnjeOcT96M2ijU2/va6XCK26h4DcXLr
- ZR02sfto3Zsczm2dGso41AiI74QJ7nw1QPWzKhdbVjpRcdeulpVPEaDu9UddxOcNWV20 1g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3acc8gdqyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 10:42:23 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 12 Aug
- 2021 10:42:21 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 12 Aug 2021 10:42:21 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id EDF1B3F7041;
-        Thu, 12 Aug 2021 10:42:18 -0700 (PDT)
-From:   Bhaskara Budiredla <bbudiredla@marvell.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
-        <sgoutham@marvell.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bhaskara Budiredla <bbudiredla@marvell.com>
-Subject: [PATCH 2/2] dt-bindings: perf: Add YAML schemas for Marvell CN10K LLC-TAD pmu bindings
-Date:   Thu, 12 Aug 2021 23:12:09 +0530
-Message-ID: <20210812174209.1970-3-bbudiredla@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210812174209.1970-1-bbudiredla@marvell.com>
-References: <20210812174209.1970-1-bbudiredla@marvell.com>
+        Thu, 12 Aug 2021 13:43:06 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 09A7C22258;
+        Thu, 12 Aug 2021 17:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628790160; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLhKLE29BtM7E1xXGsz1jQ06ZrdHyX0+TGHp1zcBJFE=;
+        b=N7GDudJ5HRwPVBPt6HzfMeRLMeQNw3bh/BYw+Ms4aJd41hhi0Fp8eYwDwOfyE/bS5PvTdE
+        XIEcg5yy31pBtun5QU39k+PZQ33qvhZptBZl4qkv6T2VMFxlFXdzh9mR+q36mEueImfbUQ
+        ZnTNPjWQw6QyUnfmU64ee5yDn/d88Cs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628790160;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLhKLE29BtM7E1xXGsz1jQ06ZrdHyX0+TGHp1zcBJFE=;
+        b=y+L6KoYHKDhAUCv/Dp8SELQS5C1ooVRAx7X/KZhCpvcl0aL/PntBbulOkep6DjeVwDVnCJ
+        +h8asSmfkdGjrACg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 53BF913AC3;
+        Thu, 12 Aug 2021 17:42:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id nMm/Eo9dFWHzEgAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 17:42:39 +0000
+To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        s32@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-6-clin@suse.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Subject: Re: [PATCH 5/8] arm64: dts: s32g2: add serial/uart support
+Message-ID: <93978882-4b47-4c4a-cd43-60cb5bcdf471@suse.de>
+Date:   Thu, 12 Aug 2021 19:42:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: FQ2EqYeWtfakl0bctM45vN-p1aw-8An7
-X-Proofpoint-ORIG-GUID: FQ2EqYeWtfakl0bctM45vN-p1aw-8An7
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_05:2021-08-12,2021-08-12 signatures=0
+In-Reply-To: <20210805065429.27485-6-clin@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for Last-level-cache Tag-and-data
-(LLC-TAD) unit PMU for Marvell CN10K SoCs.
+Hi Chester et al.,
 
-Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
----
- .../bindings/perf/marvell-cn10k-tad.yaml      | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
+On 05.08.21 08:54, Chester Lin wrote:
+> Add serial/uart support for NXP S32G2.
 
-diff --git a/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
-new file mode 100644
-index 000000000000..f66c5c31ecd8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/perf/marvell-cn10k-tad.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell CN10K LLC-TAD performance monitor
-+
-+maintainers:
-+  - Bhaskara Budiredla <bbudiredla@marvell.com>
-+
-+description: |
-+  The Tag-and-Data units (TADs) maintain coherence and contain CN10K
-+  shared on-chip last level cache (LLC). The tad pmu measures the
-+  performance of last-level cache. Each tad pmu supports up to eight
-+  counters.
-+
-+  The DT setup comprises of number of tad blocks, the sizes of pmu
-+  regions, tad blocks and overall base address of the HW.
-+
-+properties:
-+  compatible:
-+    const: marvell,cn10k-tad-pmu
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - tad-cnt
-+  - tad-page-size
-+  - tad-pmu-page-size
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    tad_pmu@0x87e280000000 {
-+        compatible = "marvell,cn10k-tad-pmu";
-+        tad-cnt = <1>;
-+        tad-page-size = <0x1000>;
-+        tad-pmu-page-size = <0x1000>;
-+        reg = <0x87e2 0x80000000 0x0 0x1000>;
-+    };
+You might mention here that (following our initial stub) this commit is
+now apparently based on the CodeAurora BSP branch foo (and therefore
+adding its last-year copyright below and separate from 4/8).
+
+> 
+
+@NXP: If there are downstream Signed-off-bys that you would like to see
+included for this portion here, please speak up.
+
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  arch/arm64/boot/dts/freescale/s32g2.dtsi | 31 ++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> index 3321819c1a2d..0076eacad8a6 100644
+> --- a/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+>  /*
+>   * Copyright (c) 2021 SUSE LLC
+> + * Copyright 2017-2020 NXP
+
+@NXP: Should this be updated to include 2021 from your latest BSP
+releases? Do you want it visually aligned by adding the ASCII-art?
+
+>   */
+>  
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+> @@ -11,6 +12,12 @@ / {
+>  	#address-cells = <2>;
+>  	#size-cells = <2>;
+>  
+> +	aliases {
+> +		serial0 = &uart0;
+> +		serial1 = &uart1;
+> +		serial2 = &uart2;
+> +	};
+
+Note: In the past there had been controversies as to whether to define
+aliases globally for a SoC or in a .dts specific to a board's usage.
+In this case it does not seem to matter much, as uart0 is being used as
+console on the reference boards.
+
+> +
+>  	cpus {
+>  		#address-cells = <1>;
+>  		#size-cells = <0>;
+> @@ -82,6 +89,30 @@ soc {
+>  
+>  		ranges;
+>  
+> +		uart0: serial@401c8000 {
+> +			compatible = "fsl,s32g2-linflexuart",
+> +				     "fsl,s32v234-linflexuart";
+> +			reg = <0 0x401c8000 0 0x3000>;
+> +			interrupts = <GIC_SPI 82 IRQ_TYPE_EDGE_RISING>;
+> +			status = "disabled";
+> +		};
+> +
+> +		uart1: serial@401cc000 {
+> +			compatible = "fsl,s32g2-linflexuart",
+> +				     "fsl,s32v234-linflexuart";
+> +			reg = <0 0x401cc000 0 0x3000>;
+> +			interrupts = <GIC_SPI 83 IRQ_TYPE_EDGE_RISING>;
+> +			status = "disabled";
+> +		};
+> +
+> +		uart2: serial@402bc000 {
+> +			compatible = "fsl,s32g2-linflexuart",
+> +				     "fsl,s32v234-linflexuart";
+> +			reg = <0 0x402bc000 0 0x3000>;
+> +			interrupts = <GIC_SPI 84 IRQ_TYPE_EDGE_RISING>;
+> +			status = "disabled";
+> +		};
+> +
+>  		gic: interrupt-controller@50800000 {
+>  			compatible = "arm,gic-v3";
+>  			#interrupt-cells = <3>;
+
+Regards,
+Andreas
+
 -- 
-2.17.1
-
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
