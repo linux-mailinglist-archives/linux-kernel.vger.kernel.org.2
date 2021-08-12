@@ -2,222 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EB33EA4D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6750A3EA4E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbhHLMo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 08:44:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:42772 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237119AbhHLMo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 08:44:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D6211042;
-        Thu, 12 Aug 2021 05:44:01 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 379203F718;
-        Thu, 12 Aug 2021 05:44:00 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/3] iommu/dma-iommu: Support iovad->granule >
- PAGE_SIZE
-To:     Sven Peter <sven@svenpeter.dev>, iommu@lists.linux-foundation.org
-Cc:     Arnd Bergmann <arnd@kernel.org>, Hector Martin <marcan@marcan.st>,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Will Deacon <will@kernel.org>
-References: <20210806155523.50429-1-sven@svenpeter.dev>
- <20210806155523.50429-3-sven@svenpeter.dev>
- <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
- <dadbd8b0-171a-4008-8a2e-f68abfed9285@www.fastmail.com>
- <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
- <cf78f795-1e75-45c9-a759-018f17cfaed9@www.fastmail.com>
- <a721f8e3-4c1d-afb2-3ae2-eb1360e1eaca@arm.com>
- <7b6cf00c-86ea-43c4-861f-f1cc32d5852d@www.fastmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <26874474-82d5-9807-f666-ff2291fb3b14@arm.com>
-Date:   Thu, 12 Aug 2021 13:43:53 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237531AbhHLMsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:48:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237171AbhHLMsR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:48:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628772472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Q2PV7VnI4EE36Yroitk5R4cnOmAOmNpL3oeGGqR8U8=;
+        b=LW+ut9O0mSQGb0a8qs7oLY2n18S22PavAwktLoGbdleut2wO8w9rBVp1l3/nzaCk3eXt6W
+        OkZ+s+/WxvckBC4QeQINlcPevcuxmHfhYjMsGfbGY/+rwYQ9dNVaasGEdxRlEHJCDQwZqM
+        +52ExREyYMgPgT6y3vsuVew1QMf7enU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-P7pp-mtwM--N3-hElsuUKQ-1; Thu, 12 Aug 2021 08:47:51 -0400
+X-MC-Unique: P7pp-mtwM--N3-hElsuUKQ-1
+Received: by mail-wm1-f72.google.com with SMTP id g70-20020a1c20490000b02902e6753bf473so3341277wmg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 05:47:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=+Q2PV7VnI4EE36Yroitk5R4cnOmAOmNpL3oeGGqR8U8=;
+        b=qwQjo3V28WTLC6YJ8TsaFo2ml8nohuX1WVU4I+h/GCQVx3Vvjcdxo08GUxOwabz0aA
+         xp659/ahBbsdYcmjFV1gtMWT5BC87UTAvZPgmhTIOMlsE9thhDcEsRGmvZo8pqsMD66b
+         UKPU9EGfBmB9N8OO8ucr0ijqZiBpDH7DIez4i+rVM2Xv1DawwQ6XRKF2ZvTV7aYh0muj
+         bkZ+Luj3OLn76n9rHWElsC5ifqnUT5kNKFhwtAh/if4GoVPFvxBSDvYJm76oBPPS8xYm
+         YFA3epNL2VFeP5SGedHznk3ZhTckP4CMQsr2yRDlsvoj1xRbSb7BBmYNNGXp6m2MhdNw
+         1Fww==
+X-Gm-Message-State: AOAM533BlQ401T4DAnmzVzOXaeGR253xJsZ40SIUuZ2A46ZZMj5ukMWT
+        rv34CaeeI6RSy7HlcQeiDRAsIdGtz/8njGX2fzJczq94GsLti9VPVRoCmDaRylcHsJP2j0ole16
+        OnIPJ3IOXBXw1Yt/u+obJ4MVK
+X-Received: by 2002:a05:600c:3644:: with SMTP id y4mr10313555wmq.156.1628772469929;
+        Thu, 12 Aug 2021 05:47:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVQ12ODWZtcTQdX51baaEDiT/qZqZ0A623jE9FyRBicdlISiUu/+dSjRRCSRweYcYjSAvmxQ==
+X-Received: by 2002:a05:600c:3644:: with SMTP id y4mr10313541wmq.156.1628772469723;
+        Thu, 12 Aug 2021 05:47:49 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
+        by smtp.gmail.com with ESMTPSA id f2sm1958077wru.31.2021.08.12.05.47.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 05:47:48 -0700 (PDT)
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210812084348.6521-1-david@redhat.com>
+ <87r1eyg8h6.fsf@oldenburg.str.redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <a57e5120-866c-0b27-8203-0632edda2717@redhat.com>
+Date:   Thu, 12 Aug 2021 14:47:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7b6cf00c-86ea-43c4-861f-f1cc32d5852d@www.fastmail.com>
+In-Reply-To: <87r1eyg8h6.fsf@oldenburg.str.redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-11 21:18, Sven Peter wrote:
+On 12.08.21 14:20, Florian Weimer wrote:
+> * David Hildenbrand:
 > 
+>> There are some (minor) user-visible changes with this series:
+>> 1. We no longer deny write access to shared libaries loaded via legacy
+>>     uselib(); this behavior matches modern user space e.g., via dlopen().
+>> 2. We no longer deny write access to the elf interpreter after exec
+>>     completed, treating it just like shared libraries (which it often is).
 > 
-> On Tue, Aug 10, 2021, at 11:51, Robin Murphy wrote:
->> On 2021-08-09 21:45, Sven Peter wrote:
->>>
->>>
->>> On Mon, Aug 9, 2021, at 19:41, Robin Murphy wrote:
->>>> On 2021-08-07 12:47, Sven Peter via iommu wrote:
->>>>>
->>>>>
->>>>> On Fri, Aug 6, 2021, at 20:04, Robin Murphy wrote:
->>>>>> On 2021-08-06 16:55, Sven Peter via iommu wrote:
->>>>>>> @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->>>>>>>      	if (dev_is_untrusted(dev))
->>>>>>>      		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
->>>>>>>      
->>>>>>> +	/*
->>>>>>> +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
->>>>>>> +	 * very likely run into sgs with a physical address that is not aligned
->>>>>>> +	 * to an IOMMU page boundary. Fall back to just mapping every entry
->>>>>>> +	 * independently with __iommu_dma_map then.
->>>>>>
->>>>>> Scatterlist segments often don't have nicely aligned ends, which is why
->>>>>> we already align things to IOVA granules in main loop here. I think in
->>>>>> principle we'd just need to move the non-IOVA-aligned part of the
->>>>>> address from sg->page to sg->offset in the temporary transformation for
->>>>>> the rest of the assumptions to hold. I don't blame you for being timid
->>>>>> about touching that, though - it took me 3 tries to get right when I
->>>>>> first wrote it...
->>>>>>
->>>>>
->>>>>
->>>>> I've spent some time with that code now and I think we cannot use it
->>>>> but have to fall back to iommu_dma_map_sg_swiotlb (even though that swiotlb
->>>>> part is a lie then):
->>>>>
->>>>> When we have sg_phys(s) = 0x802e65000 with s->offset = 0 the paddr
->>>>> is aligned to PAGE_SIZE but has an offset of 0x1000 from something
->>>>> the IOMMU can map.
->>>>> Now this would result in s->offset = -0x1000 which is already weird
->>>>> enough.
->>>>> Offset is unsigned (and 32bit) so this will actually look like
->>>>> s->offset = 0xfffff000 then, which isn't much better.
->>>>> And then sg_phys(s) = 0x902e64000 (instead of 0x802e64000) and
->>>>> we'll map some random memory in iommu_map_sg_atomic and a little bit later
->>>>> everything explodes.
->>>>>
->>>>> Now I could probably adjust the phys addr backwards and make sure offset is
->>>>> always positive (and possibly larger than PAGE_SIZE) and later restore it
->>>>> in __finalise_sg then but I feel like that's pushing this a little bit too far.
->>>>
->>>> Yes, that's what I meant. At a quick guess, something like the
->>>> completely untested diff below.
->>>
->>> That unfortunately results in unaligned mappings
+> We have a persistent issue with people using cp (or similar tools) to
+> replace system libraries.  Since the file is truncated first, all
+> relocations and global data are replaced by file contents, result in
+> difficult-to-diagnose crashes.  It would be nice if we had a way to
+> prevent this mistake.  It doesn't have to be MAP_DENYWRITE or MAP_COPY.
+> It could be something completely new, like an option that turns every
+> future access beyond the truncation point into a signal (rather than
+> getting bad data or bad code and crashing much later).
+> 
+> I don't know how many invalid copy operations are currently thwarted by
+> the current program interpreter restriction.  I doubt that lifting the
+> restriction matters.
+> 
+>> 3. We always deny write access to the file linked via /proc/pid/exe:
+>>     sys_prctl(PR_SET_MM_EXE_FILE) will fail if write access to the file
+>>     cannot be denied, and write access to the file will remain denied
+>>     until the link is effectivel gone (exec, termination,
+>>     PR_SET_MM_EXE_FILE) -- just as if exec'ing the file.
 >>
->> You mean it even compiles!? :D
+>> I was wondering if we really care about permanently disabling write access
+>> to the executable, or if it would be good enough to just disable write
+>> access while loading the new executable during exec; but I don't know
+>> the history of that -- and it somewhat makes sense to deny write access
+>> at least to the main executable. With modern user space -- dlopen() -- we
+>> can effectively modify the content of shared libraries while being used.
 > 
-> I was more impressed that it already almost worked correctly :)
-> 
->>
->>> [    9.630334] iommu: unaligned: iova 0xbff40000 pa 0x0000000801a3b000 size 0x4000 min_pagesz 0x4000
->>>
->>> I'll take a closer look later this week and see if I can fix it.
->>
->> On reflection, "s->offset ^ s_iova_off" is definitely wrong, that more
->> likely wants to be "s->offset & ~s_iova_off".
->>
->> Robin.
->>
-> 
-> 
-> If I change
-> 
-> 		sg_set_page(s, phys_to_page(sg_phys(s)), s_length,
-> 			    s_iova_off & ~PAGE_MASK);
-> 
-> in __finalise_sg (and the same thing in __invalidate_sg) to
-> 
-> 		sg_set_page(s, phys_to_page(sg_phys(s) + s_iova_off), s_length,
-> 			    s_iova_off & ~PAGE_MASK);
-> 
-> then it also restores the original fields correctly.
+> Is there a difference between ET_DYN and ET_EXEC executables?
 
-Ah, good point, once again this proves to be right on the limit of how 
-many moving parts I can hold in my head without working it through on 
-paper (or in a debugger). FWIW my thought there was that sg_phys(s) 
-would be enough to "re-normalise" things from a state where s->page_link 
-was rounded down and s->offset held the PAGE_SIZE multiple (which is 
-what the XOR did do), but of course that wasn't right to begin with. In 
-fact, s->offset must always be negligible when restoring so you could 
-arguably open-code page_to_phys(sg_page(s)), but that might be a bit too 
-much of a mouthful for a theoretical micro-optimisation (note that 
-trying to avoid the phys_addr_t round-trip by offsetting the page 
-pointer itself might appear to work for SPARSEMEM_VMEMMAP, but I'm 
-pretty sure it's not valid in general).
+No, I don't think so. When exec'ing, the main executable will see a 
+deny_write_access(file); AFAIKT, that can either be ET_DYN or ET_EXEC.
 
-> What is the proper way to credit you for coming up with this?
-> Do you create the commit and I apply it to my local tree and
-> include it in my submission once I have fixed the other
-> issues? Or do I create the commit and put a Suggested-by
-> in the message?
+-- 
+Thanks,
 
-Suggested-by is fine by me, but if you feel there's enough of my diff 
-left that you haven't had to put right then you're also welcome to have 
-these instead:
+David / dhildenb
 
-Co-developed-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-
-Cheers,
-Robin.
-
-> 
-> 
-> Either way, here's the patch that I have right now:
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 7ce74476699d..ba31dc59566d 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -907,8 +907,8 @@ static int __finalise_sg(struct device *dev, struct scatterlist *sg, int nents,
->   		unsigned int s_length = sg_dma_len(s);
->   		unsigned int s_iova_len = s->length;
-> 
-> -		s->offset += s_iova_off;
-> -		s->length = s_length;
-> +		sg_set_page(s, phys_to_page(sg_phys(s) + s_iova_off), s_length,
-> +			    s_iova_off & ~PAGE_MASK);
->   		sg_dma_address(s) = DMA_MAPPING_ERROR;
->   		sg_dma_len(s) = 0;
-> 
-> @@ -952,10 +952,11 @@ static void __invalidate_sg(struct scatterlist *sg, int nents)
->   	int i;
-> 
->   	for_each_sg(sg, s, nents, i) {
-> -		if (sg_dma_address(s) != DMA_MAPPING_ERROR)
-> -			s->offset += sg_dma_address(s);
->   		if (sg_dma_len(s))
-> -			s->length = sg_dma_len(s);
-> +			sg_set_page(s,
-> +				    phys_to_page(sg_phys(s) + sg_dma_address(s)),
-> +				    sg_dma_len(s),
-> +				    sg_dma_address(s) & ~PAGE_MASK);
->   		sg_dma_address(s) = DMA_MAPPING_ERROR;
->   		sg_dma_len(s) = 0;
->   	}
-> @@ -1031,15 +1032,16 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	 * stashing the unaligned parts in the as-yet-unused DMA fields.
->   	 */
->   	for_each_sg(sg, s, nents, i) {
-> -		size_t s_iova_off = iova_offset(iovad, s->offset);
-> +		phys_addr_t s_phys = sg_phys(s);
-> +		size_t s_iova_off = iova_offset(iovad, s_phys);
->   		size_t s_length = s->length;
->   		size_t pad_len = (mask - iova_len + 1) & mask;
-> 
->   		sg_dma_address(s) = s_iova_off;
->   		sg_dma_len(s) = s_length;
-> -		s->offset -= s_iova_off;
->   		s_length = iova_align(iovad, s_length + s_iova_off);
-> -		s->length = s_length;
-> +		sg_set_page(s, phys_to_page(s_phys - s_iova_off),
-> +			    s_length, s->offset & ~s_iova_off);
-> 
->   		/*
->   		 * Due to the alignment of our single IOVA allocation, we can
-> 
-> 
-> 
-> 
-> 
-> Sven
-> 
