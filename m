@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729DB3EA3DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A773EA3F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 13:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhHLLik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 07:38:40 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:59262 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231467AbhHLLii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:38:38 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 1227C40A2BB0;
-        Thu, 12 Aug 2021 11:38:06 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
-Date:   Thu, 12 Aug 2021 14:38:00 +0300
-Message-Id: <20210812113800.12466-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S236936AbhHLLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 07:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236908AbhHLLqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 07:46:49 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56093C061798
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:46:24 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id 90so1034305uax.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 04:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dqTStev+wYL6Dxoo88ZspHDb/tS9Nzm53GGUL0+lh+g=;
+        b=gQcZt/UfAcwS5D+nBy4DaQGe0l1WZGVpzBPyRGmtaqz1LAcqV+ODkWaS0i4Sggsh+k
+         nubMU25BdBOnlIzRZKwDdfF2s29Uklyuscx2uR6WDfUyx1pZQ4sgMQTwc5PkLgLs0GRz
+         zHbuOIeUq4GFZZf6wr5P+6eCtX1+liEOeaxL8Xob5w2YYY5zEVZHg+R3H6XwFAObUz6O
+         wC+G6FPbVn1UVZoBu2c4ZwodDzSEnscrY0I7ivJkw6QtUN8gEyw5LiRjMPaxLciVaRHk
+         rVflX189QRHYLuEYdmQfvxbxgtO0dxUZZTNQiM0bo+S1r9S56/P0Ke7DJPRTsWwUzY0f
+         qdbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dqTStev+wYL6Dxoo88ZspHDb/tS9Nzm53GGUL0+lh+g=;
+        b=mZFjgPwKmM+NQ2bKoAc/TphLbEqYLZeQ9JXJK/YoDJE02sIj8zzJ6EpdqdIFYqWPtG
+         ixt2MdnA0k/FtvOGhbJ+BAhW1PEpi6BRl1h9mWd8B6iuguJu7OWGwePdDlcKXpAgB2tQ
+         sKfxtSWNBlH5fFDMteWugfX1OnYkOBCiQvhcPEgxfYv38vrELDQjVSWbRymbXK9cCscg
+         HRd3cXaNTIzUePOMnWUdrt6dsUooW0GYBBXWK8hUPLUzjQNsKFiUCnbRz9Pi4NSVeJ2i
+         idaxRxMxD7nlgW7IkWCcwxG8WrgRRS34oRUZ7WBkVNFr+n7huJF/meued0v4HiovZz16
+         ULgA==
+X-Gm-Message-State: AOAM530g2Z547nb5npWmTzyyH1rZEsaiXvPSQtI7Q73hjp7s0AmBoD4p
+        ZWlLqc9+d1phbTE2h5QfE/8U8A40nG3myFDYLw5GXA==
+X-Google-Smtp-Source: ABdhPJzrpjG3MA2aQirSmS7CoSCz0zHPU4zYhrCxt9ru09NER+p/85knZT4Qe7T7zJqIBP9HyiJ/0M0D/W2SuX/ZM2o=
+X-Received: by 2002:a9f:25a7:: with SMTP id 36mr1584262uaf.129.1628768782902;
+ Thu, 12 Aug 2021 04:46:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1628767642-4008-1-git-send-email-rnayak@codeaurora.org> <1628767642-4008-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1628767642-4008-2-git-send-email-rnayak@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 12 Aug 2021 13:45:46 +0200
+Message-ID: <CAPDyKFoOta-4JX5ViJ6D5gArpQSobgecSV5yQ4SQ4-31_TMgcQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] opp: Don't print an error if required-opps is missing
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Dmitry Osipenko <digetx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that mxic_nfc_probe() missed invocation of
-mxic_nfc_clk_enable(). The patch fixed that. In addition, error handling
-was refined appropriately.
+On Thu, 12 Aug 2021 at 13:27, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+> The 'required-opps' property is considered optional, hence remove
+> the pr_err() in of_parse_required_opp() when we find the property is
+> missing.
+> While at it, also fix the return value of
+> of_get_required_opp_performance_state() when of_parse_required_opp()
+> fails, return a -ENODEV instead of the -EINVAL.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
----
- drivers/mtd/nand/raw/mxic_nand.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_nand.c
-index da1070993994..37e75bf60ee5 100644
---- a/drivers/mtd/nand/raw/mxic_nand.c
-+++ b/drivers/mtd/nand/raw/mxic_nand.c
-@@ -509,9 +509,15 @@ static int mxic_nfc_probe(struct platform_device *pdev)
- 	if (IS_ERR(nfc->send_dly_clk))
- 		return PTR_ERR(nfc->send_dly_clk);
- 
-+	err = mxic_nfc_clk_enable(nfc);
-+	if (err)
-+		return err;
-+
- 	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(nfc->regs))
--		return PTR_ERR(nfc->regs);
-+	if (IS_ERR(nfc->regs)) {
-+		err = PTR_ERR(nfc->regs);
-+		goto fail;
-+	}
- 
- 	nand_chip = &nfc->chip;
- 	mtd = nand_to_mtd(nand_chip);
-@@ -527,8 +533,10 @@ static int mxic_nfc_probe(struct platform_device *pdev)
- 	nand_chip->controller = &nfc->controller;
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	if (irq < 0) {
-+		err = irq;
-+		goto fail;
-+	}
- 
- 	mxic_nfc_hw_init(nfc);
- 
--- 
-2.26.2
 
+> ---
+>  drivers/opp/of.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> index d298e38..9bdabad 100644
+> --- a/drivers/opp/of.c
+> +++ b/drivers/opp/of.c
+> @@ -95,15 +95,7 @@ static struct dev_pm_opp *_find_opp_of_np(struct opp_table *opp_table,
+>  static struct device_node *of_parse_required_opp(struct device_node *np,
+>                                                  int index)
+>  {
+> -       struct device_node *required_np;
+> -
+> -       required_np = of_parse_phandle(np, "required-opps", index);
+> -       if (unlikely(!required_np)) {
+> -               pr_err("%s: Unable to parse required-opps: %pOF, index: %d\n",
+> -                      __func__, np, index);
+> -       }
+> -
+> -       return required_np;
+> +       return of_parse_phandle(np, "required-opps", index);
+>  }
+>
+>  /* The caller must call dev_pm_opp_put_opp_table() after the table is used */
+> @@ -1327,7 +1319,7 @@ int of_get_required_opp_performance_state(struct device_node *np, int index)
+>
+>         required_np = of_parse_required_opp(np, index);
+>         if (!required_np)
+> -               return -EINVAL;
+> +               return -ENODEV;
+>
+>         opp_table = _find_table_of_opp_np(required_np);
+>         if (IS_ERR(opp_table)) {
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
