@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B644A3EA243
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13013EA246
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 11:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbhHLJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 05:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235439AbhHLJo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:44:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D28A60FC4;
-        Thu, 12 Aug 2021 09:44:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628761471;
-        bh=T+hIg+QRJ1Z84eguJqbtPNh4k+7EYEKvFPe14RPj9CA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=is/icZZs88mccR4X1pskyEfmHlbgJ0QqRHPaOC71PTmF3qKssKjUAIuYIInweipet
-         SEh3ZVWxfqyAffDEaED6Fc2g1944o0fsaG6q+xydGRwBvlGaTtXxAWRPGhHploXkit
-         LTG/LHoL8kv2bj2/psZ7GSxBaq7lqL0PTQtrp6O/V3xZ1p4TIYBjKCblZB4tdIABKz
-         l45Ku/ke89jYKgRS9MxeezX1PHFuF9A8fB2YPQdPaPyZws1cdUqwIu8e6NGrjT9sH8
-         mpg2pdXb+YPFz/aDnx/e6eXyyka1YEjOhmZ8chQgZqq2LEszIXBc4+LSwhyXLaFwM4
-         wYs3/HUInpd4w==
-Date:   Thu, 12 Aug 2021 18:44:29 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-Id: <20210812184429.176d1416ff922ade4b5342fb@kernel.org>
-In-Reply-To: <20210811234648.4f847ac2@rorschach.local.home>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
-        <20210811112249.555463f2@oasis.local.home>
-        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-        <20210811234648.4f847ac2@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236201AbhHLJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 05:46:03 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:50892 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235439AbhHLJqC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 05:46:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uim9keQ_1628761534;
+Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uim9keQ_1628761534)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 12 Aug 2021 17:45:34 +0800
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH v6 0/2] make hvc pass dma capable memory to its backend
+Date:   Thu, 12 Aug 2021 17:45:30 +0800
+Message-Id: <20210812094532.145497-1-xianting.tian@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 23:46:48 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Dear all,
 
-> On Thu, 12 Aug 2021 10:27:35 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Let me confirm this, so eprobes can be attached to synthetic event?
-> > IMHO, I rather like to prevent attaching eprobe_event on the other
-> > dynamic events. It makes hard to check when removing the base dynamic
-> > events...
-> > 
-> > For the above example, we can rewrite it as below to trace filename
-> > without attaching eprobe_events on the synthetic event.
-> > 
-> >   echo 'my_open pid_t pid; char file[]' > synthetic_events
-> > 
-> >   echo 'e:myopen syscalls.sys_enter_open file=+0($filename):ustring' > dynamic_events
-> >   echo 'e:myopen_ret syscalls.sys_exit_open ret=$ret' > dynamic_events
-> >  
-> >   echo 'hist:keys=common_pid:fname=file' > events/eprobes/myopen/trigger
-> >   echo 'hist:keys=common_pid:fname=$fname:onmatch(eprobes.myopen).trace(my_open,common_pid,$fname)' > events/eprobes/myopen_ret
-> > 
-> 
-> The problem is that the above wont work :-(
-> 
-> For example, I can use this program:
-> 
-> #include <stdio.h>
-> #include <unistd.h>
-> #include <fcntl.h>
-> #include <sys/types.h>
-> 
-> static const char *file = "/etc/passwd";
-> 
-> int main (int argc, char **argv)
-> {
-> 	int fd;
-> 
-> 	fd = open(file, O_RDONLY);
-> 	if (fd < 0)
-> 		perror(file);
-> 	close(fd);
-> 	return 0;
-> }
-> 
-> Which if you do the above, all you'll get from the myopen is "(null)".
-> 
-> That's because the "/etc/passwd" is not paged in at the start of the
-> system call, and because tracepoints can not fault, the "ustring" will
-> not be mapped yet, it can not give you the content of the file pointer.
-> This was the entire reason we are working on eprobes to attach to
-> synthetic events in the first place.
+This patch series make hvc framework pass DMA capable memory to
+put_chars() of hvc backend(eg, virtio-console), and revert commit
+c4baad5029 ("virtio-console: avoid DMA from stack”)
 
-I think that is another limitation. If you run this program,
+V1
+virtio-console: avoid DMA from vmalloc area
+https://lkml.org/lkml/2021/7/27/494
 
-static const char *file = "/etc/passwd";
+For v1 patch, Arnd Bergmann suggests to fix the issue in the first
+place:
+Make hvc pass DMA capable memory to put_chars()
+The fix suggestion is included in v2.
 
-int main (int argc, char **argv)
-{
-	char buf[BUFSIZE];
-	int fd;
+V2
+[PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/1/8
+[PATCH 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/1/9
 
-	strlcpy(buf, file, BUFSIZE);
-	fd = open(buf, O_RDONLY);
-	if (fd < 0)
-		perror(file);
-	read(fd, buf, BUFSIZE);
-	close(fd);
-	return 0;
-}
+For v2 patch, Arnd Bergmann suggests to make new buf part of the
+hvc_struct structure, and fix the compile issue.
+The fix suggestion is included in v3.
 
-you'll not see any filename from the "myopen_ret" or the synthetic event.
-Thus, the user-space page fault must be handled by the other way. (e.g.
-making a special worker thread and run it before the task returns to
-user space.)
-Using eprobe over synthetic event does not solve the root cause (and
-it can introduce another issue.)
+V3
+[PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/3/1347
+[PATCH v3 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/3/1348
 
-Thank you,
+For v3 patch, Jiri Slaby suggests to make 'char c[N_OUTBUF]' part of
+hvc_struct, and make 'hp->outbuf' aligned and use struct_size() to
+calculate the size of hvc_struct. The fix suggestion is included in
+v4.
 
-> 
-> The trick is to use the synthetic event to pass the filename pointer to
-> the exit of the system call, which the system call itself would map the
-> pointer to "file", and when the eprobe reads it with ":ustring" from
-> the exit of the system call it gets "/etc/passwd" instead of "(null)".
-> 
-> Your above example doesn't fix this.
-> 
-> -- Steve
+V4
+[PATCH v4 0/2] make hvc pass dma capable memory to its backend
+https://lkml.org/lkml/2021/8/5/1350
+[PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/5/1351
+[PATCH v4 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/5/1352
+
+For v4 patch, Arnd Bergmann suggests to introduce another
+array(cons_outbuf[]) for the buffer pointers next to the cons_ops[]
+and vtermnos[] arrays. This fix included in this v5 patch.
+
+V5
+Arnd Bergmann suggests to use "L1_CACHE_BYTES" as dma alignment,
+use 'sizeof(long)' as dma alignment is wrong. fix it in v6.
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+drivers/char/virtio_console.c | 12 ++----------
+drivers/tty/hvc/hvc_console.c | 40 +++++++++++++++++++++--------------
+drivers/tty/hvc/hvc_console.h | 16 ++++++++++++--
+3 file changed
