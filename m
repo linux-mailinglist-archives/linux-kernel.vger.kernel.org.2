@@ -2,270 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4A53EA96F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B1B3EA971
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 19:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhHLR06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 13:26:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:32848 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234975AbhHLR0z (ORCPT
+        id S235734AbhHLR2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 13:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234975AbhHLR2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:26:55 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 75C371FF68;
-        Thu, 12 Aug 2021 17:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628789189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SPcSNINPXIAlmc4sErzLU2oor99AUyvRmybsJT6/ctw=;
-        b=jFS1SgersCWKSjeuMRL86MMLMYDOLbS7kq8V+UojoaAt4ls1aQfiLYxihkbBbOGu85s7fy
-        dbGzuMtnIM34pfy/o2slO4gtQc8UApsD/TeYSlrrRxK/PX6IL6GEDTeBIdrWZ/HlFGfaqq
-        BdCKiegaF7J8zgDoEs+YbEjXAOBduxA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628789189;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SPcSNINPXIAlmc4sErzLU2oor99AUyvRmybsJT6/ctw=;
-        b=wZDwhh8fVyA69YEV0ABzp/q4iMIkF3NVg3/0QFvbbtIADIyMzpO0DegU7G86M7LyBYCqQu
-        p84snFnB/jM8ZdAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DAA1013AC3;
-        Thu, 12 Aug 2021 17:26:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id FDdTNMRZFWGnDwAAGKfGzw
-        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 17:26:28 +0000
-To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        s32@nxp.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Marc Zyngier <maz@misterjones.org>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-5-clin@suse.com>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Subject: Re: [PATCH 4/8] arm64: dts: add NXP S32G2 support
-Message-ID: <d09ed0fd-83e7-a6aa-0bd6-f679ffb64eaf@suse.de>
-Date:   Thu, 12 Aug 2021 19:26:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210805065429.27485-5-clin@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 12 Aug 2021 13:28:43 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D290EC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:28:16 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id c5so5832038qtp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 10:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=AX8QGNVLcySis6GHVJ7sYjomjduq5M/gHF4YtKprC6g=;
+        b=URsWBW9ykyas/fyM01OIPjyb7A7C4mP+YLj675izYibtEd9WFjdGY1+C+98ZvL5g1m
+         Ufx66bzq+tzvh3P40Q/bSUAnGSxXCmXfDdS9W4HfRxQK1Ofb5aZPBa2HT7Lr0eFetpPd
+         cK8yUBJ1j+PInus4joM9km5ERz3TqTzf9WJ0gIZb3v3PKPaOL0KvsX6upgnOVjDtVm0L
+         dWU1ktOl7kXZcsxIQlZ767YX6qWqbSNV8+xtuIfVgX+c0onyPFjJxf2lFus+r8qZ6dj3
+         TleKstZpX01/yUOquPwbzp+DQ75TpsnuGArntlgus1BfglHhI3YMk9G96nS2gmV5HGdm
+         bPzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=AX8QGNVLcySis6GHVJ7sYjomjduq5M/gHF4YtKprC6g=;
+        b=No3nLHhSDqfWqaTbITvm8L4r35s1hXjPk9itVoVQisZ5e2uK2Ol9KuOW3EqxToKGsn
+         dJHKFWUPUUth8l4obLO9SxIWWAgzRe8jRQhTTY9XAKNZo3E9UiJEy2RmJzg48JmdJaZY
+         UiRUS2l5ySl8EVubSkihCJyIN1ODtcd2rsoO8ErIWzpVsydM+E16zZbISgcxdEPhzgmQ
+         Cdx4f3/bVZkDFa1JnXWRX/m/RsnNwz1lhGZlJXW/7ET9gxRBeVOz92AcgI6oiXc1Zy/S
+         +lz0IN5tiDllIb18LptQc+oT9bGQ1qaNx+mNiWHBD7vk7pmkpz5MEnZYx4khSO594pkr
+         B0Ig==
+X-Gm-Message-State: AOAM532gypsQCd5Ec1+JQ1rmcBrdbb1/YjK1ej/oBJva3ngfj4TnvaWt
+        d1/VZRGIglO9IC+tl+Y8k6GXyg==
+X-Google-Smtp-Source: ABdhPJx8f7vytNV4a8tZrn7GfZVm8iswDDALotQJujtTHX3bvQcZfxCtIUGmAdAdwdSy+djoiLlNeA==
+X-Received: by 2002:ac8:6e82:: with SMTP id c2mr4901783qtv.277.1628789295153;
+        Thu, 12 Aug 2021 10:28:15 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id 37sm1478039qtf.33.2021.08.12.10.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 10:28:14 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     SeongJae Park <sjpark@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210812094240.4492-1-sjpark@amazon.de>
+References: <20210812094240.4492-1-sjpark@amazon.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1628789293_131750P";
+         micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 12 Aug 2021 13:28:13 -0400
+Message-ID: <167751.1628789293@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chester et al.,
+--==_Exmh_1628789293_131750P
+Content-Type: text/plain; charset=us-ascii
 
-On 05.08.21 08:54, Chester Lin wrote:
-> Add an initial dtsi file for generic SoC features of NXP S32G2.
-> 
-> Signed-off-by: Chester Lin <clin@suse.com>
-> ---
->  arch/arm64/boot/dts/freescale/s32g2.dtsi | 98 ++++++++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/s32g2.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> new file mode 100644
-> index 000000000000..3321819c1a2d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+On Thu, 12 Aug 2021 09:42:40 -0000, SeongJae Park said:
 
-Note: This DT is for running on the Cortex-A53 cores, but S32G2 also has
-Cortex-M7 cores. For Vybrid SoCs, DTs later got contributed to also run
-on its Cortex-M4 core:
+> -         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> -         Accessed bit writers can set the state of the bit in the flags to let
+> -         other PTE Accessed bit readers don't disturbed.
+> +         This feature adds 'PG_idle' and 'PG_young' flags in 'struct page'.
+> +         PTE Accessed bit writers can save the state of the bit in the flags
+> +         to let other PTE Accessed bit readers don't get disturbed.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm/boot/dts/vf610.dtsi
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm/boot/dts/vf500.dtsi
-vs.
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm/boot/dts/vf610m4.dtsi
+Well, better English would be "to let other ... not be disturbed'.
 
-Should we plan for this in our file naming here and in following patches
-(e.g., s32g2-a53* vs. s32g2-m7*)? To me, a later concatenation of
-s32g274am7* would look awkward, and s32g274a-m7* would sort between -evb
-and -rdb2.
+But I was rather hoping for an explanation of what "don't get disturbed" actually means.
 
-> @@ -0,0 +1,98 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
+If you are "save the state of the bit", are you saving the *previous* value (in
+which case, other readers of the bit may or may not encounter changed behavior),
+or are you saving a shadow copy that may have different values than the original
+flags, and only used by a few routines?
 
- * NXP S32G2 SoC family
- *
-?
+Or are you creating two new status flags that are only used by several
+optimized/fastpath routines and ignored by the other readers of the various
+flag bits?
 
-@NXP: Are any models other than 274A in the queue that we should
-distinguish between s32g2.dtsi and s32g274a.dtsi here already?
+So a better description would be something like
 
-> + * Copyright (c) 2021 SUSE LLC
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/ {
-> +	compatible = "fsl,s32g2";
-> +	interrupt-parent = <&gic>;
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x0>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&cluster0_l2>;
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x1>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&cluster0_l2>;
-> +		};
-> +
-> +		cpu2: cpu@100 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x100>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&cluster1_l2>;
-> +		};
-> +
-> +		cpu3: cpu@101 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x101>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&cluster1_l2>;
-> +		};
-> +
-> +		cluster0_l2: l2-cache0 {
-> +			compatible = "cache";
-> +		};
-> +
-> +		cluster1_l2: l2-cache1 {
-> +			compatible = "cache";
-> +		};
-> +	};
-> +
-> +	pmu {
-> +		compatible = "arm,cortex-a53-pmu";
-> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+This feature adds two new status bits PG_idle and PG_young to 'struct page'.
+This allows passing additional information to certain users of PTE Accessed so
+they can use an optimized codepath bypassing expensive checks for certain
+common cases.
 
-interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
+or "so they can provide <describe different behavior>"
 
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-> +	};
-> +
-> +	psci {
-> +		compatible = "arm,psci-1.0";
-> +		method = "smc";
-> +	};
+or whatever this option is doing.
 
-Should we move this into a /firmware node, to group with future OP-TEE?
+--==_Exmh_1628789293_131750P
+Content-Type: application/pgp-signature
 
-> +
-> +	soc {
-> +		compatible = "simple-bus";
-> +		interrupt-parent = <&gic>;
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
 
-Duplicate, already set on root node.
+iQEcBAEBCAAGBQJhFVosAAoJEI0DS38y7CIcUrMH+QGFFKac8B0RfegkCazdDLtN
+p7d9cijWcXq1d4Tye/w8Sb+lUJwKOZcnz4mk5sUHwjVku9ZTJLB25T8ufpOjh/Em
+4ZwuLP1CJzuMnZL2PMTbLIkqZiAKXrH/vXNv/RTiYX0Fg33e38cKxBnyWtcZHiPh
+5b8BocR8VkmqD9aNsMCH7M8HMgqZMXBG9ohsMAi8NyZC2EWUEXWr899HmbAAfZH5
+LoKG/wqCN8PnDLH0XFTdHjIyVPH03TOfqXU1YaIWoBla7TGcBitP9/PflQ57xWHc
+bYYrxoU6khL2vRXvKwWXWiti3Ug4NlpTfpy7mqt/JtomqkrHCsPVIXVgRKlSe7g=
+=EoUy
+-----END PGP SIGNATURE-----
 
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-
-Why? Does it have any peripherals that go beyond 32-bit space?
-For 64-bit Realtek platforms Rob had asked me to use 1, if possible.
-I do understand that for /memory nodes we do have high-memory addresses,
-so 2 for the root node looks correct.
-
-> +
-
-Please drop this white line.
-
-> +		ranges;
-
-According to Rob, the /soc ranges should exclude any RAM ranges for
-safety reasons. Compare:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/realtek/rtd129x.dtsi
-
-If you're lacking the maximum RAM areas to carve out, NXP is in CC to
-help out :) and the EVB and RDB2 boards should give you starting numbers
-that could be enlarged later if needed.
-
-> +
-> +		gic: interrupt-controller@50800000 {
-> +			compatible = "arm,gic-v3";
-> +			#interrupt-cells = <3>;
-> +			interrupt-controller;
-> +			reg = <0 0x50800000 0 0x10000>,
-> +			      <0 0x50880000 0 0x200000>,
-> +			      <0 0x50400000 0 0x2000>,
-> +			      <0 0x50410000 0 0x2000>,
-> +			      <0 0x50420000 0 0x2000>;
-
-Please order reg after compatible by convention, and sort
-interrupt-controller or at least #interrupt-cells (applying to
-consumers) last, after the below one applying to this device itself.
-
-> +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) |
-> +						 IRQ_TYPE_LEVEL_HIGH)>;
-> +		};
-
-CC'ing Marc for additional GIC scrutiny, often the sizes are wrong.
-
-> +	};
-> +};
-
-Thanks,
-Andreas
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+--==_Exmh_1628789293_131750P--
