@@ -2,71 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43613EA6F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A873EA6F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237534AbhHLO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236417AbhHLO5w (ORCPT
+        id S237624AbhHLO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:58:46 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:36601 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237758AbhHLO6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:57:52 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7645FC061756;
-        Thu, 12 Aug 2021 07:57:27 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 301DC44A;
-        Thu, 12 Aug 2021 14:57:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 301DC44A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1628780247; bh=csI+g0I7i+/PQ+uJiZXzwrLTH3TTq4CmgYgZRCtgHEw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kUZty8t2remczjo/K2FjOD4OBqbm+zzi/u8zz+Rzuig67nL9PSpUYNf6j7IC238W8
-         uURZ+5nnJ5uDwArYO8NCDbKYVdts6LMuYbCMvzfmxpGURLq9gQ4XPIL7JBZpHbnIW/
-         lDJIbSIEGFsuyvhZfOtegItIexEFbXSc3A9mrF71bVNx6OkhZB1R+7cwrnPQ6K2y+b
-         NY8EGQacIpwGI+MP+q2SBEcFfN8PYJUf0m9B0WafIG4pecbNajVNuTNpR+9BwYb8gs
-         sVL4RzxvXawoRIWvL3pBvWyKXG6Djpp9uALxvd2gbXhRHkSoFZYyvgtPHzScSEpv28
-         VCykKFk9X09iA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     cgel.zte@gmail.com, alexs@kernel.org, siyanteng@loongson.cn,
-        sterlingteng@gmail.com
-Cc:     yang.yang29@zte.com.cn, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] docs/zh_CN: Add zh_CN/accounting/psi.rst
-In-Reply-To: <20210731084502.571451-1-yang.yang29@zte.com.cn>
-References: <20210731084502.571451-1-yang.yang29@zte.com.cn>
-Date:   Thu, 12 Aug 2021 08:57:26 -0600
-Message-ID: <87wnoqzp61.fsf@meer.lwn.net>
+        Thu, 12 Aug 2021 10:58:44 -0400
+Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MQMm9-1mRAbi44UT-00MJ0W; Thu, 12 Aug 2021 16:58:12 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     michael.weiss@aisec.fraunhofer.de
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-audit@redhat.com
+Subject: [PATCH 0/3] dm: audit event logging
+Date:   Thu, 12 Aug 2021 16:57:41 +0200
+Message-Id: <20210812145748.4460-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:E1yluKd3qSTn/LHmKKMFbuZnMtW/v47VwlVPW92Z/ltMRz2knBo
+ LUQyCYEC2nBrlG4SmrbzjHjDS+Fd9D8OehmDmOZsqJTjivtsonN6npkNg2hb0DLCrbWKdMe
+ vP+JeClAaWg4eL3AUzJ82BiSyzvh/upNN3Nu1JcQuCiX16YxsbS3NKsO4T3mVfUaolBaR93
+ bRYbvp64iIhA48Q+iXc/g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lZlLrnXJhrg=:PGh6NvpgZ0JUeh4mmqRVRw
+ duVibXgDbJSpVvoewOSVe+GodEkk73GlV1alRP/DCjdwS3JcvoTN7KDyqEwgwwZISlRWMkzHT
+ UBYDJgc83y8pysVLik2TRVYhuVhaY3gsKrRSOVbLv2A8YWd0DpzXSyvVq+9sePDSk9cLy1fEO
+ 32a27pPtS0tkOV1mWpLZzFx+C+mkDnBwS6xBh3w14ty8N7Gu/7Jj7opjXjRlAmX/lvLzN7Vou
+ AElX01s2G36RGxkqjHo4LGaEiu9oUwaONEogOaM30sbcDHh+K6MW11ZNq1oAzE841qG8bec3R
+ a9XkePcN4Sm4RTx4ipQ5+w03S1HkFZ0tcuy3D+v3B9nfh8COQ4ncxgoN25ru6+osj83WvUWIO
+ zslJjwSuercv0x/kUZyNrK5npc+MuqhxbP76yUUpnOMlATU1tlGWKgwZQ3I/DjqaUnslvZGkq
+ LNmjb6fLwIhkME6aF0A22sOTWZjTiRqYOs0UUMkUGFAUcKa2IGYxeZzzNWJBI5wlh7vRrCPw3
+ bENH9wIZKo4S2BfF4Q7OnX9PshJKrJROFSkeaI4wQ932hyDX6Xl9pAcDmEL/lNmxl2UKU+BQT
+ vuEd6sFK5EJmS6MUbBFNYLe4YfyA2G/kgBjIGCbeyvZccvJBoVY/bGDcOxJQn66pqa4k3UCRH
+ sBd/O2ttmII2Zw5/KRA9Vwy7zwkJuTmxAevj0oY6J8r2SuAbXbO6akCtxDpvABjzxcR3g+/IQ
+ ywwG/IS8Z2SBTeKwjFER0nRfl2v/TWj5/KGh1weRRs88v6EX4O5ukRfbMDqRQdMG9UXrrqtGE
+ h1WETTjvtaABaKWYXdXEv3WzO1VeAf7kHqK+9zNIxH/66LCMiv0xjmHIHR5wlPyAlN0Qw9y0q
+ +S2axYhga+FIijnwqbWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cgel.zte@gmail.com writes:
+dm integrity and also stacked dm crypt devices track integrity
+violations internally. Thus, integrity violations could be polled
+from user space, e.g., by 'integritysetup status'.
 
-> From: Yang Yang <yang.yang29@zte.com.cn>
->
-> Add translation zh_CN/accounting/psi.rst and zh_CN/accounting/index.rst.
->
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
-> ---
-> v5: link accounting/index to top-level Chinese index.rst
-> v4: delete wrong Reviewed-by
-> v3: add reviewers
-> v2: correct wrong format and add translations for code annotations
-> ---
->  .../translations/zh_CN/accounting/index.rst   |  25 +++
->  .../translations/zh_CN/accounting/psi.rst     | 155 ++++++++++++++++++
->  Documentation/translations/zh_CN/index.rst    |   2 +-
->  3 files changed, 181 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/translations/zh_CN/accounting/index.rst
->  create mode 100644 Documentation/translations/zh_CN/accounting/psi.rst
+From an auditing perspective, we only could see that there were
+a number of integrity violations, but not when and where the
+violation exactly was taking place. The current error log to
+the kernel ring buffer, contains those information, time stamp and
+sector on device. However, for auditing the audit subsystem provides
+a separate logging mechanism which meets certain criteria for secure
+audit logging.
 
-Applied, thanks.
+With this small series we make use of the kernel audit framework
+and extend the dm driver to log audit events in case of such
+integrity violations. Further, we also log construction and
+destruction of the device mappings.
 
-jon
+We focus on dm-integrity and stacked dm-crypt devices for now.
+However, the helper functions to log audit messages should be
+applicable to dm verity too.
+
+The first patch introduce generic audit wrapper functions.
+The second patch makes use of the audit wrapper functions in the
+dm-integrity.c.
+The third patch uses the wrapper functions in dm-crypt.c.
+
+The audit logs look like this if executing the following simple test:
+
+# dd if=/dev/zero of=test.img bs=1M count=1024
+# losetup -f test.img
+# integritysetup -vD format --integrity sha256 -t 32 /dev/loop0 
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# integritysetup close integritytest
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# dd if=/dev/urandom of=/dev/loop0 bs=512 count=1 seek=100000
+# dd if=/dev/mapper/integritytest of=/dev/null
+
+-------------------------
+audit.log from auditd
+
+type=UNKNOWN[1336] msg=audit(1628692862.187:409): module=integrity dev=254:3 op=ctr res=1
+type=UNKNOWN[1336] msg=audit(1628692862.443:410): module=integrity dev=254:3 op=dtr res=1
+type=UNKNOWN[1336] msg=audit(1628692862.543:411): module=integrity dev=254:3 op=ctr res=1
+type=UNKNOWN[1336] msg=audit(1628692877.943:412): module=integrity dev=254:3 op=dtr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692887.287:413): module=integrity dev=254:3 op=ctr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692925.156:417): module=integrity dev=254:3 op=dtr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692930.720:418): module=integrity dev=254:3 op=ctr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692989.344:419): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:420): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:421): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:422): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:423): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:424): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:425): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:426): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:427): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:428): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+
+Michael Weiß (3):
+  dm: introduce audit event module for device mapper
+  dm integrity: log audit events for dm-integrity target
+  dm crypt: log aead integrity violations to audit subsystem
+
+ drivers/md/Kconfig         | 10 +++++++
+ drivers/md/Makefile        |  4 +++
+ drivers/md/dm-audit.c      | 59 ++++++++++++++++++++++++++++++++++++++
+ drivers/md/dm-audit.h      | 33 +++++++++++++++++++++
+ drivers/md/dm-crypt.c      | 23 ++++++++++++---
+ drivers/md/dm-integrity.c  | 25 +++++++++++++---
+ include/uapi/linux/audit.h |  2 ++
+ 7 files changed, 148 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/md/dm-audit.c
+ create mode 100644 drivers/md/dm-audit.h
+
+-- 
+2.20.1
+
