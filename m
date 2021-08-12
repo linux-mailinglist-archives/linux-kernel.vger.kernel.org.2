@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FD53EA618
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20373EA672
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbhHLOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:00:12 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:37284 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhHLOAL (ORCPT
+        id S237964AbhHLOWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237952AbhHLOWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:00:11 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id E484A72C8FB;
-        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 931454A46F1;
-        Thu, 12 Aug 2021 16:59:43 +0300 (MSK)
-Date:   Thu, 12 Aug 2021 16:59:43 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-Subject: Re: [PATCH 1/3] crypto: tcrypt - Fix the wrong position of return
- value test statement
-Message-ID: <20210812135943.mnuce4252wp4xi52@altlinux.org>
-References: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
- <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
+        Thu, 12 Aug 2021 10:22:00 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E464CC0613D9;
+        Thu, 12 Aug 2021 07:21:34 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id n12so6814772plf.4;
+        Thu, 12 Aug 2021 07:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=csFOusVLJbr+QwATacvMZAXfEPfUH2cDcHQVoTGE5vE=;
+        b=JkEWtiTyDNnJ+BzIN7Gz4qDf9wicTiI7ILdP/I+xMvTXTscedD/r/rSItHK+lfLr0z
+         0OtLaO69EGsib16m8EQWcCZpgB8SPH0upDGSu4NxUrfhBlgrnfyTkf1+yiTgPxSatpH9
+         17L45Is8Dp2uwQstt+csUVSpQBzigZP1KR8nmBMnFFqqDLSA51/KSBzuQpqN78eARQ6n
+         hwDDchcyVUhJmebAjxPf4opcS6nCJYJUmorP/vgUJmu+TeYiobJcWIRTCPfz/bl6HKeg
+         d8U7Etb1zaRQsS0uVQktLHvt6yy9puI3MLSRFIDkdc/ROeq234enJPc2yKkDh2zChW4B
+         AJ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=csFOusVLJbr+QwATacvMZAXfEPfUH2cDcHQVoTGE5vE=;
+        b=rLybaxMonuxstrOXBp3hPIvNgaRmzFJamNivL6LE3h6+XTlV+ypWbNvADW2wsjVe7a
+         vwyalu7n7uhu0ona99SyxfXar8C00y99XCOWR9oXyz9C8GRAXPuLZV/AwkdOfKaRE8JC
+         juyPieZ4NSCpi9gctRfw+Vb9axuWgxx6uc0nEPPtikbbZg0iizjCtuHRwInIUQ2guT+V
+         IANMC7lHkLV6SkaTIuE/vdMXNhU0QzrvXLngDhZ43/mO7Zwr1Xr1g83pLv3DKInp0T9S
+         cWLjfTBBphdrJoUXaeUThY+SD+Ttdh3dCFLN/BVA+WIJs1GzIgI5+bJn1VAKH+H10oCS
+         S1uQ==
+X-Gm-Message-State: AOAM532ocHQeZ0VR8DGtOf8Uq1n3Z/UpdyMHyQx8WpJ0azzehhg5NRWF
+        kN/JcvrYAQbzX3ymF1i0NFqHUFrBQIE=
+X-Google-Smtp-Source: ABdhPJxDz2GetmVfJp2EYNCcDHh9bJawwgY+Rv+RN1HTpSpXhkjBHc6aQr/V0Lw0d/St2Uq1V1Mk2A==
+X-Received: by 2002:a17:90b:23d6:: with SMTP id md22mr16100202pjb.149.1628778094275;
+        Thu, 12 Aug 2021 07:21:34 -0700 (PDT)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id x19sm4129996pgk.37.2021.08.12.07.21.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 12 Aug 2021 07:21:34 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: [PATCH 1/2] KVM: X86: Check pte present first in __shadow_walk_next()
+Date:   Thu, 12 Aug 2021 12:36:29 +0800
+Message-Id: <20210812043630.2686-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianjia,
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-On Thu, Aug 12, 2021 at 09:17:46PM +0800, Tianjia Zhang wrote:
-> The position of the return value test statement of crypto_aead_setkey()
-> is wrong, adjust to make it work properly.
+So far, the loop bodies already ensure the pte is present before calling
+__shadow_walk_next().  But checking pte present in __shadow_walk_next()
+is a more prudent way of programing and loop bodies will not need
+to always check it.  It allows us removing is_shadow_present_pte()
+in the loop bodies.
 
-This commit message does not explain anything. It's nearly equivalent to
-"fix".
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  crypto/tcrypt.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-> index d73a42fdaa9b..73c97e085baf 100644
-> --- a/crypto/tcrypt.c
-> +++ b/crypto/tcrypt.c
-> @@ -612,6 +612,12 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
->  				}
->  			}
->  			ret = crypto_aead_setkey(tfm, key, *keysize);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index a272ccbddfa1..c48ecb25d5f8 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2231,7 +2231,7 @@ static bool shadow_walk_okay(struct kvm_shadow_walk_iterator *iterator)
+ static void __shadow_walk_next(struct kvm_shadow_walk_iterator *iterator,
+ 			       u64 spte)
+ {
+-	if (is_last_spte(spte, iterator->level)) {
++	if (!is_shadow_present_pte(spte) || is_last_spte(spte, iterator->level)) {
+ 		iterator->level = 0;
+ 		return;
+ 	}
+-- 
+2.19.1.6.gb485710b
 
-Perhaps, you would say that return value of crypto_aead_setkey was lost.
-
-> +			if (ret) {
-> +				pr_err("setkey() failed flags=%x\n",
-> +						crypto_aead_get_flags(tfm));
-> +				goto out;
-> +			}
-> +
->  			ret = crypto_aead_setauthsize(tfm, authsize);
-
-But, isn't now return value of crypto_aead_setauthsize is lost?
-
-Thanks,
-
->  
->  			iv_len = crypto_aead_ivsize(tfm);
-> @@ -622,15 +628,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
->  			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
->  					i, *keysize * 8, bs);
->  
-> -
->  			memset(tvmem[0], 0xff, PAGE_SIZE);
->  
-> -			if (ret) {
-> -				pr_err("setkey() failed flags=%x\n",
-> -						crypto_aead_get_flags(tfm));
-> -				goto out;
-> -			}
-> -
->  			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
->  				     assoc, aad_size);
->  
-> -- 
-> 2.19.1.3.ge56e4f7
