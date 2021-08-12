@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4683E9EDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA173E9EE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 08:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhHLGvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 02:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhHLGvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:51:24 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FCFC061765;
-        Wed, 11 Aug 2021 23:50:59 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id oa17so7827999pjb.1;
-        Wed, 11 Aug 2021 23:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2LuKa5ZvLNNIZbNDJsXQL3xIdp2yQbpsWGoZqtzxgLE=;
-        b=Xh5q71b7mkunOXGbpX7kWpjz5IuoadAdHMYALuGlMpaFzGQ86LKt74nmjW6lJ0oowS
-         I8CW8Amhy5kHRZ+ihao/h8hl7AiTIticDYO2iPFHnH0HBtrsHBuFLFiAGqY5xp8zRT7z
-         6fgP3wHwcxyVP/edgdQP7AT+NXlDPHHKj6/9THkZsGzsJRTHqoMXOizCWgdgUlLfXwYA
-         4+95lHi/k/V30MJvo8vaoYAMQo7qUcqztJG023b8iCTePckF6/zeZU25pzcDxFqHqCc0
-         hXEzRYEsrgrGjHqGfdPQ2zoX7+0Bq8kHIFqOZqAN5+0jjcR/UaIRUTnQluSWp24AwydD
-         GJrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2LuKa5ZvLNNIZbNDJsXQL3xIdp2yQbpsWGoZqtzxgLE=;
-        b=qbE4TY6uEKR9oOUE80EmqFmTkxlbmDCAcXhfcAYxi3UgbUTCfxIssvrgD4rpG2cP4P
-         cC2SVOqgSWYzMTk1PHgKEQ66I11U5jSMtB5PIAYSjibdRLlYkyaP7ORAthPh+pGlJHiJ
-         UU4jnOQMzxlVEHHTpCia064TrFzlydOSDHjnaagTgc9vvyvanqRnKzjcQzJdsyeZYQu6
-         BN3XiuCdx/xE1cRJfIke4YFISbdQpxh/KJkkdT6hEojFSlKFOsIugnNx2wXYMfSSu7rg
-         BPLT9f5zMJ+ZXDdzvP090bha7itjay+a2/E0Ra6hyFMXo0y2KwNDUMHUgL0Yj7V65k+v
-         bkPA==
-X-Gm-Message-State: AOAM530UOvwwBwCBc6GQIQorIxOblmplvZFGDO1dYfS8YLHiR9wo2qDU
-        isM8Eflq0r69ceO+zAkaUaA=
-X-Google-Smtp-Source: ABdhPJxhZt3qKZ/ZXQepFxFpvGli5qIzl7wLBEz3lgEGORKMEvzJ6Rztv5uztP+np+TRbH5JNXxsFw==
-X-Received: by 2002:a17:90a:d3cc:: with SMTP id d12mr2770507pjw.151.1628751059147;
-        Wed, 11 Aug 2021 23:50:59 -0700 (PDT)
-Received: from localhost ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id n23sm1997418pgv.76.2021.08.11.23.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 23:50:58 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 12:20:56 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/135] 5.10.58-rc1 review
-Message-ID: <20210812065056.niviykfmwc3yk23p@xps.yggdrasil>
-References: <20210810172955.660225700@linuxfoundation.org>
+        id S234675AbhHLGwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 02:52:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhHLGwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:52:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5125A60EFE;
+        Thu, 12 Aug 2021 06:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628751096;
+        bh=+JN6XMwjpttxBsTsht8aKrjrIm/lywJ7yWkXDLsRnqA=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=gDq9oKukKEbWu4mDHhPPopboWr4s0z5Dt70T61olO67EFlTIhHJeKn28sEE/+3W2h
+         e6SrnZGbHnM/GANWf79dpb2RCCPqChKO5b9gMflmxRRJfbrLDeZb6y326injJRzSBp
+         SXXb+UK8dec2x7Lj6/ZbwW0d3LfVrnjjO+hbrTPHQhB2slPbZ/gDbC7L+I+vRH9FVc
+         WpW7Yp/NxKMDSfx3wtPlyIhI9HStbrW3dKkMQ0Z45SObvl6nIyBAHgCzxUtdyAbWVG
+         IHt1jpwsOgdDXSU02CAF2oApzkBqm45e5dKxA6FrOM+DtzeKoYqq3waEFGSGPuk7bM
+         RG3YJGOj/MkGQ==
+References: <1628739182-30089-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1628739182-30089-3-git-send-email-chunfeng.yun@mediatek.com>
+User-agent: mu4e 1.6.2; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH 3/6] usb: cdnsp: fix the wrong mult value for HS isoc or
+ intr
+Date:   Thu, 12 Aug 2021 09:51:03 +0300
+In-reply-to: <1628739182-30089-3-git-send-email-chunfeng.yun@mediatek.com>
+Message-ID: <87mtpnyx3g.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/10 07:28PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.58 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
 
-Compiled, booted and tested with no regressions
+Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
 
-Tested-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> usb_endpoint_maxp() only returns the bit[10:0] of wMaxPacketSize
+> of endpoint descriptor, not include bit[12:11] anymore, so use
+> usb_endpoint_maxp_mult() instead.
+>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/usb/cdns3/cdnsp-mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/cdns3/cdnsp-mem.c b/drivers/usb/cdns3/cdnsp-mem.c
+> index a47948a1623f..ad9aee3f1e39 100644
+> --- a/drivers/usb/cdns3/cdnsp-mem.c
+> +++ b/drivers/usb/cdns3/cdnsp-mem.c
+> @@ -882,7 +882,7 @@ static u32 cdnsp_get_endpoint_max_burst(struct usb_gadget *g,
+>  	if (g->speed == USB_SPEED_HIGH &&
+>  	    (usb_endpoint_xfer_isoc(pep->endpoint.desc) ||
+>  	     usb_endpoint_xfer_int(pep->endpoint.desc)))
+> -		return (usb_endpoint_maxp(pep->endpoint.desc) & 0x1800) >> 11;
+> +		return usb_endpoint_maxp_mult(pep->endpoint.desc) - 1;
+
+this looks like a bugfix. Do we need to Cc stable here?
+
+In any case:
+
+Acked-by: Felipe Balbi <balbi@kernel.org>
+
+-- 
+balbi
