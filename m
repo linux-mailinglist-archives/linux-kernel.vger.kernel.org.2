@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A478D3EABCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AE03EABD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 22:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237312AbhHLUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 16:32:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60834 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhHLUc5 (ORCPT
+        id S237501AbhHLUeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 16:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhHLUeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 16:32:57 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628800351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0g6kaj3w3l8s66z1iLQpOYDO2iUHwY9sG7pabFyb34=;
-        b=DYKdHnUvdxnuxcXHyOctQBNAzVUGe/MdAiljNir0XmAdfJkJswzL1jCWknLQ8S9IKq7jiW
-        /mJgyYqZBmPnoAebGmfP2YbSDzSfsp2R+ve1YpkNqQAFhfq0YrikoyZwUF9q3qJbdMxywY
-        9RNl08VOqk1cHNFmCl7k8sCFBJAgYE+wH7nYp/spmdtdqzB4w1ZZ8XrT5+nbIO7IIgR3jY
-        6/j5cWEhrfCGlu2w9GWZc4nTYvc+D3jdDhEKJ2KAJ21mhDjdByXmzGiHhCh9ysGgvcSglW
-        jP73Kf0aiSpjLPfRqkdJOU6STCzb3kjQw5bf10NIqAXNugGDHJhCOqwfjjEImg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628800351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0g6kaj3w3l8s66z1iLQpOYDO2iUHwY9sG7pabFyb34=;
-        b=lZ3p8zpAaDTY0wOmAI3HB0PocayVusZIVK1yN+a/OCs3DPncIdjTJ71/v9xZhrwyBlx91L
-        ucH9SccbnJnRdmBg==
-To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: [PATCH] hrtimer: Unbreak hrtimer_force_reprogram()
-In-Reply-To: <877dgqivhy.ffs@tglx>
-References: <20210713135158.054424875@linutronix.de>
- <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
- <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
- <87a6lmiwi0.ffs@tglx> <877dgqivhy.ffs@tglx>
-Date:   Thu, 12 Aug 2021 22:32:30 +0200
-Message-ID: <8735recskh.ffs@tglx>
+        Thu, 12 Aug 2021 16:34:06 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168C1C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:33:41 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id q16so7834787ioj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:33:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A9UDRRG4q1idI206MNqvq77jJ/SQ1JDQ5Hwl3h3QBmc=;
+        b=PG349MzRnm8flbAtjVx9mm08lRYtiHgnYq6jP5dFDvUEFvpq5tgupPqfvJPHXFS1rK
+         zUx/LvMTF7WOkbgJwGpt5o/fiTDkHR0ShtOTm0y1X0eB5SLAm+EYKKpiHave3awT1bJV
+         3yMoZ4MAtQtJdKuMxLsQbJLX8dey4A2oLUkM0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9UDRRG4q1idI206MNqvq77jJ/SQ1JDQ5Hwl3h3QBmc=;
+        b=Mvey89GG5Py22Ilvk/sJsDu0Tng+NFLPBvly5YUEGg3rF5miv+8ApSgu3ebFCuJvbF
+         3/YEaRDpy3hijd8/V2NOXCFIZaw2NesKf5Gq9YKX8CMKPxm8cfkdKl3nDiXmk2zjnmjW
+         wHQqKnYUrO9Q210cznbFFUb6W941+kttvvW2o+zcX7E8U+G5zLpZOrVa3p7dZsqQLRUm
+         B/1t3PC4YGrazhRwzpeDUF/cHPAXblTgnVk983tdAs9QA42/sHgCnt0HvFDFF4RkQ7mq
+         d5Jp1HhCeDwFj/wFhjz9+ZmVI3lVeZjcYuZTKHQMVSwTHF+YWBjeE3Gl8jGVh8XWxSt0
+         5bNg==
+X-Gm-Message-State: AOAM530vpABCUdeD1O8ErftZYUf+5JMOQzF6wnyO31EgbhQvZhXpON+5
+        Ryib9OPHdA2agHQuruHYEwyrbk0Zy/zGqg==
+X-Google-Smtp-Source: ABdhPJw6g9dIjzRLTmdMgJ25XLokf61CoiQJR5Cfx/2AoogDQG5WSbk4m/TBjqda4Yq5qtGJWzElQQ==
+X-Received: by 2002:a6b:f416:: with SMTP id i22mr4366610iog.162.1628800420338;
+        Thu, 12 Aug 2021 13:33:40 -0700 (PDT)
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com. [209.85.166.171])
+        by smtp.gmail.com with ESMTPSA id x15sm2110695ilp.23.2021.08.12.13.33.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 13:33:39 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id j18so8404337ile.8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 13:33:39 -0700 (PDT)
+X-Received: by 2002:a92:d304:: with SMTP id x4mr324759ila.82.1628800419387;
+ Thu, 12 Aug 2021 13:33:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
+In-Reply-To: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 12 Aug 2021 13:33:26 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UF1MMKg9Y0HD3xpZ36BVZyuzr3xkwXzeSz__T1XD1r=w@mail.gmail.com>
+Message-ID: <CAD=FV=UF1MMKg9Y0HD3xpZ36BVZyuzr3xkwXzeSz__T1XD1r=w@mail.gmail.com>
+Subject: Re: [PATCH v2] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
+ cpufreq driver flag
+To:     Taniya Das <tdas@codeaurora.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the recent consoliation of reprogramming functions,
-hrtimer_force_reprogram() is affected by a check whether the new expiry
-time is past the current expiry time.
+Hi,
 
-This breaks the NOHZ logic as that relies on the fact that the tick hrtimer
-is moved into the future. That means cpu_base->expires_next becomes stale
-and subsequent reprogramming attempts fail as well until the situation is
-cleaned up by an hrtimer interrupts.
+On Thu, Aug 12, 2021 at 7:19 AM Taniya Das <tdas@codeaurora.org> wrote:
+>
+> As remote cpufreq updates are supported on QCOM platforms, set
+> dvfs_possible_from_any_cpu cpufreq driver flag.
+>
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>
+> [v2]
+>   * update the dvfs_possible_from_any_cpu always.
+>
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index f86859b..53d3898 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -223,6 +223,8 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+>
+>         table[i].frequency = CPUFREQ_TABLE_END;
+>         policy->freq_table = table;
+> +       policy->dvfs_possible_from_any_cpu = true;
+> +
 
-For some yet unknown reason this leads to a complete stall, so for now
-partially revert the offending commit to a known working state. The root
-cause for the stall is still investigated and will be fixed in a subsequent
-commit.
+Why is this in the qcom_cpufreq_hw_read_lut() function? Shouldn't it
+be straight in qcom_cpufreq_hw_cpu_init()?
 
-Fixes: b14bca97c9f5 ("hrtimer: Consolidate reprogramming code")
-Reported-by: Mike Galbraith <efault@gmx.de>
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mike Galbraith <efault@gmx.de>
----
- kernel/time/hrtimer.c |   40 ++++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
-
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -652,24 +652,10 @@ static inline int hrtimer_hres_active(vo
- 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
- }
- 
--static void
--__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
--		    struct hrtimer *next_timer, ktime_t expires_next)
-+static void __hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base,
-+				struct hrtimer *next_timer,
-+				ktime_t expires_next)
- {
--	/*
--	 * If the hrtimer interrupt is running, then it will reevaluate the
--	 * clock bases and reprogram the clock event device.
--	 */
--	if (cpu_base->in_hrtirq)
--		return;
--
--	if (expires_next > cpu_base->expires_next)
--		return;
--
--	if (skip_equal && expires_next == cpu_base->expires_next)
--		return;
--
--	cpu_base->next_timer = next_timer;
- 	cpu_base->expires_next = expires_next;
- 
- 	/*
-@@ -707,8 +693,10 @@ hrtimer_force_reprogram(struct hrtimer_c
- 
- 	expires_next = hrtimer_update_next_event(cpu_base);
- 
--	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
--			    expires_next);
-+	if (skip_equal && expires_next == cpu_base->expires_next)
-+		return;
-+
-+	__hrtimer_reprogram(cpu_base, cpu_base->next_timer, expires_next);
- }
- 
- /* High resolution timer related functions */
-@@ -863,7 +851,19 @@ static void hrtimer_reprogram(struct hrt
- 	if (base->cpu_base != cpu_base)
- 		return;
- 
--	__hrtimer_reprogram(cpu_base, true, timer, expires);
-+	if (expires >= cpu_base->expires_next)
-+		return;
-+
-+	/*
-+	 * If the hrtimer interrupt is running, then it will reevaluate the
-+	 * clock bases and reprogram the clock event device.
-+	 */
-+	if (cpu_base->in_hrtirq)
-+		return;
-+
-+	cpu_base->next_timer = timer;
-+
-+	__hrtimer_reprogram(cpu_base, timer, expires);
- }
- 
- static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
+-Doug
