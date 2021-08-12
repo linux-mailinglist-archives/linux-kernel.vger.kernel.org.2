@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBBB3EA512
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82453EA43B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 14:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237601AbhHLNCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:02:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235971AbhHLNCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:02:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628773335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0o2GOEc9/KMi1SER/cjjSaITjzoyiWUx6kLFBgBu8I=;
-        b=JaWlluFw/ppMheN1L5vhBau2U2Nlm97PzkgrdBt49cNVdyHzv9TxyMHCkxc56j52DB2CO+
-        CljJHXR81w5Zcoos59oLs0pGS5VVlVJrNwEuFV/koixe1s0n1tjQGQ2mG/3DTlrXIMbplt
-        0Sc5Hm635M247zfUexEcLW374KD7TLg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-2oAr3Q33OG62MXmosbJwyQ-1; Thu, 12 Aug 2021 09:02:13 -0400
-X-MC-Unique: 2oAr3Q33OG62MXmosbJwyQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S237231AbhHLMDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 08:03:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62831 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234110AbhHLMDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 08:03:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628769788; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6QsmkNZbQwVsN9LnELcdMHAkKo6gl/13f9/auIf990s=; b=fozKaMzIdJgBk+pZ2yeJAz+LFvekS0+DBz/+76M6qWMDvosWJ7UGSH8ZWPgSuoNmNe141PgW
+ qUBqPKK8ysVg7TTVTQ28KXD10x5OQFbhQUIiNbXiKHp4khDTe53FMxvGriW4bHftk0CVe5xv
+ PPXSdW4VJg4iWqX7JBPcKIGKqb4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61150dceb14e7e2ecbf32183 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 12 Aug 2021 12:02:22
+ GMT
+Sender: wat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B6EC2C43217; Thu, 12 Aug 2021 12:02:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cbsp-sh-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B252A802C88;
-        Thu, 12 Aug 2021 13:01:13 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F0015D9DE;
-        Thu, 12 Aug 2021 13:01:13 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 04B9941752AF; Wed, 11 Aug 2021 15:03:23 -0300 (-03)
-Date:   Wed, 11 Aug 2021 15:03:22 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com
-Subject: Re: [PATCH 1/2] KVM: KVM-on-hyperv: shorten no-entry section on
- reenlightenment
-Message-ID: <20210811180322.GA178399@fuller.cnet>
-References: <20210811102356.3406687-1-pbonzini@redhat.com>
- <20210811102356.3406687-2-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811102356.3406687-2-pbonzini@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        (Authenticated sender: wat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17E84C433D3;
+        Thu, 12 Aug 2021 12:02:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 17E84C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wat@codeaurora.org
+From:   Tao Wang <wat@codeaurora.org>
+To:     quic_wat@quicinc.com, linyyuan@qti.qualcomm.com,
+        hongwus@qti.qualcomm.com, zhijunw@qti.qualcomm.com,
+        wat@codeaurora.org
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org (open list:USB XHCI DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] usb: xhci-ring: USB SSD may fail to unmount if disconnect during data transferring.
+Date:   Thu, 12 Aug 2021 20:02:07 +0800
+Message-Id: <1628769727-45046-1-git-send-email-wat@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 06:23:55AM -0400, Paolo Bonzini wrote:
-> During re-enlightenment, update kvmclock a VM at a time instead of
-> raising KVM_REQ_MASTERCLOCK_UPDATE for all VMs.  Because the guests
-> can now run after TSC emulation has been disabled, invalidate
-> their TSC page so that they refer to the reference time counter
-> MSR while the update is in progress.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index bab8eb3e0a47..284afaa1db86 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8111,7 +8111,7 @@ static void kvm_hyperv_tsc_notifier(void)
->  
->  	mutex_lock(&kvm_lock);
->  	list_for_each_entry(kvm, &vm_list, vm_list)
-> -		kvm_make_mclock_inprogress_request(kvm);
-> +		kvm_hv_invalidate_tsc_page(kvm);
->  
->  	hyperv_stop_tsc_emulation();
+From: Tao Wang <quic_wat@quicinc.com>
 
-        hyperv_stop_tsc_emulation();
+it stuck in usb_kill_urb() due to urb use_count will not become zero,
+this means urb giveback is not happen.
+in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
+equal to TD_CLEARING_CACHE,
+but in xhci_invalidate_cancelled_tds(), only last canceled td's
+cancel_status change to TD_CLEARING_CACHE,
+thus giveback only happen to last urb.
 
-        /* TSC frequency always matches when on Hyper-V */
-        for_each_present_cpu(cpu)
-                per_cpu(cpu_tsc_khz, cpu) = tsc_khz;
-        kvm_max_guest_tsc_khz = tsc_khz; 
+this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
+rather than the last one, so all urb can giveback.
 
-Is this safe with a running guest? Why?
+Signed-off-by: Tao Wang <quic_wat@quicinc.com>
+---
+ drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 8fea44b..c7dd7c0 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
+ 			td_to_noop(xhci, ring, td, false);
+ 			td->cancel_status = TD_CLEARED;
+ 		}
+-	}
+-	if (cached_td) {
+-		cached_td->cancel_status = TD_CLEARING_CACHE;
+-
+-		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+-						cached_td->urb->stream_id,
+-						cached_td);
+-		/* Failed to move past cached td, try just setting it noop */
+-		if (err) {
+-			td_to_noop(xhci, ring, cached_td, false);
+-			cached_td->cancel_status = TD_CLEARED;
++		if (cached_td) {
++			cached_td->cancel_status = TD_CLEARING_CACHE;
++
++			err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
++							cached_td->urb->stream_id,
++							cached_td);
++			/* Failed to move past cached td, try just setting it noop */
++			if (err) {
++				td_to_noop(xhci, ring, cached_td, false);
++				cached_td->cancel_status = TD_CLEARED;
++			}
++			cached_td = NULL;
+ 		}
+-		cached_td = NULL;
+ 	}
+ 	return 0;
+ }
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
