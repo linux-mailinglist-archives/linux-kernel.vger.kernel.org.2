@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592CD3EA83D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEBC3EA83F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhHLQHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhHLQGu (ORCPT
+        id S231301AbhHLQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:07:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39592 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhHLQHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:06:50 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515C6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:06:25 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id oa17so10434195pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TX06zsnV7acVz1z3JgDeP59aGED9UWsBVN/SvvP0XMM=;
-        b=DQAzABT3sl+k3K9T3Yd7UVKtYggSobcspvGUr+9xTYq5xkUESC3/KPbaPjcTMMjcym
-         dXjFryUghY2zEYL6T0jcuaSqouLKYj4aLgQgbBUHZPSvVXAFGsyupzcHfyrWPnNYILqF
-         q0Rjzvepxi3jt/+EvKYdrt0jBLJhFboRueTqoLMMX0OqMx5IU5CYxDGLqd8K9Qh4qE5q
-         CupeHFKopOGNrc8tDzJ/r2YduoFF1vB6bK++JSF3iJH1Slwahx8h1hk3jaEUXybZErZ9
-         2ZNYDyWXBp1Rc/3zRDK2WAghvyUca7fqqLqBZ6AEocqzf+gZwfT9ttwrI8a9Rr3p6bHq
-         /sMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TX06zsnV7acVz1z3JgDeP59aGED9UWsBVN/SvvP0XMM=;
-        b=UGB/fF/mwdfSXWTUjZn1GZDHrLdBxd1SwFsnTKB03Vom2MnzftIo595gWWZAWQ79xG
-         E7CmsDUiLPbcJ2ozJj++MWTEVnk7QMCSBSbikWbgwyhETOzGgLAv5csBVi/EaexVxmW7
-         7rXTNKq/hwuDKdhq4x8BgG2MQM8Vu4pghixLAjniZB7qSsWHmuoBYe/wHrRClDn6fSqK
-         Mv+ujM/eHaaDkaE9E+QLt6quzwvbMBYuMJsjDUdi0TLO5gOqNN/E/W8vWJxyaHHlUFOp
-         sN9sFp4yo0K2+sIQc8wPLFJSCvci6tC4VhK1mpHY3GAIazQI6EK9aIc0Zrn1juYr386s
-         Y6fA==
-X-Gm-Message-State: AOAM533CYoVKN2yi3MuzhYHiD2+P340bOWgF8dXQyKCaCn7/ynetEL+I
-        +0FR4GueBReWbiU/+cU5jw34lQ==
-X-Google-Smtp-Source: ABdhPJxMIEXNHyOHxn0ix8X+qupgzFT7Jg6ck3kRYpaG9WOjI6ZdgsnMqYH5UHrFGJ8IKyI5TINIWw==
-X-Received: by 2002:a63:fb16:: with SMTP id o22mr4384217pgh.309.1628784384506;
-        Thu, 12 Aug 2021 09:06:24 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d5sm3258126pju.28.2021.08.12.09.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 09:06:23 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 16:06:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Protect marking SPs unsync when using
- TDP MMU with spinlock
-Message-ID: <YRVG+Vtry4MG+QDw@google.com>
-References: <20210810224554.2978735-1-seanjc@google.com>
- <20210810224554.2978735-2-seanjc@google.com>
- <74bb6910-4a0c-4d2f-e6b5-714a3181638e@redhat.com>
- <YRPyLagRbw5QKoNc@google.com>
- <591a0b05-da95-3782-0a71-2b9bb7875b7f@redhat.com>
+        Thu, 12 Aug 2021 12:07:32 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3191F222AC;
+        Thu, 12 Aug 2021 16:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628784426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+oIb/f55c+3egx/QhP8HshNAhJJ04qmEMqONaepnbu8=;
+        b=WDMMlHYCLY1XN65yO+0Pq+Vsd6reljX6jQm0SCfllsJc6Mhk000r/P9qocNxFkUfW2G0mX
+        SKvBBLq2u6zWLYA/NmI9jlHhwu9Fx9MhibEDi8cUYTty7TJcBh5Mrw17fJA6qBTkBELKtJ
+        ZLYF28c/7LyvRkYqhr5Uwd2BhQBVBRw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628784426;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+oIb/f55c+3egx/QhP8HshNAhJJ04qmEMqONaepnbu8=;
+        b=FpUSDrG2VlF2ApljuXOkh75NupRm4mN1igl0LD+W9yvYGnLst63PIbgTyVkg7dh22u8ZpA
+        EOahwVRyJuwFG6Ag==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1CA2813ACC;
+        Thu, 12 Aug 2021 16:07:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 7HhaBipHFWGCfAAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 12 Aug 2021 16:07:06 +0000
+Subject: Re: [PATCH v14 071/138] mm/writeback: Add filemap_dirty_folio()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-72-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e393b874-eb35-7b78-8919-838a8149d259@suse.cz>
+Date:   Thu, 12 Aug 2021 18:07:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <591a0b05-da95-3782-0a71-2b9bb7875b7f@redhat.com>
+In-Reply-To: <20210715033704.692967-72-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021, Paolo Bonzini wrote:
-> On 11/08/21 17:52, Sean Christopherson wrote:
-> > All that said, I do not have a strong preference.  Were you thinking something
-> > like this?
-> 
-> Yes, pretty much this.
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Reimplement __set_page_dirty_nobuffers() as a wrapper around
+> filemap_dirty_folio().
 
-Roger that, I'll work on a new version.  Thanks!
+I assume it becomes obvious later why the new "mapping" parameter instead of
+taking it from the folio, but maybe the changelog should say it here?
+
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
