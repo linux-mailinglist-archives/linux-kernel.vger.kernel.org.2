@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6993E3EA6A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225BB3EA6A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 16:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238030AbhHLOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 10:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236944AbhHLOdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 10:33:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EAEC061756;
-        Thu, 12 Aug 2021 07:32:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628778762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mIHYZ5fGW/DUwDGg+3IuVLf+ZAoE9UAQ5scG9d994PA=;
-        b=ItNEt3fw33zOCTai+BUa0CCmXbPLZvjfGC+ZFia1yQs/yKkIUS+Yht2CytQJ6TCnSQcusq
-        VOnwTAgPGPuW1ncDsMmXt/JppQhPoX3xhcvDEiZ+HQWNcEWB/yTHNsF1PhVu/U6T9kzNRj
-        3romADhGi2WFg362haisbi9xDzn9hrY1DCAzdbcaRUpXEj94Pym/BU/4Fs0qmB+TzSjQpj
-        HYneFQQFbOwrjUSQGF8iSw0QdHe5VAG+GyNODBmiNmSsa6+QI1O8Cio9Lnj2CFp+e40ZfC
-        rhFD3q7DWfLIle668KGSYrXbr9EYJxl/k+wNJ3J677OcneNYLXlTF1uiv+3lOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628778762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mIHYZ5fGW/DUwDGg+3IuVLf+ZAoE9UAQ5scG9d994PA=;
-        b=diq5C1ztwLdRQqoX/Ns3CTep2UT4Yq6la+TuTHdluhxk6UFiKNbtKd90aW1vQ3dmcGe3Au
-        +M9hgvP2gyZkOgBg==
-To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: timers/core] hrtimer: Consolidate reprogramming code
-In-Reply-To: <87a6lmiwi0.ffs@tglx>
-References: <20210713135158.054424875@linutronix.de>
- <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
- <7dfb3b15af67400227e7fa9e1916c8add0374ba9.camel@gmx.de>
- <87a6lmiwi0.ffs@tglx>
-Date:   Thu, 12 Aug 2021 16:32:41 +0200
-Message-ID: <877dgqivhy.ffs@tglx>
+        id S238096AbhHLOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 10:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236908AbhHLOi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:38:59 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC3506108C;
+        Thu, 12 Aug 2021 14:38:32 +0000 (UTC)
+Date:   Thu, 12 Aug 2021 10:38:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Shirish S <shirish.s@amd.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/debug: print column titles of show_state_filter()
+Message-ID: <20210812103826.27dfad5f@oasis.local.home>
+In-Reply-To: <20210812110534.82349-1-shirish.s@amd.com>
+References: <20210812110534.82349-1-shirish.s@amd.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12 2021 at 16:11, Thomas Gleixner wrote:
+On Thu, 12 Aug 2021 16:35:34 +0530
+Shirish S <shirish.s@amd.com> wrote:
 
-> On Thu, Aug 12 2021 at 09:19, Mike Galbraith wrote:
->> Greetings Peter, may your day get off to a better start than my box's
->> did :)
->>
->> On Tue, 2021-08-10 at 16:02 +0000, tip-bot2 for Peter Zijlstra wrote:
->>> The following commit has been merged into the timers/core branch of tip:
->>>
->>> Commit-ID:=C2=A0=C2=A0=C2=A0=C2=A0 b14bca97c9f5c3e3f133445b01c723e95490=
-d843
->>> Gitweb:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://git.kernel.or=
-g/tip/b14bca97c9f5c3e3f133445b01c723e95490d843
->>> Author:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Peter Zijlstra <peter=
-z@infradead.org>
->>> AuthorDate:=C2=A0=C2=A0=C2=A0 Tue, 13 Jul 2021 15:39:47 +02:00
->>> Committer:=C2=A0=C2=A0=C2=A0=C2=A0 Thomas Gleixner <tglx@linutronix.de>
->>> CommitterDate: Tue, 10 Aug 2021 17:57:22 +02:00
->>>
->>> hrtimer: Consolidate reprogramming code
->>
->> Per git-bisect, this is the tip.today commit that's bricking my box
->> early in boot.
->
-> Let me stare at that.
+> This addition in the debug output shall improve readablitly..
+> Its not intuitive for users that the pid printed in last column
+> is of parent process.
+> 
+> Without this patch:
+> 	localhost ~ # dmesg -w &
+> 	localhost ~ # echo w > /proc/sysrq-trigger
+> 	[22148.730225] sysrq: Show Blocked State
+> 	localhost ~ #
+> 
+> With this patch:
+> 	localhost ~ # dmesg -w &
+> 	localhost ~ # echo w > /proc/sysrq-trigger
+> 	[   99.979365] sysrq: Show Blocked State
+> -->	[   99.983471]   task                        PC stack   pid father  
+> 	localhost ~ #
+> 
 
-Can you please test whether the below fixes it for you?
+It would had been more informative, if there were content to those lists.
 
-I have yet to find a machine which reproduces it as I really want to
-understand which particular part is causing this.
+Just a few lines would be good enough. But the above, just looks like
+you are adding a useless header. :-/
 
-Thanks,
+In fact, I would argue that the title should not be displayed if the
+content is empty.
 
-        tglx
----
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -652,24 +652,10 @@ static inline int hrtimer_hres_active(vo
- 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
- }
-=20
--static void
--__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
--		    struct hrtimer *next_timer, ktime_t expires_next)
-+static void __hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base,
-+				struct hrtimer *next_timer,
-+				ktime_t expires_next)
- {
--	/*
--	 * If the hrtimer interrupt is running, then it will reevaluate the
--	 * clock bases and reprogram the clock event device.
--	 */
--	if (cpu_base->in_hrtirq)
--		return;
--
--	if (expires_next > cpu_base->expires_next)
--		return;
--
--	if (skip_equal && expires_next =3D=3D cpu_base->expires_next)
--		return;
--
--	cpu_base->next_timer =3D next_timer;
- 	cpu_base->expires_next =3D expires_next;
-=20
- 	/*
-@@ -707,8 +693,10 @@ hrtimer_force_reprogram(struct hrtimer_c
-=20
- 	expires_next =3D hrtimer_update_next_event(cpu_base);
-=20
--	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
--			    expires_next);
-+	if (skip_equal && expires_next =3D=3D cpu_base->expires_next)
-+		return;
-+
-+	__hrtimer_reprogram(cpu_base, cpu_base->next_timer, expires_next);
- }
-=20
- /* High resolution timer related functions */
-@@ -863,7 +851,19 @@ static void hrtimer_reprogram(struct hrt
- 	if (base->cpu_base !=3D cpu_base)
- 		return;
-=20
--	__hrtimer_reprogram(cpu_base, true, timer, expires);
-+	if (expires >=3D cpu_base->expires_next)
-+		return;
-+
-+	/*
-+	 * If the hrtimer interrupt is running, then it will reevaluate the
-+	 * clock bases and reprogram the clock event device.
-+	 */
-+	if (cpu_base->in_hrtirq)
-+		return;
-+
-+	cpu_base->next_timer =3D timer;
-+
-+	__hrtimer_reprogram(cpu_base, timer, expires);
- }
-=20
- static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
+Also, s/father/parent/  or s/father/ppid/
+
+-- Steve
+
+
+
+> v2: Dropped #ifdef logic
+> v3: Sample output in commit message
+> 
+> Signed-off-by: Shirish S <shirish.s@amd.com>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> ---
+>  kernel/sched/core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 20ffcc044134..1c7ea3ef5a9f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -8174,6 +8174,9 @@ void show_state_filter(unsigned int state_filter)
+>  {
+>  	struct task_struct *g, *p;
+>  
+> +	pr_info("  task%*s", BITS_PER_LONG == 32 ? 38 : 46,
+> +		"PC stack   pid father\n");
+> +
+>  	rcu_read_lock();
+>  	for_each_process_thread(g, p) {
+>  		/*
+
