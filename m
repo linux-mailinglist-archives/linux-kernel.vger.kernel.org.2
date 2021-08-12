@@ -2,224 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4023EA5A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D5C3EA5A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbhHLNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 09:25:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:40486 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237318AbhHLNZX (ORCPT
+        id S236488AbhHLN14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 09:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232081AbhHLN1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:25:23 -0400
-Received: from x64host.home (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C376F20C171A;
-        Thu, 12 Aug 2021 06:24:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C376F20C171A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628774697;
-        bh=HJY2GOAOOvc8RDfN7JED+eTXmUXW5HORS7eNhRhtjow=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=G+LPJ99WMtHJ9GZ/X8ZWPiC+O1rUz/7lzeJ303JEoLOBsRdc9UbyFHIrsP+i868H5
-         u+cIjmAD8Yxc1QfoidmwzKWdd1z9UUfY077VK1zhWtBbv6oaEs17T7oyNEcWmHaZ4M
-         hMTou7YG7RPClmgdDlxZDjxAUB2gG4ZbrKdhDiFc=
-From:   madvenka@linux.microsoft.com
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v7 4/4] arm64: Create a list of SYM_CODE functions, check return PC against list
-Date:   Thu, 12 Aug 2021 08:24:35 -0500
-Message-Id: <20210812132435.6143-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812132435.6143-1-madvenka@linux.microsoft.com>
-References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
- <20210812132435.6143-1-madvenka@linux.microsoft.com>
+        Thu, 12 Aug 2021 09:27:54 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77317C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:27:29 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id z20so11588660ejf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 06:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a1XyyEYLOje8+rMvka9FNoicpg3HUjRni4R1G0+vh+4=;
+        b=RaXKoLf97je3BYHTr6WL752pU+3dr3DId3m89eB0vFkbYb5ywkUZcBzm1c5QoZCUwb
+         NhVFS659FYLCpZR9hS3iLmPVLZyzGyRvByjt6aQr/hpd4mIrUAxaHYEd7KBgU15qrMU4
+         l+zUyAwEouR9DIeNxRSsEFMNl4R4nVOC2yeYSjKOchRYfjK6ornu+JLGEw3zqCwBaB/+
+         wWkVpOG40kDAJplv8FP5SQlMHTsqBLAFAMnVQ+orFBuiyfXtnpR51nyEoA2ZK0bE7ua2
+         NFN5xOIHjuvQbCEqsvszc06+ry7ES+Y3fWYua+M3tugqiTui95y/1kOWLvFsRdPI1TzJ
+         muDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a1XyyEYLOje8+rMvka9FNoicpg3HUjRni4R1G0+vh+4=;
+        b=rna1XGm93zQV1kk+YSE33GOCoSjx8cVMjvsO3SVpKWwVP2uSumqaqt12FcKj9rypiv
+         4uIWix/3k+S6CX03nQc8rxx07JaJm2VV1TEAn8HjYBwEi2f4Yk2CIC7u6kPOgel8whhp
+         IRifehmKRj1yM+3mzH7Spw+ACV0cno4WWfU+O7P743XFVLUxw6Wkc6kkrudZHE7qXOLm
+         jzJi2c5nlaVzhq6DRu5FirRG0RMJmGkUlj6xq36V7PlTMBM3UZtGvSrm+PiUmt3yzlVC
+         LQKnE42PZWBegJjmYHIDee4ZdqVgck9+yjtM7gl8+tN2vH3jYr2xd1LM/2V7S0aHZpzf
+         TScQ==
+X-Gm-Message-State: AOAM531az/K4P7ajTWrtzB2ur4QxkeXJpFxLkdX5HhYeLXU/4zPV30Bs
+        wLTWEUyf/W+AgV7QJ9EuT88wb39wnnA=
+X-Google-Smtp-Source: ABdhPJyULvIDilpcBpjZfeXM47eXHz0AftsFblB4I9GyYW8U8jQL7puMffzOwBSX4pyuVdzEPnvfLQ==
+X-Received: by 2002:a17:907:35d0:: with SMTP id ap16mr3667669ejc.456.1628774847517;
+        Thu, 12 Aug 2021 06:27:27 -0700 (PDT)
+Received: from agape ([5.171.80.192])
+        by smtp.gmail.com with ESMTPSA id p5sm809860ejl.73.2021.08.12.06.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 06:27:27 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: r8188eu: remove cfg80211 residuals
+Date:   Thu, 12 Aug 2021 15:27:25 +0200
+Message-Id: <20210812132725.18404-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+remove cfg80211 implementation residuals:
+an headeer file and build condition in Kconfig
+file.
 
-SYM_CODE functions don't follow the usual calling conventions. Check if the
-return PC in a stack frame falls in any of these. If it does, consider the
-stack trace unreliable.
-
-Define a special section for unreliable functions
-=================================================
-
-Define a SYM_CODE_END() macro for arm64 that adds the function address
-range to a new section called "sym_code_functions".
-
-Linker file
-===========
-
-Include the "sym_code_functions" section under read-only data in
-vmlinux.lds.S.
-
-Initialization
-==============
-
-Define an early_initcall() to create a sym_code_functions[] array from
-the linker data.
-
-Unwinder check
-==============
-
-Add a reliability check in unwind_is_reliable() that compares a return
-PC with sym_code_functions[]. If there is a match, then return failure.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- arch/arm64/include/asm/linkage.h  | 12 +++++++
- arch/arm64/include/asm/sections.h |  1 +
- arch/arm64/kernel/stacktrace.c    | 53 +++++++++++++++++++++++++++++++
- arch/arm64/kernel/vmlinux.lds.S   | 10 ++++++
- 4 files changed, 76 insertions(+)
+Dear Greg and Larry,
+I thought that cfg80211 had been implemented.
+Should we add a TODO file telling developers to
+do it in the near future? Is that a condition
+for mainlining r8188eu? If so please drop this
+patch and sorry for noise.
 
-diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
-index 9906541a6861..616bad74e297 100644
---- a/arch/arm64/include/asm/linkage.h
-+++ b/arch/arm64/include/asm/linkage.h
-@@ -68,4 +68,16 @@
- 		SYM_FUNC_END_ALIAS(x);		\
- 		SYM_FUNC_END_ALIAS(__pi_##x)
+ drivers/staging/r8188eu/Kconfig               |  2 +-
+ .../staging/r8188eu/include/ioctl_cfg80211.h  | 91 -------------------
+ drivers/staging/r8188eu/os_dep/rtw_android.c  |  1 -
+ 3 files changed, 1 insertion(+), 93 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/ioctl_cfg80211.h
+
+diff --git a/drivers/staging/r8188eu/Kconfig b/drivers/staging/r8188eu/Kconfig
+index dc1719d3f2e4..beb768416ab9 100644
+--- a/drivers/staging/r8188eu/Kconfig
++++ b/drivers/staging/r8188eu/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config R8188EU
+ 	tristate "Realtek RTL8188EU Wireless LAN NIC driver"
+-	depends on WLAN && USB && CFG80211
++	depends on WLAN && USB
+ 	depends on m
+ 	select WIRELESS_EXT
+ 	select WEXT_PRIV
+diff --git a/drivers/staging/r8188eu/include/ioctl_cfg80211.h b/drivers/staging/r8188eu/include/ioctl_cfg80211.h
+deleted file mode 100644
+index e22481050ef8..000000000000
+--- a/drivers/staging/r8188eu/include/ioctl_cfg80211.h
++++ /dev/null
+@@ -1,91 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. i*/
+-
+-#ifndef __IOCTL_CFG80211_H__
+-#define __IOCTL_CFG80211_H__
+-
+-struct rtw_wdev_invit_info {
+-	u8 token;
+-	u8 flags;
+-	u8 status;
+-	u8 req_op_ch;
+-	u8 rsp_op_ch;
+-};
+-
+-#define rtw_wdev_invit_info_init(invit_info) \
+-	do { \
+-		(invit_info)->token = 0; \
+-		(invit_info)->flags = 0x00; \
+-		(invit_info)->status = 0xff; \
+-		(invit_info)->req_op_ch = 0; \
+-		(invit_info)->rsp_op_ch = 0; \
+-	} while (0)
+-
+-struct rtw_wdev_priv {
+-	struct wireless_dev *rtw_wdev;
+-
+-	struct adapter *padapter;
+-
+-	struct cfg80211_scan_request *scan_request;
+-	spinlock_t scan_req_lock;
+-
+-	struct net_device *pmon_ndev;/* for monitor interface */
+-	char ifname_mon[IFNAMSIZ + 1]; /* name of monitor interface */
+-
+-	u8 p2p_enabled;
+-
+-	u8 provdisc_req_issued;
+-
+-	struct rtw_wdev_invit_info invit_info;
+-
+-	u8 bandroid_scan;
+-	bool block;
+-	bool power_mgmt;
+-};
+-
+-#define wdev_to_priv(w) ((struct rtw_wdev_priv *)(wdev_priv(w)))
+-
+-#define wiphy_to_wdev(x)				\
+-((struct wireless_dev *)(((struct rtw_wdev_priv *)wiphy_priv(x))->rtw_wdev))
+-
+-int rtw_wdev_alloc(struct adapter *padapter, struct device *dev);
+-void rtw_wdev_free(struct wireless_dev *wdev);
+-void rtw_wdev_unregister(struct wireless_dev *wdev);
+-
+-void rtw_cfg80211_init_wiphy(struct adapter *padapter);
+-
+-void rtw_cfg80211_surveydone_event_callback(struct adapter *padapter);
+-
+-void rtw_cfg80211_indicate_connect(struct adapter *padapter);
+-void rtw_cfg80211_indicate_disconnect(struct adapter *padapter);
+-void rtw_cfg80211_indicate_scan_done(struct rtw_wdev_priv *pwdev_priv,
+-				     bool aborted);
+-
+-#ifdef CONFIG_88EU_AP_MODE
+-void rtw_cfg80211_indicate_sta_assoc(struct adapter *padapter,
+-				     u8 *pmgmt_frame, uint frame_len);
+-void rtw_cfg80211_indicate_sta_disassoc(struct adapter *padapter,
+-					unsigned char *da,
+-					unsigned short reason);
+-#endif /* CONFIG_88EU_AP_MODE */
+-
+-void rtw_cfg80211_issue_p2p_provision_request(struct adapter *padapter,
+-					      const u8 *buf, size_t len);
+-void rtw_cfg80211_rx_p2p_action_public(struct adapter *padapter,
+-				       u8 *pmgmt_frame, uint frame_len);
+-void rtw_cfg80211_rx_action_p2p(struct adapter *padapter, u8 *pmgmt_frame,
+-				uint frame_len);
+-void rtw_cfg80211_rx_action(struct adapter *adapter, u8 *frame,
+-			    uint frame_len, const char *msg);
+-
+-int rtw_cfg80211_set_mgnt_wpsp2pie(struct net_device *net,
+-				   char *buf, int len, int type);
+-
+-bool rtw_cfg80211_pwr_mgmt(struct adapter *adapter);
+-
+-#define rtw_cfg80211_rx_mgmt(dev, freq, sig_dbm, buf, len, gfp)		\
+-	cfg80211_rx_mgmt(dev, freq, sig_dbm, buf, len, gfp)
+-#define rtw_cfg80211_send_rx_assoc(dev, bss, buf, len)			\
+-	cfg80211_send_rx_assoc(dev, bss, buf, len)
+-
+-#endif /* __IOCTL_CFG80211_H__ */
+diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
+index d666feb87a7a..7c5e5c8007e3 100644
+--- a/drivers/staging/r8188eu/os_dep/rtw_android.c
++++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
+@@ -7,7 +7,6 @@
+ #include "../include/rtw_android.h"
+ #include "../include/osdep_service.h"
+ #include "../include/rtw_debug.h"
+-#include "../include/ioctl_cfg80211.h"
+ #include "../include/rtw_ioctl_set.h"
  
-+/*
-+ * Record the address range of each SYM_CODE function in a struct code_range
-+ * in a special section.
-+ */
-+#define SYM_CODE_END(name)				\
-+	SYM_END(name, SYM_T_NONE)			;\
-+	99:						;\
-+	.pushsection "sym_code_functions", "aw"		;\
-+	.quad	name					;\
-+	.quad	99b					;\
-+	.popsection
-+
- #endif
-diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
-index e4ad9db53af1..c84c71063d6e 100644
---- a/arch/arm64/include/asm/sections.h
-+++ b/arch/arm64/include/asm/sections.h
-@@ -21,5 +21,6 @@ extern char __exittext_begin[], __exittext_end[];
- extern char __irqentry_text_start[], __irqentry_text_end[];
- extern char __mmuoff_data_start[], __mmuoff_data_end[];
- extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
-+extern char __sym_code_functions_start[], __sym_code_functions_end[];
- 
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index b60f8a20ba64..26dbdd4fff77 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -18,6 +18,31 @@
- #include <asm/stack_pointer.h>
- #include <asm/stacktrace.h>
- 
-+struct code_range {
-+	unsigned long	start;
-+	unsigned long	end;
-+};
-+
-+static struct code_range	*sym_code_functions;
-+static int			num_sym_code_functions;
-+
-+int __init init_sym_code_functions(void)
-+{
-+	size_t size = (unsigned long)__sym_code_functions_end -
-+		      (unsigned long)__sym_code_functions_start;
-+
-+	sym_code_functions = (struct code_range *)__sym_code_functions_start;
-+	/*
-+	 * Order it so that sym_code_functions is not visible before
-+	 * num_sym_code_functions.
-+	 */
-+	smp_mb();
-+	num_sym_code_functions = size / sizeof(struct code_range);
-+
-+	return 0;
-+}
-+early_initcall(init_sym_code_functions);
-+
- /*
-  * AArch64 PCS assigns the frame pointer to x29.
-  *
-@@ -185,6 +210,10 @@ void show_stack(struct task_struct *tsk, unsigned long *sp, const char *loglvl)
-  */
- static bool notrace unwind_is_reliable(struct stackframe *frame)
- {
-+	const struct code_range *range;
-+	unsigned long pc;
-+	int i;
-+
- 	/*
- 	 * If the PC is not a known kernel text address, then we cannot
- 	 * be sure that a subsequent unwind will be reliable, as we
-@@ -192,6 +221,30 @@ static bool notrace unwind_is_reliable(struct stackframe *frame)
- 	 */
- 	if (!__kernel_text_address(frame->pc))
- 		return false;
-+
-+	/*
-+	 * Check the return PC against sym_code_functions[]. If there is a
-+	 * match, then the consider the stack frame unreliable.
-+	 *
-+	 * As SYM_CODE functions don't follow the usual calling conventions,
-+	 * we assume by default that any SYM_CODE function cannot be unwound
-+	 * reliably.
-+	 *
-+	 * Note that this includes:
-+	 *
-+	 * - Exception handlers and entry assembly
-+	 * - Trampoline assembly (e.g., ftrace, kprobes)
-+	 * - Hypervisor-related assembly
-+	 * - Hibernation-related assembly
-+	 * - CPU start-stop, suspend-resume assembly
-+	 * - Kernel relocation assembly
-+	 */
-+	pc = frame->pc;
-+	for (i = 0; i < num_sym_code_functions; i++) {
-+		range = &sym_code_functions[i];
-+		if (pc >= range->start && pc < range->end)
-+			return false;
-+	}
- 	return true;
- }
- 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 709d2c433c5e..2bf769f45b54 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -111,6 +111,14 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SYM_CODE_FUNCTIONS				\
-+	. = ALIGN(16);					\
-+	.symcode : AT(ADDR(.symcode) - LOAD_OFFSET) {	\
-+		__sym_code_functions_start = .;		\
-+		KEEP(*(sym_code_functions))		\
-+		__sym_code_functions_end = .;		\
-+	}
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -196,6 +204,8 @@ SECTIONS
- 	swapper_pg_dir = .;
- 	. += PAGE_SIZE;
- 
-+	SYM_CODE_FUNCTIONS
-+
- 	. = ALIGN(SEGMENT_ALIGN);
- 	__init_begin = .;
- 	__inittext_begin = .;
+ static const char *android_wifi_cmd_str[ANDROID_WIFI_CMD_MAX] = {
 -- 
-2.25.1
+2.20.1
 
