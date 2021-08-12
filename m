@@ -2,268 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04623EA78E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C4F3EA797
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 17:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238023AbhHLPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 11:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236028AbhHLPaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 11:30:11 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S238095AbhHLPbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 11:31:07 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47424 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhHLPbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:31:05 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A518610A3;
-        Thu, 12 Aug 2021 15:29:45 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 11:29:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] tracing: Fixes and clean ups for v5.14
-Message-ID: <20210812112938.3748c7f5@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 557C91FF5B;
+        Thu, 12 Aug 2021 15:30:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628782239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qi9jWdZSJj/m82RJPqM2XKkZ0Klj1CgP0gfzMHD9/qk=;
+        b=YVLHPWfepY5REPMwTCV+MUl5T6hDCOK33Ksvk1CGWS5eHw1Ns6hqOHfPQr0F3D3sA0ERlo
+        uaX67Bzcp19Sl0dZAs/RfDjieMLLd2Zwi49fuyegZt2MBDOYBVNsJoybvdf16FGut457Zu
+        PQbY8E5bjVjiu7IUklsUhv9MMIJCAJA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628782239;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qi9jWdZSJj/m82RJPqM2XKkZ0Klj1CgP0gfzMHD9/qk=;
+        b=bT1Ek2CwBp+ljIqbnci9w6AnNiyWIz806gqxJmxHQeQLYqVlmT0KpWQAJSjvbfGdjg9Mu3
+        M6Ah2igmp3DbqQDA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A52C013AC3;
+        Thu, 12 Aug 2021 15:30:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id WMngJp4+FWF+cwAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Thu, 12 Aug 2021 15:30:38 +0000
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-9-clin@suse.com>
+ <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
+ <20210809080346.GO30984@dragon>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Subject: Re: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
+Message-ID: <3c65f75d-724f-a438-1e22-6baeb745a8e5@suse.de>
+Date:   Thu, 12 Aug 2021 17:30:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210809080346.GO30984@dragon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Shawn and Krzysztof,
 
-Linus,
+On 09.08.21 10:03, Shawn Guo wrote:
+> On Thu, Aug 05, 2021 at 09:49:51AM +0200, Krzysztof Kozlowski wrote:
+>> On 05/08/2021 08:54, Chester Lin wrote:
+>>> Add a new entry for the maintenance of NXP S32G2 DT files.
+>>>
+>>> Signed-off-by: Chester Lin <clin@suse.com>
+>>> ---
+>>>  MAINTAINERS | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 36aee8517ab0..3c6ba6cefd8f 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
+>>>  F:	arch/arm/mach-npcm/wpcm450.c
+>>>  F:	drivers/*/*wpcm*
+>>>  
+>>> +ARM/NXP S32G2 ARCHITECTURE
 
-Fixes and clean ups to tracing:
+Suggestion from NXP is to use the broader S32G name.
 
-- Fix warning for use of "main" variable in osnoise tracer
+>>> +M:	Chester Lin <clin@suse.com>
+>>> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>>> +S:	Maintained
+>>> +F:	arch/arm64/boot/dts/freescale/s32g2*
+>>
+>> I support the idea of sub-sub-architecture maintainers but I think idea
+>> of in-file addresses was preferred:
+>> https://lore.kernel.org/lkml/20200830122922.3884-1-shawnguo@kernel.org/
 
-- Fix header alignment when PREEMPT_RT is enabled for osnoise tracer
+I had specifically asked Chester to add a MAINTAINERS section.
 
-- Inject "stop" event to see where osnoise stopped the trace
+Is your apparent suggestion of not accepting this MAINTAINERS patch
+based on the assumption that we're dealing with only one email address
+in three files? What do you see as the threshold to warrant a section?
 
-- Define DYNAMIC_FTRACE_WITH_ARGS as some code had an #ifdef for it
+From my point of view, above MAINTAINERS entry is incomplete, as we
+should CC the full team working on S32G for patch review, not just
+Chester himself.
+So that would in my mind have been additional R: and L: entries in that
+MAINTAINERS section.
 
-- Fix erroneous message for bootconfig cmdline parameter
+> Thanks for reminding that the patch didn't land.  I just resent it with
+> your Reviewed-by tag added.  Thanks!
 
-- Fix crash caused by not found variable in histograms
+Your above patch does not make clear to me what syntax we should use for
+adding email addresses to .dts[i] files now:
 
+https://lore.kernel.org/lkml/20210809081033.GQ30984@dragon/
 
-Please pull the latest trace-v5.14-rc5 tree, which can be found at:
+Especially when not dealing with file authors.
 
+I get the impression it is not a replacement for an F: wildcard used in
+MAINTAINERS, but rather a complement?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.14-rc5
+Please understand that this is not about a single .dts file, as your
+patch suggests, but about a complete SoC family consisting of s32g*.dts*
+as well as in the future drivers specific to this platform. It seems way
+easier to specify the list of maintainers/reviewers in MAINTAINERS once
+with suitable wildcard paths, than copying them into each and every
+.dtsi and .dts file and driver .c/.h and later needing to sync multiple
+places. If a bot or user has fixes or cleanups for the S32G code, we
+want to know about it, so that NXP can consider it for their BSP
+branches and SUSE for our SLE branches, and obviously for follow-up
+patch series that are already in the works and waiting on this one.
 
-Tag SHA1: a580741e941446efd9bc43d74e34fca7b9e3bd2c
-Head SHA1: c5bcfacca8ad9c00aafdbbc5145b30cb31a22fb3
+Once merged, I would expect Chester or someone from NXP to set up an
+S32G tree on kernel.org that gets integrated into linux-next and sends
+pull requests to the SoC tree maintainers without bothering i.MX and
+Layerscape maintainers. Did you handle that differently for S32V?
 
+Thanks,
+Andreas
 
-Daniel Bristot de Oliveira (4):
-      trace/osnoise: Rename main variable to tracer_main
-      trace/osnoise: Add a header with PREEMPT_RT additional fields
-      trace/timerlat: Add a header with PREEMPT_RT additional fields
-      trace/osnoise: Print a stop tracing message
+P.S. Have you checked or considered whether your script change might
+start to CC non-existing email addresses, since we wouldn't be allowed
+to remove them from copyright or authorship statements to prevent that?
 
-Lukas Bulwahn (1):
-      tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
-
-Masami Hiramatsu (1):
-      init: Suppress wrong warning for bootconfig cmdline parameter
-
-Steven Rostedt (VMware) (1):
-      tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
-
-----
- init/main.c                      |  9 ++++--
- kernel/trace/Kconfig             |  5 ++++
- kernel/trace/trace_events_hist.c |  2 ++
- kernel/trace/trace_osnoise.c     | 62 +++++++++++++++++++++++++++++++++++++---
- 4 files changed, 72 insertions(+), 6 deletions(-)
----------------------------
-diff --git a/init/main.c b/init/main.c
-index f5b8246e8aa1..8d97aba78c3a 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
- 	return 0;
- }
- 
-+static int __init warn_bootconfig(char *str)
-+{
-+	/* The 'bootconfig' has been handled by bootconfig_params(). */
-+	return 0;
-+}
-+
- static void __init setup_boot_config(void)
- {
- 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
-@@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
- 	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
- 	return 0;
- }
--early_param("bootconfig", warn_bootconfig);
--
- #endif
-+early_param("bootconfig", warn_bootconfig);
- 
- /* Change NUL term back to "=", to make "param" the whole string. */
- static void __init repair_env_string(char *param, char *val)
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index d567b1717c4c..3ee23f4d437f 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -219,6 +219,11 @@ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	depends on DYNAMIC_FTRACE_WITH_REGS
- 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 
-+config DYNAMIC_FTRACE_WITH_ARGS
-+	def_bool y
-+	depends on DYNAMIC_FTRACE
-+	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+
- config FUNCTION_PROFILER
- 	bool "Kernel function profiler"
- 	depends on FUNCTION_TRACER
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 949ef09dc537..a48aa2a2875b 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
- 			event = data->match_data.event;
- 		}
- 
-+		if (!event)
-+			goto free;
- 		/*
- 		 * At this point, we're looking at a field on another
- 		 * event.  Because we can't modify a hist trigger on
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index a7e3c24dee13..b576e96d9741 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -253,10 +253,40 @@ static struct osnoise_data {
-  */
- static bool osnoise_busy;
- 
-+#ifdef CONFIG_PREEMPT_RT
- /*
-  * Print the osnoise header info.
-  */
- static void print_osnoise_headers(struct seq_file *s)
-+{
-+	if (osnoise_data.tainted)
-+		seq_puts(s, "# osnoise is tainted!\n");
-+
-+	seq_puts(s, "#                                _-------=> irqs-off\n");
-+	seq_puts(s, "#                               / _------=> need-resched\n");
-+	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-+	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-+	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-+	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-+	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-+
-+	seq_puts(s, "#                              |||||| /          ");
-+	seq_puts(s, "                                     MAX\n");
-+
-+	seq_puts(s, "#                              ||||| /                         ");
-+	seq_puts(s, "                    SINGLE      Interference counters:\n");
-+
-+	seq_puts(s, "#                              |||||||               RUNTIME   ");
-+	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
-+
-+	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    IN US    ");
-+	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
-+
-+	seq_puts(s, "#              | |         |   |||||||      |           |      ");
-+	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
-+}
-+#else /* CONFIG_PREEMPT_RT */
-+static void print_osnoise_headers(struct seq_file *s)
- {
- 	if (osnoise_data.tainted)
- 		seq_puts(s, "# osnoise is tainted!\n");
-@@ -279,6 +309,7 @@ static void print_osnoise_headers(struct seq_file *s)
- 	seq_puts(s, "#              | |         |   ||||      |           |      ");
- 	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
- }
-+#endif /* CONFIG_PREEMPT_RT */
- 
- /*
-  * osnoise_taint - report an osnoise error.
-@@ -323,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
- /*
-  * Print the timerlat header info.
-  */
-+#ifdef CONFIG_PREEMPT_RT
-+static void print_timerlat_headers(struct seq_file *s)
-+{
-+	seq_puts(s, "#                                _-------=> irqs-off\n");
-+	seq_puts(s, "#                               / _------=> need-resched\n");
-+	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-+	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-+	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-+	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-+	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-+	seq_puts(s, "#                              |||||| /\n");
-+	seq_puts(s, "#                              |||||||             ACTIVATION\n");
-+	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
-+	seq_puts(s, "       CONTEXT                LATENCY\n");
-+	seq_puts(s, "#              | |         |   |||||||      |         |      ");
-+	seq_puts(s, "            |                       |\n");
-+}
-+#else /* CONFIG_PREEMPT_RT */
- static void print_timerlat_headers(struct seq_file *s)
- {
- 	seq_puts(s, "#                                _-----=> irqs-off\n");
-@@ -336,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
- 	seq_puts(s, "#              | |         |   ||||      |         |      ");
- 	seq_puts(s, "            |                       |\n");
- }
-+#endif /* CONFIG_PREEMPT_RT */
- 
- /*
-  * Record an timerlat_sample into the tracer buffer.
-@@ -1025,9 +1075,13 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
- /*
-  * osnoise_stop_tracing - Stop tracing and the tracer.
-  */
--static void osnoise_stop_tracing(void)
-+static __always_inline void osnoise_stop_tracing(void)
- {
- 	struct trace_array *tr = osnoise_trace;
-+
-+	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
-+			"stop tracing hit on cpu %d\n", smp_processor_id());
-+
- 	tracer_tracing_off(tr);
- }
- 
-@@ -1458,20 +1512,20 @@ static void stop_per_cpu_kthreads(void)
- static int start_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	void *main = osnoise_main;
-+	void *tracer_main = osnoise_main;
- 	char comm[24];
- 
- #ifdef CONFIG_TIMERLAT_TRACER
- 	if (osnoise_data.timerlat_tracer) {
- 		snprintf(comm, 24, "timerlat/%d", cpu);
--		main = timerlat_main;
-+		tracer_main = timerlat_main;
- 	} else {
- 		snprintf(comm, 24, "osnoise/%d", cpu);
- 	}
- #else
- 	snprintf(comm, 24, "osnoise/%d", cpu);
- #endif
--	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
-+	kthread = kthread_create_on_cpu(tracer_main, NULL, cpu, comm);
- 
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
