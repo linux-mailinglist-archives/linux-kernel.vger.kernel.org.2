@@ -2,187 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ADD3EA86B
+	by mail.lfdr.de (Postfix) with ESMTP id AC63B3EA86D
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 18:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhHLQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 12:18:54 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:34132 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhHLQSx (ORCPT
+        id S229518AbhHLQS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 12:18:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232066AbhHLQS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:18:53 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:43426)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mEDPR-00CQHg-B6; Thu, 12 Aug 2021 10:18:21 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42228 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mEDPQ-00EqWu-5G; Thu, 12 Aug 2021 10:18:20 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?Q?K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>, linux-unionfs@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210812084348.6521-1-david@redhat.com>
-        <87r1eyg8h6.fsf@oldenburg.str.redhat.com>
-Date:   Thu, 12 Aug 2021 11:17:24 -0500
-In-Reply-To: <87r1eyg8h6.fsf@oldenburg.str.redhat.com> (Florian Weimer's
-        message of "Thu, 12 Aug 2021 14:20:37 +0200")
-Message-ID: <877dgqfxij.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 12 Aug 2021 12:18:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628785110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l49ZP/CsUxF11xSB6DgTSnYaUMf01RXS/9UvetQKxg4=;
+        b=G8PUc1tCZEWbzWlOkurp0p2NO1aJPdxvjhm4RoG/eF8IYl9tgz9m6spwKbUdkc3xI8JbeM
+        DEOJ8yrNcpiQ6Xqby8Zjmm6q4b3bi1v/D7NT0YyETaziLqTOHij1Cx0+JE2/emvx2DVbY2
+        N2KXfHy4Kut5qxRe6ucHbfZeJ60i//0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-H9_qLaIIM9G4KVxAnufM4A-1; Thu, 12 Aug 2021 12:18:29 -0400
+X-MC-Unique: H9_qLaIIM9G4KVxAnufM4A-1
+Received: by mail-ej1-f69.google.com with SMTP id j15-20020a17090643cfb02905b87bd5d2d0so1392381ejn.16
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 09:18:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l49ZP/CsUxF11xSB6DgTSnYaUMf01RXS/9UvetQKxg4=;
+        b=PqTZCnYHA2RzV3NAPeeVUB/dM58d2hgCiO1dChMwZuXWHtZrfqHPLBKbrQE56AjiLt
+         ELRGZS5dFtaDpBDetfp/GhSttnTVPncOh3VonbTsGB+ZjcJWHLAr1Jp8Gcs8EMxQ8Tmz
+         D/gwQGP5UjCY/DG6mye+sG3OsTAw7hG0+1gKZg7+eL6cCbcF4uozkY/Upv9ZBvQxSqXo
+         DnaNI5jLSSIbJHWLlW1DoYmAM7hQiMru6oqavYsGtG6QxuV/leJUXKyAfpHl3eIwHMQD
+         rhuvpzPzCDu/LIBpGdnImO6VhVOJ65HN6Sww8IuWULkbl0v5bZEKP9U5kOg7RpJqrX9R
+         rDlg==
+X-Gm-Message-State: AOAM533qe2o7CRpDVQdemUZHsAM82p3IO5vGDshB1hv7ehStY5iGTRwW
+        QdNCbaDH6lx5K8KwlbrKXyObHj6xX03JzLzdU1GkWtSAHVqnH4y1sUJ01o/Z2NM6E46Z0p3bUOk
+        97WeFvgdqo9XGqiA2aUgqJ3kz
+X-Received: by 2002:a17:906:b6c5:: with SMTP id ec5mr2729575ejb.184.1628785108005;
+        Thu, 12 Aug 2021 09:18:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZ5IRiu874shKctSmYBLbNlnNCwD57470Ge9zmvsGefcq7pmdbi64K9Fsgc5Y3sAUpb6vVNQ==
+X-Received: by 2002:a17:906:b6c5:: with SMTP id ec5mr2729554ejb.184.1628785107852;
+        Thu, 12 Aug 2021 09:18:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gu2sm993259ejb.96.2021.08.12.09.18.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 09:18:25 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+References: <20210812050717.3176478-1-seanjc@google.com>
+ <20210812050717.3176478-2-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Don't skip non-leaf SPTEs when zapping
+ all SPTEs
+Message-ID: <01b22936-49b0-638e-baf8-269ba93facd8@redhat.com>
+Date:   Thu, 12 Aug 2021 18:18:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mEDPQ-00EqWu-5G;;;mid=<877dgqfxij.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+fUaUYby0ovoa4j4axcDNjRQxbnPUhyZI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Florian Weimer <fweimer@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 564 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 10 (1.8%), b_tie_ro: 9 (1.5%), parse: 1.10 (0.2%),
-         extract_message_metadata: 3.8 (0.7%), get_uri_detail_list: 1.92
-        (0.3%), tests_pri_-1000: 15 (2.6%), tests_pri_-950: 1.26 (0.2%),
-        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 85 (15.1%), check_bayes:
-        84 (14.8%), b_tokenize: 22 (3.9%), b_tok_get_all: 13 (2.3%),
-        b_comp_prob: 3.6 (0.6%), b_tok_touch_all: 41 (7.3%), b_finish: 0.85
-        (0.2%), tests_pri_0: 424 (75.1%), check_dkim_signature: 0.59 (0.1%),
-        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 0.96 (0.2%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 13 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210812050717.3176478-2-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Weimer <fweimer@redhat.com> writes:
+On 12/08/21 07:07, Sean Christopherson wrote:
+> @@ -739,8 +749,16 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>   			  gfn_t start, gfn_t end, bool can_yield, bool flush,
+>   			  bool shared)
+>   {
+> +	bool zap_all = (end == ZAP_ALL_END);
+>   	struct tdp_iter iter;
+>   
+> +	/*
+> +	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
+> +	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
+> +	 * and so KVM will never install a SPTE for such addresses.
+> +	 */
+> +	end = min(end, 1ULL << (shadow_phys_bits - PAGE_SHIFT));
 
-> * David Hildenbrand:
->
->> There are some (minor) user-visible changes with this series:
->> 1. We no longer deny write access to shared libaries loaded via legacy
->>    uselib(); this behavior matches modern user space e.g., via dlopen().
->> 2. We no longer deny write access to the elf interpreter after exec
->>    completed, treating it just like shared libraries (which it often is).
->
-> We have a persistent issue with people using cp (or similar tools) to
-> replace system libraries.  Since the file is truncated first, all
-> relocations and global data are replaced by file contents, result in
-> difficult-to-diagnose crashes.  It would be nice if we had a way to
-> prevent this mistake.  It doesn't have to be MAP_DENYWRITE or MAP_COPY.
-> It could be something completely new, like an option that turns every
-> future access beyond the truncation point into a signal (rather than
-> getting bad data or bad code and crashing much later).
->
-> I don't know how many invalid copy operations are currently thwarted by
-> the current program interpreter restriction.  I doubt that lifting the
-> restriction matters.
+Then zap_all need not have any magic value.  You can use 0/-1ull, it's 
+readable enough.  ZAP_ALL_END is also unnecessary here if you do:
 
-I suspect that what should happen is that we should make shared
-libraries and executables read-only on disk.
+	gfn_t max_gfn_host = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+	bool zap_all = (start == 0 && end >= max_gfn_host);
 
-We could potentially take this a step farther and introduce a new sysctl
-that causes "mmap(adr, len, PROT_EXEC, MAP_SHARED, fd, off)" but not
-PROT_WRITE to fail if the file can be written by anyone.  That sysctl
-could even deny chown adding write access to the file if there are
-mappings open.
+	end = min(end, max_gfn_host);
 
-Given that there hasn't been enough pain for people to install shared
-libraries read-only yet I suspect just installing executables and shared
-libraries without write-permissions on disk is enough to prevent the
-hard to track down bugs you have been talking about.
+And as a small commit message nit, I would say "don't leak" instead of 
+"don't skip", since that's really the effect.
 
->> 3. We always deny write access to the file linked via /proc/pid/exe:
->>    sys_prctl(PR_SET_MM_EXE_FILE) will fail if write access to the file
->>    cannot be denied, and write access to the file will remain denied
->>    until the link is effectivel gone (exec, termination,
->>    PR_SET_MM_EXE_FILE) -- just as if exec'ing the file.
->>
->> I was wondering if we really care about permanently disabling write access
->> to the executable, or if it would be good enough to just disable write
->> access while loading the new executable during exec; but I don't know
->> the history of that -- and it somewhat makes sense to deny write access
->> at least to the main executable. With modern user space -- dlopen() -- we
->> can effectively modify the content of shared libraries while being used.
->
-> Is there a difference between ET_DYN and ET_EXEC executables?
+Paolo
 
-What is being changed is how we track which files to denying write
-access on.  Instead of denying write-access based on a per mapping (aka
-mmap) basis, the new code is only denying access to /proc/self/exe.
 
-Because the method of tracking is much coarser is why the interper stops
-being protected.  The code doesn't care how the mappings happen, only
-if the file is /proc/self/exe or not.
-
-Eric
+>   	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
+>   
+>   	rcu_read_lock();
+> @@ -759,9 +777,10 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>   		/*
+>   		 * If this is a non-last-level SPTE that covers a larger range
+>   		 * than should be zapped, continue, and zap the mappings at a
+> -		 * lower level.
+> +		 * lower level, except when zapping all SPTEs.
+>   		 */
+> -		if ((iter.gfn < start ||
+> +		if (!zap_all &&
+> +		    (iter.gfn < start ||
+>   		     iter.gfn + KVM_PAGES_PER_HPAGE(iter.level) > end) &&
 
