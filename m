@@ -2,219 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF4B3EAB1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABA13EAB22
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 21:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhHLTjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 15:39:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46018 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232684AbhHLTjA (ORCPT
+        id S234998AbhHLTjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 15:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234700AbhHLTjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 15:39:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628797113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tGJibS4yiaglb2J5rU+JWBqNKg1kdcrr0OdS+mMkHrI=;
-        b=YsZPejHEDNuP59u5DgBvk4kho1KqLMikTMva8fQFqGcUB5Zv/X5np47jKoEAhQC2o1/3fw
-        XN1GGdkS/lNaYiTeY0hEC4I1CJpgS5MlUQCo/bXS7Tot3QgIFzp+/Wbu7B36XlIjkIkYI3
-        7taUgRmjsZlLW+RzVkCA0VgaR/0r4K4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-4sJWHDKnOEChEuUHJ4k3Bg-1; Thu, 12 Aug 2021 15:38:32 -0400
-X-MC-Unique: 4sJWHDKnOEChEuUHJ4k3Bg-1
-Received: by mail-wr1-f72.google.com with SMTP id m5-20020a5d6a050000b0290154e83dce73so2142748wru.19
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 12:38:32 -0700 (PDT)
+        Thu, 12 Aug 2021 15:39:39 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63865C061756;
+        Thu, 12 Aug 2021 12:39:13 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x10so3556368wrt.8;
+        Thu, 12 Aug 2021 12:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=f1OrkRg0MF6p8RbuM8DdPW5HI5cmNqC1aOfIeyX1J90=;
+        b=UFBI1TqkKQ4TymtNrwUPyNvNb3z5McUTExypR9qoMlOeauluqGRpCiufV2xKSEroXR
+         Ol2Tc+YNv1gVEqEqsJ83BLwLLN/8XNCMFIqlyXOW1hM9/LqKyM9FRQB/1egy7Gj0w9RT
+         Tkx/uTJDTB3HjLUsq0X/s/5A5raAO2fUu6Bi34z0DofxLkqdpFw0WQt7rXTyDNItCf4h
+         svVOHmCJShL2MB8BBJY5ULGuIMvGmY67pEZiwzYCyYxPpcpAUNDbh3pptQ1pOMKLDexB
+         z3uNjyyXeVd8Jcb7GvH5jnEkBkl0cQm7k8qoFnyTgGMXiM51wamMSmfuMKfIbCaxYXv4
+         Lelw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tGJibS4yiaglb2J5rU+JWBqNKg1kdcrr0OdS+mMkHrI=;
-        b=VUJyVIKl9ETYk6Y5HIwjbpu25suWeXnXaGaIeXZc3gtF9PTRA1gE+reeKFLNROSgxv
-         4ltdSUhuqyEjUnjGuzEA7Sqrr1pBnBhfax1cAt7cNvzvp8ndT9S0s0SmFRDAOjeYczpJ
-         56DQPGutQCWxOomN9uHRouda1aJXnlrIzjjUkDYlAzON06jCA+M/u5YhPdlvE4k2u0fh
-         WYi7NRlksyCC+Lk7hFJAYCPhwAbYvtD7gRRhv0cMM9icJwbdaTjiRAKbR2hNKieV13ka
-         LEPFXn88XUumVUWm7gFou0iV433UAuet6ibjFtVH8A1Himi4yS4VXmSN/gyLyWLwybWk
-         GT/w==
-X-Gm-Message-State: AOAM530ujc8AKrkLkGUMkdBkEdOFFyQIu9w6kvVkhNOrcZf8dfPB5SG7
-        6pwBEosxO6gQqufAnNGkLcunjmyilwDp3He9e0gZn3NF6tZSXZ+c81ZB8jrGaJZOC6kbT0AKR3M
-        3kYkeZAj+EqW/h5T2OWnKyqbs
-X-Received: by 2002:a5d:45c2:: with SMTP id b2mr5697484wrs.188.1628797111135;
-        Thu, 12 Aug 2021 12:38:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2yA9S5GLR5aZS72Vs7D04/GT/ipvgAFBAJrXhJd9/Q2ngghrrOQ4av0TFSdLK0A6HDNvrvg==
-X-Received: by 2002:a5d:45c2:: with SMTP id b2mr5697441wrs.188.1628797110959;
-        Thu, 12 Aug 2021 12:38:30 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id i9sm4899610wre.36.2021.08.12.12.38.26
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f1OrkRg0MF6p8RbuM8DdPW5HI5cmNqC1aOfIeyX1J90=;
+        b=WIVp0MpI6WyqobJKPmvyZNSaUp9uIBGl2z7fAe68RfeXF1YclQsew7ON0SSVJ8CrkE
+         BiY+3tojaHZpX91d0sXZgLo+ogpa68TbQ0jnFf0vNZrdf0H5ozn2F154LPSjpbtgo085
+         dcINVDNF3dQaCHfX7uwlBtwbKr+O0HOtW3lgifZxfw//t3AUoPxzuiyf90pVhX6fkdIH
+         8Mhvi28G925R0MbLXCeWQEi2sawVpxEi8x42c7jCYOsxENniMqi1Gr38W674jLMCd7EQ
+         nofdprN7smbP4fQhrYrH2TQz2/UIf7z5cKXzj96op3744ILJyiU+YZRmlLikaCIvKnVN
+         3IBQ==
+X-Gm-Message-State: AOAM5314HUMzkVJ33tny4+MM0/Vr3gqryO1GkL+1m7R6hYcYVkPWRuTV
+        f7uwS/shrSbnIchyer7ZGq+wxWm2ixEaDw==
+X-Google-Smtp-Source: ABdhPJy3rGMRziZwzbsIQERT/xkaEYLK8vRvyhMT8U68I3LFXoFPmjS2nNsvN1m1Bn5mDY4TvKZpPQ==
+X-Received: by 2002:a5d:4bca:: with SMTP id l10mr4706634wrt.187.1628797151800;
+        Thu, 12 Aug 2021 12:39:11 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f10:c200:5c12:d692:d13:24d5? (p200300ea8f10c2005c12d6920d1324d5.dip0.t-ipconnect.de. [2003:ea:8f10:c200:5c12:d692:d13:24d5])
+        by smtp.googlemail.com with ESMTPSA id i9sm4901658wre.36.2021.08.12.12.39.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 12:38:29 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210812084348.6521-1-david@redhat.com>
- <20210812084348.6521-4-david@redhat.com>
- <CAHk-=wjWgFbEaE9T0smQu8WKkhrcNZZrghBUQ9441OdMsDg1-w@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
- MM exe_file
-Message-ID: <15628c8a-9c71-5611-2edf-07087ad662b7@redhat.com>
-Date:   Thu, 12 Aug 2021 21:38:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 12 Aug 2021 12:39:11 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] r8169: Enable ASPM for selected NICs
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, nic_swsd@realtek.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+ <20210812155341.817031-2-kai.heng.feng@canonical.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
+Date:   Thu, 12 Aug 2021 21:38:51 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjWgFbEaE9T0smQu8WKkhrcNZZrghBUQ9441OdMsDg1-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210812155341.817031-2-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.21 18:51, Linus Torvalds wrote:
-> On Wed, Aug 11, 2021 at 10:45 PM David Hildenbrand <david@redhat.com> wrote:
->>
->>          /* No ordering required: file already has been exposed. */
->> -       RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
->> +       exe_file = get_mm_exe_file(oldmm);
->> +       RCU_INIT_POINTER(mm->exe_file, exe_file);
->> +       if (exe_file)
->> +               deny_write_access(exe_file);
+On 12.08.2021 17:53, Kai-Heng Feng wrote:
+> The latest vendor driver enables ASPM for more recent r8168 NICs, do the
+> same here to match the behavior.
 > 
-> Can we make a helper function for this, since it's done in two different places?
-
-Sure, no compelling reason not to (except finding a suitable name, but 
-I'll think about that tomorrow).
-
+> In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
+> vendor driver, also match that.
 > 
->> -       if (new_exe_file)
->> +       if (new_exe_file) {
->>                  get_file(new_exe_file);
->> +               /*
->> +                * exec code is required to deny_write_access() successfully,
->> +                * so this cannot fail
->> +                */
->> +               deny_write_access(new_exe_file);
->> +       }
->>          rcu_assign_pointer(mm->exe_file, new_exe_file);
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>  - No change
 > 
-> And the above looks positively wrong. The comment is also nonsensical,
-> in that it basically says "we thought this cannot fail, so we'll just
-> rely on it".
-
-Well, it documents the expectation towards the caller, but in a 
-suboptimal way, I agree.
-
+>  drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
+>  1 file changed, 26 insertions(+), 8 deletions(-)
 > 
-> If it truly cannot fail, then the comment should give the reason, not
-> the "we depend on this not failing".
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index 7ab2e841dc69..caa29e72a21a 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -623,7 +623,7 @@ struct rtl8169_private {
+>  	} wk;
+>  
+>  	unsigned supports_gmii:1;
+> -	unsigned aspm_manageable:1;
+> +	unsigned aspm_supported:1;
+>  	unsigned aspm_enabled:1;
+>  	struct delayed_work aspm_toggle;
+>  	struct mutex aspm_mutex;
+> @@ -2667,8 +2667,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+>  
+>  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+>  {
+> +	if (!tp->aspm_supported)
+> +		return;
+> +
+>  	/* Don't enable ASPM in the chip if OS can't control ASPM */
+> -	if (enable && tp->aspm_manageable) {
+> +	if (enable) {
+>  		RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
+>  		RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
+>  	} else {
+> @@ -5284,6 +5287,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
+>  	rtl_rar_set(tp, mac_addr);
+>  }
+>  
+> +static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
+> +{
+> +	switch (tp->mac_version) {
+> +	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
+> +	case RTL_GIGA_MAC_VER_38:
+> +	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
+> +	case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
+> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
 
-Right, "We depend on the caller already have done a deny_write_access() 
-successfully first such that this call cannot fail." combined with
+This shouldn't be needed because ASPM support is announced the
+standard PCI way. Max a blacklist should be needed if there are
+chip versions that announce ASPM support whilst in reality they
+do not support it (or support is completely broken).
 
-if (deny_write_access(new_exe_file))
-	pr_warn("Unexpected failure of deny_write_access() in %s",
-                  __func__);
-
-suggestions welcome.
-
+> +		return 1;
+> +
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+>  static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  {
+>  	struct rtl8169_private *tp;
+> @@ -5315,12 +5333,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	if (rc)
+>  		return rc;
+>  
+> -	/* Disable ASPM completely as that cause random device stop working
+> -	 * problems as well as full system hangs for some PCIe devices users.
+> -	 */
+> -	rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> -					  PCIE_LINK_STATE_L1);
+> -	tp->aspm_manageable = !rc;
+> +	if (tp->mac_version == RTL_GIGA_MAC_VER_25)
+> +		pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> +				       PCIE_LINK_STATE_L1 |
+> +				       PCIE_LINK_STATE_CLKPM);
+> +
+> +	tp->aspm_supported = rtl_hw_aspm_supported(tp);
+>  
+>  	/* enable device (incl. PCI PM wakeup and hotplug setup) */
+>  	rc = pcim_enable_device(pdev);
 > 
-> And honestly, I don't see why it couldn't fail. And if it *does* fail,
-> we cannot then RCU-assign the exe_file pointer with this, because
-> you'll get a counter imbalance when you do the allow_write_access()
-> later.
-
-Anyone calling set_mm_exe_file() (-> begin_new_exec()) is expected to 
-successfully triggered a deny_write_access() upfront such that we won't 
-fail at that point.
-
-Further, on the dup_mmap() path we are sure the previous oldmm exe_file 
-properly saw a successful deny_write_access() already, because that's 
-now guaranteed for any exe_file.
-
-> 
-> Anyway, do_open_execat() does do deny_write_access() with proper error
-> checking. I think that is the existing reference that you depend on -
-> so that it doesn't fail. So the comment could possibly say that the
-> only caller has done this, but can we not just use the reference
-> deny_write_access() directly, and not do a new one here?
-
-I think that might over-complicate the exec code where we would see a 
-allow_write_access() on error paths, but not on success paths. This here 
-looks cleaner to me, agreeing that the comment and the error check has 
-to be improved.
-
-We handle all allow_write_access()/deny_write_access() regarding 
-exe_file completely in kernel/fork.c, which is IMHO quite nice.
-
-> 
-> IOW, maybe there's an extraneous 'allow_write_access()' somewhere that
-> should be dropped when we do the whole binprm dance in execve()?
-
-fs/exec.c: free_bprm() and exec_binprm() to be precise.
-
-Thanks!
-
--- 
-Thanks,
-
-David / dhildenb
 
