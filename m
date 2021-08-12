@@ -2,283 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2825B3EA2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3593EA2DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 12:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbhHLKOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 06:14:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236426AbhHLKOP (ORCPT
+        id S235358AbhHLKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 06:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236614AbhHLKO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 06:14:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628763229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J8fNLHegk5RzvmFVmibZ710pAngI+WF9X5zWgbKhZ8g=;
-        b=TJwEb5GGr6u2YYcI3F2FXTd1YoDeBbXngd0o7bYp379yNm5huhyHAJEnmEZ+IN3Cz/uek4
-        lwoVrf3TML2aOccac8WuSm0TEnurIoVeIicq5agtFd+xwXc6JJKO7miayB6D7hdUHGKQ/v
-        UpDDQNLx5RfLWi9JahJDe1x2YEm+OLA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-rTaXK69gOWqZN3sVKMoaqg-1; Thu, 12 Aug 2021 06:13:48 -0400
-X-MC-Unique: rTaXK69gOWqZN3sVKMoaqg-1
-Received: by mail-wm1-f72.google.com with SMTP id l19-20020a05600c4f13b029025b036c91c6so1683275wmq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 03:13:48 -0700 (PDT)
+        Thu, 12 Aug 2021 06:14:29 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5908AC0613D5;
+        Thu, 12 Aug 2021 03:14:04 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so12505652lfu.5;
+        Thu, 12 Aug 2021 03:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K926lN1vSxEZqXxMsrjyNKmXx0wf4ELCe/h4HH8yuSA=;
+        b=J6h3JD1ykWsqMxD9JhN9RMlv7lnar87y/XtgpQE393SUMqwEhJG0W5sOY9Ka+xIFEQ
+         V6I6HCXNgKLh51F0MYMHcIsKCC197amXLFziKoc2bqXRp9GN2G92LxQHd2HMjgVHkGp6
+         hgoJfGx3uZR0PnsfmkhD50h8cZswLZg+ZAcmw222sXaNZb6kGW/qft1kxNcmwlfCeS7u
+         xecwrmYWG2iqYrNaOuteQd2bqWgLMDC9hXyHvjSzPOIgjGxH8R3EML0KscLFDv5Wk3sb
+         vZXHQWKfH4hfAYcio/DjRIxCjGPFROYH1CHHtgFCsz47mZ00xX5FFR44oxEtaG0JXtm5
+         6CXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=J8fNLHegk5RzvmFVmibZ710pAngI+WF9X5zWgbKhZ8g=;
-        b=c3zaF5NZU4IM89w1OtWhCmct/m+K67zycBc3O/p+RlguOF36cPlYzabPSe6dDaMSsA
-         F4NHf3h0tbtJ9r5WWLAf+2G0KTrf/1TLZ4g/SNTJfoI0nk5dZJ3kGuQtUhWv7T7ylgmJ
-         y97uAA64EgqXM6J51rQVUxNXnX4rYBRQd5FhTy36b4HSqF87Skw0dj/z4M72ML6KCNq8
-         oigZOU4ZxDXxekcujpIp0p6nTaYnjIJaHmUiIWRoU6xhIYCsKDtPJ8v7Lw7N1pHJhyT+
-         MjfLaugdbuPTY5N2T/dEaunIcJxUm2ElYzptZyxquIrr+di7Hy9dZ8FFfNjgU3kBY0ag
-         KYgQ==
-X-Gm-Message-State: AOAM531dotIFKFgFCnE5NLgeAy2LOYnwVS4XUMirHFhkXstYmEDhNtX9
-        uWbEf5mi/a4r/9UKQmkoag54I7IEA6JKPyAcOUssMnZ3GI9dKsbSiXsX+LcjhxJPqN3Q85c6P3M
-        jJYZuFfVvMZ+qi4QfkRDsE2mp
-X-Received: by 2002:a05:600c:4f85:: with SMTP id n5mr3185717wmq.146.1628763227424;
-        Thu, 12 Aug 2021 03:13:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVPOFrEbL/sos2RT24E1z82P1IG5Ylm0/152IG6CScUCHtpvAEXWsNjyopV1zDkbIpjnwS6A==
-X-Received: by 2002:a05:600c:4f85:: with SMTP id n5mr3185661wmq.146.1628763227156;
-        Thu, 12 Aug 2021 03:13:47 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id d15sm2768384wri.96.2021.08.12.03.13.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 03:13:46 -0700 (PDT)
-Subject: Re: [PATCH v1 3/7] kernel/fork: always deny write access to current
- MM exe_file
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Andrei Vagin <avagin@gmail.com>
-References: <20210812084348.6521-1-david@redhat.com>
- <20210812084348.6521-4-david@redhat.com>
- <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1b6d27cf-2238-0c1c-c563-b38728fbabc2@redhat.com>
-Date:   Thu, 12 Aug 2021 12:13:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K926lN1vSxEZqXxMsrjyNKmXx0wf4ELCe/h4HH8yuSA=;
+        b=EpUsL7ZkGT8k8HtqDMds4e2PPh8baGryE/d0t1zEOTs1F872kNTM+tbXRrXsbfhKml
+         Y+nK+1LoI99RAuJ1rDn2fbWuSfu+gEPeAZ312yAW9ECXUIAMQD+G5+KChAiqced1v+zz
+         Kh1iXt7CjPco5BQcse1DFBObpaNOL7bw4+WeA04NOFXLVvHNLe5oRtrPp1JvN7rd6TNk
+         EtpZt3j9h0kkQurhZfVB7a5xdNh1dT8PHpesLQpt5f1Ho5WLKGg2czN889p/yikz9lPn
+         XhlctswnnXhHKIVluxB2CoPbsgbLtA1SJR2uWHCvvJ00HF2SUCVJt6g2/2CtYEzBmxHn
+         awoQ==
+X-Gm-Message-State: AOAM532Y/Lpnkepp8PqBN95xJbJtkyqWg2nJFmjl6HThG5jLNxFbmH+g
+        VhcZFmiiDfSn/vTn9GoDl9Cp6R8pP44=
+X-Google-Smtp-Source: ABdhPJzeE91uHUmY5tWQ4kJGseFX09r3UGSPbBgQD7EKuv7vBCWMRKHO6E8ot3K9ai+bzfoozFXhWg==
+X-Received: by 2002:a05:6512:6d6:: with SMTP id u22mr793220lff.263.1628763242675;
+        Thu, 12 Aug 2021 03:14:02 -0700 (PDT)
+Received: from localhost.localdomain (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
+        by smtp.gmail.com with ESMTPSA id r25sm235269lfm.90.2021.08.12.03.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 03:14:02 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v1] opp: Release current OPP properly
+Date:   Thu, 12 Aug 2021 13:13:53 +0300
+Message-Id: <20210812101353.14318-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210812100544.uhsfp75b4jcrv3qx@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.08.21 12:05, Christian Brauner wrote:
-> [+Cc Andrei]
-> 
-> On Thu, Aug 12, 2021 at 10:43:44AM +0200, David Hildenbrand wrote:
->> We want to remove VM_DENYWRITE only currently only used when mapping the
->> executable during exec. During exec, we already deny_write_access() the
->> executable, however, after exec completes the VMAs mapped
->> with VM_DENYWRITE effectively keeps write access denied via
->> deny_write_access().
->>
->> Let's deny write access when setting the MM exe_file. With this change, we
->> can remove VM_DENYWRITE for mapping executables.
->>
->> This represents a minor user space visible change:
->> sys_prctl(PR_SET_MM_EXE_FILE) can now fail if the file is already
->> opened writable. Also, after sys_prctl(PR_SET_MM_EXE_FILE), the file
-> 
-> Just for completeness, this also affects PR_SET_MM_MAP when exe_fd is
-> set.
+The current_opp is released only when whole OPP table is released,
+otherwise it's only marked as removed by dev_pm_opp_remove_table().
+Functions like dev_pm_opp_put_clkname() and dev_pm_opp_put_supported_hw()
+are checking whether OPP table is empty and it's not if current_opp is
+set since it holds the refcount of OPP, this produces a noisy warning
+from these functions about busy OPP table. Release current_opp when
+OPP table is removed to fix it.
 
-Correct.
+Cc: stable@vger.kernel.org
+Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/opp/core.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> 
->> cannot be opened writable. Note that we can already fail with -EACCES if
->> the file doesn't have execute permissions.
->>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
-> 
-> The biggest user I know and that I'm involved in is CRIU which heavily
-> uses PR_SET_MM_MAP (with a fallback to PR_SET_MM_EXE_FILE on older
-> kernels) during restore. Afair, criu opens the exe fd as an O_PATH
-> during dump and thus will use the same flag during restore when
-> opening it. So that should be fine.
-
-Yes.
-
-> 
-> However, if I understand the consequences of this change correctly, a
-> problem could be restoring workloads that hold a writable fd open to
-> their exe file at dump time which would mean that during restore that fd
-> would be reopened writable causing CRIU to fail when setting the exe
-> file for the task to be restored.
-
-If it's their exe file, then the existing VM_DENYWRITE handling would 
-have forbidden these workloads to open the fd of their exe file 
-writable, right? At least before doing any 
-PR_SET_MM_MAP/PR_SET_MM_EXE_FILE. But that should rule out quite a lot 
-of cases we might be worried about, right?
-
-> 
-> Which honestly, no idea how many such workloads exist. (I know at least
-> of runC and LXC need to sometimes reopen to rexec themselves (weird bug
-> to protect against attacking the exe file) and thus re-open
-> /proc/self/exe but read-only.)
-> 
->>   kernel/fork.c | 39 ++++++++++++++++++++++++++++++++++-----
->>   1 file changed, 34 insertions(+), 5 deletions(-)
->>
->> diff --git a/kernel/fork.c b/kernel/fork.c
->> index 6bd2e52bcdfb..5d904878f19b 100644
->> --- a/kernel/fork.c
->> +++ b/kernel/fork.c
->> @@ -476,6 +476,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   {
->>   	struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
->>   	struct rb_node **rb_link, *rb_parent;
->> +	struct file *exe_file;
->>   	int retval;
->>   	unsigned long charge;
->>   	LIST_HEAD(uf);
->> @@ -493,7 +494,10 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
->>   
->>   	/* No ordering required: file already has been exposed. */
->> -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
->> +	exe_file = get_mm_exe_file(oldmm);
->> +	RCU_INIT_POINTER(mm->exe_file, exe_file);
->> +	if (exe_file)
->> +		deny_write_access(exe_file);
->>   
->>   	mm->total_vm = oldmm->total_vm;
->>   	mm->data_vm = oldmm->data_vm;
->> @@ -638,8 +642,13 @@ static inline void mm_free_pgd(struct mm_struct *mm)
->>   #else
->>   static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
->>   {
->> +	struct file *exe_file;
->> +
->>   	mmap_write_lock(oldmm);
->> -	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
->> +	exe_file = get_mm_exe_file(oldmm);
->> +	RCU_INIT_POINTER(mm->exe_file, exe_file);
->> +	if (exe_file)
->> +		deny_write_access(exe_file);
->>   	mmap_write_unlock(oldmm);
->>   	return 0;
->>   }
->> @@ -1163,11 +1172,19 @@ void set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
->>   	 */
->>   	old_exe_file = rcu_dereference_raw(mm->exe_file);
->>   
->> -	if (new_exe_file)
->> +	if (new_exe_file) {
->>   		get_file(new_exe_file);
->> +		/*
->> +		 * exec code is required to deny_write_access() successfully,
->> +		 * so this cannot fail
->> +		 */
->> +		deny_write_access(new_exe_file);
->> +	}
->>   	rcu_assign_pointer(mm->exe_file, new_exe_file);
->> -	if (old_exe_file)
->> +	if (old_exe_file) {
->> +		allow_write_access(old_exe_file);
->>   		fput(old_exe_file);
->> +	}
->>   }
->>   
->>   int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
->> @@ -1194,10 +1211,22 @@ int atomic_set_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file)
->>   	}
->>   
->>   	/* set the new file, lockless */
->> +	ret = deny_write_access(new_exe_file);
->> +	if (ret)
->> +		return -EACCES;
->>   	get_file(new_exe_file);
->> +
->>   	old_exe_file = xchg(&mm->exe_file, new_exe_file);
->> -	if (old_exe_file)
->> +	if (old_exe_file) {
->> +		/*
->> +		 * Don't race with dup_mmap() getting the file and disallowing
->> +		 * write access while someone might open the file writable.
->> +		 */
->> +		mmap_read_lock(mm);
->> +		allow_write_access(old_exe_file);
->>   		fput(old_exe_file);
->> +		mmap_read_unlock(mm);
->> +	}
->>   	return 0;
->>   }
->>   
->> -- 
->> 2.31.1
->>
-> 
-
-
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index b335c077f215..73da968b5c86 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1378,9 +1378,6 @@ static void _opp_table_kref_release(struct kref *kref)
+ 	list_del(&opp_table->node);
+ 	mutex_unlock(&opp_table_lock);
+ 
+-	if (opp_table->current_opp)
+-		dev_pm_opp_put(opp_table->current_opp);
+-
+ 	_of_clear_opp_table(opp_table);
+ 
+ 	/* Release clk */
+@@ -2901,6 +2898,12 @@ void dev_pm_opp_remove_table(struct device *dev)
+ 	if (_opp_remove_all_static(opp_table))
+ 		dev_pm_opp_put_opp_table(opp_table);
+ 
++	/* Drop reference taken by _find_current_opp() */
++	if (opp_table->current_opp) {
++		dev_pm_opp_put(opp_table->current_opp);
++		opp_table->current_opp = NULL;
++	}
++
+ 	/* Drop reference taken by _find_opp_table() */
+ 	dev_pm_opp_put_opp_table(opp_table);
+ }
 -- 
-Thanks,
-
-David / dhildenb
+2.32.0
 
