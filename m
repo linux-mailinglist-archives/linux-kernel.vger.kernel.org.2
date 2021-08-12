@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A554C3E9D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE20C3E9D12
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 05:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbhHLDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 23:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhHLDrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 23:47:14 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BE0760FE6;
-        Thu, 12 Aug 2021 03:46:49 +0000 (UTC)
-Date:   Wed, 11 Aug 2021 23:46:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.zanussi@linux.intel.com
-Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
-Message-ID: <20210811234648.4f847ac2@rorschach.local.home>
-In-Reply-To: <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
-        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
-        <20210811112249.555463f2@oasis.local.home>
-        <20210812102735.5ac09a88aa6149a239607fd0@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233855AbhHLDxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 23:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhHLDxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 23:53:44 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA055C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso13093157pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bquCFNIcCvdCbwIly19HSfu6034c+GYMih/X5YZeEUc=;
+        b=FnDDISYVm2p6A4RVyJW8Sa32+5J7DpqcCegOdTwai4N/VkU/tKFXjF/2gQ7rFHbQlp
+         FwRRWU9n9DAvtbfPp5JT5ChcbeGb7riK9XjmUa3GMU40VHW+A+y0JnX+XdPCBlCi1xGd
+         gtieHNK5DXET5MnzZRK3eB8LndpICtygcequ0jEjiiPQ0TTMYNBLVxvo8jMXFgG0i+Ld
+         gy/ZRotP4Fu7lzD5PHxCuS8EMj7S6fJ1biEDtyd8LjQXa/FcZcIaPpdyx7gtY17qBhoK
+         fhiSM1M4UzEkXEd+TsMjtJc9jtoxCV58+SndupIDRsclXPV7hE+6p4TIoGNifnflzu5j
+         AKiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bquCFNIcCvdCbwIly19HSfu6034c+GYMih/X5YZeEUc=;
+        b=kGff3hEHiyDSrQUtalB5VL7pNQpA80pqOd5yi4sNBExMcJVZcfX/2NiKD4u6KF4cqT
+         KBdUm6Aesq0C0Gr2D/CaisOUrqCv4RUfevxWjNwTTYTk3Sq18DAFhI47Vob2n4z6pR9t
+         N8SqE/4mBNR8zu71C7/cYk3SvlJtpcLlM/BdxFiV871MuIwM5dngFd+divRhCYPyZ+e1
+         ymC5RyOa0Mlt1yiyLWI9XXRTWafkCNZENh3QQB0yWVcnMYXMUFHGV3QStYxorcbE7DQp
+         21Gd11SvfyPX3IGpEwlKLgFM7Q0T4Zg+f3NjrnaqDW0DpUIQS6fdoHan2Odesj+qLw/a
+         hCrw==
+X-Gm-Message-State: AOAM533Rdk1XHUn7VLNp9DgG8QlTM1Qq1Kk6PYFxxorlynka3NvPNMT1
+        6yUeGlKRZLPvmUObov4cnJ3YiA==
+X-Google-Smtp-Source: ABdhPJzgbdGIsXFDYBD0by0Ubi7BaLW73k/Bb4qfddZ5rXI4H4FjGzEYgpNxg5+S6pjYDThMf6DdAw==
+X-Received: by 2002:a17:902:dad0:b029:12c:83ca:fdd4 with SMTP id q16-20020a170902dad0b029012c83cafdd4mr1870821plx.77.1628740399104;
+        Wed, 11 Aug 2021 20:53:19 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id c9sm1241024pgq.58.2021.08.11.20.53.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 20:53:18 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:23:16 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
+Message-ID: <20210812035316.jen62wsrl4tlbrpm@vireshk-i7>
+References: <cover.1628682874.git.viresh.kumar@linaro.org>
+ <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
+ <YRPN8zjp1wqkHg6t@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRPN8zjp1wqkHg6t@google.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 10:27:35 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 11-08-21, 14:17, Quentin Perret wrote:
+> Also, we can probably afford calling dev_pm_opp_get_opp_count() from the
+> em_register callback as it is not a hot path, which would avoid wasting
+> some 'resident' memory here that is only used during init.
 
-> Let me confirm this, so eprobes can be attached to synthetic event?
-> IMHO, I rather like to prevent attaching eprobe_event on the other
-> dynamic events. It makes hard to check when removing the base dynamic
-> events...
-> 
-> For the above example, we can rewrite it as below to trace filename
-> without attaching eprobe_events on the synthetic event.
-> 
->   echo 'my_open pid_t pid; char file[]' > synthetic_events
-> 
->   echo 'e:myopen syscalls.sys_enter_open file=+0($filename):ustring' > dynamic_events
->   echo 'e:myopen_ret syscalls.sys_exit_open ret=$ret' > dynamic_events
->  
->   echo 'hist:keys=common_pid:fname=file' > events/eprobes/myopen/trigger
->   echo 'hist:keys=common_pid:fname=$fname:onmatch(eprobes.myopen).trace(my_open,common_pid,$fname)' > events/eprobes/myopen_ret
-> 
+We also need to make sure that OPPs are available in init(), else we
+fail. So, we can't really move that out.
 
-The problem is that the above wont work :-(
-
-For example, I can use this program:
-
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-
-static const char *file = "/etc/passwd";
-
-int main (int argc, char **argv)
-{
-	int fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		perror(file);
-	close(fd);
-	return 0;
-}
-
-Which if you do the above, all you'll get from the myopen is "(null)".
-
-That's because the "/etc/passwd" is not paged in at the start of the
-system call, and because tracepoints can not fault, the "ustring" will
-not be mapped yet, it can not give you the content of the file pointer.
-This was the entire reason we are working on eprobes to attach to
-synthetic events in the first place.
-
-The trick is to use the synthetic event to pass the filename pointer to
-the exit of the system call, which the system call itself would map the
-pointer to "file", and when the eprobe reads it with ":ustring" from
-the exit of the system call it gets "/etc/passwd" instead of "(null)".
-
-Your above example doesn't fix this.
-
--- Steve
+-- 
+viresh
