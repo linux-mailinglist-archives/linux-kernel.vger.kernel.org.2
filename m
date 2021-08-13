@@ -2,68 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AED3EBA58
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D213EBA5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhHMQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhHMQqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:46:46 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7812C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:46:19 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x10so7812185wrt.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=BpPf9A9vqFDqcSmhS9cgClrtqHdANQOuyYYO+3BSQWc+zgn5T/R08L+BKn6/cpueJO
-         URpFDGmhZ/DCkzKLaaH8qTOnmMBm3dBaNhukMYwGtV0eQIUFOSGoKZYy0HF9XrkzY9ph
-         ZO0Iynd83KH8ld4NSbt+ssAYJsghL55PG0+Qzsq8w4jCoWwybUDTDxu+pEYLu3M3knjI
-         K9WvNbW78Y+TyaWIU7yUhQlx9RzRWWk1gjK8AMw8ecp+f4O2uo2g6tUnXE0Xk2bZu870
-         +cS0WyPEKY5HFiN6ZYK5XBevIrCJWxjy08YmxxG/IZYh8iyCffD1BXW5gNhOypcwxeFD
-         nZ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=Tff+FqQlFLz7bsGpyB6n8koMDQ+cdq5kqaJ+Sb6wE0beKbOzQpnuuepqn0O3mtOWfU
-         QVMZvHpI3sGAuaZ6st6wo3Q0QsAhdi5LCbuynFV2e15HWh0Xoz9czgzy63Wz87dtIN5h
-         pB4C/m4b5vTJLxXpxkjv5vjq4ahI5Jw8Mdf1+jpFLItbgmP4YIwnn5a+B4vXHP603ePU
-         zFKMmMj6k9V7YZ+SVKWYTLRZQqa9U/Wmxapen6eiS+5iG9FhdXRHanCiIn22KwkL/AO9
-         nKb1icpO2+hfYcc0McQS2UxOfW9BTXMPLZr+TQWSK46Tf7g8tLSlvoxfeEnOoueO9miw
-         LEFg==
-X-Gm-Message-State: AOAM531hB/JoiD2uk+0kszyPa6DYHoi3Cj9feKLrlCFMw1Tp1YchLzjh
-        zx/ynD0UYLYmhTlTz4q+pws=
-X-Google-Smtp-Source: ABdhPJwCpFdhM5mgcAPQ2Ncz21grmGoR7zFQDjHA2IZZa7CML6zRIRXFccldaJCGpGm/O7IrMH4N+Q==
-X-Received: by 2002:a5d:4311:: with SMTP id h17mr4187352wrq.263.1628873178454;
-        Fri, 13 Aug 2021 09:46:18 -0700 (PDT)
-Received: from [192.168.1.70] ([102.64.213.32])
-        by smtp.gmail.com with ESMTPSA id k12sm2058309wrd.75.2021.08.13.09.46.07
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Fri, 13 Aug 2021 09:46:17 -0700 (PDT)
-Message-ID: <6116a1d9.1c69fb81.1c68.c98d@mx.google.com>
-From:   Vanina curth <ritundailb888@gmail.com>
-X-Google-Original-From: Vanina  curth
-Content-Type: text/plain; charset="iso-8859-1"
+        id S236688AbhHMQsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229530AbhHMQsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 12:48:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ED86103A;
+        Fri, 13 Aug 2021 16:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628873260;
+        bh=TOC8YA+AWzpLpPO1FgCb/XYmAb7MvaYyPY+3sTJWw5M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rZ2O8SaKYpf2+wor2v6iJ5KIDtOqkAhJRKy4AQ87te8HAdTMyXVxA9UchwVrFBRQr
+         9mwepfj97eWuCWcusaZ/xXr/GfgI3WYkM3KHMU8RX1tbQfEzk96LalijllOxg5Ufr1
+         UjbT77f73g28dj/RAIg98dmL6wZcUk0n/iN974D5xIVAu1tRNYj73xB1+r4DZbhnhA
+         K0q4RicMBiaDNYQg5XEcQLTwEzC7OZrc1bdIXkZywvNm40SXkHnGYQXUaMDs4e8mdG
+         n0CQNbGg9PhhBxylzKIuJl/FQRzSb+saSAWhxWk50m263staH6QhcExH5bnDXUpkIt
+         T+s5RaeBxJvXg==
+Date:   Fri, 13 Aug 2021 17:47:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, kernel-team@android.com
+Subject: [GIT PULL] iommu/arm-smmu: Updates for 5.15
+Message-ID: <20210813164735.GA8765@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Dear
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Fri, 13 Aug 2021 16:45:41 +0000
-Reply-To: curtisvani9008@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you? I'm Vanina. I'm interested to know you and I would like to kno=
-w more about you and establish relationship with you. i will wait for your =
-response. thank you.
+Hi Joerg,
+
+Please pull these Arm SMMU updates for 5.15. There's not tonnes here, but
+a good mixture of optimisations and cleanups -- summary in the tag.
+
+This applies cleanly against iommu/next, but I suspect it will conflict
+with Robin's series on the list. Please shout if you need anything from
+me to help with that (e.g. rebase, checking a merge conflict).
+
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+
+for you to fetch changes up to fac956710ab0812f9e395e9f7a27da551412830f:
+
+  iommu/arm-smmu-v3: Stop pre-zeroing batch commands (2021-08-13 14:26:06 +0100)
+
+----------------------------------------------------------------
+Arm SMMU updates for 5.15
+
+- SMMUv3
+
+  * Minor optimisation to avoid zeroing struct members on CMD submission
+
+  * Increased use of batched commands to reduce submission latency
+
+  * Refactoring in preparation for ECMDQ support
+
+- SMMUv2
+
+  * Fix races when probing devices with identical StreamIDs
+
+  * Optimise walk cache flushing for Qualcomm implementations
+
+  * Allow deep sleep states for some Qualcomm SoCs with shared clocks
+
+----------------------------------------------------------------
+Ashish Mhetre (1):
+      iommu: Fix race condition during default domain allocation
+
+John Garry (2):
+      iommu/arm-smmu-v3: Remove some unneeded init in arm_smmu_cmdq_issue_cmdlist()
+      iommu/arm-smmu-v3: Stop pre-zeroing batch commands
+
+Krishna Reddy (1):
+      iommu/arm-smmu: Fix race condition during iommu_group creation
+
+Sai Prakash Ranjan (2):
+      iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
+      iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom implementation
+
+Zhen Lei (4):
+      iommu/arm-smmu-v3: Use command queue batching helpers to improve performance
+      iommu/arm-smmu-v3: Add and use static helper function arm_smmu_cmdq_issue_cmd_with_sync()
+      iommu/arm-smmu-v3: Add and use static helper function arm_smmu_get_cmdq()
+      iommu/arm-smmu-v3: Extract reusable function __arm_smmu_cmdq_skip_err()
+
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 89 +++++++++++++++++------------
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c  | 11 ++++
+ drivers/iommu/arm/arm-smmu/arm-smmu.c       | 45 ++++++++++++---
+ drivers/iommu/arm/arm-smmu/arm-smmu.h       |  1 +
+ drivers/iommu/iommu.c                       |  2 +
+ 5 files changed, 106 insertions(+), 42 deletions(-)
