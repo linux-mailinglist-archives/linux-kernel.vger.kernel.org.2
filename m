@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447A03EB9C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BE03EB9D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhHMQJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
+        id S233038AbhHMQOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhHMQJQ (ORCPT
+        with ESMTP id S232602AbhHMQOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:09:16 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C67C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:08:49 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so16643708pjl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zb6hESOPAPpsYQTxj6uunL70me57Ohn5RtlRGa2hRIU=;
-        b=bt0deawY8VgLg78fejbazYxtQGqnJJ+YkSz5IoTYnQ5LuF//jd0UR5Pt6RCob2ruwg
-         L7XvtJcs+LMzfCUDh81Ba+1wBbHDlsnlh6IiZoditm2+zMGPr5c1K/absUN+/4ZuN2lB
-         hqNu9nLcRyjmucoSbEUpC/VFf1vXe3dcafsIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zb6hESOPAPpsYQTxj6uunL70me57Ohn5RtlRGa2hRIU=;
-        b=i6D8IWeWiAfZd5PDBYRh+MWlG1DfqrByap5+VAABenSdmFyRlU1L/0uRn9HV18GRW7
-         SWtU+Sljqdesiqs9QLf7hIuaY79i/ierUbBxNagBQDaH2Uvn0UdyTMJj23UXWfX52MyF
-         /a8aslZeuiyKbcLhgO5p4MrBa133L6eiHDjXU3+2Glb11riOwajgwcXipy+0qLJTRnBa
-         AIc1Lp4yNUyRDtVC0RdQxDc7qaP2npWH/5ZhU4OsbvpSMKzMIKSBLyn7alropqaRb7UG
-         DBJunNIae9bhDBZfWVGe/HeqfE7LHC40NE8emu3w6u01zsS2NB2MVyqFfooj/grDD90u
-         mlVQ==
-X-Gm-Message-State: AOAM533XEr9RnbC2hw6Uu6HRWMFpmT6pywff9ewLxUIfPMl0LVVw1TD6
-        qCpVlIYx9lgFsb4g4qEEIKtIgA==
-X-Google-Smtp-Source: ABdhPJzO/EBStKGp8NBzLlcdP5+lTA2rI0q06EsQcV9US+8Rtvv2vMu7llrU0u1jr9BMG5zMLdkcVQ==
-X-Received: by 2002:a05:6a00:1803:b029:3cd:d5c1:f718 with SMTP id y3-20020a056a001803b02903cdd5c1f718mr3121899pfa.22.1628870928766;
-        Fri, 13 Aug 2021 09:08:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y64sm3224461pgy.32.2021.08.13.09.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 09:08:48 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 09:08:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fri, 13 Aug 2021 12:14:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C64C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9Jq9OYg9EXI1aRB5/mW+60AZEjUGr9kH6BUneFaePHw=; b=srU2gOhlF1tA35b57YG0YNmQxP
+        Bu7cAtaISOcIQ5NX4BIk/TfOlOHPn82r4hLbjJIY3Kk+5STCK2yycxhkCFjMHMTuPyOtY5mPtiWNu
+        8PHYiam1b2H2D5UTeByA4eT4hYZqxpnTD0gI4LS3RPWD4zhiBBYdhekex0P6p0SwZZnA1Mk3vivuw
+        xZsJSC70p0qDfbsiYBbd79goLwWxx4ahK+itkfJyAiFkIg/M1Yzxt0y5EVeoTaCw6l5+FpwtajKn/
+        kqW98BeM4RU3mYmkl5oFkchdxpk8NQpZxkj/oV2ihrSsq0bv5lQRgq7SbOM5b2CPcMbVs6WEqLE2l
+        JJZoY3wQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mEZjj-00FqgB-G6; Fri, 13 Aug 2021 16:09:06 +0000
+Date:   Fri, 13 Aug 2021 17:08:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
+        seanpaul@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Tao Zhou <tao.zhou1@amd.com>, Huang Rui <ray.huang@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Chengming Gui <Jack.Gui@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Ashley Thomas <Ashley.Thomas2@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Wyatt Wood <Wyatt.Wood@amd.com>,
+        Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 39/64] mac80211: Use memset_after() to clear tx status
-Message-ID: <202108130907.FD09C6B@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-40-keescook@chromium.org>
- <202107310852.551B66EE32@keescook>
- <bb01e784dddf6a297025981a2a000a4d3fdaf2ba.camel@sipsolutions.net>
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Marco Elver <elver@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Albert van der Linde <alinde@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v5 3/9] dyndbg: add DEFINE_DYNAMIC_DEBUG_CATEGORIES and
+ callbacks
+Message-ID: <YRaZDzROiEhqJgUb@casper.infradead.org>
+References: <20210813151734.1236324-1-jim.cromie@gmail.com>
+ <20210813151734.1236324-4-jim.cromie@gmail.com>
+ <YRaU6fbGjcV7BGC/@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bb01e784dddf6a297025981a2a000a4d3fdaf2ba.camel@sipsolutions.net>
+In-Reply-To: <YRaU6fbGjcV7BGC/@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 09:40:07AM +0200, Johannes Berg wrote:
-> On Sat, 2021-07-31 at 08:55 -0700, Kees Cook wrote:
-> > On Tue, Jul 27, 2021 at 01:58:30PM -0700, Kees Cook wrote:
-> > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > field bounds checking for memset(), avoid intentionally writing across
-> > > neighboring fields.
-> > > 
-> > > Use memset_after() so memset() doesn't get confused about writing
-> > > beyond the destination member that is intended to be the starting point
-> > > of zeroing through the end of the struct.
-> > > 
-> > > Note that the common helper, ieee80211_tx_info_clear_status(), does NOT
-> > > clear ack_signal, but the open-coded versions do. All three perform
-> > > checks that the ack_signal position hasn't changed, though.
-> > 
-> > Quick ping on this question: there is a mismatch between the common
-> > helper and the other places that do this. Is there a bug here?
+On Fri, Aug 13, 2021 at 06:51:05PM +0300, Andy Shevchenko wrote:
+> On Fri, Aug 13, 2021 at 09:17:11AM -0600, Jim Cromie wrote:
+> > +int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
+> > +{
+> > +	unsigned long inbits;
+> > +	int rc, i, chgct = 0, totct = 0;
+> > +	char query[OUR_QUERY_SIZE];
+> > +	struct dyndbg_bitdesc *bitmap = (struct dyndbg_bitdesc *) kp->data;
 > 
-> Yes.
-> 
-> The common helper should also clear ack_signal, but that was broken by
-> commit e3e1a0bcb3f1 ("mac80211: reduce IEEE80211_TX_MAX_RATES"), because
-> that commit changed the order of the fields and updated carl9170 and p54
-> properly but not the common helper...
+> So you need space after ')' ?
 
-It looks like p54 actually uses the rates, which is why it does this
-manually. I can't see why carl9170 does this manually, though.
+More importantly, if ->data is of type 'void *', it is bad style to
+cast the pointer at all.  I can't tell what type 'data' has; if it
+is added to kernel_param as part of this series, I wasn't cc'd on
+the patch that did that.
 
-> It doesn't actually matter much because ack_signal is normally filled in
-> afterwards, and even if it isn't, it's just for statistics.
-> 
-> The correct thing to do here would be to
-> 
-> 	memset_after(&info->status, 0, rates);
-
-Sounds good; I will adjust these (and drop the BULID_BUG_ONs, as you
-suggest in the next email).
-
-Thanks!
-
--Kees
-
--- 
-Kees Cook
