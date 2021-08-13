@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FF43EAE77
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417B53EAE87
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237699AbhHMCRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:17:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33561 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233036AbhHMCRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 22:17:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gm6dX3WYCz9t23;
-        Fri, 13 Aug 2021 12:17:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628821040;
-        bh=YhK5Q0M5feZDSDGyHoE74LBF+nUvqpKftxyv3ToQjJE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Gfq4IwYDA88JEiZn+WgsB9ke4CLBc1lFnI7zMdrSIlI8e2/LN5+WsYtwlfDtbmsH4
-         7S3E19wcQRxh5o2rPPf6SQWuUfJJPCsqOLscuKaLHy+3JMf055Sfo0WWAc8vdEeL+p
-         sNshuzGZBx/wf05Zdo7jzFUqTUm1GIWEhe/qLANYfrFYtK/l5onYzZM26NaqWQjD6i
-         D7oIr5HAgFd2Pjqd+6yFsOLPSS/htsKkpu55a7L/g0Zx3iR+EWbgn071X6QTeMdLmh
-         6405cXMXLJcL6AvVt/n1/rKPOG2tFYRmNjEECCZb2kXUvVSF+woZGnNGa2elY4YYQk
-         xiatO4RS9soXw==
-Date:   Fri, 13 Aug 2021 12:17:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20210813121719.70beddf2@canb.auug.org.au>
+        id S238110AbhHMCXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:23:03 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13269 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237914AbhHMCXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:23:01 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gm6lF21LJz1CWHp;
+        Fri, 13 Aug 2021 10:22:17 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 13 Aug 2021 10:22:29 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 13 Aug
+ 2021 10:22:29 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH v3 0/2] crypto: hisilicon - some misc bugfix for SEC engine
+Date:   Fri, 13 Aug 2021 10:21:25 +0800
+Message-ID: <1628821287-49924-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zb4+SYQ+grjkig8mt.8ppup";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zb4+SYQ+grjkig8mt.8ppup
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+some misc bugfix for SEC engine.
 
-Hi all,
+changes v1->v2:
+	delete the "ifdefs", use the IS_ENABLED.
+changes v2->v3:
+	fix merge conflict
 
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Kai Ye (2):
+  crypto: hisilicon/sec - fix the abnormal exiting process
+  crypto: hisilicon/sec - modify the hardware endian configuration
 
-sound/soc/codecs/rt5682-i2c.c: In function 'rt5682_i2c_remove':
-sound/soc/codecs/rt5682-i2c.c:297:22: warning: unused variable 'rt5682' [-W=
-unused-variable]
-  297 |  struct rt5682_priv *rt5682 =3D i2c_get_clientdata(client);
-      |                      ^~~~~~
+ drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
+ drivers/crypto/hisilicon/sec2/sec_main.c | 34 +++++++++++---------------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
 
-Introduced by commit
+-- 
+2.7.4
 
-  772d44526e20 ("ASoC: rt5682: Properly turn off regulators if wrong device=
- ID")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zb4+SYQ+grjkig8mt.8ppup
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEV1i8ACgkQAVBC80lX
-0GyUhgf/dmXYkyg/I5c2ycEm3yeey6vga3jesQkyqr1pUTw7uKBgYK9r3Dd/hgIh
-wF8eNWkU0GJ/hgR7CiknSjAYljE8G5wjLMo1smKbM/G3mPxly/ft45DOqx/wtVIG
-hu0a9HucoERz86bg5oh/3v++Eoe8YdHyyqGtMUVKNnZuXk+8PTJn6jz/1HQOIS4y
-qrWKMp5OQLZRSBhppyIUdXXJCKHTBRuHm6PU5MRuaoIeZF+7MB69OHqdF/fEPwZE
-rF8GWkP63dYrh9zrDmEQZzyFNeUdoj5F/xcIzTWo06NHF7pW5A0AP4SxzbCm64WV
-mkQZhAT1ElLKI7gS66LJH4ZriLCi5A==
-=lvlF
------END PGP SIGNATURE-----
-
---Sig_/zb4+SYQ+grjkig8mt.8ppup--
