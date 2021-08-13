@@ -2,91 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D55D3EAFF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B223EAFF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238818AbhHMGTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S238824AbhHMGU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238646AbhHMGTg (ORCPT
+        with ESMTP id S238646AbhHMGU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:19:36 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5869CC061756;
-        Thu, 12 Aug 2021 23:19:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j1so13842152pjv.3;
-        Thu, 12 Aug 2021 23:19:10 -0700 (PDT)
+        Fri, 13 Aug 2021 02:20:28 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560A0C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 23:20:02 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d17so10501147plr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 23:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4kXF8rjOaeUla0M3rXpxWrQcPuqS5qE0SGdfEVWI3rM=;
-        b=uZvcZZqIFNj0oDqsoh2+Z3ZzkR7lRij4WGZUrHX0lYsxzbb4EBVP8bKG0BiC8ygjq1
-         Adp+InWlnHZS6RdBUnehs469ZSr5pudW7hxw7lamtm0TUcs3OrFTVy3fsAzYNd9FXKQ/
-         M56bfvRMRULEu9HhXdtfaY4E/ajsWLcwRlBRcclajQB3iOkCo2aMT+p08YeSwpUkBSYx
-         VYA6on8qRoL+ovuErmO+p0+jBxp0Sh4Gqsqec7DOhp9XOMB/dIDOx543fib9cjADRvmm
-         33re47tEnRLsqYEqaWbD8iWsqzAR+b+IBRbZwJSss3u5VFzSC/3l9WXWFhm47OWE8vmE
-         7veQ==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=3Plf9kYprckAlJtYbb7SyhR3dTcw+NdeOwPa/nQw2qQ=;
+        b=uh320nEJ2La0l2ayXToOEW/pFFNDV4IY+u1oTBcLjMAFVRSG3DAPfo/hPs+T7LiKFI
+         dly3bhsDBpKtyQRzECa444UPfQVrIB3XDQXtPifiYLDJkREE4qAQZunXeaiX4qxO3uAz
+         CE6fUWMzZDQ7NsW3nBfncRxjGIgKPSgd89onfG4mPkDt0WNiWtplH9sw+JWpjcsRif0b
+         lrOU/mBCAlrAZUob8UR3RLm3cVtRilQ0PU2RTX9BsF4Yi/FPpxD4PprjhOKGzOjdLUcc
+         tHiy/gjnnpvJ+SwLoxwavleSITLsTGBh5VarwFOoH9e82cCKLUAE93OetgTrgUMLm1Uo
+         jMaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4kXF8rjOaeUla0M3rXpxWrQcPuqS5qE0SGdfEVWI3rM=;
-        b=HMZiLf76I6fxQYJuhaOYmKzHCY9mvESqFRmU8zdLuJX/WHc6rzOr3JK/Cgfu91rtKM
-         044feuukentnhggwM5KjfIJWBbdF2/AgLdBEKNa4Y96IqAhXjpwaAVPngYOqELN6rA0A
-         SsHoVOhX2tr93IilaQby1c0B9DRq77HKp7JJ5mE1KmQ8eOV2gsGpyntzjc1cOJXFe107
-         tmrEcsROL83+prfErAi6wvOCe9OwwVIfa0fiv/7x0R/Q8Q1QLjTaukUnX8BdP4kQGf/7
-         PQ5ledwmejeEF5CGEFU8Mv/W/uIg7PqAruY7yaVEhovj6U2w0eUxQHLN7Vw4JpC6b7Xr
-         tVaQ==
-X-Gm-Message-State: AOAM532EEI4mW2nSP3XKW6yaA+x+LxMGZo9L8x66lgXJ5+q2On22gX2R
-        iS6RaivSeXv6GTft43f7nhs=
-X-Google-Smtp-Source: ABdhPJxH82ZJV9xD4x1exd/C7JijJWwsA0z4BAdmdDdiEerjGXqcQmOLUV7Y6pZUmASz/wyXv71Q9g==
-X-Received: by 2002:aa7:870e:0:b029:3c2:f326:468b with SMTP id b14-20020aa7870e0000b02903c2f326468bmr999709pfo.53.1628835549694;
-        Thu, 12 Aug 2021 23:19:09 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-92-48-112.hsd1.ca.comcast.net. [73.92.48.112])
-        by smtp.gmail.com with ESMTPSA id f9sm733196pjq.36.2021.08.12.23.19.08
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=3Plf9kYprckAlJtYbb7SyhR3dTcw+NdeOwPa/nQw2qQ=;
+        b=G4JkkJ4jC+UnpxCn5fY7ijFKWVsp/mtgyelDr/8QhNEm3+mzpK+DF75DblKpqunXw+
+         Ig3wa4uDpStJKnias2J1wAtJoAcHCwcj645oPEqpeXXJhTu0cmD3pwrK67z9ypl/raz6
+         AGZTBTOAHR8e+w9/jlX/KUQOFBtRV/BNtiHntEW8Woh9c46mY6LPpy/akEHT/EjYzanK
+         eHkdIbdRhLFELvcv6tk6ztMqJAfFI3ScrsSYVoUI4vRvuQ2H+12WF1sPrTMWy7lSjxix
+         v2HSoHGvapkN0fEkFCfP0FU3WP14EdYlN+NrCmMg6wel48sqKpRdr0y4btxnt3A10cg9
+         tpfA==
+X-Gm-Message-State: AOAM5324l64cPea5kjhsm1kXNlKFELvCMnhLTHwZEl1veUG5VG7wbulu
+        7YughQo2L/eJ1GHw49Ks3fc=
+X-Google-Smtp-Source: ABdhPJwjY9sww6bgXsU1OD1U78Y9YWxbhl7MSl2Q+cyvPbyaE3AzOVb4t7pilHfLFPL8vJ4tHmwfaA==
+X-Received: by 2002:a17:90a:db09:: with SMTP id g9mr1068009pjv.205.1628835601865;
+        Thu, 12 Aug 2021 23:20:01 -0700 (PDT)
+Received: from localhost (60-242-208-220.static.tpgi.com.au. [60.242.208.220])
+        by smtp.gmail.com with ESMTPSA id y23sm810874pfb.130.2021.08.12.23.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 23:19:09 -0700 (PDT)
-From:   rentao.bupt@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, taoren@fb.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH] ARM: dts: aspeed: cloudripper: Add comments for "mdio1"
-Date:   Thu, 12 Aug 2021 23:19:00 -0700
-Message-Id: <20210813061900.24539-1-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 12 Aug 2021 23:20:01 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 16:19:56 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
+ WARN_ON/__WARN_FLAGS() with asm goto
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
+        <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Message-Id: <1628834900.ecs68prq9x.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+Excerpts from Christophe Leroy's message of April 14, 2021 2:38 am:
+> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
+> flexibility to GCC.
+>=20
+> For that add an entry to the exception table so that
+> program_check_exception() knowns where to resume execution
+> after a WARNING.
 
-Add some comments to explain the purpose of "mdio1" controller: it's
-connected to the MDC/MDIO interface of the on-board management switch.
+Nice idea. How much does it bloat the exception table?
+How easy would it be to make a different exception table for
+unimportant stuff like WARN_ON faults?
 
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+>=20
+> Here are two exemples. The first one is done on PPC32 (which
+> benefits from the previous patch), the second is on PPC64.
+>=20
+> 	unsigned long test(struct pt_regs *regs)
+> 	{
+> 		int ret;
+>=20
+> 		WARN_ON(regs->msr & MSR_PR);
+>=20
+> 		return regs->gpr[3];
+> 	}
+>=20
+> 	unsigned long test9w(unsigned long a, unsigned long b)
+> 	{
+> 		if (WARN_ON(!b))
+> 			return 0;
+> 		return a / b;
+> 	}
+>=20
+> Before the patch:
+>=20
+> 	000003a8 <test>:
+> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
+> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
+> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
+> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
+> 	 3b8:	4e 80 00 20 	blr
+>=20
+> 	 3bc:	0f e0 00 00 	twui    r0,0
+> 	 3c0:	80 63 00 0c 	lwz     r3,12(r3)
+> 	 3c4:	4e 80 00 20 	blr
+>=20
+> 	0000000000000bf0 <.test9w>:
+> 	 bf0:	7c 89 00 74 	cntlzd  r9,r4
+> 	 bf4:	79 29 d1 82 	rldicl  r9,r9,58,6
+> 	 bf8:	0b 09 00 00 	tdnei   r9,0
+> 	 bfc:	2c 24 00 00 	cmpdi   r4,0
+> 	 c00:	41 82 00 0c 	beq     c0c <.test9w+0x1c>
+> 	 c04:	7c 63 23 92 	divdu   r3,r3,r4
+> 	 c08:	4e 80 00 20 	blr
+>=20
+> 	 c0c:	38 60 00 00 	li      r3,0
+> 	 c10:	4e 80 00 20 	blr
+>=20
+> After the patch:
+>=20
+> 	000003a8 <test>:
+> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
+> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
+> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
+> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
+> 	 3b8:	4e 80 00 20 	blr
+>=20
+> 	 3bc:	0f e0 00 00 	twui    r0,0
+>=20
+> 	0000000000000c50 <.test9w>:
+> 	 c50:	7c 89 00 74 	cntlzd  r9,r4
+> 	 c54:	79 29 d1 82 	rldicl  r9,r9,58,6
+> 	 c58:	0b 09 00 00 	tdnei   r9,0
+> 	 c5c:	7c 63 23 92 	divdu   r3,r3,r4
+> 	 c60:	4e 80 00 20 	blr
+>=20
+> 	 c70:	38 60 00 00 	li      r3,0
+> 	 c74:	4e 80 00 20 	blr
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts
-index 01ec3ce0a29d..9c6271a17ae8 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts
-@@ -96,6 +96,11 @@
- 	status = "okay";
- };
- 
-+/*
-+ * "mdio1" is connected to the MDC/MDIO interface of the on-board
-+ * management switch (whose ports are connected to BMC, Host and front
-+ * panel ethernet port).
-+ */
- &mdio1 {
- 	status = "okay";
- };
--- 
-2.17.1
+One thing that would be nice for WARN_ON_ONCE is to patch out the trap
+after the program interrupt. I've seen sometimes the WARN_ON_ONCE starts
+firing a lot and slows down the kernel. That gets harder to do if the
+trap is now part of the control flow.
+
+I guess that's less important case for performance though. And in theory
+you might be able to replace the trap with an equivalent cmp and branch
+(but that's probably going too over engineering it).
+
+Thanks,
+Nick
 
