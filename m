@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E7D3EB7DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6082C3EB7FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241310AbhHMPJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52218 "EHLO mail.kernel.org"
+        id S241553AbhHMPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241223AbhHMPJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:09:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DF52610CC;
-        Fri, 13 Aug 2021 15:09:05 +0000 (UTC)
+        id S241548AbhHMPKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:10:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9458F610CC;
+        Fri, 13 Aug 2021 15:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867345;
-        bh=EFJhGl4j17dSbDx5yR+3T/oEosXLQSue43tuVXBDXrU=;
+        s=korg; t=1628867375;
+        bh=Jo8QVitmMw0Sk3mcUaWlOWyNbU+LQqm0Oxvf44cN4Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+zdLs41LWZ/TNwadC7dgp0yevp5sKrZkkYVYdU+EeNteyiKAaSxB8wdU1vpZe2l/
-         7H71crrQOP/Unr36TCXofp+pv5GzBwPZS514DD7I+JroTHUeEXsr3J1wq7gPWUSt9j
-         sNPudGpOkb4CYfFzRHFqycUD5vR9wbYBQd+WkXd8=
+        b=eAJVLBMGyaZVSkyatdLBfvjCxwk+pWuUookagSUimM5aSfKCzTU95Fpg8aCDuxsvw
+         HS/RJysJKoBRS4bxaXMml1yLWh6YMhIGbJj/O7rLfuja5IXnjR2H7xHc6E3DKQoJHz
+         TgH7Aqd9CXTYPUSqw7+D2pxDbPZSANJZW9oos6og=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        folkert <folkert@vanheusden.com>
-Subject: [PATCH 4.9 01/30] ALSA: seq: Fix racy deletion of subscriber
-Date:   Fri, 13 Aug 2021 17:06:29 +0200
-Message-Id: <20210813150522.497007732@linuxfoundation.org>
+        stable@vger.kernel.org, Li Manyi <limanyi@uniontech.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 02/30] scsi: sr: Return correct event when media event code is 3
+Date:   Fri, 13 Aug 2021 17:06:30 +0200
+Message-Id: <20210813150522.526410651@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
 References: <20210813150522.445553924@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,116 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Li Manyi <limanyi@uniontech.com>
 
-commit 97367c97226aab8b298ada954ce12659ee3ad2a4 upstream.
+[ Upstream commit 5c04243a56a7977185b00400e59ca7e108004faf ]
 
-It turned out that the current implementation of the port subscription
-is racy.  The subscription contains two linked lists, and we have to
-add to or delete from both lists.  Since both connection and
-disconnection procedures perform the same order for those two lists
-(i.e. src list, then dest list), when a deletion happens during a
-connection procedure, the src list may be deleted before the dest list
-addition completes, and this may lead to a use-after-free or an Oops,
-even though the access to both lists are protected via mutex.
+Media event code 3 is defined in the MMC-6 spec as follows:
 
-The simple workaround for this race is to change the access order for
-the disconnection, namely, dest list, then src list.  This assures
-that the connection has been established when disconnecting, and also
-the concurrent deletion can be avoided.
+  "MediaRemoval: The media has been removed from the specified slot, and
+   the Drive is unable to access the media without user intervention. This
+   applies to media changers only."
 
-Reported-and-tested-by: folkert <folkert@vanheusden.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210801182754.GP890690@belle.intranet.vanheusden.com
-Link: https://lore.kernel.org/r/20210803114312.2536-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This indicated that treating the condition as an EJECT_REQUEST was
+appropriate. However, doing so had the unfortunate side-effect of causing
+the drive tray to be physically ejected on resume. Instead treat the event
+as a MEDIA_CHANGE request.
+
+Fixes: 7dd753ca59d6 ("scsi: sr: Return appropriate error code when disk is ejected")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213759
+Link: https://lore.kernel.org/r/20210726114913.6760-1-limanyi@uniontech.com
+Signed-off-by: Li Manyi <limanyi@uniontech.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/seq_ports.c |   39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ drivers/scsi/sr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -532,10 +532,11 @@ static int check_and_subscribe_port(stru
- 	return err;
- }
- 
--static void delete_and_unsubscribe_port(struct snd_seq_client *client,
--					struct snd_seq_client_port *port,
--					struct snd_seq_subscribers *subs,
--					bool is_src, bool ack)
-+/* called with grp->list_mutex held */
-+static void __delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					  struct snd_seq_client_port *port,
-+					  struct snd_seq_subscribers *subs,
-+					  bool is_src, bool ack)
- {
- 	struct snd_seq_port_subs_info *grp;
- 	struct list_head *list;
-@@ -543,7 +544,6 @@ static void delete_and_unsubscribe_port(
- 
- 	grp = is_src ? &port->c_src : &port->c_dest;
- 	list = is_src ? &subs->src_list : &subs->dest_list;
--	down_write(&grp->list_mutex);
- 	write_lock_irq(&grp->list_lock);
- 	empty = list_empty(list);
- 	if (!empty)
-@@ -553,6 +553,18 @@ static void delete_and_unsubscribe_port(
- 
- 	if (!empty)
- 		unsubscribe_port(client, port, grp, &subs->info, ack);
-+}
-+
-+static void delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					struct snd_seq_client_port *port,
-+					struct snd_seq_subscribers *subs,
-+					bool is_src, bool ack)
-+{
-+	struct snd_seq_port_subs_info *grp;
-+
-+	grp = is_src ? &port->c_src : &port->c_dest;
-+	down_write(&grp->list_mutex);
-+	__delete_and_unsubscribe_port(client, port, subs, is_src, ack);
- 	up_write(&grp->list_mutex);
- }
- 
-@@ -608,27 +620,30 @@ int snd_seq_port_disconnect(struct snd_s
- 			    struct snd_seq_client_port *dest_port,
- 			    struct snd_seq_port_subscribe *info)
- {
--	struct snd_seq_port_subs_info *src = &src_port->c_src;
-+	struct snd_seq_port_subs_info *dest = &dest_port->c_dest;
- 	struct snd_seq_subscribers *subs;
- 	int err = -ENOENT;
- 
--	down_write(&src->list_mutex);
-+	/* always start from deleting the dest port for avoiding concurrent
-+	 * deletions
-+	 */
-+	down_write(&dest->list_mutex);
- 	/* look for the connection */
--	list_for_each_entry(subs, &src->list_head, src_list) {
-+	list_for_each_entry(subs, &dest->list_head, dest_list) {
- 		if (match_subs_info(info, &subs->info)) {
--			atomic_dec(&subs->ref_count); /* mark as not ready */
-+			__delete_and_unsubscribe_port(dest_client, dest_port,
-+						      subs, false,
-+						      connector->number != dest_client->number);
- 			err = 0;
- 			break;
- 		}
- 	}
--	up_write(&src->list_mutex);
-+	up_write(&dest->list_mutex);
- 	if (err < 0)
- 		return err;
- 
- 	delete_and_unsubscribe_port(src_client, src_port, subs, true,
- 				    connector->number != src_client->number);
--	delete_and_unsubscribe_port(dest_client, dest_port, subs, false,
--				    connector->number != dest_client->number);
- 	kfree(subs);
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 5e51a39a0c27..9b63e46edffc 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -217,7 +217,7 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
+ 	else if (med->media_event_code == 2)
+ 		return DISK_EVENT_MEDIA_CHANGE;
+ 	else if (med->media_event_code == 3)
+-		return DISK_EVENT_EJECT_REQUEST;
++		return DISK_EVENT_MEDIA_CHANGE;
  	return 0;
  }
+ 
+-- 
+2.30.2
+
 
 
