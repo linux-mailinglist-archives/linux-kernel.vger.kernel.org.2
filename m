@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3B13EB869
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3703EB7F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242071AbhHMPN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
+        id S241507AbhHMPKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241806AbhHMPLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F99610FE;
-        Fri, 13 Aug 2021 15:11:15 +0000 (UTC)
+        id S241235AbhHMPJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:09:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2708061153;
+        Fri, 13 Aug 2021 15:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867476;
-        bh=30KxOoloYmk5zGptQQfwJlpzpjCtuvoyUMdhH9lZjGY=;
+        s=korg; t=1628867316;
+        bh=hB1ZqywZVYuDQf7z/EFxyNDz5gV77JsuSqEQx0lqY5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16OLWzmKS1kHlI3+Iw1b5R+pKtNl2EVoda17Wie8FFHesvhsh9CqvCcAM5IWO9nJe
-         FEHVK44F04sMAI+HUHC1dfikCNNKzMBDDJGyMmMzGBYXVinza4vOUmkIrZbzyNCLMo
-         BHjW62eX2sxO7ym065Tqn+NOvyX95184/E8jJf6k=
+        b=2LLHO9vLHAWb+YfIz3sQ18fxWo9dwX2EBh5VWOZqYlGBMLxDM2h3MvRFXjpbCcuYY
+         hr99HhQEKdu5fpyTzvbeCpGzJ04bKj9xEO8aWc0Kap6x1Wmdq6IcGRag83Mc4XjeET
+         +UFzbitdsMocr2Zsn7/tEqxvC36Ff8UD3Jni6BpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH 4.14 20/42] usb: gadget: f_hid: fixed NULL pointer dereference
-Date:   Fri, 13 Aug 2021 17:06:46 +0200
-Message-Id: <20210813150525.780787054@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Longfang Liu <liulongfang@huawei.com>
+Subject: [PATCH 4.4 23/25] USB:ehci:fix Kunpeng920 ehci hardware problem
+Date:   Fri, 13 Aug 2021 17:06:47 +0200
+Message-Id: <20210813150521.470150195@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Longfang Liu <liulongfang@huawei.com>
 
-commit 2867652e4766360adf14dfda3832455e04964f2a upstream.
+commit 26b75952ca0b8b4b3050adb9582c8e2f44d49687 upstream.
 
-Disconnecting and reconnecting the USB cable can lead to crashes
-and a variety of kernel log spam.
+Kunpeng920's EHCI controller does not have SBRN register.
+Reading the SBRN register when the controller driver is
+initialized will get 0.
 
-The problem was found and reproduced on the Raspberry Pi [1]
-and the original fix was created in Raspberry's own fork [2].
+When rebooting the EHCI driver, ehci_shutdown() will be called.
+if the sbrn flag is 0, ehci_shutdown() will return directly.
+The sbrn flag being 0 will cause the EHCI interrupt signal to
+not be turned off after reboot. this interrupt that is not closed
+will cause an exception to the device sharing the interrupt.
 
-Link: https://github.com/raspberrypi/linux/issues/3870 [1]
-Link: https://github.com/raspberrypi/linux/commit/a6e47d5f4efbd2ea6a0b6565cd2f9b7bb217ded5 [2]
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210723155928.210019-1-mdevaev@gmail.com
+Therefore, the EHCI controller of Kunpeng920 needs to skip
+the read operation of the SBRN register.
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+Link: https://lore.kernel.org/r/1617958081-17999-1-git-send-email-liulongfang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_hid.c |   26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ drivers/usb/host/ehci-pci.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -349,6 +349,11 @@ static ssize_t f_hidg_write(struct file
+--- a/drivers/usb/host/ehci-pci.c
++++ b/drivers/usb/host/ehci-pci.c
+@@ -312,6 +312,9 @@ static int ehci_pci_setup(struct usb_hcd
+ 	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
+ 	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
+ 		;	/* ConneXT has no sbrn register */
++	else if (pdev->vendor == PCI_VENDOR_ID_HUAWEI
++			 && pdev->device == 0xa239)
++		;	/* HUAWEI Kunpeng920 USB EHCI has no sbrn register */
+ 	else
+ 		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
  
- 	spin_lock_irqsave(&hidg->write_spinlock, flags);
- 
-+	if (!hidg->req) {
-+		spin_unlock_irqrestore(&hidg->write_spinlock, flags);
-+		return -ESHUTDOWN;
-+	}
-+
- #define WRITE_COND (!hidg->write_pending)
- try_again:
- 	/* write queue */
-@@ -369,8 +374,14 @@ try_again:
- 	count  = min_t(unsigned, count, hidg->report_length);
- 
- 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
--	status = copy_from_user(req->buf, buffer, count);
- 
-+	if (!req) {
-+		ERROR(hidg->func.config->cdev, "hidg->req is NULL\n");
-+		status = -ESHUTDOWN;
-+		goto release_write_pending;
-+	}
-+
-+	status = copy_from_user(req->buf, buffer, count);
- 	if (status != 0) {
- 		ERROR(hidg->func.config->cdev,
- 			"copy_from_user error\n");
-@@ -398,14 +409,17 @@ try_again:
- 
- 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
- 
-+	if (!hidg->in_ep->enabled) {
-+		ERROR(hidg->func.config->cdev, "in_ep is disabled\n");
-+		status = -ESHUTDOWN;
-+		goto release_write_pending;
-+	}
-+
- 	status = usb_ep_queue(hidg->in_ep, req, GFP_ATOMIC);
--	if (status < 0) {
--		ERROR(hidg->func.config->cdev,
--			"usb_ep_queue error on int endpoint %zd\n", status);
-+	if (status < 0)
- 		goto release_write_pending;
--	} else {
-+	else
- 		status = count;
--	}
- 
- 	return status;
- release_write_pending:
 
 
