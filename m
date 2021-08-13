@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA4F3EB3D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237023EB3BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239608AbhHMKKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:10:00 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:33646 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238808AbhHMKJ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:09:59 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Aug 2021 06:09:58 EDT
-X-AuditID: 0a580157-219ff7000004b751-85-61164151898d
-Received: from mail.kingsoft.com (bogon [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 9D.4C.46929.15146116; Fri, 13 Aug 2021 17:54:25 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 13 Aug
- 2021 17:54:25 +0800
-Date:   Fri, 13 Aug 2021 17:54:20 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-CC:     <yaoaili126@gmail.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: KVM: x86: expose HINTS_REALTIME ablility to qemu
-Message-ID: <20210813175420.62ab2ac2@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S239177AbhHMKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:02:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47099 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239221AbhHMKCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 06:02:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628848935; h=Message-ID: References: In-Reply-To: Subject:
+ To: From: Date: Content-Transfer-Encoding: Content-Type: MIME-Version:
+ Sender; bh=P2//6qY2qBL9H15tqXfsToYxN/pKSnZWVqda89Yawsk=; b=S4xhCr7eEl8TSgkbgOw230MNAtEaPl6MzQDpmxTfG9Hm7FSIJ1phVfB/E2x8+LZMk8aep/xm
+ VjAwOP7DwJjjgmAqe/UZEGv2Vyhq5lBl0U/a+3PMoBMpNNTwb3DO9Fv2cDAG/6wAd0lWzMbe
+ r2WV0bQnwxplVHrUn31kCk50PRY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 611642c576c3a9a17217f644 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 10:00:37
+ GMT
+Sender: wat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 049D3C4338A; Fri, 13 Aug 2021 10:00:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10E49C433F1;
+        Fri, 13 Aug 2021 10:00:34 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSbjmail3.kingsoft.cn (10.88.1.78) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LhimD01w10FEs0eL9Zz+Lzhn9sFtM2ilts
-        nX6FzaJz9gZ2izlTCy0u75rDZnHpwAImi/3b/rFaHD1/i8li86apzBaTWi8zW+y684TF4seG
-        x6wWz1qvsjjweTw5OI/J43trH4vHzll32T0WbCr12LSqk83j3blz7B7v911l82iceo3N4/Mm
-        OY8TLV9YA7iiuGxSUnMyy1KL9O0SuDImvtnOXHCLrWLD83a2Bsa9rF2MHBwSAiYSl96wdzFy
-        cQgJTGaSuHR9JRuE85pRYuWR7UBFnBwsAqoS209MZQSx2YDsXfdmgcVFBM4ySez5zwzSwCzQ
-        zijxeOsWdpCEsIClxIeTK8BsXgEriSWz94M18wuISfRe+c8Esdle4vF6RYgSQYmTM5+wgNjM
-        AjoSJ1YdY4aw5SW2v50DZgsJKEocXvILbKSEgJLEke4ZbBB2rMS19dcZJzAKzkIyahaSUbOQ
-        jFrAyLyKkaU4N91wEyMkmsJ3MM5r+qh3iJGJg/EQowQHs5IIb7GwWKIQb0piZVVqUX58UWlO
-        avEhRmkOFiVx3jR3oUQhgfTEktTs1NSC1CKYLBMHp1QDU/G2srUzJWQWOUlduKl7xku7fo3Z
-        /snrz4bIbGjsypLO+/0rWubW89U/7uucDXy7YlquaoTj/U2Pd5QY7Kn9wiXSw3Fv6YMXMu0W
-        9i273O+KrH0itH6O25cYy5U38jhm3ufnFH/l/9ja2/v95H0J66cs2i439WmV360D2/NLIkrD
-        RLZWvT0gN9c4KrXyUJrpfK0H1aryR0Iq5A7euXn92POYZIPHXX+MwmZf6HTb8uCN8B+j5+wz
-        Tu37tMB8Zbvn93cp3IKzuE8WHJiyf97GDxs1y3eU7pZWsK1hPHSs637+/5RZJkwqkYa9/0KX
-        7HizoSprtXZpP+PPigPWKtWh3jYipwJy/MOmLTH7fXzTVgslluKMREMt5qLiRADBuEJzFQMA
-        AA==
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 13 Aug 2021 18:00:34 +0800
+From:   wat@codeaurora.org
+To:     undisclosed-recipients:;
+Subject: Re: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to
+ TD_CLEARING_CACHE
+In-Reply-To: <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
+References: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
+ <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
+ <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
+ <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
+Message-ID: <e1feb74fa95ca1f19729bf959f73f30f@codeaurora.org>
+X-Sender: wat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I do a test that try to enable hint-dedicated for one VM, but qemu
-says "warning: host doesn't support requested feature:
-CPUID.40000001H:EDX.kvm-hint-dedicated [bit 0]".
-
-It seems the kernel hasn't expose this ability even when supporting it;
-So expose it.
-
-Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 739be5da3bca..2153014742d7 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -917,7 +917,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 
- 		entry->ebx = 0;
- 		entry->ecx = 0;
--		entry->edx = 0;
-+		entry->edx = (1 << KVM_HINTS_REALTIME);
- 		break;
- 	case 0x80000000:
- 		entry->eax = min(entry->eax, 0x8000001f);
--- 
-2.25.1
-
+On 2021-08-13 17:09, Mathias Nyman wrote:
+> On 13.8.2021 11.44, wat@codeaurora.org wrote:
+>> On 2021-08-13 15:25, Ikjoon Jang wrote:
+>>> Hi,
+>>> 
+>>> On Fri, Aug 13, 2021 at 10:44 AM Tao Wang <wat@codeaurora.org> wrote:
+>>>> 
+>>>> USB SSD may fail to unmount if disconnect during data transferring.
+>>>> 
+>>>> it stuck in usb_kill_urb() due to urb use_count will not become 
+>>>> zero,
+>>>> this means urb giveback is not happen.
+>>>> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
+>>>> equal to TD_CLEARING_CACHE,
+>>>> but in xhci_invalidate_cancelled_tds(), only last canceled td's
+>>>> cancel_status change to TD_CLEARING_CACHE,
+>>>> thus giveback only happen to last urb.
+>>>> 
+>>>> this change set all cancelled_td's cancel_status to 
+>>>> TD_CLEARING_CACHE
+>>>> rather than the last one, so all urb can giveback.
+>>>> 
+>>>> Signed-off-by: Tao Wang <wat@codeaurora.org>
+>>>> ---
+>>>>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
+>>>>  1 file changed, 12 insertions(+), 12 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/usb/host/xhci-ring.c 
+>>>> b/drivers/usb/host/xhci-ring.c
+>>>> index 8fea44b..c7dd7c0 100644
+>>>> --- a/drivers/usb/host/xhci-ring.c
+>>>> +++ b/drivers/usb/host/xhci-ring.c
+>>>> @@ -960,19 +960,19 @@ static int 
+>>>> xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
+>>>>                         td_to_noop(xhci, ring, td, false);
+>>>>                         td->cancel_status = TD_CLEARED;
+>>>>                 }
+>>>> -       }
+>>>> -       if (cached_td) {
+>>>> -               cached_td->cancel_status = TD_CLEARING_CACHE;
+>>>> -
+>>>> -               err = xhci_move_dequeue_past_td(xhci, slot_id, 
+>>>> ep->ep_index,
+>>>> -                                               
+>>>> cached_td->urb->stream_id,
+>>>> -                                               cached_td);
+>>>> -               /* Failed to move past cached td, try just setting 
+>>>> it noop */
+>>>> -               if (err) {
+>>>> -                       td_to_noop(xhci, ring, cached_td, false);
+>>>> -                       cached_td->cancel_status = TD_CLEARED;
+>>>> +               if (cached_td) {
+>>>> +                       cached_td->cancel_status = 
+>>>> TD_CLEARING_CACHE;
+>>>> +
+>>>> +                       err = xhci_move_dequeue_past_td(xhci, 
+>>>> slot_id, ep->ep_index,
+>>>> +                                                       
+>>>> cached_td->urb->stream_id,
+>>>> +                                                       cached_td);
+>>>> +                       /* Failed to move past cached td, try just 
+>>>> setting it noop */
+>>>> +                       if (err) {
+>>>> +                               td_to_noop(xhci, ring, cached_td, 
+>>>> false);
+>>>> +                               cached_td->cancel_status = 
+>>>> TD_CLEARED;
+>>>> +                       }
+>>>> +                       cached_td = NULL;
+>>>>                 }
+>>>> -               cached_td = NULL;
+>>> 
+>>> I think we can call xhci_move_dequeue_past_td() just once to
+>>> the last halted && cancelled TD in a ring.
+>>> 
+>>> But that might need to compare two TDs to see which one is
+>>> the latter, I'm not sure how to do this well. :-/
+>>> 
+>>> if (!cached_td || cached_td < td)
+>>>   cached_td = td;
+>>> 
+>> 
+>> thanks, I think you are correct that we can call 
+>> xhci_move_dequeue_past_td() just once to
+>>  the last halted && cancelled TD in a ring,
+>> but the set status "cached_td->cancel_status = TD_CLEARING_CACHE;" 
+>> should be every cancelled TD.
+>> I am not very good at td and ring, I have a question why we need to
+>> compare two TDs to see which one is the latter.
+> 
+> I'm debugging the exact same issue.
+> For normal endpoints (no streams) it should be enough to set
+> cancel_td->cancel_status = TD_CLEARING_CACHE
+> in the TD_DIRTY and TD_HALTED case.
+> 
+> We don't need to move the dq past the last cancelled TD as other
+> cancelled TDs are set to no-op, and
+> the command to move the dq will flush the xHC controllers TD cache and
+> read the no-ops.
+> (just make sure we call xhci_move_dequeue_past_td() _after_
+> overwriting cancelled TDs with no-op)
+> 
+> Streams get trickier as each endpoint has several rings, and we might
+> need to move the dq pointer for
+> many stream rings on that endpoint. This needs more work as we
+> shouldn't start the endpoint before all
+> the all move dq commands complete. i.e. the current  ep->ep_state &=
+> ~SET_DEQ_PENDING isn't enough.
+> 
+> -Mathias
+ok, thanks, please tell me if you have a great solution after debugging, 
+I still need to learn from you.
