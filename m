@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482273EB17E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A001E3EB185
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239430AbhHMH3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:29:35 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:32656 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238816AbhHMH3f (ORCPT
+        id S239439AbhHMHc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238816AbhHMHc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:29:35 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 17D7SX08005023;
-        Fri, 13 Aug 2021 16:28:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 17D7SX08005023
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628839714;
-        bh=BV8wnGfpU0adexwE48wxaMnANp7xHb9xXsYRk1N/H18=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wv4bUS5DC5jMTBHGvc+v/2dW0yUAhx2C+vVmHRxcKO0FCnXTMbyfr+1kYaPLgsdmb
-         AP8MkQY25tURaJfMeMLWoHXModJ1xvNbovHw1LwfoDwxzwQ0QZcA6WMpHBPlrz/PzW
-         8pMYW2ou/pAtxqGmZG1/trSXXAFJkwvrfU+Zt4diwVYcotLBQfF3VCngLvke/aYuZr
-         idCzI9IhobsRo3C9RDNZLgoYPGkzZTjAruIftr1v9cU/AznvCg7APk4Q0d1jiZdX/A
-         C8lT50sItK11iJWza+Ot/5wbjAQiUq8UqEtgLwpWHako41bNM1yrCX0xC84Eq5OdNo
-         5l6C+LwCi/zKQ==
-X-Nifty-SrcIP: [209.85.216.47]
-Received: by mail-pj1-f47.google.com with SMTP id bo18so14171538pjb.0;
-        Fri, 13 Aug 2021 00:28:34 -0700 (PDT)
-X-Gm-Message-State: AOAM531vw/gAV0yRVmhLy/1WD4XoyGkmE1pV7aoOqhCCU/wGwtKAkd9N
-        13Rv/p6oa7wSQyZVHcIjczct7weFXsW+w/NkwtM=
-X-Google-Smtp-Source: ABdhPJyx44tl9Uqj/H6tA+h95icpAvU0tmj4P0oIKNOx0eYC/VoDpCvWHbGhx2UZQAkDxdiox5Mt6fBk1kYZ8MIeF5o=
-X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr1212507pjg.153.1628839713522;
- Fri, 13 Aug 2021 00:28:33 -0700 (PDT)
+        Fri, 13 Aug 2021 03:32:28 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894DBC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:32:01 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id f5so11916158wrm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YhM3/UTYz8dk2sZhZpZTt6st98MzOChtEhO/bHLaAHg=;
+        b=GAED6S7AkBJXCV/TQx04ArgCnRr8eWa4lxo3X2wfeSnhw0mistR2xpnCMd3idw9fxY
+         7iQZIIk+slLq9a8+4jhuphW3EtoO2opL7tX9sveSnoaKop2/rqPFzr/xISdHZ29x376v
+         5q1xYOMcPV88hos0872fOx/MrvGY1G8y7mPhGsjIzqir+lQW1+pJsngoHkAjKt1cOowl
+         Ep3Ds6CokxyGor/i77Y7OnuJdffk6bjOBONfurTLmyt+Z7zayYk41BOexqfKADE3EWMr
+         p1GVHGcwTTqDNXM9vVTTQetJ+EdIcS/WyCaFD1S/caWLeVdP5m/MofXUWwd6f0H3JN/l
+         cIKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YhM3/UTYz8dk2sZhZpZTt6st98MzOChtEhO/bHLaAHg=;
+        b=kdno44nLt3XiSPjcH5M7VHmLGHtr1zhD5Azif6KYWYt7bt4Z5xhxDKF2HqO4RB/sxF
+         ryL7I/N1gsUq3QixoQQM/gy47tSq6y1KvjbpUnzTqCF86BG6LPeP9fA+RjJA0mKotHRr
+         62x2E4eGX7776P/x8ABa3N31Si3LT5LVQA+JjcV5RuuhUtJL76Ub/HNSrvzfuQGBdPEg
+         LfSA1XDy3EDlgMzAMM8bdJrUP8IMEd3+y/FF1aUVWxLXVhtNx8HztBy8fOYoU2Nwpmw4
+         TOhLYpnmeZeteWfDdpVBlUfLWEgrAp9cQffkRCE+AO8ydwb0Mr3C/bACJRSTwl7xTi2k
+         dkXg==
+X-Gm-Message-State: AOAM533dTw46uFAs025lSGhrDX0wZjN4afi7626xipu4H0VdEpNOW8uz
+        SGBqcKvRz6J+J4q7kWJ8xi8=
+X-Google-Smtp-Source: ABdhPJx8BsxU6DfJINDtdlyeWIgRdFDxAh0rYxwdF+2TYDObmkCGYC2XAM6vKhd+LrRc/bvyo9piaQ==
+X-Received: by 2002:a5d:4d12:: with SMTP id z18mr1421138wrt.195.1628839920023;
+        Fri, 13 Aug 2021 00:32:00 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::2571])
+        by smtp.gmail.com with ESMTPSA id k12sm697406wrd.75.2021.08.13.00.31.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 00:31:59 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 0/4] staging: r8188eu: refactor Hal_GetChnlGroup88E()
+Date:   Fri, 13 Aug 2021 09:31:05 +0200
+Message-Id: <20210813073109.25609-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210811225442.9537-1-rdunlap@infradead.org>
-In-Reply-To: <20210811225442.9537-1-rdunlap@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 13 Aug 2021 16:27:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASJi3HWY9ut8+mkSOAWD=QxB7ftnkHdqZRW0fLbO5NDhg@mail.gmail.com>
-Message-ID: <CAK7LNASJi3HWY9ut8+mkSOAWD=QxB7ftnkHdqZRW0fLbO5NDhg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: allow "make" targets 'versioncheck' and
- 'includecheck' withoug .config file
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 7:54 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Top-level Makefile targets 'versioncheck' and 'includecheck' don't
-> need a configured kernel (i.e., don't need a .config file), so add
-> them the the list of "no-dot-config-targets".
-> This eliminates the 'make' error:
->
-> ***
-> *** Configuration file ".config" not found!
-> ***
-> *** Please run some configurator (e.g. "make oldconfig" or
-> *** "make menuconfig" or "make xconfig").
-> ***
-> Makefile:759: include/config/auto.conf.cmd: No such file or directory
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: linux-kbuild@vger.kernel.org
-> ---
-> Fixes: I couldn't determine this.
->
->  Makefile |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> --- linux-next-20210811.orig/Makefile
-> +++ linux-next-20210811/Makefile
-> @@ -274,7 +274,8 @@ no-dot-config-targets := $(clean-targets
->                          cscope gtags TAGS tags help% %docs check% coccicheck \
->                          $(version_h) headers headers_% archheaders archscripts \
->                          %asm-generic kernelversion %src-pkg dt_binding_check \
-> -                        outputmakefile rustfmt rustfmtcheck
-> +                        outputmakefile rustfmt rustfmtcheck \
-> +                        versioncheck includecheck
->  # Installation targets should not require compiler. Unfortunately, vdso_install
->  # is an exception where build artifacts may be updated. This must be fixed.
->  no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+This series refactors Hal_GetChnlGroup88E().
+ - removes 5GHz code
+ - changes return type to void
+ - cleans up camel case naming
 
+Michael Straube (4):
+  staging: r8188eu: remove 5GHz code from Hal_GetChnlGroup88E()
+  staging: r8188eu: convert return type of Hal_GetChnlGroup88E() to void
+  staging: r8188eu: rename parameter of Hal_GetChnlGroup88E()
+  staging: r8188eu: rename Hal_GetChnlGroup88E()
 
-
-There is no good reason to invoke checkincludes.pl via GNU Make
-in the first place.
-
-
-
-A better solution is to do it by a shell script
-or to make checkincludes.pl traverse the
-subdirectories by itself.
-
-
-
-[1] An easy solution
-
-Add scripts/checkincludes-all:
-
-
-#!/bin/sh
-find . -name '*.[hcS]' -type f -print | sort \
-  | xargs $(dirname $0)/checkincludes.pl
-
-
-Then, remove the 'includecheck' target from the Makefile.
-
-You can do 'scripts/checkincludes-all'
-instead of 'make includecheck'.
-
-
-
-[2] A better solution
-
-Extend scripts/checkincludes.pl so that it checks
-all *.[hcS] files under the current directory
-when no argument is passed.
-
-You can simply do 'scripts/checkincludes.py'
-
-
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 90 ++++++-------------
+ 1 file changed, 26 insertions(+), 64 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+2.32.0
+
