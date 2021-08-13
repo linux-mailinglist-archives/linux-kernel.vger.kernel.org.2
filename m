@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5063EB5A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA103EB5A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240399AbhHMMhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240395AbhHMMgw (ORCPT
+        id S240465AbhHMMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:37:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:17017 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240408AbhHMMh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:36:52 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BE6C0617AE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:36:04 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k5-20020a05600c1c85b02902e699a4d20cso6818829wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OVsoLc8GnI2MJx0koPlkzsYORog3roebBSA9S9Lp1xo=;
-        b=egAI5MaCx9xeTeaDTXJ3k5cDg0ZnINbnSaS3tFWQFxO+8aN/v/SDF1W1pqnitQiAnn
-         JOdHqGMJiOhw8oNbpX0AUwKa31k8vhYnX+ilDmFTLF/bGvem4ZRyEYTMMo4/Pj4Frz2U
-         a7kPYvvhIUpNfKqRAtMWAjrLfm6aekJejIKng=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OVsoLc8GnI2MJx0koPlkzsYORog3roebBSA9S9Lp1xo=;
-        b=D3tNG26CuQmETWeaY4WEPSWFKsHFv353GCvAqccas0GaRJNH6b/EEUXoSxWap7OdBa
-         SEw/tC4Z48U+emYZIkBjpo6kLNwou8nnG/EZB+JbzkQPM/CC3bK8kKLoSqhWzwQLYCr+
-         KcMt4QmG/P+sP7LYIZJ6nLlTDZ9FKdR4rFJbeUR+U5L+0ZVV4ybqKtL5/8NNRfBtPNv4
-         Mmhk/l5uzJYEWBO6ikmEQmO+amzTk+jaUbSeqCCJWmlyrMsM+Y2u80hC3Y678O99V3Tf
-         8sRu7tIngGU6fco8QEmGgbwgYzuW3Bt/WPKZMOqhQKTNUbfmtXoJg0s02ey59mEPX9xS
-         iTWw==
-X-Gm-Message-State: AOAM530nZkLYCoeBSDA7E2LKYIP8eJNkK9LVhcaViEjqYwz1/Ju6axmW
-        sMxkiR2xzhokkYvd/36K1IAebg==
-X-Google-Smtp-Source: ABdhPJxeb4QSR91gkUeMJG783tEyeIzpfzA3nquA/DVh4P6/OjdbN0MZIGZVMmA0QRAaQYs8NFvqEg==
-X-Received: by 2002:a05:600c:3555:: with SMTP id i21mr2386110wmq.156.1628858162782;
-        Fri, 13 Aug 2021 05:36:02 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:fa59:71ff:fe7e:8d21])
-        by smtp.gmail.com with ESMTPSA id q5sm1432727wrx.33.2021.08.13.05.36.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 05:36:02 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 13:36:01 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     yongw.pur@gmail.com
-Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, tglx@linutronix.de,
-        peterz@infradead.org, shakeelb@google.com, guro@fb.com,
-        alexs@kernel.org, richard.weiyang@gmail.com, sh_def@163.com,
-        sfr@canb.auug.org.au, wang.yong12@zte.com.cn,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.yang29@zte.com.cn
-Subject: Re: [PATCH v1] mm: Add configuration to control whether vmpressure
- notifier is enabled
-Message-ID: <YRZnMYCN1ArhM3wE@chrisdown.name>
-References: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn>
+        Fri, 13 Aug 2021 08:37:28 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GmNJ04zgxzb16Q;
+        Fri, 13 Aug 2021 20:33:04 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 13 Aug 2021 20:36:45 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 13 Aug 2021 20:36:44 +0800
+Subject: Re: [PATCH] blk-mq: clear active_queues before clearing
+ BLK_MQ_F_TAG_QUEUE_SHARED
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210731062130.1533893-1-yukuai3@huawei.com>
+ <YQydfkffPhBEFpwB@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <0f8e7e8c-9c4d-7b88-a967-c54cbbe038c8@huawei.com>
+Date:   Fri, 13 Aug 2021 20:36:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <YQydfkffPhBEFpwB@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-yongw.pur@gmail.com writes:
->From: wangyong <wang.yong12@zte.com.cn>
->Inspired by PSI features, vmpressure inotifier function should also be
->configured to decide whether it is used, because it is an independent
->feature which notifies the user of memory pressure.
->
->Since the vmpressure interface is used in kernel common code, for
->users who do not use the vmpressure function, there will be
->additional overhead.
+Hi, jens
 
-Could you please demonstrate this additional overhead with profiles or 
-demonstrations of other real world effects? Thanks.
+Can you please consider to apply this patch.
+
+By the way, sorry about the wrong email I replied.
+
+Thanks
+Kuai
+
+On 2021/08/06 10:25, Ming Lei wrote:
+> On Sat, Jul 31, 2021 at 02:21:30PM +0800, Yu Kuai wrote:
+>> We run a test that delete and recover devcies frequently(two devices on
+>> the same host), and we found that 'active_queues' is super big after a
+>> period of time.
+>>
+>> If device a and device b share a tag set, and a is deleted, then
+>> blk_mq_exit_queue() will clear BLK_MQ_F_TAG_QUEUE_SHARED because there
+>> is only one queue that are using the tag set. However, if b is still
+>> active, the active_queues of b might never be cleared even if b is
+>> deleted.
+>>
+>> Thus clear active_queues before BLK_MQ_F_TAG_QUEUE_SHARED is cleared.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/blk-mq.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index 2c4ac51e54eb..2fe396385a4a 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -2994,10 +2994,12 @@ static void queue_set_hctx_shared(struct request_queue *q, bool shared)
+>>   	int i;
+>>   
+>>   	queue_for_each_hw_ctx(q, hctx, i) {
+>> -		if (shared)
+>> +		if (shared) {
+>>   			hctx->flags |= BLK_MQ_F_TAG_QUEUE_SHARED;
+>> -		else
+>> +		} else {
+>> +			blk_mq_tag_idle(hctx);
+>>   			hctx->flags &= ~BLK_MQ_F_TAG_QUEUE_SHARED;
+>> +		}
+>>   	}
+>>   }
+> 
+> Looks correct, the only remained queue in tagset has to be idled before
+> clearing BLK_MQ_F_TAG_QUEUE_SHARED:
+> 
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> 
+> 
+> 
+> Thanks,
+> Ming
+> 
+> .
+> 
