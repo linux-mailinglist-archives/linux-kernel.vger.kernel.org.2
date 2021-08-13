@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72063EAF58
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDDB3EAF5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238556AbhHMEcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 00:32:35 -0400
-Received: from relay5.mymailcheap.com ([159.100.248.207]:35271 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235002AbhHMEcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 00:32:33 -0400
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 62E42260EB;
-        Fri, 13 Aug 2021 04:32:04 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 474553F202;
-        Fri, 13 Aug 2021 04:32:01 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 78C0F2A521;
-        Fri, 13 Aug 2021 06:32:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1628829120;
-        bh=wco2uYT/C/REw9JO3fVns6TaOKfMHujekS5qiK7d4KQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LDcz+hUbfqSPgfueG+kV6yOcJY3apEG/8r/+wCEsb1NSuNtzDAEoNVny+kX9nf0j+
-         lfDh0c5yvCAvjPf6EWpPBU9kwVA8BepZ3ZHSL+xYtpzItUWHEOxFyU+mV0rYKpnpHA
-         ZNxzZFS/0cgq1kgzn/aNnB7LAtPHKdsO5wYVnvYY=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vp-wt9x0uCly; Fri, 13 Aug 2021 06:31:56 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Fri, 13 Aug 2021 06:31:56 +0200 (CEST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id D5A4740BFC;
-        Fri, 13 Aug 2021 04:31:55 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="X/h9mPou";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.162.220])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 2076740BFC;
-        Fri, 13 Aug 2021 04:31:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1628829107; bh=wco2uYT/C/REw9JO3fVns6TaOKfMHujekS5qiK7d4KQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=X/h9mPouIP6UtwvX8KJodIyT7vwhndKyQFDVXrApD/F2xTptTW7Mic7tMGmgmXlRZ
-         HN/bcmHO/r/nMkqWP+KrKoO/XjBRAtswu9XcyaxSZxmuROJsjDpjnyNrh6VHyIX6CM
-         7HeumCFOW/nCmstgyK9g+6H1WP0RHT7FsoHUbfgI=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
-Date:   Fri, 13 Aug 2021 12:31:31 +0800
-Message-Id: <20210813043131.833006-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.30.2
+        id S238680AbhHMEmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 00:42:05 -0400
+Received: from mail-dm6nam10on2085.outbound.protection.outlook.com ([40.107.93.85]:14432
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238659AbhHMEmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 00:42:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F0Id2QdDXDWDCQ9pg2uC79ZXK3CzqcRE38hKaS8/oiPLYhCe1VGzb1L3Rspat9/gAUjZoqRrZ7yNzP1Mf6NXi2dncaDKABVIVaXeuGu0le+EVzndpcT+Xi5klPMTM/B/zSj1pYefcqxMYybA347zeh7Uhn1h9pMSHJlVgc8uqJz25EvhTfG2JZHG7nnDEw17zQOdJPlNzrRYoJ7eUf5qEwo3AJgRBDEEUcXsGwmg1qaIECsL0+LEA66tohAcJibKxCKbBMM1X6KwEMzMK//kC+D/CWc+0xwqDiZUeJDdLgoWIMFv9BST3lw15/fP7U4z07T/UyBXpLkV+/BFymuLbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0I7PUlOFBEhWujC+EitLHQR3QU54bgs+GKvRXWLYopY=;
+ b=Z3tZmmR7EU7olaQHFXbUpzzvdAAdZ135dJSyeyomx9ps0Lp6FH2lvUFojqeRGyFCNWZmbUVpswv/KH0OyWf7I6k93wNg0vQrzRhAnVZ2bZURQR2nePBAHEK4ODOeB46QigFYPBnO7ddslpDHcLgQN4soEUZER7kkteEFDJ19fdjOJWnTmGTfYVwmCkLFVvddVpGsktZBRXEyLu3ciSleE7AQHLBFL/pqQOWDHRDxvfvdsX5QSRh2uk7faGpRoCENUsQLIZH8kRHI7Vrq2Ue/lI74A/E6j1+NBWXM0tSAUq4KA3CvHm2tJEhLX7O/ISHBkhTCdP8uTM6C87fOc+dY9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0I7PUlOFBEhWujC+EitLHQR3QU54bgs+GKvRXWLYopY=;
+ b=Hw3u+cNMX/XR5btFWei6zZe5sSZADf+gnMfGXhhzuu7buRD1uI+JsL+3iA+y2qypCu/IEMup/dJfw5IaZTTYFX+Pq/SK1LSMunnDXBEwy+ABSo97CrmHO5Nk33iPBFrCEajJxxkGGgHfsqjHX+9vqKwHGtn5j0xud5sw3Z1w4z4boAqhmljCP57eqRanOsqbUGg9tZTx+UF4EnQvdYp6PTJt3i6XEnjp7IZ1mFlxawpCWO3+jfjB8CPX+X7Rnl4fEz1UJEzSN7hGjpenYJIYluebUxPfqPyhWW3mvnFX9Ra30ZJciTyvk8h99T9htxV+e+XUNA83xQLT8Z/iKv8ing==
+Received: from BN9PR03CA0089.namprd03.prod.outlook.com (2603:10b6:408:fc::34)
+ by MN2PR12MB4109.namprd12.prod.outlook.com (2603:10b6:208:1d9::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Fri, 13 Aug
+ 2021 04:41:36 +0000
+Received: from BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fc:cafe::bf) by BN9PR03CA0089.outlook.office365.com
+ (2603:10b6:408:fc::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend
+ Transport; Fri, 13 Aug 2021 04:41:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT016.mail.protection.outlook.com (10.13.176.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4415.14 via Frontend Transport; Fri, 13 Aug 2021 04:41:35 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 12 Aug
+ 2021 21:41:35 -0700
+Received: from sandstorm.attlocal.net (172.20.187.5) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 13 Aug 2021 04:41:35 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-s390@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v3 0/3] A few gup refactorings and documentation updates
+Date:   Thu, 12 Aug 2021 21:41:30 -0700
+Message-ID: <20210813044133.1536842-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [4.90 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.220:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[6];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Queue-Id: D5A4740BFC
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e0c33d47-2210-4d80-b792-08d95e14a1d3
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4109:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB410909599F0B041010C398F5A8FA9@MN2PR12MB4109.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: orTKmo2OLiFDP3xM32hQGOnALTmSOidxEnY/uqK5HMd32SEzvgDOkc3vP8wW9iQDoIiKOVn5zXaBiot5Ix1HTd4XjNO6gP2jeijUbMK0isi+0/9SSp6Noq05GYuL1C/hhfBubSJb1t7cVKNVx2iD1EhBzwz1cWg+F1CkeSpGx8UdT2cgO+Jdt1W8gAjv/ACQq2M3YwzrygDhmtxX3kskyYDabVwvmJi6H+a3nkVBj8sH0yJ9+V5Ouvo7YS9/gSSTWESpBq/wrQFREAohot9dCF8ENzGHZ1OXtQE1QvwtD8203+hFhA/ZkTpGHd01yIYcMRcA3sleRKAyVfoTLAwDJlqZssig5Ff4YL6uM7DYu9lQD3OOdvsilH8k9wrzrnOhtadl30qxmyDLUgmopUPENOtD687lR9fj3ZpLH4RcAS250JzrQL3eh+alaHfA1D3vGQVuKh2WA9LvvcP2p1AHYIi2odRhhSAoNPTYhA5h+9aIoWI1qcAar6XE0wxtqBsfV93SCG0Nz+oTuhx8abzfxPBfikcfMMI7/d18mDnHe9RhqM7Mnq31PPhn3dn5u+/60jXiwAFF2Y76hIOvqd1TysxoF/SL6Kk2tG8G5XmKM39eWmTvg/poFDkueEQJc1eQFjdzwVQRE5mHyhs3g0Ii07EPS4+ER7LvJCtSswStiPaY4MDLEg+VI9osb4jlJV/g5X02AnAGLL3IMOkHPyygJgBoZyfAe8p6LMeev1HXju4MAax53K+7WWkyH9gFB79IlVC8iS5wVKLqa9MHKir3ZGn+e8Ugu2g0k3270pvCv1LTro7EoMtsFP5Q/z2obgoxV13vMyqNxCqTFTJrWnxckg==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(46966006)(36840700001)(82740400003)(83380400001)(6666004)(86362001)(36756003)(2906002)(7636003)(4326008)(356005)(70206006)(82310400003)(7416002)(15650500001)(54906003)(36860700001)(336012)(5660300002)(26005)(107886003)(966005)(426003)(1076003)(186003)(47076005)(2616005)(478600001)(8676002)(316002)(70586007)(6916009)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 04:41:35.5120
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0c33d47-2210-4d80-b792-08d95e14a1d3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, TCPM code omits discover when swapping to gadget, and assume
-that no altmodes are available when swapping from gadget. However, we do
-send discover when we get attached as gadget -- this leads to modes to be
-discovered twice when attached as gadget and then swap to host.
+Here is what's new for v3:
 
-Always re-send discover when swapping DR, regardless of what change is
-being made; and because of this, the assumption that no altmodes are
-registered with gadget role is broken, and altmodes de-registeration is
-always needed now.
+* Removed __maybe_unused from try_grab_compound_head
+* Removed some unnecessary comparisons against NULL.
+* Added Christoph's Reviewed-by tags to patches 2 and 3
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Changes in v2:
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index b9bb63d749ec..ab6d0d51ee1c 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
- 		tcpm_set_state(port, ready_state(port), 0);
- 		break;
- 	case DR_SWAP_CHANGE_DR:
--		if (port->data_role == TYPEC_HOST) {
--			tcpm_unregister_altmodes(port);
-+		tcpm_unregister_altmodes(port);
-+		if (port->data_role == TYPEC_HOST)
- 			tcpm_set_roles(port, true, port->pwr_role,
- 				       TYPEC_DEVICE);
--		} else {
-+		else
- 			tcpm_set_roles(port, true, port->pwr_role,
- 				       TYPEC_HOST);
--			port->send_discover = true;
--		}
-+		port->send_discover = true;
- 		tcpm_ams_finish(port);
- 		tcpm_set_state(port, ready_state(port), 0);
- 		break;
+* Changed refs to @refs, and added some more documentation as well.
+* Completely removed try_get_page(). (I'm adding more people and lists
+  to Cc, because of those call site changes.) * Reversed the logic in
+try_grab_page() to make it a touch more
+  readable.
+* Rebased to linux-next (next-20210810).
+
+Original v2 is here:
+https://lore.kernel.org/r/20210811070542.3403116-1-jhubbard@nvidia.com
+
+Here is the v1 cover letter, edited slightly to keep up with the latest
+story.
+
+While reviewing some of the other things going on around gup.c, I
+noticed that the documentation was wrong for a few of the routines that
+I wrote. And then I noticed that there was some significant code
+duplication too. So this fixes those issues.
+
+This is not entirely risk-free, but after looking closely at this, I
+think it's actually a useful improvement, getting rid of the code
+duplication here.
+
+However, it is possible I've overlooked something. I did some local LTP
+and other testing on an x86 test machine but failed to find any problems
+yet.
+
+Original v1 is here:
+https://lore.kernel.org/r/20210808235018.1924918-1-jhubbard@nvidia.com
+
+
+
+John Hubbard (3):
+  mm/gup: documentation corrections for gup/pup
+  mm/gup: small refactoring: simplify try_grab_page()
+  mm/gup: Remove try_get_page(), call try_get_compound_head() directly
+
+ arch/s390/mm/fault.c |  2 +-
+ fs/pipe.c            |  2 +-
+ include/linux/mm.h   | 14 ++------
+ mm/gup.c             | 83 ++++++++++++++++++++++----------------------
+ 4 files changed, 47 insertions(+), 54 deletions(-)
+
 -- 
-2.30.2
+2.32.0
+
