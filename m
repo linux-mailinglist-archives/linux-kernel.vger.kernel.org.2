@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911FF3EB34E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EBB3EB357
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbhHMJ0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:26:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239544AbhHMJZ6 (ORCPT
+        id S239214AbhHMJbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:31:34 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49496 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238980AbhHMJbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628846731;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/u8LYZUFfXpTFUk/tewCuf2wr2VOqPNaLEeEv38oPr4=;
-        b=Ro0E+HFqhPI2r0QKTUgAinSKQdGzVquHZVxx3eJon6t7wln1ZkUUOe/ZZOI2WeH45iCuIs
-        bsjk2Rk6CHe2f6tyAHzDCwOCycWMU462ax+k7t1etZJmj+cmiEeQGjP0O4jGRlIdkoFQCp
-        0BNJJsHqI1dM+XAy+12tpdVPvDR1NNM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-54wTLrrfP-yUVfPFUBdowA-1; Fri, 13 Aug 2021 05:25:29 -0400
-X-MC-Unique: 54wTLrrfP-yUVfPFUBdowA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1FF95801AEB;
-        Fri, 13 Aug 2021 09:25:12 +0000 (UTC)
-Received: from [10.64.54.103] (vpn2-54-103.bne.redhat.com [10.64.54.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00EA7687D5;
-        Fri, 13 Aug 2021 09:25:06 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v6 00/12] mm/debug_vm_pgtable: Enhancements
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        vgupta@synopsys.com, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210809092631.1888748-1-gshan@redhat.com>
- <b066aea5-6b3e-193a-01d0-32b52d5ac513@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <d96fa0d8-98d8-c924-99f7-bb9673fc2a13@redhat.com>
-Date:   Fri, 13 Aug 2021 19:25:01 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Fri, 13 Aug 2021 05:31:32 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 052401C0B76; Fri, 13 Aug 2021 11:31:05 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 11:31:04 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, jason@jlekstrand.net,
+        Jonathan Gray <jsg@jsg.id.au>
+Subject: Determining corresponding mainline patch for stable patches Re:
+ [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in eb_parse()
+Message-ID: <20210813093104.GA20799@duo.ucw.cz>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.050147269@linuxfoundation.org>
+ <20210811072843.GC10829@duo.ucw.cz>
+ <YROARN2fMPzhFMNg@kroah.com>
+ <20210811122702.GA8045@duo.ucw.cz>
+ <YRPLbV+Dq2xTnv2e@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <b066aea5-6b3e-193a-01d0-32b52d5ac513@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+In-Reply-To: <YRPLbV+Dq2xTnv2e@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman and Vineet,
 
-On 8/12/21 9:11 PM, Anshuman Khandual wrote:
-> On 8/9/21 2:56 PM, Gavin Shan wrote:
->> There are couple of issues with current implementations and this series
->> tries to resolve the issues:
->>
->>    (a) All needed information are scattered in variables, passed to various
->>        test functions. The code is organized in pretty much relaxed fashion.
->>
->>    (b) The page isn't allocated from buddy during page table entry modifying
->>        tests. The page can be invalid, conflicting to the implementations
->>        of set_xxx_at() on ARM64. The target page is accessed so that the
->>        iCache can be flushed when execution permission is given on ARM64.
->>        Besides, the target page can be unmapped and accessing to it causes
->>        kernel crash.
->>
->> "struct pgtable_debug_args" is introduced to address issue (a). For issue
->> (b), the used page is allocated from buddy in page table entry modifying
->> tests. The corresponding tets will be skipped if we fail to allocate the
->> (huge) page. For other test cases, the original page around to kernel
->> symbol (@start_kernel) is still used.
->>
->> The patches are organized as below. PATCH[2-10] could be combined to one
->> patch, but it will make the review harder:
->>
->>    PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
->>             needed information. With it, the old and new implementation
->>             can coexist.
->>    PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
->>    PATCH[11] removes the unused code for old implementation.
->>    PATCH[12] fixes the issue of corrupted page flag for ARM64
->>
->> Changelog
->> =========
->> v6:
->>     * Populate saved page table entry pointers after
->>       they're allocated in init_args()                        (Anshuman)
->>     * Fix imbalanced preemption count issue by replacing
->>       pte_alloc_mmap() with pte_alloc() in init_args()        (syzbot)
-> 
-> + vgupta@kernel.org
-> 
-> Hello Gavin/Vineet,
-> 
-> This series still need to be tested on ARC ?
-> 
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I'm unable to test ARC as it's not supported by QEMU yet.
-It would great if Vineet can give it a try on ARC :)
+Hi!
 
-Thanks,
-Gavin
+> > > > > From: Jonathan Gray <jsg@jsg.id.au>
+> > > > >=20
+> > > > > The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 =
+in
+> > > > > 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it sho=
+uld
+> > > > > have leading to 'batch' being used uninitialised.  The 5.13 backp=
+ort and
+> > > > > the mainline commit did not remove the portion this patch adds ba=
+ck.
+> > > >=20
+> > > > This patch has no upstream equivalent, right?
+> > > >=20
+> > > > Which is okay -- it explains it in plain english, but it shows that
+> > > > scripts should not simply search for anything that looks like SHA a=
+nd
+> > > > treat it as upsteam commit it.
+> > >=20
+> > > Sounds like you have a broken script if you do it that way.
+> >=20
+> > That is what you told me to do!
+> >=20
+> > https://lore.kernel.org/stable/YQEvUay+1Rzp04SO@kroah.com/
+>=20
+> Yes, which is fine for matching sha1 values.
 
+I'd really like reliable / automated way to tell upstream commit from
+given -stable commit.=20
+
+> > I would happily adapt my script, but there's no
+> > good/documented/working way to determine upstream commit given -stable
+> > commit.
+> >=20
+> > If we could agree on
+> >=20
+> > Commit: (SHA)
+> >=20
+> > in the beggining of body, that would be great.
+> >=20
+> > Upstream: (SHA)
+> >=20
+> > in sign-off area would be even better.
+>=20
+> What exactly are you trying to do when you find a sha1?  For some reason
+> my scripts work just fine with a semi-free-form way that we currently
+> have been doing this for the past 17+ years.  What are you attempting to
+> do that requires such a fixed format?
+
+Is there any problem having a fixed format? You are producing -stable
+kernels, so you are not the one needing such functionality.
+
+Anyway... We do reviews here, and we review patches on multiple
+branches (4.4, 4.19, 5.10). So I'm using scripts to group backports of
+the same patch together, for easier review and to flag patches that do
+not have upstream equivalent for extra review. (Example of the review
+file below)
+
+There are other uses. When we were creating 5.10-cip branch, we used
+automatic scripts to verify that all patches from 4.19-cip are
+included in 5.10-cip. Determining mainline patch for given commit was
+essential for that.
+
+Other use was actually suggested by you: you jokingly wanted to
+replace CVE-XXX with mainline commit IDs. But that needs reliable way
+to determine upstream commit from stable commit to work nicely.
+(And yes, we are actually trying to maintain the mapping, see for
+example
+https://gitlab.com/cip-project/cip-kernel/cip-kernel-sec/-/blob/master/issu=
+es/CVE-2016-10147.yml )
+
+Best regards,
+								Pavel
+
+
+a |150198841 135cbd o: 5.10| spi: imx: mx51-ecspi: Reinstate low-speed CONF=
+IGREG delay
+a |8916a8606 53ca18 o: 5.10| spi: imx: mx51-ecspi: Fix low-speed CONFIGREG =
+delay calculation
+v |2c32af963 5c0424 o: 5.10| scsi: sr: Return correct event when media even=
+t code is 3
+v |671402b0e 5c0424 o: 4.19| scsi: sr: Return correct event when media even=
+t code is 3
+a |a78c94304 5c0424 o: 4.4| scsi: sr: Return correct event when media event=
+ code is 3
+v |9acc1f082 c592b4 o: 5.10| media: videobuf2-core: dequeue if start_stream=
+ing fails
+v |8f33cda2c c592b4 o: 4.19| media: videobuf2-core: dequeue if start_stream=
+ing fails
+a |f18813d9c c592b4 .: 4.4| media: videobuf2-core: dequeue if start_streami=
+ng fails
+a |da6c08058 36862c .: 5.10| ARM: dts: stm32: Disable LAN8710 EDPD on DHCOM
+a |630677821 15f68f .: 5.10| ARM: dts: stm32: Fix touchscreen IRQ line assi=
+gnment on DHCOM
+a |f84d7d425 7199dd .: 5.10| dmaengine: imx-dma: configure the generic DMA =
+type to make it work
+a |e0188a8de d51c59 o: 5.10| net, gro: Set inner transport header offset in=
+ tcp/udp GRO hook
+a |72795b111 e11e86 .: 5.10| net: dsa: sja1105: overwrite dynamic FDB entri=
+es with static ones in .port_fdb_add
+a |0c548fae4 6c5fc1 .: 5.10| net: dsa: sja1105: invalidate dynamic FDB entr=
+ies learned concurrently with statically added ones
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRY72AAKCRAw5/Bqldv6
+8kAKAKCwygxPhJPdNZ0z1NKOfIYKJ8r5XwCfSMmPoyForoYtVTOV7+d9glOR8HE=
+=OYaB
+-----END PGP SIGNATURE-----
+
+--y0ulUmNC+osPPQO6--
