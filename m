@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A943EB379
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85923EB37A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239503AbhHMJoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:44:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50121 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239028AbhHMJoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:44:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="202726304"
-X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="202726304"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 02:43:34 -0700
-X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="470040425"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 02:43:29 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mETik-0091Jx-R2; Fri, 13 Aug 2021 12:43:22 +0300
-Date:   Fri, 13 Aug 2021 12:43:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Abel Vesa <abel.vesa@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 1/4] clk: fractional-divider: Export approximation
- algorithm to the CCF users
-Message-ID: <YRY+uoTrBjkdh4Zj@smile.fi.intel.com>
-References: <20210812170025.67074-1-andriy.shevchenko@linux.intel.com>
- <162879819529.19113.6409882476721828944@swboyd.mtv.corp.google.com>
+        id S239637AbhHMJoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239028AbhHMJof (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 05:44:35 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D53C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:44:08 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mETjN-0002KO-Tj; Fri, 13 Aug 2021 11:44:01 +0200
+Date:   Fri, 13 Aug 2021 11:44:01 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] staging: r8188eu: refactor Hal_GetChnlGroup88E()
+Message-ID: <20210813094401.y2d6wehhdtuvbvp4@viti.kaiser.cx>
+References: <20210813073109.25609-1-straube.linux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162879819529.19113.6409882476721828944@swboyd.mtv.corp.google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210813073109.25609-1-straube.linux@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:56:35PM -0700, Stephen Boyd wrote:
-> Quoting Andy Shevchenko (2021-08-12 10:00:22)
-> > At least one user currently duplicates some functions that are provided
-> > by fractional divider module. Let's export approximation algorithm and
-> > replace the open-coded variant.
-> > 
-> > As a bonus the exported function will get better documentation in place.
-> Applied to clk-next
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-Thank you, Stephen!
+> This series refactors Hal_GetChnlGroup88E().
+>  - removes 5GHz code
+>  - changes return type to void
+>  - cleans up camel case naming
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Michael Straube (4):
+>   staging: r8188eu: remove 5GHz code from Hal_GetChnlGroup88E()
+>   staging: r8188eu: convert return type of Hal_GetChnlGroup88E() to void
+>   staging: r8188eu: rename parameter of Hal_GetChnlGroup88E()
+>   staging: r8188eu: rename Hal_GetChnlGroup88E()
 
+>  .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 90 ++++++-------------
+>  1 file changed, 26 insertions(+), 64 deletions(-)
 
+> -- 
+> 2.32.0
+
+Hi Michael,
+
+this series looks ok to me.
+
+Acked-by: Martin Kaiser <martin@kaiser.cx>
