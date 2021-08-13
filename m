@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090DD3EBCBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 21:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9223EBCBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 21:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233935AbhHMTxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 15:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S233959AbhHMTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 15:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233830AbhHMTxD (ORCPT
+        with ESMTP id S233830AbhHMTxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 15:53:03 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1BEC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 12:52:35 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d17so13361583plr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 12:52:35 -0700 (PDT)
+        Fri, 13 Aug 2021 15:53:05 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE5BC0617AD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 12:52:38 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e19so13391311pla.10
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 12:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SM/lQTi+zDygoE+XS6N/UT9RB15cmwU0M45x22/Joec=;
-        b=ClpwbdOkN+fUw06l6m/r9I/6eV2Zc4wl3HcjVdbx2cjVfih6L4MNKKohX+Urqu5GYv
-         6KW2zdF8jXCFUcMtBWPNFNRwYkLBbJEOlRrp2pSol8//TBWAtUubSYQvDN2wqzQfSlk5
-         +kAGpg/E7C2SGAcp1XXqTEAAWQhM6T80PWwlE=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3jT2CY0QGX/0COP/TqcbhINS3kyVwSI8yvF5ASrkLUY=;
+        b=PA0NoyLNUFZHnqod419u3sBd3l/tS+vq9ygAtqU0MbeXChxr3pKekaAwaNxpWhrWa+
+         j0cg84Y3csQJuJGFyz3tlfGqtY8uIyXbOmdw2FMgULSOUC0whtcspGJ7QMMYCtub72GF
+         8rupOIwTSWwjaNj+ZWYlm1HF69nldNNjvC2xo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SM/lQTi+zDygoE+XS6N/UT9RB15cmwU0M45x22/Joec=;
-        b=VS4tsBFEqDBuqx/tAfMz8HgQqODCgrhAlu/TWaLPHd/G/TUiq4NpoUlbU7+RkH8Z+7
-         LagWHDS6UYqurTkIIOc5hgdpS56AW9YbpVR9T8sZ968Dd2DrZQ7sW0J28VghxoPis50W
-         VncFt3zbsBCUczCPpfvW2O3JzbfuJ8gcu1vfm8JVvfXvxk8fsnaibTPL82hhrbJabbx5
-         qM0TkbF0Z9Htd19L+p9MpXEAZJEIxYF8KQpykozeTEfrgEDYJGgLkNI4qQ8tm3FxuVK9
-         0MDIJLA3s/kD8EF0UXg+HRviro/vRs7QDjuHrad9KXTEUfyDm6aL8DKaO+eqvmFQqe+b
-         fucQ==
-X-Gm-Message-State: AOAM5337qPPCKJ+4rKTFS2yHgqVbG9eFZ6gkGJoGWRLQZVlJGRw9+0EF
-        I0flp3PvLRPFi0B0DViOJ9+YYg==
-X-Google-Smtp-Source: ABdhPJy2w8yD9cldBqoy3do8Oh7daxWgiPmYLMaMspNZIK+anKngS+Tlq0TxUqjOvZvr+qsyzykfpQ==
-X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr4069276pff.49.1628884355393;
-        Fri, 13 Aug 2021 12:52:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3jT2CY0QGX/0COP/TqcbhINS3kyVwSI8yvF5ASrkLUY=;
+        b=t/36NQ6G+FUnNjPOVgq0IS5GNbY8f+e1+tpdkkft+pBvWuPCgPMuAPisC/YXEH6qvY
+         9w1AWpoc/JxGLSYPFyd+LSaXg3Rp+mBOgpipG3Wpuvrj35odxNvOgoUnmbvmymUQ9I/L
+         r24b7LEuaFTE+51MkCG5qlLykLkW/YUr0u0Zro02hfpoHr9psLzP/Oc4y78uTrkY8IWx
+         AOuLQ32E6kohm8niEeZXGYWPumO0jV+HOjbvmkCeEhKfbCl6nM4cbZhJSlWiWVws1L9I
+         0T2ok160DvBp0+3rGhnhAnDm6EobqUElB9+FzoPO436GbmAQubMfdXMGuKj4Qt04jnaZ
+         aKNw==
+X-Gm-Message-State: AOAM533MDOlUlNc6aKfpdFW33yW+HHaNNb6K8COKAFdF/jzKCXlbRz0W
+        GYLyaugCOXyzZAkaxcG2fQEkkw==
+X-Google-Smtp-Source: ABdhPJwZRqobp0mIzIBjR4QDn1c3mcvxoeDaAnrYJllMxFwhaXuhqHugp90nhMKpGa6vFxFp70IZbw==
+X-Received: by 2002:a17:903:2301:b029:12c:b19a:9d40 with SMTP id d1-20020a1709032301b029012cb19a9d40mr3371708plh.33.1628884357546;
+        Fri, 13 Aug 2021 12:52:37 -0700 (PDT)
 Received: from localhost ([2620:15c:202:201:450d:9788:a70e:42d6])
-        by smtp.gmail.com with UTF8SMTPSA id x1sm3174894pfn.64.2021.08.13.12.52.31
+        by smtp.gmail.com with UTF8SMTPSA id g202sm3186576pfb.125.2021.08.13.12.52.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 12:52:34 -0700 (PDT)
+        Fri, 13 Aug 2021 12:52:37 -0700 (PDT)
 From:   Matthias Kaehlcke <mka@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alan Stern <stern@rowland.harvard.edu>,
@@ -62,56 +62,13 @@ Cc:     devicetree@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Stephen Boyd <swboyd@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?q?Martin=20J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v16 0/7] usb: misc: Add onboard_usb_hub driver
-Date:   Fri, 13 Aug 2021 12:52:21 -0700
-Message-Id: <20210813195228.2003500-1-mka@chromium.org>
+        Al Cooper <alcooperx@gmail.com>
+Subject: [PATCH v16 1/7] usb: misc: Add onboard_usb_hub driver
+Date:   Fri, 13 Aug 2021 12:52:22 -0700
+Message-Id: <20210813125146.v16.1.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
 X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+In-Reply-To: <20210813195228.2003500-1-mka@chromium.org>
+References: <20210813195228.2003500-1-mka@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -119,17 +76,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds:
-- the onboard_usb_hub_driver
-- glue in the xhci-plat driver to create and destroy the
-  onboard_usb_hub platform devices if needed
-- a device tree binding for the Realtek RTS5411 USB hub controller
-- device tree changes that add RTS5411 entries for the QCA SC7180
-  based boards trogdor and lazor
-- a couple of stubs for platform device functions to avoid
-  unresolved symbols with certain kernel configs
-
-The main issue the driver addresses is that a USB hub needs to be
+The main issue this driver addresses is that a USB hub needs to be
 powered before it can be discovered. For discrete onboard hubs (an
 example for such a hub is the Realtek RTS5411) this is often solved
 by supplying the hub with an 'always-on' regulator, which is kind
@@ -149,91 +96,751 @@ to keep the hub powered during suspend. The driver can also be
 configured to leave the hub powered when a wakeup capable USB device
 is connected when suspending, and power it off otherwise.
 
+Technically the driver consists of two drivers, the platform driver
+described above and a very thin USB driver that subclasses the
+generic driver. The purpose of this driver is to provide the platform
+driver with the USB devices corresponding to the hub(s) (a hub
+controller may provide multiple 'logical' hubs, e.g. one to support
+USB 2.0 and another for USB 3.x).
+
+Note: the current series only supports hubs connected directly to
+a root hub (through xhci-plat), support for other configurations
+could be added if needed.
+
+Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+---
+
 Changes in v16:
-- added patch 'ARM: configs: Explicitly enable USB_XHCI_PLATFORM
-  where needed' to keep arm32 defconfigs effectively unchanged
+- none
 
 Changes in v15:
-- adjusted dependencies of USB_DWC3_CORE to make sure it can only
-  be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
-  or USB_DWC3_DUAL_ROLE is selectable
+- none
 
 Changes in v14:
-- rebased on top of v5.14-rc1
-- dropped DT binding patch which landed in v5.13
+- none
 
 Changes in v13:
-- added patch "usb: Specify dependency on USB_XHCI_PLATFORM with
-  'depends on'" to the series to avoid Kconfig conflicts
-- added patch "arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM"
-  to the series to keep effective defconfig unchanged
+- none
 
 Changes in v12:
-- onboard_hub driver: use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE)
-  in onboard_hub.h to also check for the driver built as module
-- onboard_hub_driver: include onboard_hub.h again to make sure there
-  are prototype declarations for the public functions
+- use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE) in onboard_hub.h to
+  also check for the driver built as module
+- include onboard_hub.h again from the driver to make sure there are
+  prototype declarations for the public functions
+- remove indentation from label in onboard_hub_create_pdevs()
 
 Changes in v11:
-- support multiple onboard hubs connected to the same parent
+- added onboard_hub_create/destroy_pdevs() helpers, to support multiple onboard
+  hubs connected to the same parent hub
 - don't include ‘onboard_hub.h’ from the onboard hub driver
+- updated commit message
+- added ‘Acked-by' from Alan
 
 Changes in v10:
 - always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
-- keep 'regulator-boot-on' property for pp3300_hub
 
 Changes in v9:
-- added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
-  USB_PLATFORM_XHCI
+- none
+
+Changes in v8:
+- none
 
 Changes in v7:
-- updated DT binding
-- series rebased on qcom/arm64-for-5.13
+- don't declare stub for of_is_onboard_usb_hub() when
+  CONFIG_COMPILE_TEST is defined
 
 Changes in v6:
-- updated summary
+- use 'companion-hub' to locate the platform device, instead of
+  scanning through the nodes of the parent
+- added ABI documentation for 'always_powered_in_suspend'
+- sysfs_emit() instead of sprintf() in always_powered_in_suspend_show()
+- register sysfs attribute through driver.dev_groups
+- evaluate return value of driver_attach() in _probe()
+- use dev_warn() instead of WARN_ON() in _probe()
+- include 'onboard_hub.h'
 
 Changes in v5:
-- cover letter added
+- the platform device is now instantiated from the same DT node
+  as the 'primary' USB hub device
+  - use the USB compatible strings for the platform device
+  - refactored _find_onboard_hub() to search the parents child
+    nodes for a platform device with a matching compatible string
+  - added exported function of_is_onboard_usb_hub() to allow other
+    drivers (like xhci_plat) to check if one of their child DT nodes
+    is a supported hub
+- use late suspend to make sure info about wakeup enabled descendants
+  is updated
+- call driver_attach() for the USB driver in onboard_hub_probe() to
+  make sure the driver is re-attached after the device_release_driver()
+  calls in onboard_hub_remove()
+- renamed sysfs attribute 'power_off_in_suspend' to
+  'always_powered_in_suspend'
+- added sysfs symlinks between platform device and USB devices
+- marked 'onboard_hub_pm_ops' as __maybe_unused
+- removed 'realtek' compatible string which is not needed at this
+  point
+- fix log for regulator_disable() failure
 
-Matthias Kaehlcke (7):
-  usb: misc: Add onboard_usb_hub driver
-  of/platform: Add stubs for of_platform_device_create/destroy()
-  ARM: configs: Explicitly enable USB_XHCI_PLATFORM where needed
-  arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
-  usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
-  usb: host: xhci-plat: Create platform device for onboard hubs in
-    probe()
-  arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+Changes in v4:
+- updated Kconfig documentation
+- changed the loop in onboard_hub_remove() to release the hub lock
+  before unbinding the USB device and make self deadlock prevention
+  less clunky
+- fixed return value in onboard_hub_usbdev_probe()
+- added entry to MAINTAINERS file
+
+Changes in v3:
+- updated the commit message
+- updated description in Kconfig
+- remove include of 'core/usb.h'
+- use 'is_powered_on' flag instead of 'has_wakeup_capable_descendants'
+- added 'going_away' flag to struct onboard_hub
+  - don't allow adding new USB devices when the platform device is going away
+  - don't bother with deleting the list item in onboard_hub_remove_usbdev()
+    when the platform device is going away
+- don't assume in onboard_hub_suspend() that all USB hub devices are
+  connected to the same controller
+- removed unnecessary devm_kfree() from onboard_hub_remove_usbdev()
+- fixed error handling in onboard_hub_remove_usbdev()
+- use kstrtobool() instead of strtobool() in power_off_in_suspend_store()
+- unbind USB devices in onboard_hub_remove() to avoid dangling references
+  to the platform device
+- moved put_device() for platform device to _find_onboard_hub()
+- changed return value of onboard_hub_remove_usbdev() to void
+- evaluate return value of onboard_hub_add_usbdev()
+- register 'power_off_in_suspend' as managed device attribute
+- use USB_DEVICE macro instead manual initialization
+- add unwinding to onboard_hub_init()
+- updated MODULE_DESCRIPTION
+- use module_init() instead of device_initcall()
+
+Changes in v2:
+- check wakeup enabled state of the USB controller instead of
+  using 'wakeup-source' property
+- use sysfs attribute instead of DT property to determine if
+  the hub should be powered off at all during system suspend
+- added missing brace in onboard_hub_suspend()
+- updated commit message
+- use pm_ptr for pm_ops as suggested by Alan
+
+Changes in v1:
+- renamed the driver to 'onboard_usb_hub'
+- single file for platform and USB driver
+- USB hub devices register with the platform device
+  - the DT includes a phandle of the platform device
+- the platform device now controls when power is turned off
+- the USB driver became a very thin subclass of the generic USB
+  driver
+- enabled autosuspend support
 
  .../sysfs-bus-platform-onboard-usb-hub        |   8 +
  MAINTAINERS                                   |   7 +
- arch/arm/configs/exynos_defconfig             |   1 +
- arch/arm/configs/keystone_defconfig           |   1 +
- arch/arm/configs/multi_v7_defconfig           |   1 +
- arch/arm/configs/mvebu_v7_defconfig           |   1 +
- arch/arm/configs/omap2plus_defconfig          |   1 +
- arch/arm/configs/pxa_defconfig                |   1 +
- .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
- .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  12 +-
- .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
- arch/arm64/configs/defconfig                  |   1 +
- drivers/usb/cdns3/Kconfig                     |   2 +-
- drivers/usb/dwc3/Kconfig                      |   5 +-
- drivers/usb/host/Kconfig                      |   5 +-
- drivers/usb/host/xhci-plat.c                  |   6 +
- drivers/usb/host/xhci.h                       |   2 +
  drivers/usb/misc/Kconfig                      |  17 +
  drivers/usb/misc/Makefile                     |   1 +
  drivers/usb/misc/onboard_usb_hub.c            | 497 ++++++++++++++++++
- include/linux/of_platform.h                   |  22 +-
  include/linux/usb/onboard_hub.h               |  18 +
- 23 files changed, 627 insertions(+), 39 deletions(-)
+ 6 files changed, 548 insertions(+)
  create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
  create mode 100644 drivers/usb/misc/onboard_usb_hub.c
  create mode 100644 include/linux/usb/onboard_hub.h
 
+diff --git a/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+new file mode 100644
+index 000000000000..e981d83648e6
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+@@ -0,0 +1,8 @@
++What:		/sys/bus/platform/devices/<dev>/always_powered_in_suspend
++Date:		March 2021
++KernelVersion:	5.13
++Contact:	Matthias Kaehlcke <matthias@kaehlcke.net>
++		linux-usb@vger.kernel.org
++Description:
++		(RW) Controls whether the USB hub remains always powered
++		during system suspend or not.
+\ No newline at end of file
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a61f4f3b78a9..b19b990a07c7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13796,6 +13796,13 @@ S:	Maintained
+ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/i2c/ov9734.c
+ 
++ONBOARD USB HUB DRIVER
++M:	Matthias Kaehlcke <mka@chromium.org>
++L:	linux-usb@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
++F:	drivers/usb/misc/onboard_usb_hub.c
++
+ ONENAND FLASH DRIVER
+ M:	Kyungmin Park <kyungmin.park@samsung.com>
+ L:	linux-mtd@lists.infradead.org
+diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
+index 8f1144359012..f534269fbb20 100644
+--- a/drivers/usb/misc/Kconfig
++++ b/drivers/usb/misc/Kconfig
+@@ -284,3 +284,20 @@ config BRCM_USB_PINMAP
+ 	  This option enables support for remapping some USB external
+ 	  signals, which are typically on dedicated pins on the chip,
+ 	  to any gpio.
++
++config USB_ONBOARD_HUB
++	tristate "Onboard USB hub support"
++	depends on OF || COMPILE_TEST
++	help
++	  Say Y here if you want to support discrete onboard USB hubs that
++	  don't require an additional control bus for initialization, but
++	  need some nontrivial form of initialization, such as enabling a
++	  power regulator. An example for such a hub is the Realtek
++	  RTS5411.
++
++	  The driver can be configured to turn off the power of the hub
++	  during system suspend. This may reduce power consumption while
++	  the system is suspended.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called onboard_usb_hub.
+diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
+index 5f4e598573ab..2c5aec6f1b26 100644
+--- a/drivers/usb/misc/Makefile
++++ b/drivers/usb/misc/Makefile
+@@ -32,3 +32,4 @@ obj-$(CONFIG_USB_CHAOSKEY)		+= chaoskey.o
+ obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
+ obj-$(CONFIG_USB_LINK_LAYER_TEST)	+= lvstest.o
+ obj-$(CONFIG_BRCM_USB_PINMAP)		+= brcmstb-usb-pinmap.o
++obj-$(CONFIG_USB_ONBOARD_HUB)		+= onboard_usb_hub.o
+diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
+new file mode 100644
+index 000000000000..ed1f5424ea5f
+--- /dev/null
++++ b/drivers/usb/misc/onboard_usb_hub.c
+@@ -0,0 +1,497 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *  Driver for onboard USB hubs
++ *
++ * Copyright (c) 2020, Google LLC
++ */
++
++#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/regulator/consumer.h>
++#include <linux/suspend.h>
++#include <linux/sysfs.h>
++#include <linux/usb.h>
++#include <linux/usb/hcd.h>
++#include <linux/usb/of.h>
++#include <linux/usb/onboard_hub.h>
++
++static struct usb_device_driver onboard_hub_usbdev_driver;
++
++/************************** Platform driver **************************/
++
++struct udev_node {
++	struct usb_device *udev;
++	struct list_head list;
++};
++
++struct onboard_hub {
++	struct regulator *vdd;
++	struct device *dev;
++	bool always_powered_in_suspend;
++	bool is_powered_on;
++	bool going_away;
++	struct list_head udev_list;
++	struct mutex lock;
++};
++
++static int onboard_hub_power_on(struct onboard_hub *hub)
++{
++	int err;
++
++	err = regulator_enable(hub->vdd);
++	if (err) {
++		dev_err(hub->dev, "failed to enable regulator: %d\n", err);
++		return err;
++	}
++
++	hub->is_powered_on = true;
++
++	return 0;
++}
++
++static int onboard_hub_power_off(struct onboard_hub *hub)
++{
++	int err;
++
++	err = regulator_disable(hub->vdd);
++	if (err) {
++		dev_err(hub->dev, "failed to disable regulator: %d\n", err);
++		return err;
++	}
++
++	hub->is_powered_on = false;
++
++	return 0;
++}
++
++static int __maybe_unused onboard_hub_suspend(struct device *dev)
++{
++	struct onboard_hub *hub = dev_get_drvdata(dev);
++	struct udev_node *node;
++	bool power_off;
++	int rc = 0;
++
++	if (hub->always_powered_in_suspend)
++		return 0;
++
++	power_off = true;
++
++	mutex_lock(&hub->lock);
++
++	list_for_each_entry(node, &hub->udev_list, list) {
++		if (!device_may_wakeup(node->udev->bus->controller))
++			continue;
++
++		if (usb_wakeup_enabled_descendants(node->udev)) {
++			power_off = false;
++			break;
++		}
++	}
++
++	mutex_unlock(&hub->lock);
++
++	if (power_off)
++		rc = onboard_hub_power_off(hub);
++
++	return rc;
++}
++
++static int __maybe_unused onboard_hub_resume(struct device *dev)
++{
++	struct onboard_hub *hub = dev_get_drvdata(dev);
++	int rc = 0;
++
++	if (!hub->is_powered_on)
++		rc = onboard_hub_power_on(hub);
++
++	return rc;
++}
++
++static int onboard_hub_add_usbdev(struct onboard_hub *hub, struct usb_device *udev)
++{
++	struct udev_node *node;
++	char link_name[64];
++	int ret = 0;
++
++	mutex_lock(&hub->lock);
++
++	if (hub->going_away) {
++		ret = -EINVAL;
++		goto unlock;
++	}
++
++	node = devm_kzalloc(hub->dev, sizeof(*node), GFP_KERNEL);
++	if (!node) {
++		ret = -ENOMEM;
++		goto unlock;
++	}
++
++	node->udev = udev;
++
++	list_add(&node->list, &hub->udev_list);
++
++	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
++	WARN_ON(sysfs_create_link(&hub->dev->kobj, &udev->dev.kobj, link_name));
++
++unlock:
++	mutex_unlock(&hub->lock);
++
++	return ret;
++}
++
++static void onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
++{
++	struct udev_node *node;
++	char link_name[64];
++
++	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
++	sysfs_remove_link(&hub->dev->kobj, link_name);
++
++	mutex_lock(&hub->lock);
++
++	list_for_each_entry(node, &hub->udev_list, list) {
++		if (node->udev == udev) {
++			list_del(&node->list);
++			break;
++		}
++	}
++
++	mutex_unlock(&hub->lock);
++}
++
++static ssize_t always_powered_in_suspend_show(struct device *dev, struct device_attribute *attr,
++			   char *buf)
++{
++	struct onboard_hub *hub = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%d\n", hub->always_powered_in_suspend);
++}
++
++static ssize_t always_powered_in_suspend_store(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	struct onboard_hub *hub = dev_get_drvdata(dev);
++	bool val;
++	int ret;
++
++	ret = kstrtobool(buf, &val);
++	if (ret < 0)
++		return ret;
++
++	hub->always_powered_in_suspend = val;
++
++	return count;
++}
++static DEVICE_ATTR_RW(always_powered_in_suspend);
++
++static struct attribute *onboard_hub_attrs[] = {
++	&dev_attr_always_powered_in_suspend.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(onboard_hub);
++
++static int onboard_hub_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct onboard_hub *hub;
++	int err;
++
++	hub = devm_kzalloc(dev, sizeof(*hub), GFP_KERNEL);
++	if (!hub)
++		return -ENOMEM;
++
++	hub->vdd = devm_regulator_get(dev, "vdd");
++	if (IS_ERR(hub->vdd))
++		return PTR_ERR(hub->vdd);
++
++	hub->dev = dev;
++	mutex_init(&hub->lock);
++	INIT_LIST_HEAD(&hub->udev_list);
++
++	dev_set_drvdata(dev, hub);
++
++	err = onboard_hub_power_on(hub);
++	if (err)
++		return err;
++
++	/*
++	 * The USB driver might have been detached from the USB devices by
++	 * onboard_hub_remove(), make sure to re-attach it if needed.
++	 */
++	err = driver_attach(&onboard_hub_usbdev_driver.drvwrap.driver);
++	if (err) {
++		onboard_hub_power_off(hub);
++		return err;
++	}
++
++	return 0;
++}
++
++static int onboard_hub_remove(struct platform_device *pdev)
++{
++	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
++	struct udev_node *node;
++	struct usb_device *udev;
++
++	hub->going_away = true;
++
++	mutex_lock(&hub->lock);
++
++	/* unbind the USB devices to avoid dangling references to this device */
++	while (!list_empty(&hub->udev_list)) {
++		node = list_first_entry(&hub->udev_list, struct udev_node, list);
++		udev = node->udev;
++
++		/*
++		 * Unbinding the driver will call onboard_hub_remove_usbdev(),
++		 * which acquires hub->lock.  We must release the lock first.
++		 */
++		get_device(&udev->dev);
++		mutex_unlock(&hub->lock);
++		device_release_driver(&udev->dev);
++		put_device(&udev->dev);
++		mutex_lock(&hub->lock);
++	}
++
++	mutex_unlock(&hub->lock);
++
++	return onboard_hub_power_off(hub);
++}
++
++static const struct of_device_id onboard_hub_match[] = {
++	{ .compatible = "usbbda,411" },
++	{ .compatible = "usbbda,5411" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, onboard_hub_match);
++
++static bool of_is_onboard_usb_hub(const struct device_node *np)
++{
++	return !!of_match_node(onboard_hub_match, np);
++}
++
++static const struct dev_pm_ops __maybe_unused onboard_hub_pm_ops = {
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(onboard_hub_suspend, onboard_hub_resume)
++};
++
++static struct platform_driver onboard_hub_driver = {
++	.probe = onboard_hub_probe,
++	.remove = onboard_hub_remove,
++
++	.driver = {
++		.name = "onboard-usb-hub",
++		.of_match_table = onboard_hub_match,
++		.pm = pm_ptr(&onboard_hub_pm_ops),
++		.dev_groups = onboard_hub_groups,
++	},
++};
++
++/************************** USB driver **************************/
++
++#define VENDOR_ID_REALTEK	0x0bda
++
++/*
++ * Returns the onboard_hub platform device that is associated with the USB
++ * device passed as parameter.
++ */
++static struct onboard_hub *_find_onboard_hub(struct device *dev)
++{
++	struct platform_device *pdev;
++	struct device_node *np;
++	phandle ph;
++
++	pdev = of_find_device_by_node(dev->of_node);
++	if (!pdev) {
++		if (of_property_read_u32(dev->of_node, "companion-hub", &ph)) {
++			dev_err(dev, "failed to read 'companion-hub' property\n");
++			return ERR_PTR(-EINVAL);
++		}
++
++		np = of_find_node_by_phandle(ph);
++		if (!np) {
++			dev_err(dev, "failed to find device node for companion hub\n");
++			return ERR_PTR(-EINVAL);
++		}
++
++		pdev = of_find_device_by_node(np);
++		of_node_put(np);
++
++		if (!pdev)
++			return ERR_PTR(-EPROBE_DEFER);
++	}
++
++	put_device(&pdev->dev);
++
++	return dev_get_drvdata(&pdev->dev);
++}
++
++static int onboard_hub_usbdev_probe(struct usb_device *udev)
++{
++	struct device *dev = &udev->dev;
++	struct onboard_hub *hub;
++	int err;
++
++	/* ignore supported hubs without device tree node */
++	if (!dev->of_node)
++		return -ENODEV;
++
++	hub = _find_onboard_hub(dev);
++	if (IS_ERR(hub))
++		return PTR_ERR(hub);
++
++	dev_set_drvdata(dev, hub);
++
++	err = onboard_hub_add_usbdev(hub, udev);
++	if (err)
++		return err;
++
++	err = sysfs_create_link(&udev->dev.kobj, &hub->dev->kobj, "onboard_hub_dev");
++	if (err)
++		dev_warn(&udev->dev, "failed to create symlink to platform device: %d\n", err);
++
++	return 0;
++}
++
++static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
++{
++	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
++
++	sysfs_remove_link(&udev->dev.kobj, "onboard_hub_dev");
++
++	onboard_hub_remove_usbdev(hub, udev);
++}
++
++static const struct usb_device_id onboard_hub_id_table[] = {
++	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x0411) }, /* RTS5411 USB 3.0 */
++	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x5411) }, /* RTS5411 USB 2.0 */
++	{},
++};
++
++MODULE_DEVICE_TABLE(usb, onboard_hub_id_table);
++
++static struct usb_device_driver onboard_hub_usbdev_driver = {
++
++	.name = "onboard-usb-hub",
++	.probe = onboard_hub_usbdev_probe,
++	.disconnect = onboard_hub_usbdev_disconnect,
++	.generic_subclass = 1,
++	.supports_autosuspend =	1,
++	.id_table = onboard_hub_id_table,
++};
++
++/*** Helpers for creating/destroying platform devices for onboard hubs ***/
++
++struct pdev_list_entry {
++	struct platform_device *pdev;
++	struct list_head node;
++};
++
++/*
++ * Creates a platform device for each supported onboard hub that is connected to
++ * the given parent hub. To keep track of the platform devices they are added to
++ * a list that is owned by the parent hub.
++ */
++void onboard_hub_create_pdevs(struct usb_device *parent_hub, struct list_head *pdev_list)
++{
++	int i;
++	phandle ph;
++	struct device_node *np, *npc;
++	struct platform_device *pdev;
++	struct pdev_list_entry *pdle;
++
++	for (i = 1; i <= parent_hub->maxchild; i++) {
++		np = usb_of_get_device_node(parent_hub, i);
++		if (!np)
++			continue;
++
++		if (!of_is_onboard_usb_hub(np))
++			goto node_put;
++
++		if (of_property_read_u32(np, "companion-hub", &ph))
++			goto node_put;
++
++		npc = of_find_node_by_phandle(ph);
++		if (!npc)
++			goto node_put;
++
++		pdev = of_find_device_by_node(npc);
++		of_node_put(npc);
++
++		if (pdev) {
++			/* the companion hub already has a platform device, nothing to do here */
++			put_device(&pdev->dev);
++			goto node_put;
++		}
++
++		pdev = of_platform_device_create(np, NULL, &parent_hub->dev);
++		if (pdev) {
++			pdle = kzalloc(sizeof(*pdle), GFP_KERNEL);
++			if (!pdle)
++				goto node_put;
++
++			INIT_LIST_HEAD(&pdle->node);
++
++			pdle->pdev = pdev;
++			list_add(&pdle->node, pdev_list);
++		} else {
++			dev_err(&parent_hub->dev,
++				"failed to create platform device for onboard hub '%s'\n",
++				of_node_full_name(np));
++		}
++
++node_put:
++		of_node_put(np);
++	}
++}
++EXPORT_SYMBOL_GPL(onboard_hub_create_pdevs);
++
++/*
++ * Destroys the platform devices in the given list and frees the memory associated
++ * with the list entry.
++ */
++void onboard_hub_destroy_pdevs(struct list_head *pdev_list)
++{
++	struct pdev_list_entry *pdle, *tmp;
++
++	list_for_each_entry_safe(pdle, tmp, pdev_list, node) {
++		of_platform_device_destroy(&pdle->pdev->dev, NULL);
++		kfree(pdle);
++	}
++}
++EXPORT_SYMBOL_GPL(onboard_hub_destroy_pdevs);
++
++/************************** Driver (de)registration **************************/
++
++static int __init onboard_hub_init(void)
++{
++	int ret;
++
++	ret = platform_driver_register(&onboard_hub_driver);
++	if (ret)
++		return ret;
++
++	ret = usb_register_device_driver(&onboard_hub_usbdev_driver, THIS_MODULE);
++	if (ret)
++		platform_driver_unregister(&onboard_hub_driver);
++
++	return ret;
++}
++module_init(onboard_hub_init);
++
++static void __exit onboard_hub_exit(void)
++{
++	usb_deregister_device_driver(&onboard_hub_usbdev_driver);
++	platform_driver_unregister(&onboard_hub_driver);
++}
++module_exit(onboard_hub_exit);
++
++MODULE_AUTHOR("Matthias Kaehlcke <mka@chromium.org>");
++MODULE_DESCRIPTION("Driver for discrete onboard USB hubs");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/usb/onboard_hub.h b/include/linux/usb/onboard_hub.h
+new file mode 100644
+index 000000000000..d9373230556e
+--- /dev/null
++++ b/include/linux/usb/onboard_hub.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __LINUX_USB_ONBOARD_HUB_H
++#define __LINUX_USB_ONBOARD_HUB_H
++
++struct usb_device;
++struct list_head;
++
++#if IS_ENABLED(CONFIG_USB_ONBOARD_HUB)
++void onboard_hub_create_pdevs(struct usb_device *parent_hub, struct list_head *pdev_list);
++void onboard_hub_destroy_pdevs(struct list_head *pdev_list);
++#else
++static inline void onboard_hub_create_pdevs(struct usb_device *parent_hub,
++					    struct list_head *pdev_list) {}
++static inline void onboard_hub_destroy_pdevs(struct list_head *pdev_list) {}
++#endif
++
++#endif /* __LINUX_USB_ONBOARD_HUB_H */
 -- 
 2.33.0.rc1.237.g0d66db33f3-goog
 
