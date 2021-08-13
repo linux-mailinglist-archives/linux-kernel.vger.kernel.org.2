@@ -2,85 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE0C3EB135
+	by mail.lfdr.de (Postfix) with ESMTP id 6735D3EB136
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239321AbhHMHNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:13:22 -0400
-Received: from verein.lst.de ([213.95.11.211]:46616 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239319AbhHMHNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:13:16 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EA67C67373; Fri, 13 Aug 2021 09:12:45 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 09:12:45 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     willy@infradead.org, trond.myklebust@primarydata.com,
-        darrick.wong@oracle.com, hch@lst.de, viro@zeniv.linux.org.uk,
-        jlayton@kernel.org, sfrench@samba.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        id S239288AbhHMHN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:13:28 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36154 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239269AbhHMHN1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 03:13:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UirFf5E_1628838777;
+Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UirFf5E_1628838777)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 13 Aug 2021 15:12:58 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+To:     tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/5] mm: Make swap_readpage() for SWP_FS_OPS use
- ->direct_IO() not ->readpage()
-Message-ID: <20210813071245.GC26339@lst.de>
-References: <162879971699.3306668.8977537647318498651.stgit@warthog.procyon.org.uk> <162879974434.3306668.4798886633463058599.stgit@warthog.procyon.org.uk>
+Subject: [PATCH] x86/kdump: fix wrong judge about crash_size var
+Date:   Fri, 13 Aug 2021 15:12:52 +0800
+Message-Id: <20210813071252.90278-1-xhao@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162879974434.3306668.4798886633463058599.stgit@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/*
-> + * Keep track of the kiocb we're using to do async DIO.  We have to
-> + * refcount it until various things stop looking at the kiocb *after*
-> + * calling ->ki_complete().
-> + */
-> +struct swapfile_kiocb {
-> +	struct kiocb		iocb;
-> +	refcount_t		ki_refcnt;
-> +};
+The type of crash_size is unsigned long long, so
+it can not be less than 0, so there fix it.
 
-The ki_ prefix is a little strange here.
+Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+---
+ arch/x86/kernel/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +
-> +static void swapfile_put_kiocb(struct swapfile_kiocb *ki)
-> +{
-> +	if (refcount_dec_and_test(&ki->ki_refcnt)) {
-> +		fput(ki->iocb.ki_filp);
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index bff3a784aec5..95b80ec11741 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -472,11 +472,11 @@ static void __init reserve_crashkernel(void)
 
-What do we need the file reference for here?  The swap code has to have
-higher level prevention for closing the file vs active I/O, at least the
-block path seems to rely on that.
-
-> +static void swapfile_read_complete(struct kiocb *iocb, long ret, long ret2)
-> +{
-> +	struct swapfile_kiocb *ki = container_of(iocb, struct swapfile_kiocb, iocb);
-
-Overly long line.
-
-> +	/* Should set IOCB_HIPRI too, but the box becomes unresponsive whilst
-> +	 * putting out occasional messages about the NFS sunrpc scheduling
-> +	 * tasks being hung.
-> +	 */
-
-IOCB_HIPRI has a very specific meaning, so I'm not sure we should
-use it never mind leave such a comment here.  Also this is not the
-proper standard kernel comment style.
-
-> +
-> +	iov_iter_bvec(&to, READ, &bv, 1, thp_size(page));
-> +	ret = swap_file->f_mapping->a_ops->direct_IO(&kiocb, &to);
-> +
-> +	__swapfile_read_complete(&kiocb, ret, 0);
-> +	return (ret > 0) ? 0 : ret;
-
-No need for the braces.
-
-> +	return (ret > 0) ? 0 : ret;
-
-Same here.
+ 	/* crashkernel=XM */
+ 	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
+-	if (ret != 0 || crash_size <= 0) {
++	if (ret != 0 || !crash_size) {
+ 		/* crashkernel=X,high */
+ 		ret = parse_crashkernel_high(boot_command_line, total_mem,
+ 					     &crash_size, &crash_base);
+-		if (ret != 0 || crash_size <= 0)
++		if (ret != 0 || !crash_size)
+ 			return;
+ 		high = true;
+ 	}
+--
+2.31.0
