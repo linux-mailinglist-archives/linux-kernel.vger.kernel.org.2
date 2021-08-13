@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397893EBC15
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FBF3EBC17
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhHMSbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:31:35 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:41591 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhHMS3P (ORCPT
+        id S232902AbhHMSdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232602AbhHMSdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:29:15 -0400
-Received: by mail-oi1-f179.google.com with SMTP id be20so17146539oib.8;
-        Fri, 13 Aug 2021 11:28:47 -0700 (PDT)
+        Fri, 13 Aug 2021 14:33:10 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B6CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:32:43 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id q11so14448144wrr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WaQTBe3xC/88raPQmY8ZZ8JJn9RnHYoGZNkxhX1EO84=;
+        b=V+bl624JupBf+D+XFrPzacGflvEDgE0vwcRjyTf6yw3Omk0lTSIj+cL5vZN31H3msb
+         P0LLdOEByqjgjyyd3dyaIfzRNVgVEs92ctms+VZvDxX1nzb6iqV/LSBeAIMNS64XlThX
+         xX2itLVNjYZGEYV7yn9LKCrpDIQqZBl9fu5iybvAb+TVE/8pgcP7T6NPiRK+JvTE2D8e
+         PYl9SZQxN8PfLsoHRwHSt/KYqBzHiEbEcrUkRWmnbmfSUE0XI+cFb8gAOnexhZQe/NkY
+         944wO3FDXa6XcPIOa/QC3819HAqUEX4zJ5lU6qVGeJIX067olgR8fV/k2NOOfADN+Z5K
+         UzIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zZCdGU68OAkJc6X7hI5SXJs2mB8DxFZBfZ+b7CmoJgk=;
-        b=lmIWKug6vRie56/gryTmcDTlhdqs+KT9M6w1XxYnjbMAjNXnVaAoGJGegGGN7sYeDe
-         V99h06LvEvoQCaHgcbdlY38TzRGGnatWa0NO1P17vvLXuXb5sJaR/fc+rH/7AKak4kCT
-         qVqQZpE6OBVBx69gzniXOjrLFa3wqnwwTjecGVFPftw4Y+kRyILLQhsA0pJSwey0fzf6
-         5kPe/al0So2yfVx1bHp+XYNT80Cf0nHEvScZql/3eg+L0md01LTqpT70vfTMW565f3Z3
-         Wax6oDkYcoXFf1LUa5ntTviTg4kH/6wxYengeyVZvWEKcwFv67xqtxh2o8mUFc/Kk1qz
-         HhyQ==
-X-Gm-Message-State: AOAM533ljmzAmTrYCPOvfJcQ27jDIMcO9tdJZzOm3jWDjy8ZHXQGfVyu
-        iFK339z1l/VtiXEHnK2sUw==
-X-Google-Smtp-Source: ABdhPJz9MREtiq35h0kEgBsz0lVLN1iN55g1Kkmm/x/pVF9OxvS3DVnNjeLNGCKCHRJDIPJ+7nUZ4A==
-X-Received: by 2002:aca:5888:: with SMTP id m130mr3183934oib.3.1628879327512;
-        Fri, 13 Aug 2021 11:28:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c18sm454677ots.81.2021.08.13.11.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 11:28:46 -0700 (PDT)
-Received: (nullmailer pid 3814039 invoked by uid 1000);
-        Fri, 13 Aug 2021 18:28:45 -0000
-Date:   Fri, 13 Aug 2021 13:28:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sireesh Kodali <sireeshkodali@protonmail.com>
-Cc:     mturquette@baylibre.com, robh+dt@kernel.org,
-        phone-devel@vger.kernel.org, Vladimir Lypak <junak.pub@gmail.com>,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        Adam Skladowski <a_skl39@protonmail.com>,
-        linux-clk@vger.kernel.org, agross@kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        sboyd@kernel.org
-Subject: Re: [PATCH RESEND 1/2] dt-bindings: clock: add Qualcomm MSM8953 GCC
- driver bindings
-Message-ID: <YRa53aqcX5I+8vji@robh.at.kernel.org>
-References: <Q6uB3NRxqtD8Prsmliv8ZdsTXGeviv7lb2jQ743jr1E@cp4-web-036.plabs.ch>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WaQTBe3xC/88raPQmY8ZZ8JJn9RnHYoGZNkxhX1EO84=;
+        b=H9qYiRVK31h+tNrg4zzBrAi/PjjmJGkcwTY8B9QTzHp8Y645ysD9d9ygL5amD+z63z
+         jNol1axLeWjGxO5BpjUcT4YfL7R/jyvWdzj1kPUqQaBMTMf+UTJ94nZk59L6P8SCi4RL
+         2XDrIgHtI9wNN236TOV1j1H9j8uCIjFFEVWZJD5ibSq8Z+yUApMNY5l8kCMUva1ZM9AX
+         kBwUZOnSOaAjlaZHD44ZOYO3ro9hiM6REeXgZEV/2Xdt3EDjvyrhy0tYNQEVjkFQVbqj
+         K+rjmx9QbZODZRvByri0PjSg9RI4Pa13diWZh3/g4qzCJKdVmJQy1egkwTfqkDYr7k2/
+         k4Ag==
+X-Gm-Message-State: AOAM530+cmdV65AP4iYWjuGwz8nLn1fg0Ejzg+qR4do9iYUGW89UKe7S
+        rjSb6z317ZBS8wSLcQ9i6bUn1yeukjuSHWQZ
+X-Google-Smtp-Source: ABdhPJxSGnm8fSXSKk8KR1FG/lpboSwc0HyN1WAywHVXeyGOcUHqbb+YEA41TVyCGc4vuBrO0ayCFw==
+X-Received: by 2002:adf:f707:: with SMTP id r7mr4514805wrp.175.1628879561564;
+        Fri, 13 Aug 2021 11:32:41 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
+        by smtp.googlemail.com with ESMTPSA id k186sm2382823wme.45.2021.08.13.11.32.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 11:32:40 -0700 (PDT)
+Subject: Re: [PATCH v2] genirq/timings: Fix error return code in
+ irq_timings_test_irqs()
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20210811093333.2376-1-thunder.leizhen@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <da85194b-34d1-25b7-3319-e98f52a52be5@linaro.org>
+Date:   Fri, 13 Aug 2021 20:32:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Q6uB3NRxqtD8Prsmliv8ZdsTXGeviv7lb2jQ743jr1E@cp4-web-036.plabs.ch>
+In-Reply-To: <20210811093333.2376-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021 09:06:42 +0000, Sireesh Kodali wrote:
-> From: Vladimir Lypak <junak.pub@gmail.com>
+On 11/08/2021 11:33, Zhen Lei wrote:
+> Fix to return a negative error code from the error handling case instead
+> of 0, as done elsewhere in this function.
 > 
-> Add bindings and compatible to document MSM8953 GCC (Global Clock
-> Controller) driver.
-> 
-> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-> Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
-> Signed-off-by: Sireesh Kodali <sireeshkodali@protonmail.com>
+> Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
 > ---
->  .../devicetree/bindings/clock/qcom,gcc.yaml   |   2 +
->  include/dt-bindings/clock/qcom,gcc-msm8953.h  | 234 ++++++++++++++++++
->  2 files changed, 236 insertions(+)
->  create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8953.h
+>  kernel/irq/timings.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> v1 --> v2:
+> Replace -EFAULT with two more appropriate error codes.
+> 
+> diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
+> index d309d6fbf5bd..59affb3bfdfa 100644
+> --- a/kernel/irq/timings.c
+> +++ b/kernel/irq/timings.c
+> @@ -794,12 +794,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
+>  
+>  		__irq_timings_store(irq, irqs, ti->intervals[i]);
+>  		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
+> +			ret = -EBADSLT;
+>  			pr_err("Failed to store in the circular buffer\n");
+>  			goto out;
+>  		}
+>  	}
+>  
+>  	if (irqs->count != ti->count) {
+> +		ret = -ERANGE;
+>  		pr_err("Count differs\n");
+>  		goto out;
+>  	}
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
