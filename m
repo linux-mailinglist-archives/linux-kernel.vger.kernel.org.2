@@ -2,55 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AFD3EBBAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80EB3EBBB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhHMRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229808AbhHMRt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:49:56 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:33551 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhHMRtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Aug 2021 13:49:50 -0400
-Received: from mga09.intel.com ([134.134.136.24]:31878 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229654AbhHMRtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:49:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10075"; a="215594812"
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="215594812"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 10:48:51 -0700
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="470149063"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 10:48:50 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mEbIR-009M9C-Mw; Fri, 13 Aug 2021 20:48:43 +0300
-Date:   Fri, 13 Aug 2021 20:48:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v1 net-next 3/3] ptp_ocp: use bits.h macros for all masks
-Message-ID: <YRaweyNQDoaMY2bk@smile.fi.intel.com>
-References: <20210813122737.45860-3-andriy.shevchenko@linux.intel.com>
- <202108140106.K9cVluxn-lkp@intel.com>
+Received: by mail-oi1-f180.google.com with SMTP id h11so17127475oie.0;
+        Fri, 13 Aug 2021 10:49:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=WtjHQZz715RMWTTlcj47+tPX67303+dgwGOAMMRRmY4=;
+        b=IuGvOARZBEcTYPI40mxR8x79MebI3+tgHteSN1QAun5/x8vCPAF/Vuq6yGJWrZwtvx
+         VfnKNK0rWa+VAveSJ+Zx5Mq0sAJNAp9Rj2febjo//EqrgAdivmg9jKkcWVzbCK0ODaOV
+         j+5g38x8zrz58PXdxYzn2hS5QWywFzGC+WsPe7ii79PAe/9gqX+QWO4ttFqxcmAzH+Vk
+         jbEsrIVI6Nve2bNs+OjpgKIr4KGWgAZmz96vCSdEA3VsTbbpqSwQ/+FQfVAB2yDXUcm7
+         BOvsfGTQsU5rA8FwYPha6YLt50pnPlsn/c7z69EididGa70tWyNHiFEfhD5CbaCGUxby
+         hg1g==
+X-Gm-Message-State: AOAM531T6r9wlpg7MhvbdYQJwkerStNs20SBDJVNJ+DXm783JbnMJfCM
+        GKxmML3RZAfP1eB77ODg2Q==
+X-Google-Smtp-Source: ABdhPJwwCjLSQAefXV3nYBOEwr+SjBPgFMn1570lNEykCto3BMPvBwiUzWq/n3GYDxqWxC/KbbBd+w==
+X-Received: by 2002:aca:6109:: with SMTP id v9mr3054359oib.147.1628876943137;
+        Fri, 13 Aug 2021 10:49:03 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l7sm430630otk.79.2021.08.13.10.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 10:49:02 -0700 (PDT)
+Received: (nullmailer pid 3749844 invoked by uid 1000);
+        Fri, 13 Aug 2021 17:49:00 -0000
+Date:   Fri, 13 Aug 2021 12:49:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
+Cc:     Chester Lin <clin@suse.com>, s32@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
+Message-ID: <YRawjOas2FixC5Kp@robh.at.kernel.org>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-2-clin@suse.com>
+ <bcb3ddd8-23c9-81c9-7d05-b475311068ec@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <202108140106.K9cVluxn-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bcb3ddd8-23c9-81c9-7d05-b475311068ec@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 01:35:13AM +0800, kernel test robot wrote:
-> Hi Andy,
+On Thu, Aug 12, 2021 at 05:46:16PM +0200, Andreas Färber wrote:
+> Hello Rob and NXP,
 > 
-> I love your patch! Perhaps something to improve:
+> On 05.08.21 08:54, Chester Lin wrote:
+> > Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
+> > design 2 board ( S32G-VNP-RDB2).
+> > 
+> > Signed-off-by: Chester Lin <clin@suse.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index e2097011c4b0..3914aa09e503 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -983,6 +983,13 @@ properties:
+> >            - const: solidrun,lx2160a-cex7
+> >            - const: fsl,lx2160a
+> >  
+> > +      - description: S32G2 based Boards
+> > +        items:
+> > +          - enum:
+> > +              - fsl,s32g274a-evb
+> > +              - fsl,s32g274a-rdb2
+> 
+> @Rob: Should for new boards the description: syntax be used also for
+> enums? Or just at SoC level, and for board enums still traditional #
+> comments?
 
-Not in my patches.
+It's up to how the platform wants to do it.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rob
