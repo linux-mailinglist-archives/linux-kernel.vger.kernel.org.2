@@ -2,455 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFE93EADE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7167E3EADF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbhHMAXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 20:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhHMAXi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 20:23:38 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFCDC061756;
-        Thu, 12 Aug 2021 17:23:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id o185so13285724oih.13;
-        Thu, 12 Aug 2021 17:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=g6aNfvqNLuTnnvr1o1PF/KW4kI0g6a2rgjbPolDXgg4=;
-        b=Js11tXJvxKlET6qhbldP58bmdt7RwqQ7UFcZYRJJXjosudSHQhDJ3FLODiqt59LOyS
-         MnYWGUKVScynYHWCqj/p2CO9G7GxaBHSjGedqQeOHOkRSwuZ3+44Z6ngXDNaxrTbZ3Le
-         vyWZymM3MD5oqeuoiGa/ypYEHuv3YcYB/vQ9TQvYwwCU5WA72pCGjslxUcBqEGqCQ2dO
-         oPcvzFMdHYXXmAlcVPETItcg3ZBsCkgdY67eG8uEok8WqPoVTs4vX7N5TQfd6wrReNk/
-         KHWuYADhG30HgIug2PYZQ3iRqHO9JfILuAEFzv28nlj4sdsrtsUvxvVHoglULjQJFmIZ
-         /bPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=g6aNfvqNLuTnnvr1o1PF/KW4kI0g6a2rgjbPolDXgg4=;
-        b=NQvIL1esIp2bXX3+1QHMIohNiVhZYhzczbqaKG0Fyis15REeHiXCva62ErbMDmHaIG
-         waRjKxzUiBjcik4lcDQzvdalCrJsXTlXB8usapjCX8jjBvVx+yYw6kS/6V2aufaZUy0+
-         kzpSI6YoHtT739qc+kRfwRwbbb4oh3xE2W4jLfaosLA9UKHh24VzywCxoJNTduyH4y2R
-         YUJaidZDiZUBOsPk5k5rIehlzNyrzcNOO6EwtftnqZWQgi+IXPmaE9dF7gVmOFUK0Pp8
-         OrZs4i0QdFG/qjD2vFteokS+jLuE+PIvfntaOvWBOFf8KbCSdBhR5611KTLoj/nY86OX
-         mmAQ==
-X-Gm-Message-State: AOAM5312FxahZgWhY/EPSebeJ+zGeLWXnoApxDt6DENg5lKUAhnUsz35
-        5gjmAdISILB6nW1rKT/SXoK6QDdhe3fXm0JEm4U=
-X-Google-Smtp-Source: ABdhPJw6c1nUA4/6/7FT13alfZBxwI64ERG5aNB/Xw5TVpvEVADoZphvLMN2iIOij33J7frGHHzM6c1goR7OymI8Hco=
-X-Received: by 2002:a05:6808:250:: with SMTP id m16mr5390631oie.148.1628814191437;
- Thu, 12 Aug 2021 17:23:11 -0700 (PDT)
+        id S237554AbhHMA3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 20:29:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49793 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236984AbhHMA3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 20:29:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628814535; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Wzc6c47jdJP+SX2jmJlgxTZVRxNp8P8GJXI7b5FXiDQ=;
+ b=uUogvPNiebVVLRgvcp/07GDhk576c7WFlmQVgkhXcElLt0L+PNV2qWhL+yFCKkTOPN1tePFq
+ vTXv0XmzoD3v4UNHUo+cs6rHohiuZIWFTuOiXGkbau3KD7WdP8mck1V508JjOEbsAtBrgdWm
+ ndLRtK5KsU2cx0v06LEvTy4CXXo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6115bcbab14e7e2ecb15427b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 00:28:42
+ GMT
+Sender: sbillaka=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 38E59C4360C; Fri, 13 Aug 2021 00:28:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbillaka)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 144CAC433F1;
+        Fri, 13 Aug 2021 00:28:41 +0000 (UTC)
 MIME-Version: 1.0
-References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
- <159827191245.306468.4903071494263813779.stgit@warthog.procyon.org.uk> <ae623a81-50f5-3ccd-8eee-ea5604664a41@gmail.com>
-In-Reply-To: <ae623a81-50f5-3ccd-8eee-ea5604664a41@gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Fri, 13 Aug 2021 02:23:00 +0200
-Message-ID: <CAKgNAkjsbPLgHN=YiVyTts6k3rexemjBQWeXEnXFh5zf4npDrw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] Add manpage for fsconfig(2)
-To:     David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 13 Aug 2021 05:58:40 +0530
+From:   sbillaka@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [PATCH v1 1/2] drm/msm/dp: Add support for SC7280 eDP
+In-Reply-To: <CAE-0n52=mR0Zt8UZ3vOM-nt0UJszcFhi-eYfzDtD0bt3zhNA_Q@mail.gmail.com>
+References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org>
+ <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
+ <CAE-0n52=mR0Zt8UZ3vOM-nt0UJszcFhi-eYfzDtD0bt3zhNA_Q@mail.gmail.com>
+Message-ID: <0b2aa426c8f511a29143f2a1117fe9a2@codeaurora.org>
+X-Sender: sbillaka@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+On 2021-08-12 06:11, Stephen Boyd wrote:
+> Quoting Sankeerth Billakanti (2021-08-11 17:08:01)
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> index b131fd37..1096c44 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> @@ -856,9 +856,9 @@ static const struct dpu_intf_cfg sm8150_intf[] = {
+>>  };
+>> 
+>>  static const struct dpu_intf_cfg sc7280_intf[] = {
+>> -       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 0, 24, 
+>> INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+>> +       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 1, 24, 
+>> INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+>>         INTF_BLK("intf_1", INTF_1, 0x35000, INTF_DSI, 0, 24, 
+>> INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+>> -       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_EDP, 0, 24, 
+>> INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+>> +       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_DP, 0, 24, 
+>> INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+>>  };
+>> 
+>>  /*************************************************************
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index d2569da..06d5a2d 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1244,7 +1244,9 @@ static int dp_ctrl_link_train(struct 
+>> dp_ctrl_private *ctrl,
+>>                 struct dp_cr_status *cr, int *training_step)
+>>  {
+>>         int ret = 0;
+>> +       u8 *dpcd = ctrl->panel->dpcd;
+>>         u8 encoding = DP_SET_ANSI_8B10B;
+>> +       u8 ssc = 0, assr = 0;
+> 
+> Please don't initialize to zero and then overwrite it before using it.
+> It hides usage before actual initialization bugs.
+> 
 
-As noted in another mail, I will ping on all of the mails, just to
-raise all the patches to the top of the inbox.
+Okay. I will change it.
 
-Thanks,
+>>         struct dp_link_info link_info = {0};
+>> 
+>>         dp_ctrl_config_ctrl(ctrl);
+>> @@ -1254,9 +1256,21 @@ static int dp_ctrl_link_train(struct 
+>> dp_ctrl_private *ctrl,
+>>         link_info.capabilities = DP_LINK_CAP_ENHANCED_FRAMING;
+>> 
+>>         dp_aux_link_configure(ctrl->aux, &link_info);
+>> +
+>> +       if (dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5) {
+>> +               ssc = DP_SPREAD_AMP_0_5;
+>> +               drm_dp_dpcd_write(ctrl->aux, DP_DOWNSPREAD_CTRL, &ssc, 
+>> 1);
+>> +       }
+>> +
+>>         drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
+>>                                 &encoding, 1);
+>> 
+>> +       if (dpcd[DP_EDP_CONFIGURATION_CAP] & 
+>> DP_ALTERNATE_SCRAMBLER_RESET_CAP) {
+>> +               assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
+>> +               drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
+>> +                               &assr, 1);
+>> +       }
+>> +
+>>         ret = dp_ctrl_link_train_1(ctrl, cr, training_step);
+>>         if (ret) {
+>>                 DRM_ERROR("link training #1 failed. ret=%d\n", ret);
+>> @@ -1328,9 +1342,11 @@ static int 
+>> dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+>>         struct dp_io *dp_io = &ctrl->parser->io;
+>>         struct phy *phy = dp_io->phy;
+>>         struct phy_configure_opts_dp *opts_dp = &dp_io->phy_opts.dp;
+>> +       u8 *dpcd = ctrl->panel->dpcd;
+> 
+> const?
+> 
 
-Michael
+Okay. I will change to const u8 *dpcd at all the required places.
 
+>> 
+>>         opts_dp->lanes = ctrl->link->link_params.num_lanes;
+>>         opts_dp->link_rate = ctrl->link->link_params.rate / 100;
+>> +       opts_dp->ssc = dpcd[DP_MAX_DOWNSPREAD] & 
+>> DP_MAX_DOWNSPREAD_0_5;
+>>         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+>>                                         ctrl->link->link_params.rate * 
+>> 1000);
+>> 
+>> @@ -1760,6 +1776,9 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+>>         ctrl->link->link_params.num_lanes = 
+>> ctrl->panel->link_info.num_lanes;
+>>         ctrl->dp_ctrl.pixel_rate = 
+>> ctrl->panel->dp_mode.drm_mode.clock;
+>> 
+>> +       if (ctrl->dp_ctrl.pixel_rate == 0)
+>> +               return -EINVAL;
+>> +
+> 
+> Why are we enabling the stream with a zero pixel clk?
+> 
 
-On Thu, 27 Aug 2020 at 13:07, Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello David,
->
-> On 8/24/20 2:25 PM, David Howells wrote:
-> > Add a manual page to document the fsconfig() system call.
-> >
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > ---
-> >
-> >  man2/fsconfig.2 |  277 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 277 insertions(+)
-> >  create mode 100644 man2/fsconfig.2
-> >
-> > diff --git a/man2/fsconfig.2 b/man2/fsconfig.2
-> > new file mode 100644
-> > index 000000000..da53d2fcb
-> > --- /dev/null
-> > +++ b/man2/fsconfig.2
-> > @@ -0,0 +1,277 @@
-> > +'\" t
-> > +.\" Copyright (c) 2020 David Howells <dhowells@redhat.com>
-> > +.\"
-> > +.\" %%%LICENSE_START(VERBATIM)
-> > +.\" Permission is granted to make and distribute verbatim copies of this
-> > +.\" manual provided the copyright notice and this permission notice are
-> > +.\" preserved on all copies.
-> > +.\"
-> > +.\" Permission is granted to copy and distribute modified versions of this
-> > +.\" manual under the conditions for verbatim copying, provided that the
-> > +.\" entire resulting derived work is distributed under the terms of a
-> > +.\" permission notice identical to this one.
-> > +.\"
-> > +.\" Since the Linux kernel and libraries are constantly changing, this
-> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> > +.\" responsibility for errors or omissions, or for damages resulting from
-> > +.\" the use of the information contained herein.  The author(s) may not
-> > +.\" have taken the same level of care in the production of this manual,
-> > +.\" which is licensed free of charge, as they might when working
-> > +.\" professionally.
-> > +.\"
-> > +.\" Formatted or processed versions of this manual, if unaccompanied by
-> > +.\" the source, must acknowledge the copyright and authors of this work.
-> > +.\" %%%LICENSE_END
-> > +.\"
-> > +.TH FSCONFIG 2 2020-08-24 "Linux" "Linux Programmer's Manual"
-> > +.SH NAME
-> > +fsconfig \- Filesystem parameterisation
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B #include <sys/types.h>
-> > +.B #include <sys/mount.h>
-> > +.B #include <unistd.h>
-> > +.B #include <sys/mount.h>
-> > +.PP
-> > +.BI "int fsconfig(int *" fd ", unsigned int " cmd ", const char *" key ,
-> > +.br
-> > +.BI "             const void __user *" value ", int " aux ");"
-> > +.br
->
-> Please remove two instances of .br above
->
-> > +.BI
-> > +.fi
-> > +.PP
-> > +.IR Note :
-> > +There is no glibc wrapper for this system call.
-> > +.SH DESCRIPTION
-> > +.PP
-> > +.BR fsconfig ()
-> > +is used to supply parameters to and issue commands against a filesystem
-> > +configuration context as set up by
-> > +.BR fsopen (2)
-> > +or
-> > +.BR fspick (2).
-> > +The context is supplied attached to the file descriptor specified by
->
-> s/by/by the/
->
-> > +.I fd
-> > +argument.
-> > +.PP
-> > +The
-> > +.I cmd
-> > +argument indicates the command to be issued, where some of the commands simply
-> > +supply parameters to the context.  The meaning of
-> > +.IR key ", " value " and " aux
-> > +are command-dependent; unless required for the command, these should be set to
->
-> "should" or "must"? If not "must", why not? (It feels like an API design
-> error not to require these to be NULL/0 in cases where they are not used.)
->
-> > +NULL or 0.
-> > +.PP
-> > +The available commands are:
-> > +.TP
-> > +.B FSCONFIG_SET_FLAG
-> > +Set the parameter named by
-> > +.IR key
-> > +to true.  This may fail with error
->
-> s/with error/with the error/
-> (and multiple times below)
->
-> > +.B EINVAL
-> > +if the parameter requires an argument.
-> > +.TP
-> > +.B FSCONFIG_SET_STRING
-> > +Set the parameter named by
-> > +.I key
-> > +to a string.  This may fail with error
-> > +.B EINVAL
-> > +if the parser doesn't want a parameter here, wants a non-string or the string
-> > +cannot be interpreted appropriately.
-> > +.I value
-> > +points to a NUL-terminated string.
-> > +.TP
-> > +.B FSCONFIG_SET_BINARY
-> > +Set the parameter named by
-> > +.I key
-> > +to be a binary blob argument.  This may cause
-> > +.B EINVAL
-> > +to be returned if the filesystem parser isn't expecting a binary blob and it
-> > +can't be converted to something usable.
-> > +.I value
-> > +points to the data and
-> > +.I aux
-> > +indicates the size of the data.
-> > +.TP
-> > +.B FSCONFIG_SET_PATH
-> > +Set the parameter named by
-> > +.I key
-> > +to the object at the provided path.
-> > +.I value
-> > +should point to a NUL-terminated pathname string and aux may indicate
-> > +.B AT_FDCWD
-> > +or a file descriptor indicating a directory from which to begin a relative
-> > +path resolution.  This may fail with error
-> > +.B EINVAL
-> > +if the parameter isn't expecting a path; it may also fail if the path cannot
-> > +be resolved with the typcal errors for that
->
-> s/typcal/typical/
->
-> > +.RB "(" ENOENT ", " ENOTDIR ", " EPERM ", " EACCES ", etc.)."
-> > +.IP
-> > +Note that FSCONFIG_SET_STRING can be used instead, implying AT_FDCWD.
->
-> I don't understand the preceding sentence. Can you rewrite to supply more
-> detail? (E.g., "instead *of what*")
->
-> > +.TP
-> > +.B FSCONFIG_SET_PATH_EMPTY
-> > +As FSCONFIG_SET_PATH, but with
-> > +.B AT_EMPTY_PATH
-> > +applied to the pathwalk.
->
-> Can you please supply a bit more detail here, rather than just referring to
-> FSCONFIG_SET_PATH.
->
-> > +.TP
-> > +.B FSCONFIG_SET_FD
-> > +Set the parameter named by
-> > +.I key
-> > +to the file descriptor specified by
-> > +.IR aux .
-> > +This will fail with
-> > +.B EINVAL
-> > +if the parameter doesn't expect a file descriptor or
-> > +.B EBADF
-> > +if the file descriptor is invalid.
->
-> Can you mention some use cases for FSCONFIG_SET_FD here please?
->
-> > +.IP
-> > +Note that FSCONFIG_SET_STRING can be used instead with the file descriptor
-> > +passed as a decimal string.
-> > +.TP
-> > +.B FSCONFIG_CMD_CREATE
-> > +This command triggers the filesystem to take the parameters set in the context
-> > +and to try to create filesystem representation in the kernel.  If an existing
-> > +representation can be shared, the filesystem may do that instead if the
-> > +parameters permit.  This is intended for use with
-> > +.BR fsopen (2).
-> > +.TP
-> > +.B FSCONFIG_CMD_RECONFIGURE
-> > +This command causes the driver to alter the parameters of an already live
->
-> "the driver" seems like the wrong terminology here. The page never
-> mentioned "driver" before this point.) Is there something better?
->
-> > +filesystem instance according to the parameters stored in the context.  This
-> > +is intended for use with
-> > +.BR fspick (2),
-> > +but may also by used against the context created by
-> > +.BR fsopen()
-> > +after
-> > +.BR fsmount (2)
-> > +has been called on it.
->
-> s/it/that context/
->
-> > +
-> > +.\"________________________________________________________
->
-> Please remove above two lines.
->
-> > +.SH EXAMPLES
->
-> Please move the EXAMPLES section to just above SEE ALSO.
->
-> Are the following independent examples or all one big example?
-> Can you please add some explanatory text to make it clear?
->
-> > +.PP
-> > +.in +4n
-> > +.nf
-> > +fsconfig(sfd, FSCONFIG_SET_FLAG, "ro", NULL, 0);
-> > +
-> > +fsconfig(sfd, FSCONFIG_SET_STRING, "user_xattr", "false", 0);
-> > +
-> > +fsconfig(sfd, FSCONFIG_SET_BINARY, "ms_pac", pac_buffer, pac_size);
-> > +
-> > +fsconfig(sfd, FSCONFIG_SET_PATH, "journal", "/dev/sdd4", AT_FDCWD);
-> > +
-> > +dirfd = open("/dev/", O_PATH);
-> > +fsconfig(sfd, FSCONFIG_SET_PATH, "journal", "sdd4", dirfd);
-> > +
-> > +fd = open("/overlays/mine/", O_PATH);
-> > +fsconfig(sfd, FSCONFIG_SET_PATH_EMPTY, "lower_dir", "", fd);
-> > +
-> > +pipe(pipefds);
-> > +fsconfig(sfd, FSCONFIG_SET_FD, "fd", NULL, pipefds[1]);
-> > +.fi
-> > +.in
-> > +.PP
-> > +.SH RETURN VALUE
-> > +On success, the function returns 0.  On error, \-1 is returned, and
-> > +.I errno
-> > +is set appropriately.
-> > +.SH ERRORS
-> > +The error values given below result from filesystem type independent
-> > +errors.
-> > +Each filesystem type may have its own special errors and its
->
-> s/may/may additionally/
->
-> > +own special behavior.
-> > +See the Linux kernel source code for details.
-> > +.TP
-> > +.B EACCES
-> > +A component of a path was not searchable.
-> > +(See also
-> > +.BR path_resolution (7).)
-> > +.TP
-> > +.B EACCES
-> > +Mounting a read-only filesystem was attempted without specifying the
-> > +.RB ' ro '
-> > +parameter.
-> > +.TP
-> > +.B EACCES
-> > +A specified block device is located on a filesystem mounted with the
-> > +.B MS_NODEV
-> > +option.
-> > +.\" mtk: Probably: write permission is required for MS_BIND, with
-> > +.\" the error EPERM if not present; CAP_DAC_OVERRIDE is required.
-> > +.TP
-> > +.B EBADF
-> > +The file descriptor given by
-> > +.I fd
-> > +or possibly by
-> > +.I aux
-> > +(depending on the command) is invalid.
-> > +.TP
-> > +.B EBUSY
-> > +The context attached to
-> > +.I fd
-> > +is in the wrong state for the given command.
-> > +.TP
-> > +.B EBUSY
-> > +The filesystem representation cannot be reconfigured read-only because it still
-> > +holds files open for writing.
-> > +.TP
-> > +.B EFAULT
-> > +One of the pointer arguments points outside the accessible address space.
-> > +.TP
-> > +.B EINVAL
-> > +.I fd
-> > +does not refer to a filesystem configuration context.
-> > +.TP
-> > +.B EINVAL
-> > +One of the source parameters referred to an invalid superblock.
-> > +.TP
-> > +.B ELOOP
-> > +Too many links encountered during pathname resolution.
-> > +.TP
-> > +.B ENAMETOOLONG
-> > +A path name was longer than
-> > +.BR MAXPATHLEN .
-> > +.TP
-> > +.B ENOENT
-> > +A pathname was empty or had a nonexistent component.
-> > +.TP
-> > +.B ENOMEM
-> > +The kernel could not allocate sufficient memory to complete the call.
-> > +.TP
-> > +.B ENOTBLK
-> > +Once of the parameters does not refer to a block device (and a device was
->
-> s/Once/One/
->
-> > +required).
-> > +.TP
-> > +.B ENOTDIR
-> > +.IR pathname ,
->
-> But there is no argument "pathname" mentioned in this page!?
->
-> > +or a prefix of
-> > +.IR source ,
-> > +is not a directory.
->
-> But there is no argument "source" mentioned in this page!?
->
-> (Can you please review all of the errors listed in this section to
-> check that they apply to fsconfig().)
->
-> > +.TP
-> > +.B EOPNOTSUPP
-> > +The command given by
-> > +.I cmd
-> > +was not valid.
-> > +.TP
-> > +.B ENXIO
-> > +The major number of a block device parameter is out of range.
-> > +.TP
-> > +.B EPERM
-> > +The caller does not have the required privileges.
->
-> Please name the capability. Also, there was no mention of privileges in
-> the text above, so could you please add some text about why/when
-> privilege is needed.
->
-> > +.SH CONFORMING TO
-> > +These functions are Linux-specific and should not be used in programs intended
-> > +to be portable.
-> > +.SH VERSIONS
-> > +.BR fsconfig ()
-> > +was added to Linux in kernel 5.2.
-> > +.SH NOTES
-> > +Glibc does not (yet) provide a wrapper for the
-> > +.BR fsconfig ()
-> > +system call; call it using
-> > +.BR syscall (2).
-> > +.SH SEE ALSO
-> > +.BR mountpoint (1),
-> > +.BR fsmount (2),
-> > +.BR fsopen (2),
-> > +.BR fspick (2),
-> > +.BR mount_namespaces (7),
-> > +.BR path_resolution (7)
->
-> Thanks,
->
-> Michael
->
->
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+This was an error condition I encountered while bringing up sc7280. HPD 
+processing was delayed and I got a commit with pixel clock = 0. I will 
+recheck why this is happening.
 
+>>         DRM_DEBUG_DP("rate=%d, num_lanes=%d, pixel_rate=%d\n",
+>>                 ctrl->link->link_params.rate,
+>>                 ctrl->link->link_params.num_lanes, 
+>> ctrl->dp_ctrl.pixel_rate);
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index ee5bf64..a772290 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -117,8 +117,36 @@ struct dp_display_private {
+>>         struct dp_audio *audio;
+>>  };
+>> 
+>> +struct msm_dp_config {
+>> +       phys_addr_t io_start[3];
+>> +       size_t num_dp;
+>> +};
+>> +
+>> +static const struct msm_dp_config sc7180_dp_cfg = {
+>> +       .io_start = { 0x0ae90000 },
+>> +       .num_dp = 1,
+>> +};
+>> +
+>> +static const struct msm_dp_config sc8180x_dp_cfg = {
+>> +       .io_start = { 0xae90000, 0xae98000, 0 },
+>> +       .num_dp = 3,
+>> +};
+>> +
+>> +static const struct msm_dp_config sc8180x_edp_cfg = {
+>> +       .io_start = { 0, 0, 0xae9a000 },
+>> +       .num_dp = 3,
+>> +};
+>> +
+>> +static const struct msm_dp_config sc7280_edp_cfg = {
+>> +       .io_start = { 0xaea0000, 0 },
+>> +       .num_dp = 2,
+>> +};
+> 
+> Are all of these supposed to be here?
 
+No. I will remove them. Only sc7280_edp_cfg will be there.
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+> 
+>> +
+>>  static const struct of_device_id dp_dt_match[] = {
+>> -       {.compatible = "qcom,sc7180-dp"},
+>> +       { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+>> +       { .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
+>> +       { .compatible = "qcom,sc8180x-edp", .data = &sc8180x_edp_cfg 
+>> },
+>> +       { .compatible = "qcom,sc7280-edp", .data = &sc7280_edp_cfg },
+> 
+> Please sort alphabetically on compatible string, it helps avoid
+> conflicts in the future.
+
+Okay
+
+> 
+>>         {}
+>>  };
+>> 
+>> @@ -1408,7 +1436,7 @@ void msm_dp_irq_postinstall(struct msm_dp 
+>> *dp_display)
+>> 
+>>         dp_hpd_event_setup(dp);
+>> 
+>> -       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
+>> +       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
+>>  }
+>> 
+>>  void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor 
+>> *minor)
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c 
+>> b/drivers/gpu/drm/msm/dp/dp_parser.c
+>> index 0519dd3..c05fc0a 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+>> @@ -248,6 +248,33 @@ static int dp_parser_clock(struct dp_parser 
+>> *parser)
+>>         return 0;
+>>  }
+>> 
+>> +static int dp_parser_gpio(struct dp_parser *parser)
+>> +{
+>> +       struct device *dev = &parser->pdev->dev;
+>> +       int ret;
+>> +
+>> +       parser->panel_bklt_gpio = devm_gpiod_get(dev, "panel-bklt",
+>> +                       GPIOD_OUT_HIGH);
+>> +       if (IS_ERR(parser->panel_bklt_gpio)) {
+>> +               ret = PTR_ERR(parser->panel_bklt_gpio);
+>> +               parser->panel_bklt_gpio = NULL;
+>> +               DRM_ERROR("%s: cannot get panel-bklt gpio, %d\n", 
+>> __func__, ret);
+>> +               goto fail;
+>> +       }
+>> +
+>> +       parser->panel_pwm_gpio = devm_gpiod_get(dev, "panel-pwm", 
+>> GPIOD_OUT_HIGH);
+>> +       if (IS_ERR(parser->panel_pwm_gpio)) {
+>> +               ret = PTR_ERR(parser->panel_pwm_gpio);
+>> +               parser->panel_pwm_gpio = NULL;
+>> +               DRM_ERROR("%s: cannot get panel-pwm gpio, %d\n", 
+>> __func__, ret);
+>> +               goto fail;
+>> +       }
+>> +
+>> +       DRM_INFO("gpio on");
+>> +fail:
+>> +       return 0;
+>> +}
+> 
+> Don't we have pwm backlight drivers like
+> drivers/video/backlight/pwm_bl.c to support this? This sort of thing
+> doesn't belong in the dp driver.
+
+Okay. I will explore it.
+
+> 
+>> +
+>>  static int dp_parser_parse(struct dp_parser *parser)
+>>  {
+>>         int rc = 0;
+>> @@ -269,6 +296,10 @@ static int dp_parser_parse(struct dp_parser 
+>> *parser)
+>>         if (rc)
+>>                 return rc;
+>> 
+>> +       rc = dp_parser_gpio(parser);
+>> +       if (rc)
+>> +               return rc;
+>> +
+>>         /* Map the corresponding regulator information according to
+>>          * version. Currently, since we only have one supported 
+>> platform,
+>>          * mapping the regulator directly.
+
+Thank you,
+Sankeerth
