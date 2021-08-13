@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45C13EBC11
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397893EBC15
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbhHMS1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:27:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9620 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232611AbhHMS1w (ORCPT
+        id S232683AbhHMSbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:31:35 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:41591 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233116AbhHMS3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:27:52 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17DI3jOQ042063;
-        Fri, 13 Aug 2021 14:26:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=j1lczph9q4hxdvWvkJjwrPNCN+2CWHiDAOVh9v5sYiU=;
- b=F1+hlBD2gBPPNoUXcTiipWWtJWpJU6FA9KmkHDnQOfBVoCgwR2Gvxv0+7AkkSRL9NLFb
- IuJ4dAHIwl9hU6p2JZ9DKch49Qulh294Gwyy7a7ilsJyADL90YH1lcmLlXD/4gvvNNwR
- RXvrl+7pTe27FIpzGMwC1DqD22gyKtJU/wF5/gTs6ux1Pxjfe7IVF6mLjqA6Iu53yZ7q
- 5mfElFskMjqkkkLE/zBIazGY6BhvHp6ivganzgDRCP1gPbuBMmL6UOMLP9po7E1W9/lE
- Q+s9FxubEmUypH5IIDwBtCWissidvLRObSxaa7VoV8Ap1VEMey3qVFtynTWRNk6ySgVt CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3adsf3yww9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Aug 2021 14:26:26 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17DI3lvf042231;
-        Fri, 13 Aug 2021 14:26:26 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3adsf3ywvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Aug 2021 14:26:26 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17DIJkBu001449;
-        Fri, 13 Aug 2021 18:26:24 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01dal.us.ibm.com with ESMTP id 3ackhs8q50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Aug 2021 18:26:24 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17DIQM5i30343530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Aug 2021 18:26:22 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38BE8112061;
-        Fri, 13 Aug 2021 18:26:22 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 745E3112062;
-        Fri, 13 Aug 2021 18:26:19 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.76.133])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Aug 2021 18:26:19 +0000 (GMT)
-Subject: Re: [PATCH v3 01/14] integrity: Introduce a Linux keyring for the
- Machine Owner Key (MOK)
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Mimi Zohar <zohar@linux.ibm.com>, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
-        keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@hansenpartnership.com, pjones@redhat.com,
-        glin@suse.com, konrad.wilk@oracle.com
-References: <20210812021855.3083178-1-eric.snowberg@oracle.com>
- <20210812021855.3083178-2-eric.snowberg@oracle.com>
- <20210812185853.p5mgsgrftgwvt5fx@kernel.org>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <a3d7ce08-47e8-7287-772d-f7e789c47449@linux.vnet.ibm.com>
-Date:   Fri, 13 Aug 2021 14:26:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 13 Aug 2021 14:29:15 -0400
+Received: by mail-oi1-f179.google.com with SMTP id be20so17146539oib.8;
+        Fri, 13 Aug 2021 11:28:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zZCdGU68OAkJc6X7hI5SXJs2mB8DxFZBfZ+b7CmoJgk=;
+        b=lmIWKug6vRie56/gryTmcDTlhdqs+KT9M6w1XxYnjbMAjNXnVaAoGJGegGGN7sYeDe
+         V99h06LvEvoQCaHgcbdlY38TzRGGnatWa0NO1P17vvLXuXb5sJaR/fc+rH/7AKak4kCT
+         qVqQZpE6OBVBx69gzniXOjrLFa3wqnwwTjecGVFPftw4Y+kRyILLQhsA0pJSwey0fzf6
+         5kPe/al0So2yfVx1bHp+XYNT80Cf0nHEvScZql/3eg+L0md01LTqpT70vfTMW565f3Z3
+         Wax6oDkYcoXFf1LUa5ntTviTg4kH/6wxYengeyVZvWEKcwFv67xqtxh2o8mUFc/Kk1qz
+         HhyQ==
+X-Gm-Message-State: AOAM533ljmzAmTrYCPOvfJcQ27jDIMcO9tdJZzOm3jWDjy8ZHXQGfVyu
+        iFK339z1l/VtiXEHnK2sUw==
+X-Google-Smtp-Source: ABdhPJz9MREtiq35h0kEgBsz0lVLN1iN55g1Kkmm/x/pVF9OxvS3DVnNjeLNGCKCHRJDIPJ+7nUZ4A==
+X-Received: by 2002:aca:5888:: with SMTP id m130mr3183934oib.3.1628879327512;
+        Fri, 13 Aug 2021 11:28:47 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c18sm454677ots.81.2021.08.13.11.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 11:28:46 -0700 (PDT)
+Received: (nullmailer pid 3814039 invoked by uid 1000);
+        Fri, 13 Aug 2021 18:28:45 -0000
+Date:   Fri, 13 Aug 2021 13:28:45 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sireesh Kodali <sireeshkodali@protonmail.com>
+Cc:     mturquette@baylibre.com, robh+dt@kernel.org,
+        phone-devel@vger.kernel.org, Vladimir Lypak <junak.pub@gmail.com>,
+        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+        Adam Skladowski <a_skl39@protonmail.com>,
+        linux-clk@vger.kernel.org, agross@kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        sboyd@kernel.org
+Subject: Re: [PATCH RESEND 1/2] dt-bindings: clock: add Qualcomm MSM8953 GCC
+ driver bindings
+Message-ID: <YRa53aqcX5I+8vji@robh.at.kernel.org>
+References: <Q6uB3NRxqtD8Prsmliv8ZdsTXGeviv7lb2jQ743jr1E@cp4-web-036.plabs.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210812185853.p5mgsgrftgwvt5fx@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NtaYsAueNdNnB6kwL7VEQdE3reAq6bwi
-X-Proofpoint-GUID: 33tuCCwIGg_cW1kX4YoburxLjhDz1bfR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-13_06:2021-08-13,2021-08-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108130107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Q6uB3NRxqtD8Prsmliv8ZdsTXGeviv7lb2jQ743jr1E@cp4-web-036.plabs.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 05 Aug 2021 09:06:42 +0000, Sireesh Kodali wrote:
+> From: Vladimir Lypak <junak.pub@gmail.com>
+> 
+> Add bindings and compatible to document MSM8953 GCC (Global Clock
+> Controller) driver.
+> 
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
+> Signed-off-by: Sireesh Kodali <sireeshkodali@protonmail.com>
+> ---
+>  .../devicetree/bindings/clock/qcom,gcc.yaml   |   2 +
+>  include/dt-bindings/clock/qcom,gcc-msm8953.h  | 234 ++++++++++++++++++
+>  2 files changed, 236 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8953.h
+> 
 
-On 8/12/21 2:58 PM, Jarkko Sakkinen wrote:
-> On Wed, Aug 11, 2021 at 10:18:42PM -0400, Eric Snowberg wrote:
->> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
->> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
->> Boot DB and MOK keys to validate the next step in the boot chain.  The
->> MOK facility can be used to import user generated keys.  These keys can
->> be used to sign an end-users development kernel build.  When Linux
->> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
->> .platform keyring.
->>
->> Add a new Linux keyring called .mok.  This keyring shall contain just
-> I would consider ".machine" instead. It holds MOK keys but is not a
-> MOK key.
-
-I agree with changing the name.
-
-I believe the underlying source from where CA keys are loaded might vary 
-based on the architecture (".mok" is UEFI specific.). The key part is 
-that this new keyring should contain only CA keys which can be later 
-used to vouch for user keys loaded onto IMA or secondary keyring at 
-runtime. It would be good to have a "ca" in the name, like .xxxx-ca, 
-where xxxx can be machine, owner, or system. I prefer .system-ca.
-
-Thanks & Regards,
-
-      - Nayna
-
+Reviewed-by: Rob Herring <robh@kernel.org>
