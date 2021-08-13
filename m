@@ -2,174 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498CC3EBBBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E838F3EBBC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhHMR6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhHMR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:58:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E11C360EFE;
-        Fri, 13 Aug 2021 17:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628877493;
-        bh=J6D46KhrsQ2B5chlvCMLyT6qJIR9dOkPjZOOAqPF6P4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VBi6zU+6EZ5jjkV3bjcVGHXEFQw9CgbdQTlc0wGgoJkGDKxiMP1N128Rk2yDSXqC/
-         rtU53/rDl91F649c+sFD8YnbQ3nJnxCRitezMWUlA1sth/VIqaOeKwAIeDR62jiC9a
-         pXcZfuYEEijzraKal7tSfIRBUYb6ZAK0xAgsu6Sj4Fj8J/TGbvYKIPth4I0H+I4uY9
-         L+72y/ztW35wtXeKaQkkEiDKj1YFmGKM+WpjQOJfWDRvSzG6gdQhampuvNRxyYHxg8
-         CEQ1JAAhZbWemzEhhkpjmoJy+EviDX6cRhsi8adtKwIrTw7hhayiR82eKqJGX3v/wn
-         vlj9TuTg0oHCw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AE51F5C0373; Fri, 13 Aug 2021 10:58:13 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 10:58:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     mark.rutland@arm.com, dvyukov@google.com, glider@google.com,
-        boqun.feng@gmail.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kcsan: selftest: Cleanup and add missing __init
-Message-ID: <20210813175813.GC4126399@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210813081055.3119894-1-elver@google.com>
+        id S232684AbhHMR7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232099AbhHMR7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:59:14 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E70C061756;
+        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id bo18so16525411pjb.0;
+        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=di7QngSrp4FnsSGO3LSu9eV65mIJNW5jKf6yiG0+RuU=;
+        b=dQXLqc5X8fIsHbzymW3PLJOTOjlQdK8tcmZqLFzG352erBCZhuDdyQp5dJjpAxQs4B
+         JeaS1pyddkxqdfr1t8ujRcY12W0PqS0hXNNOXZ0wFZF2oaeKK3/1DVpmWTSnCW6zOWzY
+         gqsqTLjc9I8480wq1q6uBW3m6zMSJpXzGOBUxY9waV/oC7JaNorcF8JKXWehHZRJ5RUq
+         g7RNoWhlraHMPVn4DI6/rTvyrmiPeXKT3mG72JAOtuEM7ufjtq62UA9Nz9UYy2mJkzEG
+         NpAl0ATS3TPxm1KRHOuuzcztGTWzT/f9vfWyWDsL/FUIc3fxfMILeA2ztqpuFTME9rw+
+         80RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=di7QngSrp4FnsSGO3LSu9eV65mIJNW5jKf6yiG0+RuU=;
+        b=XqGMN3QL9I1Hh944IKR1rRB1hOHxrzGNlzKB23+kKOmpyeheFUZGYMdbh4uZ8r1u3r
+         Y1BAXG4NRAAjyXXBnFcqm8Fp0pUzQc+zzhMGR9PDmcQ0mKPxxPDp893h6jG5oDoexUm0
+         UwURPKxEm+X1gymT+KtTW/iwAJXiWaUWFb4BAZn2BlRc9yJqugTOuVr/8WKjERoxW3eI
+         py8wvjuviw178giVV4avC0dkWr0oSz3bcx3bXCssuHlAN0DX4nEm1cFSpm3fyYhtz7ZU
+         PYjXIcCyj18moo41wMh7O4o2r34Bbghs9/PlGynE47s079ubSC9/tcPBC0DUl6ny9ueH
+         Fz/A==
+X-Gm-Message-State: AOAM5334QW6nv2Cnx3R0Ju9eJsqYVoryg5EJKgu6PGSzg+abSURAqq0n
+        G41xhx80pHEJIfLbO98S2YI=
+X-Google-Smtp-Source: ABdhPJwzwumzRBi1BCTF3AFHLjIkjk9cXsbjw6TqqLX1fdRzbRFo7tzsATIv9gSPcOccSh8E3bFC/Q==
+X-Received: by 2002:a63:f749:: with SMTP id f9mr3387048pgk.77.1628877527474;
+        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
+        by smtp.gmail.com with ESMTPSA id 19sm2945794pfw.203.2021.08.13.10.58.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
+Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
+ function for HV IVM
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-11-ltykernel@gmail.com>
+ <20210812122741.GC19050@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
+Date:   Sat, 14 Aug 2021 01:58:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813081055.3119894-1-elver@google.com>
+In-Reply-To: <20210812122741.GC19050@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 10:10:55AM +0200, Marco Elver wrote:
-> Make test_encode_decode() more readable and add missing __init.
+On 8/12/2021 8:27 PM, Christoph Hellwig wrote:
+> This is still broken.  You need to make sure the actual DMA allocations
+> do have struct page backing.
 > 
-> Signed-off-by: Marco Elver <elver@google.com>
 
-Thank you!  I have queued and pushed this one as well as your previous
-series:
-
-https://lkml.kernel.org/r/20210813081055.3119894-1-elver@google.com
-
-							Thanx, Paul
-
-> ---
->  kernel/kcsan/selftest.c | 72 +++++++++++++++++------------------------
->  1 file changed, 30 insertions(+), 42 deletions(-)
-> 
-> diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
-> index 7f29cb0f5e63..b4295a3892b7 100644
-> --- a/kernel/kcsan/selftest.c
-> +++ b/kernel/kcsan/selftest.c
-> @@ -18,7 +18,7 @@
->  #define ITERS_PER_TEST 2000
->  
->  /* Test requirements. */
-> -static bool test_requires(void)
-> +static bool __init test_requires(void)
->  {
->  	/* random should be initialized for the below tests */
->  	return prandom_u32() + prandom_u32() != 0;
-> @@ -28,14 +28,18 @@ static bool test_requires(void)
->   * Test watchpoint encode and decode: check that encoding some access's info,
->   * and then subsequent decode preserves the access's info.
->   */
-> -static bool test_encode_decode(void)
-> +static bool __init test_encode_decode(void)
->  {
->  	int i;
->  
->  	for (i = 0; i < ITERS_PER_TEST; ++i) {
->  		size_t size = prandom_u32_max(MAX_ENCODABLE_SIZE) + 1;
->  		bool is_write = !!prandom_u32_max(2);
-> +		unsigned long verif_masked_addr;
-> +		long encoded_watchpoint;
-> +		bool verif_is_write;
->  		unsigned long addr;
-> +		size_t verif_size;
->  
->  		prandom_bytes(&addr, sizeof(addr));
->  		if (addr < PAGE_SIZE)
-> @@ -44,53 +48,37 @@ static bool test_encode_decode(void)
->  		if (WARN_ON(!check_encodable(addr, size)))
->  			return false;
->  
-> -		/* Encode and decode */
-> -		{
-> -			const long encoded_watchpoint =
-> -				encode_watchpoint(addr, size, is_write);
-> -			unsigned long verif_masked_addr;
-> -			size_t verif_size;
-> -			bool verif_is_write;
-> -
-> -			/* Check special watchpoints */
-> -			if (WARN_ON(decode_watchpoint(
-> -				    INVALID_WATCHPOINT, &verif_masked_addr,
-> -				    &verif_size, &verif_is_write)))
-> -				return false;
-> -			if (WARN_ON(decode_watchpoint(
-> -				    CONSUMED_WATCHPOINT, &verif_masked_addr,
-> -				    &verif_size, &verif_is_write)))
-> -				return false;
-> -
-> -			/* Check decoding watchpoint returns same data */
-> -			if (WARN_ON(!decode_watchpoint(
-> -				    encoded_watchpoint, &verif_masked_addr,
-> -				    &verif_size, &verif_is_write)))
-> -				return false;
-> -			if (WARN_ON(verif_masked_addr !=
-> -				    (addr & WATCHPOINT_ADDR_MASK)))
-> -				goto fail;
-> -			if (WARN_ON(verif_size != size))
-> -				goto fail;
-> -			if (WARN_ON(is_write != verif_is_write))
-> -				goto fail;
-> -
-> -			continue;
-> -fail:
-> -			pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
-> -			       __func__, is_write ? "write" : "read", size,
-> -			       addr, encoded_watchpoint,
-> -			       verif_is_write ? "write" : "read", verif_size,
-> -			       verif_masked_addr);
-> +		encoded_watchpoint = encode_watchpoint(addr, size, is_write);
-> +
-> +		/* Check special watchpoints */
-> +		if (WARN_ON(decode_watchpoint(INVALID_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
->  			return false;
-> -		}
-> +		if (WARN_ON(decode_watchpoint(CONSUMED_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
-> +			return false;
-> +
-> +		/* Check decoding watchpoint returns same data */
-> +		if (WARN_ON(!decode_watchpoint(encoded_watchpoint, &verif_masked_addr, &verif_size, &verif_is_write)))
-> +			return false;
-> +		if (WARN_ON(verif_masked_addr != (addr & WATCHPOINT_ADDR_MASK)))
-> +			goto fail;
-> +		if (WARN_ON(verif_size != size))
-> +			goto fail;
-> +		if (WARN_ON(is_write != verif_is_write))
-> +			goto fail;
-> +
-> +		continue;
-> +fail:
-> +		pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
-> +		       __func__, is_write ? "write" : "read", size, addr, encoded_watchpoint,
-> +		       verif_is_write ? "write" : "read", verif_size, verif_masked_addr);
-> +		return false;
->  	}
->  
->  	return true;
->  }
->  
->  /* Test access matching function. */
-> -static bool test_matching_access(void)
-> +static bool __init test_matching_access(void)
->  {
->  	if (WARN_ON(!matching_access(10, 1, 10, 1)))
->  		return false;
-> -- 
-> 2.33.0.rc1.237.g0d66db33f3-goog
-> 
+Hi Christoph:
+      swiotlb_tbl_map_single() still returns PA below vTOM/share_gpa_
+boundary. These PAs has backing pages and belong to system memory.
+In other word, all PAs passed to DMA API have backing pages and these is 
+no difference between Isolation guest and traditional guest for DMA API.
+The new mapped VA for PA above vTOM here is just to access the bounce 
+buffer in the swiotlb code and isn't exposed to outside.
