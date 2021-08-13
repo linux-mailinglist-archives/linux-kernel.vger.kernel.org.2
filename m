@@ -2,144 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1673EB86F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A588F3EB8A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242281AbhHMPNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
+        id S242232AbhHMPPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241884AbhHMPMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B255960E9B;
-        Fri, 13 Aug 2021 15:11:50 +0000 (UTC)
+        id S241764AbhHMPNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:13:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A66FA610EA;
+        Fri, 13 Aug 2021 15:12:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867511;
-        bh=7LTG6qdARhWI50pG/ahSSZ6B/AVByZzAQFCy4WzHm4I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=feuBaLq83ZSg9PGMh24D5vQ4Ls37p0kWXFdgWyzsxhVpirsrp2bMVaYB5uRF7tNbE
-         +GJxr0TNTDTfn+TqGjeeYyZFPpHE29cUss2PTBvu6blHNGSwgYyCVcnp+2UXT2+T1l
-         zjxzwAPW9/McnaRF1bEq0Zw9RCWVUiMlHSmJGjaM=
+        s=korg; t=1628867573;
+        bh=jc3D3ISIm4zf6pUe0gjOoGa/I+ad7JKjF8jb11HloX4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mdansC365Fi+39Lwcp/v5BVFRZvfi6NrCvsmgtG+oZs6Wcj9yIhKXLIiSq0Lx5PYL
+         RC1kwtfkzCdr1Hd4mIQiLdNM3CXkQvR+A9b9X7jXLF6nxmhUV/YbZ6R70PTReHfTqV
+         Rs4nx5ollCFRDz1zaWTGBxCHHldIxFepqU24YdGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 40/42] ppp: Fix generating ppp unit id when ifname is not specified
-Date:   Fri, 13 Aug 2021 17:07:06 +0200
-Message-Id: <20210813150526.434136975@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/11] 4.19.204-rc1 review
+Date:   Fri, 13 Aug 2021 17:07:07 +0200
+Message-Id: <20210813150520.072304554@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.204-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.204-rc1
+X-KernelTest-Deadline: 2021-08-15T15:05+00:00
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+This is the start of the stable review cycle for the 4.19.204 release.
+There are 11 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 3125f26c514826077f2a4490b75e9b1c7a644c42 upstream.
+Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
+Anything received after that time might be too late.
 
-When registering new ppp interface via PPPIOCNEWUNIT ioctl then kernel has
-to choose interface name as this ioctl API does not support specifying it.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.204-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-Kernel in this case register new interface with name "ppp<id>" where <id>
-is the ppp unit id, which can be obtained via PPPIOCGUNIT ioctl. This
-applies also in the case when registering new ppp interface via rtnl
-without supplying IFLA_IFNAME.
+thanks,
 
-PPPIOCNEWUNIT ioctl allows to specify own ppp unit id which will kernel
-assign to ppp interface, in case this ppp id is not already used by other
-ppp interface.
+greg k-h
 
-In case user does not specify ppp unit id then kernel choose the first free
-ppp unit id. This applies also for case when creating ppp interface via
-rtnl method as it does not provide a way for specifying own ppp unit id.
+-------------
+Pseudo-Shortlog of commits:
 
-If some network interface (does not have to be ppp) has name "ppp<id>"
-with this first free ppp id then PPPIOCNEWUNIT ioctl or rtnl call fails.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.204-rc1
 
-And registering new ppp interface is not possible anymore, until interface
-which holds conflicting name is renamed. Or when using rtnl method with
-custom interface name in IFLA_IFNAME.
+YueHaibing <yuehaibing@huawei.com>
+    net: xilinx_emaclite: Do not print real IOMEM pointer
 
-As list of allocated / used ppp unit ids is not possible to retrieve from
-kernel to userspace, userspace has no idea what happens nor which interface
-is doing this conflict.
+Miklos Szeredi <mszeredi@redhat.com>
+    ovl: prevent private clone if bind mount is not allowed
 
-So change the algorithm how ppp unit id is generated. And choose the first
-number which is not neither used as ppp unit id nor in some network
-interface with pattern "ppp<id>".
+Pali Rohár <pali@kernel.org>
+    ppp: Fix generating ppp unit id when ifname is not specified
 
-This issue can be simply reproduced by following pppd call when there is no
-ppp interface registered and also no interface with name pattern "ppp<id>":
+Longfang Liu <liulongfang@huawei.com>
+    USB:ehci:fix Kunpeng920 ehci hardware problem
 
-    pppd ifname ppp1 +ipv6 noip noauth nolock local nodetach pty "pppd +ipv6 noip noauth nolock local nodetach notty"
+Lai Jiangshan <laijs@linux.alibaba.com>
+    KVM: X86: MMU: Use the correct inherited permissions to get shadow page
 
-Or by creating the one ppp interface (which gets assigned ppp unit id 0),
-renaming it to "ppp1" and then trying to create a new ppp interface (which
-will always fails as next free ppp unit id is 1, but network interface with
-name "ppp1" exists).
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf, selftests: Adjust few selftest outcomes wrt unreachable code
 
-This patch fixes above described issue by generating new and new ppp unit
-id until some non-conflicting id with network interfaces is generated.
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix leakage under speculation on mispredicted branches
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ppp/ppp_generic.c |   19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Do not mark insn as seen under speculative path verification
 
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -286,7 +286,7 @@ static struct channel *ppp_find_channel(
- static int ppp_connect_channel(struct channel *pch, int unit);
- static int ppp_disconnect_channel(struct channel *pch);
- static void ppp_destroy_channel(struct channel *pch);
--static int unit_get(struct idr *p, void *ptr);
-+static int unit_get(struct idr *p, void *ptr, int min);
- static int unit_set(struct idr *p, void *ptr, int n);
- static void unit_put(struct idr *p, int n);
- static void *unit_find(struct idr *p, int n);
-@@ -977,9 +977,20 @@ static int ppp_unit_register(struct ppp
- 	mutex_lock(&pn->all_ppp_mutex);
- 
- 	if (unit < 0) {
--		ret = unit_get(&pn->units_idr, ppp);
-+		ret = unit_get(&pn->units_idr, ppp, 0);
- 		if (ret < 0)
- 			goto err;
-+		if (!ifname_is_set) {
-+			while (1) {
-+				snprintf(ppp->dev->name, IFNAMSIZ, "ppp%i", ret);
-+				if (!__dev_get_by_name(ppp->ppp_net, ppp->dev->name))
-+					break;
-+				unit_put(&pn->units_idr, ret);
-+				ret = unit_get(&pn->units_idr, ppp, ret + 1);
-+				if (ret < 0)
-+					goto err;
-+			}
-+		}
- 	} else {
- 		/* Caller asked for a specific unit number. Fail with -EEXIST
- 		 * if unavailable. For backward compatibility, return -EEXIST
-@@ -3266,9 +3277,9 @@ static int unit_set(struct idr *p, void
- }
- 
- /* get new free unit number and associate pointer with it */
--static int unit_get(struct idr *p, void *ptr)
-+static int unit_get(struct idr *p, void *ptr, int min)
- {
--	return idr_alloc(p, ptr, 0, 0, GFP_KERNEL);
-+	return idr_alloc(p, ptr, min, 0, GFP_KERNEL);
- }
- 
- /* put unit number back to a pool */
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Inherit expanded/patched seen count from old aux data
+
+Masami Hiramatsu <mhiramat@kernel.org>
+    tracing: Reject string operand in the histogram expression
+
+Sean Christopherson <seanjc@google.com>
+    KVM: SVM: Fix off-by-one indexing when nullifying last used SEV VMCB
+
+
+-------------
+
+Diffstat:
+
+ Documentation/virtual/kvm/mmu.txt             |  4 +-
+ Makefile                                      |  4 +-
+ arch/x86/kvm/paging_tmpl.h                    | 14 ++++--
+ arch/x86/kvm/svm.c                            |  2 +-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |  5 +-
+ drivers/net/ppp/ppp_generic.c                 | 19 ++++++--
+ drivers/usb/host/ehci-pci.c                   |  3 ++
+ fs/namespace.c                                | 42 +++++++++++------
+ kernel/bpf/verifier.c                         | 68 +++++++++++++++++++++++----
+ kernel/trace/trace_events_hist.c              | 14 ++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  2 +
+ 11 files changed, 138 insertions(+), 39 deletions(-)
 
 
