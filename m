@@ -2,136 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82ABA3EB606
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CF83EB615
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhHMNQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:16:52 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49064 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239016AbhHMNQu (ORCPT
+        id S239568AbhHMN2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:28:36 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58808 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239016AbhHMN2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:16:50 -0400
-Received: by mail-il1-f197.google.com with SMTP id p6-20020a056e021446b0290205af2e2342so5020927ilo.15
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 06:16:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Nq6Ex5OAIWjHJxuz7eLghOWTV3ehaberZM7g/vAkzME=;
-        b=GatREp4AQKxr6QJNd/ASp+RV9GydSopKTm3zjwjcAWvGoQ+TMpKqCCEiw3GQfRLQOl
-         gCL6ZEzMXsEfpr4n8MGx41JdQS3RAXWNj4OdMyXRkhzyjTNIaDb327uox0Xck8Huffci
-         YnXVhpsEGjJ0ef+DByWi2y1FEBfnFjo5exUoAWB0OuGzRGMHXwmRNjrWo5NYD57CygjT
-         duoi1MOQUGjXspuLs4zLvQnMse4CUClFTW+bpG2xQxc/EgV0mXBDDpVH55v+oMPJHIqr
-         XZmp09KD1W/tnwcOW4IcGDnR4xc6s1D6ylKSpg5L5fPAtlGTP/HZg8hRPEc17tI35p41
-         Fb+Q==
-X-Gm-Message-State: AOAM531am+CVXo0oP/kHJo87DWJZZR4/4WMKyP3kOfUmAsBDV4GojTYx
-        xdI5Ih/d9UsTTENEIEXYr/infD6QVeyouoX3xtEdvXa6n/IU
-X-Google-Smtp-Source: ABdhPJwUIaxEY4I5UXDHoMGc20qCAwP2MXSM20Kb58mUwjTOdA69+Ys7/IVERJ9D1urqyRrgZWkjep200e7ED0tm8mdPUKmEdkSi
+        Fri, 13 Aug 2021 09:28:35 -0400
+Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 17DDRL1d011578;
+        Fri, 13 Aug 2021 22:27:22 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
+ Fri, 13 Aug 2021 22:27:21 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 17DDRLVB011515
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 13 Aug 2021 22:27:21 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] profiling: fix shift-out-of-bounds in profile_setup
+To:     Pavel Skripkin <paskripkin@gmail.com>, rostedt@goodmis.org,
+        tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org,
+        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+References: <20210716190409.25523-1-paskripkin@gmail.com>
+ <7bc788bf-ba81-5732-957e-55edf522d1ca@i-love.sakura.ne.jp>
+ <a222a2b1-63bd-9fe1-cbc4-ca0e1e214a46@gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
+Date:   Fri, 13 Aug 2021 22:27:21 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c80e:: with SMTP id v14mr31752iln.57.1628860584020;
- Fri, 13 Aug 2021 06:16:24 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 06:16:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007fcee205c970a843@google.com>
-Subject: [syzbot] INFO: task hung in fuse_launder_page
-From:   syzbot <syzbot+bea44a5189836d956894@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a222a2b1-63bd-9fe1-cbc4-ca0e1e214a46@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/08/13 19:56, Pavel Skripkin wrote:
+> I don't get it, sorry. Do you mean, that
+> 
+> #define MAX_PROF_SHIFT        BITS_PER_LONG
+> 
+> is better solution here?
 
-syzbot found the following issue on:
+Yes, but I feel we don't need to define MAX_PROF_SHIFT because
+the type of the integer value which is subjected to shift operation
+will be always "unsigned long" and will unlikely change in the future.
 
-HEAD commit:    36a21d51725a Linux 5.14-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=104b8eaa300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
-dashboard link: https://syzkaller.appspot.com/bug?extid=bea44a5189836d956894
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143c0ee9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158fc9aa300000
+>                          And as I understand we can change prof_shift type from "unsigned long" to "unsigned short", rigth?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
-
-INFO: task syz-executor276:8433 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc5-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor276 state:D stack:27736 pid: 8433 ppid:  8430 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4681 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
- schedule+0xd3/0x270 kernel/sched/core.c:6017
- fuse_wait_on_page_writeback fs/fuse/file.c:452 [inline]
- fuse_wait_on_page_writeback+0x120/0x170 fs/fuse/file.c:448
- fuse_launder_page fs/fuse/file.c:2316 [inline]
- fuse_launder_page+0xe9/0x130 fs/fuse/file.c:2306
- do_launder_page mm/truncate.c:595 [inline]
- invalidate_inode_pages2_range+0x994/0xf80 mm/truncate.c:661
- fuse_finish_open+0x2d9/0x560 fs/fuse/file.c:202
- fuse_open_common+0x2f9/0x4c0 fs/fuse/file.c:254
- do_dentry_open+0x4c8/0x11d0 fs/open.c:826
- do_open fs/namei.c:3374 [inline]
- path_openat+0x1c23/0x27f0 fs/namei.c:3507
- do_filp_open+0x1aa/0x400 fs/namei.c:3534
- do_sys_openat2+0x16d/0x420 fs/open.c:1204
- do_sys_open fs/open.c:1220 [inline]
- __do_sys_creat fs/open.c:1294 [inline]
- __se_sys_creat fs/open.c:1288 [inline]
- __x64_sys_creat+0xc9/0x120 fs/open.c:1288
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446409
-RSP: 002b:00007f0e6a9f92f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 00000000004d34f0 RCX: 0000000000446409
-RDX: 0000000000446409 RSI: 0000000000000000 RDI: 0000000020000280
-RBP: 00000000004a3164 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
-R13: 000000000049f158 R14: 00000000004a1160 R15: 00000000004d34f8
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1584:
- #0: ffffffff8b97c1c0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-2 locks held by syz-executor276/8433:
- #0: ffff888015e38460 (sb_writers#11){.+.+}-{0:0}, at: do_open fs/namei.c:3367 [inline]
- #0: ffff888015e38460 (sb_writers#11){.+.+}-{0:0}, at: path_openat+0x1aee/0x27f0 fs/namei.c:3507
- #1: ffff8880397d0150 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
- #1: ffff8880397d0150 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: fuse_open_common+0x366/0x4c0 fs/fuse/file.c:241
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1584 Comm: khungtaskd Not tainted 5.14.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
-NMI backtrace for cpu 0 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Yes, "unsigned int" or "unsigned short int", or even "u8" (I don't know
+whether compilers generate bad code if "u8" is used). At least, since
+get_option() stores result into "int", receiving via "unsigned int" will
+be enough.
