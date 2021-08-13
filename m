@@ -2,182 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F813EAFA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44BC3EAFAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238736AbhHMFaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 01:30:10 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:44236 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229654AbhHMFaH (ORCPT
+        id S238722AbhHMFcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 01:32:03 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:25593 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhHMFcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 01:30:07 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UiqodgM_1628832571;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UiqodgM_1628832571)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 13 Aug 2021 13:29:39 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Lasse Collin <lasse.collin@tukaani.org>,
-        nl6720 <nl6720@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH 2/2] erofs: add fiemap support with iomap
-Date:   Fri, 13 Aug 2021 13:29:31 +0800
-Message-Id: <20210813052931.203280-3-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20210813052931.203280-1-hsiangkao@linux.alibaba.com>
-References: <20210813052931.203280-1-hsiangkao@linux.alibaba.com>
+        Fri, 13 Aug 2021 01:32:02 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210813053134epoutp0416290f240ce9b4ff5a9bdf6a105fa05f~axrSi4DwN0539405394epoutp04E
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:31:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210813053134epoutp0416290f240ce9b4ff5a9bdf6a105fa05f~axrSi4DwN0539405394epoutp04E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628832694;
+        bh=iGDief16Fzc3SLhWwVJACEbw8Ik43QoS3vYZa+gMyns=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=NjGqrG3O/yN5PbjQtNFne/yx2/BF9ljrO84EYjOfCN856+w9yeqmpikLvr1ApB1Xh
+         0qvyiKMx2RMYaOsV8eEhfkdUuBRB4dMq+BUKvo8mzWJ7z522TiOvhiAxsFmJvpncNk
+         VxVLbjxTl46sHx0/ZJCU111woaEx4SEP7WqTbF4Q=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210813053133epcas2p1abc2b2e3499c3fe3152d289210e8715e~axrRutZsQ0274302743epcas2p1Q;
+        Fri, 13 Aug 2021 05:31:33 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4GmBxZ4zYbz4x9Qg; Fri, 13 Aug
+        2021 05:31:30 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F7.66.09921.2B306116; Fri, 13 Aug 2021 14:31:30 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210813053130epcas2p1a1d6da04716e4c279c15350fb55937c9~axrOg7Cnw0274002740epcas2p1C;
+        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210813053129epsmtrp11c6bd4bad2b087fe23af18a43177b54b~axrOb8CN42126821268epsmtrp11;
+        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
+X-AuditID: b6c32a45-f9dff700000026c1-01-611603b22f00
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1B.77.32548.1B306116; Fri, 13 Aug 2021 14:31:29 +0900 (KST)
+Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210813053129epsmtip25c47b25ddf5818831ac26f717759ba8d~axrOItGrO3034130341epsmtip2t;
+        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <bhoon95.kim@samsung.com>
+In-Reply-To: <32cc37cd-2f66-0f74-5242-cfcf86f58844@acm.org>
+Subject: RE: [RFC PATCH v1 0/2] scsi: ufs: introduce vendor isr
+Date:   Fri, 13 Aug 2021 14:31:29 +0900
+Message-ID: <064a01d79004$77f087c0$67d19740$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLpLcRe5nxssMVHyiI1GTvVMnlTYwK++sB5AU8a/RsBw7fVSgIyhbLYqQ2JOBA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmue4mZrFEg8alqhYnn6xhs3gwbxub
+        xcufV9ksDj7sZLH4uvQZq8W0Dz+ZLT6tX8ZqsXrxAxaLRTe2MVlc3jWHzaL7+g42i+XH/zFZ
+        dN29wWix9N9bFgc+j8tXvD0u9/UyeSze85LJY8KiA4we39d3sHl8fHqLxaNvyypGj8+b5Dza
+        D3QzBXBG5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXm
+        AB2vpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQw
+        MDIFqkzIyVi/3qzgI0fF+ZvVDYy/2LoYOTkkBEwkjt3vY+li5OIQEtjBKPH2SjcbhPOJUWLu
+        5OnsEM5nRonlN/YzwrTMOj2PCSKxi1HizNcGRgjnBaNE17YNYFVsAtoS0x7uZgVJiAi0MEtc
+        2fuJCSTBKWAt8fTILqC5HBzCAvYSL/+JgYRZBFQljjy5wQxi8wpYStyfdpUdwhaUODnzCQuI
+        zSwgL7H97RxmiCsUJH4+XcYKYosI+El8X3qbEaJGRGJ2ZxszyF4JgRscEk+33oU620Xi8cZv
+        UF8LS7w6voUdwpaSeNnfBmXXS+yb2sAK0dzDKPF03z+oZmOJWc/aGUGOZhbQlFi/Sx/ElBBQ
+        ljhyC+o2PomOw3/ZIcK8Eh1tQhCNyhK/Jk2GGiIpMfPmHahNHhKbjp1im8CoOAvJl7OQfDkL
+        yTezEPYuYGRZxSiWWlCcm55abFRgiBzXmxjB6VrLdQfj5Lcf9A4xMnEwHmKU4GBWEuHdKSeU
+        KMSbklhZlVqUH19UmpNafIjRFBjuE5mlRJPzgRkjryTe0NTIzMzA0tTC1MzIQkmcVyPua4KQ
+        QHpiSWp2ampBahFMHxMHp1QDk2zoubaSluKLS3jUPJcU7NU8LxDnoLez5fWtH8826W6dOGHi
+        LTHmWjnDuQqn9dS5lf//cNlxa5dk+YY3R39dPeqVlreT8b1C6PatPly1O/kuOapb8vf+2Kay
+        QX8tW7jsMsX+a+WRittyvu3SYblrMlv10oaHG6WvXD/7guvoVZ+YXsm/v7Vb2xJXHj71Jjv1
+        PrPX/gfHAlo+mfvc/rYo/seGRTM2zK6LkuAJuG1s8nmPhPajqbHVbix89Qn6zrJqrVmLTzy4
+        acp2yI0nSvFi4aEFjxK3PzNcKCY2tdvqabdHxR+xV72TGA3mpXLfDL62/WGVRtz0QHv19ryz
+        fxa4f7Q6aiZtetfbu1Kig/fgWiWW4oxEQy3mouJEAFj62nxgBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSvO5GZrFEgznzDCxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
+        H+hmCuCM4rJJSc3JLEst0rdL4MpYv96s4CNHxfmb1Q2Mv9i6GDk5JARMJGadnscEYgsJ7GCU
+        OLXSDSIuKXFi53NGCFtY4n7LEdYuRi6gmmeMEkc/bwNLsAloS0x7uBssISIwhVnizrWjbBBV
+        05gkbj3YxApSxSlgLfH0yC72LkYODmEBe4mX/8RAwiwCqhJHntxgBrF5BSwl7k+7yg5hC0qc
+        nPmEBcRmBlrQ+7CVEcKWl9j+dg4zxEUKEj+fLgMbLyLgJ/F96W2oGhGJ2Z1tzBMYhWYhGTUL
+        yahZSEbNQtKygJFlFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcHxqae1g3LPqg94h
+        RiYOxkOMEhzMSiK8O+WEEoV4UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQ
+        WgSTZeLglGpg2n1m4075F/bpiSemq3av28Bbp6Eskynk9bPtmVbSbZemCqmFrNXOP67zzLho
+        pspmdf5kQaJpvEak0TKJtEfCbV81bnzffsm8IfyG3+KlDS/+VJ2s8KledFRArzj00fwkn/2M
+        Ww+9XNNdpOAZWXUrc/fnnH1FGsLbsuUvvVK94ZbVLPogSP2b8MHbU0//muOzsvE935GJW0Qu
+        bXovvvDib0FupeXnkrd3fcsteccd8dHtldpNgaKgALvwq6UN3z2aJz74uuDdgV53e8ktC5tv
+        vj11UsRYptPjuPcN7npO6z+FOSfrYljUMnKC/6pt0XKY8ef3pheJpx9V100zkV1oOTVjv351
+        9Z0zFXeU8tZLK7EUZyQaajEXFScCAHOZ2sQ+AwAA
+X-CMS-MailID: 20210813053130epcas2p1a1d6da04716e4c279c15350fb55937c9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229
+References: <CGME20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229@epcas2p1.samsung.com>
+        <cover.1628231581.git.kwmad.kim@samsung.com>
+        <b3c18b34-2108-abfa-54ca-096a3eb31318@acm.org>
+        <000601d78cf2$a160f820$e422e860$@samsung.com>
+        <32cc37cd-2f66-0f74-5242-cfcf86f58844@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds fiemap support for both uncompressed files and compressed
-files by using iomap infrastructure.
+> On 8/9/21 12:46 AM, Kiwoong Kim wrote:
+> >> How about extending the UFS spec instead of adding a non-standard
+> >> mechanism in a driver that is otherwise based on a standard?
+> >
+> > It seems to be a great approach but I wonder if extending for the
+> > events that all the SoC vendors require in the spec is recommendable.
+> > Because I think there is quite possible that many of those things are
+> > originated for architectural reasons.
+> 
+> Has the interrupt mechanism supported by this patch series already been
+> implemented or is it still possible to change the ASIC design? In the
+The former case. It has been included since mass production of the first SoC
+supporting UFS for the first time.
 
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/erofs/data.c     | 15 ++++++++++++++-
- fs/erofs/inode.c    |  1 +
- fs/erofs/internal.h |  5 +++++
- fs/erofs/namei.c    |  1 +
- fs/erofs/zmap.c     | 38 ++++++++++++++++++++++++++++++++++++++
- 5 files changed, 59 insertions(+), 1 deletion(-)
+> latter case, I propose the following:
+> * Drop the new interrupt.
+> * Instead of raising an interrupt if the UFS controller detects an
+> inconsistency, report this via a check condition code, e.g. LOGICAL UNIT
+> NOT READY, HARD RESET REQUIRED (there may be a better choice).
+> 
+> The above approach has the advantage that it does not slow down the UFS
+> interrupt handler.
+> 
+> Thanks,
+> 
+> Bart.
+> 
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index b2a22aabc9bc..09c46fbdb9b2 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -5,7 +5,6 @@
-  */
- #include "internal.h"
- #include <linux/prefetch.h>
--#include <linux/iomap.h>
- #include <linux/dax.h>
- #include <trace/events/erofs.h>
- 
-@@ -152,6 +151,20 @@ static const struct iomap_ops erofs_iomap_ops = {
- 	.iomap_end = erofs_iomap_end,
- };
- 
-+int erofs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
-+		 u64 start, u64 len)
-+{
-+	if (erofs_inode_is_data_compressed(EROFS_I(inode)->datalayout)) {
-+#ifdef CONFIG_EROFS_FS_ZIP
-+		return iomap_fiemap(inode, fieinfo, start, len,
-+				    &z_erofs_iomap_report_ops);
-+#else
-+		return -EOPNOTSUPP;
-+#endif
-+	}
-+	return iomap_fiemap(inode, fieinfo, start, len, &erofs_iomap_ops);
-+}
-+
- /*
-  * since we dont have write or truncate flows, so no inode
-  * locking needs to be held at the moment.
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index 92728da1d206..d13e0709599c 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -365,6 +365,7 @@ const struct inode_operations erofs_generic_iops = {
- 	.getattr = erofs_getattr,
- 	.listxattr = erofs_listxattr,
- 	.get_acl = erofs_get_acl,
-+	.fiemap = erofs_fiemap,
- };
- 
- const struct inode_operations erofs_symlink_iops = {
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 2a05b09e1c06..ae33a28c8669 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -15,6 +15,7 @@
- #include <linux/magic.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-+#include <linux/iomap.h>
- #include "erofs_fs.h"
- 
- /* redefine pr_fmt "erofs: " */
-@@ -363,6 +364,8 @@ struct erofs_map_blocks {
- #define EROFS_GET_BLOCKS_FIEMAP	0x0002
- 
- /* zmap.c */
-+extern const struct iomap_ops z_erofs_iomap_report_ops;
-+
- #ifdef CONFIG_EROFS_FS_ZIP
- int z_erofs_fill_inode(struct inode *inode);
- int z_erofs_map_blocks_iter(struct inode *inode,
-@@ -381,6 +384,8 @@ static inline int z_erofs_map_blocks_iter(struct inode *inode,
- /* data.c */
- extern const struct file_operations erofs_file_fops;
- struct page *erofs_get_meta_page(struct super_block *sb, erofs_blk_t blkaddr);
-+int erofs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
-+		 u64 start, u64 len);
- 
- /* inode.c */
- static inline unsigned long erofs_inode_hash(erofs_nid_t nid)
-diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
-index a8271ce5e13f..8629e616028c 100644
---- a/fs/erofs/namei.c
-+++ b/fs/erofs/namei.c
-@@ -245,4 +245,5 @@ const struct inode_operations erofs_dir_iops = {
- 	.getattr = erofs_getattr,
- 	.listxattr = erofs_listxattr,
- 	.get_acl = erofs_get_acl,
-+	.fiemap = erofs_fiemap,
- };
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 12256ef12819..6af31ef6f13f 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -673,3 +673,41 @@ int z_erofs_map_blocks_iter(struct inode *inode,
- 	DBG_BUGON(err < 0 && err != -ENOMEM);
- 	return err;
- }
-+
-+static int z_erofs_iomap_begin_report(struct inode *inode, loff_t offset,
-+				loff_t length, unsigned int flags,
-+				struct iomap *iomap, struct iomap *srcmap)
-+{
-+	int ret;
-+	struct erofs_map_blocks map = { .m_la = offset };
-+
-+	ret = z_erofs_map_blocks_iter(inode, &map, EROFS_GET_BLOCKS_FIEMAP);
-+	if (map.mpage)
-+		put_page(map.mpage);
-+	if (ret < 0)
-+		return ret;
-+
-+	iomap->bdev = inode->i_sb->s_bdev;
-+	iomap->offset = map.m_la;
-+	iomap->length = map.m_llen;
-+	if (map.m_flags & EROFS_MAP_MAPPED) {
-+		iomap->type = IOMAP_MAPPED;
-+		iomap->addr = map.m_pa;
-+	} else {
-+		iomap->type = IOMAP_HOLE;
-+		iomap->addr = IOMAP_NULL_ADDR;
-+		/*
-+		 * No strict rule how to describe extents for post EOF, yet
-+		 * we need do like below. Otherwise, iomap itself will get
-+		 * into an endless loop on post EOF.
-+		 */
-+		if (iomap->offset >= inode->i_size)
-+			iomap->length = length + map.m_la - offset;
-+	}
-+	iomap->flags = 0;
-+	return 0;
-+}
-+
-+const struct iomap_ops z_erofs_iomap_report_ops = {
-+	.iomap_begin = z_erofs_iomap_begin_report,
-+};
--- 
-2.24.4
 
