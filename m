@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B923EBB64
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2553EBB68
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhHMRYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:24:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39344 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbhHMRYi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:24:38 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 345401FFE7;
-        Fri, 13 Aug 2021 17:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628875450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IaoDX9vjNunz+khPUACQq4xbH9srsHzOAkpAeQHb2aA=;
-        b=HklHC8PL9MAPXvU6kqy6g9gqpbynGPvuhchfGawPJK+qeWzRC0DrAGYi+a9HKr2PpktCNw
-        qelJ0yl+6/gV5dzPz8fGcGewI+nmiVw6Hude4oyp4QbgGglqpCGgOrYC/Js1z0dshmht0X
-        6xiuKxn/hJg27XPN3rXrvoT+5ioSpjg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628875450;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IaoDX9vjNunz+khPUACQq4xbH9srsHzOAkpAeQHb2aA=;
-        b=Uh0DN6LUaZttpmZpycg5sObldaRdn07j97ybdiKQq790Ujkw27yTwq51axzUQIYEb38ZKv
-        m/wY9Oh069Bew8Bw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1AB0B13668;
-        Fri, 13 Aug 2021 17:24:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id JG40BrqqFmG3KQAAGKfGzw
-        (envelope-from <bp@suse.de>); Fri, 13 Aug 2021 17:24:10 +0000
-Date:   Fri, 13 Aug 2021 19:24:43 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86-ml <x86@kernel.org>
-Subject: Re: vmlinux.o: warning: objtool: do_machine_check()+0x5dc: call to
- memset() leaves .noinstr.text section
-Message-ID: <YRaq0YjECPNA1/D0@zn.tnic>
-References: <202108140113.JJqRVW2H-lkp@intel.com>
+        id S231311AbhHMR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhHMR0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:26:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4D1060F36;
+        Fri, 13 Aug 2021 17:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628875545;
+        bh=bmfn7HbaaCItG5D2XO6GaE2puQJLN9rvaABOzoYwYRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iwgXXRq72gtd4nZHWuZoh7lOvyjwD50w3KX0bd//GnWIV0vc1ulSzvI/Tnc/M/pk9
+         a0m+QuNF0RSxm/QTGyMWyeY4Aeli4trKm6bGJfTNsqC3HLPdthQXE4fHjyg0gU9aTR
+         K0VzwueqE0tGHRfClLzJp1hpzipICxLVX+wbGJ8AIB9I9o9sMKuq4K5PqcMrRepXwR
+         pXnbFz0d0zaAT7p1gK4rdG2ESVJM6v5sH2aelEdVoZfHfm6AIMCyR9nWdfsRVBSB/d
+         E3EJ2UPCDbXbL7cZDdgKR7GnAChJ22fQ3OjVGxfhqOCLbl8EyDPohfhLRxNKXTufl7
+         h6MdWyntVwWmQ==
+Date:   Fri, 13 Aug 2021 18:25:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Gene Chen <gene.chen.richtek@gmail.com>, matthias.bgg@gmail.com,
+        matti.vaittinen@fi.rohmeurope.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, gene_chen@richtek.com,
+        Wilma.Wu@mediatek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH resend v6 0/3] power: supply: mt6360_charger: add MT6360
+ charger support
+Message-ID: <20210813172524.GG5209@sirena.org.uk>
+References: <20210719033914.16990-1-gene.chen.richtek@gmail.com>
+ <20210813155438.4ssph6deqksob2uv@earth.universe>
+ <20210813155858.GD5209@sirena.org.uk>
+ <20210813162029.q5slrkubelfy3mvh@earth.universe>
+ <20210813163254.GF5209@sirena.org.uk>
+ <20210813171106.entpro4b6dstho4s@earth.universe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lHGcFxmlz1yfXmOs"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202108140113.JJqRVW2H-lkp@intel.com>
+In-Reply-To: <20210813171106.entpro4b6dstho4s@earth.universe>
+X-Cookie: E Pluribus Unix
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 01:00:21AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f8e6dfc64f6135d1b6c5215c14cd30b9b60a0008
-> commit: 7bb39313cd6239e7eb95198950a02b4ad2a08316 x86/mce: Make mce_timed_out() identify holdout CPUs
-> date:   7 months ago
-> config: x86_64-buildonly-randconfig-r001-20210812 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7bb39313cd6239e7eb95198950a02b4ad2a08316
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 7bb39313cd6239e7eb95198950a02b4ad2a08316
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> vmlinux.o: warning: objtool: do_machine_check()+0x5dc: call to memset() leaves .noinstr.text section
 
-I cannot trigger this particular warning with your config ontop of
-latest tip/master so you can drop this.
+--lHGcFxmlz1yfXmOs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Regards/Gruss,
-    Boris.
+On Fri, Aug 13, 2021 at 07:11:06PM +0200, Sebastian Reichel wrote:
+> On Fri, Aug 13, 2021 at 05:32:54PM +0100, Mark Brown wrote:
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> > It would be better, the issues I'm worrying about are more general
+> > refactorings or whatever that create actual dependencies rather than
+> > just trivial add/add type issues - it can make doing some kinds of work
+> > really painful if things go via a different tree.
+
+> There you go:
+
+Thanks!
+
+--lHGcFxmlz1yfXmOs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEWqwQACgkQJNaLcl1U
+h9B8MQf/SabFhXiu82blgagfCOLQoxiKYIr+aSGYjCQoWyz9Zvt1gSq1HULJmgc1
+ofKQVgValsxqtpU6UYzPMVBIPhqpZ/TIbgYHvlLMSrpD07Nt3tddjDr/g6fYGyj7
+dwfQAa5QrxXz3uRPWpszlgQtkas3tpTM4lNF/ytOHWq1Lk9Mz3CmujN9qsbPKf/U
+DBVVEsV+oBCVG1atIOrKqZQCUrOkhG/KxhTrw1DquIN4IL6ygGUbhNVxi7nbRgu1
+z0TtqU54hgl3ALZZ1jxS3ehe/9zNP4zMZKk1qG+T6pj2kYwRmmDPVD9VFntbP1lP
+0KOZoYGZKBO8aBs6x06t78BGFwd42w==
+=KFpM
+-----END PGP SIGNATURE-----
+
+--lHGcFxmlz1yfXmOs--
