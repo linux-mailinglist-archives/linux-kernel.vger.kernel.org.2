@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EC33EBCDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 21:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903A93EBD05
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhHMTzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 15:55:54 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52266 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233716AbhHMTzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 15:55:51 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8FCF81C0B76; Fri, 13 Aug 2021 21:55:23 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 21:55:23 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 5.10 04/19] bpf: Add _kernel suffix to internal
- lockdown_bpf_read
-Message-ID: <20210813195523.GA4577@duo.ucw.cz>
-References: <20210813150522.623322501@linuxfoundation.org>
- <20210813150522.774143311@linuxfoundation.org>
+        id S234562AbhHMUCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:02:45 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:50414 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234542AbhHMUCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 16:02:39 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1mEcwT-00043h-71; Fri, 13 Aug 2021 21:34:09 +0200
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 07/13] KVM: Just resync arch fields when slots_arch_lock gets reacquired
+Date:   Fri, 13 Aug 2021 21:33:20 +0200
+Message-Id: <c7d7f681c2f978d03bddea7f5f0d684cdfdb2dd2.1628871413.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1628871411.git.maciej.szmigiero@oracle.com>
+References: <cover.1628871411.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
-Content-Disposition: inline
-In-Reply-To: <20210813150522.774143311@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There is no need to copy the whole memslot data after releasing
+slots_arch_lock for a moment to install temporary memslots copy in
+kvm_set_memslot() since this lock only protects the arch field of each
+memslot.
 
-Hi!
+Just resync this particular field after reacquiring slots_arch_lock.
 
-> From: Daniel Borkmann <daniel@iogearbox.net>
->=20
-> commit 71330842ff93ae67a066c1fa68d75672527312fa upstream.
->=20
-> Rename LOCKDOWN_BPF_READ into LOCKDOWN_BPF_READ_KERNEL so we have naming
-> more consistent with a LOCKDOWN_BPF_WRITE_USER option that we are
-> adding.
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
+ virt/kvm/kvm_main.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-As far as I can tell, next bpf patch does not depend on this one and
-we don't need it in 5.10. (Likely same situation with 5.13).
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---VbJkn9YxBvnuCH5J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRbOKwAKCRAw5/Bqldv6
-8rkbAKC8/UThc601ypMAptZLgZZZswLUzACghlIN4L2iQoOTHHEeyDKqsZPQnvE=
-=Yxs9
------END PGP SIGNATURE-----
-
---VbJkn9YxBvnuCH5J--
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 7000efff1425..272bc86a0e69 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1494,6 +1494,15 @@ static void kvm_copy_memslots(struct kvm_memslots *to,
+ 	memcpy(to, from, kvm_memslots_size(from->used_slots));
+ }
+ 
++static void kvm_copy_memslots_arch(struct kvm_memslots *to,
++				   struct kvm_memslots *from)
++{
++	int i;
++
++	for (i = 0; i < from->used_slots; i++)
++		to->memslots[i].arch = from->memslots[i].arch;
++}
++
+ /*
+  * Note, at a minimum, the current number of used slots must be allocated, even
+  * when deleting a memslot, as we need a complete duplicate of the memslots for
+@@ -1579,10 +1588,10 @@ static int kvm_set_memslot(struct kvm *kvm,
+ 		/*
+ 		 * The arch-specific fields of the memslots could have changed
+ 		 * between releasing the slots_arch_lock in
+-		 * install_new_memslots and here, so get a fresh copy of the
+-		 * slots.
++		 * install_new_memslots and here, so get a fresh copy of these
++		 * fields.
+ 		 */
+-		kvm_copy_memslots(slots, __kvm_memslots(kvm, as_id));
++		kvm_copy_memslots_arch(slots, __kvm_memslots(kvm, as_id));
+ 	}
+ 
+ 	r = kvm_arch_prepare_memory_region(kvm, old, new, mem, change);
+@@ -1599,8 +1608,6 @@ static int kvm_set_memslot(struct kvm *kvm,
+ 
+ out_slots:
+ 	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
+-		slot = id_to_memslot(slots, old->id);
+-		slot->flags &= ~KVM_MEMSLOT_INVALID;
+ 		slots = install_new_memslots(kvm, as_id, slots);
+ 	} else {
+ 		mutex_unlock(&kvm->slots_arch_lock);
