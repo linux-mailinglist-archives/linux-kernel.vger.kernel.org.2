@@ -2,214 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B0B3EBC36
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611D23EBC38
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbhHMStC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:49:02 -0400
-Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:46853
-        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233213AbhHMStA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:49:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1628880512; bh=M0IvlQWn1NZVpyUDNBFopADNkTBHVFU56HyMjOLWEjo=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=ZgO+KaM5PnlUvMqaJWCuxa0YBPmkRp6kEzH8b3XkmtRVBcEpvUdQw2HGAjFqTpiDphMRxG+pqbCTrcATMJb20oYDlTb3n1BVHEBX2WK6yT3Hts7N9Zxsz7Jm9CWS4x3FcQhdPcK6Wra/2rFxHt9QzjPC3xcRFe3/amx0li0RXCxzW5l+05VXH9FwAYCMUP8ug9vhNh3WJsV7NDeqX0c2bhsgJ7PNW9ormXY5d5/ZFxryAqxq6emuWE5VPFueCow41R3QqaX+bS2D1bhu/n2mWIc70LUuJPOY3GGXdbXvBsHAZXI4oCF1RPFvIQf9PEzYqOAOqXPQQawhPfN7UlEZOA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1628880512; bh=jBvNAxA/VMvcfD5RelGYHzl4DdJ1BH4Ly9tujw8R8PL=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=sT3Xq2fbTw665eKbyuvqJsIlbUdHKIkX8CiZ2k19YBDjp41L1cxI+VtxNHs0e7U8QdoeH+6mkxubtYN6tvdCelInserXrUQ2xvdLbcokc0oGOHTpjNa9luKwUnrUjsMb9l76/Ln/2+VOEXHBNp4/x7pYZ7zHA8ZnJWSyvZCY4L7GAfptsYWr8ldLyPi6opAyoPyZuvndcklmDf+fJO6mnPVi6Lks7t5w6t+ceP+DkEoAFL2V4TEELSJmsKux6YALmA9iPpwNx3C9s/O1lTHhnDL5qUWgYhVabtmZNtzxx4+ovAMr9f1e472gLXiOD/dlYpI2oMG/MlheFmeJYNOSUA==
-X-YMail-OSG: bCEqmp4VM1lmcCZ9AQDkiqI_o8TuUJsyL0cyfz5RIhPviaUqKKuBYN1HY6G9epQ
- 95FQyZTLyt9VBXe6hbgnyh8.32uGjXborurpsEugGgZ3jfHaDhbASY0ZLsLMABskpJD5Bw4jLob1
- zQfn.EXRWcSzSG9B8s1vdDCh5yTtx7EeThT6g.BIb.4vRI75Jgo_VkKNskeRhvedCBLD6fQoVozN
- FLZ_TEMEDYGv6CPuvYrVAVbHFVVGefWwBEHJ4AnLQn_5HrdgN.5hgGVrJW95I.k7OKC__5xqQznv
- qpLvaavzG3_abA6Dv3mpK2kg0rxAENj.1f6zTKBtzZgboaiaGHH9xIbxdm_QHQhS5XgRNsRmRgLs
- Xo2nuKsQvFqkptmXN3j4mnG7WsH09mhTTnZJdYGdapl9TrMBzJpgEdPOyiBM9gJeU6qy_mAwrfs1
- 7eFTFUwGsKYwBKhDGjhtwLJ2w6Ey4YuevUsD3uMxaa2gemI4cU5LDFn8sBrhdo3Jnnha4uEDhDmS
- 2g8wNFhfil8pg18VRS0ZPwISnt9OFc5Z3FM80kbc_pz8TVBnKYCsMmAWfh4Hv62GprQHkd8M0GJJ
- Fv18oQvl15u5HGITUkSfZ1bGGBuAFd2m0nHRsxNVeKjux_xG0fCrLlqkqN_TFtOArCNa.wRtBmb.
- geUkoglndJnxd4.pLgARvbnRDCAZ4djy4NFBj0Gt15FIrJuIVibo74tzTUayA4qGyGezuqcL8P4k
- bfRV7GonuJ22Fhvkj1lo8sTCshSFjK1co6T1sYypLSyQKYJoeZS87lGB300aXP0vIWqesURG5t_A
- L0DFYjaGJfYb4hVhI5iqJLgWHpS5kqjxKmtTVyAADrdrUD6KaQsbhhLlKvUy8Dkyv2vKfyb2YWgS
- ufGtAOy7WnKde6s64Bq4405yjGSaZZMmQgKa_fYGAou2T7sPrmgjg.XVnHABx5TUyTWXH4bcMHEv
- e70OrjtxVait4wh2AcAc9NtpxF5y586Pzlfr_1PVH.UifxaTrKaSB6Ka3n1UGkybwA59i52dmL0_
- w3sQM1sVKZvOtHQ1Q32xKzCbYJCKx0_1nOs5kpeFF9FR1dvWIaUObX.GUSwT1ZfA9JBsdURJcYGS
- BNSgrOuxUcfkOveE5reqgT_RiMnuZbGf._ofsEBJtKIatq2ykQdFsYnR.pdIIr0NFRO0WvMQsHVr
- A5teWmTT6g0.CM42xYuEmfsuYU6eowMddF7cwoy0mfL_x8Mgi50ghfyqWXOxMcdEl8mqdTKBgjWC
- 7I8ieSWiyP60jzYp.mN47ypBgyk92cQXpN9AciYid0mpvbRCnvUxuSgnokgVZGveBuVN_YX7d_h2
- oz_S7vvGRO3l7Z8B47EMAhyT7RFfYHr1VF8ptWIZD7JTe9NVQWAerdFHXjZuqsOgnsdkv.d0uPxZ
- b8xu03IleXSSkQVFoYlvjcTTZrkkRBOb6ihzrypY8nTaNtUZCLMxOMZsrHxKtRIn8_GHsM.r2koD
- FsOe0Q2XN7JJ1xwOd4PDD9c_5VBK46rztZZcMCy_SnqzcfBfMmJwjTiqDoSLSXaKm47TVXrlL5Gi
- 27YP6gHY_0y__lmdnOiLxBt8NoQu6IswLPuQQyU1cj1nKL6c7IKNOqqvIepIHcWIh.VL6EDcyrb2
- HGLclZGnR6D1wrzkqy5YYY5NF6wWdYBVjSqu1bVqL6swaHnVNnf6PnzeX7bnsmfxG__bBAxhIM5b
- 1C4c0Xge3Z0lMu4UwQdojAPeQKvRev5iAB4iaxQTq2dNxMzmWad9zgaVC8lX9EWJNng9V58doSki
- qJ4ndtP2zeRKThzVYQDCEQz2j_Kl8vAiryq67XsMjfs8dkbJ9SSimfX.a3NA_q4SJM1txa9.nkWR
- JY1nUi0fETbQcruSS4j4Iu2hscNqLAkK6772p51C3HsDNbhnuVjc_C5UZMht1YZECeQwR02fy9ns
- 0khl6F2dJPUTcD0BA_YDc41x1tqw50lImO4N7NEKQqH844WrMjsRn6Y1yrvvH.DQQU5d5eU6pUex
- 5xyqIQu0fG1Ix_Y3Dh_t5Jbd6Ws2UIRyibmrzKdJMQVHRTjRTF0H3LVsNlAHfsC92QNZP2cagRtn
- hN8R2JAaPNHiAtznhHZvVqKEmx9AbFRtkdKhMVNR_M4wGj6_AO5C0XTUSTnz_ElcIqIq3_cW3RqS
- ktpnJLtyauBuxMkELrEXWRJhKIwjtWA8u0IL6YhyDCCrXTz6zOLL_8VaFttov5g08xlyqFPH6M9u
- ban5sGoypXm6PmPEvqagCcoKA82uvHAElaIYmb6PQ81oniWIExufSlk6DlBJI2Z3vJiUT3A_KM6U
- TpN5OnrMKRO0voH_JA83zEf4YLTWFtu7hH1oL210ewuDQuI8FRbj0KiWI
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Fri, 13 Aug 2021 18:48:32 +0000
-Received: by kubenode548.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c6ab84719401a110a9f9bcd99da5cc70;
-          Fri, 13 Aug 2021 18:48:27 +0000 (UTC)
-Subject: Re: [PATCH v28 22/25] Audit: Add record for multiple process LSM
- attributes
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20210722004758.12371-1-casey@schaufler-ca.com>
- <20210722004758.12371-23-casey@schaufler-ca.com>
- <CAHC9VhTj2OJ7E6+iSBLNZaiPK-16UY0zSFJikpz+teef3JOosg@mail.gmail.com>
- <ace9d273-3560-3631-33fa-7421a165b038@schaufler-ca.com>
- <CAHC9VhSSASAL1mVwDo1VS3HcEF7Yb3LTTaoajEtq1HsA-8R+xQ@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <fba1a123-d6e5-dcb0-3d49-f60b26f65b29@schaufler-ca.com>
-Date:   Fri, 13 Aug 2021 11:48:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233522AbhHMSty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:49:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:56640 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233213AbhHMStR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 14:49:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEB77D6E;
+        Fri, 13 Aug 2021 11:48:49 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC95E3F40C;
+        Fri, 13 Aug 2021 11:48:46 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
+In-Reply-To: <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-4-valentin.schneider@arm.com> <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
+Date:   Fri, 13 Aug 2021 19:48:41 +0100
+Message-ID: <87v9496v06.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhSSASAL1mVwDo1VS3HcEF7Yb3LTTaoajEtq1HsA-8R+xQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Mailer: WebService/1.1.18850 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/2021 8:31 AM, Paul Moore wrote:
-> On Thu, Aug 12, 2021 at 6:38 PM Casey Schaufler <casey@schaufler-ca.com=
-> wrote:
->> On 8/12/2021 1:59 PM, Paul Moore wrote:
->>> On Wed, Jul 21, 2021 at 9:12 PM Casey Schaufler <casey@schaufler-ca.c=
-om> wrote:
->>>> Create a new audit record type to contain the subject information
->>>> when there are multiple security modules that require such data.
-> ...
+On 12/08/21 17:20, Paul E. McKenney wrote:
+> On Wed, Aug 11, 2021 at 09:13:53PM +0100, Valentin Schneider wrote:
+>> rcu_core() preemptability considerations
+>> ========================================
+>> 
+>> As pointed out by Paul [2], keeping rcu_check_quiescent_state() preemptible
+>> (which is the case under CONFIG_PREEMPT_RT) requires some consideration.
+>> 
+>> note_gp_changes() itself runs with irqs off, and enters
+>> __note_gp_changes() with rnp->lock held (raw_spinlock), thus is safe vs
+>> preemption.
+>> 
+>> rdp->core_needs_qs *could* change after being read by the RCU core
+>> kthread if it then gets preempted. Consider, with
+>> CONFIG_RCU_STRICT_GRACE_PERIOD:
+>> 
+>>   rcuc/x                                   task_foo
+>> 
+>>     rcu_check_quiescent_state()
+>>     `\
+>>       rdp->core_needs_qs == true
+>> 			     <PREEMPT>
+>> 					   rcu_read_unlock()
+>> 					   `\
+>> 					     rcu_preempt_deferred_qs_irqrestore()
+>> 					     `\
+>> 					       rcu_report_qs_rdp()
+>> 					       `\
+>> 						 rdp->core_needs_qs := false;
+>> 
+>> This would let rcuc/x's rcu_check_quiescent_state() proceed further down to
+>> rcu_report_qs_rdp(), but if task_foo's earlier rcu_report_qs_rdp()
+>> invocation would have cleared the rdp grpmask from the rnp mask, so
+>> rcuc/x's invocation would simply bail.
+>> 
+>> Since rcu_report_qs_rdp() can be safely invoked, even if rdp->core_needs_qs
+>> changed, it appears safe to keep rcu_check_quiescent_state() preemptible.
 >
->>> The local
->>> audit context is a hack that is made necessary by the fact that we
->>> have to audit things which happen outside the scope of an executing
->>> task, e.g. the netfilter audit hooks, it should *never* be used when
->>> there is a valid task_struct.
->> In the existing audit code a "current context" is only needed for
->> syscall events, so that's the only case where it's allocated. Would
->> you suggest that I track down the non-syscall events that include
->> subj=3D fields and add allocate a "current context" for them? I looked=
-
->> into doing that, and it wouldn't be simple.
-> This is why the "local context" was created.  Prior to these stacking
-> additions, and the audit container ID work, we never needed to group
-> multiple audit records outside of a syscall context into a single
-> audit event so passing a NULL context into audit_log_start() was
-> reasonable.  The local context was designed as a way to generate a
-> context for use in a local function scope to group multiple records,
-> however, for reasons I'll get to below I'm now wondering if the local
-> context approach is really workable ...
-
-I haven't found a place where it didn't work. What is the concern?
-
-
->>> Hopefully that makes sense?
->> Yes, it makes sense. Methinks you may believe that the current context=
-
->> is available more regularly than it actually is.
->>
->> I instrumented the audit event functions with:
->>
->>         WARN_ONCE(audit_context, "%s has context\n", __func__);
->>         WARN_ONCE(!audit_context, "%s lacks context\n", __func__);
->>
->> I only used local contexts where the 2nd WARN_ONCE was hit.
-> What does your audit config look like?  Both the kernel command line
-> and the output of 'auditctl -l' would be helpful.
-
-On the fedora system:
-
-BOOT_IMAGE=3D(hd0,gpt2)/vmlinuz-5.14.0-rc5stack+
-root=3D/dev/mapper/fedora-root ro resume=3D/dev/mapper/fedora-swap
-rd.lvm.lv=3Dfedora/root rd.lvm.lv=3Dfedora/swap lsm.debug
-
--a always,exit -F arch=3Db64 -S bpf -F key=3Dtestsuite-1628714321-EtlWIph=
-W
-
-On the Ubuntu system:
-
-BOOT_IMAGE=3D/boot/vmlinuz-5.14.0-rc1stack+
-root=3DUUID=3D39c25777-d413-4c2e-948c-dfa2bf259049 ro lsm.debug
-
-No rules
-
-> I'm beginning to suspect that you have the default
-> we-build-audit-into-the-kernel-because-product-management-said-we-have-=
-to-but-we-don't-actually-enable-it-at-runtime
-> audit configuration that is de rigueur for many distros these days.
-
-Yes, but I've also fiddled about with it so as to get better event covera=
-ge.
-I've run the audit-testsuite, which has got to fiddle about with the audi=
-t
-configuration.
-
-> If that is the case, there are many cases where you would not see a
-> NULL current->audit_context simply because the config never allocated
-> one, see kernel/auditsc.c:audit_alloc().
-
-I assume you mean that I *would* see a NULL current->audit_context
-in the "event not enabled" case.
-=C2=A0
-
-> If that is the case, I'm
-> honestly a little surprised we didn't realize that earlier, especially
-> given all the work/testing that Richard has done with the audit
-> container ID bits, but then again he surely had a proper audit config
-> during his testing so it wouldn't have appeared.
+> Another concern...
 >
-> Good times.
-
-Indeed.
-
-> Regardless, assuming that is the case we probably need to find an
-> alternative to the local context approach as it currently works.  For
-> reasons we already talked about, we don't want to use a local
-> audit_context if there is the possibility for a proper
-> current->audit_context, but we need to do *something* so that we can
-> group these multiple events into a single record.
-
-I tried a couple things, but neither was satisfactory.
-
-> Since this is just occurring to me now I need a bit more time to think
-> on possible solutions - all good ideas are welcome - but the first
-> thing that pops into my head is that we need to augment
-> audit_log_end() to potentially generated additional, associated
-> records similar to what we do on syscall exit in audit_log_exit().
-
-I looked into that. You need a place to save the timestamp
-that doesn't disappear. That's the role the audit_context plays
-now.
-
->   Of
-> course the audit_log_end() changes would be much more limited than
-> audit_log_exit(), just the LSM subject and audit container ID info,
-> and even then we might want to limit that to cases where the ab->ctx
-> value is NULL and let audit_log_exit() handle it otherwise.  We may
-> need to store the event type in the audit_buffer during
-> audit_log_start() so that we can later use that in audit_log_end() to
-> determine what additional records are needed.
->
-> Regardless, let's figure out why all your current->audit_context
-> values are NULL
-
-That's what's maddening, and why I implemented audit_alloc_for_lsm().
-They aren't all NULL. Sometimes current->audit_context is NULL,
-sometimes it isn't, for the same event. I thought it might be a
-question of the netlink interface being treated specially, but
-that doesn't explain all the cases.
-
->  first (report back on your audit config please), I may
-> be worrying about a hypothetical that isn't real.
+> During the preemption of rcu_check_quiescent_state() someone might report
+> a quiescent state on behalf of CPU x (perhaps due to its having recently
+> been idle) and then the RCU grace-period kthread might start running on
+> CPU x, where it might initialize a new grace period in rcu_gp_init().
+> It can then invoke __note_gp_changes(), also on CPU x.
 >
 
+(this is me "writing out loud" to make sure I can follow)
+
+I take it the preemption of rcuc/x itself would count as a quiescent state,
+if the current grace period started before rcuc/x's rcu_read_lock()
+(rcuc/x would end up in ->blkd_tasks but wouldn't affect ->gp_tasks).
+
+Then if we get something to run rcu_report_qs_rnp() with a mask spanning
+CPU x - I think the GP kthread doing quiescent state forcing might fit the
+bill - we'll let the GP kthread initialize a new GP.
+
+> If preempted as shown above just after checking >core_needs_qs, the
+> ->cpu_no_qs.b.norm field will be set by the grace-period kthread, which
+> will cause the rcu_check_quiescent_state() function's subsequent check
+> of ->cpu_no_qs.b.norm to take an early exit.  So OK here.
+>
+
+Right
+
+> On the other hand, if preempted just after the rcu_check_quiescent_state()
+> function's check of ->cpu_no_qs.b.norm, the later invocation of
+> rcu_report_qs_rdp() should take an early exit due to ->gp_seq mismatch.
+> So OK here.
+>
+
+If, as described in your scenario above, the GP kthread has preempted
+rcuc/x, initialized a new GP and has run __note_gp_changes() (on CPU x),
+then wouldn't the rdp->gp_seq and rnp->gp_seq match when rcuc/x gets to run
+again?
+
+And because we would've then had a context switch between the GP kthread
+and rcuc/x, we would've noted a quiescent state for CPU x, which would let
+rcuc/x's rcu_report_qs_rdp() continue - or have I erred on the way there?
+
+> However, this should be added to the commit log.  Might be a big commit
+> log, but mass storage is cheap these days.  ;-)
+>
+
+No objections here!
+
+> This needs a review of each and every manipulation of ->core_needs_qs
+> and ->cpu_no_qs.b.norm.  For example, the preemptions will cause the
+> scheduler to invoke RCU's context-switch hooks, which also mess with
+> ->cpu_no_qs.b.norm.  I can get to that some time next week (or tomorrow,
+> if things go better than expected), but it would be good for you (and
+> others) to check as well.
+>
+
+I have some notes scribbled down regarding those that I need to go through
+again, but that won't be before a week's time - I'll be away next week.
+
+> Frederic should look this over, but I am taking a quick pass in the
+> meantime.  Please see below.
+>
+
+Thanks!
+
+>> @@ -210,6 +210,8 @@ struct rcu_data {
+>>  	struct timer_list nocb_timer;	/* Enforce finite deferral. */
+>>  	unsigned long nocb_gp_adv_time;	/* Last call_rcu() CB adv (jiffies). */
+>>  
+>> +	local_lock_t nocb_local_lock;
+>
+> Should this go near the beginning of the structure, given that code
+> paths taking this lock tend to access ->cpu_no_qs, ->core_needs_qs,
+> and so on?
+>
+> Given that it is used to protect core processing (not just offloaded
+> callbacks), might ->core_local_lock be a better name?
+>
+
+It would still have to be in a #define CONFIG_RCU_NOCB_CPU region IMO, as
+it only exists to protect access of the offloading state - hence the name,
+but I'm not particularly attached to it.
+
+> Please keep in mind that you can build kernels that offload callbacks
+> but that still use softirq for RCU core processing.  And vice versa,
+> that is, kernels that use rcuc kthreads but do not offload callbacks.
+>
+
+AFAICT the problem only stands if core processing becomes preemptible,
+which is only the case under PREEMPT_RT (at least for now), and that implies
+core processing done purely via kthreads.
+
+>> +
+>>  	/* The following fields are used by call_rcu, hence own cacheline. */
+>>  	raw_spinlock_t nocb_bypass_lock ____cacheline_internodealigned_in_smp;
+>>  	struct rcu_cblist nocb_bypass;	/* Lock-contention-bypass CB list. */
+>> @@ -445,6 +447,8 @@ static void rcu_nocb_unlock(struct rcu_data *rdp);
+>>  static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
+>>  				       unsigned long flags);
+>>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
+>> +static void rcu_nocb_local_lock(struct rcu_data *rdp);
+>> +static void rcu_nocb_local_unlock(struct rcu_data *rdp);
+>>  #ifdef CONFIG_RCU_NOCB_CPU
+>>  static void __init rcu_organize_nocb_kthreads(void);
+>>  #define rcu_nocb_lock_irqsave(rdp, flags)				\
+>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+>> index 0ff5e4fb933e..11c4ff00afde 100644
+>> --- a/kernel/rcu/tree_plugin.h
+>> +++ b/kernel/rcu/tree_plugin.h
+>> @@ -21,6 +21,17 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
+>>  	return lockdep_is_held(&rdp->nocb_lock);
+>>  }
+>>  
+>> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
+>> +{
+>> +	return lockdep_is_held(
+>> +#ifdef CONFIG_PREEMPT_RT
+>> +		&rdp->nocb_local_lock.lock
+>> +#else
+>> +		&rdp->nocb_local_lock
+>> +#endif
+>
+> It would be good if this was abstracted.  Or is this the only place
+> in the kernel that needs this #ifdef?  Maybe a lockdep_is_held_rt()
+> or lockdep_is_held_local(), as the case may be?
+>
+
+It does look like the first/only place that tries to access a local_lock's
+dep_map regardless of CONFIG_PREEMPT_RT. Looking at it some more, I'm not
+sure if it's really useful: !PREEMPT_RT local_locks disable preemption, so
+the preemption check in rcu_rdp_is_offloaded() will short circuit the
+lockdep check when !PREEMPT_RT...
+
+One thing I should perhaps point out - the local lock is only really needed
+for PREEMPT_RT; for !PREEMPT_RT it will just disable preemption, and it's
+only used in places that *already* disabled preemption (when !PREEMPT_RT).
+I initially gated the lock under CONFIG_PREEMPT_RT, but changed that as I
+found it reduced the ifdeffery.
+
+>> +	);
+>> +}
+>> +
+>>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>>  {
+>>  	/* Race on early boot between thread creation and assignment */
+>> @@ -38,7 +49,10 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
+>>  {
+>>  	return 0;
+>>  }
+>> -
+>> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
+>> +{
+>> +	return 0;
+>
+> This is backwards of normal lockdep practice, which defaults to locks
+> always held.  And that will be what happens once lockdep has detected
+> its first deadlock, correct?  At which point, this function and its
+> earlier instance will be in conflict.
+>
+> Or is there some subtle reason why this conflict would be OK?
+>
+
+This follows the !CONFIG_RCU_NOCB definition of rcu_lockdep_is_held_nocb(),
+which looked fine to me.
+
+Actually with the way I wrote rcu_local_offload_access_safe(), we don't
+even access that function when !CONFIG_RCU_NOCB...
+
+>> +}
+>>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>>  {
+>>  	return false;
+>> @@ -46,23 +60,44 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>>  
+>>  #endif /* #ifdef CONFIG_RCU_NOCB_CPU */
+>>  
+>> +/*
+>> + * Is a local read of the rdp's offloaded state safe and stable?
+>> + * See rcu_nocb_local_lock() & family.
+>> + */
+>> +static inline bool rcu_local_offload_access_safe(struct rcu_data *rdp)
+>> +{
+>> +	if (!preemptible())
+>> +		return true;
+>> +
+>> +	if (!migratable()) {
+>> +		if (!IS_ENABLED(CONFIG_RCU_NOCB))
+>
+> Do we also need to consult the use_softirq module parameter that controls
+> whether or not there are rcuc kthreads?
+>
+> Actually, if !IS_ENABLED(CONFIG_RCU_NOCB) then rcu_rdp_is_offloaded()
+> can simply return false without bothering with the RCU_LOCKDEP_WARN().
+> Might be worth getting that out of the way of the RCU_LOCKDEP_WARN()
+> condition.  ;-)
+>
+
+I _assumed_ the check was there even for !CONFIG_RCU_NOCB to provide a wider
+test coverage of the calling conditions.
+
+If that RCU_LOCKDEP_WARN() becomes conditionnal on CONFIG_RCU_NOCB then
+yes, we could clean that up.
+
+>> +			return true;
+>> +
+>> +		return rcu_lockdep_is_held_nocb_local(rdp);
+>> +	}
+>> +
+>> +	return false;
+>> +}
+>> +
