@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3AE3EB414
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B23F3EB418
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239798AbhHMKdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:33:55 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48354 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238615AbhHMKdy (ORCPT
+        id S240157AbhHMKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240147AbhHMKe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:33:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EDD4F201B2;
-        Fri, 13 Aug 2021 10:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628850806;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=THaFvJ0mMbfDh3kdowKax6bW6A4Pv8w9QwsEiqD14UI=;
-        b=1lCDKFU5NzKjrckU12DycGARob7wjYTUQRJnEcmQbXa+uNz1PDy+dg5JZXjsCNQl2B3ET6
-        q6G1J+sd2kWCoS9+3LSqZ3vpcXzPd4yWYx1LEQnI6NKie4un45Odrkbg2jTBbafs0MVWvW
-        dofC/Xvs5vjDdKgYEs05zGOvGvb+4Vw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628850806;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=THaFvJ0mMbfDh3kdowKax6bW6A4Pv8w9QwsEiqD14UI=;
-        b=9x9HZVG+Iu2H2NF5yuSqyumy5ZIO8zBpSeb150vsVzVEHMbNnfR4FSTS8UgoS5kggkzFx+
-        xTIv/3oBOWJt4yAA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D9FA5A3B84;
-        Fri, 13 Aug 2021 10:33:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DBCD1DB25F; Fri, 13 Aug 2021 12:30:32 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 12:30:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-Message-ID: <20210813103032.GR5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
- <20210812103851.GC5047@twin.jikos.cz>
- <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
- <20210812155032.GL5047@twin.jikos.cz>
- <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
- <20210813085137.GQ5047@twin.jikos.cz>
- <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
+        Fri, 13 Aug 2021 06:34:27 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06598C061756;
+        Fri, 13 Aug 2021 03:34:01 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l10-20020a05600c4f0a00b002e6be174c29so2564437wmq.0;
+        Fri, 13 Aug 2021 03:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=drW2s19rJYY7O+/Nya4xV6OqunsSjSmEFOmQUF4SWn0=;
+        b=oL1NrgoJyE6uPktlm9mvl/Hvw/tIOrg/EZ08olU3Xg+JsAoV2Y4ydt0DoD5BD8KE1U
+         tJqRuK3m9cMFnp9WclHDAZrVUFsee6nzpZnYMafiRQg9PMYTfFm83TZZOdX8wfrI2GL8
+         WQUVJiNEy1TKLjwSBjh2di9eBIepMmvanFrKIHuCIM/7EhN63B9hPYwOLeGuXoUPog0M
+         PB9Utd323wHVPK4pndDILTiNaVeup2+o5Nu46YYMb9Lhr6TQ5sEqPrTZLbYoxj39Rv/f
+         yE4Yz/2ZSdKCpAeCYY/mJTbi9XP0A/ZfY9xVnGthbted7Mkc3pZVte/7pBgHE3+/jkXN
+         hM1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=drW2s19rJYY7O+/Nya4xV6OqunsSjSmEFOmQUF4SWn0=;
+        b=ONHJryEePZh75VYgAUnrtKvpziYg6PitJn7yLuie85Tdp+kw2pVtL8lhwFTY31wC9/
+         4d5YnxkJ9+v1P8inRBNblb4/7plTBfNuCuWvMx51KQW03LQbHumxQVYIESZYQPshHo0p
+         aPA7psHMugzbIcHGdCWH6k3gyKm5tukHUTVYja/0CrLoMSoL996Xa63eakNc9GXA/brF
+         c2uZ/g8tVuvdyMdIXWTfWou7Kp6F4fvHWI5lajML1UrFM/QfRA7mGah2zV//xGR3MiO/
+         9I+9tn/h0QpoRYhtvAb3QoQHjxNQmkFY+dGamtXIq7oRyiXu1Vu3NvsPjmpTHhnpXZ+x
+         8EXg==
+X-Gm-Message-State: AOAM532sULBDxZ8d4p7Yxn0bdkRnovjdNq+ffWqdQYS4jnFvJOyhsDZt
+        pDRJea+IsF6+dz/h4X0A8cA=
+X-Google-Smtp-Source: ABdhPJxmxhsijAM34+CEGEwXblQ+l9BM4uTixQ7AV2powo98NdVrFoPPbQnDhY1n2OXBGlt5HfMSjQ==
+X-Received: by 2002:a7b:c40e:: with SMTP id k14mr2010883wmi.46.1628850839619;
+        Fri, 13 Aug 2021 03:33:59 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id z13sm1151315wrs.71.2021.08.13.03.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 03:33:58 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 12:33:57 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Subject: Re: [PATCH v18 0/2] Add memory bandwidth management to NVIDIA Tegra
+ DRM driver
+Message-ID: <YRZKlYg5YQlbmqFg@orome.fritz.box>
+References: <20210601042108.1942-1-digetx@gmail.com>
+ <8accfe1e-fc48-21ca-f7c6-bd2d60162e6d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jrvKOVFBTGi4etd5"
 Content-Disposition: inline
-In-Reply-To: <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <8accfe1e-fc48-21ca-f7c6-bd2d60162e6d@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 05:57:26PM +0800, Desmond Cheong Zhi Xi wrote:
-> On 13/8/21 4:51 pm, David Sterba wrote:
-> > On Fri, Aug 13, 2021 at 01:31:25AM +0800, Desmond Cheong Zhi Xi wrote:
-> >> On 12/8/21 11:50 pm, David Sterba wrote:
-> >>> On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
-> >>>> On 12/8/21 6:38 pm, David Sterba wrote:
-> >>>>> On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> >>>>>> --- a/fs/btrfs/volumes.c
-> >>>>>> +++ b/fs/btrfs/volumes.c
-> >>>>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
-> >>>>>>     		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-> >>>>>>     			list_del_init(&device->dev_alloc_list);
-> >>>>>>     			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-> >>>>>> +			fs_devices->rw_devices--;
-> >>>>>>     		}
-> >>>>>>     		list_del_init(&device->dev_list);
-> >>>>>>     		fs_devices->num_devices--;
-> >>>>>
-> >>>>> I've hit a crash on master branch with stacktrace very similar to one
-> >>>>> this bug was supposed to fix. It's a failed assertion on device close.
-> >>>>> This patch was the last one to touch it and it matches some of the
-> >>>>> keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
-> >>>>> the original patch but was not reinstated in your fix.
-> >>>>>
-> >>>>> I'm not sure how reproducible it is, right now I have only one instance
-> >>>>> and am hunting another strange problem. They could be related.
-> >>>>>
-> >>>>> assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
-> >>>>>
-> >>>>> https://susepaste.org/view/raw/18223056 full log with other stacktraces,
-> >>>>> possibly relatedg
-> >>>>>
-> >>>>
-> >>>> Looking at the logs, it seems that a dev_replace was started, then
-> >>>> suspended. But it wasn't canceled or resumed before the fs devices were
-> >>>> closed.
-> >>>>
-> >>>> I'll investigate further, just throwing some observations out there.
-> >>>
-> >>> Thanks. I'm testing the patch revert, no crash after first loop, I'll
-> >>> run a few more to be sure as it's not entirely reliable.
-> >>>
-> >>> Sending the revert is option of last resort as we're approaching end of
-> >>> 5.14 dev cycle and the crash prevents testing (unlike the fuzzer
-> >>> warning).
-> >>>
-> >>
-> >> I might be missing something, so any thoughts would be appreciated. But
-> >> I don't think the assertion in btrfs_close_one_device is correct.
-> >>
-> >>   From what I see, this crash happens when close_ctree is called while a
-> >> dev_replace hasn't completed. In close_ctree, we suspend the
-> >> dev_replace, but keep the replace target around so that we can resume
-> >> the dev_replace procedure when we mount the root again. This is the call
-> >> trace:
-> >>
-> >>     close_ctree():
-> >>       btrfs_dev_replace_suspend_for_unmount();
-> >>       btrfs_close_devices():
-> >>         btrfs_close_fs_devices():
-> >>           btrfs_close_one_device():
-> >>             ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
-> >> &device->dev_state));
-> >>
-> >> However, since the replace target sticks around, there is a device with
-> >> BTRFS_DEV_STATE_REPLACE_TGT set, and we fail the assertion in
-> >> btrfs_close_one_device.
-> >>
-> >> Two options I can think of:
-> >>
-> >> - We could remove the assertion.
-> >>
-> >> - Or we could clear the BTRFS_DEV_STATE_REPLACE_TGT bit in
-> >> btrfs_dev_replace_suspend_for_unmount. This is fine since the bit is set
-> >> again in btrfs_init_dev_replace if the dev_replace->replace_state is
-> >> BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED. But this approach strikes me as
-> >> a little odd because the device is still the replace target when
-> >> mounting in the future.
-> > 
-> > The option #2 does not sound safe because the TGT bit is checked in
-> > several places where device list is queried for various reasons, even
-> > without a mounted filesystem.
-> > 
-> > Removing the assertion makes more sense but I'm still not convinced that
-> > the this is expected/allowed state of a closed device.
-> > 
-> 
-> Would it be better if we cleared the REPLACE_TGT bit only when closing
-> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
-> 
-> The first conditional in btrfs_close_one_device assumes that we can come
-> across such a device. If we come across it, we should properly reset it.
-> 
-> If other devices has this bit set, the ASSERT will still catch it and
-> let us know something is wrong.
 
-That sounds great.
+--jrvKOVFBTGi4etd5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 70f94b75f25a..a5afebb78ecf 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->                  fs_devices->rw_devices--;
->          }
->   
-> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
-> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
-> +
->          if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
->                  fs_devices->missing_devices--;
+On Mon, Jun 07, 2021 at 01:40:06AM +0300, Dmitry Osipenko wrote:
+> 01.06.2021 07:21, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > This series adds memory bandwidth management to the NVIDIA Tegra DRM dr=
+iver,
+> > which is done using interconnect framework. It fixes display corruption=
+ that
+> > happens due to insufficient memory bandwidth.
+> >=20
+> > Changelog:
+> >=20
+> > v18: - Moved total peak bandwidth from CRTC state to plane state and re=
+moved
+> >        dummy plane bandwidth state initialization from T186+ plane hub.=
+ This
+> >        was suggested by Thierry Reding to v17.
+> >=20
+> >      - I haven't done anything about the cursor's plane bandwidth which
+> >        doesn't contribute to overlapping bandwidths for a small sized
+> >        window because it works okay as-is.
+>=20
+> Thierry, will you take these patches for 5.14?
 
-I'll do a few test rounds, thanks.
+As discussed offline, I've picked these up for v5.15 with a small patch
+squashed in to unbreak the Tegra186 and later support.
+
+Thanks,
+Thierry
+
+--jrvKOVFBTGi4etd5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEWSpUACgkQ3SOs138+
+s6EO5g/6Asf0AlKgNnrGVq250gnG5jSscO5GxTFzO9VNbuIHOOLJlKqBkx2fLXl3
+TwKAtaQDfNzRiBVgCMk6xsxAas49cESh82NXgZSvsdU0O9+7PcMaK2IfPtZNHLSI
+ClDiIi/WSdy9BsfUllfq4o1WkkzNQGUSiD+mAc/GaL/PxSEk7gc70vyg5cHl2Haa
+yIrvXGZu9SlQ8b5MY9vdUK22xBvjd8+dRmmYDpm/wHFUfQC0Q/OpaPpxBi64OEuh
+f+L25WJNJHimkXgrokDcDqtu9dVfS5k00qN6tG44jjDpLHn1rDmwU6P7lHgvr08G
++3tNJCLSAToYLKu8m0GYkYuB9gXyeb/YbRISJfm5pFkl1lWJ+4oM3ic+GWLaUlLe
+2VwStFgoYK+um7AWuUYXGItLbU+w/x/U13ScGSABCGhQwu9y2KCKHtkOjCF3S1Nr
+54hnTr1dmJx/sJvkU62txM5xiLMmjN/5bGUfvmMZoahbUSDumcPF4tgiEPBwZVRx
+5LfVRCOih6+U0SIN52c1bVQ4ujwGF4wpHpFYP6IFEf+bHGV7J8ht5qgwdeWrBS3K
+WdJ4XOkRugfXjUmspnry7kCsn5bR358Pj9qdXZvgOnrUWMyx8UH/2GugoMedTxJ0
+QbCpolRbjR0Ief0B1CZcgDlonGaGOCJWA9fxaecjokALpIm3sm0=
+=K59I
+-----END PGP SIGNATURE-----
+
+--jrvKOVFBTGi4etd5--
