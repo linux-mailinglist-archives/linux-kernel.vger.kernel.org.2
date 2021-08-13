@@ -2,135 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F6A3EBD34
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7B3EBD2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhHMURu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhHMURr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:17:47 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57902C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:17:20 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id c24so21935593lfi.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GFV5lmVN+JD08JpsLHuW/g9a9aLzMuIjyvYEJ1TJkEE=;
-        b=j7uHAAwVagEhjIQfAEgVKt4UKiNyCnssnj/SNuUT329+DGFnIt6yCSq8ozr8erC0rS
-         4GyRceTxDH8qO8sNYeKT+WZV+SE+m4X2UCzI9l/m0/F4FBhTOxsznVi86ovhBa1OMDRn
-         jHRLq7nJl/LAFDXvqlxic0IdHd+hd1Mj/5Af6Sv9ce9eeH+O5WhuuVB8wA8JvF8lwogB
-         xLowwuoNchcoQshChqWwr9aZ5bA1/0EJ29oE/TKdsWaU2nShSp/tfIDNUhIZ32TZ30HR
-         0icMnstEpn3IVzgT8SnhPYHOTEQYR4abF2ZLW5zUi1zPyFUBFqtx0qG25EAIc080eYv8
-         Am3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFV5lmVN+JD08JpsLHuW/g9a9aLzMuIjyvYEJ1TJkEE=;
-        b=juOzv/BBT6qZgTdAJCuSzk9Pf+SP0uSdah77AXxOrD976eg+wLARDFW7PDTnFS+hL+
-         /delHooJReMPt8MPHA0ijhEO55d7WQIDakglbGt1uXAN3o2z10h20x6zSfHQtCJZbEOG
-         cSPWhIEvqdz8xdtvnJEoub8i/3Etv/8Nz1ZPtgsd+u5SfC+CvuVygbIfE5Ut1y7P9kBf
-         XldhfCxpsNUu+pgUaBECsZk4F3VLNZNHiVgV5HpSHkkVQVZmqgEbvh3eggtNabhrerll
-         SSkwehxPn812DqSQNdk1lpTRbdPsly4TvVLjdAZqanlvQ9b2bM4Gwqk5UZxD3KO7pwNF
-         uBdQ==
-X-Gm-Message-State: AOAM530TdY+f81ljp/qP6l2//qg4uLEnj/LOLGOoNkz5997PRDZ+SvDi
-        Y7U77wFsfVBEuy9t5wVh+pCe5UKo3POcM7mZfajVEw==
-X-Google-Smtp-Source: ABdhPJwwvdMMPK6x8sK+8U8N0u9tL75R5rFPakH+Z3Gp5EZkBrwGd31/IG7GW0Fv4b5+BeSGUSiJFZI+NiHA4xhaV8s=
-X-Received: by 2002:a19:e00a:: with SMTP id x10mr2996893lfg.536.1628885838324;
- Fri, 13 Aug 2021 13:17:18 -0700 (PDT)
+        id S234274AbhHMURs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:17:48 -0400
+Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:62944
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233890AbhHMURq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 16:17:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WGw0U9FkgKp4hxsvcFdS+Z7DUF2Um0cW04RoIpgi//zy5IZ39Kz1fCX2rVhK9AfVPCzIZx/VN+/c0vKLjcELXtCeqlZEkPZhhS2XiAfPgWhgMPuEdvIhHN7rBVvbCQams9QlvgTp5FsR8jCKuu39Gtbgm0OZ+Qn86bPCokiEi4UDBO+eeCQ7XyeWjdlfMm4hv3airl6E+yaPDId+2s512TtyQbjafNM0Gx3IYB4zzGH0ejWseKFeD1hF5InIjfRLO3d/akqNGHR0KClTwfFZljax2IYs8nKrhO2BbTW5mosq8j6ZERwGi2ni9faElRKE+XquZXbgcBbdvP+h87A36Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DpwOvDM3GnwNTNcL815T+RSOydEG+h+3oDIg9dnFcc8=;
+ b=EMLZ5P4NMpgY2QIUrBxnmxGsz5hDMG67hy4Mog8GvtOJgYyqUItuz59aeYyBFPlRSns5aRKJYaYuB3r4WULP65T9OWtOv0RdVSGJu0Icg+VGxcNNUCgbMZFTV5Uairek2h2CXjpfoW01HVKZlpw3q+v1wM6g42M2n7dbFRJFxyWX+84zq9k25c7lFC0po7sv/rVgzcUxwaLNRYDAgcB61bcpPj46NVIOv6g5OLvE+va68vyZ8p1ex93HYhmoQhFd2O3SSzsJQZf/jjzLOe85x3iisIzBrCByNHjGXWr4CYrcpUHLMJmnaVZvTfqUucinEUcYywOo3H00deM7niXn4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DpwOvDM3GnwNTNcL815T+RSOydEG+h+3oDIg9dnFcc8=;
+ b=MyTmwlzgKeBu9Kr9AdaSE1zoak8QxWlRT/g45sd8A3BxVuycfnUWDTtSlbv7kbm+wPD+NOE8KuxfMaVbm1BHq28hmB5OTiCq1m8BAT98u8NbbFWus7koWMgW2ellOLwPUjgB57RbR3+znK3BrbrvmdTSLWxPBzjHKCg3KahE5E4=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5056.namprd12.prod.outlook.com (2603:10b6:5:38b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Fri, 13 Aug
+ 2021 20:17:17 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 20:17:17 +0000
+Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
+ with prot_guest_has()
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
+ <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
+ <4b885c52-f70a-147e-86bd-c71a8f4ef564@amd.com>
+ <20210811121917.ghxi7g4mctuybhbk@box.shutemov.name>
+ <0a819549-e481-c004-7da8-82ba427b13ce@amd.com>
+ <20210812100724.t4cdh7xbkuqgnsc3@box.shutemov.name>
+ <943223d5-5949-6aba-8a49-0b07078d68e1@amd.com>
+Message-ID: <f6399958-d161-fd58-fac7-9b849bc4f05e@amd.com>
+Date:   Fri, 13 Aug 2021 15:17:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <943223d5-5949-6aba-8a49-0b07078d68e1@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0015.namprd13.prod.outlook.com
+ (2603:10b6:806:21::20) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-References: <CAP-5=fUV-Tbo+X-myLZ2z8hpjBbHUrgLN6wq9z_wsykyXgxp+g@mail.gmail.com>
- <CAA4y5iAnwnubx1hSxrfopPajqNnyH+UWWUvMZJqsiyy=L3sx-w@mail.gmail.com> <CAGq6xJ4oo2WM2j58vkMayp_FikLEEJ7pK+oMcp=85aPGdEaFGg@mail.gmail.com>
-In-Reply-To: <CAGq6xJ4oo2WM2j58vkMayp_FikLEEJ7pK+oMcp=85aPGdEaFGg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@google.com>
-Date:   Fri, 13 Aug 2021 13:17:06 -0700
-Message-ID: <CAA4y5iARtvPfLEQ+UcrNMQwpwxXr56Of6U7ApiOqffHf8OCYWw@mail.gmail.com>
-Subject: Re: perf report sort
-To:     Arnaldo Melo <acme@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        namhyung@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9PR13CA0015.namprd13.prod.outlook.com (2603:10b6:806:21::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.9 via Frontend Transport; Fri, 13 Aug 2021 20:17:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fb04504a-2bc8-4b11-096f-08d95e97582d
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5056:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5056CC972FC97575617C9C45ECFA9@DM4PR12MB5056.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HeKYrRV7+y6fb+GcsgwZgLn6m+17BeFDzSYIRsWs+5gk/EvKWEu2gSmv8RvTO/nfbvLfTRsKb1Rmu/IiexH4OmM5yzL1S1M0b1KCFnlSqI8q07PgcARl23shuBOwuXMPNwYrnU2x5cFzlC5kpomANRa9DYwDAdniG9jn0sUdyUssSht9Fj45WNk5kKyCNOwzQkl4Uwfx4ThxvNPm/2ZDWUUaD9h4KXaJfbXl7FOnHluKIb2zyecyHHGHT9LymYEJz5S7RJOMqqWviTNVR18VwG2DXy3EdmYfOUSweCmgr1F5+YNeYL0xuLozBRA3iCSoJ8z186DXgEqoQzPLgGIGWaJStbn3sjliQijGiQArX8StUtsSdv7beBuRfFRJgjp+PMjE74m12pIzia7y7ArUN+9FQfFGXdeMHBWOuZEkY7sXKBpAYhVZL+IzHjCsiTDaKb1dI/aEvOT+HEP3+0pFhWM+gj7aw1TS6rvljuEKICCuVKQxw/iZMHPFqMACRshww9+CkZF74+BBgpYEEwnfE4ZD2OYbNPPAX6HfzpgGABkpn12jKR5rTpzx/1EipOB3U2sOxGm7Mj13MUhqX7AkZsVTyrgswRhjfQpHB54uounI8FMHqOtfgpkX9CKnV73XHRj3NzUtA9k4wwtBs2k808QhRQvjOOhAoq+3kMA1KWhfE7oPISSKTsZBbqCFcKnt8I9jsZEFVs34Lo4rTbbD3u/3KCSJ0GktcSNcge0JTXo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(8936002)(7416002)(86362001)(31696002)(6506007)(83380400001)(36756003)(6486002)(7406005)(66476007)(66556008)(53546011)(6512007)(31686004)(478600001)(316002)(2616005)(38100700002)(956004)(8676002)(66946007)(26005)(6916009)(2906002)(5660300002)(4326008)(186003)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTZOV216SVRjR2pvTmN0RGhmT3VtRnJiQzVwZ1JSSTNSZXpET1RESUUzYVNY?=
+ =?utf-8?B?L1lpY2EreHNqWE1JTUpwRDhRckxnWmJSNHlqdmxva21GRXFTM2o4Q2tPeVlK?=
+ =?utf-8?B?N3UrZkNkcGhLc210WFlYTmtVL3FYcWVqamloTC9PWDVVSE5ySjQ0R2RyMHc4?=
+ =?utf-8?B?dFE4SmZDSFJUWnl4VldYNlFIbld2RTBCUVF2dVhuYm5UVnUwOVBRWHEyUGQ4?=
+ =?utf-8?B?amdPNGxtNkxBNkRsSXJhK0lPT2lIMUdNVlBaV1FwTWNNeE95c0hYZjQ0RlpZ?=
+ =?utf-8?B?YTJ5aEVHeE9VeXB0bWs0MVY4cVdqRzAyYUZLK21ScE9rbXdDNWh5a0lnZFlT?=
+ =?utf-8?B?aFVTaWlGUXBrYnNhcVExR1N6V1h2K01IU0JramhHeWZvV3M0RkZERkQ1M3NK?=
+ =?utf-8?B?TW5iaU1EcGEzS2hYUklXUkdLR3FmYTg0NmFPWTdmKzI4RzBUcGNnTzcxeElw?=
+ =?utf-8?B?NTVTeUJwcUVvWWFMWHp2ZjYvTEtuc09wQWF1MVErdHBodGlFQVZxRWVQMVNZ?=
+ =?utf-8?B?N01IbmEyQjRkUFZxcDFCOVc3SG9ERVJETnViSFBCQW1obzdUQS9ENmZ0aG9n?=
+ =?utf-8?B?OHhVamdFRXRWRnJNYWlJRTVIenVoK0Y2NE42V3FBS3R6Z0dEeFpRWVRSZXps?=
+ =?utf-8?B?WTNmZUNtYm5sRG8yL3RZa2FkNjQvVklLT2owWmNzUHd0K3NIQ1NZYXdIdjUr?=
+ =?utf-8?B?Wi92VG9pMG5NamNVeDF5YUpkaW9rUkRGM05EdXZUcTlDQk10ZjRpMVQrb3hr?=
+ =?utf-8?B?NDdjZzVZKy9XYUp1VmZSa3Rveng3RG9SOFhGWmtHVlBRVEdoV3orajVsRVlt?=
+ =?utf-8?B?bFJSNnJNMWV5WmRCbkFDYm5JQXF4cEtJZ2VRR1VPZ0NiOWdyUENHUUdqTERn?=
+ =?utf-8?B?NmxKM2tja0tDc2JPYUxsVFdMNXZQai96Z1c0VlgzTWxsdGFNaHFTRmI2cDNZ?=
+ =?utf-8?B?VTVMV0VBaUZBVjZlZVJ0aFhKWVBvZjZCZVhzb1NneG1wMlZtK0dTRTAveWsw?=
+ =?utf-8?B?V0lVYmxuNzBENlhibkV2bVVTdEZZSVhXK3B0TEozZGpZYzd4c2ZRNjE5cVhw?=
+ =?utf-8?B?RjB1Tk1DbkFDUXJycElqK0t5NGVaM3B6cTcvNVlReUxiR29jVnpVK0VOcFQy?=
+ =?utf-8?B?Q2xYR1JoYlJFYXlvZlJxUCtQeERlTCt5ZEl1WEsxQ3R1eVhuSUNpVEVaaE9o?=
+ =?utf-8?B?VHFwNnVzU0FPOHRQaUhFUWtLU1lBNlBtZ3RsNDBIMW5EMVhQYXVSZVpKREVN?=
+ =?utf-8?B?c21HQjV2RHVTK3hsazFzVEJPSzhVM1BWeEgyajZRcjk3Y0FWbG9NTWV2OXNQ?=
+ =?utf-8?B?WGQweHhuMURwc00xK0UvTVB1ek9VL2ZPcVNCdFNncWRzWm9ybFlvU2V2VnNB?=
+ =?utf-8?B?MlhiaThjc2FYbTdGNENXM3dRby83cTUvYWtJTmpMdjdUVlliL251QVh3QVNH?=
+ =?utf-8?B?MjBoTVpQOTMraUpGcnUvY1Z1aFJDQm5pQk9vY3JmaDJqYXY1QUtqQ1BIamo4?=
+ =?utf-8?B?MzRCVjJqYmdUbXRJUEN5cWJWdi8yNUZBejlPdkZVdjFwQjJoWDJtVFdGS0Q0?=
+ =?utf-8?B?d0MvU1JpZm4xKzNoejhlRlhaMUVEaUN3anJHdFJhdjcxUFh5OXlRd011R3RC?=
+ =?utf-8?B?NFFlVzhUcmFJcm1rL2xCY1hwK0YvVVdua0ZNSi9TaTg0cjl5YTFjbjJ4UTJ1?=
+ =?utf-8?B?TnQvbnVIS2Vvb2dsMWtQTFBPRFRmNFNDc0Q4dU1oLzNPYUZXTTJ0L0Z4aTdV?=
+ =?utf-8?Q?X4j/QZYAY5VhEB8ISJ7ENzxDr6z08b94zP1ag1f?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb04504a-2bc8-4b11-096f-08d95e97582d
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 20:17:17.8323
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5rYKyb1eg9llUGfYKNWymW6AFqmswxWINdi5GxJCtmBK1fz+zhjdQgfi1wjlNeI3FFBkBzHHXR4HqtkxkzDSzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ LKML and linux-perf-users
-
-On Thu, Aug 12, 2021 at 5:20 PM Arnaldo Melo <acme@redhat.com> wrote:
->
-> On Thu, Aug 12, 2021 at 4:15 PM Namhyung Kim <namhyung@google.com> wrote:
+On 8/13/21 12:08 PM, Tom Lendacky wrote:
+> On 8/12/21 5:07 AM, Kirill A. Shutemov wrote:
+>> On Wed, Aug 11, 2021 at 10:52:55AM -0500, Tom Lendacky wrote:
+>>> On 8/11/21 7:19 AM, Kirill A. Shutemov wrote:
+>>>> On Tue, Aug 10, 2021 at 02:48:54PM -0500, Tom Lendacky wrote:
+>>>>> On 8/10/21 1:45 PM, Kuppuswamy, Sathyanarayanan wrote:
+> ...
+>>>> Looking at code agains, now I *think* the reason is accessing a global
+>>>> variable from __startup_64() inside TDX version of prot_guest_has().
+>>>>
+>>>> __startup_64() is special. If you access any global variable you need to
+>>>> use fixup_pointer(). See comment before __startup_64().
+>>>>
+>>>> I'm not sure how you get away with accessing sme_me_mask directly from
+>>>> there. Any clues? Maybe just a luck and complier generates code just 
+>>>> right
+>>>> for your case, I donno.
+>>>
+>>> Hmm... yeah, could be that the compiler is using rip-relative addressing
+>>> for it because it lives in the .data section?
 >>
->> Hi Ian,
+>> I guess. It has to be fixed. It may break with complier upgrade or any
+>> random change around the code.
+> 
+> I'll look at doing that separate from this series.
+> 
 >>
->> On Wed, Aug 11, 2021 at 12:01 AM Ian Rogers <irogers@google.com> wrote:
->> > My suspicion is that page_fault and _dl_relocate_object have identical
->> > numbers of samples (5.56%) but sorting by the symbol (in sort_order)
->> > should solve this. I suspect providing a sort order in the test will
->> > make it robust, but I'm confused looking at the builtin-report code as
->> > it reads that this should already happen. I wondered if you had any
->> > suggestions?
->>
->> So actually the sort key doesn't sort the output. :(
->> It should be called 'group-by' rather than sort.
->
->
-> I think there is value in changing this behaviour to match what Ian expected, don't you think?
->
-> And also I think we should start doing this not via command line options, but via .perfconfig settings.
->
-> And perhaps we can mark these kinds of settings as .perfconfig-only ones.
->
-> This way we can have a 'perf config' mode that extracts these settings to share with others, or keep
-> per-organization defaults.
->
-> The range of preferences is huge, it is really difficult to find sane defaults that please everybody, so we probably should try to help facilitate per-community defaults.
->
-> wdyt?
+>> BTW, does it work with clang for you?
+> 
+> I haven't tried with clang, I'll check on that.
 
-I agree that it's confusing especially with -F/--fields option.
-If users want to change the behavior to be a real sort key
-they probably need to use -F too.
-
-Not sure what's the best way to handle it.  But by providing
-the config option, I guess users should be aware of the
-change and use appropriate options.
-
->
-> - Arnaldo
->
-> P.S.: This discussion should really have happened in the open, please consider replying to this CCing linux-perf-users & linux-kernel while keeping as-is this response :-)
-
-Yep, Cc-ed.
+Just as an fyi, clang also uses rip relative addressing for those 
+variables. No issues booting SME and SEV guests built with clang.
 
 Thanks,
-Namhyung
+Tom
 
-
->
->>
->> The output is sorted by the overhead (= period) by default.
->>
->> There is -F/--fields option to control which fields are displayed.
->> When it's used, the -s option will behave as (real) sort keys.
->> In fact, 'perf report' (using the default sort key) is same as
->>
->>   perf report -F overhead,comm,dso,sym -s overhead
->>
->> If you want to sort the output by symbol name,
->>
->>   perf report -F overhead,comm,dso,sym -s sym
->>
->> Maybe we need to change the test like above.
->>
->> Thanks,
->> Namhyung
+> 
+> Thanks,
+> Tom
+> 
 >>
