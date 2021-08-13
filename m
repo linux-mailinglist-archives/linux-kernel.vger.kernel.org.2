@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852FB3EB2BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D0B3EB2AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhHMIkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238688AbhHMIka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:40:30 -0400
-X-Greylist: delayed 464 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Aug 2021 01:40:04 PDT
-Received: from mail.avm.de (mail.avm.de [IPv6:2001:bf0:244:244::120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2433DC061756;
-        Fri, 13 Aug 2021 01:40:04 -0700 (PDT)
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-        by mail.avm.de (Postfix) with ESMTPS;
-        Fri, 13 Aug 2021 10:32:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-        t=1628843533; bh=WgDG4+v+9Te4gNm9R9XKLR82p8dpxWsSryvc/+cGqtc=;
+        id S239006AbhHMIdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238157AbhHMIdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 04:33:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA7F46104F;
+        Fri, 13 Aug 2021 08:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628843559;
+        bh=NOS1YByhYU8Q8BGlUFYZ502PcNq7rmSYOZRJrGjHag0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bwSgIwwS9w+I4T3tIwZocKLHFhPmzOrvfQb2ZpYLk5K6u7h7Jll68ccgwqXspjnBB
-         6b8BTnx5LaYgQnBGx9c1xkQbySLdDzwNV9N9B4ctLEHETGfIjG/EF8RR5bqMTekDIA
-         m9DjlK7INb4+Y3GcK6sXQlxCyUn26SPDxo0cV1A8=
-Received: from deb-nschier.ads.avm.de (unknown [172.17.24.144])
-        by mail-auth.avm.de (Postfix) with ESMTPSA id 65708802F0;
-        Fri, 13 Aug 2021 10:32:12 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 10:32:11 +0200
-From:   Nicolas Schier <n.schier@avm.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] kbuild: allow "make" targets 'versioncheck' and
- 'includecheck' withoug .config file
-Message-ID: <YRYuC9p5G714Bt68@deb-nschier.ads.avm.de>
-References: <20210811225442.9537-1-rdunlap@infradead.org>
+        b=cNK98SCecV5MmtiGjuX8Vnn7/Opd0ffQh5FwBvn4SSKkezf0K+86RggdHWcelOsfz
+         GTmM2j9K48PIaHBzR2BT6v5hnpm1XKfc7BTBqOBIqVugG3v6nZMJAWUwRLRzk43iQP
+         BTAMvpHWLIXuc2sTliOlHobfbZlxNBHKJNQkB19M=
+Date:   Fri, 13 Aug 2021 10:32:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     song.bao.hua@hisilicon.com, agordeev@linux.ibm.com,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        bristot@redhat.com, dave.hansen@intel.com, guodong.xu@linaro.org,
+        jianpeng.ma@intel.com, linux-kernel@vger.kernel.org,
+        linux@rasmusvillemoes.dk, linuxarm@huawei.com,
+        peterz@infradead.org, prime.zeng@hisilicon.com, rafael@kernel.org,
+        rdunlap@infradead.org, sbrivio@redhat.com,
+        tangchengchang@huawei.com, tim.c.chen@linux.intel.com,
+        valentin.schneider@arm.com, yangyicong@huawei.com,
+        yury.norov@gmail.com
+Subject: Re: [PATCH v9 0/5] use bin_attribute to break the size limitation of
+ cpumap ABI
+Message-ID: <YRYuHW8q5Zd+hvH5@kroah.com>
+References: <20210806110251.560-1-song.bao.hua@hisilicon.com>
+ <20210812044426.29876-1-21cnbao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811225442.9537-1-rdunlap@infradead.org>
-X-purgate-ID: 149429::1628843532-00002E98-7E68066B/0/0
-X-purgate-type: clean
-X-purgate-size: 1703
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+In-Reply-To: <20210812044426.29876-1-21cnbao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 03:54:42PM -0700, Randy Dunlap wrote:
-> Top-level Makefile targets 'versioncheck' and 'includecheck' don't
-> need a configured kernel (i.e., don't need a .config file), so add
-> them the the list of "no-dot-config-targets".
-> This eliminates the 'make' error:
+On Thu, Aug 12, 2021 at 04:44:26PM +1200, Barry Song wrote:
+> > V9:
+> >   - Split bitmask and list APIs and removed bool parameter with respect to
+> >     Greg's comment
+> >   - Removed duplication in code doc
+> >
+> ...
+> >
+> > Background:
+> >
+> > the whole story began from this thread when Jonatah and me tried to add a
+> > new topology level-cluster which exists on kunpeng920 and X86 Jacobsville:
+> > https://lore.kernel.org/lkml/YFRGIedW1fUlnmi+@kroah.com/
+> > https://lore.kernel.org/lkml/YFR2kwakbcGiI37w@kroah.com/
+> >
 > 
-> ***
-> *** Configuration file ".config" not found!
-> ***
-> *** Please run some configurator (e.g. "make oldconfig" or
-> *** "make menuconfig" or "make xconfig").
-> ***
-> Makefile:759: include/config/auto.conf.cmd: No such file or directory
+> Hi Greg,
+> Will you take this series so that I can rebase the cluster-scheduler series[1] on top of
+> this? that cluster series is where this ABI series really get started. I am looking forward
+> to sending a normal patchset for cluster series after this ABI series settles down.
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: linux-kbuild@vger.kernel.org
-> ---
+> [1] scheduler: expose the topology of clusters and add cluster scheduler
+> https://lore.kernel.org/lkml/20210420001844.9116-1-song.bao.hua@hisilicon.com/
 
-I like that change, works for me as expected.  Possibly you might want
-to fix the commit subject typo (withoug -> without).
+Now applied to my testing tree.
 
-Regards,
-Nicolas
+thanks,
 
-
-> Fixes: I couldn't determine this.
-> 
->  Makefile |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> --- linux-next-20210811.orig/Makefile
-> +++ linux-next-20210811/Makefile
-> @@ -274,7 +274,8 @@ no-dot-config-targets := $(clean-targets
->  			 cscope gtags TAGS tags help% %docs check% coccicheck \
->  			 $(version_h) headers headers_% archheaders archscripts \
->  			 %asm-generic kernelversion %src-pkg dt_binding_check \
-> -			 outputmakefile rustfmt rustfmtcheck
-> +			 outputmakefile rustfmt rustfmtcheck \
-> +			 versioncheck includecheck
->  # Installation targets should not require compiler. Unfortunately, vdso_install
->  # is an exception where build artifacts may be updated. This must be fixed.
->  no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+greg k-h
