@@ -2,50 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804553EAE9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A203EAEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238347AbhHMChQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237040AbhHMChP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 22:37:15 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B48260F35;
-        Fri, 13 Aug 2021 02:36:48 +0000 (UTC)
-Date:   Thu, 12 Aug 2021 22:36:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     bristot@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 0/1] tracing: Provide more parseable hist trigger output
-Message-ID: <20210812223641.2bb429c9@oasis.local.home>
-In-Reply-To: <cover.1628807056.git.zanussi@kernel.org>
-References: <cover.1628807056.git.zanussi@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S238370AbhHMCmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:42:46 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:38503 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237040AbhHMCmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:42:45 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id C001A32005CA;
+        Thu, 12 Aug 2021 22:42:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 12 Aug 2021 22:42:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=roa8fRHcNdYx2xc/3
+        RYd5PJ0b1LRVXfo2cPc65w5DtU=; b=ofNePowixuzRWmLxnDeHuSOAleLt5IeuR
+        zvy/m5B7qLeMFAKqiV+qoXahqQmoUgBcqmsERfFdcKIBAgnfEoRUBJKAbIw6eVOe
+        3YfDcaYoPoTj8fvbfVKHgDEr1kyMVD6uBeZxWnGedDmrbGD1uz3Kb3QzZKwI/DBX
+        V6YzSYYoaT/+LY6684cPoT8cpZeJ3byRPVeRcMuyl6XXFPsyuZRp37xLjxEiG6S7
+        NHaCHxgjm5t77p9U8extxTzs6Z1Q/zTqyESMAFjJ78EcrYgdQ0+ti0NsFLAEpzZ3
+        RWi3k8cDhLbkHHLNuSeS2EomWmmeSVckJL56yKvwReEqg3vRLngEw==
+X-ME-Sender: <xms:CdwVYe2sF3Szsyqw7acH6vY2QHK0FsjZ41YDkAFQ-PJYPXFDzvhjQQ>
+    <xme:CdwVYRGr4-tJcQtF1p1zfhbLrjn5gA6RMoSyPNYfd1Gfr17cM-pvUFw_8QSQ09y7M
+    22Ifu4C6Zrz6flcCAk>
+X-ME-Received: <xmr:CdwVYW50rWS7m5r65VXax7xqUJ3E3AAyTS3TOghskfVQSbQjpfy4G-azMZbL>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeeggdeiudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
+    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
+    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:CdwVYf3SwLIJt9yppktpGkXkc_AQSQU_Y4JnHOh3NCMlPruRsWj6HA>
+    <xmx:CdwVYRHoKH2O63_D2ePscRwYcFYfwLjtfbFfq53Od8ChqlJtgaoIlg>
+    <xmx:CdwVYY-xfDlr1E_AqnELuyGs_cxAkCpgm1bAaB-3A5c_6caQNKsr5g>
+    <xmx:CtwVYWSGqGBOyYf0anXQWAZBIKmFujtecNWidUQKMODEgNzd6oZMLg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 12 Aug 2021 22:42:15 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] asus-wmi: Add support for platform_profile
+Date:   Fri, 13 Aug 2021 14:42:01 +1200
+Message-Id: <20210813024201.9518-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 17:43:23 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+Add initial support for platform_profile where the support is
+based on availability of ASUS_THROTTLE_THERMAL_POLICY.
 
-> I designed it so that more files/formats could be easily added as
-> desired, so if you still want the csv output, let me know.  If so,
-> though, please give me some more detailed idea as to what you think
-> that should look like.
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ drivers/platform/x86/asus-wmi.c | 112 ++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
 
-Thanks Tom!
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 90a6a0d00deb..62260043c15c 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -26,6 +26,7 @@
+ #include <linux/rfkill.h>
+ #include <linux/pci.h>
+ #include <linux/pci_hotplug.h>
++#include <linux/platform_profile.h>
+ #include <linux/power_supply.h>
+ #include <linux/hwmon.h>
+ #include <linux/hwmon-sysfs.h>
+@@ -219,6 +220,9 @@ struct asus_wmi {
+ 	bool throttle_thermal_policy_available;
+ 	u8 throttle_thermal_policy_mode;
+ 
++	struct platform_profile_handler platform_profile_handler;
++	bool platform_profile_support;
++
+ 	// The RSOC controls the maximum charging percentage.
+ 	bool battery_rsoc_available;
+ 
+@@ -2144,6 +2148,106 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+ // Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
+ static DEVICE_ATTR_RW(throttle_thermal_policy);
+ 
++/* Platform profile ***********************************************************/
++static int platform_profile_get(struct platform_profile_handler *pprof,
++				enum platform_profile_option *profile)
++{
++	struct asus_wmi *asus;
++	int tp;
++
++	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
++
++	/* All possible toggles like throttle_thermal_policy here */
++	if (asus->throttle_thermal_policy_available) {
++		tp = asus->throttle_thermal_policy_mode;
++	} else {
++		return -1;
++	}
++
++	if (tp < 0)
++		return tp;
++
++	switch (tp) {
++	case ASUS_THROTTLE_THERMAL_POLICY_DEFAULT:
++		*profile = PLATFORM_PROFILE_BALANCED;
++		break;
++	case ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST:
++		*profile = PLATFORM_PROFILE_PERFORMANCE;
++		break;
++	case ASUS_THROTTLE_THERMAL_POLICY_SILENT:
++		*profile = PLATFORM_PROFILE_QUIET;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int platform_profile_set(struct platform_profile_handler *pprof,
++				enum platform_profile_option profile)
++{
++	struct asus_wmi *asus;
++	int tp;
++
++	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
++
++	/* All possible toggles like throttle_thermal_policy here */
++	if (!asus->throttle_thermal_policy_available) {
++		return -1;
++	}
++
++	switch (profile) {
++	case PLATFORM_PROFILE_PERFORMANCE:
++		tp = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
++		break;
++	case PLATFORM_PROFILE_BALANCED:
++		tp = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
++		break;
++	case PLATFORM_PROFILE_QUIET:
++		tp = ASUS_THROTTLE_THERMAL_POLICY_SILENT;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	if (asus->throttle_thermal_policy_available) {
++		asus->throttle_thermal_policy_mode = tp;
++		return throttle_thermal_policy_write(asus);
++	}
++	return 0;
++}
++
++static int platform_profile_setup(struct asus_wmi *asus)
++{
++	int err;
++
++	if (asus->throttle_thermal_policy_available) {
++		pr_info("Using throttle_thermal_policy for platform_profile support\n");
++	} else {
++		/*
++		 * Not an error if a component platform_profile relies on is unavailable
++		 * so early return, skipping the setup of platform_profile.
++		*/
++		return 0;
++	}
++	asus->platform_profile_handler.profile_get = platform_profile_get;
++	asus->platform_profile_handler.profile_set = platform_profile_set;
++
++	set_bit(PLATFORM_PROFILE_QUIET, asus->platform_profile_handler.choices);
++	set_bit(PLATFORM_PROFILE_BALANCED,
++		asus->platform_profile_handler.choices);
++	set_bit(PLATFORM_PROFILE_PERFORMANCE,
++		asus->platform_profile_handler.choices);
++
++	err = platform_profile_register(&asus->platform_profile_handler);
++	if (err)
++		return err;
++
++	asus->platform_profile_support = true;
++	return 0;
++}
++
+ /* Backlight ******************************************************************/
+ 
+ static int read_backlight_power(struct asus_wmi *asus)
+@@ -2904,6 +3008,10 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	else
+ 		throttle_thermal_policy_set_default(asus);
+ 
++	err = platform_profile_setup(asus);
++	if (err)
++		goto fail_platform_profile_setup;
++
+ 	err = panel_od_check_present(asus);
+ 	if (err)
+ 		goto fail_panel_od;
+@@ -2993,6 +3101,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	asus_wmi_sysfs_exit(asus->platform_device);
+ fail_sysfs:
+ fail_throttle_thermal_policy:
++fail_platform_profile_setup:
+ fail_fan_boost_mode:
+ fail_egpu_enable:
+ fail_dgpu_disable:
+@@ -3017,6 +3126,9 @@ static int asus_wmi_remove(struct platform_device *device)
+ 	asus_fan_set_auto(asus);
+ 	asus_wmi_battery_exit(asus);
+ 
++	if (asus->platform_profile_support)
++		platform_profile_remove();
++
+ 	kfree(asus);
+ 	return 0;
+ }
+-- 
+2.31.1
 
-BTW, I have off tomorrow, so I wont be looking at this until next week.
-
-Although, tomorrow I'll probably spend my "free" time finishing up
-slides that were due two weeks ago :-/
-
--- Steve
