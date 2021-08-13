@@ -2,113 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67A63EB996
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC2D3EB995
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241508AbhHMPyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241457AbhHMPyW (ORCPT
+        id S241478AbhHMPyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:54:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57574 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241418AbhHMPyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Aug 2021 11:54:22 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5BFC061756;
-        Fri, 13 Aug 2021 08:53:55 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id h2so16282667lji.6;
-        Fri, 13 Aug 2021 08:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aMX+a6wP1iCii8UfZRNRB0ftn/+EsmPtpxrSR4YPCHE=;
-        b=W9cMdo1w90Diw8YIJIySfXDhuAHRZl6bLlzMy7C/GZlgThteZ87DT6k5EUWIuabAlB
-         tWt1TPSHNg3bXs7ax5kd/61lL5jmXO/MLvYPb/JLvZnqyVDQZvQm94gmr5qyThFmP+x2
-         3wFXB4sG8RpIOCrplGiQkG2WJsXqOmzRET/iPhQQH1yHgWiMADGibwzGgVEWl1uYAQ+B
-         /HwQ76FVke+ne4Mmafgmbgmr+J8vqnZEL0lKzCdukKFOBNU0Qd9MdJ7/63EqDtGva0p2
-         JU6fQTQUTqfWd30QLLNwANN+cLyFzyiDrKcdkpiSyMawhwpxOvkLnaT+l0oVLfVA9wa5
-         rkLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aMX+a6wP1iCii8UfZRNRB0ftn/+EsmPtpxrSR4YPCHE=;
-        b=iYtnn9iAFcU4dQGOhphAkTOeyYk5MSQGAbOLBe4rOv68XP6HXMLhfQEhikl4yuQNK1
-         ZCDCr5dbUbHJ8Te8Ewcxsb9WCb+rPpn+HYHurGV3xwNgiw3rEYFymwESW8kVEbZqs3ju
-         s/uBWKepSjFDlzUQxHcrDAlZJ8S9g7lVtLP6IjBd89qqykVn9y9bK+Nf2MROmXhDZdob
-         9RsknuPUIrrL9YtHj+T54zUzzObCcgRzJG0BaJTJJ8AInaIPpnx9d6r5GATkrD+lI9e9
-         qJVux/87dAB5J7xTA0rx4nDkGdVuiSsdmluwVFTLxhiMlpZ7N6BJhS2CrU1QIxA08zER
-         z/SA==
-X-Gm-Message-State: AOAM532sU0+guriPBlCwwj51FOc8VCImQqj5H1LfrGNkGyWnfea3QYXR
-        JtcWG9T2Bzi6SX/G9L0tv2A=
-X-Google-Smtp-Source: ABdhPJxY3aZpHjI5xq9CX1t4DztTg0tQ+aaWxIsVh57v1CyenE1WGSs5BEGkZhD5t5ELqtbCF6HAsw==
-X-Received: by 2002:a2e:8688:: with SMTP id l8mr2308140lji.157.1628870033611;
-        Fri, 13 Aug 2021 08:53:53 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i23sm188939lfo.76.2021.08.13.08.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 08:53:52 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 18:53:50 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 00/10] NTFS read-write driver GPL implementation by
- Paragon Software
-Message-ID: <20210813155350.vcoxqtox2ezvybgb@kari-VirtualBox>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729162459.GA3601405@magnolia>
- <YQdlJM6ngxPoeq4U@mit.edu>
- <20210812170326.6szm7us5kfdte52u@kari-VirtualBox>
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id A8F7C1F40E8C
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4B5E23C0C99; Fri, 13 Aug 2021 17:53:51 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 17:53:51 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][V2][next] power: supply: ab8500: clean up warnings found
+ by checkpatch
+Message-ID: <20210813155351.dj67imzn5nfpdf3d@earth.universe>
+References: <20210720082922.6398-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lewwtmsomymedhht"
 Content-Disposition: inline
-In-Reply-To: <20210812170326.6szm7us5kfdte52u@kari-VirtualBox>
+In-Reply-To: <20210720082922.6398-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 08:03:26PM +0300, Kari Argillander wrote:
-> On Sun, Aug 01, 2021 at 11:23:16PM -0400, Theodore Ts'o wrote:
-> > On Thu, Jul 29, 2021 at 09:24:59AM -0700, Darrick J. Wong wrote:
-> > > 
-> > > I have the same (still unanswered) questions as last time:
-> > > 
-> > > 1. What happens when you run ntfs3 through fstests with '-g all'?  I get
-> > > that the pass rate isn't going to be as high with ntfs3 as it is with
-> > > ext4/xfs/btrfs, but fstests can be adapted (see the recent attempts to
-> > > get exfat under test).
-> > 
-> > Indeed, it's not that hard at all.  I've included a patch to
-> > xfstests-bld[1] so that you can just run "kvm-xfstests -c ntfs3 -g
-> > auto".
-> > 
-> > Konstantin, I would *strongly* encourage you to try running fstests,
-> > about 60 seconds into a run, we discover that generic/013 will trigger
-> > locking problems that could lead to deadlocks.
-> 
-> It seems at least at my testing that if acl option is used then
-> generic/013 will pass. I have tested this with old linux-next commit
-> 5a4cee98ea757e1a2a1354b497afdf8fafc30a20 I have still some of my own
-> code in it but I will test this tomorrow so I can be sure.
-> 
-> It also seems that acl support is broken. I also suspect ntfs-3g mkfs in
-> some failure cases. So maybe ntfs-3g mkfs will give different result than
-> Paragons mkfs. It would be nice to test with Paragons mkfs software or
-> that Paragon will test with ntfs-3g.
 
-I have made more testing and it was actually my code which cause 013 not
-fail. It is still pretty strange. I have made code for new mount api (fs
-context) and 013 still get deadlock but still test will pass. This only
-happends if acl is on. Though this is intresting why this happends. I
-will not use more time for this now. I will try to focus fs context
-mount api for now.
+--lewwtmsomymedhht
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+On Tue, Jul 20, 2021 at 09:29:21AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Clean up a handful of checkpatch warnings:
+>  - static const char * array should probably be static const char * const
+>  - function arguments should have identifier names
+>  - else should follow close brace '}'
+>  - suspect code indent for conditional statements
+>  - unnecessary parentheses in an if condition
+>  - avoid multiple line dereference
+>  - remove debug showing function execution, ftrace can trace these better
+>  - prefer 'long' over 'long int' as the int is unnecessary
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> V2: Fix subject, s/cppcheck/checkpatch/
+>     Remove debug, ftrace can track these better.
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/supply/ab8500_chargalg.c | 24 ++++++++++--------------
+>  1 file changed, 10 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/ab8500_chargalg.c b/drivers/power/suppl=
+y/ab8500_chargalg.c
+> index 46b0c9fedebb..ff4b26b1ceca 100644
+> --- a/drivers/power/supply/ab8500_chargalg.c
+> +++ b/drivers/power/supply/ab8500_chargalg.c
+> @@ -123,7 +123,7 @@ enum ab8500_chargalg_states {
+>  	STATE_WD_EXPIRED,
+>  };
+> =20
+> -static const char *states[] =3D {
+> +static const char * const states[] =3D {
+>  	"HANDHELD_INIT",
+>  	"HANDHELD",
+>  	"CHG_NOT_OK_INIT",
+> @@ -274,8 +274,8 @@ static enum power_supply_property ab8500_chargalg_pro=
+ps[] =3D {
+> =20
+>  struct ab8500_chargalg_sysfs_entry {
+>  	struct attribute attr;
+> -	ssize_t (*show)(struct ab8500_chargalg *, char *);
+> -	ssize_t (*store)(struct ab8500_chargalg *, const char *, size_t);
+> +	ssize_t (*show)(struct ab8500_chargalg *di, char *buf);
+> +	ssize_t (*store)(struct ab8500_chargalg *di, const char *buf, size_t le=
+ngth);
+>  };
+> =20
+>  /**
+> @@ -526,8 +526,7 @@ static int ab8500_chargalg_kick_watchdog(struct ab850=
+0_chargalg *di)
+>  			di->usb_chg->ops.kick_wd(di->usb_chg);
+> =20
+>  		return di->ac_chg->ops.kick_wd(di->ac_chg);
+> -	}
+> -	else if (di->usb_chg && di->usb_chg->ops.kick_wd &&
+> +	} else if (di->usb_chg && di->usb_chg->ops.kick_wd &&
+>  			di->chg_info.online_chg & USB_CHG)
+>  		return di->usb_chg->ops.kick_wd(di->usb_chg);
+> =20
+> @@ -750,8 +749,8 @@ static void ab8500_chargalg_check_temp(struct ab8500_=
+chargalg *di)
+>  			di->t_hyst_norm =3D 0;
+>  			di->t_hyst_lowhigh =3D di->bm->temp_hysteresis;
+>  		} else {
+> -		/* Within hysteresis */
+> -		dev_dbg(di->dev, "Within hysteresis limit temp: %d "
+> +			/* Within hysteresis */
+> +			dev_dbg(di->dev, "Within hysteresis limit temp: %d "
+>  				"hyst_lowhigh %d, hyst normal %d\n",
+>  				di->batt_data.temp, di->t_hyst_lowhigh,
+>  				di->t_hyst_norm);
+> @@ -867,7 +866,7 @@ static enum maxim_ret ab8500_chargalg_chg_curr_maxim(=
+struct ab8500_chargalg *di)
+> =20
+>  	di->ccm.wait_cnt =3D 0;
+> =20
+> -	if ((di->batt_data.inst_curr > di->ccm.original_iset)) {
+> +	if (di->batt_data.inst_curr > di->ccm.original_iset) {
+>  		dev_dbg(di->dev, " Maximization Ibat (%dmA) too high"
+>  			" (limit %dmA) (current iset: %dmA)!\n",
+>  			di->batt_data.inst_curr, di->ccm.original_iset,
+> @@ -1545,8 +1544,7 @@ static void ab8500_chargalg_algorithm(struct ab8500=
+_chargalg *di)
+> =20
+>  	case STATE_WAIT_FOR_RECHARGE:
+>  		if (di->batt_data.percent <=3D
+> -		    di->bm->bat_type[di->bm->batt_id].
+> -		    recharge_cap)
+> +		    di->bm->bat_type[di->bm->batt_id].recharge_cap)
+>  			ab8500_chargalg_state_to(di, STATE_NORMAL_INIT);
+>  		break;
+> =20
+> @@ -1676,8 +1674,6 @@ static void ab8500_chargalg_wd_work(struct work_str=
+uct *work)
+>  	struct ab8500_chargalg *di =3D container_of(work,
+>  		struct ab8500_chargalg, chargalg_wd_work.work);
+> =20
+> -	dev_dbg(di->dev, "ab8500_chargalg_wd_work\n");
+> -
+>  	ret =3D ab8500_chargalg_kick_watchdog(di);
+>  	if (ret < 0)
+>  		dev_err(di->dev, "failed to kick watchdog\n");
+> @@ -1754,7 +1750,7 @@ static ssize_t ab8500_chargalg_curr_step_show(struc=
+t ab8500_chargalg *di,
+>  static ssize_t ab8500_chargalg_curr_step_store(struct ab8500_chargalg *d=
+i,
+>  					       const char *buf, size_t length)
+>  {
+> -	long int param;
+> +	long param;
+>  	int ret;
+> =20
+>  	ret =3D kstrtol(buf, 10, &param);
+> @@ -1787,7 +1783,7 @@ static ssize_t ab8500_chargalg_en_show(struct ab850=
+0_chargalg *di,
+>  static ssize_t ab8500_chargalg_en_store(struct ab8500_chargalg *di,
+>  	const char *buf, size_t length)
+>  {
+> -	long int param;
+> +	long param;
+>  	int ac_usb;
+>  	int ret;
+> =20
+> --=20
+> 2.31.1
+>=20
+
+--lewwtmsomymedhht
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWlYgACgkQ2O7X88g7
++ppDoA/7B0JZuIjapZNNyPrc+2hDpJOBtiTyT/1zqaRTfREcBFd7ns700z8+attk
+kSJmbfg13v4kKr/SfaJ3r6galSfdJTJJo9xH/qsdJy9towapyKubU78y3lMRzv1v
+GqpXh3GGq/jJ3clokRI4AlT6ngKjrh7tx/1czHfl31PuOYp2WwUuMEDXX01NHVX5
+BWL6YNX45EPuba+2CJNmaqOBU0PmToca44uf46XNnPAq6cuR2WhtGWYm/2zm40c1
+5Sg6vr+YB5X2qX457LnHyC9Y+YSA2WQFGjEZ2lW2hmG1MyCSRYWz+XcKgDUQJxgX
+6QQZRR+NQL7AhldrSxSBS/DH9VV79Zdgn/nrnSoFFvgbB/PwlhbRmWk5F0PfdXbO
+bynoTeEXefLySFUzNDGPwIgUtJkXwbxx0RO0ViqNrpeGQEWBEG6yHrmthY8CbY3O
++r0JOhfhhB+YRzio4rQLEt7b9NkgH5VWlz7vzgmIrIFqxFG2vi3PyWp9lNHfD7fQ
+N1mH6JUTLMS2jvtUSnJSkj5VpI16wFaFZms0JtRIO0MjMae9/ELI6uI6ewYNAtLp
+nicG/lJg9kiz2XuyVHg19TVBOtUTOs9sot9iopZ1HXMgbVqD9+NlHuVID0yFtri8
+IEmK9wA/ULZAltFumR57RbjWArqwgHUkjvXqXTDkpopZi7ihWz4=
+=mZ7a
+-----END PGP SIGNATURE-----
+
+--lewwtmsomymedhht--
