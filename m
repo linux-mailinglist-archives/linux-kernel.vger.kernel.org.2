@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC033EB7EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21F33EB7BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241571AbhHMPKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
+        id S241258AbhHMPJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241485AbhHMPJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:09:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3221B610CC;
-        Fri, 13 Aug 2021 15:09:21 +0000 (UTC)
+        id S241206AbhHMPIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0DF86109E;
+        Fri, 13 Aug 2021 15:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867361;
-        bh=1KKhpcXXkCv8ioX0rHIK3uKgunrD9lCqIQ/QV/SfGQc=;
+        s=korg; t=1628867306;
+        bh=WTcoYn764YW43k/A0/6SVzKX1dcFrJatAQAOKKY6Mcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovCLdUtnFvnlGkp1NErPfhWkutQKGG15shHVb+D2XmIQkDKfriJrwnIWekHczll4b
-         DhuFs6wdh2xbO6mRCK1Q4xgQJlXM3DL+QQLtz4NQr+6dYiN5jN8dt+dUP0ZaNOxbV/
-         8V8Nw226GkdviAQ1RAyWuAlhibc08SenAaMG1A70=
+        b=Cv9Ftijk+fNhsdmCZkc9Fwi0eW509mbllaGuRLUmzbJ3sdj0A3nqknDtRjw/+kmkE
+         G9dt/j72DMsdS1wUgszkU2g9lyD6MUyo4BEgwvh1OTP9fnxVDB9OKXN68KOgVk9Al2
+         SrB+oobTFbAPbJCa2iUCOlV34hF0lgYsgbr8SAy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH 4.9 15/30] usb: otg-fsm: Fix hrtimer list corruption
-Date:   Fri, 13 Aug 2021 17:06:43 +0200
-Message-Id: <20210813150522.924661961@linuxfoundation.org>
+        stable@vger.kernel.org, Prarit Bhargava <prarit@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 20/25] alpha: Send stop IPI to send to online CPUs
+Date:   Fri, 13 Aug 2021 17:06:44 +0200
+Message-Id: <20210813150521.373297353@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Prarit Bhargava <prarit@redhat.com>
 
-commit bf88fef0b6f1488abeca594d377991171c00e52a upstream.
+[ Upstream commit caace6ca4e06f09413fb8f8a63319594cfb7d47d ]
 
-The HNP work can be re-scheduled while it's still in-fly. This results in
-re-initialization of the busy work, resetting the hrtimer's list node of
-the work and crashing kernel with null dereference within kernel/timer
-once work's timer is expired. It's very easy to trigger this problem by
-re-plugging USB cable quickly. Initialize HNP work only once to fix this
-trouble.
+This issue was noticed while debugging a shutdown issue where some
+secondary CPUs are not being shutdown correctly.  A fix for that [1] requires
+that secondary cpus be offlined using the cpu_online_mask so that the
+stop operation is a no-op if CPU HOTPLUG is disabled.  I, like the author in
+[1] looked at the architectures and found that alpha is one of two
+architectures that executes smp_send_stop() on all possible CPUs.
 
- Unable to handle kernel NULL pointer dereference at virtual address 00000126)
- ...
- PC is at __run_timers.part.0+0x150/0x228
- LR is at __next_timer_interrupt+0x51/0x9c
- ...
- (__run_timers.part.0) from [<c0187a2b>] (run_timer_softirq+0x2f/0x50)
- (run_timer_softirq) from [<c01013ad>] (__do_softirq+0xd5/0x2f0)
- (__do_softirq) from [<c012589b>] (irq_exit+0xab/0xb8)
- (irq_exit) from [<c0170341>] (handle_domain_irq+0x45/0x60)
- (handle_domain_irq) from [<c04c4a43>] (gic_handle_irq+0x6b/0x7c)
- (gic_handle_irq) from [<c0100b65>] (__irq_svc+0x65/0xac)
+On alpha, smp_send_stop() sends an IPI to all possible CPUs but only needs
+to send them to online CPUs.
 
-Cc: stable@vger.kernel.org
-Acked-by: Peter Chen <peter.chen@kernel.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210717182134.30262-6-digetx@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Send the stop IPI to only the online CPUs.
+
+[1] https://lkml.org/lkml/2020/1/10/250
+
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Signed-off-by: Matt Turner <mattst88@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/common/usb-otg-fsm.c |    6 +++++-
- include/linux/usb/otg-fsm.h      |    1 +
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ arch/alpha/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/common/usb-otg-fsm.c
-+++ b/drivers/usb/common/usb-otg-fsm.c
-@@ -199,7 +199,11 @@ static void otg_start_hnp_polling(struct
- 	if (!fsm->host_req_flag)
- 		return;
- 
--	INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
-+	if (!fsm->hnp_work_inited) {
-+		INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
-+		fsm->hnp_work_inited = true;
-+	}
-+
- 	schedule_delayed_work(&fsm->hnp_polling_work,
- 					msecs_to_jiffies(T_HOST_REQ_POLL));
- }
---- a/include/linux/usb/otg-fsm.h
-+++ b/include/linux/usb/otg-fsm.h
-@@ -210,6 +210,7 @@ struct otg_fsm {
- 	struct mutex lock;
- 	u8 *host_req_flag;
- 	struct delayed_work hnp_polling_work;
-+	bool hnp_work_inited;
- 	bool state_changed;
- };
- 
+diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
+index 2f24447fef92..1543b571bd99 100644
+--- a/arch/alpha/kernel/smp.c
++++ b/arch/alpha/kernel/smp.c
+@@ -584,7 +584,7 @@ void
+ smp_send_stop(void)
+ {
+ 	cpumask_t to_whom;
+-	cpumask_copy(&to_whom, cpu_possible_mask);
++	cpumask_copy(&to_whom, cpu_online_mask);
+ 	cpumask_clear_cpu(smp_processor_id(), &to_whom);
+ #ifdef DEBUG_IPI_MSG
+ 	if (hard_smp_processor_id() != boot_cpu_id)
+-- 
+2.30.2
+
 
 
