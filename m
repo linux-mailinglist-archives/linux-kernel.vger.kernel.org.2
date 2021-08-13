@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D5C3EB85A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB043EB857
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhHMPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54700 "EHLO mail.kernel.org"
+        id S241925AbhHMPND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:13:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241154AbhHMPLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DDE610CC;
-        Fri, 13 Aug 2021 15:11:20 +0000 (UTC)
+        id S241848AbhHMPLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:11:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D1966109E;
+        Fri, 13 Aug 2021 15:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867481;
-        bh=sRPFH21GUHaIfPsrdFoiMnFo8Ti4ntSLsfKaoA+wXGY=;
+        s=korg; t=1628867484;
+        bh=i2zCazZeP+sT2YQiWWWFNaOJ/n/UKH3EC44jbWO8rzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IaEEFnec9MxPrWZj9tcPqpHH5B+2Kg5CDq5LE5q97zKNDe6RTe629rkMKfeynDp1E
-         No4lIoPTrPJUI36wm0opwUZyrCMFIndDKkp6Jlx8H/5gik/Jv7FJheJNUxTHtTeXS+
-         Bdc3zlFaRnJJw1nDlAG3v6Nfh1/ggb2exS+K4Ark=
+        b=aGb8o3d80qqgsZmnMgi2N3/rC6mEmu9me0G1iM3yJu0FicloHYix1AIG21KlKXlGA
+         B4ul1j0AQOquO44lPTxsvHXgjakSNx1xmgH0UvXVazCNuXSn4IDBnq880UeoxyoW1W
+         JA0i4LA//waxEp1LVshQD3ag16rUN2ah8wiOv1/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: [PATCH 4.14 30/42] pcmcia: i82092: fix a null pointer dereference bug
-Date:   Fri, 13 Aug 2021 17:06:56 +0200
-Message-Id: <20210813150526.117710214@linuxfoundation.org>
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 31/42] spi: meson-spicc: fix memory leak in meson_spicc_remove
+Date:   Fri, 13 Aug 2021 17:06:57 +0200
+Message-Id: <20210813150526.149061469@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
 References: <20210813150525.098817398@linuxfoundation.org>
@@ -39,32 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit e39cdacf2f664b09029e7c1eb354c91a20c367af upstream.
+commit 8311ee2164c5cd1b63a601ea366f540eae89f10e upstream.
 
-During the driver loading process, the 'dev' field was not assigned, but
-the 'dev' field was referenced in the subsequent 'i82092aa_set_mem_map'
-function.
+In meson_spicc_probe, the error handling code needs to clean up master
+by calling spi_master_put, but the remove function does not have this
+function call. This will lead to memory leak of spicc->master.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-CC: <stable@vger.kernel.org>
-[linux@dominikbrodowski.net: shorten commit message, add Cc to stable]
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Fixes: 454fa271bc4e("spi: Add Meson SPICC driver")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Link: https://lore.kernel.org/r/20210720100116.1438974-1-mudongliangabcd@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pcmcia/i82092.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-meson-spicc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/pcmcia/i82092.c
-+++ b/drivers/pcmcia/i82092.c
-@@ -105,6 +105,7 @@ static int i82092aa_pci_probe(struct pci
- 	for (i = 0;i<socket_count;i++) {
- 		sockets[i].card_state = 1; /* 1 = present but empty */
- 		sockets[i].io_base = pci_resource_start(dev, 0);
-+		sockets[i].dev = dev;
- 		sockets[i].socket.features |= SS_CAP_PCCARD;
- 		sockets[i].socket.map_size = 0x1000;
- 		sockets[i].socket.irq_mask = 0;
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -599,6 +599,8 @@ static int meson_spicc_remove(struct pla
+ 
+ 	clk_disable_unprepare(spicc->core);
+ 
++	spi_master_put(spicc->master);
++
+ 	return 0;
+ }
+ 
 
 
