@@ -2,190 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843723EB4A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFD63EB4AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240034AbhHMLlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 07:41:40 -0400
-Received: from mga11.intel.com ([192.55.52.93]:50529 "EHLO mga11.intel.com"
+        id S240351AbhHMLmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 07:42:07 -0400
+Received: from aposti.net ([89.234.176.197]:46710 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239938AbhHMLlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:41:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="212432591"
-X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="212432591"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 04:41:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="677344298"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 13 Aug 2021 04:41:12 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mEVYl-000Nm1-KS; Fri, 13 Aug 2021 11:41:11 +0000
-Date:   Fri, 13 Aug 2021 19:40:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 4e32644d45e0abe67d48e162f85b27771ab8f13f
-Message-ID: <61165a49.0g+T8bSnK36UjcCG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239938AbhHMLmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 07:42:05 -0400
+Date:   Fri, 13 Aug 2021 13:41:26 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: IIO, dmabuf, io_uring
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-iio@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
+Message-Id: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 4e32644d45e0abe67d48e162f85b27771ab8f13f  rcu-tasks: Move RTGS_WAIT_CBS to beginning of rcu_tasks_kthread() loop
+Hi,
 
-elapsed time: 724m
+A few months ago we (ADI) tried to upstream the interface we use with 
+our high-speed ADCs and DACs. It is a system with custom ioctls on the 
+iio device node to dequeue and enqueue buffers (allocated with 
+dma_alloc_coherent), that can then be mmap'd by userspace applications. 
+Anyway, it was ultimately denied entry [1]; this API was okay in ~2014 
+when it was designed but it feels like re-inventing the wheel in 2021.
 
-configs tested: 132
-configs skipped: 3
+Back to the drawing table, and we'd like to design something that we 
+can actually upstream. This high-speed interface looks awfully similar 
+to DMABUF, so we may try to implement a DMABUF interface for IIO, 
+unless someone has a better idea.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Our first usecase is, we want userspace applications to be able to 
+dequeue buffers of samples (from ADCs), and/or enqueue buffers of 
+samples (for DACs), and to be able to manipulate them (mmapped 
+buffers). With a DMABUF interface, I guess the userspace application 
+would dequeue a dma buffer from the driver, mmap it, read/write the 
+data, unmap it, then enqueue it to the IIO driver again so that it can 
+be disposed of. Does that sound sane?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210812
-arm                    vt8500_v6_v7_defconfig
-sh                           se7751_defconfig
-powerpc                     ep8248e_defconfig
-sh                           sh2007_defconfig
-m68k                        stmark2_defconfig
-mips                  maltasmvp_eva_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                        maltaup_defconfig
-mips                           ip22_defconfig
-sh                           se7721_defconfig
-arm                        clps711x_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                 mpc837x_mds_defconfig
-ia64                             alldefconfig
-sh                        edosk7705_defconfig
-xtensa                generic_kc705_defconfig
-arm                           stm32_defconfig
-arm                           omap1_defconfig
-arc                           tb10x_defconfig
-arm                          exynos_defconfig
-mips                          ath25_defconfig
-mips                        workpad_defconfig
-mips                     decstation_defconfig
-powerpc                        cell_defconfig
-powerpc                     ppa8548_defconfig
-arc                        nsimosci_defconfig
-arm                     davinci_all_defconfig
-mips                           gcw0_defconfig
-arm                            xcep_defconfig
-riscv                             allnoconfig
-powerpc64                        alldefconfig
-powerpc                     ksi8560_defconfig
-arm                            zeus_defconfig
-sh                             sh03_defconfig
-arm                       aspeed_g5_defconfig
-arc                     nsimosci_hs_defconfig
-arc                          axs103_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210812
-x86_64               randconfig-a004-20210812
-x86_64               randconfig-a003-20210812
-x86_64               randconfig-a005-20210812
-x86_64               randconfig-a002-20210812
-x86_64               randconfig-a001-20210812
-i386                 randconfig-a004-20210812
-i386                 randconfig-a003-20210812
-i386                 randconfig-a002-20210812
-i386                 randconfig-a001-20210812
-i386                 randconfig-a006-20210812
-i386                 randconfig-a005-20210812
-i386                 randconfig-a004-20210813
-i386                 randconfig-a003-20210813
-i386                 randconfig-a001-20210813
-i386                 randconfig-a002-20210813
-i386                 randconfig-a006-20210813
-i386                 randconfig-a005-20210813
-i386                 randconfig-a011-20210812
-i386                 randconfig-a015-20210812
-i386                 randconfig-a013-20210812
-i386                 randconfig-a014-20210812
-i386                 randconfig-a016-20210812
-i386                 randconfig-a012-20210812
-i386                 randconfig-a011-20210813
-i386                 randconfig-a015-20210813
-i386                 randconfig-a014-20210813
-i386                 randconfig-a013-20210813
-i386                 randconfig-a016-20210813
-i386                 randconfig-a012-20210813
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Our second usecase is - and that's where things get tricky - to be able 
+to stream the samples to another computer for processing, over Ethernet 
+or USB. Our typical setup is a high-speed ADC/DAC on a dev board with a 
+FPGA and a weak soft-core or low-power CPU; processing the data in-situ 
+is not an option. Copying the data from one buffer to another is not an 
+option either (way too slow), so we absolutely want zero-copy.
 
-clang tested configs:
-x86_64               randconfig-c001-20210812
-x86_64               randconfig-a006-20210813
-x86_64               randconfig-a004-20210813
-x86_64               randconfig-a003-20210813
-x86_64               randconfig-a002-20210813
-x86_64               randconfig-a005-20210813
-x86_64               randconfig-a001-20210813
-x86_64               randconfig-a011-20210812
-x86_64               randconfig-a013-20210812
-x86_64               randconfig-a012-20210812
-x86_64               randconfig-a016-20210812
-x86_64               randconfig-a015-20210812
-x86_64               randconfig-a014-20210812
+Usual userspace zero-copy techniques (vmsplice+splice, MSG_ZEROCOPY 
+etc) don't really work with mmapped kernel buffers allocated for DMA 
+[2] and/or have a huge overhead, so the way I see it, we would also 
+need DMABUF support in both the Ethernet stack and USB (functionfs) 
+stack. However, as far as I understood, DMABUF is mostly a DRM/V4L2 
+thing, so I am really not sure we have the right idea here.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+And finally, there is the new kid in town, io_uring. I am not very 
+literate about the topic, but it does not seem to be able to handle DMA 
+buffers (yet?). The idea that we could dequeue a buffer of samples from 
+the IIO device and send it over the network in one single syscall is 
+appealing, though.
+
+Any thoughts? Feedback would be greatly appreciated.
+
+Cheers,
+-Paul
+
+[1]: 
+https://lore.kernel.org/linux-iio/20210217073638.21681-1-alexandru.ardelean@analog.com/T/#m6b853addb77959c55e078fbb06828db33d4bf3d7
+[2]: 
+https://newbedev.com/zero-copy-user-space-tcp-send-of-dma-mmap-coherent-mapped-memory
+
+
