@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA893EAEFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABAC3EAF05
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237853AbhHMDkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 23:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        id S238626AbhHMD5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 23:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233750AbhHMDku (ORCPT
+        with ESMTP id S238130AbhHMD5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 23:40:50 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C501C061756;
-        Thu, 12 Aug 2021 20:40:24 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so18803488pjs.0;
-        Thu, 12 Aug 2021 20:40:24 -0700 (PDT)
+        Thu, 12 Aug 2021 23:57:14 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79104C061756;
+        Thu, 12 Aug 2021 20:56:48 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so9914816pje.0;
+        Thu, 12 Aug 2021 20:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ORlrD9sl2aYo7jcRja/hxhONlCSeq5JNCCwjrBnwxHg=;
-        b=ls+y9PABiM7r2XhDF6NpqmapOhuDd3WDTmTnpnP3+eOcE/KB0PBGnOMGCTwiWmCxZU
-         zRtrd/D/KjHERYC7MTD8uRVfXzG2Z3HMizrjPVThbvc0Jn4mv8A/w1u2/0UmT+VeoOy4
-         3QbaSEy+9SrswsB+SIEssE3V2Wai5hML/bWmUvsTYU/Exi+Oz3uilkjwqQ/pvR+VGy+L
-         xEJTN4AxgeY/0UlnLApejq8ai34l4SANvij0fRnaR5wI4+AygGI1FTzF80JVv7ieaASI
-         zWnHrO72pTJmD0O/WVdun7wGDUdBEF/Kctn2zoaQFwPrsJQ5o/mXLKr6pOmXC/e9NwQF
-         kXjA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hOydTfRsWf5FkWMj8BE6lR9D+1scpczz/SuhDex9Szc=;
+        b=TZCq2I6YftrR2zFRyuTUnA2aQWQmDMgnQbXraUtcBSUi2WDMzUoQB1LBCVQMMrGgyO
+         dcbo0Z3dDocwN6BQWOhY9xCh4/Ukukt8Q9eY/6kfIZ8aSrqudSunc8owyoRdWBUbYnUn
+         +xRCZujfuboQGwbS+OTo4wjelxJPY4m3Hqfte7MmjoRI9IFzbkVAYi4UVBfkBNPDlvi4
+         /bjhhSkBg+whKuPGSxcLovZIB8aKz1nvGqzebS929DGLaDzw3F0g/4DuqOnFUSoIj5p5
+         78hLHEEWOaflcqbhyz+35JxOuqkPG1fgbQ3WTGzSFB60kyrWoKFfJrMKwMbRc0SrU2sc
+         5Wbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ORlrD9sl2aYo7jcRja/hxhONlCSeq5JNCCwjrBnwxHg=;
-        b=EB1QxmuSUOsl/2NwbR3d1EiBfa0vfmQv71RMtDmEj3sGllfUCTFrofdfNUI+LW/ClT
-         F7AtQO07xMdQoEYXSvECIzIBCEycG4T3MyY/GdV2zZ7QJjg9KEWirSvnSQ/nMqoDb1lp
-         T5337G9buWOYXzO60p1nTqxfnTE9Uo1/ugvUppIc9Y+XxqYBLC1TXt+q0HEBP6Tq5Ica
-         uc1h1iGWPdi8L+IJGkYzbeEU0jHb+AXodOyW9q2f3AWnH5XRB/JSk/O6xd5FktB3UHC6
-         KEl1iG5wA+updXtwqRAvEfdNKnaiAlTbDHF7R0hvICu+QkeqDPVpaB9qwiNoqg7f4R/D
-         6m2w==
-X-Gm-Message-State: AOAM530bFwWFnXkMgu1vmnX+Eiu7tFnApjiN81iqiBjHyzpbp0GbjVAU
-        w6V2yOty0K64jximd9cZ1/E=
-X-Google-Smtp-Source: ABdhPJzhTgI45W86irveIUKBOUgK67+9nGpu3ltrKHOvKGT9EQFFV8uNZpi8CRMREa+QzJyTRGOSyg==
-X-Received: by 2002:a17:902:8f90:b029:12d:1b48:efd8 with SMTP id z16-20020a1709028f90b029012d1b48efd8mr352319plo.23.1628826023485;
-        Thu, 12 Aug 2021 20:40:23 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-92-48-112.hsd1.ca.comcast.net. [73.92.48.112])
-        by smtp.gmail.com with ESMTPSA id z24sm236977pjq.43.2021.08.12.20.40.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Aug 2021 20:40:23 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 20:40:17 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Subject: Re: [PATCH v2 4/6] ARM: dts: aspeed: Add Facebook Cloudripper
- (AST2600) BMC
-Message-ID: <20210813034016.GA21895@taoren-ubuntu-R90MNF91>
-References: <20210805222818.8391-1-rentao.bupt@gmail.com>
- <20210805222818.8391-5-rentao.bupt@gmail.com>
- <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hOydTfRsWf5FkWMj8BE6lR9D+1scpczz/SuhDex9Szc=;
+        b=KiH3Javdx1wyo5l/N6947Fy7hgICFObckE4q9jd49EFAwgIS4QI2Y9JTGiwteI+WYv
+         Q2LNroZHeqzlGKvLu3CZqSZomzJLh5wpdfp8TnRanTbN1tApYNp4QMOU+wDQ8m88GMeT
+         aMeHdLnJw9kTOsQDn8zPjXgaO6fPec58Q5UXIQRXUAcSRbl9VFsQIYx3BjqGdXYub1Fj
+         jTndX/YLvN6wmQJKx2OFRVm83RJWMcFt3QChJ+l/O769XSeykWcD23+PrULG3D+s4ZRB
+         typD8BeMJXHl/oG49Sj6BHeVsV3UzDlqftvaOVIm8pETvl6Ic7wV+GPbJLNqsHLbjrbF
+         tqoA==
+X-Gm-Message-State: AOAM531qEiEU2MYsU/kltlXhiX7YMe/glIoVw1v/P9kBU1JpDsPVpTuf
+        RR08MQ/7rWl+P5pR5Xnms3BXpnnm9FfHsPUn
+X-Google-Smtp-Source: ABdhPJyroy/GdDpliyBkGamzjHV8RSK+9Q8AJF1ksOeutmz7JIzbP8+ARJzj8FUgtYkQbymIhd6cxg==
+X-Received: by 2002:a65:6288:: with SMTP id f8mr423662pgv.81.1628827007619;
+        Thu, 12 Aug 2021 20:56:47 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8916:5000:f39c:9aee:21bf:36f5])
+        by smtp.gmail.com with ESMTPSA id n25sm297791pfa.26.2021.08.12.20.56.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 20:56:46 -0700 (PDT)
+From:   Barry Song <21cnbao@gmail.com>
+To:     linux-kernel@vger.kernel.org, maz@kernel.org, tglx@linutronix.de
+Cc:     bhelgaas@google.com, dwmw@amazon.co.uk, gregkh@linuxfoundation.org,
+        linux-pci@vger.kernel.org, linuxarm@huawei.com,
+        lorenzo.pieralisi@arm.com, rafael@kernel.org, robin.murphy@arm.com,
+        song.bao.hua@hisilicon.com, will@kernel.org
+Subject: [PATCH v3 0/2] msi: extend msi_irqs sysfs entries to platform devices
+Date:   Fri, 13 Aug 2021 15:56:26 +1200
+Message-Id: <20210813035628.6844-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 01:29:17AM +0000, Joel Stanley wrote:
-> On Thu, 5 Aug 2021 at 22:28, <rentao.bupt@gmail.com> wrote:
-> > +&mdio1 {
-> > +       status = "okay";
-> 
-> You're enabling this but it looks like it's unused?
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-Thanks Joel for the careful review. The MDIO controller is not paired
-with BMC MAC; instead, it's connected to the MDC/MDIO interface of the
-on-board switch (whose ports are connected to BMC, Host and front panel
-management port).
+-v3:
+  added Acked-by of Greg Kroah-Hartman and Bjorn Helgaas, thanks!
+  refined commit log with respect to Bjorn's comments
 
-In other word, the MDIO controller is used, but we do need some user
-space scripts to control the controller. What's your suggestion? For
-example, should I add some comments to explain the purpose?
+  Hi Thomas & Marc,
+  Would you please handle this series? Thanks!
 
+-v2:
+  extract common code for msi_irqs sysfs populate/destory from PCI to MSI core,
+  platform_device can directly reuse common code;
+  https://lore.kernel.org/lkml/20210812105341.51657-1-21cnbao@gmail.com/
 
-Cheers,
+-v1:
+  https://lore.kernel.org/lkml/20210811105020.12980-1-song.bao.hua@hisilicon.com/
 
-Tao
+Just like pci devices have msi_irqs which can be used by userspace irq affinity
+tools or applications to bind irqs, platform devices also widely support msi
+irqs.
+For platform devices, for example ARM SMMU, userspaces also care about its msi
+irqs as applications can know the mapping between devices and irqs and then
+make smarter decision on handling irq affinity. For example, for SVA mode,
+it is better to pin io page fault to the numa node applications are running
+on. Otherwise, io page fault will get a remote page from the node iopf happens
+rather than from the node applications are running on.
 
-> 
-> > +};
-> > +
-> > +&mdio3 {
-> > +       status = "okay";
-> > +
-> > +       ethphy1: ethernet-phy@13 {
-> > +               compatible = "ethernet-phy-ieee802.3-c22";
-> > +               reg = <0x0d>;
-> > +       };
-> > +};
-> > +
-> > +&mac3 {
-> > +       status = "okay";
-> > +       phy-mode = "rgmii";
-> > +       phy-handle = <&ethphy1>;
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_rgmii4_default>;
-> > +};
+The first patch extracts the sysfs populate/destory code from PCI to
+MSI core. The 2nd patch lets platform-msi export msi_irqs entry so that
+userspace can know the mapping between devices and irqs for platform
+devices.
+
+Barry Song (2):
+  genirq/msi: Extract common sysfs populate entries to MSI core from PCI
+  platform-msi: Add ABI to show msi_irqs of platform devices
+
+ Documentation/ABI/testing/sysfs-bus-platform |  14 +++
+ drivers/base/platform-msi.c                  |  10 ++
+ drivers/pci/msi.c                            | 124 ++-----------------------
+ include/linux/msi.h                          |   4 +
+ kernel/irq/msi.c                             | 134 +++++++++++++++++++++++++++
+ 5 files changed, 171 insertions(+), 115 deletions(-)
+
+-- 
+1.8.3.1
+
