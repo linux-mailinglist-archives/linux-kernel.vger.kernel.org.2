@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292773EB8ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B466D3EB8FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242612AbhHMPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59108 "EHLO mail.kernel.org"
+        id S242698AbhHMPSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:18:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242703AbhHMPOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:14:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78A6E610F7;
-        Fri, 13 Aug 2021 15:14:14 +0000 (UTC)
+        id S241710AbhHMPOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:14:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25584610FD;
+        Fri, 13 Aug 2021 15:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867655;
-        bh=E7wxtjAb81PF0LND7bzdoKazKry0KsHM2b7YkjrrFg8=;
+        s=korg; t=1628867657;
+        bh=8uQasMfu+BP/uELSfdUi6nEdM2giS1F32OlKhetDiC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WeXMXEg6qJiSPQxPU0ivTV2A9/08YxVvjPT63Hg4LygMNBDcUtKg/8YK3lYu/Bwy+
-         Zv++NsxJaYLfBcXvPY5ridZBRRWlsuROerHOpW++P6ysSYdiK+Q35MgBoMr7GQLWwu
-         vrFZ2Xnce8wgLXjkga9DQFWfL/y9gi7yuC4KvPuc=
+        b=jbxwc73QCv5Ft0MYWQWZlukF7Hc/Q3BqyC5b8GbGDzPoPG3LqpqxbG7YtiRbLtUUw
+         WHVRiD2+R1edHOVmPbMRQFJdQpzIztUT3mg1gEF2JOng2KmUjvnlthOZnOkOk1tshp
+         qfTkTN+m7B+E7rHnsS0xmhB0W94EusptsykM2vwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Allen Pais <apais@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 03/19] firmware: tee_bnxt: Release TEE shm, session, and context during kexec
-Date:   Fri, 13 Aug 2021 17:07:20 +0200
-Message-Id: <20210813150522.739650240@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH 5.10 04/19] bpf: Add _kernel suffix to internal lockdown_bpf_read
+Date:   Fri, 13 Aug 2021 17:07:21 +0200
+Message-Id: <20210813150522.774143311@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150522.623322501@linuxfoundation.org>
 References: <20210813150522.623322501@linuxfoundation.org>
@@ -43,79 +39,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 914ab19e471d8fb535ed50dff108b0a615f3c2d8 ]
+commit 71330842ff93ae67a066c1fa68d75672527312fa upstream.
 
-Implement a .shutdown hook that will be called during a kexec operation
-so that the TEE shared memory, session, and context that were set up
-during .probe can be properly freed/closed.
+Rename LOCKDOWN_BPF_READ into LOCKDOWN_BPF_READ_KERNEL so we have naming
+more consistent with a LOCKDOWN_BPF_WRITE_USER option that we are adding.
 
-Additionally, don't use dma-buf backed shared memory for the
-fw_shm_pool. dma-buf backed shared memory cannot be reliably freed and
-unregistered during a kexec operation even when tee_shm_free() is called
-on the shm from a .shutdown hook. The problem occurs because
-dma_buf_put() calls fput() which then uses task_work_add(), with the
-TWA_RESUME parameter, to queue tee_shm_release() to be called before the
-current task returns to user mode. However, the current task never
-returns to user mode before the kexec completes so the memory is never
-freed nor unregistered.
-
-Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
-allocation so that tee_shm_free() can directly call tee_shm_release().
-This will ensure that the shm can be freed and unregistered during a
-kexec operation.
-
-Fixes: 246880958ac9 ("firmware: broadcom: add OP-TEE based BNXT f/w manager")
-Cc: stable@vger.kernel.org
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-Co-developed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/broadcom/tee_bnxt_fw.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ include/linux/security.h |    2 +-
+ kernel/bpf/helpers.c     |    4 ++--
+ kernel/trace/bpf_trace.c |    8 ++++----
+ security/security.c      |    2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-+++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-@@ -212,10 +212,9 @@ static int tee_bnxt_fw_probe(struct devi
- 
- 	pvt_data.dev = dev;
- 
--	fw_shm_pool = tee_shm_alloc(pvt_data.ctx, MAX_SHM_MEM_SZ,
--				    TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+	fw_shm_pool = tee_shm_alloc_kernel_buf(pvt_data.ctx, MAX_SHM_MEM_SZ);
- 	if (IS_ERR(fw_shm_pool)) {
--		dev_err(pvt_data.dev, "tee_shm_alloc failed\n");
-+		dev_err(pvt_data.dev, "tee_shm_alloc_kernel_buf failed\n");
- 		err = PTR_ERR(fw_shm_pool);
- 		goto out_sess;
- 	}
-@@ -242,6 +241,14 @@ static int tee_bnxt_fw_remove(struct dev
- 	return 0;
- }
- 
-+static void tee_bnxt_fw_shutdown(struct device *dev)
-+{
-+	tee_shm_free(pvt_data.fw_shm_pool);
-+	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
-+	tee_client_close_context(pvt_data.ctx);
-+	pvt_data.ctx = NULL;
-+}
-+
- static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
- 	{UUID_INIT(0x6272636D, 0x2019, 0x0716,
- 		    0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
-@@ -257,6 +264,7 @@ static struct tee_client_driver tee_bnxt
- 		.bus		= &tee_bus_type,
- 		.probe		= tee_bnxt_fw_probe,
- 		.remove		= tee_bnxt_fw_remove,
-+		.shutdown	= tee_bnxt_fw_shutdown,
- 	},
- };
- 
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -123,7 +123,7 @@ enum lockdown_reason {
+ 	LOCKDOWN_INTEGRITY_MAX,
+ 	LOCKDOWN_KCORE,
+ 	LOCKDOWN_KPROBES,
+-	LOCKDOWN_BPF_READ,
++	LOCKDOWN_BPF_READ_KERNEL,
+ 	LOCKDOWN_PERF,
+ 	LOCKDOWN_TRACEFS,
+ 	LOCKDOWN_XMON_RW,
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -729,12 +729,12 @@ bpf_base_func_proto(enum bpf_func_id fun
+ 	case BPF_FUNC_probe_read_user:
+ 		return &bpf_probe_read_user_proto;
+ 	case BPF_FUNC_probe_read_kernel:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_kernel_proto;
+ 	case BPF_FUNC_probe_read_user_str:
+ 		return &bpf_probe_read_user_str_proto;
+ 	case BPF_FUNC_probe_read_kernel_str:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_kernel_str_proto;
+ 	case BPF_FUNC_snprintf_btf:
+ 		return &bpf_snprintf_btf_proto;
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1281,19 +1281,19 @@ bpf_tracing_func_proto(enum bpf_func_id
+ 	case BPF_FUNC_probe_read_user:
+ 		return &bpf_probe_read_user_proto;
+ 	case BPF_FUNC_probe_read_kernel:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_kernel_proto;
+ 	case BPF_FUNC_probe_read_user_str:
+ 		return &bpf_probe_read_user_str_proto;
+ 	case BPF_FUNC_probe_read_kernel_str:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_kernel_str_proto;
+ #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	case BPF_FUNC_probe_read:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_compat_proto;
+ 	case BPF_FUNC_probe_read_str:
+-		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+ 		       NULL : &bpf_probe_read_compat_str_proto;
+ #endif
+ #ifdef CONFIG_CGROUPS
+--- a/security/security.c
++++ b/security/security.c
+@@ -61,7 +61,7 @@ const char *const lockdown_reasons[LOCKD
+ 	[LOCKDOWN_INTEGRITY_MAX] = "integrity",
+ 	[LOCKDOWN_KCORE] = "/proc/kcore access",
+ 	[LOCKDOWN_KPROBES] = "use of kprobes",
+-	[LOCKDOWN_BPF_READ] = "use of bpf to read kernel RAM",
++	[LOCKDOWN_BPF_READ_KERNEL] = "use of bpf to read kernel RAM",
+ 	[LOCKDOWN_PERF] = "unsafe use of perf",
+ 	[LOCKDOWN_TRACEFS] = "use of tracefs",
+ 	[LOCKDOWN_XMON_RW] = "xmon read and write access",
 
 
