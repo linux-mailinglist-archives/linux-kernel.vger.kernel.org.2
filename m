@@ -2,83 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F903EB9A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A883EB9A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241343AbhHMP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241089AbhHMP7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:59:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A75261038;
-        Fri, 13 Aug 2021 15:59:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628870359;
-        bh=mmIVKecooge/8bcS9f0J7os6PhKUAnx5VYDKl8xDsBk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h0UeKtiuCmF7ZbGSAr0SIZuSsu5fpSiZqBAlXQ+aTihpG1KFZdVf83yzaeFv7bEg1
-         1K+YglebukLQDc8ijvvaAipKKtcAaAQkWqvMJD08xNSRkYQ+xlqtK6AMxkm3DKEWql
-         3RlkZFQQgZPHT0A4e2QSBWpGsh16HWG2wKCXu6FCEPvgMSkN9f+a5mewQGj0jJcJkA
-         U/4A/q3lwab0e0RTjibr4JmKgEnBLj7YTSu5S5IcVk3CVDJUyJkAS15RtTHNexrWnn
-         lNs71tHa7orNoez4ewAEK04xCTs6CMKGyY9r+/+ELDMSrWAUCgb1HN2b5WcyLBvSXb
-         +oOhXJntx8Itg==
-Date:   Fri, 13 Aug 2021 16:58:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>, matthias.bgg@gmail.com,
-        matti.vaittinen@fi.rohmeurope.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, gene_chen@richtek.com,
-        Wilma.Wu@mediatek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH resend v6 0/3] power: supply: mt6360_charger: add MT6360
- charger support
-Message-ID: <20210813155858.GD5209@sirena.org.uk>
-References: <20210719033914.16990-1-gene.chen.richtek@gmail.com>
- <20210813155438.4ssph6deqksob2uv@earth.universe>
+        id S241376AbhHMQAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241089AbhHMQAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 12:00:30 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EA3C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:00:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v4so6833589wro.12
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:00:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7PXtXujZD4XZng1PTJIntgXjl3GoFzqtFBNOKPV0DYw=;
+        b=rjD26/ksnY5lq/8q+yTqUfc8CoO5cbcVjSoG4sUphipTrgHoKHtgHb8wR39HdrVVPC
+         LoODPOfIw8tp0hCi2WK/QDtzJ8N7nBvUIdcTNxdyj/FBydLmVE8DTvZPhU8CV+64Udhu
+         4aySdcuQpkK++1v7eKui6/bGhzkBSAJAadneDzKFEDhmEaEeSgHLwWsrjba9wDYIMiLY
+         9CTIsLyLjsmkPuJrCqVN6l8lpRTgTS1OYiCO5St8M5jnmTk6Qa8gDeaco/DTG6D7Xcnc
+         IYR5F5W1UHcnZxVJnLJ5H+XUagAVfRmoFHxbnvOPxNpeuvLUv0GOeRlW1ybDSAHVOIQV
+         Pebg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7PXtXujZD4XZng1PTJIntgXjl3GoFzqtFBNOKPV0DYw=;
+        b=R5rKrJ4qEYML+XIUUfnoQE+TUi1UWOPF6HXs3i+k4h3bRvkds8Q4SrsdH58kfIsVhJ
+         3oj5rJKfMch9jCnxbP+XEj21zmhtCUkVWtDHpAvHie9/VYOet7QjGCOWeAClwx54TIlH
+         PbxvIH8qgQoSVNp0Acyez6qRE4L1XX7mxy8Ul8I5WhM8oW2RfH3ZzK3UoapUW+DgItFW
+         Hqi5GNVFXU20cIGB6w9ijkKUl226DETneUPrhrhOr4Z5ieJ8OH8E7XEIxSyEmL4ZTVsU
+         lmUoYctUwsP+b6nRQfao1T6xZw9wTBti4csx1555Mf0Lf6ftFZx+hk0IC1qnzIp+Nz5m
+         /FXQ==
+X-Gm-Message-State: AOAM533hrfS/qCMItMErV8lcZdem1rVDFym3qhI6rCd39k2XnpWhVW8u
+        h6X3TW1L5vFzQGcqC/+gGUTEYT2ZCE0+fW5x
+X-Google-Smtp-Source: ABdhPJytmOoWuLmKkvkzL+gxg9fROF5WJi55LAKimehnefpeQrWrDvlcGOzfjBVM3rru93L7DeqW7A==
+X-Received: by 2002:adf:97d7:: with SMTP id t23mr3885245wrb.81.1628870401615;
+        Fri, 13 Aug 2021 09:00:01 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
+        by smtp.googlemail.com with ESMTPSA id x18sm1956929wrw.19.2021.08.13.09.00.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 09:00:01 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] clocksource/drivers/sprd: Add module support to
+ Unisoc timer
+To:     Chunyan Zhang <zhang.lyra@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210715065455.392923-1-zhang.lyra@gmail.com>
+ <20210715065455.392923-4-zhang.lyra@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <47dcce5a-f438-9f12-5b60-651dc5f2b92c@linaro.org>
+Date:   Fri, 13 Aug 2021 18:00:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
-Content-Disposition: inline
-In-Reply-To: <20210813155438.4ssph6deqksob2uv@earth.universe>
-X-Cookie: E Pluribus Unix
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210715065455.392923-4-zhang.lyra@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/07/2021 08:54, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> Timers still have devices created for them. So, when compiling a timer
+> driver as a module, implement it as a normal platform device driver.
+> 
+> Original-by: Baolin Wang <baolin.wang7@gmail.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  drivers/clocksource/Kconfig      |  2 +-
+>  drivers/clocksource/timer-sprd.c | 15 ++++++++++-----
+>  2 files changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index eb661b539a3e..a5a5b7c883ec 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -461,7 +461,7 @@ config MTK_TIMER
+>  	  Support for Mediatek timer driver.
+>  
+>  config SPRD_TIMER
+> -	bool "Spreadtrum timer driver" if EXPERT
+> +	tristate "Spreadtrum timer driver" if EXPERT
+>  	depends on HAS_IOMEM
+>  	depends on (ARCH_SPRD || COMPILE_TEST)
+>  	default ARCH_SPRD
+> diff --git a/drivers/clocksource/timer-sprd.c b/drivers/clocksource/timer-sprd.c
+> index 430cb99d8d79..a8a7d3ea3464 100644
+> --- a/drivers/clocksource/timer-sprd.c
+> +++ b/drivers/clocksource/timer-sprd.c
+> @@ -5,6 +5,8 @@
+>  
+>  #include <linux/init.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+>  
+>  #include "timer-of.h"
+>  
+> @@ -141,7 +143,7 @@ static struct timer_of to = {
+>  	},
+>  };
+>  
+> -static int __init sprd_timer_init(struct device_node *np)
+> +static int sprd_timer_init(struct device_node *np)
 
---zbGR4y+acU1DwHSi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Does the __init annotation really need to be removed ?
 
-On Fri, Aug 13, 2021 at 05:54:38PM +0200, Sebastian Reichel wrote:
-> On Mon, Jul 19, 2021 at 11:39:11AM +0800, Gene Chen wrote:
-> > This patch series add MT6360 Charger support contains driver and binding
-> > document
+>  {
+>  	int ret;
+>  
+> @@ -190,7 +192,7 @@ static struct clocksource suspend_clocksource = {
+>  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_SUSPEND_NONSTOP,
+>  };
+>  
+> -static int __init sprd_suspend_timer_init(struct device_node *np)
+> +static int sprd_suspend_timer_init(struct device_node *np)
+>  {
+>  	int ret;
+>  
+> @@ -204,6 +206,9 @@ static int __init sprd_suspend_timer_init(struct device_node *np)
+>  	return 0;
+>  }
+>  
+> -TIMER_OF_DECLARE(sc9860_timer, "sprd,sc9860-timer", sprd_timer_init);
+> -TIMER_OF_DECLARE(sc9860_persistent_timer, "sprd,sc9860-suspend-timer",
+> -		 sprd_suspend_timer_init);
+> +TIMER_PLATFORM_DRIVER_BEGIN(sprd_timer)
+> +TIMER_MATCH("sprd,sc9860-timer", sprd_timer_init)
+> +TIMER_MATCH("sprd,sc9860-suspend-timer", sprd_suspend_timer_init)
+> +TIMER_PLATFORM_DRIVER_END(sprd_timer);
 
-> Thanks, queued.
+Please replace the above by something like:
 
-We're still waiting for review from Matti on the linear ranges bit -
-normally that goes through the regulator tree, do you have a tag to pull
-in case of merge conflicts?
+TIMER_PLATFORM_DECLARE(sc9860_timer,
+			"sprd,sc9860-timer",
+			sprd_timer_init);
 
---zbGR4y+acU1DwHSi
-Content-Type: application/pgp-signature; name="signature.asc"
+TIMER_PLATFORM_DECLARE(sc9860_persistent_timer,
+			"sprd,sc9860-suspend-timer",
+			sprd_suspend_timer_init);
 
------BEGIN PGP SIGNATURE-----
+Without TIMER_PLATFORM_DRIVER_BEGIN/END, and if possible the
+MODULE_DESCRIPTION/LICENSE in the TIMER_PLATFORM_DECLARE macro itself.
+The module description could be the first argument of the timer platform
+declaration.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEWlsIACgkQJNaLcl1U
-h9AoZwf9HFxqK2eAq4AklZVlMqvPXdEMOIAyrwH6KkySTkl5AajtCofzW9m+02vr
-rZ0r+Hbp5wngiO1gS2xHi9IiOupIZ/T0FfUSNKYavSX7+tocv+KlAkDRFd+ktpCo
-7rtr9aBOqcljkdX5n2OYZKvwZdJBj6uPEh7qxNivFxpEbCmx8ymL1YWL1pEYlblR
-r3sgWu/fZ1sbp1sFwCvf8GqjmP7Qexqaps6Pg+URJFRoKMlctTDp58ONiE71g8t/
-Mw0vlKqG4564sYxo1Pp+cxL+lsv5GvUMvWxEwvi+2nlmc2TD0sZ0KKgkGKtQyzJd
-kSrVVJ83AhIEe86ozgS7kgsj3tTR3g==
-=bg/U
------END PGP SIGNATURE-----
+> +MODULE_DESCRIPTION("Unisoc broadcast timer module");
+> +MODULE_LICENSE("GPL");
 
---zbGR4y+acU1DwHSi--
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
