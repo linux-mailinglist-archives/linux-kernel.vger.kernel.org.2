@@ -2,144 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BD13EB3D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392D53EB3D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239514AbhHMKIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:08:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:52276 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238808AbhHMKIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:08:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25477D6E;
-        Fri, 13 Aug 2021 03:08:13 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57EFF3F70D;
-        Fri, 13 Aug 2021 03:08:11 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTog5Zue5aSNOiBbRXh0ZXJuYWxdUmU6IEFuIGNtYSBv?=
- =?UTF-8?Q?ptimization_patch_is_used_for_cma=5f=5balloc=7cfree=5d=2e?=
-To:     Jichao Zou <zoujc@motorola.com>,
-        David Hildenbrand <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "song.bao.hua@hisilicon.com" <song.bao.hua@hisilicon.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        JianQi Yang <yangj@motorola.com>,
-        Yanjune Tian <tianyje@motorola.com>
-References: <HK0PR03MB4177A44D9DAD3302251B0EC8D5FA9@HK0PR03MB4177.apcprd03.prod.outlook.com>
- <f5cd9fe6-3b62-eab8-1ff1-d3943d4bb85b@redhat.com>
- <HK0PR03MB41775573A48273BF128C7F72D5FA9@HK0PR03MB4177.apcprd03.prod.outlook.com>
- <ca497139-a6e8-cb66-e221-7fe4af2bda14@arm.com>
- <HK0PR03MB4177FDD7160ABAC3C8119984D5FA9@HK0PR03MB4177.apcprd03.prod.outlook.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <52c0b1fd-d60f-5d7d-0b47-b3569678ebf6@arm.com>
-Date:   Fri, 13 Aug 2021 11:08:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239875AbhHMKLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:11:48 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44334
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239613AbhHMKLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 06:11:47 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EBD1A3F109
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 10:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628849479;
+        bh=XktaWb5OarhZZWhK207tWNHGLgGwQeK53+2iSkcLfrA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ZN+kLYnlR8gRBoVyKhLfkq/ec5eUHU4u6OEpPcd1wCZPUFLrfKaeMap98TyTi5c5t
+         moMzrBZbUrdYwoeZabGmZ6BT8/0Jm7ZTq7X3DIgx7VtU5Cj2B0PGPiWNI4ywFmKW1m
+         AbxatJrXMd0qtTi85Jxz0kZZwCNGVB+hrH1kz1HF66RcrpYgBmVT0J5x2+g19HH05x
+         Hrs7OvxKBj1T1aNmXBHbhDWS+E7KQqtG41wc9XKIfHL1NI4yZ324MqdBlCP3haDxpf
+         wzCZI/7OIAtIf2qD/+LblQoTWKrIjoBnmG8FeasQIpqEpNYKEJXGCO6aX4DXmY8N3x
+         TjLGQ3tkaxxoQ==
+Received: by mail-ed1-f70.google.com with SMTP id v11-20020a056402348bb02903be68e116adso4611411edc.14
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XktaWb5OarhZZWhK207tWNHGLgGwQeK53+2iSkcLfrA=;
+        b=P3NTdhp1IW4peGXjpqRJds2zsr1Xl6+Jy3FsSkL4gjQGx84J8Qp+w6lNcTAHZYx5Yu
+         MXIw18m+Nga5LrD7uglrne636ZOyWjmNcrl0DGhxeM/ZRHJ0lAfCbpr9TnJXqJzb9hUF
+         vSG5otdfYc2qiTQm4RN2iRmq7kTLJ14cuX/gYksFu/+BYuAYfWP9ARjQRM72gYRGl0zl
+         GsvZOIx9gdQzETiYmIC93BjYFJfl7F8iC0GCQoTNb9t5X/hZ66Sz550ESHZtJRuYfUru
+         W84Bzk9Uxtk3Orbd3xH2hc8OT2dbgXnVOCeVuvg9hH3K05hSw57LLWPZgg8CFIkvDu5L
+         o1pg==
+X-Gm-Message-State: AOAM530F2gpHs4v5cPzbhbXCpswVereDWbMHhe0qvhbSnO6FFg4UB+eF
+        TeuWq81ymoVuDoD31HCzkZ+uF63b4oSz15vxFg3bv8x2fi0H9McJyyijsIoMbL96MCi1D4b7IFo
+        HPN0WROh+WpIpap5q2P/BZVDtEWS+3rXi3K7PF+cnvDqq++WI1ochaSoJdg==
+X-Received: by 2002:a17:907:3345:: with SMTP id yr5mr1657230ejb.542.1628849479559;
+        Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx54a+seJ6N2++kphZ8J3++CuGLKdwh8/E5ah2nd49CpMNozv5E8xFHxj6PzaHtWLKKdcjORItwf19KoGuY2gg=
+X-Received: by 2002:a17:907:3345:: with SMTP id yr5mr1657216ejb.542.1628849479230;
+ Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <HK0PR03MB4177FDD7160ABAC3C8119984D5FA9@HK0PR03MB4177.apcprd03.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
+ <20210812155341.817031-2-kai.heng.feng@canonical.com> <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
+In-Reply-To: <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 13 Aug 2021 18:11:06 +0800
+Message-ID: <CAAd53p6KGTVWp5PgZux5t2mdTXK29XdyB5Ke5YbR_-UacR03Sg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] r8169: Enable ASPM for selected NICs
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 10:46, Jichao Zou wrote:
-> I got it, but in kernel that we used version, many heap drivers that in drivers/dma-buf/ are based on CMA, not DMA carveout!
-> If this patch is not accepted, we cancel it!!!
+On Fri, Aug 13, 2021 at 3:39 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 12.08.2021 17:53, Kai-Heng Feng wrote:
+> > The latest vendor driver enables ASPM for more recent r8168 NICs, do the
+> > same here to match the behavior.
+> >
+> > In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
+> > vendor driver, also match that.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v2:
+> >  - No change
+> >
+> >  drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
+> >  1 file changed, 26 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 7ab2e841dc69..caa29e72a21a 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -623,7 +623,7 @@ struct rtl8169_private {
+> >       } wk;
+> >
+> >       unsigned supports_gmii:1;
+> > -     unsigned aspm_manageable:1;
+> > +     unsigned aspm_supported:1;
+> >       unsigned aspm_enabled:1;
+> >       struct delayed_work aspm_toggle;
+> >       struct mutex aspm_mutex;
+> > @@ -2667,8 +2667,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+> >
+> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >  {
+> > +     if (!tp->aspm_supported)
+> > +             return;
+> > +
+> >       /* Don't enable ASPM in the chip if OS can't control ASPM */
+> > -     if (enable && tp->aspm_manageable) {
+> > +     if (enable) {
+> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
+> >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
+> >       } else {
+> > @@ -5284,6 +5287,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
+> >       rtl_rar_set(tp, mac_addr);
+> >  }
+> >
+> > +static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
+> > +{
+> > +     switch (tp->mac_version) {
+> > +     case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
+> > +     case RTL_GIGA_MAC_VER_38:
+> > +     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
+> > +     case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
+> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
+>
+> This shouldn't be needed because ASPM support is announced the
+> standard PCI way. Max a blacklist should be needed if there are
+> chip versions that announce ASPM support whilst in reality they
+> do not support it (or support is completely broken).
 
-If you just want dma_alloc_coherent() to work automatically from a 
-carveout in the same manner as CMA, without having to stick 
-of_reserved_mem_device_init() calls everywhere to make drivers aware of 
-per-device carveouts, then [1] is probably what you want.
+So can we also remove aspm_manageable since blacklist will be used?
 
-If it's specifically dma-buf heaps that you're interested in, then 
-hacking the common CMA code to make the CMA heap behave like a carveout 
-heap is definitely the wrong approach - just implement a carveout heap 
-properly. It seems the only reason that hasn't ported over from ION is 
-that nobody's needed it yet[2].
+Kai-Heng
 
-Robin.
-
-[1] https://lore.kernel.org/linux-iommu/20210712061704.4162464-1-hch@lst.de/
-[2] https://lwn.net/Articles/801230/
-
-> 
-> Thank you all.
-> 
-> Best Regards,
-> 
-> -----邮件原件-----
-> 发件人: Robin Murphy <robin.murphy@arm.com>
-> 发送时间: 2021年8月13日 17:16
-> 收件人: Jichao Zou <zoujc@motorola.com>; David Hildenbrand <david@redhat.com>; akpm@linux-foundation.org; linux-kernel@vger.kernel.org; linux-mm@kvack.org; minchan@kernel.org; song.bao.hua@hisilicon.com; hch@lst.de; m.szyprowski@samsung.com; iommu@lists.linux-foundation.org; JianQi Yang <yangj@motorola.com>; Yanjune Tian <tianyje@motorola.com>
-> 主题: Re: 回复: [External]Re: An cma optimization patch is used for cma_[alloc|free].
-> 
-> On 2021-08-13 09:27, Jichao Zou wrote:
->> Hi David,
->> 	I'll git-send-email patch again.
->> 	Your understanding is exactly right.
->> 	Let me explain the background of Patch, we are developing Android phone, kernel is 5.10.43 LTS, we encounter cma_alloc failed during kernel startup, buddy system is ready,
->> 01-11 14:22:08.650   216   216 E cma     : cma_alloc([216][init]:cma(ffffffff00b50000:total 8192) linux,cma(ffffffe89d084cf0), count 2, align 1 gfp_mask 0xcc0)
->> 01-11 14:22:08.650   216   216 E cma     : cma_alloc(): memory range at ffffffff00b62880 is busy, retrying
->>    
->> 	cma bitmap show memory is free, but alloc_contig_range failed, we checked it out that some drivers cma_alloc are
->> 	"struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align, bool no_warn)"
->> 	In 5.10.43, cma_alloc is
->> 	"struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align, gfp_t gfp_mask)"
->>    	After change cma_alloc parameter with GFP_KERNEL, issue is fixed, at the same time, we found that preallocate a portion of cma memory for audio&video resulted in better performance and guarantee AV function even under memory pressure, so we try to submit this patch.
-> 
-> The whole point of CMA is that the memory can be shared by moveable pages while it's not being used for DMA. If you want a dedicated DMA carveout, there are already mechanisms for that.
-> 
-> Robin.
-> 
->>
->> Thanks.
->>
->> Best Regards,
->>
->> Zou Jichao 邹纪超
->> Advisory Engineer, SW BSP
->> MBG ROW SW BJ PF BSP (CN)
->> Motorola Mobility, A Lenovo Company
->> motorola.com
->> M +86 18910860212
->> E zoujc@lenovo.com
->> twitter | facebook | instagram | blog | forums
->>
->>
->>
->>
->> -----邮件原件-----
->> 发件人: David Hildenbrand <david@redhat.com>
->> 发送时间: 2021年8月13日 15:45
->> 收件人: Jichao Zou <zoujc@motorola.com>; akpm@linux-foundation.org;
->> linux-kernel@vger.kernel.org; linux-mm@kvack.org; minchan@kernel.org;
->> song.bao.hua@hisilicon.com; hch@lst.de; m.szyprowski@samsung.com;
->> robin.murphy@arm.com; iommu@lists.linux-foundation.org; JianQi Yang
->> <yangj@motorola.com>; Yanjune Tian <tianyje@motorola.com>
->> 主题: [External]Re: An cma optimization patch is used for cma_[alloc|free].
->>
->> On 13.08.21 09:00, Jichao Zou wrote:
->>> Pre-allocate CMA memory that configured in device tree, this greatly
->>> improves the CMA memory allocation efficiency, cma_[alloc|free] is
->>> less than 1ms, old way is took a few ms to tens or hundreds ms.
->>>
->>
->> Please send patches as proper emails (man git-format-patch; man git-send-email).
->>
->> What you propose is turning cma reservations into something comparable to permanent boottime allocations. From the POV of the buddy, the pages are always allocated and cannot be repurposed for e.g., movable allocations until *actually* allocated via CMA.
->>
->> I don't think we want this behavior upstream.
->>
->> --
->> Thanks,
->>
->> David / dhildenb
->>
+>
+> > +             return 1;
+> > +
+> > +     default:
+> > +             return 0;
+> > +     }
+> > +}
+> > +
+> >  static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >  {
+> >       struct rtl8169_private *tp;
+> > @@ -5315,12 +5333,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       if (rc)
+> >               return rc;
+> >
+> > -     /* Disable ASPM completely as that cause random device stop working
+> > -      * problems as well as full system hangs for some PCIe devices users.
+> > -      */
+> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> > -                                       PCIE_LINK_STATE_L1);
+> > -     tp->aspm_manageable = !rc;
+> > +     if (tp->mac_version == RTL_GIGA_MAC_VER_25)
+> > +             pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> > +                                    PCIE_LINK_STATE_L1 |
+> > +                                    PCIE_LINK_STATE_CLKPM);
+> > +
+> > +     tp->aspm_supported = rtl_hw_aspm_supported(tp);
+> >
+> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+> >       rc = pcim_enable_device(pdev);
+> >
+>
