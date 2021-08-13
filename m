@@ -2,169 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F3D3EB2B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7DD3EB2B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhHMIfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S239205AbhHMIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHMIfG (ORCPT
+        with ESMTP id S231127AbhHMIfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:35:06 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC959C061756;
-        Fri, 13 Aug 2021 01:34:39 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id u7so10010341ilk.7;
-        Fri, 13 Aug 2021 01:34:39 -0700 (PDT)
+        Fri, 13 Aug 2021 04:35:50 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F983C061756;
+        Fri, 13 Aug 2021 01:35:24 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id q2so10943034plr.11;
+        Fri, 13 Aug 2021 01:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bE9TxV1NxGv6uJxQKHxpw5wNqdc2BaAqHYvz9Wy+fwc=;
-        b=S8LL0yUkD360rWg8+AdVSuJEGuVgJ3p7K1oJ8exah+FLfY4yvPm2YNsW7VYP/Guch7
-         WluEbiUDlYlbXxZKbxy7AhGGtYD4kftU1I5ee0IzMI9giAKsjh1gUylSag1/Ze0rEx17
-         12sxRfz+/9YosvH/rDqsDyNJ/igq4AV93q+jypLL2wB79C8IAo74hfqK12rQ2CdtsbOz
-         YQKPkiVTfvVUV2RIAM9+1Os9B/P8ceqpLwFtMhzU5DTXJB8yB85ORxSQQKuNvDc38djq
-         jIATQex7NR/yMQtpSgJqmdGHii2CBkiTbIgURWIuuRPtcX7laDfFl/uD0NMNGoi97mDr
-         7kLQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4GsNW56/UTWAKNJcOVAzElbQgz8X5qDWWkjKF7FjuM8=;
+        b=SciHUmuvLOFOUpXdwCrJ/1HSWkBiy8qVuLN6n0GHOOQrPHwyBBuMZJBqsUPw/8+01m
+         haWmi8fkQryC6BDANwMCDRSlfeOcuNpXX8oN1cbYno5SOv2p2QoYRRndeJRw1QzjcT7g
+         XUns4vNTyjtZtqZjdZkkwsVHLFPhHaYZUspIQlzIRLCR3GIB2k4FjfpIqSRrdqOlBtAP
+         231NPw5Dpvm8Ur30PbDop//SJCKAB9wTFDLRtHn+tiOiD6BAecK4vgqsAQJ5yzp1DGrM
+         8kInF4LEVgTD4zE2VnvB6EjKPdF6PZ6hITHDrkndGpit3RtoE7c8H5rUq0ZHUeNxqCkJ
+         i0cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bE9TxV1NxGv6uJxQKHxpw5wNqdc2BaAqHYvz9Wy+fwc=;
-        b=ApBrYkb6gYSQrxdZh50A06oxD5Z967DOErwU6UqwW4UszA9ZJkmTyQQ14KNp7BNKFu
-         pUuv076uazCieWDfpR3EiO08iprNkGO3rM7PF3EICu/nd5NYCgTHtApQ5mjR2c/jeIkg
-         I53wKVQUAKbxu9NDMe46Xvb4zojTTYgaE8ljXUMH81OYz+K13sxE+ESIy7d0C0086+Bt
-         +0fE03zNQwG9nrryNzJtrTy9Y1T4nYh1mgBXCaWlqVAa+7gst035T5NmWcqzhOrutgtX
-         hDPBQoJxSt7UvrgeDoBiGKnegYlCRFFid0qasop8h4yfPA7679M6czhp5KIzFmaz9q3i
-         kyUw==
-X-Gm-Message-State: AOAM532Te/iwKvfkDFWXJzWH8FzFF7cHycQAjZZxcEePZgxcmzzlTUHL
-        p3vjXkIhCP0NrCiw1J+A2wHYWKN+czJLWHLidCc=
-X-Google-Smtp-Source: ABdhPJxbpOw72enS/WAszOVjZATUo1JYihbMnyiie96wVEdBZCmstMgDdxCfxx6xAR6JAc+4QJ72YN3B4Na6VzyWxzM=
-X-Received: by 2002:a05:6e02:1543:: with SMTP id j3mr1020302ilu.308.1628843679474;
- Fri, 13 Aug 2021 01:34:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4GsNW56/UTWAKNJcOVAzElbQgz8X5qDWWkjKF7FjuM8=;
+        b=RTXLczUf24v633bxgDiz+jvOjnFP04+E8q2uwWJWNp3F28JzzhgrGvjOOvfxlvjDeN
+         oIG77R/ASHI6ctxepxzSBlQUBb49t8S+aSqXCrVYQTyBe4eSi1qfSmI0pw5upTI/OreC
+         4nKMLb/aP4Kw0rUYbDcs78WhsKCI17KJz92E8zOoDAa85D/DvY3It0aaQKHnnhVzbtDn
+         z4vom6EFUobr6+xySbxf2bo+6s2I+iVpkf4y3402i9qdnRhoEig9WOlvapyfsBV7Hy8w
+         S6z3ox/DYY6HwwuFFMyQeRhdJRMAYDWbCxVu554aE6tmkEYBYO6wZrYjzSO7fqSM3/Ax
+         2cZA==
+X-Gm-Message-State: AOAM532FNOTKWr5MnSayhMRvSELPEP/v3OjwKfoLKgC1oxVdF6sEfBZ3
+        4veOcbrtoIYw+FvrWpYL25s=
+X-Google-Smtp-Source: ABdhPJxR8lCxtwSp2FFc6DPT1zBpjAZaEhOiOdFeuW5JCEBbPvgVZY6valh9pcZRYa8BLr7GGkMqkQ==
+X-Received: by 2002:a63:fe52:: with SMTP id x18mr1424644pgj.84.1628843723927;
+        Fri, 13 Aug 2021 01:35:23 -0700 (PDT)
+Received: from localhost.localdomain ([49.156.122.252])
+        by smtp.googlemail.com with ESMTPSA id w82sm1363569pff.112.2021.08.13.01.35.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 01:35:23 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Michael.Hennerich@analog.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com,
+        Darius.Berghe@analog.com, andy.shevchenko@gmail.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH] iio: accel: adxl355: Add triggered buffer support
+Date:   Fri, 13 Aug 2021 14:04:55 +0530
+Message-Id: <20210813083455.252986-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <1563961393-10301-1-git-send-email-wanpengli@tencent.com> <5ffaea5b-fb07-0141-cab8-6dce39071abe@redhat.com>
-In-Reply-To: <5ffaea5b-fb07-0141-cab8-6dce39071abe@redhat.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 13 Aug 2021 16:34:28 +0800
-Message-ID: <CAJhGHyAY-kN-CYwoq_R2v9067fgjZVOimPOXv_kxzq8aZfFteg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: X86: Boost queue head vCPU to mitigate lock waiter preemption
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 9:26 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 24/07/19 11:43, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > Commit 11752adb (locking/pvqspinlock: Implement hybrid PV queued/unfair=
- locks)
-> > introduces hybrid PV queued/unfair locks
-> >  - queued mode (no starvation)
-> >  - unfair mode (good performance on not heavily contended lock)
-> > The lock waiter goes into the unfair mode especially in VMs with over-c=
-ommit
-> > vCPUs since increaing over-commitment increase the likehood that the qu=
-eue
-> > head vCPU may have been preempted and not actively spinning.
-> >
-> > However, reschedule queue head vCPU timely to acquire the lock still ca=
-n get
-> > better performance than just depending on lock stealing in over-subscri=
-be
-> > scenario.
-> >
-> > Testing on 80 HT 2 socket Xeon Skylake server, with 80 vCPUs VM 80GB RA=
-M:
-> > ebizzy -M
-> >              vanilla     boosting    improved
-> >  1VM          23520        25040         6%
-> >  2VM           8000        13600        70%
-> >  3VM           3100         5400        74%
-> >
-> > The lock holder vCPU yields to the queue head vCPU when unlock, to boos=
-t queue
-> > head vCPU which is involuntary preemption or the one which is voluntary=
- halt
-> > due to fail to acquire the lock after a short spin in the guest.
->
-> Clever!  I have applied the patch.
+Provide a way for continuous data capture by setting up buffer support. The
+data ready signal exposed at the DRDY pin of the ADXL355 is exploited as
+a hardware interrupt which triggers to fill the buffer.
 
-Hello
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ drivers/iio/accel/Kconfig        |   4 +
+ drivers/iio/accel/adxl355_core.c | 154 ++++++++++++++++++++++++++++++-
+ 2 files changed, 155 insertions(+), 3 deletions(-)
 
-I think this patch is very very counter-intuition.  The current vCPU
-can now still continue to run, but this patch puts it on hold for a while
-via yield_to().  KVM_HC_KICK_CPU is used by spin_unlock() in guest,
-what if the guest CPU is in irq or in irq-disabled section, or nested
-in other spin_lock(). It could add more latency to these cases.
+diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
+index d0c45c809..9c16c1841 100644
+--- a/drivers/iio/accel/Kconfig
++++ b/drivers/iio/accel/Kconfig
+@@ -69,6 +69,8 @@ config ADXL355_I2C
+ 	depends on I2C
+ 	select ADXL355
+ 	select REGMAP_I2C
++	select IIO_BUFFER
++	select IIO_TRIGGERED_BUFFER
+ 	help
+ 	  Say Y here if you want to build i2c support for the Analog Devices
+ 	  ADXL355 3-axis digital accelerometer.
+@@ -82,6 +84,8 @@ config ADXL355_SPI
+ 	depends on SPI
+ 	select ADXL355
+ 	select REGMAP_SPI
++	select IIO_BUFFER
++	select IIO_TRIGGERED_BUFFER
+ 	help
+ 	  Say Y here if you want to build spi support for the Analog Devices
+ 	  ADXL355 3-axis digital accelerometer.
+diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
+index c91d2254c..bd5304bcf 100644
+--- a/drivers/iio/accel/adxl355_core.c
++++ b/drivers/iio/accel/adxl355_core.c
+@@ -6,14 +6,18 @@
+  *
+  * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+  */
+-
+ #include <linux/bits.h>
+ #include <linux/bitfield.h>
++#include <linux/iio/buffer.h>
+ #include <linux/iio/iio.h>
++#include <linux/iio/trigger.h>
++#include <linux/iio/triggered_buffer.h>
++#include <linux/iio/trigger_consumer.h>
+ #include <linux/limits.h>
+ #include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/of_irq.h>
+ #include <linux/regmap.h>
+ #include <asm/unaligned.h>
+ 
+@@ -46,6 +50,7 @@
+ #define ADXL355_RANGE_REG		0x2C
+ #define ADXL355_POWER_CTL_REG		0x2D
+ #define  ADXL355_POWER_CTL_MODE_MSK	GENMASK(1, 0)
++#define  ADXL355_POWER_CTL_DRDY_MSK	BIT(2)
+ #define ADXL355_SELF_TEST_REG		0x2E
+ #define ADXL355_RESET_REG		0x2F
+ 
+@@ -157,6 +162,7 @@ static const struct adxl355_chan_info adxl355_chans[] = {
+ };
+ 
+ struct adxl355_data {
++	int irq;
+ 	struct regmap *regmap;
+ 	struct device *dev;
+ 	struct mutex lock; /* lock to protect op_mode */
+@@ -165,7 +171,14 @@ struct adxl355_data {
+ 	enum adxl355_hpf_3db hpf_3db;
+ 	int calibbias[3];
+ 	int adxl355_hpf_3db_table[7][2];
+-	u8 transf_buf[3] ____cacheline_aligned;
++	struct iio_trigger      *dready_trig;
++	union {
++		u8 transf_buf[3];
++		struct {
++			u8 buf[14];
++			s64 ts;
++		} buffer;
++	} ____cacheline_aligned;
+ };
+ 
+ static int adxl355_set_op_mode(struct adxl355_data *data,
+@@ -186,6 +199,23 @@ static int adxl355_set_op_mode(struct adxl355_data *data,
+ 	return ret;
+ }
+ 
++static int adxl355_data_rdy_trigger_set_state(struct iio_trigger *trig,
++					      bool state)
++{
++	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
++	struct adxl355_data *data = iio_priv(indio_dev);
++	int ret;
++
++	mutex_lock(&data->lock);
++	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL_REG,
++				 ADXL355_POWER_CTL_DRDY_MSK,
++				 FIELD_PREP(ADXL355_POWER_CTL_DRDY_MSK,
++					    !state));
++	mutex_unlock(&data->lock);
++
++	return ret;
++}
++
+ static void adxl355_fill_3db_frequency_table(struct adxl355_data *data)
+ {
+ 	u32 multiplier;
+@@ -246,6 +276,12 @@ static int adxl355_setup(struct adxl355_data *data)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL_REG,
++				 ADXL355_POWER_CTL_DRDY_MSK,
++				 FIELD_PREP(ADXL355_POWER_CTL_DRDY_MSK, 1));
++	if (ret)
++		return ret;
++
+ 	adxl355_fill_3db_frequency_table(data);
+ 
+ 	return adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+@@ -499,12 +535,65 @@ static int adxl355_read_avail(struct iio_dev *indio_dev,
+ 	}
+ }
+ 
++static const unsigned long adxl355_avail_scan_masks[] = {
++	GENMASK(3, 0),
++	0
++};
++
+ static const struct iio_info adxl355_info = {
+ 	.read_raw	= adxl355_read_raw,
+ 	.write_raw	= adxl355_write_raw,
+ 	.read_avail	= &adxl355_read_avail,
+ };
+ 
++static const struct iio_trigger_ops adxl355_trigger_ops = {
++	.set_trigger_state = &adxl355_data_rdy_trigger_set_state,
++	.validate_device = &iio_trigger_validate_own_device,
++};
++
++static irqreturn_t adxl355_trigger_handler(int irq, void *p)
++{
++	struct iio_poll_func *pf = p;
++	struct iio_dev *indio_dev = pf->indio_dev;
++	struct adxl355_data *data = iio_priv(indio_dev);
++	int ret;
++
++	mutex_lock(&data->lock);
++
++	ret = regmap_bulk_read(data->regmap, ADXL355_XDATA3_REG,
++			       &data->buffer.buf[1],
++			       3);
++	if (ret)
++		goto out_unlock_notify;
++
++	ret = regmap_bulk_read(data->regmap, ADXL355_YDATA3_REG,
++			       &data->buffer.buf[5],
++			       3);
++	if (ret)
++		goto out_unlock_notify;
++
++	ret = regmap_bulk_read(data->regmap, ADXL355_ZDATA3_REG,
++			       &data->buffer.buf[9],
++			       3);
++	if (ret)
++		goto out_unlock_notify;
++
++	ret = regmap_bulk_read(data->regmap, ADXL355_TEMP2_REG,
++			       &data->buffer.buf[12],
++			       2);
++	if (ret)
++		goto out_unlock_notify;
++
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
++					   pf->timestamp);
++
++out_unlock_notify:
++	mutex_unlock(&data->lock);
++	iio_trigger_notify_done(indio_dev->trig);
++
++	return IRQ_HANDLED;
++}
++
+ #define ADXL355_ACCEL_CHANNEL(index, reg, axis) {			\
+ 	.type = IIO_ACCEL,						\
+ 	.address = reg,							\
+@@ -518,6 +607,7 @@ static const struct iio_info adxl355_info = {
+ 	.info_mask_shared_by_type_available =				\
+ 		BIT(IIO_CHAN_INFO_SAMP_FREQ) |				\
+ 		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
++	.scan_index = index,						\
+ 	.scan_type = {							\
+ 		.sign = 's',						\
+ 		.realbits = 20,						\
+@@ -537,6 +627,7 @@ static const struct iio_chan_spec adxl355_channels[] = {
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+ 				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OFFSET),
++		.scan_index = 3,
+ 		.scan_type = {
+ 			.sign = 's',
+ 			.realbits = 12,
+@@ -544,8 +635,46 @@ static const struct iio_chan_spec adxl355_channels[] = {
+ 			.endianness = IIO_BE,
+ 		},
+ 	},
++	IIO_CHAN_SOFT_TIMESTAMP(4),
+ };
+ 
++static int adxl355_probe_trigger(struct iio_dev *indio_dev)
++{
++	struct adxl355_data *data = iio_priv(indio_dev);
++	int ret;
++
++	if (!data->irq) {
++		dev_info(data->dev, "no irq, using polling\n");
++		return 0;
++	}
++
++	data->dready_trig = devm_iio_trigger_alloc(data->dev, "%s-dev%d",
++						   indio_dev->name,
++						   indio_dev->id);
++	if (!data->dready_trig)
++		return -ENOMEM;
++
++	data->dready_trig->ops = &adxl355_trigger_ops;
++	iio_trigger_set_drvdata(data->dready_trig, indio_dev);
++
++	ret = devm_request_irq(data->dev, data->irq,
++			       &iio_trigger_generic_data_rdy_poll,
++			       IRQF_ONESHOT, "adxl355_irq", data->dready_trig);
++	if (ret < 0)
++		return dev_err_probe(data->dev, ret, "request irq %d failed\n",
++				     data->irq);
++
++	ret = devm_iio_trigger_register(data->dev, data->dready_trig);
++	if (ret) {
++		dev_err(data->dev, "iio trigger register failed\n");
++		return ret;
++	}
++
++	indio_dev->trig = iio_trigger_get(data->dready_trig);
++
++	return 0;
++}
++
+ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
+ 		       const char *name)
+ {
+@@ -563,18 +692,37 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
+ 	data->op_mode = ADXL355_STANDBY;
+ 	mutex_init(&data->lock);
+ 
++	/*
++	 * Would be good to move it to the generic version.
++	 */
++	ret = of_irq_get_byname(dev->of_node, "DRDY");
++	if (ret > 0)
++		data->irq = ret;
++
+ 	indio_dev->name = name;
+ 	indio_dev->info = &adxl355_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->channels = adxl355_channels;
+ 	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
++	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
+ 
+ 	ret = adxl355_setup(data);
+-	if (ret < 0) {
++	if (ret) {
+ 		dev_err(dev, "ADXL355 setup failed\n");
+ 		return ret;
+ 	}
+ 
++	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
++					      &iio_pollfunc_store_time,
++					      &adxl355_trigger_handler, NULL);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "iio triggered buffer setup failed\n");
++
++	ret = adxl355_probe_trigger(indio_dev);
++	if (ret)
++		return ret;
++
+ 	return devm_iio_device_register(dev, indio_dev);
+ }
+ EXPORT_SYMBOL_GPL(adxl355_core_probe);
+-- 
+2.30.1
 
-It is convinced that the test proved the patch.  But I think we need
-stronger reasoning between the code and the test (and even more tests)
-since it is counter-intuition.  Why the code can boost the tests in
-detail. I don't think these:
-
-> The lock holder vCPU yields to the queue head vCPU when unlock, to boost =
-queue
-> head vCPU which is involuntary preemption or the one which is voluntary h=
-alt
-> due to fail to acquire the lock after a short spin in the guest.
-
-are enough to explain it to me.  But I'm Okay with if this short
-reason can be added to the code to reduce shockness.
-
-At least when I glanced kvm_sched_yield() in case KVM_HC_KICK_CPU, it made
-me wonder due to there is no reasoning comment before kvm_sched_yield().
-
-Anyway, I don't object to this patch which also proves altruism is a good
-strategy in the world.
-
-Thanks
-Lai
-
->
-> Paolo
->
-> > Cc: Waiman Long <longman@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Radim Kr=C4=8Dm=C3=A1=C5=99 <rkrcmar@redhat.com>
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 01e18ca..c6d951c 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -7206,7 +7206,7 @@ static void kvm_sched_yield(struct kvm *kvm, unsi=
-gned long dest_id)
-> >
-> >       rcu_read_unlock();
-> >
-> > -     if (target)
-> > +     if (target && READ_ONCE(target->ready))
-> >               kvm_vcpu_yield_to(target);
-> >  }
-> >
-> > @@ -7246,6 +7246,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> >               break;
-> >       case KVM_HC_KICK_CPU:
-> >               kvm_pv_kick_cpu_op(vcpu->kvm, a0, a1);
-> > +             kvm_sched_yield(vcpu->kvm, a1);
-> >               ret =3D 0;
-> >               break;
-> >  #ifdef CONFIG_X86_64
-> >
->
