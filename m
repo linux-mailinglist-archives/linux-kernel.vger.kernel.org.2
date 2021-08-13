@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680C33EBC0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45C13EBC11
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhHMS1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhHMS0y (ORCPT
+        id S233338AbhHMS1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:27:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9620 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232611AbhHMS1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:26:54 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4209AC0617AF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:26:27 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id f12-20020a05600c4e8c00b002e6bdd6ffe2so4471744wmq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mzFaXUU/x0+sUupGX2omqXEd8e4JzxswlubxRenky6w=;
-        b=ScYlXF5tHV8j2XrA2jNLLzo8Rab8MRZldCrvA9HegVr5y92+/z3K5kNNonQHZE5CIp
-         xfj9mMkzV+/tJiheHAPX6B6JjDct4b3lvUjknyYrimNkzEBnjq+mSSi8oEYGCBSSbuwm
-         k8ZeSxQ9iZoLcNg3jP/GPiL5Pw15HHo+JRsMP445xt8EKfrOn1sqYV/3sguXbnAUkloW
-         EmFiU1A9WTZdSvFT0ml0jKd/4IbM9Z3JzlLTzkvJeSotXrj7bZFXHN+HEajHKFxfHwrV
-         YKq6nAavtsoSEUCSSuN8Lu12fF2EbNSrrNDsNQ7pvHIGuEKoSCFc9rxMAw4spomShvDe
-         SxBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mzFaXUU/x0+sUupGX2omqXEd8e4JzxswlubxRenky6w=;
-        b=h7aVIX6tfk38RirorbU9ooLL/9bVTztLKgCL9+6z+WfDE00i896tuMXqw8UFRVyq6q
-         RCEDYX637icTnlY6OGwRjdlgHQ1S2XwFiZ73qDEZcT19ETvbic2smRGFD2V0GePvex3Y
-         RLKMPZCf1GIWQ6F4B1JVGYpu/0BDFP6WBqfqi09Op4jBX82v8SYdEH8PJGHBUIpylrmB
-         8P/r8dCJRc5ufnl5dBGziZ/9oGE6+6xgSfwkGIV5WHAisT/OuqHLpDCN1k/Mn8rxchDK
-         RGFRPP28cM+o8d1U1jhZy0WcqSTo6cXpGrDglBp4hpWYjaI/q6O5z5TsNB2NQA1tRBry
-         Drvg==
-X-Gm-Message-State: AOAM533WvRhrFiKjJTc8M3mT1UNn/aKj22+KVFXlfcgakXLSEc9Mn86p
-        KOkruwjijKKqCGiJXqnb54XpvXZ1NJ8=
-X-Google-Smtp-Source: ABdhPJxQFjf8JQn/5VnVYjev/ZHIaQJ2q8FdQ5/sVuFvBUdt/Mlfal5NlbRoF/1ca5UJOvsJVfvWRA==
-X-Received: by 2002:a1c:4a:: with SMTP id 71mr3991907wma.87.1628879185892;
-        Fri, 13 Aug 2021 11:26:25 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::2571? ([2a02:8108:96c0:3b88::2571])
-        by smtp.gmail.com with ESMTPSA id p14sm2267405wro.3.2021.08.13.11.26.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 11:26:25 -0700 (PDT)
-Subject: Re: [PATCH 1/4] staging: r8188eu: remove 5GHz code from
- Hal_GetChnlGroup88E()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210813073109.25609-1-straube.linux@gmail.com>
- <20210813073109.25609-2-straube.linux@gmail.com>
- <7543688.ql1GSxUkq4@localhost.localdomain>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <945d66b4-122c-33e2-659d-b7028de1bfcc@gmail.com>
-Date:   Fri, 13 Aug 2021 20:25:48 +0200
+        Fri, 13 Aug 2021 14:27:52 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17DI3jOQ042063;
+        Fri, 13 Aug 2021 14:26:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j1lczph9q4hxdvWvkJjwrPNCN+2CWHiDAOVh9v5sYiU=;
+ b=F1+hlBD2gBPPNoUXcTiipWWtJWpJU6FA9KmkHDnQOfBVoCgwR2Gvxv0+7AkkSRL9NLFb
+ IuJ4dAHIwl9hU6p2JZ9DKch49Qulh294Gwyy7a7ilsJyADL90YH1lcmLlXD/4gvvNNwR
+ RXvrl+7pTe27FIpzGMwC1DqD22gyKtJU/wF5/gTs6ux1Pxjfe7IVF6mLjqA6Iu53yZ7q
+ 5mfElFskMjqkkkLE/zBIazGY6BhvHp6ivganzgDRCP1gPbuBMmL6UOMLP9po7E1W9/lE
+ Q+s9FxubEmUypH5IIDwBtCWissidvLRObSxaa7VoV8Ap1VEMey3qVFtynTWRNk6ySgVt CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3adsf3yww9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Aug 2021 14:26:26 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17DI3lvf042231;
+        Fri, 13 Aug 2021 14:26:26 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3adsf3ywvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Aug 2021 14:26:26 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17DIJkBu001449;
+        Fri, 13 Aug 2021 18:26:24 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01dal.us.ibm.com with ESMTP id 3ackhs8q50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Aug 2021 18:26:24 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17DIQM5i30343530
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Aug 2021 18:26:22 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38BE8112061;
+        Fri, 13 Aug 2021 18:26:22 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 745E3112062;
+        Fri, 13 Aug 2021 18:26:19 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.76.133])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Aug 2021 18:26:19 +0000 (GMT)
+Subject: Re: [PATCH v3 01/14] integrity: Introduce a Linux keyring for the
+ Machine Owner Key (MOK)
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Mimi Zohar <zohar@linux.ibm.com>, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
+        keescook@chromium.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, scott.branden@broadcom.com,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@hansenpartnership.com, pjones@redhat.com,
+        glin@suse.com, konrad.wilk@oracle.com
+References: <20210812021855.3083178-1-eric.snowberg@oracle.com>
+ <20210812021855.3083178-2-eric.snowberg@oracle.com>
+ <20210812185853.p5mgsgrftgwvt5fx@kernel.org>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <a3d7ce08-47e8-7287-772d-f7e789c47449@linux.vnet.ibm.com>
+Date:   Fri, 13 Aug 2021 14:26:18 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <7543688.ql1GSxUkq4@localhost.localdomain>
+In-Reply-To: <20210812185853.p5mgsgrftgwvt5fx@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NtaYsAueNdNnB6kwL7VEQdE3reAq6bwi
+X-Proofpoint-GUID: 33tuCCwIGg_cW1kX4YoburxLjhDz1bfR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-13_06:2021-08-13,2021-08-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 impostorscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108130107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 6:27 PM, Fabio M. De Francesco wrote:
-> On Friday, August 13, 2021 9:31:06 AM CEST Michael Straube wrote:
->> Remove 5GHz code from Hal_GetChnlGroup88E().
+
+On 8/12/21 2:58 PM, Jarkko Sakkinen wrote:
+> On Wed, Aug 11, 2021 at 10:18:42PM -0400, Eric Snowberg wrote:
+>> Many UEFI Linux distributions boot using shim.  The UEFI shim provides
+>> what is called Machine Owner Keys (MOK). Shim uses both the UEFI Secure
+>> Boot DB and MOK keys to validate the next step in the boot chain.  The
+>> MOK facility can be used to import user generated keys.  These keys can
+>> be used to sign an end-users development kernel build.  When Linux
+>> boots, both UEFI Secure Boot DB and MOK keys get loaded in the Linux
+>> .platform keyring.
 >>
->> Signed-off-by: Michael Straube <straube.linux@gmail.com>
->> ---
->>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 62 +++++--------------
->>   1 file changed, 14 insertions(+), 48 deletions(-)
-> 
-> I missed those lines in my "Remove 5GHz band related code" series.
-> Nice work, so...
-> 
-> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> 
+>> Add a new Linux keyring called .mok.  This keyring shall contain just
+> I would consider ".machine" instead. It holds MOK keys but is not a
+> MOK key.
 
-Thanks for your review and ack Fabio. :)
+I agree with changing the name.
 
-Michael
+I believe the underlying source from where CA keys are loaded might vary 
+based on the architecture (".mok" is UEFI specific.). The key part is 
+that this new keyring should contain only CA keys which can be later 
+used to vouch for user keys loaded onto IMA or secondary keyring at 
+runtime. It would be good to have a "ca" in the name, like .xxxx-ca, 
+where xxxx can be machine, owner, or system. I prefer .system-ca.
+
+Thanks & Regards,
+
+      - Nayna
+
