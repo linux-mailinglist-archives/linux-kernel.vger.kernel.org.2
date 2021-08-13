@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D0B3EB2AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9955F3EB2AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhHMIdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:33:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238157AbhHMIdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:33:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA7F46104F;
-        Fri, 13 Aug 2021 08:32:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628843559;
-        bh=NOS1YByhYU8Q8BGlUFYZ502PcNq7rmSYOZRJrGjHag0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cNK98SCecV5MmtiGjuX8Vnn7/Opd0ffQh5FwBvn4SSKkezf0K+86RggdHWcelOsfz
-         GTmM2j9K48PIaHBzR2BT6v5hnpm1XKfc7BTBqOBIqVugG3v6nZMJAWUwRLRzk43iQP
-         BTAMvpHWLIXuc2sTliOlHobfbZlxNBHKJNQkB19M=
-Date:   Fri, 13 Aug 2021 10:32:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     song.bao.hua@hisilicon.com, agordeev@linux.ibm.com,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        bristot@redhat.com, dave.hansen@intel.com, guodong.xu@linaro.org,
-        jianpeng.ma@intel.com, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, linuxarm@huawei.com,
-        peterz@infradead.org, prime.zeng@hisilicon.com, rafael@kernel.org,
-        rdunlap@infradead.org, sbrivio@redhat.com,
-        tangchengchang@huawei.com, tim.c.chen@linux.intel.com,
-        valentin.schneider@arm.com, yangyicong@huawei.com,
-        yury.norov@gmail.com
-Subject: Re: [PATCH v9 0/5] use bin_attribute to break the size limitation of
- cpumap ABI
-Message-ID: <YRYuHW8q5Zd+hvH5@kroah.com>
-References: <20210806110251.560-1-song.bao.hua@hisilicon.com>
- <20210812044426.29876-1-21cnbao@gmail.com>
+        id S239162AbhHMIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:33:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50696 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhHMIdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 04:33:47 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C47FF222D4;
+        Fri, 13 Aug 2021 08:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628843599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jCWY77+gLyatOQ2sRYjPfd4/tyo+rtSXinShJm80Yg=;
+        b=1LAo713+1rwwurHUZRYb0hJJ4VPxRKGiBO/AEPBwJWLQlS6GJUiC5IN4qQ6R9BJFGtbuKU
+        KLId8EK8UFSZJ6JWlDQdJJyeN8jDfJv5COq5nP49ezWfsb9w/UQU0IUFkVZXkrkYC16z7k
+        +ne5XNbJBEyBfP/SepnlhzcCXFwsjAI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628843599;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jCWY77+gLyatOQ2sRYjPfd4/tyo+rtSXinShJm80Yg=;
+        b=ZXkH/0TK1osuPRTSHHAzIS5QiT17rC+cCSK2MwjRBJplWQb68Z+gJm5bklxfVBPslHn1KH
+        XKsqMWfysXeRoUDw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B276A1396D;
+        Fri, 13 Aug 2021 08:33:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id P9sCK08uFmF0PQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Fri, 13 Aug 2021 08:33:19 +0000
+Subject: Re: [PATCH v14 062/138] mm/migrate: Add folio_migrate_copy()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-63-willy@infradead.org>
+ <b9c3038a-56af-95e9-b5dd-8e88f508719e@suse.cz>
+ <YRXyGg7MWZTLA+YU@casper.infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <c33999ee-64ce-cf00-a457-66fb6b90a64d@suse.cz>
+Date:   Fri, 13 Aug 2021 10:33:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812044426.29876-1-21cnbao@gmail.com>
+In-Reply-To: <YRXyGg7MWZTLA+YU@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 04:44:26PM +1200, Barry Song wrote:
-> > V9:
-> >   - Split bitmask and list APIs and removed bool parameter with respect to
-> >     Greg's comment
-> >   - Removed duplication in code doc
-> >
-> ...
-> >
-> > Background:
-> >
-> > the whole story began from this thread when Jonatah and me tried to add a
-> > new topology level-cluster which exists on kunpeng920 and X86 Jacobsville:
-> > https://lore.kernel.org/lkml/YFRGIedW1fUlnmi+@kroah.com/
-> > https://lore.kernel.org/lkml/YFR2kwakbcGiI37w@kroah.com/
-> >
+On 8/13/21 6:16 AM, Matthew Wilcox wrote:
+> On Thu, Aug 12, 2021 at 01:56:24PM +0200, Vlastimil Babka wrote:
+>> On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+>> > This is the folio equivalent of migrate_page_copy(), which is retained
+>> > as a wrapper for filesystems which are not yet converted to folios.
+>> > Also convert copy_huge_page() to folio_copy().
+>> > 
+>> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>> 
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> 
+>> The way folio_copy() avoids cond_resched() for single page would IMHO deserve a
+>> comment though, so it's not buried only in this thread.
 > 
-> Hi Greg,
-> Will you take this series so that I can rebase the cluster-scheduler series[1] on top of
-> this? that cluster series is where this ABI series really get started. I am looking forward
-> to sending a normal patchset for cluster series after this ABI series settles down.
+> I think folio_copy() deserves kernel-doc.
 > 
-> [1] scheduler: expose the topology of clusters and add cluster scheduler
-> https://lore.kernel.org/lkml/20210420001844.9116-1-song.bao.hua@hisilicon.com/
-
-Now applied to my testing tree.
-
-thanks,
-
-greg k-h
+> /**
+>  * folio_copy - Copy the contents of one folio to another.
+>  * @dst: Folio to copy to.
+>  * @src: Folio to copy from.
+>  *
+>  * The bytes in the folio represented by @src are copied to @dst.
+>  * Assumes the caller has validated that @dst is at least as large as @src.
+>  * Can be called in atomic context for order-0 folios, but if the folio is
+>  * larger, it may sleep.
+>  */
+> 
+LGTM.
