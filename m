@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F8F3EB754
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7FC3EB75B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241118AbhHMPCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:02:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241003AbhHMPCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:02:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E6A61103;
-        Fri, 13 Aug 2021 15:01:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628866904;
-        bh=I65Rgbb3ZgNsrMF5mpaQrz+X9IBc/w4G2CT5Fy7g6YE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oGr5x9H0ZohviSpaZcJ2yRbylQjXp1i1nQ7WHuLsaYQxC1k+ER6V8qMu8DV9VRaHR
-         XCD2rT6MEGUXU5rTMEoS3OcYXWHzeZpJp3fuhqE/XvIxIdeq9jQSYQZZeg2mW2h0oX
-         O1zwFJoPG/D2N2FD5s2uttEYgpDZvHUdBPvxEQ3A=
-Date:   Fri, 13 Aug 2021 17:01:41 +0200
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     =?utf-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
-        Bing Fan <hptsfb@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
- request
-Message-ID: <YRaJVZOJMKtAM8Sl@kroah.com>
-References: <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
- <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
- <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
- <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
- <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
- <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
- <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
- <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
- <09918b566884413898f63b92ddd037a0@tencent.com>
- <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
+        id S241056AbhHMPEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:04:25 -0400
+Received: from mail.netline.ch ([148.251.143.180]:47467 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240928AbhHMPEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:04:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id AD1DE20201B;
+        Fri, 13 Aug 2021 17:03:55 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id ETYiRXdf4Gu5; Fri, 13 Aug 2021 17:03:51 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id A87E120201A;
+        Fri, 13 Aug 2021 17:03:50 +0200 (CEST)
+Received: from localhost ([::1])
+        by thor with esmtp (Exim 4.94.2)
+        (envelope-from <michel@daenzer.net>)
+        id 1mEYir-000Dnl-Sf; Fri, 13 Aug 2021 17:03:49 +0200
+To:     zhaoxiao <zhaoxiao@uniontech.com>, airlied@linux.ie
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        David1.Zhou@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210813085434.3890-1-zhaoxiao@uniontech.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH] drm: radeon: r600_dma: Replace cpu_to_le32() by
+ lower_32_bits()
+Message-ID: <54590a79-7047-cd6f-0f54-a005bdc69769@daenzer.net>
+Date:   Fri, 13 Aug 2021 17:03:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210813085434.3890-1-zhaoxiao@uniontech.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 09:42:52AM -0400, Qian Cai wrote:
+On 2021-08-13 10:54 a.m., zhaoxiao wrote:
+> This patch fixes the following sparse errors:
+> drivers/gpu/drm/radeon/r600_dma.c:247:30: warning: incorrect type in assignment (different base types)
+> drivers/gpu/drm/radeon/r600_dma.c:247:30:    expected unsigned int volatile [usertype]
+> drivers/gpu/drm/radeon/r600_dma.c:247:30:    got restricted __le32 [usertype]
 > 
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>  drivers/gpu/drm/radeon/r600_dma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On 8/12/2021 11:32 PM, tombinfan(范兵) wrote:
-> > hello,
-> > 
-> > I have sent the modified patch to the following mailboxes. THX
-> > 
-> > gregkh@linuxfoundation.org
-> > linux-serial@vger.kernel.org
-> > linux-kernel@vger.kernel.org
+> diff --git a/drivers/gpu/drm/radeon/r600_dma.c b/drivers/gpu/drm/radeon/r600_dma.c
+> index fb65e6fb5c4f..a2d0b1edcd22 100644
+> --- a/drivers/gpu/drm/radeon/r600_dma.c
+> +++ b/drivers/gpu/drm/radeon/r600_dma.c
+> @@ -244,7 +244,7 @@ int r600_dma_ring_test(struct radeon_device *rdev,
+>  	gpu_addr = rdev->wb.gpu_addr + index;
+>  
+>  	tmp = 0xCAFEDEAD;
+> -	rdev->wb.wb[index/4] = cpu_to_le32(tmp);
+> +	rdev->wb.wb[index/4] = lower_32_bits(tmp);
+>  
+>  	r = radeon_ring_lock(rdev, ring, 4);
+>  	if (r) {
 > 
-> Thanks for the pointer. It is good to get some reviews from Arm
-> people in the first place, so we don't break Arm like this.
-> 
-> Anyway, for anyone who might be watching, here is the new patch,
-> 
-> https://lore.kernel.org/linux-serial/1628825490-18937-1-git-send-email-hptsfb@gmail.com/
-> 
-> Unfortunately, I saw Greg mentioned that it was not based on
-> tty-next, so not something I can apply easily on linux-next here
-> as well.
 
-That is because the code in tty-next (and linux-next), looks to already
-do exactly what you submitted, right?
+Seems better to mark rdev->wb.wb as little endian instead. It's read with le32_to_cpu (with some exceptions which look like bugs), which would result in 0xADEDFECA like this.
 
-So is this working now for everyone in linux-next?
 
-thanks,
-
-greg k-h
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
