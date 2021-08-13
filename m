@@ -2,119 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD5B3EBC47
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06113EBC4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhHMS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:56:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233569AbhHMS4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:56:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7214D6024A;
-        Fri, 13 Aug 2021 18:56:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628880967;
-        bh=3uaHgmEvZhNDKI0rrRHd0Jlbqr0chISUgb3mTBGDw1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XbgdhBpClZ7Hi6JQOA6pxuTrCl62aWCa4E3l1zxlnqsyM4lbCXFQJZpVtGxallJU3
-         qKyHb52zny5w2E8YGgSQ3k8HUxOPpyqGBkzeAiPmLPdD8Df0su/iWWNdZig7RbF4p6
-         d0NzEsgM+Si5sX9ZEtPibMCBS9t8yuYW5z0nQBeTRZmBfyU98Ag0ocQkMgl447Moe+
-         oxiijqJo5TobAwmX2uZw2CtkEBKVm8r77ZKsqQtHuWEWNm9Tooe5+ZDvVt3Og0mxy6
-         MWCQgDoNZgDnPOYmanRhv2q1tf9bvoENra5qWdPIIPN/fkp9mHIVVAPa8XHNGotdsE
-         JgL9uA9NfJTgA==
-Date:   Fri, 13 Aug 2021 11:56:06 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce periodic iostat io latency
- traces
-Message-ID: <YRbARsMfs2O2fz2s@google.com>
-References: <20210803225542.3487172-1-daeho43@gmail.com>
- <2a79c1c5-366b-92d9-4025-dbda660b1178@kernel.org>
- <YRWKKQe0bcgjKIIA@google.com>
- <b1a7b8a6-89dc-9076-2388-ced59aa8c47c@kernel.org>
+        id S233622AbhHMS4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:56:45 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:36631 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233627AbhHMS4n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 14:56:43 -0400
+Received: by mail-ot1-f42.google.com with SMTP id u13-20020a9d4d8d0000b02905177c9e0a4aso2595415otk.3;
+        Fri, 13 Aug 2021 11:56:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hzJEw0L+kP4NgMaVTXLDpwO/ZHH+044EBwZ0FnUt4pc=;
+        b=JDtVNpqxseK7J0JNE2n643/0w6XzQLQZBY4+v2uhfM3qmtsJInS61IgyaD3IJRoKs9
+         VphgPyl+zYicE9YzqB8oR/lRMdaV+5sgZJBDm3KBWruReGr5qwxG+YlcDT4h5KeKM4fv
+         nvKtlNITERrjn/1Pjf7mLDSRW4exJGzaupQzgGsJfuOcEMqnFXQCYB52dCGOW/rnll6u
+         wW7ks9qC/WUbO0hI01SSicX9TlBXY4U17hGu97Yfqz72ZPpwcpXek0LNgFFaP7HFv2dV
+         zGdtI1QAwB343i3JGH8FAJpnl+PceO2prUapcUsDILOE7Im9FHxzui6HPmTrStmG2fdX
+         t1ow==
+X-Gm-Message-State: AOAM5335zCMkeqDGBMDq8R+L4O1Rn5iiiLHxr0U4SSmzGNoln1KYSLVw
+        jyPFaTDs/AzubyHJ52EkuA==
+X-Google-Smtp-Source: ABdhPJxF3tjwBS2dlLyMp36aylpfzvH9ZeHuko+34laK+0gtd9fhwvTyAGtSV/ixwbCc6l+jU0CfSg==
+X-Received: by 2002:a9d:7d90:: with SMTP id j16mr3341650otn.186.1628880975818;
+        Fri, 13 Aug 2021 11:56:15 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a19sm485076otl.48.2021.08.13.11.56.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 11:56:15 -0700 (PDT)
+Received: (nullmailer pid 3860867 invoked by uid 1000);
+        Fri, 13 Aug 2021 18:56:14 -0000
+Date:   Fri, 13 Aug 2021 13:56:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     nicolas.ferre@microchip.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, olof@lixom.net,
+        alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, soc@kernel.org,
+        ludovic.desroches@microchip.com, arnd@arndb.de
+Subject: Re: [PATCH 5/7] dt-bindings: add vendor prefix for calamp
+Message-ID: <YRbAThIgS8qPi9UP@robh.at.kernel.org>
+References: <20210805155357.594414-1-claudiu.beznea@microchip.com>
+ <20210805155357.594414-6-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b1a7b8a6-89dc-9076-2388-ced59aa8c47c@kernel.org>
+In-Reply-To: <20210805155357.594414-6-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/13, Chao Yu wrote:
-> On 2021/8/13 4:52, Jaegeuk Kim wrote:
-> > On 08/11, Chao Yu wrote:
-> > > Hi Daeho,
-> > > 
-> > > On 2021/8/4 6:55, Daeho Jeong wrote:
-> > > > From: Daeho Jeong <daehojeong@google.com>
-> > > > 
-> > > > Whenever we notice some sluggish issues on our machines, we are always
-> > > > curious about how well all types of I/O in the f2fs filesystem are
-> > > > handled. But, it's hard to get this kind of real data. First of all,
-> > > > we need to reproduce the issue while turning on the profiling tool like
-> > > > blktrace, but the issue doesn't happen again easily. Second, with the
-> > > > intervention of any tools, the overall timing of the issue will be
-> > > > slightly changed and it sometimes makes us hard to figure it out.
-> > > > 
-> > > > So, I added F2FS_IOSTAT_IO_LATENCY config option to support printing out
-> > > > IO latency statistics tracepoint events which are minimal things to
-> > > > understand filesystem's I/O related behaviors. With "iostat_enable" sysfs
-> > > > node on, we can get this statistics info in a periodic way and it
-> > > > would cause the least overhead.
-> > > > 
-> > > > [samples]
-> > > >    f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
-> > > > dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> > > > rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
-> > > > wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
-> > > > wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
-> > > > wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> > > > 
-> > > >    f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
-> > > > dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> > > > rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
-> > > > wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
-> > > > wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
-> > > > wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> > > > 
-> > > > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > > > 
-> > > > ---
-> > > > v2: clean up with wrappers and fix a build breakage reported by
-> > > >       kernel test robot <lkp@intel.com>
-> > > > ---
-> > > >    fs/f2fs/Kconfig             |   9 +++
-> > > 
-> > > I try to apply this patch in my local dev branch, but it failed due to
-> > > conflicting with below commit, it needs to rebase this patch to last dev
-> > > branch.
-> > 
-> > I applied this in dev branch. Could you please check?
+On Thu, 05 Aug 2021 18:53:55 +0300, Claudiu Beznea wrote:
+> Add vendor prefix for CalAmp Corp.
 > 
-> Yeah, I see.
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> > > > +config F2FS_IOSTAT_IO_LATENCY
-> > > > +	bool "F2FS IO statistics IO latency information"
-> > > > +	depends on F2FS_FS
-> > > > +	default n
-> > > > +	help
-> > > > +	  Support printing out periodic IO latency statistics tracepoint
-> > > > +	  events. With this, you have to turn on "iostat_enable" sysfs
-> > > > +	  node to print this out.
-> > > 
-> > > This functionality looks independent, how about introuducing iostat.h
-> > > and iostat.c (not sure, maybe trace.[hc])to include newly added structure
-> > > and functions for dispersive codes cleanup.
-> 
-> Thoughts? this also can avoid using CONFIG_F2FS_IOSTAT_IO_LATENCY in many places.
 
-It seems there's somewhat dependency with iostat which is done by default.
-How about adding this by default as well in the existing iostat, and then
-covering all together by F2FS_IOSTAT?
-
-> 
-> Thanks,
+Acked-by: Rob Herring <robh@kernel.org>
