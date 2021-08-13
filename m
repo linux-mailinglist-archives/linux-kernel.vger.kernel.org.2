@@ -2,118 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409273EB695
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8E53EB69E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240560AbhHMONo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239515AbhHMONm (ORCPT
+        id S239708AbhHMOSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:18:20 -0400
+Received: from mail-m176236.qiye.163.com ([59.111.176.236]:16838 "EHLO
+        mail-m176236.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233635AbhHMOST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:13:42 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E782C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:13:16 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id b7so12151676plh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=qX/JChnLXlyObYVqGeKWhDoJp7v9J6Kqnss11iHK/7U=;
-        b=dKp0vQV7R1+npo6tAVzsGn8tYIalp1aIGDIPOj3XmQYMJya9hzE08a+ZWBpKKiYTru
-         +O5TGgbcdtY9uQxh7Rq4R3T/+azsUKqW104KC8XF3KXhgREOts+nhk4Pld1YCcTORRO4
-         Qe0NFO7ZRWBNGQyf087+bJBxHSq1ZZfGVxAPI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=qX/JChnLXlyObYVqGeKWhDoJp7v9J6Kqnss11iHK/7U=;
-        b=aBcts1tCatfSEncfXjSpTx6GXkvJvQcdXk9swq3jjM+iXMbSGEV82cRA3Q0m9fMijx
-         3c+q8GeJZeopzNNBrk50FoLy4mxvDMsbcB8ldodRQcTnXwmvV/PjHAXlNdGLdSsnYuIz
-         eimI/+DLTekEP/8uJEnmLnrJbXgO3ALKN2D137ynf7y8LydMgZxRy9rROSgunyPQNBCE
-         SSKOxIKjjK68kjrQeepAvHBaLkpTr5hgz8gMsWafgE4pFD2+78V4wbvQN/OCk+HNL3jG
-         Np+Inqq5DkR062sJUdUlG/Q8fGl8wkBF5OjlMdTstjE9BFzbgEm5USGu/G85prfhqt74
-         cXww==
-X-Gm-Message-State: AOAM530Vki0Z1QnoMvgGW1WBAjSu6tHSvLLzGayIutAyU5OuMr+VhwMk
-        qHISRRc48RO87aCFOQxR0jVzWw==
-X-Google-Smtp-Source: ABdhPJwF8LJN/sdYnjZyTEuBKiH/d5kecrBt7FUxTDbZIMxbarCsexTwnCvXt76At8sb3Tp8OJrJbg==
-X-Received: by 2002:a63:4d18:: with SMTP id a24mr2462947pgb.324.1628863995693;
-        Fri, 13 Aug 2021 07:13:15 -0700 (PDT)
-Received: from localhost ([2001:4479:e200:df00:e80c:91ad:1614:aeef])
-        by smtp.gmail.com with ESMTPSA id k3sm2611155pfc.16.2021.08.13.07.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 07:13:15 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Bill Wendling <morbo@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Cc:     Bill Wendling <morbo@google.com>
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-In-Reply-To: <20210812204951.1551782-1-morbo@google.com>
-References: <20210812204951.1551782-1-morbo@google.com>
-Date:   Sat, 14 Aug 2021 00:13:11 +1000
-Message-ID: <87sfzde8lk.fsf@linkitivity.dja.id.au>
+        Fri, 13 Aug 2021 10:18:19 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176236.qiye.163.com (Hmail) with ESMTP id D6BF2780146;
+        Fri, 13 Aug 2021 22:17:49 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AKcA0QDJDw7c2rSjY0-LUKqD.3.1628864269869.Hmail.frank.li@vivo.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZjJmczogY29udmVydCAvc3lzL2ZzL2YyZnMvPGRpc2s+L3N0YXQvc2Jfc3RhdHVzIHRvIHVzZSBzdHJpbmc=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.231
+In-Reply-To: <78fcfb53-66ec-b383-8477-3f25ee13f962@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from frank.li@vivo.com( [58.251.74.231) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 13 Aug 2021 22:17:49 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Fri, 13 Aug 2021 22:17:49 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRkfH0lWT0gYT05OGBgaQx
+        9PVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OQkNLS0tJSkhJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MBg6Syo*MT8MTBhJCSgRIktWNy4wCj9VSFVKTUlDQ01PSUxLSE9PVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5KVUxPVUlISllXWQgBWUFJTU5CNwY+
+X-HM-Tid: 0a7b3fe04e39d9aekuwsd6bf2780146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bill Wendling <morbo@google.com> writes:
-
-> The "-z notext" flag disables reporting an error if DT_TEXTREL is set on
-> PPC with CONFIG=kdump:
->
->   ld.lld: error: can't create dynamic relocation R_PPC64_ADDR64 against
->     local symbol in readonly segment; recompile object files with -fPIC
->     or pass '-Wl,-z,notext' to allow text relocations in the output
->   >>> defined in built-in.a(arch/powerpc/kernel/misc.o)
->   >>> referenced by arch/powerpc/kernel/misc.o:(.text+0x20) in archive
->       built-in.a
->
-> The BFD linker disables this by default (though it's configurable in
-> current versions). LLD enables this by default. So we add the flag to
-> keep LLD from emitting the error.
-
-You didn't provide a huge amount of context but I was able to reproduce
-a similar set of errors with pseries_le_defconfig and
-
-make ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- CC="ccache clang-11" LD=ld.lld-11 AR=llvm-ar-11 -j4 vmlinux
-
-I also checked the manpage, and indeed the system ld does not issue this
-warning/error by default.
-
-> ---
->  arch/powerpc/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> index 6505d66f1193..17a9fbf9b789 100644
-> --- a/arch/powerpc/Makefile
-> +++ b/arch/powerpc/Makefile
-> @@ -122,6 +122,7 @@ endif
->  
->  LDFLAGS_vmlinux-y := -Bstatic
->  LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) := -pie
-> +LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) += -z notext
-
-Is there any reason this should be gated on CONFIG_RELOCATABLE? (I tried
-without it and got different but possibly related linker errors...)
-
-Also, is this behaviour new?
-
-Kind regards,
-Daniel
-
->  LDFLAGS_vmlinux	:= $(LDFLAGS_vmlinux-y)
->  
->  ifdef CONFIG_PPC64
-> -- 
-> 2.33.0.rc1.237.g0d66db33f3-goog
+SEkgQ2hhbywKCkZyb206IENoYW8gWXUgPGNoYW9Aa2VybmVsLm9yZz4KRGF0ZTogMjAyMS0wOC0x
+MyAyMjowOTo1MwpUbzogIFlhbmd0YW8gTGkgPGZyYW5rLmxpQHZpdm8uY29tPixqYWVnZXVrQGtl
+cm5lbC5vcmcKQ2M6ICBsaW51eC1mMmZzLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldCxsaW51
+eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGYyZnM6IGNvbnZl
+cnQgL3N5cy9mcy9mMmZzLzxkaXNrPi9zdGF0L3NiX3N0YXR1cyB0byB1c2Ugc3RyaW5nPk9uIDIw
+MjEvOC8xMyAyMjowMSwgWWFuZ3RhbyBMaSB3cm90ZToKPj4gRG8gbm90IHVzZSBudW1iZXJzIGJ1
+dCBzdHJpbmdzIHRvIGltcHJvdmUgcmVhZGFiaWxpdHkgd2hlbiBmbGFnIGlzIHNldC4KPgo+VGhp
+cyBicmVha3Mgb3V0cHV0IHJ1bGUgb2Ygc3lzZnMgZW50cnksIHNlZSBiZWxvdyBsaW5rOgo+Cldo
+aWNoIHJ1bGU/IG9uZSBlbnRyeSBzaG91bGQgc2hvdyBvbmUgdmFsdWXvvJ8KCkJ1dCBJIHNlZSB0
+aGF0OgojIGNhdCAvc3lzL2ZzL2YyZnMvPGRpc2s+L2ZlYXR1cmVzCmVuY3J5cHRpb24sIHF1b3Rh
+X2lubywgdmVyaXR5LCBwaW5fZmlsZQoKU28gdGhlIGZvcm1hdCBvZiBmZWF0dXJlcyBhbHNvIHdy
+b25nPwoKVGh477yMDQoNCg==
