@@ -2,133 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39E73EB32B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02B33EB331
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239584AbhHMJH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:07:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:11965 "EHLO mga09.intel.com"
+        id S239098AbhHMJMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:12:24 -0400
+Received: from mga01.intel.com ([192.55.52.88]:9427 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239035AbhHMJHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:07:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215523443"
+        id S231582AbhHMJMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 05:12:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="237573044"
 X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="215523443"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 02:07:28 -0700
+   d="scan'208";a="237573044"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 02:11:56 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
-   d="scan'208";a="508072260"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2021 02:07:26 -0700
-Subject: Re: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to
- TD_CLEARING_CACHE
-To:     wat@codeaurora.org, Ikjoon Jang <ikjn@chromium.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
- <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
- <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Message-ID: <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
-Date:   Fri, 13 Aug 2021 12:09:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+   d="scan'208";a="517962932"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Aug 2021 02:11:55 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mETEI-000Nap-KB; Fri, 13 Aug 2021 09:11:54 +0000
+Date:   Fri, 13 Aug 2021 17:10:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.08.10a] BUILD SUCCESS
+ 4fa5993c1d1ce6bc96f070d4680f465adb4a8545
+Message-ID: <6116371b.XiY0Beu/xH61GL4k%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.8.2021 11.44, wat@codeaurora.org wrote:
-> On 2021-08-13 15:25, Ikjoon Jang wrote:
->> Hi,
->>
->> On Fri, Aug 13, 2021 at 10:44 AM Tao Wang <wat@codeaurora.org> wrote:
->>>
->>> USB SSD may fail to unmount if disconnect during data transferring.
->>>
->>> it stuck in usb_kill_urb() due to urb use_count will not become zero,
->>> this means urb giveback is not happen.
->>> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
->>> equal to TD_CLEARING_CACHE,
->>> but in xhci_invalidate_cancelled_tds(), only last canceled td's
->>> cancel_status change to TD_CLEARING_CACHE,
->>> thus giveback only happen to last urb.
->>>
->>> this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
->>> rather than the last one, so all urb can giveback.
->>>
->>> Signed-off-by: Tao Wang <wat@codeaurora.org>
->>> ---
->>>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
->>>  1 file changed, 12 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
->>> index 8fea44b..c7dd7c0 100644
->>> --- a/drivers/usb/host/xhci-ring.c
->>> +++ b/drivers/usb/host/xhci-ring.c
->>> @@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
->>>                         td_to_noop(xhci, ring, td, false);
->>>                         td->cancel_status = TD_CLEARED;
->>>                 }
->>> -       }
->>> -       if (cached_td) {
->>> -               cached_td->cancel_status = TD_CLEARING_CACHE;
->>> -
->>> -               err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
->>> -                                               cached_td->urb->stream_id,
->>> -                                               cached_td);
->>> -               /* Failed to move past cached td, try just setting it noop */
->>> -               if (err) {
->>> -                       td_to_noop(xhci, ring, cached_td, false);
->>> -                       cached_td->cancel_status = TD_CLEARED;
->>> +               if (cached_td) {
->>> +                       cached_td->cancel_status = TD_CLEARING_CACHE;
->>> +
->>> +                       err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
->>> +                                                       cached_td->urb->stream_id,
->>> +                                                       cached_td);
->>> +                       /* Failed to move past cached td, try just setting it noop */
->>> +                       if (err) {
->>> +                               td_to_noop(xhci, ring, cached_td, false);
->>> +                               cached_td->cancel_status = TD_CLEARED;
->>> +                       }
->>> +                       cached_td = NULL;
->>>                 }
->>> -               cached_td = NULL;
->>
->> I think we can call xhci_move_dequeue_past_td() just once to
->> the last halted && cancelled TD in a ring.
->>
->> But that might need to compare two TDs to see which one is
->> the latter, I'm not sure how to do this well. :-/
->>
->> if (!cached_td || cached_td < td)
->>   cached_td = td;
->>
-> 
-> thanks, I think you are correct that we can call xhci_move_dequeue_past_td() just once to
->  the last halted && cancelled TD in a ring,
-> but the set status "cached_td->cancel_status = TD_CLEARING_CACHE;" should be every cancelled TD.
-> I am not very good at td and ring, I have a question why we need to
-> compare two TDs to see which one is the latter.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.08.10a
+branch HEAD: 4fa5993c1d1ce6bc96f070d4680f465adb4a8545  clocksource: Make clocksource-wdtest.c safe for slow-HZ systems
 
-I'm debugging the exact same issue.
-For normal endpoints (no streams) it should be enough to set cancel_td->cancel_status = TD_CLEARING_CACHE
-in the TD_DIRTY and TD_HALTED case.
+elapsed time: 728m
 
-We don't need to move the dq past the last cancelled TD as other cancelled TDs are set to no-op, and
-the command to move the dq will flush the xHC controllers TD cache and read the no-ops.
-(just make sure we call xhci_move_dequeue_past_td() _after_ overwriting cancelled TDs with no-op)
+configs tested: 148
+configs skipped: 3
 
-Streams get trickier as each endpoint has several rings, and we might need to move the dq pointer for
-many stream rings on that endpoint. This needs more work as we shouldn't start the endpoint before all
-the all move dq commands complete. i.e. the current  ep->ep_state &= ~SET_DEQ_PENDING isn't enough.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--Mathias
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210812
+powerpc                     mpc5200_defconfig
+powerpc                         wii_defconfig
+arm                      integrator_defconfig
+arm                        trizeps4_defconfig
+sh                          polaris_defconfig
+powerpc                      bamboo_defconfig
+powerpc                       holly_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                        cell_defconfig
+powerpc                 mpc837x_rdb_defconfig
+i386                             alldefconfig
+mips                      fuloong2e_defconfig
+mips                           mtx1_defconfig
+arm                           u8500_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                        maltaup_defconfig
+mips                           ip22_defconfig
+sh                           se7721_defconfig
+riscv                    nommu_k210_defconfig
+m68k                       m5208evb_defconfig
+x86_64                           alldefconfig
+powerpc                     pseries_defconfig
+mips                            gpr_defconfig
+mips                      maltaaprp_defconfig
+arm                        clps711x_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                 mpc837x_mds_defconfig
+ia64                             alldefconfig
+sh                        edosk7705_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          kfr2r09_defconfig
+s390                          debug_defconfig
+openrisc                  or1klitex_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                           ip32_defconfig
+xtensa                              defconfig
+powerpc                         ps3_defconfig
+mips                         rt305x_defconfig
+arm                            qcom_defconfig
+sh                   secureedge5410_defconfig
+powerpc                       eiger_defconfig
+arm                        multi_v7_defconfig
+arm                     davinci_all_defconfig
+mips                           gcw0_defconfig
+arm                            xcep_defconfig
+powerpc64                        alldefconfig
+powerpc                     ksi8560_defconfig
+arm                            zeus_defconfig
+sh                             sh03_defconfig
+arm                       aspeed_g5_defconfig
+arc                     nsimosci_hs_defconfig
+arc                          axs103_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210812
+x86_64               randconfig-a004-20210812
+x86_64               randconfig-a003-20210812
+x86_64               randconfig-a005-20210812
+x86_64               randconfig-a002-20210812
+x86_64               randconfig-a001-20210812
+i386                 randconfig-a004-20210812
+i386                 randconfig-a003-20210812
+i386                 randconfig-a002-20210812
+i386                 randconfig-a001-20210812
+i386                 randconfig-a006-20210812
+i386                 randconfig-a005-20210812
+i386                 randconfig-a004-20210813
+i386                 randconfig-a003-20210813
+i386                 randconfig-a001-20210813
+i386                 randconfig-a002-20210813
+i386                 randconfig-a006-20210813
+i386                 randconfig-a005-20210813
+i386                 randconfig-a011-20210812
+i386                 randconfig-a015-20210812
+i386                 randconfig-a013-20210812
+i386                 randconfig-a014-20210812
+i386                 randconfig-a016-20210812
+i386                 randconfig-a012-20210812
+i386                 randconfig-a011-20210813
+i386                 randconfig-a015-20210813
+i386                 randconfig-a014-20210813
+i386                 randconfig-a013-20210813
+i386                 randconfig-a016-20210813
+i386                 randconfig-a012-20210813
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210812
+x86_64               randconfig-a006-20210813
+x86_64               randconfig-a004-20210813
+x86_64               randconfig-a003-20210813
+x86_64               randconfig-a002-20210813
+x86_64               randconfig-a005-20210813
+x86_64               randconfig-a001-20210813
+x86_64               randconfig-a011-20210812
+x86_64               randconfig-a013-20210812
+x86_64               randconfig-a012-20210812
+x86_64               randconfig-a016-20210812
+x86_64               randconfig-a015-20210812
+x86_64               randconfig-a014-20210812
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
