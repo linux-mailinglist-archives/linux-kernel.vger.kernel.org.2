@@ -2,246 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCE03EBA07
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA4A3EBA0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235579AbhHMQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        id S235761AbhHMQaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbhHMQ3p (ORCPT
+        with ESMTP id S229471AbhHMQaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:29:45 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFEBC061756;
-        Fri, 13 Aug 2021 09:29:17 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 60E1F1F44925
-Received: by earth.universe (Postfix, from userid 1000)
-        id 406E53C0C99; Fri, 13 Aug 2021 18:29:14 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 18:29:14 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] power: supply: bq24735: add watchdog timer delay
- support
-Message-ID: <20210813162914.p3mzc47ixpmdk62f@earth.universe>
-References: <20210709142731.23418-1-bruno.meneguele@smartgreen.net>
- <20210709142731.23418-3-bruno.meneguele@smartgreen.net>
+        Fri, 13 Aug 2021 12:30:10 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EF8C061756;
+        Fri, 13 Aug 2021 09:29:43 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so16506940ljq.0;
+        Fri, 13 Aug 2021 09:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lSjANMOkeDV/0UvMiD3d/wgPXF81D4gziwyjM+awd5c=;
+        b=Oquwslrv0iZO0iE4+rg2oqrPU9W7lCXWmZo8U1byMsIeJqu7KOK/WmqadDlVomPZ3Z
+         NUvTbj8Mlso65qDPO523wiGbXwH/sTgFXJuqIb5kplbAz3s69wJ+TaHPXpZIjy9OiSvF
+         8lcu89HaYJwEEO75RNV4jgueP7YS/2YdnToXR2fgEUuVQKWBgAqS8E7vYjsgRXXi0lla
+         Bj5frT1giO08YsBWMmdsCsdRHBZgSvZeoMmKFckysmdWn6nIySXuIGQo7/RN/Kt++rFJ
+         BG8GLADvjfgqW0wrFovbCeq4if/pFdveRNZYNlMnOYhaLvKnad1eSvf91x87zaweD6Gn
+         RLpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lSjANMOkeDV/0UvMiD3d/wgPXF81D4gziwyjM+awd5c=;
+        b=pjgFUuLH2vwcqKfIXPZrsqulEX2FuhkUQoIR4IRcYsem8ISInBDzTP9QkJ0CEnO/dw
+         KPQ2Itj93i7G5pUWRLEnnjY01F9j1BHsO6rtspGqTbXyc56NAXjwhwcXfAXTP9aRw67s
+         qbZfXjs9wJP2zN6W1arjQOPenqDtXe8DZ/iy4qv231ufQfnLyJjumsq8Kl7BXnQFFzdk
+         g7EW45jI3W7Mtl29NEnoy1iVH8zx7yLyEKbHH1KM/QHlddkHURL4gYGGF2zsgio/9YHl
+         JuACD3bLvKg/XE7WZa4ib1uj6ssR8k5N+eEvklsAzOFvjdnJBLgOC38Z36WDXyau7HhC
+         5NMA==
+X-Gm-Message-State: AOAM5336oHowoR0mAsBx/3kdMChYMBkQRtE3KokHK3CxiEPbvWjk02Z3
+        4ao/mMwq3Zx/oulbka9+WQkH02ubV8i5s/ZU/jc=
+X-Google-Smtp-Source: ABdhPJw7IU0i3kJszwAd/r6LZDHpmqyuenklMvUuyjDAEcVXEQ5w6NynYbqNk6S0sprJyfm2fRUjHi3oxxQANr8xgoc=
+X-Received: by 2002:a2e:3607:: with SMTP id d7mr2452450lja.481.1628872181924;
+ Fri, 13 Aug 2021 09:29:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qozfxa223fazoxhr"
-Content-Disposition: inline
-In-Reply-To: <20210709142731.23418-3-bruno.meneguele@smartgreen.net>
+References: <CAHhAz+hQBnUVWBnoQO6y44C-G5CnZdFLJ7v738_Y5Rt6AZSkrA@mail.gmail.com>
+ <41bebccc-7940-8379-0108-047bd1cc92f9@perex.cz> <CACk2A5ZcrVTv4AVHdmRDh-xWkx=1BHi6SV8yYqX1Z2DzcDR8hA@mail.gmail.com>
+ <CAHhAz+gD-UtvXgsWnWx8yPwMbpY4R-ZJqPg9TNNF+iZrmKxQSA@mail.gmail.com>
+In-Reply-To: <CAHhAz+gD-UtvXgsWnWx8yPwMbpY4R-ZJqPg9TNNF+iZrmKxQSA@mail.gmail.com>
+From:   Muni Sekhar <munisekharrms@gmail.com>
+Date:   Fri, 13 Aug 2021 21:59:30 +0530
+Message-ID: <CAHhAz+jVm6_B8Fje5TafKFFXk9x801z07afivsfHw7tWp4eB=w@mail.gmail.com>
+Subject: Re: USB-Audio: Device or resource busy (strace log)
+To:     vishnu <vardhanraj4143@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        linux-usb@vger.kernel.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 11, 2021 at 6:48 PM Muni Sekhar <munisekharrms@gmail.com> wrote:
+>
+> On Wed, Aug 11, 2021 at 6:19 PM vishnu <vardhanraj4143@gmail.com> wrote:
+> >
+> > can you paste output of
+> > arecord -l (list of capture devices).
+> $ arecord -l
+> **** List of CAPTURE Hardware Devices ****
+> card 0: USB [Plantronics .Audio 628 USB], device 0: USB Audio [USB Audio]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+>
+>
+> > Which device you are using and os.
+> > Does this instance is already open by default? like any video playing or something like that?
+> lsof does not catch it.
+>
+> >
+> > Yes you can stop pulse audio and try..
+> >
+> > On Wed, Aug 11, 2021 at 6:17 PM Jaroslav Kysela <perex@perex.cz> wrote:
+> >>
+> >> On 11. 08. 21 14:36, Muni Sekhar wrote:
+> >> > Hi All,
+> >> >
+> >> > $ cat /proc/asound/cards
+> >> >  0 [USB            ]: USB-Audio - Plantronics .Audio 628 USB
+> >> >                       Plantronics Plantronics .Audio 628 USB at
+> >> > usb-0000:00:14.0-2, full speed
+> >> >
+> >> > I am using a Plantronics USB Audio headset.
+> >> >
+> >> > $ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+> >> > arecord: main:722: audio open error: Device or resource busy
+> >> >
+> >> >
+> >> > 'arecord' command always fails the first time after system boot in my
+> >> > system. But subsequent execution of the 'arecord' command runs fine.
+> >> >
+> >> >
+> >> > I've attached the strace log for the "audio open error: Device or
+> >> > resource busy" failure. Is there any fix available for this issue?
+> >>
+> >> You may check which other task blocks the PCM device:
+> >>
+> >>   lsof /dev/snd/pcmC0D0c
+> It does not output any process.
+> $ lsof /dev/snd/pcmC0D0c
+>
+> 1st run:
+> ----------
+> $ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+> arecord: main:722: audio open error: Device or resource busy
+>
+> 2nd run:
+> ----------
+> $ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+> Recording WAVE 'x.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+> ^CAborted by signal Interrupt...
+>
+>
+> >>
+> >> I guess that it will be pulseaudio (device enumeration).
+I see that pulseaudio is getting loaded on invoking the 1st run of
+'arecord' command. Here is the log:
 
---qozfxa223fazoxhr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+After system boot I verified that pulseaudio is not in the memory.
 
-Hi,
+test@test594:~$ uptime
+ 21:39:27 up 0 min,  1 user,  load average: 0.70, 0.25, 0.09
+test@test594:~$ ls -ltr /dev/snd/controlC1
+crw-rw---- 1 root audio 116, 2 Aug 13 21:38 /dev/snd/controlC1
+test@test594:~$ ls -ltr /dev/snd/
+total 0
+crw-rw---- 1 root audio 116, 33 Aug 13 21:38 timer
+crw-rw---- 1 root audio 116,  1 Aug 13 21:38 seq
+crw-rw---- 1 root audio 116,  3 Aug 13 21:38 pcmC1D0p
+crw-rw---- 1 root audio 116,  4 Aug 13 21:38 pcmC1D0c
+crw-rw---- 1 root audio 116,  2 Aug 13 21:38 controlC1
+drwxr-xr-x 2 root root       60 Aug 13 21:38 by-path
+drwxr-xr-x 2 root root       60 Aug 13 21:38 by-id
+test@test594:~$ lsof /dev/snd/controlC1
+test@test594:~$ lsof /dev/snd/pcmC1D0c
+test@test594:~$
 
-On Fri, Jul 09, 2021 at 11:27:31AM -0300, Bruno Meneguele wrote:
-> The BQ24735 charger allows the user to set the watchdog timer delay betwe=
-en
-> two consecutives ChargeCurrent or ChargeVoltage command writes, if the IC
-> doesn't receive any command before the timeout happens, the charge is tur=
-ned
-> off.
->=20
-> This patch adds the support to the user to change the default/POR value w=
-ith
-> four discrete values:
->=20
->   0 - disabled
->   1 - enabled, 44 sec
->   2 - enabled, 88 sec
->   3 - enabled, 175 sec (default at POR)
->=20
-> These are the options supported in the ChargeOptions register bits 13&14.
->=20
-> Also, this patch make one additional check when poll-interval is set by t=
-he
-> user: if the interval set is greater than the WDT timeout it'll fail duri=
-ng
-> the probe stage, preventing the user to set non-compatible values between
-> the two options.
->=20
-> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
-> ---
->  .../bindings/power/supply/bq24735.yaml        | 13 +++++
 
-Patches for the DT bindings needs to be CC'd to the DT binding
-maintainers and should be in their own patch.
+1st run of 'arecord':
+-------------------------
+I triggered 'arecord' after 2 mins of the system boot. In the 1st run,
+it failed with "Device or resource busy" and I see that pulseaudio
+loaded in the memory.
+Why does pulseaudio get triggered on running the alsa-utils command?
+How is the failure message "Device or resource busy" from the kernel code?
 
->  drivers/power/supply/bq24735-charger.c        | 48 +++++++++++++++++++
->  include/linux/power/bq24735-charger.h         |  1 +
->  3 files changed, 62 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/power/supply/bq24735.yaml =
-b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-> index 131be6782c4b..62399efab467 100644
-> --- a/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-> @@ -56,6 +56,19 @@ properties:
->        The POR value is 0x1000h. This number is in mA (e.g. 8064).
->        See the spec for more information about the InputCurrent (0x3fh) r=
-egister.
-> =20
-> +  ti,wdt-timeout:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Used to control and set the charger watchdog delay between consecu=
-tive
-> +      charge voltage and charge current commands.
-> +      This value must be:
-> +        0 - disabled
-> +        1 - 44 seconds
-> +        2 - 88 seconds
-> +        3 - 175 seconds
-> +      The POR value is 0x11 (3).
-> +      See the spec for more information about the ChargeOptions(0x12h) r=
-egister.
-> +
 
-This is missing=20
+test@test594:~$ arecord --device hw:1,0 --channels 2 --format S16_LE
+--rate 44100Hz x.wav
+arecord: main:722: audio open error: Device or resource busy
+test@test594:~$
+test@test594:~$ lsof /dev/snd/pcmC1D0c
+COMMAND    PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+pulseaudi 1550 test  mem    CHR  116,4           463 /dev/snd/pcmC1D0c
+pulseaudi 1550 test   27u   CHR  116,4      0t0  463 /dev/snd/pcmC1D0c
+test@test594:~$ lsof /dev/snd/controlC1
+COMMAND    PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+pulseaudi 1550 test   20u   CHR  116,2      0t0  461 /dev/snd/controlC1
+pulseaudi 1550 test   26u   CHR  116,2      0t0  461 /dev/snd/controlC1
+test@test594:~$ lsof /dev/snd/pcmC1D0p
+test@test594:~$
+test@test594:~$ uptime
+ 21:41:06 up 2 min,  1 user,  load average: 0.20, 0.19, 0.08
 
-minimum: 0
-maximum: 3
 
->    ti,external-control:
->      type: boolean
->      description: |
-> diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/suppl=
-y/bq24735-charger.c
-> index 3ce36d09c017..88f1cb1e9fee 100644
-> --- a/drivers/power/supply/bq24735-charger.c
-> +++ b/drivers/power/supply/bq24735-charger.c
-> @@ -45,6 +45,8 @@
->  /* ChargeOptions bits of interest */
->  #define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
->  #define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
-> +#define BQ24735_CHARGE_OPT_WDT_OFFSET	13
-> +#define BQ24735_CHARGE_OPT_WDT		(3 << BQ24735_CHARGE_OPT_WDT_OFFSET)
-> =20
->  struct bq24735 {
->  	struct power_supply		*charger;
-> @@ -156,6 +158,20 @@ static int bq24735_config_charger(struct bq24735 *ch=
-arger)
->  		}
->  	}
-> =20
-> +	if (pdata->wdt_timeout) {
-> +		value =3D pdata->wdt_timeout;
-> +
-> +		ret =3D bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
-> +					  BQ24735_CHARGE_OPT_WDT,
-> +					  (value << BQ24735_CHARGE_OPT_WDT_OFFSET));
-> +		if (ret < 0) {
-> +			dev_err(&charger->client->dev,
-> +				"Failed to write watchdog timer: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +	}
+2nd run of 'arecord':
+-------------------------
+The subsequent run of arecord runs fine without any issues even though
+pulseaudio is still in memory.
 
-binding says '0' =3D disabled, but code implements '0' =3D do not
-change.
+test@test594:~$ arecord --device hw:1,0 --channels 2 --format S16_LE
+--rate 44100Hz x.wav
+Recording WAVE 'x.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+^CAborted by signal Interrupt...
+test@test594:~$ uptime
+ 21:41:22 up 2 min,  1 user,  load average: 0.14, 0.18, 0.08
+test@test594:~$
 
--- Sebastian
+What is the role of pulseaudio? Is there a way to disable it from running it?
+Disabling pulseaudio causes any issues while testing audio drivers?
 
-> +
->  	return 0;
->  }
-> =20
-> @@ -347,6 +363,17 @@ static struct bq24735_platform *bq24735_parse_dt_dat=
-a(struct i2c_client *client)
->  	if (!ret)
->  		pdata->input_current =3D val;
-> =20
-> +	ret =3D of_property_read_u32(np, "ti,wdt-timeout", &val);
-> +	if (!ret) {
-> +		if (val <=3D 3) {
-> +			pdata->wdt_timeout =3D val;
-> +		} else {
-> +			dev_warn(&client->dev,
-> +				 "Invalid value for ti,wdt-timeout: %d",
-> +				 val);
-> +		}
-> +	}
-> +
->  	pdata->ext_control =3D of_property_read_bool(np, "ti,external-control");
-> =20
->  	return pdata;
-> @@ -476,6 +503,27 @@ static int bq24735_charger_probe(struct i2c_client *=
-client,
->  			return 0;
->  		if (!charger->poll_interval)
->  			return 0;
-> +		if (charger->pdata->wdt_timeout) {
-> +			int wdt_ms;
-> +
-> +			switch (charger->pdata->wdt_timeout) {
-> +			case 1:
-> +				wdt_ms =3D 44000;
-> +				break;
-> +			case 2:
-> +				wdt_ms =3D 88000;
-> +				break;
-> +			case 3:
-> +				wdt_ms =3D 175000;
-> +				break;
-> +			}
-> +
-> +			if (charger->poll_interval > wdt_ms) {
-> +				dev_err(&client->dev,
-> +					"Poll interval greater than WDT timeout\n");
-> +				return -EINVAL;
-> +			}
-> +		}
-> =20
->  		ret =3D devm_delayed_work_autocancel(&client->dev, &charger->poll,
->  						   bq24735_poll);
-> diff --git a/include/linux/power/bq24735-charger.h b/include/linux/power/=
-bq24735-charger.h
-> index 321dd009ce66..ce5a030ca111 100644
-> --- a/include/linux/power/bq24735-charger.h
-> +++ b/include/linux/power/bq24735-charger.h
-> @@ -12,6 +12,7 @@ struct bq24735_platform {
->  	uint32_t charge_current;
->  	uint32_t charge_voltage;
->  	uint32_t input_current;
-> +	uint32_t wdt_timeout;
-> =20
->  	const char *name;
-> =20
-> --=20
-> 2.31.1
->=20
 
---qozfxa223fazoxhr
-Content-Type: application/pgp-signature; name="signature.asc"
+> >>
+> >>                                         Jaroslav
+> >>
+> >> --
+> >> Jaroslav Kysela <perex@perex.cz>
+> >> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>
+>
+>
+> --
+> Thanks,
+> Sekhar
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWndoACgkQ2O7X88g7
-+pphhg/7BS4jcSO/H83ZVDfrtbLGQnug9SCxp6S3QXkBxMzyeUfpDVwtmgCyhfPO
-U10iR78V1mD25gLJAaUWExZpukZKGl3gOg+yg6tfEVzP06FuEgSmDdg4cGQUzc2i
-Z1DS5sB4q125ewfdPJjGaPBBh9PzV3DEl+76jRyyK3VS01FaC0zYUhkumbEHbzLG
-C4XAaB6QdMQRnDChtGdCS49qH19AePqHJsPZ8xyxg9M/C9h7j+ekFMpzJjSuOaY0
-rdV1iCDe7ehEpVXzdQXXb/qU5PrqpbEv2fsqdpeHyyq/IiOHb6/P/mQXQMsdWndk
-nbaw4L2IgDCNE4fQDDDfsjg8qB33FDMCeMs3AUca9OMKd4tuH6UF9whNEKZ558Qy
-iVpf066iwfSVhMZVyJQIbZ5elSXaTa3h7hc6BVPY1mM4HAdsQdh6FjC4hYriywcK
-lR640lLWkCUPrIwZyGbRoMyBEQjARjTzjNlHXdHreY/ahvcyXkcTlMGdscnj3ZlW
-Km9/P3eFWF5LmenSfjyS70KVlY6YnMccQqZswbY7khDcqgaF/c492sxsqI7yI5KE
-ZBaGEHw6IxMj+Zm1lIcH0yEwAWCJO/h5UlSKfhcKlWsmOdjPmuk+LWt++n1RIcvF
-YUnx+3fzSc7CVzBWRmVjbzdJivZe4ac3Ws+GRI/lXdwAkrk4pOM=
-=pjxb
------END PGP SIGNATURE-----
 
---qozfxa223fazoxhr--
+-- 
+Thanks,
+Sekhar
