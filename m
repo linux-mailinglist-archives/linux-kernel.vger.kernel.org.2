@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B523EB93D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485133EB93E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241144AbhHMP0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        id S242820AbhHMP0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243602AbhHMPYb (ORCPT
+        with ESMTP id S243612AbhHMPYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Aug 2021 11:24:31 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77778C06114B
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:19:50 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id v16so434424ilo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:19:50 -0700 (PDT)
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B56C0612E7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:20:12 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id k3so11207576ilu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=j0nfnl+luadMfBENeONGcQqctQXuoRc2drfaC6JFN/A=;
-        b=GBZRjmAOPBa5yXLrsf6O+pIflq+4DOa/sjc9rs5KZWMeggk/Ngr5aWNqZAgIoXMGn8
-         GebO/bbELPJUlaI7iC/OhwxEXhIyJu/9Hy1e/qK7f/1fh01ay9eQpyGdTPzxm8uAi8I3
-         19J/zTBka6VYFLN/2kRRN863UF8MrVWdP4wheNKM6C+cGh6hFECEU3FafnSa//s0+JlX
-         qiOZ02YqbRg4Omru4M6PiggCD4cMKh11QeNeMxo/LmBRZetzAkxlowAdkhVqaDCY4njg
-         HaukA6BeRCpAIuB0U4Efh/yuaFHs95tAsg4VoxtblGZkWgtjWMOaeYSEbS1I3Y/784C5
-         FBCQ==
+        bh=Di0vKi6q1FQK7H2Iauu5LRuMFu/619Qh3TdTrNtKXuA=;
+        b=PLbGXNu9yoFFMGvAAq7mWxn1nB2oBNSmzMpU++6lMiwMowccbTk69/TgNBK9WRgBI/
+         mrDIh2aU8WKSoBDTSm2Xxm7nkOt+8PzvzTkQHd/NzYgBZ1EY/zIZSamX/29Ngd3Rbeey
+         ebplp9i5NFP3EVLieSjROCtLIr+3Ge1k/0jjfCS9QBhSA45Y35RYaAy26zOsg0DIKEql
+         BC1U3EZ7B7SuQDlH+s85/RriXjUVwOdiOe8Zyjgj6c9/gxz4EQNl4nQYAKZddQgWMXik
+         rPAIbHMdV72J4KXtWEl43oLdXcSxjk3lmrg3y93MNqiCSsWs9vY81UIf6rKbRN4xoi37
+         U2jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j0nfnl+luadMfBENeONGcQqctQXuoRc2drfaC6JFN/A=;
-        b=eYYQHXhmB6PqAMA74Y3AkHQtoHpHWH0Z/NurxkgjGTEfztoLgeU84ER0zI/d019Uqg
-         VChAw5daa15CQtriM+l8HB6P5fpI5Os7nlrCXBTJ/1W7KYDAXNYYypScYYYYC3D7o91d
-         H4QwpkbOHPazAzOs88Ut6qlDoO+36EPjAd2gn37bBfGGUwVp1D0174D4C+9H3tQOleqY
-         T+D+AN7NCmfeL5Uq6ODsFwx2mS19VARA1OEjN6EX2rOtzXoXaLXiaMGjCi2WcwclmPlQ
-         0Xaf2s2UICJwnHpH28ZQDD6XXtqfUtBnM8c/mA1vVmHbytcYnH4ejVp5TfSVtCG9MiId
-         izlA==
-X-Gm-Message-State: AOAM531IJ+jBAmeoWAUhZwOLRzehpLYrneF+udTEZNL8earuLhqX8ebe
-        Q/ffyl1Uy67S41TS8IPOCIM=
-X-Google-Smtp-Source: ABdhPJz8bOriy9Ujvg+TITr8FCdz9ASMzyYVACa+RWgPp1vMNOi5JTxThdPOrnzmI/d1Miq3HQpWZA==
-X-Received: by 2002:a92:c841:: with SMTP id b1mr2181218ilq.300.1628867989820;
-        Fri, 13 Aug 2021 08:19:49 -0700 (PDT)
+        bh=Di0vKi6q1FQK7H2Iauu5LRuMFu/619Qh3TdTrNtKXuA=;
+        b=M7o/oncEvtSq1k63gG0qvP6ikjhiu3kZxhGx1lQ73wn7xGXGJhyQTqgqQPYbT89ejq
+         4w5bha1mP8eSRV6mqU49nWK7tQedl0uwLRTHLahXFGot95G4Mn/ZmnhzWUAaMt/0zyQw
+         1OeDvgUkZbf4U1eC6mZITHz1C96r4FgBvKcreS4x0PQGY/OEdyV1OaWuCHvD/bltnVTJ
+         eUdkX3hyoBGBNVbMGsOrzqag6mmhgaFkDDJVqB5lAr0rr0HzKcyAI7tPaiojhjfMvcEG
+         oQlAezEyXa1eCbzrtVqwnTch3YT/Y6WNdR+jgfYbsnXTpkmzbHB1ggIIDaO1WOAhlBj/
+         +bCg==
+X-Gm-Message-State: AOAM531WhJsUkd9zDlAqzWBudXIYh88vIeQRsZO7FxiAvgjepf9lpGd0
+        4pNI3eaxC+tmEorMUHkB4Zs=
+X-Google-Smtp-Source: ABdhPJwjZ3QV5w0NGk4jwf4SXlJWwLYG7CCgjFVrVegJXXhUT9WT2rYtUmFi+TK28d00QloXQ8BuTg==
+X-Received: by 2002:a92:7d0f:: with SMTP id y15mr2194691ilc.10.1628868011655;
+        Fri, 13 Aug 2021 08:20:11 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id d4sm921145ilo.29.2021.08.13.08.19.47
+        by smtp.googlemail.com with ESMTPSA id d4sm921145ilo.29.2021.08.13.08.20.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 08:19:49 -0700 (PDT)
+        Fri, 13 Aug 2021 08:20:11 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     gregkh@linuxfoundation.org, seanpaul@chromium.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -68,17 +68,17 @@ To:     gregkh@linuxfoundation.org, seanpaul@chromium.org,
         Jason Baron <jbaron@akamai.com>,
         Hawking Zhang <Hawking.Zhang@amd.com>,
         Tao Zhou <tao.zhou1@amd.com>, Huang Rui <ray.huang@amd.com>,
-        Le Ma <le.ma@amd.com>, Chengming Gui <Jack.Gui@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>, Dennis Li <Dennis.Li@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Chengming Gui <Jack.Gui@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
         Jim Cromie <jim.cromie@gmail.com>,
         John Clements <john.clements@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
         Ashley Thomas <Ashley.Thomas2@amd.com>,
         Aurabindo Pillai <aurabindo.pillai@amd.com>,
         Qingqing Zhuo <qingqing.zhuo@amd.com>,
         Wyatt Wood <Wyatt.Wood@amd.com>,
         Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
         Nick Desaulniers <ndesaulniers@gooogle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
@@ -91,22 +91,20 @@ To:     gregkh@linuxfoundation.org, seanpaul@chromium.org,
         Sedat Dilek <sedat.dilek@gmail.com>,
         Changbin Du <changbin.du@intel.com>,
         Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
         Brendan Higgins <brendanhiggins@google.com>,
-        Oliver Glitta <glittao@gmail.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Patricia Alfonso <trishalfonso@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Albert van der Linde <alinde@google.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
         Arvind Sankar <nivedita@alum.mit.edu>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
         intel-gfx@lists.freedesktop.org
-Subject: [PATCH v5 5/9] i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to create "gvt:core:" etc categories
-Date:   Fri, 13 Aug 2021 09:17:13 -0600
-Message-Id: <20210813151734.1236324-6-jim.cromie@gmail.com>
+Subject: [PATCH v5 6/9] amdgpu: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to control categorized pr_debugs
+Date:   Fri, 13 Aug 2021 09:17:14 -0600
+Message-Id: <20210813151734.1236324-7-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210813151734.1236324-1-jim.cromie@gmail.com>
 References: <20210813151734.1236324-1-jim.cromie@gmail.com>
@@ -116,94 +114,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gvt component of this driver has ~120 pr_debugs, in 9 categories
-quite similar to those in DRM.  Following the interface model of
-drm.debug, add a parameter to map bits to these categorizations.
+logger_types.h defines many DC_LOG_*() categorized debug wrappers.
+Most of these use DRM debug API, so are controllable using drm.debug,
+but others use bare pr_debug("$prefix: .."), each with a different
+class-prefix matching "^\[\w+\]:"
 
-DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-	"dyndbg bitmap desc",
-	{ "gvt:cmd: ",  "command processing" },
-	{ "gvt:core: ", "core help" },
-	{ "gvt:dpy: ",  "display help" },
-	{ "gvt:el: ",   "help" },
-	{ "gvt:irq: ",  "help" },
-	{ "gvt:mm: ",   "help" },
-	{ "gvt:mmio: ", "help" },
-	{ "gvt:render: ", "help" },
-	{ "gvt:sched: " "help" });
-
-The actual patch has a few details different, cmd_help() macro emits
-the initialization construct.
-
-if CONFIG_DRM_USE_DYNAMIC_DEBUG, then -DDYNAMIC_DEBUG_MODULE is added
-cflags, by gvt/Makefile.
-
----
-v4+:
-. static decl of vector of bit->class descriptors - Emil.V
-. relocate gvt-makefile chunk from elsewhere
+Use DEFINE_DYNAMIC_DEBUG_CATEGORIES to create a /sys debug_dc
+parameter, modinfos, and to specify a map from bits -> categorized
+pr_debugs to be controlled.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/gpu/drm/i915/gvt/Makefile  |  4 ++++
- drivers/gpu/drm/i915/i915_params.c | 35 ++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ .../gpu/drm/amd/display/dc/core/dc_debug.c    | 44 ++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt/Makefile
-index ea8324abc784..846ba73b8de6 100644
---- a/drivers/gpu/drm/i915/gvt/Makefile
-+++ b/drivers/gpu/drm/i915/gvt/Makefile
-@@ -7,3 +7,7 @@ GVT_SOURCE := gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o firmware.o \
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
+index 21be2a684393..69e68d721512 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
+@@ -36,8 +36,50 @@
  
- ccflags-y				+= -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
- i915-y					+= $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
-+
-+#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
-+ccflags-y	+= -DDYNAMIC_DEBUG_MODULE
-+#endif
-diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-index e07f4cfea63a..683e942a074e 100644
---- a/drivers/gpu/drm/i915/i915_params.c
-+++ b/drivers/gpu/drm/i915/i915_params.c
-@@ -265,3 +265,38 @@ void i915_params_free(struct i915_params *params)
- 	I915_PARAMS_FOR_EACH(FREE);
- #undef FREE
- }
-+
+ #include "resource.h"
+ 
+-#define DC_LOGGER_INIT(logger)
 +#ifdef DRM_USE_DYNAMIC_DEBUG
-+/* todo: needs DYNAMIC_DEBUG_MODULE in some cases */
++/* define a drm.debug style dyndbg pr-debug control point */
++#include <linux/dynamic_debug.h>
 +
-+unsigned long __gvt_debug;
-+EXPORT_SYMBOL(__gvt_debug);
++unsigned long __debug_dc;
++EXPORT_SYMBOL(__debug_dc);
 +
-+#define _help(key)	"\t    \"" key "\"\t: help for " key "\n"
++#define _help_(key)	"\t   " key "\t- help for " key "\n"
 +
-+#define I915_GVT_CATEGORIES(name) \
-+	" Enable debug output via /sys/module/i915/parameters/" #name	\
-+	", where each bit enables a debug category.\n"			\
-+	_help("gvt:cmd:")						\
-+	_help("gvt:core:")						\
-+	_help("gvt:dpy:")						\
-+	_help("gvt:el:")						\
-+	_help("gvt:irq:")						\
-+	_help("gvt:mm:")						\
-+	_help("gvt:mmio:")						\
-+	_help("gvt:render:")						\
-+	_help("gvt:sched:")
++/* Id like to do these inside DEFINE_DYNAMIC_DEBUG_CATEGORIES, if possible */
++#define DC_DYNDBG_BITMAP_DESC(name)					\
++	"Control pr_debugs via /sys/module/amdgpu/parameters/" #name	\
++	", where each bit controls a debug category.\n"			\
++	_help_("[SURFACE]:")						\
++	_help_("[CURSOR]:")						\
++	_help_("[PFLIP]:")						\
++	_help_("[VBLANK]:")						\
++	_help_("[HW_LINK_TRAINING]:")					\
++	_help_("[HW_AUDIO]:")						\
++	_help_("[SCALER]:")						\
++	_help_("[BIOS]:")						\
++	_help_("[BANDWIDTH_CALCS]:")					\
++	_help_("[DML]:")						\
++	_help_("[IF_TRACE]:")						\
++	_help_("[GAMMA]:")						\
++	_help_("[SMU_MSG]:")
 +
-+DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-+				I915_GVT_CATEGORIES(debug_gvt),
-+				_DD_cat_("gvt:cmd:"),
-+				_DD_cat_("gvt:core:"),
-+				_DD_cat_("gvt:dpy:"),
-+				_DD_cat_("gvt:el:"),
-+				_DD_cat_("gvt:irq:"),
-+				_DD_cat_("gvt:mm:"),
-+				_DD_cat_("gvt:mmio:"),
-+				_DD_cat_("gvt:render:"),
-+				_DD_cat_("gvt:sched:"));
-+
++DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_dc, __debug_dc,
++	DC_DYNDBG_BITMAP_DESC(debug_dc),
++	_DD_cat_("[CURSOR]:"),
++	_DD_cat_("[PFLIP]:"),
++	_DD_cat_("[VBLANK]:"),
++	_DD_cat_("[HW_LINK_TRAINING]:"),
++	_DD_cat_("[HW_AUDIO]:"),
++	_DD_cat_("[SCALER]:"),
++	_DD_cat_("[BIOS]:"),
++	_DD_cat_("[BANDWIDTH_CALCS]:"),
++	_DD_cat_("[DML]:"),
++	_DD_cat_("[IF_TRACE]:"),
++	_DD_cat_("[GAMMA]:"),
++	_DD_cat_("[SMU_MSG]:"));
 +#endif
+ 
++#define DC_LOGGER_INIT(logger)
+ 
+ #define SURFACE_TRACE(...) do {\
+ 		if (dc->debug.surface_trace) \
 -- 
 2.31.1
 
