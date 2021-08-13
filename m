@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FBF3EBC17
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19EC3EBC1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhHMSdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbhHMSdK (ORCPT
+        id S233314AbhHMSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:33:41 -0400
+Received: from mail-m176236.qiye.163.com ([59.111.176.236]:17828 "EHLO
+        mail-m176236.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232906AbhHMSdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:33:10 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B6CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:32:43 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id q11so14448144wrr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=WaQTBe3xC/88raPQmY8ZZ8JJn9RnHYoGZNkxhX1EO84=;
-        b=V+bl624JupBf+D+XFrPzacGflvEDgE0vwcRjyTf6yw3Omk0lTSIj+cL5vZN31H3msb
-         P0LLdOEByqjgjyyd3dyaIfzRNVgVEs92ctms+VZvDxX1nzb6iqV/LSBeAIMNS64XlThX
-         xX2itLVNjYZGEYV7yn9LKCrpDIQqZBl9fu5iybvAb+TVE/8pgcP7T6NPiRK+JvTE2D8e
-         PYl9SZQxN8PfLsoHRwHSt/KYqBzHiEbEcrUkRWmnbmfSUE0XI+cFb8gAOnexhZQe/NkY
-         944wO3FDXa6XcPIOa/QC3819HAqUEX4zJ5lU6qVGeJIX067olgR8fV/k2NOOfADN+Z5K
-         UzIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WaQTBe3xC/88raPQmY8ZZ8JJn9RnHYoGZNkxhX1EO84=;
-        b=H9qYiRVK31h+tNrg4zzBrAi/PjjmJGkcwTY8B9QTzHp8Y645ysD9d9ygL5amD+z63z
-         jNol1axLeWjGxO5BpjUcT4YfL7R/jyvWdzj1kPUqQaBMTMf+UTJ94nZk59L6P8SCi4RL
-         2XDrIgHtI9wNN236TOV1j1H9j8uCIjFFEVWZJD5ibSq8Z+yUApMNY5l8kCMUva1ZM9AX
-         kBwUZOnSOaAjlaZHD44ZOYO3ro9hiM6REeXgZEV/2Xdt3EDjvyrhy0tYNQEVjkFQVbqj
-         K+rjmx9QbZODZRvByri0PjSg9RI4Pa13diWZh3/g4qzCJKdVmJQy1egkwTfqkDYr7k2/
-         k4Ag==
-X-Gm-Message-State: AOAM530+cmdV65AP4iYWjuGwz8nLn1fg0Ejzg+qR4do9iYUGW89UKe7S
-        rjSb6z317ZBS8wSLcQ9i6bUn1yeukjuSHWQZ
-X-Google-Smtp-Source: ABdhPJxSGnm8fSXSKk8KR1FG/lpboSwc0HyN1WAywHVXeyGOcUHqbb+YEA41TVyCGc4vuBrO0ayCFw==
-X-Received: by 2002:adf:f707:: with SMTP id r7mr4514805wrp.175.1628879561564;
-        Fri, 13 Aug 2021 11:32:41 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
-        by smtp.googlemail.com with ESMTPSA id k186sm2382823wme.45.2021.08.13.11.32.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 11:32:40 -0700 (PDT)
-Subject: Re: [PATCH v2] genirq/timings: Fix error return code in
- irq_timings_test_irqs()
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Fri, 13 Aug 2021 14:33:33 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176236.qiye.163.com (Hmail) with ESMTP id E330D780127;
+        Sat, 14 Aug 2021 02:33:03 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALgAlACUD67cbvnqcwuTRaqA.3.1628879583910.Hmail.frank.li@vivo.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-References: <20210811093333.2376-1-thunder.leizhen@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <da85194b-34d1-25b7-3319-e98f52a52be5@linaro.org>
-Date:   Fri, 13 Aug 2021 20:32:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2NSAxLzJdIGYyZnM6IGludHJvZHVjZSBwcm9jL2ZzL2YyZnMvPGRldj4vZnNja19zdGFjayBub2Rl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.231
+In-Reply-To: <0cc57cc5-33b1-cc00-58a4-fce8de22aa35@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210811093333.2376-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from frank.li@vivo.com( [58.251.74.231) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 14 Aug 2021 02:33:03 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Sat, 14 Aug 2021 02:33:03 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlCTUNWGklNHxlPSUMeS0
+        sZVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OQkNLTUJKTk1LN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Nxw6Fzo4Lj9NTBgZDRUKGAwOLykaCjpVSFVKTUlDQ0xCTkNPT0NCVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5KVUxPVUlISllXWQgBWUFNTkNINwY+
+X-HM-Tid: 0a7b40c9fabcd9aekuwse330d780127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2021 11:33, Zhen Lei wrote:
-> Fix to return a negative error code from the error handling case instead
-> of 0, as done elsewhere in this function.
-> 
-> Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-> ---
->  kernel/irq/timings.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> v1 --> v2:
-> Replace -EFAULT with two more appropriate error codes.
-> 
-> diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
-> index d309d6fbf5bd..59affb3bfdfa 100644
-> --- a/kernel/irq/timings.c
-> +++ b/kernel/irq/timings.c
-> @@ -794,12 +794,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
->  
->  		__irq_timings_store(irq, irqs, ti->intervals[i]);
->  		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
-> +			ret = -EBADSLT;
->  			pr_err("Failed to store in the circular buffer\n");
->  			goto out;
->  		}
->  	}
->  
->  	if (irqs->count != ti->count) {
-> +		ret = -ERANGE;
->  		pr_err("Count differs\n");
->  		goto out;
->  	}
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+RnJvbTogQ2hhbyBZdSA8Y2hhb0BrZXJuZWwub3JnPgpEYXRlOiAyMDIxLTA4LTEzIDIyOjQ0OjQ5
+ClRvOiAgWWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+LGphZWdldWtAa2VybmVsLm9yZwpD
+YzogIGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0LGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmcKU3ViamVjdDogUmU6IFtQQVRDSCB2NSAxLzJdIGYyZnM6IGludHJvZHVj
+ZSBwcm9jL2ZzL2YyZnMvPGRldj4vZnNja19zdGFjayBub2RlPk9uIDIwMjEvOC8xMyAyMDozMiwg
+WWFuZ3RhbyBMaSB3cm90ZToKPj4gU0JJX05FRURfRlNDSyBpcyBhbiBpbmRpY2F0b3IgdGhhdCBm
+c2NrLmYyZnMgbmVlZHMgdG8gYmUgdHJpZ2dlcmVkLAo+PiB0aGlzIGZsYWcgaXMgc2V0IGluIHRv
+byBtYW55IHBsYWNlcy4gRm9yIHNvbWUgc2NlbmVzIHRoYXQgYXJlIG5vdCB2ZXJ5Cj4+IHJlcHJv
+ZHVjaWJsZSwgYWRkaW5nIHN0YWNrIGluZm9ybWF0aW9uIHdpbGwgaGVscCBsb2NhdGUgdGhlIHBy
+b2JsZW0uCj4+IAo+PiBMZXQncyBleHBvc2UgYWxsIGZzY2sgc3RhY2sgaGlzdG9yeSBpbiBwcm9j
+ZnMuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBZYW5ndGFvIExpIDxmcmFuay5saUB2aXZvLmNvbT4K
+Pj4gLS0tCj4+IHY1Ogo+PiAtZml4IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdz
+dGFja190cmFjZV9zYXZlJwo+PiAgIGZzL2YyZnMvZjJmcy5oICB8IDM0ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKy0KPj4gICBmcy9mMmZzL3N5c2ZzLmMgfCAyNiArKysrKysrKysr
+KysrKysrKysrKysrKysrKwo+PiAgIDIgZmlsZXMgY2hhbmdlZCwgNTkgaW5zZXJ0aW9ucygrKSwg
+MSBkZWxldGlvbigtKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2ZzL2YyZnMvZjJmcy5oIGIvZnMvZjJm
+cy9mMmZzLmgKPj4gaW5kZXggNjdmYWE0M2NjMTQxLi5jYmQwNmRlYTNjNmEgMTAwNjQ0Cj4+IC0t
+LSBhL2ZzL2YyZnMvZjJmcy5oCj4+ICsrKyBiL2ZzL2YyZnMvZjJmcy5oCj4+IEBAIC0yNCw2ICsy
+NCw4IEBACj4+ICAgI2luY2x1ZGUgPGxpbnV4L3F1b3Rhb3BzLmg+Cj4+ICAgI2luY2x1ZGUgPGxp
+bnV4L3BhcnRfc3RhdC5oPgo+PiAgICNpbmNsdWRlIDxjcnlwdG8vaGFzaC5oPgo+PiArI2luY2x1
+ZGUgPGxpbnV4L3N0YWNrZGVwb3QuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9zdGFja3RyYWNlLmg+
+Cj4+ICAgCj4+ICAgI2luY2x1ZGUgPGxpbnV4L2ZzY3J5cHQuaD4KPj4gICAjaW5jbHVkZSA8bGlu
+dXgvZnN2ZXJpdHkuaD4KPj4gQEAgLTExOSw2ICsxMjEsOCBAQCB0eXBlZGVmIHUzMiBuaWRfdDsK
+Pj4gICAKPj4gICAjZGVmaW5lIENPTVBSRVNTX0VYVF9OVU0JCTE2Cj4+ICAgCj4+ICsjZGVmaW5l
+IEZTQ0tfU1RBQ0tfREVQVEggNjQKPj4gKwo+PiAgIHN0cnVjdCBmMmZzX21vdW50X2luZm8gewo+
+PiAgIAl1bnNpZ25lZCBpbnQgb3B0Owo+PiAgIAlpbnQgd3JpdGVfaW9fc2l6ZV9iaXRzOwkJLyog
+V3JpdGUgSU8gc2l6ZSBiaXRzICovCj4+IEBAIC0xNzg2LDYgKzE3OTAsOCBAQCBzdHJ1Y3QgZjJm
+c19zYl9pbmZvIHsKPj4gICAJdW5zaWduZWQgaW50IGNvbXByZXNzX3dhdGVybWFyazsJLyogY2Fj
+aGUgcGFnZSB3YXRlcm1hcmsgKi8KPj4gICAJYXRvbWljX3QgY29tcHJlc3NfcGFnZV9oaXQ7CQkv
+KiBjYWNoZSBoaXQgY291bnQgKi8KPj4gICAjZW5kaWYKPj4gKwlkZXBvdF9zdGFja19oYW5kbGVf
+dCAqZnNja19zdGFjazsKPj4gKwl1bnNpZ25lZCBpbnQgZnNja19jb3VudDsKPj4gICB9Owo+PiAg
+IAo+PiAgIHN0cnVjdCBmMmZzX3ByaXZhdGVfZGlvIHsKPj4gQEAgLTE5OTcsOSArMjAwMywzNSBA
+QCBzdGF0aWMgaW5saW5lIGJvb2wgaXNfc2JpX2ZsYWdfc2V0KHN0cnVjdCBmMmZzX3NiX2luZm8g
+KnNiaSwgdW5zaWduZWQgaW50IHR5cGUpCj4+ICAgCXJldHVybiB0ZXN0X2JpdCh0eXBlLCAmc2Jp
+LT5zX2ZsYWcpOwo+PiAgIH0KPj4gICAKPj4gLXN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfc2JpX2Zs
+YWcoc3RydWN0IGYyZnNfc2JfaW5mbyAqc2JpLCB1bnNpZ25lZCBpbnQgdHlwZSkKPj4gK3N0YXRp
+YyB2b2lkIHNldF9zYmlfZmxhZyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksIHVuc2lnbmVkIGlu
+dCB0eXBlKQo+PiAgIHsKPj4gICAJc2V0X2JpdCh0eXBlLCAmc2JpLT5zX2ZsYWcpOwo+PiArCj4+
+ICsJaWYgKHVubGlrZWx5KHR5cGUgPT0gIFNCSV9ORUVEX0ZTQ0spKSB7Cj4KPkhtbS4uLiBJIGRv
+bid0IGtub3cgd2hhdCB0byBzYXkuLi4KClNvcnJ5LCBtYXliZSB0aGVyZSBpcyBhIHByb2JsZW0g
+d2l0aCBteSB2aW0gY29uZmlndXJhdGlvbi4KVGhlIHN0cmFuZ2UgdGhpbmcgaXMgdGhhdCBjaGVj
+a3BhdGNoLnBsIGRpZG4ndCBjaGVjayBpdCBvdXQuCgo+Cj4+ICsJCXVuc2lnbmVkIGxvbmcgZW50
+cmllc1tGU0NLX1NUQUNLX0RFUFRIXTsKPj4gKwkJZGVwb3Rfc3RhY2tfaGFuZGxlX3Qgc3RhY2ss
+ICpuZXc7Cj4+ICsJCXVuc2lnbmVkIGludCBucl9lbnRyaWVzOwo+PiArCQlpbnQgaTsKPj4gKwo+
+PiArCQlucl9lbnRyaWVzID0gc3RhY2tfdHJhY2Vfc2F2ZShlbnRyaWVzLCBBUlJBWV9TSVpFKGVu
+dHJpZXMpLCAwKTsKPj4gKwkJbnJfZW50cmllcyA9IGZpbHRlcl9pcnFfc3RhY2tzKGVudHJpZXMs
+IG5yX2VudHJpZXMpOwo+PiArCQlzdGFjayA9IHN0YWNrX2RlcG90X3NhdmUoZW50cmllcywgbnJf
+ZW50cmllcywgR0ZQX0tFUk5FTCk7Cj4+ICsJCWlmICghc3RhY2spCj4+ICsJCQlyZXR1cm47Cj4+
+ICsKPj4gKwkJLyogVHJ5IHRvIGZpbmQgYW4gZXhpc3RpbmcgZW50cnkgZm9yIHRoaXMgYmFja3Ry
+YWNlICovCj4+ICsJCWZvciAoaSA9IDA7IGkgPCBzYmktPmZzY2tfY291bnQ7IGkrKykKPj4gKwkJ
+CWlmIChzYmktPmZzY2tfc3RhY2tbaV0gPT0gc3RhY2spCj4KPnN0YWNrIG5lZWQgdG8gYmUgcmVs
+ZWFzZWQgaGVyZT8KCldlIGNhbid0IHJlbW92ZSBzdGFjayBmcm9tIGRlcG90LCBhcyB3ZSBzdG9y
+ZSB0aGVtIGNvbnRpZ3VvdXNseSBvbmUgYWZ0ZXIKYW5vdGhlciBpbiBhIGNvbnRpZ3VvdXMgbWVt
+b3J5IGFsbG9jYXRpb24uCgpPciB3ZSBjYW4gbGltaXQgdGhlIHJlY29yZGVkIHN0YWNrIG51bWJl
+ci4KCiQgZ3JlcCAtbnIgIlNCSV9ORUVEX0ZTQ0siIGZzL2YyZnMvIC0taW5jbHVkZT0qLmMgLS1p
+bmNsdWRlPSouaCB8IHdjIC1sCjUzCiQgZ3JlcCAtbnIgImYyZnNfYnVnX29uIiBmcy9mMmZzLyAt
+LWluY2x1ZGU9Ki5jIC0taW5jbHVkZT0qLmggfCB3YyAtbAoxMzUKClNpbmNlIHdlIG9ubHkgaGF2
+ZSB0d28gaHVuZHJlZCBwb3NzaWJsZSBzZXR0aW5ncyBoZXJlLCBjb25zaWRlcmluZyB0aGF0CnRo
+ZSBzYW1lIHN0YWNrIHdpbGwgbm90IGJlIHJlY29yZGVkLCBhbmQgdGhlIHByb2JhYmlsaXR5IG9m
+IG9jY3VycmVuY2Ugd2lsbApub3QgYmUgaGlnaCwgc28gaXQgaXMgYWNjZXB0YWJsZSBub3QgdG8g
+cmVsZWFzZT8KCklmIHRoaXMgaXMgdGhlIGNhc2UsIHRoZSBzdWJzZXF1ZW50IGFsbG9jYXRpb24g
+ZG9lcyBub3QgbmVlZCB0byBiZSByZWxlYXNlZC4KClRoeCwKWWFuZ3Rhbw0KDQo=
