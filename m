@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC8D3EB5C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA73EB5CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240408AbhHMMxc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Aug 2021 08:53:32 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:34646 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhHMMxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:53:31 -0400
-Received: by mail-vs1-f50.google.com with SMTP id l22so5928953vsi.1;
-        Fri, 13 Aug 2021 05:53:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GUkLMwD2j+LMs+Mhg8retAXqFr+2fCyVciaZId7XXMA=;
-        b=A+DzMKh4SaI8IKueMe35NE6ASnRVifB/NBYZX/KGnlJTV2kWkfMtpUDCQzWd3qjVJO
-         Wy1VM4v21eEHWU1DfNhtEeV7Fy6cqj2zE6FVwmMBX4WtnbaechVx9fBRbSi2KkBHtUDM
-         ja7sx7g8zMX0g4zN5vAaOLt0JchtWm4Tznc7buTYRItM/C+WTGrmJ7Rv4zD+w6Kbzm95
-         IFOUpwTj1MhzlQF6RWNFRVHnsktUvnoxDOw0IC6BJOHcxUXWf3d2K9QbxK9fz7NWoATu
-         7wOZEe15THA+ykF6m2QwCsZqtJJjHJkamhPFTVVu/U4vcKqVcXY2nfD94t9iLynowXRj
-         LFyw==
-X-Gm-Message-State: AOAM533CYkLOQ078pKB3UPE6RzN1mGLSSWnt8FkimyOtbv2I/a6HFngl
-        uRAcMx2mYV8id8UPumpqQLfqhJXRHEMbImvt+To=
-X-Google-Smtp-Source: ABdhPJzjK6cDtV6QbCobPoCPv+kseDVbo2qNoxZBSAFh+8+1qixu6jaaer/OLjhFttaw7VgR0TV8HigL8Np+ZSkG7+k=
-X-Received: by 2002:a05:6102:e59:: with SMTP id p25mr1482758vst.26.1628859183649;
- Fri, 13 Aug 2021 05:53:03 -0700 (PDT)
+        id S240481AbhHMMyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:54:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233416AbhHMMyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 08:54:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 210C560F91;
+        Fri, 13 Aug 2021 12:53:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628859223;
+        bh=xpS807ZsmUqY4wbbSw6MbqCagTEFVPHlwkp24KlCBRw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=L4OKBlfk2A+1+BR3+zqIganxq6pQ7QNQEY+R8SyOMmwSQOciazevmv1RnQDKHCZTZ
+         IODAYTRzF0UxGu6wAbhD0TvzN8IWvSh/Y2Mwczfu85PxU1qn2vMPwEG3pLrCdfhEqk
+         CfHaIp15QLs20Gt4BFGXqhfRw6SArSp+EmjBj1FkvMjodFVxmS7ZQ5exbtt591JNc5
+         Su1hnJ97Dx+LYUOarYiH4ocoKxLxBVD/T4x7mdeBd8gX4ZmSp340dDk0PcChyd6LPG
+         JvFuDfvJrq8c+DxYXmE83b4xf/3D9H7MroKFkp793q8lfyqc7cX0Q5wD8MeLPNAaW4
+         2j7Idwp4gNBEQ==
+Message-ID: <a786d17996459d1ed5530d7f193013c04d183e8c.camel@kernel.org>
+Subject: Re: [PATCH] netfs: Fix READ/WRITE confusion when calling
+ iov_iter_xarray()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com
+Cc:     linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 13 Aug 2021 08:53:41 -0400
+In-Reply-To: <162729351325.813557.9242842205308443901.stgit@warthog.procyon.org.uk>
+References: <162729351325.813557.9242842205308443901.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-References: <20210811095759.1281480-1-geert@linux-m68k.org>
- <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
- <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com> <CAHp75VeNyHUmcU7GPnP8woRcDErDNQ5M3FHQGpLnhUoL5qTnLQ@mail.gmail.com>
-In-Reply-To: <CAHp75VeNyHUmcU7GPnP8woRcDErDNQ5M3FHQGpLnhUoL5qTnLQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 13 Aug 2021 14:52:52 +0200
-Message-ID: <CAMuHMdVFOu6EXKqkiLgBp3n8Oujm+uSpFn-ximtp+37TOZSp9A@mail.gmail.com>
-Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Mon, 2021-07-26 at 10:58 +0100, David Howells wrote:
+> Fix netfs_clear_unread() to pass READ to iov_iter_xarray() instead of WRITE
+> (the flag is about the operation accessing the buffer, not what sort of
+> access it is doing to the buffer).
+> 
+> Fixes: 3d3c95046742 ("netfs: Provide readahead and readpage netfs helpers")
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: linux-cachefs@redhat.com
+> cc: linux-afs@lists.infradead.org
+> cc: ceph-devel@vger.kernel.org
+> cc: linux-cifs@vger.kernel.org
+> cc: linux-nfs@vger.kernel.org
+> cc: v9fs-developer@lists.sourceforge.net
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-mm@kvack.org
+> ---
+> 
+>  fs/netfs/read_helper.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+> index 0b6cd3b8734c..994ec22d4040 100644
+> --- a/fs/netfs/read_helper.c
+> +++ b/fs/netfs/read_helper.c
+> @@ -150,7 +150,7 @@ static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
+>  {
+>  	struct iov_iter iter;
+>  
+> -	iov_iter_xarray(&iter, WRITE, &subreq->rreq->mapping->i_pages,
+> +	iov_iter_xarray(&iter, READ, &subreq->rreq->mapping->i_pages,
+>  			subreq->start + subreq->transferred,
+>  			subreq->len   - subreq->transferred);
+>  	iov_iter_zero(iov_iter_count(&iter), &iter);
+> 
+> 
 
-On Thu, Aug 12, 2021 at 2:33 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Wednesday, August 11, 2021, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Wed, Aug 11, 2021 at 12:48 PM Marek Behún <kabel@kernel.org> wrote:
->> > On Wed, 11 Aug 2021 11:57:59 +0200
->> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> > > Instantiate a single LED based on the "led" subnode in DT.
->> > > This allows the user to control display brightness and blinking (backed
->> > > by hardware support) through the LED class API and triggers, and exposes
->> > > the display color.  The LED will be named
->> > > "auxdisplay:<color>:<function>".
->> > >
->> > > When running in dot-matrix mode and if no "led" subnode is found, the
->> > > driver falls back to the traditional backlight mode, to preserve
->> > > backwards compatibility.
->> > >
->> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> >
->> > Reviewed-by: Marek Behún <kabel@kernel.org>
->>
->> Thanks!
->>
->> > BTW, this driver does not need to depend on OF, methinks.
->> > The few instances of properties reading can be
->> > easily rewritten to device_* functions (from include/linux/property.h).
->> > The of_get_child_by_name() can become device_get_named_child_node().
->> >
->> > Geert, what do you think?
->>
->> Sure, that can be done later, when an ACPI user appears?
->
-> Actually with PRP0001 approach any of compatible driver may be used onACPI platform. So, what you are saying can be interpreted the way “we don’t care about users on ACPI based platforms”. If it is the case, then it should be told explicitly.
+That's better!
 
-I think you're interpreting too much ;-)
-My point is simply:
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
->> The dependency on OF was pre-existing, and this series is already
->> at v5.
-
-If any OF compatible driver can now be used on ACPI platforms, perhaps
-this should be handled at the API level? I.e. the distinction between
-OF and device properties should be dropped completely, and all drivers
-be converted mechanically in one shot, instead of a gradual ad-hoc
-conversion being sneaked in through other series like this one?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
