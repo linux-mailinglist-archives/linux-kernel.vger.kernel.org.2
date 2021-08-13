@@ -2,179 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7219B3EBB12
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7993EBB1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhHMRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:09:49 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:46433
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231602AbhHMRJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:09:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q7h9cEa72/P/Z/VtiliY8vYqmsNze6YaEjbj40NlKqyU32cToOYk1F3hjKipqb8S8qCM73S1DXAcoDU819ugr2h6jNWmL0apyxqa0xudm3f3SCgxRLGvxXlhHiy0dSj0rkB5hByk8THe4LvsEct+rHBCiwJirBmvb51TtlC7FLVDYkzvRRmsY1lslXkgXyuhwwAvM7eQTwPaRfN8j+ifOBNy+j2m55nE0+pufj7TCqhUFl+uztz5UDMMQI1v2ifiGK1geEoo06PvowMsLrU9XGjqsIN5OUj9cE/h39GLknj3zYbcSQt/qpe+s03ZViBbrBEDPH7EZ25tXfXoYWEHcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Oux9q7Lp6wTWTOZ5u3rsrrwsvPKJtDqU4/5IhYig+k=;
- b=bAw5qhpycdPLllJdjNHYLcfw2UBgJ3GqHKda1+QXDSb9+f0FvT9F66z2Nf0dy0/nDgpfHZFamkhwtugzG5O2qcSqX0vsD8oC69uSIU5n/qSvM/McxCPDYMHGT9/fdt5yDk9oeIWqQWdE/EeYPBDbDr0Dw5rYfPrJEkGaL0eCmJ6QbewAjRx5/iMZYN3BRUY3fmjL3FMK/nF9VV6eR2JW8fUQZtoM+BzUiQAOYs6vR8Mzej3zazK+CFiilJQtV6mENf9LVEUEhKqzz2GcnR5rwJ5ykWO403mPv0x7LdQUOg7slFiC+m1nhAHrhcm+OmyCbVOGTp29T5KnDT5u0EuQmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Oux9q7Lp6wTWTOZ5u3rsrrwsvPKJtDqU4/5IhYig+k=;
- b=hNxz02+dfT3jAz1uT+MXQ2eeAalXdF4cDQOEO6RPB3jG6LdVLQZ5OPxwACeQ3FoGAO+lQDVd5ZrsQcPmHWmmIWPcBCiOUPvuRz86mfXaGM0YELPI+d4Wp5JO1ZQK77rGZtCtgKM1tvo/Ngyf3STzn1vp5z5hSueJdYUXSFOHDBE=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5344.namprd12.prod.outlook.com (2603:10b6:5:39f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Fri, 13 Aug
- 2021 17:09:03 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
- 17:09:03 +0000
-Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
- with prot_guest_has()
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>
-References: <cover.1627424773.git.thomas.lendacky@amd.com>
- <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
- <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
- <4b885c52-f70a-147e-86bd-c71a8f4ef564@amd.com>
- <20210811121917.ghxi7g4mctuybhbk@box.shutemov.name>
- <0a819549-e481-c004-7da8-82ba427b13ce@amd.com>
- <20210812100724.t4cdh7xbkuqgnsc3@box.shutemov.name>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <943223d5-5949-6aba-8a49-0b07078d68e1@amd.com>
-Date:   Fri, 13 Aug 2021 12:08:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210812100724.t4cdh7xbkuqgnsc3@box.shutemov.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0157.namprd13.prod.outlook.com
- (2603:10b6:806:28::12) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S232365AbhHMROI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:14:08 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50768
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229728AbhHMRLX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:11:23 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 06FEC3F247
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 17:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628874607;
+        bh=8FqkbZBTRWV0AxSlmaQKOjvfV2RVpFuLWDlormJNSBQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=oeXPyfu99q37Os4lIEpe0ZmiyYuZqthT7GAn78dv9tKkMR05Wxnsh4rmJmlS6Df5F
+         wQtT1q4P4vhg8jIuYdyjDgLko/FVGrL9f3Nuta761hqQtwsX4tJ4my2cvLBAE43I0v
+         gl8gJ3JxuACnRjXbO9bWeSbOzUewychRnufrFezoTma8INeMrpMlAL0DB2ZEX4WRgp
+         5i5IYgWQjZZb+UkKq5Q4j1hCDUUrLtgRPpYpmgamtR1hMb6s69Hf9Xpe6mtn6IVcgI
+         DXHrepdZfZCSCG5xlVzbhqrqpJf5uP3Ed2U3QKXyVmBn1v/OWd+iXyUu1XMWQBWyR1
+         whMparKiDIB/w==
+Received: by mail-io1-f69.google.com with SMTP id o8-20020a0566021248b029058d0f91164eso5722116iou.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 10:10:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8FqkbZBTRWV0AxSlmaQKOjvfV2RVpFuLWDlormJNSBQ=;
+        b=KB7FweBeiMvmkYHku+w/raY/pBdqE+vtXobVUUxqN5LKOHLZDNU/EI8FQIz2APEiIQ
+         +iVLN4Qy5wu7H1pLc6vMyR060xEErGYF4TWi7XuQEqg+xTOkh7rwEZgsgoVBrww9c2a5
+         ojUf6vi/aWa441rIAGrVJOZTdB1wjcFOeqUsFJ16R/VC7ARpiTOGq8MybQDaeQBEjsg8
+         VZIrrIShd1ex3rq1AbSWac6q5OcFEniGe7gymsC7WA29LHErPAO5IU0LGlZM9ANIc6Tx
+         SBTf4cUFDg8RaySBPuvaFr5LdvKwYtxShBRm64T6j9vCWOq6QBW8pCCnw26PHJ9QUwFh
+         r1OQ==
+X-Gm-Message-State: AOAM532jq8OyBPSi7fO6nmHAIW6dUSfBzgW6ttIKiAJwCoDqiPe8V0h1
+        zLcIVRC/QIwTGrj1tg0D1b50cVW3g1qIO0BiW84ENST4zmEmZSJd3ggODBDPSgZ5ljM7hKZdR57
+        mJNNSzuevPCoXbV35OztLcGGSos+vA1lKj8yhbev+gcdEaBfCTgRLXw2o/g==
+X-Received: by 2002:a6b:8f08:: with SMTP id r8mr2777987iod.42.1628874605865;
+        Fri, 13 Aug 2021 10:10:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVux983Ruh0XqE6sNH39w7EPP8QIhYytDywc1JCFiM2xWArPpRtEv2c5H6lqf0CelaOEXDsCbHjlOsELavFUA=
+X-Received: by 2002:a6b:8f08:: with SMTP id r8mr2777975iod.42.1628874605615;
+ Fri, 13 Aug 2021 10:10:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9PR13CA0157.namprd13.prod.outlook.com (2603:10b6:806:28::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.11 via Frontend Transport; Fri, 13 Aug 2021 17:09:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50889268-2304-4264-f1dc-08d95e7d0d28
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5344:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB53444D5E8E6C3632AF33E92FECFA9@DM4PR12MB5344.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q63veiVi9Sd+d5FxVHDqXmQrNFjPeMriTBiUPjzpEXdDLMyhuXi8KWcHxW7/UucnVh83s+milQzv3+iqqvLtYUgYayIT7ww/ubkUcGfrsRWfJViKJWIAb3tiG86XVhRtW8+aqZhLs9oTUVPi5jCX8oqbZ8ELzuY3ztB7Wy7Cj/tMYdBiMJtx7keiPVKDtQCJs4D1dCbrwZFqjLp8FjHoEYvvjUQP0iTyGJrokucNOQRCJZ0n22WwvpIcJAy+8H9n6quKBXw6gkgjy1ybayInuZ5+V1svrmUMut7qRwUuneZUnqgW50Jcmx8Knfl/lxYJI1GE369ENoNMoWmruU4Ql9zGIxLlasAsQu2Dr/FIDzrw6s9ZI/GJm+uoyaJr9CCiMv1Py2zlw2wvBG2BrTEnsAPcNcH28F5YIMl5czSMGOoJtmZstS96wnCAv/ORKycOut7XaPdugVLX5QM5MGeKs+0lq1t/Fbx0vnLu3F3eiHj79n1cIiE/T2GxwDIMfV1BXnVMXh0CRsqvY/bF/6UFnzxtrBbo307UO3rfzDtxrTWEchnQ79dQizP6/2K6AuC8tVoR3JG0CH66yj8jEb/2kpXtjjTLXUR9FvmPAA02BvsDu6c6kzydm7MMOylM6QomUUYb6RiSg9OlOaCa2U2ZSbo9whUXnGq3PPO48zQLToNksr7sAJ+iM+lZhWNvrfIhEHexeGooQjmxlFbat6z7aRU7sAc2s7uGQMyzwjTFRg0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(86362001)(8676002)(2616005)(5660300002)(31686004)(54906003)(2906002)(38100700002)(31696002)(6506007)(36756003)(53546011)(6916009)(6512007)(478600001)(8936002)(83380400001)(4326008)(7406005)(186003)(7416002)(6486002)(26005)(956004)(316002)(66476007)(66556008)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3pETFlsM01tdm1WMEdtdUgvcUExSkROM09LWXcyS3ZyNVJjeENabnJEcmV2?=
- =?utf-8?B?aDhNZUM2QzU4ZGkyUUVOSVdzclZRdXdGUDdHYldibk82bHpZeHFFYmxDVmVR?=
- =?utf-8?B?dEx6bHc5MEVjd2FnaGJ3WitHZzJlRzZyVzlhamhzSWtBVlRkVFBQWmZ5UGxr?=
- =?utf-8?B?V3hCNk05eHZtYkpET2k1MGlOMTdQeTg0MU1kU0kxLzlmeG83NDhvME5FMzdx?=
- =?utf-8?B?TjFpZEJWcmlNY3hwOHNyRUdjTWdIL1RRWklYZmlZMTRzenBsZDJCWVNLeWIx?=
- =?utf-8?B?aGgwMTNxNzdob2lDTGdFcW5ZZ2Fod0pHT1R6akRTMlZURi93VktEMzZvaWhM?=
- =?utf-8?B?eUFXMFdDeWplVC84dk9CZjJmZW1GT0EvYi94WVAxS09kTXhtcFlQU0VwdVpz?=
- =?utf-8?B?eTBlQ2NZLzVEYzloWlVZUVBYem1Sb2JYQStNRkF6WHZBbXdVRmZvaEFUZDRJ?=
- =?utf-8?B?Um03bk84Mm41NWhNd3FVSGxkMHBycno1OElDalppdXdpYnpWajVLZzNSbnNm?=
- =?utf-8?B?NnVCK3lpNWJuVEIwS1h4dWw2QU82UFI2dnI0NDJqYmVyUjczbWlyZnUyV3Js?=
- =?utf-8?B?bXhkbSt0RDNWcm1hRFphQVg2SlV1NWdJVFZSN0FQNVM1L0xQRWdtVmpZSTJE?=
- =?utf-8?B?ZTVJN3llSXhveWxWSGJrVTNjbTNxMWwxeXVnNkZmUEE1NEE4SDA0enNWVEhu?=
- =?utf-8?B?eGJlYTU4VmV5UHpBVXZWQUd6WVhjK09zSFRyelpQeGlnTVZ3NU9pU093VTJR?=
- =?utf-8?B?ZTFZbSsvR0VxSi94V0JKVDVDdytRU01Qb1BSaVBQN2VZSGNRM28rYVpGOHAv?=
- =?utf-8?B?KzZTdnU0RzYxODE5MVpRb25uR0poRXhmTHV1SW13M1Z6S3lvQVd6Q1VuWDIv?=
- =?utf-8?B?dWtLcDFiZFkyVUQ1Y2pGa1BvZGlIS1JpdVJMWFJzaEZlN2hGRVoyejErQllU?=
- =?utf-8?B?YkhhRFhEL1pyMFZhTUlpc3p3ZU9jT1QxbU5LTjJ5SWY1dnJNWUlIRVdFTnZw?=
- =?utf-8?B?WUIrQ05xQXQ2UkZDSDlVMXhqS2pINk1Icnc0c2gwZUs2ZEtQNVlpUDVtRitv?=
- =?utf-8?B?dkQ4Zy81VStWU2x1YTRrNjlCRHV4Uk1kN1BXNTRvUnpKeHprNHorL3NBTzNY?=
- =?utf-8?B?T3lHVis5WC9WV1BmdE9KSHRxMEtrakV5K3ZubkhRYlM3cjE2ckovYTE5VEIr?=
- =?utf-8?B?YnFXWHd4RjNuUmd5VFcydVdTaWpQNjFWVENsLzJ0MGlQcjV4NUZ5eTVDeEt0?=
- =?utf-8?B?R09Qd0hLTUkrSE5Celhucm1WNkF1NGl2MmVzYTEyeVM0aGpKeGdPcDlWZEFG?=
- =?utf-8?B?T2Y0RTh5YXh5OTlXbWI1OGgxd24wMS9zN1FnelpnaGVhdUt2bGtLUVBhdy9u?=
- =?utf-8?B?b2gyZWFFUnVnZTZCZVkxaHB3aklMR3dpd3ZZbGhmT1JIak1JT1hzZCtBMmhB?=
- =?utf-8?B?bklyR2VMRHJHeFNJeXpvR0pwU3FGamtSRlJpMy83dUJjaWRyS3VZN011K3Zm?=
- =?utf-8?B?bE9IRU40cUMrcDcvNlpSSmJSVDNGbEZHVE5hMlVxcjJqUXpaMFRuRUdWV3FY?=
- =?utf-8?B?UHl4K3BabVRSakw0V1VtbVU5THp2MWU1V09Cb3Z0MFQ1dUFCZjh4eHFGbys2?=
- =?utf-8?B?a2x2UnlNQmY1emttd3pSNmowaEFNZzNaOVE2Vi9lYndQbUpYTFg0NndFUTJG?=
- =?utf-8?B?Zkw3ZEpGSkl5akREMUVZd1VXcjZYRTM0VUtVTHNYQk5lWEtaTlRvK2VyTFZL?=
- =?utf-8?Q?xPclah53KtKOSImQbvJ5QZ5voq8Am7B6fErogyk?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50889268-2304-4264-f1dc-08d95e7d0d28
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 17:09:03.5929
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: its5y84wE4atTYo1NDVSaH7SF7GU5qqBNtjEwyCJTBnY3K7m3SwYCf2Gp8qYKdn9AGpktMFWQT5x9dIC+X30Ag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5344
+References: <20210812123433.27871-1-dimitri.ledkov@canonical.com> <CAOnJCULTxFmRbpw4wp7SYN8EJxFhSN5J04QDE=cfxLAB01ZOFA@mail.gmail.com>
+In-Reply-To: <CAOnJCULTxFmRbpw4wp7SYN8EJxFhSN5J04QDE=cfxLAB01ZOFA@mail.gmail.com>
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Date:   Fri, 13 Aug 2021 18:09:29 +0100
+Message-ID: <CADWks+bVr8OcrfeMzMCPJ15G-y9cGpbb-2+1_AGU4Y2QOQjjBg@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: prevent sbi_send_cpumask_ipi race with ftrace
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Pierce Andjelkovic <pierceandjelkovic@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 5:07 AM, Kirill A. Shutemov wrote:
-> On Wed, Aug 11, 2021 at 10:52:55AM -0500, Tom Lendacky wrote:
->> On 8/11/21 7:19 AM, Kirill A. Shutemov wrote:
->>> On Tue, Aug 10, 2021 at 02:48:54PM -0500, Tom Lendacky wrote:
->>>> On 8/10/21 1:45 PM, Kuppuswamy, Sathyanarayanan wrote:
-...
->>> Looking at code agains, now I *think* the reason is accessing a global
->>> variable from __startup_64() inside TDX version of prot_guest_has().
->>>
->>> __startup_64() is special. If you access any global variable you need to
->>> use fixup_pointer(). See comment before __startup_64().
->>>
->>> I'm not sure how you get away with accessing sme_me_mask directly from
->>> there. Any clues? Maybe just a luck and complier generates code just right
->>> for your case, I donno.
->>
->> Hmm... yeah, could be that the compiler is using rip-relative addressing
->> for it because it lives in the .data section?
-> 
-> I guess. It has to be fixed. It may break with complier upgrade or any
-> random change around the code.
+Hi,
 
-I'll look at doing that separate from this series.
+On Thu, Aug 12, 2021 at 4:53 PM Atish Patra <atishp@atishpatra.org> wrote:
+>
+> On Thu, Aug 12, 2021 at 5:36 AM Dimitri John Ledkov
+> <dimitri.ledkov@canonical.com> wrote:
+> >
+> > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> >
+> > ftrace will patch instructions in sbi_send_cpumask_ipi, which is going to
+> > be used by flush_icache_range, leading to potential races and crashes like
+> > this:
+> >
+> > [    0.000000] ftrace: allocating 38893 entries in 152 pages
+> > [    0.000000] Oops - illegal instruction [#1]
+> > [    0.000000] Modules linked in:
+> > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-1014-generic #14-Ubuntu
+> > [    0.000000] epc: ffffffe00000920e ra : ffffffe000009384 sp : ffffffe001803d30
+> > [    0.000000]  gp : ffffffe001a14240 tp : ffffffe00180f440 t0 : ffffffe07fe38000
+> > [    0.000000]  t1 : ffffffe0019cd338 t2 : 0000000000000000 s0 : ffffffe001803d70
+> > [    0.000000]  s1 : 0000000000000000 a0 : ffffffe0000095aa a1 : 0000000000000001
+> > [    0.000000]  a2 : 0000000000000002 a3 : 0000000000000000 a4 : 0000000000000000
+> > [    0.000000]  a5 : 0000000000000000 a6 : 0000000000000004 a7 : 0000000052464e43
+> > [    0.000000]  s2 : 0000000000000002 s3 : 0000000000000001 s4 : 0000000000000000
+> > [    0.000000]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+> > [    0.000000]  s8 : ffffffe001a170c0 s9 : 0000000000000001 s10: 0000000000000001
+> > [    0.000000]  s11: 00000000fffcc5d0 t3 : 0000000000000068 t4 : 000000000000000b
+> > [    0.000000]  t5 : ffffffe0019cd3e0 t6 : ffffffe001803cd8
+> > [    0.000000] status: 0000000200000100 badaddr: 000000000513f187 cause: 0000000000000002
+> > [    0.000000] ---[ end trace f67eb9af4d8d492b ]---
+> > [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+> > [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> >
+> > Where ffffffe00000920e lies in the middle of sbi_send_cpumask_ipi.
+> >
+> > Reproduced on Unmatched board using Ubuntu kernels. See
+> > https://people.canonical.com/~xnox/lp1934548/ for sample images,
+> > kernels, debug symbols.
+> >
+> > BugLink: https://bugs.launchpad.net/bugs/1934548
+> > Reported-by: Pierce Andjelkovic <pierceandjelkovic@gmail.com>
+> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+> > cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > cc: linux-riscv@lists.infradead.org
+> > cc: stable@vger.kernel.org
+> > ---
+> >  arch/riscv/kernel/sbi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> > index 7402a417f38e..158199865c68 100644
+> > --- a/arch/riscv/kernel/sbi.c
+> > +++ b/arch/riscv/kernel/sbi.c
+> > @@ -562,7 +562,7 @@ long sbi_get_mimpid(void)
+> >         return __sbi_base_ecall(SBI_EXT_BASE_GET_MIMPID);
+> >  }
+> >
+> > -static void sbi_send_cpumask_ipi(const struct cpumask *target)
+> > +static void notrace sbi_send_cpumask_ipi(const struct cpumask *target)
+> >  {
+> >         struct cpumask hartid_mask;
+> >
+>
+> flush_icache_range doesn't invoke sbi_send_cpumask_ipi.
+> flush_icache_range->flush_icache_all->sbi_remote_fence_i->__sbi_rfence->sbi_ecall
+>
+> Moreover, sbi.c should be removed from ftrace path as it is compiled
+> with notrace flag after the patch [1]
+>
+> CFLAGS_REMOVE_sbi.o   = $(CC_FLAGS_FTRACE)
+>
+> This solution was proposed as a result of earlier discussion [2] last year.
+>
+> [1] https://patchwork.kernel.org/project/linux-riscv/patch/1608220905-1962-5-git-send-email-guoren@kernel.org/
+> [2] https://lkml.org/lkml/2020/11/3/735
+>
+> The proposed fix probably hiding the root cause somehow.
+>
+> Do you have the patch[1] in your kernel ?
+>
 
-> 
-> BTW, does it work with clang for you?
+We do not. I have applied and tested it, and indeed it resolves the
+boot issue too. And it does make a lot more sense. I see that it and
+its prereq patch did not have CC: stable on them. I will submit them
+to stable, as they are required to have bootable kernels. Thanks a lot
+for the pointers.
 
-I haven't tried with clang, I'll check on that.
+So this patch that I sent is NACKed now.
+-- 
+Regards,
 
-Thanks,
-Tom
-
-> 
+Dimitri.
