@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA703EB121
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14463EB123
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239252AbhHMHMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239230AbhHMHMF (ORCPT
+        id S239281AbhHMHMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:12:50 -0400
+Received: from forward2-smtp.messagingengine.com ([66.111.4.226]:59575 "EHLO
+        forward2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239230AbhHMHMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:12:05 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E95BC061756;
-        Fri, 13 Aug 2021 00:11:39 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GmF934cbfz9sX5;
-        Fri, 13 Aug 2021 17:11:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628838696;
-        bh=rzdZtyoqNdlhNULIYYA8qf3YbQGCby2dBpv50fz3FAs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Qz3VeCn56YXyeY10Sd93/b62OFX5BHZ24j4CtYAkNciXittNMei6SNePrXVaYtgtq
-         V7j9E7AiO4AXhmZyviU+rEDunH60Gyt6RkMxij6h/ALAXCxdbJXZabE8+fpzTu5Qk+
-         C3B/WGsINrlKvHlJTmvBwqgEZ9sHb313/JewuNfSaVBlrOlYhOpCAv+4HYNqQyPj9+
-         uPoxaNgvkp8sGRaRKiwkvaz04Jty50GjUaWSJu/GE3PW3x1aI+8M1nsdbYXGzKrcfO
-         tTprj3A1HBNPz2+vOemTpLA5M8h2sqd0UMliC0/I61LQS1qq2ZnRjv/0OwNa43Ccsx
-         +kno5GWCGwiNA==
-Date:   Fri, 13 Aug 2021 17:11:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the dma-mapping tree
-Message-ID: <20210813171134.4ad7d640@canb.auug.org.au>
+        Fri, 13 Aug 2021 03:12:46 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.nyi.internal (Postfix) with ESMTP id 25FA0194076A;
+        Fri, 13 Aug 2021 03:12:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 13 Aug 2021 03:12:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=IJ84Zz7cXD2dARXk2
+        E4si9LSMTMEPXvMGAWxocLB7k8=; b=KLPKleY+V+TZn7ffDpWBbAMHhDbU5PLd4
+        CGEukJFWJMJ7zseXMfvCsGkDWVB+JlDZkCvkQXLeWg4dh3neJ1756YodHhm6klEP
+        sEVgh3+3vTpDt8hcQhyB4/vRnrn84CHG1g3FfGtK9lAjlAv4cSR6aGOYqFioCo9B
+        PcjhPSw+vhMMDSl8b0jKttvFway/muwGtKvByqBZuWNShdmX5LP5CeNv1hMwC028
+        3ZkTBN4i/+hODlDecP30cGFoJyl2ydSItwmqaknnqo+IwdktqMpZEDp1xqN/wHhd
+        c/poT2PtVokLUiSwvZvG1fMWEtgG1RSptilx/u0bPt1PJoODfp6pA==
+X-ME-Sender: <xms:TxsWYc4F_mQvQqAEI6dKg-QUCj-wNM-lCqfNGfnyD2WiHYampzItEg>
+    <xme:TxsWYd6oPX_dxxN7xCymbvl2cn_W3rvKyrqQQPtJ9UjpN9dcT60bikWeRHEgR07vh
+    z9cohHqkKo-TTAgeJU>
+X-ME-Received: <xmr:TxsWYbeyALtUZhaN4E1HFtJG-opvzR1BgNhzEfx3iSXXwpl_E_3yoqyB4D9q_lBVL6px8GYj-X9BiYOWxmWjtAzkWo1pDoZBTyYYWpm1ie0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeeggdduudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeduhfetvdfhgfeltddtgeelheetveeufeegteevtddu
+    iedvgeejhfdukeegteehheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtghomh
+X-ME-Proxy: <xmx:TxsWYRLuc_fs7O6HqTS3E7Xb_sP6mONlxk1GtGeIDkl61UqwCFUXwg>
+    <xmx:TxsWYQJOHNVJtMx5hiOgAxILBRcTaaLGEURarB0xAIdXid2khuwZhw>
+    <xmx:TxsWYSyf4VEatx40J9CeUX9cDQf25jxvV3IL0fXvRu5Db6JqPwP3yQ>
+    <xmx:UhsWYVgvTlRhDmolQXmesWRyAzGqbNPuaa_CSzOBDQ_nOFjrmcjCDE4gnZs>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Aug 2021 03:12:14 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 94f31bc7;
+        Fri, 13 Aug 2021 07:12:12 +0000 (UTC)
+From:   David Edmondson <david.edmondson@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Matlack <dmatlack@google.com>, x86@kernel.org,
+        kvm@vger.kernel.org, David Edmondson <david.edmondson@oracle.com>
+Subject: [PATCH v4 0/4] KVM: x86: Convey the exit reason, etc. to user-space on emulation failure
+Date:   Fri, 13 Aug 2021 08:12:07 +0100
+Message-Id: <20210813071211.1635310-1-david.edmondson@oracle.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YLaE55UFyg5G90ZRUkeQbju";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YLaE55UFyg5G90ZRUkeQbju
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+To help when debugging failures in the field, if instruction emulation
+fails, report the VM exit reason, etc. to userspace in order that it
+can be recorded.
 
-Hi all,
+The SGX changes here are compiled but untested.
 
-After merging the dma-mapping tree, today's linux-next build (htmldocs)
-produced this warning:
+Sean: if you want me to add your name to patch 3, given that I adopted
+your sample code almost unaltered, please say.
 
-kernel/dma/mapping.c:224: warning: Function parameter or member 'nents' not=
- described in 'dma_map_sg_attrs'
+v4:
+- Update the API for preparing emulation failure report (Sean)
+- sgx uses the provided API in all relevant cases (Sean)
+- Clarify the intended layout of kvm_run.emulation_failure.
 
-Caused by commit
+v3:
+- Convey any debug data un-flagged after the ABI specified data in
+  struct emulation_failure (Sean)
+- Obey the ABI protocol in sgx_handle_emulation_failure() (Sean)
 
-  fffe3cc8c219 ("dma-mapping: allow map_sg() ops to return negative error c=
-odes")
+v2:
+- Improve patch comments (dmatlock)
+- Intel should provide the full exit reason (dmatlock)
+- Pass a boolean rather than flags (dmatlock)
+- Use the helper in kvm_task_switch() and kvm_handle_memory_failure()
+  (dmatlock)
+- Describe the exit_reason field of the emulation_failure structure
+  (dmatlock)
 
---=20
-Cheers,
-Stephen Rothwell
+David Edmondson (4):
+  KVM: x86: Clarify the kvm_run.emulation_failure structure layout
+  KVM: x86: Get exit_reason as part of kvm_x86_ops.get_exit_info
+  KVM: x86: On emulation failure, convey the exit reason, etc. to
+    userspace
+  KVM: x86: SGX must obey the KVM_INTERNAL_ERROR_EMULATION protocol
 
---Sig_/YLaE55UFyg5G90ZRUkeQbju
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ arch/x86/include/asm/kvm_host.h | 10 +++--
+ arch/x86/kvm/svm/svm.c          |  8 ++--
+ arch/x86/kvm/trace.h            |  9 ++--
+ arch/x86/kvm/vmx/nested.c       |  2 +-
+ arch/x86/kvm/vmx/sgx.c          | 16 +++-----
+ arch/x86/kvm/vmx/vmx.c          | 11 +++--
+ arch/x86/kvm/x86.c              | 73 ++++++++++++++++++++++++++-------
+ include/uapi/linux/kvm.h        | 15 ++++++-
+ 8 files changed, 100 insertions(+), 44 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.30.2
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEWGyYACgkQAVBC80lX
-0GzbhQf+N1Q+bUP0L6/3sLzhU+J7aozmnRLKKi0VWMLbJGMX/SehziiPgS5EncI+
-vMva8GPc8T3aHNu/38ZptUXo9C8LDG4RuXrR6mDTdzNRm4yxlZKR/Ubr/Eh6kCh5
-xqL9op1MHZCQqs/dDKkTJcQhLK63ohl2tAiMWoIIL8jF4wFyL+GfQUcPHNDxDJ6Q
-PlElY5nEfz8ABnFfkp/G96MXbYDaYNeactYJUVLIAG7brF5ymC5/gg2EchLnG+7y
-2WQMecb/GhZOQDxBuXtKX+9ZJTyPRlD8a2G1NbxoITT2GSkk0Usjh3HHruUVevkm
-/MfGZGtqTiNQQIFXcoQeFy1s9RPuGQ==
-=iJ5R
------END PGP SIGNATURE-----
-
---Sig_/YLaE55UFyg5G90ZRUkeQbju--
