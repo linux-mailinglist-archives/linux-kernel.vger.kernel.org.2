@@ -2,280 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC053EB732
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954AA3EB735
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241007AbhHMO7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:59:25 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:58672 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240995AbhHMO7W (ORCPT
+        id S241028AbhHMO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:59:30 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:3572 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241019AbhHMO72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:59:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1628866734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g9ouu5+RoAH5oQyO2vQCYm1c3cwUaJgMLT5gpBEaBSY=;
-        b=a7GWDPdfeynW/OF27lJcGBHgwuGZ3rvNRxsB/F1BTO1pRqMhk9oEYA5KnJn61C0MBZay4/
-        lXIB7XBBfb8S/FXItJTxpP6XbYc66yO0dgAc9wBZqRwKuk8cQzP1tVat+UzQvgrv6k6PAQ
-        +DcktHfOfU6HVc8kCzCvoEpxYn3YRmQ=
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01lp2056.outbound.protection.outlook.com [104.47.2.56]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-15-fziMKt4SMc-o61nZKcN6kw-1; Fri, 13 Aug 2021 16:58:52 +0200
-X-MC-Unique: fziMKt4SMc-o61nZKcN6kw-1
+        Fri, 13 Aug 2021 10:59:28 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17DEtkuO010091;
+        Fri, 13 Aug 2021 14:58:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=nIy5kOhV2tmCy63FhT/+hM0XM9wOm94PgL6RWcV/TAM=;
+ b=eJ/YZw8Ad+v4CbUD8jyX1vTl/OT/tmyrHbLqNSI2RqsgXWNN+7XUDgUl1Gx9Ed6vEfx6
+ sAWHWKu5urBBy4QgYeRsE8IAXHDX7EQN/fT6+0WcQuqiayQLXZKYHd7baMF9hd9HaPII
+ EIXWQb2VPIFSPj49kxkid2+xX44iPj1VWm427/NHTYl0KhH5JIZhQ01RaJX3WC/O/M/K
+ Y3v6Vh7mZuDCICKu3ok2TcNa9vF0FNBZhX6gR62Y2t1Msif+PywRFEXqoNlVZ5utpFYA
+ 4mR2dQduLY1DX+LsDMxRQ5a9iMtHQPvIPml4bMglKqte+oPrOB1mlLaaHo4S7YVswMQI 1A== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=nIy5kOhV2tmCy63FhT/+hM0XM9wOm94PgL6RWcV/TAM=;
+ b=bFKe5wHhkOOkbITLsUkL7YyMiWnBpxScOLhy7jy/mYisA7PuGcKdkVzJ9EMxMFjs9bzh
+ rj6kZbEmWUZsVIqXqxCHOGO2KzAI199F5FtvNrR/ikDar5HRKru4B8tM+VpCwv/Mz4xq
+ lp/GRaSFTZzkcXpl0H1/LvMGXHmecg+SEOzMresTIHp1NX4Doi/Co1xgyDsQP86CSqBl
+ wwpYBlec5FnA5e+xLuMhC6FjMJVuzD1TlQmS5XVH+CWJ7j0X5kIDpyM6yNQ1Hyur0dxp
+ epAlmTQ33+c1cpYpIjbF/9+JwTaoXlVCglknj96x3XPcYC35RB5JDCkm0mj4O7h4b+sl Pw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3adsja88kg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Aug 2021 14:58:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17DEuSim046155;
+        Fri, 13 Aug 2021 14:58:53 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by userp3020.oracle.com with ESMTP id 3adrmd7u5u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Aug 2021 14:58:53 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QMGujTw2mp2SpWarWKOhKSBkAlC32X3F4lGYJVjCi3YVaJdlCuhst9zIEL08IGs2Ccx8yFc3W8vA5PXbXCKQNSk/pdZYkR2Ixee/VRksDRqrOxjC8hWR8MIbGcsRhkK6/LZ3a9fYGkiKj1xHZn2HcdCQpm+o1lsZZPkUo0kVpxqO3xnk4kU4Z7fpevm4SlPJt23+aOe8VfSZbQpERRelNLNkF9C5kxuvxwd4MeufarH4edKV+FIVJUVSMwwOLyn3xyds5BMoPDRFi9DtC98Vm3ASENVXTsOTQ77BwymT2ny73wNPr/cZKiAjyJAVsK52yz7y4dUVIgbXXqTCiTuUTw==
+ b=h/EbVSSjAfHiJe6yLkx562gNYZ3wsIAPmuCYfNxM4FkehoGi2RfE03FDomcsZDDAcnFLiuidIUt79b0eDRtIqGfbN2fK91LlZLNMtbnIhOUfh33KXpa9xL2ds7W4C+KtsnDzHxTw+Os+kL0JeyFekK3LXq2alJ5s0DEVHn5Dr34ZuJjyt/DIdKU6uOWBigqrLViOXpDoJwgKroMuU6V9RslsNGqAt6sRnHanOWOD9AMOa5CjfUxI04hFQyLvrPQ6Pq5N1dWvT5zEVEiof1BaZxjop7bVr0nNpnuGSI1v5pSeruQIiZlwbdhCWTI+udQF9xz5vTb7EjIVvDMGhVCAAw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JS8C0pkN0vHQGFwTWdHgix5dvfrtmZmz39hr/iteA84=;
- b=Z69M7ZJjOW07BkiiiGCkjHG2BCnQ6ElpKRTH1nOpW5wDKEi2bGQIONNgzOcUtNAafPYSZ12qKV1gRguG6kYBwXgcwYos+DBR53Q6lArXxB/uDvTXOvlr5T+cqB8U10wZy5GGb8pZL0RPbtawRGzYcRzxhRDSAwhfpVca93KplZxRMTufepE1MPeaopt/lQSLwW2tsU0WH9akXL8meRayA3n4iS0mt54KCejZk4lWgrjU+6ZrO2BBOrYA45hbQR+ytFboaO4HQ3ihFM9+vkQ0nKVhlKbH7sE/p+9G3PznqK9mEjL/5K5hO99EE+VP4nttt8AYGHi7AiiRZNYnNv5GqA==
+ bh=nIy5kOhV2tmCy63FhT/+hM0XM9wOm94PgL6RWcV/TAM=;
+ b=W+muSROD/vRg54sTihfwPGvjL3BhUoUiWb366mNNiYA8Ny25uQP74u81TmSaBBYUgkHSEBJuJOET9wdW7Yju0eAot61YnOZxOHRGZ7CWNmIV8ZpIINNb2opFB9NtV/+m/MGX9GHodYhRub1UbWYlqIKUTOcoklcpqttESbMDrLoNFjIbLSo5Uw+WnDUVl6aqZZOQjZEuzZXikJpoHdM6/Tk5a8eoLCWsmJN2eBlyYH4U5osBRD6ffZwUnekpHKKhhHvBg4VELkj9gD9O4vU0GceFPSnqA964yAf94GRc5ESnExKKf1sMgHcccJcFZapbN13/yFju9+99VkECy4JR7w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com (2603:10a6:803:4::13)
- by VI1PR04MB4528.eurprd04.prod.outlook.com (2603:10a6:803:6f::20) with
- Microsoft SMTP Server (version=TLS1_2,
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nIy5kOhV2tmCy63FhT/+hM0XM9wOm94PgL6RWcV/TAM=;
+ b=uov2IZwLyjUX2xo96tMeW3fXm8apfrlqa7Ua85ezEpZOw6js5xOA+S9AwSRIcvR7nOLsvDEk0d6CecHWAurvd6hWKaymWR/drNvmspkfuePPlWbQuVJrKVLA5cJ2vFXCQK1HjcSx7xBQZa7zNpw4qz4j9nXjFvMAv8MYXYwJHYg=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1248.namprd10.prod.outlook.com
+ (2603:10b6:301:8::9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Fri, 13 Aug
- 2021 14:58:50 +0000
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::504b:de61:1358:c344]) by VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::504b:de61:1358:c344%4]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
- 14:58:50 +0000
-Date:   Fri, 13 Aug 2021 22:58:29 +0800
-From:   Chester Lin <clin@suse.com>
-To:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-CC:     Rob Herring <robh+dt@kernel.org>, s32@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [PATCH 7/8] arm64: dts: s32g2: add memory nodes for evb and rdb2
-Message-ID: <YRaIlYiYH6P7UolW@linux-8mug>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-8-clin@suse.com>
- <17ab7b71-2dbe-0c66-e180-4cc2e8310441@suse.de>
-Content-Type: text/plain; charset=iso-8859-1
+ 2021 14:58:51 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 14:58:51 +0000
+Date:   Fri, 13 Aug 2021 17:58:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: 6pack: fix slab-out-of-bounds in decode_data
+Message-ID: <20210813145834.GC1931@kadam>
+References: <20210813112855.11170-1-paskripkin@gmail.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <17ab7b71-2dbe-0c66-e180-4cc2e8310441@suse.de>
-X-ClientProxiedBy: HK2PR04CA0080.apcprd04.prod.outlook.com
- (2603:1096:202:15::24) To VI1PR0402MB3439.eurprd04.prod.outlook.com
- (2603:10a6:803:4::13)
+In-Reply-To: <20210813112855.11170-1-paskripkin@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::19)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-8mug (118.166.51.198) by HK2PR04CA0080.apcprd04.prod.outlook.com (2603:1096:202:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend Transport; Fri, 13 Aug 2021 14:58:41 +0000
+Received: from kadam (62.8.83.99) by JN2P275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Fri, 13 Aug 2021 14:58:46 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 85ee7560-71a3-4302-9cca-08d95e6adbd8
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4528:
+X-MS-Office365-Filtering-Correlation-Id: 59fba5e9-b2a1-4e06-f5e3-08d95e6adc2e
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1248:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4528D376E81AEB9CA55A8BF8ADFA9@VI1PR04MB4528.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1248C431B018B1AF2DC6A99B8EFA9@MWHPR10MB1248.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:136;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w1qh7jXumogndrMQPuwhadwRBo+n1jz/zKkh3shsO+fv27v0e1ZiCHA4SL0JUMKHGZDsl3wrDgOwU87NcgTgn0f4B7xYA/t3bdUePxXr+8vggyxyxCcY0dZ5wdCJQ/BgWOmuw6+H7WqO7zw2h+q+UaV68vtu+LHwq0O7QJEqkg2r4pxW1qJKpdNLqMznBV0HX2fLgRqi6CPEckKeucBe+WvWPI37+4kpRSC1kW3WKmRJ3ekstVknS/9pSaYl+4jIyuJYWWIWsChSIUmzm/lJdGV2Yu76m5FfHba5sqjiPiN4E7OmXIUz1qtF3McVm3kWv3teX64eGF0T38jbGIZh1pEbezCDCZKLiUoFw9VHzkTnYkh6Q2aD2UpSOHQCerth4wG6aS/pYYZ6tUJKh7My2T5xRYuYwyDNnvT4tvj7pNa+8UjFPH8RhoQotoW5N33jQWhlcylvRtFnHT0qu5M4gx24qR0vAQRuF3J3suDhXszBH1kJPWBdXG4A8lih/u0K+W3JSFnThr59FsD07ae3xHg99SfJfW+M1BrYLfoBu45vnsIFE+mcTtsKHaFyKjqp594ko1DhMZRng0cvCQzKnLyq0GHbHFCMPeFgO/OioHAD5yo/3SUncSOkrNNi7HZ8oYKNgFQy38z2ts5DaVno6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3439.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39850400004)(136003)(346002)(376002)(55236004)(53546011)(54906003)(6666004)(83380400001)(66574015)(6916009)(55016002)(8676002)(9686003)(7416002)(6496006)(186003)(478600001)(5660300002)(2906002)(8936002)(66946007)(4326008)(66556008)(38100700002)(33716001)(66476007)(956004)(316002)(26005)(107886003)(86362001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: aIkOQgJnBXC/weDZ5wCpBNA6NcjqQ8MCPsqZyt7YobuOIKFAuGYyofctCOIod0dwg2kyhD1QIZ5lE78FkZM0fwaYLk9uaTiH0WKckzsmJuANo30Ehg2aRosGbV7vbDxyddEbKGdIMrtxV60QJGJEw4A9HXctQq8K1UGEOpnO+w/24fYXOlInJ6Ne0drG+1x73ZzNWB1Yc+tB5FiTQR9m0Jtxz5GTUx/A+Me/dRtFrIcPDg2mWumKspMTmXrZs6h9uupRRSfz68GcLYFFudW8LwBQox0lZOK/BWiqRWcdlyussGx/GMAHwp3WJahTmTDcE9kXfEXaGGMsw2ch8ejQAcgL3qAV28W4uS79TPkYzTYKwtG6WoKJk1aUlov/mGGuPAr6YV/xo5gTKaZV2ewR19BmxbGnJz/9PfeGpzEVL84KjkTCZTxIyR7Yo9hgfkoB6pspEGRW365ME23sBlZfBsTa8cMNaBYYjOWrvR7a6nFLCbDzMogLKRRlDRoGcY/Q115sn97EZ1xbLVh1Nc3lMDpeYHDs+ZXFTRcO6g6Zyyr8Sc1AEcDOzzEdRtXqQ2Q/vkb0ZEOujBwYGM9/gL0x1Sl56CQCVAXnXP7ign+1Um8Q0fjxsLnx78Vk3m5PE3eV57rxK/HesIdhyo9HkHAbcXLEvcW2vrM/wK+YIg2L0YJQ23MEfCzYJ9yLVxGSeKxsKIhOiTMiSexGc8KykIOlOA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(366004)(396003)(346002)(44832011)(55016002)(6496006)(2906002)(9686003)(5660300002)(956004)(6916009)(1076003)(86362001)(316002)(33716001)(8676002)(26005)(4326008)(52116002)(6666004)(9576002)(66476007)(66556008)(66946007)(38350700002)(38100700002)(8936002)(186003)(33656002)(478600001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L+5xg4kO4n/1YY1/l62fEgIAzf9Vb71HH4zLcF+Y23hoU7njIPhvgV3NsgzU?=
- =?us-ascii?Q?SSW9fwHaWPAbJZtFbU7wrAo8dTCCzwsEtXultaNr0RzSSNPsm1PtRzDkJdfl?=
- =?us-ascii?Q?1eoqTVV5w9ZKaSpOoWASr3jtS00kKErQ0WYhinCUXeylhH5sI/zGJqlhkIJi?=
- =?us-ascii?Q?wRG99ivn+o3NkPSOsAhWmpf666fEgwHiJHtrVHCNLAGOgxKKOv5rgSlQhahm?=
- =?us-ascii?Q?AhMBrlmBL5KrE+Uqqcip9wKN4UlY00Fq8sBZwfBCZw9upwkNIdZOGjqtg4wd?=
- =?us-ascii?Q?IN2Gei3AQJVmp/J8qqmpLv19psLxa+DuBjdvW2mCsGYY33a/LoZHK/xirG9q?=
- =?us-ascii?Q?4zT0tMaIaWXok1+eaFm9J3Dl6IyFu3+whP9eum8hgMXlyH65rkCWt8r2vaKm?=
- =?us-ascii?Q?yCA64FS+KcNPXCQFZjmRmb1l6YX6YeWwB17HSKPkTZHC5S4tXos9lSLFFZCg?=
- =?us-ascii?Q?fc7KeHvHDXrTMEiTjb5zbuzzM9djsnUXCf5x27PeZFT6+WyQz9xeI996yM6f?=
- =?us-ascii?Q?UTOsf17qvpXqzi6NiCfRL2PdxjyOHmQUR8S7IDb98ccbIntc1zLfuAMjzh0w?=
- =?us-ascii?Q?E0R0CA+KXGEoFhjxeiD6UpULxGMzloA6NQrLN/FCfDmuMlKg6Q1VCbo0DgMG?=
- =?us-ascii?Q?MbLfyfR8jRabkN6TjGHB00qpuABIFKEVLTlEYsvm8iC5GKvBXoex5IVY4ojZ?=
- =?us-ascii?Q?NXqBthfTt4wG58mwE/Eq0sDo4ryg+8ju/0Q/YssyD/U0V2KZ/9QTn1uXc9rs?=
- =?us-ascii?Q?mFebDQV8h6K2pBToDUWBJmxa3c+VfIlWlKdfSDJgNaRVipZGgl1RVVPj8hLS?=
- =?us-ascii?Q?Mmu9JTpiWl/TvLnwpcjXR30BM0Hc/+OWAFse6tN6yGZ+BswEsNGxP36qCD54?=
- =?us-ascii?Q?k7J0dxBYOcVn0hw00yP1W+UMZoqcGcBbK4cMDUC1XBXDlYk1tPAtxq0sf5ti?=
- =?us-ascii?Q?uhEY5lvIPp5Ka1xRlOdWMDG7Sqcuv4F9laDCmwybeRRvqyN6br+mSzjC5rZI?=
- =?us-ascii?Q?rPP2QXqsPgWf2BFDwV8r1/PzBl22OurzJdsudmLkalb0ww0k2LgmgDqVQnDk?=
- =?us-ascii?Q?Y27+Jbrz5mJUXXDbQ9O6yDaqJ+u94H1UWRS5S72d+t2/C55DuIyfAzK7qgOs?=
- =?us-ascii?Q?+nz47cO8VkX87z4z0Zyit93r/Gqvis/ag4nmiLle9jsMm3Czyk/Pjo259/l9?=
- =?us-ascii?Q?sEaOoQb8w6ZkgyvjaNS8olDeKDACJQ5dfYXucqoUiJZijNXw/X4Gc4yStO1z?=
- =?us-ascii?Q?dBvk471vQ6UI0MfDrBHQyeC/wfPkOYJSnkMhM6ZF0Bc28COUT13YLanSSQ5H?=
- =?us-ascii?Q?sV9vLvemNi+HOTo4agtaVTfQ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85ee7560-71a3-4302-9cca-08d95e6adbd8
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3439.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Wr5J+8PmVmdWoXuXiWzOsZyQ51o0bxgjE3DixuPKQchAhtH6auPbhYqqCd5p?=
+ =?us-ascii?Q?dc6k80DbyuxWADKmQewP8tVR12Er93Jt4PFCktPze/3hJr4JaE3WxtGimyjQ?=
+ =?us-ascii?Q?bUleyFhgAoU3MvBgXe0BjCv7maF94zMfYybOhIEoV5ae/WL+1YqErUGlYBFA?=
+ =?us-ascii?Q?2LbQdcAziKyGFHvrday4ApQKwSOLxK3yEih1BSXOiYztvq6SFN75OX5DvJIP?=
+ =?us-ascii?Q?ktK+ldp3cAuuyr1HlBNUfTQ6UeDTB0pKA3PGhL0p1b2KIexQPme8eEWeAyXw?=
+ =?us-ascii?Q?F8poPLaaTR7HQy76R5gSkCBBO6LXbCeTdBtRRrJzj9L1XAYSbmUMAdqFyh9d?=
+ =?us-ascii?Q?rhURrRFSPl61nRX80ODUoVG3DFwc4Y8YxRtn0ZaR6et/xyBsUvkXvaH49NLZ?=
+ =?us-ascii?Q?b9kTJOROiyomLPSh2sP/hwWujVTXi6cpO+UVSm9OVwBnrx0pjsaMRpMxuFm4?=
+ =?us-ascii?Q?yUFc2JVBOXfIQGgcu9pdyty9puMth71FHXjYyw7kgwgRI2n9UCa7BY7z63e7?=
+ =?us-ascii?Q?EqDvQj6rhL1yrE+pevvYkyeepujM/MZ3gQTPNplI6nk2APZkiHJQsQGbGG8O?=
+ =?us-ascii?Q?KML92mfJhK2GU6QqP5KFPUQjOU/8J0U67yAlmh2EjoI51+IrFBlsWyX+FzIu?=
+ =?us-ascii?Q?8kL/WdPikTlDG23SWTOoSs62KZJ7qMmtIoWp+/ER6HyPsB6HPQI5brmKMJZ8?=
+ =?us-ascii?Q?vtVaSASTsm9iBN9D/ID3RASpQi8pweAATBggRAEZUprNtO/blf+KWNngWBM5?=
+ =?us-ascii?Q?4Y+osM0kVlelQEDFOfHuPfsRcqs/fQ5tdtaCIuLXhHKn+WhvP89mYDZ2BMrF?=
+ =?us-ascii?Q?eitEQKWSDp90v3vW+YD2QSmjBY8OgYYQFXVtK0z/+PU19bu/d1nsSRxEGYIo?=
+ =?us-ascii?Q?sYxzPIgMYdEbfX04GS3xAHGVCxOt2NYsF+kn493bM4fJrMuW4rS7dvrvbQG1?=
+ =?us-ascii?Q?KAZn7e6F0pJ4ml1+/D0YjWJUs9ENmPOKazTtpxYRt+wDg23NFgX7djCfBhaR?=
+ =?us-ascii?Q?NJWb3+hDxGPerkjTun7nL9JlsWITEPHTKo/CEuAYMmRe15WZ3FZS6PiIq7ri?=
+ =?us-ascii?Q?9UpOql6/DUyHN0Nr6REKNbbAnIeik3rYy47gFhxC9HuWmxYEVWsY2Ic5gUK8?=
+ =?us-ascii?Q?m88WJfP9R+/kqAGyBvoT3uvirLS1h5wj1PwwRmUDWD+Hfbi3h+i+XJAnM7j9?=
+ =?us-ascii?Q?0DPT9uWOkE9T6nswIngP9Cp+XI352lhAQSV9QOdAy0N92ndgkW8dcw1r8Nfu?=
+ =?us-ascii?Q?+KxMGJp9gSl0FAp0jkcSZZ0TBCvsIrc4ORQkuZ963FSMLiPZZPtSC3s6NE0/?=
+ =?us-ascii?Q?zWJDg+RKghbJZahYorKpp4jP?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59fba5e9-b2a1-4e06-f5e3-08d95e6adc2e
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 14:58:50.1464
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 14:58:51.1090
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u6SLCF4tUgVtbcRqLnRE1fJZRVe1N9jnaqD3uQvNky+X4ARjjYP1bxDVYblEHF+h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4528
+X-MS-Exchange-CrossTenant-UserPrincipalName: eXqrHfSjiwXxA5x0O5FTMXlh7f0iCHwb3RNWPrZ8kRJcDVPo7gUJNpY+ko18f7GIDgIFItvoFUc6ZRIBR5mImFBgltnoTuwUSe+KSGBvlcw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1248
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10075 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108130089
+X-Proofpoint-GUID: zgqg1jQ27Ba9tgzOlz_DK61-mCl0PWpK
+X-Proofpoint-ORIG-GUID: zgqg1jQ27Ba9tgzOlz_DK61-mCl0PWpK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 08:25:00PM +0200, Andreas F=E4rber wrote:
-> Hi Chester et al.,
->=20
-> On 05.08.21 08:54, Chester Lin wrote:
-> > Add memory nodes for S32G-VNP-EVB and S32G-VNP-RDB2 since they have fix=
-ed
-> > RAM size.
->=20
-> You can drop "since they have fixed RAM size" - if they didn't, you
-> would simply choose the lowest size and rely on the bootloader (U-Boot)
-> to overwrite it with the actually detected size.
->=20
-> Please expand why this patch is separate - BSP based, I assume?
->=20
+On Fri, Aug 13, 2021 at 02:28:55PM +0300, Pavel Skripkin wrote:
+> Syzbot reported slab-out-of bounds write in decode_data().
+> The problem was in missing validation checks.
+> 
+> Syzbot's reproducer generated malicious input, which caused
+> decode_data() to be called a lot in sixpack_decode(). Since
+> rx_count_cooked is only 400 bytes and noone reported before,
+> that 400 bytes is not enough, let's just check if input is malicious
+> and complain about buffer overrun.
+> 
+> Fail log:
+> ==================================================================
+> BUG: KASAN: slab-out-of-bounds in drivers/net/hamradio/6pack.c:843
+> Write of size 1 at addr ffff888087c5544e by task kworker/u4:0/7
+> 
+> CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.6.0-rc3-syzkaller #0
+> ...
+> Workqueue: events_unbound flush_to_ldisc
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x197/0x210 lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+>  __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
+>  kasan_report+0x12/0x20 mm/kasan/common.c:641
+>  __asan_report_store1_noabort+0x17/0x20 mm/kasan/generic_report.c:137
+>  decode_data.part.0+0x23b/0x270 drivers/net/hamradio/6pack.c:843
+>  decode_data drivers/net/hamradio/6pack.c:965 [inline]
+>  sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
+> 
+> Reported-and-tested-by: syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  drivers/net/hamradio/6pack.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+> index fcf3af76b6d7..f4ffc2a80ab7 100644
+> --- a/drivers/net/hamradio/6pack.c
+> +++ b/drivers/net/hamradio/6pack.c
+> @@ -827,6 +827,12 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
+>  		return;
+>  	}
+>  
+> +	if (sp->rx_count_cooked + 3 >= sizeof(sp->cooked_buf)) {
 
-Yes, the information of memory banks is from s32 downstream kernel, which i=
-s
-listed in the board DTs of older releases [bsp27] although newer releases
-[bsp28 & bsp29] have moved it into s32 downstream u-boot as runtime fdt-fix=
-up.
-I think we should still reveal this information in kernel DTs in order to h=
-ave
-better understanding of system memory ranges that each board can have.
+It should be + 2 instead of + 3.
 
-@NXP: Please don't hesitate to let me know if any better idea, thanks!
+We write three bytes.  idx, idx + 1, idx + 2.  Otherwise, good fix!
 
-> >=20
-> > Signed-off-by: Chester Lin <clin@suse.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/s32g274a-evb.dts  | 8 ++++++++
-> >  arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts | 8 ++++++++
-> >  2 files changed, 16 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm6=
-4/boot/dts/freescale/s32g274a-evb.dts
-> > index a1ae5031730a..cd41f0af5dd8 100644
-> > --- a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> > +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> >  /*
-> >   * Copyright (c) 2021 SUSE LLC
-> > + * Copyright 2019-2020 NXP
->=20
-> @NXP: Please review year, alignment. Do any Signed-off-bys apply?
->=20
-> >   */
-> > =20
-> >  /dts-v1/;
-> > @@ -14,6 +15,13 @@ / {
-> >  	chosen {
-> >  		stdout-path =3D "serial0:115200n8";
-> >  	};
-> > +
-> > +	memory@80000000 {
-> > +		device_type =3D "memory";
-> > +		/* 4GB RAM */
->=20
-> This looks strange to me - either put /* 4 GiB RAM */ before the node,
-> three lines above, and/or append comment /* 2 GiB */ on each line below.
-> Note the space, and suggest to be precise about factor 1024 vs. 1000.
->=20
-
-Thank you for the suggestion.
-
-> > +		reg =3D <0 0x80000000 0 0x80000000>,
->=20
-> Note that this gives you the range to use for the .dtsi /soc node:
-> Address 0x0 with size 0x80000000 gets mapped to 0x0 0x0, excluding the
-> upper 0x80000000 for the RAM here. Or address 0x0 0x0 for two /soc cells
-> if there are high-memory peripherals.
->=20
-
-I don't know if memory ranges might be changed for new boards or CPU revisi=
-ons
-in the future, which means the first memory range might be expanded as well
-[e.g. 0~4GB]. Based this assumption, I think the size should also be change=
-d
-accordingly. Not sure if overlays can still work with this case but overwri=
-ting
-all reg properties under /soc could be awful.
-
-However if we only have to think of current hardware spec, it's good to dec=
-lare
-"range =3D <0 0 0 0x80000000>".
-
-Please feel free to let me know if any suggestions, thanks.
-
-> > +		      <8 0x80000000 0 0x80000000>;
->=20
-> Maybe use 0x8 here and 0x0 above? (second 0 stays same, so don't mind)
->=20
-
-Will fix it.
-
-> > +	};
-> >  };
-> > =20
-> >  &uart0 {
-> > diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm=
-64/boot/dts/freescale/s32g274a-rdb2.dts
-> > index b2faae306b70..8fbbf3b45eb8 100644
-> > --- a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> > +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> >  /*
-> >   * Copyright (c) 2021 SUSE LLC
-> > + * Copyright 2019-2020 NXP
->=20
-> @NXP: 2021?
->=20
-> >   */
-> > =20
-> >  /dts-v1/;
-> > @@ -14,6 +15,13 @@ / {
-> >  	chosen {
-> >  		stdout-path =3D "serial0:115200n8";
-> >  	};
-> > +
-> > +	memory@80000000 {
-> > +		device_type =3D "memory";
-> > +		/* 4GB RAM */
-> > +		reg =3D <0 0x80000000 0 0x80000000>,
-> > +		      <8 0x80000000 0 0x80000000>;
-> > +	};
->=20
-> Same comments as for EVB.
->=20
-> >  };
-> > =20
-> >  &uart0 {
->=20
-> Regards,
-> Andreas
->=20
-> --=20
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-> GF: Felix Imend=F6rffer
-> HRB 36809 (AG N=FCrnberg)
->=20
+regards,
+dan carpenter
 
