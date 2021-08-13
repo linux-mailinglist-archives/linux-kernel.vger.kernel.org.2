@@ -2,93 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B573EAF57
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72063EAF58
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238445AbhHMEbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 00:31:38 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:22715 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235002AbhHMEbh (ORCPT
+        id S238556AbhHMEcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 00:32:35 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:35271 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235002AbhHMEcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 00:31:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1628829071; x=1660365071;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=2Qn8uclZhD6XPeMfCxSgFOazhwYXJ3l60HI88f+/yDc=;
-  b=nx+zmMAEQd/puFCvKJdkqVdHQ5QRn+iX7m1nZQ/kl3Z7KOOneuNCqbYO
-   1WW18YbMzpHqLTbaB1l8CpnYU8KkyKh5JHmtMnMyXem7Sd9he3NAkAv2m
-   EWQ8IisaYLJ0NvH3Vy531rdHyNMn09hCSwaipp9Pf9Yh72tr4YDP9Ltwo
-   Q=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 Aug 2021 21:31:10 -0700
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 21:31:10 -0700
-Received: from [10.110.12.68] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.15; Thu, 12 Aug
- 2021 21:31:09 -0700
-Subject: Re: [PATCH 0/3] soc: qcom: Add download mode support for QTI
- platforms
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Sai Prakash Ranjan" <saiprakash.ranjan@codeaurora.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        "Rajendra Nayak" <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, <quic_eberman@quicinc.com>
-References: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
- <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-Message-ID: <0178821e-a8cd-87c8-640c-4928201a3b5a@quicinc.com>
-Date:   Thu, 12 Aug 2021 21:31:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 13 Aug 2021 00:32:33 -0400
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 62E42260EB;
+        Fri, 13 Aug 2021 04:32:04 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 474553F202;
+        Fri, 13 Aug 2021 04:32:01 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 78C0F2A521;
+        Fri, 13 Aug 2021 06:32:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1628829120;
+        bh=wco2uYT/C/REw9JO3fVns6TaOKfMHujekS5qiK7d4KQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LDcz+hUbfqSPgfueG+kV6yOcJY3apEG/8r/+wCEsb1NSuNtzDAEoNVny+kX9nf0j+
+         lfDh0c5yvCAvjPf6EWpPBU9kwVA8BepZ3ZHSL+xYtpzItUWHEOxFyU+mV0rYKpnpHA
+         ZNxzZFS/0cgq1kgzn/aNnB7LAtPHKdsO5wYVnvYY=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vp-wt9x0uCly; Fri, 13 Aug 2021 06:31:56 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Fri, 13 Aug 2021 06:31:56 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id D5A4740BFC;
+        Fri, 13 Aug 2021 04:31:55 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="X/h9mPou";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.162.220])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 2076740BFC;
+        Fri, 13 Aug 2021 04:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1628829107; bh=wco2uYT/C/REw9JO3fVns6TaOKfMHujekS5qiK7d4KQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X/h9mPouIP6UtwvX8KJodIyT7vwhndKyQFDVXrApD/F2xTptTW7Mic7tMGmgmXlRZ
+         HN/bcmHO/r/nMkqWP+KrKoO/XjBRAtswu9XcyaxSZxmuROJsjDpjnyNrh6VHyIX6CM
+         7HeumCFOW/nCmstgyK9g+6H1WP0RHT7FsoHUbfgI=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [PATCH] usb: typec: tcpm: always rediscover when swapping DR
+Date:   Fri, 13 Aug 2021 12:31:31 +0800
+Message-Id: <20210813043131.833006-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03f.na.qualcomm.com (10.85.0.47) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [4.90 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.220:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_FIVE(0.00)[6];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Queue-Id: D5A4740BFC
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen,
+Currently, TCPM code omits discover when swapping to gadget, and assume
+that no altmodes are available when swapping from gadget. However, we do
+send discover when we get attached as gadget -- this leads to modes to be
+discovered twice when attached as gadget and then swap to host.
 
-On 8/12/2021 5:16 PM, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-08-12 02:17:39)
->> Collecting ramdumps on QTI platforms mainly require two things,
->> SDI (System Debug Image) enabled firmware and kernel support to
->> configure download mode cookies and SDI settings. Ramdumps can
->> be collected once the system enters the download mode. To enter
->> download mode, magic values or cookies need to be set in IMEM
->> which is used by firmware to decide to enter download mode or not.
->> Download mode cookies remain the same across targets and SDI disable
->> register needs to be set or SDI needs to be disabled in case of normal
->> reboot since ramdumps are supposed to be for crash debugging and
->> not for every reboot. This series adds the kernel support required
->> to enter download mode.
-> 
-> I don't recall if we discussed this on the list, but I'd really prefer
-> that we don't make kernel changes to support this beyond implementing
-> PSCI SYSTEM_RESET2 support and then some sort of vendor specific (or if
-> ARM is willing to update the spec then ARM specific) reset command on
-> panic reboot paths. The idea is to set the cookie in the bootloader
-> before the kernel is booted, then any insta-reboots/watchdogs would go
-> into download mode, no special init code required to lay down the cookie
->>   create mode 100644 drivers/soc/qcom/download_mode.c
+Always re-send discover when swapping DR, regardless of what change is
+being made; and because of this, the assumption that no altmodes are
+registered with gadget role is broken, and altmodes de-registeration is
+always needed now.
 
-Some discussion by Elliot on the PSCI_SYSTEM_RESET2 and vendor bits was 
-done here. You may want to check.
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-https://lkml.org/lkml/2020/2/24/1137
-
----Trilok Soni
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index b9bb63d749ec..ab6d0d51ee1c 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4495,15 +4495,14 @@ static void run_state_machine(struct tcpm_port *port)
+ 		tcpm_set_state(port, ready_state(port), 0);
+ 		break;
+ 	case DR_SWAP_CHANGE_DR:
+-		if (port->data_role == TYPEC_HOST) {
+-			tcpm_unregister_altmodes(port);
++		tcpm_unregister_altmodes(port);
++		if (port->data_role == TYPEC_HOST)
+ 			tcpm_set_roles(port, true, port->pwr_role,
+ 				       TYPEC_DEVICE);
+-		} else {
++		else
+ 			tcpm_set_roles(port, true, port->pwr_role,
+ 				       TYPEC_HOST);
+-			port->send_discover = true;
+-		}
++		port->send_discover = true;
+ 		tcpm_ams_finish(port);
+ 		tcpm_set_state(port, ready_state(port), 0);
+ 		break;
+-- 
+2.30.2
