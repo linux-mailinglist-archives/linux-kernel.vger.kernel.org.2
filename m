@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04F43EB0F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7223EB0F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239187AbhHMG5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:57:36 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35340 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239060AbhHMG5e (ORCPT
+        id S239086AbhHMG5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:57:53 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:41068 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238964AbhHMG5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:57:34 -0400
-X-UUID: 8fe53ecca5ec4299a855fde4bd5a9cd5-20210813
-X-UUID: 8fe53ecca5ec4299a855fde4bd5a9cd5-20210813
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Fri, 13 Aug 2021 02:57:50 -0400
+X-UUID: dd2aed077ddb47d3a04cdf1b5beb04e9-20210813
+X-UUID: dd2aed077ddb47d3a04cdf1b5beb04e9-20210813
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 433459281; Fri, 13 Aug 2021 14:57:05 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 811913677; Fri, 13 Aug 2021 14:57:21 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 13 Aug 2021 14:57:03 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 13 Aug 2021 14:57:19 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 13 Aug 2021 14:57:02 +0800
+ Transport; Fri, 13 Aug 2021 14:57:18 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v2 25/29] iommu/mediatek: Change the domid to iova_region_id
-Date:   Fri, 13 Aug 2021 14:53:20 +0800
-Message-ID: <20210813065324.29220-26-yong.wu@mediatek.com>
+Subject: [PATCH v2 26/29] iommu/mediatek: Get the proper bankid for multi banks
+Date:   Fri, 13 Aug 2021 14:53:21 +0800
+Message-ID: <20210813065324.29220-27-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210813065324.29220-1-yong.wu@mediatek.com>
 References: <20210813065324.29220-1-yong.wu@mediatek.com>
@@ -53,154 +53,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for adding bankid, also no functional change.
+We preassign some ports in a special bank via the new defined
+bank_portmsk. Put it in the plat_data means it is not expected to be
+adjusted dynamically.
 
-In the previous SoC, each a iova_region is a domain; In the multi-banks
-case, each a bank is a domain; then the original function name
-"mtk_iommu_get_domain_id" is not proper. the name "iova_region_id"
-should be proper. this patch only rename the domid to iova_region_id.
+If the iommu id in the iommu consumer's dtsi node is inside this
+bank_portmsk, then we switch it to this special iommu bank, and initialise
+the IOMMU bank HW.
+
+Each a bank has the independent pgtable(4GB iova range). Each a bank
+is a independent iommu domain/group. Currently we don't separate different
+iova ranges inside a bank.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 46 +++++++++++++++++++--------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ drivers/iommu/mtk_iommu.c | 38 +++++++++++++++++++++++++++++++++++---
+ drivers/iommu/mtk_iommu.h |  1 +
+ 2 files changed, 36 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 5b9891b2be6c..29b9ab528774 100644
+index 29b9ab528774..ce83569eec21 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -358,8 +358,8 @@ static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
+@@ -358,6 +358,30 @@ static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
--static int mtk_iommu_get_domain_id(struct device *dev,
--				   const struct mtk_iommu_plat_data *plat_data)
-+static int mtk_iommu_get_iova_region_id(struct device *dev,
-+					const struct mtk_iommu_plat_data *plat_data)
++static unsigned int mtk_iommu_get_bank_id(struct device *dev,
++					  const struct mtk_iommu_plat_data *plat_data)
++{
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	unsigned int i, portmsk = 0, bankid = 0; /* bank default is 0 */
++
++	if (plat_data->bank_nr == 1)
++		return bankid;
++
++	for (i = 0; i < fwspec->num_ids; i++)
++		portmsk |= BIT(MTK_M4U_TO_PORT(fwspec->ids[i]));
++
++	for (i = 0; i < plat_data->bank_nr; i++) {
++		if (!plat_data->bank_enable[i])
++			continue;
++
++		if (portmsk & plat_data->bank_portmsk[i]) {
++			bankid = i;
++			break;
++		}
++	}
++	return bankid;
++}
++
+ static int mtk_iommu_get_iova_region_id(struct device *dev,
+ 					const struct mtk_iommu_plat_data *plat_data)
  {
- 	const struct mtk_iommu_iova_region *rgn = plat_data->iova_region;
- 	const struct bus_dma_region *dma_rgn = dev->dma_range_map;
-@@ -389,7 +389,7 @@ static int mtk_iommu_get_domain_id(struct device *dev,
- }
- 
- static int mtk_iommu_config(struct mtk_iommu_data *data, struct device *dev,
--			    bool enable, unsigned int domid)
-+			    bool enable, unsigned int regionid)
- {
- 	struct mtk_smi_larb_iommu    *larb_mmu;
- 	unsigned int                 larbid, portid;
-@@ -405,12 +405,12 @@ static int mtk_iommu_config(struct mtk_iommu_data *data, struct device *dev,
- 		if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_MM)) {
- 			larb_mmu = &data->larb_imu[larbid];
- 
--			region = data->plat_data->iova_region + domid;
-+			region = data->plat_data->iova_region + regionid;
- 			larb_mmu->bank[portid] = upper_32_bits(region->iova_base);
- 
--			dev_dbg(dev, "%s iommu for larb(%s) port %d dom %d bank %d.\n",
-+			dev_dbg(dev, "%s iommu for larb(%s) port %d region %d rgn-bank %d.\n",
- 				enable ? "enable" : "disable", dev_name(larb_mmu->dev),
--				portid, domid, larb_mmu->bank[portid]);
-+				portid, regionid, larb_mmu->bank[portid]);
- 
- 			if (enable)
- 				larb_mmu->mmu |= MTK_SMI_MMU_EN(portid);
-@@ -437,7 +437,7 @@ static int mtk_iommu_config(struct mtk_iommu_data *data, struct device *dev,
- 
- static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
- 				     struct mtk_iommu_data *data,
--				     unsigned int domid)
-+				     unsigned int region_id)
- {
- 	const struct mtk_iommu_iova_region *region;
- 	struct mtk_iommu_domain	*m4u_dom;
-@@ -476,7 +476,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
- 
- update_iova_region:
- 	/* Update the iova region for this domain */
--	region = data->plat_data->iova_region + domid;
-+	region = data->plat_data->iova_region + region_id;
- 	dom->domain.geometry.aperture_start = region->iova_base;
- 	dom->domain.geometry.aperture_end = region->iova_base + region->size - 1;
- 	dom->domain.geometry.force_aperture = true;
-@@ -517,18 +517,18 @@ static int mtk_iommu_attach_device(struct iommu_domain *domain,
+@@ -516,13 +540,14 @@ static int mtk_iommu_attach_device(struct iommu_domain *domain,
+ 	struct list_head *hw_list = data->hw_list;
  	struct mtk_iommu_bank_data *bank;
  	struct device *m4udev = data->dev;
- 	unsigned int bankid = 0;
--	int ret, domid;
-+	int ret, region_id;
+-	unsigned int bankid = 0;
++	unsigned int bankid;
+ 	int ret, region_id;
  
--	domid = mtk_iommu_get_domain_id(dev, data->plat_data);
--	if (domid < 0)
--		return domid;
-+	region_id = mtk_iommu_get_iova_region_id(dev, data->plat_data);
-+	if (region_id < 0)
-+		return region_id;
+ 	region_id = mtk_iommu_get_iova_region_id(dev, data->plat_data);
+ 	if (region_id < 0)
+ 		return region_id;
  
++	bankid = mtk_iommu_get_bank_id(dev, data->plat_data);
  	bank = &data->bank[bankid];
  	if (!dom->bank) {
  		/* Data is in the frstdata in sharing pgtable case. */
- 		frstdata = mtk_iommu_get_frst_data(hw_list);
- 
--		if (mtk_iommu_domain_finalise(dom, frstdata, domid))
-+		if (mtk_iommu_domain_finalise(dom, frstdata, region_id))
- 			return -ENODEV;
- 		dom->bank = bank;
- 	}
-@@ -550,7 +550,7 @@ static int mtk_iommu_attach_device(struct iommu_domain *domain,
- 		pm_runtime_put(m4udev);
- 	}
- 
--	return mtk_iommu_config(data, dev, true, domid);
-+	return mtk_iommu_config(data, dev, true, region_id);
- }
- 
- static void mtk_iommu_detach_device(struct iommu_domain *domain,
-@@ -653,21 +653,21 @@ static struct iommu_group *mtk_iommu_device_group(struct device *dev)
+@@ -653,6 +678,7 @@ static struct iommu_group *mtk_iommu_device_group(struct device *dev)
  	struct mtk_iommu_data *c_data = dev_iommu_priv_get(dev), *data;
  	struct list_head *hw_list = c_data->hw_list;
  	struct iommu_group *group;
--	int domid;
-+	int regionid;
++	unsigned int bankid, groupid;
+ 	int regionid;
  
  	data = mtk_iommu_get_frst_data(hw_list);
- 	if (!data)
- 		return ERR_PTR(-ENODEV);
+@@ -662,12 +688,18 @@ static struct iommu_group *mtk_iommu_device_group(struct device *dev)
+ 	regionid = mtk_iommu_get_iova_region_id(dev, data->plat_data);
+ 	if (regionid < 0)
+ 		return ERR_PTR(regionid);
++	bankid = mtk_iommu_get_bank_id(dev, data->plat_data);
  
--	domid = mtk_iommu_get_domain_id(dev, data->plat_data);
--	if (domid < 0)
--		return ERR_PTR(domid);
-+	regionid = mtk_iommu_get_iova_region_id(dev, data->plat_data);
-+	if (regionid < 0)
-+		return ERR_PTR(regionid);
- 
--	group = data->m4u_group[domid];
-+	group = data->m4u_group[regionid];
+-	group = data->m4u_group[regionid];
++	/*
++	 * If the bank function is enabled, each a bank is a iommu group/domain.
++	 * otherwise, each a iova region is a iommu group/domain.
++	 */
++	groupid = bankid ? bankid : regionid;
++	group = data->m4u_group[groupid];
  	if (!group) {
  		group = iommu_group_alloc();
  		if (!IS_ERR(group))
--			data->m4u_group[domid] = group;
-+			data->m4u_group[regionid] = group;
+-			data->m4u_group[regionid] = group;
++			data->m4u_group[groupid] = group;
  	} else {
  		iommu_group_ref_get(group);
  	}
-@@ -700,14 +700,14 @@ static void mtk_iommu_get_resv_regions(struct device *dev,
- 				       struct list_head *head)
- {
- 	struct mtk_iommu_data *data = dev_iommu_priv_get(dev);
--	unsigned int domid = mtk_iommu_get_domain_id(dev, data->plat_data), i;
-+	unsigned int regionid = mtk_iommu_get_iova_region_id(dev, data->plat_data), i;
- 	const struct mtk_iommu_iova_region *resv, *curdom;
- 	struct iommu_resv_region *region;
- 	int prot = IOMMU_WRITE | IOMMU_READ;
+diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
+index 7a8d6a233d14..905d8740dbcf 100644
+--- a/drivers/iommu/mtk_iommu.h
++++ b/drivers/iommu/mtk_iommu.h
+@@ -65,6 +65,7 @@ struct mtk_iommu_plat_data {
  
--	if ((int)domid < 0)
-+	if ((int)regionid < 0)
- 		return;
--	curdom = data->plat_data->iova_region + domid;
-+	curdom = data->plat_data->iova_region + regionid;
- 	for (i = 0; i < data->plat_data->iova_region_nr; i++) {
- 		resv = data->plat_data->iova_region + i;
+ 	unsigned int        bank_nr;
+ 	bool                bank_enable[MTK_IOMMU_BANK_MAX];
++	unsigned int        bank_portmsk[MTK_IOMMU_BANK_MAX];
+ 	unsigned char       larbid_remap[MTK_LARB_COM_MAX][MTK_LARB_SUBCOM_MAX];
+ };
  
 -- 
 2.18.0
