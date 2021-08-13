@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44BC3EAFAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18A73EAFAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238722AbhHMFcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 01:32:03 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:25593 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhHMFcC (ORCPT
+        id S238692AbhHMFc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 01:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhHMFc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 01:32:02 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210813053134epoutp0416290f240ce9b4ff5a9bdf6a105fa05f~axrSi4DwN0539405394epoutp04E
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:31:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210813053134epoutp0416290f240ce9b4ff5a9bdf6a105fa05f~axrSi4DwN0539405394epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1628832694;
-        bh=iGDief16Fzc3SLhWwVJACEbw8Ik43QoS3vYZa+gMyns=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=NjGqrG3O/yN5PbjQtNFne/yx2/BF9ljrO84EYjOfCN856+w9yeqmpikLvr1ApB1Xh
-         0qvyiKMx2RMYaOsV8eEhfkdUuBRB4dMq+BUKvo8mzWJ7z522TiOvhiAxsFmJvpncNk
-         VxVLbjxTl46sHx0/ZJCU111woaEx4SEP7WqTbF4Q=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210813053133epcas2p1abc2b2e3499c3fe3152d289210e8715e~axrRutZsQ0274302743epcas2p1Q;
-        Fri, 13 Aug 2021 05:31:33 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4GmBxZ4zYbz4x9Qg; Fri, 13 Aug
-        2021 05:31:30 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F7.66.09921.2B306116; Fri, 13 Aug 2021 14:31:30 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210813053130epcas2p1a1d6da04716e4c279c15350fb55937c9~axrOg7Cnw0274002740epcas2p1C;
-        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210813053129epsmtrp11c6bd4bad2b087fe23af18a43177b54b~axrOb8CN42126821268epsmtrp11;
-        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
-X-AuditID: b6c32a45-f9dff700000026c1-01-611603b22f00
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1B.77.32548.1B306116; Fri, 13 Aug 2021 14:31:29 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210813053129epsmtip25c47b25ddf5818831ac26f717759ba8d~axrOItGrO3034130341epsmtip2t;
-        Fri, 13 Aug 2021 05:31:29 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
-        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
-        <bhoon95.kim@samsung.com>
-In-Reply-To: <32cc37cd-2f66-0f74-5242-cfcf86f58844@acm.org>
-Subject: RE: [RFC PATCH v1 0/2] scsi: ufs: introduce vendor isr
-Date:   Fri, 13 Aug 2021 14:31:29 +0900
-Message-ID: <064a01d79004$77f087c0$67d19740$@samsung.com>
+        Fri, 13 Aug 2021 01:32:56 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41466C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:32:30 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id w5so16201665ejq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SjY0/FqpdDSUzmYDD6o6NUxD8vYkaJFdfIaMbxp4reQ=;
+        b=Pom5kFB+D2EtF1yj0MgO35Ntwe7FczYHcIaX7Xgf/ypWo0eEV5SmBEpNDebM3FXl/b
+         gLznHtg0E7u58vlgLjBSExfjkqGfMl80GAVfdoWRmC+7iRQ3XFNRKvgH+zfwKlRYr0ug
+         5U+4t6lR4VZRtPkjPHxN16aIeXuowoF7AIyKNYAltWh91UoDQxVP5bZtu3y+I5Bb/tV2
+         SK9hN16AGRpOHjDuAC/r5Yp2PBCyn10zO2N+7KNC6ACm6CBCcyJfw+NjBxfkMeaNHz0z
+         FhdYvqivjRJp3rUeJu1anTWoBajQUaH8ZXH0OWB9WYYKnv63CjXQIu3osh6c2K0+04le
+         5arA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SjY0/FqpdDSUzmYDD6o6NUxD8vYkaJFdfIaMbxp4reQ=;
+        b=KInn4FQexxHye36GYkB62QjVSsHpfmTfspuY7e5dJHsv2r1JJ0qdeykrKuhZyxfnT9
+         YNke+q2K9rjpEmriIQgeWnUl3WqLS7uQeDYsZykT5IpNOLdPrVIEBiyve5RhzYmcppXa
+         WClejsqAFV6UxxuKYySKI7DBIn4C3u5exK/abGpqb/cLNZgKEulhE/tXT0l65EwisVvB
+         GL/JxFVMuggUA82+yO0OZb0mAb/BGEO9f6XZh9p0BupWGsGvg0/hxw2lwqH/YoSzVvf+
+         Eg0vOAO3b/px33tmAjK/aGXomTnKcSQs7qxdvFWEYqnq2PNBKPvU2OIwZfAwEeL9rKLK
+         8HtQ==
+X-Gm-Message-State: AOAM5316nGT+A6JDBvb+Gv90bVn3Udvg9WjUTO4dSWegMAvRtpInxUaZ
+        CVGC6hW0dWw2BBbgxRO70SVssEudqyo7OwmYHVo=
+X-Google-Smtp-Source: ABdhPJz3LzQVh4SrAjmPOjHK2w9471Nj+pCHrjHILeGY4/+wJN/F/TjnuN9g8j+Qc0WpEYuEfUHZ5ilLgNjWOKixwso=
+X-Received: by 2002:a17:906:4ad8:: with SMTP id u24mr809791ejt.186.1628832748914;
+ Thu, 12 Aug 2021 22:32:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLpLcRe5nxssMVHyiI1GTvVMnlTYwK++sB5AU8a/RsBw7fVSgIyhbLYqQ2JOBA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmue4mZrFEg8alqhYnn6xhs3gwbxub
-        xcufV9ksDj7sZLH4uvQZq8W0Dz+ZLT6tX8ZqsXrxAxaLRTe2MVlc3jWHzaL7+g42i+XH/zFZ
-        dN29wWix9N9bFgc+j8tXvD0u9/UyeSze85LJY8KiA4we39d3sHl8fHqLxaNvyypGj8+b5Dza
-        D3QzBXBG5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXm
-        AB2vpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQw
-        MDIFqkzIyVi/3qzgI0fF+ZvVDYy/2LoYOTkkBEwkjt3vY+li5OIQEtjBKPH2SjcbhPOJUWLu
-        5OnsEM5nRonlN/YzwrTMOj2PCSKxi1HizNcGRgjnBaNE17YNYFVsAtoS0x7uZgVJiAi0MEtc
-        2fuJCSTBKWAt8fTILqC5HBzCAvYSL/+JgYRZBFQljjy5wQxi8wpYStyfdpUdwhaUODnzCQuI
-        zSwgL7H97RxmiCsUJH4+XcYKYosI+El8X3qbEaJGRGJ2ZxszyF4JgRscEk+33oU620Xi8cZv
-        UF8LS7w6voUdwpaSeNnfBmXXS+yb2sAK0dzDKPF03z+oZmOJWc/aGUGOZhbQlFi/Sx/ElBBQ
-        ljhyC+o2PomOw3/ZIcK8Eh1tQhCNyhK/Jk2GGiIpMfPmHahNHhKbjp1im8CoOAvJl7OQfDkL
-        yTezEPYuYGRZxSiWWlCcm55abFRgiBzXmxjB6VrLdQfj5Lcf9A4xMnEwHmKU4GBWEuHdKSeU
-        KMSbklhZlVqUH19UmpNafIjRFBjuE5mlRJPzgRkjryTe0NTIzMzA0tTC1MzIQkmcVyPua4KQ
-        QHpiSWp2ampBahFMHxMHp1QDk2zoubaSluKLS3jUPJcU7NU8LxDnoLez5fWtH8826W6dOGHi
-        LTHmWjnDuQqn9dS5lf//cNlxa5dk+YY3R39dPeqVlreT8b1C6PatPly1O/kuOapb8vf+2Kay
-        QX8tW7jsMsX+a+WRittyvu3SYblrMlv10oaHG6WvXD/7guvoVZ+YXsm/v7Vb2xJXHj71Jjv1
-        PrPX/gfHAlo+mfvc/rYo/seGRTM2zK6LkuAJuG1s8nmPhPajqbHVbix89Qn6zrJqrVmLTzy4
-        acp2yI0nSvFi4aEFjxK3PzNcKCY2tdvqabdHxR+xV72TGA3mpXLfDL62/WGVRtz0QHv19ryz
-        fxa4f7Q6aiZtetfbu1Kig/fgWiWW4oxEQy3mouJEAFj62nxgBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSvO5GZrFEgznzDCxOPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
-        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
-        H+hmCuCM4rJJSc3JLEst0rdL4MpYv96s4CNHxfmb1Q2Mv9i6GDk5JARMJGadnscEYgsJ7GCU
-        OLXSDSIuKXFi53NGCFtY4n7LEdYuRi6gmmeMEkc/bwNLsAloS0x7uBssISIwhVnizrWjbBBV
-        05gkbj3YxApSxSlgLfH0yC72LkYODmEBe4mX/8RAwiwCqhJHntxgBrF5BSwl7k+7yg5hC0qc
-        nPmEBcRmBlrQ+7CVEcKWl9j+dg4zxEUKEj+fLgMbLyLgJ/F96W2oGhGJ2Z1tzBMYhWYhGTUL
-        yahZSEbNQtKygJFlFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcHxqae1g3LPqg94h
-        RiYOxkOMEhzMSiK8O+WEEoV4UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQ
-        WgSTZeLglGpg2n1m4075F/bpiSemq3av28Bbp6Eskynk9bPtmVbSbZemCqmFrNXOP67zzLho
-        pspmdf5kQaJpvEak0TKJtEfCbV81bnzffsm8IfyG3+KlDS/+VJ2s8KledFRArzj00fwkn/2M
-        Ww+9XNNdpOAZWXUrc/fnnH1FGsLbsuUvvVK94ZbVLPogSP2b8MHbU0//muOzsvE935GJW0Qu
-        bXovvvDib0FupeXnkrd3fcsteccd8dHtldpNgaKgALvwq6UN3z2aJz74uuDdgV53e8ktC5tv
-        vj11UsRYptPjuPcN7npO6z+FOSfrYljUMnKC/6pt0XKY8ef3pheJpx9V100zkV1oOTVjv351
-        9Z0zFXeU8tZLK7EUZyQaajEXFScCAHOZ2sQ+AwAA
-X-CMS-MailID: 20210813053130epcas2p1a1d6da04716e4c279c15350fb55937c9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229
-References: <CGME20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229@epcas2p1.samsung.com>
-        <cover.1628231581.git.kwmad.kim@samsung.com>
-        <b3c18b34-2108-abfa-54ca-096a3eb31318@acm.org>
-        <000601d78cf2$a160f820$e422e860$@samsung.com>
-        <32cc37cd-2f66-0f74-5242-cfcf86f58844@acm.org>
+References: <20210811163731.186125-1-masahiroy@kernel.org> <20210811163731.186125-4-masahiroy@kernel.org>
+In-Reply-To: <20210811163731.186125-4-masahiroy@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 12 Aug 2021 22:32:17 -0700
+Message-ID: <CAMo8BfJtpUY-FC-cwU5HXSqOSwUwn15kTYWOhx-tsgybPe8mpw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] xtensa: move core-y in arch/xtensa/Makefile to arch/xtensa/Kbuild
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 8/9/21 12:46 AM, Kiwoong Kim wrote:
-> >> How about extending the UFS spec instead of adding a non-standard
-> >> mechanism in a driver that is otherwise based on a standard?
-> >
-> > It seems to be a great approach but I wonder if extending for the
-> > events that all the SoC vendors require in the spec is recommendable.
-> > Because I think there is quite possible that many of those things are
-> > originated for architectural reasons.
-> 
-> Has the interrupt mechanism supported by this patch series already been
-> implemented or is it still possible to change the ASIC design? In the
-The former case. It has been included since mass production of the first SoC
-supporting UFS for the first time.
+On Wed, Aug 11, 2021 at 9:38 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Use obj-y to clean up Makefile.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/xtensa/Kbuild             | 1 +
+>  arch/xtensa/Makefile           | 3 ---
+>  arch/xtensa/platforms/Makefile | 4 ++++
+>  3 files changed, 5 insertions(+), 3 deletions(-)
+>  create mode 100644 arch/xtensa/platforms/Makefile
+>
+> diff --git a/arch/xtensa/Kbuild b/arch/xtensa/Kbuild
+> index a4e40e534e6a..fd12f61745ba 100644
+> --- a/arch/xtensa/Kbuild
+> +++ b/arch/xtensa/Kbuild
+> @@ -1 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> +obj-y += kernel/ mm/ platforms/ boot/dts/
+> diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
+> index 093e87b889be..96714ef7c89e 100644
+> --- a/arch/xtensa/Makefile
+> +++ b/arch/xtensa/Makefile
+> @@ -58,9 +58,6 @@ KBUILD_DEFCONFIG := iss_defconfig
+>  LIBGCC := $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+>
+>  head-y         := arch/xtensa/kernel/head.o
+> -core-y         += arch/xtensa/kernel/ arch/xtensa/mm/
+> -core-y         += arch/xtensa/platforms/$(platform-y)/
+> -core-y                 += arch/xtensa/boot/dts/
+>
+>  libs-y         += arch/xtensa/lib/ $(LIBGCC)
+>
+> diff --git a/arch/xtensa/platforms/Makefile b/arch/xtensa/platforms/Makefile
+> new file mode 100644
+> index 000000000000..e2e7e0726979
+> --- /dev/null
+> +++ b/arch/xtensa/platforms/Makefile
+> @@ -0,0 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +obj-$(CONFIG_XTENSA_PLATFORM_XT2000)   += xt2000/
+> +obj-$(CONFIG_XTENSA_PLATFORM_ISS)      += iss/
+> +obj-$(CONFIG_XTENSA_PLATFORM_XTFPGA)   += xtfpga/
 
-> latter case, I propose the following:
-> * Drop the new interrupt.
-> * Instead of raising an interrupt if the UFS controller detects an
-> inconsistency, report this via a check condition code, e.g. LOGICAL UNIT
-> NOT READY, HARD RESET REQUIRED (there may be a better choice).
-> 
-> The above approach has the advantage that it does not slow down the UFS
-> interrupt handler.
-> 
-> Thanks,
-> 
-> Bart.
-> 
+With this change platform directory names are duplicated in two
+makefiles. Can we move them to Kconfig with something like the
+following (on top of this change)?
 
+---8<---
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index b843902ad9fd..fe5ae5ec71c9 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -314,6 +314,12 @@ config PLATFORM_HAVE_XIP
 
+menu "Platform options"
+
++config XTENSA_PLATFORM
++       string
++       default iss if XTENSA_PLATFORM_ISS
++       default xt2000 if XTENSA_PLATFORM_XT2000
++       default xtfpga if XTENSA_PLATFORM_XTFPGA
++
+choice
+       prompt "Xtensa System Type"
+       default XTENSA_PLATFORM_ISS
+diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
+index 96714ef7c89e..6b104ecdd19e 100644
+--- a/arch/xtensa/Makefile
++++ b/arch/xtensa/Makefile
+@@ -26,12 +26,6 @@ ifneq ($(VARIANT),)
+  endif
+endif
+
+-# Platform configuration
+-
+-platform-$(CONFIG_XTENSA_PLATFORM_XT2000)      := xt2000
+-platform-$(CONFIG_XTENSA_PLATFORM_ISS)         := iss
+-platform-$(CONFIG_XTENSA_PLATFORM_XTFPGA)      := xtfpga
+-
+# temporarily until string.h is fixed
+KBUILD_CFLAGS += -ffreestanding -D__linux__
+KBUILD_CFLAGS += -pipe -mlongcalls -mtext-section-literals
+@@ -47,7 +41,7 @@ endif
+CHECKFLAGS += -D$(if $(CONFIG_CPU_BIG_ENDIAN),__XTENSA_EB__,__XTENSA_EL__)
+
+vardirs := $(patsubst %,arch/xtensa/variants/%/,$(variant-y))
+-plfdirs := $(patsubst %,arch/xtensa/platforms/%/,$(platform-y))
++plfdirs := $(patsubst %,arch/xtensa/platforms/%/,$(CONFIG_XTENSA_PLATFORM))
+
+KBUILD_CPPFLAGS += $(patsubst %,-I$(srctree)/%include,$(vardirs) $(plfdirs))
+
+diff --git a/arch/xtensa/platforms/Makefile b/arch/xtensa/platforms/Makefile
+index e2e7e0726979..08d0e9053db6 100644
+--- a/arch/xtensa/platforms/Makefile
++++ b/arch/xtensa/platforms/Makefile
+@@ -1,4 +1,2 @@
+# SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_XTENSA_PLATFORM_XT2000)   += xt2000/
+-obj-$(CONFIG_XTENSA_PLATFORM_ISS)      += iss/
+-obj-$(CONFIG_XTENSA_PLATFORM_XTFPGA)   += xtfpga/
++obj-y += $(CONFIG_XTENSA_PLATFORM)/
+
+---8<---
+
+-- 
+Thanks.
+-- Max
