@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59A63EAF21
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B573EAF57
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 06:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhHMERS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 00:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhHMERR (ORCPT
+        id S238445AbhHMEbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 00:31:38 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:22715 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235002AbhHMEbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 00:17:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF07FC061756;
-        Thu, 12 Aug 2021 21:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y3X3sVuY3L2FWlXGWvS23PeS1/gxpP+T9Fv+274OjwQ=; b=jYyxgMzfWOQo+Hrse33LD/l0b7
-        nQq/CeYf/jACRw9Z0bVKWTY6/czLjNvVAThT5svKXzaod41mg4cW/ONz2GemN0+sza0zjwSUcLvE1
-        x0VV35IYX/v6vwlpn9p+UA1v44PpBFl2AI5H6fSP+PWH+qZIK/ADPC3e38qg4+mBznVxhEgIiNJmC
-        hU3OYQfDEXqnZ4FXEmGbq9FH2YEpNDUtl9DNORCm8eOu0mLtPTMWJS6+FGz5SxPgoedYKajpCMd5W
-        KiNVWytYJDFoxuGY0+2MEcyQGfL5AdPZnTdE3n9Qomz1atbKv4XZZTDVD4bESR8ZbUrnkUIeJYzRp
-        /Si23TJQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEOcM-00FIVR-6R; Fri, 13 Aug 2021 04:16:33 +0000
-Date:   Fri, 13 Aug 2021 05:16:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 062/138] mm/migrate: Add folio_migrate_copy()
-Message-ID: <YRXyGg7MWZTLA+YU@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-63-willy@infradead.org>
- <b9c3038a-56af-95e9-b5dd-8e88f508719e@suse.cz>
+        Fri, 13 Aug 2021 00:31:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1628829071; x=1660365071;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=2Qn8uclZhD6XPeMfCxSgFOazhwYXJ3l60HI88f+/yDc=;
+  b=nx+zmMAEQd/puFCvKJdkqVdHQ5QRn+iX7m1nZQ/kl3Z7KOOneuNCqbYO
+   1WW18YbMzpHqLTbaB1l8CpnYU8KkyKh5JHmtMnMyXem7Sd9he3NAkAv2m
+   EWQ8IisaYLJ0NvH3Vy531rdHyNMn09hCSwaipp9Pf9Yh72tr4YDP9Ltwo
+   Q=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 Aug 2021 21:31:10 -0700
+X-QCInternal: smtphost
+Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 21:31:10 -0700
+Received: from [10.110.12.68] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.15; Thu, 12 Aug
+ 2021 21:31:09 -0700
+Subject: Re: [PATCH 0/3] soc: qcom: Add download mode support for QTI
+ platforms
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Sai Prakash Ranjan" <saiprakash.ranjan@codeaurora.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        "Rajendra Nayak" <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, <quic_eberman@quicinc.com>
+References: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
+ <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+Message-ID: <0178821e-a8cd-87c8-640c-4928201a3b5a@quicinc.com>
+Date:   Thu, 12 Aug 2021 21:31:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b9c3038a-56af-95e9-b5dd-8e88f508719e@suse.cz>
+In-Reply-To: <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03f.na.qualcomm.com (10.85.0.47) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 01:56:24PM +0200, Vlastimil Babka wrote:
-> On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> > This is the folio equivalent of migrate_page_copy(), which is retained
-> > as a wrapper for filesystems which are not yet converted to folios.
-> > Also convert copy_huge_page() to folio_copy().
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Stephen,
+
+On 8/12/2021 5:16 PM, Stephen Boyd wrote:
+> Quoting Sai Prakash Ranjan (2021-08-12 02:17:39)
+>> Collecting ramdumps on QTI platforms mainly require two things,
+>> SDI (System Debug Image) enabled firmware and kernel support to
+>> configure download mode cookies and SDI settings. Ramdumps can
+>> be collected once the system enters the download mode. To enter
+>> download mode, magic values or cookies need to be set in IMEM
+>> which is used by firmware to decide to enter download mode or not.
+>> Download mode cookies remain the same across targets and SDI disable
+>> register needs to be set or SDI needs to be disabled in case of normal
+>> reboot since ramdumps are supposed to be for crash debugging and
+>> not for every reboot. This series adds the kernel support required
+>> to enter download mode.
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> The way folio_copy() avoids cond_resched() for single page would IMHO deserve a
-> comment though, so it's not buried only in this thread.
+> I don't recall if we discussed this on the list, but I'd really prefer
+> that we don't make kernel changes to support this beyond implementing
+> PSCI SYSTEM_RESET2 support and then some sort of vendor specific (or if
+> ARM is willing to update the spec then ARM specific) reset command on
+> panic reboot paths. The idea is to set the cookie in the bootloader
+> before the kernel is booted, then any insta-reboots/watchdogs would go
+> into download mode, no special init code required to lay down the cookie
+>>   create mode 100644 drivers/soc/qcom/download_mode.c
 
-I think folio_copy() deserves kernel-doc.
+Some discussion by Elliot on the PSCI_SYSTEM_RESET2 and vendor bits was 
+done here. You may want to check.
 
-/**
- * folio_copy - Copy the contents of one folio to another.
- * @dst: Folio to copy to.
- * @src: Folio to copy from.
- *
- * The bytes in the folio represented by @src are copied to @dst.
- * Assumes the caller has validated that @dst is at least as large as @src.
- * Can be called in atomic context for order-0 folios, but if the folio is
- * larger, it may sleep.
- */
+https://lkml.org/lkml/2020/2/24/1137
 
+---Trilok Soni
