@@ -2,344 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB08C3EB93C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427B43EB931
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242099AbhHMP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243605AbhHMPYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:24:31 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C406AC0613A3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:20:08 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c6so8529971qtv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metztli-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=gJTQPe82ol2Y2TFU2cBPWUy+VdEbYpoVUQKUyB1Hzq8=;
-        b=woW/vHNHHNJ79tr32hXJugdwUbdUtMUQLjgy8lpO+8EpabQofYFHWxui3lv442GlAe
-         BnEDksye9hb3YLdk0VCewpeYNFSfMX9YvUVQ0+xP/RFBI4o2mdZ7UFgfifrhZrlH/thy
-         45xzTgG9se/HdGrSeoFDh3IOxnnZR203ebV6+Cwm1JZ1gY7hXQlsHhQ/cmF38heiokuw
-         0vFI6rBMyf5sNOpypOxlVVDeUVYpR+8/T6aUQjqXg5U2VTUbhHVlGD+hJfDpnuCfRSMv
-         sLBC7ogl+3XH3wc70MLs3qiRz840ktRANWaCVPkgCi7yRpA2+wwmTn9LseNctTJgri7e
-         3Rsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=gJTQPe82ol2Y2TFU2cBPWUy+VdEbYpoVUQKUyB1Hzq8=;
-        b=COhkIZvioUk17U0O50yajA0cPTIT4Ss8fdXoUEJeJ+WA2i5TOI73CNZqzgReOH6IBp
-         V+g3aXmtMECBQIvktD1wIm+ZUlYFPfJLHz9zOs8TuJwa4K2fr9yHtDqv68bCSKdbY4iC
-         Iug+LQeYDKQ3OxaJNWsNgzynEnJrKfXMjFtn2t7J9xVpfkncL9kgvyHbo52w4kHhTPAM
-         gahZYwyoACtjW7eTLMoE5UiOjov8pZHOyPVjpMMgRduGSktMpNJnk3rzMZJxlZO0eVfg
-         +UOxmjtNMukkMo+iI1VkBFF/Sl/W0FUoM86KKxnrySCr7B3KoSYVPufSNAkbKopHiP10
-         N2NQ==
-X-Gm-Message-State: AOAM533xaZdF7DdeuprWHAPAVfuxpDw64QOw07+RctS9Gwoc0jNf3DPG
-        zL514K1SO1jqq5cQznUipcKMzg==
-X-Google-Smtp-Source: ABdhPJzsK6Dwz9gzAPHOWMJlhusctbRSwtuHs1Y+Kwfx6+BcF9uW8tYq5dIMcnk+AszYmvLK1aVblA==
-X-Received: by 2002:ac8:5ac6:: with SMTP id d6mr2441190qtd.261.1628868007694;
-        Fri, 13 Aug 2021 08:20:07 -0700 (PDT)
-Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
-        by smtp.gmail.com with ESMTPSA id s185sm1123454qkd.2.2021.08.13.08.20.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 08:20:06 -0700 (PDT)
-Message-ID: <d85555853f76b7f46ce3b7514d2890091b304c12.camel@metztli.com>
-Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for
- file /test-exec \(pid: 10094 comm: debootstrap\)
-From:   Metztli Information Technology <jose.r.r@metztli.com>
-To:     Edward Shishkin <edward.shishkin@gmail.com>
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Fri, 13 Aug 2021 08:20:04 -0700
-In-Reply-To: <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-References: <20210208125427.CFC7C75EED90@huitzilopochtli.metztli-it.com>
-         <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S242092AbhHMPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:23:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:54954 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243365AbhHMPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:23:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD6F1042;
+        Fri, 13 Aug 2021 08:22:47 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C700C3F718;
+        Fri, 13 Aug 2021 08:22:45 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 16:22:40 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     robh+dt@kernel.org, bhelgaas@google.com, matthias.bgg@gmail.com,
+        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
+        yong.wu@mediatek.com, Frank Wunderlich <frank-w@public-files.de>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/4] PCI: mediatek: Add new method to get shared
+ pcie-cfg base address and parse node
+Message-ID: <20210813152239.GA15515@lpieralisi>
+References: <20210719073456.28666-3-chuanjia.liu@mediatek.com>
+ <20210810194250.GA2276275@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810194250.GA2276275@bjorn-Precision-5520>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 17:03 +0100, Edward Shishkin wrote:
-> On 02/08/2021 01:54 PM, Metztli Information Technology wrote:
-> > On Wed, Dec 23, 2020 at 3:40 PM Edward Shishkin
-> > <edward.shishkin@gmail.com> wrote:
-> > > 
-> > > On 12/23/2020 05:01 PM, Metztli Information Technology wrote:
-> > > > Niltze [Ð—Ð´Ñ€Ð°Ð²Ñ Ñ‚Ð²ÑƒÐ¹Ñ‚Ðµ : Hello], Ed-
-> > > > 
-> > > > I built Linux kernel 5.10.1-1 within the 'Debian way' -- as
-> > > > usual -- to generate a kernel component for my Debian-Installer
-> > > > (d-i).
-> > > > The patch I applied is reiser4-for-5.10-rc3.patch.gz from v5-
-> > > > unstable.
-> > > > 
-> > > > Once I built the proper reiser4progs-2.0.4.tar.gz and generated
-> > > > one set of components for d-i I built the d-i image.
-> > > > 
-> > > > Fact is, the installer throws an error in *both* bare metal and
-> > > > VirtualBox 6.1.16:
-> > > > ...
-> > > > Dec 22 20:19:56 main-menu[330]: INFO: Menu item 'bootstrap-
-> > > > base' selected
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap --
-> > > > components=main --debian-installer --resolve-deps --
-> > > > keyring=/usr/share/keyrings/archive.gpg buster /target
-> > > > http://deb.debian.org/debian/
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap: line 1596:
-> > > > /target/test-exec: Invalid argument
-> > > > Dec 22 20:19:56 kernel: [ 1018.632648] kernel read not
-> > > > supported for file /test-exec (pid: 10077 comm: debootstrap)
-> > > > Dec 22 20:19:56 debootstrap: E: NOEXEC
-> > > > Dec 22 20:19:56 debootstrap: EF: Cannot install into target
-> > > > '/target' mounted with noexec or nodev
-> > > > Dec 22 20:20:12 base-installer: error: exiting on error base-
-> > > > installer/debootstrap-failed
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Configuring
-> > > > 'bootstrap-base' failed with error code 1
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Menu item
-> > > > 'bootstrap-base' failed.
-> > > > Dec 22 20:20:15 main-menu[330]: INFO: Falling back to the
-> > > > package description for brltty-udeb
-> > > > 
-> > > 
-> > > [...]
-> > > 
-> > > > 
-> > > > Apparently, d-i [Debian-installer] complains about being unable
-> > > > to set the test file executable and causes the error when 1 is
-> > > > returned.
-> > > > Notwithstanding, I manually verified that I am able to touch a
-> > > > file and set it +x executable.
-> > > > 
-> > > > Furthermore, tricking the function return value to 0 I am able
-> > > > to make d-i continue with the latest SFRN5 installation (see
-> > > > [*trick*] below); yet, subsequently halts again with
-> > > > an apparently related error --can not proceed any further.
-> > > > 
-> > > > Digging deeper with dmesg, we can see that apparently it is the
-> > > > kernel which cannot 'read' properly. Please find a partial
-> > > > dmesg log with relevant output
-> > > > from an attempt on my physical development machine.
-> > > > ...
-> > > > [  508.614488] Loading Reiser4 (Software Framework Release:
-> > > > 5.1.3). See reiser4.wiki.kernel.org for a description of
-> > > > Reiser4.
-> > > > [  508.661951] SGI XFS with ACLs, security attributes,
-> > > > realtime, quota, no debug enabled
-> > > > [  509.326270] device-mapper: uevent: version 1.0.3
-> > > > [  509.326505] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01)
-> > > > initialised: dm-devel@redhat.com
-> > > > [  509.902828]  sda: sda1 sda2 sda3 sda4 sda5 sda6
-> > > > [  509.915300]  sdb: sdb1 sdb2 sdb3
-> > > > [  511.973360]  sdb: sdb1 sdb2 sdb3
-> > > > [  627.525371] Adding 9765884k swap on /dev/sda3.  Priority:-2
-> > > > extents:1 across:9765884k FS
-> > > > [  636.240812] reiser4[mount(9430)]: reiser4_register_subvol
-> > > > (fs/reiser4/init_volume.c:222)[edward-1932]:
-> > > > [  636.240812] NOTICE: brick /dev/sda6 has been registered
-> > > > [  636.243003] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  643.759971] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  643.759980] reiser4: brick /dev/sda6 activated
-> > > > [  643.788537] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [  643.813474] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [  643.813488] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [  648.168730] kernel read not supported for file /test-exec
-> > > > (pid: 9876 comm: debootstrap) [*trick*]
-> > > > [  898.761385] reiser4: brick /dev/sda6 deactivated
-> > > > [  991.001332] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  999.093471] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  999.093480] reiser4: brick /dev/sda6 activated
-> > > > [ 1009.340117] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [ 1009.362722] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [ 1009.362737] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [ 6373.748413] kernel read not supported for file /test-exec
-> > > > (pid: 10094 comm: debootstrap)
-> > > > [ 6413.169920] kernel read not supported for file /usr/bin/true
-> > > > (pid: 15960 comm: chroot)
-> > > 
-> > > 
-> > > Hello.
-> > > 
-> > > This is because of VFS changes in Linux-5.10.X.
-> > > Specifically, because of the following patch:
-> > > https://lkml.org/lkml/2020/8/17/174
-> > > In the upstream git repository it is commit
-> > > 4d03e3cc59828c82ee89ea6e2
-> > > 
-> > > So, Christoph, what to do now for file systems which implement
-> > > ->read() method of file operations?
-> > 
-> > *deafening silence* it appears that -- in the best of cases --
-> > Christoph engaged in an act of _iter masturbation [1];
-> > and in the worst of cases, the gentleman was aiming straight at
-> > reiser4.
-> > 
-> > > ... It seems that chroot doesn't work
-> > > for them. And people are not able to release distros with
-> > > upgraded
-> > > kernels..
-> > 
-> > Not only 'chroot doesn't work' for us, but even after replacing the
-> > kernel in a reiser4 (proper SFRN ;) instance and
-> >   upon an initial Linux 5.10.x kernel boot:
-> > ...
-> > kernel read not supported for file usr/lib/systemd/systemd (pid: 1
-> > comm: run-init)
-> > kernel panic -- not syncing: Attempted to kill init!
-> > exitcod=0x00000100
-> > ...
-> > 
-> > Fact is some of us have commercial interests when deploying
-> > reiser4, both in cloud instances, baremetal, and on-premises.
-> > 
-> > In the future if -- and only if -- our reiser4 efforts come to
-> > successful fruition, quite likely in due time we will be
-> >   able to financially commit to the Penguin's Linux Foundation
-> > temple, just like large corporations do
-> >   in exchange for indulgences[2] which virtue-wash their past
-> > and/or current corp. officers' *substantially darker deeds*;
-> >   heck, 'indulgence trafficking' seems to assuage->numb->arg(STFU)
-> > that 'virtuous' cult of GNU/Linux
-> >   developers/gatekeepers/maintainers' frivolous, *narcissist*,
-> > ethics and/or moralities so often piled up against
-> >   Reiser's work --which, paradoxically(!?), actually was largely
-> > implemented by Russian developers ;)
-> > 
-> > In the meantime, I hacked a reverse patch that undoes some(all) of
-> > the surreptitious lethal attack on reiser4 fs
-> >   -- at least on AMD64 architectures (I did away with other
-> > arch/Kconfigs).
-> > And no, I am not a git pro-, undoing what I could of commit
-> > 4d03e3cc59828c82ee89ea6e27a2f3cdf95aaadf (as your hinted, Ed)
-> >   does not fix the 'kernel read' issue.
-> > 
-> > Notwithstanding, I would appreciate if you can take a look at the
-> > attached patch. Probably it can be streamlined and/or improved
-> >   further to minimize pain on subsequent Linux kernel upgrades.
+On Tue, Aug 10, 2021 at 02:42:50PM -0500, Bjorn Helgaas wrote:
+> On Mon, Jul 19, 2021 at 03:34:54PM +0800, Chuanjia Liu wrote:
+> > For the new dts format, add a new method to get
+> > shared pcie-cfg base address and parse node.
 > 
+> This commit log doesn't seem to really cover what's going on here.  It
+> looks like:
 > 
-> That patch is an attempt to swim against the current ;)
+>   - You added a check for "mediatek,generic-pciecfg" (I guess this is
+>     the "shared pcie-cfg base address" part).  Probably could have
+>     been its own patch.
 > 
-> I no longer remember, why they want to get rid of set_fs for already
-> 15
-> years, but ->read() and ->write() methods seem to be deprecated, and
-> the
-> correct way would be to implement the new ->read_iter() and
-> write_iter()
-> methods, where reiser4 works with "chunked" streams, represented by
-> iov_iter structure, rather than with "continuous" streams,
-> represented
-> by char __user *buf. The task is not that difficult, but rather time
-> consuming - I don't have a time for this right now..
+>   - You added checks for "interrupt-names" and "pcie_irq".  Not
+>     explained in commit log; probably could have been its own patch,
+>     too.
+> 
+>   - You now look for "linux,pci-domain" (via of_get_pci_domain_nr()).
+>     If present, you parse only one port instead of looking for all the
+>     children of the node.
+> 
+>     That's sort of weird behavior -- why should the presence of
+>     "linux,pci-domain" determine whether the node can have children?
+>     Is that really what you intend?
+> 
+>     Should be explained in the commit log and could have been its own
+>     patch, too.
 
-On Sun, Jun 20, 2021 at 10:45 AM Edward Shishkin
-<edward.shishkin@gmail.com> wrote:
-      So, I have implemented ->read_iter() for all plugins (*). It is
-      included
-      to reiser4-for-5.12 stuff. Not sure if it is enough to make distro with
-      root over reiser4 though: ->write_iter() is not yet implemented (not so
-      trivial because of transactions).
-      
-      (*)
-      https://github.com/edward6/reiser4/commit/ac72aba7e8bb16a28755c1b2b762971927d17c3c
-      
-      https://github.com/edward6/reiser4/commit/4d3200fbcb2003c680cdb822e3f616d3fa83c391
-      
-      Edward.
-      
-   Your updated reiser4 patch implementation enables the reiser4 Debian
-   Installer (d-i) to proceed with the installation into a reiser4 root fs
-   disk media, Sir, much appreciated.
-   
-   < https://metztli.it/bullseye/netboot-ng/metztli-reiser4.iso >
-   < https://metztli.it/bullseye/netboot-ng/metztli-reiser4.iso.SHA256SUM
-   >
-   
-   Took me a while because there is no Debian packaging for the Linux
-   kernel 5.12, i.e., the Debian kernel package maintainers/developers'
-   last package is for 5.10.46-zt and then they skipped 5.11 and 5.12 to
-   begin experimenting with packaging for 5.13.xy-zt. I had to come up
-   with a crude hack -- based on inductive reasoning -- to combine patches
-   from those two packaging extremes and thus test if your patch actually
-   solved the installation issue.
-   
-   Apropos, I have been running that reiser4 linux 5.12.19 EOL build
-   locally, as well, for a couple of days without apparent issues thus
-   far.
-   < https://metztli.it/bullseye/tezcatlipoca.jpg >
-   
-   Best Professional Regards.
-   
-   
-Niltze, Ed-
+I agree with Bjorn, this patch should be split (and commit logs
+rewritten). I will drop it from my tree, waiting for a v12.
 
-I finally got around to creating an SFRN 5.1.3 -enabled Debian
-Installer (d-i) for upcoming Debian 11 (codenamed Bullseye). Applied
-your unstable reiser4 for 5.12 patch onto my debianized hack packaging
-for Linux kernel 5.12.19 EOL.
+Lorenzo
 
-I gave the d-i a spin in VirtualBox 6.1.26 and it choked on the
-following code fragment:
----------------------------------------------------------------------
-setup_dev_linux () {
-        # Ensure static device nodes created during install are
-preserved
-        # Tests in MAKEDEV require this is done in the D-I environment
-        mkdir -p /dev/.static/dev
-        chmod 700 /dev/.static/
-        mount --bind /target/dev /dev/.static/dev
-        # Mirror device nodes in D-I environment to target
-        mount --bind /dev /target/dev/
-}
------------------------------------------------------------------------
-
-specifically:
-mount --bind /target/dev /dev/.static/dev
-
-See relevant code fragment next to VirtualBox VM, where I manually
-entered the above directive:
-< https://metztli.it/bullseye-reiser5/d-i-sfrn5-fail.jpg >
-
-i.e., '--bind' is causing the SFRN5 -enabled installer to bail out
-*only* for this reiser4 unstable SFRN 5.1.3 -patched kernel. On the
-other hand, as reported previously, no such issue occurs with your
-reiser4 stable SFRN 4.0.2 patch applied to the *same* debianized kernel
-source tree, Ed.
-
-
-Best Professional Regards.
-
--- 
--- 
-Jose R R
-http://metztli.it
------------------------------------------------------------------------
-----------------------
-Download Metztli Reiser4: Debian Buster w/ Linux 5.9.26 AMD64
------------------------------------------------------------------------
-----------------------
-feats ZSTD compression https://sf.net/projects/metztli-reiser4/
------------------------------------------------------------------------
-----------------------
-or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
------------------------------------------------------------------------
---------------------
-Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
-
-
+> > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
+> > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> > ---
+> >  drivers/pci/controller/pcie-mediatek.c | 52 +++++++++++++++++++-------
+> >  1 file changed, 39 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> > index 25bee693834f..928e0983a900 100644
+> > --- a/drivers/pci/controller/pcie-mediatek.c
+> > +++ b/drivers/pci/controller/pcie-mediatek.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/irqchip/chained_irq.h>
+> >  #include <linux/irqdomain.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/mfd/syscon.h>
+> >  #include <linux/msi.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of_address.h>
+> > @@ -23,6 +24,7 @@
+> >  #include <linux/phy/phy.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> >  #include <linux/reset.h>
+> >  
+> >  #include "../pci.h"
+> > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
+> >   * struct mtk_pcie - PCIe host information
+> >   * @dev: pointer to PCIe device
+> >   * @base: IO mapped register base
+> > + * @cfg: IO mapped register map for PCIe config
+> >   * @free_ck: free-run reference clock
+> >   * @mem: non-prefetchable memory resource
+> >   * @ports: pointer to PCIe port information
+> > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
+> >  struct mtk_pcie {
+> >  	struct device *dev;
+> >  	void __iomem *base;
+> > +	struct regmap *cfg;
+> >  	struct clk *free_ck;
+> >  
+> >  	struct list_head ports;
+> > @@ -650,7 +654,11 @@ static int mtk_pcie_setup_irq(struct mtk_pcie_port *port,
+> >  		return err;
+> >  	}
+> >  
+> > -	port->irq = platform_get_irq(pdev, port->slot);
+> > +	if (of_find_property(dev->of_node, "interrupt-names", NULL))
+> > +		port->irq = platform_get_irq_byname(pdev, "pcie_irq");
+> > +	else
+> > +		port->irq = platform_get_irq(pdev, port->slot);
+> > +
+> >  	if (port->irq < 0)
+> >  		return port->irq;
+> >  
+> > @@ -682,6 +690,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
+> >  		val |= PCIE_CSR_LTSSM_EN(port->slot) |
+> >  		       PCIE_CSR_ASPM_L1_EN(port->slot);
+> >  		writel(val, pcie->base + PCIE_SYS_CFG_V2);
+> > +	} else if (pcie->cfg) {
+> > +		val = PCIE_CSR_LTSSM_EN(port->slot) |
+> > +		      PCIE_CSR_ASPM_L1_EN(port->slot);
+> > +		regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
+> >  	}
+> >  
+> >  	/* Assert all reset signals */
+> > @@ -985,6 +997,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+> >  	struct device *dev = pcie->dev;
+> >  	struct platform_device *pdev = to_platform_device(dev);
+> >  	struct resource *regs;
+> > +	struct device_node *cfg_node;
+> >  	int err;
+> >  
+> >  	/* get shared registers, which are optional */
+> > @@ -995,6 +1008,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+> >  			return PTR_ERR(pcie->base);
+> >  	}
+> >  
+> > +	cfg_node = of_find_compatible_node(NULL, NULL,
+> > +					   "mediatek,generic-pciecfg");
+> > +	if (cfg_node) {
+> > +		pcie->cfg = syscon_node_to_regmap(cfg_node);
+> > +		if (IS_ERR(pcie->cfg))
+> > +			return PTR_ERR(pcie->cfg);
+> > +	}
+> > +
+> >  	pcie->free_ck = devm_clk_get(dev, "free_ck");
+> >  	if (IS_ERR(pcie->free_ck)) {
+> >  		if (PTR_ERR(pcie->free_ck) == -EPROBE_DEFER)
+> > @@ -1027,22 +1048,27 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
+> >  	struct device *dev = pcie->dev;
+> >  	struct device_node *node = dev->of_node, *child;
+> >  	struct mtk_pcie_port *port, *tmp;
+> > -	int err;
+> > +	int err, slot;
+> > +
+> > +	slot = of_get_pci_domain_nr(dev->of_node);
+> > +	if (slot < 0) {
+> > +		for_each_available_child_of_node(node, child) {
+> > +			err = of_pci_get_devfn(child);
+> > +			if (err < 0) {
+> > +				dev_err(dev, "failed to get devfn: %d\n", err);
+> > +				goto error_put_node;
+> > +			}
+> >  
+> > -	for_each_available_child_of_node(node, child) {
+> > -		int slot;
+> > +			slot = PCI_SLOT(err);
+> >  
+> > -		err = of_pci_get_devfn(child);
+> > -		if (err < 0) {
+> > -			dev_err(dev, "failed to parse devfn: %d\n", err);
+> > -			goto error_put_node;
+> > +			err = mtk_pcie_parse_port(pcie, child, slot);
+> > +			if (err)
+> > +				goto error_put_node;
+> >  		}
+> > -
+> > -		slot = PCI_SLOT(err);
+> > -
+> > -		err = mtk_pcie_parse_port(pcie, child, slot);
+> > +	} else {
+> > +		err = mtk_pcie_parse_port(pcie, node, slot);
+> >  		if (err)
+> > -			goto error_put_node;
+> > +			return err;
+> >  	}
+> >  
+> >  	err = mtk_pcie_subsys_powerup(pcie);
+> > -- 
+> > 2.18.0
+> > 
