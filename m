@@ -2,153 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85D13EBEE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A845D3EBEE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhHMX4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 19:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
+        id S235859AbhHMX5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 19:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbhHMX4J (ORCPT
+        with ESMTP id S235397AbhHMX5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 19:56:09 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598C2C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:55:42 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id z128so21835756ybc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:55:42 -0700 (PDT)
+        Fri, 13 Aug 2021 19:57:20 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E816C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:56:52 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id f5so15329948wrm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6Hza+cZiqC9XzItENxitG0eHLg/qkhDpg0M92+ngjKE=;
-        b=IowVmiqz9W4nGo9+xQXGxJhoa1M+RONhN4l79NEfW0xTGx5gNNhLIKXfwLyYC8u4YR
-         44mSAS8UZArbJqnVF+cSH0OyCYcSvS8TY8Xe6guCUOlFozksRc/xux1TNGCVmMacAsKJ
-         3e5WdZvKzMhaF383b3gkcVMpUO+QLE3cez097HyA5adz5bRtcHPS8hIsICLIBHykTaHU
-         X014zBe1Xob9Nrw2ZA082+QAhbYmsdtfpkvQ+a4yG3mZR8B6qI5FC7bP6Y4PKT6D0VgI
-         Fss42lg2Xr/YUowKDy/vgl0jKq21RiHaQB3BYo5/AYi/3meufiyVvikluz0mC4NNdOid
-         Z/1w==
+        bh=NU03iJOxvCulVEpzqukpTCxo3VXTtcwN74QlTrmbW0Q=;
+        b=GSXcbUDZJmnZTVsxM3CVn+xYqam8o0HAQWAYmk1P0MvGDXqGz/MIMMtrhhwM79jivZ
+         ncZCzkj2I7YTEzb0R8ADhr5kpdli8nv05KFa9xh4uQ8FSFpdhzoyDIe3XtLC5YtGsRiS
+         inyOklsn0Y9WCN5k6zZAVkODX4RBIDR1j4KqENK511KAKH6pP5ErPe4oBxPRGpEyKw84
+         Hij6kdiLs9Kyf9DApAK9yh8F6GFrtxVJNd4Ff7hshZKSkXYXWAlSY48BdKXN5LLiv/Sk
+         JaR1w8eEBFSwiVy7LOBn55W8YjTNDcNqnbWBWhOtwYLO88piuHnOVaIOi6hl1JHIN9W3
+         7v9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6Hza+cZiqC9XzItENxitG0eHLg/qkhDpg0M92+ngjKE=;
-        b=Y49nN+11FnXIM1MOre+9lGIJJfZssc94uq8tVsr8CAZbgzWO33KMhhS8L0F0rb3ip+
-         sNfNe25kIodpfvPjUahJH8h+cQ5eE109+LsO7HoK1SLGaLsG4cxlHbDFuFibOEefMO1Q
-         zPhDXT8wGwM3KDWTzm+vS1ARZFRczuTWlUd9qILFy8KmSER0ZnChgt1a4fQ4O8PDeaM1
-         lkeGL3AR4x6y/PwnLNEwucCicQzpToCnWd7DhbD9GpxfrzU/fwh0uytUTpYXLMaH/MJi
-         j2sI+EgURzOVd/mA74p24CTPUerZ74Z//06pwYIZvJ0wLN2zFXuoYLBS5aLZRg7cZZew
-         Hbag==
-X-Gm-Message-State: AOAM532FYOoTLv22R5NUbN3WpkeSuuHdl8F662lSMaaEMzX/skk+NB3r
-        n4RDHKFThRFshuzBIrws7eiTuDEeGFKa4O3NqB/Tqw==
-X-Google-Smtp-Source: ABdhPJy6EX2LTFKvpwLgwc+nWeGl0+trx7LHktLUrINKrTHUqJLH4Lnzndks7rKcu/iM4267UbsvRh2lmYfVt8KH5s0=
-X-Received: by 2002:a5b:7c4:: with SMTP id t4mr5934445ybq.368.1628898941326;
- Fri, 13 Aug 2021 16:55:41 -0700 (PDT)
+        bh=NU03iJOxvCulVEpzqukpTCxo3VXTtcwN74QlTrmbW0Q=;
+        b=oyjc/5m/mZdv64TdXtbwl1qWNBYBkgVWmcky41prOIsKY7nvgZtmf3CO8/ym5zdGCo
+         dN11PhkU+WU2GhGDiuOQ78LQGmrQZjBjrfIZT9eIwmg08TwKVYlo0NnLTfGWOLvLYSnl
+         hyG7znBoV1g90j1RCca3+gzVbTFxF51D1tahadJFNKm6O9Uk1jfIVS3Z3dWuqVOSoPo/
+         9Jwi4V3HXWKJerYVbvgNh7oYeZSVm3Oq6eneZ5mmAK6CK7h44AYWWfyl07dhLq09OLQP
+         WEXQI7mIht4NXxKxsbrZnA26q8b6XG1i9Wkn1nLXUViaLehF8bPhvDiKesCtYBwC53oC
+         S/hA==
+X-Gm-Message-State: AOAM531kKF4NQV9/tvPgHAOJ3POjj4qKgY+cyvCvwt+HIz/9Ys1y695n
+        JTkXjKFmkdtnO4vLoWx286Gtb7+eDbeKsSkcoKq1zg==
+X-Google-Smtp-Source: ABdhPJzQBHl54s6hhaqpnQH6oM3UmWeyrbu3cmnDWrCcX5GYgjNduJzsIMpw4WqiFbdeSOV04NQ5MYOMu26Ifvms5h8=
+X-Received: by 2002:adf:f68d:: with SMTP id v13mr5629075wrp.358.1628899010983;
+ Fri, 13 Aug 2021 16:56:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730020019.1487127-1-joshdon@google.com> <20210730020019.1487127-3-joshdon@google.com>
- <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
- <CABk29Ns8P9AGy7Tpo6duOeEh=ZFWM1jO8FnvhZhktfcA0GWOpw@mail.gmail.com> <CAKfTPtB=ao5yrE3OtEj7mZYPNeMGCEB4rGMRb=vN5QfF=ySGiw@mail.gmail.com>
-In-Reply-To: <CAKfTPtB=ao5yrE3OtEj7mZYPNeMGCEB4rGMRb=vN5QfF=ySGiw@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Fri, 13 Aug 2021 16:55:30 -0700
-Message-ID: <CABk29NvOFsZYq6C0h4hRpd=CvoVxtYypgTx9neG4SKzUMQy2Tw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched: adjust SCHED_IDLE interactions
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210731063938.1391602-1-yuzhao@google.com> <20210731063938.1391602-3-yuzhao@google.com>
+ <CAHbLzkq4Bk2U8gEOum=uspwtjh=4ikoxdh7oJmyBLNvch8uvyA@mail.gmail.com>
+ <CAOUHufZdefs-QQnKb_8M_KCrUHB4qurB6ULGOy3vc8A_R3gFPA@mail.gmail.com>
+ <CAHbLzkqasAZ3UWcKQCAqd4OJX58_DMyxKnyvqBaNc8xekpP8-w@mail.gmail.com>
+ <CAOUHufb0fK9nBzMn-hx9uybGGWyWFE3bB0MRF1+Vwse8vPth7g@mail.gmail.com> <CAHbLzkpJ5gB7dsRMDspx5+_v+OMQkQ3D_c5n1tqP0o0hthvSQA@mail.gmail.com>
+In-Reply-To: <CAHbLzkpJ5gB7dsRMDspx5+_v+OMQkQ3D_c5n1tqP0o0hthvSQA@mail.gmail.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Fri, 13 Aug 2021 17:56:39 -0600
+Message-ID: <CAOUHufYJ91cBKk38b5H9X6vobBQm29gNiZ5arTc9Civtf0y3WA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: free zapped tail pages when splitting isolated thp
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuang Zhai <zhais@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 5:43 AM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
-[snip]
+()
+On Fri, Aug 13, 2021 at 5:24 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Wed, Aug 11, 2021 at 4:12 PM Yu Zhao <yuzhao@google.com> wrote:
+> >
+> > On Wed, Aug 11, 2021 at 4:25 PM Yang Shi <shy828301@gmail.com> wrote:
 > > >
-> > > The 1ms of your test comes from the tick which could be a good
-> > > candidate for a min value or the
-> > > normalized_sysctl_sched_min_granularity which has the advantage of not
-> > > increasing with number of CPU
-> >
-> > Fair point, this shouldn't completely ignore min granularity. Something like
-> >
-> > unsigned int sysctl_sched_idle_min_granularity = NSEC_PER_MSEC;
-> >
-> > (and still only using this value instead of the default
-> > min_granularity when the SCHED_IDLE entity is competing with normal
-> > entities)
->
-> Yes that looks like a good option
->
-> Also note that with a NSEC_PER_MSEC default value, the sched_idle
-> entity will most probably run 2 ticks instead of the 1 tick (HZ=1000)
-> that you have with your proposal because a bit less than a full tick
-> is accounted to the running thread (the time spent in interrupt is not
-> accounted as an example) so sysctl_sched_idle_min_granularity of 1ms
-> with HZ=1000 will most propably run 2 ticks. Instead you could reuse
-> the default 750000ULL value of sched_idle_min_granularity
-
-Yes, great point. That's a better value here, with sufficient margin.
-
-> That being said sysctl_sched_idle_min_granularity =
-> normalized_sysctl_sched_min_granularity * scale_factor which means
-> that normalized_sysctl_sched_min_granularity stays the same
-> (750000ULL) whatever the number of cpus
->
-> >
-> > > > @@ -4216,7 +4228,15 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
-> > > >                 if (sched_feat(GENTLE_FAIR_SLEEPERS))
-> > > >                         thresh >>= 1;
+> > > On Sun, Aug 8, 2021 at 10:49 AM Yu Zhao <yuzhao@google.com> wrote:
 > > > >
-> > > > -               vruntime -= thresh;
-> > > > +               /*
-> > > > +                * Don't give sleep credit to a SCHED_IDLE entity if we're
-> > > > +                * placing it onto a cfs_rq with non SCHED_IDLE entities.
-> > > > +                */
-> > > > +               if (!se_is_idle(se) ||
-> > > > +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
+> > > > On Wed, Aug 4, 2021 at 6:13 PM Yang Shi <shy828301@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Jul 30, 2021 at 11:39 PM Yu Zhao <yuzhao@google.com> wrote:
+> > > > > >
+> > > > > > If a tail page has only two references left, one inherited from the
+> > > > > > isolation of its head and the other from lru_add_page_tail() which we
+> > > > > > are about to drop, it means this tail page was concurrently zapped.
+> > > > > > Then we can safely free it and save page reclaim or migration the
+> > > > > > trouble of trying it.
+> > > > > >
+> > > > > > Signed-off-by: Yu Zhao <yuzhao@google.com>
+> > > > > > Tested-by: Shuang Zhai <zhais@google.com>
+> > > > > > ---
+> > > > > >  include/linux/vm_event_item.h |  1 +
+> > > > > >  mm/huge_memory.c              | 28 ++++++++++++++++++++++++++++
+> > > > > >  mm/vmstat.c                   |  1 +
+> > > > > >  3 files changed, 30 insertions(+)
+> > > > > >
+> > > > > > diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+> > > > > > index ae0dd1948c2b..829eeac84094 100644
+> > > > > > --- a/include/linux/vm_event_item.h
+> > > > > > +++ b/include/linux/vm_event_item.h
+> > > > > > @@ -99,6 +99,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+> > > > > >  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> > > > > >                 THP_SPLIT_PUD,
+> > > > > >  #endif
+> > > > > > +               THP_SPLIT_FREE,
+> > > > > >                 THP_ZERO_PAGE_ALLOC,
+> > > > > >                 THP_ZERO_PAGE_ALLOC_FAILED,
+> > > > > >                 THP_SWPOUT,
+> > > > > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > > > > index d8b655856e79..5120478bca41 100644
+> > > > > > --- a/mm/huge_memory.c
+> > > > > > +++ b/mm/huge_memory.c
+> > > > > > @@ -2432,6 +2432,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+> > > > > >         struct address_space *swap_cache = NULL;
+> > > > > >         unsigned long offset = 0;
+> > > > > >         unsigned int nr = thp_nr_pages(head);
+> > > > > > +       LIST_HEAD(pages_to_free);
+> > > > > > +       int nr_pages_to_free = 0;
+> > > > > >         int i;
+> > > > > >
+> > > > > >         VM_BUG_ON_PAGE(list && PageLRU(head), head);
+> > > > > > @@ -2506,6 +2508,25 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+> > > > > >                         continue;
+> > > > > >                 unlock_page(subpage);
+> > > > > >
+> > > > > > +               /*
+> > > > > > +                * If a tail page has only two references left, one inherited
+> > > > > > +                * from the isolation of its head and the other from
+> > > > > > +                * lru_add_page_tail() which we are about to drop, it means this
+> > > > > > +                * tail page was concurrently zapped. Then we can safely free it
+> > > > > > +                * and save page reclaim or migration the trouble of trying it.
+> > > > > > +                */
+> > > > > > +               if (list && page_ref_freeze(subpage, 2)) {
+> > > > > > +                       VM_BUG_ON_PAGE(PageLRU(subpage), subpage);
+> > > > > > +                       VM_BUG_ON_PAGE(PageCompound(subpage), subpage);
+> > > > > > +                       VM_BUG_ON_PAGE(page_mapped(subpage), subpage);
+> > > > > > +
+> > > > > > +                       ClearPageActive(subpage);
+> > > > > > +                       ClearPageUnevictable(subpage);
+> > > > > > +                       list_move(&subpage->lru, &pages_to_free);
+> > > > > > +                       nr_pages_to_free++;
+> > > > > > +                       continue;
+> > > > > > +               }
+> > > > >
+> > > > > Yes, such page could be freed instead of swapping out. But I'm
+> > > > > wondering if we could have some simpler implementation. Since such
+> > > > > pages will be re-added to page list, so we should be able to check
+> > > > > their refcount in shrink_page_list(). If the refcount is 1, the
+> > > > > refcount inc'ed by lru_add_page_tail() has been put by later
+> > > > > put_page(), we know it is freed under us since the only refcount comes
+> > > > > from isolation, we could just jump to "keep" (the label in
+> > > > > shrink_page_list()), then such page will be freed later by
+> > > > > shrink_inactive_list().
+> > > > >
+> > > > > For MADV_PAGEOUT, I think we could add some logic to handle such page
+> > > > > after shrink_page_list(), just like what shrink_inactive_list() does.
+> > > > >
+> > > > > Migration already handles refcount == 1 page, so should not need any change.
+> > > > >
+> > > > > Is this idea feasible?
+> > > >
+> > > > Yes, but then we would have to loop over the tail pages twice, here
+> > > > and in shrink_page_list(), right?
 > > >
-> > > Can't this condition above create unfairness between idle entities ?
-> > > idle thread 1 wake up while normal thread is running
-> > > normal thread thread sleeps immediately after
-> > > idle thread 2 wakes up just after and gets some credits compared to the 1st one.
+> > > I don't quite get what you mean "loop over the tail pages twice". Once
+> > > THP is isolated then get split, all the tail pages will be put on the
+> > > list (local list for isolated pages), then the reclaimer would deal
+> > > with the head page, then continue to iterate the list to deal with
+> > > tail pages. Your patch could free the tail pages earlier. But it
+> > > should not make too much difference to free the tail pages a little
+> > > bit later IMHO.
 > >
-> > Yes, this sacrifices some idle<->idle fairness when there is a normal
-> > thread that comes and goes. One alternative is to simply further
-> > reduce thresh for idle entities. That will interfere with idle<->idle
-> > fairness when there are no normal threads, which is why I opted for
-> > the former. On second thought though, the former fairness issue seems
-> > more problematic. Thoughts on applying a smaller sleep credit
-> > threshold universally to idle entities?
+> > We are in a (the first) loop here. If we free the tail pages later,
+> > then we will need to loop over them again (the second).
+> >
+> > IOW,
+> > 1) __split_huge_page(): for each of the 511 tail pages (first loop).
+> > 2) shrink_page_list(): for each of the 511 tail pages (second loop).
+> >
+> > > > In addition, if we try to freeze the refcount of a page in
+> > > > shrink_page_list(), we couldn't be certain whether this page used to
+> > > > be a tail page. So we would have to test every page. If a page wasn't
+> > > > a tail page, it's unlikely for its refcount to drop unless there is a
+> > > > race. But this patch isn't really intended to optimize such a race.
+> > > > It's mainly for the next, i.e., we know there is a good chance to drop
+> > > > tail pages (~10% on our systems). Sounds reasonable? Thanks.
+> > >
+> > > I'm not sure what is the main source of the partial mapped THPs from
+> > > your fleets. But if most of them are generated by MADV_DONTNEED (this
+> > > is used by some userspace memory allocator libs), they should be on
+> > > deferred split list too. Currently deferred split shrinker just
+> > > shrinks those THPs (simply split them and free unmapped sub pages)
+> > > proportionally, we definitely could shrink them more aggressively, for
+> > > example, by setting shrinker->seeks to 0. I'm wondering if this will
+> > > achieve a similar effect or not.
+> >
+> > Not partially mapped but internal fragmentation.
+> >
+> > IOW, some of the 4KB pages within a THP were never written into, which
+> > can be common depending on the implementations of userspace memory
+> > allocators.
 >
-> This one is a bit more complex to set.
-> With adding 1, you favor the already runnable tasks by ensuring that
-> they have or will run a slice during this period before sched_idle
-> task
-> But as soon as you subtract something to min_vruntime, the task will
-> most probably be scheduled at the next tick if other tasks already run
-> for a while (at least a sched period). If we use
-> sysctl_sched_min_granularity for sched_idle tasks that wake up instead
-> of sysctl_sched_latency, we will ensure that a sched_idle task will
-> not preempt a normal task, which woke up few ms before, and we will
-> keep some fairness for sched_idle task that sleeps compare to other.
+> OK, this is actually what the patch #3 does. The patch #3 just doesn't
+> remap the "all zero" page when splitting the THP IIUC. But the page
+> has refcount from isolation so it can't be simply freed by put_page().
 >
-> so a thresh of sysctl_sched_min_granularity (3.75ms with 16 cpus )
-> should not disturb your UC and keep some benefit for newly wake up
-> sched_ide task
+> Actually this makes me think my suggestion is better. It doesn't make
+> too much sense to me to have page free logic (manipulate flags,
+> uncharge memcg, etc) in THP split.
+>
+> There have been a couple of places to handle such cases:
+> - deferred split shrinker: the unmapped subpage is just freed by
+> put_page() since there is no extra refcount
+> - migration: check page refcount then free the refcount == 1 one
+>
+> Here you add the third case in the page reclaim path, so why not just
+> let the page reclaim handle all the work for freeing page?
 
-If the normal task has already been running for at least a period, it
-should be ok to preempt.
-A thresh around the min_granularity seems like a good order of
-magnitude; I'll experiment a bit.
+As I have explained previously:
+
+1) We would have to loop over tail pages twice. Not much overhead but
+unnecessary.
+2) We would have to try to freeze the refcount on _every_ page in
+shrink_page_list() -- shrink_page_list() takes all pages, not just
+relevant ones (previously being tail). Attempting to freeze refcount
+on an irrelevant page will likely fail. Again, not a significant
+overhead but better to avoid.
+
+I'm not against your idea. But I'd like to hear some clarifications
+about the points above. That is whether you think it's still a good
+idea to do what you suggested after taking these into account.
+
+> > > I really don't have any objection to free such pages, but just
+> > > wondering if we could have something simpler or not.
+> >
+> > Thanks.
+> >
+> > > > > > +
+> > > > > >                 /*
+> > > > > >                  * Subpages may be freed if there wasn't any mapping
+> > > > > >                  * like if add_to_swap() is running on a lru page that
+> > > > > > @@ -2515,6 +2536,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+> > > > > >                  */
+> > > > > >                 put_page(subpage);
+> > > > > >         }
+> > > > > > +
+> > > > > > +       if (!nr_pages_to_free)
+> > > > > > +               return;
+> > > > > > +
+> > > > > > +       mem_cgroup_uncharge_list(&pages_to_free);
+> > > > > > +       free_unref_page_list(&pages_to_free);
+> > > > > > +       count_vm_events(THP_SPLIT_FREE, nr_pages_to_free);
+> > > > > >  }
+> > > > > >
+> > > > > >  int total_mapcount(struct page *page)
+> > > > > > diff --git a/mm/vmstat.c b/mm/vmstat.c
+> > > > > > index b0534e068166..f486e5d98d96 100644
+> > > > > > --- a/mm/vmstat.c
+> > > > > > +++ b/mm/vmstat.c
+> > > > > > @@ -1300,6 +1300,7 @@ const char * const vmstat_text[] = {
+> > > > > >  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> > > > > >         "thp_split_pud",
+> > > > > >  #endif
+> > > > > > +       "thp_split_free",
+> > > > > >         "thp_zero_page_alloc",
+> > > > > >         "thp_zero_page_alloc_failed",
+> > > > > >         "thp_swpout",
+> > > > > > --
+> > > > > > 2.32.0.554.ge1b32706d8-goog
+> > > > > >
