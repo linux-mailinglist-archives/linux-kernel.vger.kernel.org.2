@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E923EB3C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971E03EB3C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239592AbhHMKDo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Aug 2021 06:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        id S240005AbhHMKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239619AbhHMKDQ (ORCPT
+        with ESMTP id S240037AbhHMKEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:03:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75221C0613A3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:02:34 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mEU14-0003CR-44; Fri, 13 Aug 2021 12:02:18 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mEU11-0003w2-Fx; Fri, 13 Aug 2021 12:02:15 +0200
-Message-ID: <5da35c2030e57621fa56795cd193e727f53205fe.camel@pengutronix.de>
-Subject: Re: [v11 2/2] pwm: Add Aspeed ast2600 PWM support
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>, lee.jones@linaro.org,
-        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Cc:     BMC-SW@aspeedtech.com
-Date:   Fri, 13 Aug 2021 12:02:15 +0200
-In-Reply-To: <20210812040942.5365-3-billy_tsai@aspeedtech.com>
-References: <20210812040942.5365-1-billy_tsai@aspeedtech.com>
-         <20210812040942.5365-3-billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Fri, 13 Aug 2021 06:04:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C00C061756;
+        Fri, 13 Aug 2021 03:04:04 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id a20so11294335plm.0;
+        Fri, 13 Aug 2021 03:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KHDDEXFDuvFgzelg5YEj3tZBkBln65N3PSUGMLuEUs0=;
+        b=OJB6/jiAQWXyZ69kkqoODTuQQuiVaUmwa/Zr1r2yRdbLMglCODldkr6oUgvkwneStF
+         ufmSVbfwnzMK+yRulbg8SDakhIWgrRTMktV8h30NZ7WLlofWi9H/pUZgC6dXpld8UnuL
+         u47oIx+mjtKD0LttjqlKFbXYTn0dIGjBNOn4JDGLhtCy65lcemYSWSGh66Vaw5P89Qk2
+         Qz5tHq6LmfbWEv/2lqG2t3xa31MIMmmjGkhtvasxsn0n2QuoLm62Q/K5CzT7fyzfioEy
+         nbPHxnWsJxSUzTxamSobtE0k8rzlNVK97JCO9xFUaw8gTEguL0LtlRtJ2xjcUqmsQF8q
+         CClg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KHDDEXFDuvFgzelg5YEj3tZBkBln65N3PSUGMLuEUs0=;
+        b=eoC1fuTw/4EUW+K23pOlwdsj+SWBJ/puK6YXcobypEpqiPNM+sbgI7yFm/UpRjz2X6
+         ulaC6rYoOehXnoR4A9CoWuJSLbAOvErp+L1un2ZONjyr8FAq0OAJLId7b2f3BtbcijPH
+         BC3k/tGbZCLdRKhlT3HFdbwqBsrJcVLRQu5lMdKK68tLD5Bt3pO91Ig1/11CKfTP+wPZ
+         xDfoTEq/b7p4GDTb+MEyMoooz4hOSFIq7hsLaOe+t/DhSH2QUUIgt1mGifMBtQFCB7nG
+         yQCApRMJGYPAw7NxRbt9Xzzmu6LxTY3HJqL27XcOaBeUPIYykovf9FMFZgScpQlHFz2Y
+         3vtg==
+X-Gm-Message-State: AOAM531+Ka4HrME/TVn0v/wUEGq5E5UPnxnczlDhT/syCU8a+bp4jkrc
+        7mw6kiOhNTIQFdvPpcNP2oHjYJkq8Wt4j3Y9ADM=
+X-Google-Smtp-Source: ABdhPJwyx20o7xFa7iXigi8x85KBmrfugMexJQIQue9+gbQrwJVXrrYLo7B0h3it1DBQDkAnnJh4tirtgweXFHcsAS0=
+X-Received: by 2002:aa7:860e:0:b029:3bd:7e49:7a14 with SMTP id
+ p14-20020aa7860e0000b02903bd7e497a14mr1804807pfn.40.1628849044422; Fri, 13
+ Aug 2021 03:04:04 -0700 (PDT)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210813083455.252986-1-puranjay12@gmail.com>
+In-Reply-To: <20210813083455.252986-1-puranjay12@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 13 Aug 2021 13:03:25 +0300
+Message-ID: <CAHp75VfK3BwVBSQu-A03aiWoapXb1Eo+NhThnKLPp=WA15365Q@mail.gmail.com>
+Subject: Re: [PATCH] iio: accel: adxl355: Add triggered buffer support
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        Darius <Darius.Berghe@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
+On Fri, Aug 13, 2021 at 11:35 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> Provide a way for continuous data capture by setting up buffer support. The
+> data ready signal exposed at the DRDY pin of the ADXL355 is exploited as
+> a hardware interrupt which triggers to fill the buffer.
 
-On Thu, 2021-08-12 at 12:09 +0800, Billy Tsai wrote:
-> This patch add the support of PWM controller which can be found at aspeed
-> ast2600 soc. The pwm supoorts up to 16 channels and it's part function
-> of multi-function device "pwm-tach controller".
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
-[...]
-> diff --git a/drivers/pwm/pwm-aspeed-ast2600.c b/drivers/pwm/pwm-aspeed-ast2600.c
-> new file mode 100644
-> index 000000000000..f89ce1d4cd67
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-aspeed-ast2600.c
-> @@ -0,0 +1,327 @@
-[...]
-> +static int aspeed_pwm_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	priv->clk = devm_clk_get(&parent_dev->dev, 0);
-> +	if (IS_ERR(priv->clk))
-> +		return dev_err_probe(dev, PTR_ERR(priv->clk),
-> +				     "Couldn't get clock\n");
-> +
-> +	ret = clk_prepare_enable(priv->clk);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Couldn't enable clock\n");
-> +
-> +	priv->reset = devm_reset_control_get_shared(&parent_dev->dev, NULL);
-> +	if (IS_ERR(priv->reset)) {
-> +		ret = dev_err_probe(dev, PTR_ERR(priv->reset),
-> +				    "Get reset failed\n");
-> +		goto err_disable_clk;
-> +	}
+...
 
-I suggest to request the reset control before enabling the clock. That
-way you can simplify the error path and avoid enabling the clock in case
-of reset_control_get failure.
+>   *
+>   * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+>   */
+> -
 
-regards
-Philipp
+Unrelated change.
+
+...
+
+> +#include <linux/iio/buffer.h>
+>  #include <linux/iio/iio.h>
+> +#include <linux/iio/trigger.h>
+> +#include <linux/iio/triggered_buffer.h>
+> +#include <linux/iio/trigger_consumer.h>
+
+I would rather regroup this like
+
+linux/*
+
+asm/*
+
+linux/iio*
+
+...
+
+> +#include <linux/of_irq.h>
+
+Okay, this is due to the absence of generic fwnode_irq_get_byname() or so.
+
+...
+
+>  struct adxl355_data {
+
+> +       int irq;
+
+Depending on container_of and frequency of usage this is not a good
+location for this.
+Strating from regmap pointer is much better (no pointer arithmetics involved).
+
+>         struct regmap *regmap;
+>         struct device *dev;
+>         struct mutex lock; /* lock to protect op_mode */
+
+>  };
+
+...
+
+> +       ret = regmap_bulk_read(data->regmap, ADXL355_XDATA3_REG,
+> +                              &data->buffer.buf[1],
+> +                              3);
+
+ARRAY_SIZE()? Or put this 3 to the previous line, it will be easier to read.
+
+Ditto for the rest of the similar code.
+
+> +       if (ret)
+> +               goto out_unlock_notify;
+
+...
+
+> +       /*
+> +        * Would be good to move it to the generic version.
+
+Something like "TODO: Would be..." ?
+
+> +        */
+> +       ret = of_irq_get_byname(dev->of_node, "DRDY");
+> +       if (ret > 0)
+> +               data->irq = ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
