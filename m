@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4F33EB835
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C02B3EB7B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241761AbhHMPLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54656 "EHLO mail.kernel.org"
+        id S241195AbhHMPIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241710AbhHMPLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C9F96109E;
-        Fri, 13 Aug 2021 15:10:36 +0000 (UTC)
+        id S241147AbhHMPIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA5461106;
+        Fri, 13 Aug 2021 15:08:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867436;
-        bh=BMkrYUd1x4/CkZQGRYspxSUXCQBLme0dkLHHzGJd4lg=;
+        s=korg; t=1628867293;
+        bh=qT9QoGe6vzZYvvq/osf6/mHJJetAvGUoSU0Mo3XpB+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yQi65YMlYCIy0eDZyNVk9VF1nF5IQ4VvpgrDC2UJIHw3dtMY5zKEfQ428xRXfdq0d
-         z5yzWk7Sr9+Q8Rny4Wuz7WeUMRwrFkwVGSlzTF8pkq3v1noX7CxBSi23lMDwCYJwOl
-         3riQxvdNn37KPr8rg5/Y9dECh6qru5r6zY/1USMM=
+        b=hTnVQCzGTQpGuUNSoOnKdJ+EV8HzFLGv/eDZHIenguS407idEGmd9iWE+aq7Wco7T
+         TwNLdJlDCygg7eidqBX2hck6CmKK6eStpYfdpVFyMSO1mYSkMryAcalUXm71i/Sxt+
+         hptkmYGGxUZUnhqBukTw8QXIvF+ywITjWArbQIVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 13/42] net: vxge: fix use-after-free in vxge_device_unregister
+        stable@vger.kernel.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: [PATCH 4.4 15/25] serial: 8250: Mask out floating 16/32-bit bus bits
 Date:   Fri, 13 Aug 2021 17:06:39 +0200
-Message-Id: <20210813150525.548292376@linuxfoundation.org>
+Message-Id: <20210813150521.220281022@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +40,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit 942e560a3d3862dd5dee1411dbdd7097d29b8416 ]
+commit e5227c51090e165db4b48dcaa300605bfced7014 upstream.
 
-Smatch says:
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+Make sure only actual 8 bits of the IIR register are used in determining
+the port type in `autoconfig'.
 
-Since vdev pointer is netdev private data accessing it after free_netdev()
-call can cause use-after-free bug. Fix it by moving free_netdev() call at
-the end of the function
+The `serial_in' port accessor returns the `unsigned int' type, meaning
+that with UPIO_AU, UPIO_MEM16, UPIO_MEM32, and UPIO_MEM32BE access types
+more than 8 bits of data are returned, of which the high order bits will
+often come from bus lines that are left floating in the data phase.  For
+example with the MIPS Malta board's CBUS UART, where the registers are
+aligned on 8-byte boundaries and which uses 32-bit accesses, data as
+follows is returned:
 
-Fixes: 6cca200362b4 ("vxge: cleanup probe error paths")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+YAMON> dump -32 0xbf000900 0x40
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-index 50ea69d88480..e69e76bb2c77 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-@@ -3537,13 +3537,13 @@ static void vxge_device_unregister(struct __vxge_hw_device *hldev)
- 
- 	kfree(vdev->vpaths);
- 
--	/* we are safe to free it now */
--	free_netdev(dev);
--
- 	vxge_debug_init(vdev->level_trace, "%s: ethernet device unregistered",
- 			buf);
- 	vxge_debug_entryexit(vdev->level_trace,	"%s: %s:%d  Exiting...", buf,
- 			     __func__, __LINE__);
+BF000900: 1F000942 1F000942 1F000900 1F000900  ...B...B........
+BF000910: 1F000901 1F000901 1F000900 1F000900  ................
+BF000920: 1F000900 1F000900 1F000960 1F000960  ...........`...`
+BF000930: 1F000900 1F000900 1F0009FF 1F0009FF  ................
+
+YAMON>
+
+Evidently high-order 24 bits return values previously driven in the
+address phase (the 3 highest order address bits used with the command
+above are masked out in the simple virtual address mapping used here and
+come out at zeros on the external bus), a common scenario with bus lines
+left floating, due to bus capacitance.
+
+Consequently when the value of IIR, mapped at 0x1f000910, is retrieved
+in `autoconfig', it comes out at 0x1f0009c1 and when it is right-shifted
+by 6 and then assigned to 8-bit `scratch' variable, the value calculated
+is 0x27, not one of 0, 1, 2, 3 expected in port type determination.
+
+Fix the issue then, by assigning the value returned from `serial_in' to
+`scratch' first, which masks out 24 high-order bits retrieved, and only
+then right-shift the resulting 8-bit data quantity, producing the value
+of 3 in this case, as expected.  Fix the same issue in `serial_dl_read'.
+
+The problem first appeared with Linux 2.6.9-rc3 which predates our repo
+history, but the origin could be identified with the old MIPS/Linux repo
+also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>
+as commit e0d2356c0777 ("Merge with Linux 2.6.9-rc3."), where code in
+`serial_in' was updated with this case:
+
++	case UPIO_MEM32:
++		return readl(up->port.membase + offset);
 +
-+	/* we are safe to free it now */
-+	free_netdev(dev);
+
+which made it produce results outside the unsigned 8-bit range for the
+first time, though obviously it is system dependent what actual values
+appear in the high order bits retrieved and it may well have been zeros
+in the relevant positions with the system the change originally was
+intended for.  It is at that point that code in `autoconf' should have
+been updated accordingly, but clearly it was overlooked.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org # v2.6.12+
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Link: https://lore.kernel.org/r/alpine.DEB.2.21.2106260516220.37803@angie.orcam.me.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/serial/8250/8250_port.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -274,7 +274,11 @@ configured less than Maximum supported f
+ /* Uart divisor latch read */
+ static int default_serial_dl_read(struct uart_8250_port *up)
+ {
+-	return serial_in(up, UART_DLL) | serial_in(up, UART_DLM) << 8;
++	/* Assign these in pieces to truncate any bits above 7.  */
++	unsigned char dll = serial_in(up, UART_DLL);
++	unsigned char dlm = serial_in(up, UART_DLM);
++
++	return dll | dlm << 8;
  }
  
- /*
--- 
-2.30.2
-
+ /* Uart divisor latch write */
+@@ -1160,9 +1164,11 @@ static void autoconfig(struct uart_8250_
+ 	serial_out(up, UART_LCR, 0);
+ 
+ 	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO);
+-	scratch = serial_in(up, UART_IIR) >> 6;
+ 
+-	switch (scratch) {
++	/* Assign this as it is to truncate any bits above 7.  */
++	scratch = serial_in(up, UART_IIR);
++
++	switch (scratch >> 6) {
+ 	case 0:
+ 		autoconfig_8250(up);
+ 		break;
 
 
