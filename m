@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D053EB838
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5C3EB7E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241958AbhHMPMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54700 "EHLO mail.kernel.org"
+        id S241523AbhHMPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241728AbhHMPLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95603610F7;
-        Fri, 13 Aug 2021 15:10:38 +0000 (UTC)
+        id S241410AbhHMPJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E7C61103;
+        Fri, 13 Aug 2021 15:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867439;
-        bh=FqsY6egiV9ISMen/Wo37gggvZZXps9gpmomhjQ1Q/p8=;
+        s=korg; t=1628867356;
+        bh=I4m2kPY9UgdBTkTiWJFQgRp5uiCVjYQUXB2EydW5tUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XlP/OsdHAMutzFXwq5ZWB8Y44X9SYqoZhiPA90K3SNdQGw9Ix8jIyEjdJaxrPEdLA
-         Tqy52ujTnEC8OmmV5HwT3R3Q9WEie44VL8e98WL25OtFcPNCNTFhNsgs1UHX9SD/2t
-         DlpUADquEwmaHxQM42zpdELGVyMBktMrlyZa/p24=
+        b=Q6vdLK/va9hlojEXCQglE8iI0qYM5qfnoS065MauaX2aa6fw1LsAS6Uz8869R3BVw
+         55Ass+hAXdUDZphgazrH3bOf4FnGRp6cBZuDvZZ3jZzbjhsGJu3RKGpvxsHzXC7AC7
+         1qcGKBsw43voo+CTx1Co/C6yEUMLSCeVDaBNPRuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+a5df189917e79d5e59c9@syzkaller.appspotmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 14/42] Bluetooth: defer cleanup of resources in hci_unregister_dev()
-Date:   Fri, 13 Aug 2021 17:06:40 +0200
-Message-Id: <20210813150525.580499094@linuxfoundation.org>
+        stable@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 13/30] USB: serial: ch341: fix character loss at high transfer rates
+Date:   Fri, 13 Aug 2021 17:06:41 +0200
+Message-Id: <20210813150522.865665253@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
+In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
+References: <20210813150522.445553924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,244 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Willy Tarreau <w@1wt.eu>
 
-[ Upstream commit e04480920d1eec9c061841399aa6f35b6f987d8b ]
+commit 3c18e9baee0ef97510dcda78c82285f52626764b upstream.
 
-syzbot is hitting might_sleep() warning at hci_sock_dev_event() due to
-calling lock_sock() with rw spinlock held [1].
+The chip supports high transfer rates, but with the small default buffers
+(64 bytes read), some entire blocks are regularly lost. This typically
+happens at 1.5 Mbps (which is the default speed on Rockchip devices) when
+used as a console to access U-Boot where the output of the "help" command
+misses many lines and where "printenv" mangles the environment.
 
-It seems that history of this locking problem is a trial and error.
+The FTDI driver doesn't suffer at all from this. One difference is that
+it uses 512 bytes rx buffers and 256 bytes tx buffers. Adopting these
+values completely resolved the issue, even the output of "dmesg" is
+reliable. I preferred to leave the Tx value unchanged as it is not
+involved in this issue, while a change could increase the risk of
+triggering the same issue with other devices having too small buffers.
 
-Commit b40df5743ee8 ("[PATCH] bluetooth: fix socket locking in
-hci_sock_dev_event()") in 2.6.21-rc4 changed bh_lock_sock() to
-lock_sock() as an attempt to fix lockdep warning.
+I verified that it backports well (and works) at least to 5.4. It's of
+low importance enough to be dropped where it doesn't trivially apply
+anymore.
 
-Then, commit 4ce61d1c7a8e ("[BLUETOOTH]: Fix locking in
-hci_sock_dev_event().") in 2.6.22-rc2 changed lock_sock() to
-local_bh_disable() + bh_lock_sock_nested() as an attempt to fix the
-sleep in atomic context warning.
-
-Then, commit 4b5dd696f81b ("Bluetooth: Remove local_bh_disable() from
-hci_sock.c") in 3.3-rc1 removed local_bh_disable().
-
-Then, commit e305509e678b ("Bluetooth: use correct lock to prevent UAF
-of hdev object") in 5.13-rc5 again changed bh_lock_sock_nested() to
-lock_sock() as an attempt to fix CVE-2021-3573.
-
-This difficulty comes from current implementation that
-hci_sock_dev_event(HCI_DEV_UNREG) is responsible for dropping all
-references from sockets because hci_unregister_dev() immediately
-reclaims resources as soon as returning from
-hci_sock_dev_event(HCI_DEV_UNREG).
-
-But the history suggests that hci_sock_dev_event(HCI_DEV_UNREG) was not
-doing what it should do.
-
-Therefore, instead of trying to detach sockets from device, let's accept
-not detaching sockets from device at hci_sock_dev_event(HCI_DEV_UNREG),
-by moving actual cleanup of resources from hci_unregister_dev() to
-hci_cleanup_dev() which is called by bt_host_release() when all
-references to this unregistered device (which is a kobject) are gone.
-
-Since hci_sock_dev_event(HCI_DEV_UNREG) no longer resets
-hci_pi(sk)->hdev, we need to check whether this device was unregistered
-and return an error based on HCI_UNREGISTER flag.  There might be subtle
-behavioral difference in "monitor the hdev" functionality; please report
-if you found something went wrong due to this patch.
-
-Link: https://syzkaller.appspot.com/bug?extid=a5df189917e79d5e59c9 [1]
-Reported-by: syzbot <syzbot+a5df189917e79d5e59c9@syzkaller.appspotmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: e305509e678b ("Bluetooth: use correct lock to prevent UAF of hdev object")
-Acked-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/r/20210724152739.18726-1-w@1wt.eu
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         | 16 +++++------
- net/bluetooth/hci_sock.c         | 49 +++++++++++++++++++++-----------
- net/bluetooth/hci_sysfs.c        |  3 ++
- 4 files changed, 45 insertions(+), 24 deletions(-)
+ drivers/usb/serial/ch341.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 0cc5e2b4bbf4..51afaaa68408 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1030,6 +1030,7 @@ struct hci_dev *hci_alloc_dev(void);
- void hci_free_dev(struct hci_dev *hdev);
- int hci_register_dev(struct hci_dev *hdev);
- void hci_unregister_dev(struct hci_dev *hdev);
-+void hci_cleanup_dev(struct hci_dev *hdev);
- int hci_suspend_dev(struct hci_dev *hdev);
- int hci_resume_dev(struct hci_dev *hdev);
- int hci_reset_dev(struct hci_dev *hdev);
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index ba5c899d1edf..3b2dd98e9fd6 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3181,14 +3181,10 @@ EXPORT_SYMBOL(hci_register_dev);
- /* Unregister HCI device */
- void hci_unregister_dev(struct hci_dev *hdev)
- {
--	int id;
--
- 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
- 
- 	hci_dev_set_flag(hdev, HCI_UNREGISTER);
- 
--	id = hdev->id;
--
- 	write_lock(&hci_dev_list_lock);
- 	list_del(&hdev->list);
- 	write_unlock(&hci_dev_list_lock);
-@@ -3217,7 +3213,14 @@ void hci_unregister_dev(struct hci_dev *hdev)
- 	}
- 
- 	device_del(&hdev->dev);
-+	/* Actual cleanup is deferred until hci_cleanup_dev(). */
-+	hci_dev_put(hdev);
-+}
-+EXPORT_SYMBOL(hci_unregister_dev);
- 
-+/* Cleanup HCI device */
-+void hci_cleanup_dev(struct hci_dev *hdev)
-+{
- 	debugfs_remove_recursive(hdev->debugfs);
- 	kfree_const(hdev->hw_info);
- 	kfree_const(hdev->fw_info);
-@@ -3239,11 +3242,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
- 	hci_discovery_filter_clear(hdev);
- 	hci_dev_unlock(hdev);
- 
--	hci_dev_put(hdev);
--
--	ida_simple_remove(&hci_index_ida, id);
-+	ida_simple_remove(&hci_index_ida, hdev->id);
- }
--EXPORT_SYMBOL(hci_unregister_dev);
- 
- /* Suspend HCI device */
- int hci_suspend_dev(struct hci_dev *hdev)
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index 120064e9cb2b..1ad569581165 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -59,6 +59,17 @@ struct hci_pinfo {
- 	char              comm[TASK_COMM_LEN];
- };
- 
-+static struct hci_dev *hci_hdev_from_sock(struct sock *sk)
-+{
-+	struct hci_dev *hdev = hci_pi(sk)->hdev;
-+
-+	if (!hdev)
-+		return ERR_PTR(-EBADFD);
-+	if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
-+		return ERR_PTR(-EPIPE);
-+	return hdev;
-+}
-+
- void hci_sock_set_flag(struct sock *sk, int nr)
- {
- 	set_bit(nr, &hci_pi(sk)->flags);
-@@ -747,19 +758,13 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
- 	if (event == HCI_DEV_UNREG) {
- 		struct sock *sk;
- 
--		/* Detach sockets from device */
-+		/* Wake up sockets using this dead device */
- 		read_lock(&hci_sk_list.lock);
- 		sk_for_each(sk, &hci_sk_list.head) {
--			lock_sock(sk);
- 			if (hci_pi(sk)->hdev == hdev) {
--				hci_pi(sk)->hdev = NULL;
- 				sk->sk_err = EPIPE;
--				sk->sk_state = BT_OPEN;
- 				sk->sk_state_change(sk);
--
--				hci_dev_put(hdev);
- 			}
--			release_sock(sk);
- 		}
- 		read_unlock(&hci_sk_list.lock);
- 	}
-@@ -918,10 +923,10 @@ static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
- static int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd,
- 				unsigned long arg)
- {
--	struct hci_dev *hdev = hci_pi(sk)->hdev;
-+	struct hci_dev *hdev = hci_hdev_from_sock(sk);
- 
--	if (!hdev)
--		return -EBADFD;
-+	if (IS_ERR(hdev))
-+		return PTR_ERR(hdev);
- 
- 	if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
- 		return -EBUSY;
-@@ -1075,6 +1080,18 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
- 
- 	lock_sock(sk);
- 
-+	/* Allow detaching from dead device and attaching to alive device, if
-+	 * the caller wants to re-bind (instead of close) this socket in
-+	 * response to hci_sock_dev_event(HCI_DEV_UNREG) notification.
-+	 */
-+	hdev = hci_pi(sk)->hdev;
-+	if (hdev && hci_dev_test_flag(hdev, HCI_UNREGISTER)) {
-+		hci_pi(sk)->hdev = NULL;
-+		sk->sk_state = BT_OPEN;
-+		hci_dev_put(hdev);
-+	}
-+	hdev = NULL;
-+
- 	if (sk->sk_state == BT_BOUND) {
- 		err = -EALREADY;
- 		goto done;
-@@ -1351,9 +1368,9 @@ static int hci_sock_getname(struct socket *sock, struct sockaddr *addr,
- 
- 	lock_sock(sk);
- 
--	hdev = hci_pi(sk)->hdev;
--	if (!hdev) {
--		err = -EBADFD;
-+	hdev = hci_hdev_from_sock(sk);
-+	if (IS_ERR(hdev)) {
-+		err = PTR_ERR(hdev);
- 		goto done;
- 	}
- 
-@@ -1713,9 +1730,9 @@ static int hci_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 		goto done;
- 	}
- 
--	hdev = hci_pi(sk)->hdev;
--	if (!hdev) {
--		err = -EBADFD;
-+	hdev = hci_hdev_from_sock(sk);
-+	if (IS_ERR(hdev)) {
-+		err = PTR_ERR(hdev);
- 		goto done;
- 	}
- 
-diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
-index d5c7c89ec4d6..b568f7c21b30 100644
---- a/net/bluetooth/hci_sysfs.c
-+++ b/net/bluetooth/hci_sysfs.c
-@@ -83,6 +83,9 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
- static void bt_host_release(struct device *dev)
- {
- 	struct hci_dev *hdev = to_hci_dev(dev);
-+
-+	if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
-+		hci_cleanup_dev(hdev);
- 	kfree(hdev);
- 	module_put(THIS_MODULE);
- }
--- 
-2.30.2
-
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -585,6 +585,7 @@ static struct usb_serial_driver ch341_de
+ 		.owner	= THIS_MODULE,
+ 		.name	= "ch341-uart",
+ 	},
++	.bulk_in_size      = 512,
+ 	.id_table          = id_table,
+ 	.num_ports         = 1,
+ 	.open              = ch341_open,
 
 
