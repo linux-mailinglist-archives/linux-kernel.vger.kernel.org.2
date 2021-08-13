@@ -2,111 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F953EB9D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B223EB9D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhHMQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:11:41 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:55736 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231270AbhHMQLk (ORCPT
+        id S231270AbhHMQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhHMQM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:11:40 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 0BE3D8219E;
-        Fri, 13 Aug 2021 19:11:11 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1628871071;
-        bh=S7U7RzlCWxWHeqcFklpXbvxk+/So5UbE0PlinKA7/VA=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=FJbXsQ7AvkHk2tSb30GF8OeGlgXNCorhgtL+0Tac7gtGuZEiAFmBOvv5qqhL9Rr79
-         6AOtp/RXq01i9U9nmzLdXI/zyOEW0LlhUiqcxQPENDoR4Qjr7gRM0M3S6cASJvyE/k
-         mRz9blp1EARYBAbp9MuvfhN/+yeBw6narc8kMETQ=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 13 Aug 2021 19:11:10 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.2176.009; Fri, 13 Aug 2021 19:11:10 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        "zajec5@gmail.com" <zajec5@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
-Subject: RE: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
-Thread-Topic: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
-Thread-Index: AQHXhWe5WstdeQuygUujQulzI6K7d6txqg+w
-Date:   Fri, 13 Aug 2021 16:11:10 +0000
-Message-ID: <a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com>
- <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com>
- <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.0.26]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 13 Aug 2021 12:12:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AB0C061756;
+        Fri, 13 Aug 2021 09:12:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 516D71F44A4C
+Received: by earth.universe (Postfix, from userid 1000)
+        id 3D07F3C0C99; Fri, 13 Aug 2021 18:12:26 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 18:12:26 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] power: supply: bq24735: reorganize ChargeOption
+ command macros
+Message-ID: <20210813161226.phnswlf7lnpjkizu@earth.universe>
+References: <20210709142731.23418-1-bruno.meneguele@smartgreen.net>
+ <20210709142731.23418-2-bruno.meneguele@smartgreen.net>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ay3hu2slrqbfq2lf"
+Content-Disposition: inline
+In-Reply-To: <20210709142731.23418-2-bruno.meneguele@smartgreen.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRhdGlvbi5vcmc+DQo+
-IFNlbnQ6IEZyaWRheSwgSnVseSAzMCwgMjAyMSA4OjI0IFBNDQo+IFRvOiBLb25zdGFudGluIEtv
-bWFyb3YgPGFsbWF6LmFsZXhhbmRyb3ZpY2hAcGFyYWdvbi1zb2Z0d2FyZS5jb20+OyBTdGVwaGVu
-IFJvdGh3ZWxsIDxzZnJAY2FuYi5hdXVnLm9yZy5hdT4NCj4gQ2M6IExlb25pZGFzIFAuIFBhcGFk
-YWtvcyA8cGFwYWRha29zcGFuQGdtYWlsLmNvbT47IHphamVjNUBnbWFpbC5jb207IERhcnJpY2sg
-Si4gV29uZyA8ZGp3b25nQGtlcm5lbC5vcmc+OyBHcmVnIEtyb2FoLQ0KPiBIYXJ0bWFuIDxncmVn
-a2hAbGludXhmb3VuZGF0aW9uLm9yZz47IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5j
-b20+OyBsaW51eC1mc2RldmVsIDxsaW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZz47DQo+IExp
-bnV4IEtlcm5lbCBNYWlsaW5nIExpc3QgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBB
-bCBWaXJvIDx2aXJvQHplbml2LmxpbnV4Lm9yZy51az47IE1hdHRoZXcgV2lsY294IDx3aWxseUBp
-bmZyYWRlYWQub3JnPg0KPiBTdWJqZWN0OiBQYXJhZ29uIE5URlN2MyAod2FzIFJlOiBbR0lUIFBV
-TExdIHZib3hzZiBmaXhlcyBmb3IgNS4xNC0xKQ0KPiANCj4gT24gRnJpLCBKdWwgMzAsIDIwMjEg
-YXQgODo1NSBBTSBLb25zdGFudGluIEtvbWFyb3YNCj4gPGFsbWF6LmFsZXhhbmRyb3ZpY2hAcGFy
-YWdvbi1zb2Z0d2FyZS5jb20+IHdyb3RlOg0KPiA+DQo+ID4gV2UndmUganVzdCBzZW50IHRoZSAy
-N3RoIHBhdGNoIHNlcmllcyB3aGljaCBmaXhlcyB0byB0aGUgYnVpbGRhYmlsaXR5IGFnYWluc3QN
-Cj4gPiBjdXJyZW50IGxpbnV4LW5leHQuIEFuZCB3ZSdsbCBuZWVkIHNldmVyYWwgZGF5cyB0byBw
-cmVwYXJlIGEgcHJvcGVyIHB1bGwgcmVxdWVzdA0KPiA+IGJlZm9yZSBzZW5kaW5nIGl0IHRvIHlv
-dS4NCj4gDQo+IFdlbGwsIEkgd29uJ3QgcHVsbCB1bnRpbCB0aGUgbmV4dCBtZXJnZSB3aW5kb3cg
-b3BlbnMgYW55d2F5IChhYm91dCBhDQo+IG1vbnRoIGF3YXkpLiBCdXQgaXQgd291bGQgYmUgZ29v
-ZCB0byBoYXZlIHlvdXIgdHJlZSBpbiBsaW51eC1uZXh0IGZvcg0KPiBhdCBsZWFzdCBhIGNvdXBs
-ZSBvZiB3ZWVrcyBiZWZvcmUgdGhhdCBoYXBwZW5zLg0KPiANCj4gQWRkZWQgU3RlcGhlbiB0byB0
-aGUgcGFydGljaXBhbnRzIGxpc3QgYXMgYSBoZWFkcy11cCBmb3IgaGltIC0gbGV0dGluZw0KPiBo
-aW0ga25vdyB3aGVyZSB0byBmZXRjaCB0aGUgZ2l0IHRyZWUgZnJvbSB3aWxsIGFsbG93IHRoYXQg
-dG8gaGFwcGVuIGlmDQo+IHlvdSBoYXZlbid0IGRvbmUgc28gYWxyZWFkeS4NCj4gDQoNClRoYW5r
-cyBmb3IgdGhpcyBjbGFyaWZpY2F0aW9uLCBMaW51cyENClN0ZXBoZW4sIHBsZWFzZSBmaW5kIHRo
-ZSB0cmVlIGhlcmU6DQpodHRwczovL2dpdGh1Yi5jb20vUGFyYWdvbi1Tb2Z0d2FyZS1Hcm91cC9s
-aW51eC1udGZzMy5naXQNCkl0IGlzIHRoZSBmb3JrIGZyb20gNS4xNC1yYzUgdGFnIHdpdGggbnRm
-czMgcGF0Y2hlcyBhcHBsaWVkLg0KQWxzbywgdGhlIGxhdGVzdCBjaGFuZ2VzDQotIGZpeCBzb21l
-IGdlbmVyaWMvWFlaIHhmc3Rlc3RzLCB3aGljaCB3ZXJlIGRpc2N1c3NlZA0Kd2l0aCBUaGVvZG9y
-ZSwgRGFycmljayBhbmQgb3RoZXJzDQotIHVwZGF0ZXMgdGhlIE1BSU5UQUlORVJTIHdpdGggbWFp
-bGluZyBsaXN0IChhbHNvIGFkZGVkIHRvIENDIGhlcmUpIGFuZCBzY20gdHJlZSBsaW5rLg0KDQpQ
-bGVhc2UgbGV0IG1lIGtub3cgaWYgYWRkaXRpb25hbCBjaGFuZ2VzIHJlcXVyZWQgdG8gZ2V0IGZl
-dGNoZWQgaW50byBsaW51eC1uZXh0Lg0KDQo+IFRoZSBvbmUgb3RoZXIgdGhpbmcgSSBkbyB3YW50
-IHdoZW4gdGhlcmUncyBiaWcgbmV3IHBpZWNlcyBsaWtlIHRoaXMNCj4gYmVpbmcgYWRkZWQgaXMg
-dG8gYXNrIHlvdSB0byBtYWtlIHN1cmUgdGhhdCBldmVyeXRoaW5nIGlzIHNpZ25lZC1vZmYNCj4g
-cHJvcGVybHksIGFuZCB0aGF0IHRoZXJlIGlzIG5vIGludGVybmFsIGNvbmZ1c2lvbiBhYm91dCB0
-aGUgR1BMdjINCj4gaW5zaWRlIFBhcmFnb24sIGFuZCB0aGF0IGFueSBsZWdhbCBwZW9wbGUgZXRj
-IGFyZSBhbGwgYXdhcmUgb2YgdGhpcw0KPiBhbGwgYW5kIGFyZSBvbiBib2FyZC4gVGhlIGxhc3Qg
-dGhpbmcgd2Ugd2FudCB0byBzZWUgaXMgc29tZSAib29wcywgd2UNCj4gZGlkbid0IG1lYW4gdG8g
-ZG8gdGhpcyIgYnJvdWhhaGEgc2l4IG1vbnRocyBsYXRlci4NCj4gDQo+IEkgZG91YnQgdGhhdCdz
-IGFuIGlzc3VlLCBjb25zaWRlcmluZyBob3cgcHVibGljIHRoaXMgYWxsIGhhcyBiZWVuLCBidXQN
-Cj4gSSBqdXN0IHdhbnRlZCB0byBtZW50aW9uIGl0IGp1c3QgdG8gYmUgdmVyeSBvYnZpb3VzIGFi
-b3V0IGl0Lg0KPiANCj4gICAgICAgICAgICAgICAgICAgTGludXMNCkluZGVlZCwgdGhlcmUgaXMg
-bm8gaW50ZXJuYWwgY29uZnVzaW9uIGFib3V0IHRoZSBHUEx2MiBhbmQgd2UgbWVhbiB0byBtYWtl
-IHRoaXMgY29udHJpYnV0aW9uLg0KDQpCZXN0IHJlZ2FyZHMsDQpLb25zdGFudGluLg0K
+
+--ay3hu2slrqbfq2lf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Jul 09, 2021 at 11:27:30AM -0300, Bruno Meneguele wrote:
+> Rename ChargeOption macros to match the others for ChargeCurrent and
+> ChargeVoltage and also separate the command & masks macros from the bits =
+of
+> interest macros for each command.  This macro doesn't introduce any
+> functional change, only code re-org.
+>=20
+> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/supply/bq24735-charger.c | 27 ++++++++++++++------------
+>  1 file changed, 15 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/suppl=
+y/bq24735-charger.c
+> index b5d619db79f6..3ce36d09c017 100644
+> --- a/drivers/power/supply/bq24735-charger.c
+> +++ b/drivers/power/supply/bq24735-charger.c
+> @@ -31,9 +31,8 @@
+> =20
+>  #include <linux/power/bq24735-charger.h>
+> =20
+> -#define BQ24735_CHG_OPT			0x12
+> -#define BQ24735_CHG_OPT_CHARGE_DISABLE	(1 << 0)
+> -#define BQ24735_CHG_OPT_AC_PRESENT	(1 << 4)
+> +/* BQ24735 available commands and their respective masks */
+> +#define BQ24735_CHARGE_OPT		0x12
+>  #define BQ24735_CHARGE_CURRENT		0x14
+>  #define BQ24735_CHARGE_CURRENT_MASK	0x1fc0
+>  #define BQ24735_CHARGE_VOLTAGE		0x15
+> @@ -43,6 +42,10 @@
+>  #define BQ24735_MANUFACTURER_ID		0xfe
+>  #define BQ24735_DEVICE_ID		0xff
+> =20
+> +/* ChargeOptions bits of interest */
+> +#define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
+> +#define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
+> +
+>  struct bq24735 {
+>  	struct power_supply		*charger;
+>  	struct power_supply_desc	charger_desc;
+> @@ -167,8 +170,8 @@ static inline int bq24735_enable_charging(struct bq24=
+735 *charger)
+>  	if (ret)
+>  		return ret;
+> =20
+> -	return bq24735_update_word(charger->client, BQ24735_CHG_OPT,
+> -				   BQ24735_CHG_OPT_CHARGE_DISABLE, 0);
+> +	return bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
+> +				   BQ24735_CHARGE_OPT_CHG_DISABLE, 0);
+>  }
+> =20
+>  static inline int bq24735_disable_charging(struct bq24735 *charger)
+> @@ -176,9 +179,9 @@ static inline int bq24735_disable_charging(struct bq2=
+4735 *charger)
+>  	if (charger->pdata->ext_control)
+>  		return 0;
+> =20
+> -	return bq24735_update_word(charger->client, BQ24735_CHG_OPT,
+> -				   BQ24735_CHG_OPT_CHARGE_DISABLE,
+> -				   BQ24735_CHG_OPT_CHARGE_DISABLE);
+> +	return bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
+> +				   BQ24735_CHARGE_OPT_CHG_DISABLE,
+> +				   BQ24735_CHARGE_OPT_CHG_DISABLE);
+>  }
+> =20
+>  static bool bq24735_charger_is_present(struct bq24735 *charger)
+> @@ -188,14 +191,14 @@ static bool bq24735_charger_is_present(struct bq247=
+35 *charger)
+>  	} else {
+>  		int ac =3D 0;
+> =20
+> -		ac =3D bq24735_read_word(charger->client, BQ24735_CHG_OPT);
+> +		ac =3D bq24735_read_word(charger->client, BQ24735_CHARGE_OPT);
+>  		if (ac < 0) {
+>  			dev_dbg(&charger->client->dev,
+>  				"Failed to read charger options : %d\n",
+>  				ac);
+>  			return false;
+>  		}
+> -		return (ac & BQ24735_CHG_OPT_AC_PRESENT) ? true : false;
+> +		return (ac & BQ24735_CHARGE_OPT_AC_PRESENT) ? true : false;
+>  	}
+> =20
+>  	return false;
+> @@ -208,11 +211,11 @@ static int bq24735_charger_is_charging(struct bq247=
+35 *charger)
+>  	if (!bq24735_charger_is_present(charger))
+>  		return 0;
+> =20
+> -	ret  =3D bq24735_read_word(charger->client, BQ24735_CHG_OPT);
+> +	ret  =3D bq24735_read_word(charger->client, BQ24735_CHARGE_OPT);
+>  	if (ret < 0)
+>  		return ret;
+> =20
+> -	return !(ret & BQ24735_CHG_OPT_CHARGE_DISABLE);
+> +	return !(ret & BQ24735_CHARGE_OPT_CHG_DISABLE);
+>  }
+> =20
+>  static void bq24735_update(struct bq24735 *charger)
+> --=20
+> 2.31.1
+>=20
+
+--ay3hu2slrqbfq2lf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWmeUACgkQ2O7X88g7
++pojqw/8D02O/nqnfBLzGbC/szuhXuvSNNjch3qGxCdcRxQ8nRkRqP27/jxFlzVG
+KTZpywsMek/txT+EoUuMawWpD/VtdDj6X2nvGAnmXLV8+S6/wVSSLRzJoba3QOWt
+AddeNNB/yuJDiDssRBMcFDyFyr7iFvg+jlGtgdtDRCzJ79MeEVNdFU5OlBnarHn9
+o4B9HLys1eUXDYqAmADXFFm16Q3S90tuHdzjxEfITlXxQHicCPevGmJ07s8kw+/5
+p0RmAWBjOQA42bo9tPJTJ0cdds3YTIyzhzZEuuNF6B7f+cYRoVYkoMWnVqF/LjmL
+UXR1frqHu7HxB254N2MnYfUkM0viaR9x5F1LW7BZG2NiZzbK4uh2KRQ87c/EWdKd
+uWt4Cebk2Ma5voAAFBZBGbo7nNdGbqWuOpM3f9QPH7QcXcqSWQ/KQF212X8G7uGk
+gVWqBDGYRg4/a8SVORFPkSDsMfIGvBc5DYraFVydU9hoBqDKHRVGfHQwYtnmmFhj
+gRaKChxeJva8UT9ZiGpETGYMlFcp8wzT/p6PcEFqO56tO2eJsbLbsPfWKDEGHWwV
+U31mNHyMpdjPl7whlmoGUqyxgN0bQoHTspjCuEaDzc1H86WKLRDnHuVjxk6vClrE
+4RVI2jg/D0xas7OIP/UPDLS3StzGI83ETb+nEnKFG0mzDUO3j7U=
+=35pV
+-----END PGP SIGNATURE-----
+
+--ay3hu2slrqbfq2lf--
