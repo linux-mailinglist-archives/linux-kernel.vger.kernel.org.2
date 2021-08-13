@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E37F3EBA2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1776C3EBA33
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhHMQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
+        id S235385AbhHMQih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233827AbhHMQfZ (ORCPT
+        with ESMTP id S233838AbhHMQig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:35:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57199C061756;
-        Fri, 13 Aug 2021 09:34:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 1BE991F44A96
-Received: by earth.universe (Postfix, from userid 1000)
-        id CB6733C0C99; Fri, 13 Aug 2021 18:34:54 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 18:34:54 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     zhuguanghong <zhuguanghong@uniontech.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] POWER SUPPLY CLASS/SUBSYSTEM : add new status 'Full
- charging' can show that the battery is fully charged but still charging
-Message-ID: <20210813163454.de6rprklvnbnq3yv@earth.universe>
-References: <20210707081751.17021-1-zhuguanghong@uniontech.com>
+        Fri, 13 Aug 2021 12:38:36 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BB7C0617AD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:38:09 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id w6so5690673plg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rKvd8GPFgFZOtNQzzws03kml/1ydB9Y6K/jtiteL0wc=;
+        b=mkunRimklcu7tq5sSrKfl+MZalwCsCE4vJGGtvK/+ezuV7gNnMBYCay5kpiCcnF0DR
+         r07bEiI8kfE2zFDR77solHFcAHg4UcjgdwcGYlr7CUxBh3a2rlLuN9NjGkRit/PgLxIK
+         fApuGfKI4bNzgewxf98oGVyAj4fiqfE+NFY3M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rKvd8GPFgFZOtNQzzws03kml/1ydB9Y6K/jtiteL0wc=;
+        b=rOc/TlbUnFoVM5H0wFgHBAyq57C8Pv+BbvvkwNStJR3hpv2xMDwV2dWNx94yCOfiOJ
+         DWrTjIRq+AMGwcxFBVNkNgVGy4qdL+owzbAe0bDlfHBSUAHML2Fo4Hh3o9UG0WFxFmo3
+         m3Zlog9azWfEWZoCi6lUZfpgXkAzfe2Q9Cio2/Tgspbdv8SjkV6vlhqb4EusIODUsz4a
+         EX4M8dEyFb/ltDP7G5ACke97RT73HK7zCpuGXQizhHeXw8YgByBuNTaxiFJBZ7+sVbNl
+         O+pdRlH6ZRO17Yc2aPluUN3kOflhLh4aG2VQ1wIpVvGvp2R3ZBiE1stnZk/V/iaT1xxT
+         vaKw==
+X-Gm-Message-State: AOAM533lVffqWvDR07eFaUowfeQNwUBRDRWtai/4c5v2kiG7OJr3kuwa
+        oJlVhElkjrjKSjiWdQTs1UkQTw==
+X-Google-Smtp-Source: ABdhPJwWTb+EHLsKayUYtAvOSVOUAdQtjnMHIwfubJ7iDXxddJbwYUHITnIGBY+2pLtZ3MYHoMtp7g==
+X-Received: by 2002:a62:6042:0:b029:3e0:86b4:51b with SMTP id u63-20020a6260420000b02903e086b4051bmr3241725pfb.62.1628872688791;
+        Fri, 13 Aug 2021 09:38:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q5sm2291199pjo.7.2021.08.13.09.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 09:38:08 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 09:38:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+Message-ID: <202108130937.7848F6B318@keescook>
+References: <20210802143820.1150099-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3benhu3tw7vl2w3i"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707081751.17021-1-zhuguanghong@uniontech.com>
+In-Reply-To: <20210802143820.1150099-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The input_system_configure_channel_sensor() function lost its final
+> return code in a previous patch:
+> 
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+> 
+> Restore what was there originally.
+> 
+> Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---3benhu3tw7vl2w3i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I hit this too. Thanks!
 
-Hi,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-On Wed, Jul 07, 2021 at 04:17:51PM +0800, zhuguanghong wrote:
+-Kees
 
-Where is the long description?
-
-Why is this needed? If userspace wants to know the details
-(trickle charging vs small leak battery usage) it can always
-check current_now / power_now. I think adding this will make
-things more complex without any real improvement.
-
-> Signed-off-by: zhuguanghong <zhuguanghong@uniontech.com>
 > ---
+>  .../media/atomisp/pci/hive_isp_css_common/host/input_system.c   | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> index 8e085dda0c18..712e01c37870 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> @@ -1646,6 +1646,8 @@ static input_system_err_t input_system_configure_channel_sensor(
+>  	default:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+>  	}
+> +
+> +	return INPUT_SYSTEM_ERR_NO_ERROR;
+>  }
+>  
+>  // Test flags and set structure.
+> -- 
+> 2.29.2
+> 
 
-
->  drivers/power/supply/power_supply_sysfs.c | 1 +
->  include/linux/power_supply.h              | 1 +
->  2 files changed, 2 insertions(+)
->=20
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
-pply/power_supply_sysfs.c
-> index c3d7cbcd4fad..0ddb84b7637f 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -78,6 +78,7 @@ static const char * const POWER_SUPPLY_STATUS_TEXT[] =
-=3D {
->  	[POWER_SUPPLY_STATUS_DISCHARGING]	=3D "Discharging",
->  	[POWER_SUPPLY_STATUS_NOT_CHARGING]	=3D "Not charging",
->  	[POWER_SUPPLY_STATUS_FULL]		=3D "Full",
-> +	[POWER_SUPPLY_STATUS_FULL_CHARGING]	=3D "Full charging",
->  };
-> =20
->  static const char * const POWER_SUPPLY_CHARGE_TYPE_TEXT[] =3D {
-> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> index be203985ecdd..04844dbb18c4 100644
-> --- a/include/linux/power_supply.h
-> +++ b/include/linux/power_supply.h
-> @@ -37,6 +37,7 @@ enum {
->  	POWER_SUPPLY_STATUS_DISCHARGING,
->  	POWER_SUPPLY_STATUS_NOT_CHARGING,
->  	POWER_SUPPLY_STATUS_FULL,
-> +	POWER_SUPPLY_STATUS_FULL_CHARGING,
->  };
-> =20
->  /* What algorithm is the charger using? */
-> --=20
-> 2.20.1
->=20
->=20
->=20
-
---3benhu3tw7vl2w3i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWny4ACgkQ2O7X88g7
-+pq8ZQ//X1ATR3gAGaI0TI1vVVl8FLJSgVoxAB8vTjtm0zPlO6u0kZJzrvvdDZtj
-Gzspdf7+HNUK+vhNcfiBs+XIsV8ch/ccHrCVl57UrwTPxGz8oYwdUlLoR7JXbzEk
-z8WvDb1RNZJZHldk2OA5NsiNyMput0uayp9FTkXSg00GSFICamqbbnY68KiocPxe
-UVpsjTyjZN5WmDlB1SEV28vPrpy0/M/NGHGLqIzzVkrzd+byzNoRA3dn83UKMuf3
-8EPySgX9NHIfyAKCYf+bx+9tDOGQIKe4WyLR2QGbjLk1PUQYOfImlaTLGzQ3O+L2
-s9uAnxxeUi2w+wwtfmBtZYtEnIT/yW9kThUJj5idSeDXzOd1+xTLq4U6GEEYQ9St
-oxVi6uTrCjAWjQhdMZ/I2kJlgl3tdSIxKjJah9NcT/HR7/eF4ZpgwTv0S66CgKf1
-cQdqr67D1In93xoz9O64JW3O+96lMJouhKc08HXtTkdAH8sxENukKYAhHnvbsZEM
-WsT1Xcn6fQyhQ0VBF3VjSwBNGpjAkmhU1HA0T8hBNYuTjB3/zYE2a9a4xnapoc8x
-xZevAK37NqtzVwzc60xXLnQtQGsKjx4fo2NNo9GmM9adTf+rGB28XDifS6LIBjA9
-sO2QIFOFzRHDji5ZgHNIrx4Tl+P+C3gzLBnUvxGo2BNICczJ+zo=
-=7zT3
------END PGP SIGNATURE-----
-
---3benhu3tw7vl2w3i--
+-- 
+Kees Cook
