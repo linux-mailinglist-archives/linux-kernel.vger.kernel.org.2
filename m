@@ -2,143 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438443EB75D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46B73EB76B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241092AbhHMPFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49288 "EHLO mail.kernel.org"
+        id S241138AbhHMPIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:08:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240928AbhHMPFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:05:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49BAF61102;
-        Fri, 13 Aug 2021 15:04:49 +0000 (UTC)
+        id S241123AbhHMPIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE482610A5;
+        Fri, 13 Aug 2021 15:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867089;
-        bh=pCnFpMRtS+e2XhtLoiMVTHyFudGfKS2FuJvMqpXcFw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aKYWEf7Bc6BzXV3M5PhO81/Cen+j65tX4Xw4T7Lx/J8BMn7EkyYM/44t1jUP2HQye
-         FUqgZjC1m19cxTlKIzkkZ49cpxT3yL7p02nVNEvi3eeqY9Q6sTBYf2WmD1Mna20LB7
-         de5kDQm1L3EOgHYevA1BQE7oJnkJb9+GQ5UR1XXE=
-Date:   Fri, 13 Aug 2021 17:04:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Bing Fan <hptsfb@gmail.com>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>
-Subject: Re: [PATCH v6] arm pl011 serial: support multi-irq request
-Message-ID: <YRaKDxUq5fifGJ75@kroah.com>
-References: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
- <YRYc9nCcpGOs4SaJ@kroah.com>
- <9c3a4336-b6c4-d96e-9a9d-8001dddcee20@gmail.com>
- <YRYqq5Cgqy3975e1@kroah.com>
- <f3d4ba49-0cf8-9e92-77c1-ea8964b4e6b9@arm.com>
+        s=korg; t=1628867283;
+        bh=j4LColll/ekHeJhezivbY8g02d6B6al3PeE6otLR8a8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=quuJ0qaz+1wuJXrWzO1Wl5s1WiIxpslzf7jQNqVX5J8MVY21VtXXJ7or3qPFcB6JX
+         3jd/wVzcmEVqThJyANYV/lUhrz4glcR2LwZJharUOVgKSUjtKTsAIe+zasRj+R62Rl
+         uykRSvD0gW8nuRqx9G9cpWz7ad5+V+D4WTcHvXfs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/25] 4.4.281-rc1 review
+Date:   Fri, 13 Aug 2021 17:06:24 +0200
+Message-Id: <20210813150520.718161915@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.281-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.281-rc1
+X-KernelTest-Deadline: 2021-08-15T15:05+00:00
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f3d4ba49-0cf8-9e92-77c1-ea8964b4e6b9@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 03:08:48PM +0100, Robin Murphy wrote:
-> Hi Greg,
-> 
-> On 2021-08-13 09:17, Greg KH wrote:
-> > On Fri, Aug 13, 2021 at 03:56:01PM +0800, Bing Fan wrote:
-> > > 
-> > > 在 8/13/2021 15:19, Greg KH 写道:
-> > > > On Fri, Aug 13, 2021 at 11:31:30AM +0800, Bing Fan wrote:
-> > > > > From: Bing Fan <tombinfan@tencent.com>
-> > > > > 
-> > > > > In order to make pl011 work better, multiple interrupts are
-> > > > > required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-> > > > > at the same time, pl011 to GIC does not merge the interrupt
-> > > > > lines(each serial-interrupt corresponding to different GIC hardware
-> > > > > interrupt), so need to enable and request multiple gic interrupt
-> > > > > numbers in the driver.
-> > > > > 
-> > > > > Signed-off-by: Bing Fan <tombinfan@tencent.com>
-> > > > > ---
-> > > > >    drivers/tty/serial/amba-pl011.c | 39 +++++++++++++++++++++++++++++++--
-> > > > >    1 file changed, 37 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> > > > > index e14f3378b8a0..eaac3431459c 100644
-> > > > > --- a/drivers/tty/serial/amba-pl011.c
-> > > > > +++ b/drivers/tty/serial/amba-pl011.c
-> > > > > @@ -1701,6 +1701,41 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
-> > > > >    	}
-> > > > >    }
-> > > > > +static void pl011_release_multi_irqs(struct uart_amba_port *uap, unsigned int max_cnt)
-> > > > > +{
-> > > > > +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-> > > > > +	int i;
-> > > > > +
-> > > > > +	for (i = 0; i < max_cnt; i++)
-> > > > > +		if (amba_dev->irq[i])
-> > > > > +			free_irq(amba_dev->irq[i], uap);
-> > > > > +}
-> > > > > +
-> > > > > +static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
-> > > > > +{
-> > > > > +	int ret = 0;
-> > > > > +	int i;
-> > > > > +	unsigned int virq;
-> > > > > +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-> > > > > +
-> > > > > +	pl011_write(uap->im, uap, REG_IMSC);
-> > > > > +
-> > > > > +	for (i = 0; i < AMBA_NR_IRQS; i++) {
-> > > > > +		virq = amba_dev->irq[i];
-> > > > > +		if (virq == 0)
-> > > > > +			break;
-> > > > > +
-> > > > > +		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
-> > > > > +		if (ret) {
-> > > > > +			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
-> > > > > +			pl011_release_multi_irqs(uap, i - 1);
-> > > > > +			break;
-> > > > > +		}
-> > > > > +	}
-> > > > > +
-> > > > > +	return ret;
-> > > > > +}
-> > > > This function looks identical to pl011_allocate_irq(), so what is the
-> > > > difference here?  Why is this still needed at all?  What does it do that
-> > > > is different from pl011_allocate_irq()?
-> > > 
-> > > The v6-patch is based on master of
-> > > git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git, not tty-next.
-> > 
-> > Always submit patches based on tty-next if you want them accepted into
-> > that tree.
-> > 
-> > > As below, the pl011_allocate_irq function supports single irq request only,
-> > > which different from pl011_allocate_multi_irqs.
-> > > 
-> > > static int pl011_allocate_irq(struct uart_amba_port *uap)
-> > > {
-> > >      pl011_write(uap->im, uap, REG_IMSC);
-> > > 
-> > >      return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011",
-> > > uap);
-> > > }
-> > 
-> > Ok, but that does not reflect what is in my tree to be merged for
-> > 5.15-rc1.  What is wrong with the code in there that is incorrect and
-> > needs to be changed?
-> 
-> As reported by Qian Cai, it blows up on ACPI-based systems by assuming
-> port.dev is an amba_device when in fact in that situation it's a
-> platform_device. If you're able to drop the current patch from your tree
-> that would probably be the best thing to do for the moment.
+This is the start of the stable review cycle for the 4.4.281 release.
+There are 25 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-I have not seen any such bug report.
+Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
+Anything received after that time might be too late.
 
-If something needs to be reverted in linux-next, (i.e. in my tty-next
-branch), please let me know.  Ideally by sending a pathc to do so...
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.281-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
 thanks,
 
 greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.281-rc1
+
+Miklos Szeredi <mszeredi@redhat.com>
+    ovl: prevent private clone if bind mount is not allowed
+
+YueHaibing <yuehaibing@huawei.com>
+    net: xilinx_emaclite: Do not print real IOMEM pointer
+
+Longfang Liu <liulongfang@huawei.com>
+    USB:ehci:fix Kunpeng920 ehci hardware problem
+
+Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+    pipe: increase minimum default pipe size to 2 pages
+
+Letu Ren <fantasquex@gmail.com>
+    net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
+
+Prarit Bhargava <prarit@redhat.com>
+    alpha: Send stop IPI to send to online CPUs
+
+Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+    reiserfs: check directory items on read from disk
+
+Yu Kuai <yukuai3@huawei.com>
+    reiserfs: add check for root_inode in reiserfs_fill_super
+
+Zheyu Ma <zheyuma97@gmail.com>
+    pcmcia: i82092: fix a null pointer dereference bug
+
+Maciej W. Rozycki <macro@orcam.me.uk>
+    MIPS: Malta: Do not byte-swap accesses to the CBUS UART
+
+Maciej W. Rozycki <macro@orcam.me.uk>
+    serial: 8250: Mask out floating 16/32-bit bus bits
+
+Johan Hovold <johan@kernel.org>
+    media: rtl28xxu: fix zero-length control request
+
+Hui Su <suhui@zeku.com>
+    scripts/tracing: fix the bug that can't parse raw_trace_func
+
+David Bauer <mail@david-bauer.net>
+    USB: serial: ftdi_sio: add device ID for Auto-M3 OP-COM v2
+
+Willy Tarreau <w@1wt.eu>
+    USB: serial: ch341: fix character loss at high transfer rates
+
+Daniele Palmas <dnlplm@gmail.com>
+    USB: serial: option: add Telit FD980 composition 0x1056
+
+Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+    Bluetooth: defer cleanup of resources in hci_unregister_dev()
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: vxge: fix use-after-free in vxge_device_unregister
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: pegasus: fix uninit-value in get_interrupt_interval
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    bnx2x: fix an error code in bnx2x_nic_load()
+
+H. Nikolaus Schaller <hns@goldelico.com>
+    mips: Fix non-POSIX regexp
+
+Wang Hai <wanghai38@huawei.com>
+    net: natsemi: Fix missing pci_disable_device() in probe and remove
+
+Hans Verkuil <hverkuil-cisco@xs4all.nl>
+    media: videobuf2-core: dequeue if start_streaming fails
+
+Li Manyi <limanyi@uniontech.com>
+    scsi: sr: Return correct event when media event code is 3
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Fix racy deletion of subscriber
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                        |  4 +-
+ arch/alpha/kernel/smp.c                         |  2 +-
+ arch/mips/Makefile                              |  2 +-
+ arch/mips/mti-malta/malta-platform.c            |  3 +-
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c         | 11 +++++-
+ drivers/media/v4l2-core/videobuf2-core.c        | 13 ++++++-
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c |  3 +-
+ drivers/net/ethernet/natsemi/natsemi.c          |  8 +---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c  |  6 +--
+ drivers/net/ethernet/qlogic/qla3xxx.c           |  6 +--
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c   |  5 +--
+ drivers/net/usb/pegasus.c                       | 14 +++++--
+ drivers/pcmcia/i82092.c                         |  1 +
+ drivers/scsi/sr.c                               |  2 +-
+ drivers/tty/serial/8250/8250_port.c             | 12 ++++--
+ drivers/usb/host/ehci-pci.c                     |  3 ++
+ drivers/usb/serial/ch341.c                      |  1 +
+ drivers/usb/serial/ftdi_sio.c                   |  1 +
+ drivers/usb/serial/ftdi_sio_ids.h               |  3 ++
+ drivers/usb/serial/option.c                     |  2 +
+ fs/namespace.c                                  | 42 +++++++++++++--------
+ fs/pipe.c                                       | 17 ++++++++-
+ fs/reiserfs/stree.c                             | 31 +++++++++++++---
+ fs/reiserfs/super.c                             |  8 ++++
+ include/net/bluetooth/hci_core.h                |  1 +
+ net/bluetooth/hci_core.c                        | 16 ++++----
+ net/bluetooth/hci_sock.c                        | 49 +++++++++++++++++--------
+ net/bluetooth/hci_sysfs.c                       |  3 ++
+ scripts/tracing/draw_functrace.py               |  6 +--
+ sound/core/seq/seq_ports.c                      | 39 ++++++++++++++------
+ 30 files changed, 224 insertions(+), 90 deletions(-)
+
+
