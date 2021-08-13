@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688783EB6E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FE43EB6E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240855AbhHMOlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38212 "EHLO mail.kernel.org"
+        id S240582AbhHMOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:43:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233567AbhHMOle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:41:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7576360C41;
-        Fri, 13 Aug 2021 14:41:06 +0000 (UTC)
+        id S233567AbhHMOni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 10:43:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA96760C41;
+        Fri, 13 Aug 2021 14:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628865667;
-        bh=lTE5dn1H2YpYJhp+KIjBVxOkkJJGTQc9GEOAL7tSiwA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=H2gjhKOwV+yFuZJQFg7xBJnDa37RmRuz0bql3OAK8punjgpTtBjc3R37ZmmYx3zA4
-         QM9TZIBsDpfTZZs5p67PmaU6eaAt4iwLm9L1Y7BysAC71YITQpztblqiONVMYZ3h93
-         EQMW5pW17PsPoTBmMpkfHNDG+boc63cX8P44m8/zbPcvNwVzfh6+snAVoOQiUnAEW2
-         RyS+0r68PZfxMZ9ouOWcPtO/Px8nLOJZ5u2G8T+McY/F8492T2bZmWMS1r+e0iJGNC
-         XKRHLrfTOhhEhQEw4qOzAAdyY4/ElBtVVzGTNwtwXeM+Hwil8Xq93P0VhQ6FFoD6ZB
-         66KOA+EoGc2Lw==
-Subject: Re: [PATCH] f2fs: convert /sys/fs/f2fs/<disk>/stat/sb_status to use
- string
-To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <AKcA0QDJDw7c2rSjY0-LUKqD.3.1628864269869.Hmail.frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <9b000232-c3dc-458c-2507-1dde8a8d985c@kernel.org>
-Date:   Fri, 13 Aug 2021 22:41:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        s=k20201202; t=1628865791;
+        bh=WFhOXngG1jTidCMkgnBGevWfnMbHMBV1tkcVssMelAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JCdQnBlFworm0odw/VFe0rVtElOhEI06BUtG/WnKnXU3EOVhNJjjevavM8+nCWHOB
+         eOE9RD2X2G3UjI7X1IHHJHZmSYg0Fiq2eq86MM11joa6tfZFA9t0HeFaaatAhEb/Rq
+         O2E93rVwvQ3vK4qnv28fH7aw6dO6Y2ljMo8DTjXPoAtgDVnCs14JGyoBPNOU/cAh3c
+         tbC79/21C99tneJ7gq4GnywZieMneNG87+1WjGMu1Qub35U1eDl/ZV2e3p/Cqo5EL3
+         jEc/AUvNpMySyQPtdTtXgqh25RzAevHI/my+WDaopun9FptJUG1i26Q0i/LVjP7I/E
+         76VSJTBBDEkAg==
+Date:   Fri, 13 Aug 2021 15:43:06 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+        wangle6@huawei.com, xiaoqian9@huawei.com, shaolexi@huawei.com
+Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
+Message-ID: <20210813144305.GB8451@willie-the-truck>
+References: <20210809021215.19991-1-nixiaoming@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <AKcA0QDJDw7c2rSjY0-LUKqD.3.1628864269869.Hmail.frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809021215.19991-1-nixiaoming@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/13 22:17, 李扬韬 wrote:
-> HI Chao,
+On Mon, Aug 09, 2021 at 10:12:15AM +0800, Xiaoming Ni wrote:
+> Semaphore is sleeping lock. Add might_sleep() to down*() family
+> (with exception of down_trylock()) to detect atomic context sleep.
 > 
-> From: Chao Yu <chao@kernel.org>
-> Date: 2021-08-13 22:09:53
-> To:  Yangtao Li <frank.li@vivo.com>,jaegeuk@kernel.org
-> Cc:  linux-f2fs-devel@lists.sourceforge.net,linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] f2fs: convert /sys/fs/f2fs/<disk>/stat/sb_status to use string>On 2021/8/13 22:01, Yangtao Li wrote:
->>> Do not use numbers but strings to improve readability when flag is set.
->>
->> This breaks output rule of sysfs entry, see below link:
->>
-> Which rule? one entry should show one value？
+> Previously discussed with Peter Zijlstra, see link:
+>  https://lore.kernel.org/lkml/20210806082320.GD22037@worktop.programming.kicks-ass.net
 
-Yes, one value per file please, which is suggested by Greg.
+You can use a Link: tag here.
 
-https://lkml.org/lkml/2021/6/3/319
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> ---
+>  kernel/locking/semaphore.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-> 
-> But I see that:
-> # cat /sys/fs/f2fs/<disk>/features
-> encryption, quota_ino, verity, pin_file
-> 
-> So the format of features also wrong?
+Acked-by: Will Deacon <will@kernel.org>
 
-  What:		/sys/fs/f2fs/<disk>/features
-  Date:		July 2017
-  Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-  Description:	<deprecated: should use /sys/fs/f2fs/<disk>/feature_list/
-
-Thanks,
-
-> 
-> Thx，
-> 
+Will
