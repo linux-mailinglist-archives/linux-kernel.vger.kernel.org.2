@@ -2,128 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA00C3EB268
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3A03EB274
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239702AbhHMIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234844AbhHMIPZ (ORCPT
+        id S239803AbhHMISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:18:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239773AbhHMISE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:15:25 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F45C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id t66so9929470qkb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=nmbUvnf/USoc9AmsYZayjj+Bsv4n/4XSVzeQZeHCY/w=;
-        b=VY3rnbKfC6IyMIF2mQCvcO3/p1MrleXlgTgNxeWSBXT9iJw3CBZFN3z2XXGgMQdSbI
-         TbqHQUQPUP7CY43Yx06VPYqyrcoeX6o8i3UnYo9aW/VkFIG3dcJNQ1ake9dlvnaXDbi8
-         SyIoqLR1GG5fX1OKF/8NeJmGX2XBjM/XQfF3V0w25q/RUbd7NYlx0dvdN/LhjAbc2BbU
-         py1wKpcYHDd8ZwuXMSQiYQljbWcfItimubLcy3OW6L9QmMoYNG0IXQwP7I9gox6ywe60
-         YilRF+Ku5B+cO+nXNL2prqfMW1kLH8TIzekXuxCr2q7JdzMwExtofJOvTDb55Rr/USlZ
-         wfxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=nmbUvnf/USoc9AmsYZayjj+Bsv4n/4XSVzeQZeHCY/w=;
-        b=ZD25x3hYLZ+xFos81hy615to72vAmLCWx0LgOl6JEn/yfeK1ZUjk/DRXrjchNf74ik
-         0NC8hWqDi6titJ3qS8uT2zqCC1cjFs6w14TPKK+UoXTJ3sWvOdnOiCVmXU845JHRsYRa
-         hP0i0fLXknqL3Cf79tpgddi7En4Tm73tBtxpQDEoBXdn7vq2sxkbG522Wz5KhObgd0Ae
-         BUXTXE/hsktHVnCGcaBgrjJwVsv/tWzj9+hFW68t97Iz5U0BE0ekK1nQjHFGdql+jJNx
-         sG4LsuRQ+Z4Wpt8MHBminBIV0jdCG289hOKD5Na3EHkJVXu4AcVwsr0DrDVz+8RZRZ9E
-         v0Hw==
-X-Gm-Message-State: AOAM5300qo3PrxDR6DgJkwTOZ6Dod2V+VWMGKEVlgFqFOuSMLoXeLuhO
-        wgalpcXYoq3ea0CU7J7KOkE=
-X-Google-Smtp-Source: ABdhPJy5IJcev/70U0W5olAYgc/Xqjg6SLl1FzSP3Q2Gzhie+jQp3XWe3d9tZt0n0JnKtppozgum3A==
-X-Received: by 2002:a05:620a:1722:: with SMTP id az34mr900560qkb.115.1628842498132;
-        Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id q184sm505955qkd.35.2021.08.13.01.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 01:14:57 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        =?UTF-8?q?=20Valdis=20Kl=C4=93tnieks=20?= <valdis.kletnieks@vt.edu>,
-        "SeongJae Park" <sjpark@amazon.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:
-Date:   Fri, 13 Aug 2021 08:14:52 +0000
-Message-Id: <20210813081452.34784-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210812131921.a1c5c85213290e1729cc72a3@linux-foundation.org>
+        Fri, 13 Aug 2021 04:18:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628842658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sqXqJy/S48z48l2Ks/2UHAgqYhB0LstlNS9q6S5x3T4=;
+        b=HHfYKzHzsReo6XQbci4RZ/jd0fbc5xcESDqXyNVaZicxrETPujsJBZt85PE4jDcDDCQ1AL
+        Ffomnn/WiE+YJWCZoV/oYgxO6EhvUozafXFarKePTtDFaAT6btxGbc+H4fPeoNva13vc8K
+        eFQH79/VYLO0kpShnOecDDbGPNuPr6c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-178-SIO_k7EWOEKloWx3m5ZmWw-1; Fri, 13 Aug 2021 04:17:36 -0400
+X-MC-Unique: SIO_k7EWOEKloWx3m5ZmWw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F7761008061;
+        Fri, 13 Aug 2021 08:17:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51BD95C3E0;
+        Fri, 13 Aug 2021 08:17:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YRYXAii0zZ0SzDt+@infradead.org>
+References: <YRYXAii0zZ0SzDt+@infradead.org> <2408234.1628687271@warthog.procyon.org.uk> <YRVHLu3OAwylCONm@casper.infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC][PATCH] netfs, afs, ceph: Use folios
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3449253.1628842648.1@warthog.procyon.org.uk>
+Date:   Fri, 13 Aug 2021 09:17:28 +0100
+Message-ID: <3449254.1628842648@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Christoph Hellwig <hch@infradead.org> wrote:
 
-On Thu, 12 Aug 2021 13:19:21 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
+> It actually needs to go away.  There's not real good use for that level
+> of API. netfs should just open code the releavant parts of
+> generic_perform_write, similar to iomap.
 
-> On Thu, 12 Aug 2021 09:42:40 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> 
-> > > +config PAGE_IDLE_FLAG
-> > > +       bool "Add PG_idle and PG_young flags"
-> > > +       help
-> > > +         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
-> > > +         Accessed bit writers can set the state of the bit in the flags to let
-> > > +         other PTE Accessed bit readers don't disturbed.
-> > > 
-> > > This needs to be converted to proper, or at least comprehensible, English....
-> > 
-> > Thank you for the comment.
-> > 
-> > How about below?
-> > 
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -743,9 +743,9 @@ config PAGE_IDLE_FLAG
-> >         bool "Add PG_idle and PG_young flags"
-> >         select PAGE_EXTENSION if !64BIT
-> >         help
-> > -         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
-> > -         Accessed bit writers can set the state of the bit in the flags to let
-> > -         other PTE Accessed bit readers don't disturbed.
-> > +         This feature adds 'PG_idle' and 'PG_young' flags in 'struct page'.
-> > +         PTE Accessed bit writers can save the state of the bit in the flags
-> > +         to let other PTE Accessed bit readers don't get disturbed.
-> 
-> How about this?
-> 
-> --- a/mm/Kconfig~mm-idle_page_tracking-make-pg_idle-reusable-fix-fix
-> +++ a/mm/Kconfig
-> @@ -743,9 +743,9 @@ config PAGE_IDLE_FLAG
->  	bool "Add PG_idle and PG_young flags"
->  	select PAGE_EXTENSION if !64BIT
->  	help
-> -	  This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
-> -	  Accessed bit writers can set the state of the bit in the flags to let
-> -	  other PTE Accessed bit readers don't disturbed.
-> +	  This adds PG_idle and PG_young flags to 'struct page'.  PTE Accessed
-> +	  bit writers can set the state of the bit in the flags so that PTE
-> +	  Accessed bit readers may avoid disturbance.
->  
->  config IDLE_PAGE_TRACKING
->  	bool "Enable idle page tracking"
+I'm working on doing that in netfs lib, with the intent of sharing it between
+at least afs, ceph, cifs and 9p.  It reduces the cost of accessing fscache
+for large writes that span multiple pages.
 
-So good, thank you!
+David
 
-> 
-> Also, is there any way in which we can avoid presenting this option to
-> the user?  Because most users will have real trouble understanding what
-> this thing is for.  Can we simply select it when needed, as dictated by
-> other, higher-level config options?
-
-I believe this is the right way to go!  I sent a patch for removing the prompt
-of this option:
-https://lore.kernel.org/linux-mm/20210813081238.34705-1-sj38.park@gmail.com/
-
-
-Thanks,
-SeongJae Park
