@@ -2,156 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C493EB2CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A923EB2F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239507AbhHMIpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:45:09 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49919 "EHLO m43-7.mailgun.net"
+        id S239838AbhHMIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:52:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46852 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239458AbhHMIpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:45:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628844281; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Hcc2FxmHIY2GdiFcXl5MMCZnhwtJVytw2Sr5LMIcmR8=;
- b=a1L5TC6yCP0xzXxYWBnMiPtMyPww1Wq83CW0XbnG6v/y8oIMa7QSsUlVN8CU2sT4FTSeOHQD
- kwiMXiHr/V99VpqGMrNV60U7m5BYVHuAJ0ozwvVaiZ6iDjBdnCQMLw545ntTNVfz43lQt61j
- 0zjNoQzhjL1lycCUqGd2Zb2S/wY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 611630f791487ad52072eaa1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 08:44:39
- GMT
-Sender: wat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C7A48C43217; Fri, 13 Aug 2021 08:44:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E49CC433D3;
-        Fri, 13 Aug 2021 08:44:37 +0000 (UTC)
+        id S239327AbhHMIwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 04:52:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="202720766"
+X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
+   d="scan'208";a="202720766"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 01:52:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
+   d="scan'208";a="422174640"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by orsmga006.jf.intel.com with ESMTP; 13 Aug 2021 01:52:02 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net-next 1/1] net: phy: marvell: Add WAKE_PHY support to WOL event
+Date:   Fri, 13 Aug 2021 16:45:08 +0800
+Message-Id: <20210813084508.182333-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Aug 2021 16:44:37 +0800
-From:   wat@codeaurora.org
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to
- TD_CLEARING_CACHE
-In-Reply-To: <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
-References: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
- <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
-Message-ID: <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
-X-Sender: wat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 15:25, Ikjoon Jang wrote:
-> Hi,
-> 
-> On Fri, Aug 13, 2021 at 10:44 AM Tao Wang <wat@codeaurora.org> wrote:
->> 
->> USB SSD may fail to unmount if disconnect during data transferring.
->> 
->> it stuck in usb_kill_urb() due to urb use_count will not become zero,
->> this means urb giveback is not happen.
->> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
->> equal to TD_CLEARING_CACHE,
->> but in xhci_invalidate_cancelled_tds(), only last canceled td's
->> cancel_status change to TD_CLEARING_CACHE,
->> thus giveback only happen to last urb.
->> 
->> this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
->> rather than the last one, so all urb can giveback.
->> 
->> Signed-off-by: Tao Wang <wat@codeaurora.org>
->> ---
->>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
->>  1 file changed, 12 insertions(+), 12 deletions(-)
->> 
->> diff --git a/drivers/usb/host/xhci-ring.c 
->> b/drivers/usb/host/xhci-ring.c
->> index 8fea44b..c7dd7c0 100644
->> --- a/drivers/usb/host/xhci-ring.c
->> +++ b/drivers/usb/host/xhci-ring.c
->> @@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct 
->> xhci_virt_ep *ep)
->>                         td_to_noop(xhci, ring, td, false);
->>                         td->cancel_status = TD_CLEARED;
->>                 }
->> -       }
->> -       if (cached_td) {
->> -               cached_td->cancel_status = TD_CLEARING_CACHE;
->> -
->> -               err = xhci_move_dequeue_past_td(xhci, slot_id, 
->> ep->ep_index,
->> -                                               
->> cached_td->urb->stream_id,
->> -                                               cached_td);
->> -               /* Failed to move past cached td, try just setting it 
->> noop */
->> -               if (err) {
->> -                       td_to_noop(xhci, ring, cached_td, false);
->> -                       cached_td->cancel_status = TD_CLEARED;
->> +               if (cached_td) {
->> +                       cached_td->cancel_status = TD_CLEARING_CACHE;
->> +
->> +                       err = xhci_move_dequeue_past_td(xhci, slot_id, 
->> ep->ep_index,
->> +                                                       
->> cached_td->urb->stream_id,
->> +                                                       cached_td);
->> +                       /* Failed to move past cached td, try just 
->> setting it noop */
->> +                       if (err) {
->> +                               td_to_noop(xhci, ring, cached_td, 
->> false);
->> +                               cached_td->cancel_status = TD_CLEARED;
->> +                       }
->> +                       cached_td = NULL;
->>                 }
->> -               cached_td = NULL;
-> 
-> I think we can call xhci_move_dequeue_past_td() just once to
-> the last halted && cancelled TD in a ring.
-> 
-> But that might need to compare two TDs to see which one is
-> the latter, I'm not sure how to do this well. :-/
-> 
-> if (!cached_td || cached_td < td)
->   cached_td = td;
-> 
+Add Wake-on-PHY feature support by enabling the Link Up Event.
 
-thanks, I think you are correct that we can call 
-xhci_move_dequeue_past_td() just once to
-  the last halted && cancelled TD in a ring,
-but the set status "cached_td->cancel_status = TD_CLEARING_CACHE;" 
-should be every cancelled TD.
-I am not very good at td and ring, I have a question why we need to
-compare two TDs to see which one is the latter.
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+ drivers/net/phy/marvell.c | 39 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 3 deletions(-)
 
->>         }
->>         return 0;
->>  }
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+index 3de93c9f2744..415e2a01c151 100644
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -155,6 +155,7 @@
+ 
+ #define MII_88E1318S_PHY_WOL_CTRL				0x10
+ #define MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS		BIT(12)
++#define MII_88E1318S_PHY_WOL_CTRL_LINK_UP_ENABLE		BIT(13)
+ #define MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE	BIT(14)
+ 
+ #define MII_PHY_LED_CTRL	        16
+@@ -1746,13 +1747,19 @@ static void m88e1318_get_wol(struct phy_device *phydev,
+ {
+ 	int ret;
+ 
+-	wol->supported = WAKE_MAGIC;
++	wol->supported = WAKE_MAGIC | WAKE_PHY;
+ 	wol->wolopts = 0;
+ 
+ 	ret = phy_read_paged(phydev, MII_MARVELL_WOL_PAGE,
+ 			     MII_88E1318S_PHY_WOL_CTRL);
+-	if (ret >= 0 && ret & MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE)
++	if (ret < 0)
++		return;
++
++	if (ret & MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE)
+ 		wol->wolopts |= WAKE_MAGIC;
++
++	if (ret & MII_88E1318S_PHY_WOL_CTRL_LINK_UP_ENABLE)
++		wol->wolopts |= WAKE_PHY;
+ }
+ 
+ static int m88e1318_set_wol(struct phy_device *phydev,
+@@ -1764,7 +1771,7 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+ 	if (oldpage < 0)
+ 		goto error;
+ 
+-	if (wol->wolopts & WAKE_MAGIC) {
++	if (wol->wolopts & (WAKE_MAGIC | WAKE_PHY)) {
+ 		/* Explicitly switch to page 0x00, just to be sure */
+ 		err = marvell_write_page(phydev, MII_MARVELL_COPPER_PAGE);
+ 		if (err < 0)
+@@ -1796,7 +1803,9 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+ 				   MII_88E1318S_PHY_LED_TCR_INT_ACTIVE_LOW);
+ 		if (err < 0)
+ 			goto error;
++	}
+ 
++	if (wol->wolopts & WAKE_MAGIC) {
+ 		err = marvell_write_page(phydev, MII_MARVELL_WOL_PAGE);
+ 		if (err < 0)
+ 			goto error;
+@@ -1837,6 +1846,30 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+ 			goto error;
+ 	}
+ 
++	if (wol->wolopts & WAKE_PHY) {
++		err = marvell_write_page(phydev, MII_MARVELL_WOL_PAGE);
++		if (err < 0)
++			goto error;
++
++		/* Clear WOL status and enable link up event */
++		err = __phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL, 0,
++				   MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS |
++				   MII_88E1318S_PHY_WOL_CTRL_LINK_UP_ENABLE);
++		if (err < 0)
++			goto error;
++	} else {
++		err = marvell_write_page(phydev, MII_MARVELL_WOL_PAGE);
++		if (err < 0)
++			goto error;
++
++		/* Clear WOL status and disable link up event */
++		err = __phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL,
++				   MII_88E1318S_PHY_WOL_CTRL_LINK_UP_ENABLE,
++				   MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS);
++		if (err < 0)
++			goto error;
++	}
++
+ error:
+ 	return phy_restore_page(phydev, oldpage, err);
+ }
+-- 
+2.25.1
+
