@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D8A3EB1AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041E83EB1B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239552AbhHMHjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
+        id S239565AbhHMHkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238794AbhHMHjx (ORCPT
+        with ESMTP id S238787AbhHMHku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:39:53 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD71C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:39:27 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id r16-20020a0568304190b02904f26cead745so11062609otu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=+MDYu2cZk5y6qEtCDaD7IWEU7wQ5JsJjonx7gGHCu64=;
-        b=JCliibW/kDUdRuvJCFyeVw4QLrSu06v8215hUcnaN6sRRYQ4xrTk//gD5L1tIu/nyZ
-         aehTQwTqhIDqwstXRNLTaURCYjGt0HVSsDTMuzmfj0X6t5W8VWa6u1A9rxQ4v+k7uAp5
-         vq3WzuM6N7G/LoMAdSjwjx7biOyyqdjI9hXtPivbV2KwmzRlfbyh8eUMeJXQxTC9JtDN
-         mfGqT5cxrl/7uZWZ3ggdhNFgeZNhDow717d/GiUwH8Y08x6FUUNDh0k5c5PDIUEsVhbY
-         AW2yfPDwm8eGqRp3rHYoVcXPU7cD6/MfZWn9L7yDsAkCr+qTDVfiC/6/dDGkSSZ/8d3D
-         /pyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=+MDYu2cZk5y6qEtCDaD7IWEU7wQ5JsJjonx7gGHCu64=;
-        b=k0xvsxPlqvrNL+JSpoO7kxQ+dKdwDtp5MsZCnyQjfTH+zepFV9P/W5b8ghWnUyUc3o
-         sDx2Lj4E26oxWXWQ6HrQVaZmSviyXsh6NWl2P+QroalSU/Vsa+Dsbu2GZ6S/6gmPjraU
-         jbYuihR4lzK26USmyvwo/OJDS4Tn+FfaqLRddiDIzPUjWQZ1q4L6cY4NCHyj32YUVATv
-         cphs0zh0b0cEWQCLrID9qeIWM9zaAvxHIATZDMKzaf+xCbOL+iX/DAo9hS4/mHP+ikv2
-         REvs48sypyh9wpGMhOJFxP/ndwLoPhZJ7O14fck3c9djw7yoZh6StHmH8I5HITOElls9
-         JWnQ==
-X-Gm-Message-State: AOAM5329f4WGrHkrVm0P59OiBvGur1netNgiyqFjazy50hhbfulQce7G
-        n2XnBaXNZJ+DXKvPWYnwK5QhcvW0oCkcUU6kvaw=
-X-Google-Smtp-Source: ABdhPJy8RqQWEU882avsSiG8ckcCkITvjXkM+RogY5XcICZRbtDaH1moNnmq25RSwROJ7J469s5W7oHnE9SHtKkHcxY=
-X-Received: by 2002:a9d:4c98:: with SMTP id m24mr1037396otf.271.1628840366541;
- Fri, 13 Aug 2021 00:39:26 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: mrakainkarim7@gmail.com
-Sender: arryod72@gmail.com
-Received: by 2002:a9d:868:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 00:39:26 -0700 (PDT)
-From:   Mr Akain Karim <aeyuhlmy739@gmail.com>
-Date:   Fri, 13 Aug 2021 00:39:26 -0700
-X-Google-Sender-Auth: XLD7sSWWlVMUY6okMe4r-v4mizg
-Message-ID: <CADS+2b4Q1O7xFk8CzQ5AKkwChvjoyecANzfODKb4MZ1paPxwdQ@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
+        Fri, 13 Aug 2021 03:40:50 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB43C061756;
+        Fri, 13 Aug 2021 00:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=sJrRyJAk0s7nMFwbcLX8dMSTh66Xp6VqgCIIZV7nbU4=;
+        t=1628840423; x=1630050023; b=Kdt+VYOuseLyRh98tKIyHWM0dDqNuy9A1CLDJZZBvyBMhRp
+        MaRTVKSHX6U8PutiB796fn/6fdQtu6q4Zj8yL6pw35jdHVV1JhOcUcHFAPyN+kvCeOo/R5y62vdI+
+        ppF7+qvJr4CWRzMaVGKxyapI/npTavpqjhPUFXu7eXYC9ZlbkVVKtNI3r9DNlQc0cmd0JOte/9r5z
+        Z0arFTGU6S374xTr+wCs/trETSWIqQar3VoNH2wfMcVRVIxeR8bq8M7q0n3+lwLDeR2Sm1jHh0FfN
+        RP/hfK0EG0fGP6eKsoe7XyhwN1YNNwa6sP4ulj8D/etp5Mld1jHk72oegvQAWNqg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mERnV-00A8zH-4r; Fri, 13 Aug 2021 09:40:09 +0200
+Message-ID: <bb01e784dddf6a297025981a2a000a4d3fdaf2ba.camel@sipsolutions.net>
+Subject: Re: [PATCH 39/64] mac80211: Use memset_after() to clear tx status
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-hardening@vger.kernel.org
+Date:   Fri, 13 Aug 2021 09:40:07 +0200
+In-Reply-To: <202107310852.551B66EE32@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+         <20210727205855.411487-40-keescook@chromium.org>
+         <202107310852.551B66EE32@keescook>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-*Compliment of the day,I am Mr. Akain Karim,  I Have a Business Proposal of
-$10.5million for you and I  was compelled to use this medium due to the
-nature of this project, I have access to very vital information that can be
-used to transfer this huge amount of money, which may culminate into the
-investment of the said funds into your company or any lucrative venture in
-your country. If you will like to assist me as a partner then indicate your
-interest, after which we shall both discuss the modalities and the sharing
-percentage.Upon receipt of your reply on your expression of Interest.I will
-give you full details on how the business will be executed and I am open
-for negotiation.Thanks for your anticipated cooperation.Best RegardsMr. 	
-Akain Karim*  Please feel free to reach me on my e-mail:mrakainkarim7@gmail.com
+On Sat, 2021-07-31 at 08:55 -0700, Kees Cook wrote:
+> On Tue, Jul 27, 2021 at 01:58:30PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
+> > 
+> > Use memset_after() so memset() doesn't get confused about writing
+> > beyond the destination member that is intended to be the starting point
+> > of zeroing through the end of the struct.
+> > 
+> > Note that the common helper, ieee80211_tx_info_clear_status(), does NOT
+> > clear ack_signal, but the open-coded versions do. All three perform
+> > checks that the ack_signal position hasn't changed, though.
+> 
+> Quick ping on this question: there is a mismatch between the common
+> helper and the other places that do this. Is there a bug here?
+
+Yes.
+
+The common helper should also clear ack_signal, but that was broken by
+commit e3e1a0bcb3f1 ("mac80211: reduce IEEE80211_TX_MAX_RATES"), because
+that commit changed the order of the fields and updated carl9170 and p54
+properly but not the common helper...
+
+It doesn't actually matter much because ack_signal is normally filled in
+afterwards, and even if it isn't, it's just for statistics.
+
+The correct thing to do here would be to
+
+	memset_after(&info->status, 0, rates);
+
+johannes
+
