@@ -2,102 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6553EBBB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498CC3EBBBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhHMRzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:55:55 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:46913 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhHMRzR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:55:17 -0400
-Received: by mail-ot1-f47.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso184652ott.13;
-        Fri, 13 Aug 2021 10:54:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vN1Ro8SFmGGRVeTjvNxQ/6Tj6lw0hqz/g1dXZ9CSndM=;
-        b=sWd+QVAlyUKIrTn/1ONRCXlZgbmkzFmYdPY60kzc3sXIlaDY7se8gh9VWxxFRvA6pq
-         a825umyOueYOHBVFkWFD3qPXiHhzHSn1tZl3Anye4HMBpUXGTc0cNGy1zPJRQAfy1LRq
-         DgHFrA5BuWZ3lgsnXBYaweOwfhnB4URPHp23AcuvYiOckNd+SpvvJfi/3RVm18d0qVQ2
-         9RydVnnb4hNvmSOM3O4f8OpopEKzdxd1phLeglmc81OzaI44tNyl5QVt0WM3QHqBrCPG
-         9oQvl6A51g14MhdcwB2wIdm3OEgVHOuknsNyFHxWm50scQJ1iG2Q9ILJIXIMAQHFkM4K
-         yuzw==
-X-Gm-Message-State: AOAM5323n/K7MwUdYfsp9l9XvVH5l8qi/Qp4k3SUS2X8y80Jz7fFKpTj
-        JRlpvwkRbnrbPFQ/owMClg==
-X-Google-Smtp-Source: ABdhPJzhY2HLgGmX5bWhBfVNpTEOsDQXalq1Wmpn/2g6XvjlE+aRHdxHa+So6xPNK5oulc/3HccBSQ==
-X-Received: by 2002:a9d:729a:: with SMTP id t26mr3085115otj.28.1628877242437;
-        Fri, 13 Aug 2021 10:54:02 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k13sm458822oik.40.2021.08.13.10.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 10:54:01 -0700 (PDT)
-Received: (nullmailer pid 3757698 invoked by uid 1000);
-        Fri, 13 Aug 2021 17:53:59 -0000
-Date:   Fri, 13 Aug 2021 12:53:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chester Lin <clin@suse.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
-Message-ID: <YRaxt1LCF+hWaMJU@robh.at.kernel.org>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-2-clin@suse.com>
+        id S231823AbhHMR6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229607AbhHMR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:58:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E11C360EFE;
+        Fri, 13 Aug 2021 17:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628877493;
+        bh=J6D46KhrsQ2B5chlvCMLyT6qJIR9dOkPjZOOAqPF6P4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VBi6zU+6EZ5jjkV3bjcVGHXEFQw9CgbdQTlc0wGgoJkGDKxiMP1N128Rk2yDSXqC/
+         rtU53/rDl91F649c+sFD8YnbQ3nJnxCRitezMWUlA1sth/VIqaOeKwAIeDR62jiC9a
+         pXcZfuYEEijzraKal7tSfIRBUYb6ZAK0xAgsu6Sj4Fj8J/TGbvYKIPth4I0H+I4uY9
+         L+72y/ztW35wtXeKaQkkEiDKj1YFmGKM+WpjQOJfWDRvSzG6gdQhampuvNRxyYHxg8
+         CEQ1JAAhZbWemzEhhkpjmoJy+EviDX6cRhsi8adtKwIrTw7hhayiR82eKqJGX3v/wn
+         vlj9TuTg0oHCw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AE51F5C0373; Fri, 13 Aug 2021 10:58:13 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 10:58:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     mark.rutland@arm.com, dvyukov@google.com, glider@google.com,
+        boqun.feng@gmail.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kcsan: selftest: Cleanup and add missing __init
+Message-ID: <20210813175813.GC4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210813081055.3119894-1-elver@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805065429.27485-2-clin@suse.com>
+In-Reply-To: <20210813081055.3119894-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 02:54:22PM +0800, Chester Lin wrote:
-> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
-> design 2 board ( S32G-VNP-RDB2).
+On Fri, Aug 13, 2021 at 10:10:55AM +0200, Marco Elver wrote:
+> Make test_encode_decode() more readable and add missing __init.
 > 
-> Signed-off-by: Chester Lin <clin@suse.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+
+Thank you!  I have queued and pushed this one as well as your previous
+series:
+
+https://lkml.kernel.org/r/20210813081055.3119894-1-elver@google.com
+
+							Thanx, Paul
+
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  kernel/kcsan/selftest.c | 72 +++++++++++++++++------------------------
+>  1 file changed, 30 insertions(+), 42 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index e2097011c4b0..3914aa09e503 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -983,6 +983,13 @@ properties:
->            - const: solidrun,lx2160a-cex7
->            - const: fsl,lx2160a
+> diff --git a/kernel/kcsan/selftest.c b/kernel/kcsan/selftest.c
+> index 7f29cb0f5e63..b4295a3892b7 100644
+> --- a/kernel/kcsan/selftest.c
+> +++ b/kernel/kcsan/selftest.c
+> @@ -18,7 +18,7 @@
+>  #define ITERS_PER_TEST 2000
 >  
-> +      - description: S32G2 based Boards
-> +        items:
-> +          - enum:
-> +              - fsl,s32g274a-evb
-> +              - fsl,s32g274a-rdb2
-> +          - const: fsl,s32g2
-
-Given this is an entirely different family from i.MX and new?, shouldn't 
-it use 'nxp' instead of 'fsl'? Either way,
-
-Acked-by: Rob Herring <robh@kernel.org>
-
-Rob
+>  /* Test requirements. */
+> -static bool test_requires(void)
+> +static bool __init test_requires(void)
+>  {
+>  	/* random should be initialized for the below tests */
+>  	return prandom_u32() + prandom_u32() != 0;
+> @@ -28,14 +28,18 @@ static bool test_requires(void)
+>   * Test watchpoint encode and decode: check that encoding some access's info,
+>   * and then subsequent decode preserves the access's info.
+>   */
+> -static bool test_encode_decode(void)
+> +static bool __init test_encode_decode(void)
+>  {
+>  	int i;
+>  
+>  	for (i = 0; i < ITERS_PER_TEST; ++i) {
+>  		size_t size = prandom_u32_max(MAX_ENCODABLE_SIZE) + 1;
+>  		bool is_write = !!prandom_u32_max(2);
+> +		unsigned long verif_masked_addr;
+> +		long encoded_watchpoint;
+> +		bool verif_is_write;
+>  		unsigned long addr;
+> +		size_t verif_size;
+>  
+>  		prandom_bytes(&addr, sizeof(addr));
+>  		if (addr < PAGE_SIZE)
+> @@ -44,53 +48,37 @@ static bool test_encode_decode(void)
+>  		if (WARN_ON(!check_encodable(addr, size)))
+>  			return false;
+>  
+> -		/* Encode and decode */
+> -		{
+> -			const long encoded_watchpoint =
+> -				encode_watchpoint(addr, size, is_write);
+> -			unsigned long verif_masked_addr;
+> -			size_t verif_size;
+> -			bool verif_is_write;
+> -
+> -			/* Check special watchpoints */
+> -			if (WARN_ON(decode_watchpoint(
+> -				    INVALID_WATCHPOINT, &verif_masked_addr,
+> -				    &verif_size, &verif_is_write)))
+> -				return false;
+> -			if (WARN_ON(decode_watchpoint(
+> -				    CONSUMED_WATCHPOINT, &verif_masked_addr,
+> -				    &verif_size, &verif_is_write)))
+> -				return false;
+> -
+> -			/* Check decoding watchpoint returns same data */
+> -			if (WARN_ON(!decode_watchpoint(
+> -				    encoded_watchpoint, &verif_masked_addr,
+> -				    &verif_size, &verif_is_write)))
+> -				return false;
+> -			if (WARN_ON(verif_masked_addr !=
+> -				    (addr & WATCHPOINT_ADDR_MASK)))
+> -				goto fail;
+> -			if (WARN_ON(verif_size != size))
+> -				goto fail;
+> -			if (WARN_ON(is_write != verif_is_write))
+> -				goto fail;
+> -
+> -			continue;
+> -fail:
+> -			pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
+> -			       __func__, is_write ? "write" : "read", size,
+> -			       addr, encoded_watchpoint,
+> -			       verif_is_write ? "write" : "read", verif_size,
+> -			       verif_masked_addr);
+> +		encoded_watchpoint = encode_watchpoint(addr, size, is_write);
+> +
+> +		/* Check special watchpoints */
+> +		if (WARN_ON(decode_watchpoint(INVALID_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
+>  			return false;
+> -		}
+> +		if (WARN_ON(decode_watchpoint(CONSUMED_WATCHPOINT, &verif_masked_addr, &verif_size, &verif_is_write)))
+> +			return false;
+> +
+> +		/* Check decoding watchpoint returns same data */
+> +		if (WARN_ON(!decode_watchpoint(encoded_watchpoint, &verif_masked_addr, &verif_size, &verif_is_write)))
+> +			return false;
+> +		if (WARN_ON(verif_masked_addr != (addr & WATCHPOINT_ADDR_MASK)))
+> +			goto fail;
+> +		if (WARN_ON(verif_size != size))
+> +			goto fail;
+> +		if (WARN_ON(is_write != verif_is_write))
+> +			goto fail;
+> +
+> +		continue;
+> +fail:
+> +		pr_err("%s fail: %s %zu bytes @ %lx -> encoded: %lx -> %s %zu bytes @ %lx\n",
+> +		       __func__, is_write ? "write" : "read", size, addr, encoded_watchpoint,
+> +		       verif_is_write ? "write" : "read", verif_size, verif_masked_addr);
+> +		return false;
+>  	}
+>  
+>  	return true;
+>  }
+>  
+>  /* Test access matching function. */
+> -static bool test_matching_access(void)
+> +static bool __init test_matching_access(void)
+>  {
+>  	if (WARN_ON(!matching_access(10, 1, 10, 1)))
+>  		return false;
+> -- 
+> 2.33.0.rc1.237.g0d66db33f3-goog
+> 
