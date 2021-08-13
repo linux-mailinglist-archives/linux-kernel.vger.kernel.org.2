@@ -2,129 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CB53EB7EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAF93EB815
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241563AbhHMPKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241275AbhHMPJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:09:46 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BDCC061756;
-        Fri, 13 Aug 2021 08:09:19 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id c24so20353960lfi.11;
-        Fri, 13 Aug 2021 08:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W2ooleetOGxDv6uA8BJbyCwodwSrc5h12weH35wLF8I=;
-        b=LJ9tvuR18O6i0e/19G+GiF5PLODO5+OHXzP8X61oleHa7rd6+QZyTd6vEpzqW2nXn+
-         JDqJfOqlhI8p6liS+aKZsi6CckOgV/mBo8Dzrlo8LzuzZN3w0uAsjztKJ6aFy+ufc7cK
-         129Rolwxw+GSezhVuAAHNlKRpk4nHjreaayZaNc49Yaj1IqmdANowcLxZeu9ZHDVnX06
-         bWXMHSJiLIQYEI7I/LZLRvxON0xhRKY1f/dl6ly4db+NMPe+CaN7ku0/Nl33rX8W94DA
-         JZeJjhLohf4vBFmm0lGY92hwz1jsKutn6FLLA0VYrG7fEHYCWsYGsOIwyzaoieZ8SBo+
-         FAbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W2ooleetOGxDv6uA8BJbyCwodwSrc5h12weH35wLF8I=;
-        b=Unw3BMfWIstp15JcKUkJzqnQ3CivUqiQaEHkMQSe3M82ib7nOwEi4joACMUwsNEJ6I
-         9cZ+v5vASjaesVPOJl/+HtsmAW8reXMDtj9DIVhPry7sSjtHOK/XA/mqIxR71pCJunCO
-         QMJSRNIM5SgrD/VLN89VbqYF91rxKJp2xbdJiYmdDV979Xh2oEM0VHK2ZgV63ViG23I4
-         SyzYotjRjpExG9R98dW8/sVFaeqr+o3ab/81bmQTeitZM4Xysfh3tcDq55gwpBLx42q/
-         FLPUxddBm8C4tU4VJhJZWMaxMLJtrdCx2LHcWBJi7OxAIcyBf8cVL07Tcbhzrr92Rb4U
-         89tQ==
-X-Gm-Message-State: AOAM532maxwbXUb1SNWfYDCFzw39GMsbgGgNCYnPaBRfQVUOO9Ah/sZg
-        LkgSqGB1kHkVNPwImG9Z8oo=
-X-Google-Smtp-Source: ABdhPJw6mdF7zUfbTWIQTUIzK1O+2FCEe3s3BpOgu9HbDibOnPFFyeqRBsPq5/Aqzj/fQ2MOQrWCHA==
-X-Received: by 2002:a19:dc57:: with SMTP id f23mr2015290lfj.294.1628867358296;
-        Fri, 13 Aug 2021 08:09:18 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id a18sm193831ljq.14.2021.08.13.08.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 08:09:17 -0700 (PDT)
-Subject: Re: [PATCH] net: 6pack: fix slab-out-of-bounds in decode_data
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
-References: <20210813112855.11170-1-paskripkin@gmail.com>
- <20210813145834.GC1931@kadam>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <0c5bc329-6555-edb1-82ad-038cae6b0299@gmail.com>
-Date:   Fri, 13 Aug 2021 18:09:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241242AbhHMPLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:11:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:54548 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241665AbhHMPKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:10:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 898FE1042;
+        Fri, 13 Aug 2021 08:09:57 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75D233F718;
+        Fri, 13 Aug 2021 08:09:56 -0700 (PDT)
+Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
+ request
+To:     gregkh <gregkh@linuxfoundation.org>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Cc:     =?UTF-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
+        Bing Fan <hptsfb@gmail.com>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
+ <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
+ <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
+ <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
+ <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
+ <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
+ <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
+ <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
+ <09918b566884413898f63b92ddd037a0@tencent.com>
+ <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
+ <YRaJVZOJMKtAM8Sl@kroah.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
+Date:   Fri, 13 Aug 2021 16:09:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210813145834.GC1931@kadam>
+In-Reply-To: <YRaJVZOJMKtAM8Sl@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 5:58 PM, Dan Carpenter wrote:
-> On Fri, Aug 13, 2021 at 02:28:55PM +0300, Pavel Skripkin wrote:
->> Syzbot reported slab-out-of bounds write in decode_data().
->> The problem was in missing validation checks.
->> 
->> Syzbot's reproducer generated malicious input, which caused
->> decode_data() to be called a lot in sixpack_decode(). Since
->> rx_count_cooked is only 400 bytes and noone reported before,
->> that 400 bytes is not enough, let's just check if input is malicious
->> and complain about buffer overrun.
->> 
->> Fail log:
->> ==================================================================
->> BUG: KASAN: slab-out-of-bounds in drivers/net/hamradio/6pack.c:843
->> Write of size 1 at addr ffff888087c5544e by task kworker/u4:0/7
->> 
->> CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.6.0-rc3-syzkaller #0
->> ...
->> Workqueue: events_unbound flush_to_ldisc
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:77 [inline]
->>  dump_stack+0x197/0x210 lib/dump_stack.c:118
->>  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
->>  __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
->>  kasan_report+0x12/0x20 mm/kasan/common.c:641
->>  __asan_report_store1_noabort+0x17/0x20 mm/kasan/generic_report.c:137
->>  decode_data.part.0+0x23b/0x270 drivers/net/hamradio/6pack.c:843
->>  decode_data drivers/net/hamradio/6pack.c:965 [inline]
->>  sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
->> 
->> Reported-and-tested-by: syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
->> ---
->>  drivers/net/hamradio/6pack.c | 6 ++++++
->>  1 file changed, 6 insertions(+)
->> 
->> diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
->> index fcf3af76b6d7..f4ffc2a80ab7 100644
->> --- a/drivers/net/hamradio/6pack.c
->> +++ b/drivers/net/hamradio/6pack.c
->> @@ -827,6 +827,12 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
->>  		return;
->>  	}
->>  
->> +	if (sp->rx_count_cooked + 3 >= sizeof(sp->cooked_buf)) {
+On 2021-08-13 16:01, gregkh wrote:
+> On Fri, Aug 13, 2021 at 09:42:52AM -0400, Qian Cai wrote:
+>>
+>>
+>> On 8/12/2021 11:32 PM, tombinfan(范兵) wrote:
+>>> hello,
+>>>
+>>> I have sent the modified patch to the following mailboxes. THX
+>>>
+>>> gregkh@linuxfoundation.org
+>>> linux-serial@vger.kernel.org
+>>> linux-kernel@vger.kernel.org
+>>
+>> Thanks for the pointer. It is good to get some reviews from Arm
+>> people in the first place, so we don't break Arm like this.
+>>
+>> Anyway, for anyone who might be watching, here is the new patch,
+>>
+>> https://lore.kernel.org/linux-serial/1628825490-18937-1-git-send-email-hptsfb@gmail.com/
+>>
+>> Unfortunately, I saw Greg mentioned that it was not based on
+>> tty-next, so not something I can apply easily on linux-next here
+>> as well.
 > 
-> It should be + 2 instead of + 3.
+> That is because the code in tty-next (and linux-next), looks to already
+> do exactly what you submitted, right?
 > 
-> We write three bytes.  idx, idx + 1, idx + 2.  Otherwise, good fix!
-> 
+> So is this working now for everyone in linux-next?
 
-Indeed. Will fix in v2, thank you for pointing it out!
+AFAICS commit b0819465be8b in linux-next still results in 
+amba_device-specific code being called from sbsa_uart_startup() and 
+sbsa_uart_shutdown(), which is what blows up.
 
-
-With regards,
-Pavel Skripkin
+Robin.
