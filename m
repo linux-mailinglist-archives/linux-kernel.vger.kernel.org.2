@@ -2,103 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E838F3EBBC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F193EBBD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhHMR7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhHMR7O (ORCPT
+        id S232479AbhHMSFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:05:15 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:34337 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhHMSFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:59:14 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E70C061756;
-        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id bo18so16525411pjb.0;
-        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=di7QngSrp4FnsSGO3LSu9eV65mIJNW5jKf6yiG0+RuU=;
-        b=dQXLqc5X8fIsHbzymW3PLJOTOjlQdK8tcmZqLFzG352erBCZhuDdyQp5dJjpAxQs4B
-         JeaS1pyddkxqdfr1t8ujRcY12W0PqS0hXNNOXZ0wFZF2oaeKK3/1DVpmWTSnCW6zOWzY
-         gqsqTLjc9I8480wq1q6uBW3m6zMSJpXzGOBUxY9waV/oC7JaNorcF8JKXWehHZRJ5RUq
-         g7RNoWhlraHMPVn4DI6/rTvyrmiPeXKT3mG72JAOtuEM7ufjtq62UA9Nz9UYy2mJkzEG
-         NpAl0ATS3TPxm1KRHOuuzcztGTWzT/f9vfWyWDsL/FUIc3fxfMILeA2ztqpuFTME9rw+
-         80RQ==
+        Fri, 13 Aug 2021 14:05:14 -0400
+Received: by mail-oi1-f174.google.com with SMTP id t128so17105396oig.1;
+        Fri, 13 Aug 2021 11:04:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=di7QngSrp4FnsSGO3LSu9eV65mIJNW5jKf6yiG0+RuU=;
-        b=XqGMN3QL9I1Hh944IKR1rRB1hOHxrzGNlzKB23+kKOmpyeheFUZGYMdbh4uZ8r1u3r
-         Y1BAXG4NRAAjyXXBnFcqm8Fp0pUzQc+zzhMGR9PDmcQ0mKPxxPDp893h6jG5oDoexUm0
-         UwURPKxEm+X1gymT+KtTW/iwAJXiWaUWFb4BAZn2BlRc9yJqugTOuVr/8WKjERoxW3eI
-         py8wvjuviw178giVV4avC0dkWr0oSz3bcx3bXCssuHlAN0DX4nEm1cFSpm3fyYhtz7ZU
-         PYjXIcCyj18moo41wMh7O4o2r34Bbghs9/PlGynE47s079ubSC9/tcPBC0DUl6ny9ueH
-         Fz/A==
-X-Gm-Message-State: AOAM5334QW6nv2Cnx3R0Ju9eJsqYVoryg5EJKgu6PGSzg+abSURAqq0n
-        G41xhx80pHEJIfLbO98S2YI=
-X-Google-Smtp-Source: ABdhPJwzwumzRBi1BCTF3AFHLjIkjk9cXsbjw6TqqLX1fdRzbRFo7tzsATIv9gSPcOccSh8E3bFC/Q==
-X-Received: by 2002:a63:f749:: with SMTP id f9mr3387048pgk.77.1628877527474;
-        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id 19sm2945794pfw.203.2021.08.13.10.58.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 10:58:47 -0700 (PDT)
-Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
- function for HV IVM
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-11-ltykernel@gmail.com>
- <20210812122741.GC19050@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
-Date:   Sat, 14 Aug 2021 01:58:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3jaTA2yjA5SS7lnLCvNvkVrtuwgO6LNiLl2iqDgDWV4=;
+        b=uCGjIWE5LKuPlUf+YPEBXQHftPADeFPx0yEu1HeA4vRxUXFmQgqPLYSeQmeKGwpb22
+         D15r/ud8p360FpvUPZ+UP2jN9PsalDwdwTcmrtzU/owSj7SIZeFesdkayUCqZ/PfZuOo
+         zWcroDxrO9KczfRxiiNmLHA0hmdkt7KhScYVbLt+vTDxfJircs2fQegMQCi0MnTlGIuA
+         e3VYQHRPotxYTGwdnX62MsEs9JZLfBtqvSV/2Jk27kFBLmLILfaGlP0Vq/kUEsOmJ43J
+         kjgkhyNA6a6P5tB1Fp5fHKor2E6Z7qOrmtXuwdgpppFxD/sNXZYiF1GeAIZMol4nWUfH
+         tAmw==
+X-Gm-Message-State: AOAM533tHfemG1pmfIMbVw/uUgwX9EswbitozjkstnWZ90GOCZBDVABO
+        GbB6zM2umbUktjSlVX1x5w==
+X-Google-Smtp-Source: ABdhPJxKTTFelgMODfsY7TL+aSBbhOUZ0n08lwXexJDmW/G2zuPwOTWBOSRFwEMoGry544zrWZ+ucA==
+X-Received: by 2002:a05:6808:20a:: with SMTP id l10mr3205935oie.20.1628877886916;
+        Fri, 13 Aug 2021 11:04:46 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j2sm494191oia.21.2021.08.13.11.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 11:04:46 -0700 (PDT)
+Received: (nullmailer pid 3776476 invoked by uid 1000);
+        Fri, 13 Aug 2021 18:04:43 -0000
+Date:   Fri, 13 Aug 2021 13:04:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chester Lin <clin@suse.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-serial@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 2/8] dt-bindings: serial: fsl-linflexuart: convert to
+ json-schema format
+Message-ID: <YRa0O9YNpHTsgi39@robh.at.kernel.org>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-3-clin@suse.com>
+ <1ff13837-e6ca-c476-376d-b4f80450a259@suse.de>
+ <YRZTSJPFLFFIR+gx@linux-8mug>
+ <0b42dc7e-a7c1-fe41-e39a-89627d44cbe4@kernel.org>
+ <YRZa1ZX0gJb/yDrw@linux-8mug>
 MIME-Version: 1.0
-In-Reply-To: <20210812122741.GC19050@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRZa1ZX0gJb/yDrw@linux-8mug>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/2021 8:27 PM, Christoph Hellwig wrote:
-> This is still broken.  You need to make sure the actual DMA allocations
-> do have struct page backing.
+On Fri, Aug 13, 2021 at 07:43:17PM +0800, Chester Lin wrote:
+> On Fri, Aug 13, 2021 at 01:28:40PM +0200, Krzysztof Kozlowski wrote:
+> > On 13/08/2021 13:11, Chester Lin wrote:
+> > > Hi Andreas,
+> > > 
+> > > On Thu, Aug 12, 2021 at 06:04:44PM +0200, Andreas Färber wrote:
+> > >> On 05.08.21 08:54, Chester Lin wrote:
+> > >>> Convert the FSL LINFlexD UART binding to json-schema.
+> > >>>
+> > >>> Signed-off-by: Chester Lin <clin@suse.com>
+> > >>> ---
+> > >>>  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
+> > >>>  .../bindings/serial/fsl,s32-linflexuart.yaml  | 48 +++++++++++++++++++
+> > >>>  2 files changed, 48 insertions(+), 22 deletions(-)
+> > >>>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+> > >>>  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> > >>
+> > >> Thanks for your effort, Chester.
+> > >>
+> > >>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+> > >>> deleted file mode 100644
+> > >>> index f1bbe0826be5..000000000000
+> > >>> --- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+> > >>> +++ /dev/null
+> > >>> @@ -1,22 +0,0 @@
+> > >>> -* Freescale LINFlexD UART
+> > >>> -
+> > >>> -The LINFlexD controller implements several LIN protocol versions, as well as
+> > >>> -support for full-duplex UART communication through 8-bit and 9-bit frames.
+> > >>> -
+> > >>> -See chapter 47 ("LINFlexD") in the reference manual[1].
+> > >>> -
+> > >>> -Required properties:
+> > >>> -- compatible :
+> > >>> -  - "fsl,s32v234-linflexuart" for LINFlexD configured in UART mode, which
+> > >>> -    is compatible with the one integrated on S32V234 SoC
+> > >>> -- reg : Address and length of the register set for the device
+> > >>> -- interrupts : Should contain uart interrupt
+> > >>> -
+> > >>> -Example:
+> > >>> -uart0: serial@40053000 {
+> > >>> -	compatible = "fsl,s32v234-linflexuart";
+> > >>> -	reg = <0x0 0x40053000 0x0 0x1000>;
+> > >>> -	interrupts = <0 59 4>;
+> > >>> -};
+> > >>> -
+> > >>> -[1] https://www.nxp.com/webapp/Download?colCode=S32V234RM
+> > >>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> > >>> new file mode 100644
+> > >>> index 000000000000..acfe34706ccb
+> > >>> --- /dev/null
+> > >>> +++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+> > >>> @@ -0,0 +1,48 @@
+> > >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > >>
+> > >> Since this is dual-licensed and BSD-2-Clause would seem compatible with
+> > >> GPLv3, this could probably be s/GPL-2.0-only/GPL-2.0-or-later/ ? Not a
+> > >> blocker.
+> > > 
+> > > There's no license identifier in the original file so it's not a problem to
+> > > choose "GPL-2.0-or-later".
+> > 
+> > That is not entirely correct. If there is no explicit license in the
+> > file, it's kernel's default so GPL-2.0-only. You cannot relicense
+> > derivative work without getting permission from authors and copyright
+> > holders.
+> > 
+> > However if you did not copy the text/description from original bindings,
+> > your work won't be derivative so you can relicense it.
+> > 
 > 
+> Sorry for my misunderstanding and thanks for the reminder.
 
-Hi Christoph:
-      swiotlb_tbl_map_single() still returns PA below vTOM/share_gpa_
-boundary. These PAs has backing pages and belong to system memory.
-In other word, all PAs passed to DMA API have backing pages and these is 
-no difference between Isolation guest and traditional guest for DMA API.
-The new mapped VA for PA above vTOM here is just to access the bounce 
-buffer in the swiotlb code and isn't exposed to outside.
+TBC, please try and get permission to relicense. The single author was 
+from NXP so changing the license here just needs the okay from any NXP 
+employee.
+
+But use 'GPL-2.0-only' not 'GPL-2.0-or-later' please. As gregkh says,
+are you okay with GPLv4, v5, etc.?
+
+Rob
