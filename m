@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A6C3EB839
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B011F3EB7B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241477AbhHMPMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54778 "EHLO mail.kernel.org"
+        id S241179AbhHMPIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:08:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241862AbhHMPLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ADBE61156;
-        Fri, 13 Aug 2021 15:10:41 +0000 (UTC)
+        id S241173AbhHMPIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54450610CC;
+        Fri, 13 Aug 2021 15:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867441;
-        bh=APXV1ettJc56Pim3O9S/zGJB+22qUeFzyCZDhmKV3SY=;
+        s=korg; t=1628867298;
+        bh=sRPFH21GUHaIfPsrdFoiMnFo8Ti4ntSLsfKaoA+wXGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BEUhVqda1m23gjirObloe+r3eud9gBCi54uH+8jBxqORj0Mkus/SLgcddsI9qcZdz
-         FSTUkCWUN+Qp+KQRcL42JDaKCEKr5pLqe3lZe+gW8CmKzDxit7ZbLJg6CKl4LJWNeR
-         DmNjmPl6Mar5IUzuuggDsWrP2vhOGxa/XPU4JDrA=
+        b=uwjCsGZhP0235OK1JuPCSN0x/o04kEynZRbbCpy9IHQ8kmPkkAqfmwVLQ/pEp5n+t
+         sTKVLgnTOuNHMvRdVqpyE8lvg3flgbS/lG7pYcZOxTr1OzPOUR+H4DQTOMZSfeIgKv
+         bQL82QILbVAV4rQtqlN0B85Isd9FlE3JFkcJcD34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com,
-        "Qiang.zhang" <qiang.zhang@windriver.com>,
-        Guido Kiener <guido.kiener@rohde-schwarz.com>
-Subject: [PATCH 4.14 15/42] USB: usbtmc: Fix RCU stall warning
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH 4.4 17/25] pcmcia: i82092: fix a null pointer dereference bug
 Date:   Fri, 13 Aug 2021 17:06:41 +0200
-Message-Id: <20210813150525.617800151@linuxfoundation.org>
+Message-Id: <20210813150521.280456301@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiang.zhang <qiang.zhang@windriver.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 30fad76ce4e98263edfa8f885c81d5426c1bf169 upstream.
+commit e39cdacf2f664b09029e7c1eb354c91a20c367af upstream.
 
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu:    1-...!: (2 ticks this GP) idle=d92/1/0x4000000000000000
-        softirq=25390/25392 fqs=3
-        (t=12164 jiffies g=31645 q=43226)
-rcu: rcu_preempt kthread starved for 12162 jiffies! g31645 f0x0
-     RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-rcu:    Unless rcu_preempt kthread gets sufficient CPU time,
-        OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task
-...........
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: unknown status received: -71
-usbtmc 3-1:0.0: usb_submit_urb failed: -19
+During the driver loading process, the 'dev' field was not assigned, but
+the 'dev' field was referenced in the subsequent 'i82092aa_set_mem_map'
+function.
 
-The function usbtmc_interrupt() resubmits urbs when the error status
-of an urb is -EPROTO. In systems using the dummy_hcd usb controller
-this can result in endless interrupt loops when the usbtmc device is
-disconnected from the host system.
-
-Since host controller drivers already try to recover from transmission
-errors, there is no need to resubmit the urb or try other solutions
-to repair the error situation.
-
-In case of errors the INT pipe just stops to wait for further packets.
-
-Fixes: dbf3e7f654c0 ("Implement an ioctl to support the USMTMC-USB488 READ_STATUS_BYTE operation")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com
-Signed-off-by: Qiang.zhang <qiang.zhang@windriver.com>
-Acked-by: Guido Kiener <guido.kiener@rohde-schwarz.com>
-Link: https://lore.kernel.org/r/20210723004334.458930-1-qiang.zhang@windriver.com
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+CC: <stable@vger.kernel.org>
+[linux@dominikbrodowski.net: shorten commit message, add Cc to stable]
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/usbtmc.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/pcmcia/i82092.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/class/usbtmc.c
-+++ b/drivers/usb/class/usbtmc.c
-@@ -1343,16 +1343,10 @@ static void usbtmc_interrupt(struct urb
- 	case -EOVERFLOW:
- 		dev_err(dev, "overflow with length %d, actual length is %d\n",
- 			data->iin_wMaxPacketSize, urb->actual_length);
--	case -ECONNRESET:
--	case -ENOENT:
--	case -ESHUTDOWN:
--	case -EILSEQ:
--	case -ETIME:
-+	default:
- 		/* urb terminated, clean up */
- 		dev_dbg(dev, "urb terminated, status: %d\n", status);
- 		return;
--	default:
--		dev_err(dev, "unknown status received: %d\n", status);
- 	}
- exit:
- 	rv = usb_submit_urb(urb, GFP_ATOMIC);
+--- a/drivers/pcmcia/i82092.c
++++ b/drivers/pcmcia/i82092.c
+@@ -105,6 +105,7 @@ static int i82092aa_pci_probe(struct pci
+ 	for (i = 0;i<socket_count;i++) {
+ 		sockets[i].card_state = 1; /* 1 = present but empty */
+ 		sockets[i].io_base = pci_resource_start(dev, 0);
++		sockets[i].dev = dev;
+ 		sockets[i].socket.features |= SS_CAP_PCCARD;
+ 		sockets[i].socket.map_size = 0x1000;
+ 		sockets[i].socket.irq_mask = 0;
 
 
