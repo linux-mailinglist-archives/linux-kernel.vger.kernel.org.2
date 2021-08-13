@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F173EB9DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041FA3EB9E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhHMQQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:16:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhHMQQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ECD0610A5;
-        Fri, 13 Aug 2021 16:16:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628871373;
-        bh=exNtTQEXZVA1SbZhCLPoxctZxfVROly9j6q4ACZXMF4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WURIjjZsPOyym8iPW4IcM6qtGizJLJHk9XQOZOr9ZFS0bDn+sI5DhZ/E5/v1WRhh1
-         Xx2iXF2sksA0409Ch3/0gFUkJ/ABh+jsfKLYEJcyt4peZlQij2/9eZEWoGk6wIHCWi
-         sHTIIiFr8si5DGr3L8V5vUIXFbrK9bhJ9acRyt8HOFv9Xuh1do9xjciDRML4M3pn2C
-         OALR+P05mJSJ13Bb4QBFHYrgKUeF3rqsUqKLN+qmZG/g3rTqzKQ7TE6+YmSIEPyeRY
-         jmfXT9iDezYHYkRwM5beraA6fSRuN4PcNaQk7g85y3Aol2zLSWNFurtkr7tqbzDYvq
-         6vGxdxcMoGdaw==
-Received: by mail-lf1-f43.google.com with SMTP id w20so20767327lfu.7;
-        Fri, 13 Aug 2021 09:16:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533H5HcA1ZMkWyUzbdUl/W81P/7P7hGwJKHCgxFn4KYdNTAi7u5e
-        cKQjxcZFMV5BY7Ihel7nPG63T61znuFeEg7uiyQ=
-X-Google-Smtp-Source: ABdhPJzsoteT06x0RmPU8JlZIfdHKShBIwB38siEctt4CD20hkOjyWOyWXsOc1cxiPop7HzeWwql7LzYMRXn/Lu8cVw=
-X-Received: by 2002:ac2:44c3:: with SMTP id d3mr1923014lfm.281.1628871371513;
- Fri, 13 Aug 2021 09:16:11 -0700 (PDT)
+        id S232664AbhHMQRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhHMQRO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 12:17:14 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B883C061756;
+        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id bo18so16110867pjb.0;
+        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
+        b=V7sQT4KCgtnVpRX90o4X/FqgPaiKH4o6jvDypjFYfwZyXYnhyjnUb9+Vr2WelHEk5j
+         vKp0QRk2LjsafSp8wmQnVcd8Jr+SLzWSIpm6D3zG7wHIY/2QhFG+hcMKN9Oo7cMohrQ3
+         4VDmKxdS+hvcvZaD4CqmrMUkFnc0G1D2uv1dimHQxWaZhfckfKU6bgwFI0vppyBb2Rov
+         EM9/BZvvM9mQdaGuHaGQiWojIjIQOhUAkPHecWSjpnLOvOOJYgGizkAkDKs4lPCSzcIl
+         w3KLTLRQiWy2NcYDeRgvVG5JOstQQEuwPwpXB2oPZ59inEn7N1OKKfx6ibt+J1XyLfH8
+         gJmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
+        b=JsHo0JhO+yTtyYSm+vExpQJ336lVpuBqo0zm9NvZfT3e6itNgoTskyD35KDfFuzl4U
+         l2JftkcBanqzvsHH+s+yw5giOAfRsxgew+xJBzeHJV8ZaJi6AWqqDFENPXRL91EFod8M
+         fQyh+5P7iRzUR8LGWGdRrUOzuJS4XSEvBcXqVJJTxzh6CeSHE0B4jT+BOQenkdgrMlSn
+         NQS2oc/CdunehSfbWqNWm4GdPfp35e1bHGsXUYK8V9wJDCrPhVS7EVRJ2zaGoSqtb7vH
+         edfFX2ebI0RgzJFf7wo6hhw+tU8zghnB/6a7afQZLoJ0BfwPK2UrCT2zXmRoQUTwSVif
+         Kw4Q==
+X-Gm-Message-State: AOAM533GDDAYD3B3yBd5WxqUB0Tn672kIR7RwC8Bm26lu0ugznrJG5xk
+        LWn83WuLWpg0Xy3M66uEnHA=
+X-Google-Smtp-Source: ABdhPJyOkGJkNHePuKgw0Vmur+Cdhb4/TaV0LrXCv5Qr6uulsRr4xwxhUaKi3FuwQKHCRThl7jPXvg==
+X-Received: by 2002:a62:cf01:0:b029:3cd:ee82:2ee with SMTP id b1-20020a62cf010000b02903cdee8202eemr3118320pfg.78.1628871407407;
+        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-44e6-6a58-44be-40a6.res6.spectrum.com. [2603:800c:1a02:1bae:44e6:6a58:44be:40a6])
+        by smtp.gmail.com with ESMTPSA id 66sm2968564pfu.67.2021.08.13.09.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 13 Aug 2021 06:16:45 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] misc_cgroup: use a counter to count the number of
+ failures
+Message-ID: <YRaa7R6niNQMpqZm@mtj.duckdns.org>
+References: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-References: <tencent_888910D6F881B3D8BD9C3DFED667A5009806@qq.com>
-In-Reply-To: <tencent_888910D6F881B3D8BD9C3DFED667A5009806@qq.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 13 Aug 2021 09:16:00 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7cC+d5mhNjJb0AiHDKCUb5WzYPNzZ5UPOSScdtFuNzww@mail.gmail.com>
-Message-ID: <CAPhsuW7cC+d5mhNjJb0AiHDKCUb5WzYPNzZ5UPOSScdtFuNzww@mail.gmail.com>
-Subject: Re: [PATCH] drivers:md:fix a potential use-after-free bug
-To:     lwt105 <3061522931@qq.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 8:46 PM lwt105 <3061522931@qq.com> wrote:
->
-> In line 2867, "raid5_release_stripe(sh);" drops the reference to sh and
-> may cause sh to be released. However, sh is subsequently used in lines
-> 2869 "if (sh->batch_head && sh != sh->batch_head)". This may result in an
-> use-after-free bug.
->
-> It can be fixed by moving "raid5_release_stripe(sh);" to the bottom of
-> the function.
->
-> Signed-off-by: lwt105 <3061522931@qq.com>
+Hello,
 
-The fix looks reasonable. I guess lwt105 is not a real name. Please update
-the diff with your real name.
+On Fri, Aug 13, 2021 at 01:26:11PM +0800, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> For a container, we only print an error log when the resource
+> charge fails. There may be some problems here:
+> 
+> 1. If a large number of containers are created and deleted,
+>    there will be a lot of error logs.
+> 2. According to an error log, we cannot better understand
+>    the actual pressure of resources.
+> 
+> Therefore, perhaps we should use a failcnt counter to count
+> the number of failures, so that we can easily understand the
+> actual pressure of resources and avoid too many error log..
+> 
+> This is a partial patch of the previous serial, which may
+> be useful, so I resend it.
 
-Thanks,
-Song
-> ---
->  drivers/md/raid5.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index b8436e4930ed..16ed44646419 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -2864,10 +2864,10 @@ static void raid5_end_write_request(struct bio *bi)
->         if (!test_and_clear_bit(R5_DOUBLE_LOCKED, &sh->dev[i].flags))
->                 clear_bit(R5_LOCKED, &sh->dev[i].flags);
->         set_bit(STRIPE_HANDLE, &sh->state);
-> -       raid5_release_stripe(sh);
->
->         if (sh->batch_head && sh != sh->batch_head)
->                 raid5_release_stripe(sh->batch_head);
-> +       raid5_release_stripe(sh);
->  }
->
->  static void raid5_error(struct mddev *mddev, struct md_rdev *rdev)
-> --
-> 2.25.1
->
+I think this approach is fine but can you please
+
+* Cc the original author of the misc cgroup who added the warning
+  messages.
+
+* Rename failcnt to nr_fails?
+
+Thanks.
+
+-- 
+tejun
