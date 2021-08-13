@@ -2,72 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3A03EB274
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B183EB278
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239803AbhHMISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:18:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239773AbhHMISE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:18:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628842658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqXqJy/S48z48l2Ks/2UHAgqYhB0LstlNS9q6S5x3T4=;
-        b=HHfYKzHzsReo6XQbci4RZ/jd0fbc5xcESDqXyNVaZicxrETPujsJBZt85PE4jDcDDCQ1AL
-        Ffomnn/WiE+YJWCZoV/oYgxO6EhvUozafXFarKePTtDFaAT6btxGbc+H4fPeoNva13vc8K
-        eFQH79/VYLO0kpShnOecDDbGPNuPr6c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-178-SIO_k7EWOEKloWx3m5ZmWw-1; Fri, 13 Aug 2021 04:17:36 -0400
-X-MC-Unique: SIO_k7EWOEKloWx3m5ZmWw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F7761008061;
-        Fri, 13 Aug 2021 08:17:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 51BD95C3E0;
-        Fri, 13 Aug 2021 08:17:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YRYXAii0zZ0SzDt+@infradead.org>
-References: <YRYXAii0zZ0SzDt+@infradead.org> <2408234.1628687271@warthog.procyon.org.uk> <YRVHLu3OAwylCONm@casper.infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC][PATCH] netfs, afs, ceph: Use folios
+        id S239817AbhHMISR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:18:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239805AbhHMISQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 04:18:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B33460FC3;
+        Fri, 13 Aug 2021 08:17:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628842670;
+        bh=NRuGJFIVb0gRcxgVN5cRG5v5o7NpkC9m78LebAd0vnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xvOARDDRrMfRGSOrCde5K0qyQOpUl16xE0EqkK47jMffgTlJ2xzbcdjLp4PCHPPe3
+         JzKGDpEjQ/RafuU4bDYm42FxIf0DeESj7LDgjSYsJyfc/rljkb7VkySJMLNyW9zolr
+         YTEJTKGkCfWOIFUWPsdA32Vy0LqN7XGGKJz1UfcM=
+Date:   Fri, 13 Aug 2021 10:17:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bing Fan <hptsfb@gmail.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] arm pl011 serial: support multi-irq request
+Message-ID: <YRYqq5Cgqy3975e1@kroah.com>
+References: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
+ <YRYc9nCcpGOs4SaJ@kroah.com>
+ <9c3a4336-b6c4-d96e-9a9d-8001dddcee20@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3449253.1628842648.1@warthog.procyon.org.uk>
-Date:   Fri, 13 Aug 2021 09:17:28 +0100
-Message-ID: <3449254.1628842648@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9c3a4336-b6c4-d96e-9a9d-8001dddcee20@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> wrote:
+On Fri, Aug 13, 2021 at 03:56:01PM +0800, Bing Fan wrote:
+> 
+> 在 8/13/2021 15:19, Greg KH 写道:
+> > On Fri, Aug 13, 2021 at 11:31:30AM +0800, Bing Fan wrote:
+> > > From: Bing Fan <tombinfan@tencent.com>
+> > > 
+> > > In order to make pl011 work better, multiple interrupts are
+> > > required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+> > > at the same time, pl011 to GIC does not merge the interrupt
+> > > lines(each serial-interrupt corresponding to different GIC hardware
+> > > interrupt), so need to enable and request multiple gic interrupt
+> > > numbers in the driver.
+> > > 
+> > > Signed-off-by: Bing Fan <tombinfan@tencent.com>
+> > > ---
+> > >   drivers/tty/serial/amba-pl011.c | 39 +++++++++++++++++++++++++++++++--
+> > >   1 file changed, 37 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+> > > index e14f3378b8a0..eaac3431459c 100644
+> > > --- a/drivers/tty/serial/amba-pl011.c
+> > > +++ b/drivers/tty/serial/amba-pl011.c
+> > > @@ -1701,6 +1701,41 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
+> > >   	}
+> > >   }
+> > > +static void pl011_release_multi_irqs(struct uart_amba_port *uap, unsigned int max_cnt)
+> > > +{
+> > > +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < max_cnt; i++)
+> > > +		if (amba_dev->irq[i])
+> > > +			free_irq(amba_dev->irq[i], uap);
+> > > +}
+> > > +
+> > > +static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
+> > > +{
+> > > +	int ret = 0;
+> > > +	int i;
+> > > +	unsigned int virq;
+> > > +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
+> > > +
+> > > +	pl011_write(uap->im, uap, REG_IMSC);
+> > > +
+> > > +	for (i = 0; i < AMBA_NR_IRQS; i++) {
+> > > +		virq = amba_dev->irq[i];
+> > > +		if (virq == 0)
+> > > +			break;
+> > > +
+> > > +		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
+> > > +		if (ret) {
+> > > +			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
+> > > +			pl011_release_multi_irqs(uap, i - 1);
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > This function looks identical to pl011_allocate_irq(), so what is the
+> > difference here?  Why is this still needed at all?  What does it do that
+> > is different from pl011_allocate_irq()?
+> 
+> The v6-patch is based on master of
+> git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git, not tty-next.
 
-> It actually needs to go away.  There's not real good use for that level
-> of API. netfs should just open code the releavant parts of
-> generic_perform_write, similar to iomap.
+Always submit patches based on tty-next if you want them accepted into
+that tree.
 
-I'm working on doing that in netfs lib, with the intent of sharing it between
-at least afs, ceph, cifs and 9p.  It reduces the cost of accessing fscache
-for large writes that span multiple pages.
+> As below, the pl011_allocate_irq function supports single irq request only,
+> which different from pl011_allocate_multi_irqs.
+> 
+> static int pl011_allocate_irq(struct uart_amba_port *uap)
+> {
+>     pl011_write(uap->im, uap, REG_IMSC);
+> 
+>     return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011",
+> uap);
+> }
 
-David
+Ok, but that does not reflect what is in my tree to be merged for
+5.15-rc1.  What is wrong with the code in there that is incorrect and
+needs to be changed?
 
+thanks,
+
+greg k-h
