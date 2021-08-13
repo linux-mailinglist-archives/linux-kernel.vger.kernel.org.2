@@ -2,76 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A363EBD9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0243EBDA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234659AbhHMUtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:49:40 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:34721 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234644AbhHMUta (ORCPT
+        id S234735AbhHMUwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:52:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234705AbhHMUwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:49:30 -0400
-Received: by mail-ot1-f44.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so13584665otl.1;
-        Fri, 13 Aug 2021 13:49:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WR7uDjxrUVN4AooG1rp4oYurHuq5CzCbP2cCx2Yn0Hk=;
-        b=JgM9VFvXNw9xerXETWRiornXxL+Pq1juhJxHm/VBOufoQAuCalMPFW+wvd+tYdeJaH
-         Y/Owe41wY8U4swIugKK82FKprLYARqXD6ND2WkSGiK/Xlm/GqA5sy7YJgfpTVTCL9PAR
-         QrHl5tlti5Ml6h349gQiLzSBeBF3PlwdilqcT3mMVP3MGutkRfrdkkf/wKcHrbCcMVrw
-         85UcZMWVPJDO7L9aE4t1Hw6dmmDE+3GKPUPixz3Q8OGG2fqC6qJMRFLfU/NKuSrw19Ju
-         R7xLvx6V1Rb8CXkB6wE1WmgXGLIDRmlMQ98r9rZWmEfNHofqLubYfKLgR2kOQUiTGvMR
-         h3IA==
-X-Gm-Message-State: AOAM531I7KbmU+JkH35DY1gIoBzRlT9cqM0Z3jtVXXtfUNxcbnSKihBL
-        wOG1JyzWNypZI2XjHZTEYQ==
-X-Google-Smtp-Source: ABdhPJzirUAytpaW6TgtFI+xKQCEZxnjH4itq90oLrts13DOK4jbtJNqsXwk/BKu/fMKi22SIxnwhw==
-X-Received: by 2002:a9d:2782:: with SMTP id c2mr3604968otb.323.1628887743001;
-        Fri, 13 Aug 2021 13:49:03 -0700 (PDT)
-Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
-        by smtp.gmail.com with ESMTPSA id m16sm482172oop.3.2021.08.13.13.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:49:02 -0700 (PDT)
-Received: (nullmailer pid 4005715 invoked by uid 1000);
-        Fri, 13 Aug 2021 20:49:00 -0000
-Date:   Fri, 13 Aug 2021 15:49:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mediatek@lists.infradead.org, Min Guo <min.guo@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: mtk-musb: add MT7623 compatible
-Message-ID: <YRbavByuh2HGnVo7@robh.at.kernel.org>
-References: <20210803151320.71531-1-mans0n@gorani.run>
- <20210808123840.176738-1-mans0n@gorani.run>
- <20210808123840.176738-2-mans0n@gorani.run>
+        Fri, 13 Aug 2021 16:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628887897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2X6nzOXxo3H0EdqupppVKuVb2Pe4/bVUTDNmqoeLdE=;
+        b=W8LIVHwvIaZOwMMIqMzpnh9nR+BugJJiua54Z7qqEJQFzZodEQbRqQwgWMTNrE8CPc12h7
+        VLWqY8ui7zx20vH4OTAQKN6Rk/W9VfLPf/CYwnoR3SuC4OEFFlHuaJYUFU971aSDruhosK
+        rBlN0X/IHz8GswXR6rmRnY9JYsWEMe4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-Y3LCxE_EOcGvjoJz3lSDhA-1; Fri, 13 Aug 2021 16:51:35 -0400
+X-MC-Unique: Y3LCxE_EOcGvjoJz3lSDhA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9ADC1008060;
+        Fri, 13 Aug 2021 20:51:33 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.194.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 795DB1BCF0;
+        Fri, 13 Aug 2021 20:51:11 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     ebiederm@xmission.com (Eric W. Biederman)
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+        <87eeay8pqx.fsf@disp2133>
+        <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+        <87h7ft2j68.fsf@disp2133>
+Date:   Fri, 13 Aug 2021 22:51:09 +0200
+In-Reply-To: <87h7ft2j68.fsf@disp2133> (Eric W. Biederman's message of "Fri,
+        13 Aug 2021 15:17:51 -0500")
+Message-ID: <871r6xdq6a.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808123840.176738-2-mans0n@gorani.run>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 08 Aug 2021 21:38:39 +0900, Sungbo Eo wrote:
-> Document MT7623 compatible for mtk-musb.
-> 
-> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> ---
-> v2:
-> * add reviewed by Matthias
-> ---
->  Documentation/devicetree/bindings/usb/mediatek,musb.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+* Eric W. Biederman:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> Florian Weimer, would it be possible to get glibc's ld.so implementation to use
+> MAP_SHARED?  Just so people reading the code know what to expect of the
+> kernel?  As far as I can tell there is not a practical difference
+> between a read-only MAP_PRIVATE and a read-only MAP_SHARED.
+
+Some applications use mprotect to change page protections behind glibc's
+back.  Using MAP_SHARED would break fork pretty badly.
+
+Most of the hard-to-diagnose crashes seem to come from global data or
+relocations because they are wiped by truncation.  And we certainly
+can't use MAP_SHARED for those.  Code often seems to come back unchanged
+after the truncation because the overwritten file hasn't actually
+changed.  File attributes don't help because the copying is an
+adminstrative action in the context of the application (maybe the result
+of some automation).
+
+I think avoiding the crashes isn't the right approach.  What I'd like to
+see is better diagnostics.  Writing mtime and ctime to the core file
+might help.  Or adding a flag to the core file and /proc/PID/smaps that
+indicates if the file has been truncated across the mapping since the
+mapping was created.
+
+A bit less conservative and even more obvious to diagnose would be a new
+flag for the mapping (perhaps set via madvise) that causes any future
+access to the mapping to fault with SIGBUS and a special si_code value
+after the file has been truncated across the mapping.  I think we would
+set that in the glibc dynamic loader.  It would make the crashes much
+less weird.
+
+Thanks,
+Florian
+
