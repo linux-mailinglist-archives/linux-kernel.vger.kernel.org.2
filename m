@@ -2,127 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD733EB3E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52863EB3EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240011AbhHMKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239613AbhHMKRM (ORCPT
+        id S240035AbhHMKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:19:58 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:60591 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240027AbhHMKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:17:12 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAB2C061756;
-        Fri, 13 Aug 2021 03:16:46 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id k5-20020a05600c1c85b02902e699a4d20cso6565022wms.2;
-        Fri, 13 Aug 2021 03:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qqw1S6wFqpcslkxegqQiXTxlXz74o59gYYNcnKgmY4g=;
-        b=Iac72rAAdZ6AojYmmBS1b45TFPgBlke8aXSGKhPB+5ChYdcMcO7rrOnxRDymsPQTes
-         Sfi0jSDobljIJhCJbdsbs6KE8Wo+0oGJyE0jPPl7KVeVVHxVjzpLS8r78IaunH+YGcvA
-         Cyskeksk0kb8Lc4py22Ak+sLqRYBquFwbX9xBkFi6YUCplmh7QPeDhT+NupyF+dGJJQg
-         a3VCGO977oB0ja8EHzCBvHK5VfyAw8jJpH4DIFE7/HQDTP3Cys8n/WyOt0OkfOvqgIzS
-         UUrd0Pq8lKhUlL44AEvsXjjX2WJ9YT9JYnRG+6DZMzK9iahdYLOv/kww2MyxFbsTnyPK
-         ZLmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qqw1S6wFqpcslkxegqQiXTxlXz74o59gYYNcnKgmY4g=;
-        b=MzuZ0S0kpzxK4mrJ+ec9TBeSu+GABSnOsVJhpCJtTmpagya/KA7tHNNr3ZNlptK5N1
-         75r3SWuSjueMbjObUWcFtVKE1IjyBgGe2GlaH6M+CREBV/pG1FpXiUezwlhn1iF1Tn6e
-         wqlEUoKWkp80JQ053gC97N7QGUlj4W6FKiRynQC81RpkxH7SsRvse05E3GIzArGlbQ11
-         EQfpwpFiQnWrVXkbvTVXZN9KNoB4p2P892KP7QuCdCjBRaTf9keLuLBRE8XLi3ekm729
-         pqMxno/OjPQS9hZTRWFUge8guiS0MRG0vs8IbQ7vxtNTxdITKNa/PV6kbkbXHkhrG3Eo
-         p6jA==
-X-Gm-Message-State: AOAM533PbFDJsYnxIkfpenWLOgS2vDCnLWgB058oI7763qMrCUJT/J1Z
-        a6n1g6bm8TiKb8AiyMjCZQk=
-X-Google-Smtp-Source: ABdhPJxusspL3XxpzAX1smg8pNVYGaREmsqR1h9AnCCTJ/0mjdcoR9VTniawwni1Ad19eDHMKiwbBA==
-X-Received: by 2002:a05:600c:4fd6:: with SMTP id o22mr1880796wmq.45.1628849804786;
-        Fri, 13 Aug 2021 03:16:44 -0700 (PDT)
-Received: from [10.0.0.3] ([37.165.153.200])
-        by smtp.gmail.com with ESMTPSA id p5sm1253942wrd.25.2021.08.13.03.16.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 03:16:44 -0700 (PDT)
-Subject: Re: [PATCH] net: drop skbs in napi->rx_list when removing the napi
- context.
-To:     Phi Nguyen <phind.uet@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        memxor@gmail.com, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com,
-        Mahesh Bandewar <maheshb@google.com>
-References: <20210811235959.1099333-1-phind.uet@gmail.com>
- <CANn89iLQj4Xm-6Bcygtkd5QqDzmJBDALznL8mEJrF1Fh_W32iQ@mail.gmail.com>
- <663ac8c4-b0c3-5af6-c3c3-f371e0410a43@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <8f324e46-f05c-42d7-9599-a43de7be17dc@gmail.com>
-Date:   Fri, 13 Aug 2021 12:16:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 13 Aug 2021 06:19:07 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 9141A3200954;
+        Fri, 13 Aug 2021 06:18:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 13 Aug 2021 06:18:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=anzC8ZRMZSWdfChkQsS28eBhKJx
+        SGQXXEm17xUZ0I3E=; b=xB2b3ycI0wM1n4F3ChcHdwCKPlVEEtNs6GBUpcQld33
+        lCmcw7aI7Kjloc1GrQiJWiHISQOzfF2JT/mfcSVTUBaBkfvwtH9E8Fb2Bgtkhdvi
+        sCmnm9VuIGMvpL2xnBzOjFsd0HOD4mngrVyRXzNfKR+5wfSn29B7vZDNolWSixKx
+        cbPTprIV7xsmKNxQsWhtlBUML5ZZ65xWtlN6ShOCxQt5jyokAGZovMoTYjc1k/OT
+        2/Z5Enh2O4bP2ojYkw3NWYHlevccL5UpuBtL0b0fxWr1vrd4HLneTpew37lIeFqV
+        iXU7RfsOqfuz2S2/UakwlloI85fw0ZP4L6Pyy1r9LEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=anzC8Z
+        RMZSWdfChkQsS28eBhKJxSGQXXEm17xUZ0I3E=; b=JgLIbQwubmvXBaf+q79hmP
+        v6dj2mgQsItPK5JkLPy1TVOFaic1O2o0CRd98SBzufvvkbgju+SFyvPnujdHW3PR
+        evoFlKC/+ERcWVnq0pkMbXkVNVEFy1SfFyYKSPL4cAp3DWbYM4xa9AThV8ArFRak
+        DU4U03PurZx9NS9ISEW/wBdmIlogGU8wLSdfZHGuYIwsjW+kXr47RpqJAu2fkCde
+        sHphwp/NyoIqvsGR+CIv7u68ALfw2387DO/d4fkIwPf7sajr6SOn5al1aNxv69Fl
+        qH5JIjtVDsD9qYYL0Qypbg771gW/PyVghs/ENqVx/VOWrXmc7qpD8tQrVLgfte/g
+        ==
+X-ME-Sender: <xms:_0YWYTfKbFn8ffNxZtVge09o63lPRrRPT60WqT6KXKwsbNZ1G6axVw>
+    <xme:_0YWYZOfqTVXT9cbrdU2PPJNI-b0l7xmBWGvY0r0P-kQ63ALQzZUwrYKyKVfKL2Xc
+    h5wmbFa7zfbtw>
+X-ME-Received: <xmr:_0YWYchbe8ucy52cYT_5-38b_iqpJBRNsAw-YtiYGh9Hgb1vcXpt7Fg-eRitf-cOL2S3mfZK6LBevW4wWbCi3LsyBfPGnPQX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeehgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:_0YWYU8wP8np0aO2ukKyB1mUmrBzc0G1y7uUU2N20LhWXqpYUIWRcg>
+    <xmx:_0YWYftPZrx0W5ltkLFaveNrhwqtawoHMU9w_oRJKD-8xse-FCgN3Q>
+    <xmx:_0YWYTEstgnxFxTdJOqulxPc_GLXvzP1qEAoDA56NFQ4Mw1ADMc9kg>
+    <xmx:AEcWYTgrjXp9oCYXkS1kFoCMB_zKoPgzEEmyPPBuyUauPqPuxOounA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Aug 2021 06:18:39 -0400 (EDT)
+Date:   Fri, 13 Aug 2021 12:18:27 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/7] make btrfs/153 sucessful on 5.4.y
+Message-ID: <YRZG81GsaIblr/II@kroah.com>
+References: <cover.1628845854.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <663ac8c4-b0c3-5af6-c3c3-f371e0410a43@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1628845854.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 13, 2021 at 05:55:23PM +0800, Anand Jain wrote:
+> Patch 1-2 and 5 helps to fix the conflicts smoothly.
+> Patch 3-4 and 6 fixes the regression as reported by the
+>                 test case btrfs/153 and comes from the below patch-set
+>                 (btrfs: qgroup: Fix the long-existing regression of btrfs/153)
+> Patch 7 fixes lockdep Warning as in the commit log now reported by
+> the test case btrfs/153 on 5.4.y
 
+All queued up, thanks!
 
-On 8/12/21 9:17 PM, Phi Nguyen wrote:
-> On 8/12/2021 3:07 PM, Eric Dumazet wrote:
->> Also I object to this fix.
->>
->> If packets have been stored temporarily in GRO, they should be
->> released at some point,
->> normally at the end of a napi poll.
->>
->> By released, I mean that these packets should reach the upper stack,
->> instead of being dropped without
->> any notification.
->>
->> It seems a call to gro_normal_list() is missing somewhere.
->>
->> Can you find where ?
->>
->> Thanks !
->> H Eric,
-> 
-> I think the location that should have a call to gro_normal_list() is __netif_napi_del(). Let say, if the driver call a function that lead to gro_normal_one(), and add a skb to the rx_list while the napi poll is not scheduled, and the driver remove the napi context before a napi poll could be triggered, then the added skb will be lost.
-> 
-> Actually, this was the first solution that I tried with syzbot (It passed the test too).
-> Best regards,
-> Phi
-
-I think the real bug is in drivers/net/tun.c
-
-It can call napi_gro_frags() and I do not see corresponding napi_complete()
-
-This seems completely bogus.
-
-Your patch only works around one the many bugs caused by 
-commit 90e33d45940793def6f773b2d528e9f3c84ffdc7 tun: enable napi_gro_frags() for TUN/TAP driver
-
-I suggest not adding your patch, because we should fix the root cause.
-
+greg k-h
