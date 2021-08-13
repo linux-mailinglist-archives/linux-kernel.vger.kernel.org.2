@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85923EB37A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36D13EB37D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhHMJoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S239768AbhHMJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239028AbhHMJof (ORCPT
+        with ESMTP id S238807AbhHMJp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:44:35 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D53C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:44:08 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mETjN-0002KO-Tj; Fri, 13 Aug 2021 11:44:01 +0200
-Date:   Fri, 13 Aug 2021 11:44:01 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] staging: r8188eu: refactor Hal_GetChnlGroup88E()
-Message-ID: <20210813094401.y2d6wehhdtuvbvp4@viti.kaiser.cx>
-References: <20210813073109.25609-1-straube.linux@gmail.com>
+        Fri, 13 Aug 2021 05:45:28 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A9FC061756;
+        Fri, 13 Aug 2021 02:45:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GmJZ24wlzz9sPf;
+        Fri, 13 Aug 2021 19:44:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628847899;
+        bh=8X6LgnuMw2xZ9R6aXbGDuvdrA67fJ95JyS2i8kkOhwg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ey3nieQjhifAemuB5wGoqGyRDFb1llIp1KujqwoPOWa9IBtECA6M+vn2eun8k9jpQ
+         coAdiXHKcciQ7t2R2wz6I17Q6VkbddjpJCiy0mZN5yVkI7CIPO7+wIQk8Q4p3/HazO
+         6YIm8pwKOpEiJiR4sc2pKtL8j4bMwoz4ERY7TAAHPo3GIqHZtaLpS5xnbob+8/Ic0b
+         ttZLUCJD7OHWhkjb48d/VQ5EnoBleNEBt1a4c+KYNZ7NIXdNgIFXIU1xh3CjCa0VTm
+         sHGVLeFnyj43a8b+mufzV/6BtGMAQ+4YC6x6iXGFjXXtI2C/hg4zZKUlLpqMUkKoro
+         v3am/Je1pd+aQ==
+Date:   Fri, 13 Aug 2021 19:44:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the irqchip tree
+Message-ID: <20210813194457.445205e6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813073109.25609-1-straube.linux@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Content-Type: multipart/signed; boundary="Sig_/CFo+XUE5e+ht3lSDq2C7qur";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
+--Sig_/CFo+XUE5e+ht3lSDq2C7qur
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> This series refactors Hal_GetChnlGroup88E().
->  - removes 5GHz code
->  - changes return type to void
->  - cleans up camel case naming
+Hi all,
 
-> Michael Straube (4):
->   staging: r8188eu: remove 5GHz code from Hal_GetChnlGroup88E()
->   staging: r8188eu: convert return type of Hal_GetChnlGroup88E() to void
->   staging: r8188eu: rename parameter of Hal_GetChnlGroup88E()
->   staging: r8188eu: rename Hal_GetChnlGroup88E()
+After merging the irqchip tree, today's linux-next build (htmldocs)
+produced this warning:
 
->  .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 90 ++++++-------------
->  1 file changed, 26 insertions(+), 64 deletions(-)
+Documentation/core-api/irq/irq-domain.rst:178: WARNING: Inline emphasis sta=
+rt-string without end-string.
 
-> -- 
-> 2.32.0
+Introduced by commit
 
-Hi Michael,
+  991007ba6cca ("Documentation: Update irq_domain.rst with new lookup APIs")
 
-this series looks ok to me.
+--=20
+Cheers,
+Stephen Rothwell
 
-Acked-by: Martin Kaiser <martin@kaiser.cx>
+--Sig_/CFo+XUE5e+ht3lSDq2C7qur
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEWPxkACgkQAVBC80lX
+0GwPuwf8DBJf9i0/fB83IdajHOg3UWXQxz8LipBfMkdlLfZcRxTVmh/UF91lhN51
+fsQl2i8zJ4cu6gL+suYsKX2sZk6RRwCIgNvDrDRcEXtFYwOyoOMH+okk5ZGy1CmH
+oOfLZtMFu6MWaWgRgT34yleE3QveUNmtfsScqVK7hYOirNs2zLww/0hE0cDMkeXw
+WjNQ48SGLjxoBkQx8Ww1Po72XWp8DAlIEVosPNwNPuyfqOFqkEvzJ5v6oINelr4n
+uVSpKzOmVuGOpSTyt4cOZZHHGuk/ay6owNRiVJ0DVtX4Vcq3hemaO0Yv/QV/7ruM
+EOj4mS2x0RMdoAW047WCCetwFGfepQ==
+=OnIS
+-----END PGP SIGNATURE-----
+
+--Sig_/CFo+XUE5e+ht3lSDq2C7qur--
