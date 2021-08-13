@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE243EB595
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549243EB59E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240328AbhHMMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:33:04 -0400
-Received: from mail-m17636.qiye.163.com ([59.111.176.36]:51650 "EHLO
-        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240145AbhHMMdB (ORCPT
+        id S240368AbhHMMe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:34:57 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:14203 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhHMMeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:33:01 -0400
-Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
-        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id D9F70C4020F;
-        Fri, 13 Aug 2021 20:32:28 +0800 (CST)
-From:   Yangtao Li <frank.li@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH v5 2/2] f2fs: convert S_IRUGO to 0444
-Date:   Fri, 13 Aug 2021 20:32:21 +0800
-Message-Id: <20210813123221.185591-2-frank.li@vivo.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813123221.185591-1-frank.li@vivo.com>
-References: <20210813123221.185591-1-frank.li@vivo.com>
+        Fri, 13 Aug 2021 08:34:50 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GmNK51TQCz1CWQ4;
+        Fri, 13 Aug 2021 20:34:01 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 13 Aug 2021 20:34:18 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 13 Aug 2021 20:34:18 +0800
+Subject: Re: [PATCH] block: don't decrement flush request refcount if it's
+ state is idle in flush_end_io()
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210808070330.763177-1-yukuai3@huawei.com>
+ <e251976b-eab8-1c79-0891-25d48b31d4db@huawei.com>
+Message-ID: <35619043-673f-73be-96bc-df0711c529e3@huawei.com>
+Date:   Fri, 13 Aug 2021 20:34:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <e251976b-eab8-1c79-0891-25d48b31d4db@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRoaSUhWSx9JH0xIQkIYQk
-        oeVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NxQ6IRw*PD9IFxgfCxYXMSEY
-        DRUaChNVSlVKTUlDQ05MQk9CT0xNVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
-        VUpLT1VKQ0NVSk1OWVdZCAFZQUlDTUo3Bg++
-X-HM-Tid: 0a7b3f7fdb7ad996kuwsd9f70c4020f
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
-+               proc_create_single_data("fsck_stack", S_IRUGO, sbi->s_proc,
+Please ignore this email, I reply to the wrong wmail.
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- fs/f2fs/debug.c |  2 +-
- fs/f2fs/sysfs.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Sincerely apologize
+Kuai
 
-diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-index 473ad04d1891..401e5e34edd6 100644
---- a/fs/f2fs/debug.c
-+++ b/fs/f2fs/debug.c
-@@ -621,7 +621,7 @@ void __init f2fs_create_root_stats(void)
- #ifdef CONFIG_DEBUG_FS
- 	f2fs_debugfs_root = debugfs_create_dir("f2fs", NULL);
- 
--	debugfs_create_file("status", S_IRUGO, f2fs_debugfs_root, NULL,
-+	debugfs_create_file("status", 0444, f2fs_debugfs_root, NULL,
- 			    &stat_fops);
- #endif
- }
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index c134bbb99c7b..09bf8c4be2b1 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -1276,15 +1276,15 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
- 		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
- 
- 	if (sbi->s_proc) {
--		proc_create_single_data("segment_info", S_IRUGO, sbi->s_proc,
-+		proc_create_single_data("segment_info", 0444, sbi->s_proc,
- 				segment_info_seq_show, sb);
--		proc_create_single_data("segment_bits", S_IRUGO, sbi->s_proc,
-+		proc_create_single_data("segment_bits", 0444, sbi->s_proc,
- 				segment_bits_seq_show, sb);
--		proc_create_single_data("iostat_info", S_IRUGO, sbi->s_proc,
-+		proc_create_single_data("iostat_info", 0444, sbi->s_proc,
- 				iostat_info_seq_show, sb);
--		proc_create_single_data("victim_bits", S_IRUGO, sbi->s_proc,
-+		proc_create_single_data("victim_bits", 0444, sbi->s_proc,
- 				victim_bits_seq_show, sb);
--		proc_create_single_data("fsck_stack", S_IRUGO, sbi->s_proc,
-+		proc_create_single_data("fsck_stack", 0444, sbi->s_proc,
- 				fsck_stack_seq_show, sb);
- 	}
- 	return 0;
--- 
-2.32.0
-
+在 2021/08/13 17:40, yukuai (C) 写道:
+> Hi, jens
+> 
+> Can you please consider to apply this patch?
+> 
+> Thanks
+> Kuai
+> 
+> On 2021/08/08 15:03, Yu Kuai wrote:
+>> flush_end_io() currently decrement request refcount unconditionally.
+>> However, it's possible that the request is already idle and it's
+>> refcount is zero since that flush_end_io() can be called concurrently.
+>>
+>> For example, nbd_clear_que() can be called concurrently with normal
+>> io completion or io timeout.
+>>
+>> Thus check idle before decrement to avoid refcount_t underflow
+>> warning.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/blk-flush.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/block/blk-flush.c b/block/blk-flush.c
+>> index 1002f6c58181..9b65dc43702c 100644
+>> --- a/block/blk-flush.c
+>> +++ b/block/blk-flush.c
+>> @@ -222,7 +222,8 @@ static void flush_end_io(struct request *flush_rq, 
+>> blk_status_t error)
+>>       /* release the tag's ownership to the req cloned from */
+>>       spin_lock_irqsave(&fq->mq_flush_lock, flags);
+>> -    if (!refcount_dec_and_test(&flush_rq->ref)) {
+>> +    if (blk_mq_rq_state(flush_rq) == MQ_RQ_IDLE ||
+>> +        !refcount_dec_and_test(&flush_rq->ref)) {
+>>           fq->rq_status = error;
+>>           spin_unlock_irqrestore(&fq->mq_flush_lock, flags);
+>>           return;
+>>
+> .
+> 
