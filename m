@@ -2,117 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB13E3EBB35
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4B63EBB38
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbhHMRSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:18:08 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:38571 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhHMRSG (ORCPT
+        id S232397AbhHMRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:18:36 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58602 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232151AbhHMRSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:18:06 -0400
-Received: by mail-oi1-f182.google.com with SMTP id u25so16896025oiv.5;
-        Fri, 13 Aug 2021 10:17:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h68fhwaIJGBeInei61waRjahlBNK+UqY88zaiPuB/Gw=;
-        b=Uvkk06mxrnKkewYnBdLqrz44OuLqlHMcWL2Cg+fH/r2BMQ58xb7UbmpvjWpI8BCkpK
-         YjShmO9/rbcS7JqMqgKPWNyqm2tky8p43aVQIq5RE5oXCw+fr9pAS1JoFBGU0IE1yoxS
-         v8rncdS251O9EfJI4ZGQHzF+SaoPS5rkkAbzW1F74Qdw3zkGaQ9ATqJeDpq/bd3JaOMa
-         WATMUPLtO8tXCfSSIb/Cr3mweEA6x5n2FuPMwuXoIeGOBSP+dOUTI1PHU+GippZxjElv
-         iI+i6ilGqt2B0YiCe3wVuFGhS7KnB/xdUSP4jkC6LQZxlA74RRxj8v+sPTzXjH5ncUKf
-         Lx+Q==
-X-Gm-Message-State: AOAM533W9OsOuFCoaDuzj5dmLK7Ar5VdTixnGvimkLQgWN7CWf4R8Q7l
-        9bHC/DRrCRUSrk0mifk6uQ==
-X-Google-Smtp-Source: ABdhPJx3K3cc3GWnc2e23wyDvjtkfl5TevTPrmq0X8fptV6TKcYWL8Ix2VpQOeEyvmefqxyPYSiIZA==
-X-Received: by 2002:a05:6808:f07:: with SMTP id m7mr2921822oiw.16.1628875059355;
-        Fri, 13 Aug 2021 10:17:39 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a19sm427823otl.48.2021.08.13.10.17.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 10:17:38 -0700 (PDT)
-Received: (nullmailer pid 3698805 invoked by uid 1000);
-        Fri, 13 Aug 2021 17:17:36 -0000
-Date:   Fri, 13 Aug 2021 12:17:36 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>, linux-omap@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: PCI: ti,j721e: Add bindings to
- specify legacy interrupts
-Message-ID: <YRapMFNb63MSPJ1E@robh.at.kernel.org>
-References: <20210804132912.30685-1-kishon@ti.com>
- <20210804132912.30685-2-kishon@ti.com>
+        Fri, 13 Aug 2021 13:18:13 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id D06D01F44A1D
+Received: by earth.universe (Postfix, from userid 1000)
+        id 8DD2C3C0C99; Fri, 13 Aug 2021 19:17:39 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 19:17:39 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     Daniel Gonzalez Cabanelas <dgcbueu@gmail.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: reset: linkstation-poweroff: prepare for new
+ devices
+Message-ID: <20210813171739.cafastjubtkvqkty@earth.universe>
+References: <20210624091813.42334-1-paweldembicki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zlbul57bczkluur7"
 Content-Disposition: inline
-In-Reply-To: <20210804132912.30685-2-kishon@ti.com>
+In-Reply-To: <20210624091813.42334-1-paweldembicki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 06:59:10PM +0530, Kishon Vijay Abraham I wrote:
-> Add bindings to specify interrupt controller for legacy interrupts.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+
+--zlbul57bczkluur7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Thu, Jun 24, 2021 at 11:18:11AM +0200, Pawel Dembicki wrote:
+> This commit prepare driver for another device support.
+>=20
+> New power_off_cfg structure describes two most important things: name of
+> mdio bus and pointer to register setting function. It allow to add new
+> device with different mdio bus node and other phy register config.
+>=20
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 > ---
->  .../bindings/pci/ti,j721e-pci-host.yaml           | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> index cc900202df29..f461d7b4c0cc 100644
-> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> @@ -74,6 +74,11 @@ properties:
->  
->    msi-map: true
->  
-> +patternProperties:
-> +  "interrupt-controller":
 
-Not a pattern unless you meant for foo-interrupt-controller-bar to be 
-valid.
+Thanks, queued.
 
-Anything is allowed in the node?
+-- Sebastian
 
-> +    type: object
-> +    description: interrupt controller to handle legacy interrupts.
+>  drivers/power/reset/linkstation-poweroff.c | 35 ++++++++++++++++++----
+>  1 file changed, 29 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/linkstation-poweroff.c b/drivers/power/r=
+eset/linkstation-poweroff.c
+> index f1e843df0e16..cb5a32f852c1 100644
+> --- a/drivers/power/reset/linkstation-poweroff.c
+> +++ b/drivers/power/reset/linkstation-poweroff.c
+> @@ -29,11 +29,21 @@
+>  #define LED2_FORCE_ON					(0x8 << 8)
+>  #define LEDMASK						GENMASK(11,8)
+> =20
+> +struct power_off_cfg {
+> +	char *mdio_node_name;
+> +	void (*phy_set_reg)(bool restart);
+> +};
 > +
->  required:
->    - compatible
->    - reg
-> @@ -97,6 +102,8 @@ unevaluatedProperties: false
->  
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
->      #include <dt-bindings/soc/ti,sci_pm_domain.h>
->      #include <dt-bindings/gpio/gpio.h>
->  
-> @@ -131,5 +138,13 @@ examples:
->              ranges = <0x01000000 0x0 0x10001000  0x00 0x10001000  0x0 0x0010000>,
->                       <0x02000000 0x0 0x10011000  0x00 0x10011000  0x0 0x7fef000>;
->              dma-ranges = <0x02000000 0x0 0x0 0x0 0x0 0x10000 0x0>;
+>  static struct phy_device *phydev;
+> +static const struct power_off_cfg *cfg;
+> =20
+> -static void mvphy_reg_intn(u16 data)
+> +static void linkstation_mvphy_reg_intn(bool restart)
+>  {
+>  	int rc =3D 0, saved_page;
+> +	u16 data =3D 0;
 > +
+> +	if (restart)
+> +		data =3D MII_88E1318S_PHY_LED_TCR_FORCE_INT;
+> =20
+>  	saved_page =3D phy_select_page(phydev, MII_MARVELL_LED_PAGE);
+>  	if (saved_page < 0)
+> @@ -66,11 +76,16 @@ static void mvphy_reg_intn(u16 data)
+>  		dev_err(&phydev->mdio.dev, "Write register failed, %d\n", rc);
+>  }
+> =20
+> +static const struct power_off_cfg linkstation_power_off_cfg =3D {
+> +	.mdio_node_name =3D "mdio",
+> +	.phy_set_reg =3D linkstation_mvphy_reg_intn,
+> +};
 > +
-> +            pcie0_intc: interrupt-controller {
-> +                    interrupt-controller;
-> +                    #interrupt-cells = <1>;
-> +                    interrupt-parent = <&gic500>;
-> +                    interrupts = <GIC_SPI 312 IRQ_TYPE_EDGE_RISING>;
-> +            };
->          };
->      };
-> -- 
-> 2.17.1
-> 
-> 
+>  static int linkstation_reboot_notifier(struct notifier_block *nb,
+>  				       unsigned long action, void *unused)
+>  {
+>  	if (action =3D=3D SYS_RESTART)
+> -		mvphy_reg_intn(MII_88E1318S_PHY_LED_TCR_FORCE_INT);
+> +		cfg->phy_set_reg(true);
+> =20
+>  	return NOTIFY_DONE;
+>  }
+> @@ -82,14 +97,18 @@ static struct notifier_block linkstation_reboot_nb =
+=3D {
+>  static void linkstation_poweroff(void)
+>  {
+>  	unregister_reboot_notifier(&linkstation_reboot_nb);
+> -	mvphy_reg_intn(0);
+> +	cfg->phy_set_reg(false);
+> =20
+>  	kernel_restart("Power off");
+>  }
+> =20
+>  static const struct of_device_id ls_poweroff_of_match[] =3D {
+> -	{ .compatible =3D "buffalo,ls421d" },
+> -	{ .compatible =3D "buffalo,ls421de" },
+> +	{ .compatible =3D "buffalo,ls421d",
+> +	  .data =3D &linkstation_power_off_cfg,
+> +	},
+> +	{ .compatible =3D "buffalo,ls421de",
+> +	  .data =3D &linkstation_power_off_cfg,
+> +	},
+>  	{ },
+>  };
+> =20
+> @@ -97,13 +116,17 @@ static int __init linkstation_poweroff_init(void)
+>  {
+>  	struct mii_bus *bus;
+>  	struct device_node *dn;
+> +	const struct of_device_id *match;
+> =20
+>  	dn =3D of_find_matching_node(NULL, ls_poweroff_of_match);
+>  	if (!dn)
+>  		return -ENODEV;
+>  	of_node_put(dn);
+> =20
+> -	dn =3D of_find_node_by_name(NULL, "mdio");
+> +	match =3D of_match_node(ls_poweroff_of_match, dn);
+> +	cfg =3D match->data;
+> +
+> +	dn =3D of_find_node_by_name(NULL, cfg->mdio_node_name);
+>  	if (!dn)
+>  		return -ENODEV;
+> =20
+> --=20
+> 2.25.1
+>=20
+
+--zlbul57bczkluur7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWqTMACgkQ2O7X88g7
++prrDQ//SeP6zggVT8iyWjHr79wRUR4zvYmEOX2XDjq1E7DIfdEaq6VFMw2abWt3
+1EVq6UaF/oQUJdWogaRI7Jly5iaJNAf/T9fvzeaj8QHVnEGkB/WAKuhY2X3bP8GH
+IwSD3NMO6J4+nV61mP6dIMqDq3IN/13vfY46re6+lHPiJEHA4NqODEpGO2idCMMv
+2FYIUrNe6duxc/yoxDYIBuoIcR8sVf0+E8gEsnpASrJYe0mJj3vQfbNE+o4etBVf
+U0EREUd6wuWRx00W2Yh36YULlSoUsWWSrO/t0J6LfmT1+bWlPRj5IzZGC8Ep+43P
+BBfxIdj3MooXntYWKrVd6cvHx2Zhp9gqBecApPLBvzfrK/WN2ogDKeHiNjEiP73v
+UY1+sxarW8cSGxyBXMckyQsu2u+P5p5hyH/HPg6cppDpT5RUQutfu0hITVubYiA9
+5t3LEjxNnT7HwQd0utbDZYq0a7OGm7DWAL5n9Tv3EyVZPT568MCUi3YHIJZjXsmO
+UT5x54lN/6P5dRnIINRvzoFy0rgPC2laoue25TWA+ppnWWgdaXcmNFAeWLxmhLOc
+FMK+gNHIbTyRGN58ODpkBKvZAXFpG33CnJibG+70mpwfRQm1920wFtSACN2HNeiu
+Z9Ho/O+ddgW/K7I2/c8cJneredVxADFVkomIpiZ8p4M81D0bp3Y=
+=NwJ4
+-----END PGP SIGNATURE-----
+
+--zlbul57bczkluur7--
