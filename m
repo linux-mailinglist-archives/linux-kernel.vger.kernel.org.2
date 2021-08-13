@@ -2,204 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456DA3EBD8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B103EBD90
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhHMUoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbhHMUn6 (ORCPT
+        id S234710AbhHMUoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:44:14 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:45005 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234735AbhHMUoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:43:58 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39555C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:43:31 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z11so17143983edb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iRAplBayhxWymKoWiC0WoyTJpbQvWuYgJ79F91VPsGY=;
-        b=AJXHxf6mdypCa42/YwFeu+0Ff51vNI2hZQLJOtmI36BZuel/csiDOA2aXeD2vXyi4d
-         6wdAaPLATieACVpkBz03DOgyyTecO6kBA7tpnJTW/LkLzIp1sfh/lF1uPjVIsPi9xL/E
-         FzDEW8/RWzt4/ZHPAWIuS/V6U8kAIWsTC38r+MmecIj0MH979uAJtFb3YcvA+rzD1dH+
-         nJddGcY6JX41yknjZUr05q5UpIPjre1WgcrpR8WfsxLoPsHKk5cAXEz7tauV2QDDGvd6
-         U99fcfAJmKH3Ay8LkYJYjICks+rZlKX6e7Eef0N1THfeGYfNNxQ5aK7Qo3dWHqHr9eod
-         JWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iRAplBayhxWymKoWiC0WoyTJpbQvWuYgJ79F91VPsGY=;
-        b=WHKyrZ7LZfk3xky4WZXU0lJA0FRctnBQxpaaekNwvqckS1PpV9R8Er2NHBe/9VG5LK
-         WQC3pPDQQRRVv22Hy0z2mh+K8uuiC/dUrIsQKKGNKMgBE4gesRv6/j67Mmt3wnz8bw9P
-         LfmYCyGB3Vr0pcIkvAL4ehV0ToVCaFpG0V86zBGCgRPnRGlvakYFm9OG6Jqmm3aKuIOP
-         eSgqh38hP8DtW4ExblLL9kVfkXcWokCgpa+h7rblPY9UvjxbIKTl7ozvnIraNYR1cJGK
-         v+uuvPW+FrvJNaR9l/76sU6u53FGavhzuCTxvdvVLuH1vJDxEFpN8A3nwfJw53dwRRy4
-         5isQ==
-X-Gm-Message-State: AOAM531wdEmSBNjknlmvKwBZYj2aUj1yahpc1G226yU63+EQSY9TzsPD
-        PZnenDUOtsc02fLM1MVnufD6vX6ncxx8qkLvVinF
-X-Google-Smtp-Source: ABdhPJzuZlbMX/SZdVH8AI8TEUryb01jMYyYASTBqkbdK5gus1OBuQz4ggC/DrTs2bokQflB8Rq6ia+jQ/0sJBH4L2c=
-X-Received: by 2002:aa7:d982:: with SMTP id u2mr5423505eds.164.1628887409671;
- Fri, 13 Aug 2021 13:43:29 -0700 (PDT)
+        Fri, 13 Aug 2021 16:44:11 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MHG4c-1mJ3ra1TiS-00DHov; Fri, 13 Aug 2021 22:43:42 +0200
+Received: by mail-wm1-f54.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso10511003wmq.3;
+        Fri, 13 Aug 2021 13:43:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532q5U+A/fa+FgF3cfOIGK7uRaF/ixgMNazRWV0V9z41BYOpOSjH
+        4B+aLwjIdlbB1BlQEye1oGzWGAEFEaDOsB+0qOg=
+X-Google-Smtp-Source: ABdhPJwl2hbFF4zSYJjpxgH8sof1HQMAwDVUw2gQkq+zLsmWBDWM7SSxSZSBjZWCN0L1Zzg2Ae2KmGtEgC9aswK1kSs=
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr4243876wmq.43.1628887421988;
+ Fri, 13 Aug 2021 13:43:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722004758.12371-1-casey@schaufler-ca.com>
- <20210722004758.12371-23-casey@schaufler-ca.com> <CAHC9VhTj2OJ7E6+iSBLNZaiPK-16UY0zSFJikpz+teef3JOosg@mail.gmail.com>
- <ace9d273-3560-3631-33fa-7421a165b038@schaufler-ca.com> <CAHC9VhSSASAL1mVwDo1VS3HcEF7Yb3LTTaoajEtq1HsA-8R+xQ@mail.gmail.com>
- <fba1a123-d6e5-dcb0-3d49-f60b26f65b29@schaufler-ca.com>
-In-Reply-To: <fba1a123-d6e5-dcb0-3d49-f60b26f65b29@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 13 Aug 2021 16:43:18 -0400
-Message-ID: <CAHC9VhQxG+LXxgtczhH=yVdeh9mTO+Xhe=TeQ4eihjtkQ2=3Fw@mail.gmail.com>
-Subject: Re: [PATCH v28 22/25] Audit: Add record for multiple process LSM attributes
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20210806082635.20239-1-krzysztof.kozlowski@canonical.com> <YRbDNInfG7caSr2r@robh.at.kernel.org>
+In-Reply-To: <YRbDNInfG7caSr2r@robh.at.kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 13 Aug 2021 22:43:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0QtpBq8i2_RhW=isLSNULc2z7DbjohZReMY+rhyXEbJA@mail.gmail.com>
+Message-ID: <CAK8P3a0QtpBq8i2_RhW=isLSNULc2z7DbjohZReMY+rhyXEbJA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: synaptics: remove unused DTSI for AS370
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:b41h5jGw8dPfPW8R1ZC837Z4LbqEoQORnNycnEfL8fyvvXOjpRf
+ 6FDJ3hLhrrxqjPectcaVcsbsRGYn6r8YQfzVfZ0m8HnM5M8mFv5WnPa8hWVEdJLvqxQxfGe
+ Ht48H/TIUKO7X3IJm0uO4FPx2ptCe8IhMjxuQNqELxGRaIYyxeePXoS0p61glWdGKpVaKg0
+ PNUc6ym0fen4Aakfp2qsQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qTDUN2Gd1ME=:OsrlnJ2PWoa6u31I1qUkmD
+ IMJQZ1O8W/a5jwmsgpvbVdS7YWm6Fjb5rJew3mFs29BnD8YjxRZnxlgMlIl2rtV+2+pURW+nA
+ qp0y2vixKhxndRBxxSRJGx508v0wVtejZkvstIzadG9G+Yy8g9ivOUT+jUin30ErCVGKXfptz
+ OIFhz9TjbeyY7TzX3OBD9/oqDdbXQBuU/IQ83ECSApaKPlYmS7qTKYNQtm2cZCxeXERi+Tc/6
+ VqmQOyIDE+XDGWeqK+3LqGNzRAVaSxvgP5M8Zfl7Kcr2l+ABg6MUuoV8SZ7lK0ys+dP8jZPSr
+ sEbjGcw9WYqidNbss6odewcIlYvytMdPccpX+Ow7TZpzZd7AcD8Ltx6zdd0Erj+1w6wpireIW
+ vu/yoIdcn5iS2DlPIbJulfMuegDhe7DuNHDGBU4otR6ym8QPRnqGlK6Jn/MeqV8v/6WXH6Oai
+ PcXXPa8nXq862Qs+4boUwez/SL5W5f+sJbHRo88cTDPrQbMe5oRJmy3+Rl1a9wEb1T65Nt1LT
+ FqeUt85AzL4NIWR+hOC3F9ptmrBxtjkt2yeNgNh+zJAvkMnSJEhhdbbVce7PgJ6prr8aS43Cr
+ IQKf6kIBy4Kzg7YXGhZ/xttHbKjtCqiSPiEB+1xyzBy3Xh+SnvI8Ir2vyKxxGrx9XXa1MeBlD
+ 0QrklWKQ8Y9rhbX/PHZlgmA5RX5UIfK+lPBWpOhYy9GuJrTPLtQGzTG/ZGaIJqdovrcia/rAX
+ fQdKKM/j2QS5u2idlE75IBuUSm8M8AZgSwPUuXdixUxmPCKT35zbq/YNJ9MMSYIwsNG69gcwv
+ 8URJRNVcJoWGp6Qguka5c6uq+RwdIJxzl4rzuHACjKq5QMzWokJqo6GrG7cZzNMOrN5ZYNQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 2:48 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 8/13/2021 8:31 AM, Paul Moore wrote:
-> > On Thu, Aug 12, 2021 at 6:38 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 8/12/2021 1:59 PM, Paul Moore wrote:
-> >>> On Wed, Jul 21, 2021 at 9:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>>> Create a new audit record type to contain the subject information
-> >>>> when there are multiple security modules that require such data.
-> > ...
+On Fri, Aug 13, 2021 at 9:09 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, 06 Aug 2021 10:26:35 +0200, Krzysztof Kozlowski wrote:
+> > The as370.dtsi for Synaptics AS370 SoC does not have a user (DTS board
+> > file), is uncompilable and untestable.  It was added back in 2018.  No
+> > user appeared since that time, so assume it won't be added.
 > >
-> >>> The local
-> >>> audit context is a hack that is made necessary by the fact that we
-> >>> have to audit things which happen outside the scope of an executing
-> >>> task, e.g. the netfilter audit hooks, it should *never* be used when
-> >>> there is a valid task_struct.
-> >> In the existing audit code a "current context" is only needed for
-> >> syscall events, so that's the only case where it's allocated. Would
-> >> you suggest that I track down the non-syscall events that include
-> >> subj= fields and add allocate a "current context" for them? I looked
-> >> into doing that, and it wouldn't be simple.
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  .../devicetree/bindings/arm/syna.txt          |   4 -
+> >  arch/arm64/boot/dts/synaptics/as370.dtsi      | 173 ------------------
+> >  2 files changed, 177 deletions(-)
+> >  delete mode 100644 arch/arm64/boot/dts/synaptics/as370.dtsi
 > >
-> > This is why the "local context" was created.  Prior to these stacking
-> > additions, and the audit container ID work, we never needed to group
-> > multiple audit records outside of a syscall context into a single
-> > audit event so passing a NULL context into audit_log_start() was
-> > reasonable.  The local context was designed as a way to generate a
-> > context for use in a local function scope to group multiple records,
-> > however, for reasons I'll get to below I'm now wondering if the local
-> > context approach is really workable ...
 >
-> I haven't found a place where it didn't work. What is the concern?
-
-The concern is that use of a local context can destroy any hopes of
-linking with other related records, e.g. SYSCALL and PATH records, to
-form a single cohesive event.  If the current task_struct is valid for
-a given function invocation then we *really* should be using current's
-audit_context.
-
-However, based on our discussion here it would seem that we may have
-some issues where current->audit_context is not being managed
-correctly.  I'm not surprised, but I will admit to being disappointed.
-
-> > What does your audit config look like?  Both the kernel command line
-> > and the output of 'auditctl -l' would be helpful.
+> I assume Arnd/Olof will take this.
 >
-> On the fedora system:
->
-> BOOT_IMAGE=(hd0,gpt2)/vmlinuz-5.14.0-rc5stack+
-> root=/dev/mapper/fedora-root ro resume=/dev/mapper/fedora-swap
-> rd.lvm.lv=fedora/root rd.lvm.lv=fedora/swap lsm.debug
->
-> -a always,exit -F arch=b64 -S bpf -F key=testsuite-1628714321-EtlWIphW
->
-> On the Ubuntu system:
->
-> BOOT_IMAGE=/boot/vmlinuz-5.14.0-rc1stack+
-> root=UUID=39c25777-d413-4c2e-948c-dfa2bf259049 ro lsm.debug
->
-> No rules
+> Acked-by: Rob Herring <robh@kernel.org>
 
-The Fedora system looks to have some audit-testsuite leftovers, but
-that shouldn't have an impact on what we are discussing; in both cases
-I would expect current->audit_context to be allocated and non-NULL.
+Sure, I can take that, but it would be nice to hear anything from Jisheng Zhang
+about this.
 
-> > I'm beginning to suspect that you have the default
-> > we-build-audit-into-the-kernel-because-product-management-said-we-have-to-but-we-don't-actually-enable-it-at-runtime
-> > audit configuration that is de rigueur for many distros these days.
->
-> Yes, but I've also fiddled about with it so as to get better event coverage.
-> I've run the audit-testsuite, which has got to fiddle about with the audit
-> configuration.
+I can see that the only two 64-bit Synaptics SoCs are as370 and bg4ct,
+but both of them have apparently been replaced with newer versions that
+never made it into the kernel: as371, as390, bg5ct, according to press
+releases.
 
-Yes, it looks like my hunch was wrong.
+Jisheng, can you clarify whether you plan to complete the as370 support
+or add the later SoCs?
 
-> > If that is the case, there are many cases where you would not see a
-> > NULL current->audit_context simply because the config never allocated
-> > one, see kernel/auditsc.c:audit_alloc().
->
-> I assume you mean that I *would* see a NULL current->audit_context
-> in the "event not enabled" case.
-
-Yep, typo.
-
-> > Regardless, assuming that is the case we probably need to find an
-> > alternative to the local context approach as it currently works.  For
-> > reasons we already talked about, we don't want to use a local
-> > audit_context if there is the possibility for a proper
-> > current->audit_context, but we need to do *something* so that we can
-> > group these multiple events into a single record.
->
-> I tried a couple things, but neither was satisfactory.
->
-> > Since this is just occurring to me now I need a bit more time to think
-> > on possible solutions - all good ideas are welcome - but the first
-> > thing that pops into my head is that we need to augment
-> > audit_log_end() to potentially generated additional, associated
-> > records similar to what we do on syscall exit in audit_log_exit().
->
-> I looked into that. You need a place to save the timestamp
-> that doesn't disappear. That's the role the audit_context plays
-> now.
-
-Yes, I've spent a few hours staring at the poorly planned struct that
-is audit_context ;)
-
-Regardless, the obvious place for such a thing is audit_buffer; we can
-stash whatever we need in there.
-
-> >  Of
-> > course the audit_log_end() changes would be much more limited than
-> > audit_log_exit(), just the LSM subject and audit container ID info,
-> > and even then we might want to limit that to cases where the ab->ctx
-> > value is NULL and let audit_log_exit() handle it otherwise.  We may
-> > need to store the event type in the audit_buffer during
-> > audit_log_start() so that we can later use that in audit_log_end() to
-> > determine what additional records are needed.
-> >
-> > Regardless, let's figure out why all your current->audit_context
-> > values are NULL
->
-> That's what's maddening, and why I implemented audit_alloc_for_lsm().
-> They aren't all NULL. Sometimes current->audit_context is NULL,
-> sometimes it isn't, for the same event. I thought it might be a
-> question of the netlink interface being treated specially, but
-> that doesn't explain all the cases.
-
-Your netlink changes are exactly what made me think, "this is
-obviously wrong", but now I'm wondering if a previously held
-assumption of "current is valid and points to the calling process" in
-the case of the kernel servicing netlink messages sent from userspace.
-Or rather, perhaps that assumption is still true but something is
-causing current->audit_context to be NULL in that case.
-
-Friday the 13th indeed.
-
--- 
-paul moore
-www.paul-moore.com
+       Arnd
