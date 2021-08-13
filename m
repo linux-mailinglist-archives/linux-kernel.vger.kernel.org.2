@@ -2,133 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EDF3EB71F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5443EB724
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240951AbhHMOzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240906AbhHMOzN (ORCPT
+        id S240978AbhHMOz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:55:56 -0400
+Received: from mail-m176236.qiye.163.com ([59.111.176.236]:50352 "EHLO
+        mail-m176236.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240619AbhHMOzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:55:13 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C23C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:54:46 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g138so7055946wmg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RNsPi3jDYyBzv2kUjVpJkokk1HayHjqKs+GTvpkRyVg=;
-        b=suBO/Sv9jLaFXlKfn+u4jovTDNp7ztHgwGBe3sJ8oa+6JGxOEXHLdnGye0wEEF8jNm
-         L4Q4MrjXiVru1C3Zg4NonC0hGk2z2cQSwkyWWxVatutnbJedKhOKYRyIM/MSRfun7var
-         7nBelSI6at05aDH6kbZW2WgzXXIjonoXGEf9yAoYqm4/IhgfNqW6zwQ2Qweh+dkz7wSD
-         DOJ5a+V2zzcO7/MiF4biYyenjpaqWGM4e0rCTcf7dASvT3CBiJ5/IIRBGytURqa5Dp/S
-         b8BadL0eN4E9HDYsxSP9dmigSMqwo2BbIKPh6SJx6yczq3KoRFcqOy+aGM9k5lhY3IHT
-         jZwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RNsPi3jDYyBzv2kUjVpJkokk1HayHjqKs+GTvpkRyVg=;
-        b=ng0h/sHYMHOt9/NtV0DRoTVhUAwS23kHheyyXxb0pAY0x5Rz2eyCICW/u6FOSk2gQL
-         I/0exPrqENQzam8p7l8iwK8Z48UfueGr3Nvd2LvIt7RW9ikcPfs6rDo+JFVWxVj9relf
-         uIBRoUAHbR8sVqnc/ZWxlHVme8hLAfg/vgdIn6Ck84w+T1eM127JtGTKIa/hCeIRlgJg
-         nsMkDTw9i6/OGYSTaKXQOtvCOGRoxGe11e2oGW3Kzr2vMjjncMyhEQgljVjfN/5sUmDN
-         8Y/z+Bp+flohPhu/dRKmYD5UptROZ45DTM0Z+1sM/GkKM5H50OYq9I5i33Zn/e60mQWP
-         JQ1Q==
-X-Gm-Message-State: AOAM532NslaHTpt+5FICCW6uJtaWBJov97I1zIVEWpWkv0axfC8MmooG
-        I5mExkemE50SWgj/U4mJXG97eqRHdvBukRJA
-X-Google-Smtp-Source: ABdhPJyoLasmj8kICLFfOtBuet4rZn2v2GaTohM62GKWy9ojCFy2A6ZonxXaRrz0w2gYuG0bemo1mA==
-X-Received: by 2002:a7b:cf12:: with SMTP id l18mr3138037wmg.130.1628866483900;
-        Fri, 13 Aug 2021 07:54:43 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
-        by smtp.googlemail.com with ESMTPSA id r129sm1629693wmr.7.2021.08.13.07.54.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 07:54:43 -0700 (PDT)
-Subject: Re: [PATCH v3] arm64: dts: rockchip: add thermal fan control to
- rockpro64
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210730151727.729822-1-pgwipeout@gmail.com>
- <ad6d8025-977c-9ff2-81ff-a417df48231c@linaro.org>
- <893701da-ea17-00ab-5e31-c745051ac9b9@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2b1050f2-0311-1871-820a-f876218894bc@linaro.org>
-Date:   Fri, 13 Aug 2021 16:54:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 13 Aug 2021 10:55:54 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176236.qiye.163.com (Hmail) with ESMTP id 2EE8878011E;
+        Fri, 13 Aug 2021 22:55:26 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AHAA5gBVD-NcU6Btsog*u4qC.3.1628866526180.Hmail.frank.li@vivo.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZjJmczogY29udmVydCAvc3lzL2ZzL2YyZnMvPGRpc2s+L3N0YXQvc2Jfc3RhdHVzIHRvIHVzZSBzdHJpbmc=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.231
+In-Reply-To: <9b000232-c3dc-458c-2507-1dde8a8d985c@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <893701da-ea17-00ab-5e31-c745051ac9b9@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from frank.li@vivo.com( [58.251.74.231) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 13 Aug 2021 22:55:26 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Fri, 13 Aug 2021 22:55:26 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRodSkJWQx9LGkIeHkxITh
+        9CVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OQkNLTUJLTE5DN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Mzo6Thw5LT9WNRguTTkPCBQcUQ5PCjhVSFVKTUlDQ01NTklNTklNVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5KVUxPVUlISllXWQgBWUFITEtONwY+
+X-HM-Tid: 0a7b4002bbf2d9aekuws2ee8878011e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Robin,
-
-
-On 13/08/2021 15:51, Robin Murphy wrote:
-> On 2021-08-13 13:59, Daniel Lezcano wrote:
->> On 30/07/2021 17:17, Peter Geis wrote:
->>> The rockpro64 had a fan node since
->>> commit 5882d65c1691 ("arm64: dts: rockchip: Add PWM fan for RockPro64")
->>> however it was never tied into the thermal driver for automatic control.
->>>
->>> Add the links to the thermal node to permit the kernel to handle this
->>> automatically.
->>> Borrowed from the (rk3399-khadas-edge.dtsi).
->>>
->>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-
-[ ... ]
-
->>>   +&cpu_thermal {
->>> +    trips {
->>> +        cpu_warm: cpu_warm {
->>> +            temperature = <55000>;
->>> +            hysteresis = <2000>;
->>> +            type = "active";
->>> +        };
->>> +
->>> +        cpu_hot: cpu_hot {
->>> +            temperature = <65000>;
->>> +            hysteresis = <2000>;
->>> +            type = "active";
->>> +        };
->>> +    };
->>> +
->>
->> Why two trip points ?
->>
->> Why not one functioning temperature and no lower / upper limits for the
->> cooling maps ?
-> 
-> Certainly when I first did this for NanoPC-T4, IIRC it was to avoid the
-> fan ramping up too eagerly, since level 1 for my fan is effectively
-> silent but still cools enough to let a moderate load eventually settle
-> to a steady state below the second trip.
-
-Thanks for your answer.
-
-What would be the governor for this setup ?
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+5Y+R5Lu25Lq677yaQ2hhbyBZdSA8Y2hhb0BrZXJuZWwub3JnPgrlj5HpgIHml6XmnJ/vvJoyMDIx
+LTA4LTEzIDIyOjQxOjAyCuaUtuS7tuS6uu+8miLmnY7miazpn6wiIDxmcmFuay5saUB2aXZvLmNv
+bT4K5oqE6YCB5Lq677yaamFlZ2V1a0BrZXJuZWwub3JnLGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMu
+c291cmNlZm9yZ2UubmV0LGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcK5Li76aKY77yaUmU6
+IFtQQVRDSF0gZjJmczogY29udmVydCAvc3lzL2ZzL2YyZnMvPGRpc2s+L3N0YXQvc2Jfc3RhdHVz
+IHRvIHVzZSBzdHJpbmc+T24gMjAyMS84LzEzIDIyOjE3LCDmnY7miazpn6wgd3JvdGU6Cj4+IEhJ
+IENoYW8sCj4+IAo+PiBGcm9tOiBDaGFvIFl1IDxjaGFvQGtlcm5lbC5vcmc+Cj4+IERhdGU6IDIw
+MjEtMDgtMTMgMjI6MDk6NTMKPj4gVG86ICBZYW5ndGFvIExpIDxmcmFuay5saUB2aXZvLmNvbT4s
+amFlZ2V1a0BrZXJuZWwub3JnCj4+IENjOiAgbGludXgtZjJmcy1kZXZlbEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwo+PiBTdWJqZWN0OiBSZTogW1BB
+VENIXSBmMmZzOiBjb252ZXJ0IC9zeXMvZnMvZjJmcy88ZGlzaz4vc3RhdC9zYl9zdGF0dXMgdG8g
+dXNlIHN0cmluZz5PbiAyMDIxLzgvMTMgMjI6MDEsIFlhbmd0YW8gTGkgd3JvdGU6Cj4+Pj4gRG8g
+bm90IHVzZSBudW1iZXJzIGJ1dCBzdHJpbmdzIHRvIGltcHJvdmUgcmVhZGFiaWxpdHkgd2hlbiBm
+bGFnIGlzIHNldC4KPj4+Cj4+PiBUaGlzIGJyZWFrcyBvdXRwdXQgcnVsZSBvZiBzeXNmcyBlbnRy
+eSwgc2VlIGJlbG93IGxpbms6Cj4+Pgo+PiBXaGljaCBydWxlPyBvbmUgZW50cnkgc2hvdWxkIHNo
+b3cgb25lIHZhbHVl77yfCj4KPlllcywgb25lIHZhbHVlIHBlciBmaWxlIHBsZWFzZSwgd2hpY2gg
+aXMgc3VnZ2VzdGVkIGJ5IEdyZWcuCj4KPmh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIxLzYvMy8z
+MTkKPgo+PiAKPj4gQnV0IEkgc2VlIHRoYXQ6Cj4+ICMgY2F0IC9zeXMvZnMvZjJmcy88ZGlzaz4v
+ZmVhdHVyZXMKPj4gZW5jcnlwdGlvbiwgcXVvdGFfaW5vLCB2ZXJpdHksIHBpbl9maWxlCj4+IAo+
+PiBTbyB0aGUgZm9ybWF0IG9mIGZlYXR1cmVzIGFsc28gd3Jvbmc/Cj4KPiAgV2hhdDoJCS9zeXMv
+ZnMvZjJmcy88ZGlzaz4vZmVhdHVyZXMKPiAgRGF0ZToJCUp1bHkgMjAxNwo+ICBDb250YWN0Ogki
+SmFlZ2V1ayBLaW0iIDxqYWVnZXVrQGtlcm5lbC5vcmc+Cj4gIERlc2NyaXB0aW9uOgk8ZGVwcmVj
+YXRlZDogc2hvdWxkIHVzZSAvc3lzL2ZzL2YyZnMvPGRpc2s+L2ZlYXR1cmVfbGlzdC8KCk9LLCBT
+byBNYXliZSB3ZSBjYW4gbWFrZSBzb21ldGhpbmcgbGlrZSBmb2xsb3dpbmfvvJ8KCi9zeXMvZnMv
+ZjJmcy88ZGlzaz4vc2JpX3N0YXR1cy9mc2NrIAoKWWFuZ3Rhbw0KDQo=
