@@ -2,212 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFA43EBC3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048333EBC3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhHMSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:53:15 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:41790 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhHMSxO (ORCPT
+        id S233425AbhHMSyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233116AbhHMSyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:53:14 -0400
-Received: by mail-oi1-f175.google.com with SMTP id be20so17240936oib.8;
-        Fri, 13 Aug 2021 11:52:47 -0700 (PDT)
+        Fri, 13 Aug 2021 14:54:13 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65167C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:53:46 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id be20so17244681oib.8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w/q5TpmhXtwE97hfUFtXadpNp8zPMY0oD8ZlmGnSHRg=;
+        b=S9WsONofc4SyP+/yj8JqnZeQ6HcCuUkMSd1rc4T0/KNl7Z6pmTce/e39X3wjTWeRMS
+         aDdFrpT+I5YzCSbfHkIdutSBtgxmP4A2fQ/U/wlxDu8Q0UoyICmgBrjwU6ghgNZ4nTuQ
+         BWCQedhyV9HR0R4SB/lLsUhxAAtsluYWLn/Pw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mdzy0KX+fl8Q5N04J1STf/fVrOxfUwyLIOn26vpnuiI=;
-        b=YUWXlDymuvCcwKHMxhaiLGGFk5deq3MkhFKraasdq59R1oT/7eoSGgZPYc5MyoKSwW
-         m8yAQzmOe0i3SibRixWid9PObkjgPvVY0MppmGGOuO46r6fXRQ2oAmn2K6ENE4/ynoQS
-         Cw7XW9lYNhhhqznRpwuKrYxg/NuWZp9/gNEOIjMdNo6XhsGaJitwnkAjubkEYeyGtrVV
-         LLueRy2d6fwl8YkVipEjKK4MadvYHFUeFQvTGbd9vqwkLqMSX0KcCMIEaqLR+Mbn9KHP
-         yEDap0xM7kJFxYuTrkPukc1HDEmJ1ofh09m8xXKdreBq7sh7O1j/xO/jmHNxIPft3AOY
-         pq3A==
-X-Gm-Message-State: AOAM533588C751MTy5rzqAZ3bvbH69voyDdkDVS5uIRfbCVXGduNJr12
-        ddK3HwKehnCBpOvn73gIDA==
-X-Google-Smtp-Source: ABdhPJyLUXUJRcE/jMjACT75yHjEPAVxS+dLaQGxKczevuNEaqic1Wiop2DZjTPspxeR0wQaHMxqHw==
-X-Received: by 2002:aca:230f:: with SMTP id e15mr657649oie.154.1628880767430;
-        Fri, 13 Aug 2021 11:52:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u14sm412251oot.36.2021.08.13.11.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 11:52:46 -0700 (PDT)
-Received: (nullmailer pid 3854710 invoked by uid 1000);
-        Fri, 13 Aug 2021 18:52:45 -0000
-Date:   Fri, 13 Aug 2021 13:52:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Yu Chen <chenyu56@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: misc: add schema for USB hub on Kirin
- devices
-Message-ID: <YRa/fURTp8QncIEZ@robh.at.kernel.org>
-References: <d428b90bb655c7992e9e13fc50130ed223812d2d.1628159456.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w/q5TpmhXtwE97hfUFtXadpNp8zPMY0oD8ZlmGnSHRg=;
+        b=CWtsQ/SCxK+plT9nykLPmZ/QuhKummbg9WJ3bi+qpcezuszLt5HJXT8fCK6mbPe60M
+         XIhxXD5Y4c+RRVq5PAJUmVMUwEpSxHkVYMAe+9yPqMhNfQnEUIZrIGhST0EMVW31n1ik
+         4oTC+O9/idJssCxfsfaEGOQX7QLPcbKJ9I4q9EoS2wIl2KYW+sdeodoPEK/MZPqbgtsm
+         LAO782UMZAsd8kraSismv4UNQE9G+ZsDFTeZSLY9BbrgxrLS+JanivM06bUkWZnTqXfh
+         zP5mCi7OZj+5+RZCXwhDyedPwEpbPX6u+qNlKdaiFVnC6cLnVo5AAqSWhx97BYppP+d3
+         L3iA==
+X-Gm-Message-State: AOAM531cLDMAvV/YV4S82fKu8TxePgaFaEAcwfG4/SNl7zHALZwxwgdi
+        WHSRTwbViGT0swzVyRGXaYT+RQ==
+X-Google-Smtp-Source: ABdhPJwnZcOOBZbpWswVfhbAAHEPrKTCAXZGjNpPeup8tKCA3LBcBy4NO9eLDTMORYk8niZKL0YwJg==
+X-Received: by 2002:a54:468d:: with SMTP id k13mr3333895oic.125.1628880825829;
+        Fri, 13 Aug 2021 11:53:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id p64sm533827oib.4.2021.08.13.11.53.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 11:53:45 -0700 (PDT)
+Subject: Re: [PATCH v4 1/8] x86/sgx: Add /sys/kernel/debug/x86/sgx_total_mem
+To:     Jarkko Sakkinen <jarkko@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210809093127.76264-1-jarkko@kernel.org>
+ <20210809093127.76264-2-jarkko@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <df28390f-dbb3-79fa-258f-1c8477c10c04@linuxfoundation.org>
+Date:   Fri, 13 Aug 2021 12:53:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d428b90bb655c7992e9e13fc50130ed223812d2d.1628159456.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210809093127.76264-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 12:31:00PM +0200, Mauro Carvalho Chehab wrote:
-> From: Yu Chen <chenyu56@huawei.com>
+On 8/9/21 3:31 AM, Jarkko Sakkinen wrote:
+> Just like normal memory, SGX memory can be overcommitted.  SGX has its
+> own reclaim mechanism which kicks in when physical SGX memory (Enclave
+> Page Cache / EPC) is exhausted.  That reclaim mechanism is relatively
+> rarely exercised and needs selftests to poke at it.
 > 
-> This patch adds binding documentation to support USB HUB and
-> USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
-
-Like PCIe, there's a standard way to describe USB devices in DT. Though 
-PCI is easy compared to USB. :(
-
-Also like PCIe on Hikey, I'm less than thrilled to define how this 
-should look for a board that's generally not widely available or well 
-supported.
-
+> The amount of EPC on the system is determined by the BIOS and it varies
+> wildly between systems.  It can be dozens of MB on desktops, or many GB
+> on servers.
 > 
-> [mchehab: updated OF names and added support for HiKey970]
-> Signed-off-by: Yu Chen <chenyu56@huawei.com>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> To run in a reasonable amount of time, the selftest needs to know how
+> much EPC there is in the system.
+> 
+> Introduce a new debugfs file to export that information.
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 > ---
->  .../bindings/misc/hisilicon,hikey-usb.yaml    | 95 +++++++++++++++++++
->  1 file changed, 95 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-> new file mode 100644
-> index 000000000000..857f9bd802fe
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-> @@ -0,0 +1,95 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2019 Linaro Ltd.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: HiKey960/970 onboard USB GPIO Hub
-> +
-> +maintainers:
-> +  - John Stultz <john.stultz@linaro.org>
-> +
-> +description: |
-> +  Supports the onboard USB GPIO hub found on HiKey960/970.
-> +  The HUB, which acts as a role-switch intermediary to detect the state of
-> +  the USB-C port, to switch the hub into dual-role USB-C or host mode,
-> +  which enables the onboard USB-A host ports.
-> +
-> +  Schematics about the hub can be found here:
-> +    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
-> +    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - hisilicon,gpio_hubv1
-> +      - hisilicon,kirin970_hikey_usbhub
-
-s/_/-/
-
-Why is one compatible pretty generic and the other very specific?
-
-> +
-> +  typec-vbus:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: phandle to the typec-vbus gpio
-
-If a GPIO, why is it not using a GPIO DT property?
-
-> +
-> +  otg-switch:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: phandle to the otg-switch gpio
-
-Ditto?
-
-> +
-> +  hub-vdd33-en:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: phandle to the hub 3.3v power enablement gpio
-
-GPIOs controlling a power rail should use a gpio-regulator.
-
-> +
-> +  hub_reset_en_gpio:
-
-s/_/-/
-
-And still, not a GPIO DT property...
-
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: phandle to the hub reset gpio
-> +
-> +  usb-role-switch:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: Support role switch.
-> +
-> +  hub-vdd-supply:
-> +    description: regulator for hub power
-> +
-> +  port:
-> +    description: |
-> +      any connector to the data bus of this controller should be modelled
-> +      using the OF graph bindings specified, if the "usb-role-switch"
-> +      property is used. Note for this driver, two ports are supported,
-> +      the first being the endpoint that will be notified by this driver,
-> +      and the second being the endpoint that notifies this driver of a
-> +      role switch.
-
-You're describing this in terms of driver connections rather than h/w 
-connections.
-
-But we've already got ways to describe the data connections. For 
-starters, it should be a child of the USB host.
-
-And how does all this tie in with the USB connector binding?
-
-> +
-> +
-> +required:
-> +  - compatible
-> +  - typec-vbus
-> +  - otg-switch
-> +  - usb-role-switch
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    hisi_hikey_usb: hisi_hikey_usb {
-> +        compatible = "hisilicon,gpio_hubv1";
-> +        typec-vbus = <&gpio25 2 GPIO_ACTIVE_HIGH>;
-> +        otg-switch = <&gpio25 6 GPIO_ACTIVE_HIGH>;
-> +        hub-vdd33-en = <&gpio5 6 GPIO_ACTIVE_HIGH>;
-> +        usb-role-switch;
-> +
-> +        port {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            hikey_usb_ep0: endpoint@0 {
-> +                reg = <0>;
-> +                remote-endpoint = <&dwc3_role_switch>;
-> +            };
-> +            hikey_usb_ep1: endpoint@1 {
-> +                reg = <1>;
-> +                remote-endpoint = <&rt1711h_ep>;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.31.1
+> v3:
+> * Describe the units of sgx_total_mem in Dcumentation/x86/sgx.rst.
+> * Rewrite of the commit message (suggested by Dave):
+>    https://lore.kernel.org/linux-sgx/5d3614af-2393-6744-9d85-7001241ca76e@intel.com/
 > 
+> v2:
+> * sgx_nr_all_pages -> sgx_total_mem
 > 
+>   Documentation/x86/sgx.rst      |  6 ++++++
+>   arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+>   2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> index dd0ac96ff9ef..f11bfb331b93 100644
+> --- a/Documentation/x86/sgx.rst
+> +++ b/Documentation/x86/sgx.rst
+> @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+>   on the same machine, the user should reserve enough EPC (by taking out
+>   total virtual EPC size of all SGX VMs from the physical EPC size) for
+>   host SGX applications so they can run with acceptable performance.
+> +
+> +Debugging
+> +=========
+> +
+> +*/sys/kernel/debug/x86/sgx_total_mem* contains an integer describing
+> +the total SGX reserved memory in bytes, available in the system.
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 63d3de02bbcc..b65da19a53ee 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*  Copyright(c) 2016-20 Intel Corporation. */
+>   
+> +#include <linux/debugfs.h>
+>   #include <linux/file.h>
+>   #include <linux/freezer.h>
+>   #include <linux/highmem.h>
+> @@ -28,7 +29,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+>   static LIST_HEAD(sgx_active_page_list);
+>   static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+>   
+> -/* The free page list lock protected variables prepend the lock. */
+> +/* Total EPC memory available in bytes. */
+> +static unsigned long sgx_total_mem;
+> +
+> +/* The number of free EPC pages in all nodes. */
+>   static unsigned long sgx_nr_free_pages;
+>   
+>   /* Nodes with one or more EPC sections. */
+> @@ -656,6 +660,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+>   		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+>   	}
+>   
+> +	sgx_total_mem += nr_pages * PAGE_SIZE;
+> +
+>   	return true;
+>   }
+>   
+> @@ -823,6 +829,8 @@ static int __init sgx_init(void)
+>   	if (sgx_vepc_init() && ret)
+>   		goto err_provision;
+>   
+> +	debugfs_create_ulong("sgx_total_mem", 0444, arch_debugfs_dir, &sgx_total_mem);
+
+dbugfs init dependency would be met I assume by this time?
+
+> +
+>   	return 0;
+>   
+>   err_provision:
+> 
+
