@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988A03EBA35
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E2C3EBA37
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbhHMQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:39:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233838AbhHMQj1 (ORCPT
+        id S236250AbhHMQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233838AbhHMQlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:39:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628872740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/XxhUQFWXy6zXss0bwZob8zlLwav1FMwUCDBU4JYgrE=;
-        b=eJVoAAYWQMGcEMx79S+WnIm90tNWjIRUFiT3cCKKS1GRPaI8bLH41IfzV4f6YtfYT72DZb
-        RGoPOLMZSzyQOu5NeSZGCaSCL9xZD7au4wxZr8yXuF4NbmVUArVLIDKSAFnfZTy7gaq+uc
-        43R/IX9fky80fcLdpnIAUyCBXLuhVJ0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-s8bCMZFKNOqEWlELSTP4Lg-1; Fri, 13 Aug 2021 12:38:59 -0400
-X-MC-Unique: s8bCMZFKNOqEWlELSTP4Lg-1
-Received: by mail-wm1-f71.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so2857660wmj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:38:59 -0700 (PDT)
+        Fri, 13 Aug 2021 12:41:22 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2874FC061756;
+        Fri, 13 Aug 2021 09:40:55 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id o1-20020a05600c5101b02902e676fe1f04so8012745wms.1;
+        Fri, 13 Aug 2021 09:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=bg+ey9jn4eCnxo8lKaJlDWoU38GqGlmQ73XY5Oghpto=;
+        b=m38Siw5Gbam+IOURK2ZK13+BuFuM7+/tFvcTXm9BY15+1V/J1ZyOUbcNLgReI4RxhF
+         9A8pLcmDVKdMWWyVLLrP8Oyxgpg9ynvWY7RKdBwD7wv7cLhyXgNIK4qiA8NzdTsuhY5T
+         qYSYWzGi6aLBoH8iZtOVKt7ErSklgGcF5e07tUPodZK6Lu4Sorr8vCe80eN3cOLibEww
+         Rd7NSCnJ4HiTqtYBbklf4sZBtzIDi3AjZCRdD2YPMvykbkPYKehlFGEZTV++67itIz2e
+         4xscEI4oG8Ko3tX989VL64qj68tmH+gi1LzHBQABRWTmt+HsW0+hkKCuVpDRSh1CCG6R
+         ZzLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/XxhUQFWXy6zXss0bwZob8zlLwav1FMwUCDBU4JYgrE=;
-        b=CjQ5VJ+mQE5R/qS8RVLH8FGNBF950Ho6brSapi1NlPj4/smysL6p3yE6zXtOgGkESA
-         ONhhCPOBwAKAbay2RALIqLHahSFpBVSmflKx4+qIS4MamKcqpT293f2wGLgXITZvQ6K0
-         UN05pp/rQjW1pHY2qP8Ks779sc2Cr9nq6BDXHaJvXsjeBX72fJUAk5q8BF04KjD1zI7+
-         ffs7leNoc5TgP244AKMp1R92jppIC+ZRhIJEX+JdSVITmK3+Wa6p2vTuTzMddQxQ6sB/
-         j8TpW/9GK6vJ/i+oNilxL3mQJZC5OKWnXzXV48wGfilsIiy8Y9Vq5N4dZmMBomo7wfsC
-         UdXA==
-X-Gm-Message-State: AOAM533U/X2NAeN43p3RQalIZv8Czbj8YhM56/C4XfF5j2DqDSl4K37T
-        xeGX9UwcCQDxIOm8Tu/nRbGCxTo6lSXSDURLKmObLp5CPqSUWLDQMl67sbDWkWy/duIcSjkYotQ
-        otQO7Qwzjt/JnSN/xhymegJDPAK8LZ3G+XVoIhZsRlRW1sv1g+6Vf8ckcCofcB2Ic+9kPVKlHej
-        GI
-X-Received: by 2002:a1c:4c05:: with SMTP id z5mr3484702wmf.145.1628872737720;
-        Fri, 13 Aug 2021 09:38:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwC6stTt1zfIk+HUVQG+yNxjf+4NlHQz9JRcodQI5y8z7vijkPCLwAnX/jxPPBjWVFF3V6GVQ==
-X-Received: by 2002:a1c:4c05:: with SMTP id z5mr3484685wmf.145.1628872737424;
-        Fri, 13 Aug 2021 09:38:57 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w9sm1840071wmc.19.2021.08.13.09.38.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 09:38:56 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Don't step down in the TDP iterator
- when zapping all SPTEs
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ben Gardon <bgardon@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210812050717.3176478-1-seanjc@google.com>
- <20210812050717.3176478-3-seanjc@google.com>
- <CANgfPd8HSYZbqmi21XQ=XeMCndXJ0+Ld0eZNKPWLa1fKtutiBA@mail.gmail.com>
- <YRVVWC31fuZiw9tT@google.com>
- <928be04d-e60e-924c-1f3a-cb5fef8b0042@redhat.com>
- <YRVbamoQhvPmrEgK@google.com>
- <7a95b2f6-a7ad-5101-baa5-6a19194695a3@redhat.com>
- <YRVebIjxEv87I55b@google.com>
- <b08a7751-20c3-26fc-522e-c4cf274d9a6c@redhat.com>
- <YRaaIi9Go38E3mUh@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0086ef77-ce5f-3e89-0cbd-b17d4dccaacf@redhat.com>
-Date:   Fri, 13 Aug 2021 18:38:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=bg+ey9jn4eCnxo8lKaJlDWoU38GqGlmQ73XY5Oghpto=;
+        b=Gc7ofzeH0bMKjo6dAXY3X8imLRHmeJ3d7HhHBVjPutT19v7gV1O4t7YpNstXOT3cQo
+         6vS2tTO9YIQGfzVQAA5MKBTJetOy1GA4yUOvXZQmUGUQlcfLmrQjIGjypTgpqJMK/JWC
+         R+lfs9KTaePUyEXIUIMuU6Y9ZDSGlpMAYz1BGXYI6iS/daE6LRsDG1jEAbrvWN/tVxVm
+         33JmSkYGSShBeZbSJlCZv5p80GzWfkRMTAON5QPP5D0He2k7j3MrtNi9ewX/zoXhpWWc
+         srx3lyhAlXNy7JK56RTeEzM6jzQ6zKgXxdef8A+rkNdZklRaaSFiTCWdxNyh9zr8w9Cb
+         xCJA==
+X-Gm-Message-State: AOAM5317ueZAId8/I6HjyvJfVRRujEaJGaSAhjjevN6eQiuNb8xC00b6
+        uYaL5F4T34QviIkkmFub0CM=
+X-Google-Smtp-Source: ABdhPJzCZ3PjZwkwgGlym/w7aSXNOaeG10yp53D1PQCiuWJrE9C6Z+K4OrGRZPJRl+8GROCG5tRrTw==
+X-Received: by 2002:a1c:9a8b:: with SMTP id c133mr3474079wme.103.1628872853722;
+        Fri, 13 Aug 2021 09:40:53 -0700 (PDT)
+Received: from pc ([196.234.235.93])
+        by smtp.gmail.com with ESMTPSA id d13sm1604669wra.70.2021.08.13.09.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 09:40:53 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 17:40:49 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Keith Packard <keithp@keithp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: misc: chaoskey: remove useless else
+Message-ID: <20210813164049.GA2310720@pc>
 MIME-Version: 1.0
-In-Reply-To: <YRaaIi9Go38E3mUh@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/08/21 18:13, Sean Christopherson wrote:
-> On Fri, Aug 13, 2021, Paolo Bonzini wrote:
->> On 12/08/21 19:46, Sean Christopherson wrote:
->>>>> 	if (iter->level == iter->min_level)
->>>>> 		return false;
->>>>>
->>>>> 	/*
->>>>> 	 * Reread the SPTE before stepping down to avoid traversing into page
->>>>> 	 * tables that are no longer linked from this entry.
->>>>> 	 */
->>>>> 	iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));  \
->>>>>                                                                         ---> this is the code that is avoided
->>>>> 	child_pt = spte_to_child_pt(iter->old_spte, iter->level);   /
->>>>> 	if (!child_pt)
->>>>> 		return false;
->>>> Ah, right - so I agree with Ben that it's not too important.
->>> Ya.  There is a measurable performance improvement, but it's really only
->>> meaningful when there aren't many SPTEs to zap, otherwise the cost of zapping
->>> completely dominates the time.
->>
->> I don't understand.  When try_step_down is called by tdp_iter_next, all it
->> does is really just the READ_ONCE, because spte_to_child_pt will see a
->> non-present PTE and return immediately.  Why do two, presumably cache hot,
->> reads cause a measurable performance improvement?
-> 
-> It's entirely possible my measurements were bad and/or noisy.  Ah, and my kernel
-> was running with CONFIG_PROVE_RCU=y, which makes the rcu_dereference() quite a bit
-> more expensive.
+Remove useless else in order to make the code cleaner.
 
-It's one line of code and it makes sense, so I can certainly include the 
-patch.  I was just a bit confused.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/usb/misc/chaoskey.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Paolo
+diff --git a/drivers/usb/misc/chaoskey.c b/drivers/usb/misc/chaoskey.c
+index 87067c3d6109..9814ac2201d5 100644
+--- a/drivers/usb/misc/chaoskey.c
++++ b/drivers/usb/misc/chaoskey.c
+@@ -299,14 +299,11 @@ static int chaoskey_release(struct inode *inode, struct file *file)
+ 
+ 	--dev->open;
+ 
+-	if (!dev->present) {
+-		if (dev->open == 0) {
+-			mutex_unlock(&dev->lock);
++	mutex_unlock(&dev->lock);
++
++	if (!dev->present)
++		if (dev->open == 0)
+ 			chaoskey_free(dev);
+-		} else
+-			mutex_unlock(&dev->lock);
+-	} else
+-		mutex_unlock(&dev->lock);
+ 
+ 	usb_dbg(interface, "release success");
+ 	return 0;
+-- 
+2.25.1
 
