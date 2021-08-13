@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F57E3EB7C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA653EB885
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241222AbhHMPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:09:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
+        id S242429AbhHMPOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:14:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241235AbhHMPIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:08:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74F1261103;
-        Fri, 13 Aug 2021 15:08:28 +0000 (UTC)
+        id S242148AbhHMPMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:12:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 099A861131;
+        Fri, 13 Aug 2021 15:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867309;
-        bh=3/4sIaaFElelnzWqEYEbJuoxm01lynaT1jMQ92lvVTw=;
+        s=korg; t=1628867537;
+        bh=ad1nxWuS/6zkHjBv250cAUckxubPiF3+4RpWYGDyiNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TRXkNzBHg42QFuPJdYpKTdcFaVr/FcmosBF6yegMZc/anaRyFrXpS5Zs5qzIPLT5G
-         d/mLAC/XiNnsg1KipNNs26N0Q5hRErZrxbjtntLVsWWLjnEbWocR7u/CBwEzJwGhre
-         t+lHQymCgQA6/2mC+vY8lEAoLsReaaghCtc0xuD8=
+        b=jJsKSCvjXN3riWsRb2CRHp1VQJ3u+Nmk5fhYRZt+EofD99U4e4Rw5KKWPp7OJ1HCb
+         6t1HvpkMpaaELbGybChQUBm/XG5EwLm9fbyJz50euTntE+xk+40bsyqPznEInR0tvZ
+         Ojt2OTwgqQKKmzdwwjLXfNepq3MH6X6knw6hWUv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/25] net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Maxim Devaev <mdevaev@gmail.com>
+Subject: [PATCH 4.14 19/42] usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
 Date:   Fri, 13 Aug 2021 17:06:45 +0200
-Message-Id: <20210813150521.404196201@linuxfoundation.org>
+Message-Id: <20210813150525.748547277@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
-References: <20210813150520.718161915@linuxfoundation.org>
+In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
+References: <20210813150525.098817398@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Letu Ren <fantasquex@gmail.com>
+From: Maxim Devaev <mdevaev@gmail.com>
 
-[ Upstream commit 92766c4628ea349c8ddab0cd7bd0488f36e5c4ce ]
+commit afcff6dc690e24d636a41fd4bee6057e7c70eebd upstream.
 
-When calling the 'ql_wait_for_drvr_lock' and 'ql_adapter_reset', the driver
-has already acquired the spin lock, so the driver should not call 'ssleep'
-in atomic context.
+The USB HID standard declares mandatory support for GET_IDLE and SET_IDLE
+requests for Boot Keyboard. Most hosts can handle their absence, but others
+like some old/strange UEFIs and BIOSes consider this a critical error
+and refuse to work with f_hid.
 
-This bug can be fixed by using 'mdelay' instead of 'ssleep'.
+This primitive implementation of saving and returning idle is sufficient
+to meet the requirements of the standard and these devices.
 
-Reported-by: Letu Ren <fantasquex@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
+Link: https://lore.kernel.org/r/20210721180351.129450-1-mdevaev@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qla3xxx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/f_hid.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 192950a112c9..cb9d43c871c4 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -155,7 +155,7 @@ static int ql_wait_for_drvr_lock(struct ql3_adapter *qdev)
- 				      "driver lock acquired\n");
- 			return 1;
- 		}
--		ssleep(1);
-+		mdelay(1000);
- 	} while (++i < 10);
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -45,6 +45,7 @@ struct f_hidg {
+ 	unsigned char			bInterfaceSubClass;
+ 	unsigned char			bInterfaceProtocol;
+ 	unsigned char			protocol;
++	unsigned char			idle;
+ 	unsigned short			report_desc_length;
+ 	char				*report_desc;
+ 	unsigned short			report_length;
+@@ -533,6 +534,14 @@ static int hidg_setup(struct usb_functio
+ 		goto respond;
+ 		break;
  
- 	netdev_err(qdev->ndev, "Timed out waiting for driver lock...\n");
-@@ -3287,7 +3287,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 		if ((value & ISP_CONTROL_SR) == 0)
- 			break;
++	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
++		  | HID_REQ_GET_IDLE):
++		VDBG(cdev, "get_idle\n");
++		length = min_t(unsigned int, length, 1);
++		((u8 *) req->buf)[0] = hidg->idle;
++		goto respond;
++		break;
++
+ 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
+ 		  | HID_REQ_SET_REPORT):
+ 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
+@@ -556,6 +565,14 @@ static int hidg_setup(struct usb_functio
+ 		goto stall;
+ 		break;
  
--		ssleep(1);
-+		mdelay(1000);
- 	} while ((--max_wait_time));
- 
- 	/*
-@@ -3323,7 +3323,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 						   ispControlStatus);
- 			if ((value & ISP_CONTROL_FSR) == 0)
- 				break;
--			ssleep(1);
-+			mdelay(1000);
- 		} while ((--max_wait_time));
- 	}
- 	if (max_wait_time == 0)
--- 
-2.30.2
-
++	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
++		  | HID_REQ_SET_IDLE):
++		VDBG(cdev, "set_idle\n");
++		length = 0;
++		hidg->idle = value;
++		goto respond;
++		break;
++
+ 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
+ 		  | USB_REQ_GET_DESCRIPTOR):
+ 		switch (value >> 8) {
+@@ -783,6 +800,7 @@ static int hidg_bind(struct usb_configur
+ 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
+ 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
+ 	hidg->protocol = HID_REPORT_PROTOCOL;
++	hidg->idle = 1;
+ 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
+ 	hidg_ss_in_comp_desc.wBytesPerInterval =
+ 				cpu_to_le16(hidg->report_length);
 
 
