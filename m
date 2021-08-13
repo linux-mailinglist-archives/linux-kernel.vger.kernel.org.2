@@ -2,105 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3203EB5F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09F63EB5FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240599AbhHMNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:08:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:53478 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240565AbhHMNIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:08:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 038001042;
-        Fri, 13 Aug 2021 06:08:27 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6204E3F718;
-        Fri, 13 Aug 2021 06:08:25 -0700 (PDT)
-Subject: Re: [PATCH 2/5] arm64: Handle UNDEF in the EL2 stub vectors
-To:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-3-maz@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2f6bf17f-d235-8311-13d5-dcb3d00e23c4@arm.com>
-Date:   Fri, 13 Aug 2021 14:08:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240620AbhHMNLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239062AbhHMNLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 09:11:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC8DC061756;
+        Fri, 13 Aug 2021 06:11:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=F+mZz90Iw9bJNSCiyhztHZfMrr85VxOQkOCEMKU4nZQ=; b=cYGYHE2HA3uBWTLGd4LtSr6t43
+        JRORc4aXQeNilMuwMYpsjJZMCOUrUCUJZo+U9AKbuWDM879kva2Zk2qHgX50EC3BGecHnTXe3cr/U
+        fEdPFk56SfgQ/DWMKq0++EQzFZ9sRGgx9Erlp8hgcsV1bRrk93xF9xby4lN3Y8uwpUy2gPe4BLtm+
+        LAPtedZI2RJMPNvivl6sf0yEl6gzMzXDX0SGY5Fw/ql7VvuFwmlyc6BBAdll7O4xGCNg4QP8QyEz0
+        In/Bn42/E2iYc5X378mO1YTpmma/aPeOkb29Jxi7wU9GSyDI6ZXP/4uAg6Ij2xhQqnHGmfeicTEJ7
+        1eDAY0ug==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mEWw6-00FhZM-Ms; Fri, 13 Aug 2021 13:09:35 +0000
+Date:   Fri, 13 Aug 2021 14:09:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     yongw.pur@gmail.com
+Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, tglx@linutronix.de,
+        peterz@infradead.org, shakeelb@google.com, guro@fb.com,
+        alexs@kernel.org, richard.weiyang@gmail.com, sh_def@163.com,
+        sfr@canb.auug.org.au, wang.yong12@zte.com.cn,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.yang29@zte.com.cn
+Subject: Re: [PATCH v1] mm: Add configuration to control whether vmpressure
+ notifier is enabled
+Message-ID: <YRZvAojYDsVPT+wr@casper.infradead.org>
+References: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210812190213.2601506-3-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-12 20:02, Marc Zyngier wrote:
-> As we want to handle the silly case where HVC has been disabled
-> from EL3, augment our ability to handle exception at EL2.
-> 
-> Check for unknown exceptions (usually UNDEF) coming from EL2,
-> and treat them as a failing HVC call into the stubs. While
-> this isn't great and obviously doesn't catter for the gigantic
-> range of possible exceptions, it isn't any worse than what we
-> have today.
-> 
-> Just don't try and use it for anything else.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->   arch/arm64/kernel/hyp-stub.S | 19 ++++++++++++++++++-
->   1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-> index 43d212618834..026a34515b21 100644
-> --- a/arch/arm64/kernel/hyp-stub.S
-> +++ b/arch/arm64/kernel/hyp-stub.S
-> @@ -46,7 +46,16 @@ SYM_CODE_END(__hyp_stub_vectors)
->   	.align 11
->   
->   SYM_CODE_START_LOCAL(elx_sync)
-> -	cmp	x0, #HVC_SET_VECTORS
-> +	mrs	x4, spsr_el2
-> +	and	x4, x4, #PSR_MODE_MASK
-> +	orr	x4, x4, #1
-> +	cmp	x4, #PSR_MODE_EL2h
-> +	b.ne	0f
-> +	mrs	x4, esr_el2
-> +	eor	x4, x4, #ESR_ELx_IL
-> +	cbz	x4, el2_undef
+On Fri, Aug 13, 2021 at 04:57:50AM -0700, yongw.pur@gmail.com wrote:
+> @@ -855,7 +856,7 @@ At reading, current status of OOM is shown.
+>            The number of processes belonging to this cgroup killed by any
+>            kind of OOM killer.
+>  
+> -11. Memory Pressure
+> +11. Memory Pressure (CONFIG_MEMCG_VMPRESSURE)
+>  ===================
 
-Hmm, might it be neater to check ESR_EL2.ISS to see if we landed here 
-for any reason *other* than a successfully-executed HVC?
-
-Robin.
-
-> +
-> +0:	cmp	x0, #HVC_SET_VECTORS
->   	b.ne	1f
->   	msr	vbar_el2, x1
->   	b	9f
-> @@ -71,6 +80,14 @@ SYM_CODE_START_LOCAL(elx_sync)
->   
->   9:	mov	x0, xzr
->   	eret
-> +
-> +el2_undef:
-> +	// Assumes this was a HVC that went really wrong...
-> +	mrs	x0, elr_el2
-> +	add	x0, x0, #4
-> +	msr	elr_el2, x0
-> +	mov_q	x0, HVC_STUB_ERR
-> +	eret
->   SYM_CODE_END(elx_sync)
->   
->   // nVHE? No way! Give me the real thing!
-> 
+Did you build the documentation after changing it (eg make htmldocs)?
