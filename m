@@ -2,199 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEE03EB6EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638E63EB6F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240811AbhHMOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbhHMOos (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:44:48 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6FEC061756;
-        Fri, 13 Aug 2021 07:44:21 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f10so3920088wml.2;
-        Fri, 13 Aug 2021 07:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2GEjq99Ivf3hy+n7EUR2s2FJOrTklvp8lMkzGzLSlp0=;
-        b=Y8zwNcjCx+h1UdumUaPu7pesQBDoZN92clH1u7JNjfchXUBltzO6Hq+tMpwDWkK8CI
-         CCS/tCK+Ay9RsGm0H+A6e7/HA/lqoobcBHjX9E25NOklGJM3Lme/K5pkdpGMD2WcE8gF
-         8oLdDR5YP72ZPME54YtfI+LyoCYfKE/0nXX2wS6Z/PNXrV9kaMjpok1aqt9tzKdU2FmU
-         nNKke3J71Skwe3UdJSa0PoOp9bpti9tRoxQoc8eRa2BNemU0k2okytWpYtCtJP6Fx7HD
-         oUeEfZkMifpB9rafuECHy5e/H4wZdv7BQn/94xcsnhotMtEXtLadrH0Hs+GP9zx8BZ4n
-         gbCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2GEjq99Ivf3hy+n7EUR2s2FJOrTklvp8lMkzGzLSlp0=;
-        b=CA43NQyTchcpAp/rwqX+iKV0E7qe4NFQscL7ovdS1AD8wz2vtzWYPPFS5Vz/4om6Se
-         gc9kYBt7l0UCUMBSsrq2S/JQS3tXovM/ZrjuBSOdQ6o7vb9gxGDJNUDrpxq/URWM5A6/
-         MYedy2rSgFyVdn5OaEmY2VOnsJUeIa45MRPY1Sd5cXyP1sMHDT9CPzESkBEHDT11ARqf
-         TFAzKlJ4irxjJq8kgzt9ZI050AgwnEpdFhAdPl4o6RQ4YesM1wAuXhzCd/lPY96/WSe9
-         YW/IRuNS6dG60Q6Rg2YwgXCGEV9Ig8IkotetcAUr+gw3Gsb6lw3DGATNGdPmXsYQdA+/
-         +9lw==
-X-Gm-Message-State: AOAM532RFzSsJezd9eLBw+ExjmOPV5ooTMpZXxcYs7ulhrs0V1ZaAsp4
-        DB3SuqAoZeSYu3EYPTypMUM=
-X-Google-Smtp-Source: ABdhPJxnx3BM6wz5YYRTf89esWL4ZWKvIrQqeRM0oSTeawxwQy3JNDz03Ud0xkzXOJKOgU5EsnDaJQ==
-X-Received: by 2002:a7b:cb09:: with SMTP id u9mr3062131wmj.63.1628865859846;
-        Fri, 13 Aug 2021 07:44:19 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id e11sm1751375wrm.80.2021.08.13.07.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 07:44:18 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:44:17 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-Message-ID: <YRaFQRyD8fwc6PEz@orome.fritz.box>
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
- <871r71azjw.wl-maz@kernel.org>
- <YROpd450N+n6hYt2@orome.fritz.box>
- <87pmuk9ku9.wl-maz@kernel.org>
- <YRUwMjeQnXH5RfoB@orome.fritz.box>
- <87v94a8z0u.wl-maz@kernel.org>
+        id S240805AbhHMOpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:45:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235131AbhHMOpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 10:45:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB4460C41;
+        Fri, 13 Aug 2021 14:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628865892;
+        bh=5leq8kE0+YWfDReXgUKHmWcBXZjTix6mSjdCruwc/hc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=uHncfYNkIPFZjqoEC32dZD04Xq/OzMmnsZodq3Jc3s2/1snq+f0Zq1aBPLfez2hQ2
+         5UJDATDVjVriYqvmefBCbfMY4A9E6qe7NEXp8nlkoGFYrhzAUxaBvMCnnuEq670Djo
+         iaLwvXEcmSkVIcrTxNGNA8m/L3r3GD7AlNSOSmVg6/Pf61tXuYZ6FiOPMWcUMWeMwo
+         MkEt06nEneAVwNM5vZksjScIuhAWMA1Ycgq6fi41oHQjkNVtk2R/QqxTowBH9sCk6k
+         6QwWwm3BQXNVHvXkWw+1XfZ+/pEYUjVowV+fhHqr86XImv2jZ2Id6uXOCOLcZTrzdm
+         uUO5D0fQLfV3Q==
+Subject: Re: [PATCH v5 1/2] f2fs: introduce proc/fs/f2fs/<dev>/fsck_stack node
+To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20210813123221.185591-1-frank.li@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <0cc57cc5-33b1-cc00-58a4-fce8de22aa35@kernel.org>
+Date:   Fri, 13 Aug 2021 22:44:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="X64kRSgE2UZmdzLA"
-Content-Disposition: inline
-In-Reply-To: <87v94a8z0u.wl-maz@kernel.org>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <20210813123221.185591-1-frank.li@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/8/13 20:32, Yangtao Li wrote:
+> SBI_NEED_FSCK is an indicator that fsck.f2fs needs to be triggered,
+> this flag is set in too many places. For some scenes that are not very
+> reproducible, adding stack information will help locate the problem.
+> 
+> Let's expose all fsck stack history in procfs.
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+> v5:
+> -fix implicit declaration of function 'stack_trace_save'
+>   fs/f2fs/f2fs.h  | 34 +++++++++++++++++++++++++++++++++-
+>   fs/f2fs/sysfs.c | 26 ++++++++++++++++++++++++++
+>   2 files changed, 59 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 67faa43cc141..cbd06dea3c6a 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -24,6 +24,8 @@
+>   #include <linux/quotaops.h>
+>   #include <linux/part_stat.h>
+>   #include <crypto/hash.h>
+> +#include <linux/stackdepot.h>
+> +#include <linux/stacktrace.h>
+>   
+>   #include <linux/fscrypt.h>
+>   #include <linux/fsverity.h>
+> @@ -119,6 +121,8 @@ typedef u32 nid_t;
+>   
+>   #define COMPRESS_EXT_NUM		16
+>   
+> +#define FSCK_STACK_DEPTH 64
+> +
+>   struct f2fs_mount_info {
+>   	unsigned int opt;
+>   	int write_io_size_bits;		/* Write IO size bits */
+> @@ -1786,6 +1790,8 @@ struct f2fs_sb_info {
+>   	unsigned int compress_watermark;	/* cache page watermark */
+>   	atomic_t compress_page_hit;		/* cache hit count */
+>   #endif
+> +	depot_stack_handle_t *fsck_stack;
+> +	unsigned int fsck_count;
+>   };
+>   
+>   struct f2fs_private_dio {
+> @@ -1997,9 +2003,35 @@ static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+>   	return test_bit(type, &sbi->s_flag);
+>   }
+>   
+> -static inline void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+> +static void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+>   {
+>   	set_bit(type, &sbi->s_flag);
+> +
+> +	if (unlikely(type ==  SBI_NEED_FSCK)) {
 
---X64kRSgE2UZmdzLA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm... I don't know what to say...
 
-On Thu, Aug 12, 2021 at 04:26:41PM +0100, Marc Zyngier wrote:
-> On Thu, 12 Aug 2021 15:29:06 +0100,
-> Thierry Reding <thierry.reding@gmail.com> wrote:
-> >=20
-> > On Wed, Aug 11, 2021 at 02:23:10PM +0100, Marc Zyngier wrote:
->=20
-> [...]
->=20
-> > > I love this machine... Did this issue occur with the Denver CPUs
-> > > disabled?
-> >=20
-> > Interestingly I've been doing some work on a newer device called Jetson
-> > TX2 NX (which is kind of a trimmed-down version of Jetson TX2, in the
-> > spirit of the Jetson Nano) and I can't seem to reproduce these failures
-> > there (tested on next-20210812).
-> >=20
-> > I'll go dig out my Jetson TX2 to run the same tests there, because I've
-> > also been using a development version of the bootloader stack and
-> > flashing tools and all that, so it's possible that something was fixed
-> > at that level. I don't think I've ever tried disabling the Denver CPUs,
-> > but then I've also never seen these issues myself.
-> >=20
-> > Just out of curiosity, what version of the BSP have you been using to
-> > flash?
->=20
-> I've only used the BSP for a few weeks when I got the board last
-> year. The only thing I use from it is u-boot to chainload an upstream
-> u-boot, and boot Debian from there.
+> +		unsigned long entries[FSCK_STACK_DEPTH];
+> +		depot_stack_handle_t stack, *new;
+> +		unsigned int nr_entries;
+> +		int i;
+> +
+> +		nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
+> +		nr_entries = filter_irq_stacks(entries, nr_entries);
+> +		stack = stack_depot_save(entries, nr_entries, GFP_KERNEL);
+> +		if (!stack)
+> +			return;
+> +
+> +		/* Try to find an existing entry for this backtrace */
+> +		for (i = 0; i < sbi->fsck_count; i++)
+> +			if (sbi->fsck_stack[i] == stack)
 
-That's interesting... have you ever tried to inject a version of
-upstream U-Boot into the BSP and have it flash that instead? That should
-allow you to drop the chainloading step.
+stack need to be released here?
 
-Not that that's likely to have anything to do with this.
+> +				return;
+> +
+> +		new = krealloc(sbi->fsck_stack, (sbi->fsck_count + 1) *
+> +			       sizeof(*sbi->fsck_stack), GFP_KERNEL);
+> +		if (!new)
 
-> > One other thing that I ran into: there's a known issue with the PHY
-> > configuration. We mark the PHY on most devices as "rgmii-id" on most
-> > devices and then the Marvell PHY driver needs to be enabled. Jetson TX2
-> > has phy-mode =3D "rgmii", so it /should/ work okay.
-> >=20
-> > Typically what we're seeing with that misconfiguration is that the
-> > device fails to get an IP address, but it might still be worth trying to
-> > switch Jetson TX2 to rgmii-id and using the Marvell PHY, to see if that
-> > improves anything.
->=20
-> I never failed to get an IP address. Overall, networking has been
-> solid on this machine until this patch. I'll try and mess with this
-> when I get time, but that's probably going to be next week now.
+Ditto?
 
-So I've hooked up my Jetson TX2 and tried various workloads. I wasn't
-able to reproduce this on next-20210813. I've tried both the L4T 32.6.1
-release and a local development build.
+> +			return;
+> +
+> +		sbi->fsck_stack = new;
 
-Perhaps one thing to try would be to upgrade your L4T BSP to something
-newer. I know that there have occasionally been bugs in the MTS
-firmware, which is what's running on the Denver cores, and newer BSPs
-can fix those kinds of issues.
+Need to be released somewhere.
 
-If that doesn't help, perhaps try to read out the SoC version numbers so
-that we can compare. I know that some newer Tegra186 chips behave
-slightly differently, so that's perhaps a difference that would explain
-why it's not happening on all devices.
+> +		sbi->fsck_stack[sbi->fsck_count++] = stack;
 
-You can read the version and revision from sysfs using something like:
+Need to be released somewhere.
 
-	# cat /sys/devices/soc0/{major,minor,revision}
-
-> [...]
->=20
-> > > That'd be pretty annoying. Do you know if the Ethernet is a coherent
-> > > device on this machine? or does it need active cache maintenance?
-> >=20
-> > I don't think Ethernet is a coherent device on Tegra186. I think
-> > Tegra194 had various improvements with regard to coherency, but most
-> > devices on Tegra186 do need active cache maintenance.
-> >=20
-> > Let me dig through some old patches and mailing list threads. I vaguely
-> > recall prototyping a patch that did something special for outer cache
-> > flushing, but that may have been Tegra132, not Tegra186. I also don't
-> > think we ended up merging that because it turned out to not be needed.
->=20
-> ARMv8 forbid any sort of *visible* outer cache, so I really hope this
-> is not required. We wouldn't be able to support it.
-
-I couldn't find any trace of this anywhere. So I'm possibly
-misremembering. It's also more likely that this was on an earlier SoC
-generation, otherwise I'd probably remember more clearly.
-
-Thierry
-
---X64kRSgE2UZmdzLA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEWhT4ACgkQ3SOs138+
-s6G1rxAArVvwByHZ3mTo/xyzjpXbONIIoIJ3sPDUfnv0XGyqVLpstQGZqzZM2qmr
-OiykYQpbdjemNNvZLrW0axYvo/7ImPhMaA2aKhOUdekOqx8HhMFUpBB4t5zvzeKm
-/EpbhncuTeIXMGVeCpYNSnBqqf9TvewojlecM/UuiqMRfEH093LmZz2hluVWWzHz
-V9LbAz/MfMz+XH9HTsLz6rRsR49mh2n3eO0XfJPqZYwuPr6U/hQEBspb9b/8nK2Y
-eUKzHcec0Lk0qesdnarMb14YFCs8zShQd4hKsxGsA65gC1vKpfDp5Bact4jtuo4L
-4HfKNS4HD0mKU413Jd/AcFu0sht5b0MDV8iyxXZKwgHCScrEwLiUpVpqcEVgreCw
-UfXmExHmZrSglwe8LOBX/8cGekHMUojyu3mdBkzKTT4MZf8UavvwDfmLEsgyYmEO
-u67ZQvhIjOXw4HpUvVTY07v1Sj1aHZjKgl7baD4nVx9cR7bjxVK7AbFvykKYZjdI
-3EiE33eHg/18CN3XaaPA7A6Kh8gLj/7Y8fziusfDV3G/wGm7we1oF5DTjBHbAQu8
-GOuH7ZMzJ8NwMTJ758zhRdKCS4dt0fsAXYgC5iwGbFaSYwzv9JkCdYCLntyNWtYR
-ulWUWKl7p76oH+P+WqjPcYdEpz8SVCfhQjoRzgu3FSPu+bNM/oc=
-=uBz8
------END PGP SIGNATURE-----
-
---X64kRSgE2UZmdzLA--
+> +	}
+>   }
+>   
+>   static inline void clear_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 0954761341d7..c134bbb99c7b 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -1171,6 +1171,29 @@ static int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
+>   	return 0;
+>   }
+>   
+> +static int __maybe_unused fsck_stack_seq_show(struct seq_file *seq,
+> +						void *offset)
+> +{
+> +	struct super_block *sb = seq->private;
+> +	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+> +	unsigned long *entries;
+> +	unsigned int nr_entries;
+> +	unsigned int i, j;
+> +
+> +	for (i = 0; i < sbi->fsck_count; i++) {
+> +		nr_entries = stack_depot_fetch(sbi->fsck_stack[i], &entries);
+> +		if (!entries)
+> +			return 0;
+> +
+> +		for (j = 0; j < nr_entries; j++)
+> +			seq_printf(seq, "%pS\n", (void *)entries[j]);
+> +
+> +		seq_putc(seq, '\n');
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
+>   						void *offset)
+>   {
+> @@ -1261,6 +1284,8 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
+>   				iostat_info_seq_show, sb);
+>   		proc_create_single_data("victim_bits", S_IRUGO, sbi->s_proc,
+>   				victim_bits_seq_show, sb);
+> +		proc_create_single_data("fsck_stack", S_IRUGO, sbi->s_proc,
+> +				fsck_stack_seq_show, sb);
+>   	}
+>   	return 0;
+>   put_feature_list_kobj:
+> @@ -1282,6 +1307,7 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
+>   		remove_proc_entry("segment_info", sbi->s_proc);
+>   		remove_proc_entry("segment_bits", sbi->s_proc);
+>   		remove_proc_entry("victim_bits", sbi->s_proc);
+> +		remove_proc_entry("fsck_stack", sbi->s_proc);
+>   		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
+>   	}
+>   
+> 
