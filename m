@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9253EBD7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C3D3EBD80
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhHMUkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:40:18 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:39754 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbhHMUkR (ORCPT
+        id S234515AbhHMUkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233905AbhHMUkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:40:17 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bj40so17737642oib.6;
-        Fri, 13 Aug 2021 13:39:49 -0700 (PDT)
+        Fri, 13 Aug 2021 16:40:53 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE6BC061756;
+        Fri, 13 Aug 2021 13:40:26 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id n6so17363892ljp.9;
+        Fri, 13 Aug 2021 13:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EdjJ5WkYh23R+5q3/cVLvQ2hscpaA4GqqB6R6gmdArg=;
+        b=r08iXLqVSjelGTsw/vjC/K6iKbAKENdSr2Xj3kRn5jjWki4T2/0qvLOPAoWWTHAjut
+         kw73Ne2EITcwTG96lxq6Dw2T4EXDGMbt3p5I4PyiXpd73D2NPxK8evdnxP7hhtTmFlmJ
+         +cCvYeHx/4awvFil5MjqQJ+KMaKYsq0cvpydGZZdDhXtAVmQtZTBs1eQVuzwGz0Xqp+/
+         vIf6e4poZX7eG2zFY24tD3hi6ySm9FkANXqFs2HTBR5ZNjiWaNpY5D3vBhZ13E20GRY/
+         sSrGUKdyGV9RCh6d/lLp4GJ6f7QouVUT7wMfeZjvZLxPWo/WDOGhY4MAOg20hnMF9I7A
+         0Ctw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nwf3HxBs/DWJ6gxuqn8PSDwNL+5hxahjlAUN3iHW5uc=;
-        b=iSx/IgS+xOQF7ZzCNuMM3oDLgg12c1Bq3eU8InR/HevmqlEOWawpy4JIb6YaqF5tex
-         6ezPQfIe0uZN/EPFGdZf/aFn+FQ+AZFqjXwDfCe1XVAkb3x/47qAC1WCSl7Eg+cU0Gue
-         /lRx+PCBSJtEt5nq0rdj5SWlEUHLblV3+qS6gfEpPr6JKPcnJQC/rtelIdTKn6UTrCkW
-         ihamRDSgiQ32l3ykHjmk86p7CQBmBWO7TEhO9CMjyTOuQdV23MNX84+dQRB4m8p21vYl
-         9o1DnAKoaZwtVTzRFl1XdaDVPowtdjVu7NloK3lrN4CP3/FWGjv0MT0vZ2M8gP3eg792
-         w7kA==
-X-Gm-Message-State: AOAM531/69SCOVxG/KMIvHSK6a8sE6a9Eu2wUey0dDugzqdLmgrqBeVo
-        WWEBLcwcIkanpxxxzgOlJw==
-X-Google-Smtp-Source: ABdhPJxPhDHaoGXr6o1TMLVqDILEGqBKa35MFIwEH1UvdA2N+YpquykztdNxSCAP2MZJI3Q6zKmZLQ==
-X-Received: by 2002:aca:2b05:: with SMTP id i5mr3555977oik.55.1628887189594;
-        Fri, 13 Aug 2021 13:39:49 -0700 (PDT)
-Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
-        by smtp.gmail.com with ESMTPSA id z23sm573158oib.36.2021.08.13.13.39.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EdjJ5WkYh23R+5q3/cVLvQ2hscpaA4GqqB6R6gmdArg=;
+        b=BDxSaiH5/Ei4uh03Vuylur1QkQvZZDVTMT47rQR4KxT+Z0fHiqjf3OtDQBxxuJt6vf
+         8O6puiMsT0sIDk7KMgwZLCk5StigoxhJULB3GB9MXYDiAi2dFRielu+wUJMhRAS9qhnc
+         i41LazwEiYTY3NmQJs0kP+3mZgyoRh6PRBjpe3j2tWirMFJUZaRYEf3o7s+UmsD66fKC
+         O8dNCyEmRo56iuqx3pz5sEAKB+FxJE2QVF7RU3tqd0Y04r+0MrsW2Oq75bzP4MQ8r6sB
+         lomO3oEARqj+jPXLkRUiLZ0IHL4Z7GqCkcc7RBVAif7BnYYt8uMW81FekzdfltRGH+lr
+         rsPQ==
+X-Gm-Message-State: AOAM532tXx97vOUGyESAXfyPxQDA+zQb6HNel23kOi4idzdSAM+N7/8I
+        EfPs7bWW6M3U3p15fqr2omc=
+X-Google-Smtp-Source: ABdhPJxEZ6LaVms2MRDEFQgjeuGwuYHCpWDMSbjpnTqRJXbrvOsszilKZuZbv/dfH9D3DwPIC0Kmyw==
+X-Received: by 2002:a2e:2f0f:: with SMTP id v15mr3013919ljv.203.1628887224745;
+        Fri, 13 Aug 2021 13:40:24 -0700 (PDT)
+Received: from reki (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
+        by smtp.gmail.com with ESMTPSA id z4sm241695lfi.98.2021.08.13.13.40.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:39:48 -0700 (PDT)
-Received: (nullmailer pid 3990366 invoked by uid 1000);
-        Fri, 13 Aug 2021 20:39:47 -0000
-Date:   Fri, 13 Aug 2021 15:39:47 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-kernel@vger.kernel.org, broonie@kernel.org,
-        lee.jones@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com, linux-imx@nxp.com,
-        alistair23@gmail.com, kernel@pengutronix.de
-Subject: Re: [PATCH v10 01/11] dt-bindings: mfd: Initial commit of
- silergy,sy7636a.yaml
-Message-ID: <YRbYk8K9ob4OqRe9@robh.at.kernel.org>
-References: <20210807103940.152-1-alistair@alistair23.me>
- <20210807103940.152-2-alistair@alistair23.me>
+        Fri, 13 Aug 2021 13:40:24 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 23:40:22 +0300
+From:   Maxim Devaev <mdevaev@gmail.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        ruslan.bilovol@gmail.com, mika.westerberg@linux.intel.com,
+        maze@google.com, jj251510319013@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
+Message-ID: <20210813234022.5d5644ae@reki>
+In-Reply-To: <20210813232212.5cba6d33@reki>
+References: <20210813114551.72898-1-mdevaev@gmail.com>
+        <20210813145823.GA38198@rowland.harvard.edu>
+        <20210813232212.5cba6d33@reki>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210807103940.152-2-alistair@alistair23.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Aug 2021 20:39:30 +1000, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  .../bindings/mfd/silergy,sy7636a.yaml         | 79 +++++++++++++++++++
->  1 file changed, 79 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> 
+=D0=92 Fri, 13 Aug 2021 23:22:12 +0300
+Maxim Devaev <mdevaev@gmail.com> =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Alan Stern <stern@rowland.harvard.edu> wrote:
+> > In other words, a device does not need to have an interrupt-OUT=20
+> > endpoint, but if it does have one then the host must use it.
+>=20
+> You're right. Although the actual behavior of the hosts is not different
+> from what I wrote - they really just ignore out endpoint.
+> I will eventually fix this in the patch description.
+
+It seems that I have confused everything even more, sorry. I will explain.
+There are three possible host behaviors:
+
+(1) The host works with the OUT endpoint as it describes the standard
+    and transmits reports through it.
+
+(2) The host works with IN endpoint, but refuses to transmit reports
+    via OUT endpoint at all. In the case of the keyboard, it will work,
+    but it will not receive the status of the LEDs.
+
+(3) The host sees OUT endpoint and either refuses to use such a device at a=
+ll,
+    or goes crazy in various ways.
+
+In both cases (2) and (3), using SETUP/SET_REPORT solves the problem.
+Therefore, I offer this as an option to solve compatibility problems.
+Yes, in fact, this is not our problem, but it is impossible to fix the driv=
+ers
+of all these proprietary devices. Moreover, I have never met a keyboard
+with OUT endpoint, absolutely all of them use SETUP/SET_REPORT.
