@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAA93EB86D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469F93EB877
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242241AbhHMPNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:13:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56306 "EHLO mail.kernel.org"
+        id S242304AbhHMPN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242029AbhHMPMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:12:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DA4610FF;
-        Fri, 13 Aug 2021 15:11:45 +0000 (UTC)
+        id S241810AbhHMPM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:12:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C366112E;
+        Fri, 13 Aug 2021 15:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867505;
-        bh=xWLck34ubnToho/WAusHO8nnnECUAcIWBVtlkxNrB2g=;
+        s=korg; t=1628867519;
+        bh=52OGZHc6eP+/yhBMlX3Dr9d7J9aNvl8zYA6+2oxNc74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0h1WFRcQGXtlXM40/OrrcCv+lUcg/0gjL6B6u4S+SBpErMP2ErkBOhZrv7r39bWsi
-         VuiFLIB6LRHuaxSEGWBHiF1XrImDOOqBEDmo7/ztOFA2g5Yf0V9RmNA9pzZhI9khec
-         mtFzJ5/tdNmxmUbvl0CLHkQ7mpp//xrjQuQcwQfk=
+        b=Mc0t4bAyZK+zpItS7oxGMCA+OJk+UZekWUCQrHuC/TBUK60z5uyaNOTyBcla1UwmC
+         3hWeKRdGKRnDMclm764Bjr4bh3iYqRV/pX4ADy3b7yZPi0AEP/wUIN5mAfytiPLvrg
+         J5jFalk0AuHxoCzrmkDntjGZZK/4SW/rSeX5+J2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>
-Subject: [PATCH 4.14 21/42] usb: gadget: f_hid: idle uses the highest byte for duration
-Date:   Fri, 13 Aug 2021 17:06:47 +0200
-Message-Id: <20210813150525.811197546@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: [PATCH 4.14 22/42] usb: otg-fsm: Fix hrtimer list corruption
+Date:   Fri, 13 Aug 2021 17:06:48 +0200
+Message-Id: <20210813150525.845675856@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
 References: <20210813150525.098817398@linuxfoundation.org>
@@ -38,32 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Devaev <mdevaev@gmail.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit fa20bada3f934e3b3e4af4c77e5b518cd5a282e5 upstream.
+commit bf88fef0b6f1488abeca594d377991171c00e52a upstream.
 
-SET_IDLE value must be shifted 8 bits to the right to get duration.
-This confirmed by USBCV test.
+The HNP work can be re-scheduled while it's still in-fly. This results in
+re-initialization of the busy work, resetting the hrtimer's list node of
+the work and crashing kernel with null dereference within kernel/timer
+once work's timer is expired. It's very easy to trigger this problem by
+re-plugging USB cable quickly. Initialize HNP work only once to fix this
+trouble.
 
-Fixes: afcff6dc690e ("usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Link: https://lore.kernel.org/r/20210727185800.43796-1-mdevaev@gmail.com
+ Unable to handle kernel NULL pointer dereference at virtual address 00000126)
+ ...
+ PC is at __run_timers.part.0+0x150/0x228
+ LR is at __next_timer_interrupt+0x51/0x9c
+ ...
+ (__run_timers.part.0) from [<c0187a2b>] (run_timer_softirq+0x2f/0x50)
+ (run_timer_softirq) from [<c01013ad>] (__do_softirq+0xd5/0x2f0)
+ (__do_softirq) from [<c012589b>] (irq_exit+0xab/0xb8)
+ (irq_exit) from [<c0170341>] (handle_domain_irq+0x45/0x60)
+ (handle_domain_irq) from [<c04c4a43>] (gic_handle_irq+0x6b/0x7c)
+ (gic_handle_irq) from [<c0100b65>] (__irq_svc+0x65/0xac)
+
+Cc: stable@vger.kernel.org
+Acked-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210717182134.30262-6-digetx@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_hid.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/common/usb-otg-fsm.c |    6 +++++-
+ include/linux/usb/otg-fsm.h      |    1 +
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -583,7 +583,7 @@ static int hidg_setup(struct usb_functio
- 		  | HID_REQ_SET_IDLE):
- 		VDBG(cdev, "set_idle\n");
- 		length = 0;
--		hidg->idle = value;
-+		hidg->idle = value >> 8;
- 		goto respond;
- 		break;
+--- a/drivers/usb/common/usb-otg-fsm.c
++++ b/drivers/usb/common/usb-otg-fsm.c
+@@ -206,7 +206,11 @@ static void otg_start_hnp_polling(struct
+ 	if (!fsm->host_req_flag)
+ 		return;
+ 
+-	INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
++	if (!fsm->hnp_work_inited) {
++		INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
++		fsm->hnp_work_inited = true;
++	}
++
+ 	schedule_delayed_work(&fsm->hnp_polling_work,
+ 					msecs_to_jiffies(T_HOST_REQ_POLL));
+ }
+--- a/include/linux/usb/otg-fsm.h
++++ b/include/linux/usb/otg-fsm.h
+@@ -195,6 +195,7 @@ struct otg_fsm {
+ 	struct mutex lock;
+ 	u8 *host_req_flag;
+ 	struct delayed_work hnp_polling_work;
++	bool hnp_work_inited;
+ 	bool state_changed;
+ };
  
 
 
