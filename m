@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356E13EB242
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A573D3EB251
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239772AbhHMIGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239714AbhHMIG3 (ORCPT
+        id S239747AbhHMIKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:10:37 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44220 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239668AbhHMIKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:06:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96419C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:06:02 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628841960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m8SDlxxfnQkj2M+ncAfzmCafpk/C/r3y8fM/XSbU8v0=;
-        b=KI080ac6VkRGwAZSPpxwBC0cOPJFXJP+vnIB3Gv7YEtzweO/DLNd0bGyd4pX7B1NowXtQL
-        ZhoYStsMO/oPZu4IRpbW/HzNhMU/ZeWTTRU0XOzwZz0FwXto5RStM0HYirhVT0u+i+o0C2
-        uZZ3u9Ir1xvo6OOrfr19mInblnsewkiuMFu9+1O4JistR7pqSkom0TzUWHaGxGBcQnFc1z
-        Djq5MyIDFBwCmOek6h3fU3UXi2zwi0x8kWdSNXgpzwNvh/3/LHCtRgQp0b/UqhEX/lLhqH
-        OAYCaR1wvnDMCmN8Z3ChPF3Bd7ggbEf2+l9gx8y72QiTVsD0qwbBOPLZEm7JMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628841960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m8SDlxxfnQkj2M+ncAfzmCafpk/C/r3y8fM/XSbU8v0=;
-        b=c0LMWYFXKr1hNg1ePE/m7uL85AwDW8SyFlxaocNm3lhekpuTdAvKeia65T5Bx8+RqsNeIR
-        Ja2aTY/TCkNtM+DA==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 69/68] locking/rt: Add missing __might_sleep() to
- spin/rwlocks
-In-Reply-To: <20210811120348.855823694@linutronix.de>
-References: <20210811120348.855823694@linutronix.de>
-Date:   Fri, 13 Aug 2021 10:05:59 +0200
-Message-ID: <87wnopbwgo.ffs@tglx>
+        Fri, 13 Aug 2021 04:10:36 -0400
+X-UUID: b8752efb16e1441f8b6b43d798f983b8-20210813
+X-UUID: b8752efb16e1441f8b6b43d798f983b8-20210813
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1910488043; Fri, 13 Aug 2021 16:10:07 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 13 Aug
+ 2021 16:10:06 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 13 Aug 2021 16:10:05 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH net-next v3] ipv6: add IFLA_INET6_RA_MTU to expose mtu value in the RA message
+Date:   Fri, 13 Aug 2021 16:07:40 +0800
+Message-ID: <20210813080740.31571-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <4624cc10-1fc8-12cd-e9e1-9585f5b496a0@gmail.com>
+References: <4624cc10-1fc8-12cd-e9e1-9585f5b496a0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2021-08-11 at 12:05 -0600, David Ahern wrote:
+> On 8/11/21 7:56 AM, David Ahern wrote:
+>> On 8/10/21 6:33 AM, Rocco Yue wrote:
+>>> On Mon, 2021-08-09 at 16:43 -0600, David Ahern wrote:
+>>>>
+>>>> Since this MTU is getting reported via af_info infrastructure,
+>>>> rtmsg_ifinfo should be sufficient.
+>>>>
+>>>> From there use 'ip monitor' to make sure you are not generating multiple
+>>>> notifications; you may only need this on the error path.
+>>>
+>>> Hi David,
+>>>
+>>> To avoid generating multiple notifications, I added a separate ramtu notify
+>>> function in this patch, and I added RTNLGRP_IPV6_IFINFO nl_mgrp to the ipmonitor.c
+>>> to verify this patch was as expected.
+>>>
+>>> I look at the rtmsg_ifinfo code, it should be appropriate and I will use it and
+>>> verify it.
+>>>
+>>> But there's one thing, I'm sorry I didn't fully understand the meaning of this
+>>> sentence "you may only need this on the error path". Honestly, I'm not sure what
+>>> the error patch refers to, do you mean "if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu)" ?
+>>>
+>> 
+>> looks like nothing under:
+>>     if (ndopts.nd_opts_mtu && in6_dev->cnf.accept_ra_mtu) {
+>> 
+>>     }
+>> 
+>> is going to send a link notification so you can just replace
+>> inet6_iframtu_notify with rtmsg_ifinfo in your proposed change.
+>> 
+> 
+> Taking a deeper dive on the code, you do not need to call rtmsg_ifinfo.
+> Instead, the existing:
+> 
+>         /*
+>          *      Send a notify if RA changed managed/otherconf flags or
+> timer settings
+>          */
+>         if (send_ifinfo_notify)
+>                 inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
+> 
+> is called too early. For one the RA can change the MTU and that is done
+> after this notify.
+> 
+> I think if you moved this down to the out:
+> 
+> out:
+>         /*
+>          *      Send a notify if RA changed managed/otherconf flags or
+> timer settings
+>          */
+>         if (send_ifinfo_notify)
+>                 inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
+> 
+> and then set send_ifinfo_notify when the mtu is *changed* by the RA you
+> should be good.
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hi David,
 
-On RT enabled kernels the substituted spin_lock and rw_lock acquisition
-functions can sleep.
+Thanks for your suggestion,
+this looks like a better choice without adding a separate notification function,
+I will modify it and push the next iteration .
 
-Add the missing __might_sleep() invocations.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V4+: This should have been part of the V4 submission, but got lost
-     during patch juggling.
----
- kernel/locking/spinlock_rt.c |    3 +++
- 1 file changed, 3 insertions(+)
----
---- a/kernel/locking/spinlock_rt.c
-+++ b/kernel/locking/spinlock_rt.c
-@@ -32,6 +32,7 @@ static __always_inline void rtlock_lock(
- 
- static __always_inline void __rt_spin_lock(spinlock_t *lock)
- {
-+	___might_sleep(__FILE__, __LINE__, 0);
- 	rtlock_lock(&lock->lock);
- 	rcu_read_lock();
- 	migrate_disable();
-@@ -206,6 +207,7 @@ EXPORT_SYMBOL(rt_write_trylock);
- 
- void __sched rt_read_lock(rwlock_t *rwlock)
- {
-+	___might_sleep(__FILE__, __LINE__, 0);
- 	rwlock_acquire_read(&rwlock->dep_map, 0, 0, _RET_IP_);
- 	rwbase_read_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
- 	rcu_read_lock();
-@@ -215,6 +217,7 @@ EXPORT_SYMBOL(rt_read_lock);
- 
- void __sched rt_write_lock(rwlock_t *rwlock)
- {
-+	___might_sleep(__FILE__, __LINE__, 0);
- 	rwlock_acquire(&rwlock->dep_map, 0, 0, _RET_IP_);
- 	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
- 	rcu_read_lock();
+Best Regards,
+Rocco
