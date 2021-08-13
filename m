@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1FF3EBA02
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FC33EBA05
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbhHMQ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        id S235597AbhHMQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234309AbhHMQ2S (ORCPT
+        with ESMTP id S235642AbhHMQ3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:28:18 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60900C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:27:51 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id b15so19232788ejg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:27:51 -0700 (PDT)
+        Fri, 13 Aug 2021 12:29:14 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDFCC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:28:47 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e19so12645568pla.10
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ImhGSizu51qcAiPtd7HLBN22Lau/TM3KbSolcI8f00k=;
-        b=RWKHnEj+1M8YE0PLOqaDZVnZjruu6unn14Hg9b/LdOWYpftRNvPZjMNs//UKcqArUM
-         dzrwBBifdrrijisFAqQf0rcJv56lQ243uUSSD3M7E5kYWtbrIijb0k7b2DTumc+RUR+d
-         hdxPl+vCudjouRaI7Porl5ikUztuZQMxKnrjMWAzPMtB0swUU+riAaswfA024ly8E/5Y
-         6TThc4WNFh5/FnpOGBjTx6lLtogvgWsk37h/FhiAXOYSX+qiZWo8fPKT/3VnX3uh5rkg
-         mtc4rpcOyNWoih8x/A99IMM4BXVFM4faB7BmyPoLhFlQYmifWPt/k8QlO6W4Spxf4x8W
-         F/4w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5vsrCAhIhqleSp4ilnt79j6IYc6DztFKdxcos4U/Zdw=;
+        b=s/gPWOK8ezdqks7mEUKZQGuY3ur/s9nmz5Xm799RPiVLlhDeWVeLaq4jwY6wGUpZzk
+         kfQBYmld7FNccLGlURTq+4X5SM0Ld67qddVGTEfkj/tWtjysVvvlgA9C5m3Fkd/bpjp/
+         MU6i66OntDLzok1dUjkKiGJO+DggV18HL7D+s7JnFal3Pi8D4HjcE9JwyuF7DVt7YChG
+         uZ9Uv4Wg0ycik3MJ+eAR6cidd+x9kNOjv4dOGPtG1xUGr8TFzJYENi8fjK+8UyN3tbmS
+         rJdtxUQgeUwXjnACaHFBTrHv7iCLgOiVCAPRsmuN5zOCQFBrMI5BUO/2T2vUe5ahZfjp
+         zrMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ImhGSizu51qcAiPtd7HLBN22Lau/TM3KbSolcI8f00k=;
-        b=PLdK43KNNI968DP881m6n6oN5ku6NqvCoWHlGx/q5hdwZ1YTGbo4uJvxRkMSwkhq0w
-         Y7OO/U5rziTP/HgWhhKf/X8S6Fkt8pfRhvX/fx4GMJpWfUObeWIlZ6oPjVP99XJE2NCl
-         W69h6bq3YCF1DKIervwYcGq/jAunqnfnOY68Rs/lb6xFoRMNhSPDQrnDgTPjYtHWIuea
-         FHrvUx9dVzDa3y1t2K9W8/+GM6/kS8TcX9bwleSp212gc18g9etTBMCUO2gPw0Qg+ngE
-         2OFkjjraDy8X72fU8jPidlJrEQnjyoS0PAJvCHprATki3c48V+/Xm9lPfyJlTKzoG613
-         56TQ==
-X-Gm-Message-State: AOAM533vGlQGfnOi6gaNa+gj8XpM7S7Lb4+BS6MJ2KtfY9LOwGUDiT8D
-        tdIsGL+VOnYHvsaiqu56CkU=
-X-Google-Smtp-Source: ABdhPJwJGwcRLMAAg/iwe4fePXNNMSVl91JwT+NeusWxvJeP2w1mp3sT0YiWL86TjZi6ORQS2PAMbA==
-X-Received: by 2002:a17:906:4f03:: with SMTP id t3mr3364891eju.369.1628872069951;
-        Fri, 13 Aug 2021 09:27:49 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id h19sm821013ejt.46.2021.08.13.09.27.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5vsrCAhIhqleSp4ilnt79j6IYc6DztFKdxcos4U/Zdw=;
+        b=paOiovrySwolCD3+G9N2jaQhm7XA1JaRuK0V41IBWFJS908cVLQPqsD/I1MrXNHE4V
+         wrqG7vgiUlCTAezd/3qIdiihq497xDQopuRhFLoelqIghZD+H8n2riSyFmz+KFkdfPK6
+         lWDxNIv2SDarIGPpYiEg8s21ha4Q/ypj5lzYPN9JMahq6quN6uVz690BUZp0sTnLik7l
+         AxCMelrvnBKEzsXb7a5Uyq4A/MSUQr9ZB3hMX8c6d+YAO0wiJjQzjf4VtK3Umfxwp+3p
+         cs7x1lEndsjKeTVFRN6iRkgCQsdPJfD2lnn2eBu1vBje6we7SDEbNaeWgtJ+f9Cs6o9r
+         zcNA==
+X-Gm-Message-State: AOAM530L0/lKI6jBPN64Qm4NDCOKbhfXrRetOuXJ6s5Nst8+Y3vWMzbK
+        CoHnnWeV5sRL/9OiYnLB2F9A0Q==
+X-Google-Smtp-Source: ABdhPJzFcDg42Qi/QLxlT+AItPtHajHKKItsai4wbDeuQpZVXo0+ztFHB94T39wdHTdSuIGS4ouPdw==
+X-Received: by 2002:aa7:8a04:0:b029:3e0:ec4a:6e65 with SMTP id m4-20020aa78a040000b02903e0ec4a6e65mr3227176pfa.47.1628872126672;
+        Fri, 13 Aug 2021 09:28:46 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f6sm2745044pfv.69.2021.08.13.09.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 09:27:49 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org,
-        Michael Straube <straube.linux@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: Re: [PATCH 1/4] staging: r8188eu: remove 5GHz code from Hal_GetChnlGroup88E()
-Date:   Fri, 13 Aug 2021 18:27:48 +0200
-Message-ID: <7543688.ql1GSxUkq4@localhost.localdomain>
-In-Reply-To: <20210813073109.25609-2-straube.linux@gmail.com>
-References: <20210813073109.25609-1-straube.linux@gmail.com> <20210813073109.25609-2-straube.linux@gmail.com>
+        Fri, 13 Aug 2021 09:28:45 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 16:28:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
+        peterx@redhat.com
+Subject: Re: [PATCH 02/16] KVM: x86: clamp host mapping level to max_level in
+ kvm_mmu_max_mapping_level
+Message-ID: <YRaduAFaHZ+w643k@google.com>
+References: <20210807134936.3083984-1-pbonzini@redhat.com>
+ <20210807134936.3083984-3-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807134936.3083984-3-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, August 13, 2021 9:31:06 AM CEST Michael Straube wrote:
-> Remove 5GHz code from Hal_GetChnlGroup88E().
-> 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 62 +++++--------------
->  1 file changed, 14 insertions(+), 48 deletions(-)
+On Sat, Aug 07, 2021, Paolo Bonzini wrote:
+> This patch started as a way to make kvm_mmu_hugepage_adjust a bit simpler,
+> in preparation for switching it to struct kvm_page_fault, but it does
+> fix a microscopic bug in zapping collapsible PTEs.
 
-I missed those lines in my "Remove 5GHz band related code" series.
-Nice work, so...
-
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
-Thanks,
-
-Fabio
-
-
+I think this also fixes a bug where userspace backs guest memory with a 1gb hugepage
+but only assigns a subset of the page to the guest.  1gb pages would be disallowed
+by the memslot, but not 2mb.  kvm_mmu_max_mapping_level() would fall through to the
+host_pfn_mapping_level() logic, see the 1gb huge, and map the whole thing into the
+guest.  I can't imagine any userspace would actually do something like that, but the
+failure mode is serious enough that it warrants a Fixes: + Cc: stable@.
