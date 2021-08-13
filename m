@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BE83EB570
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAC63EB573
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240383AbhHMM0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:26:35 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34829 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229474AbhHMM0e (ORCPT
+        id S240423AbhHMM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhHMM1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:26:34 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9FB345C010D;
-        Fri, 13 Aug 2021 08:26:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 13 Aug 2021 08:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=O0lENVBH+WntImBlijDZKATpdAC
-        IiNeSXStEESHrN30=; b=Mc0Xfv+8Q6hr0aQiMjQaDAb+UhbQbsgTyRYHMUZPpcT
-        ZgCd+XeEOJuLugNsugVv/nqPwB2DDMhiCElDiauqHjrAytruDBAVZpAUed8uQU7y
-        IJ5BsnwPQypG+qw4vNb+olLa9YxBcKM6tN8fNeWLJiUj9IEyByEV02aipdmJESZ4
-        N6Y0TYN16GnqlXoMFv1uRqedXeVUz3D0dGgqIE16oZy8JJ0aU/5FQqtycjDfoGnK
-        78/HBG43SjMzjBzRaQNU9O8X0lUJpEUs0xfdwgzdLIAUX8AKazf0EPjhC5YfBdao
-        jAc4P+cMqtTqMe6zDd7jUD4BnrRNmmtD9dU6lH+uMWw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=O0lENV
-        BH+WntImBlijDZKATpdACIiNeSXStEESHrN30=; b=ee8+d9Mjek15jqzP6hyf4p
-        B6EHtGxHSzylYZz/S7ngMW557BnTIHZgaNkzMifCPkllMdh3VSjvIjmOQQwlWbMx
-        vYG94tCWVm+sKi5SqHxuR/sd4vajyekODPQHMHobaaJ/GQzLGvPDxL6MDbKg/A6m
-        40mwJCDRYIzPZjXnDEDBhuR4wCh8DO2DhGICBMe05mQHD21Dw9o7knufybNtkmV6
-        xGaAwqGE2n0W14v88U1FMH7J91msDt5ITP/gLIr3HVUqUUmDNjaOT1nkcgZ8drEY
-        ySe0sn13D/Qj2EZeEXH7QsHxoKn/InLA0x7D9U4VnNg3ns1uOmPgqFQ3KRoOD6uQ
-        ==
-X-ME-Sender: <xms:3mQWYWNEozgrjv__eCdn7_B21NICRut9KnkcBwTpyW769scdCDShZg>
-    <xme:3mQWYU8sL_pN5R-gx9hDMxLkLrdutaIotq0LK1dA8RIGA2H1jFUx8hjjaJRN3zeQj
-    llIcrC5Bf4iVQ>
-X-ME-Received: <xmr:3mQWYdQvGTpEb3uCzAJyAu8G5QwqrtYuRYGpBQYcdIjKfLdw1oftIkmMgqD1WJmxeeNbO3EuILGgFyFbK1_RzO0Qys8NI1nY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeehgdehvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:3mQWYWtBBZIzTYC2PHW8sbzD5KAyXLipUekFgXnkSsC-p_S36lE6gg>
-    <xmx:3mQWYefA6jm5k3dJ0q_xMSkhWH0fXhgwoUGZQ990NkZUwSB8cHb_Ag>
-    <xmx:3mQWYa1IHjpxjQOz4vV-vsc3xaQeroKhDj94H75kKCz51rqCVB08bw>
-    <xmx:3mQWYVy1g1ZuFg0PeJMUik7IAu1iVB92__Wx7KMx_W3q3xuJ393jjg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Aug 2021 08:26:05 -0400 (EDT)
-Date:   Fri, 13 Aug 2021 14:26:03 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, fdmanana@suse.com
-Subject: Re: [PATCH stable-5.4.y 0/3] btrfs: backport hang fixes due to
- commit c53e9653605d
-Message-ID: <YRZk20TQpSiGiis7@kroah.com>
-References: <cover.1628854236.git.anand.jain@oracle.com>
+        Fri, 13 Aug 2021 08:27:34 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3988FC061756;
+        Fri, 13 Aug 2021 05:27:07 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id l11so11736593plk.6;
+        Fri, 13 Aug 2021 05:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EJxkE2wkJq+QgJn112ZtChVb7MaeOYwvtc3bN2p1tTg=;
+        b=rsM63gA8Ke+q7OOmBS5bZp/+xQPASbpbS2dehshnFn+vjWgOcu8yP5YcfLQE3aq7n5
+         pbwlwoIIWZ05Pmk91JkBLx9S3Bw80wDFlOF5pnecDofoWJBORuuoC3zeGKX/q5KNsX8S
+         0AuqQCm7EnhCAlzJ5pIw6geleL4JXw7wmf0smSK9zQLEI4L62zK1+lGd6BxLYEKnEFPt
+         VYhfWUUzcC448IDgIenx9/Ph6sAfJKy2VrdpTtFhjH6NbJSjOgc1M7Rw2OhWjmn6IbQw
+         Ni46Lc0hjA9aDNOeSdl1znTp/aNhGN1xBJPQ6MEKPj2V7mBkDPr4gKkemJFKm9ryQAZ3
+         iX2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EJxkE2wkJq+QgJn112ZtChVb7MaeOYwvtc3bN2p1tTg=;
+        b=HCHgV3EVh3+lHRPot/M5iRQRzDfC3UeWVypveLf2dvfKMXjcVBj8mdblBIjLduX6FK
+         4EqQUQ3/hFQtqQxQ8d/9B8iBjIbbonKfBsSRJIi6quI6tGsa0jbHyeJ+f82ixrLK0KhT
+         6OMgmvBci1nvZHJTpKBvm8RYTVqsahRme1k4CywX1NNFp7X8QpBoaLw9lyACmfSxFkLx
+         8TgDi+A7KlMeLd9NNXftgA5Z9VDG5dfLLQ7jTQIvmDGDoBwqfWFbRTLFfZL7sNve+bWj
+         C8TrN732fo+3UrmgYfCPGKq/f+xOixOz/VyDiDsoKhjIMKNHk4moormGNJN5N6EcE6RO
+         gvQw==
+X-Gm-Message-State: AOAM531eHFgfS2grf3gu3ikc0XTY45IpKXy6+BW+R9Nx3XiPJ6nKIqbk
+        szRL1QVTyC3x4dUvwfTqFoU=
+X-Google-Smtp-Source: ABdhPJzr9deUC5KetbUoge6dxu/lJuhGJtQDTpk8G4TR7fvnQj/s7kpkntZWUGZGM0AgSqKq2fVZhA==
+X-Received: by 2002:a17:90a:4285:: with SMTP id p5mr2409655pjg.162.1628857626705;
+        Fri, 13 Aug 2021 05:27:06 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8916:5000:f39c:9aee:21bf:36f5])
+        by smtp.gmail.com with ESMTPSA id b10sm2218293pfi.122.2021.08.13.05.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 05:27:06 -0700 (PDT)
+From:   Barry Song <21cnbao@gmail.com>
+To:     bhelgaas@google.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org,
+        Jonathan.Cameron@huawei.com, leon@kernel.org,
+        schnelle@linux.ibm.com, bilbao@vt.edu, luzmaximilian@gmail.com,
+        linuxarm@huawei.com, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] PCI/MSI: Clarify the irq sysfs ABI for PCI devices
+Date:   Sat, 14 Aug 2021 00:26:50 +1200
+Message-Id: <20210813122650.25764-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1628854236.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 08:12:22PM +0800, Anand Jain wrote:
-> Further to the commit c53e9653605d (btrfs: qgroup: try to flush qgroup 
-> space when we get -EDQUOT) there are three fixes as below.
-> 
-> 6f23277a49e6 btrfs: qgroup: don't commit transaction when we already hold the handle
-> 4d14c5cde5c2 btrfs: don't flush from btrfs_delayed_inode_reserve_metadata
-> f9baa501b4fd btrfs: fix deadlock when cloning inline extents and using qgroups
-> 
-> Commits 6f23277a49e6 and 4d14c5cde5c2 above are straightforward and are
-> part of this series.
-> 
-> However, commit f9baa501b4fd above is more complicated to backport.
-> Furthermore, the bug mentioned in the commit f9baa501b4fd might not
-> trigger on 5.4.y as its related commit 05a5a7621ce66c ("Btrfs: implement
-> full reflink support for inline extents") is not backported to 5.4.y.
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-Queued up, thanks.
+/sys/bus/pci/devices/.../irq has been there for many years but it has never
+been documented. This patch is trying to document it. Plus, irq ABI is very
+confusing at this moment especially for MSI and MSI-x cases. MSI sets irq
+to the first number in the vector, but MSI-X does nothing for this though
+it saves default_irq in msix_setup_entries(). Weird the saved default_irq
+for MSI-X is never used in pci_msix_shutdown(), which is quite different
+with pci_msi_shutdown(). Thus, this patch also moves to show the first IRQ
+number which is from the first msi_entry for MSI-X. Hopefully, this can
+make irq ABI more clear and more consistent.
 
-greg k-h
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ Documentation/ABI/testing/sysfs-bus-pci | 8 ++++++++
+ drivers/pci/msi.c                       | 6 ++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+index 793cbb7..8d42385 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci
++++ b/Documentation/ABI/testing/sysfs-bus-pci
+@@ -96,6 +96,14 @@ Description:
+ 		This attribute indicates the mode that the irq vector named by
+ 		the file is in (msi vs. msix)
+ 
++What:		/sys/bus/pci/devices/.../irq
++Date:		August 2021
++Contact:	Barry Song <song.bao.hua@hisilicon.com>
++Description:
++		Historically this attribute represent the IRQ line which runs
++		from the PCI device to the Interrupt controller. With MSI and
++		MSI-X, this attribute is the first IRQ number of IRQ vectors.
++
+ What:		/sys/bus/pci/devices/.../remove
+ Date:		January 2009
+ Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 9232255..6bbf81b 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -771,6 +771,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 	int ret;
+ 	u16 control;
+ 	void __iomem *base;
++	struct msi_desc *desc;
+ 
+ 	/* Ensure MSI-X is disabled while it is set up */
+ 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+@@ -814,6 +815,10 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_MASKALL, 0);
+ 
+ 	pcibios_free_irq(dev);
++
++	desc = first_pci_msi_entry(dev);
++	dev->irq = desc->irq;
++
+ 	return 0;
+ 
+ out_avail:
+@@ -1024,6 +1029,7 @@ static void pci_msix_shutdown(struct pci_dev *dev)
+ 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+ 	pci_intx_for_msi(dev, 1);
+ 	dev->msix_enabled = 0;
++	dev->irq = entry->msi_attrib.default_irq;
+ 	pcibios_alloc_irq(dev);
+ }
+ 
+-- 
+1.8.3.1
+
