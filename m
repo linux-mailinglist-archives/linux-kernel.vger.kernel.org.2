@@ -2,101 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3563EB763
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE77D3EB8C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241096AbhHMPHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:07:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55411 "EHLO mga17.intel.com"
+        id S242699AbhHMPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240849AbhHMPHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:07:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10075"; a="195842836"
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="195842836"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 08:07:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="440385639"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga002.jf.intel.com with ESMTP; 13 Aug 2021 08:07:21 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Fri, 13 Aug 2021 08:07:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Fri, 13 Aug 2021 08:07:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Fri, 13 Aug 2021 08:07:20 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 1/2] mm,hwpoison: fix race with hugetlb page allocation
-Thread-Topic: [PATCH v6 1/2] mm,hwpoison: fix race with hugetlb page
- allocation
-Thread-Index: AQHXjzJ4oLpdbdbIlE+0uuWADomvDqtwCKsA///1mwCAAXHrgIAAFrKw
-Date:   Fri, 13 Aug 2021 15:07:20 +0000
-Message-ID: <96d4fd8b75e44a6c970e4d9530980f21@intel.com>
-References: <20210603233632.2964832-1-nao.horiguchi@gmail.com>
- <20210603233632.2964832-2-nao.horiguchi@gmail.com>
- <20210812042813.GA1576603@agluck-desk2.amr.corp.intel.com>
- <20210812090303.GA153531@hori.linux.bs1.fc.nec.co.jp>
- <20210812152548.GA1579021@agluck-desk2.amr.corp.intel.com>
- <20210813062951.GA203438@hori.linux.bs1.fc.nec.co.jp>
-In-Reply-To: <20210813062951.GA203438@hori.linux.bs1.fc.nec.co.jp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S242346AbhHMPOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AF79610CC;
+        Fri, 13 Aug 2021 15:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628867612;
+        bh=Q9o77BbtVoUm7yQcY/7r3FvoICo0D4P1pW3bc1t/ywY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vFEbU/tuZVphRtHq5sx1d/77kKqfXfNmCveq3WbDS3LZwY6B5cuSeraTafLR4Md7Q
+         GtTK7mrhpxc4hR7qHoMlSxHjxacA0/gPCyvKWZ1/8vHZw+AwvmLu3DHDgxjvblj/4q
+         R2d2XLO9mj7j7uteYvkHIsKQYW7CQUoMht7+BaV0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH 5.4 22/27] btrfs: qgroup: remove ASYNC_COMMIT mechanism in favor of reserve retry-after-EDQUOT
+Date:   Fri, 13 Aug 2021 17:07:20 +0200
+Message-Id: <20210813150524.106630482@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210813150523.364549385@linuxfoundation.org>
+References: <20210813150523.364549385@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SSdtIHJ1bm5pbmcgdGhlIGRlZmF1bHQgY2FzZSBmcm9tIG15IGVpbmpfbWVtX3VjIHRlc3QuIFRo
-YXQganVzdDoNCg0KMSkgYWxsb2NhdGVzIGEgcGFnZSB1c2luZzoNCg0KCW1tYXAoTlVMTCwgcGFn
-ZXNpemUsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfU0hBUkVEfE1BUF9BTk9OLCAtMSwgMCk7
-DQoNCjIpIGZpbGxzIHRoZSBwYWdlIHdpdGggcmFuZG9tIGRhdGEgKHRvIG1ha2Ugc3VyZSBpdCBo
-YXMgYmVlbiBhbGxvY2F0ZWQsIGFuZCB0aGF0IHRoZSBrZXJuZWwgY2FuJ3QNCmRvIEtTTSB0cmlj
-a3MgdG8gc2hhcmUgdGhpcyBwaHlzaWNhbCBwYWdlIHdpdGggc29tZSBvdGhlciB1c2VyKS4NCg0K
-MykgaW5qZWN0cyB0aGUgZXJyb3IgYXQgYSAxS0Igb2Zmc2V0IHdpdGhpbiB0aGUgcGFnZS4NCg0K
-NCkgZG9lcyBhIG1lbW9yeSByZWFkIG9mIHRoZSBwb2lzb24gYWRkcmVzcy4NCg0KDQo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGFjdGlvbl9yZXN1bHQocGZuLCBNRl9NU0dfVU5LTk9XTiwg
-TUZfSUdOT1JFRCk7DQo+ICAgKyAgICAgICAgICAgICAgICAgICAgICAgZHVtcF9wYWdlKHAsICJo
-d3BvaXNvbiB1bmtub3duIHBhZ2UiKTsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVz
-ID0gLUVCVVNZOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHVubG9ja19tdXRl
-eDsNCj4gICAgICAgICAgICAgICAgICAgIH0NCg0KSSBhZGRlZCB0aGF0IHBhdGNoIGFnYWluc3Qg
-dXBzdHJlYW0gKHY1LjE0LXJjNSkuICBIZXJlJ3MgdGhlIGR1bXAuIFRoZSAicGZuIiBtYXRjaGVz
-IHRoZSBwaHlzaWNhbCBhZGRyZXNzIHdoZXJlIEkgaW5qZWN0ZWQsDQphbmQgaXQgaGFzIHRoZSBo
-d3BvaXNvbiBmbGFnIGJpdCB0aGF0IHdhcyBzZXQgZWFybHkgaW4gbWVtb3J5X2ZhaWx1cmUoKSAt
-LS0gc28gdGhpcyBpcyB0aGUgcmlnaHQgcGFnZS4NCg0KWyAgIDc5LjM2ODIxMl0gTWVtb3J5IGZh
-aWx1cmU6IDB4NjIzODg5OiByZWNvdmVyeSBhY3Rpb24gZm9yIHVua25vd24gcGFnZTogSWdub3Jl
-ZA0KWyAgIDc5LjM3NTUyNV0gcGFnZTowMDAwMDAwMDY1YWQ5NDc5IHJlZmNvdW50OjMgbWFwY291
-bnQ6MSBtYXBwaW5nOjAwMDAwMDAwYTRhYzg0M2IgaW5kZXg6MHgwIHBmbjoweDYyMzg4OQ0KWyAg
-IDc5LjM4NDkwOV0gbWVtY2c6ZmY0MGE1NjlmMjk2NjAwMA0KWyAgIDc5LjM4ODMxM10gYW9wczpz
-aG1lbV9hb3BzIGlubzo0YzAwIGRlbnRyeSBuYW1lOiJkZXYvemVybyINClsgICA3OS4zOTM4OTZd
-IGZsYWdzOiAweDE3ZmZmZmMwODgwMDBjKHVwdG9kYXRlfGRpcnR5fHN3YXBiYWNrZWR8aHdwb2lz
-b258bm9kZT0wfHpvbmU9MnxsYXN0Y3B1cGlkPTB4MWZmZmZmKQ0KWyAgIDc5LjQwMzQ1NV0gcmF3
-OiAwMDE3ZmZmZmMwODgwMDBjIDAwMDAwMDAwMDAwMDAwMDAgZGVhZDAwMDAwMDAwMDEyMiBmZjQw
-YTU2OWY0NWE3MTYwDQpbICAgNzkuNDExMTkxXSByYXc6IDAwMDAwMDAwMDAwMDAwMDAgMDAwMDAw
-MDAwMDAwMDAwMCAwMDAwMDAwMzAwMDAwMDAwIGZmNDBhNTY5ZjI5NjYwMDANClsgICA3OS40MTg5
-MzFdIHBhZ2UgZHVtcGVkIGJlY2F1c2U6IGh3cG9pc29uIHVua25vd24gcGFnZQ0KDQoNCi1Ub255
-DQo=
+From: Qu Wenruo <wqu@suse.com>
+
+commit adca4d945c8dca28a85df45c5b117e6dac2e77f1 upstream
+
+commit a514d63882c3 ("btrfs: qgroup: Commit transaction in advance to
+reduce early EDQUOT") tries to reduce the early EDQUOT problems by
+checking the qgroup free against threshold and tries to wake up commit
+kthread to free some space.
+
+The problem of that mechanism is, it can only free qgroup per-trans
+metadata space, can't do anything to data, nor prealloc qgroup space.
+
+Now since we have the ability to flush qgroup space, and implemented
+retry-after-EDQUOT behavior, such mechanism can be completely replaced.
+
+So this patch will cleanup such mechanism in favor of
+retry-after-EDQUOT.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/btrfs/ctree.h       |    5 -----
+ fs/btrfs/disk-io.c     |    1 -
+ fs/btrfs/qgroup.c      |   43 ++-----------------------------------------
+ fs/btrfs/transaction.c |    1 -
+ fs/btrfs/transaction.h |   14 --------------
+ 5 files changed, 2 insertions(+), 62 deletions(-)
+
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -505,11 +505,6 @@ enum {
+ 	 */
+ 	BTRFS_FS_EXCL_OP,
+ 	/*
+-	 * To info transaction_kthread we need an immediate commit so it
+-	 * doesn't need to wait for commit_interval
+-	 */
+-	BTRFS_FS_NEED_ASYNC_COMMIT,
+-	/*
+ 	 * Indicate that balance has been set up from the ioctl and is in the
+ 	 * main phase. The fs_info::balance_ctl is initialized.
+ 	 * Set and cleared while holding fs_info::balance_mutex.
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1749,7 +1749,6 @@ static int transaction_kthread(void *arg
+ 
+ 		now = ktime_get_seconds();
+ 		if (cur->state < TRANS_STATE_COMMIT_START &&
+-		    !test_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags) &&
+ 		    (now < cur->start_time ||
+ 		     now - cur->start_time < fs_info->commit_interval)) {
+ 			spin_unlock(&fs_info->trans_lock);
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -11,7 +11,6 @@
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+ #include <linux/btrfs.h>
+-#include <linux/sizes.h>
+ 
+ #include "ctree.h"
+ #include "transaction.h"
+@@ -2840,20 +2839,8 @@ out:
+ 	return ret;
+ }
+ 
+-/*
+- * Two limits to commit transaction in advance.
+- *
+- * For RATIO, it will be 1/RATIO of the remaining limit as threshold.
+- * For SIZE, it will be in byte unit as threshold.
+- */
+-#define QGROUP_FREE_RATIO		32
+-#define QGROUP_FREE_SIZE		SZ_32M
+-static bool qgroup_check_limits(struct btrfs_fs_info *fs_info,
+-				const struct btrfs_qgroup *qg, u64 num_bytes)
++static bool qgroup_check_limits(const struct btrfs_qgroup *qg, u64 num_bytes)
+ {
+-	u64 free;
+-	u64 threshold;
+-
+ 	if ((qg->lim_flags & BTRFS_QGROUP_LIMIT_MAX_RFER) &&
+ 	    qgroup_rsv_total(qg) + (s64)qg->rfer + num_bytes > qg->max_rfer)
+ 		return false;
+@@ -2862,32 +2849,6 @@ static bool qgroup_check_limits(struct b
+ 	    qgroup_rsv_total(qg) + (s64)qg->excl + num_bytes > qg->max_excl)
+ 		return false;
+ 
+-	/*
+-	 * Even if we passed the check, it's better to check if reservation
+-	 * for meta_pertrans is pushing us near limit.
+-	 * If there is too much pertrans reservation or it's near the limit,
+-	 * let's try commit transaction to free some, using transaction_kthread
+-	 */
+-	if ((qg->lim_flags & (BTRFS_QGROUP_LIMIT_MAX_RFER |
+-			      BTRFS_QGROUP_LIMIT_MAX_EXCL))) {
+-		if (qg->lim_flags & BTRFS_QGROUP_LIMIT_MAX_EXCL) {
+-			free = qg->max_excl - qgroup_rsv_total(qg) - qg->excl;
+-			threshold = min_t(u64, qg->max_excl / QGROUP_FREE_RATIO,
+-					  QGROUP_FREE_SIZE);
+-		} else {
+-			free = qg->max_rfer - qgroup_rsv_total(qg) - qg->rfer;
+-			threshold = min_t(u64, qg->max_rfer / QGROUP_FREE_RATIO,
+-					  QGROUP_FREE_SIZE);
+-		}
+-
+-		/*
+-		 * Use transaction_kthread to commit transaction, so we no
+-		 * longer need to bother nested transaction nor lock context.
+-		 */
+-		if (free < threshold)
+-			btrfs_commit_transaction_locksafe(fs_info);
+-	}
+-
+ 	return true;
+ }
+ 
+@@ -2937,7 +2898,7 @@ static int qgroup_reserve(struct btrfs_r
+ 
+ 		qg = unode_aux_to_qgroup(unode);
+ 
+-		if (enforce && !qgroup_check_limits(fs_info, qg, num_bytes)) {
++		if (enforce && !qgroup_check_limits(qg, num_bytes)) {
+ 			ret = -EDQUOT;
+ 			goto out;
+ 		}
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2297,7 +2297,6 @@ int btrfs_commit_transaction(struct btrf
+ 	 */
+ 	cur_trans->state = TRANS_STATE_COMPLETED;
+ 	wake_up(&cur_trans->commit_wait);
+-	clear_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags);
+ 
+ 	spin_lock(&fs_info->trans_lock);
+ 	list_del_init(&cur_trans->list);
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -207,20 +207,6 @@ int btrfs_clean_one_deleted_snapshot(str
+ int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
+ int btrfs_commit_transaction_async(struct btrfs_trans_handle *trans,
+ 				   int wait_for_unblock);
+-
+-/*
+- * Try to commit transaction asynchronously, so this is safe to call
+- * even holding a spinlock.
+- *
+- * It's done by informing transaction_kthread to commit transaction without
+- * waiting for commit interval.
+- */
+-static inline void btrfs_commit_transaction_locksafe(
+-		struct btrfs_fs_info *fs_info)
+-{
+-	set_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags);
+-	wake_up_process(fs_info->transaction_kthread);
+-}
+ int btrfs_end_transaction_throttle(struct btrfs_trans_handle *trans);
+ int btrfs_should_end_transaction(struct btrfs_trans_handle *trans);
+ void btrfs_throttle(struct btrfs_fs_info *fs_info);
+
+
