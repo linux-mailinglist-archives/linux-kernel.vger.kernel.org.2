@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9723EB841
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B7F3EB7C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241637AbhHMPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54986 "EHLO mail.kernel.org"
+        id S241248AbhHMPJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:09:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241890AbhHMPLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:11:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37A461102;
-        Fri, 13 Aug 2021 15:10:51 +0000 (UTC)
+        id S241252AbhHMPJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:09:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 490FF610A5;
+        Fri, 13 Aug 2021 15:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867452;
-        bh=EFJhGl4j17dSbDx5yR+3T/oEosXLQSue43tuVXBDXrU=;
+        s=korg; t=1628867313;
+        bh=yDPIGuMexPghYZNCHX3Fwg7l5cormIYMvgJIf8fu6XE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bzn8LB4Bpwn9/P6UNPXogj5hLFxIk+F+TD3e7jL3/zaDBl7Cqspuud11IVvAlNnSf
-         EhOSlcVe1VeKObY92musa9oXJfvr3d7B7cAfQDPKKqLTda2HwB06Zt4TL79sX6qXol
-         /47nVuBsHAckOp7mOJ3dfxsW/VFtqsy8G16+dee0=
+        b=aWk8NBPbE7Lm/EUlXgJDerMSHEQIsqse16F+imMXpzmD+FmgmNCJo7MG2pPixV3gv
+         5VINLdGAgDaHLKxD6PampiPi072Ov0rsROjon4bvjqxg1aLDGbapJnYOyJqe+LsGIV
+         6/KajDVo98unJ73f+4jNEzCXFBhbrBBxJSqTTlUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        folkert <folkert@vanheusden.com>
-Subject: [PATCH 4.14 02/42] ALSA: seq: Fix racy deletion of subscriber
-Date:   Fri, 13 Aug 2021 17:06:28 +0200
-Message-Id: <20210813150525.180507847@linuxfoundation.org>
+        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 05/25] mips: Fix non-POSIX regexp
+Date:   Fri, 13 Aug 2021 17:06:29 +0200
+Message-Id: <20210813150520.905190010@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
-References: <20210813150525.098817398@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,116 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit 97367c97226aab8b298ada954ce12659ee3ad2a4 upstream.
+[ Upstream commit 28bbbb9875a35975904e46f9b06fa689d051b290 ]
 
-It turned out that the current implementation of the port subscription
-is racy.  The subscription contains two linked lists, and we have to
-add to or delete from both lists.  Since both connection and
-disconnection procedures perform the same order for those two lists
-(i.e. src list, then dest list), when a deletion happens during a
-connection procedure, the src list may be deleted before the dest list
-addition completes, and this may lead to a use-after-free or an Oops,
-even though the access to both lists are protected via mutex.
+When cross compiling a MIPS kernel on a BSD based HOSTCC leads
+to errors like
 
-The simple workaround for this race is to change the access order for
-the disconnection, namely, dest list, then src list.  This assures
-that the connection has been established when disconnecting, and also
-the concurrent deletion can be avoided.
+  SYNC    include/config/auto.conf.cmd - due to: .config
+egrep: empty (sub)expression
+  UPD     include/config/kernel.release
+  HOSTCC  scripts/dtc/dtc.o - due to target missing
 
-Reported-and-tested-by: folkert <folkert@vanheusden.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210801182754.GP890690@belle.intranet.vanheusden.com
-Link: https://lore.kernel.org/r/20210803114312.2536-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It turns out that egrep uses this egrep pattern:
+
+		(|MINOR_|PATCHLEVEL_)
+
+This is not valid syntax or gives undefined results according
+to POSIX 9.5.3 ERE Grammar
+
+	https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
+
+It seems to be silently accepted by the Linux egrep implementation
+while a BSD host complains.
+
+Such patterns can be replaced by a transformation like
+
+	"(|p1|p2)" -> "(p1|p2)?"
+
+Fixes: 48c35b2d245f ("[MIPS] There is no __GNUC_MAJOR__")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/seq_ports.c |   39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -532,10 +532,11 @@ static int check_and_subscribe_port(stru
- 	return err;
- }
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 252e347958f3..ca010bce5d65 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -269,7 +269,7 @@ LDFLAGS			+= -m $(ld-emul)
  
--static void delete_and_unsubscribe_port(struct snd_seq_client *client,
--					struct snd_seq_client_port *port,
--					struct snd_seq_subscribers *subs,
--					bool is_src, bool ack)
-+/* called with grp->list_mutex held */
-+static void __delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					  struct snd_seq_client_port *port,
-+					  struct snd_seq_subscribers *subs,
-+					  bool is_src, bool ack)
- {
- 	struct snd_seq_port_subs_info *grp;
- 	struct list_head *list;
-@@ -543,7 +544,6 @@ static void delete_and_unsubscribe_port(
- 
- 	grp = is_src ? &port->c_src : &port->c_dest;
- 	list = is_src ? &subs->src_list : &subs->dest_list;
--	down_write(&grp->list_mutex);
- 	write_lock_irq(&grp->list_lock);
- 	empty = list_empty(list);
- 	if (!empty)
-@@ -553,6 +553,18 @@ static void delete_and_unsubscribe_port(
- 
- 	if (!empty)
- 		unsubscribe_port(client, port, grp, &subs->info, ack);
-+}
-+
-+static void delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					struct snd_seq_client_port *port,
-+					struct snd_seq_subscribers *subs,
-+					bool is_src, bool ack)
-+{
-+	struct snd_seq_port_subs_info *grp;
-+
-+	grp = is_src ? &port->c_src : &port->c_dest;
-+	down_write(&grp->list_mutex);
-+	__delete_and_unsubscribe_port(client, port, subs, is_src, ack);
- 	up_write(&grp->list_mutex);
- }
- 
-@@ -608,27 +620,30 @@ int snd_seq_port_disconnect(struct snd_s
- 			    struct snd_seq_client_port *dest_port,
- 			    struct snd_seq_port_subscribe *info)
- {
--	struct snd_seq_port_subs_info *src = &src_port->c_src;
-+	struct snd_seq_port_subs_info *dest = &dest_port->c_dest;
- 	struct snd_seq_subscribers *subs;
- 	int err = -ENOENT;
- 
--	down_write(&src->list_mutex);
-+	/* always start from deleting the dest port for avoiding concurrent
-+	 * deletions
-+	 */
-+	down_write(&dest->list_mutex);
- 	/* look for the connection */
--	list_for_each_entry(subs, &src->list_head, src_list) {
-+	list_for_each_entry(subs, &dest->list_head, dest_list) {
- 		if (match_subs_info(info, &subs->info)) {
--			atomic_dec(&subs->ref_count); /* mark as not ready */
-+			__delete_and_unsubscribe_port(dest_client, dest_port,
-+						      subs, false,
-+						      connector->number != dest_client->number);
- 			err = 0;
- 			break;
- 		}
- 	}
--	up_write(&src->list_mutex);
-+	up_write(&dest->list_mutex);
- 	if (err < 0)
- 		return err;
- 
- 	delete_and_unsubscribe_port(src_client, src_port, subs, true,
- 				    connector->number != src_client->number);
--	delete_and_unsubscribe_port(dest_client, dest_port, subs, false,
--				    connector->number != dest_client->number);
- 	kfree(subs);
- 	return 0;
- }
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
++	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ ifdef CONFIG_64BIT
+ CHECKFLAGS		+= -m64
+-- 
+2.30.2
+
 
 
