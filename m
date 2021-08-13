@@ -2,173 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237023EB3BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E923EB3C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239177AbhHMKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:02:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:47099 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239221AbhHMKCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:02:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628848935; h=Message-ID: References: In-Reply-To: Subject:
- To: From: Date: Content-Transfer-Encoding: Content-Type: MIME-Version:
- Sender; bh=P2//6qY2qBL9H15tqXfsToYxN/pKSnZWVqda89Yawsk=; b=S4xhCr7eEl8TSgkbgOw230MNAtEaPl6MzQDpmxTfG9Hm7FSIJ1phVfB/E2x8+LZMk8aep/xm
- VjAwOP7DwJjjgmAqe/UZEGv2Vyhq5lBl0U/a+3PMoBMpNNTwb3DO9Fv2cDAG/6wAd0lWzMbe
- r2WV0bQnwxplVHrUn31kCk50PRY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 611642c576c3a9a17217f644 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 10:00:37
- GMT
-Sender: wat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 049D3C4338A; Fri, 13 Aug 2021 10:00:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10E49C433F1;
-        Fri, 13 Aug 2021 10:00:34 +0000 (UTC)
+        id S239592AbhHMKDo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Aug 2021 06:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239619AbhHMKDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 06:03:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75221C0613A3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:02:34 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mEU14-0003CR-44; Fri, 13 Aug 2021 12:02:18 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mEU11-0003w2-Fx; Fri, 13 Aug 2021 12:02:15 +0200
+Message-ID: <5da35c2030e57621fa56795cd193e727f53205fe.camel@pengutronix.de>
+Subject: Re: [v11 2/2] pwm: Add Aspeed ast2600 PWM support
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>, lee.jones@linaro.org,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Cc:     BMC-SW@aspeedtech.com
+Date:   Fri, 13 Aug 2021 12:02:15 +0200
+In-Reply-To: <20210812040942.5365-3-billy_tsai@aspeedtech.com>
+References: <20210812040942.5365-1-billy_tsai@aspeedtech.com>
+         <20210812040942.5365-3-billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 13 Aug 2021 18:00:34 +0800
-From:   wat@codeaurora.org
-To:     undisclosed-recipients:;
-Subject: Re: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to
- TD_CLEARING_CACHE
-In-Reply-To: <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
-References: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
- <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
- <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
- <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
-Message-ID: <e1feb74fa95ca1f19729bf959f73f30f@codeaurora.org>
-X-Sender: wat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 17:09, Mathias Nyman wrote:
-> On 13.8.2021 11.44, wat@codeaurora.org wrote:
->> On 2021-08-13 15:25, Ikjoon Jang wrote:
->>> Hi,
->>> 
->>> On Fri, Aug 13, 2021 at 10:44 AM Tao Wang <wat@codeaurora.org> wrote:
->>>> 
->>>> USB SSD may fail to unmount if disconnect during data transferring.
->>>> 
->>>> it stuck in usb_kill_urb() due to urb use_count will not become 
->>>> zero,
->>>> this means urb giveback is not happen.
->>>> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
->>>> equal to TD_CLEARING_CACHE,
->>>> but in xhci_invalidate_cancelled_tds(), only last canceled td's
->>>> cancel_status change to TD_CLEARING_CACHE,
->>>> thus giveback only happen to last urb.
->>>> 
->>>> this change set all cancelled_td's cancel_status to 
->>>> TD_CLEARING_CACHE
->>>> rather than the last one, so all urb can giveback.
->>>> 
->>>> Signed-off-by: Tao Wang <wat@codeaurora.org>
->>>> ---
->>>>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
->>>>  1 file changed, 12 insertions(+), 12 deletions(-)
->>>> 
->>>> diff --git a/drivers/usb/host/xhci-ring.c 
->>>> b/drivers/usb/host/xhci-ring.c
->>>> index 8fea44b..c7dd7c0 100644
->>>> --- a/drivers/usb/host/xhci-ring.c
->>>> +++ b/drivers/usb/host/xhci-ring.c
->>>> @@ -960,19 +960,19 @@ static int 
->>>> xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
->>>>                         td_to_noop(xhci, ring, td, false);
->>>>                         td->cancel_status = TD_CLEARED;
->>>>                 }
->>>> -       }
->>>> -       if (cached_td) {
->>>> -               cached_td->cancel_status = TD_CLEARING_CACHE;
->>>> -
->>>> -               err = xhci_move_dequeue_past_td(xhci, slot_id, 
->>>> ep->ep_index,
->>>> -                                               
->>>> cached_td->urb->stream_id,
->>>> -                                               cached_td);
->>>> -               /* Failed to move past cached td, try just setting 
->>>> it noop */
->>>> -               if (err) {
->>>> -                       td_to_noop(xhci, ring, cached_td, false);
->>>> -                       cached_td->cancel_status = TD_CLEARED;
->>>> +               if (cached_td) {
->>>> +                       cached_td->cancel_status = 
->>>> TD_CLEARING_CACHE;
->>>> +
->>>> +                       err = xhci_move_dequeue_past_td(xhci, 
->>>> slot_id, ep->ep_index,
->>>> +                                                       
->>>> cached_td->urb->stream_id,
->>>> +                                                       cached_td);
->>>> +                       /* Failed to move past cached td, try just 
->>>> setting it noop */
->>>> +                       if (err) {
->>>> +                               td_to_noop(xhci, ring, cached_td, 
->>>> false);
->>>> +                               cached_td->cancel_status = 
->>>> TD_CLEARED;
->>>> +                       }
->>>> +                       cached_td = NULL;
->>>>                 }
->>>> -               cached_td = NULL;
->>> 
->>> I think we can call xhci_move_dequeue_past_td() just once to
->>> the last halted && cancelled TD in a ring.
->>> 
->>> But that might need to compare two TDs to see which one is
->>> the latter, I'm not sure how to do this well. :-/
->>> 
->>> if (!cached_td || cached_td < td)
->>>   cached_td = td;
->>> 
->> 
->> thanks, I think you are correct that we can call 
->> xhci_move_dequeue_past_td() just once to
->>  the last halted && cancelled TD in a ring,
->> but the set status "cached_td->cancel_status = TD_CLEARING_CACHE;" 
->> should be every cancelled TD.
->> I am not very good at td and ring, I have a question why we need to
->> compare two TDs to see which one is the latter.
+Hi Billy,
+
+On Thu, 2021-08-12 at 12:09 +0800, Billy Tsai wrote:
+> This patch add the support of PWM controller which can be found at aspeed
+> ast2600 soc. The pwm supoorts up to 16 channels and it's part function
+> of multi-function device "pwm-tach controller".
 > 
-> I'm debugging the exact same issue.
-> For normal endpoints (no streams) it should be enough to set
-> cancel_td->cancel_status = TD_CLEARING_CACHE
-> in the TD_DIRTY and TD_HALTED case.
-> 
-> We don't need to move the dq past the last cancelled TD as other
-> cancelled TDs are set to no-op, and
-> the command to move the dq will flush the xHC controllers TD cache and
-> read the no-ops.
-> (just make sure we call xhci_move_dequeue_past_td() _after_
-> overwriting cancelled TDs with no-op)
-> 
-> Streams get trickier as each endpoint has several rings, and we might
-> need to move the dq pointer for
-> many stream rings on that endpoint. This needs more work as we
-> shouldn't start the endpoint before all
-> the all move dq commands complete. i.e. the current  ep->ep_state &=
-> ~SET_DEQ_PENDING isn't enough.
-> 
-> -Mathias
-ok, thanks, please tell me if you have a great solution after debugging, 
-I still need to learn from you.
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+[...]
+> diff --git a/drivers/pwm/pwm-aspeed-ast2600.c b/drivers/pwm/pwm-aspeed-ast2600.c
+> new file mode 100644
+> index 000000000000..f89ce1d4cd67
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-aspeed-ast2600.c
+> @@ -0,0 +1,327 @@
+[...]
+> +static int aspeed_pwm_probe(struct platform_device *pdev)
+> +{
+[...]
+> +	priv->clk = devm_clk_get(&parent_dev->dev, 0);
+> +	if (IS_ERR(priv->clk))
+> +		return dev_err_probe(dev, PTR_ERR(priv->clk),
+> +				     "Couldn't get clock\n");
+> +
+> +	ret = clk_prepare_enable(priv->clk);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Couldn't enable clock\n");
+> +
+> +	priv->reset = devm_reset_control_get_shared(&parent_dev->dev, NULL);
+> +	if (IS_ERR(priv->reset)) {
+> +		ret = dev_err_probe(dev, PTR_ERR(priv->reset),
+> +				    "Get reset failed\n");
+> +		goto err_disable_clk;
+> +	}
+
+I suggest to request the reset control before enabling the clock. That
+way you can simplify the error path and avoid enabling the clock in case
+of reset_control_get failure.
+
+regards
+Philipp
