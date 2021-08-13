@@ -2,77 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9849E3EBE65
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E239A3EBE6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhHMWw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 18:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59038 "EHLO mail.kernel.org"
+        id S235325AbhHMW6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 18:58:04 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49386 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235029AbhHMWwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:52:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8E460F13;
-        Fri, 13 Aug 2021 22:52:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628895148;
-        bh=W/HryaeCif0NxndYVYWuG7EKalOs8HPuUDAwHgZGsvQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SH7UJxZVqITE1ctiveJoNXNxmJNXx3dT3PixxD4go8rGy8imxcL6uuOApLy6PH3b2
-         AMDTWg5xgH019dl81pNvgFKnpRJ1jOugTqlQo7PojxvYa9DnT+1Mz+zAt+BOh03DiU
-         NF6AIZpYgLWYDYLwNPrphys5KMFLNAt+cqfr78+Kf/qbH4dAYXQvWE0Km3qPrfVr4Z
-         FDCxwZXyclgu47+3DUF3zPD47Dpm7NesSc7vrMXIq37Lk15Uoeq1MBwIJVdgBTohfw
-         vHhDnoOpFpVIlBXkQbb0L0Pb6pDyMnIHoYbqjHpZxuiOGRsJr9syNnOtbGCbVqNBmX
-         PcQzUwdH6OEcw==
-Date:   Fri, 13 Aug 2021 15:52:26 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
+        id S235029AbhHMW6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 18:58:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=FYuUdJcFQOnbiiBadjNTfXqj9uF9g7KISuzsDGYuIvY=; b=C085qsX/52ve+v3DUlpobQXO/P
+        xQqpZwVxtMvm7cREVO5zkVU4jchLMtKkpNwVA1i1wYi2Sm4PW0/Jf/kNbMMbvmd42qQmONNay4cCu
+        ubMgBINKx5U6Yhpv8H94DHq+ccliTuHltIfKJI9v5l2i5Qt3fW4Siny1Gh1imVLJy2p4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mEg7D-00HZox-WF; Sat, 14 Aug 2021 00:57:28 +0200
+Date:   Sat, 14 Aug 2021 00:57:27 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
 To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, linux@rempel-privat.de,
-        himadrispandya@gmail.com, andrew@lunn.ch,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com,
-        Robert Foss <robert.foss@collabora.com>,
-        Vincent Palatin <vpalatin@chromium.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
+        himadrispandya@gmail.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
 Subject: Re: [PATCH v2] net: asix: fix uninit value in asix_mdio_read
-Message-ID: <20210813155226.651c74f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210813224219.11359-1-paskripkin@gmail.com>
+Message-ID: <YRb419yLsAtDVShf@lunn.ch>
 References: <YRbw1psAc8jQu4ob@lunn.ch>
-        <20210813224219.11359-1-paskripkin@gmail.com>
+ <20210813224219.11359-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813224219.11359-1-paskripkin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Aug 2021 01:42:19 +0300 Pavel Skripkin wrote:
-> Syzbot reported uninit-value in asix_mdio_read(). The problem was in
-> missing error handling. asix_read_cmd() should initialize passed stack
-> variable smsr, but it can fail in some cases. Then while condidition
-> checks possibly uninit smsr variable.
-> 
-> Since smsr is uninitialized stack variable, driver can misbehave,
-> because smsr will be random in case of asix_read_cmd() failure.
-> Fix it by adding error cheking and just continue the loop instead of
-> checking uninit value.
-> 
-> Fixes: 8a46f665833a ("net: asix: Avoid looping when the device is disconnected")
-
-This is not the right tag, the Fixes tag should point to the commit
-where the problem is introduced. Robert/Vincent only added some error
-checking, the issue was there before, right?
-
-Once you locate the right starting point for the fix please make sure
-to add the author to CC.
-
-Thanks!
-
-> Reported-by: syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-
->  drivers/net/usb/asix_common.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
 > diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
 > index ac92bc52a85e..7019c25e591c 100644
 > --- a/drivers/net/usb/asix_common.c
@@ -84,9 +52,7 @@ Thanks!
 > -	int i = 0;
 > +	int i;
 >  	int ret;
-
-nit: move i after ret, reverse xmas tree style
-
+>  
 >  	mutex_lock(&dev->phy_mutex);
 > -	do {
 > +	for (i = 0; i < 30; ++i) {
@@ -105,9 +71,8 @@ nit: move i after ret, reverse xmas tree style
 > +			break;
 > +	}
 > +
->  	if (ret == -ENODEV || ret == -ETIMEDOUT) {
->  		mutex_unlock(&dev->phy_mutex);
->  		return ret;
 
-Code LGTM, do other functions which Robert/Vincent touched not need the
-same treatment tho?
+Yes, this looks good. And Jakub is correct, there are 3 other bits of
+similar code you should look at.
+
+     Andrew
