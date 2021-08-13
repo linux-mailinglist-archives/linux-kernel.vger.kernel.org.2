@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D69E3EB73E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086123EB749
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241044AbhHMPAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:00:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46168 "EHLO mail.kernel.org"
+        id S241025AbhHMPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241035AbhHMPAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:00:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36B3A610F7;
-        Fri, 13 Aug 2021 15:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628866814;
-        bh=rJVB8c8zbROro7cBJd32sE+qX454V0M11ELW5v/GB3c=;
+        id S241048AbhHMPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8564C61042;
+        Fri, 13 Aug 2021 15:00:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628866834;
+        bh=I1FekdfmiRJknOkcQKVglzJj1Ot+dwBi5XK4Uv4qoLw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OKct3yRhUjIGcZVMd3+a4SEO46LXuMVjuhR1kUj18Pdtt+l/GKCcxfY110R9CPNby
-         GzbXyFA7YWqSPKSsfSZ94Lm6ZLYTWaunQddsfcaxBBUYbm1SDOo/XLo8XBSEwSCVfJ
-         mITOtkl3bE7gsfo+EcR95klekcpGOxipr0jS8/up6VE6fB6eCFt2XnXtaH5p1sNqfm
-         MyKN46D33TQ05nuXjE5H398odFXpQOU16utmASAt/3URmksN3TNC3yxJDpHqdkTojj
-         pxLSpp9sZ1QsiJqkvJnyw1Ctl6i5nBMGQ0cy6EIgCxaWRjtbzoWEe+o7ewZiCv3nyF
-         87NF/ZCBLw40w==
-Date:   Fri, 13 Aug 2021 16:00:10 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     shuah@kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, luto@kernel.org,
-        linux-kselftest@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v2] selftest: Add test for Soft-Dirty PTE bit
-Message-ID: <20210813150009.GC8451@willie-the-truck>
-References: <20210603151518.2437813-1-krisman@collabora.com>
+        b=fuY6lYyOpl7hDr0+1ihFss0W58HDyFd8HTcmfb6hCWldAsyNOZKLP6QDAubN5Ho30
+         td0c9NzbhV791kLwVF6DHPULiHtRnJvQaECbafz7hKPIDiVcneNG5cn9fCumnYXiSs
+         4gEgVbzkauaN+75E0Uq+qBMctxTS74Qaem0aZfoc=
+Date:   Fri, 13 Aug 2021 17:00:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oliver Graute <oliver.graute@kococonnector.com>
+Cc:     Carlis <zhangxuezhi1@yulong.com>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] fbtft: fb_st7789v: added reset on init_display()
+Message-ID: <YRaJDyYquuklht6C@kroah.com>
+References: <20210813062511.14537-1-oliver.graute@kococonnector.com>
+ <YRYrPfEHrcvDL4va@kroah.com>
+ <20210813125430.GA1527@optiplex>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603151518.2437813-1-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210813125430.GA1527@optiplex>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:15:18AM -0400, Gabriel Krisman Bertazi wrote:
-> This introduces three tests:
+On Fri, Aug 13, 2021 at 02:54:30PM +0200, Oliver Graute wrote:
+> On 13/08/21, Greg KH wrote:
+> > On Fri, Aug 13, 2021 at 08:25:10AM +0200, Oliver Graute wrote:
+> > > staging: fbtft: fb_st7789v: reset display before initialization
+> > 
+> > What is this line here, and why is this not your subject line instead?
 > 
-> 1) Sanity check soft dirty basic semantics: allocate area, clean, dirty,
-> check if the SD bit flipped.
+> I'll put the line as subject instead.
 > 
-> 2) Check VMA reuse: validate the VM_SOFTDIRTY usage
+> > > In rare cases the display is flipped or mirrored. This was observed more
+> > > often in a low temperature environment. A clean reset on init_display()
+> > > should help to get registers in a sane state.
+> > > 
+> > > Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
+> > 
+> > What commit does this fix?
 > 
-> 3) Check soft-dirty on huge pages
-> 
-> This was motivated by Will Deacon's fix commit 912efa17e512 ("mm: proc:
-> Invalidate TLB after clearing soft-dirty page state"). I was tracking the
-> same issue that he fixed, and this test would have caught it.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> 
-> --
-> Changes since V1:
->   - Fix last minute build break with page_size
-> ---
->  tools/testing/selftests/Makefile              |   1 +
->  tools/testing/selftests/soft-dirty/.gitignore |   1 +
->  tools/testing/selftests/soft-dirty/Makefile   |   9 +
->  .../testing/selftests/soft-dirty/soft-dirty.c | 254 ++++++++++++++++++
->  4 files changed, 265 insertions(+)
->  create mode 100644 tools/testing/selftests/soft-dirty/.gitignore
->  create mode 100644 tools/testing/selftests/soft-dirty/Makefile
->  create mode 100644 tools/testing/selftests/soft-dirty/soft-dirty.c
+> this is a fix for a rare behavior of the fb_st7789v display. Not a
+> bugfix for a specific commit.
 
-Although I think adding a test for this is great (and I certainly wouldn't
-want to get in the way of that; quite the opposite), I notice that we
-already have test_softdirty() in selftests/vm/madv_populate.c. Would we be
-better off extending that test instead of introducing another one?
+So if it has always been broken, list the commit where the code was
+added to the kernel, as this should be backported to the stable kernels,
+right?
 
-Will
+thanks,
+
+greg k-h
