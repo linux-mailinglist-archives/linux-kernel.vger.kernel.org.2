@@ -2,179 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA593EAF09
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE24C3EAF0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238652AbhHMD5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 23:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
+        id S238658AbhHMD6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 23:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238651AbhHMD50 (ORCPT
+        with ESMTP id S233750AbhHMD6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 23:57:26 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D0BC0617AF;
-        Thu, 12 Aug 2021 20:57:00 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id bo18so13523523pjb.0;
-        Thu, 12 Aug 2021 20:57:00 -0700 (PDT)
+        Thu, 12 Aug 2021 23:58:22 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AD4C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 20:57:56 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id nt11so13458371pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 20:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=afELPIh8J30U75rhJhY8tI3oPOuBLSl/0lGnJPYz3fo=;
-        b=IrLZ2cN0N8QGITqIznkMkCdMdmbVal7yBdHqMbCYZXunGlR32MCjHwh66vPG0CYRuv
-         hV3POu2XlrgISwtRco+WcqumMVXT/mAZUl4bzKm/YlDNgdiWDsJvDQoH55Wlhc7htjjr
-         GIyV9wT1eecIV9saT4cvyPQHyi/zX8M8ubTU/1nDYk40iiLFpzrAoqf8KOIjulbTYprA
-         Qro0SRIq2kBkRV3X1cHlKxygLrBj5f+QIpeaNbdOvnAoUOF1XKwJNH2WLzXk2Ase4vz1
-         dRkqnDzk8hXEWsktY8RZZVTA0eax9O7Gt++CbdXuzoiPmc5C5U/nOejl2/mK5XlFVfgL
-         xxqA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MvmuwhxcqYAbdPmkTIufV5uQRwUnrxELEdSjPA9KrXo=;
+        b=eOwiRNh4MUanAxbqTJMBRZCZfu41L9y7gdH60FKetDLsqWzSItkABZc2JszeZ82opI
+         bfkEzhtcD2es9gu2FAoDAUD+8r0bgLFFKMlRuYwEIbemol70oWZxCO31WcLOv5eMCRNa
+         CJz0KsyMOp6WuJk25J8DqIzQcqdedVyC1mhgHbhFE87rdyadBI69e49/dXtQgjr5nbwK
+         VwFZ8KAWt5PmbX1zUdzO5/uHS77AD+9oVD4cjLD1dgCyEgN0HdYt+pNQ9evzQR5Xju/D
+         A2Cbwl1uAfUjP6ecqadlbt+ewPMPfQYRiHSWmx1YWwU4/vp+unPk39FFAHC70KWSX+1c
+         sUrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=afELPIh8J30U75rhJhY8tI3oPOuBLSl/0lGnJPYz3fo=;
-        b=NrjTUEvZuEhoxIDN8IhInWw+p8ZU2klu9beWuR5jYn86K4hKEeupNo9Rk4qErg/cKg
-         Dsgmbw2Btgrz1Lnqpq7bB6iaPPdpRiMgpfy8N4vtDaOj9zHKlu7rULnOdE0tktApw6uC
-         kwY4erl9SEYZA9XPxY5yjn2PcalL7femzb6Oz1dBtc9///jNW9KTLxm3AENH8sOCFvme
-         elId0h7DPhmab6fVRWldvH3wJQWsn8eSCS47es3kvm9aWHfamMWWb/w4IIzy2MJitw//
-         Dds6/3S+p6imiFchR3S5AExhTZnsJJfWshT35vC7hIcDtG/j8RGvmGcTrGjsscYQyluB
-         XWVQ==
-X-Gm-Message-State: AOAM5313bglH4Gia43iE2dcgzppuI0gf2znjtevNo48Db7CUr1C0o5wG
-        dHv8HErVwgeKyiWF4f/lVY5zFW46D+GEqjMq
-X-Google-Smtp-Source: ABdhPJw35cqiSqLFCGUqyYmhlXj/CcFDJueOXhlB8GNZi0ALm4Up6XyLQHZkqC/kh5Yt6UIPGvpY6w==
-X-Received: by 2002:a65:5acf:: with SMTP id d15mr417664pgt.217.1628827020085;
-        Thu, 12 Aug 2021 20:57:00 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8916:5000:f39c:9aee:21bf:36f5])
-        by smtp.gmail.com with ESMTPSA id n25sm297791pfa.26.2021.08.12.20.56.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MvmuwhxcqYAbdPmkTIufV5uQRwUnrxELEdSjPA9KrXo=;
+        b=JCBK7tkRiambz9fgxv3HbaQzwhLNplTE3Li9SL+rovBwE7BRjj8tg0Xh9MDJT9l5M/
+         5sylYOW5u7Nf+YQV0Vvj+6XnlfYK6IkCn8R0DDrQ7zhgMQNXC4tPS6lod92Gt7rX+BfV
+         zOClUFf+/7zeY5B9q4L5XWmABW8xrYLlT/i6ln6L8hcA8KQ6zXV+4j2hCVAw3mePpa60
+         FyyzZxhV/LAjNkiSkW+XL2l8yBazIi0DwWAxzQfIs0SIQbMeRRS+wxpuQRXTcALTKugC
+         CLiCPoQ+Sb9qcktgN6SZZamB72ue8jGWi53SWugLFMtRp4jDiAz9XG4a7pdX1wFJAxuM
+         ITWA==
+X-Gm-Message-State: AOAM5319H+EWK72hy/yYX2XGuwH/r9oGSaGQOSyrbl8qNb5gTLtSuUWx
+        mzrf4GSUmVTZlYb+FBy57ow7IQ==
+X-Google-Smtp-Source: ABdhPJxRDakJcVqHqBRWt5r47fIPr4C/oo8C0jNq80oWE8P2YNHnQVm97OlAzna+HWJyBkUGtgz+2g==
+X-Received: by 2002:a65:44c3:: with SMTP id g3mr421133pgs.233.1628827076146;
+        Thu, 12 Aug 2021 20:57:56 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id x1sm299780pfn.64.2021.08.12.20.57.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 20:56:59 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     linux-kernel@vger.kernel.org, maz@kernel.org, tglx@linutronix.de
-Cc:     bhelgaas@google.com, dwmw@amazon.co.uk, gregkh@linuxfoundation.org,
-        linux-pci@vger.kernel.org, linuxarm@huawei.com,
-        lorenzo.pieralisi@arm.com, rafael@kernel.org, robin.murphy@arm.com,
-        song.bao.hua@hisilicon.com, will@kernel.org,
-        Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [PATCH v3 2/2] platform-msi: Add ABI to show msi_irqs of platform devices
-Date:   Fri, 13 Aug 2021 15:56:28 +1200
-Message-Id: <20210813035628.6844-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210813035628.6844-1-21cnbao@gmail.com>
-References: <20210813035628.6844-1-21cnbao@gmail.com>
+        Thu, 12 Aug 2021 20:57:55 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 09:27:53 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net,
+        digetx@gmail.com
+Subject: Re: [PATCH v7 1/3] opp: Don't print an error if required-opps is
+ missing
+Message-ID: <20210813035753.7b6ye4yzztmp2ly7@vireshk-i7>
+References: <1628767642-4008-1-git-send-email-rnayak@codeaurora.org>
+ <1628767642-4008-2-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628767642-4008-2-git-send-email-rnayak@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
+On 12-08-21, 16:57, Rajendra Nayak wrote:
+> The 'required-opps' property is considered optional, hence remove
+> the pr_err() in of_parse_required_opp() when we find the property is
+> missing.
+> While at it, also fix the return value of
+> of_get_required_opp_performance_state() when of_parse_required_opp()
+> fails, return a -ENODEV instead of the -EINVAL.
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  drivers/opp/of.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
 
-Just like PCI devices have msi_irqs which can be used by userspace IRQ
-affinity tools or applications to bind IRQs, platform devices also widely
-support MSI IRQs. For some platform devices such as ARM SMMU, userspaces
-also care about its MSI IRQs as applications can know the mapping between
-devices and IRQs and then make smarter decision on handling IRQ affinity.
-For example, in SVA mode, it is better to pin I/O page fault to the NUMA
-node applications are running on. Otherwise, I/O page fault will get a
-remote page from the node IOPF happens.
-With this patch, a system with multiple ARM SMMUs in multiple different
-NUMA nodes can get the mapping between devices and IRQs now:
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-  root@ubuntu:/sys/devices/platform# ls -l arm-smmu-v3.*/msi_irqs/*
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/25
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/26
-  -r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/27
-  -r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/28
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/29
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/30
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/31
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/32
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/33
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/34
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/35
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/36
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/37
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/38
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/39
-  -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/40
-
-Applications can use the mapping and the NUMA node information to pin
-IRQs by further leveraging the numa information which has also been
-exported:
-
-  root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.0.auto/numa_node
-  0
-  root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.4.auto/numa_node
-  2
-
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Zhou Wang <wangzhou1@hisilicon.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/ABI/testing/sysfs-bus-platform | 14 ++++++++++++++
- drivers/base/platform-msi.c                  | 10 ++++++++++
- 2 files changed, 24 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
-index 194ca70..ff30728 100644
---- a/Documentation/ABI/testing/sysfs-bus-platform
-+++ b/Documentation/ABI/testing/sysfs-bus-platform
-@@ -28,3 +28,17 @@ Description:
- 		value comes from an ACPI _PXM method or a similar firmware
- 		source. Initial users for this file would be devices like
- 		arm smmu which are populated by arm64 acpi_iort.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		The /sys/devices/.../msi_irqs directory contains a variable set
-+		of files, with each file being named after a corresponding msi
-+		irq vector allocated to that device.
-+
-+What:		/sys/bus/platform/devices/.../msi_irqs/<N>
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		This attribute will show "msi" if <N> is a valid msi irq
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 0b72b13..a3bf910 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -23,6 +23,7 @@
- struct platform_msi_priv_data {
- 	struct device		*dev;
- 	void 			*host_data;
-+	const struct attribute_group    **msi_irq_groups;
- 	msi_alloc_info_t	arg;
- 	irq_write_msi_msg_t	write_msg;
- 	int			devid;
-@@ -272,8 +273,16 @@ int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
- 	if (err)
- 		goto out_free_desc;
- 
-+	priv_data->msi_irq_groups = msi_populate_sysfs(dev);
-+	if (IS_ERR(priv_data->msi_irq_groups)) {
-+		err = PTR_ERR(priv_data->msi_irq_groups);
-+		goto out_free_irqs;
-+	}
-+
- 	return 0;
- 
-+out_free_irqs:
-+	msi_domain_free_irqs(dev->msi_domain, dev);
- out_free_desc:
- 	platform_msi_free_descs(dev, 0, nvec);
- out_free_priv_data:
-@@ -293,6 +302,7 @@ void platform_msi_domain_free_irqs(struct device *dev)
- 		struct msi_desc *desc;
- 
- 		desc = first_msi_entry(dev);
-+		msi_destroy_sysfs(dev, desc->platform.msi_priv_data->msi_irq_groups);
- 		platform_msi_free_priv_data(desc->platform.msi_priv_data);
- 	}
- 
 -- 
-1.8.3.1
-
+viresh
