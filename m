@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8583EB58E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5696D3EB593
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240460AbhHMMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240266AbhHMMay (ORCPT
+        id S240260AbhHMMdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:33:03 -0400
+Received: from mail-m17636.qiye.163.com ([59.111.176.36]:51568 "EHLO
+        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233573AbhHMMdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:30:54 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9D2C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:30:27 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id a7so15380702ljq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKyfNfiNqsHMlq1jao0L8607rl8WGkrJVnPkqazb7bQ=;
-        b=GbGotzYF6T06vpY+OUEQIlPMEj5pd++OBg9ekYpLubofuJK/zKV+LxP9seGOUHi2ZN
-         YbSmiMk5z16NuqeoOEBrg6B8FCl3RK6bjJOBdD0GDSIt1hHVUFCEJgTG+mpkwVSyg/8N
-         zsbW1cqeFgrbh9AGeBtWdvRrfQ1rKeWYBSkPS7ZLVo1fDYNEQgUwuP8vlUWwsQ4UhdfI
-         vdBZeEUGL1vPp+ioYUQHeabQOeaoa/5gsq5a0sLt1RtlNMirtsNmMsaLce0ZZaInx9Vq
-         LwPVOJ2C/pG2MqgQq4Ogzk68frOc22xbcGIWl5MEElGBjgaoB7+kM7delLLKPBoJYh8W
-         1wDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKyfNfiNqsHMlq1jao0L8607rl8WGkrJVnPkqazb7bQ=;
-        b=hV8VOLu1bA93EBm9h52xlPv+ih7PvrghpfagiR5G1/VaorV6TewGFE7spSwVQs2qZW
-         WkFzyttGYHtOAsW+vRl8zxxg9FfO4IPLgXuXnHninkFGsnOe+2i54ddj9ATor8VRKZ+X
-         Om7nUh9vng8umSDEa96L28wD5JrpE+aUv7jabgqJO1utdsp4hbTWv0rDZ8675U6oMu0T
-         F0R9VKGxCYH1gFdi8RwmKQxii33Yih47kaI1v57i5/5g47HCSJJPOgn9EwkRYX7xLviP
-         p6kEbMxOKWPuLw2AhG85l70iYmbA4/VK4OJcprzt3GYGOPFTUQtR+YxZ6ZPHnfCdBbws
-         2eDQ==
-X-Gm-Message-State: AOAM531uSFGQgPP0WZfMUqPk0kDhIG0UCWPLY204VbRrUInTRZr7MPqX
-        50CPGWttakUiyaDlMnO8wnVY6VEmzd5ARA==
-X-Google-Smtp-Source: ABdhPJxUFyr7g2Jo75fLHEeiGOVb53ZTMRRDjcVopWtyR5+UnWgv4N2N6Z2x5vPLNzm7L6w9oAs/ew==
-X-Received: by 2002:a05:651c:1506:: with SMTP id e6mr1686085ljf.487.1628857825412;
-        Fri, 13 Aug 2021 05:30:25 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id a7sm145009lfu.275.2021.08.13.05.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 05:30:24 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     hch@infradead.org
-Cc:     linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] sysv: use BUILD_BUG_ON instead of runtime check
-Date:   Fri, 13 Aug 2021 15:30:20 +0300
-Message-Id: <20210813123020.22971-1-paskripkin@gmail.com>
+        Fri, 13 Aug 2021 08:33:00 -0400
+Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
+        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 3B6F3C40179;
+        Fri, 13 Aug 2021 20:32:26 +0800 (CST)
+From:   Yangtao Li <frank.li@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH v5 1/2] f2fs: introduce proc/fs/f2fs/<dev>/fsck_stack node
+Date:   Fri, 13 Aug 2021 20:32:20 +0800
+Message-Id: <20210813123221.185591-1-frank.li@vivo.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUNLH0xWTkNDHR9JHUJMQx
+        keVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRQ6CDo5Lz8DAxhDMRYwMSku
+        D0sKCx1VSlVKTUlDQ05MQk9NQ0xJVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
+        VUpLT1VKQ0NVSk1OWVdZCAFZQU9CTkI3Bg++
+X-HM-Tid: 0a7b3f7fd127d996kuws3b6f3c40179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was runtime checks about sizes of struct v7_super_block
-and struct sysv_inode. If one of these checks fail kernel will panic.
-Since these values are known on complite time let's use BUILD_BUG_ON(),
-because it's standard mechanism for validation checking at build time
+SBI_NEED_FSCK is an indicator that fsck.f2fs needs to be triggered,
+this flag is set in too many places. For some scenes that are not very
+reproducible, adding stack information will help locate the problem.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Let's expose all fsck stack history in procfs.
+
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
- fs/sysv/super.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+v5:
+-fix implicit declaration of function 'stack_trace_save'
+ fs/f2fs/f2fs.h  | 34 +++++++++++++++++++++++++++++++++-
+ fs/f2fs/sysfs.c | 26 ++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/fs/sysv/super.c b/fs/sysv/super.c
-index cc8e2ed155c8..d1def0771a40 100644
---- a/fs/sysv/super.c
-+++ b/fs/sysv/super.c
-@@ -474,10 +474,8 @@ static int v7_fill_super(struct super_block *sb, void *data, int silent)
- 	struct sysv_sb_info *sbi;
- 	struct buffer_head *bh;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 67faa43cc141..cbd06dea3c6a 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -24,6 +24,8 @@
+ #include <linux/quotaops.h>
+ #include <linux/part_stat.h>
+ #include <crypto/hash.h>
++#include <linux/stackdepot.h>
++#include <linux/stacktrace.h>
  
--	if (440 != sizeof (struct v7_super_block))
--		panic("V7 FS: bad super-block size");
--	if (64 != sizeof (struct sysv_inode))
--		panic("sysv fs: bad i-node size");
-+	BUILD_BUG_ON(sizeof(struct v7_super_block) != 440);
-+	BUILD_BUG_ON(sizeof(struct sysv_inode) != 64);
+ #include <linux/fscrypt.h>
+ #include <linux/fsverity.h>
+@@ -119,6 +121,8 @@ typedef u32 nid_t;
  
- 	sbi = kzalloc(sizeof(struct sysv_sb_info), GFP_KERNEL);
- 	if (!sbi)
+ #define COMPRESS_EXT_NUM		16
+ 
++#define FSCK_STACK_DEPTH 64
++
+ struct f2fs_mount_info {
+ 	unsigned int opt;
+ 	int write_io_size_bits;		/* Write IO size bits */
+@@ -1786,6 +1790,8 @@ struct f2fs_sb_info {
+ 	unsigned int compress_watermark;	/* cache page watermark */
+ 	atomic_t compress_page_hit;		/* cache hit count */
+ #endif
++	depot_stack_handle_t *fsck_stack;
++	unsigned int fsck_count;
+ };
+ 
+ struct f2fs_private_dio {
+@@ -1997,9 +2003,35 @@ static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+ 	return test_bit(type, &sbi->s_flag);
+ }
+ 
+-static inline void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
++static void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+ {
+ 	set_bit(type, &sbi->s_flag);
++
++	if (unlikely(type ==  SBI_NEED_FSCK)) {
++		unsigned long entries[FSCK_STACK_DEPTH];
++		depot_stack_handle_t stack, *new;
++		unsigned int nr_entries;
++		int i;
++
++		nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
++		nr_entries = filter_irq_stacks(entries, nr_entries);
++		stack = stack_depot_save(entries, nr_entries, GFP_KERNEL);
++		if (!stack)
++			return;
++
++		/* Try to find an existing entry for this backtrace */
++		for (i = 0; i < sbi->fsck_count; i++)
++			if (sbi->fsck_stack[i] == stack)
++				return;
++
++		new = krealloc(sbi->fsck_stack, (sbi->fsck_count + 1) *
++			       sizeof(*sbi->fsck_stack), GFP_KERNEL);
++		if (!new)
++			return;
++
++		sbi->fsck_stack = new;
++		sbi->fsck_stack[sbi->fsck_count++] = stack;
++	}
+ }
+ 
+ static inline void clear_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 0954761341d7..c134bbb99c7b 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -1171,6 +1171,29 @@ static int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
+ 	return 0;
+ }
+ 
++static int __maybe_unused fsck_stack_seq_show(struct seq_file *seq,
++						void *offset)
++{
++	struct super_block *sb = seq->private;
++	struct f2fs_sb_info *sbi = F2FS_SB(sb);
++	unsigned long *entries;
++	unsigned int nr_entries;
++	unsigned int i, j;
++
++	for (i = 0; i < sbi->fsck_count; i++) {
++		nr_entries = stack_depot_fetch(sbi->fsck_stack[i], &entries);
++		if (!entries)
++			return 0;
++
++		for (j = 0; j < nr_entries; j++)
++			seq_printf(seq, "%pS\n", (void *)entries[j]);
++
++		seq_putc(seq, '\n');
++	}
++
++	return 0;
++}
++
+ static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
+ 						void *offset)
+ {
+@@ -1261,6 +1284,8 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
+ 				iostat_info_seq_show, sb);
+ 		proc_create_single_data("victim_bits", S_IRUGO, sbi->s_proc,
+ 				victim_bits_seq_show, sb);
++		proc_create_single_data("fsck_stack", S_IRUGO, sbi->s_proc,
++				fsck_stack_seq_show, sb);
+ 	}
+ 	return 0;
+ put_feature_list_kobj:
+@@ -1282,6 +1307,7 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
+ 		remove_proc_entry("segment_info", sbi->s_proc);
+ 		remove_proc_entry("segment_bits", sbi->s_proc);
+ 		remove_proc_entry("victim_bits", sbi->s_proc);
++		remove_proc_entry("fsck_stack", sbi->s_proc);
+ 		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
+ 	}
+ 
 -- 
 2.32.0
 
