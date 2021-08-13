@@ -2,159 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E383EB6FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30F23EB6F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240871AbhHMOry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240854AbhHMOrw (ORCPT
+        id S240861AbhHMOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:47:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23464 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240810AbhHMOrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:47:52 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E197C061756;
-        Fri, 13 Aug 2021 07:47:25 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id c17so6971630plz.2;
-        Fri, 13 Aug 2021 07:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h0fwzAM2xa3IuzI5XH7EKcb4uriWshT0e5PMSEAhE6o=;
-        b=SFsaZR8H6/iCATb9npLqQav3v7+Hx9pEBpXMvZkAbLWlGdP4tJPkFnhWjYYVBA+gr7
-         enDVqHRI+sUTfO+QD+xUb/kiaHjki5TDX7LDRXRbnAAGdzglfYmAIeEv3NaLOs3WZFI6
-         QpwVTXaqKuk2LqUcHXMYCJShgxETjKgSFjd+w519tN8vJ1PIS4ggPI/hdyDemG/O9yG0
-         d+nJvNvFi1CNxm3imEFAafWG8G3cd55gKw6pOrOqUc8/nnasymxbpZawN1H+CcZsRXPW
-         sAIiYwwES150T0ZoQ+2eHkBM4cXeXgB/0HvLF2TLeor+lXfzkRiUTK8l2xe65SzwmVk3
-         WOkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h0fwzAM2xa3IuzI5XH7EKcb4uriWshT0e5PMSEAhE6o=;
-        b=Tctp9o2oyj5MSf+2cnRcBsQNDDlDwC4PGxq3PTyXHd1G8JeF9WMU5hiRC1uIngDJ6q
-         7W2kqatD4rzC39VKmreYzSdXIJFxj258d9scA855EUjIiwbM/z0NpoJ1sJjYuKpgjp/B
-         lUo1za7D6Nnqe1+dW4wG7n8u+a0QxtQmJu0bW2m6cJA4IDR4VjTy6ddivK8C30izeLbt
-         /kFC2w1toIt/8Z3lwFABoiE6I0cXdcKB/cCKFcEbNrsz9pZVAsrJM8bwn+a46tV7D8Yr
-         4HAH2eAxmUYqJK0aZMcWV+6o61DRlldX3zPCWfnqufpct0CpGmmWLl0BEulFHLaGpT6l
-         FXhg==
-X-Gm-Message-State: AOAM5330EcvSNSNwGbDIB75eXDfPolpEnQKBMUbC8+SWJw58N/7+bynx
-        g+sJYfb1JGKx5PAfxXo2a/s=
-X-Google-Smtp-Source: ABdhPJwW7TruVJob38A8ZwZijeyYKk6sy+4zU/ElfEn3Dos9dmdvRF3erNjV7wBXCJz+RKJwCFAOrw==
-X-Received: by 2002:a62:7f09:0:b029:3c8:584:72d with SMTP id a9-20020a627f090000b02903c80584072dmr2813006pfd.80.1628866045025;
-        Fri, 13 Aug 2021 07:47:25 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id pc6sm1799926pjb.29.2021.08.13.07.47.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 07:47:24 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] Documentation: in_irq() cleanup
-Date:   Fri, 13 Aug 2021 22:47:13 +0800
-Message-Id: <20210813144713.85598-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 13 Aug 2021 10:47:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628866044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+F5e/QJCQvTQyfdm+mXX5RdrWpejQYPMUGSZ/zRGUYg=;
+        b=HPWZiPabWoPFTO8P0obg/vGBtv+t7kxFRU5KXCYTKj2XNmi0LZHtBSqRD4botQ2j9sBqaa
+        9Px6PMrUv9erOt/G9aI0FBKFIqkSSohzcokugVdh1DLRhcKMQgQ4JfPNXO+bb9ib3AHTTF
+        sH2HM+WmFpZmwsfi69jUwzAcbPvnZVI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-lV9q3wEuNu2HaooDE1H1AA-1; Fri, 13 Aug 2021 10:47:23 -0400
+X-MC-Unique: lV9q3wEuNu2HaooDE1H1AA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A77DC1008061;
+        Fri, 13 Aug 2021 14:47:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B9DC060853;
+        Fri, 13 Aug 2021 14:47:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] netfs: Fix READ/WRITE confusion when calling
+ iov_iter_xarray()
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Jeff Layton <jlayton@kernel.org>, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dhowells@redhat.com, linux-kernel@vger.kernel.org
+Date:   Fri, 13 Aug 2021 15:47:14 +0100
+Message-ID: <162886603464.3940407.3790841170414793899.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the obsolete and ambiguos macro in_irq() with new
-macro in_hardirq().
+Fix netfs_clear_unread() to pass READ to iov_iter_xarray() instead of WRITE
+(the flag is about the operation accessing the buffer, not what sort of
+access it is doing to the buffer).
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Fixes: 3d3c95046742 ("netfs: Provide readahead and readpage netfs helpers")
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+cc: linux-cachefs@redhat.com
+cc: linux-afs@lists.infradead.org
+cc: ceph-devel@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: linux-nfs@vger.kernel.org
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-mm@kvack.org
+Link: https://lore.kernel.org/r/162729351325.813557.9242842205308443901.stgit@warthog.procyon.org.uk/
 ---
- Documentation/kernel-hacking/hacking.rst                    | 2 +-
- Documentation/kernel-hacking/locking.rst                    | 4 ++--
- Documentation/translations/it_IT/kernel-hacking/hacking.rst | 2 +-
- Documentation/translations/it_IT/kernel-hacking/locking.rst | 4 ++--
- Documentation/translations/zh_CN/kernel-hacking/hacking.rst | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
-index df65c19aa7df..f514cec8e16b 100644
---- a/Documentation/kernel-hacking/hacking.rst
-+++ b/Documentation/kernel-hacking/hacking.rst
-@@ -77,7 +77,7 @@ fast: frequently it simply acknowledges the interrupt, marks a 'software
- interrupt' for execution and exits.
+ fs/netfs/read_helper.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index 2ad91f9e2a45..9320a42dfaf9 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -150,7 +150,7 @@ static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
+ {
+ 	struct iov_iter iter;
  
- You can tell you are in a hardware interrupt, because
--:c:func:`in_irq()` returns true.
-+:c:func:`in_hardirq()` returns true.
- 
- .. warning::
- 
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
-index ed1284c6f078..94232ed1d592 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -1406,7 +1406,7 @@ bh
-   half will be running at any time.
- 
- Hardware Interrupt / Hardware IRQ
--  Hardware interrupt request. in_irq() returns true in a
-+  Hardware interrupt request. in_hardirq() returns true in a
-   hardware interrupt handler.
- 
- Interrupt Context
-@@ -1418,7 +1418,7 @@ SMP
-   (``CONFIG_SMP=y``).
- 
- Software Interrupt / softirq
--  Software interrupt handler. in_irq() returns false;
-+  Software interrupt handler. in_hardirq() returns false;
-   in_softirq() returns true. Tasklets and softirqs both
-   fall into the category of 'software interrupts'.
- 
-diff --git a/Documentation/translations/it_IT/kernel-hacking/hacking.rst b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-index f6beb385b4ac..a2474e1f235e 100644
---- a/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-+++ b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-@@ -90,7 +90,7 @@ i gestori d'interruzioni devono essere veloci: spesso si limitano
- esclusivamente a notificare la presa in carico dell'interruzione,
- programmare una 'interruzione software' per l'esecuzione e quindi terminare.
- 
--Potete dire d'essere in una interruzione hardware perché :c:func:`in_irq()`
-+Potete dire d'essere in una interruzione hardware perché :c:func:`in_hardirq()`
- ritorna vero.
- 
- .. warning::
-diff --git a/Documentation/translations/it_IT/kernel-hacking/locking.rst b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-index 1e7c84def369..1efb8293bf1f 100644
---- a/Documentation/translations/it_IT/kernel-hacking/locking.rst
-+++ b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-@@ -1459,11 +1459,11 @@ contesto utente
-   che hardware.
- 
- interruzione hardware
--  Richiesta di interruzione hardware. in_irq() ritorna vero in un
-+  Richiesta di interruzione hardware. in_hardirq() ritorna vero in un
-   gestore d'interruzioni hardware.
- 
- interruzione software / softirq
--  Gestore di interruzioni software: in_irq() ritorna falso;
-+  Gestore di interruzioni software: in_hardirq() ritorna falso;
-   in_softirq() ritorna vero. I tasklet e le softirq sono entrambi
-   considerati 'interruzioni software'.
- 
-diff --git a/Documentation/translations/zh_CN/kernel-hacking/hacking.rst b/Documentation/translations/zh_CN/kernel-hacking/hacking.rst
-index ab974faddecf..877921adb5bb 100644
---- a/Documentation/translations/zh_CN/kernel-hacking/hacking.rst
-+++ b/Documentation/translations/zh_CN/kernel-hacking/hacking.rst
-@@ -68,7 +68,7 @@
- 它将被排队（或丢弃）。因为它会关闭中断，所以处理程序必须很快：通常它只是
- 确认中断，标记一个“软件中断”以执行并退出。
- 
--您可以通过 :c:func:`in_irq()` 返回真来判断您处于硬件中断状态。
-+您可以通过 :c:func:`in_hardirq()` 返回真来判断您处于硬件中断状态。
- 
- .. warning::
- 
--- 
-2.30.2
+-	iov_iter_xarray(&iter, WRITE, &subreq->rreq->mapping->i_pages,
++	iov_iter_xarray(&iter, READ, &subreq->rreq->mapping->i_pages,
+ 			subreq->start + subreq->transferred,
+ 			subreq->len   - subreq->transferred);
+ 	iov_iter_zero(iov_iter_count(&iter), &iter);
+
 
