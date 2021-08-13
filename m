@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093673EBC41
+	by mail.lfdr.de (Postfix) with ESMTP id C9DC93EBC43
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhHMSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:55:37 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:42741 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhHMSzf (ORCPT
+        id S233554AbhHMSzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:55:49 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:45774 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233116AbhHMSzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:55:35 -0400
-Received: by mail-ot1-f41.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so13161279otl.9;
-        Fri, 13 Aug 2021 11:55:06 -0700 (PDT)
+        Fri, 13 Aug 2021 14:55:47 -0400
+Received: by mail-oi1-f174.google.com with SMTP id o20so17256075oiw.12;
+        Fri, 13 Aug 2021 11:55:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zgYDaCCAVB+2In14a1kG5iiSGAnj8Z0BlZoSrQOooJs=;
-        b=gaDT+3bYD/zDK+W0Sd4DLRWAT2BRaie2I0Hx9mpy+WvfLtLVOQg+op1VHJWfQCOnQZ
-         VEAPqPnn4qpARpC2JDMM3eDIbzeH1ZdEqWMnoQ9qdMRRFk/0ddNK6+SxNmwZmmBFnEV+
-         qDkycbs4GgNQsFoDUwa7KplI4SnY5sJHcBuc+BoNSID+bCnXntgr3ifJ5mjSS5yeS31g
-         t2m86S5gYNzBZvc/lVdf251xS6mZCzjT7SjMrfDl6EBPC2q3tfW/XyOApkK9XEJoP1jq
-         FkAJv9eEiYer5pPCZcixS6XFG5PKcH+NA4C+zwlQH41RX07Bvzm5ER0+twirRHVIaygj
-         Ml1A==
-X-Gm-Message-State: AOAM530zKDiEjTEysVMFbaR5qtrc0FNq1iu2u+36YwrlwzSpmV4+6Ohy
-        /yoeYeTvNiWFZyVfrNnxCw==
-X-Google-Smtp-Source: ABdhPJwxmdmo6xRjRihAW2AtHQF9dDvG9ZJaa+9boQ+XVewLk7MSFFS49dAeSXvzPiaFF5dc7aHLPg==
-X-Received: by 2002:a05:6830:1f54:: with SMTP id u20mr3256501oth.320.1628880892451;
-        Fri, 13 Aug 2021 11:54:52 -0700 (PDT)
+        bh=cng24zHOfefhsIyuo8+sls9JUJaOQc7bK59B/LvqdMk=;
+        b=C9MTHj0M9zhEt0ax4uGz4M++Fpo2lXTZFeNY+MJl1sQrHRahX0rSIP72vvZEY0eLfO
+         M2ciIcTnJH25b9Q7M5aKEPVc+NLfPl94gdXyP4CVpcedXlC6m/FEuoaBvD1TXWbkPpzS
+         D6RwRy7JjZdHHrAAL17cC/miUo39iCW8ZktbfcaYxfzZH3OiPFVLV8eEsLzWluT1mNoN
+         jOFUfXddCBw/a218r4fY6X9xcNsZ9PfAx48JpPGCRVjPsOZdX6o9pjVZdpeM1VM0WH+t
+         Sv9WyRpE5czu8i5e/MEGN4fciurrzZ5A/qv0zxlturI87Xq2a4SpGQTzjjYJ5iyVfhKS
+         cDqA==
+X-Gm-Message-State: AOAM530Ed5mKY/OyiYCaD0wiVtpDwGB1g/RsRsu4eD2W7tCqHcKXoPrr
+        8bQLyVg15naPgtziFRwQ9w==
+X-Google-Smtp-Source: ABdhPJzwh8U81EC0A8V3HPWGGTJ4J2sIg/6C2OiLum4E+86UHhc9fu+Yxp/WTdfVouHPjIRsBKPoDg==
+X-Received: by 2002:a05:6808:bcd:: with SMTP id o13mr3401856oik.61.1628880919869;
+        Fri, 13 Aug 2021 11:55:19 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r2sm522068oig.1.2021.08.13.11.54.51
+        by smtp.gmail.com with ESMTPSA id t3sm520494oic.13.2021.08.13.11.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 11:54:51 -0700 (PDT)
-Received: (nullmailer pid 3858276 invoked by uid 1000);
-        Fri, 13 Aug 2021 18:54:50 -0000
-Date:   Fri, 13 Aug 2021 13:54:50 -0500
+        Fri, 13 Aug 2021 11:55:19 -0700 (PDT)
+Received: (nullmailer pid 3859064 invoked by uid 1000);
+        Fri, 13 Aug 2021 18:55:18 -0000
+Date:   Fri, 13 Aug 2021 13:55:18 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Simon Xue <xxm@rock-chips.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liang Chen <cl@rock-chips.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] dt-bindings: power: add rk3568-pmu-io-domain
- support
-Message-ID: <YRa/+rrW3ciW/tJf@robh.at.kernel.org>
-References: <20210805120107.27007-1-michael.riesch@wolfvision.net>
- <20210805120107.27007-2-michael.riesch@wolfvision.net>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     olof@lixom.net, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
+        devicetree@vger.kernel.org, nicolas.ferre@microchip.com,
+        soc@kernel.org, ludovic.desroches@microchip.com,
+        robh+dt@kernel.org, alexandre.belloni@bootlin.com
+Subject: Re: [PATCH 2/7] dt-bindings: add vendor prefix for exegin
+Message-ID: <YRbAFrGzKv9s0mKe@robh.at.kernel.org>
+References: <20210805155357.594414-1-claudiu.beznea@microchip.com>
+ <20210805155357.594414-3-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805120107.27007-2-michael.riesch@wolfvision.net>
+In-Reply-To: <20210805155357.594414-3-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021 14:01:01 +0200, Michael Riesch wrote:
-> Add binding for the RK3568 along a SoC-specific description of
-> voltage supplies.
+On Thu, 05 Aug 2021 18:53:52 +0300, Claudiu Beznea wrote:
+> Add vendor prefix for Exegin Technologies Limited.
 > 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> [add soc-specific section]
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
-> v3:
-> - add missing compatible for the rk3568 to grf.yaml
-> 
->  .../bindings/power/rockchip-io-domain.yaml    | 30 +++++++++++++++++++
->  .../devicetree/bindings/soc/rockchip/grf.yaml |  1 +
->  2 files changed, 31 insertions(+)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
