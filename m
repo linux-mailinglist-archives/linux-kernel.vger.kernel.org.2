@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9C23EB819
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6B13EB831
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241866AbhHMPLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53344 "EHLO mail.kernel.org"
+        id S241863AbhHMPLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:11:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241562AbhHMPKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E3561106;
-        Fri, 13 Aug 2021 15:10:03 +0000 (UTC)
+        id S241712AbhHMPK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:10:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58A626113B;
+        Fri, 13 Aug 2021 15:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867404;
-        bh=yyoemwsBvh19aiEslTcjG5vsMeyQtHkA1RfuZX4iPDE=;
+        s=korg; t=1628867431;
+        bh=YR0X7P5rPSdiyvL8r9FdeCj/5iLxqGgzw8fCEvqO/xE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srpEtT6Qye/KJKJYEgBJKg5/CKcHN9EzjuFvrxiI3tgh9NZ5cVkrcqjHGVkk2QxRD
-         Rtp9Qo1FsuYVcRN2seN2R4oXqS0glOVK5AxL/PnoNWTR+8JXG8JvWwMRTq9qNLz43n
-         KK+eN5Fy6QCwHQnJAoH/ND/QieZJA9NBzwMuPoW8=
+        b=W4TSIwU+IJthExYsuDGqpY5C1nWhX7CwWvQZRmu0yk+PZIwptcWgbLbmo3JaJlkUI
+         zAqREZZJoUxaclhhcuKqhH4fV3hDs8+fmGmF23GAdQyv3FSX58GaM1A/X9VM3YsvvY
+         taQyOnQ9oFtZw62sqKTmEwpCqzmKbf8hbiONE7Rc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 09/30] net: vxge: fix use-after-free in vxge_device_unregister
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 11/42] net: pegasus: fix uninit-value in get_interrupt_interval
 Date:   Fri, 13 Aug 2021 17:06:37 +0200
-Message-Id: <20210813150522.742804565@linuxfoundation.org>
+Message-Id: <20210813150525.486992786@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
+References: <20210813150525.098817398@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 942e560a3d3862dd5dee1411dbdd7097d29b8416 ]
+[ Upstream commit af35fc37354cda3c9c8cc4961b1d24bdc9d27903 ]
 
-Smatch says:
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+Syzbot reported uninit value pegasus_probe(). The problem was in missing
+error handling.
 
-Since vdev pointer is netdev private data accessing it after free_netdev()
-call can cause use-after-free bug. Fix it by moving free_netdev() call at
-the end of the function
+get_interrupt_interval() internally calls read_eprom_word() which can
+fail in some cases. For example: failed to receive usb control message.
+These cases should be handled to prevent uninit value bug, since
+read_eprom_word() will not initialize passed stack variable in case of
+internal failure.
 
-Fixes: 6cca200362b4 ("vxge: cleanup probe error paths")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fail log:
+
+BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
+...
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+ pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+....
+
+Local variable ----data.i@pegasus_probe created at:
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+
+Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Link: https://lore.kernel.org/r/20210804143005.439-1-paskripkin@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/usb/pegasus.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-index e0993eba5df3..c6950e580883 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-@@ -3539,13 +3539,13 @@ static void vxge_device_unregister(struct __vxge_hw_device *hldev)
- 
- 	kfree(vdev->vpaths);
- 
--	/* we are safe to free it now */
--	free_netdev(dev);
--
- 	vxge_debug_init(vdev->level_trace, "%s: ethernet device unregistered",
- 			buf);
- 	vxge_debug_entryexit(vdev->level_trace,	"%s: %s:%d  Exiting...", buf,
- 			     __func__, __LINE__);
-+
-+	/* we are safe to free it now */
-+	free_netdev(dev);
+diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+index 5435c34dfcc7..d18a283a0ccf 100644
+--- a/drivers/net/usb/pegasus.c
++++ b/drivers/net/usb/pegasus.c
+@@ -750,12 +750,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
+ 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
  }
  
- /*
+-static inline void get_interrupt_interval(pegasus_t *pegasus)
++static inline int get_interrupt_interval(pegasus_t *pegasus)
+ {
+ 	u16 data;
+ 	u8 interval;
++	int ret;
++
++	ret = read_eprom_word(pegasus, 4, &data);
++	if (ret < 0)
++		return ret;
+ 
+-	read_eprom_word(pegasus, 4, &data);
+ 	interval = data >> 8;
+ 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
+ 		if (interval < 0x80) {
+@@ -770,6 +774,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
+ 		}
+ 	}
+ 	pegasus->intr_interval = interval;
++
++	return 0;
+ }
+ 
+ static void set_carrier(struct net_device *net)
+@@ -1188,7 +1194,9 @@ static int pegasus_probe(struct usb_interface *intf,
+ 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+ 
+ 	pegasus->features = usb_dev_id[dev_index].private;
+-	get_interrupt_interval(pegasus);
++	res = get_interrupt_interval(pegasus);
++	if (res)
++		goto out2;
+ 	if (reset_mac(pegasus)) {
+ 		dev_err(&intf->dev, "can't reset MAC\n");
+ 		res = -EIO;
 -- 
 2.30.2
 
