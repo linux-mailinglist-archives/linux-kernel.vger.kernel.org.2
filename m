@@ -2,206 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427B43EB931
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE543EB941
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242092AbhHMPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:23:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:54954 "EHLO foss.arm.com"
+        id S242683AbhHMP0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243365AbhHMPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:23:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DD6F1042;
-        Fri, 13 Aug 2021 08:22:47 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C700C3F718;
-        Fri, 13 Aug 2021 08:22:45 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:22:40 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Chuanjia Liu <chuanjia.liu@mediatek.com>
-Cc:     robh+dt@kernel.org, bhelgaas@google.com, matthias.bgg@gmail.com,
-        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
-        yong.wu@mediatek.com, Frank Wunderlich <frank-w@public-files.de>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/4] PCI: mediatek: Add new method to get shared
- pcie-cfg base address and parse node
-Message-ID: <20210813152239.GA15515@lpieralisi>
-References: <20210719073456.28666-3-chuanjia.liu@mediatek.com>
- <20210810194250.GA2276275@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810194250.GA2276275@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S240849AbhHMP0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:26:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F66A604AC;
+        Fri, 13 Aug 2021 15:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628868379;
+        bh=PnDYHEZmtLQzD+SDpkgm+FUo4/MBMwul90100w6jt/s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gaGlUBWpFHeJQE1TfvzBOX8xCyVGsmI7prs53046uxJtuP3ST1Hx2sfHMD4WZeoaI
+         0ZD62KDF3GN/EmhihlMzEuvbYTRe4LTLQqXkYYpio3CCWTxR7cmCgZHSUAQ58/xRjm
+         dcrdr8zqGIFkKJw64zooKHAzH3fLvwkCpYHF1Sq2382JKHGVgH+VLv7E9qTxbvm1l6
+         vup8PZmbcpuVhVdRSjw/zzFT1WgPGgUsS38xCWETfELVX3Z5lhQJHW4D5W9JE8ZG/i
+         AM7ZhXoIPVXq7jngftf8rQj9RYRbPGYnh4CQjSUdueGC10qxENmEiaumFPK57/grf9
+         VDsEPz0QYTfOA==
+Date:   Sat, 14 Aug 2021 00:26:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH -tip v3 0/6] kprobes: treewide: Clean up kprobe code
+Message-Id: <20210814002614.1e4711003e9013e0b60aa789@kernel.org>
+In-Reply-To: <162748615977.59465.13262421617578791515.stgit@devnote2>
+References: <162748615977.59465.13262421617578791515.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:42:50PM -0500, Bjorn Helgaas wrote:
-> On Mon, Jul 19, 2021 at 03:34:54PM +0800, Chuanjia Liu wrote:
-> > For the new dts format, add a new method to get
-> > shared pcie-cfg base address and parse node.
-> 
-> This commit log doesn't seem to really cover what's going on here.  It
-> looks like:
-> 
->   - You added a check for "mediatek,generic-pciecfg" (I guess this is
->     the "shared pcie-cfg base address" part).  Probably could have
->     been its own patch.
-> 
->   - You added checks for "interrupt-names" and "pcie_irq".  Not
->     explained in commit log; probably could have been its own patch,
->     too.
-> 
->   - You now look for "linux,pci-domain" (via of_get_pci_domain_nr()).
->     If present, you parse only one port instead of looking for all the
->     children of the node.
-> 
->     That's sort of weird behavior -- why should the presence of
->     "linux,pci-domain" determine whether the node can have children?
->     Is that really what you intend?
-> 
->     Should be explained in the commit log and could have been its own
->     patch, too.
+Hi Ingo,
 
-I agree with Bjorn, this patch should be split (and commit logs
-rewritten). I will drop it from my tree, waiting for a v12.
+Could you pick this series if no problem?
+These patches do not change any functionalities. (of course some of them
+changes function APIs, like the type of return value and arguments)
 
-Lorenzo
+Thank you,
 
-> > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> > ---
-> >  drivers/pci/controller/pcie-mediatek.c | 52 +++++++++++++++++++-------
-> >  1 file changed, 39 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> > index 25bee693834f..928e0983a900 100644
-> > --- a/drivers/pci/controller/pcie-mediatek.c
-> > +++ b/drivers/pci/controller/pcie-mediatek.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/irqchip/chained_irq.h>
-> >  #include <linux/irqdomain.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/mfd/syscon.h>
-> >  #include <linux/msi.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_address.h>
-> > @@ -23,6 +24,7 @@
-> >  #include <linux/phy/phy.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/regmap.h>
-> >  #include <linux/reset.h>
-> >  
-> >  #include "../pci.h"
-> > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
-> >   * struct mtk_pcie - PCIe host information
-> >   * @dev: pointer to PCIe device
-> >   * @base: IO mapped register base
-> > + * @cfg: IO mapped register map for PCIe config
-> >   * @free_ck: free-run reference clock
-> >   * @mem: non-prefetchable memory resource
-> >   * @ports: pointer to PCIe port information
-> > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
-> >  struct mtk_pcie {
-> >  	struct device *dev;
-> >  	void __iomem *base;
-> > +	struct regmap *cfg;
-> >  	struct clk *free_ck;
-> >  
-> >  	struct list_head ports;
-> > @@ -650,7 +654,11 @@ static int mtk_pcie_setup_irq(struct mtk_pcie_port *port,
-> >  		return err;
-> >  	}
-> >  
-> > -	port->irq = platform_get_irq(pdev, port->slot);
-> > +	if (of_find_property(dev->of_node, "interrupt-names", NULL))
-> > +		port->irq = platform_get_irq_byname(pdev, "pcie_irq");
-> > +	else
-> > +		port->irq = platform_get_irq(pdev, port->slot);
-> > +
-> >  	if (port->irq < 0)
-> >  		return port->irq;
-> >  
-> > @@ -682,6 +690,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
-> >  		val |= PCIE_CSR_LTSSM_EN(port->slot) |
-> >  		       PCIE_CSR_ASPM_L1_EN(port->slot);
-> >  		writel(val, pcie->base + PCIE_SYS_CFG_V2);
-> > +	} else if (pcie->cfg) {
-> > +		val = PCIE_CSR_LTSSM_EN(port->slot) |
-> > +		      PCIE_CSR_ASPM_L1_EN(port->slot);
-> > +		regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
-> >  	}
-> >  
-> >  	/* Assert all reset signals */
-> > @@ -985,6 +997,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> >  	struct device *dev = pcie->dev;
-> >  	struct platform_device *pdev = to_platform_device(dev);
-> >  	struct resource *regs;
-> > +	struct device_node *cfg_node;
-> >  	int err;
-> >  
-> >  	/* get shared registers, which are optional */
-> > @@ -995,6 +1008,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> >  			return PTR_ERR(pcie->base);
-> >  	}
-> >  
-> > +	cfg_node = of_find_compatible_node(NULL, NULL,
-> > +					   "mediatek,generic-pciecfg");
-> > +	if (cfg_node) {
-> > +		pcie->cfg = syscon_node_to_regmap(cfg_node);
-> > +		if (IS_ERR(pcie->cfg))
-> > +			return PTR_ERR(pcie->cfg);
-> > +	}
-> > +
-> >  	pcie->free_ck = devm_clk_get(dev, "free_ck");
-> >  	if (IS_ERR(pcie->free_ck)) {
-> >  		if (PTR_ERR(pcie->free_ck) == -EPROBE_DEFER)
-> > @@ -1027,22 +1048,27 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
-> >  	struct device *dev = pcie->dev;
-> >  	struct device_node *node = dev->of_node, *child;
-> >  	struct mtk_pcie_port *port, *tmp;
-> > -	int err;
-> > +	int err, slot;
-> > +
-> > +	slot = of_get_pci_domain_nr(dev->of_node);
-> > +	if (slot < 0) {
-> > +		for_each_available_child_of_node(node, child) {
-> > +			err = of_pci_get_devfn(child);
-> > +			if (err < 0) {
-> > +				dev_err(dev, "failed to get devfn: %d\n", err);
-> > +				goto error_put_node;
-> > +			}
-> >  
-> > -	for_each_available_child_of_node(node, child) {
-> > -		int slot;
-> > +			slot = PCI_SLOT(err);
-> >  
-> > -		err = of_pci_get_devfn(child);
-> > -		if (err < 0) {
-> > -			dev_err(dev, "failed to parse devfn: %d\n", err);
-> > -			goto error_put_node;
-> > +			err = mtk_pcie_parse_port(pcie, child, slot);
-> > +			if (err)
-> > +				goto error_put_node;
-> >  		}
-> > -
-> > -		slot = PCI_SLOT(err);
-> > -
-> > -		err = mtk_pcie_parse_port(pcie, child, slot);
-> > +	} else {
-> > +		err = mtk_pcie_parse_port(pcie, node, slot);
-> >  		if (err)
-> > -			goto error_put_node;
-> > +			return err;
-> >  	}
-> >  
-> >  	err = mtk_pcie_subsys_powerup(pcie);
-> > -- 
-> > 2.18.0
-> > 
+On Thu, 29 Jul 2021 00:29:20 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hi,
+> 
+> Here is the 3rd series of patches to cleanup the kprobes code. Previous
+> version is here.
+> 
+>  https://lore.kernel.org/bpf/162598881438.1222130.11530594038964049135.stgit@devnote2/
+> 
+> This version is rebased on the latest tip/master and Punit's cleanup series;
+> 
+>  https://lore.kernel.org/linux-csky/20210727133426.2919710-1-punitagrawal@gmail.com/
+> 
+> Just fixed some conflicts, basically no change.
+> 
+> I pushed his series and this series as the 'kprobes/cleanup' branch on my tree.
+> So you can pull the series (and Punit's series too) from the branch below.
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/cleanup 
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (6):
+>       kprobes: treewide: Cleanup the error messages for kprobes
+>       kprobes: Fix coding style issues
+>       kprobes: Use IS_ENABLED() instead of kprobes_built_in()
+>       kprobes: Add assertions for required lock
+>       kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
+>       kprobes: Use bool type for functions which returns boolean value
+> 
+> 
+>  arch/arm/probes/kprobes/core.c     |    4 
+>  arch/arm/probes/kprobes/opt-arm.c  |    7 -
+>  arch/arm64/kernel/probes/kprobes.c |    5 -
+>  arch/csky/kernel/probes/kprobes.c  |   10 +
+>  arch/mips/kernel/kprobes.c         |   11 +
+>  arch/powerpc/kernel/optprobes.c    |    6 -
+>  arch/riscv/kernel/probes/kprobes.c |   11 +
+>  arch/s390/kernel/kprobes.c         |    4 
+>  arch/x86/kernel/kprobes/opt.c      |    6 -
+>  include/linux/kprobes.h            |   64 +++----
+>  kernel/kprobes.c                   |  313 +++++++++++++++++++-----------------
+>  kernel/trace/trace_kprobe.c        |    2 
+>  12 files changed, 226 insertions(+), 217 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
