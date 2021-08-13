@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0C93EBB62
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B923EBB64
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhHMRXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhHMRXl (ORCPT
+        id S232081AbhHMRYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:24:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39344 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231530AbhHMRYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:23:41 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5159C0617AD;
-        Fri, 13 Aug 2021 10:23:13 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id w20so21100915lfu.7;
-        Fri, 13 Aug 2021 10:23:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nFvCEWS9nc+hUhvIRKx+G3HCmb1nXE/AJUmaTFf3Dcg=;
-        b=YW1JN91Pevet9azoWif0Gpl2VtOEPxPycNOH0Qxlh41N8z1XPR+V8LlvRRte0VPi+A
-         0+6G6m0rtoam7BucMzUqv9KiJZMV27WNo9/kLtu0kA+hobLqHvVrkLCfDp9uRZIChxhc
-         YTWAR7mMm8fRe6OrjR21hbYmCGW70/8LqeuDXspALeyTXUOy5Cm9he7z8h8ULMmfZO34
-         ZncmZmrCHcSGQumVxFMOphGryFdv/2geTkRkybbAEeZv14YmTY+Z9PNpWC1d/SI7Bys2
-         hQKOsMHMINIJ1733zWIT+iv8mLNqhbFgJyKIr3aa00ndWaF1Gns6T3EcybmxkdvUI0fS
-         aGIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nFvCEWS9nc+hUhvIRKx+G3HCmb1nXE/AJUmaTFf3Dcg=;
-        b=Opyi5y3bGzh6FFeXk5hjMLJ7ssCk/bKqDKGPqB2AoA1+XarYbtkmjsJH4ciJbJHUtp
-         9/7Ezez3AIMamkWuZ4jopriMN/xqQdb1gPgOy5OWNxyncOOcrkzqUdXWyPQDMS5baBsU
-         r4RblZEkGdEEDFCqKXxNv7TJRw4UsEi7GhFZn/ICn/HRyoJOhO4HifPDKmfc/HuMhdEV
-         BXBn+27OwaKNl68rwgaM+KoeOU9t3U7jPXmTy7YE+LJYth7AfemsAbCdVUYFJOSzp168
-         wNgdweNXsmgc9G7oSc3jg4QQiQP3gUL4EDm1M+2uuiaE45nZATHdTZhjyzgIazE+r9XU
-         Q8MQ==
-X-Gm-Message-State: AOAM5324rXjvv1wN64ogEehNcijRv61poflTTwy5yN4x7qVqor/O7/96
-        G0WgXtOrWRsw/VTsTWUeNJx4Ph63ocA=
-X-Google-Smtp-Source: ABdhPJynG/s6bbc+iY4ooNJe/vbQgG0uEfff6Lw+m9PwK67RGj67T1hryd+gMINJdRqYZbhDvhJjpg==
-X-Received: by 2002:a05:6512:3f8e:: with SMTP id x14mr2311274lfa.389.1628875391957;
-        Fri, 13 Aug 2021 10:23:11 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id br39sm204982lfb.104.2021.08.13.10.23.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 10:23:11 -0700 (PDT)
-Subject: Re: [PATCH v1] opp: Release current OPP properly
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210812101353.14318-1-digetx@gmail.com>
- <20210813041224.dqz3kbynr5ffjclj@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <940eb122-651b-1dbf-9a11-5d59bb45008f@gmail.com>
-Date:   Fri, 13 Aug 2021 20:23:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 13 Aug 2021 13:24:38 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 345401FFE7;
+        Fri, 13 Aug 2021 17:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628875450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IaoDX9vjNunz+khPUACQq4xbH9srsHzOAkpAeQHb2aA=;
+        b=HklHC8PL9MAPXvU6kqy6g9gqpbynGPvuhchfGawPJK+qeWzRC0DrAGYi+a9HKr2PpktCNw
+        qelJ0yl+6/gV5dzPz8fGcGewI+nmiVw6Hude4oyp4QbgGglqpCGgOrYC/Js1z0dshmht0X
+        6xiuKxn/hJg27XPN3rXrvoT+5ioSpjg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628875450;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IaoDX9vjNunz+khPUACQq4xbH9srsHzOAkpAeQHb2aA=;
+        b=Uh0DN6LUaZttpmZpycg5sObldaRdn07j97ybdiKQq790Ujkw27yTwq51axzUQIYEb38ZKv
+        m/wY9Oh069Bew8Bw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1AB0B13668;
+        Fri, 13 Aug 2021 17:24:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id JG40BrqqFmG3KQAAGKfGzw
+        (envelope-from <bp@suse.de>); Fri, 13 Aug 2021 17:24:10 +0000
+Date:   Fri, 13 Aug 2021 19:24:43 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86-ml <x86@kernel.org>
+Subject: Re: vmlinux.o: warning: objtool: do_machine_check()+0x5dc: call to
+ memset() leaves .noinstr.text section
+Message-ID: <YRaq0YjECPNA1/D0@zn.tnic>
+References: <202108140113.JJqRVW2H-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210813041224.dqz3kbynr5ffjclj@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <202108140113.JJqRVW2H-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.08.2021 07:12, Viresh Kumar пишет:
-> On 12-08-21, 13:13, Dmitry Osipenko wrote:
->> The current_opp is released only when whole OPP table is released,
->> otherwise it's only marked as removed by dev_pm_opp_remove_table().
->> Functions like dev_pm_opp_put_clkname() and dev_pm_opp_put_supported_hw()
->> are checking whether OPP table is empty and it's not if current_opp is
->> set since it holds the refcount of OPP, this produces a noisy warning
->> from these functions about busy OPP table. Release current_opp when
->> OPP table is removed to fix it.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/opp/core.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->> index b335c077f215..73da968b5c86 100644
->> --- a/drivers/opp/core.c
->> +++ b/drivers/opp/core.c
->> @@ -1378,9 +1378,6 @@ static void _opp_table_kref_release(struct kref *kref)
->>  	list_del(&opp_table->node);
->>  	mutex_unlock(&opp_table_lock);
->>  
->> -	if (opp_table->current_opp)
->> -		dev_pm_opp_put(opp_table->current_opp);
->> -
->>  	_of_clear_opp_table(opp_table);
->>  
->>  	/* Release clk */
->> @@ -2901,6 +2898,12 @@ void dev_pm_opp_remove_table(struct device *dev)
->>  	if (_opp_remove_all_static(opp_table))
->>  		dev_pm_opp_put_opp_table(opp_table);
->>  
->> +	/* Drop reference taken by _find_current_opp() */
->> +	if (opp_table->current_opp) {
->> +		dev_pm_opp_put(opp_table->current_opp);
->> +		opp_table->current_opp = NULL;
->> +	}
->> +
+On Sat, Aug 14, 2021 at 01:00:21AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f8e6dfc64f6135d1b6c5215c14cd30b9b60a0008
+> commit: 7bb39313cd6239e7eb95198950a02b4ad2a08316 x86/mce: Make mce_timed_out() identify holdout CPUs
+> date:   7 months ago
+> config: x86_64-buildonly-randconfig-r001-20210812 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7bb39313cd6239e7eb95198950a02b4ad2a08316
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 7bb39313cd6239e7eb95198950a02b4ad2a08316
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 > 
-> It is better to drop the reference when the OPP table is really
-> getting removed.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> I think the WARN_ON() in the put_* functions can be dropped. It is
-> important to check this when the stuff is getting set, like in
-> dev_pm_opp_set_supported_hw(), but removal is just fine.
+> All warnings (new ones prefixed by >>):
 > 
+> >> vmlinux.o: warning: objtool: do_machine_check()+0x5dc: call to memset() leaves .noinstr.text section
 
-Alright, I'll make another patch then.
+I cannot trigger this particular warning with your config ontop of
+latest tip/master so you can drop this.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
