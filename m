@@ -2,804 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B44D3EB938
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7BB3EB92E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243483AbhHMPZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243782AbhHMPYl (ORCPT
+        id S243159AbhHMPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:22:36 -0400
+Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:41032 "EHLO
+        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242850AbhHMPTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:24:41 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA76C06124A
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:21:19 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id f11so13758487ioj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=exurjxhZnNMpJGUyDGyH6mJG8q3OTiV4CUPdinAeZAk=;
-        b=GZqTShcC5/Iju7hI9/QB6MqoQO67KQPYYBeZ4z1TBDD9CSYA5WJaG1cHjJOekeN3Cu
-         SUhwPj7hlQ/zT+jHXH6cfdd5D0L7Ki8VnCrQNjraLqRhVvfZLTP6gb0WeTOeJlgrkjRI
-         iz6fUjcEYK4g0gaZ5eXnkYW3lFT/AmXQU60Qw6thhTYQ9eTKO4TZlUv6/pXfhCB837z9
-         9GqZjevOZroOVFbieYFMFCAMV8RpvyIDETNVAGlQmXjFvNEGp1EI8viZOcX/2J4Oo9K5
-         d6O9lrRZx1HEGWl89uwjbeKa/cRpfA/oNlhhXdpa/Ttk1f8fLZjsn9fpjNo/sq+K7kSb
-         sQ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=exurjxhZnNMpJGUyDGyH6mJG8q3OTiV4CUPdinAeZAk=;
-        b=Jq49DdwKt84jQlWxBO6RpsX5o41r95I46XbT0gefDKejDBgIpVyWMK4jVJP7BQzxt6
-         Qi1dpdxSB8LLATwCV8JZgXp1IlBhb/XPxzqpHN18OSiAh/67OCeNlz5wkhWaLw/X0AtN
-         7mICOIA3Unm+chZd1nuIBVxtjM3xneBqX5LiI9AQ8Z910c+GImKIIgPc8nSHQiY1zTfh
-         z6BfymsvhxCH4kkXML6dtDDnjE46jBMn52/+WJvyFtxWp8rRwZnLRLguSS1YTJ98R5hE
-         DxF71RTznuVFB0WcBKcaQzPaF9GF23BbuQd5e3xXr5m3Cbciq2Gx84MEEvmdtwRtoYw0
-         DQnA==
-X-Gm-Message-State: AOAM5302JECyvreQ6gvQ791dfpeAtltBseJ1elsOPiFAd6FnYleJBlCd
-        bP8uDqNWjjxXJzuS8g0KFB0=
-X-Google-Smtp-Source: ABdhPJwrD8LaBMoWQWQXxi+JScrGXll33ISRmsN1Og62PoLKWLEjEY3av7GQ8qZpx5NRyE8p/CxTqQ==
-X-Received: by 2002:a05:6602:3359:: with SMTP id c25mr2398333ioz.181.1628868079205;
-        Fri, 13 Aug 2021 08:21:19 -0700 (PDT)
-Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id d4sm921145ilo.29.2021.08.13.08.21.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 08:21:18 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     gregkh@linuxfoundation.org, seanpaul@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Tao Zhou <tao.zhou1@amd.com>, Huang Rui <ray.huang@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        Chengming Gui <Jack.Gui@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        John Clements <john.clements@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        Ashley Thomas <Ashley.Thomas2@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Wyatt Wood <Wyatt.Wood@amd.com>, Jessica Yu <jeyu@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Fri, 13 Aug 2021 11:19:10 -0400
+Received: from pps.filterd (m0127841.ppops.net [127.0.0.1])
+        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17DFHlT5001169;
+        Fri, 13 Aug 2021 08:18:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=nspCT/WOgiCfl05pxrqHG0lxEALwEtPjF8tdWkT5y0w=;
+ b=MubwpOkjG9He94VpwXXuj1j8W+VJtjKKAjjCG1Xu/HbiNs5sae2pJ7u66JnzELm4X/bI
+ KjM0+hpnujAh1aFOcHYmkZZJYCXJ7qnpBKGzeU5btqdeKdzQcVoQcPJG3QxpS31Xi7+U
+ ahSzeVOHUZcjIA2kWqnSjVHzHXU38fjzCwsqCLYuDp2QSYqzm5CWXHUO56149GYhwzsq
+ WaOnAs0CpdbZIC6F45Q5BDHAPbXIUHt1oObsE4lVct5OcWS+1piuk3F/OUcarVGfMTgZ
+ iGr/Yn/Bf5XzO3Uz4hO6HqcbxaB3L8YS9k5rLhL2OfXTCI6na+Sji6rm/JqxPezKGWLx /g== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
+        by mx0b-002c1b01.pphosted.com with ESMTP id 3ad6c3jd8h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Aug 2021 08:18:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WBhpvcVKv19rhu0NPrAcEblNdg5FY2ujaF6pdG0gzX20XF+QBrrR338SAPFZ1+z0tJxIH1eDOADlUtaXoUHOxu1ZLz1ie+VqMZcCD1Afb1sZDDTuSN7a+hrbHmgTBHy5IuxwPkEr5rBXensgCBrPZSzfesf5U5iopN7mVWDWBImOO3prp2Nl0ftSgT0IcXlNJPxU8+FGqt6B2D7uF0NBESCWLTzdiAsHZoO3kbW5ehPcuXfn709+5YUZHCk0EahO4L3fOS1XJ2TIo0c40oZXOKS4pJSs360kqZj8rkkyI+/k2cZswtdErWqJgHy0pPRy9tLMR1NDW9vt5tHi/HCLEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nspCT/WOgiCfl05pxrqHG0lxEALwEtPjF8tdWkT5y0w=;
+ b=RIjcMdiJMO8U5YAKk/+Pgh0uLI1xblKog8AhHu3p5eRlq/j1ui3HCtlLJcCsqc9OH16234KFx/QCH71kaJan36aYJkN/zFG05jWdews6s6dP9r3ZDKOicQtkwzSApveXkV8Tbj2H765TUAAcqMU9dxfbHOP2L/dcOrHpHTfZ8F4WAIXSsCalcQbAHYBB2jyF/bZM9DaWuDwN3mBf7CvH86mkKF4C4TrHd/8YTZr75Ob2th5Jx1BRSseOYYRjIO+MGxQxCPgoq21c478PzfiWoW6+YBMzLwYfEhwwqi93efG6uvZaOT+l74QwXjxObjibAgkvaOPa9joIkvfDbLz6oQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
+ DM6PR02MB4812.namprd02.prod.outlook.com (2603:10b6:5:17::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.21; Fri, 13 Aug 2021 15:18:23 +0000
+Received: from DM6PR02MB5578.namprd02.prod.outlook.com
+ ([fe80::5116:80a5:77d9:fcc4]) by DM6PR02MB5578.namprd02.prod.outlook.com
+ ([fe80::5116:80a5:77d9:fcc4%7]) with mapi id 15.20.4415.016; Fri, 13 Aug 2021
+ 15:18:23 +0000
+From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Julian Braha <julianbraha@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Oliver Glitta <glittao@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Albert van der Linde <alinde@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Patricia Alfonso <trishalfonso@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Subject: [PATCH v5 9/9] dyndbg: RFC add tracer facility RFC
-Date:   Fri, 13 Aug 2021 09:17:17 -0600
-Message-Id: <20210813151734.1236324-10-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210813151734.1236324-1-jim.cromie@gmail.com>
-References: <20210813151734.1236324-1-jim.cromie@gmail.com>
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 4/4] mm: Install marker pte when page out for shmem
+ pages
+Thread-Topic: [PATCH RFC 4/4] mm: Install marker pte when page out for shmem
+ pages
+Thread-Index: AQHXizvk75H5GcOBbk6XpDvivARYyKtxlnAA
+Date:   Fri, 13 Aug 2021 15:18:22 +0000
+Message-ID: <C0DB3FED-F779-4838-9697-D05BE96C3514@nutanix.com>
+References: <20210807032521.7591-1-peterx@redhat.com>
+ <20210807032521.7591-5-peterx@redhat.com>
+In-Reply-To: <20210807032521.7591-5-peterx@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9ccd3d8d-409d-40d9-7e9a-08d95e6d972c
+x-ms-traffictypediagnostic: DM6PR02MB4812:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR02MB48122220CB320674D6ECD41CE6FA9@DM6PR02MB4812.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Q9c/sfAjmpASI2yFRmcJcqZy5Ya6dnp5+exYR6aI/0IDWkOQ81M5S4PttFXINk4pTpPdd+R0p1S0IbSjUN2Ln1jYvhdNkcILE59O4BUJgdmAMItKIKO4BJkiigrSykFT6Yl803Mck6rndfEsU8rr+lGYKXbHRiAWNPqjCYTh/MJR3UqWj3W0eP6HM3Z/8ssZDafMunDuxfVx7+wVYoyFPMNs8okQNveIrgNtumcfuvB+FYRDvMtrrNSRxR4nuv7LTYHRQ19BlZkeZcyoJ/0Gwwb4T983hVlEiX9L2HlbJI7H+Ox9hJPzDcIDsQGkChZd6In9+WviS5RZoWETL5xwKV04txMium5jmVWhtFxOOGHBxNhROcgOpHAGr/inJH1XcD+7xdD6oHYqK7keCi/ZDMgbvOZ1CHvQqB0DJg7+lKOXxe7PXYeQrE3K4kphRXqBpzltDYeUjOB8PNmzaOn3nRwPYahSXbm3jGx4EE1R3NwdM65QIvjIQ5BdnE/upmp1PSlUJ09tDJMdLuYLef2DfZFSjKIyPz1WplpMyIK3zP5yM10vQDaJO5PbsPyU4P/2wznqvO7kSo8KFmpdCvNeQ22L0fufQucj1GaceoA7+9z//bv/rBO6U+TzaNDY3JIPdK9V6I8WqG9y2+SdA8Yd5FL6CKpvvCutcoC29gPqsgCdpOrbm6ESWT0GrTWSbgxuyIcMQe1m0gAW5vLIQ2cBz83v6ZsyBpTs7DTREQJguYkXpjj/NWk5Ae6DaPABnt3xOcIGYR34++LrUHJKWLBQXgwfopZbgGsFUixb9iixKc+FfBBE+IfJ0zUwx1SnMWF0
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(396003)(366004)(376002)(6506007)(53546011)(8676002)(7416002)(8936002)(478600001)(54906003)(71200400001)(4326008)(316002)(966005)(38100700002)(6512007)(36756003)(86362001)(91956017)(76116006)(2616005)(5660300002)(66556008)(66476007)(6916009)(64756008)(2906002)(38070700005)(66946007)(83380400001)(66446008)(186003)(33656002)(122000001)(6486002)(44832011)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XALCfOx+CMzpZDk80y0s4nFpynAJh7uQU87DO6z51wW83RDATrP4U7R9jJ9O?=
+ =?us-ascii?Q?4N7VMLlDxlvodAuPkPyzDBNrlftTUUOjLOXuwXQ3MJWfMXpIjzuL3U4NHLe1?=
+ =?us-ascii?Q?Gv02Rd8Vked3aX8SB14nh/yAzoR/uUbcVJYmEumKk4GpEbwwfC+NraBJaUYY?=
+ =?us-ascii?Q?rNn5geo3wNNtvm7AdstVN4d58leQNjz/WT7lGX1RMk/uWGM3eMEX70bzuIb/?=
+ =?us-ascii?Q?+J5HsCrFr6hPlLtRiFKgDf/sHDuBOSjFlFa4FjuJP9Zk/+7V3KCaL6KA/uJK?=
+ =?us-ascii?Q?wQUcZGJx0B4qNWwNfEqpwlbUn8YcmgbcBRRl5OOVOanO0bwxjBCNibk7SCFJ?=
+ =?us-ascii?Q?KQD9iZ8yozb+BA2uzPf7pAcyHdlC0xogQ+wcIsIbvBvPf4bsmeV7B7QyNDgu?=
+ =?us-ascii?Q?YVAwuN6rX7WlyP+5NihJWRkkP1OlmABi/GHl4qvFFxti5fyGGHApLEjuqbD4?=
+ =?us-ascii?Q?EQnyL9lmvSar30mfq0IKEfRlQxJHhM3u7625bjYHa9BFQtB4InqSWXkT2adl?=
+ =?us-ascii?Q?P4ygJft09mL2fc+9tFhdgPsC8cJmgX2CpdTPxv+/1sP0Gi2JaFynA8jrYc7V?=
+ =?us-ascii?Q?s3edD9o2joZ0wYX2k7JubpEEJDJCu7xJc3x8/wP45XlKZ8V7az5xpP+3ZgDx?=
+ =?us-ascii?Q?n0Wlgv20eGmp2DmfmsMgqtWFKTPSMzhkt9cDmUtIvNX9TUQ+YxNpQEwp5cAX?=
+ =?us-ascii?Q?sR9HyPPrPjrgRFqWsgV7I+3E1GUtqFEXGK9+UwPEqEiflSpZlo7UyC0xJLwh?=
+ =?us-ascii?Q?sXkZPB1Vsnq0E2Ow2azOiUz3Bg3uWLniLN/5HyMGQjsyOAlZvcbUN8gvG5kV?=
+ =?us-ascii?Q?Bw/+7Ns5JOf98qo6Rg6FbAqwI6yNekQ1K5jvEqZJ/9clzF05Wpc0CtV5bJmZ?=
+ =?us-ascii?Q?RXB+6QkTXVaK8JpqCSwCVRtukGX7UfVmcwjUtQAjp1L9GPf8YnBMNKmWO25V?=
+ =?us-ascii?Q?2D8ms939QwOdyXupjd74CE+qGRDB8mIWahiaL6BMrjmYMW2hm/e5NYgzD5uF?=
+ =?us-ascii?Q?jtQE4oow+fLIhGiu/x8mWEQYW9Z6ToqGd0F4KJxJd9Od7c3whZOF8G/YHPW8?=
+ =?us-ascii?Q?0MFyUI6ntNFu+kB1Djxf13qutRW+G0AffbiOE7GcdG6eDcFfQOUJnxJYuB3P?=
+ =?us-ascii?Q?puA5NaK1vUvg0bsG9Wk+WnMCylYnNOgopQPYT55xKUlj0I3VGNPpr5Iuh6Ky?=
+ =?us-ascii?Q?dLUKUAOJnTNWg+y1taUHI1yJ17PeonaiBfsn3OYQIuWKJhZiRGwu7w01fMYo?=
+ =?us-ascii?Q?Km9NTrC128Vv84wUFnwuyGF0mWAAe8eMSDVo+zVe6nebhN0Z4o2/6QRUyHYl?=
+ =?us-ascii?Q?pEAF8RlWuWJYf8fnB+uoV+CIEa4ku4hC8P9UEG7qEp1BJm8SpfQ65ZRETRc/?=
+ =?us-ascii?Q?f7O7NzqzOhoqYuQvskMM+GsNPACK?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D15C31F9E80D8C4CBD707979F1B3BB46@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ccd3d8d-409d-40d9-7e9a-08d95e6d972c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2021 15:18:22.9568
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EGreN+7K6EcZdDxQDRjQfNkMFOvo0UaF+P3sh8idNkEG/DmDch8b35C4tmaVRHQGElFBm0ymd4k++d4WyWEPpYVwBdXCdLACqVzQ1LgkxAo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4812
+X-Proofpoint-ORIG-GUID: xLDAk5lHsU77TOr_d7jOv3ZVjhPAKa1N
+X-Proofpoint-GUID: xLDAk5lHsU77TOr_d7jOv3ZVjhPAKa1N
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-13_05:2021-08-13,2021-08-13 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Paul seanpaul@chromium.org proposed, in
-https://patchwork.freedesktop.org/series/78133/
-drm/trace: Mirror DRM debug logs to tracefs
+Hello Peter,
 
-That patchset's goal is to be able to duplicate the debug stream to a
-tracing destination, by splitting drm_debug_enabled() into syslog &
-trace flavors, and enabling them separately.  That clashes rather
-deeply with this patchset's goal; to avoid drm_debug_enabled() using
-dyndbg.
+Sorry for commenting so late.
 
-Instead, this puts the print-to-trace decision in dyndbg, after the
-is-it-enabled test (which is a noop), so it has near zero additional
-cost (other than memory increase); the print-to-trace test is only
-done on enabled callsites.
+> On 7 Aug 2021, at 04:25, Peter Xu <peterx@redhat.com> wrote:
+>=20
+> When shmem pages are swapped out, instead of clearing the pte entry, we l=
+eave a
+> marker pte showing that this page is swapped out as a hint for pagemap.  =
+A new
+> TTU flag is introduced to identify this case.
+>=20
+> This can be useful for detecting swapped out cold shmem pages.  Then afte=
+r some
+> memory background scanning work (which will fault in the shmem page and
+> confusing page reclaim), we can do MADV_PAGEOUT explicitly on this page t=
+o swap
+> it out again as we know it was cold.
+>=20
+> For pagemap, we don't need to explicitly set PM_SWAP bit, because by natu=
+re
+> SWP_PTE_MARKER ptes are already counted as PM_SWAP due to it's format as =
+swap.
+>=20
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+> fs/proc/task_mmu.c   |  1 +
+> include/linux/rmap.h |  1 +
+> mm/rmap.c            | 19 +++++++++++++++++++
+> mm/vmscan.c          |  2 +-
+> 4 files changed, 22 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index eb97468dfe4c..21b8594abc1d 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1384,6 +1384,7 @@ static pagemap_entry_t pte_to_pagemap_entry(struct =
+pagemapread *pm,
+> 		if (pm->show_pfn)
+> 			frame =3D swp_type(entry) |
+> 				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
+> +		/* NOTE: this covers PTE_MARKER_PAGEOUT too */
+> 		flags |=3D PM_SWAP;
+> 		if (is_pfn_swap_entry(entry))
+> 			page =3D pfn_swap_entry_to_page(entry);
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index c976cc6de257..318a0e95c7fb 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -95,6 +95,7 @@ enum ttu_flags {
+> 					 * do a final flush if necessary */
+> 	TTU_RMAP_LOCKED		=3D 0x80,	/* do not grab rmap lock:
+> 					 * caller holds it */
+> +	TTU_HINT_PAGEOUT	=3D 0x100, /* Hint for pageout operation */
+> };
+>=20
+> #ifdef CONFIG_MMU
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index b9eb5c12f3fe..24a70b36b6da 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1384,6 +1384,22 @@ void page_remove_rmap(struct page *page, bool comp=
+ound)
+> 	unlock_page_memcg(page);
+> }
+>=20
+> +static inline void
+> +pte_marker_install(struct vm_area_struct *vma, pte_t *pte,
+> +		   struct page *page, unsigned long address)
+> +{
+> +#ifdef CONFIG_PTE_MARKER_PAGEOUT
+> +	swp_entry_t entry;
+> +	pte_t pteval;
+> +
+> +	if (vma_is_shmem(vma) && !PageAnon(page) && pte_none(*pte)) {
+> +		entry =3D make_pte_marker_entry(PTE_MARKER_PAGEOUT);
+> +		pteval =3D swp_entry_to_pte(entry);
+> +		set_pte_at(vma->vm_mm, address, pte, pteval);
+> +	}
+> +#endif
+> +}
+> +
+> /*
+>  * @arg: enum ttu_flags will be passed to this argument
+>  */
+> @@ -1628,6 +1644,9 @@ static bool try_to_unmap_one(struct page *page, str=
+uct vm_area_struct *vma,
+> 			 */
+> 			dec_mm_counter(mm, mm_counter_file(page));
+> 		}
+> +
+> +		if (flags & TTU_HINT_PAGEOUT)
+> +			pte_marker_install(vma, pvmw.pte, page, address);
+> discard:
+> 		/*
+> 		 * No need to call mmu_notifier_invalidate_range() it has be
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4620df62f0ff..4754af6fa24b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1493,7 +1493,7 @@ static unsigned int shrink_page_list(struct list_he=
+ad *page_list,
+> 		 * processes. Try to unmap it here.
+> 		 */
+> 		if (page_mapped(page)) {
+> -			enum ttu_flags flags =3D TTU_BATCH_FLUSH;
+> +			enum ttu_flags flags =3D TTU_BATCH_FLUSH | TTU_HINT_PAGEOUT;
+> 			bool was_swapbacked =3D PageSwapBacked(page);
+>=20
+> 			if (unlikely(PageTransHuge(page)))
+> --=20
+> 2.32.0
+>=20
+The RFC looks good to me. It makes it much cleaner to verify whether the pa=
+ge
+is in swap or not, and there is great performance benefit compared to my pa=
+tch.
 
-The basic elements:
+Currently, your patch does not have a way of putting the swap offset onto t=
+he
+entry when a shared page is swapped, so it does not cover all use cases
+IMO.
 
- - add a new struct _ddebug member: (*tracer)(char *format, ...)
- - add a new T flag to enable tracer
- - adjust the static-key-enable/disable condition for (p|T)
- - if (p) before printk, since T enables too.
- - if (T) call tracer if its true
+To counter that, I added my patch on top of yours. By making use of your
+mechanism, we don't need to read the page cache xarray when we pages
+are definitely none. This reduces much unnecessary overhead.
 
- = int dynamic_debug_register_tracer(query, modname, tracer);
- = int dynamic_debug_unregister_tracer(query, modname, cookie);
+Main diff in fs/proc/task_mmu.c:pte_to_pagemap_entry():
+        } else if (is_swap_pte(pte)) {
+                swp_entry_t entry;
+                ...
+                entry =3D pte_to_swp_entry(pte);
++               if (is_pte_marker_entry(entry)) {
++                       void *xa_entry =3D get_xa_entry_at_vma_addr(vma, ad=
+dr);
+                ...
 
-This new interface lets clients set/unset a tracer function on each
-callsite matching the query, for example: "drm:atomic:fail:".
+For reference: https://lore.kernel.org/lkml/20210730160826.63785-1-tiberiu.=
+georgescu@nutanix.com/.
 
-Clients are expected to unregister the same callsites they register (a
-cookie), allowing protection of each client's dyndbg-state setup
-against overwrites by others.
+After some preliminary performance tests on VMs, I noticed a significant
+performance improvement in my patch, when yours is added. Here is the
+most interesting result:
 
-Intended Behavior: (things are in flux, RFC)
+Program I tested it on: Same as https://lore.kernel.org/lkml/20210730160826=
+.63785-1-tiberiu.georgescu@nutanix.com/
 
-- register sets empty slot, doesnt overwrite
-  the query selects callsites, and sets +T (grammar requires +-action)
+Specs:
+    Memory: 32GB memory, 64GB swap
+    Params: 16GB allocated shmem, 50% dirty, 4GB cgroup, no batching
 
-- register allows same-tracer over-set wo warn
-  2nd register can then enable superset, subset, disjoint set
+In short, the pagemap read deals with=20
+    * ~4GB of physical memory (present pages),=20
+    * ~4GB in swap (swapped pages)
+    * 8GB non-dirty (none pages).
 
-- unregister clears slot if it matches cookie/tracer
-  query selects set, -T (as tested)
-  tolerates over-clears
+Results:
++------------+-------+-------+
+| Peter\Tibi |  Pre  | Post  | (in seconds)
++------------+-------+-------+
+| Pre        | 11.82 | 38.44 |
+| Post       | 13.28 | 22.34 |
++------------+-------+-------+
 
-- dd-exec-queries(+/-T) can modify the enablements
-  not sure its needed, but it falls out..
+With your patch, mine yields the results in twice the time, compared to 4x.
+I am aware it is not ideal, but until it is decided whether a whole differe=
+nt
+system is preferred to PTE markers, our solutions together currently delive=
+r
+the best performance for correctness. Thank you for finding this solution.
 
-The code is currently in-line in ddebug_change(), to be moved to
-separate fn, rc determines flow, may also veto/alter changes by
-altering flag-settings - tbd.
+I am happy to introduce a configuration variable to enable my pagemap
+patch only if necessary. Either way, if performance is a must, batching is =
+still
+the best way to access multiple pagemap entries.
 
-TBD: Im not sure what happens when exec-queries(+T) hits a site wo a
-tracer (silence I think. maybe not ideal).
-
-internal call-chain gets a tracer param:
-					New arg:
-public: dynamic_debug_exec_queries
-	ro-string copy moved ...
-1	ddebug_exec_queries		tracer=NULL
-	... to here
-2	ddebug_exec_query		tracer=NULL
-
-call-chain gets (re)used: with !NULL
-
-public: dynamic_debug_register_tracer	tracer=client's
-	w ro-string
-1	ddebug_exec_queries		tracer
-...
-
-SELFTEST: test_dynamic_debug.ko:
-
-Uses the tracer facility to do a selftest:
-
-- A custom tracer counts the number of calls (of T-enabled pr_debugs),
-- do_debugging(x) calls a set of categorized pr_debugs x times
-
-- test registers the tracer on the function,
-  then iteratively:
-  manipulates dyndbg states via query-cmds
-  runs do_debugging()
-  counts enabled callsite executions
-  reports mismatches
-
-- modprobe test_dynamic_debug use_bad_tracer=1
-  attaches a bad/recursive tracer
-  Bad Things Happen.
-  has thrown me interesting panics.
-
-NOTES:
-
-This needs more work. RFC.
-
-ERRORS (or WARNINGS):
-
-It should be an error to +T a callsite which has no aux_print set (ie
-already registered with a query that selected that callsite).  This
-tacitly enforces registration.
-
-Then +T,-T can toggle those aux_print callsites (or subsets of them)
-to tailor the debug-stream for the purpose.  Controlling flow is the
-best work limiter.
-
----
-v4+: (this patch sent after (on top of) v4)
-
-. fix "too many arguments to function", and name the args:
-  int (*aux_print)(const char *fmt, char *prefix, char *label, void *);
-   prefix : is a slot for dynamic_emit_prefix, or for custom buffer insert
-   label  : for builtin-caller used by drm-trace-print
-   void*  : vaf, add type constraint later.
-
-. fix printk (to syslog) needs if (+p), since +T also enables
-. add prototypes for un/register_aux_print
-. change iface names: s/aux_print/tracer/
-. also s/trace_print/tracer/
-. struct va_format *vaf - tighten further ?
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- include/linux/dynamic_debug.h |  32 ++++-
- lib/Kconfig.debug             |  10 ++
- lib/Makefile                  |   1 +
- lib/dynamic_debug.c           | 109 +++++++++++----
- lib/test_dynamic_debug.c      | 247 ++++++++++++++++++++++++++++++++++
- 5 files changed, 372 insertions(+), 27 deletions(-)
- create mode 100644 lib/test_dynamic_debug.c
-
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index 42cfb37d4870..cbcb1c94cec3 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -20,6 +20,7 @@ struct _ddebug {
- 	const char *function;
- 	const char *filename;
- 	const char *format;
-+	int (*tracer)(const char *fmt, char *prefix, char *label, struct va_format *vaf);
- 	unsigned int lineno:18;
- 	/*
- 	 * The flags field controls the behaviour at the callsite.
-@@ -27,7 +28,11 @@ struct _ddebug {
- 	 * writes commands to <debugfs>/dynamic_debug/control
- 	 */
- #define _DPRINTK_FLAGS_NONE	0
--#define _DPRINTK_FLAGS_PRINT	(1<<0) /* printk() a message using the format */
-+#define _DPRINTK_FLAGS_PRINT		(1<<0) /* printk() a message */
-+#define _DPRINTK_FLAGS_PRINT_TRACE	(1<<5) /* call (*tracer) */
-+
-+#define _DPRINTK_ENABLED (_DPRINTK_FLAGS_PRINT | _DPRINTK_FLAGS_PRINT_TRACE)
-+
- #define _DPRINTK_FLAGS_INCL_MODNAME	(1<<1)
- #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
- #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
-@@ -279,4 +284,29 @@ extern const struct kernel_param_ops param_ops_dyndbg;
- #define _DD_cat_help_(pfx)
- #endif
- 
-+/**
-+ * dynamic_debug_register_tracer - register a "printer" function
-+ * @query: query-command string to select callsites getting the function
-+ * @tracer: &vprintf-ish accepting 3 char* ptrs & a vaf
-+ *
-+ * Attach a printer function to callsites selected by query.
-+ * If another printer is already attached, warn and skip, applying the
-+ * rest of the query.  This protects existing setups, while allowing
-+ * maximal coexistence of (mostly) non-competing listeners. RFC.
-+ */
-+int dynamic_debug_register_tracer(const char *query, const char *mod,
-+	int (*tracer) (const char *fmt, char *prefix, char *label, struct va_format *vaf));
-+/**
-+ * dynamic_debug_unregister_tracer - unregister your "printer" function
-+ * @query: query-command string to select callsites to reset
-+ * @cookie: reserved to validate unregisters against pirates
-+ *
-+ * Detach this printer function (@cookie) from callsites selected by
-+ * the query, when @cookie == callsite.  This protects existing
-+ * setups, while allowing maximal coexistence of (mostly)
-+ * non-competing listeners. RFC.
-+ */
-+int dynamic_debug_unregister_tracer(const char *query, const char *mod,
-+	int (*cookie) (const char *fmt, char *prefix, char *label, struct va_format *vaf));
-+
- #endif
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5ddd575159fb..5038f81d3fc6 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2486,6 +2486,16 @@ config TEST_STATIC_KEYS
- 
- 	  If unsure, say N.
- 
-+config TEST_DYNAMIC_DEBUG
-+	tristate "Test DYNAMIC_DEBUG"
-+	depends on m
-+	depends on DYNAMIC_DEBUG
-+	help
-+	  Test the print_aux registration with a counting fn,
-+	  then test expected counts during the execution.
-+
-+	  If unsure, say N.
-+
- config TEST_KMOD
- 	tristate "kmod stress tester"
- 	depends on m
-diff --git a/lib/Makefile b/lib/Makefile
-index 5efd1b435a37..01c3c76980ba 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -82,6 +82,7 @@ obj-$(CONFIG_TEST_SORT) += test_sort.o
- obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
- obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
- obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
-+obj-$(CONFIG_TEST_DYNAMIC_DEBUG) += test_dynamic_debug.o
- obj-$(CONFIG_TEST_PRINTF) += test_printf.o
- obj-$(CONFIG_TEST_SCANF) += test_scanf.o
- obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 6bc645a663e7..9ba180976636 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -85,6 +85,7 @@ static inline const char *trim_prefix(const char *path)
- 
- static struct { unsigned flag:8; char opt_char; } opt_array[] = {
- 	{ _DPRINTK_FLAGS_PRINT, 'p' },
-+	{ _DPRINTK_FLAGS_PRINT_TRACE, 'T' },
- 	{ _DPRINTK_FLAGS_INCL_MODNAME, 'm' },
- 	{ _DPRINTK_FLAGS_INCL_FUNCNAME, 'f' },
- 	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
-@@ -146,7 +147,8 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
-  * logs the changes.  Takes ddebug_lock.
-  */
- static int ddebug_change(const struct ddebug_query *query,
--			 struct flag_settings *modifiers)
-+			 struct flag_settings *modifiers,
-+			 int (*tracer)(const char *, char *, char *, struct va_format *))
- {
- 	int i;
- 	struct ddebug_table *dt;
-@@ -205,11 +207,43 @@ static int ddebug_change(const struct ddebug_query *query,
- 			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
- 			if (newflags == dp->flags)
- 				continue;
-+
-+			/* handle T flag */
-+			if (newflags & _DPRINTK_FLAGS_PRINT_TRACE) {
-+				if (!tracer)
-+					v2pr_info("tracer enable\n");
-+				else {
-+					/* register attempt */
-+					if (!dp->tracer) {
-+						v2pr_info("register tracer\n");
-+						dp->tracer = tracer;
-+					}
-+					else if (tracer == dp->tracer)
-+						v2pr_info("tracer equal, ok\n");
-+					else
-+						pr_warn("tracer register error\n");
-+				}
-+			} else if (dp->flags & _DPRINTK_FLAGS_PRINT_TRACE) {
-+				if (!tracer)
-+					v2pr_info("ok: disabling\n");
-+				else {
-+					/* only unregister has a !!tracer */
-+					if (!dp->tracer)
-+						pr_warn("nok: tracer already unset\n");
-+
-+					else if (dp->tracer == tracer) {
-+						v2pr_info("ok: cookie match, unregistering\n");
-+						dp->tracer = NULL;
-+					}
-+					else
-+						pr_warn("nok: tracer cookie match fail\n");
-+				}
-+			}
- #ifdef CONFIG_JUMP_LABEL
--			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
--				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
-+			if (dp->flags & _DPRINTK_ENABLED) {
-+				if (!(modifiers->flags & _DPRINTK_ENABLED))
- 					static_branch_disable(&dp->key.dd_key_true);
--			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
-+			} else if (modifiers->flags & _DPRINTK_ENABLED)
- 				static_branch_enable(&dp->key.dd_key_true);
- #endif
- 			dp->flags = newflags;
-@@ -482,7 +516,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- 	return 0;
- }
- 
--static int ddebug_exec_query(char *query_string, const char *modname)
-+static int ddebug_exec_query(char *query_string, const char *modname, void *tracer)
- {
- 	struct flag_settings modifiers = {};
- 	struct ddebug_query query = {};
-@@ -505,7 +539,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* actually go and implement the change */
--	nfound = ddebug_change(&query, &modifiers);
-+	nfound = ddebug_change(&query, &modifiers, tracer);
- 	vpr_info_dq(&query, nfound ? "applied" : "no-match");
- 
- 	return nfound;
-@@ -515,10 +549,19 @@ static int ddebug_exec_query(char *query_string, const char *modname)
-    last error or number of matching callsites.  Module name is either
-    in param (for boot arg) or perhaps in query string.
- */
--static int ddebug_exec_queries(char *query, const char *modname)
-+static int ddebug_exec_queries(const char *query_in, const char *modname, void *tracer)
- {
- 	char *split;
- 	int i, errs = 0, exitcode = 0, rc, nfound = 0;
-+	char *query; /* writable copy of query_in */
-+
-+	if (!query_in) {
-+		pr_err("non-null query/command string expected\n");
-+		return -EINVAL;
-+	}
-+	query = kstrndup(query_in, PAGE_SIZE, GFP_KERNEL);
-+	if (!query)
-+		return -ENOMEM;
- 
- 	for (i = 0; query; query = split) {
- 		split = strpbrk(query, ";\n");
-@@ -531,7 +574,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
- 
- 		vpr_info("query %d: \"%s\" %s\n", i, query, (modname) ? modname : "");
- 
--		rc = ddebug_exec_query(query, modname);
-+		rc = ddebug_exec_query(query, modname, tracer);
- 		if (rc < 0) {
- 			errs++;
- 			exitcode = rc;
-@@ -540,6 +583,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
- 		}
- 		i++;
- 	}
-+	kfree(query);
- 	vpr_info("processed %d queries, with %d matches, %d errs\n",
- 		 i, nfound, errs);
- 
-@@ -560,20 +604,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
-  */
- int dynamic_debug_exec_queries(const char *query, const char *modname)
- {
--	int rc;
--	char *qry; /* writable copy of query */
--
--	if (!query) {
--		pr_err("non-null query/command string expected\n");
--		return -EINVAL;
--	}
--	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
--	if (!qry)
--		return -ENOMEM;
--
--	rc = ddebug_exec_queries(qry, modname);
--	kfree(qry);
--	return rc;
-+	return ddebug_exec_queries(query, modname, NULL);
- }
- EXPORT_SYMBOL_GPL(dynamic_debug_exec_queries);
- 
-@@ -637,8 +668,20 @@ void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
- 	vaf.fmt = fmt;
- 	vaf.va = &args;
- 
--	printk(KERN_DEBUG "%s%pV", dynamic_emit_prefix(descriptor, buf), &vaf);
-+	if (descriptor->flags & _DPRINTK_ENABLED)
-+		dynamic_emit_prefix(descriptor, buf);
-+
-+	if (descriptor->flags & _DPRINTK_FLAGS_PRINT)
-+		printk(KERN_DEBUG "%s%pV", buf, &vaf);
- 
-+	if (descriptor->flags & _DPRINTK_FLAGS_PRINT_TRACE) {
-+
-+		if (descriptor->tracer) {
-+			(*descriptor->tracer)("%s:%ps %pV", buf,
-+						 __builtin_return_address(0), &vaf);
-+		}
-+		/* else shouldnt matter, but maybe for consistency */
-+	}
- 	va_end(args);
- }
- EXPORT_SYMBOL(__dynamic_pr_debug);
-@@ -783,7 +826,7 @@ static ssize_t ddebug_proc_write(struct file *file, const char __user *ubuf,
- 		return PTR_ERR(tmpbuf);
- 	vpr_info("read %d bytes from userspace\n", (int)len);
- 
--	ret = ddebug_exec_queries(tmpbuf, NULL);
-+	ret = ddebug_exec_queries(tmpbuf, NULL, NULL);
- 	kfree(tmpbuf);
- 	if (ret < 0)
- 		return ret;
-@@ -989,7 +1032,7 @@ static int ddebug_dyndbg_param_cb(char *param, char *val,
- 	if (strcmp(param, "dyndbg"))
- 		return on_err; /* determined by caller */
- 
--	ddebug_exec_queries((val ? val : "+p"), modname);
-+	ddebug_exec_queries((val ? val : "+p"), modname, NULL);
- 
- 	return 0; /* query failure shouldn't stop module load */
- }
-@@ -1124,7 +1167,7 @@ static int __init dynamic_debug_init(void)
- 	/* apply ddebug_query boot param, dont unload tables on err */
- 	if (ddebug_setup_string[0] != '\0') {
- 		pr_warn("ddebug_query param name is deprecated, change it to dyndbg\n");
--		ret = ddebug_exec_queries(ddebug_setup_string, NULL);
-+		ret = ddebug_exec_queries(ddebug_setup_string, NULL, NULL);
- 		if (ret < 0)
- 			pr_warn("Invalid ddebug boot param %s\n",
- 				ddebug_setup_string);
-@@ -1214,3 +1257,17 @@ const struct kernel_param_ops param_ops_dyndbg = {
- };
- /* support DEFINE_DYNAMIC_DEBUG_CATEGORIES users */
- EXPORT_SYMBOL(param_ops_dyndbg);
-+
-+int dynamic_debug_register_tracer(const char *query, const char *mod,
-+	int (*tracer) (const char *fmt, char *prefix, char *label, struct va_format *vaf))
-+{
-+	return ddebug_exec_queries(query, mod, tracer);
-+}
-+EXPORT_SYMBOL(dynamic_debug_register_tracer);
-+
-+int dynamic_debug_unregister_tracer(const char *query, const char *mod,
-+	int (*tracer) (const char *fmt, char *prefix, char *label, struct va_format *vaf))
-+{
-+	return ddebug_exec_queries(query, mod, tracer);
-+}
-+EXPORT_SYMBOL(dynamic_debug_unregister_tracer);
-diff --git a/lib/test_dynamic_debug.c b/lib/test_dynamic_debug.c
-new file mode 100644
-index 000000000000..e837398bd885
---- /dev/null
-+++ b/lib/test_dynamic_debug.c
-@@ -0,0 +1,247 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Kernel module for testing dynamic_debug
-+ *
-+ * Authors:
-+ *      Jim Cromie	<jim.cromie@gmail.com>
-+ */
-+
-+/*
-+ * test-setup: use trace_print attachment interface as a test harness,
-+ * define a custom trace_printer which counts invocations, and a
-+ * pr_debug event generator function which calls a set of categorized
-+ * pr_debugs.
-+ * test-run: manipulate the pr_debug's enablement, run the event
-+ * generator, and check for the expected side effects.
-+ */
-+
-+#include <linux/module.h>
-+
-+static int __bad_tracer;
-+
-+static int trace_ct = 0;
-+static int test_ct = 0;
-+static int errors = 0;
-+static int verbose = 0;
-+
-+
-+module_param_named(use_bad_tracer, __bad_tracer, int, 0644);
-+MODULE_PARM_DESC(use_bad_tracer,
-+		 "use broken tracer, recursing with pr_debug\n"
-+		 "\tonly works at modprobe time\n");
-+
-+static int (*my_tracer)(const char *decorator, char *prefix, char *label, struct va_format *vaf);
-+
-+static int good_tracer(const char *decorator, char *prefix, char *label, struct va_format *vaf)
-+{
-+	trace_ct++;
-+	if (verbose)
-+		pr_notice("my_tracer: %pV", vaf);
-+	return 0;
-+}
-+
-+static int bad_tracer(const char *decorator, char *prefix, char *label, struct va_format *vaf)
-+{
-+	/* dont try pr_debug, it recurses back here */
-+	pr_debug("oops! recursion, crash?\n");
-+	return 0;
-+}
-+
-+static void pick_tracer(void)
-+{
-+	if (__bad_tracer)
-+		my_tracer = bad_tracer;
-+	else
-+		my_tracer = good_tracer;
-+}
-+
-+static int expect_count(int want, const char *story)
-+{
-+	test_ct++;
-+	if (want != trace_ct) {
-+		pr_err("expect_count: want %d, got %d: %s\n", want, trace_ct, story);
-+		errors++;
-+		trace_ct = 0;
-+		return 1;
-+	}
-+	pr_info("pass %d, hits %d, on \"%s\"\n", test_ct, want, story);
-+	trace_ct = 0;
-+	return 0;
-+}
-+
-+/* call pr_debug (4 * reps) + 2 times, for tracer side-effects */
-+static void do_debugging(int reps)
-+{
-+	int i;
-+
-+	pr_debug("Entry:\n");
-+	pr_info(" do_debugging %d time(s)\n", reps);
-+	for (i = 0; i < reps; i++) {
-+		pr_debug("hi: %d\n", i);
-+		pr_debug("mid: %d\n", i);
-+		pr_debug("low: %d\n", i);
-+		pr_debug("low:lower: %d subcategory test\n", i);
-+	}
-+	pr_debug("Exit:\n");
-+}
-+
-+static void expect_matches(int want, int got, const char *story)
-+{
-+	// todo: got <0 are errors, bubbled up
-+	if (got != want)
-+		pr_warn(" match_count wrong: want %d got %d on \"%s\"\n", want, got, story);
-+	else
-+		pr_info(" ok: %d matches by \"%s\"\n", want, story);
-+
-+	// ? count errs ? separately ?
-+}
-+
-+static int report(char *who)
-+{
-+	if (errors)
-+		pr_err("%s failed %d of %d tests\n", who, errors, test_ct);
-+	else
-+		pr_info("%s passed %d tests\n", who, test_ct);
-+	return errors;
-+}
-+
-+struct exec_test {
-+	int matches;
-+	int loops;
-+	int hits;
-+	const char *mod;
-+	const char *qry;
-+};
-+
-+static void do_exec_test(struct exec_test *tst)
-+{
-+	int match_count;
-+
-+	match_count = dynamic_debug_exec_queries(tst->qry, tst->mod);
-+	expect_matches(tst->matches, match_count, tst->qry);
-+	do_debugging(tst->loops);
-+	expect_count(tst->hits, tst->qry);
-+}
-+
-+static const char my_mod[] = "test_dynamic_debug";
-+
-+/* these tests rely on register stuff having been done ?? */
-+struct exec_test exec_tests[] = {
-+
-+	/* standard use is my_mod, for `modprobe $module dyndbg=+p` */
-+
-+	/* no modification probe */
-+	{ 6, 2, 0, my_mod, "func do_debugging +_" },
-+
-+	/* use original single string query style */
-+	{ 6, 3, 0, NULL, "module test_dynamic_debug func do_debugging -T" },
-+
-+	/* this is mildly preferred */
-+	{ 6, 3, 0, my_mod, "func do_debugging -T" },
-+
-+	/* enable all DUT */
-+	{ 6, 4, 18, my_mod, "func do_debugging +T" },
-+
-+	/* disable 1 call */
-+	{ 1, 4, 14, my_mod, "format '^hi:' -T" },
-+
-+	/* disable 1 call */
-+	{ 1, 4, 10, my_mod, "format '^mid:' -T" },
-+
-+	/* repeat same disable */
-+	{ 1, 4, 10, my_mod, "format '^mid:' -T" },
-+
-+	/* repeat same disable, diff run ct */
-+	{ 1, 5, 12, my_mod, "format '^mid:' -T" },
-+
-+	/* include subclass */
-+	{ 2, 4, 2, my_mod, "format '^low:' -T" },
-+
-+	/* re-disable, exclude subclass */
-+	{ 1, 4, 2, my_mod, "format '^low: ' -T" },
-+
-+	/* enable, exclude subclass */
-+	{ 1, 4, 6, my_mod, "format '^low: ' +T" },
-+
-+	/* enable the subclass */
-+	{ 1, 4, 10, my_mod, "format '^low:lower:' +T" },
-+
-+	/* enable the subclass */
-+	{ 1, 6, 14, my_mod, "format '^low:lower:' +T" },
-+};
-+
-+struct register_test {
-+	int matches;
-+	int loops;
-+	int hits;
-+	const char *mod;
-+	const char *qry;
-+};
-+
-+static void do_register_test(struct register_test *tst)
-+{
-+	int match_count;
-+
-+	match_count = dynamic_debug_register_tracer(tst->qry, tst->mod, my_tracer);
-+	expect_matches(tst->matches, match_count, tst->qry);
-+	do_debugging(tst->loops);
-+	expect_count(tst->hits, tst->qry);
-+}
-+
-+struct register_test register_tests[] = {
-+
-+	{ 6, 3, 14, my_mod, "func do_debugging +T" },
-+
-+	{ 10, 3, 0, my_mod, "+_" }, //, my_tracer },
-+	{ 11, 3, 0, my_mod, "+T" }, //, my_tracer },
-+};
-+
-+static int __init test_dynamic_debug_init(void)
-+{
-+	int match_count; /* rc from ddebug_exec_queries. meh. */
-+	int i;
-+
-+	pick_tracer();
-+
-+	pr_debug("Entry:\n");
-+	do_debugging(3);
-+	expect_count(0, "nothing unless dyndbg=+T at modprobe");
-+
-+	for (i = 0; i < ARRAY_SIZE(register_tests); i++)
-+		do_register_test(&register_tests[i]);
-+
-+	do_debugging(2);
-+	expect_count(10, "do_debugging 2 times after +T");
-+
-+	for (i = 0; i < ARRAY_SIZE(exec_tests); i++)
-+		do_exec_test(&exec_tests[i]);
-+
-+	match_count = dynamic_debug_unregister_tracer(
-+		"func do_debugging -T", "test_dynamic_debug", my_tracer);
-+
-+	expect_matches(6, match_count,
-+		       "unregister do_debugging()s tracers");
-+	do_debugging(4);
-+	expect_count(0, "everything is off");
-+
-+	match_count = dynamic_debug_unregister_tracer(
-+		"func do_debugging -T", "test_dynamic_debug", my_tracer);
-+
-+	expect_matches(6, match_count,
-+		       "re-unregister, same count, not a change count");
-+	report("init");
-+	pr_debug("Exit:\n");
-+	return 0;
-+}
-+
-+static void __exit test_dynamic_debug_exit(void)
-+{
-+	report("exit");
-+	pr_debug("Exit:");
-+}
-+
-+module_init(test_dynamic_debug_init);
-+module_exit(test_dynamic_debug_exit);
-+
-+MODULE_AUTHOR("Jim Cromie <jim.cromie@gmail.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.31.1
-
+Looking forward to updates,
+Tibi=
