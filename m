@@ -2,182 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6673EADD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9312D3EADDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236235AbhHMAVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 20:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
+        id S236647AbhHMAWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 20:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235686AbhHMAVc (ORCPT
+        with ESMTP id S232410AbhHMAWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 20:21:32 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97A4C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 17:21:06 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d17so9586774plr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 17:21:06 -0700 (PDT)
+        Thu, 12 Aug 2021 20:22:04 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481FDC061756;
+        Thu, 12 Aug 2021 17:21:38 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id bj40so13376671oib.6;
+        Thu, 12 Aug 2021 17:21:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jPOasYiBAcjG9pv11zmhOsUezGxQh8Ee+W8L/ZGWhXE=;
-        b=Ucsw6v7F1/7OrQNGaQv6pTULwv5MHBtWCvb27jnzWJtP2n85q1GxWLopCu354aJfLM
-         MR/o+T1kNXS3HBXN6/BXF2t5qtOsc7kaHFIgH2OUXrm2MTHoGQgcDfYhuPlfUHp9NvlQ
-         TuS+xd4bdJbA4Tse+EZr7HouuH634AaflULJR+4AuaJLK1EXeq9RyquIdWVw1MZIH/tZ
-         WO+3+y8M0asx6RjlDnpiEdeJ171TN8Ib10X08Z6ism/3AUZgng6P8Ha/Nueokg90u1DL
-         kfdPt9MDV1aTQb0mWjr22j/HM8O1T7XkxDtxLkPOeGwG/MAiVLIwzIPPZ2QTRLlhqdqD
-         AzGQ==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=QNYkOGSwG5lfopPcPIAJaeb/J9i3OcwIPx9Dk/mlFoc=;
+        b=KE8//2Y1lvUhwkcjDd8LymvPPeksZJhG7NLXZTZnOEKAuuga/qpks8arMMe60t8e/q
+         5x0DP2CNtMU3+JqGGosS6oerv0dnV1TF5rDkLQ7YWxux0rc49lV4Ds6NnsAtrdeukfh3
+         x7CHwQ4MGK75eE0AHx/ZwyBxF2x0oSDYWrFhyQjDt8WjMjgGQF4PSD97LUIuzXTHk51N
+         NHkpLQT7RBOQeVfzKCdcA1BdU/QNJrN/Wg4V6xV9ia8HMa/3nLdXG+7/QtsS9mYDW37l
+         Lrs1w0RHAIXxLdIr/KlKSwYm1YltiUUo+5wnuOvJbsZ64QagaLtRJ/KxliN79Z+BWDSN
+         3qhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jPOasYiBAcjG9pv11zmhOsUezGxQh8Ee+W8L/ZGWhXE=;
-        b=ZJgtKWk0zjZx1UBAhu2om8jPT7BrJVrr9JxrvH/TEjx1aM4aejmxyGN23QCg7rJq+k
-         JHIvJ5ihHgW6Cm7sNtcXbq9dCpTJDsS/luGOJaMukLFY6JxlNOcGCuRav+126LGjD+kR
-         y4uwP5ldrs6092HUn/OHmyF4E497d1JPld04TbpAFpss/0rR4puAcNfnvrMTJpEnx3tK
-         6c27gOEepzktuZlQaRsDv2nsNU6sW72enjKUHhdqfjjowbDYuqcpRarVRztQmLX/9cHr
-         HBbLTbI5Smq1+CwmP60jHwYCK5qCHdpENsid2+s8c4684yymIqrnnKaWCQpmUTbNP7Gd
-         JkAw==
-X-Gm-Message-State: AOAM532Zm2ooVOK5g0ihN3knioV+h3PaaBGHT3a/CbF25PwJukCvvqHg
-        /g1pFEskWcfN1OA2ElFtLNlljS5ucy0=
-X-Google-Smtp-Source: ABdhPJxeJzQTTki0QzVX/bcIs+hRPolDk7b10eftkkr7ujda30hSu8XaKsdtDBfvSl21VRgIAKMYaQ==
-X-Received: by 2002:a63:4e11:: with SMTP id c17mr6120172pgb.54.1628814066103;
-        Thu, 12 Aug 2021 17:21:06 -0700 (PDT)
-Received: from [10.69.57.159] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n23sm4846116pgv.76.2021.08.12.17.21.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 17:21:05 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_alloc: don't corrupt pcppage_migratetype
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210811182917.2607994-1-opendmb@gmail.com>
- <e9393682-5429-448a-d151-a3ee05216499@suse.cz>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <b5020966-c7dd-54b2-9e6a-e1d21a23d267@gmail.com>
-Date:   Thu, 12 Aug 2021 17:21:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=QNYkOGSwG5lfopPcPIAJaeb/J9i3OcwIPx9Dk/mlFoc=;
+        b=riqb1n56T2uov6kKbDxBYm3tnITEaSinn4lqghgJ5b/Z58x+rbw1rXoz0B5qFg+6lw
+         NhMGel7mHkvzDMWr+BCzeE1CFySUEPTAMXuwzrpTxTwpxH/3Dn91QXPbHNIDj/fNidA2
+         u86sMW8ZhgkokMFyQeA3Rdw85SyAo4KzfwESMdi9pFXx00A9dhPARtqqbCr3HqFdBKAu
+         SK9l31+UOro9m8qV25pz5CahzKv5woTufv9RLSQwBt72Fdo40ZJJOykYQeiFVvYTd+2X
+         DafT/nfbeyB4uwf/TOBN9DsO90LfRotHdnTLA2w1BSrdnQg2+ydWVEkHactZF3BQtEKp
+         xXIQ==
+X-Gm-Message-State: AOAM533krbstX37dfwvqSOpUet8KnAUNQkTUN/79lsbCLBByzKEMknG4
+        GrWAih2kjDajxMIW3PmWj1QJFOYrWdYE/JLYIIg=
+X-Google-Smtp-Source: ABdhPJxDpmet0YaNN4XMUoUI4lGM9peRpvSxtqb6KJeqM5mGU0TIpSg/IhFjrpEjS/NKgyPo3XumbtlW852Nycse13o=
+X-Received: by 2002:a05:6808:209e:: with SMTP id s30mr4547238oiw.177.1628814097684;
+ Thu, 12 Aug 2021 17:21:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e9393682-5429-448a-d151-a3ee05216499@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+ <159827189025.306468.4916341547843731338.stgit@warthog.procyon.org.uk> <77b67542-f094-3395-80bd-18f82ea060b7@gmail.com>
+In-Reply-To: <77b67542-f094-3395-80bd-18f82ea060b7@gmail.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Fri, 13 Aug 2021 02:21:26 +0200
+Message-ID: <CAKgNAkhbQSt-XyH1a6NkipnZeV_ZTenxcCpDx4JvSUEWL9HPSw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] Add manpages for move_mount(2)
+To:     David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/2021 1:17 AM, Vlastimil Babka wrote:
-> On 8/11/21 8:29 PM, Doug Berger wrote:
->> When placing pages on a pcp list, migratetype values over
->> MIGRATE_PCPTYPES get added to the MIGRATE_MOVABLE pcp list.
->>
->> However, the actual migratetype is preserved in the page and
->> should not be changed to MIGRATE_MOVABLE or the page may end
->> up on the wrong free_list.
-> 
-> Nice, how did you find out? Were there any user-visible effects? (Hint: which?
-> the changelog should say that so that the severity of the bug can be judged).
-> Otherwise I agree the bug is there and patch is fixing it. Thanks.
+Hello David,
 
-I did not observe the bug "in the wild", but rather noticed it while
-reviewing the current CMA implementation. I would imagine in the worst
-case that CMA memory could leak onto MIGRATE_MOVABLE free_lists and get
-"stolen" through fallback for MIGRATE_UNMOVABLE allocations effectively
-breaking CMA.
-
-For full disclosure I should take this opportunity to say that I am
-investigating ways to improve the CMA/Movable memory implementations
-somewhat in line with what Joonsoo Kim has been trying, which is why I
-observed this bug.
-
-However, I largely agree with the proposal Mel Gorman made in his
-comments on:
-https://lkml.org/lkml/2016/4/28/244
-
-I can appreciate that zones may provide a convenient way of grouping
-memory with common attributes, but it is a bastardization of the
-original intention of zones. I would prefer a mechanism for designating
-blocks of memory as "sticky" movable such that they can only be used to
-satisfy movable memory requests and not be converted to other
-migratetypes. I've wrestled with the terminology and currently favor
-Designated Movable Blocks (as opposed to "sticky") because these are
-blocks of memory that have the movable attribute by designation rather
-than by default or accident.
-
-While CMA blocks should be a subset of Designated Movable Blocks since
-they have the same migration properties, it may be desirable/necessary
-to maintain a distinction to accommodate competing allocation
-objectives. Specifically, Designated Movable Blocks used by CMA to
-satisfy the needs of drivers will likely want the page allocator to be
-less aggressive than users of Memory Hot-plug or kernelcore= Designated
-Movable Blocks. Perhaps a round-robin scheme with MIGRATE_MOVABLE can
-satisfy all users, but I'm not too optimistic.
-
-I don't know if Mel has changed his opinions on this matter, but any
-suggestions and encouragement are appreciated.
+As noted in another mail, I will ping on all of the mails, just to
+raise all the patches to the top of the inbox.
 
 Thanks,
-    Doug
 
-> 
->> Fixes: df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
->> Signed-off-by: Doug Berger <opendmb@gmail.com>
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
->> ---
->>  mm/page_alloc.c | 25 ++++++++++++-------------
->>  1 file changed, 12 insertions(+), 13 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 73704e836649..8addb4919f75 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -3436,19 +3436,10 @@ void free_unref_page_list(struct list_head *list)
->>  		 * comment in free_unref_page.
->>  		 */
->>  		migratetype = get_pcppage_migratetype(page);
->> -		if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
->> -			if (unlikely(is_migrate_isolate(migratetype))) {
->> -				list_del(&page->lru);
->> -				free_one_page(page_zone(page), page, pfn, 0,
->> -							migratetype, FPI_NONE);
->> -				continue;
->> -			}
->> -
->> -			/*
->> -			 * Non-isolated types over MIGRATE_PCPTYPES get added
->> -			 * to the MIGRATE_MOVABLE pcp list.
->> -			 */
->> -			set_pcppage_migratetype(page, MIGRATE_MOVABLE);
->> +		if (unlikely(is_migrate_isolate(migratetype))) {
->> +			list_del(&page->lru);
->> +			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
->> +			continue;
->>  		}
->>  
->>  		set_page_private(page, pfn);
->> @@ -3458,7 +3449,15 @@ void free_unref_page_list(struct list_head *list)
->>  	list_for_each_entry_safe(page, next, list, lru) {
->>  		pfn = page_private(page);
->>  		set_page_private(page, 0);
->> +
->> +		/*
->> +		 * Non-isolated types over MIGRATE_PCPTYPES get added
->> +		 * to the MIGRATE_MOVABLE pcp list.
->> +		 */
->>  		migratetype = get_pcppage_migratetype(page);
->> +		if (unlikely(migratetype >= MIGRATE_PCPTYPES))
->> +			migratetype = MIGRATE_MOVABLE;
->> +
->>  		trace_mm_page_free_batched(page);
->>  		free_unref_page_commit(page, pfn, migratetype, 0);
->>  
->>
-> 
+Michael
 
+On Thu, 27 Aug 2020 at 13:04, Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>
+> Hello David,
+>
+> On 8/24/20 2:24 PM, David Howells wrote:
+> > Add manual pages to document the move_mount() system call.
+> >
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > ---
+> >
+> >  man2/move_mount.2 |  267 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 267 insertions(+)
+> >  create mode 100644 man2/move_mount.2
+> >
+> > diff --git a/man2/move_mount.2 b/man2/move_mount.2
+> > new file mode 100644
+> > index 000000000..2ceb775d9
+> > --- /dev/null
+> > +++ b/man2/move_mount.2
+> > @@ -0,0 +1,267 @@
+> > +'\" t
+> > +.\" Copyright (c) 2020 David Howells <dhowells@redhat.com>
+> > +.\"
+> > +.\" %%%LICENSE_START(VERBATIM)
+> > +.\" Permission is granted to make and distribute verbatim copies of this
+> > +.\" manual provided the copyright notice and this permission notice are
+> > +.\" preserved on all copies.
+> > +.\"
+> > +.\" Permission is granted to copy and distribute modified versions of this
+> > +.\" manual under the conditions for verbatim copying, provided that the
+> > +.\" entire resulting derived work is distributed under the terms of a
+> > +.\" permission notice identical to this one.
+> > +.\"
+> > +.\" Since the Linux kernel and libraries are constantly changing, this
+> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+> > +.\" responsibility for errors or omissions, or for damages resulting from
+> > +.\" the use of the information contained herein.  The author(s) may not
+> > +.\" have taken the same level of care in the production of this manual,
+> > +.\" which is licensed free of charge, as they might when working
+> > +.\" professionally.
+> > +.\"
+> > +.\" Formatted or processed versions of this manual, if unaccompanied by
+> > +.\" the source, must acknowledge the copyright and authors of this work.
+> > +.\" %%%LICENSE_END
+> > +.\"
+> > +.TH MOVE_MOUNT 2 2020-08-24 "Linux" "Linux Programmer's Manual"
+> > +.SH NAME
+> > +move_mount \- Move mount objects around the filesystem topology
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B #include <sys/types.h>
+> > +.B #include <sys/mount.h>
+> > +.B #include <unistd.h>
+> > +.BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
+> > +.PP
+> > +.BI "int move_mount(int " from_dirfd ", const char *" from_pathname ","
+> > +.BI "               int " to_dirfd ", const char *" to_pathname ","
+> > +.BI "               unsigned int " flags );
+> > +.fi
+> > +.PP
+> > +.IR Note :
+> > +There is no glibc wrapper for this system call.
+> > +.SH DESCRIPTION
+> > +The
+> > +.BR move_mount ()
+> > +call moves a mount from one place to another; it can also be used to attach an
+> > +unattached mount that was created by
+> > +.BR fsmount "() or " open_tree "() with " OPEN_TREE_CLONE .
+> > +.PP
+> > +If
+> > +.BR move_mount ()
+> > +is called repeatedly with a file descriptor that refers to a mount object,
+> > +then the object will be attached/moved the first time and then moved
+> > +repeatedly, detaching it from the previous mountpoint each time.
+>
+> s/mountpoint/mount point/
+> (and all other instances below)
+>
+> > +.PP
+> > +To access the source mount object or the destination mountpoint, no
+> > +permissions are required on the object itself, but if either pathname is
+> > +supplied, execute (search) permission is required on all of the directories
+> > +specified in
+> > +.IR from_pathname " or " to_pathname .
+> > +.PP
+> > +The caller does, however, require the appropriate privilege (Linux: the
+>
+> s/Linux: //
+>
+> > +.B CAP_SYS_ADMIN
+> > +capability) to move or attach mounts.
+> > +.PP
+> > +.BR move_mount ()
+> > +uses
+> > +.IR from_pathname ", " from_dirfd " and part of " flags
+> > +to locate the mount object to be moved and
+> > +.IR to_pathname ", " to_dirfd " and another part of " flags
+> > +to locate the destination mountpoint.  Each lookup can be done in one of a
+> > +variety of ways:
+> > +.TP
+> > +[*] By absolute path.
+> > +The pathname points to an absolute path and the dirfd is ignored.  The file is
+> > +looked up by name, starting from the root of the filesystem as seen by the
+> > +calling process.
+> > +.TP
+> > +[*] By cwd-relative path.
+> > +The pathname points to a relative path and the dirfd is
+> > +.IR AT_FDCWD .
+> > +The file is looked up by name, starting from the current working directory.
+> > +.TP
+> > +[*] By dir-relative path.
+> > +The pathname points to relative path and the dirfd indicates a file descriptor
+> > +pointing to a directory.  The file is looked up by name, starting from the
+> > +directory specified by
+> > +.IR dirfd .
+> > +.TP
+> > +[*] By file descriptor.  The pathname is an empty string (""), the dirfd
+>
+> Formatting problem here... Add a newline before "The"
+>
+> > +points directly to the mount object to move or the destination mount point and
+> > +the appropriate
+> > +.B *_EMPTY_PATH
+> > +flag is set.
+> > +.PP
+> > +.I flags
+> > +can be used to influence a path-based lookup.  The value for
+> > +.I flags
+> > +is constructed by OR'ing together zero or more of the following constants:
+> > +.TP
+> > +.BR MOVE_MOUNT_F_EMPTY_PATH
+> > +.\" commit 65cfc6722361570bfe255698d9cd4dccaf47570d
+> > +If
+> > +.I from_pathname
+> > +is an empty string, operate on the file referred to by
+> > +.IR from_dirfd
+> > +(which may have been obtained using the
+> > +.BR open (2)
+> > +.B O_PATH
+> > +flag or
+> > +.BR open_tree ())
+> > +If
+> > +.I from_dirfd
+> > +is
+> > +.BR AT_FDCWD ,
+> > +the call operates on the current working directory.
+> > +In this case,
+> > +.I from_dirfd
+> > +can refer to any type of file, not just a directory.
+> > +This flag is Linux-specific; define
+> > +.B _GNU_SOURCE
+> > +.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
+> > +to obtain its definition.
+> > +.TP
+> > +.B MOVE_MOUNT_T_EMPTY_PATH
+> > +As above, but operating on
+>
+> s/As above/As for MOVE_MOUNT_F_EMPTY_PATH/
+>
+> > +.IR to_pathname " and " to_dirfd .
+> > +.TP
+> > +.B MOVE_MOUNT_F_AUTOMOUNTS
+> > +Don't automount the terminal ("basename") component of
+> > +.I from_pathname
+> > +if it is a directory that is an automount point.  This allows a mount object
+> > +that has an automount point at its root to be moved and prevents unintended
+> > +triggering of an automount point.
+> > +The
+> > +.B MOVE_MOUNT_F_AUTOMOUNTS
+> > +flag has no effect if the automount point has already been mounted over.  This
+> > +flag is Linux-specific; define
+> > +.B _GNU_SOURCE
+> > +.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
+> > +to obtain its definition.
+> > +.TP
+> > +.B MOVE_MOUNT_T_AUTOMOUNTS
+> > +As above, but operating on
+> > +.IR to_pathname " and " to_dirfd .
+> > +This allows an automount point to be manually mounted over.
+> > +.TP
+> > +.B MOVE_MOUNT_F_SYMLINKS
+> > +If
+> > +.I from_pathname
+> > +is a symbolic link, then dereference it.  The default for
+> > +.BR move_mount ()
+> > +is to not follow symlinks.
+> > +.TP
+> > +.B MOVE_MOUNT_T_SYMLINKS
+> > +As above, but operating on
+> > +.IR to_pathname " and " to_dirfd .
+> > +.SH RETURN VALUE
+> > +On success, 0 is returned.  On error, \-1 is returned, and
+> > +.I errno
+> > +is set appropriately.
+> > +.SH ERRORS
+>
+> Should EPERM be in the following list?
+>
+> > +.TP
+> > +.B EACCES
+> > +Search permission is denied for one of the directories
+> > +in the path prefix of
+> > +.IR pathname .
+> > +(See also
+> > +.BR path_resolution (7).)
+> > +.TP
+> > +.B EBADF
+> > +.IR from_dirfd " or " to_dirfd
+> > +is not a valid open file descriptor.
+> > +.TP
+> > +.B EFAULT
+> > +.IR from_pathname " or " to_pathname
+> > +is NULL or either one point to a location outside the process's accessible
+> > +address space.
+> > +.TP
+> > +.B EINVAL
+> > +Reserved flag specified in
+>
+> Should this rather be, "Invalid flag specified in..." ?
+>
+> > +.IR flags .
+> > +.TP
+> > +.B ELOOP
+> > +Too many symbolic links encountered while traversing the pathname.
+> > +.TP
+> > +.B ENAMETOOLONG
+> > +.IR from_pathname " or " to_pathname
+> > +is too long.
+> > +.TP
+> > +.B ENOENT
+> > +A component of
+> > +.IR from_pathname " or " to_pathname
+> > +does not exist, or one is an empty string and the appropriate
+> > +.B *_EMPTY_PATH
+> > +was not specified in
+> > +.IR flags .
+> > +.TP
+> > +.B ENOMEM
+> > +Out of memory (i.e., kernel memory).
+> > +.TP
+> > +.B ENOTDIR
+> > +A component of the path prefix of
+> > +.IR from_pathname " or " to_pathname
+> > +is not a directory or one or the other is relative and the appropriate
+> > +.I *_dirfd
+> > +is a file descriptor referring to a file other than a directory.
+> > +.SH VERSIONS
+> > +.BR move_mount ()
+> > +was added to Linux in kernel 5.2.
+> > +.SH CONFORMING TO
+> > +.BR move_mount ()
+> > +is Linux-specific.
+> > +.SH NOTES
+> > +Glibc does not (yet) provide a wrapper for the
+> > +.BR move_mount ()
+> > +system call; call it using
+> > +.BR syscall (2).
+> > +.SH EXAMPLES
+> > +The
+> > +.BR move_mount ()
+> > +function can be used like the following:
+> > +.PP
+> > +.RS
+> > +.nf
+> > +move_mount(AT_FDCWD, "/a", AT_FDCWD, "/b", 0);
+> > +.fi
+> > +.RE
+> > +.PP
+> > +This would move the object mounted on "/a" to "/b".  It can also be used in
+>
+> s/It/move_mount()/
+>
+> > +conjunction with
+> > +.BR open_tree "(2) or " open "(2) with " O_PATH :
+> > +.PP
+> > +.RS
+> > +.nf
+> > +fd = open_tree(AT_FDCWD, "/mnt", 0);
+> > +move_mount(fd, "", AT_FDCWD, "/mnt2", MOVE_MOUNT_F_EMPTY_PATH);
+> > +move_mount(fd, "", AT_FDCWD, "/mnt3", MOVE_MOUNT_F_EMPTY_PATH);
+> > +move_mount(fd, "", AT_FDCWD, "/mnt4", MOVE_MOUNT_F_EMPTY_PATH);
+> > +.fi
+> > +.RE
+> > +.PP
+> > +This would attach the path point for "/mnt" to fd, then it would move the
+> > +mount to "/mnt2", then move it to "/mnt3" and finally to "/mnt4".
+> > +.PP
+> > +It can also be used to attach new mounts:
+>
+> s/It/move_mount()/
+>
+> > +.PP
+> > +.RS
+> > +.nf
+> > +sfd = fsopen("ext4", FSOPEN_CLOEXEC);
+> > +fsconfig(sfd, FSCONFIG_SET_STRING, "source", "/dev/sda1", 0);
+> > +fsconfig(sfd, FSCONFIG_SET_FLAG, "user_xattr", NULL, 0);
+> > +fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0);
+> > +mfd = fsmount(sfd, FSMOUNT_CLOEXEC, MOUNT_ATTR_NODEV);
+> > +move_mount(mfd, "", AT_FDCWD, "/home", MOVE_MOUNT_F_EMPTY_PATH);
+> > +.fi
+> > +.RE
+> > +.PP
+> > +Which would open the Ext4 filesystem mounted on "/dev/sda1", turn on user
+> > +extended attribute support and create a mount object for it.  Finally, the new
+>
+> Please replace "it" with a noun (phrase).
+>
+> > +mount object would be attached with
+> > +.BR move_mount ()
+> > +to "/home".
+> > +.SH SEE ALSO
+> > +.BR fsmount (2),
+> > +.BR fsopen (2),
+> > +.BR open_tree (2)
+>
+> Thanks,
+>
+> Michael
+>
+>
+>
+> --
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
+
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
