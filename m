@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267CC3EB949
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E083EB94C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241219AbhHMP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:29:05 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:7611 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241408AbhHMP3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:29:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1628868516; x=1660404516;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=SqazGllWDPr0Qlv37WVWkdOkuMsFftvHhqgfFk44AX0=;
-  b=Nymb5HbsotOrcrKKnIpckB042SiyQkUV+v79GKDDkrjARESNsu5PDYPH
-   YbxS+KJRkF09zxZx5JTYkjut+LDhXprHWsBGnSJsVotNQN0OEY7wNQxeg
-   5UJ4aUVGVKpnHYSjQy30bqM4964kIErQQmIu99D0sz+hpvHKGanf8Xn/k
-   0=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 13 Aug 2021 08:28:35 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 08:28:35 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.15; Fri, 13 Aug 2021 08:28:34 -0700
-Received: from [10.111.172.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.15; Fri, 13 Aug
- 2021 08:28:33 -0700
-Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
- request
-To:     gregkh <gregkh@linuxfoundation.org>,
-        Robin Murphy <robin.murphy@arm.com>
-CC:     =?UTF-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
-        Bing Fan <hptsfb@gmail.com>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
- <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
- <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
- <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
- <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
- <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
- <09918b566884413898f63b92ddd037a0@tencent.com>
- <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
- <YRaJVZOJMKtAM8Sl@kroah.com> <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
- <YRaMQL+YOaky+x9Q@kroah.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <4cc762c8-ba6f-12ba-35f0-3367be8c1fb5@quicinc.com>
-Date:   Fri, 13 Aug 2021 11:28:32 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YRaMQL+YOaky+x9Q@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        id S241042AbhHMPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236719AbhHMPbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:31:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 223B360F51;
+        Fri, 13 Aug 2021 15:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628868665;
+        bh=j/cq3RnilYjfjnkBy+wgYRioYjMOqrFWQpXfBHLhjRM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NB1nBQLNxxYUL21QD+hFeXDqZcf5qrOEyyIjW2wlRyrfkhAdNhhI6B2UdAzn+p+Ye
+         DIG+I+9PIFjRZIqqwV/NWlHsEUDo9tQmdQbtbX3vvp50PXPAqv9B+fpvuTFcjHHcyo
+         JvjKKPn6wwn9yRYgtoZ6ALY8Fli+Gix8Ly+/LIQR1MCA5k0ha+z4cQq2UPUyf/OwX4
+         hj8jtiVIW7tFQDxGirAX8ghwQCKX1BAf3RDzibqxanVpy6Tv339cLqg1DrzDfUNaPH
+         STiy8SJgcUXOz2ywp+QI1DkmfoGVLWAsgrqLrnOgVLSrAlHn/EoplV/HSlc4V4m3pT
+         tRFgTn+BC6l9w==
+Message-ID: <42a2672432301de9beee593765bb49f739ce493a.camel@kernel.org>
+Subject: Re: [PATCH 0/1] tracing: Provide more parseable hist trigger output
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, bristot@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Date:   Fri, 13 Aug 2021 10:31:03 -0500
+In-Reply-To: <20210813182436.0ca56fe333a80fb7188f0b14@kernel.org>
+References: <cover.1628807056.git.zanussi@kernel.org>
+         <20210813182436.0ca56fe333a80fb7188f0b14@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Masami,
 
-
-On 8/13/2021 11:14 AM, gregkh wrote:
->> AFAICS commit b0819465be8b in linux-next still results in
->> amba_device-specific code being called from sbsa_uart_startup() and
->> sbsa_uart_shutdown(), which is what blows up.
+On Fri, 2021-08-13 at 18:24 +0900, Masami Hiramatsu wrote:
+> Hi Tom,
 > 
-> Ick,  ok, can someone send me a revert with this information in it
-> please?
+> On Thu, 12 Aug 2021 17:43:23 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Hi Steve and Daniel,
+> > 
+> > Following our discussion last week about more parseable hist
+> > trigger
+> > output, I started trying to implement the 'csv' output you had
+> > mentioned, but realized that since it was more than just table
+> > output
+> > that was needed, JSON would be a better fit, so implemented that in
+> > this patch instead.
+> 
+> This seems really good feature! BTW, what about adding an tracing
+> option to switch the hist output format?
+> e.g.
+> 
+> $ echo 1 > /sys/kernel/tracing/options/hist-json
+> 
+> This will no need to add additional pseudo file but just add an
+> option to
+> the ftrace.
+> 
 
-I guess Bin won't be around to response in his timezone on Friday, so
-I'll send a revert shortly.
+That sounds like a good idea, thanks for the suggestion!
+
+Tom
+
+
