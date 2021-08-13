@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A5E3EAEF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F2C3EAEF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238586AbhHMD3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 23:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbhHMD3m (ORCPT
+        id S238602AbhHMDaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 23:30:55 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:47818 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237040AbhHMDav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 23:29:42 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CE2C061756;
-        Thu, 12 Aug 2021 20:29:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gm8DQ4TbSz9t1s;
-        Fri, 13 Aug 2021 13:29:10 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628825352;
-        bh=6H1ac3ZAOh+J15mkR+JB6nijw/1pgcTrHGDHl+cxLdc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZmbUDwbrFzdbSnyLKcyYSWKYOe+ajnWatgN0NL0O/qpasShNiqUJ7stgdTW7ALMNw
-         tjT4F6NkmWXJuGpg7atuHyB8IHJZPq7Wr2zCp6GDwIc+oIIYM3RzwQcmtuNYqkZi2P
-         Ml9zgxdXoZ2DQsTIfSJYRmhZsSlME9gzttxeCxZiJwTfmZ91j2oUaFFWnI12Q8T4DZ
-         sdm5B1alZf5/bgtDMeEOMcakGgCBIKs1FR/wVtfrbchbte1fi72Xu38tFhDBiKJ3f6
-         K3JV8HSRwwIVtyWOgVl31AkFsixLYgbGUgEFVJR+yJBQsP9j8jBlGO6PIh8nog4sab
-         xiSCF7Skd5elw==
-Date:   Fri, 13 Aug 2021 13:29:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: linux-next: manual merge of the irqchip tree with the tip tree
-Message-ID: <20210813132909.28f1c34c@canb.auug.org.au>
+        Thu, 12 Aug 2021 23:30:51 -0400
+Received: by mail-io1-f69.google.com with SMTP id p7-20020a6b63070000b02904f58bb90366so4625352iog.14
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 20:30:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7MglwI/yX/ewU3i1nPDYLSNM5Et0vKbSBNWk8oJbUeU=;
+        b=g9+FJwzMuR03CYJfITv7B/uRNMyqvj/7Lw7f2ZNVkkJxGZ1f154rn9qy4tyYmCjZB0
+         HorMbsnA/f9nKywf2LLNM/W2to0sXOnuBZS3DRV+nuUgiymUspJ5f/2cfvYLpmz8upeT
+         Dv+H/spsYnXA1Das1w3Qu59l24d7cNEFpPIDmEjvjZHgWO8Phq79Lpy3MZBQi7MX4sBT
+         vzwNHT70VO9Y48fiycOdEWnl5UeqkVo4UIIYMYSZOqedkmxC1MCOGDqmtKFN1fPPm00P
+         z1iv89XDuZFaXqHwKXmw6idgTz/LLSxvmfCtt+3D5q9t718HCebtBo+64Qz5ssapy9Ic
+         qGbQ==
+X-Gm-Message-State: AOAM530BdJUPEtlHJVTpc+FQhq2Nvu8fHRCkncDU8wSBysccpBEmusXg
+        mMikM8M98a9yjSru4U4DCOdC9WitdVk7tHFVJcacaZ6WXXaO
+X-Google-Smtp-Source: ABdhPJwDa3tKW9uDPQb05kcGCNNCkytknzX2FL2wy4e1UeXCiakil2fVGUCcLKn6CcuEnvGQ5WPhDNeXIN7dLN2G8xcxAosp17LV
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6MXXdDGQQ9QpBXODW_PZJr8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a6b:490d:: with SMTP id u13mr357643iob.176.1628825425086;
+ Thu, 12 Aug 2021 20:30:25 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 20:30:25 -0700
+In-Reply-To: <000000000000b25bb805c798a1a5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dd0bf405c96878b9@google.com>
+Subject: Re: [syzbot] WARNING in __set_page_dirty
+From:   syzbot <syzbot+0d5b462a6f07447991b3@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, akpm@linux-foundation.org,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, rpeterso@redhat.com, swhiteho@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6MXXdDGQQ9QpBXODW_PZJr8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+syzbot has found a reproducer for the following issue on:
 
-Hi all,
+HEAD commit:    f8fbb47c6e86 Merge branch 'for-v5.14' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=125aadf6300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
+dashboard link: https://syzkaller.appspot.com/bug?extid=0d5b462a6f07447991b3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122742ee300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17925381300000
 
-Today's linux-next merge of the irqchip tree got a conflict in:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0d5b462a6f07447991b3@syzkaller.appspotmail.com
 
-  include/linux/irq.h
+NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 inode_to_wb include/linux/backing-dev.h:283 [inline]
+WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 account_page_dirtied mm/page-writeback.c:2435 [inline]
+WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 __set_page_dirty+0xace/0x1070 mm/page-writeback.c:2483
+Modules linked in:
+CPU: 0 PID: 8496 Comm: segctord Not tainted 5.14.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:inode_to_wb include/linux/backing-dev.h:283 [inline]
+RIP: 0010:account_page_dirtied mm/page-writeback.c:2435 [inline]
+RIP: 0010:__set_page_dirty+0xace/0x1070 mm/page-writeback.c:2483
+Code: a8 01 00 00 be ff ff ff ff 48 8d 78 70 e8 ea 60 8d 07 31 ff 89 c3 89 c6 e8 cf a6 d8 ff 85 db 0f 85 ac f7 ff ff e8 82 9f d8 ff <0f> 0b e9 a0 f7 ff ff e8 76 9f d8 ff 4c 8d 75 08 48 b8 00 00 00 00
+RSP: 0018:ffffc9000175f8c8 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8880263b9c40 RSI: ffffffff819d083e RDI: 0000000000000003
+RBP: ffffea000082dac0 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff819d0831 R11: 0000000000000000 R12: 0000000000000293
+R13: ffff888037e60138 R14: ffff888037e60488 R15: ffff888037e602e0
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005593610abbe0 CR3: 0000000016882000 CR4: 0000000000350ef0
+Call Trace:
+ mark_buffer_dirty+0x49a/0x5e0 fs/buffer.c:1108
+ nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
+ nilfs_btree_propagate+0x4ae/0xea0 fs/nilfs2/btree.c:2085
+ nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
+ nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
+ nilfs_segctor_apply_buffers+0x14a/0x470 fs/nilfs2/segment.c:1009
+ nilfs_segctor_scan_file+0x3e4/0x700 fs/nilfs2/segment.c:1058
+ nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1224 [inline]
+ nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
+ nilfs_segctor_do_construct+0x16ee/0x6b20 fs/nilfs2/segment.c:2036
+ nilfs_segctor_construct+0x7a7/0xb30 fs/nilfs2/segment.c:2372
+ nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
+ nilfs_segctor_thread+0x3c3/0xf90 fs/nilfs2/segment.c:2563
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------
+Code disassembly (best guess):
+   0:	a8 01                	test   $0x1,%al
+   2:	00 00                	add    %al,(%rax)
+   4:	be ff ff ff ff       	mov    $0xffffffff,%esi
+   9:	48 8d 78 70          	lea    0x70(%rax),%rdi
+   d:	e8 ea 60 8d 07       	callq  0x78d60fc
+  12:	31 ff                	xor    %edi,%edi
+  14:	89 c3                	mov    %eax,%ebx
+  16:	89 c6                	mov    %eax,%esi
+  18:	e8 cf a6 d8 ff       	callq  0xffd8a6ec
+  1d:	85 db                	test   %ebx,%ebx
+  1f:	0f 85 ac f7 ff ff    	jne    0xfffff7d1
+  25:	e8 82 9f d8 ff       	callq  0xffd89fac
+  2a:	0f 0b                	ud2     <-- trapping instruction
+  2c:	e9 a0 f7 ff ff       	jmpq   0xfffff7d1
+  31:	e8 76 9f d8 ff       	callq  0xffd89fac
+  36:	4c 8d 75 08          	lea    0x8(%rbp),%r14
+  3a:	48                   	rex.W
+  3b:	b8 00 00 00 00       	mov    $0x0,%eax
 
-between commit:
-
-  826da771291f ("genirq: Provide IRQCHIP_AFFINITY_PRE_STARTUP")
-
-from the tip tree and commit:
-
-  e0c1a5b24f5b ("genirq: Add chip flag to denote automatic IRQ (un)masking")
-
-from the irqchip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/irq.h
-index c8293c817646,0b45e42812d6..000000000000
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@@ -569,7 -577,7 +577,8 @@@ struct irq_chip=20
-   * IRQCHIP_SUPPORTS_NMI:              Chip can deliver NMIs, only for roo=
-t irqchips
-   * IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND:  Invokes __enable_irq()/__disable_ir=
-q() for wake irqs
-   *                                    in the suspend path if they are in =
-disabled state
- + * IRQCHIP_AFFINITY_PRE_STARTUP:      Default affinity update before star=
-tup
-+  * IRQCHIP_AUTOMASKS_FLOW:            chip->ack() masks and chip->eoi() u=
-nmasks
-   */
-  enum {
-  	IRQCHIP_SET_TYPE_MASKED			=3D (1 <<  0),
-@@@ -582,7 -590,7 +591,8 @@@
-  	IRQCHIP_SUPPORTS_LEVEL_MSI		=3D (1 <<  7),
-  	IRQCHIP_SUPPORTS_NMI			=3D (1 <<  8),
-  	IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND	=3D (1 <<  9),
- -	IRQCHIP_AUTOMASKS_FLOW                  =3D (1 <<  10),
- +	IRQCHIP_AFFINITY_PRE_STARTUP		=3D (1 << 10),
-++	IRQCHIP_AUTOMASKS_FLOW                  =3D (1 << 11),
-  };
- =20
-  #include <linux/irqdesc.h>
-
---Sig_/6MXXdDGQQ9QpBXODW_PZJr8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEV5wUACgkQAVBC80lX
-0GzhMgf+IScAkgu7IvG7Z5P1zMiFHWZm76O4c6aYULO+WtofBybS8OWwECLZepnR
-hH+rpVO9GWLQCp0VQ3n37KcKGTn0quIMGF/HeEfdzpwKyhjphjHVsclt7Ngyxlip
-0KrWzy47g2GDcfmbLYXvid0nki4vNmznYbnLXGsJQGlG6uDWRsz8fYLCIoZ4QHw/
-+Nmj/2Y7tKuOnJ1q9jrH9Q6ZEALgJPuLK1Y0ZoT1JMSFbpULIGanlb6nfxCaEf28
-NXKknpYUheqdd7OGhVAJrDF/cg/HQfZjJwlR47cR4HOYDP8RKLAg99hj6P3gzDZm
-jedYqUNGkbIZ3hZ1lRpbwXHGLKLAiQ==
-=gUiH
------END PGP SIGNATURE-----
-
---Sig_/6MXXdDGQQ9QpBXODW_PZJr8--
