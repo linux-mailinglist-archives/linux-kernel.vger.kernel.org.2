@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFE93EBEBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608B03EBEBE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235787AbhHMX04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 19:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235654AbhHMX0y (ORCPT
+        id S235679AbhHMX1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 19:27:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55062 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235530AbhHMX1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 19:26:54 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE705C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:26:26 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id b7so6346728iob.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bxuiDhwFd5/1+OCBgqMGo92C3FHs10czCMmzZapYzHE=;
-        b=Oj0N9cDZ9O9c8vzbLbDwgR4qGQFxbodUjWThHcbb6ddIA4Fys970KUpFCmEDd72NeT
-         mn24Xh0mafXq823IQrAsYawniun0+AA6bi5twP7Fju1OTlnpDdutig81mfvANA8St99W
-         hZWNMPALR/K3FyJ2fxnHeOm0sYA7M2YTNYNdg=
+        Fri, 13 Aug 2021 19:27:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628897225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ltnXqs72PoZJlgVvtR4opPys8udAwLGgtjNFBrBB1U=;
+        b=OMOhNqTHrbuCyF1r8T4eR9ZaB0SzGzXisQwV6dlvQRl4x8eponwPQ3Uo1P3l5Ma+IYEoOn
+        MybE3QQ2ZpbCNwZyCYpp1yNjmNKn5cCQ3w8geo+sLWfs0CgxaXxpdufhEZisytRmpIUzRL
+        VAIEnFBT58QEeqpvUZBa/605gaDQ+ZM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-ND25mHrfP1-lAr2yra8cfg-1; Fri, 13 Aug 2021 19:27:04 -0400
+X-MC-Unique: ND25mHrfP1-lAr2yra8cfg-1
+Received: by mail-wm1-f71.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so2207954wmj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 16:27:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bxuiDhwFd5/1+OCBgqMGo92C3FHs10czCMmzZapYzHE=;
-        b=FFSXWGe8x3C/nuIFF9VdmsKKN5ll5wDLihL6XqIisBICCkeSqAUZHHu9z2GPC6KRsa
-         aewYIUk6xXiBDMtzW052Ro8928r50lucG/D+mFOIO/QQsAxMvNGthoh9DLVE0JpCSKt3
-         Hlopqc551rj7GYnzi+7+VkEaaDQ2hzIdagWAHh4bTjEd47tgzE91YxHqZwc4X+mW66Jk
-         C472cqzChKU98iQo8xDkKwgeuccDDKCQryC5f6YNJvFxhG0NNKaGK3lm+cKdGLPk8uMa
-         BX1D4nfGVk3FClmZrlLOFK7NCBRucbBo/Ru3ubHEiojLWmQU81/QXWJDJ4ua3hIBWzRO
-         7yLw==
-X-Gm-Message-State: AOAM531PiXmSyOgfoH7QklBx0kDyZ2GLwugy8Z+m6yxC6Dx7wdQazlw/
-        U1ItedPu71aWHYuAj9kEg3hxPA==
-X-Google-Smtp-Source: ABdhPJwUoQ3XBf4BUzo+IvppWotMbhMHpo5R+GLKF5XsXnL8TMWAY0ES7O8X8hJ2HMtdzD6g821tUg==
-X-Received: by 2002:a02:caa1:: with SMTP id e1mr4456669jap.107.1628897186197;
-        Fri, 13 Aug 2021 16:26:26 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p19sm986512ilj.58.2021.08.13.16.26.25
+        bh=2ltnXqs72PoZJlgVvtR4opPys8udAwLGgtjNFBrBB1U=;
+        b=M/D4IZuBfns5AO3HQM5phc5bTRSKJFbestbW7TRG/w89oWe4kU0U8zN0LmYgXW4Vvu
+         CRVN+1imvyXUWRu5cm+IF647KeCZh7qpKPZ30U1yej3uw1NI0ZCns5nyPoF/KVWmZFos
+         n2X/Q6YqtZ1htS/0XLLHnYD9fOG2LsUCzntLWnyfZeFLVI2HLq0s4azpLK1nGIaUeqOl
+         k0BO62EP4NZOg6jsrlocRcxBh+ebdLZ22mUBOJVVYSdZQfRQT4GxIiXaQF0msrIRIj7V
+         6FeRIIi6sRtR6+Y94Nh5DTbuQuL5XcbemWh6aTyMJsHYrANfuwe44ZaeJAZBRJob/kbO
+         I9IA==
+X-Gm-Message-State: AOAM533eQ4zAjKf32hEJY8QFW95gZEJFwmyPCUHOWYSrNEGWMKNLBLcX
+        P105NyjYIKLqwZ9Uw/OMfxqdUKAAG52/6UcVlFWKkPOEvEOqXcniVKaCh4c8e8wYVpc1bDGcQ/E
+        wrHWBG1n2tcJMM0wUu3M2i4Abn3NwwGyXQBQWqKOFyzBbZ/6DSymfmutWZFXg3pGf85pJO/SOwe
+        Q1
+X-Received: by 2002:a05:600c:1483:: with SMTP id c3mr4574075wmh.131.1628897222512;
+        Fri, 13 Aug 2021 16:27:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0xDBu7qLTuycfsdJlyJRztUYK2z+Cba+NWhlTJD00FCnM/bVqlz1ZvzqvrtswSGYJMSQejg==
+X-Received: by 2002:a05:600c:1483:: with SMTP id c3mr4574048wmh.131.1628897222249;
+        Fri, 13 Aug 2021 16:27:02 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q17sm2712042wrr.91.2021.08.13.16.27.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 16:26:25 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/25] 4.4.281-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210813150520.718161915@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3d0a2bd6-3f9f-ccee-a442-855ba610f97c@linuxfoundation.org>
-Date:   Fri, 13 Aug 2021 17:26:24 -0600
+        Fri, 13 Aug 2021 16:27:01 -0700 (PDT)
+Subject: Re: [PATCH -next 1/2] selftests: Fix vm_handle_exception undefined
+ error
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Chen Lifu <chenlifu@huawei.com>, shuah@kernel.org,
+        bgardon@google.com, wangyanan55@huawei.com,
+        axelrasmussen@google.com, drjones@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, dwmw@amazon.co.uk, joao.m.martins@oracle.com,
+        yangyingliang@huawei.com, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210709063741.355325-1-chenlifu@huawei.com>
+ <f130f6ec-0c80-7a83-fad2-7d72d389b96b@linuxfoundation.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b6fca25d-f241-4de2-5a8e-cbcd34abc758@redhat.com>
+Date:   Sat, 14 Aug 2021 01:26:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+In-Reply-To: <f130f6ec-0c80-7a83-fad2-7d72d389b96b@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 9:06 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.281 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 13/08/21 19:01, Shuah Khan wrote:
+> On 7/9/21 12:37 AM, Chen Lifu wrote:
+>> Compile setftests on x86_64 occurs following error:
+>> make -C tools/testing/selftests
+>> ...
+>>
+>> x86_64/hyperv_features.c:618:2: warning: implicit declaration of 
+>> function ‘vm_handle_exception’ [-Wimplicit-function-declaration]
+>>    618 |  vm_handle_exception(vm, GP_VECTOR, guest_gp_handler);
+>> /usr/bin/ld: /tmp/cclOnpml.o: in function `main':
+>> tools/testing/selftests/kvm/x86_64/hyperv_features.c:618: undefined 
+>> reference to `vm_handle_exception'
+>> collect2: error: ld returned 1 exit status
+>>
+>> The reason is that commit b78f4a596692 ("KVM: selftests: Rename 
+>> vm_handle_exception")
+>> renamed "vm_handle_exception" function to 
+>> "vm_install_exception_handler" function.
+>>
+>> Fix it by replacing "vm_handle_exception" with 
+>> "vm_install_exception_handler"
+>> in corresponding selftests files.
+>>
+>> Signed-off-by: Chen Lifu <chenlifu@huawei.com>
+>> ---
+>>   tools/testing/selftests/kvm/x86_64/hyperv_features.c | 2 +-
+>>   tools/testing/selftests/kvm/x86_64/mmu_role_test.c   | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
 > 
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.281-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Please include kvm in the commit summary. I think it is not getting
+> the right attention because of the summary line.
 
-Compiled and booted on my test system. No dmesg regressions.
+The same patch was already committed:
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+     commit f8f0edabcc09fafd695ed2adc0eb825104e35d5c
+     Author: Marc Zyngier <maz@kernel.org>
+     Date:   Thu Jul 1 08:19:28 2021 +0100
 
-thanks,
--- Shuah
+     KVM: selftests: x86: Address missing vm_install_exception_handler conversions
+     
+     Commit b78f4a59669 ("KVM: selftests: Rename vm_handle_exception")
+     raced with a couple of new x86 tests, missing two vm_handle_exception
+     to vm_install_exception_handler conversions.
+     
+     Help the two broken tests to catch up with the new world.
+     
+     Cc: Andrew Jones <drjones@redhat.com>
+     CC: Ricardo Koller <ricarkol@google.com>
+     Cc: Paolo Bonzini <pbonzini@redhat.com>
+     Signed-off-by: Marc Zyngier <maz@kernel.org>
+     Message-Id: <20210701071928.2971053-1-maz@kernel.org>
+     Reviewed-by: Andrew Jones <drjones@redhat.com>
+     Reviewed-by: Ricardo Koller <ricarkol@google.com>
+     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+For the other patch, returning 0 is going to cause issues elsewhere
+in the tests.  Either the test is failed immediately, or all callers
+must be examined carefully.
+
+Paolo
 
