@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F8E3EBE14
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 23:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAAB3EBE16
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 23:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235000AbhHMVzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 17:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234831AbhHMVzr (ORCPT
+        id S235060AbhHMV6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 17:58:30 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46144 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhHMV62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 17:55:47 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9B2C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 14:55:17 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id cn28so5581657edb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 14:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P+Z/RYz/jriuijQpIN7Fhw40kHDI4JM4DRM0zPmZRTY=;
-        b=VeuSfTAea9nDlLQ8zYxcK0qWXy7SzRkRFt2hjrCQ7JiEf75tgQcKWHrOxgS55Bonle
-         8sk6K+9xXJQWVdPdbjQxXz/IU0eJ1/BpZk9xHSB8IVXeDM6dT+HUMQ/R9kMHo+mCmJbg
-         T7LtrpDnbZnCYtyOwdOpJ1tzKxdU+8Sl+fDp+RZ3t5ifybxVLDw31ntMRlFZhzKUWFyN
-         QpXnFHtOT8XRIHF9tbdkC/1Zn5+aiZFduh0q9ALxbhv6maAdysYKJhvjMBZROUx4xGUB
-         N3RN77TH+NophsNw66AobC+cM49E1NfcjWZSo7CdwMajsUYfhd377RY/x4hHyM46Cn9Y
-         nU6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P+Z/RYz/jriuijQpIN7Fhw40kHDI4JM4DRM0zPmZRTY=;
-        b=Iins6Ym4zkcunINDOBvtja86Fyajazm4LrD+a5JZXwerjSKF2BIeVT/LKIPRH8o/kr
-         UvcmacBidSsWiAreehQ4m5RaW9Ci8h4AAUDLNpA1KyWJdZXfqOqQxO1n2RjwUEHCH/5O
-         cTYnvX2CtNOY0INsMjIcjsDuKSZHcsTZ5TjxkuswBLLjikBA9PIX1IOIYglzAbopbe0R
-         +K+MMYK02T/YQPDqfV99jIjQCddlamlTHyfIF0uSMEBzOOhM53Xg8uFOWBVvZRNXZ9DT
-         pVvekAViKofDjPwT71y3WmYMwjZIvsVsCSiZhWRgqg1iDRXF7VQNYXjFejOOFbTxJrcu
-         JmSg==
-X-Gm-Message-State: AOAM532IRxTLpupkdQlX1g8Wt9KAkMY1Ig9IQUW8QPWn2zqCZ0thGeTu
-        GxhiwkXkJOonRK6nnhjxaME=
-X-Google-Smtp-Source: ABdhPJzHbUlQQIzzv3T9J80QbmMZRWzFGGEswNHk4x46iK0pDa74tVImS72KHHsj8knXm/3+OXVXmg==
-X-Received: by 2002:a50:aa87:: with SMTP id q7mr2807690edc.157.1628891716371;
-        Fri, 13 Aug 2021 14:55:16 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id dg24sm1442864edb.6.2021.08.13.14.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 14:55:15 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove unnecessary ret variable in rtw_drv_init()
-Date:   Fri, 13 Aug 2021 23:55:14 +0200
-Message-ID: <5820125.tyerhIWj94@localhost.localdomain>
-In-Reply-To: <20210813201418.4018631-1-nathan@kernel.org>
-References: <20210813201418.4018631-1-nathan@kernel.org>
+        Fri, 13 Aug 2021 17:58:28 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mEfBf-0009bB-4V; Fri, 13 Aug 2021 23:57:59 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mEfBe-000F9N-VP; Fri, 13 Aug 2021 23:57:59 +0200
+Subject: Re: [PATCH 5.10 04/19] bpf: Add _kernel suffix to internal
+ lockdown_bpf_read
+To:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20210813150522.623322501@linuxfoundation.org>
+ <20210813150522.774143311@linuxfoundation.org>
+ <20210813195523.GA4577@duo.ucw.cz>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f42f4fbb-3777-6e5b-0daf-6fdb2cc707b8@iogearbox.net>
+Date:   Fri, 13 Aug 2021 23:57:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210813195523.GA4577@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26262/Fri Aug 13 10:20:51 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, August 13, 2021 10:14:18 PM CEST Nathan Chancellor wrote:
-> ret is unnecessary as both error paths set the same error code so just
-> return that directly.
+Hi Pavel,
+
+On 8/13/21 9:55 PM, Pavel Machek wrote:
+>> From: Daniel Borkmann <daniel@iogearbox.net>
+>>
+>> commit 71330842ff93ae67a066c1fa68d75672527312fa upstream.
+>>
+>> Rename LOCKDOWN_BPF_READ into LOCKDOWN_BPF_READ_KERNEL so we have naming
+>> more consistent with a LOCKDOWN_BPF_WRITE_USER option that we are
+>> adding.
 > 
-> Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> As far as I can tell, next bpf patch does not depend on this one and
+> we don't need it in 5.10. (Likely same situation with 5.13).
 
-Much nicer!
-
-Reviewed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Yeah, it's nice to have for consistency given also small as well, but
+also fully okay to drop it as there shouldn't be any conflict.
 
 Thanks,
-
-Fabio
-
-
+Daniel
