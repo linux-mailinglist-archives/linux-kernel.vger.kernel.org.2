@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7D83EB66C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353BB3EB66E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbhHMOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S240749AbhHMOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhHMOAT (ORCPT
+        with ESMTP id S234353AbhHMOAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:00:19 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009F9C061756;
-        Fri, 13 Aug 2021 06:59:53 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa17so15387490pjb.1;
-        Fri, 13 Aug 2021 06:59:52 -0700 (PDT)
+        Fri, 13 Aug 2021 10:00:53 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38FEC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:00:26 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id c12so2707713ljr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:00:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LSu8sFAFrhC/odFtHfJqDJdYJpzj9L5nziSDMXR8vEM=;
-        b=TGPQkbTs2i8gpw+d00MDmoYy23labhuVlc9grBKN7y7s+IXbxe31PZ9JEbzgL7HzEz
-         tPEJz0ch5WB3x/Tz9RqOU4uJ4fkgLRguXjyPaLM7lFD+ANJCIpA/XgtJot2H8/acXx+p
-         CYxiUkwJIsKAxsB15IcU7Q9jCgzZ2Djbl24Ea8UvKxQJXPN5rQkGMwIwo4I0jQOjYmRq
-         t6WK9ltK2ROdWHJCFIr/qL5iednM+RuTsMIMET9i1uT1RNaZECZKuwqTfGj6lSuPu4r3
-         LMS9CV64svF2Kt4rdtIDT/mL78QXVMc1F2CaZho6cOKo9HpZdmaGNssTn8S1w0RVkE/c
-         1fUw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZVM0vplmy/19oK/cXrcKqIhbxHNaKwUpDUiALp+Y6aE=;
+        b=qCdruYefutWcjRrs3M/Y8Udlh9BzmfI2VBGmQAwmpPOdLXo/52OU1jEr0frSqAsfB0
+         pr5SZqxxMxH3RL88RSRRY8v2rViEd5gUbtZXzxRPkgcgW93uMYQ+8Hngw6ZH7lSTF0XK
+         E63VgjFuBAS+uJ8k6CaaVIJePYuSncm+wtyml15y9bEmJlswD6yhITjfhLL+UFhRx9m6
+         9iTi8HHmLLoo/7i584xEqHSczw/5hapOBgYB2caJwq8eux6APBgaztvWyVYq87so8fn+
+         sH4rOIidwbuHvvRypbps4CZsG9iy/9EaOM94w7cMSc2073AcnIRL/vzXDEHRgJLgsMJ8
+         p0LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LSu8sFAFrhC/odFtHfJqDJdYJpzj9L5nziSDMXR8vEM=;
-        b=Jssf8q6A6croBuqo4bZew1sx7bUyQs1HJrIRDylvS0deBreJME0V58dSWvOKP9tOax
-         OHrlnjtnbQ2WRzLiIZX+wlY870pnHeIRqLiuY+1zPbeVJr/yzr/PGqJWdf1uBUOgmWdI
-         LesnJXLa3IuoJg9cYheGFSJgmYoqpjx4QmeFjm3TEQbNZpApK6/MzS74M7vwKX+K5eO0
-         52uyLEQDF7bQqzoW/3p/7gT7plY+6s+S9Ru9QK+iCR+aAd3X6obflLJtgoCPe+pu780O
-         KPB/rVqUdHTdJMd8wtDS/bJRsUBzeJ8CjCZh3mauqoZP9oc6cwnDwuzR6T+AMbZmiV+J
-         PEug==
-X-Gm-Message-State: AOAM530k7T2ikqS/5O27dACwpREAHuBGgSsdjy29LUlKyvIdPszdK3zW
-        i2vs/EwvucN/DHcgO5+MZ0+oK+YdRGhY4Nfj9+Y=
-X-Google-Smtp-Source: ABdhPJzQbeYqFgjmUZ7qRC5aFHx8LQJMXfquo7iK9Xh0oX2OxNFjiTy5sHnPApz+D8JrixNPFriP2nkZUsivzsv59Rk=
-X-Received: by 2002:a17:90a:cf18:: with SMTP id h24mr2737483pju.228.1628863192516;
- Fri, 13 Aug 2021 06:59:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZVM0vplmy/19oK/cXrcKqIhbxHNaKwUpDUiALp+Y6aE=;
+        b=YMPHUYgOhqtM9ewX0axYtaFgGZRKO0jFH+foYSAvprXL8adarHhMX6Hih0BhuoKcIn
+         uMTLdwH5EPHZ0O/lrru/AT8Os0PNjeG9TlQb3CRBUBUfjP0bbtF8SqdX+QzOqiRpbQHA
+         rak6mxTrFykZ5TKNKNjOn7yjGdMsSCtBOYf2yhZE6Gtt2GQn5k4EtzKdVOPBFDcG+f7q
+         RSaQ0pMvxcuJnn6zKkxHL4sUapn2DbPmhwF4ez1wlJqa3cj/f/6Il1RPrlX+LrmpVCVu
+         3g0aLiHui3s+MnZdEWdqR9YHtwzccsLH/2u4yp4BsAZY3c3FdpNKlM3ChoIm4hyw6iyw
+         zOZg==
+X-Gm-Message-State: AOAM532Feu3/yVF6ohoVwknp/wCxPQep1OXtfhzXNAnMq2/M0cARekLT
+        409+l3IvTE4gWBUmEg1RNhXMI4SZBqyXsw==
+X-Google-Smtp-Source: ABdhPJxtJmMaaBxGAbInWk8Sqlc4Ietf7STHLSTXHytqFjsXm17SZQxD6cM/rca40hCqGYZfE9H2Aw==
+X-Received: by 2002:a2e:824e:: with SMTP id j14mr1926569ljh.77.1628863225011;
+        Fri, 13 Aug 2021 07:00:25 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id u10sm165002lft.252.2021.08.13.07.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 07:00:24 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     rostedt@goodmis.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: [PATCH v2] profiling: fix shift-out-of-bounds bugs
+Date:   Fri, 13 Aug 2021 17:00:22 +0300
+Message-Id: <20210813140022.5011-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
+References: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-References: <20210811095759.1281480-1-geert@linux-m68k.org>
- <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
- <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com>
- <CAHp75VeNyHUmcU7GPnP8woRcDErDNQ5M3FHQGpLnhUoL5qTnLQ@mail.gmail.com> <CAMuHMdVFOu6EXKqkiLgBp3n8Oujm+uSpFn-ximtp+37TOZSp9A@mail.gmail.com>
-In-Reply-To: <CAMuHMdVFOu6EXKqkiLgBp3n8Oujm+uSpFn-ximtp+37TOZSp9A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 13 Aug 2021 16:59:13 +0300
-Message-ID: <CAHp75VfsOFdgQP3-XStFieBQ9o4P=FVY43N4WXg6yOe+2O0bwg@mail.gmail.com>
-Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 3:53 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
-> On Thu, Aug 12, 2021 at 2:33 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Wednesday, August 11, 2021, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> >> On Wed, Aug 11, 2021 at 12:48 PM Marek Beh=C3=BAn <kabel@kernel.org> w=
-rote:
-> >> > On Wed, 11 Aug 2021 11:57:59 +0200
+Syzbot reported shift-out-of-bounds bug in profile_init().
+The problem was in incorrect prof_shift. Since prof_shift value comes from
+userspace we need to clamp this value into [0, BITS_PER_LONG -1]
+boundaries.
 
-...
+Second possible shiht-out-of-bounds was found by Tetsuo:
+sample_step local variable in read_profile() had "unsigned int" type,
+but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
+possible shiht-out-of-bounds sample_step type was changed to
+"unsigned long".
 
-> >> Sure, that can be done later, when an ACPI user appears?
-> >
-> > Actually with PRP0001 approach any of compatible driver may be used onA=
-CPI platform. So, what you are saying can be interpreted the way =E2=80=9Cw=
-e don=E2=80=99t care about users on ACPI based platforms=E2=80=9D. If it is=
- the case, then it should be told explicitly.
->
-> I think you're interpreting too much ;-)
-> My point is simply:
->
-> >> The dependency on OF was pre-existing, and this series is already
-> >> at v5.
+Also, "unsigned short int" will be sufficient for storing
+[0, BITS_PER_LONG] value, that's why there is no need for
+"unsigned long" prof_shift.
 
-Okay, but we can get rid of it. Why not make it more generic at the
-same time? Does it make sense?
-(I believe this is what Marek is asking initially)
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-> If any OF compatible driver can now be used on ACPI platforms, perhaps
-> this should be handled at the API level? I.e. the distinction between
-> OF and device properties should be dropped completely,
+Changes in v2:
+	1. Fixed possible shiht-out-of-bounds in read_profile()
+	   (Reported by Tetsuo)
 
-And this is done by device_*() / fwnode_*() APIs. And that's what can
-be easily done here.
+	2. Changed prof_shift type from "unsigned long" to
+	   "unsigned short int"
 
->  and all drivers
-> be converted mechanically in one shot, instead of a gradual ad-hoc
-> conversion being sneaked in through other series like this one?
+---
+ kernel/profile.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-Do you realize that you are asking for something impossible?
+diff --git a/kernel/profile.c b/kernel/profile.c
+index c2ebddb5e974..eb9c7f0f5ac5 100644
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -41,7 +41,8 @@ struct profile_hit {
+ #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+ 
+ static atomic_t *prof_buffer;
+-static unsigned long prof_len, prof_shift;
++static unsigned long prof_len;
++static unsigned short int prof_shift;
+ 
+ int prof_on __read_mostly;
+ EXPORT_SYMBOL_GPL(prof_on);
+@@ -67,8 +68,8 @@ int profile_setup(char *str)
+ 		if (str[strlen(sleepstr)] == ',')
+ 			str += strlen(sleepstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel sleep profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ #else
+ 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
+@@ -78,21 +79,21 @@ int profile_setup(char *str)
+ 		if (str[strlen(schedstr)] == ',')
+ 			str += strlen(schedstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel schedule profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
+ 		prof_on = KVM_PROFILING;
+ 		if (str[strlen(kvmstr)] == ',')
+ 			str += strlen(kvmstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel KVM profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	} else if (get_option(&str, &par)) {
+-		prof_shift = par;
++		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+ 		prof_on = CPU_PROFILING;
+-		pr_info("kernel profiling enabled (shift: %ld)\n",
++		pr_info("kernel profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	}
+ 	return 1;
+@@ -468,7 +469,7 @@ read_profile(struct file *file, char __user *buf, size_t count, loff_t *ppos)
+ 	unsigned long p = *ppos;
+ 	ssize_t read;
+ 	char *pnt;
+-	unsigned int sample_step = 1 << prof_shift;
++	unsigned long sample_step = 1UL << prof_shift;
+ 
+ 	profile_flip_buffers();
+ 	if (p >= (prof_len+1)*sizeof(unsigned int))
+-- 
+2.32.0
 
-Moreover, an ad-hoc approach is what we do for plenty of things in the
-kernel (WRT new APIs, that don't replace old ones immediately).
-
---=20
-With Best Regards,
-Andy Shevchenko
