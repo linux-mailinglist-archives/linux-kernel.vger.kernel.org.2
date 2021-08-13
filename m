@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1D23EB9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0043A3EBA01
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhHMQXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:23:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:55506 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234260AbhHMQXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:23:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76E851FB;
-        Fri, 13 Aug 2021 09:22:35 -0700 (PDT)
-Received: from [10.57.41.96] (unknown [10.57.41.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 621583F718;
-        Fri, 13 Aug 2021 09:22:32 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-To:     Leo Yan <leo.yan@linaro.org>
-References: <20210809112727.596876-1-leo.yan@linaro.org>
- <20210809112727.596876-3-leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Li Huafei <lihuafei1@huawei.com>, coresight@lists.linaro.org
-From:   James Clark <james.clark@arm.com>
-Message-ID: <2b4e0c07-a8df-cca6-6a94-328560f4b0c6@arm.com>
-Date:   Fri, 13 Aug 2021 17:22:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234487AbhHMQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:27:04 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36662 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229471AbhHMQ1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 12:27:02 -0400
+X-UUID: 594c94b2845b4de4bdda7d6b30014193-20210814
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Fmj94kKyC76Gj81A4sW5VrTf4W9B0Rq9Rw24Ubfs3gM=;
+        b=S1VOwjNkPlVY6mejB+yaaXSL8JW7YUYOvnHM2yjrTkyDxoXt2sS+WbuiWuHOzIT8DSrrUcBcMmgL/sZaUEkIN1mGTLzLdT3Vnu0qk1kwMHcacYJLdfU6kTyaohsmbOH/JSlnyyYAs8YfWCHtaLx58UqvLxS1XCGQfaMJ4MSsGLI=;
+X-UUID: 594c94b2845b4de4bdda7d6b30014193-20210814
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <ryder.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1734543056; Sat, 14 Aug 2021 00:26:19 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 14 Aug 2021 00:26:18 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 14 Aug 2021 00:26:13 +0800
+Message-ID: <3c120b7278481229031c02bf140901738bffcbb8.camel@mediatek.com>
+Subject: Re: drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:41:
+ warning: passing argument 1 of 'thermal_cooling_device_register' discards
+ 'const' qualifier from pointer target type
+From:   Ryder Lee <ryder.lee@mediatek.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
+        Felix Fietkau <nbd@nbd.name>
+Date:   Sat, 14 Aug 2021 00:26:13 +0800
+In-Reply-To: <202108131536.fI3monk1-lkp@intel.com>
+References: <202108131536.fI3monk1-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <20210809112727.596876-3-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gRnJpLCAyMDIxLTA4LTEzIGF0IDE1OjE5ICswODAwLCBrZXJuZWwgdGVzdCByb2JvdCB3cm90
+ZToNCj4gSGkgUnlkZXIsDQo+IA0KPiBGWUksIHRoZSBlcnJvci93YXJuaW5nIHN0aWxsIHJlbWFp
+bnMuDQo+IA0KPiB0cmVlOiAgIA0KPiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6
+Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgu
+Z2l0X187ISFDVFJOS0E5d01nMEFSYnchMXlHaHlaMnpjZ0RTQVpJbnlGQ3BUV1FxN3dtMEtLN013
+b1lXS0VNRV9EcmF5ZmNZZnhoNGk5ZG51ZlZOOUMtYyQNCj4gICBtYXN0ZXINCj4gaGVhZDogICBm
+OGU2ZGZjNjRmNjEzNWQxYjZjNTIxNWMxNGNkMzBiOWI2MGEwMDA4DQo+IGNvbW1pdDogMzRiODc3
+ZDk3MmJlYzhjYmYzOTdhNTczOTMzMTc2NzJjZjkyOTk2ZiBtdDc2OiBtdDc5MTU6IGFkZA0KPiB0
+aGVybWFsIGNvb2xpbmcgZGV2aWNlIHN1cHBvcnQNCj4gZGF0ZTogICA4IHdlZWtzIGFnbw0KPiBj
+b25maWc6IHg4Nl82NC1idWlsZG9ubHktcmFuZGNvbmZpZy1yMDAxLTIwMjEwODEyIChhdHRhY2hl
+ZCBhcw0KPiAuY29uZmlnKQ0KPiBjb21waWxlcjogZ2NjLTkgKERlYmlhbiA5LjMuMC0yMikgOS4z
+LjANCj4gcmVwcm9kdWNlICh0aGlzIGlzIGEgVz0xIGJ1aWxkKToNCj4gICAgICAgICAjIA0KPiBo
+dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
+L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9MzRiODc3ZDk3
+MmJlYzhjYmYzOTdhNTczOTMzMTc2NzJjZjkyOTk2Zl9fOyEhQ1RSTktBOXdNZzBBUmJ3ITF5R2h5
+WjJ6Y2dEU0FaSW55RkNwVFdRcTd3bTBLSzdNd29ZV0tFTUVfRHJheWZjWWZ4aDRpOWRudWVZbG1q
+ZEskDQo+ICANCj4gICAgICAgICBnaXQgcmVtb3RlIGFkZCBsaW51cyANCj4gaHR0cHM6Ly91cmxk
+ZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJu
+ZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdF9fOyEhQ1RSTktBOXdNZzBBUmJ3ITF5R2h5WjJ6Y2dE
+U0FaSW55RkNwVFdRcTd3bTBLSzdNd29ZV0tFTUVfRHJheWZjWWZ4aDRpOWRudWZWTjlDLWMkDQo+
+ICANCj4gICAgICAgICBnaXQgZmV0Y2ggLS1uby10YWdzIGxpbnVzIG1hc3Rlcg0KPiAgICAgICAg
+IGdpdCBjaGVja291dCAzNGI4NzdkOTcyYmVjOGNiZjM5N2E1NzM5MzMxNzY3MmNmOTI5OTZmDQo+
+ICAgICAgICAgIyBzYXZlIHRoZSBhdHRhY2hlZCAuY29uZmlnIHRvIGxpbnV4IGJ1aWxkIHRyZWUN
+Cj4gICAgICAgICBtYWtlIFc9MSBBUkNIPXg4Nl82NCANCj4gDQo+IElmIHlvdSBmaXggdGhlIGlz
+c3VlLCBraW5kbHkgYWRkIGZvbGxvd2luZyB0YWcgYXMgYXBwcm9wcmlhdGUNCj4gUmVwb3J0ZWQt
+Ynk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPiANCj4gQWxsIHdhcm5pbmdz
+IChuZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6DQo+IA0KPiAgICBkcml2ZXJzL25ldC93aXJlbGVz
+cy9tZWRpYXRlay9tdDc2L210NzkxNS9pbml0LmM6IEluIGZ1bmN0aW9uDQo+ICdtdDc5MTVfdGhl
+cm1hbF9pbml0JzoNCj4gPiA+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL21lZGlhdGVrL210NzYvbXQ3
+OTE1L2luaXQuYzoxMzQ6NDE6IHdhcm5pbmc6DQo+ID4gPiBwYXNzaW5nIGFyZ3VtZW50IDEgb2Yg
+J3RoZXJtYWxfY29vbGluZ19kZXZpY2VfcmVnaXN0ZXInIGRpc2NhcmRzDQo+ID4gPiAnY29uc3Qn
+IHF1YWxpZmllciBmcm9tIHBvaW50ZXIgdGFyZ2V0IHR5cGUgWy1XZGlzY2FyZGVkLQ0KPiA+ID4g
+cXVhbGlmaWVyc10NCj4gDQo+ICAgICAgMTM0IHwgIGNkZXYgPSB0aGVybWFsX2Nvb2xpbmdfZGV2
+aWNlX3JlZ2lzdGVyKHdpcGh5X25hbWUod2lwaHkpLA0KPiBwaHksDQo+ICAgICAgICAgIHwgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+DQo+
+ICAgIEluIGZpbGUgaW5jbHVkZWQgZnJvbQ0KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9tZWRpYXRl
+ay9tdDc2L210NzkxNS9pbml0LmM6NzoNCj4gICAgaW5jbHVkZS9saW51eC90aGVybWFsLmg6NDA3
+OjM5OiBub3RlOiBleHBlY3RlZCAnY2hhciAqJyBidXQNCj4gYXJndW1lbnQgaXMgb2YgdHlwZSAn
+Y29uc3QgY2hhciAqJw0KPiAgICAgIDQwNyB8IHRoZXJtYWxfY29vbGluZ19kZXZpY2VfcmVnaXN0
+ZXIoY2hhciAqdHlwZSwgdm9pZCAqZGV2ZGF0YSwNCj4gICAgICAgICAgfCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIH5+fn5+fl5+fn4NCj4gDQo+IA0KPiB2aW0gKzEzNCBkcml2ZXJz
+L25ldC93aXJlbGVzcy9tZWRpYXRlay9tdDc2L210NzkxNS9pbml0LmMNCj4gDQo+ICAgIDEyNwkN
+Cj4gICAgMTI4CXN0YXRpYyBpbnQgbXQ3OTE1X3RoZXJtYWxfaW5pdChzdHJ1Y3QgbXQ3OTE1X3Bo
+eSAqcGh5KQ0KPiAgICAxMjkJew0KPiAgICAxMzAJCXN0cnVjdCB3aXBoeSAqd2lwaHkgPSBwaHkt
+Pm10NzYtPmh3LT53aXBoeTsNCj4gICAgMTMxCQlzdHJ1Y3QgdGhlcm1hbF9jb29saW5nX2Rldmlj
+ZSAqY2RldjsNCj4gICAgMTMyCQlzdHJ1Y3QgZGV2aWNlICpod21vbjsNCj4gICAgMTMzCQ0KPiAg
+PiAxMzQJCWNkZXYgPQ0KPiB0aGVybWFsX2Nvb2xpbmdfZGV2aWNlX3JlZ2lzdGVyKHdpcGh5X25h
+bWUod2lwaHkpLCBwaHksDQo+ICAgIDEzNQkJCQkJCSAgICAgICAmbXQ3OTE1Xw0KPiB0aGVybWFs
+X29wcyk7DQo+ICAgIDEzNgkJaWYgKCFJU19FUlIoY2RldikpIHsNCj4gICAgMTM3CQkJaWYgKHN5
+c2ZzX2NyZWF0ZV9saW5rKCZ3aXBoeS0+ZGV2LmtvYmosIA0KPiAmY2Rldi0+ZGV2aWNlLmtvYmos
+DQo+ICAgIDEzOAkJCQkJICAgICAgImNvb2xpbmdfZGV2aWNlIikNCj4gPCAwKQ0KPiAgICAxMzkJ
+CQkJdGhlcm1hbF9jb29saW5nX2RldmljZV91bnJlZ2lzdA0KPiBlcihjZGV2KTsNCj4gICAgMTQw
+CQkJZWxzZQ0KPiAgICAxNDEJCQkJcGh5LT5jZGV2ID0gY2RldjsNCj4gICAgMTQyCQl9DQo+ICAg
+IDE0MwkNCj4gICAgMTQ0CQlpZiAoIUlTX1JFQUNIQUJMRShDT05GSUdfSFdNT04pKQ0KPiAgICAx
+NDUJCQlyZXR1cm4gMDsNCj4gICAgMTQ2CQ0KPiAgICAxNDcJCWh3bW9uID0NCj4gZGV2bV9od21v
+bl9kZXZpY2VfcmVnaXN0ZXJfd2l0aF9ncm91cHMoJndpcGh5LT5kZXYsDQo+ICAgIDE0OAkJCQkJ
+CQkgICAgICAgDQo+IHdpcGh5X25hbWUod2lwaHkpLCBwaHksDQo+ICAgIDE0OQkJCQkJCQkgICAg
+ICAgDQo+IG10NzkxNV9od21vbl9ncm91cHMpOw0KPiAgICAxNTAJCWlmIChJU19FUlIoaHdtb24p
+KQ0KPiAgICAxNTEJCQlyZXR1cm4gUFRSX0VSUihod21vbik7DQo+ICAgIDE1MgkNCj4gICAgMTUz
+CQlyZXR1cm4gMDsNCj4gICAgMTU0CX0NCj4gICAgMTU1CQ0KPiANCj4gLS0tDQo+IDAtREFZIENJ
+IEtlcm5lbCBUZXN0IFNlcnZpY2UsIEludGVsIENvcnBvcmF0aW9uDQo+IA0KaHR0cHM6Ly91cmxk
+ZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vbGlzdHMuMDEub3JnL2h5cGVya2l0dHkvbGlzdC9rYnVp
+bGQtYWxsQGxpc3RzLjAxLm9yZ19fOyEhQ1RSTktBOXdNZzBBUmJ3ITF5R2h5WjJ6Y2dEU0FaSW55
+RkNwVFdRcTd3bTBLSzdNd29ZV0tFTUVfRHJheWZjWWZ4aDRpOWRudVY5RGIzaGQkDQoNClRoZSBj
+YXVzZSBpcyANCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvQUJEQUZDQUItOERGNS00MUE3
+LUIxRTAtNDk1M0E5QkYzMkIzQGdtYWlsLmNvbS9ULw0KDQo=
 
-
-On 09/08/2021 12:27, Leo Yan wrote:
-> +/*
-> + * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
-> + * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
-> + * the issues caused by the below sequence on multiple CPUs: when perf tool
-> + * accesses either the load operation or the store operation for 64-bit value,
-> + * on some architectures the operation is divided into two instructions, one
-> + * is for accessing the low 32-bit value and another is for the high 32-bit;
-> + * thus these two user operations can give the kernel chances to access the
-> + * 64-bit value, and thus leads to the unexpected load values.
-> + *
-> + *   kernel (64-bit)                        user (32-bit)
-> + *
-> + *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
-> + *       STORE $aux_data      |       ,--->
-> + *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
-> + *       STORE ->aux_head   --|-------`     smp_rmb()
-> + *   }                        |             LOAD $data
-> + *                            |             smp_mb()
-> + *                            |             STORE ->aux_tail_lo
-> + *                            `----------->
-> + *                                          STORE ->aux_tail_hi
-> + *
-> + * For this reason, it's impossible for the perf tool to work correctly when
-> + * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
-> + * can not simply limit the AUX ring buffer to less than 4GB, the reason is
-> + * the pointers can be increased monotonically, whatever the buffer size it is,
-> + * at the end the head and tail can be bigger than 4GB and carry out to the
-> + * high 32-bit.
-> + *
-> + * To mitigate the issues and improve the user experience, we can allow the
-> + * perf tool working in certain conditions and bail out with error if detect
-> + * any overflow cannot be handled.
-> + *
-> + * For reading the AUX head, it reads out the values for three times, and
-> + * compares the high 4 bytes of the values between the first time and the last
-> + * time, if there has no change for high 4 bytes injected by the kernel during
-> + * the user reading sequence, it's safe for use the second value.
-> + *
-> + * When update the AUX tail and detects any carrying in the high 32 bits, it
-> + * means there have two store operations in user space and it cannot promise
-> + * the atomicity for 64-bit write, so return '-1' in this case to tell the
-> + * caller an overflow error has happened.
-> + */
-> +u64 __weak compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-> +{
-> +	struct perf_event_mmap_page *pc = mm->userpg;
-> +	u64 first, second, last;
-> +	u64 mask = (u64)(UINT32_MAX) << 32;
-> +
-> +	do {
-> +		first = READ_ONCE(pc->aux_head);
-> +		/* Ensure all reads are done after we read the head */
-> +		smp_rmb();
-> +		second = READ_ONCE(pc->aux_head);
-> +		/* Ensure all reads are done after we read the head */
-> +		smp_rmb();
-> +		last = READ_ONCE(pc->aux_head);
-> +	} while ((first & mask) != (last & mask));
-> +
-> +	return second;
-> +}
-> +
-
-Hi Leo,
-
-I had a couple of questions about this bit. If we're assuming that the
-high bytes of 'first' and 'last' are equal, then 'second' is supposed
-to be somewhere in between or equal to 'first' and 'last'.
-
-If that's the case, wouldn't it be better to return 'last', because it's
-closer to the value at the time of reading? And then in that case, if
-last is returned, then why do a read for 'second' at all? Can 'second' be
-skipped and just read first and last?
-
-Also maybe it won't make a difference, but is there a missing smp_rmb()
-between the read of 'last' and 'first'?
-
-Thanks
-James
