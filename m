@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EF73EB010
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99F23EB014
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbhHMGbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:31:03 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:17302 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238613AbhHMGbC (ORCPT
+        id S238908AbhHMGcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:32:19 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48158 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238587AbhHMGcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:31:02 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 17D6U7KX027960;
-        Fri, 13 Aug 2021 15:30:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 17D6U7KX027960
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628836208;
-        bh=2uyWj3h2GkHP1NCnqBhoeJftu4PYK3lPRAQw5R60hWs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jix1rYh0mraSpD3oie+vA8WRYLEn++pG++eMwczTMU89WDlLUvuvD1w7mGFoN1V8z
-         gQVGHJhxHUJ2gGv3kQXJkmJZDefSutU1R7qJNVJsCKn7a56DsCa0BUYeQ/vgrSljCJ
-         bk3s+DkmG7m24/lbC6rvcc23buqw+9Lysbr/BdH0lNwJ9tDb/iepXvs+dWuHgD/2HC
-         W0xxXDswKv1t0ZjvKARkRyECf09mbmBxXPy5dsmaTTp192N3RZ3ODRCp2GvuaRi8Zx
-         CLWc25Y3SKrAlsYnH4djEGb3IZjV0PRrnYLRfYM5WeihZMk+mEqpnB5NstvL8wdZcs
-         GIASuywfsuqkg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH 2/2] kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk
-Date:   Fri, 13 Aug 2021 15:30:05 +0900
-Message-Id: <20210813063005.1739278-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210813063005.1739278-1-masahiroy@kernel.org>
-References: <20210813063005.1739278-1-masahiroy@kernel.org>
+        Fri, 13 Aug 2021 02:32:18 -0400
+X-UUID: 59ec8581f8044f1a8747bcfa846fe00e-20210813
+X-UUID: 59ec8581f8044f1a8747bcfa846fe00e-20210813
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1306624726; Fri, 13 Aug 2021 14:31:48 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 13 Aug 2021 14:31:48 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 13 Aug 2021 14:31:47 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     Pawel Laszczak <pawell@cadence.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v3 1/7] usb: mtu3: restore HS function when set SS/SSP
+Date:   Fri, 13 Aug 2021 14:30:47 +0800
+Message-ID: <1628836253-7432-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if_changed, if_changed_dep, and if_changed_rule must have FORCE as a
-prerequisite so the command line change is detected.
+Due to HS function is disabled when set as FS, need restore
+it when set as SS/SSP.
 
-Documentation/kbuild/makefiles.rst clearly explains it:
-
-  Note: It is a typical mistake to forget the FORCE prerequisite.
-
-However, not all people read the document, or understand what is written
-in it.
-
-People repeated this mistake over again, and I determined a compelling
-force is needed.
-
-Show a warning if FORCE is missing in the prerequisite of if_changed
-and friends. Same for filechk.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: dc4c1aa7eae9 ("usb: mtu3: add ->udc_set_speed()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
+v3: fix invalid email format for stable
+v2: no changes
+---
+ drivers/usb/mtu3/mtu3_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- scripts/Kbuild.include | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index c3c975a92318..dd48e68965f8 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -57,6 +57,7 @@ kecho := $($(quiet)kecho)
- # - If the content differ the new file is used
- # - If they are equal no change, and no timestamp update
- define filechk
-+	$(check-FORCE)
- 	$(Q)set -e;						\
- 	mkdir -p $(dir $@);					\
- 	trap "rm -f $(dot-target).tmp" EXIT;			\
-@@ -130,7 +131,11 @@ make-cmd = $(call escsq,$(subst $(pound),$$(pound),$(subst $$,$$$$,$(cmd_$(1))))
- # PHONY targets skipped in both cases.
- newer-prereqs = $(filter-out $(PHONY),$?)
- 
--if-changed-cond = $(newer-prereqs)$(cmd-check)
-+# It is a typical mistake to forget the FORCE prerequisite. Check it here so
-+# no more breakage will slip in.
-+check-FORCE = $(if $(filter FORCE, $^),,$(warning FORCE prerequsite is missing))
-+
-+if-changed-cond = $(newer-prereqs)$(cmd-check)$(check-FORCE)
- 
- # Execute command if command has changed or prerequisite(s) are updated.
- if_changed = $(if $(if-changed-cond),                                        \
+diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
+index 562f4357831e..6403f01947b2 100644
+--- a/drivers/usb/mtu3/mtu3_core.c
++++ b/drivers/usb/mtu3/mtu3_core.c
+@@ -227,11 +227,13 @@ static void mtu3_set_speed(struct mtu3 *mtu, enum usb_device_speed speed)
+ 		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
+ 		break;
+ 	case USB_SPEED_SUPER:
++		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
+ 		mtu3_clrbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
+ 			     SSUSB_U3_PORT_SSP_SPEED);
+ 		break;
+ 	case USB_SPEED_SUPER_PLUS:
+-			mtu3_setbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
++		mtu3_setbits(mbase, U3D_POWER_MANAGEMENT, HS_ENABLE);
++		mtu3_setbits(mtu->ippc_base, SSUSB_U3_CTRL(0),
+ 			     SSUSB_U3_PORT_SSP_SPEED);
+ 		break;
+ 	default:
 -- 
-2.30.2
+2.18.0
 
