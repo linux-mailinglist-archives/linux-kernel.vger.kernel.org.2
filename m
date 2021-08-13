@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3929B3EB813
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E53EB850
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241840AbhHMPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53720 "EHLO mail.kernel.org"
+        id S241249AbhHMPMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241652AbhHMPKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:10:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D40266113B;
-        Fri, 13 Aug 2021 15:09:55 +0000 (UTC)
+        id S241785AbhHMPLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:11:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A25CF610A5;
+        Fri, 13 Aug 2021 15:11:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867396;
-        bh=8Kq8PJidGV/fZmYd7B9fuwje5htBYajQc3q9hhqLjMY=;
+        s=korg; t=1628867468;
+        bh=k5kHytCZaighHyAX4UhcRC3wV1LiL2cSHQfzb+8w9AY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vSKdWce/H+Zqvv0VGDbMBngzyHavyJc/YQrk/5iZ1O69l0JcGrYGoR0bukfZ0Wm6l
-         XzCdukxaJ4NaujFG73C/vO4Ah2we8xmXiLG0I9cmFKIPfSaJ/ikqea3kq6xECWpyDR
-         bk6kJMq8xwfLBXRVzrZo+i330ERBfcj2vnz0mEn8=
+        b=iyqCgkFCnCdqOT9DQO1td/yRiRupgH7vLlqMWVCaANcoXo8eB3EtNKUF0GX8tzxzJ
+         WQSkWcip0FiXtJU6lrOO24oUJCEz8YsARF2CFnpYcrxvitW+UgdFveWn5pMdk74Mhl
+         mkxnL37FiN7A1muNsmOInrJ04KMYI/QexDekn7nU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Fei Qin <fei.qin@corigine.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 06/30] bnx2x: fix an error code in bnx2x_nic_load()
+Subject: [PATCH 4.14 08/42] nfp: update ethtool reporting of pauseframe control
 Date:   Fri, 13 Aug 2021 17:06:34 +0200
-Message-Id: <20210813150522.652304555@linuxfoundation.org>
+Message-Id: <20210813150525.386066517@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
+References: <20210813150525.098817398@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Fei Qin <fei.qin@corigine.com>
 
-[ Upstream commit fb653827c758725b149b5c924a5eb50ab4812750 ]
+[ Upstream commit 9fdc5d85a8fe684cdf24dc31c6bc4a727decfe87 ]
 
-Set the error code if bnx2x_alloc_fw_stats_mem() fails.  The current
-code returns success.
+Pauseframe control is set to symmetric mode by default on the NFP.
+Pause frames can not be configured through ethtool now, but ethtool can
+report the supported mode.
 
-Fixes: ad5afc89365e ("bnx2x: Separate VF and PF logic")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 265aeb511bd5 ("nfp: add support for .get_link_ksettings()")
+Signed-off-by: Fei Qin <fei.qin@corigine.com>
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@corigine.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-index 46a7dcf2ff4a..9d7f491931ce 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -2672,7 +2672,8 @@ int bnx2x_nic_load(struct bnx2x *bp, int load_mode)
- 	}
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+index 8e623d8fa78e..681919f8cbd7 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+@@ -271,6 +271,8 @@ nfp_net_get_link_ksettings(struct net_device *netdev,
  
- 	/* Allocated memory for FW statistics  */
--	if (bnx2x_alloc_fw_stats_mem(bp))
-+	rc = bnx2x_alloc_fw_stats_mem(bp);
-+	if (rc)
- 		LOAD_ERROR_EXIT(bp, load_error0);
- 
- 	/* request pf to initialize status blocks */
+ 	/* Init to unknowns */
+ 	ethtool_link_ksettings_add_link_mode(cmd, supported, FIBRE);
++	ethtool_link_ksettings_add_link_mode(cmd, supported, Pause);
++	ethtool_link_ksettings_add_link_mode(cmd, advertising, Pause);
+ 	cmd->base.port = PORT_OTHER;
+ 	cmd->base.speed = SPEED_UNKNOWN;
+ 	cmd->base.duplex = DUPLEX_UNKNOWN;
 -- 
 2.30.2
 
