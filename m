@@ -2,332 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59093EB5D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6E83EB5D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240506AbhHMMz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:55:27 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33372
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240496AbhHMMz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:55:26 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 7632C40664
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 12:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628859298;
-        bh=BIiDZIvIKhWZo8ChmOHD9cnqndoFwXV2somORXCN6EY=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=QI6yPWtg4HYDyP3tZuT/Vx4yk4Tvrwnd+A+uX+j5YAGVkW0yWhahXlOMsMqRq7N8O
-         yGWMJOD86/KqWZopk6x42tA3Y5xrvkT1/s5s1lD2nFydiMcdjHydV5R9Qipj5Q4xdQ
-         lCmHD1N3MvxKw4W5neLP7wgM2gIaPiL8GiMh5hm8/qc15Kf4xKDso3ROgJMtSOAQgd
-         yfNwaFzhXfC+ROYSTWUgNdfW2ZIFVgdgpJxXRP96Aia03L751IdXbx1J0fVDt2pBqB
-         5mUYhh7+F6sYyughfxPQKcWN/blw+1PnSslLQTzSlZ9D0qNOIb5Pz4IzKOZZqrfaHQ
-         cLXKqXOfsH4lw==
-Received: by mail-ed1-f72.google.com with SMTP id v11-20020a056402348bb02903be68e116adso4813879edc.14
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:54:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BIiDZIvIKhWZo8ChmOHD9cnqndoFwXV2somORXCN6EY=;
-        b=PIcngXzqY7Vv8p+4Tm9sFY9NA29CKmbjAFBujT2R2GQ76HOspCtdi2jXZCGJAefBXX
-         i8dbXC+K37/Be9YRBtoAm3miZmsLGQP7HWXigaWiBy4/OJxvUf6vrvMCUhxs5ooBkiDQ
-         WrM8azubytSGy1UNj8J6GHLtOW3LXrmXes7qTbAvrCq8xDcJCqfiOjxrMNRD8EmhFpVy
-         2eXpdMwqpTa+IwRf8/cIwLoPqo1LhLdD1p0BA67pwLgY17APimhAprbu4G0mullDSbey
-         NqoNqJmXKsyqi6XSox7eX+XViJPwd2kLIMWyMM0Jheq3kIJWBYDRhd1UZ1FL/eW2eLz6
-         8O8A==
-X-Gm-Message-State: AOAM532BRzLTMEd6YDfu3sN8Pi7rSG9iXGHty/8lPK2/qH7HzRUjL6mF
-        e2fpju72b8GlSRSa0/D2JjifE2fuhwZN1FzFQCg/zdpbmFuN9NIE7lRj38hA6iK0WTRetgjFshM
-        YFxRUhTgbcUbOJidNKHlUPNjzcsPsx17w20qapqYtOw==
-X-Received: by 2002:aa7:c4d4:: with SMTP id p20mr2949915edr.382.1628859298077;
-        Fri, 13 Aug 2021 05:54:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVlWeVKe50mKNtAwRRnujr59LFk6b9kiWigqOfEHvhKA9oq2QAmUrCktKZiswrFYf56kinjQ==
-X-Received: by 2002:aa7:c4d4:: with SMTP id p20mr2949894edr.382.1628859297856;
-        Fri, 13 Aug 2021 05:54:57 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id h8sm593264ejj.22.2021.08.13.05.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 05:54:57 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH] dt-bindings: memory: convert Samsung Exynos DMC to dtschema
-Date:   Fri, 13 Aug 2021 14:54:14 +0200
-Message-Id: <20210813125414.104467-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S240494AbhHMMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:55:09 -0400
+Received: from mail-eopbgr00056.outbound.protection.outlook.com ([40.107.0.56]:62414
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233416AbhHMMzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 08:55:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wy083JwF5SirZlUsPoqDfIPoPa9AuYGfz+Nfbmdn2Jf/S1kcbMtyFiMaswVUDnIKGRheU9y+pRj2+LsMFvwdL69LV/x39TJOtibkziayiExBs2KWN+bOjMqdzvhb9ttiq6GinfLquj86XcXNHDmDqdM7vjfN1MZGy8Ey1w7Bef/MAmeyHSCwbu3xdXPLOkqdqTQXdsZDTolM43SMpq3FP43x+dHafuxIxxRSMTQS2WclaE6gW67U5jlxbNmx33/PnIy1LPuJ9T4liUEfgnfGvMsjT18ClpT3OCvXmVcJUr3Mhp/vVpsIzZciRCxHNppPDc4nSnbpoHXihd4qhv3W/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Srk3eF3DuckrUsK50O1sICFFzlBFqwYQt4e1+uW5Dvw=;
+ b=ml8JWHZx3qwVtog6nE0C63BPZbaCKerBfxxTzZfoYQ5g4dBLKpsMvZKlmiT1sn0hqFDK0y9/rGLEQoH9t7HjL407YYGBh533Qq1KJelD1zNabs/RMt/4nQaPIwX9phdVAr4/Q1ConvS1aniZZ5O0PuaEymMwRWO3yY31lPRMMNpnduUGgnHVLnCR7rzIDg/LbWk9KWomdTYAfz8vbRo9KQuHcTfSsscDwjuEvA3FEZgf3G85VGuL6qhq9MxFLzJZCjwepss/dYuserpb81OWG2dFmj5PGCy63h8K+iLF2HzdqgEXjhQ8thYmz2kurKHkGsKMR3+uRFVCNqQcvHC5CQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kococonnector.com; dmarc=pass action=none
+ header.from=kococonnector.com; dkim=pass header.d=kococonnector.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=KoCoConnector.onmicrosoft.com; s=selector2-KoCoConnector-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Srk3eF3DuckrUsK50O1sICFFzlBFqwYQt4e1+uW5Dvw=;
+ b=aekxq0OacsQvhBu841SdZtEP4cKVpgVl6+Xnd9dI32pFYFQH09rhhxOzuObHSn531DAK0xau/rKGuoggxLF5tU/qqz65yJCsFOl/X3oWpvo20w1IdPzVYtET3015rtttRUCHbGZDDT/EY2uvB0bABOkiDfw5YVeOzAXanKRwWOI=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=kococonnector.com;
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com (2603:10a6:20b:281::9)
+ by AM9PR09MB4545.eurprd09.prod.outlook.com (2603:10a6:20b:2d4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Fri, 13 Aug
+ 2021 12:54:40 +0000
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::35c9:eaa2:9d67:9ec1]) by AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::35c9:eaa2:9d67:9ec1%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 12:54:39 +0000
+Date:   Fri, 13 Aug 2021 14:54:30 +0200
+From:   Oliver Graute <oliver.graute@kococonnector.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Carlis <zhangxuezhi1@yulong.com>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] fbtft: fb_st7789v: added reset on init_display()
+Message-ID: <20210813125430.GA1527@optiplex>
+References: <20210813062511.14537-1-oliver.graute@kococonnector.com>
+ <YRYrPfEHrcvDL4va@kroah.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRYrPfEHrcvDL4va@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM0PR04CA0039.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::16) To AM9PR09MB4884.eurprd09.prod.outlook.com
+ (2603:10a6:20b:281::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2.207.138.2) by AM0PR04CA0039.eurprd04.prod.outlook.com (2603:10a6:208:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend Transport; Fri, 13 Aug 2021 12:54:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b6f3584a-4335-440f-fe9c-08d95e598338
+X-MS-TrafficTypeDiagnostic: AM9PR09MB4545:
+X-Microsoft-Antispam-PRVS: <AM9PR09MB45456E1123C4D58336C48446EBFA9@AM9PR09MB4545.eurprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:483;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TRFsZUvBMA2Fk8WHsswvpYHVjlLNr388XrtZa0Ti9Az3PDUVy+V4LCQvZCutCsjKPYXj8mIB1sYcoYMVx9y0d+CzrjCTvqHLOMCqXA5O2/BnFBglH1CEf5JYqKppdjmG7qRq/kzbdmXRi0SREBd93uJ2jMOXeRpPcHkwpDeBzeZg8P8WcH/Ecv6HztV4DuZySwvPBcz1aitDpWUxYnual9gOwAJIzfsXBMrgTTsZYZKb343E630wos7EbqHls6UFgOhSMM2wxZ7JNYZN4UdLAPMwYQvr0/gauL+1+x3XPF4T8Zw0EzLXSS/6Jmg1TJA2brGoFk2hUzvEoW7A92+VB5P4Ro+qYuvK83vx8m2Pz+Va/efxQriYjt5Tmz+XjJVumyyBp92n97kBe5HglDrexUZuozX5NE/LOVLDICHFnTW0CC9L5rT4Pf7vlA4FaWwdq6oXIA49p53+0nb+KGpkGhhvbaob9v22IuNA7Xpn0gnV3dPBlPyicXhRvphNPcs2GzSgjaJfJY7+HtfNUBktoX/kXSIRWemJspxmCH4q5Nb2C19OE09hJGmJ8Ag5RV6cKF3V0p5sK3DDvD6wbMPlJcEte+cyVISWa5BMjzw0bUGXncwrUE4PChJsuU4ACSybsYu38h8v0Yc/zQ2wx+46HVZtka7GaDPedcnWyOJaRGZwtHiQQH/ewH8evDzMHoCJXidz5SOELVXWffc8MWQFNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR09MB4884.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(376002)(136003)(366004)(396003)(346002)(39830400003)(1076003)(316002)(4326008)(6496006)(956004)(52116002)(4744005)(6916009)(66946007)(186003)(66476007)(8676002)(38350700002)(478600001)(8936002)(38100700002)(66556008)(6486002)(33716001)(5660300002)(26005)(6666004)(33656002)(2906002)(86362001)(44832011)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vvsMoxtqpy3t87SzjVC9EGPT8lY99iRAGvC1baXZpP88c3O41+jGV2o4QjFd?=
+ =?us-ascii?Q?K7nn0VfYYd10gn3UVDxboTq15ljuyXq5MMI0ZUV9FD4emaKHv07H3J2sN219?=
+ =?us-ascii?Q?S0ZOrP8xTV9jKJ94F+OePb+7fZ9TnoAl0T7YtiEhoMhw0cBdhcbJJBBYMAlG?=
+ =?us-ascii?Q?DIZRtPaOFqIXjYdrTrUq7zYnmfX58Msb4WsqD2rjj4O8NM0U+GfWQAuCmoaW?=
+ =?us-ascii?Q?ilLKFjNqU4WUThQN3aSSW2bimi5AdgGM3RTx3ftYnLIAThUcBKVyaKjZYL6Z?=
+ =?us-ascii?Q?g9oB9dy4yQg/4qO0WmWsj4gpJgPX1EMk1xuminsEl9rMdFps/bK0DfqciH+N?=
+ =?us-ascii?Q?N41Rqpnp4wQlmSzJtHRaBSzPTX15ad39DkIQTDDaIuhEAVQrHLbWJofSRT5M?=
+ =?us-ascii?Q?y6ecy880MQQKYYhDTL7vSZXmwIUehcg/EPS1gxBsF9KsFdzG8puWiTw9VvMS?=
+ =?us-ascii?Q?6DhAw7zoPoVCCbopgmFafufpX/sSPWBLg/RrJigrN857vOCiBISJEVLfWy/A?=
+ =?us-ascii?Q?o/B9Iz/XwFvSLRSHe5hlkRm1SAe6SvRmQvVt9yuEN0UQ+lqisnxtL3Mxt+TV?=
+ =?us-ascii?Q?QcmVWW69biJ8M7frX/3Yf7uY0qCvnjvcVRX3oWUMjAfBqtbLq1NnuZvwZWxL?=
+ =?us-ascii?Q?yotFDrL5OunkjzBprM/CKFw7M7p6y6jb+Gc29g4z7WhAEgrVW40NK7oQVzFu?=
+ =?us-ascii?Q?RSTg3JfpCX+9R+FI6Rcuonf2bQ+tB7k3Zp1MBjhaYTP/oknCTUHvoZTwdR+2?=
+ =?us-ascii?Q?v7ckcE8oHh5ud1c/pEydQsAjBcoemSoAGd6TwyKquWUTA5MHnj0uwypijp/b?=
+ =?us-ascii?Q?9sD3hIKAjgo8Tci5ZlIRGyKxY9aOCqP3E2XSMRSgZhVsd1Ur+7+2+IwlU7qh?=
+ =?us-ascii?Q?UWmS5rfyjpyNhEPCYtKTcUMxS7qrMQjoKhDefC01KTkkNUenyTnjiaAzbas3?=
+ =?us-ascii?Q?WibuFJUxhNF3j6mqyAnd7C0c+2CxJWpqGbhwrIWN4FWzAkUVatLRW2XT1Or9?=
+ =?us-ascii?Q?Cpol4f6bTE+flmpzhH3vdJ1AcV09jRSu97KJzyF6nbKjOL0eIar6aFKxVMXF?=
+ =?us-ascii?Q?6S+gA1zTraN7x+Hk7BNYzlJTyprSOwimwBa6c4wYH9QN+CiI3j2qxJEIbFhO?=
+ =?us-ascii?Q?M4jIywa2EWTKWBt7sPQ4DwYbDy30SW/n2l/nQRUU54uHPerz1s4fx8kLmGDK?=
+ =?us-ascii?Q?vFvaogC3dp15kBRfsRnzhcZ0G3//nHAjM5DDobz33rWYGMW4kPTg9bk6DDdA?=
+ =?us-ascii?Q?gFhdGmmjE41EOpf77O1SwRThdeDV8GoQyKZVbabrTPRT3yxTCPbHAx/NNyE+?=
+ =?us-ascii?Q?MbCTFUKCkdtzKVDmCE+A21Xf?=
+X-OriginatorOrg: kococonnector.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6f3584a-4335-440f-fe9c-08d95e598338
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR09MB4884.eurprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 12:54:39.7441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 59845429-0644-4099-bd7e-17fba65a2f2b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hjqQ+JcCI0xSeeQCU7fcFvsvvTKjnXLNP4ue7jJZOFMi3yVElJ/E4t3WZ78r09FhBZUaQbdwwDuOt2Uz/xEcdOsyl1l2bLcAYo62c6Ve5RU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR09MB4545
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Samsung Exynos5422 SoC frequency and voltage scaling for
-Dynamic Memory Controller to DT schema format using json-schema.
+On 13/08/21, Greg KH wrote:
+> On Fri, Aug 13, 2021 at 08:25:10AM +0200, Oliver Graute wrote:
+> > staging: fbtft: fb_st7789v: reset display before initialization
+> 
+> What is this line here, and why is this not your subject line instead?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../memory-controllers/exynos5422-dmc.txt     |  84 -----------
- .../samsung,exynos5422-dmc.yaml               | 137 ++++++++++++++++++
- MAINTAINERS                                   |   2 +-
- 3 files changed, 138 insertions(+), 85 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/samsung,exynos5422-dmc.yaml
+I'll put the line as subject instead.
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt b/Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt
-deleted file mode 100644
-index 02e4a1f862f1..000000000000
---- a/Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt
-+++ /dev/null
-@@ -1,84 +0,0 @@
--* Exynos5422 frequency and voltage scaling for Dynamic Memory Controller device
--
--The Samsung Exynos5422 SoC has DMC (Dynamic Memory Controller) to which the DRAM
--memory chips are connected. The driver is to monitor the controller in runtime
--and switch frequency and voltage. To monitor the usage of the controller in
--runtime, the driver uses the PPMU (Platform Performance Monitoring Unit), which
--is able to measure the current load of the memory.
--When 'userspace' governor is used for the driver, an application is able to
--switch the DMC and memory frequency.
--
--Required properties for DMC device for Exynos5422:
--- compatible: Should be "samsung,exynos5422-dmc".
--- clocks : list of clock specifiers, must contain an entry for each
--  required entry in clock-names for CLK_FOUT_SPLL, CLK_MOUT_SCLK_SPLL,
--  CLK_FF_DOUT_SPLL2, CLK_FOUT_BPLL, CLK_MOUT_BPLL, CLK_SCLK_BPLL,
--  CLK_MOUT_MX_MSPLL_CCORE, CLK_MOUT_MX_MSPLL_CCORE_PHY, CLK_MOUT_MCLK_CDREX,
--- clock-names : should include "fout_spll", "mout_sclk_spll", "ff_dout_spll2",
--  "fout_bpll", "mout_bpll", "sclk_bpll", "mout_mx_mspll_ccore",
--  "mout_mclk_cdrex"  entries
--- devfreq-events : phandles for PPMU devices connected to this DMC.
--- vdd-supply : phandle for voltage regulator which is connected.
--- reg : registers of two CDREX controllers.
--- operating-points-v2 : phandle for OPPs described in v2 definition.
--- device-handle : phandle of the connected DRAM memory device. For more
--	information please refer to documentation file:
--	Documentation/devicetree/bindings/ddr/lpddr3.txt
--- devfreq-events : phandles of the PPMU events used by the controller.
--- samsung,syscon-clk : phandle of the clock register set used by the controller,
--	these registers are used for enabling a 'pause' feature and are not
--	exposed by clock framework but they must be used in a safe way.
--	The register offsets are in the driver code and specyfic for this SoC
--	type.
--
--Optional properties for DMC device for Exynos5422:
--- interrupt-parent : The parent interrupt controller.
--- interrupts : Contains the IRQ line numbers for the DMC internal performance
--  event counters in DREX0 and DREX1 channels. Align with specification of the
--  interrupt line(s) in the interrupt-parent controller.
--- interrupt-names : IRQ names "drex_0" and "drex_1", the order should be the
--  same as in the 'interrupts' list above.
--
--Example:
--
--	ppmu_dmc0_0: ppmu@10d00000 {
--		compatible = "samsung,exynos-ppmu";
--		reg = <0x10d00000 0x2000>;
--		clocks = <&clock CLK_PCLK_PPMU_DREX0_0>;
--		clock-names = "ppmu";
--		events {
--			ppmu_event_dmc0_0: ppmu-event3-dmc0_0 {
--				event-name = "ppmu-event3-dmc0_0";
--			};
--		};
--	};
--
--	dmc: memory-controller@10c20000 {
--		compatible = "samsung,exynos5422-dmc";
--		reg = <0x10c20000 0x10000>, <0x10c30000 0x10000>;
--		clocks = <&clock CLK_FOUT_SPLL>,
--			 <&clock CLK_MOUT_SCLK_SPLL>,
--			 <&clock CLK_FF_DOUT_SPLL2>,
--			 <&clock CLK_FOUT_BPLL>,
--			 <&clock CLK_MOUT_BPLL>,
--			 <&clock CLK_SCLK_BPLL>,
--			 <&clock CLK_MOUT_MX_MSPLL_CCORE>,
--			 <&clock CLK_MOUT_MCLK_CDREX>;
--		clock-names = "fout_spll",
--			      "mout_sclk_spll",
--			      "ff_dout_spll2",
--			      "fout_bpll",
--			      "mout_bpll",
--			      "sclk_bpll",
--			      "mout_mx_mspll_ccore",
--			      "mout_mclk_cdrex";
--		operating-points-v2 = <&dmc_opp_table>;
--		devfreq-events = <&ppmu_event3_dmc0_0>,	<&ppmu_event3_dmc0_1>,
--				 <&ppmu_event3_dmc1_0>, <&ppmu_event3_dmc1_1>;
--		device-handle = <&samsung_K3QF2F20DB>;
--		vdd-supply = <&buck1_reg>;
--		samsung,syscon-clk = <&clock>;
--		interrupt-parent = <&combiner>;
--		interrupts = <16 0>, <16 1>;
--		interrupt-names = "drex_0", "drex_1";
--	};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/samsung,exynos5422-dmc.yaml b/Documentation/devicetree/bindings/memory-controllers/samsung,exynos5422-dmc.yaml
-new file mode 100644
-index 000000000000..b168a9c8bfde
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/samsung,exynos5422-dmc.yaml
-@@ -0,0 +1,137 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/samsung,exynos5422-dmc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: |
-+  Samsung Exynos5422 SoC frequency and voltage scaling for Dynamic Memory
-+  Controller device
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+  - Lukasz Luba <lukasz.luba@arm.com>
-+
-+description: |
-+  The Samsung Exynos5422 SoC has DMC (Dynamic Memory Controller) to which the
-+  DRAM memory chips are connected. The driver is to monitor the controller in
-+  runtime and switch frequency and voltage. To monitor the usage of the
-+  controller in runtime, the driver uses the PPMU (Platform Performance
-+  Monitoring Unit), which is able to measure the current load of the memory.
-+  When 'userspace' governor is used for the driver, an application is able to
-+  switch the DMC and memory frequency.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: samsung,exynos5422-dmc
-+
-+  clock-names:
-+    items:
-+      - const: fout_spll
-+      - const: mout_sclk_spll
-+      - const: ff_dout_spll2
-+      - const: fout_bpll
-+      - const: mout_bpll
-+      - const: sclk_bpll
-+      - const: mout_mx_mspll_ccore
-+      - const: mout_mclk_cdrex
-+
-+  clocks:
-+    minItems: 8
-+    maxItems: 8
-+
-+  devfreq-events:
-+    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-+    minItems: 1
-+    maxItems: 16
-+    description: phandles of the PPMU events used by the controller.
-+
-+  device-handle:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      phandle of the connected DRAM memory device. For more information please
-+      refer to documentation file: Documentation/devicetree/bindings/ddr/lpddr3.txt
-+
-+  operating-points-v2: true
-+
-+  interrupts:
-+    items:
-+      - description: DMC internal performance event counters in DREX0
-+      - description: DMC internal performance event counters in DREX1
-+
-+  interrupt-names:
-+    items:
-+      - const: drex_0
-+      - const: drex_1
-+
-+  reg:
-+    items:
-+      - description: registers of DREX0
-+      - description: registers of DREX1
-+
-+  samsung,syscon-clk:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Phandle of the clock register set used by the controller, these registers
-+      are used for enabling a 'pause' feature and are not exposed by clock
-+      framework but they must be used in a safe way.  The register offsets are
-+      in the driver code and specyfic for this SoC type.
-+
-+  vdd-supply: true
-+
-+required:
-+  - compatible
-+  - clock-names
-+  - clocks
-+  - devfreq-events
-+  - device-handle
-+  - reg
-+  - samsung,syscon-clk
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/exynos5420.h>
-+    ppmu_dmc0_0: ppmu@10d00000 {
-+        compatible = "samsung,exynos-ppmu";
-+        reg = <0x10d00000 0x2000>;
-+        clocks = <&clock CLK_PCLK_PPMU_DREX0_0>;
-+        clock-names = "ppmu";
-+        events {
-+            ppmu_event_dmc0_0: ppmu-event3-dmc0_0 {
-+                event-name = "ppmu-event3-dmc0_0";
-+            };
-+        };
-+    };
-+
-+    memory-controller@10c20000 {
-+        compatible = "samsung,exynos5422-dmc";
-+        reg = <0x10c20000 0x10000>, <0x10c30000 0x10000>;
-+        clocks = <&clock CLK_FOUT_SPLL>,
-+                 <&clock CLK_MOUT_SCLK_SPLL>,
-+                 <&clock CLK_FF_DOUT_SPLL2>,
-+                 <&clock CLK_FOUT_BPLL>,
-+                 <&clock CLK_MOUT_BPLL>,
-+                 <&clock CLK_SCLK_BPLL>,
-+                 <&clock CLK_MOUT_MX_MSPLL_CCORE>,
-+                 <&clock CLK_MOUT_MCLK_CDREX>;
-+        clock-names = "fout_spll",
-+                      "mout_sclk_spll",
-+                      "ff_dout_spll2",
-+                      "fout_bpll",
-+                      "mout_bpll",
-+                      "sclk_bpll",
-+                      "mout_mx_mspll_ccore",
-+                      "mout_mclk_cdrex";
-+        operating-points-v2 = <&dmc_opp_table>;
-+        devfreq-events = <&ppmu_event3_dmc0_0>,	<&ppmu_event3_dmc0_1>,
-+                         <&ppmu_event3_dmc1_0>, <&ppmu_event3_dmc1_1>;
-+        device-handle = <&samsung_K3QF2F20DB>;
-+        vdd-supply = <&buck1_reg>;
-+        samsung,syscon-clk = <&clock>;
-+        interrupt-parent = <&combiner>;
-+        interrupts = <16 0>, <16 1>;
-+        interrupt-names = "drex_0", "drex_1";
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ebdb07a49b02..eb4ada858826 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5570,7 +5570,7 @@ M:	Lukasz Luba <lukasz.luba@arm.com>
- L:	linux-pm@vger.kernel.org
- L:	linux-samsung-soc@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt
-+F:	Documentation/devicetree/bindings/memory-controllers/samsung,exynos5422-dmc.yaml
- F:	drivers/memory/samsung/exynos5422-dmc.c
- 
- DME1737 HARDWARE MONITOR DRIVER
--- 
-2.30.2
+> > In rare cases the display is flipped or mirrored. This was observed more
+> > often in a low temperature environment. A clean reset on init_display()
+> > should help to get registers in a sane state.
+> > 
+> > Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
+> 
+> What commit does this fix?
 
+this is a fix for a rare behavior of the fb_st7789v display. Not a
+bugfix for a specific commit.
+
+Best regards,
+
+Oliver
