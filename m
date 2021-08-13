@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA393EB613
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F8D3EB618
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235675AbhHMN22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        id S240642AbhHMNec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbhHMN20 (ORCPT
+        with ESMTP id S240095AbhHMNeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:28:26 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533B1C061756;
-        Fri, 13 Aug 2021 06:27:59 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id c24so19811168lfi.11;
-        Fri, 13 Aug 2021 06:27:59 -0700 (PDT)
+        Fri, 13 Aug 2021 09:34:31 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4D6C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 06:34:02 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id z9so13247093wrh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 06:34:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b2ifuGO0OwtV+DJhwJpc6J6jVy2SNXahQGiPbiV560Q=;
-        b=UKvVHtxPXaeNsM11MJdXSl4Lzyrj9BcnCM+qfKNHOsuZx74p5FTEskvqRk+78LKYKj
-         s5NIUY/Gn/tsjA9xFeAtNjhqOtxNa4boRW726SeneaoYlaaAU7Z2hRwdQKEJ9s0cv2uK
-         8KvSru7xc9b7ZcjdWqfBqkW1/MpZWMfw/KleBe3jWfaIXGMni58CPgAAc9yd6hgBk/n4
-         lTtTwhGZqdm9bwyHtlDCyCUg7UR+x2Y2+Gu4VDTjdQORZj8gutxu2VJ72T9sawf1QAHy
-         gQzqo9QGL002O9yHYKm7KJ7mYfqLU1vJUbTYmiSDJK5fVHvNQpheD6+dpqdDsrtdO9O2
-         zedg==
+        bh=mN7MYIays/XFnrwXeEvXA0NNGnQRv8r6bR7JAyW0q9c=;
+        b=dOI1WyQIyonl4RYgU8lq8nk0rZhyrAcDoofESYiX+9MsDn2bqylF6aWJ9EeedI5WV1
+         Zfy/1nk2yrTl+8Ldl5qPE57v+rMjXzvQI1wDQo9J7dGMVGS4040BU3po6Y7sk0X1lKpy
+         T2nIwlU9Khut0u6yOuVaUi+G5OZ8syKKA9j8ukHYfdyuU4a8LZMgTF+LQ3SIjlb9VAH2
+         0fskJ1KV0H5Z7EH5Gh4RQ52JmPsUn8CkEMut2W0yTh3lmnV2ImuzfAm7ZGiflBmddEH4
+         yOJoMLrOc742xBGE0M5W9yaUHmCmLZANUYCyRqUWlNh6InqJgzZCxTDpZTORm55wrlPB
+         GUOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=b2ifuGO0OwtV+DJhwJpc6J6jVy2SNXahQGiPbiV560Q=;
-        b=RBUikRhhpG1CxsSfN1zVZv2fUgMLA3GhM/fZIEmrxbs1Srv00WyelQp6+XEqglM6B/
-         ogkKAfyet4P70IzMIsL3j6xiXb0Al8sqqJA0GSZUPWsn+wekis+vMtcovDGNRXiKRi7h
-         l+pbS5aLVJUv6xKqmPVlMOwJ8wHy5bfHINiX69TY/kjlyqRUxk1NZljzLNlqEKcunnhy
-         Iq1R6R0jogk82Yp1Kw1xYqtSQrTQ6EqMhLP+0UGgY8wpY8pOmlKDrl2tyUXw5UCc5IjW
-         fSvqDduEyJIRf99BTDJJKnd+rxrw4f7SVBxE1FdumHWhucTpow3Hoo73rM4l53DINDiC
-         8nuA==
-X-Gm-Message-State: AOAM5321cNAcvRFccHHx8XjSZ9w+ouKLv5l0FrjIZ7YvhREonCG/MZ+c
-        BK4tLVw4mer+z0fps9aBUDU=
-X-Google-Smtp-Source: ABdhPJy8wlbCms3nlFay8c37XAlqmB8bo1ed7BuAcEt6Sqfq+V64sfLy4N/WjLWAv2/RglQFEes1DQ==
-X-Received: by 2002:a05:6512:3da2:: with SMTP id k34mr1600973lfv.3.1628861276619;
-        Fri, 13 Aug 2021 06:27:56 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id bt28sm158144lfb.195.2021.08.13.06.27.55
+        bh=mN7MYIays/XFnrwXeEvXA0NNGnQRv8r6bR7JAyW0q9c=;
+        b=ersQuYSxHv+bI6y1+NqI1SxMptcuEoAmP4qZGZcerhoxikO9LnJrc/82pYzS+icpKU
+         FKcOszZ70I0eQR2NsW5Y33RrnXKTOIoRmf1gQb7nnRXdOODMnFccjQTIbiAlbcsL/V5x
+         Ts92BE6W12ZGqWIEUQmPSIy40JQGaDHpYcBUmGz1txGjlpjTKxceTIQJtseCeVuuwQVI
+         VrQcIBtohU152OZRpWfJJsz2D+n9/GOll5gHC6/Iu3gpwWSmEwvqDCPaxdihIsjJdvCw
+         VrUER8foO2+EX3BqBrZ8j+J0K3S+Z/kP+NG5mn7Jexupjk1AN2PVhfdeDQ4oHcatuLoL
+         7lKw==
+X-Gm-Message-State: AOAM530O+88Acr3bv9ygPNiMBIRSqSk/YZ2t9tSg5gdeiRoOZdBZDQgp
+        udlvXGZaIe16rPgjbSewVuTkumggJilw44DK
+X-Google-Smtp-Source: ABdhPJzu6Fum02kFZe4eIeCvjJGItdUESFvXsrKc9BrUKIqHYe63at4G+KHUAcH+XpUiGgSb+LI2VQ==
+X-Received: by 2002:adf:e7d1:: with SMTP id e17mr334425wrn.151.1628861640388;
+        Fri, 13 Aug 2021 06:34:00 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
+        by smtp.googlemail.com with ESMTPSA id d13sm1124997wra.70.2021.08.13.06.33.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 06:27:56 -0700 (PDT)
-Subject: Re: [PATCH v18 0/2] Add memory bandwidth management to NVIDIA Tegra
- DRM driver
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20210601042108.1942-1-digetx@gmail.com>
- <8accfe1e-fc48-21ca-f7c6-bd2d60162e6d@gmail.com>
- <YRZKlYg5YQlbmqFg@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <13277e43-d94a-8358-276e-62cfc2dd08be@gmail.com>
-Date:   Fri, 13 Aug 2021 16:27:55 +0300
+        Fri, 13 Aug 2021 06:33:59 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] drivers/clocksource/timer-of: Remove __init
+ markings
+To:     Chunyan Zhang <zhang.lyra@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210715065455.392923-1-zhang.lyra@gmail.com>
+ <20210715065455.392923-2-zhang.lyra@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <3a173a51-2abe-c1bf-41a5-d0be15290452@linaro.org>
+Date:   Fri, 13 Aug 2021 15:33:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YRZKlYg5YQlbmqFg@orome.fritz.box>
+In-Reply-To: <20210715065455.392923-2-zhang.lyra@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -76,26 +74,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.08.2021 13:33, Thierry Reding пишет:
-> On Mon, Jun 07, 2021 at 01:40:06AM +0300, Dmitry Osipenko wrote:
->> 01.06.2021 07:21, Dmitry Osipenko пишет:
->>> This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
->>> which is done using interconnect framework. It fixes display corruption that
->>> happens due to insufficient memory bandwidth.
->>>
->>> Changelog:
->>>
->>> v18: - Moved total peak bandwidth from CRTC state to plane state and removed
->>>        dummy plane bandwidth state initialization from T186+ plane hub. This
->>>        was suggested by Thierry Reding to v17.
->>>
->>>      - I haven't done anything about the cursor's plane bandwidth which
->>>        doesn't contribute to overlapping bandwidths for a small sized
->>>        window because it works okay as-is.
->>
->> Thierry, will you take these patches for 5.14?
+On 15/07/2021 08:54, Chunyan Zhang wrote:
+> From: Saravana Kannan <saravanak@google.com>
 > 
-> As discussed offline, I've picked these up for v5.15 with a small patch
-> squashed in to unbreak the Tegra186 and later support.
+> This allows timer drivers to be compiled as modules.
 
-Cool, thanks.
+Why ?
+
+These changes will create a precedence with the timers being loaded as
+modules. A longer description is important.
+
+Also, loading the timers may be fine but unloading them is not supported
+AFAICT from the time framework. That should be described also and the
+code should make sure the unloading will be never supported in any
+module conversion.
+
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  drivers/clocksource/timer-of.c | 17 +++++++++--------
+>  drivers/clocksource/timer-of.h |  4 ++--
+>  2 files changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/clocksource/timer-of.c b/drivers/clocksource/timer-of.c
+> index 529cc6a51cdb..7f108978fd51 100644
+> --- a/drivers/clocksource/timer-of.c
+> +++ b/drivers/clocksource/timer-of.c
+> @@ -19,7 +19,7 @@
+>   *
+>   * Free the irq resource
+>   */
+> -static __init void timer_of_irq_exit(struct of_timer_irq *of_irq)
+> +static void timer_of_irq_exit(struct of_timer_irq *of_irq)
+>  {
+>  	struct timer_of *to = container_of(of_irq, struct timer_of, of_irq);
+>  
+> @@ -47,7 +47,7 @@ static __init void timer_of_irq_exit(struct of_timer_irq *of_irq)
+>   *
+>   * Returns 0 on success, < 0 otherwise
+>   */
+> -static __init int timer_of_irq_init(struct device_node *np,
+> +static int timer_of_irq_init(struct device_node *np,
+>  				    struct of_timer_irq *of_irq)
+>  {
+>  	int ret;
+> @@ -91,7 +91,7 @@ static __init int timer_of_irq_init(struct device_node *np,
+>   *
+>   * Disables and releases the refcount on the clk
+>   */
+> -static __init void timer_of_clk_exit(struct of_timer_clk *of_clk)
+> +static void timer_of_clk_exit(struct of_timer_clk *of_clk)
+>  {
+>  	of_clk->rate = 0;
+>  	clk_disable_unprepare(of_clk->clk);
+> @@ -107,7 +107,7 @@ static __init void timer_of_clk_exit(struct of_timer_clk *of_clk)
+>   *
+>   * Returns 0 on success, < 0 otherwise
+>   */
+> -static __init int timer_of_clk_init(struct device_node *np,
+> +static int timer_of_clk_init(struct device_node *np,
+>  				    struct of_timer_clk *of_clk)
+>  {
+>  	int ret;
+> @@ -146,12 +146,12 @@ static __init int timer_of_clk_init(struct device_node *np,
+>  	goto out;
+>  }
+>  
+> -static __init void timer_of_base_exit(struct of_timer_base *of_base)
+> +static void timer_of_base_exit(struct of_timer_base *of_base)
+>  {
+>  	iounmap(of_base->base);
+>  }
+>  
+> -static __init int timer_of_base_init(struct device_node *np,
+> +static int timer_of_base_init(struct device_node *np,
+>  				     struct of_timer_base *of_base)
+>  {
+>  	of_base->base = of_base->name ?
+> @@ -165,7 +165,7 @@ static __init int timer_of_base_init(struct device_node *np,
+>  	return 0;
+>  }
+>  
+> -int __init timer_of_init(struct device_node *np, struct timer_of *to)
+> +int timer_of_init(struct device_node *np, struct timer_of *to)
+>  {
+>  	int ret = -EINVAL;
+>  	int flags = 0;
+> @@ -209,6 +209,7 @@ int __init timer_of_init(struct device_node *np, struct timer_of *to)
+>  		timer_of_base_exit(&to->of_base);
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(timer_of_init);
+>  
+>  /**
+>   * timer_of_cleanup - release timer_of resources
+> @@ -217,7 +218,7 @@ int __init timer_of_init(struct device_node *np, struct timer_of *to)
+>   * Release the resources that has been used in timer_of_init().
+>   * This function should be called in init error cases
+>   */
+> -void __init timer_of_cleanup(struct timer_of *to)
+> +void timer_of_cleanup(struct timer_of *to)
+>  {
+>  	if (to->flags & TIMER_OF_IRQ)
+>  		timer_of_irq_exit(&to->of_irq);
+> diff --git a/drivers/clocksource/timer-of.h b/drivers/clocksource/timer-of.h
+> index a5478f3e8589..1b8cfac5900a 100644
+> --- a/drivers/clocksource/timer-of.h
+> +++ b/drivers/clocksource/timer-of.h
+> @@ -66,9 +66,9 @@ static inline unsigned long timer_of_period(struct timer_of *to)
+>  	return to->of_clk.period;
+>  }
+>  
+> -extern int __init timer_of_init(struct device_node *np,
+> +extern int timer_of_init(struct device_node *np,
+>  				struct timer_of *to);
+>  
+> -extern void __init timer_of_cleanup(struct timer_of *to);
+> +extern void timer_of_cleanup(struct timer_of *to);
+>  
+>  #endif
+> 
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
