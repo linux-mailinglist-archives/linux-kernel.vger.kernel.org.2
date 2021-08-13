@@ -2,229 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A203EAEA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA3B3EAEAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238370AbhHMCmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:42:46 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:38503 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237040AbhHMCmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 22:42:45 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id C001A32005CA;
-        Thu, 12 Aug 2021 22:42:18 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 12 Aug 2021 22:42:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=roa8fRHcNdYx2xc/3
-        RYd5PJ0b1LRVXfo2cPc65w5DtU=; b=ofNePowixuzRWmLxnDeHuSOAleLt5IeuR
-        zvy/m5B7qLeMFAKqiV+qoXahqQmoUgBcqmsERfFdcKIBAgnfEoRUBJKAbIw6eVOe
-        3YfDcaYoPoTj8fvbfVKHgDEr1kyMVD6uBeZxWnGedDmrbGD1uz3Kb3QzZKwI/DBX
-        V6YzSYYoaT/+LY6684cPoT8cpZeJ3byRPVeRcMuyl6XXFPsyuZRp37xLjxEiG6S7
-        NHaCHxgjm5t77p9U8extxTzs6Z1Q/zTqyESMAFjJ78EcrYgdQ0+ti0NsFLAEpzZ3
-        RWi3k8cDhLbkHHLNuSeS2EomWmmeSVckJL56yKvwReEqg3vRLngEw==
-X-ME-Sender: <xms:CdwVYe2sF3Szsyqw7acH6vY2QHK0FsjZ41YDkAFQ-PJYPXFDzvhjQQ>
-    <xme:CdwVYRGr4-tJcQtF1p1zfhbLrjn5gA6RMoSyPNYfd1Gfr17cM-pvUFw_8QSQ09y7M
-    22Ifu4C6Zrz6flcCAk>
-X-ME-Received: <xmr:CdwVYW50rWS7m5r65VXax7xqUJ3E3AAyTS3TOghskfVQSbQjpfy4G-azMZbL>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeeggdeiudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
-    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
-    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:CdwVYf3SwLIJt9yppktpGkXkc_AQSQU_Y4JnHOh3NCMlPruRsWj6HA>
-    <xmx:CdwVYRHoKH2O63_D2ePscRwYcFYfwLjtfbFfq53Od8ChqlJtgaoIlg>
-    <xmx:CdwVYY-xfDlr1E_AqnELuyGs_cxAkCpgm1bAaB-3A5c_6caQNKsr5g>
-    <xmx:CtwVYWSGqGBOyYf0anXQWAZBIKmFujtecNWidUQKMODEgNzd6oZMLg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Aug 2021 22:42:15 -0400 (EDT)
-From:   "Luke D. Jones" <luke@ljones.dev>
-To:     linux-kernel@vger.kernel.org
-Cc:     hdegoede@redhat.com, hadess@hadess.net,
-        platform-driver-x86@vger.kernel.org,
-        "Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH] asus-wmi: Add support for platform_profile
-Date:   Fri, 13 Aug 2021 14:42:01 +1200
-Message-Id: <20210813024201.9518-1-luke@ljones.dev>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S238470AbhHMCou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:44:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30302 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238357AbhHMCou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:44:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628822664; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=+sXnDd5NzLQp8aMTaouqrcnUqs/sQpYuHKr+B/RA/Ro=; b=w+mWhwsydM9D8zaeKyIB0/M3D70uXGIoMSVA3jc3rBcgdKP0p1ND6ouzMzebHNDFtbZDpcwa
+ DTthHThH4WtdviKswzSeQTWMqaKbtb+a58uHFq3XX+qUBuRwWFheRB5qwEyLxPTcQFozMqnB
+ 5+q4OposM+ELKSPrW9hxRaypWfs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6115dc7191487ad5207df2fc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 02:44:01
+ GMT
+Sender: wat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3BACC43217; Fri, 13 Aug 2021 02:44:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cbsp-sh-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F584C433F1;
+        Fri, 13 Aug 2021 02:43:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F584C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wat@codeaurora.org
+From:   Tao Wang <wat@codeaurora.org>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org (open list:USB XHCI DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Tao Wang <wat@codeaurora.org>
+Subject: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to TD_CLEARING_CACHE
+Date:   Fri, 13 Aug 2021 10:43:23 +0800
+Message-Id: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for platform_profile where the support is
-based on availability of ASUS_THROTTLE_THERMAL_POLICY.
+USB SSD may fail to unmount if disconnect during data transferring.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
+it stuck in usb_kill_urb() due to urb use_count will not become zero,
+this means urb giveback is not happen.
+in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
+equal to TD_CLEARING_CACHE,
+but in xhci_invalidate_cancelled_tds(), only last canceled td's
+cancel_status change to TD_CLEARING_CACHE,
+thus giveback only happen to last urb.
+
+this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
+rather than the last one, so all urb can giveback.
+
+Signed-off-by: Tao Wang <wat@codeaurora.org>
 ---
- drivers/platform/x86/asus-wmi.c | 112 ++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+ drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 90a6a0d00deb..62260043c15c 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -26,6 +26,7 @@
- #include <linux/rfkill.h>
- #include <linux/pci.h>
- #include <linux/pci_hotplug.h>
-+#include <linux/platform_profile.h>
- #include <linux/power_supply.h>
- #include <linux/hwmon.h>
- #include <linux/hwmon-sysfs.h>
-@@ -219,6 +220,9 @@ struct asus_wmi {
- 	bool throttle_thermal_policy_available;
- 	u8 throttle_thermal_policy_mode;
- 
-+	struct platform_profile_handler platform_profile_handler;
-+	bool platform_profile_support;
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 8fea44b..c7dd7c0 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
+ 			td_to_noop(xhci, ring, td, false);
+ 			td->cancel_status = TD_CLEARED;
+ 		}
+-	}
+-	if (cached_td) {
+-		cached_td->cancel_status = TD_CLEARING_CACHE;
+-
+-		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+-						cached_td->urb->stream_id,
+-						cached_td);
+-		/* Failed to move past cached td, try just setting it noop */
+-		if (err) {
+-			td_to_noop(xhci, ring, cached_td, false);
+-			cached_td->cancel_status = TD_CLEARED;
++		if (cached_td) {
++			cached_td->cancel_status = TD_CLEARING_CACHE;
 +
- 	// The RSOC controls the maximum charging percentage.
- 	bool battery_rsoc_available;
- 
-@@ -2144,6 +2148,106 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
- // Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
- static DEVICE_ATTR_RW(throttle_thermal_policy);
- 
-+/* Platform profile ***********************************************************/
-+static int platform_profile_get(struct platform_profile_handler *pprof,
-+				enum platform_profile_option *profile)
-+{
-+	struct asus_wmi *asus;
-+	int tp;
-+
-+	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
-+
-+	/* All possible toggles like throttle_thermal_policy here */
-+	if (asus->throttle_thermal_policy_available) {
-+		tp = asus->throttle_thermal_policy_mode;
-+	} else {
-+		return -1;
-+	}
-+
-+	if (tp < 0)
-+		return tp;
-+
-+	switch (tp) {
-+	case ASUS_THROTTLE_THERMAL_POLICY_DEFAULT:
-+		*profile = PLATFORM_PROFILE_BALANCED;
-+		break;
-+	case ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST:
-+		*profile = PLATFORM_PROFILE_PERFORMANCE;
-+		break;
-+	case ASUS_THROTTLE_THERMAL_POLICY_SILENT:
-+		*profile = PLATFORM_PROFILE_QUIET;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int platform_profile_set(struct platform_profile_handler *pprof,
-+				enum platform_profile_option profile)
-+{
-+	struct asus_wmi *asus;
-+	int tp;
-+
-+	asus = container_of(pprof, struct asus_wmi, platform_profile_handler);
-+
-+	/* All possible toggles like throttle_thermal_policy here */
-+	if (!asus->throttle_thermal_policy_available) {
-+		return -1;
-+	}
-+
-+	switch (profile) {
-+	case PLATFORM_PROFILE_PERFORMANCE:
-+		tp = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST;
-+		break;
-+	case PLATFORM_PROFILE_BALANCED:
-+		tp = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
-+		break;
-+	case PLATFORM_PROFILE_QUIET:
-+		tp = ASUS_THROTTLE_THERMAL_POLICY_SILENT;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (asus->throttle_thermal_policy_available) {
-+		asus->throttle_thermal_policy_mode = tp;
-+		return throttle_thermal_policy_write(asus);
-+	}
-+	return 0;
-+}
-+
-+static int platform_profile_setup(struct asus_wmi *asus)
-+{
-+	int err;
-+
-+	if (asus->throttle_thermal_policy_available) {
-+		pr_info("Using throttle_thermal_policy for platform_profile support\n");
-+	} else {
-+		/*
-+		 * Not an error if a component platform_profile relies on is unavailable
-+		 * so early return, skipping the setup of platform_profile.
-+		*/
-+		return 0;
-+	}
-+	asus->platform_profile_handler.profile_get = platform_profile_get;
-+	asus->platform_profile_handler.profile_set = platform_profile_set;
-+
-+	set_bit(PLATFORM_PROFILE_QUIET, asus->platform_profile_handler.choices);
-+	set_bit(PLATFORM_PROFILE_BALANCED,
-+		asus->platform_profile_handler.choices);
-+	set_bit(PLATFORM_PROFILE_PERFORMANCE,
-+		asus->platform_profile_handler.choices);
-+
-+	err = platform_profile_register(&asus->platform_profile_handler);
-+	if (err)
-+		return err;
-+
-+	asus->platform_profile_support = true;
-+	return 0;
-+}
-+
- /* Backlight ******************************************************************/
- 
- static int read_backlight_power(struct asus_wmi *asus)
-@@ -2904,6 +3008,10 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	else
- 		throttle_thermal_policy_set_default(asus);
- 
-+	err = platform_profile_setup(asus);
-+	if (err)
-+		goto fail_platform_profile_setup;
-+
- 	err = panel_od_check_present(asus);
- 	if (err)
- 		goto fail_panel_od;
-@@ -2993,6 +3101,7 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	asus_wmi_sysfs_exit(asus->platform_device);
- fail_sysfs:
- fail_throttle_thermal_policy:
-+fail_platform_profile_setup:
- fail_fan_boost_mode:
- fail_egpu_enable:
- fail_dgpu_disable:
-@@ -3017,6 +3126,9 @@ static int asus_wmi_remove(struct platform_device *device)
- 	asus_fan_set_auto(asus);
- 	asus_wmi_battery_exit(asus);
- 
-+	if (asus->platform_profile_support)
-+		platform_profile_remove();
-+
- 	kfree(asus);
++			err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
++							cached_td->urb->stream_id,
++							cached_td);
++			/* Failed to move past cached td, try just setting it noop */
++			if (err) {
++				td_to_noop(xhci, ring, cached_td, false);
++				cached_td->cancel_status = TD_CLEARED;
++			}
++			cached_td = NULL;
+ 		}
+-		cached_td = NULL;
+ 	}
  	return 0;
  }
 -- 
-2.31.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
