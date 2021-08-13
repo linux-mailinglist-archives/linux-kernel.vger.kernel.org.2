@@ -2,236 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC74A3EB192
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504623EB1A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239497AbhHMHhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:37:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239488AbhHMHhC (ORCPT
+        id S239541AbhHMHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:38:50 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:43306 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239505AbhHMHis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628840195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0GudUQwxoRGaM8Ug8csU9EG508ZlzE+xcxQopbBunHk=;
-        b=DE9qEpI3KN/8w//QQ0gNBR3z3U2KNhi+SxwSBcqwuWDH+838sorrU1m4XCIv0NgIa6lmsC
-        ajV6oMax/AKybndqwwaRZTYuXr3en8Vcu9sW3bG2RXnawg9mOI9hRZrNsD780T8wU9ZkS6
-        dclYK29GGYM4WyV/gkJMLEOeQUrMnI8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-ezdEphVeNcajw0w9N8R9Qw-1; Fri, 13 Aug 2021 03:36:33 -0400
-X-MC-Unique: ezdEphVeNcajw0w9N8R9Qw-1
-Received: by mail-ed1-f72.google.com with SMTP id u4-20020a50eac40000b02903bddc52675eso4440720edp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:36:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0GudUQwxoRGaM8Ug8csU9EG508ZlzE+xcxQopbBunHk=;
-        b=iEhUvaXXk7wKbqJ4ARonj09601S2g2XsZ5Chb6Uvsn7V5CzSdBkK7AW4SCP+oPBm7Y
-         1D28GzjZHIcuNGwEFqAY/S6S9EbeTo4fI7vwJQWAzQR6fuJgqwTNYaWHO/hoK54jQCyb
-         ket2WPAjCQp/GXNXHCOX04FALFmK3/P+JVrEHYc52ZFzw6jDCPpNbRmYFRGIk3xL/HJX
-         7jniPgjkjbd3GxPOpf8QfX0LS7Tmr7el8cKoF3zh2myLmbeLnXmH1v6pMjOMve1m/o+0
-         mtVjcSXk1CzGho+w+xlllLlGwktxTZW/PxULC4wWdFNDficn9nnkMn7FZ7bqsvKbOY2P
-         GrfQ==
-X-Gm-Message-State: AOAM532Ud8cdM0Vkfe82HM1mjUNzJvcC2/gUewWULLSTlDjo6H8DbhXr
-        sJ/y8CTBjOVmsN9CdN/LFfeBugi6/Prk0DaMwWXdPyCdDV9UkZVPG/Lm2BRQMbA2iFtWpetbki6
-        i7GzBAYWRi/AiEtPsWnUXw6Zq
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr1433532edv.306.1628840192568;
-        Fri, 13 Aug 2021 00:36:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwx3+/UqdrAF2yU81a3Rs+lfogK6oq62/3Ts4GudcXjfrDMq6m+WjBytrWf29miY8SiWOaS4g==
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr1433509edv.306.1628840192356;
-        Fri, 13 Aug 2021 00:36:32 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r27sm454935edb.66.2021.08.13.00.36.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 00:36:31 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: x86/mmu: Protect marking SPs unsync when using
- TDP MMU with spinlock
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-References: <20210812181815.3378104-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2476ccf6-1542-c7ad-993b-7d1f703d390e@redhat.com>
-Date:   Fri, 13 Aug 2021 09:36:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 13 Aug 2021 03:38:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UirXt4z_1628840298;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UirXt4z_1628840298)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 13 Aug 2021 15:38:19 +0800
+Subject: Re: [PATCH 1/3] crypto: tcrypt - Fix the wrong position of return
+ value test statement
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+References: <20210812131748.81620-1-tianjia.zhang@linux.alibaba.com>
+ <20210812131748.81620-2-tianjia.zhang@linux.alibaba.com>
+ <20210812135943.mnuce4252wp4xi52@altlinux.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <30de4d0a-42ee-3115-981e-bedc701bceb8@linux.alibaba.com>
+Date:   Fri, 13 Aug 2021 15:38:18 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210812181815.3378104-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210812135943.mnuce4252wp4xi52@altlinux.org>
+Content-Type: text/plain; charset=koi8-r; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/21 20:18, Sean Christopherson wrote:
-> Add yet another spinlock for the TDP MMU and take it when marking indirect
-> shadow pages unsync.  When using the TDP MMU and L1 is running L2(s) with
-> nested TDP, KVM may encounter shadow pages for the TDP entries managed by
-> L1 (controlling L2) when handling a TDP MMU page fault.  The unsync logic
-> is not thread safe, e.g. the kvm_mmu_page fields are not atomic, and
-> misbehaves when a shadow page is marked unsync via a TDP MMU page fault,
-> which runs with mmu_lock held for read, not write.
+Hi Vitaly,
+
+On 8/12/21 9:59 PM, Vitaly Chikunov wrote:
+> Tianjia,
 > 
-> Lack of a critical section manifests most visibly as an underflow of
-> unsync_children in clear_unsync_child_bit() due to unsync_children being
-> corrupted when multiple CPUs write it without a critical section and
-> without atomic operations.  But underflow is the best case scenario.  The
-> worst case scenario is that unsync_children prematurely hits '0' and
-> leads to guest memory corruption due to KVM neglecting to properly sync
-> shadow pages.
+> On Thu, Aug 12, 2021 at 09:17:46PM +0800, Tianjia Zhang wrote:
+>> The position of the return value test statement of crypto_aead_setkey()
+>> is wrong, adjust to make it work properly.
 > 
-> Use an entirely new spinlock even though piggybacking tdp_mmu_pages_lock
-> would functionally be ok.  Usurping the lock could degrade performance when
-> building upper level page tables on different vCPUs, especially since the
-> unsync flow could hold the lock for a comparatively long time depending on
-> the number of indirect shadow pages and the depth of the paging tree.
-> 
-> For simplicity, take the lock for all MMUs, even though KVM could fairly
-> easily know that mmu_lock is held for write.  If mmu_lock is held for
-> write, there cannot be contention for the inner spinlock, and marking
-> shadow pages unsync across multiple vCPUs will be slow enough that
-> bouncing the kvm_arch cacheline should be in the noise.
-> 
-> Note, even though L2 could theoretically be given access to its own EPT
-> entries, a nested MMU must hold mmu_lock for write and thus cannot race
-> against a TDP MMU page fault.  I.e. the additional spinlock only _needs_ to
-> be taken by the TDP MMU, as opposed to being taken by any MMU for a VM
-> that is running with the TDP MMU enabled.  Holding mmu_lock for read also
-> prevents the indirect shadow page from being freed.  But as above, keep
-> it simple and always take the lock.
-> 
-> Alternative #1, the TDP MMU could simply pass "false" for can_unsync and
-> effectively disable unsync behavior for nested TDP.  Write protecting leaf
-> shadow pages is unlikely to noticeably impact traditional L1 VMMs, as such
-> VMMs typically don't modify TDP entries, but the same may not hold true for
-> non-standard use cases and/or VMMs that are migrating physical pages (from
-> L1's perspective).
-> 
-> Alternative #2, the unsync logic could be made thread safe.  In theory,
-> simply converting all relevant kvm_mmu_page fields to atomics and using
-> atomic bitops for the bitmap would suffice.  However, (a) an in-depth audit
-> would be required, (b) the code churn would be substantial, and (c) legacy
-> shadow paging would incur additional atomic operations in performance
-> sensitive paths for no benefit (to legacy shadow paging).
-> 
-> Fixes: a2855afc7ee8 ("KVM: x86/mmu: Allow parallel page faults for the TDP MMU")
-> Cc: stable@vger.kernel.org
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   Documentation/virt/kvm/locking.rst |  8 ++++----
->   arch/x86/include/asm/kvm_host.h    |  7 +++++++
->   arch/x86/kvm/mmu/mmu.c             | 28 ++++++++++++++++++++++++++++
->   3 files changed, 39 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-> index 8138201efb09..5d27da356836 100644
-> --- a/Documentation/virt/kvm/locking.rst
-> +++ b/Documentation/virt/kvm/locking.rst
-> @@ -31,10 +31,10 @@ On x86:
->   
->   - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock
->   
-> -- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock is
-> -  taken inside kvm->arch.mmu_lock, and cannot be taken without already
-> -  holding kvm->arch.mmu_lock (typically with ``read_lock``, otherwise
-> -  there's no need to take kvm->arch.tdp_mmu_pages_lock at all).
-> +- kvm->arch.mmu_lock is an rwlock.  kvm->arch.tdp_mmu_pages_lock and
-> +  kvm->arch.mmu_unsync_pages_lock are taken inside kvm->arch.mmu_lock, and
-> +  cannot be taken without already holding kvm->arch.mmu_lock (typically with
-> +  ``read_lock`` for the TDP MMU, thus the need for additional spinlocks).
->   
->   Everything else is a leaf: no other lock is taken inside the critical
->   sections.
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 20daaf67a5bf..cf32b87b6bd3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1036,6 +1036,13 @@ struct kvm_arch {
->   	struct list_head lpage_disallowed_mmu_pages;
->   	struct kvm_page_track_notifier_node mmu_sp_tracker;
->   	struct kvm_page_track_notifier_head track_notifier_head;
-> +	/*
-> +	 * Protects marking pages unsync during page faults, as TDP MMU page
-> +	 * faults only take mmu_lock for read.  For simplicity, the unsync
-> +	 * pages lock is always taken when marking pages unsync regardless of
-> +	 * whether mmu_lock is held for read or write.
-> +	 */
-> +	spinlock_t mmu_unsync_pages_lock;
->   
->   	struct list_head assigned_dev_head;
->   	struct iommu_domain *iommu_domain;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a272ccbddfa1..cef526dac730 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2596,6 +2596,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->   int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->   {
->   	struct kvm_mmu_page *sp;
-> +	bool locked = false;
->   
->   	/*
->   	 * Force write-protection if the page is being tracked.  Note, the page
-> @@ -2618,9 +2619,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->   		if (sp->unsync)
->   			continue;
->   
-> +		/*
-> +		 * TDP MMU page faults require an additional spinlock as they
-> +		 * run with mmu_lock held for read, not write, and the unsync
-> +		 * logic is not thread safe.  Take the spinklock regardless of
-> +		 * the MMU type to avoid extra conditionals/parameters, there's
-> +		 * no meaningful penalty if mmu_lock is held for write.
-> +		 */
-> +		if (!locked) {
-> +			locked = true;
-> +			spin_lock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
-> +
-> +			/*
-> +			 * Recheck after taking the spinlock, a different vCPU
-> +			 * may have since marked the page unsync.  A false
-> +			 * positive on the unprotected check above is not
-> +			 * possible as clearing sp->unsync _must_ hold mmu_lock
-> +			 * for write, i.e. unsync cannot transition from 0->1
-> +			 * while this CPU holds mmu_lock for read (or write).
-> +			 */
-> +			if (READ_ONCE(sp->unsync))
-> +				continue;
-> +		}
-> +
->   		WARN_ON(sp->role.level != PG_LEVEL_4K);
->   		kvm_unsync_page(vcpu, sp);
->   	}
-> +	if (locked)
-> +		spin_unlock(&vcpu->kvm->arch.mmu_unsync_pages_lock);
->   
->   	/*
->   	 * We need to ensure that the marking of unsync pages is visible
-> @@ -5604,6 +5630,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->   {
->   	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
->   
-> +	spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
-> +
->   	if (!kvm_mmu_init_tdp_mmu(kvm))
->   		/*
->   		 * No smp_load/store wrappers needed here as we are in
+> This commit message does not explain anything. It's nearly equivalent to
+> "fix".
 > 
 
-Queued, thanks.
+will update in next version.
 
-Paolo
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> ---
+>>   crypto/tcrypt.c | 13 ++++++-------
+>>   1 file changed, 6 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+>> index d73a42fdaa9b..73c97e085baf 100644
+>> --- a/crypto/tcrypt.c
+>> +++ b/crypto/tcrypt.c
+>> @@ -612,6 +612,12 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>>   				}
+>>   			}
+>>   			ret = crypto_aead_setkey(tfm, key, *keysize);
+> 
+> Perhaps, you would say that return value of crypto_aead_setkey was lost.
+> 
 
+Yes, good idea.
+
+>> +			if (ret) {
+>> +				pr_err("setkey() failed flags=%x\n",
+>> +						crypto_aead_get_flags(tfm));
+>> +				goto out;
+>> +			}
+>> +
+>>   			ret = crypto_aead_setauthsize(tfm, authsize);
+> 
+> But, isn't now return value of crypto_aead_setauthsize is lost?
+> 
+> Thanks,
+> 
+
+Yes, it is needed.
+
+I will move crypto_aead_setauthsize() call out of the loop, only need to 
+call it once after load transform.
+
+Best regards,
+Tianjia
+
+>>   
+>>   			iv_len = crypto_aead_ivsize(tfm);
+>> @@ -622,15 +628,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
+>>   			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
+>>   					i, *keysize * 8, bs);
+>>   
+>> -
+>>   			memset(tvmem[0], 0xff, PAGE_SIZE);
+>>   
+>> -			if (ret) {
+>> -				pr_err("setkey() failed flags=%x\n",
+>> -						crypto_aead_get_flags(tfm));
+>> -				goto out;
+>> -			}
+>> -
+>>   			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
+>>   				     assoc, aad_size);
+>>   
+>> -- 
+>> 2.19.1.3.ge56e4f7
