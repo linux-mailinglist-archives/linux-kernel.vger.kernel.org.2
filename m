@@ -2,104 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19EC3EBC1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F983EBC1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbhHMSdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:33:41 -0400
-Received: from mail-m176236.qiye.163.com ([59.111.176.236]:17828 "EHLO
-        mail-m176236.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhHMSdd (ORCPT
+        id S233427AbhHMSd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233186AbhHMSdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:33:33 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176236.qiye.163.com (Hmail) with ESMTP id E330D780127;
-        Sat, 14 Aug 2021 02:33:03 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ALgAlACUD67cbvnqcwuTRaqA.3.1628879583910.Hmail.frank.li@vivo.com>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2NSAxLzJdIGYyZnM6IGludHJvZHVjZSBwcm9jL2ZzL2YyZnMvPGRldj4vZnNja19zdGFjayBub2Rl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.231
-In-Reply-To: <0cc57cc5-33b1-cc00-58a4-fce8de22aa35@kernel.org>
+        Fri, 13 Aug 2021 14:33:41 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4850C0617AD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:33:13 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d17so13085926plr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 11:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Oavcp2pFnC2cFXkrrEs6NnAp/Yy/K6T50MosZsUzhis=;
+        b=lJIKxJoDB/aAZbLpirzQkMyJoRmThAikyFRpuGbLeId7fd0o23xD6tNmaVbl1Mz5Qd
+         lHHkiPFD9jKsp4maRXPRSmKyvuCEh1puT/H6kV1ULEkEZ0U5jRg4zwUcN6GDAhSAXUtd
+         64+iKz+xUOCtJW498wFyavo67TZpq9B2MHHiM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Oavcp2pFnC2cFXkrrEs6NnAp/Yy/K6T50MosZsUzhis=;
+        b=qjuNYXkSyUzARLcMNchqBwUrB1iU3zxYJ1O0+mHlEYpRXveieN5+KEgWPCnFs/B7gM
+         WsZDL8CcySHAu5TQkZy7AQlEf9warvwvqdZSvGNwnD7Up3V+JV0GcTDOZHuu9oRnm6MK
+         LDmlSh0aBN7p28CsV5QJig1Pb4FUUPKCQqwdtGha6gRSiGO0Pu7jKgBm5lnjr5AE2QgS
+         f/OFQfoIcoHLBD5VnCb3u91osJSmZPdpjuVkjFR8NOOHpcEDDQZBMFiSWt0EpoYMDREw
+         l6YK/lCuI9cQbT/Xpqy/BVsKZFnCdQUZu0AUzQkyAeRHMET2x0h0DfwF8ZFGw8mzhciW
+         yX1A==
+X-Gm-Message-State: AOAM531F3uvE9xWDkVh4Y5PYSjb1rj5ekyfDWx9p/KXOh2RyGczXa+MK
+        +V+JAui1UTrLiJO3O2rOIZHWhQ==
+X-Google-Smtp-Source: ABdhPJwKnXfOpKfshUbQlMBlW1T1VCUKLFgQrOPTtyIXCkBL296ZEMCcjLuDGiZ47Tg/4o7leekywg==
+X-Received: by 2002:a65:644e:: with SMTP id s14mr3479420pgv.410.1628879593367;
+        Fri, 13 Aug 2021 11:33:13 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:450d:9788:a70e:42d6])
+        by smtp.gmail.com with UTF8SMTPSA id r11sm2464611pjd.26.2021.08.13.11.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 11:33:12 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 11:33:09 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Peter Chen <peter.chen@kernel.org>, devicetree@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Andy Gross <agross@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nishanth Menon <nm@ti.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v15 0/6] usb: misc: Add onboard_usb_hub driver
+Message-ID: <YRa65ZWzkB5OLpPm@google.com>
+References: <20210727004118.2583774-1-mka@chromium.org>
+ <YRFOnhJkB2vi/zwD@google.com>
+ <8a8cae28-6617-76d3-1742-3f151a149069@kernel.org>
+ <ddd60682-c957-2897-768e-96c9d25c148a@kernel.org>
+ <YRVVjwNprk7l1jUk@google.com>
+ <166449bc-4c33-b923-f53d-6df4f83dc267@kernel.org>
 MIME-Version: 1.0
-Received: from frank.li@vivo.com( [58.251.74.231) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 14 Aug 2021 02:33:03 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-Date:   Sat, 14 Aug 2021 02:33:03 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlCTUNWGklNHxlPSUMeS0
-        sZVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OQkNLTUJKTk1LN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Nxw6Fzo4Lj9NTBgZDRUKGAwOLykaCjpVSFVKTUlDQ0xCTkNPT0NCVTMWGhIXVR0JGhUQVRcS
-        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5KVUxPVUlISllXWQgBWUFNTkNINwY+
-X-HM-Tid: 0a7b40c9fabcd9aekuwse330d780127
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <166449bc-4c33-b923-f53d-6df4f83dc267@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hhbyBZdSA8Y2hhb0BrZXJuZWwub3JnPgpEYXRlOiAyMDIxLTA4LTEzIDIyOjQ0OjQ5
-ClRvOiAgWWFuZ3RhbyBMaSA8ZnJhbmsubGlAdml2by5jb20+LGphZWdldWtAa2VybmVsLm9yZwpD
-YzogIGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0LGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcKU3ViamVjdDogUmU6IFtQQVRDSCB2NSAxLzJdIGYyZnM6IGludHJvZHVj
-ZSBwcm9jL2ZzL2YyZnMvPGRldj4vZnNja19zdGFjayBub2RlPk9uIDIwMjEvOC8xMyAyMDozMiwg
-WWFuZ3RhbyBMaSB3cm90ZToKPj4gU0JJX05FRURfRlNDSyBpcyBhbiBpbmRpY2F0b3IgdGhhdCBm
-c2NrLmYyZnMgbmVlZHMgdG8gYmUgdHJpZ2dlcmVkLAo+PiB0aGlzIGZsYWcgaXMgc2V0IGluIHRv
-byBtYW55IHBsYWNlcy4gRm9yIHNvbWUgc2NlbmVzIHRoYXQgYXJlIG5vdCB2ZXJ5Cj4+IHJlcHJv
-ZHVjaWJsZSwgYWRkaW5nIHN0YWNrIGluZm9ybWF0aW9uIHdpbGwgaGVscCBsb2NhdGUgdGhlIHBy
-b2JsZW0uCj4+IAo+PiBMZXQncyBleHBvc2UgYWxsIGZzY2sgc3RhY2sgaGlzdG9yeSBpbiBwcm9j
-ZnMuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBZYW5ndGFvIExpIDxmcmFuay5saUB2aXZvLmNvbT4K
-Pj4gLS0tCj4+IHY1Ogo+PiAtZml4IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdz
-dGFja190cmFjZV9zYXZlJwo+PiAgIGZzL2YyZnMvZjJmcy5oICB8IDM0ICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0KPj4gICBmcy9mMmZzL3N5c2ZzLmMgfCAyNiArKysrKysrKysr
-KysrKysrKysrKysrKysrKwo+PiAgIDIgZmlsZXMgY2hhbmdlZCwgNTkgaW5zZXJ0aW9ucygrKSwg
-MSBkZWxldGlvbigtKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2ZzL2YyZnMvZjJmcy5oIGIvZnMvZjJm
-cy9mMmZzLmgKPj4gaW5kZXggNjdmYWE0M2NjMTQxLi5jYmQwNmRlYTNjNmEgMTAwNjQ0Cj4+IC0t
-LSBhL2ZzL2YyZnMvZjJmcy5oCj4+ICsrKyBiL2ZzL2YyZnMvZjJmcy5oCj4+IEBAIC0yNCw2ICsy
-NCw4IEBACj4+ICAgI2luY2x1ZGUgPGxpbnV4L3F1b3Rhb3BzLmg+Cj4+ICAgI2luY2x1ZGUgPGxp
-bnV4L3BhcnRfc3RhdC5oPgo+PiAgICNpbmNsdWRlIDxjcnlwdG8vaGFzaC5oPgo+PiArI2luY2x1
-ZGUgPGxpbnV4L3N0YWNrZGVwb3QuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9zdGFja3RyYWNlLmg+
-Cj4+ICAgCj4+ICAgI2luY2x1ZGUgPGxpbnV4L2ZzY3J5cHQuaD4KPj4gICAjaW5jbHVkZSA8bGlu
-dXgvZnN2ZXJpdHkuaD4KPj4gQEAgLTExOSw2ICsxMjEsOCBAQCB0eXBlZGVmIHUzMiBuaWRfdDsK
-Pj4gICAKPj4gICAjZGVmaW5lIENPTVBSRVNTX0VYVF9OVU0JCTE2Cj4+ICAgCj4+ICsjZGVmaW5l
-IEZTQ0tfU1RBQ0tfREVQVEggNjQKPj4gKwo+PiAgIHN0cnVjdCBmMmZzX21vdW50X2luZm8gewo+
-PiAgIAl1bnNpZ25lZCBpbnQgb3B0Owo+PiAgIAlpbnQgd3JpdGVfaW9fc2l6ZV9iaXRzOwkJLyog
-V3JpdGUgSU8gc2l6ZSBiaXRzICovCj4+IEBAIC0xNzg2LDYgKzE3OTAsOCBAQCBzdHJ1Y3QgZjJm
-c19zYl9pbmZvIHsKPj4gICAJdW5zaWduZWQgaW50IGNvbXByZXNzX3dhdGVybWFyazsJLyogY2Fj
-aGUgcGFnZSB3YXRlcm1hcmsgKi8KPj4gICAJYXRvbWljX3QgY29tcHJlc3NfcGFnZV9oaXQ7CQkv
-KiBjYWNoZSBoaXQgY291bnQgKi8KPj4gICAjZW5kaWYKPj4gKwlkZXBvdF9zdGFja19oYW5kbGVf
-dCAqZnNja19zdGFjazsKPj4gKwl1bnNpZ25lZCBpbnQgZnNja19jb3VudDsKPj4gICB9Owo+PiAg
-IAo+PiAgIHN0cnVjdCBmMmZzX3ByaXZhdGVfZGlvIHsKPj4gQEAgLTE5OTcsOSArMjAwMywzNSBA
-QCBzdGF0aWMgaW5saW5lIGJvb2wgaXNfc2JpX2ZsYWdfc2V0KHN0cnVjdCBmMmZzX3NiX2luZm8g
-KnNiaSwgdW5zaWduZWQgaW50IHR5cGUpCj4+ICAgCXJldHVybiB0ZXN0X2JpdCh0eXBlLCAmc2Jp
-LT5zX2ZsYWcpOwo+PiAgIH0KPj4gICAKPj4gLXN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfc2JpX2Zs
-YWcoc3RydWN0IGYyZnNfc2JfaW5mbyAqc2JpLCB1bnNpZ25lZCBpbnQgdHlwZSkKPj4gK3N0YXRp
-YyB2b2lkIHNldF9zYmlfZmxhZyhzdHJ1Y3QgZjJmc19zYl9pbmZvICpzYmksIHVuc2lnbmVkIGlu
-dCB0eXBlKQo+PiAgIHsKPj4gICAJc2V0X2JpdCh0eXBlLCAmc2JpLT5zX2ZsYWcpOwo+PiArCj4+
-ICsJaWYgKHVubGlrZWx5KHR5cGUgPT0gIFNCSV9ORUVEX0ZTQ0spKSB7Cj4KPkhtbS4uLiBJIGRv
-bid0IGtub3cgd2hhdCB0byBzYXkuLi4KClNvcnJ5LCBtYXliZSB0aGVyZSBpcyBhIHByb2JsZW0g
-d2l0aCBteSB2aW0gY29uZmlndXJhdGlvbi4KVGhlIHN0cmFuZ2UgdGhpbmcgaXMgdGhhdCBjaGVj
-a3BhdGNoLnBsIGRpZG4ndCBjaGVjayBpdCBvdXQuCgo+Cj4+ICsJCXVuc2lnbmVkIGxvbmcgZW50
-cmllc1tGU0NLX1NUQUNLX0RFUFRIXTsKPj4gKwkJZGVwb3Rfc3RhY2tfaGFuZGxlX3Qgc3RhY2ss
-ICpuZXc7Cj4+ICsJCXVuc2lnbmVkIGludCBucl9lbnRyaWVzOwo+PiArCQlpbnQgaTsKPj4gKwo+
-PiArCQlucl9lbnRyaWVzID0gc3RhY2tfdHJhY2Vfc2F2ZShlbnRyaWVzLCBBUlJBWV9TSVpFKGVu
-dHJpZXMpLCAwKTsKPj4gKwkJbnJfZW50cmllcyA9IGZpbHRlcl9pcnFfc3RhY2tzKGVudHJpZXMs
-IG5yX2VudHJpZXMpOwo+PiArCQlzdGFjayA9IHN0YWNrX2RlcG90X3NhdmUoZW50cmllcywgbnJf
-ZW50cmllcywgR0ZQX0tFUk5FTCk7Cj4+ICsJCWlmICghc3RhY2spCj4+ICsJCQlyZXR1cm47Cj4+
-ICsKPj4gKwkJLyogVHJ5IHRvIGZpbmQgYW4gZXhpc3RpbmcgZW50cnkgZm9yIHRoaXMgYmFja3Ry
-YWNlICovCj4+ICsJCWZvciAoaSA9IDA7IGkgPCBzYmktPmZzY2tfY291bnQ7IGkrKykKPj4gKwkJ
-CWlmIChzYmktPmZzY2tfc3RhY2tbaV0gPT0gc3RhY2spCj4KPnN0YWNrIG5lZWQgdG8gYmUgcmVs
-ZWFzZWQgaGVyZT8KCldlIGNhbid0IHJlbW92ZSBzdGFjayBmcm9tIGRlcG90LCBhcyB3ZSBzdG9y
-ZSB0aGVtIGNvbnRpZ3VvdXNseSBvbmUgYWZ0ZXIKYW5vdGhlciBpbiBhIGNvbnRpZ3VvdXMgbWVt
-b3J5IGFsbG9jYXRpb24uCgpPciB3ZSBjYW4gbGltaXQgdGhlIHJlY29yZGVkIHN0YWNrIG51bWJl
-ci4KCiQgZ3JlcCAtbnIgIlNCSV9ORUVEX0ZTQ0siIGZzL2YyZnMvIC0taW5jbHVkZT0qLmMgLS1p
-bmNsdWRlPSouaCB8IHdjIC1sCjUzCiQgZ3JlcCAtbnIgImYyZnNfYnVnX29uIiBmcy9mMmZzLyAt
-LWluY2x1ZGU9Ki5jIC0taW5jbHVkZT0qLmggfCB3YyAtbAoxMzUKClNpbmNlIHdlIG9ubHkgaGF2
-ZSB0d28gaHVuZHJlZCBwb3NzaWJsZSBzZXR0aW5ncyBoZXJlLCBjb25zaWRlcmluZyB0aGF0CnRo
-ZSBzYW1lIHN0YWNrIHdpbGwgbm90IGJlIHJlY29yZGVkLCBhbmQgdGhlIHByb2JhYmlsaXR5IG9m
-IG9jY3VycmVuY2Ugd2lsbApub3QgYmUgaGlnaCwgc28gaXQgaXMgYWNjZXB0YWJsZSBub3QgdG8g
-cmVsZWFzZT8KCklmIHRoaXMgaXMgdGhlIGNhc2UsIHRoZSBzdWJzZXF1ZW50IGFsbG9jYXRpb24g
-ZG9lcyBub3QgbmVlZCB0byBiZSByZWxlYXNlZC4KClRoeCwKWWFuZ3Rhbw0KDQo=
+On Fri, Aug 13, 2021 at 09:35:53AM +0300, Roger Quadros wrote:
+> Hi Matthias,
+> 
+> On 12/08/2021 20:08, Matthias Kaehlcke wrote:
+> > Hi Roger,
+> > 
+> > On Wed, Aug 11, 2021 at 03:56:15PM +0300, Roger Quadros wrote:
+> >>
+> >>
+> >> On 11/08/2021 15:38, Roger Quadros wrote:
+> >>> Hi Matthias,
+> >>>
+> >>> On 09/08/2021 18:49, Matthias Kaehlcke wrote:
+> >>>> Hi Greg,
+> >>>>
+> >>>> Just wanted to check if this series is still on your radar. Is
+> >>>> there anything that blocks it from landing (further ACKs, ...)?
+> >>>>
+> >>>> Thanks
+> >>>>
+> >>>> Matthias
+> >>>>
+> >>>> On Mon, Jul 26, 2021 at 05:41:12PM -0700, Matthias Kaehlcke wrote:
+> >>>>> This series adds:
+> >>>>> - the onboard_usb_hub_driver
+> >>>>> - glue in the xhci-plat driver to create and destroy the
+> >>>>>   onboard_usb_hub platform devices if needed
+> >>>>> - a device tree binding for the Realtek RTS5411 USB hub controller
+> >>>>> - device tree changes that add RTS5411 entries for the QCA SC7180
+> >>>>>   based boards trogdor and lazor
+> >>>>> - a couple of stubs for platform device functions to avoid
+> >>>>>   unresolved symbols with certain kernel configs
+> >>>>>
+> >>>>> The main issue the driver addresses is that a USB hub needs to be
+> >>>>> powered before it can be discovered. For discrete onboard hubs (an
+> >>>>> example for such a hub is the Realtek RTS5411) this is often solved
+> >>>>> by supplying the hub with an 'always-on' regulator, which is kind
+> >>>>> of a hack. Some onboard hubs may require further initialization
+> >>>>> steps, like changing the state of a GPIO or enabling a clock, which
+> >>>>> requires even more hacks. This driver creates a platform device
+> >>>>> representing the hub which performs the necessary initialization.
+> >>>>> Currently it only supports switching on a single regulator, support
+> >>>>> for multiple regulators or other actions can be added as needed.
+> >>>>> Different initialization sequences can be supported based on the
+> >>>>> compatible string.
+> >>>>>
+> >>>>> Besides performing the initialization the driver can be configured
+> >>>>> to power the hub off during system suspend. This can help to extend
+> >>>>> battery life on battery powered devices which have no requirements
+> >>>>> to keep the hub powered during suspend. The driver can also be
+> >>>>> configured to leave the hub powered when a wakeup capable USB device
+> >>>>> is connected when suspending, and power it off otherwise.
+> >>>>>
+> >>>>> Changes in v15:
+> >>>>> - adjusted dependencies of USB_DWC3_CORE to make sure it can only
+> >>>>>   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
+> >>>>>   or USB_DWC3_DUAL_ROLE is selectable
+> >>>>>
+> >>>>> Changes in v14:
+> >>>>> - rebased on top of v5.14-rc1
+> >>>>> - dropped DT binding patch which landed in v5.13
+> >>>>>
+> >>>>> Changes in v13:
+> >>>>> - added patch "usb: Specify dependency on USB_XHCI_PLATFORM with
+> >>>>>   'depends on'" to the series to avoid Kconfig conflicts
+> >>>>> - added patch "arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM"
+> >>>>>   to the series to keep effective defconfig unchanged
+> >>>>>
+> >>>>> Changes in v12:
+> >>>>> - onboard_hub driver: use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE)
+> >>>>>   in onboard_hub.h to also check for the driver built as module
+> >>>>> - onboard_hub_driver: include onboard_hub.h again to make sure there
+> >>>>>   are prototype declarations for the public functions
+> >>>>>
+> >>>>> Changes in v11:
+> >>>>> - support multiple onboard hubs connected to the same parent
+> >>>>> - don't include ‘onboard_hub.h’ from the onboard hub driver
+> >>>>>
+> >>>>> Changes in v10:
+> >>>>> - always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
+> >>>>> - keep 'regulator-boot-on' property for pp3300_hub
+> >>>>>
+> >>>>> Changes in v9:
+> >>>>> - added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
+> >>>>>   USB_PLATFORM_XHCI
+> >>>>>
+> >>>>> Changes in v7:
+> >>>>> - updated DT binding
+> >>>>> - series rebased on qcom/arm64-for-5.13
+> >>>>>
+> >>>>> Changes in v6:
+> >>>>> - updated summary
+> >>>>>
+> >>>>> Changes in v5:
+> >>>>> - cover letter added
+> >>>>>
+> >>>>> Matthias Kaehlcke (6):
+> >>>>>   usb: misc: Add onboard_usb_hub driver
+> >>>>>   of/platform: Add stubs for of_platform_device_create/destroy()
+> >>>>>   arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
+> >>>>>   usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
+> >>>>>   usb: host: xhci-plat: Create platform device for onboard hubs in
+> >>>>>     probe()
+> >>>>>   arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+> >>>>>
+> >>>>>  .../sysfs-bus-platform-onboard-usb-hub        |   8 +
+> >>>>>  MAINTAINERS                                   |   7 +
+> >>>>>  .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
+> >>>>>  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  12 +-
+> >>>>>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
+> >>>>>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
+> >>>>>  arch/arm64/configs/defconfig                  |   1 +
+> >>>>>  drivers/usb/cdns3/Kconfig                     |   2 +-
+> >>>>>  drivers/usb/dwc3/Kconfig                      |   5 +-
+> >>>>>  drivers/usb/host/Kconfig                      |   5 +-
+> >>>
+> >>> These Kconfig changes are causing the resulting .config to be different.
+> >>> For example, if I start with omap2plus_defconfig, the resulting .config
+> >>> before and after your series is different as shown below
+> >>>
+> >>> :/work/linux$ diff /tmp/.config .config
+> >>> 1902d1901
+> >>> < # CONFIG_HISI_HIKEY_USB is not set
+> >>> 4992c4991
+> >>> < CONFIG_USB_XHCI_PLATFORM=m
+> >>> ---
+> >>>> # CONFIG_USB_XHCI_PLATFORM is not set
+> >>> 5073,5075c5072
+> >>> < # CONFIG_USB_DWC3_HOST is not set
+> >>> < # CONFIG_USB_DWC3_GADGET is not set
+> >>> < CONFIG_USB_DWC3_DUAL_ROLE=y
+> >>> ---
+> >>>> CONFIG_USB_DWC3_GADGET=y
+> >>> 5173a5171
+> >>>> # CONFIG_USB_ONBOARD_HUB is not set
+> >>> 5285c5283
+> >>> < CONFIG_USB_ROLE_SWITCH=m
+> >>> ---
+> >>>> # CONFIG_USB_ROLE_SWITCH is not set
+> >>>
+> >>> I would expect the same issues for multi_v7_defconfig and multi_v8_defconfig as well.
+> >>
+> >> Sorry I meant defconfig for arm64, not multi_v8_defconfig.
+> >>
+> >> I checked that for arm64 defconfig it is ok.
+> >>
+> >>> I'm ok to update the relevant defconfigs files so that the resulting .config is identical to
+> >>> before your series. Thanks!
+> >>
+> >> With the below patch you can fix it for omap2plus_defconfig and multi_v7_defconfig.
+> >>
+> >> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> >> index d9abaae118dd..8c175ab37377 100644
+> >> --- a/arch/arm/configs/multi_v7_defconfig
+> >> +++ b/arch/arm/configs/multi_v7_defconfig
+> >> @@ -787,6 +787,7 @@ CONFIG_SND_AUDIO_GRAPH_CARD=m
+> >>  CONFIG_USB=y
+> >>  CONFIG_USB_OTG=y
+> >>  CONFIG_USB_XHCI_HCD=y
+> >> +CONFIG_USB_XHCI_PLATFORM=y
+> >>  CONFIG_USB_XHCI_MVEBU=y
+> >>  CONFIG_USB_XHCI_TEGRA=m
+> >>  CONFIG_USB_EHCI_HCD=y
+> >> diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+> >> index 2ac2418084ab..a015fb04fa25 100644
+> >> --- a/arch/arm/configs/omap2plus_defconfig
+> >> +++ b/arch/arm/configs/omap2plus_defconfig
+> >> @@ -562,6 +562,7 @@ CONFIG_USB=m
+> >>  CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+> >>  CONFIG_USB_MON=m
+> >>  CONFIG_USB_XHCI_HCD=m
+> >> +CONFIG_USB_XHCI_PLATFORM=m
+> >>  CONFIG_USB_EHCI_HCD=m
+> >>  CONFIG_USB_OHCI_HCD=m
+> >>  CONFIG_USB_ACM=m
+> > 
+> > Thanks for testing!
+> > 
+> > I completely forgot that arm32 has all these different defconfigs.
+> > 
+> > While trying to adjust qcom_defconfig I came across something that confuses
+> > me. The original defconfig results in:
+> > 
+> > # CONFIG_USB_XHCI_HCD is not set
+> > CONFIG_USB_DWC3_DUAL_ROLE=y
+> 
+> The original Kconfig was:
+> 
+> > config USB_DWC3_DUAL_ROLE
+> >         bool "Dual Role mode"
+> >         depends on ((USB=y || USB=USB_DWC3) && (USB_GADGET=y || USB_GADGET=USB_DWC3))
+> >         depends on (EXTCON=y || EXTCON=USB_DWC3)
+> 
+> Which means USB_DWC3_DUAL_ROLE can be enabled even without CONFIG_USB_XHCI_HCD.
+> 
+> All the dual role code does is add/remove the host/gadget controller platform devices.
+> It doesn't care whether there is a driver for it or not.
+> i.e. there is no build dependency on CONFIG_USB_XHCI_HCD.
+> 
+> > 
+> > My assumption was that xHCI support is need for dwc3 dual mode (which is
+> > made explicit by https://lore.kernel.org/patchwork/patch/1468240/), is
+> > that incorrect? Maybe without xHCI support the controller can still
+> > operate in USB 2.0 dual role mode?
+> > 
+> 
+> Without xHCI support the host functionality will not work at all on dwc3 dual role.
+> So I think your Kconfig changes for USB_DWC3_DUAL_ROLE to depend on USB_XHCI_PLATFORM
+> are correct.
+
+Thanks for the clarification!
