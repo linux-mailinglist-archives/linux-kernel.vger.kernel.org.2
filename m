@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1C63EB659
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEFA3EB65D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240731AbhHMNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        id S240751AbhHMNz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240714AbhHMNzR (ORCPT
+        with ESMTP id S240733AbhHMNzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:55:17 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4EEC061756;
-        Fri, 13 Aug 2021 06:54:50 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id y7so15771335ljp.3;
-        Fri, 13 Aug 2021 06:54:50 -0700 (PDT)
+        Fri, 13 Aug 2021 09:55:24 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CC6C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 06:54:56 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so16104872pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 06:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O1XdnwWUF59vgK1x0K9t+2GQQ4pwaV3DLawK5UlUo80=;
-        b=hb3nT9IcrGjePqClT5j5lBJ/wY/I9PPAMN9oFbjkvfk+RJH3cP/HUD07Vfdf5eA9su
-         3ESIFrv9OVVZqEfSHWPMS2Vwry6fxX7B3kE/YvuCvp5fon+J9SmhTuNpadxrKOCidR7p
-         3LsN7woGUmLwnLl9JivGGllxsmbkN0NxXnqXeEDP25+qpLSaWQvCdctZQCrqjj8wQE1+
-         cyc/xLmcvgsRPJLq1dCRnhy347bNqgMOl4ysDjOkWSicH7BONijeMZUQDB/r8G3aTxf8
-         CoN6lJXKC7TnbDbJpz+hH5tQ41fUezjCv4wh3dawz77W4mqedjfKNY09JJ5yzoth5ity
-         mUOA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oQC/n+C5wkFlClIPjHrqQ3kOoEWEq/Nw32k6usYG8aM=;
+        b=Q8JyhdOIIC+vHiSG0UUYTJzmCspHV1ym1fFrXKyoFsMdhOXCGSkKDZPXXWsXhE4tBF
+         uHz0Hq8WZWOlSI1vx6Y26CDoSptb7tu+7iqh9uVryYolTwc/LIE5fONzrY3u7HNbN27O
+         o3hVSSLMA8D1dsgEcHVmKA+QIytfTYiLAhV1ylrpuGmR9iF5qwF8k+p28xtEc4mAThRt
+         7PlOrioxGTfkWnDsPoM2g4IFhDbM6xtZ3UFU0msk3G/b7iF8pBo8REac006S32AgtoV5
+         W+BSQ7BVImreNCkD6OVlHkj6vbfAfwjcKyJRuNqdRGRNsYcQGZTYL59JNkxYUIPVjHcV
+         LxpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=O1XdnwWUF59vgK1x0K9t+2GQQ4pwaV3DLawK5UlUo80=;
-        b=d/LGd26uhI2hT1vv+QlOfm/mANNyFuMMi4ZhVTR/MUXp+5C63yN9zgiVyeimhNzsKy
-         3z0wA7p2zhxgOkzj2zHWH2SeaUTVGP+POLG1SV+S7gd8OsbeBANCdl2ohFOycPaMzGw4
-         q1ALluwfeuiH9yoOJs04n+rs7sCJ6Suv39fKs7eAoAW4k1bl3gfIelDlCCGXzfB2OzZl
-         BBARYvkLiQRbU/wkvWBQLxsPvwbbpuc+tqgU7SaE6Vnxp4JSPyjpG/17ScKipekDattz
-         0xGveKNBssCOeSRhy9fXBUoArS+qFN7k/spYaR+zQ+j35Jn/LKcGttOUO4hvDrCC1Q4z
-         qv7Q==
-X-Gm-Message-State: AOAM532jx/4Yo6VwXtm+ZgiGv0daR8aVGIwsbNHhAF2DTN4hNpJBKVtq
-        2aLRfO1VKuVJq3ea4oSI5JKySuJIVuGBWUZy
-X-Google-Smtp-Source: ABdhPJzrzQR6pAQaUauD6jgHqgRU0Gc25T0BsXZGtG7vhxsbrUSc7RIh+xcxRhLpMe1qAiecXoW9Kw==
-X-Received: by 2002:a2e:a209:: with SMTP id h9mr1930492ljm.249.1628862888667;
-        Fri, 13 Aug 2021 06:54:48 -0700 (PDT)
-Received: from localhost.localdomain (45-11-60-78.ip4.greenlan.pl. [45.11.60.78])
-        by smtp.googlemail.com with ESMTPSA id j16sm178626lja.82.2021.08.13.06.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 06:54:48 -0700 (PDT)
-From:   Marcin Chojnacki <marcinch7@gmail.com>
-Cc:     marcinch7@gmail.com,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mips: mm: correct build errors for debug code in tlb-r3k
-Date:   Fri, 13 Aug 2021 15:54:33 +0200
-Message-Id: <20210813135434.1015906-1-marcinch7@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=oQC/n+C5wkFlClIPjHrqQ3kOoEWEq/Nw32k6usYG8aM=;
+        b=UU9mpoMtfGDvVGQNmLzNED5rhRUdGwxhcucm5Ho3nKd2Z1TCHOHTqjzNtNxhzecC9P
+         +4q7Y/YFr90A7+vs+jnOjVoKCIhB9rvhDjTUYcxD6A8XeGajXeVBJ1gSrA18Qc9pFVzZ
+         s1qD/ZINu5Pl0e2F5B9BC9pcmdEOKMdUc/+jwceNseITsUcN6CP8VzNn00qDz7sEkeyt
+         ejU7/lsjEwnFsTgnp4DMiso3ObCPI61USX/dpN5q4bw1h853Bh/LSGMmUTvUUnOBsTPk
+         kqcU9pwWYfnZcT9tl1c75WqdETJDmkZbrDk8iGCVZHHUrQCwW/58cu42XVNgotvlexWm
+         tbZA==
+X-Gm-Message-State: AOAM533Cp90nP+4HgaU/PBTb5sLO78wSA1nyF4El50wLu2bkJxuzNJUv
+        rWlNWdIMNZpGd1Ve+daP6AG24Q==
+X-Google-Smtp-Source: ABdhPJzemwI9mYnJQDtqzhrX2LcxCiDY/8WOBCEpJgn4EHMB1KhKMDIJxfaep7LxosNv0MIIuX7IlQ==
+X-Received: by 2002:a62:878a:0:b029:3e0:7810:ec36 with SMTP id i132-20020a62878a0000b02903e07810ec36mr2610733pfe.4.1628862895920;
+        Fri, 13 Aug 2021 06:54:55 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id bo14sm1991744pjb.1.2021.08.13.06.54.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 06:54:55 -0700 (PDT)
+Subject: Re: linux-next: build warning after merge of the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210813194116.3a0297d6@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b2492209-732c-9871-6085-6a17659f6429@kernel.dk>
+Date:   Fri, 13 Aug 2021 07:54:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210813194116.3a0297d6@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tlb-r3k has debug code hidden under DEBUG_TLB define. This flag
-is undefined by default which results in the code not being compiled.
-If one would enable the flag, the file would not build because of
-the code being not up to date with the rest of this file.
+On 8/13/21 3:41 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the block tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> block/bio.c:1689: warning: Function parameter or member 'nr_vecs' not described in 'bio_alloc_kiocb'
+> 
+> Introduced by commit
+> 
+>   1cbbd31c4ada ("bio: add allocation cache abstraction")
 
-This commit fixes the normally hidden debug code to bring it in line
-with the rest of the file and make it build with the debug flag enabled.
+Thanks, fixed up.
 
-Signed-off-by: Marcin Chojnacki <marcinch7@gmail.com>
----
- arch/mips/mm/tlb-r3k.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/mips/mm/tlb-r3k.c b/arch/mips/mm/tlb-r3k.c
-index a36622ebe..ca53f3366 100644
---- a/arch/mips/mm/tlb-r3k.c
-+++ b/arch/mips/mm/tlb-r3k.c
-@@ -77,7 +77,7 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 		unsigned long size, flags;
- 
- #ifdef DEBUG_TLB
--		printk("[tlbrange<%lu,0x%08lx,0x%08lx>]",
-+		printk("[tlbrange<%llu,0x%08lx,0x%08lx>]",
- 			cpu_context(cpu, mm) & asid_mask, start, end);
- #endif
- 		local_irq_save(flags);
-@@ -115,7 +115,7 @@ void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
- 	unsigned long size, flags;
- 
- #ifdef DEBUG_TLB
--	printk("[tlbrange<%lu,0x%08lx,0x%08lx>]", start, end);
-+	printk("[tlbrange<0x%08lx,0x%08lx>]", start, end);
- #endif
- 	local_irq_save(flags);
- 	size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
-@@ -156,7 +156,7 @@ void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
- 		int oldpid, newpid, idx;
- 
- #ifdef DEBUG_TLB
--		printk("[tlbpage<%lu,0x%08lx>]", cpu_context(cpu, vma->vm_mm), page);
-+		printk("[tlbpage<%llu,0x%08lx>]", cpu_context(cpu, vma->vm_mm), page);
- #endif
- 		newpid = cpu_context(cpu, vma->vm_mm) & asid_mask;
- 		page &= PAGE_MASK;
-@@ -183,6 +183,9 @@ void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t pte)
- 	unsigned long asid_mask = cpu_asid_mask(&current_cpu_data);
- 	unsigned long flags;
- 	int idx, pid;
-+#ifdef DEBUG_TLB
-+	int cpu = smp_processor_id();
-+#endif
- 
- 	/*
- 	 * Handle debugger faulting in for debugee.
-@@ -194,7 +197,7 @@ void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t pte)
- 
- #ifdef DEBUG_TLB
- 	if ((pid != (cpu_context(cpu, vma->vm_mm) & asid_mask)) || (cpu_context(cpu, vma->vm_mm) == 0)) {
--		printk("update_mmu_cache: Wheee, bogus tlbpid mmpid=%lu tlbpid=%d\n",
-+		printk("update_mmu_cache: Wheee, bogus tlbpid mmpid=%llu tlbpid=%d\n",
- 		       (cpu_context(cpu, vma->vm_mm)), pid);
- 	}
- #endif
-@@ -229,7 +232,7 @@ void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
- 		unsigned long w;
- 
- #ifdef DEBUG_TLB
--		printk("[tlbwired<entry lo0 %8x, hi %8x\n, pagemask %8x>]\n",
-+		printk("[tlbwired<entry lo0 %8lx, hi %8lx\n, pagemask %8lx>]\n",
- 		       entrylo0, entryhi, pagemask);
- #endif
- 
-@@ -253,7 +256,7 @@ void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
- 
- 	} else if (wired < 8) {
- #ifdef DEBUG_TLB
--		printk("[tlbwired<entry lo0 %8x, hi %8x\n>]\n",
-+		printk("[tlbwired<entry lo0 %8lx, hi %8lx\n>]\n",
- 		       entrylo0, entryhi);
- #endif
- 
 -- 
-2.30.2
+Jens Axboe
 
