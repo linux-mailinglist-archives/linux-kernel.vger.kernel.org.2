@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D33EAE27
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 03:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F223EAE37
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 03:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238207AbhHMB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 21:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237238AbhHMB34 (ORCPT
+        id S238267AbhHMBon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 21:44:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48897 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238130AbhHMBol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 21:29:56 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF5FC061756;
-        Thu, 12 Aug 2021 18:29:30 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id bl13so4362196qvb.5;
-        Thu, 12 Aug 2021 18:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d7y1hw5LdhKxpKxA/yXBN3ZJJ9yKaaGgYxkF16tEOMQ=;
-        b=XgmjOaNQhbcCpvEmbZ5/zeX1bIUCgsvOXXufJ2DPyPwiVEcOXqrSKm7FQ6EHIiZPyf
-         oLeOmGXFO5wc15/y2C90t9Vq9dPWNQ1zd0kaJv433461YrWvDUAzi2BBUezZlhb5C9cK
-         XEDHQ5hrZEWfa+AOsbVJMlsxxBhsgTXh6Acys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d7y1hw5LdhKxpKxA/yXBN3ZJJ9yKaaGgYxkF16tEOMQ=;
-        b=hwMBouZ2mAgpiZBPsPK0s87Fi61zee7S4HNbnaDMNvzob1DRQGfY9debR7i8w3TLP2
-         FZTwFBL8tGBmJSN9tmd0Xk0s/TXoW1YE5nbJGkkXESJE5+POsbbMswUU2Xockj0n8mat
-         ZJFz+3XcfPrtgVT1X3FL9O3tyhx/VfLNX78bl728qlkxQHPgcjO8hKEXzSfQP0nZjVMK
-         8mIKKDkygEqJBNq2b8C3K1mz+JcFLYWYOjVHbhWEvnJwIxF3FE8j5loKbBP6kV7/yyZr
-         e5Rw5R5HJBKL3Z5AFBgNXsdQgfBPS3SYrrXhSd5SUVaEurlsy6t+Wd+RZTaui9vPIEU2
-         c++g==
-X-Gm-Message-State: AOAM5325GveBTe40moyQqInnfD4ywhI0Od0y8hpIvzwcAU6rjC3p5j9u
-        pq1QAQFVwf6HogAjcr1XZe4a9JrXTZFN14msF4w=
-X-Google-Smtp-Source: ABdhPJwhFLUqMIHIWOI/nCQlWmPOcdMRcHIRqjb8rAdMkprVxUulQ0uUl0tMgKhaIcL2vd8J9M1zxJmLtEpFhq9AfOM=
-X-Received: by 2002:a0c:e6a4:: with SMTP id j4mr107833qvn.16.1628818169431;
- Thu, 12 Aug 2021 18:29:29 -0700 (PDT)
+        Thu, 12 Aug 2021 21:44:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628819055; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=yKB585e+W6FgF524wGRfYxwHeT/TqmQJg/xn/cG/j0Y=;
+ b=dbXTaWZBFWC+5H331uwM9jeCOAwyVktTwdQxRAsVIe33D7wikszMIrcjEuY1TVINXpGzRLQ6
+ L/bH6s2YSdEbqnTUjhNtMOfOJplFV1iU5/39OnAYUgUKiH4Ovh/pgwCbMEpYitiKwT3vJepn
+ LKjhjnBZCjlQVOPUEr51/yyZrhI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6115ce61b14e7e2ecb67cbfc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 01:44:01
+ GMT
+Sender: wat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2693CC433D3; Fri, 13 Aug 2021 01:44:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69100C4338A;
+        Fri, 13 Aug 2021 01:44:00 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210805222818.8391-1-rentao.bupt@gmail.com> <20210805222818.8391-5-rentao.bupt@gmail.com>
-In-Reply-To: <20210805222818.8391-5-rentao.bupt@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 13 Aug 2021 01:29:17 +0000
-Message-ID: <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] ARM: dts: aspeed: Add Facebook Cloudripper
- (AST2600) BMC
-To:     Tao Ren <rentao.bupt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 13 Aug 2021 09:44:00 +0800
+From:   wat@codeaurora.org
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_wat@quicinc.com, wat@codeaurora.org
+Subject: Re: [PATCH] usb: xhci-ring: USB SSD may fail to unmount if disconnect
+ during data transferring.
+In-Reply-To: <1628769727-45046-1-git-send-email-wat@codeaurora.org>
+References: <1628769727-45046-1-git-send-email-wat@codeaurora.org>
+Message-ID: <83812530fbe1ba6f93c0978019bf118b@codeaurora.org>
+X-Sender: wat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021 at 22:28, <rentao.bupt@gmail.com> wrote:
-> +&mdio1 {
-> +       status = "okay";
+Hi usb teams,
 
-You're enabling this but it looks like it's unused?
+I have a patch about xhci-ring, can you help me to check?
 
-> +};
+you can contact me if you have any question.
+
+
+On 2021-08-12 20:02, Tao Wang wrote:
+> From: Tao Wang <quic_wat@quicinc.com>
+> 
+> it stuck in usb_kill_urb() due to urb use_count will not become zero,
+> this means urb giveback is not happen.
+> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
+> equal to TD_CLEARING_CACHE,
+> but in xhci_invalidate_cancelled_tds(), only last canceled td's
+> cancel_status change to TD_CLEARING_CACHE,
+> thus giveback only happen to last urb.
+> 
+> this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
+> rather than the last one, so all urb can giveback.
+> 
+> Signed-off-by: Tao Wang <quic_wat@quicinc.com>
+> ---
+>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/usb/host/xhci-ring.c 
+> b/drivers/usb/host/xhci-ring.c
+> index 8fea44b..c7dd7c0 100644
+> --- a/drivers/usb/host/xhci-ring.c
+> +++ b/drivers/usb/host/xhci-ring.c
+> @@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct
+> xhci_virt_ep *ep)
+>  			td_to_noop(xhci, ring, td, false);
+>  			td->cancel_status = TD_CLEARED;
+>  		}
+> -	}
+> -	if (cached_td) {
+> -		cached_td->cancel_status = TD_CLEARING_CACHE;
+> -
+> -		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+> -						cached_td->urb->stream_id,
+> -						cached_td);
+> -		/* Failed to move past cached td, try just setting it noop */
+> -		if (err) {
+> -			td_to_noop(xhci, ring, cached_td, false);
+> -			cached_td->cancel_status = TD_CLEARED;
+> +		if (cached_td) {
+> +			cached_td->cancel_status = TD_CLEARING_CACHE;
 > +
-> +&mdio3 {
-> +       status = "okay";
-> +
-> +       ethphy1: ethernet-phy@13 {
-> +               compatible = "ethernet-phy-ieee802.3-c22";
-> +               reg = <0x0d>;
-> +       };
-> +};
-> +
-> +&mac3 {
-> +       status = "okay";
-> +       phy-mode = "rgmii";
-> +       phy-handle = <&ethphy1>;
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_rgmii4_default>;
-> +};
+> +			err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+> +							cached_td->urb->stream_id,
+> +							cached_td);
+> +			/* Failed to move past cached td, try just setting it noop */
+> +			if (err) {
+> +				td_to_noop(xhci, ring, cached_td, false);
+> +				cached_td->cancel_status = TD_CLEARED;
+> +			}
+> +			cached_td = NULL;
+>  		}
+> -		cached_td = NULL;
+>  	}
+>  	return 0;
+>  }
