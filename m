@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5293EB117
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289E83EB119
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239229AbhHMHIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:08:41 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44503 "EHLO ozlabs.org"
+        id S239236AbhHMHIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:08:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239052AbhHMHIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:08:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GmF542898z9sX5;
-        Fri, 13 Aug 2021 17:08:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628838489;
-        bh=cSQZZr9Vw+irm1Sj/LhL6f4p46464iC1L24zuQ44qPg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=S+w3nFc4HWkeHoyCuNYgRtCzIIFK52jGkcBogmAl+RH/pv3/epyglhmK4UFqurrZ9
-         cM3nwIOP71j3Z7MoFf5XmSoTegUIPPgmRhgSGCByyJ6SSnVvWSBcAREl+uicEUXisC
-         KWbtbf3p6IUui1bVyPIQZWdywWLDLUYxCtQ2fvQiIHU1MWHgOBd95WQq00QzGJkDgq
-         8hNKZsnBsCXPxJG2NK0jLr1UwZ+FsAkWjn9017B/a82TjY7aCQAiLphv7XpFbdHbRE
-         EXswubunZDplQzsct3qwGWqBfygtbYHngLI3Tv8IawlZFg8Pkq6YWkRXcl7qmSiltm
-         5vhGHxxvq4tPg==
-Date:   Fri, 13 Aug 2021 17:08:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20210813170806.226b9510@canb.auug.org.au>
+        id S239222AbhHMHIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 03:08:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DBD26056B;
+        Fri, 13 Aug 2021 07:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628838493;
+        bh=TpgsIa/y2++/G1mwfOPNpyBa1LqSYUt4QgccMUO9r8s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cXKy9Ri1s0kB+LiLpOZdXFA6fFRSTjTDbWplJQjTiuEI5hW7WhKRQCFK8vMhCtyKy
+         I+6nZmsm/F7mVfnKj1nQ0TvETfYMaxo4Qcl7g5tfjZtR/nTOWYOJyo8x7KRYTPR3M2
+         tyWsuZs0lHQPY6HNXSQbXkGxcQZHbSVKlOnApJVE=
+Date:   Fri, 13 Aug 2021 09:08:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jeaho Hwang <jhhwang@rtst.co.kr>
+Cc:     Peter Chen <peter.chen@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: chipidea: add loop timeout for hw_ep_set_halt()
+Message-ID: <YRYaWgiWmO0lHcPg@kroah.com>
+References: <20210809112048.GA3319230@ubuntu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Hxe/x=Xa3LHuFTBco.G+/Rr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809112048.GA3319230@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Hxe/x=Xa3LHuFTBco.G+/Rr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 09, 2021 at 08:20:48PM +0900, Jeaho Hwang wrote:
+> If ctrl EP priming is failed (very rare case in standard linux),
+> hw_ep_set_halt goes infinite loop. 50 was enough for zynq7000.
+> 
+> Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
+> ---
+>  drivers/usb/chipidea/udc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
+> index d0cd1de1b6c7..92ca0b7e4310 100644
+> --- a/drivers/usb/chipidea/udc.c
+> +++ b/drivers/usb/chipidea/udc.c
+> @@ -210,6 +210,9 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+>  	return 0;
+>  }
+>  
+> +/*will it be enough?*/
 
-Hi all,
+Please use ' ' characters in your comments.
 
-After merging the tip tree, yesterday's linux-next build (htmldocs)
-produced this warning:
+And can you answer this, please do not add a question in a comment, be
+sure about this.
 
-include/linux/device.h:577: warning: Function parameter or member 'msi_lock=
-' not described in 'device'
+> +#define HW_EP_SET_HALT_COUNT_MAX 100
+> +
+>  /**
+>   * hw_ep_set_halt: configures ep halt & resets data toggle after clear (execute
+>   *                 without interruption)
+> @@ -222,6 +225,7 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+>   */
+>  static int hw_ep_set_halt(struct ci_hdrc *ci, int num, int dir, int value)
+>  {
+> +	int count = HW_EP_SET_HALT_COUNT_MAX;
+>  	if (value != 0 && value != 1)
 
-Introduced by commit
+Please use checkpatch.pl when submitting patches :(
 
-  77e89afc25f3 ("PCI/MSI: Protect msi_desc::masked for multi-MSI")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Hxe/x=Xa3LHuFTBco.G+/Rr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEWGlYACgkQAVBC80lX
-0Gx/xAf/UXegx7Bqb4f/kwct3BGon1gxBcgkiSpxw2F/AnnIO7JfPRKFZcX0biAE
-mr3C6JPL4rxj8Z85/zBNv4PGQb9+R0TyKEOOyd05NNGS1U4H3JNBfiGvWMMUaEzt
-knyYu3lz/y7F+ONbrm5vpuibYUx9ATjTwv0VSeWIATLE+owvvoVygVqIOY70azr3
-TRe0gzugi7/GOnHNo/wIf+rxYvRpB+fZzbxHjC34A4J/k6xdZMZiqGRS/b+YLOw9
-F9pDr9ldOY7ndGKbW0J/Ng2a+lnD0uSGIezYx9SzBWDY1XBYgU+fXd1+qV1+isPo
-6+ja8hFhCWB4i2lm1Zrqpx3xBcVX3A==
-=4AUD
------END PGP SIGNATURE-----
-
---Sig_/Hxe/x=Xa3LHuFTBco.G+/Rr--
