@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290BA3EB31E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43ACC3EB322
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbhHMJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:03:57 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:55968 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238823AbhHMJDz (ORCPT
+        id S239940AbhHMJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239963AbhHMJEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:03:55 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id D879D72C8FB;
-        Fri, 13 Aug 2021 12:03:27 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id B63664A46F2;
-        Fri, 13 Aug 2021 12:03:27 +0300 (MSK)
-Date:   Fri, 13 Aug 2021 12:03:27 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
-Subject: Re: [PATCH v2 1/3] crypto: tcrypt - Fix missing return value check
-Message-ID: <20210813090327.g6x5gi2hoale5kjg@altlinux.org>
-References: <20210813075508.98854-1-tianjia.zhang@linux.alibaba.com>
- <20210813075508.98854-2-tianjia.zhang@linux.alibaba.com>
+        Fri, 13 Aug 2021 05:04:12 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE056C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id x10so12286112iop.13
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=sTYXnW/fKO7LUe4ClSyArlRitSMo4bEAWIg7vqVDpkgmbE1VgFg3P4nV46iIdvALci
+         a9/t4uCskiGn6aR1Nl0xh3HgeK9CNskpGKSJPE6zBlUo7GuXSB9SYG8LMA5KX+c0bfV8
+         UqB9Mtv+I+YIiC+btrHC1vkgjQbyhlI25Y02cx/s4lzN+xmga6wwr6Wwykx3DAL6EmLV
+         ebHi8mj+JqKgg9zzIGdrt7BAqIw7Sn+DHhD20j/HPOT4qeRupbJQVwnqDHrXrTgbc3pa
+         HN1OEQ/FDTiQGroOiPODK0nQM1WOcA9f/DsIP2/ddRRna/Y43QS/7wvU8a94XaHBJMuF
+         8V7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=gux8D6Vjcc5Gtt+1f9KdwQCXFFwSQkMqAL58XtqDMU/HXJHeM76Ql20XdtJICXRm1H
+         ykalLb82ALUshy314Z4RDNZUAJ1PMDcMukaW7v5Kf+bGhHVCAVWkSowa7AhQtvThQKQX
+         VbjXDrGYT1okYmbvFgrg9crvSeYYx+a+3lgqCn2hWZBhWoE20n/ZNWWgg6ikR7ZpK9u+
+         0mOSLeN5B7v5aBT0OqDycpoQ7VK1so9CjhtfS3kcYAMGNw1O704mfyAvcgDPw2nbZakf
+         3QriwQid/ha7nVYCviqFgOHTeErtxKqs3y3Y0N8pGrypU3kk6HCUqyZv9u8K3FwierFB
+         iA7A==
+X-Gm-Message-State: AOAM5330xVAxmmNsw/tl5w6nWa0F+9wBDoNqnhWCo9wa8v1nAS+hWGwh
+        SfMtjnimKujp5yfb2th1A+Jbd4N1ZbPjMzWMnQ==
+X-Google-Smtp-Source: ABdhPJxGmnUY5DN3VhROx6vIh8ZBIJFGk30t0z+9nI1UDSl2kgbuiAN+BiHZWdKxhvD2C8W1aTZldLJi5zzsr9sGu4s=
+X-Received: by 2002:a05:6638:1513:: with SMTP id b19mr1330287jat.109.1628845425322;
+ Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20210813075508.98854-2-tianjia.zhang@linux.alibaba.com>
+Reply-To: zahirikeen@gmail.com
+Sender: ali.wa1234ara@gmail.com
+Received: by 2002:a02:6a56:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 02:03:44
+ -0700 (PDT)
+From:   Zahiri Keen <zahirikeen2@gmail.com>
+Date:   Fri, 13 Aug 2021 09:03:44 +0000
+X-Google-Sender-Auth: 4nZYkZ0cu-iM3nvJKssnBYpOUmM
+Message-ID: <CA+0F4TGLSiKHmJGR4Eg4NVCYi7WU0-bR-1WhNr=Rtjtjd_rkBA@mail.gmail.com>
+Subject: Greetings to you.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 03:55:06PM +0800, Tianjia Zhang wrote:
-> There are several places where the return value check of crypto_aead_setkey
-> and crypto_aead_setauthsize were lost. It is necessary to add these checks.
-> 
-> At the same time, move the crypto_aead_setauthsize() call out of the loop,
-> and only need to call it once after load transform.
-> 
-> Fixee: 53f52d7aecb4 ("crypto: tcrypt - Added speed tests for AEAD crypto alogrithms in tcrypt test suite")
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Greetings,
 
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
+            I have a Mutual/Beneficial Business Project that would be
+beneficial to you. I only have two questions to ask of you, if you are
+interested.
 
-Thanks,
+1. Can you handle this project?
+2. Can I give you this trust?
 
-> ---
->  crypto/tcrypt.c | 29 +++++++++++++++++++----------
->  1 file changed, 19 insertions(+), 10 deletions(-)
-> 
-> diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-> index d73a42fdaa9b..170102e92f7d 100644
-> --- a/crypto/tcrypt.c
-> +++ b/crypto/tcrypt.c
-> @@ -290,6 +290,11 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
->  	}
->  
->  	ret = crypto_aead_setauthsize(tfm, authsize);
-> +	if (ret) {
-> +		pr_err("alg: aead: Failed to setauthsize for %s: %d\n", algo,
-> +		       ret);
-> +		goto out_free_tfm;
-> +	}
->  
->  	for (i = 0; i < num_mb; ++i)
->  		if (testmgr_alloc_buf(data[i].xbuf)) {
-> @@ -315,7 +320,7 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
->  	for (i = 0; i < num_mb; ++i) {
->  		data[i].req = aead_request_alloc(tfm, GFP_KERNEL);
->  		if (!data[i].req) {
-> -			pr_err("alg: skcipher: Failed to allocate request for %s\n",
-> +			pr_err("alg: aead: Failed to allocate request for %s\n",
->  			       algo);
->  			while (i--)
->  				aead_request_free(data[i].req);
-> @@ -567,13 +572,19 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
->  	sgout = &sg[9];
->  
->  	tfm = crypto_alloc_aead(algo, 0, 0);
-> -
->  	if (IS_ERR(tfm)) {
->  		pr_err("alg: aead: Failed to load transform for %s: %ld\n", algo,
->  		       PTR_ERR(tfm));
->  		goto out_notfm;
->  	}
->  
-> +	ret = crypto_aead_setauthsize(tfm, authsize);
-> +	if (ret) {
-> +		pr_err("alg: aead: Failed to setauthsize for %s: %d\n", algo,
-> +		       ret);
-> +		goto out_noreq;
-> +	}
-> +
->  	crypto_init_wait(&wait);
->  	printk(KERN_INFO "\ntesting speed of %s (%s) %s\n", algo,
->  			get_driver_name(crypto_aead, tfm), e);
-> @@ -611,8 +622,13 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
->  					break;
->  				}
->  			}
-> +
->  			ret = crypto_aead_setkey(tfm, key, *keysize);
-> -			ret = crypto_aead_setauthsize(tfm, authsize);
-> +			if (ret) {
-> +				pr_err("setkey() failed flags=%x: %d\n",
-> +					crypto_aead_get_flags(tfm), ret);
-> +				goto out;
-> +			}
->  
->  			iv_len = crypto_aead_ivsize(tfm);
->  			if (iv_len)
-> @@ -622,15 +638,8 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
->  			printk(KERN_INFO "test %u (%d bit key, %d byte blocks): ",
->  					i, *keysize * 8, bs);
->  
-> -
->  			memset(tvmem[0], 0xff, PAGE_SIZE);
->  
-> -			if (ret) {
-> -				pr_err("setkey() failed flags=%x\n",
-> -						crypto_aead_get_flags(tfm));
-> -				goto out;
-> -			}
-> -
->  			sg_init_aead(sg, xbuf, bs + (enc ? 0 : authsize),
->  				     assoc, aad_size);
->  
-> -- 
-> 2.19.1.3.ge56e4f7
+Please note that the deal requires high level of maturity, honesty and
+secrecy. This will involve moving some money from my office, on trust
+to your hands or bank account. Also note that i will do everything to
+make sure that the money is moved as a purely legitimate fund, so you
+will not be exposed to any risk.
+
+I request for your full co-operation. I will give you details and
+procedure when I receive your reply, to commence this transaction, I
+require you to immediately indicate your interest by a return reply. I
+will be waiting for your response in a timely manner.
+
+Contact  Email: zahirikeen@gmail.com
+Best Regard,
+Mr Zahiri Keen.
