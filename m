@@ -2,450 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4497F3EADD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89DA3EADD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 02:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235645AbhHMAVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 20:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbhHMAVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 20:21:02 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB07DC061756;
-        Thu, 12 Aug 2021 17:20:36 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id c23-20020a0568301af7b029050cd611fb72so10095020otd.3;
-        Thu, 12 Aug 2021 17:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=0i/qCXlW29JFtp89/RIv38eHDbCBKhuEmMcwx5NlMfY=;
-        b=qQ05QZBFKIUeJwPhnA0arwEiiqrH36xz8sSmgBJuGySgIfHMGrLX5XyjZ0spMKVvue
-         XB6JemWJztzmZe6Dm2KlCQj8ppm683wLlbRV8uOF9eECuBnoJQfGen4TA3/cW715Kcv8
-         HHtcEcrKpvZYLb4sDTJEl2SpNOCBOrlfFjdk/m1kXKRNogEXIiJ8TyBOxQsDWiXQ6KSP
-         4kHs9+VWNALWuNvD5QsOKuxF3pmDZJyJYBOtaiG8Bq+nMk4I94+qRDIET47dCRLwU5BC
-         aXzGxkl6gBDTuHQMzpXhbDC8Fy/8Qn1Zba5EjOzDpz1pV81sokqgQbG2/Ee5ygHcv62x
-         KbPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=0i/qCXlW29JFtp89/RIv38eHDbCBKhuEmMcwx5NlMfY=;
-        b=DAHHZ3CvlhXvN5qy2yNiB71lL0S8949wXziL6LxJHyaax7lEnhz89LPssGSinGQNPu
-         gdJVxZBWHDwu0ncPUlhqNVDlhPw5n4JouBm5cTUr2HgDnPbrDxlTmIIJ+gbPZnvH/Ize
-         rEelOHsxY4rV1VsNcIbbA5/eXQi2+q+RjIPhpZJifgblOhkzma52uBwc7u+Tw7Pk9T4C
-         8jzgEa25bvoDe9rlvwet/FyYbbGaYBGPfxGdAxhbDXtNpI79zdbW4Rn16QS3zLEzpGfX
-         suvDV8i/M6pnxbl3wxDyB1r1PGFw2TxPcHzy6HyjvOUn4pN2YZ3by8FsNZcah3ZM/W8V
-         PX6Q==
-X-Gm-Message-State: AOAM531WOA9vgAU7pCYMm4T7k3OjVZIwV9if215mDuYxp/MmmUDzlLQc
-        DkGRsG5OsJnslNcbDKR85YxCmlzMrqeiQ089xcA=
-X-Google-Smtp-Source: ABdhPJxkTlWxMfBv9yc6SXOnb5NsfTBuHtIenktIM7LdPJb08pljL7rBh3cxop72H6KH6R82cjPAg+V9uCAnlje64uM=
-X-Received: by 2002:a9d:6a09:: with SMTP id g9mr5378355otn.308.1628814036000;
- Thu, 12 Aug 2021 17:20:36 -0700 (PDT)
+        id S234477AbhHMAVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 20:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235688AbhHMAVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 20:21:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E756101E;
+        Fri, 13 Aug 2021 00:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628814045;
+        bh=AhxEQkvh3j/yrIJT4nLVABFILcymRNR0YRvhLKiYo3c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LegxafWChg3WBP0UI7ETwM58tYyh1Yjl2Qn/KCeV7+W52HIV1+dQPtujbn6nP79Fv
+         AnDCGzXM0xjJWceNctU+K75P0k4PJKL1k90mZmcCIbWEBBG5HWK2zm4I6U0w5axCCt
+         j6YA1uQqxOr8+/GbPHBypXeNEjQNT1at3rmN5DIHgDPAEutTNx6gvwJEjTwkxYffrw
+         eah/879/R32F1HU2ynYMgj5MQcCGjoBUtLwKCq2ghu51pv4XhWLrpaTjBHMiyrShvd
+         y4wWAgPgsbZyLsDxFYFJ7vTusaabfSYFDkLrwKOL+/XsbG/FtMLIueBT/6u3QmhpxY
+         GGDuh6PKfOATw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A57945C0531; Thu, 12 Aug 2021 17:20:45 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 17:20:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock()
+ under PREEMPT_RT
+Message-ID: <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-4-valentin.schneider@arm.com>
 MIME-Version: 1.0
-References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
- <402ceb27-0f63-e7f0-c58d-de0fe4c86f56@gmail.com>
-In-Reply-To: <402ceb27-0f63-e7f0-c58d-de0fe4c86f56@gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Fri, 13 Aug 2021 02:20:24 +0200
-Message-ID: <CAKgNAkhFqbKDrnTuT6zTK6GzqeAemddwUivLyKebotJaDnVKmQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] Add manpage for open_tree(2)
-To:     David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811201354.1976839-4-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+On Wed, Aug 11, 2021 at 09:13:53PM +0100, Valentin Schneider wrote:
+> Warning
+> =======
+> 
+> Running v5.13-rt1 on my arm64 Juno board triggers:
+> 
+> [    0.156302] =============================
+> [    0.160416] WARNING: suspicious RCU usage
+> [    0.164529] 5.13.0-rt1 #20 Not tainted
+> [    0.168300] -----------------------------
+> [    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+> [    0.179920]
+> [    0.179920] other info that might help us debug this:
+> [    0.179920]
+> [    0.188037]
+> [    0.188037] rcu_scheduler_active = 1, debug_locks = 1
+> [    0.194677] 3 locks held by rcuc/0/11:
+> [    0.198448] #0: ffff00097ef10cf8 ((softirq_ctrl.lock).lock){+.+.}-{2:2}, at: __local_bh_disable_ip (./include/linux/rcupdate.h:662 kernel/softirq.c:171)
+> [    0.208709] #1: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock (kernel/locking/spinlock_rt.c:43 (discriminator 4))
+> [    0.217134] #2: ffff80001205e5f0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip (kernel/softirq.c:169)
+> [    0.226428]
+> [    0.226428] stack backtrace:
+> [    0.230889] CPU: 0 PID: 11 Comm: rcuc/0 Not tainted 5.13.0-rt1 #20
+> [    0.237100] Hardware name: ARM Juno development board (r0) (DT)
+> [    0.243041] Call trace:
+> [    0.245497] dump_backtrace (arch/arm64/kernel/stacktrace.c:163)
+> [    0.249185] show_stack (arch/arm64/kernel/stacktrace.c:219)
+> [    0.252522] dump_stack (lib/dump_stack.c:122)
+> [    0.255947] lockdep_rcu_suspicious (kernel/locking/lockdep.c:6439)
+> [    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+> [    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+> [    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+> [    0.271644] smpboot_thread_fn (kernel/smpboot.c:165 (discriminator 3))
+> [    0.275767] kthread (kernel/kthread.c:321)
+> [    0.279013] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+> 
+> In this case, this is the RCU core kthread accessing the local CPU's
+> rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
+> 
+> Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
+> incrementing the preempt_count, which satisfies the "local non-preemptible
+> read" of rcu_rdp_is_offloaded().
+> 
+> Under CONFIG_PREEMPT_RT however, this becomes
+> 
+>   local_lock(&softirq_ctrl.lock)
+> 
+> which, under the same config, is migrate_disable() + rt_spin_lock(). As
+> pointed out by Frederic, this is not sufficient to safely access an rdp's
+> offload state, as the RCU core kthread can be preempted by a kworker
+> executing rcu_nocb_rdp_offload() [1].
+> 
+> Introduce a local_lock to serialize an rdp's offload state while the rdp's
+> associated core kthread is executing rcu_core().
+> 
+> rcu_core() preemptability considerations
+> ========================================
+> 
+> As pointed out by Paul [2], keeping rcu_check_quiescent_state() preemptible
+> (which is the case under CONFIG_PREEMPT_RT) requires some consideration.
+> 
+> note_gp_changes() itself runs with irqs off, and enters
+> __note_gp_changes() with rnp->lock held (raw_spinlock), thus is safe vs
+> preemption.
+> 
+> rdp->core_needs_qs *could* change after being read by the RCU core
+> kthread if it then gets preempted. Consider, with
+> CONFIG_RCU_STRICT_GRACE_PERIOD:
+> 
+>   rcuc/x                                   task_foo
+> 
+>     rcu_check_quiescent_state()
+>     `\
+>       rdp->core_needs_qs == true
+> 			     <PREEMPT>
+> 					   rcu_read_unlock()
+> 					   `\
+> 					     rcu_preempt_deferred_qs_irqrestore()
+> 					     `\
+> 					       rcu_report_qs_rdp()
+> 					       `\
+> 						 rdp->core_needs_qs := false;
+> 
+> This would let rcuc/x's rcu_check_quiescent_state() proceed further down to
+> rcu_report_qs_rdp(), but if task_foo's earlier rcu_report_qs_rdp()
+> invocation would have cleared the rdp grpmask from the rnp mask, so
+> rcuc/x's invocation would simply bail.
+> 
+> Since rcu_report_qs_rdp() can be safely invoked, even if rdp->core_needs_qs
+> changed, it appears safe to keep rcu_check_quiescent_state() preemptible.
 
-I've pinged on these manual pages for the new mount API already a few
-times in the past.
+Another concern...
 
-I would really like to get them out the door, but some work is
-required, and I can't do it on my own; I need your help. In
-particular, there are a number of open questions that I do not feel
-confident at guessing the answer.
+During the preemption of rcu_check_quiescent_state() someone might report
+a quiescent state on behalf of CPU x (perhaps due to its having recently
+been idle) and then the RCU grace-period kthread might start running on
+CPU x, where it might initialize a new grace period in rcu_gp_init().
+It can then invoke __note_gp_changes(), also on CPU x.
 
-How can I get your help please with completing these pages?
+If preempted as shown above just after checking >core_needs_qs, the
+->cpu_no_qs.b.norm field will be set by the grace-period kthread, which
+will cause the rcu_check_quiescent_state() function's subsequent check
+of ->cpu_no_qs.b.norm to take an early exit.  So OK here.
 
-I will ping on all of the other mails, just to raise all the patches
-to the top of the inbox.
+On the other hand, if preempted just after the rcu_check_quiescent_state()
+function's check of ->cpu_no_qs.b.norm, the later invocation of
+rcu_report_qs_rdp() should take an early exit due to ->gp_seq mismatch.
+So OK here.
 
-Thanks,
+However, this should be added to the commit log.  Might be a big commit
+log, but mass storage is cheap these days.  ;-)
 
-Michael
+This needs a review of each and every manipulation of ->core_needs_qs
+and ->cpu_no_qs.b.norm.  For example, the preemptions will cause the
+scheduler to invoke RCU's context-switch hooks, which also mess with
+->cpu_no_qs.b.norm.  I can get to that some time next week (or tomorrow,
+if things go better than expected), but it would be good for you (and
+others) to check as well.
 
+Frederic should look this over, but I am taking a quick pass in the
+meantime.  Please see below.
 
-On Thu, 27 Aug 2020 at 13:01, Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello David,
->
-> Can I ask that you please reply to each of my mails, rather than
-> just sending out a new patch series (which of course I would also
-> like  you to do). Some things that I mentioned in the last mails
-> got lost, and I end up having to repeat them.
->
-> So, even where I say "please change this", could you please reply with
-> "done", or a reason why you declined the suggested change, is useful.
-> But in any case, a few words in reply to explain the other changes
-> that you make would be helpful.
->
-> Also, some of my questions now will get a little more complex, and as
-> well as you updating the pages, I think a little discussion may be
-> required in some cases.
->
-> On 8/24/20 2:24 PM, David Howells wrote:
-> > Add a manual page to document the open_tree() system call.
-> >
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > ---
-> >
-> >  man2/open_tree.2 |  249 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 249 insertions(+)
-> >  create mode 100644 man2/open_tree.2
-> >
-> > diff --git a/man2/open_tree.2 b/man2/open_tree.2
-> > new file mode 100644
-> > index 000000000..d480bd82f
-> > --- /dev/null
-> > +++ b/man2/open_tree.2
-> > @@ -0,0 +1,249 @@
-> > +'\" t
-> > +.\" Copyright (c) 2020 David Howells <dhowells@redhat.com>
-> > +.\"
-> > +.\" %%%LICENSE_START(VERBATIM)
-> > +.\" Permission is granted to make and distribute verbatim copies of this
-> > +.\" manual provided the copyright notice and this permission notice are
-> > +.\" preserved on all copies.
-> > +.\"
-> > +.\" Permission is granted to copy and distribute modified versions of this
-> > +.\" manual under the conditions for verbatim copying, provided that the
-> > +.\" entire resulting derived work is distributed under the terms of a
-> > +.\" permission notice identical to this one.
-> > +.\"
-> > +.\" Since the Linux kernel and libraries are constantly changing, this
-> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> > +.\" responsibility for errors or omissions, or for damages resulting from
-> > +.\" the use of the information contained herein.  The author(s) may not
-> > +.\" have taken the same level of care in the production of this manual,
-> > +.\" which is licensed free of charge, as they might when working
-> > +.\" professionally.
-> > +.\"
-> > +.\" Formatted or processed versions of this manual, if unaccompanied by
-> > +.\" the source, must acknowledge the copyright and authors of this work.
-> > +.\" %%%LICENSE_END
-> > +.\"
-> > +.TH OPEN_TREE 2 2020-08-24 "Linux" "Linux Programmer's Manual"
-> > +.SH NAME
-> > +open_tree \- Pick or clone mount object and attach to fd
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B #include <sys/types.h>
-> > +.B #include <sys/mount.h>
-> > +.B #include <unistd.h>
-> > +.BR "#include <fcntl.h>           " "/* Definition of AT_* constants */"
-> > +.PP
-> > +.BI "int open_tree(int " dirfd ", const char *" pathname ", unsigned int " flags );
-> > +.fi
-> > +.PP
-> > +.IR Note :
-> > +There are no glibc wrappers for these system calls.
-> > +.SH DESCRIPTION
-> > +.BR open_tree ()
-> > +picks the mount object specified by the pathname and attaches it to a new file
->
-> The terminology "pick" is unusual, and you never really explain what
-> it means.  Is there better terminology? In any case, can you add a few
-> words to explain what the term (('pick" or whatever alternative you
-> come up with) means.
->
-> > +descriptor or clones it and attaches the clone to the file descriptor.  The
->
-> Please replace "it" by a noun (phrase) -- maybe: "the mount object"?
->
-> > +resultant file descriptor is indistinguishable from one produced by
-> > +.BR open "(2) with " O_PATH .
->
-> What is the significance of that last piece? Can you add some words
-> about why the fact that the resulting FD is indistinguishable from one
-> produced by open() O_PATH matters or is useful?
->
-> > +.PP
-> > +In the case that the mount object is cloned, the clone will be "unmounted" and
->
-> You place "unmounted" in quotes. Why? Is this to signify that the the
-> unmount is somehow different from other unmounts? If so, please
-> explain how it is different.  If not, then I think we can lose the double
-> quotes.
->
-> > +destroyed when the file descriptor is closed if it is not otherwise mounted
-> > +somewhere by calling
-> > +.BR move_mount (2).
-> > +.PP
-> > +To select a mount object, no permissions are required on the object referred
->
-> Here you use the word "select". Is this the same as "pick"? If yes, please
-> use the same term.
->
-> > +to by the path, but execute (search) permission is required on all of the
->
-> s/the path/.I pathname/ ?
->
-> (Where pathname == "the pathname argument)
->
-> > +directories in
-> > +.I pathname
-> > +that lead to the object.
-> > +.PP
-> > +Appropriate privilege (Linux: the
->
-> s/Linux: //
-> (This is a Linux specific system call...)
->
-> > +.B CAP_SYS_ADMIN
-> > +capability) is required to clone mount objects.
-> > +.PP
-> > +.BR open_tree ()
-> > +uses
-> > +.IR pathname ", " dirfd " and " flags
-> > +to locate the target object in one of a variety of ways:
-> > +.TP
-> > +[*] By absolute path.
-> > +.I pathname
-> > +points to an absolute path and
-> > +.I dirfd
-> > +is ignored.  The object is looked up by name, starting from the root of the
-> > +filesystem as seen by the calling process.
-> > +.TP
-> > +[*] By cwd-relative path.
-> > +.I pathname
-> > +points to a relative path and
-> > +.IR dirfd " is " AT_FDCWD .
-> > +The object is looked up by name, starting from the current working directory.
-> > +.TP
-> > +[*] By dir-relative path.
-> > +.I pathname
-> > +points to relative path and
-> > +.I dirfd
-> > +indicates a file descriptor pointing to a directory.  The object is looked up
-> > +by name, starting from the directory specified by
-> > +.IR dirfd .
-> > +.TP
-> > +[*] By file descriptor.
-> > +.I pathname
-> > +is "",
-> > +.I dirfd
-> > +indicates a file descriptor and
-> > +.B AT_EMPTY_PATH
-> > +is set in
-> > +.IR flags .
-> > +The mount attached to the file descriptor is queried directly.  The file
-> > +descriptor may point to any type of file, not just a directory.
->
-> I want to check here. Is it really *any* type of file? Can it be a UNIX
-> domain socket or a char/block device or a FIFO?
->
-> > +.PP
-> > +.I flags
-> > +can be used to control the operation of the function and to influence a
-> > +path-based lookup.  A value for
-> > +.I flags
-> > +is constructed by OR'ing together zero or more of the following constants:
-> > +.TP
-> > +.BR AT_EMPTY_PATH
-> > +.\" commit 65cfc6722361570bfe255698d9cd4dccaf47570d
-> > +If
-> > +.I pathname
-> > +is an empty string, operate on the file referred to by
-> > +.IR dirfd
-> > +(which may have been obtained from
-> > +.BR open "(2) with"
-> > +.BR O_PATH ", from " fsmount (2)
-> > +or from another
->
-> s/another/a previous call to/
->
-> > +.BR open_tree ()).
-> > +If
-> > +.I dirfd
-> > +is
-> > +.BR AT_FDCWD ,
-> > +the call operates on the current working directory.
-> > +In this case,
-> > +.I dirfd
-> > +can refer to any type of file, not just a directory.
-> > +This flag is Linux-specific; define
-> > +.B _GNU_SOURCE
-> > +.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
-> > +to obtain its definition.
-> > +.TP
-> > +.BR AT_NO_AUTOMOUNT
-> > +Don't automount the final ("basename") component of
-> > +.I pathname
-> > +if it is a directory that is an automount point.  This flag allows the
-> > +automount point itself to be picked up or a mount cloned that is rooted on the
-> > +automount point.  The
-> > +.B AT_NO_AUTOMOUNT
-> > +flag has no effect if the mount point has already been mounted over.
-> > +This flag is Linux-specific; define
-> > +.B _GNU_SOURCE
-> > +.\" Before glibc 2.16, defining _ATFILE_SOURCE sufficed
-> > +to obtain its definition.
-> > +.TP
-> > +.B AT_SYMLINK_NOFOLLOW
-> > +If
-> > +.I pathname
-> > +is a symbolic link, do not dereference it: instead pick up or clone a mount
-> > +rooted on the link itself.
-> > +.TP
-> > +.B OPEN_TREE_CLOEXEC
-> > +Set the close-on-exec flag for the new file descriptor.  This will cause the
-> > +file descriptor to be closed automatically when a process exec's.
-> > +.TP
-> > +.B OPEN_TREE_CLONE
-> > +Rather than directly attaching the selected object to the file descriptor,
-> > +clone the object, set the root of the new mount object to that point and
->
-> Could you expand on "that point" a little. It's not quite clear to me what
-> you mean there.
->
-> > +attach the clone to the file descriptor.
-> > +.TP
-> > +.B AT_RECURSIVE
-> > +This is only permitted in conjunction with OPEN_TREE_CLONE.  It causes the
-> > +entire mount subtree rooted at the selected spot to be cloned rather than just
->
-> Is there a better word than "spot"?
->
-> > +that one mount object.
-> > +.SH RETURN VALUE
-> > +On success, the new file descriptor is returned.  On error, \-1 is returned,
-> > +and
-> > +.I errno
-> > +is set appropriately.
-> > +.SH ERRORS
-> > +.TP
-> > +.B EACCES
-> > +Search permission is denied for one of the directories
-> > +in the path prefix of
-> > +.IR pathname .
-> > +(See also
-> > +.BR path_resolution (7).)
-> > +.TP
-> > +.B EBADF
-> > +.I dirfd
-> > +is not a valid open file descriptor.
-> > +.TP
-> > +.B EFAULT
-> > +.I pathname
-> > +is NULL or
-> > +.IR pathname
-> > +point to a location outside the process's accessible address space.
-> > +.TP
-> > +.B EINVAL
-> > +Reserved flag specified in
-> > +.IR flags .
-> > +.TP
-> > +.B ELOOP
-> > +Too many symbolic links encountered while traversing the pathname.
-> > +.TP
-> > +.B ENAMETOOLONG
-> > +.I pathname
-> > +is too long.
-> > +.TP
-> > +.B ENOENT
-> > +A component of
-> > +.I pathname
-> > +does not exist, or
-> > +.I pathname
-> > +is an empty string and
-> > +.B AT_EMPTY_PATH
-> > +was not specified in
-> > +.IR flags .
-> > +.TP
-> > +.B ENOMEM
-> > +Out of memory (i.e., kernel memory).
-> > +.TP
-> > +.B ENOTDIR
-> > +A component of the path prefix of
-> > +.I pathname
-> > +is not a directory or
-> > +.I pathname
-> > +is relative and
-> > +.I dirfd
-> > +is a file descriptor referring to a file other than a directory.
-> > +.SH VERSIONS
-> > +.BR open_tree ()
-> > +was added to Linux in kernel 5.2.
-> > +.SH CONFORMING TO
-> > +.BR open_tree ()
-> > +is Linux-specific.
-> > +.SH NOTES
-> > +Glibc does not (yet) provide a wrapper for the
-> > +.BR open_tree ()
-> > +system call; call it using
-> > +.BR syscall (2).
->
-> What's the current status with respect to glibc support? Is it coming/is
-> someone working on this?
->
-> > +.SH EXAMPLE
->
-> s/EXAMPLE/EXAMPLES/
-> (That's the standard section header name these days.)
->
-> > +The
-> > +.BR open_tree ()
-> > +function can be used like the following:
->
-> The following example does a recursive bind mount, right?
-> Can you please add some words to say that explicitly.
->
-> > +.PP
-> > +.RS
-> > +.nf
-> > +fd1 = open_tree(AT_FDCWD, "/mnt", 0);
-> > +fd2 = open_tree(fd1, "",
-> > +                AT_EMPTY_PATH | OPEN_TREE_CLONE | AT_RECURSIVE);
-> > +move_mount(fd2, "", AT_FDCWD, "/mnt2", MOVE_MOUNT_F_EMPTY_PATH);
-> > +.fi
-> > +.RE
-> > +.PP
-> > +This would attach the path point for "/mnt" to fd1, then it would copy the
->
-> What is a "path point"? This is not standard terminology. Can you
-> replace this with something better?
->
-> > +entire subtree at the point referred to by fd1 and attach that to fd2; lastly,
-> > +it would attach the clone to "/mnt2".
-> > +.SH SEE ALSO
-> > +.BR fsmount (2),
-> > +.BR move_mount (2),
-> > +.BR open (2)
->
-> Thanks,
->
-> Michael
->
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+							Thanx, Paul
 
+> [1]: http://lore.kernel.org/r/20210727230814.GC283787@lothringen
+> [2]: http://lore.kernel.org/r/20210729010445.GO4397@paulmck-ThinkPad-P17-Gen-1
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/rcu/tree.c        |  4 ++
+>  kernel/rcu/tree.h        |  4 ++
+>  kernel/rcu/tree_plugin.h | 82 +++++++++++++++++++++++++++++++++++-----
+>  3 files changed, 81 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 51f24ecd94b2..caadfec994f3 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -87,6 +87,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+>  	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	.cblist.flags = SEGCBLIST_SOFTIRQ_ONLY,
+> +	.nocb_local_lock =  INIT_LOCAL_LOCK(nocb_local_lock),
+>  #endif
+>  };
+>  static struct rcu_state rcu_state = {
+> @@ -2853,10 +2854,12 @@ static void rcu_cpu_kthread(unsigned int cpu)
+>  {
+>  	unsigned int *statusp = this_cpu_ptr(&rcu_data.rcu_cpu_kthread_status);
+>  	char work, *workp = this_cpu_ptr(&rcu_data.rcu_cpu_has_work);
+> +	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  	int spincnt;
+>  
+>  	trace_rcu_utilization(TPS("Start CPU kthread@rcu_run"));
+>  	for (spincnt = 0; spincnt < 10; spincnt++) {
+> +		rcu_nocb_local_lock(rdp);
+>  		local_bh_disable();
+>  		*statusp = RCU_KTHREAD_RUNNING;
+>  		local_irq_disable();
+> @@ -2866,6 +2869,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
+>  		if (work)
+>  			rcu_core();
+>  		local_bh_enable();
+> +		rcu_nocb_local_unlock(rdp);
+>  		if (*workp == 0) {
+>  			trace_rcu_utilization(TPS("End CPU kthread@rcu_wait"));
+>  			*statusp = RCU_KTHREAD_WAITING;
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 305cf6aeb408..aa6831255fec 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -210,6 +210,8 @@ struct rcu_data {
+>  	struct timer_list nocb_timer;	/* Enforce finite deferral. */
+>  	unsigned long nocb_gp_adv_time;	/* Last call_rcu() CB adv (jiffies). */
+>  
+> +	local_lock_t nocb_local_lock;
 
+Should this go near the beginning of the structure, given that code
+paths taking this lock tend to access ->cpu_no_qs, ->core_needs_qs,
+and so on?
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Given that it is used to protect core processing (not just offloaded
+callbacks), might ->core_local_lock be a better name?
+
+Please keep in mind that you can build kernels that offload callbacks
+but that still use softirq for RCU core processing.  And vice versa,
+that is, kernels that use rcuc kthreads but do not offload callbacks.
+
+> +
+>  	/* The following fields are used by call_rcu, hence own cacheline. */
+>  	raw_spinlock_t nocb_bypass_lock ____cacheline_internodealigned_in_smp;
+>  	struct rcu_cblist nocb_bypass;	/* Lock-contention-bypass CB list. */
+> @@ -445,6 +447,8 @@ static void rcu_nocb_unlock(struct rcu_data *rdp);
+>  static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
+>  				       unsigned long flags);
+>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
+> +static void rcu_nocb_local_lock(struct rcu_data *rdp);
+> +static void rcu_nocb_local_unlock(struct rcu_data *rdp);
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  static void __init rcu_organize_nocb_kthreads(void);
+>  #define rcu_nocb_lock_irqsave(rdp, flags)				\
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 0ff5e4fb933e..11c4ff00afde 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -21,6 +21,17 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
+>  	return lockdep_is_held(&rdp->nocb_lock);
+>  }
+>  
+> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
+> +{
+> +	return lockdep_is_held(
+> +#ifdef CONFIG_PREEMPT_RT
+> +		&rdp->nocb_local_lock.lock
+> +#else
+> +		&rdp->nocb_local_lock
+> +#endif
+
+It would be good if this was abstracted.  Or is this the only place
+in the kernel that needs this #ifdef?  Maybe a lockdep_is_held_rt()
+or lockdep_is_held_local(), as the case may be?
+
+> +	);
+> +}
+> +
+>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>  {
+>  	/* Race on early boot between thread creation and assignment */
+> @@ -38,7 +49,10 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
+>  {
+>  	return 0;
+>  }
+> -
+> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
+> +{
+> +	return 0;
+
+This is backwards of normal lockdep practice, which defaults to locks
+always held.  And that will be what happens once lockdep has detected
+its first deadlock, correct?  At which point, this function and its
+earlier instance will be in conflict.
+
+Or is there some subtle reason why this conflict would be OK?
+
+> +}
+>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>  {
+>  	return false;
+> @@ -46,23 +60,44 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
+>  
+>  #endif /* #ifdef CONFIG_RCU_NOCB_CPU */
+>  
+> +/*
+> + * Is a local read of the rdp's offloaded state safe and stable?
+> + * See rcu_nocb_local_lock() & family.
+> + */
+> +static inline bool rcu_local_offload_access_safe(struct rcu_data *rdp)
+> +{
+> +	if (!preemptible())
+> +		return true;
+> +
+> +	if (!migratable()) {
+> +		if (!IS_ENABLED(CONFIG_RCU_NOCB))
+
+Do we also need to consult the use_softirq module parameter that controls
+whether or not there are rcuc kthreads?
+
+Actually, if !IS_ENABLED(CONFIG_RCU_NOCB) then rcu_rdp_is_offloaded()
+can simply return false without bothering with the RCU_LOCKDEP_WARN().
+Might be worth getting that out of the way of the RCU_LOCKDEP_WARN()
+condition.  ;-)
+
+> +			return true;
+> +
+> +		return rcu_lockdep_is_held_nocb_local(rdp);
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>  {
+>  	/*
+> -	 * In order to read the offloaded state of an rdp is a safe
+> -	 * and stable way and prevent from its value to be changed
+> -	 * under us, we must either hold the barrier mutex, the cpu
+> -	 * hotplug lock (read or write) or the nocb lock. Local
+> -	 * non-preemptible reads are also safe. NOCB kthreads and
+> -	 * timers have their own means of synchronization against the
+> -	 * offloaded state updaters.
+> +	 * In order to read the offloaded state of an rdp is a safe and stable
+> +	 * way and prevent from its value to be changed under us, we must either...
+>  	 */
+>  	RCU_LOCKDEP_WARN(
+> +		// ...hold the barrier mutex...
+>  		!(lockdep_is_held(&rcu_state.barrier_mutex) ||
+> +		  // ... the cpu hotplug lock (read or write)...
+>  		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+> +		  // ... or the NOCB lock.
+>  		  rcu_lockdep_is_held_nocb(rdp) ||
+> +		  // Local reads still require the local state to remain stable
+> +		  // (preemption disabled / local lock held)
+>  		  (rdp == this_cpu_ptr(&rcu_data) &&
+> -		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
+> +		   rcu_local_offload_access_safe(rdp)) ||
+> +		  // NOCB kthreads and timers have their own means of synchronization
+> +		  // against the offloaded state updaters.
+>  		  rcu_current_is_nocb_kthread(rdp)),
+>  		"Unsafe read of RCU_NOCB offloaded state"
+>  	);
+> @@ -1629,6 +1664,22 @@ static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
+>  	}
+>  }
+>  
+> +/*
+> + * The invocation of rcu_core() within the RCU core kthreads remains preemptible
+> + * under PREEMPT_RT, thus the offload state of a CPU could change while
+> + * said kthreads are preempted. Prevent this from happening by protecting the
+> + * offload state with a local_lock().
+> + */
+> +static void rcu_nocb_local_lock(struct rcu_data *rdp)
+> +{
+> +	local_lock(&rcu_data.nocb_local_lock);
+> +}
+> +
+> +static void rcu_nocb_local_unlock(struct rcu_data *rdp)
+> +{
+> +	local_unlock(&rcu_data.nocb_local_lock);
+> +}
+> +
+>  /* Lockdep check that ->cblist may be safely accessed. */
+>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp)
+>  {
+> @@ -2396,6 +2447,7 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
+>  	if (rdp->nocb_cb_sleep)
+>  		rdp->nocb_cb_sleep = false;
+>  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> +	rcu_nocb_local_unlock(rdp);
+>  
+>  	/*
+>  	 * Ignore former value of nocb_cb_sleep and force wake up as it could
+> @@ -2427,6 +2479,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+>  
+>  	pr_info("De-offloading %d\n", rdp->cpu);
+>  
+> +	rcu_nocb_local_lock(rdp);
+>  	rcu_nocb_lock_irqsave(rdp, flags);
+>  	/*
+>  	 * Flush once and for all now. This suffices because we are
+> @@ -2509,6 +2562,7 @@ static long rcu_nocb_rdp_offload(void *arg)
+>  	 * Can't use rcu_nocb_lock_irqsave() while we are in
+>  	 * SEGCBLIST_SOFTIRQ_ONLY mode.
+>  	 */
+> +	rcu_nocb_local_lock(rdp);
+>  	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
+
+These look plausible at first glance, but it would be good for Frederic
+to look at the exact placement of these rcu_nocb_local_lock() and
+rcu_nocb_local_unlock() calls.
+
+>  	/*
+> @@ -2868,6 +2922,16 @@ static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
+>  	local_irq_restore(flags);
+>  }
+>  
+> +/* No ->nocb_local_lock to acquire. */
+> +static void rcu_nocb_local_lock(struct rcu_data *rdp)
+> +{
+> +}
+> +
+> +/* No ->nocb_local_lock to release. */
+> +static void rcu_nocb_local_unlock(struct rcu_data *rdp)
+> +{
+> +}
+> +
+>  /* Lockdep check that ->cblist may be safely accessed. */
+>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp)
+>  {
+> -- 
+> 2.25.1
+> 
