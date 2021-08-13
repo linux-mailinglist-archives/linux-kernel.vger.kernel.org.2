@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AEF3EB929
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0DC3EB92C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243064AbhHMPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:22:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242662AbhHMPSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:18:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30D860EE4;
-        Fri, 13 Aug 2021 15:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867869;
-        bh=97FxDBhO+gj5hTWln0ptZn6i/yb6QPwappDqtDluh0Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LVeb2thJxXDJATCxsv91PjHEbhEmwPMZw6lcyLvj2UZIfPpWvNmUlmykXYJpviYHv
-         cZR0Ju0yGs3qK4fZZmQMTvFO0WFfGY3JiI621qzAA2bfSW2Ip932jC0+KjhBSUxz2N
-         bggO4B2ddBF1gUzIqJfJq0Q8fvQfCjL7MMKfe3AA=
-Date:   Fri, 13 Aug 2021 17:14:08 +0200
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        =?utf-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
-        Bing Fan <hptsfb@gmail.com>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
- request
-Message-ID: <YRaMQL+YOaky+x9Q@kroah.com>
-References: <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
- <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
- <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
- <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
- <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
- <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
- <09918b566884413898f63b92ddd037a0@tencent.com>
- <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
- <YRaJVZOJMKtAM8Sl@kroah.com>
- <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
+        id S243134AbhHMPW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244164AbhHMPUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:20:53 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D896BC034028;
+        Fri, 13 Aug 2021 08:14:38 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a7so16054071ljq.11;
+        Fri, 13 Aug 2021 08:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qGBykzUHvO+mc7m2ZKZa337KSvPaPnpDZaAGPG4FlFk=;
+        b=QKxeBCKrnNdm3R2q7WeaN94xWSbe/WNi98zc2dW9Dj7KtQVa27JD8wo4H5X9Aqh9CC
+         9QGXM8FajTygobcNOOPNr0pi1Jjbb2arclodxpqb5+mCclK3iFunzvvbnZv9Y3xT4Pi9
+         4dEwSEIDIJyVw4+8GpMQClxB/wVjYBGWKSngLnnTlXhaLFJZMpiOiy5OluO2FUL8jkpv
+         1uVFeyuNokLgq6xtIReFGKVeIaG4iYCEvdd0LkkmBLt96R4LaK2QADx5i8XJMCm9XlaF
+         67G65ecQjJvM7BT6VUpAYblvcfdIO/ULZ30zllGle568EeF3oACnKBz4+ZIJgv6MO8pF
+         fYSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qGBykzUHvO+mc7m2ZKZa337KSvPaPnpDZaAGPG4FlFk=;
+        b=MUJOvd+v+Ozuq7Vo50S8V4x1PP8AoxXg5uYJQhz5Xbgyr9HbqoGkkfW4A2+uqCOwqB
+         38qqXisZgYHNgngE82yLg/IckirmekcResFkEuGConrBbH7VgQa6oQGTNFXyURFIrOas
+         BTB34uWH8dvwIozskvZiXpt7ugV8OyVhgENkLkbwQkpLOoTpXexhdJ+AUd0XBWMLKJD3
+         H/vhvK98WmfM56f4RkCVqfTk5x8sPRDT+LhNhxGDYDP2yW0V7Fx3Xhl/Hwn84vjnxzlS
+         wLbIZS+hyB9h2pW2AVMFdPqEcVmzzzCmYoaS36ffxEVYUjtCJmC+12q42BHbPkAM1tgz
+         T93w==
+X-Gm-Message-State: AOAM532JrxX0xLgsoKKxEfxKJw20q/OOrZ/vg9td/29ZxSYbcCWZG/lK
+        EBHCbuLvC/VqTVsaN5vMxVs=
+X-Google-Smtp-Source: ABdhPJza/AsXX9Eah14o12B8iPtsO7VrEukozhO9ruzowumVxbf/75KPyBAePWh5VdfNtCwKP0+IcQ==
+X-Received: by 2002:a05:651c:49c:: with SMTP id s28mr2150046ljc.189.1628867677175;
+        Fri, 13 Aug 2021 08:14:37 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id q16sm180788lfg.102.2021.08.13.08.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 08:14:36 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+Subject: [PATCH v2] net: 6pack: fix slab-out-of-bounds in decode_data
+Date:   Fri, 13 Aug 2021 18:14:33 +0300
+Message-Id: <20210813151433.22493-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210813145834.GC1931@kadam>
+References: <20210813145834.GC1931@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 04:09:50PM +0100, Robin Murphy wrote:
-> On 2021-08-13 16:01, gregkh wrote:
-> > On Fri, Aug 13, 2021 at 09:42:52AM -0400, Qian Cai wrote:
-> > > 
-> > > 
-> > > On 8/12/2021 11:32 PM, tombinfan(范兵) wrote:
-> > > > hello,
-> > > > 
-> > > > I have sent the modified patch to the following mailboxes. THX
-> > > > 
-> > > > gregkh@linuxfoundation.org
-> > > > linux-serial@vger.kernel.org
-> > > > linux-kernel@vger.kernel.org
-> > > 
-> > > Thanks for the pointer. It is good to get some reviews from Arm
-> > > people in the first place, so we don't break Arm like this.
-> > > 
-> > > Anyway, for anyone who might be watching, here is the new patch,
-> > > 
-> > > https://lore.kernel.org/linux-serial/1628825490-18937-1-git-send-email-hptsfb@gmail.com/
-> > > 
-> > > Unfortunately, I saw Greg mentioned that it was not based on
-> > > tty-next, so not something I can apply easily on linux-next here
-> > > as well.
-> > 
-> > That is because the code in tty-next (and linux-next), looks to already
-> > do exactly what you submitted, right?
-> > 
-> > So is this working now for everyone in linux-next?
-> 
-> AFAICS commit b0819465be8b in linux-next still results in
-> amba_device-specific code being called from sbsa_uart_startup() and
-> sbsa_uart_shutdown(), which is what blows up.
+Syzbot reported slab-out-of bounds write in decode_data().
+The problem was in missing validation checks.
 
-Ick,  ok, can someone send me a revert with this information in it
-please?
+Syzbot's reproducer generated malicious input, which caused
+decode_data() to be called a lot in sixpack_decode(). Since
+rx_count_cooked is only 400 bytes and noone reported before,
+that 400 bytes is not enough, let's just check if input is malicious
+and complain about buffer overrun.
 
-thanks,
+Fail log:
+==================================================================
+BUG: KASAN: slab-out-of-bounds in drivers/net/hamradio/6pack.c:843
+Write of size 1 at addr ffff888087c5544e by task kworker/u4:0/7
 
-greg k-h
+CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.6.0-rc3-syzkaller #0
+...
+Workqueue: events_unbound flush_to_ldisc
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+ __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_store1_noabort+0x17/0x20 mm/kasan/generic_report.c:137
+ decode_data.part.0+0x23b/0x270 drivers/net/hamradio/6pack.c:843
+ decode_data drivers/net/hamradio/6pack.c:965 [inline]
+ sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
+
+Reported-and-tested-by: syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+
+Changes in v2:
+	+ 3 -> +2 (Reported by Dan Carpenter)
+
+---
+ drivers/net/hamradio/6pack.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index fcf3af76b6d7..8fe8887d506a 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -827,6 +827,12 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
+ 		return;
+ 	}
+ 
++	if (sp->rx_count_cooked + 2 >= sizeof(sp->cooked_buf)) {
++		pr_err("6pack: cooked buffer overrun, data loss\n");
++		sp->rx_count = 0;
++		return;
++	}
++
+ 	buf = sp->raw_buf;
+ 	sp->cooked_buf[sp->rx_count_cooked++] =
+ 		buf[0] | ((buf[1] << 2) & 0xc0);
+-- 
+2.32.0
+
