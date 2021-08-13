@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2FD3EB1F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2173EB1FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239691AbhHMHsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        id S239509AbhHMHwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239528AbhHMHsm (ORCPT
+        with ESMTP id S235010AbhHMHwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:48:42 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A5BC0617AD;
-        Fri, 13 Aug 2021 00:48:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GmFzJ6Qy3z9sRf;
-        Fri, 13 Aug 2021 17:48:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628840893;
-        bh=3GwkGOov2JNrlvSg/FXO8i3tIL+hKHVWG683e6ibvZw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MZd5b99723lXkmKu7qrjE4G7CGR9W+FZzOWRRju8DsYY8N1rHfxbQPH1BDdhADYOQ
-         GIOPcaV6PF2OhUrCQfBQTfHsBskfT3L/8LMQtfNPm9uqm+xbJ5LJUtiIpr4wGcOvgv
-         T4+jbW+7PALLISfcgCg5AZQtYiHP42N7QUAkVnrkJ1RIMdMjPP8TV98LiqVwli59za
-         AQateoC1I30t8jluSpZW4mRfcbJjCFgbSYL6iwT/rK9N4g8jZSq8km9dcx4qpS7WJx
-         2M0TcG8+8gdOZLMNDP00COWWHASNeeselG+1zBkJnA/1rc9fnAhNNu4YGQ4vVJ/geo
-         GwPkOKxBIQKYg==
-Date:   Fri, 13 Aug 2021 17:48:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Joel Savitz <jsavitz@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20210813174812.3eb1af5d@canb.auug.org.au>
+        Fri, 13 Aug 2021 03:52:22 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5D3C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:51:55 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id d11so16770128eja.8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 00:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GK8wq/IOiIxJgDvCUYvsZ+KqziS3kB0R8RP8IZKkltI=;
+        b=LdtOhIxb3CQdyFtsCx0t8s7ZbjdhMVfRroj6e9Bu0C5sIfiz3QfG18dDkFFOms71X7
+         YzdoijNa4rlLVY35Q8Q9s4USIA8xIwu701vncDGBzNCTS9TmPv5S2gNXY3FjysdKL8Bm
+         BfQexaZb9NyOxuE4q+vCMX88srriox7DrdTY68dNcshfDwzcBGveIfAOpXyjtMXwcwyD
+         hrzt+SofXy3JYCi0qad59fBxLsVOiC0ebfeig7sY1mIc43y1VmxVWG6xdi8FyUOG4u2g
+         yEzYIZ9AqqGAWVS7GcokAufeK3LczPFuW+EfClBOx+45MhjdS3xB+xxh0uIzfavVVzqQ
+         JSJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GK8wq/IOiIxJgDvCUYvsZ+KqziS3kB0R8RP8IZKkltI=;
+        b=fIx1TtndKdvGzr+egr0nhQhuLbw8pmxEemohU/OaBYfKZovg2M9C8WoqFzkslYnJyo
+         XacQFpBL9z+r4qMyDQ5HOFGH78Xrki5v5Uv4r4bJrQqCpJQVGJ7rMojHg1PyYdWcvLo5
+         sEyUk86D1OQ7Ru8wBvRnzVqZi7ntsHDkz5dqJEfDscQZAz9tUSM0AHEfpz1uLcec3SX1
+         c25iTpvIpNAmQlmGYxzcKYSlb5RHseRhXt7yc/yf0fNJpPr7HX4wugHXSINGhJ4dPZgO
+         oIl0czRM/mUj8I1JpxT8xeCjpb4bMUxU2tpLr+PJP5DJTRu+KgF0ac0YTMbzjberY8t0
+         RH6w==
+X-Gm-Message-State: AOAM533DYRExjkhmnCuodoniGYOKeYskAXu0FNumgpgjntIXCAkt/U7Y
+        2Mi4izpoEnWLJY7nj7FCkOa87FJP0Sd23Rx5mdc=
+X-Google-Smtp-Source: ABdhPJwJ5SOLW9apRli3AOrXFL4cVQnh9RqbRN4V3vvm8P4Vzvjl97S95ccpuX4P4FSx16PZBSKVvs7RWqZ+8VFbLCU=
+X-Received: by 2002:a17:907:2096:: with SMTP id pv22mr1220682ejb.443.1628841114413;
+ Fri, 13 Aug 2021 00:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LH1wADt7gryIi3Pv/7Sq6LZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210811163731.186125-1-masahiroy@kernel.org> <20210811163731.186125-4-masahiroy@kernel.org>
+ <CAMo8BfJtpUY-FC-cwU5HXSqOSwUwn15kTYWOhx-tsgybPe8mpw@mail.gmail.com> <CAK7LNATERCrQc1gDfJTqGNvFPpS3Xyzk9VErQyaj0kvc10oDeA@mail.gmail.com>
+In-Reply-To: <CAK7LNATERCrQc1gDfJTqGNvFPpS3Xyzk9VErQyaj0kvc10oDeA@mail.gmail.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Fri, 13 Aug 2021 00:51:43 -0700
+Message-ID: <CAMo8Bf+0r7z=ueD571AFyHphcsb2hB3dLo5wMmLF_ELn8Dm_Qg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] xtensa: move core-y in arch/xtensa/Makefile to arch/xtensa/Kbuild
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LH1wADt7gryIi3Pv/7Sq6LZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Aug 13, 2021 at 12:10 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Aug 13, 2021 at 2:32 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
+> >
+> > On Wed, Aug 11, 2021 at 9:38 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Use obj-y to clean up Makefile.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > ---
+> > >
+> > >  arch/xtensa/Kbuild             | 1 +
+> > >  arch/xtensa/Makefile           | 3 ---
+> > >  arch/xtensa/platforms/Makefile | 4 ++++
+> > >  3 files changed, 5 insertions(+), 3 deletions(-)
+> > >  create mode 100644 arch/xtensa/platforms/Makefile
+> > >
+> > > diff --git a/arch/xtensa/Kbuild b/arch/xtensa/Kbuild
+> > > index a4e40e534e6a..fd12f61745ba 100644
+> > > --- a/arch/xtensa/Kbuild
+> > > +++ b/arch/xtensa/Kbuild
+> > > @@ -1 +1,2 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > > +obj-y += kernel/ mm/ platforms/ boot/dts/
+> > > diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
+> > > index 093e87b889be..96714ef7c89e 100644
+> > > --- a/arch/xtensa/Makefile
+> > > +++ b/arch/xtensa/Makefile
+> > > @@ -58,9 +58,6 @@ KBUILD_DEFCONFIG := iss_defconfig
+> > >  LIBGCC := $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+> > >
+> > >  head-y         := arch/xtensa/kernel/head.o
+> > > -core-y         += arch/xtensa/kernel/ arch/xtensa/mm/
+> > > -core-y         += arch/xtensa/platforms/$(platform-y)/
+> > > -core-y                 += arch/xtensa/boot/dts/
+> > >
+> > >  libs-y         += arch/xtensa/lib/ $(LIBGCC)
+> > >
+> > > diff --git a/arch/xtensa/platforms/Makefile b/arch/xtensa/platforms/Makefile
+> > > new file mode 100644
+> > > index 000000000000..e2e7e0726979
+> > > --- /dev/null
+> > > +++ b/arch/xtensa/platforms/Makefile
+> > > @@ -0,0 +1,4 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only
+> > > +obj-$(CONFIG_XTENSA_PLATFORM_XT2000)   += xt2000/
+> > > +obj-$(CONFIG_XTENSA_PLATFORM_ISS)      += iss/
+> > > +obj-$(CONFIG_XTENSA_PLATFORM_XTFPGA)   += xtfpga/
+> >
+> > With this change platform directory names are duplicated in two
+> > makefiles. Can we move them to Kconfig with something like the
+> > following (on top of this change)?
+>
+> I do not like the idea much for the following reasons.
 
-Hi all,
+Ok, thanks for the explanation. Applied the original patch to my xtensa tree.
 
-After merging the tip tree, today's linux-next build (htmldocs) produced
-this warning:
-
-Documentation/core-api/genericirq:503: /home/sfr/next/next/kernel/irq/manag=
-e.c:2111: WARNING: Unexpected indentation.
-
-Introduced by commit
-
-  61377ec14457 ("genirq: Clarify documentation for request_threaded_irq()")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LH1wADt7gryIi3Pv/7Sq6LZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEWI7wACgkQAVBC80lX
-0Gwlawf+IzYGEJ0xD1IAQXjCYk5MuDaOyBjvsHWjcXFmYebyU74GPHK8WnDZZOkU
-XGmk87RArBoF+H7puEmqgsZLLbDme/S8kyffQ/YlKMzbh0X+RxvLmYhAnncgyGo9
-B4Q+WVWVgL2AJ/kRNdLirCATC6nG9bWKtREh6fwPGk+y9Sr8ZoMpBQoYtxm+6C2F
-r8zrT8EZQmLwScXpoT2jQ/2gfpH80ZDMJorWC7Rl3UU4ecz5Fl2iGkEMDBpFymP0
-FqpJCul9sIWr2o50Gopp9tWESrugrTIrTKHKyRnOJMKOaaqfc2AeWe/SoluKeu0h
-u7rPVuUN1V7CeM+SwGKevKCGAu9tlg==
-=ydfW
------END PGP SIGNATURE-----
-
---Sig_/LH1wADt7gryIi3Pv/7Sq6LZ--
+-- 
+Thanks.
+-- Max
