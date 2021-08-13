@@ -2,154 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0C73EB3F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86B73EB3FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240070AbhHMKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239357AbhHMKWx (ORCPT
+        id S240106AbhHMKY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:24:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55512 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239176AbhHMKY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:22:53 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD161C0617AD;
-        Fri, 13 Aug 2021 03:22:26 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a0d0079874d21390dee82.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d00:7987:4d21:390d:ee82])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 179861EC0390;
-        Fri, 13 Aug 2021 12:22:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628850141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=BrEpox4JFTOv//FkK1+++liPSNoSwrYzYIAmzeG1Vvg=;
-        b=rrhY/wFPs01PzwPngi2OvYsBOn3Oj+mOPU4ppqg2QD3QMMpo5HPrRQksILGK2tbPzMNL/P
-        /Z+q2NCpFwOZGLfgdVjlJd5AbybcSaH0RK4p4eLjvedsqwEIBCnfou68aXrXhezqElb99A
-        CyzdpLOPT9knQnU7SkvRJRi/bsKl6e0=
-Date:   Fri, 13 Aug 2021 12:22:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 09/36] x86/compressed: Add helper for
- validating pages in the decompression stage
-Message-ID: <YRZIA+qQ7EpO0zxC@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-10-brijesh.singh@amd.com>
+        Fri, 13 Aug 2021 06:24:57 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 63D9E1C0B76; Fri, 13 Aug 2021 12:24:30 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 12:24:29 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        jason@jlekstrand.net, Jonathan Gray <jsg@jsg.id.au>
+Subject: Re: Determining corresponding mainline patch for stable patches Re:
+ [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in eb_parse()
+Message-ID: <20210813102429.GA28610@duo.ucw.cz>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.050147269@linuxfoundation.org>
+ <20210811072843.GC10829@duo.ucw.cz>
+ <YROARN2fMPzhFMNg@kroah.com>
+ <20210811122702.GA8045@duo.ucw.cz>
+ <YRPLbV+Dq2xTnv2e@kroah.com>
+ <20210813093104.GA20799@duo.ucw.cz>
+ <20210813095429.GA21912@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
 Content-Disposition: inline
-In-Reply-To: <20210707181506.30489-10-brijesh.singh@amd.com>
+In-Reply-To: <20210813095429.GA21912@1wt.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:14:39PM -0500, Brijesh Singh wrote:
-> @@ -274,16 +274,31 @@ static int set_clr_page_flags(struct x86_mapping_info *info,
->  	/*
->  	 * Changing encryption attributes of a page requires to flush it from
->  	 * the caches.
-> +	 *
-> +	 * If the encryption attribute is being cleared, then change the page
-> +	 * state to shared in the RMP table.
 
-That comment...
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  	 */
-> -	if ((set | clr) & _PAGE_ENC)
-> +	if ((set | clr) & _PAGE_ENC) {
->  		clflush_page(address);
->  
+On Fri 2021-08-13 11:54:29, Willy Tarreau wrote:
+> Hi Pavel,
+>=20
+> On Fri, Aug 13, 2021 at 11:31:04AM +0200, Pavel Machek wrote:
+> > > > If we could agree on
+> > > >=20
+> > > > Commit: (SHA)
+> > > >=20
+> > > > in the beggining of body, that would be great.
+> > > >=20
+> > > > Upstream: (SHA)
+> > > >=20
+> > > > in sign-off area would be even better.
+> > >=20
+> > > What exactly are you trying to do when you find a sha1?  For some rea=
+son
+> > > my scripts work just fine with a semi-free-form way that we currently
+> > > have been doing this for the past 17+ years.  What are you attempting=
+ to
+> > > do that requires such a fixed format?
+> >=20
+> > Is there any problem having a fixed format? You are producing -stable
+> > kernels, so you are not the one needing such functionality.
+>=20
+> When I was doing extended LTS in the past, I used to restart from
+> Greg's closest branch (e.g. 4.4.y for latest 3.10.y) and needed
+> exactly that. It was pretty easy in the end, as you'll essentially
+> find two formats (one form from net and the other for the rest of
+> the patches):
+>=20
+>   - commit XXXX upstream
+>   - [ Upstream commit XXXX ]
+>=20
+> I ended up writing this trivial script that did the job well for me
+> and also supported the "git cherry-pick -x" format that I was using
+> a lot. Feel free to reuse that as a starting point, here it comes, a
+> bit covered in dust :-)
 
-... goes here:
+Please see previous discussion. Yes, I have my regexps, too, but there
+are variations, and there were even false positives.. One of them is
+in this email thread.
 
-<---
+Greg suggests to simply ignore context and look for SHA1 sum; that
+does not work, either.
 
-> +		if (clr)
-> +			snp_set_page_shared(pte_pfn(*ptep) << PAGE_SHIFT);
-> +	}
-> +
+So what I'm asking is for single, easy to parse format. I don't quite
+care what it is, but
 
-...
+Upstream: (SHA)
 
-> diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-> index 2f3081e9c78c..f386d45a57b6 100644
-> --- a/arch/x86/boot/compressed/sev.c
-> +++ b/arch/x86/boot/compressed/sev.c
-> @@ -164,6 +164,47 @@ static bool is_vmpl0(void)
->  	return true;
->  }
->  
-> +static void __page_state_change(unsigned long paddr, int op)
+would be best.
 
-That op should be:
+Best regards,
+								Pavel
 
-enum psc_op {
-	SNP_PAGE_STATE_SHARED,
-	SNP_PAGE_STATE_PRIVATE,
-};
 
-and have
+> Willy
+>=20
+> #!/bin/bash
+>=20
+> die() {
+>         [ "$#" -eq 0 ] || echo "$*" >&2
+>         exit 1
+> }
+>=20
+> [ -n "$1" ] || die "Usage: ${0##*/} <commit>|<file>"
+>=20
+> upstream=3D( )
+> if [ -s "$1" ]; then
+>         upstream=3D( $(sed -n -e '/^$/,/^./s/^commit \([0-9a-f]*\) upstre=
+am\.$/\1/p' \
+>                             -e 's/^\[ Upstream commit \([0-9a-f]*\) \]$/\=
+1/p' \
+>                             -e 's/^(cherry picked from commit \([0-9a-f]*=
+\))/\1/p' "$1") )
+> else
+>         upstream=3D( $(git log -1 --pretty --format=3D%B "$1" | \
+>                      sed -n -e '1,3s/^commit \([0-9a-f]*\) upstream\.$/\1=
+/p' \
+>                             -e 's/^\[ Upstream commit \([0-9a-f]*\) \]$/\=
+1/p' \
+>                             -e 's/^(cherry picked from commit \([0-9a-f]*=
+\))/\1/p') )
+> fi
+>=20
+> [ "${#upstream[@]}" -gt 0 ] || die "No upstream commit ID found."
+>=20
+> echo "${upstream[0]}"
 
-static void __page_state_change(unsigned long paddr, enum psc_op op)
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-so that the compiler can check you're at least passing from the correct
-set of defines.
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index ea508835ab33..aee07d1bb138 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -45,6 +45,23 @@
->  		(((unsigned long)reg & GHCB_MSR_CPUID_REG_MASK) << GHCB_MSR_CPUID_REG_POS) | \
->  		(((unsigned long)fn) << GHCB_MSR_CPUID_FUNC_POS))
->  
-> +/* SNP Page State Change */
-> +#define GHCB_MSR_PSC_REQ		0x014
-> +#define SNP_PAGE_STATE_PRIVATE		1
-> +#define SNP_PAGE_STATE_SHARED		2
-> +#define GHCB_MSR_PSC_GFN_POS		12
-> +#define GHCB_MSR_PSC_GFN_MASK		GENMASK_ULL(39, 0)
-> +#define GHCB_MSR_PSC_OP_POS		52
-> +#define GHCB_MSR_PSC_OP_MASK		0xf
-> +#define GHCB_MSR_PSC_REQ_GFN(gfn, op)	\
-> +	(((unsigned long)((op) & GHCB_MSR_PSC_OP_MASK) << GHCB_MSR_PSC_OP_POS) | \
-> +	((unsigned long)((gfn) & GHCB_MSR_PSC_GFN_MASK) << GHCB_MSR_PSC_GFN_POS) | \
-> +	GHCB_MSR_PSC_REQ)
-> +
-> +#define GHCB_MSR_PSC_RESP		0x015
-> +#define GHCB_MSR_PSC_ERROR_POS		32
-> +#define GHCB_MSR_PSC_RESP_VAL(val)	((val) >> GHCB_MSR_PSC_ERROR_POS)
-> +
+-----BEGIN PGP SIGNATURE-----
 
-Also get rid of eccessive defines...
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRZIXQAKCRAw5/Bqldv6
+8sqBAJ41kruMaMcWRZScZBoXI4W+ShwIhgCeL6u/S9BtBLyNrTejc26AiwnnNSU=
+=mlAp
+-----END PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--ZPt4rx8FFjLCG7dd--
