@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831AA3EBE3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317233EBE41
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhHMWXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 18:23:37 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45542 "EHLO inva021.nxp.com"
+        id S235245AbhHMWX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 18:23:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49342 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235029AbhHMWXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:23:36 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0B4242002CD;
-        Sat, 14 Aug 2021 00:23:07 +0200 (CEST)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C8B4320005D;
-        Sat, 14 Aug 2021 00:23:06 +0200 (CEST)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id 0BD8F40A55;
-        Fri, 13 Aug 2021 15:23:06 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        shawnguo@kernel.org
-Subject: [GIT PULL] soc/fsl drivers changes for fix(v5.14)
-Date:   Fri, 13 Aug 2021 17:23:05 -0500
-Message-Id: <20210813222305.13663-1-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
+        id S235029AbhHMWXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 18:23:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=i5EM6xjmmLHbCrinG5m/aYEhgq7R3jsqXMJV7UntAEc=; b=R8PaH/Cl6PyLfSeXD0TV+UV5eF
+        zXfiU9l4R3iCyiq13BXUVfymU6YUmhHIrS/83xu7ht6hvlge6NdCmj+aMfaxJgZVx9oU1U/uxIgKZ
+        f4dOj5qoF6cbkuGuyu90GnWzeLOX79MjGTKMQwsJhH+uI/n1iPPj1445cnbapjmWgRVo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mEfaA-00HZUt-45; Sat, 14 Aug 2021 00:23:18 +0200
+Date:   Sat, 14 Aug 2021 00:23:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
+        himadrispandya@gmail.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: asix: fix uninit value in asix_mdio_read
+Message-ID: <YRbw1psAc8jQu4ob@lunn.ch>
+References: <20210813160108.17534-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813160108.17534-1-paskripkin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi soc maintainers,
+On Fri, Aug 13, 2021 at 07:01:08PM +0300, Pavel Skripkin wrote:
+> Syzbot reported uninit-value in asix_mdio_read(). The problem was in
+> missing error handling. asix_read_cmd() should initialize passed stack
+> variable smsr, but it can fail in some cases. Then while condidition
+> checks possibly uninit smsr variable.
+> 
+> Since smsr is uninitialized stack variable, driver can misbehave,
+> because smsr will be random in case of asix_read_cmd() failure.
+> Fix it by adding error cheking and just continue the loop instead of
+> checking uninit value.
+> 
+> Fixes: 8a46f665833a ("net: asix: Avoid looping when the device is disconnected")
+> Reported-and-tested-by: syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  drivers/net/usb/asix_common.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
+> index ac92bc52a85e..572ca3077f8f 100644
+> --- a/drivers/net/usb/asix_common.c
+> +++ b/drivers/net/usb/asix_common.c
+> @@ -479,7 +479,13 @@ int asix_mdio_read(struct net_device *netdev, int phy_id, int loc)
+>  		usleep_range(1000, 1100);
+>  		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+>  				    0, 0, 1, &smsr, 0);
+> -	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
+> +		if (ret == -ENODEV) {
+> +			break;
+> +		} else if (ret < 0) {
+> +			++i;
+> +			continue;
+> +		}
+> +	} while (!(smsr & AX_HOST_EN) && (i++ < 30));
 
-Please merge the following fixes for soc/fsl drivers.
+No ret < 0, don't you end up with a double increment of i? So it will
+only retry 15 times, not 30?
 
-Regards,
-Leo
+Humm.
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+If ret < 0 is true, smsr is uninitialized? The continue statement
+causes a jump into the condition expression, where we evaluate smsr &
+AX_HOST_EN. Isn't this just as broken as the original version?
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/leo/linux.git tags/soc-fsl-fix-v5.14
-
-for you to fetch changes up to c1e64c0aec8cb0499e61af7ea086b59abba97945:
-
-  soc: fsl: qe: fix static checker warning (2021-08-13 16:56:10 -0500)
-
-----------------------------------------------------------------
-NXP/FSL SoC driver fixes for v5.14
-
-QE interrupt controller driver
-- Convert it to platform_device driver to make it work with fw_devlink
-- Fix static analysis issue
-
-----------------------------------------------------------------
-Maxim Kochetkov (2):
-      soc: fsl: qe: convert QE interrupt controller to platform_device
-      soc: fsl: qe: fix static checker warning
-
- drivers/soc/fsl/qe/qe_ic.c | 84 ++++++++++++++++++++++++++--------------------
- 1 file changed, 48 insertions(+), 36 deletions(-)
+      Andrew
