@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354A03EBDB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C713EBDB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhHMU5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:57:32 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:43597 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhHMU5a (ORCPT
+        id S234722AbhHMU5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:57:54 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:36765 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhHMU5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:57:30 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bf25so8989145oib.10;
-        Fri, 13 Aug 2021 13:57:03 -0700 (PDT)
+        Fri, 13 Aug 2021 16:57:53 -0400
+Received: by mail-oi1-f169.google.com with SMTP id bd1so10311082oib.3;
+        Fri, 13 Aug 2021 13:57:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3wvmf7DOu12lxJGmuxwNus8Ei0TqBPYTO/Ya0rfIezM=;
-        b=XZ4bez+jEoD0nxwvVfnM7MR6X5KngPCcAVyh01S50NBYomgdsYxQG3MhZJvS2LzrKR
-         HRbhANSVwS9Z6Rq2PyXKsSadVqIWprYl8dD8SdQRvhytBHd6UF9AaHJY+9QNZNEsEdbV
-         pznvHDWPDwuzEUDzGjv3ZD0PdTTiymf4FFdoZ0tfMwaT4gpPHVgLzw0GjmdKcn6UOMKE
-         dZbx211SMpCTP0mNQw2RsDQQYgqsxKCFO0WLNtzNSD7xaOynv5sWdec3Zrnio/dpCakk
-         riFbRxeYCXE2RrUEjkzGeiS4xcXRER+6spdsX0NYJ0Y2zzcf2o0bLOkeJZq7BWtwXiQU
-         Nd4A==
-X-Gm-Message-State: AOAM5325oswN6YB45jD6kq0OdRve/6wh+uLedNEkr0k746KPJfx7lfou
-        boiaFekHDdsCXENek8jvVg==
-X-Google-Smtp-Source: ABdhPJzEqww+nuVlBCG4CJ4QIjNt2ny8eoAF/xFTGVu66sG0M0ICoNa+C3HT50atfQpNHUR72XfXZw==
-X-Received: by 2002:a05:6808:85:: with SMTP id s5mr3627786oic.31.1628888223215;
-        Fri, 13 Aug 2021 13:57:03 -0700 (PDT)
+        bh=xRw29i8rZgtAQOOWjfxSeVfjrlJMzPgX8t5bNl0FQc4=;
+        b=hRoXSmfsfdK7xpXZnyMusn4ZiJvrro3kFsRvOPY4m0iq78T2Ofh+nnKs6N9suMWXpM
+         tbjE2DaRJMDvsoPrGTfR+0J8xFb15G09YV5h6p/MqN3XMNqW/qBQQZuL+lBoyefpy4dM
+         exNe/+Tqlft9445h9Otylem95TtB/ViDQlzz4d6eOGMa8Na6Tqgum05o9TE5BlIyhuGF
+         yhZUOEAx2rPR5SE+bHKjSQyuqKJp4Q7MPGVlTYNKUDb4w1rPAl8DtCO/kf+WzknTo2cK
+         jchHEA4xv6v97XBSqrKbxePJluHB27NF+PUlHF/HaoqrM50qHYYoRe2LvHp6Zt8C2bQU
+         0Yag==
+X-Gm-Message-State: AOAM5301GLHMAV0XzycyNBAmHTHw0bL0MwIH5yiWj10FLFDTkk9pli7F
+        S6CHbcmVOOxYCkTmoaCEGQ==
+X-Google-Smtp-Source: ABdhPJy9HKW8pPlI9RBDXhXYvubQZueRg9WbqHK62nLq1LNsL5G+0pIOcso3FFcfwkxt3itU8Ljf5w==
+X-Received: by 2002:aca:1911:: with SMTP id l17mr3728709oii.160.1628888245552;
+        Fri, 13 Aug 2021 13:57:25 -0700 (PDT)
 Received: from robh.at.kernel.org (2603-8080-2a06-ed00-a2a6-2d62-395f-9378.res6.spectrum.com. [2603:8080:2a06:ed00:a2a6:2d62:395f:9378])
-        by smtp.gmail.com with ESMTPSA id l9sm530729otr.34.2021.08.13.13.57.01
+        by smtp.gmail.com with ESMTPSA id w35sm525504ott.80.2021.08.13.13.57.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:57:02 -0700 (PDT)
-Received: (nullmailer pid 4019042 invoked by uid 1000);
-        Fri, 13 Aug 2021 20:57:00 -0000
-Date:   Fri, 13 Aug 2021 15:57:00 -0500
+        Fri, 13 Aug 2021 13:57:25 -0700 (PDT)
+Received: (nullmailer pid 4019742 invoked by uid 1000);
+        Fri, 13 Aug 2021 20:57:23 -0000
+Date:   Fri, 13 Aug 2021 15:57:23 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     devicetree@vger.kernel.org, krzysztof.kozlowski@canonical.com,
-        robh+dt@kernel.org, matthias.bgg@gmail.com, shawnguo@kernel.org,
-        sam@ravnborg.org, geert+renesas@glider.be, fanghao11@huawei.com,
-        daniel@0x0f.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, ohad@wizery.com,
-        linux@rempel-privat.de, bjorn.andersson@linaro.org,
-        linux-kernel@vger.kernel.org, Max.Merchel@tq-group.com,
-        linux-mediatek@lists.infradead.org, mathieu.poirier@linaro.org
-Subject: Re: [PATCH v6 3/6] dt-bindings: remoteproc: mediatek: Convert
- mtk,scp to json-schema
-Message-ID: <YRbcnKLx43UcJNSm@robh.at.kernel.org>
-References: <20210809051959.31136-1-tinghan.shen@mediatek.com>
- <20210809051959.31136-4-tinghan.shen@mediatek.com>
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     linux-iio@vger.kernel.org, Dragos.Bogdan@analog.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Darius.Berghe@analog.com,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: potentiometer: Add AD5110 in
+ trivial-devices
+Message-ID: <YRbcswAZuiLCFVz+@robh.at.kernel.org>
+References: <20210809075745.160042-1-dmugil2000@gmail.com>
+ <20210809075745.160042-2-dmugil2000@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809051959.31136-4-tinghan.shen@mediatek.com>
+In-Reply-To: <20210809075745.160042-2-dmugil2000@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Aug 2021 13:19:56 +0800, Tinghan Shen wrote:
-> Convert the mtk,scp binding to DT schema format using json-schema.
+On Mon, 09 Aug 2021 13:27:19 +0530, Mugilraj Dhavachelvan wrote:
+> Add AD5110, a Nonvolatile Digital Potentiometer into
+> trivial-devices.yaml.
 > 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
 > ---
->  .../bindings/remoteproc/mtk,scp.txt           | 41 ---------
->  .../bindings/remoteproc/mtk,scp.yaml          | 92 +++++++++++++++++++
->  2 files changed, 92 insertions(+), 41 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
