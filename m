@@ -2,130 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2A73EB1D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C1A3EB1CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239618AbhHMHmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:42:39 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13419 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239590AbhHMHme (ORCPT
+        id S239616AbhHMHma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239590AbhHMHm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:42:34 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GmFm12733zdZXX;
-        Fri, 13 Aug 2021 15:38:25 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 13 Aug 2021 15:42:04 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 13 Aug
- 2021 15:42:04 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v4 2/2] crypto: hisilicon/sec - modify the hardware endian configuration
-Date:   Fri, 13 Aug 2021 15:41:02 +0800
-Message-ID: <1628840462-25437-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628840462-25437-1-git-send-email-yekai13@huawei.com>
-References: <1628840462-25437-1-git-send-email-yekai13@huawei.com>
+        Fri, 13 Aug 2021 03:42:29 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FCEC061756;
+        Fri, 13 Aug 2021 00:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=v5GvruCHAD5VdGVp7rPAa70pStcYZ0dgf5ANMBb+4wc=;
+        t=1628840522; x=1630050122; b=ZFr3C2+x1UejITvtIoKSlKqWMYfmd05UvxUUYJmP8dCuqZf
+        xyL7kJF2m31ZbzvXMxn0Qfo/LsIdqEv+uDFADyYhkZH/gq1wVfAYpfvvHz0euyfwDe4RouS03or0e
+        dhM0p+QuyBPDtIGV/IMKk1eKz1XNqmGv+GvQfUkGGjKbUrsOm2gJYmA2ysm9KYtgwfby3qUVcH8sl
+        Em7NK+clrwAnkRPjbj1+yEyh6lQteTdvCAFF8IgnmzxiwzICRKC0V7EKQwyQx3nhr6bgSbitEHW5S
+        L0dfMV1v8YGd5+WQxoBO0iPtQJn5nzXhREzUcX2n0+AZqqvEooJKIpQ+7q6elHMA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mERoz-00A937-Sm; Fri, 13 Aug 2021 09:41:42 +0200
+Message-ID: <347234b097eb93a0882ad2a3a209c2b7923ff611.camel@sipsolutions.net>
+Subject: Re: [PATCH 39/64] mac80211: Use memset_after() to clear tx status
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-hardening@vger.kernel.org
+Date:   Fri, 13 Aug 2021 09:41:40 +0200
+In-Reply-To: <202107310852.551B66EE32@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+         <20210727205855.411487-40-keescook@chromium.org>
+         <202107310852.551B66EE32@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the endian configuration of the hardware is abnormal, it will
-cause the SEC engine is faulty that reports empty message. And it
-will affect the normal function of the hardware. Currently the soft
-configuration method can't restore the faulty device. The endian
-needs to be configured according to the system properties. So fix it.
+On Sat, 2021-07-31 at 08:55 -0700, Kees Cook wrote:
+> 
+> > @@ -278,9 +278,7 @@ static void carl9170_tx_release(struct kref *ref)
+> >  	BUILD_BUG_ON(
+> >  	    offsetof(struct ieee80211_tx_info, status.ack_signal) != 20);
+> >  
+> > 
+> > -	memset(&txinfo->status.ack_signal, 0,
+> > -	       sizeof(struct ieee80211_tx_info) -
+> > -	       offsetof(struct ieee80211_tx_info, status.ack_signal));
+> > +	memset_after(&txinfo->status, 0, rates);
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
- drivers/crypto/hisilicon/sec2/sec_main.c | 31 +++++++++----------------------
- 2 files changed, 9 insertions(+), 27 deletions(-)
+FWIW, I think we should also remove the BUILD_BUG_ON() now in all the
+places - that was meant to give people a hint to update if some field
+ordering etc. changed, but now that it's "after rates" this is no longer
+necessary.
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 8c3621d..34c9c22 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -206,11 +206,6 @@ struct sec_ctx {
- 	struct device *dev;
- };
- 
--enum sec_endian {
--	SEC_LE = 0,
--	SEC_32BE,
--	SEC_64BE
--};
- 
- enum sec_debug_file_index {
- 	SEC_CLEAR_ENABLE,
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 45a1ddd..2250c81 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -318,31 +318,20 @@ static const struct pci_device_id sec_dev_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sec_dev_ids);
- 
--static u8 sec_get_endian(struct hisi_qm *qm)
-+static void sec_set_endian(struct hisi_qm *qm)
- {
- 	u32 reg;
- 
--	/*
--	 * As for VF, it is a wrong way to get endian setting by
--	 * reading a register of the engine
--	 */
--	if (qm->pdev->is_virtfn) {
--		dev_err_ratelimited(&qm->pdev->dev,
--				    "cannot access a register in VF!\n");
--		return SEC_LE;
--	}
- 	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	/* BD little endian mode */
--	if (!(reg & BIT(0)))
--		return SEC_LE;
-+	reg &= ~(BIT(1) | BIT(0));
-+	if (!IS_ENABLED(CONFIG_64BIT))
-+		reg |= BIT(1);
- 
--	/* BD 32-bits big endian mode */
--	else if (!(reg & BIT(1)))
--		return SEC_32BE;
- 
--	/* BD 64-bits big endian mode */
--	else
--		return SEC_64BE;
-+	if (!IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN))
-+		reg |= BIT(0);
-+
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static void sec_open_sva_prefetch(struct hisi_qm *qm)
-@@ -463,9 +452,7 @@ static int sec_engine_init(struct hisi_qm *qm)
- 		       qm->io_base + SEC_BD_ERR_CHK_EN_REG3);
- 
- 	/* config endian */
--	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
--	reg |= sec_get_endian(qm);
--	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
-+	sec_set_endian(qm);
- 
- 	sec_enable_clock_gate(qm);
- 
--- 
-2.7.4
+johannes
 
