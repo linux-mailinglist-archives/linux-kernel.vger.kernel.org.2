@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48DB3EBBAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0191C3EBB97
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhHMRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:47:43 -0400
-Received: from home.keithp.com ([63.227.221.253]:53698 "EHLO elaine.keithp.com"
+        id S229841AbhHMRl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:41:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhHMRrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:47:42 -0400
-X-Greylist: delayed 515 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Aug 2021 13:47:42 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by elaine.keithp.com (Postfix) with ESMTP id 18CD23F305B7;
-        Fri, 13 Aug 2021 10:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1628876297; bh=C899dx3Df3AlBcC6RWdM9Ct3+jWx0MfYIIh4qIowBy4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=XNpjLFqEaE+lVTXQIyoF7fyW7xynfMQrnC+oTY140zTc2Kv7Uja9mNxoEdf4MJRNZ
-         QsNwrwIO4PTqo5g8CN0X1/Cb4AJ9lomKgaLkaVT5dRMQ8TMfbcuSne28+KbLVMk+DH
-         8E6zELU5tRq+lrNB4hiGrsgxwmPAdPnlrAbXgAEskIVPVvKS1BF951kT9b7pYt7I4v
-         GOupgWlQ6ShPfSaVSpaMOBggWnmtPW5Ys8+ScyIM96kpTpnTdwpsGtEwtQ6MesZ2u8
-         hwo1129wooZyg9QjrPcP/5sfXMFHtiVvNItrkJQqiRRvILUw6HAz1O1dGF/mqFH4TX
-         O//JxFCQONEnA==
-X-Virus-Scanned: Debian amavisd-new at keithp.com
-Received: from elaine.keithp.com ([127.0.0.1])
-        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id Lh7T-VbpyHUU; Fri, 13 Aug 2021 10:38:12 -0700 (PDT)
-Received: from keithp.com (koto.keithp.com [192.168.11.2])
-        by elaine.keithp.com (Postfix) with ESMTPSA id 502D13F305B6;
-        Fri, 13 Aug 2021 10:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1628876292; bh=C899dx3Df3AlBcC6RWdM9Ct3+jWx0MfYIIh4qIowBy4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WMUxnb716BUu/6RWZggAojWV5Ms3XYq97jzlCiJPwldHoADb4VBLxcFjrRw2wVVuS
-         6aMOXrLVGGuXkOf+H+kEykM1JdyIxzge+ZvExd5WiK0kcc9D79fY6MF4m7LNA4ae6V
-         ibGkitZWlaAqEp3Z5BIrd6Bsojjedp2/ElwxAXbupEqeKqeuqnOiehJZ3wWs+KJIC7
-         DKar7ZgOSLwVkxDicaUt7mwRzOx1RgIHFl7YdzHvc/t1Yj1S2ssMYjaPa4EkZGfB9d
-         nuwz3UmHGrW352OX8jMp6FA8wcc9Yi22UBlWTsCy5oBiuTNJtaOm7wrzns/zol7T+R
-         iWuCRRWnZuWsA==
-Received: by keithp.com (Postfix, from userid 1000)
-        id 62D8C1E60119; Fri, 13 Aug 2021 10:38:34 -0700 (PDT)
-From:   Keith Packard <keithp@keithp.com>
-To:     Salah Triki <salah.triki@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: misc: chaoskey: remove useless else
-In-Reply-To: <20210813164049.GA2310720@pc>
-References: <20210813164049.GA2310720@pc>
-Date:   Fri, 13 Aug 2021 10:38:34 -0700
-Message-ID: <87bl61utwl.fsf@keithp.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S229535AbhHMRl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:41:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3241D60F51;
+        Fri, 13 Aug 2021 17:41:29 +0000 (UTC)
+Received: from 109-170-232-56.xdsl.murphx.net ([109.170.232.56] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mEbBP-004qe7-2x; Fri, 13 Aug 2021 18:41:27 +0100
+Date:   Fri, 13 Aug 2021 18:41:36 +0100
+Message-ID: <87im091bu7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+Subject: Re: [PATCH 2/5] arm64: Handle UNDEF in the EL2 stub vectors
+In-Reply-To: <2f6bf17f-d235-8311-13d5-dcb3d00e23c4@arm.com>
+References: <20210812190213.2601506-1-maz@kernel.org>
+        <20210812190213.2601506-3-maz@kernel.org>
+        <2f6bf17f-d235-8311-13d5-dcb3d00e23c4@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 109.170.232.56
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, zajec5@gmail.com, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, ardb@kernel.org, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Fri, 13 Aug 2021 14:08:23 +0100,
+Robin Murphy <robin.murphy@arm.com> wrote:
+> 
+> On 2021-08-12 20:02, Marc Zyngier wrote:
+> > As we want to handle the silly case where HVC has been disabled
+> > from EL3, augment our ability to handle exception at EL2.
+> > 
+> > Check for unknown exceptions (usually UNDEF) coming from EL2,
+> > and treat them as a failing HVC call into the stubs. While
+> > this isn't great and obviously doesn't catter for the gigantic
+> > range of possible exceptions, it isn't any worse than what we
+> > have today.
+> > 
+> > Just don't try and use it for anything else.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >   arch/arm64/kernel/hyp-stub.S | 19 ++++++++++++++++++-
+> >   1 file changed, 18 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> > index 43d212618834..026a34515b21 100644
+> > --- a/arch/arm64/kernel/hyp-stub.S
+> > +++ b/arch/arm64/kernel/hyp-stub.S
+> > @@ -46,7 +46,16 @@ SYM_CODE_END(__hyp_stub_vectors)
+> >   	.align 11
+> >     SYM_CODE_START_LOCAL(elx_sync)
+> > -	cmp	x0, #HVC_SET_VECTORS
+> > +	mrs	x4, spsr_el2
+> > +	and	x4, x4, #PSR_MODE_MASK
+> > +	orr	x4, x4, #1
+> > +	cmp	x4, #PSR_MODE_EL2h
+> > +	b.ne	0f
+> > +	mrs	x4, esr_el2
+> > +	eor	x4, x4, #ESR_ELx_IL
+> > +	cbz	x4, el2_undef
+> 
+> Hmm, might it be neater to check ESR_EL2.ISS to see if we landed here
+> for any reason *other* than a successfully-executed HVC?
 
-Salah Triki <salah.triki@gmail.com> writes:
+We absolutely could. However, the sixpence question (yes, that's the
+Brexit effect for you) is "what do you do with exceptions that are
+neither UNDEF now HVC?".
 
-> Remove useless else in order to make the code cleaner.
+We are taking a leap of faith by assuming that the only thing that
+will UNDEF at EL2 while the stubs are installed is HVC. If anything
+else occurs, I have no idea what to do with it. I guess we could always
+ignore it instead of treating it as a HVC (as it is done at the
+moment).
 
-> -	if (!dev->present) {
-> -		if (dev->open =3D=3D 0) {
-> -			mutex_unlock(&dev->lock);
-> +	mutex_unlock(&dev->lock);
-> +
-> +	if (!dev->present)
-> +		if (dev->open =3D=3D 0)
->  			chaoskey_free(dev);
-> -		} else
-> -			mutex_unlock(&dev->lock);
-> -	} else
-> -		mutex_unlock(&dev->lock);
+Thanks,
 
-This accesses dev->present outside of the lock region introducing a
-potential race condition.
+	M.
 
-=2D-=20
-=2Dkeith
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEw4O3eCVWE9/bQJ2R2yIaaQAAABEFAmEWrhoACgkQ2yIaaQAA
-ABGrbQ/+O0U3SxZLR2Hizm26TbH06UsEA5Mx4futZ23knkILxyPzMwSDeR2HFOTM
-ZrYOSgs+1aTKW5a3rHbQQMMB8btXuyORcZTLwJCRrbIXX4O7vQbzdT9+iuPUqbbd
-tlOleHpZLCCQipK3MUV02tpN+UH7IQ4UxmONjpLvFQBBA0mqNichpZ1Q0P2px4W8
-ecjz4rS+jES3iLZLbQHkhLx37wePDzavUJ++yxDKlJ798PHfN6Jhint8W25IpyQ6
-iaJdagoC6Xxo1IGXp+XJepu0PcqVTox4akS15PGhMQ7Kgdn9N5s3Bmv8QQ5JgjL3
-DMFEt3hSmxdnZtFGbq++L4NS6s0Fmds21Da9zj4yZ3XKZ3vVkOsF/lXDOrdnmiVD
-KwhtYqz3zbf0mTd4vUbnym6wTCONYnOb/hEahu6DFJL3wbC/NxvIIn7L68DgOHzC
-7WTyfdqOkAeFPRY4oIxOQLCdDf3Q5hD9k9VOj9ymkL1iKbx5bcw+0g+5e145e4yG
-f/in1d6EormuSTWyEwgMGDGxXEUHXJyHEqMBuXXtoeySIeEKXl8fzQAezDqxnh0J
-b4irU4usWAA2+BuNxZ/bfaKrrRqWBDsWJt8oKaNrRaTeaPSFvtBfG6iAjndqm4oq
-erMg5gpd6r0jd+44IBKHoIVRjT76n8+3PxxqYPlVctAvUMLX3NQ=
-=GgHp
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+Without deviation from the norm, progress is not possible.
