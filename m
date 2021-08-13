@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AED3EBE57
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FA83EBE60
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbhHMWmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 18:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        id S235408AbhHMWot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 18:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhHMWmC (ORCPT
+        with ESMTP id S235029AbhHMWor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:42:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56516C061756;
-        Fri, 13 Aug 2021 15:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=9LVCyfqZR/mJDKYzPBzlmzTBTxLDn7h7pvpHyqkQo6A=; b=LFI/tyvxzL1hQTH5R1lZEI8E7q
-        9SHEHzqBlZLD6FUMp1RVSGYGx7ibosArsCgo4sKgp+fe5j6SNmHoDI0onGPjmGASvsB05RTchMDJj
-        bRS0DTYIPshTLjxPDDxvIfk/LDW6TevpH4I+rjMCww55520LeNrEsDFNfbrCUke9Qnu1dHU2uAGww
-        wzNkiXAHa7ph7cr+iZYFTgIxZFsga42YJ4pYfmMppiwHFrkcVgyiuIEqJf4y+AOev5AlFGPDftETB
-        p2YjUfiWJbJDSbFXgOdEUQCetL220a8NPJu77vfX0YKCHhyJVlUEBgSAfNNjriMPfXIUzY41sKe3S
-        9A5tMLAw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEfrp-00Df0o-1T; Fri, 13 Aug 2021 22:41:33 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH] Makefile: use -Wno-main in the full kernel tree
-Date:   Fri, 13 Aug 2021 15:41:31 -0700
-Message-Id: <20210813224131.25803-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Fri, 13 Aug 2021 18:44:47 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75435C061756;
+        Fri, 13 Aug 2021 15:44:19 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id c12so4789709ljr.5;
+        Fri, 13 Aug 2021 15:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UA6o2CCYezR/kHTPRnO3Z0sstg3TXd9hIrBv8hmRn7o=;
+        b=udZHgeAR7SMTHzfd4w96JqJIMPnbpwc/0RAtjKZw8dUUjybQWMXzEjEp2l0XETE8Ra
+         tbIXV/3KDrAQppyWAVPXtvAPu5R/NjKgX2QgJOlEkdiAEfFb4V8nRbUP6V/bWn+Dm1IW
+         Ae7Op2TRQRZXbs1eKogPoOfzyUYRABYWAGcSHBg8GDHDhIQSkMWBQ8TbjqEssZBytmdL
+         wyVjeJa/bvqmN+odBAsQr+nDLyQKcLlITiwkNgH16xqn7Br25Oi6MwA4Gxhoe2dcfYj1
+         le++OYtIixK95VRQeLTJgFlt4+um2jKnx1Igx3ls28KU+nGbiNh60VEtNc3pDTcdGzJH
+         W4xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UA6o2CCYezR/kHTPRnO3Z0sstg3TXd9hIrBv8hmRn7o=;
+        b=DzMPTK+nAjko1TNy5dTKBrmtQTrv9PrYifVkpBQi5oNIVcUVvgLFHNbKjZtt6Z1y9/
+         WjRy8Su6DhGMPrRuu0gUEP1vZSmfVplW3I3RF4ipspMReEDi8GtqjAN6JkHoIdBYuZsN
+         DwIRgI2O/FQnwBrrdEIgKrPU6ie2Tfh4jGNE3T2BdWLJeSpTcB1Q0cNthgpZyRJiJy36
+         Rpb4ur+l43rT4FjAW8uNk5UaRSldw7+TFp4xOnQO5x6UJ7gN5Q9FqADK7+s5EPtGCDG6
+         pvgjBm4FcJMyzwuTB1kWLmZWKdpFxiU/+k9j6n/wQk0+0M6EpI9gN4YLEwdOSg7E7tGu
+         7g7w==
+X-Gm-Message-State: AOAM530eF3DItG3oCOlPhx0b5suDPorkbqnXI3tGWhUxk7wemJwIWhzh
+        zVOgcx3HpU/4Lm0q9k/6+JA=
+X-Google-Smtp-Source: ABdhPJwD8QzbG+DTZt+H4DZGVFJ3VMOnRmXbhHvHhOeNASdABTbinl9c0w56b3KQG4CpKFc6+Bke2g==
+X-Received: by 2002:a2e:9584:: with SMTP id w4mr3422787ljh.258.1628894657827;
+        Fri, 13 Aug 2021 15:44:17 -0700 (PDT)
+Received: from localhost.localdomain ([46.61.204.59])
+        by smtp.gmail.com with ESMTPSA id m2sm265538lfu.61.2021.08.13.15.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 15:44:17 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
+        himadrispandya@gmail.com, andrew@lunn.ch
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Subject: [PATCH v2] net: asix: fix uninit value in asix_mdio_read
+Date:   Sat, 14 Aug 2021 01:42:19 +0300
+Message-Id: <20210813224219.11359-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YRbw1psAc8jQu4ob@lunn.ch>
+References: <YRbw1psAc8jQu4ob@lunn.ch>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using gcc (SUSE Linux) 7.5.0 (on openSUSE 15.3), I see a
-build warning:
+Syzbot reported uninit-value in asix_mdio_read(). The problem was in
+missing error handling. asix_read_cmd() should initialize passed stack
+variable smsr, but it can fail in some cases. Then while condidition
+checks possibly uninit smsr variable.
 
-../kernel/trace/trace_osnoise.c: In function 'start_kthread':
-../kernel/trace/trace_osnoise.c:1461:8: warning: 'main' is usually a function [-Wmain]
-  void *main = osnoise_main;
-        ^~~~
+Since smsr is uninitialized stack variable, driver can misbehave,
+because smsr will be random in case of asix_read_cmd() failure.
+Fix it by adding error cheking and just continue the loop instead of
+checking uninit value.
 
-Quieten that warning by using "-Wno-main". It's OK to use "main" as a
-declaration name in the kernel.
-
-Build-tested on most ARCHes.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
+Fixes: 8a46f665833a ("net: asix: Avoid looping when the device is disconnected")
+Reported-by: syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20210812.orig/Makefile
-+++ linux-next-20210812/Makefile
-@@ -522,7 +522,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-P
- KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
- 		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
- 		   -Werror=implicit-function-declaration -Werror=implicit-int \
--		   -Werror=return-type -Wno-format-security \
-+		   -Werror=return-type -Wno-format-security -Wno-main \
- 		   -std=gnu89
- KBUILD_CPPFLAGS := -D__KERNEL__
- KBUILD_RUST_TARGET := $(srctree)/arch/$(SRCARCH)/rust/target.json
+Changes in v2:
+	1. Fixed previous wrong approach and changed while loop to for loop
+	2. Reported-and-tested-by: tag removed, since KMSAN tests can be
+	   false positive. Used Reported-by instead.
+
+---
+ drivers/net/usb/asix_common.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
+index ac92bc52a85e..7019c25e591c 100644
+--- a/drivers/net/usb/asix_common.c
++++ b/drivers/net/usb/asix_common.c
+@@ -468,18 +468,25 @@ int asix_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 	__le16 res;
+ 	u8 smsr;
+-	int i = 0;
++	int i;
+ 	int ret;
+ 
+ 	mutex_lock(&dev->phy_mutex);
+-	do {
++	for (i = 0; i < 30; ++i) {
+ 		ret = asix_set_sw_mii(dev, 0);
+ 		if (ret == -ENODEV || ret == -ETIMEDOUT)
+ 			break;
+ 		usleep_range(1000, 1100);
+ 		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
+ 				    0, 0, 1, &smsr, 0);
+-	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
++		if (ret == -ENODEV)
++			break;
++		else if (ret < 0)
++			continue;
++		else if (smsr & AX_HOST_EN)
++			break;
++	}
++
+ 	if (ret == -ENODEV || ret == -ETIMEDOUT) {
+ 		mutex_unlock(&dev->phy_mutex);
+ 		return ret;
+-- 
+2.32.0
+
