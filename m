@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7628A3EB801
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20563EB7F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241300AbhHMPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S241463AbhHMPKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241562AbhHMPKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:10:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F0C61106;
-        Fri, 13 Aug 2021 15:09:37 +0000 (UTC)
+        id S241292AbhHMPJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:09:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44B596109D;
+        Fri, 13 Aug 2021 15:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867377;
-        bh=lw1W+e583AmWiGbJnihoWDafUqNBgEjBWHvYnHdpkMM=;
+        s=korg; t=1628867321;
+        bh=cZF+gyiBCJw0XZHtF3PVJAZBdgXcVwz2oOH2/y3iHqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jxnXVNDL6bfL42/fEU62UXRntLl707aoj9v5V0qnDO89xAUEDDA/jXuek2Gi21R8n
-         bqKwEt9TTxnN2iFNEqy9WUfXtDWBsSSQB+yjBc5aoxLwx1utINFCtPi6iKIPENJ+WM
-         Dx28IMd3zpFSqnWV+1Y33h/lVaPt9ViRBkPP6Gc4=
+        b=FoDN4dpEmjgJ/ltrxigDThcgUnERgmj4KyP98gkMkjCUBiIK3eGu5bXkCGzzIXAgs
+         9j6aZReS6A5xs3eJb8XeMTYINyt2qeC5hMQrg0qlWZFf9ibulE25XTwf6uOILHYQ7b
+         xk6XlAcnET9NfW6mKnyt/5Vl/aYSansVL5P4C//0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: [PATCH 4.9 20/30] MIPS: Malta: Do not byte-swap accesses to the CBUS UART
-Date:   Fri, 13 Aug 2021 17:06:48 +0200
-Message-Id: <20210813150523.090468872@linuxfoundation.org>
+        stable@vger.kernel.org, Alois Wohlschlager <alois1@gmx-topmail.de>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.4 25/25] ovl: prevent private clone if bind mount is not allowed
+Date:   Fri, 13 Aug 2021 17:06:49 +0200
+Message-Id: <20210813150521.531089718@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +39,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit 9a936d6c3d3d6c33ecbadf72dccdb567b5cd3c72 upstream.
+commit 427215d85e8d1476da1a86b8d67aceb485eb3631 upstream.
 
-Correct big-endian accesses to the CBUS UART, a Malta on-board discrete
-TI16C550C part wired directly to the system controller's device bus, and
-do not use byte swapping with the 32-bit accesses to the device.
+Add the following checks from __do_loopback() to clone_private_mount() as
+well:
 
-The CBUS is used for devices such as the boot flash memory needed early
-on in system bootstrap even before PCI has been initialised.  Therefore
-it uses the system controller's device bus, which follows the endianness
-set with the CPU, which means no byte-swapping is ever required for data
-accesses to CBUS, unlike with PCI.
+ - verify that the mount is in the current namespace
 
-The CBUS UART uses the UPIO_MEM32 access method, that is the `readl' and
-`writel' MMIO accessors, which on the MIPS platform imply byte-swapping
-with PCI systems.  Consequently the wrong byte lane is accessed with the
-big-endian configuration and the UART is not correctly accessed.
+ - verify that there are no locked children
 
-As it happens the UPIO_MEM32BE access method makes use of the `ioread32'
-and `iowrite32' MMIO accessors, which still use `readl' and `writel'
-respectively, however they byte-swap data passed, effectively cancelling
-swapping done with the accessors themselves and making it suitable for
-the CBUS UART.
-
-Make the CBUS UART switch between UPIO_MEM32 and UPIO_MEM32BE then,
-based on the endianness selected.  With this change in place the device
-is correctly recognised with big-endian Malta at boot, along with the
-Super I/O devices behind PCI:
-
-Serial: 8250/16550 driver, 5 ports, IRQ sharing enabled
-printk: console [ttyS0] disabled
-serial8250.0: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-printk: console [ttyS0] enabled
-printk: bootconsole [uart8250] disabled
-serial8250.0: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-serial8250.0: ttyS2 at MMIO 0x1f000900 (irq = 20, base_baud = 230400) is a 16550A
-
-Fixes: e7c4782f92fc ("[MIPS] Put an end to <asm/serial.h>'s long and annyoing existence")
-Cc: stable@vger.kernel.org # v2.6.23+
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2106260524430.37803@angie.orcam.me.uk
+Reported-by: Alois Wohlschlager <alois1@gmx-topmail.de>
+Fixes: c771d683a62e ("vfs: introduce clone_private_mount()")
+Cc: <stable@vger.kernel.org> # v3.18
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/mti-malta/malta-platform.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/namespace.c |   42 +++++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 15 deletions(-)
 
---- a/arch/mips/mti-malta/malta-platform.c
-+++ b/arch/mips/mti-malta/malta-platform.c
-@@ -48,7 +48,8 @@ static struct plat_serial8250_port uart8
- 		.mapbase	= 0x1f000900,	/* The CBUS UART */
- 		.irq		= MIPS_CPU_IRQ_BASE + MIPSCPU_INT_MB2,
- 		.uartclk	= 3686400,	/* Twice the usual clk! */
--		.iotype		= UPIO_MEM32,
-+		.iotype		= IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) ?
-+				  UPIO_MEM32BE : UPIO_MEM32,
- 		.flags		= CBUS_UART_FLAGS,
- 		.regshift	= 3,
- 	},
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1830,6 +1830,20 @@ void drop_collected_mounts(struct vfsmou
+ 	namespace_unlock();
+ }
+ 
++static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
++{
++	struct mount *child;
++
++	list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
++		if (!is_subdir(child->mnt_mountpoint, dentry))
++			continue;
++
++		if (child->mnt.mnt_flags & MNT_LOCKED)
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * clone_private_mount - create a private clone of a path
+  *
+@@ -1844,16 +1858,27 @@ struct vfsmount *clone_private_mount(str
+ 	struct mount *old_mnt = real_mount(path->mnt);
+ 	struct mount *new_mnt;
+ 
++	down_read(&namespace_sem);
+ 	if (IS_MNT_UNBINDABLE(old_mnt))
+-		return ERR_PTR(-EINVAL);
++		goto invalid;
++
++	if (!check_mnt(old_mnt))
++		goto invalid;
++
++	if (has_locked_children(old_mnt, path->dentry))
++		goto invalid;
+ 
+-	down_read(&namespace_sem);
+ 	new_mnt = clone_mnt(old_mnt, path->dentry, CL_PRIVATE);
+ 	up_read(&namespace_sem);
++
+ 	if (IS_ERR(new_mnt))
+ 		return ERR_CAST(new_mnt);
+ 
+ 	return &new_mnt->mnt;
++
++invalid:
++	up_read(&namespace_sem);
++	return ERR_PTR(-EINVAL);
+ }
+ EXPORT_SYMBOL_GPL(clone_private_mount);
+ 
+@@ -2169,19 +2194,6 @@ static int do_change_type(struct path *p
+ 	return err;
+ }
+ 
+-static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
+-{
+-	struct mount *child;
+-	list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
+-		if (!is_subdir(child->mnt_mountpoint, dentry))
+-			continue;
+-
+-		if (child->mnt.mnt_flags & MNT_LOCKED)
+-			return true;
+-	}
+-	return false;
+-}
+-
+ /*
+  * do loopback mount.
+  */
 
 
