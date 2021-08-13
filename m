@@ -2,193 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB2D3EBD4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9253EBD7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhHMU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbhHMU3T (ORCPT
+        id S234365AbhHMUkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:40:18 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:39754 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233905AbhHMUkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:29:19 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092DCC0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:28:52 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id r5so17660608oiw.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 13:28:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=zk1heXrMYtMEgRgp0UUFws+A6Ti7NQpBEIoZ/rcxUIA=;
-        b=HpJ++4TkSiT7tXjH6uZWBqx3wvzNFo+Jrr65Jk3Irp4R5Tpxh/q00HHNAThglteN9j
-         y6jesKB+sQUjm+C7RkzsC5RryrlgWSCkc4v/LHyLaGg1+OuLNhQRB/tHf5lI56eJP+vA
-         rQLQNRcYp3VQgtWczVL8TyVN7W36icZHoim/A=
+        Fri, 13 Aug 2021 16:40:17 -0400
+Received: by mail-oi1-f182.google.com with SMTP id bj40so17737642oib.6;
+        Fri, 13 Aug 2021 13:39:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=zk1heXrMYtMEgRgp0UUFws+A6Ti7NQpBEIoZ/rcxUIA=;
-        b=RkHVEopW8mIZd/DT1N/UMeTASeckHkHWWjgt0yR/XLT5I+YiDroXFDn7rEy5yBx1O1
-         sUVMUEeTC20yd5XcNn/dNaMKsl/Ii2e7hTvw+HfbcE9IxsP9FBblbFqPvwbjCnaas9Oc
-         VLf+UuAmcfCh1+IRSe68qZqdE2Q+wYHf6NLjoFv5CMgt3PbfgvDaPIYW01WqMzOyF+v3
-         I134vtE3nNxTZDyxJZw3g3oHv3tryBW8iy8UDzvyum3rJkIije26Keteq7+tPA7Xba2Q
-         L2qV1bFK6DctpHvmYWC8steJr/iKWBkT6El2saERCkKXGhZKNzLlR5K4J63SwgvMRj97
-         nWDQ==
-X-Gm-Message-State: AOAM530+h6K7AHMcnNCK4ojb9F1QanlK2UFDtGkYi4y3aRQF37mqIMP1
-        RXA87+AsVHj+DlNiR0hr/45GQ5/lXAxZ2g==
-X-Google-Smtp-Source: ABdhPJyPMGSNbTRUvOoP64e+K7c7MuB2NsgzhM14FVCQM63TgFT4G7ND8o9CL8N3fuyJikz2JhTh+A==
-X-Received: by 2002:aca:44d4:: with SMTP id r203mr3593452oia.126.1628886531195;
-        Fri, 13 Aug 2021 13:28:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 45sm537475otm.43.2021.08.13.13.28.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 13:28:50 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest update for Linux 5.14-rc6
-Message-ID: <f27686fd-6fb5-a906-b2d0-1e07cdf83594@linuxfoundation.org>
-Date:   Fri, 13 Aug 2021 14:28:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nwf3HxBs/DWJ6gxuqn8PSDwNL+5hxahjlAUN3iHW5uc=;
+        b=iSx/IgS+xOQF7ZzCNuMM3oDLgg12c1Bq3eU8InR/HevmqlEOWawpy4JIb6YaqF5tex
+         6ezPQfIe0uZN/EPFGdZf/aFn+FQ+AZFqjXwDfCe1XVAkb3x/47qAC1WCSl7Eg+cU0Gue
+         /lRx+PCBSJtEt5nq0rdj5SWlEUHLblV3+qS6gfEpPr6JKPcnJQC/rtelIdTKn6UTrCkW
+         ihamRDSgiQ32l3ykHjmk86p7CQBmBWO7TEhO9CMjyTOuQdV23MNX84+dQRB4m8p21vYl
+         9o1DnAKoaZwtVTzRFl1XdaDVPowtdjVu7NloK3lrN4CP3/FWGjv0MT0vZ2M8gP3eg792
+         w7kA==
+X-Gm-Message-State: AOAM531/69SCOVxG/KMIvHSK6a8sE6a9Eu2wUey0dDugzqdLmgrqBeVo
+        WWEBLcwcIkanpxxxzgOlJw==
+X-Google-Smtp-Source: ABdhPJxPhDHaoGXr6o1TMLVqDILEGqBKa35MFIwEH1UvdA2N+YpquykztdNxSCAP2MZJI3Q6zKmZLQ==
+X-Received: by 2002:aca:2b05:: with SMTP id i5mr3555977oik.55.1628887189594;
+        Fri, 13 Aug 2021 13:39:49 -0700 (PDT)
+Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
+        by smtp.gmail.com with ESMTPSA id z23sm573158oib.36.2021.08.13.13.39.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 13:39:48 -0700 (PDT)
+Received: (nullmailer pid 3990366 invoked by uid 1000);
+        Fri, 13 Aug 2021 20:39:47 -0000
+Date:   Fri, 13 Aug 2021 15:39:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-kernel@vger.kernel.org, broonie@kernel.org,
+        lee.jones@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com, linux-imx@nxp.com,
+        alistair23@gmail.com, kernel@pengutronix.de
+Subject: Re: [PATCH v10 01/11] dt-bindings: mfd: Initial commit of
+ silergy,sy7636a.yaml
+Message-ID: <YRbYk8K9ob4OqRe9@robh.at.kernel.org>
+References: <20210807103940.152-1-alistair@alistair23.me>
+ <20210807103940.152-2-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------6505005E49B8889672A6C2AA"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807103940.152-2-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------6505005E49B8889672A6C2AA
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Sat, 07 Aug 2021 20:39:30 +1000, Alistair Francis wrote:
+> Initial support for the Silergy SY7636A Power Management chip
+> and regulator.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  .../bindings/mfd/silergy,sy7636a.yaml         | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> 
 
-Hi Linus,
-
-Please pull the following Kselftest fixes update for Linux 5.14-rc6
-
-This Kselftest fixes update for Linux 5.14-rc6 consists of a single patch
-to sgx test to fix Q1 and Q2 calculation.
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
-
-   Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.14-rc6
-
-for you to fetch changes up to 567c39047dbee341244fe3bf79fea24ee0897ff9:
-
-   selftests/sgx: Fix Q1 and Q2 calculation in sigstruct.c (2021-07-30 17:20:01 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-fixes-5.14-rc6
-
-This Kselftest fixes update for Linux 5.14-rc6 consists of a single patch
-to sgx test to fix Q1 and Q2 calculation.
-
-----------------------------------------------------------------
-Tianjia Zhang (1):
-       selftests/sgx: Fix Q1 and Q2 calculation in sigstruct.c
-
-  tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++++++----------------
-  1 file changed, 21 insertions(+), 20 deletions(-)
-----------------------------------------------------------------
-
---------------6505005E49B8889672A6C2AA
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-fixes-5.14-rc6.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-fixes-5.14-rc6.diff"
-
-diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
-index dee7a3d6c5a5..92bbc5a15c39 100644
---- a/tools/testing/selftests/sgx/sigstruct.c
-+++ b/tools/testing/selftests/sgx/sigstruct.c
-@@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
- 	return true;
- }
- 
-+static void reverse_bytes(void *data, int length)
-+{
-+	int i = 0;
-+	int j = length - 1;
-+	uint8_t temp;
-+	uint8_t *ptr = data;
-+
-+	while (i < j) {
-+		temp = ptr[i];
-+		ptr[i] = ptr[j];
-+		ptr[j] = temp;
-+		i++;
-+		j--;
-+	}
-+}
-+
- static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
- 		      uint8_t *q2)
- {
- 	struct q1q2_ctx ctx;
-+	int len;
- 
- 	if (!alloc_q1q2_ctx(s, m, &ctx)) {
- 		fprintf(stderr, "Not enough memory for Q1Q2 calculation\n");
-@@ -89,8 +106,10 @@ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
- 		goto out;
- 	}
- 
--	BN_bn2bin(ctx.q1, q1);
--	BN_bn2bin(ctx.q2, q2);
-+	len = BN_bn2bin(ctx.q1, q1);
-+	reverse_bytes(q1, len);
-+	len = BN_bn2bin(ctx.q2, q2);
-+	reverse_bytes(q2, len);
- 
- 	free_q1q2_ctx(&ctx);
- 	return true;
-@@ -152,22 +171,6 @@ static RSA *gen_sign_key(void)
- 	return key;
- }
- 
--static void reverse_bytes(void *data, int length)
--{
--	int i = 0;
--	int j = length - 1;
--	uint8_t temp;
--	uint8_t *ptr = data;
--
--	while (i < j) {
--		temp = ptr[i];
--		ptr[i] = ptr[j];
--		ptr[j] = temp;
--		i++;
--		j--;
--	}
--}
--
- enum mrtags {
- 	MRECREATE = 0x0045544145524345,
- 	MREADD = 0x0000000044444145,
-@@ -367,8 +370,6 @@ bool encl_measure(struct encl *encl)
- 	/* BE -> LE */
- 	reverse_bytes(sigstruct->signature, SGX_MODULUS_SIZE);
- 	reverse_bytes(sigstruct->modulus, SGX_MODULUS_SIZE);
--	reverse_bytes(sigstruct->q1, SGX_MODULUS_SIZE);
--	reverse_bytes(sigstruct->q2, SGX_MODULUS_SIZE);
- 
- 	EVP_MD_CTX_destroy(ctx);
- 	RSA_free(key);
-
---------------6505005E49B8889672A6C2AA--
+Reviewed-by: Rob Herring <robh@kernel.org>
