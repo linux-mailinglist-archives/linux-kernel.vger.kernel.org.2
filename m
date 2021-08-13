@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DED3EB80C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22CD3EB7CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241662AbhHMPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
+        id S241347AbhHMPJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:09:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241491AbhHMPKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F075A6109D;
-        Fri, 13 Aug 2021 15:09:47 +0000 (UTC)
+        id S241304AbhHMPJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:09:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BCCE610A5;
+        Fri, 13 Aug 2021 15:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867388;
-        bh=dbdpBBFRRzf13jbm/8FS7yEMCQC+VVBhsWAdwznpnhQ=;
+        s=korg; t=1628867329;
+        bh=yyoemwsBvh19aiEslTcjG5vsMeyQtHkA1RfuZX4iPDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GCLcvMRg+2NycGmVgOLSx3nar0pM7zmqV/Vhdss7TXeusfxCs5lvDdqtzQNmNz1gh
-         nS8jje50TsSJCwbTe30pkuENPxZxhVW1g1EfD2QsKDlFZqZ2P0yQJ2BG3u0Z2k93QT
-         T7jbc/SkQ0bO8oVDO5KpI8MJmwk/JvRRXlMZmAsY=
+        b=h7gT2PjpEPHMyPoq8+uOY0Ev21xwU7mPcVWXAVNaeK06nHnFkIa4i6Zt5OL++Hmsf
+         r8AseWeN/yWY4HFzt2HaOfTM7eDSXIESQbgvjkeGF6BKCmtt9OV3y2byhcNaHS6fyi
+         1pksEY2XowK3GtjFROrUQvP8QtAx+eAV2nw7cirw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 03/30] media: videobuf2-core: dequeue if start_streaming fails
-Date:   Fri, 13 Aug 2021 17:06:31 +0200
-Message-Id: <20210813150522.556786043@linuxfoundation.org>
+Subject: [PATCH 4.4 08/25] net: vxge: fix use-after-free in vxge_device_unregister
+Date:   Fri, 13 Aug 2021 17:06:32 +0200
+Message-Id: <20210813150520.997995843@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,69 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit c592b46907adbeb81243f7eb7a468c36692658b8 ]
+[ Upstream commit 942e560a3d3862dd5dee1411dbdd7097d29b8416 ]
 
-If a vb2_queue sets q->min_buffers_needed then when the number of
-queued buffers reaches q->min_buffers_needed, vb2_core_qbuf() will call
-the start_streaming() callback. If start_streaming() returns an error,
-then that error was just returned by vb2_core_qbuf(), but the buffer
-was still queued. However, userspace expects that if VIDIOC_QBUF fails,
-the buffer is returned dequeued.
+Smatch says:
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
 
-So if start_streaming() fails, then remove the buffer from the queue,
-thus avoiding this unwanted side-effect.
+Since vdev pointer is netdev private data accessing it after free_netdev()
+call can cause use-after-free bug. Fix it by moving free_netdev() call at
+the end of the function
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Tested-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Fixes: b3379c6201bb ("[media] vb2: only call start_streaming if sufficient buffers are queued")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 6cca200362b4 ("vxge: cleanup probe error paths")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/videobuf2-core.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/videobuf2-core.c b/drivers/media/v4l2-core/videobuf2-core.c
-index b1a4d4e2341b..3ac9f7260e72 100644
---- a/drivers/media/v4l2-core/videobuf2-core.c
-+++ b/drivers/media/v4l2-core/videobuf2-core.c
-@@ -1370,6 +1370,7 @@ static int vb2_start_streaming(struct vb2_queue *q)
- int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- {
- 	struct vb2_buffer *vb;
-+	enum vb2_buffer_state orig_state;
- 	int ret;
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index e0993eba5df3..c6950e580883 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -3539,13 +3539,13 @@ static void vxge_device_unregister(struct __vxge_hw_device *hldev)
  
- 	if (q->error) {
-@@ -1399,6 +1400,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- 	 * Add to the queued buffers list, a buffer will stay on it until
- 	 * dequeued in dqbuf.
- 	 */
-+	orig_state = vb->state;
- 	list_add_tail(&vb->queued_entry, &q->queued_list);
- 	q->queued_count++;
- 	q->waiting_for_buffers = false;
-@@ -1429,8 +1431,17 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- 	if (q->streaming && !q->start_streaming_called &&
- 	    q->queued_count >= q->min_buffers_needed) {
- 		ret = vb2_start_streaming(q);
--		if (ret)
-+		if (ret) {
-+			/*
-+			 * Since vb2_core_qbuf will return with an error,
-+			 * we should return it to state DEQUEUED since
-+			 * the error indicates that the buffer wasn't queued.
-+			 */
-+			list_del(&vb->queued_entry);
-+			q->queued_count--;
-+			vb->state = orig_state;
- 			return ret;
-+		}
- 	}
+ 	kfree(vdev->vpaths);
  
- 	dprintk(1, "qbuf of buffer %d succeeded\n", vb->index);
+-	/* we are safe to free it now */
+-	free_netdev(dev);
+-
+ 	vxge_debug_init(vdev->level_trace, "%s: ethernet device unregistered",
+ 			buf);
+ 	vxge_debug_entryexit(vdev->level_trace,	"%s: %s:%d  Exiting...", buf,
+ 			     __func__, __LINE__);
++
++	/* we are safe to free it now */
++	free_netdev(dev);
+ }
+ 
+ /*
 -- 
 2.30.2
 
