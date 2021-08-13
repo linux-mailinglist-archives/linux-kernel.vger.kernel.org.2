@@ -2,193 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C816B3EB6D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1133EB6D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240841AbhHMOgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:36:48 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:38274
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240698AbhHMOgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:36:47 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 061DB3F04E
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 14:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628865380;
-        bh=x9UCZvVc7jU0CntSkbEGlw9mwi/YjTVnEbLIpC6FvVI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=L8IM+no85s9zX0AJjtwcrZoJAaGbc9VW5qLkG1yerZYIfxcNI/4613bfUk0X+caf7
-         uQ/dHqO7yWtiJOpkPLkTrd0IbjBKktl92XYOdC09UhZDCzfSjW8O7uASOm8trqJWzr
-         +fEGRjcNa+OazrGrdjTKw599R+zhNXu2D1e8m6vHT1kAxC1urW0CClTw03kraBf9DG
-         Htbhm6EiRedT9njEQ8h99UnqkjnylANylMf+nQdY9lVZmlBkFGCkjJotUy9cDOuiY7
-         GiGD/LMHZLbwXeicr4PvT3uavWY2aln9JXgOyR2CchvxnP+d7K9WhbakB7EfyN54Yv
-         670BrvyOfNcYQ==
-Received: by mail-ed1-f71.google.com with SMTP id dh21-20020a0564021d35b02903be0aa37025so4990532edb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:36:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x9UCZvVc7jU0CntSkbEGlw9mwi/YjTVnEbLIpC6FvVI=;
-        b=OpVnTHveSzs8G3kALtmm1q5vMzVXVKOdFP9h3JV1ELrFmTHHDYjxgrvTKPZQ72orSC
-         8o3lcO2YJUpNOxrV/DZmiCKZjnI9jXGrMR2eE3L8P0FVCYlYi5WDnYNtO3y1WWl9Y4EV
-         CuRm6Fb/3LC+HjjXF6mI8qmpa3tfaojSI7d7lA8gqfqnjRpypeImaF9siPOUGTifaM9G
-         QRigbmlH/Bdtzz+CHVUCXuOzpyyrxLkGN+6Ik0MGRtcxvmZkh8qjrx3wYFn+aXlds+3T
-         LYXPVmZfMvPevR9smcCHkZZiwM/u4PIAXdQtlQnByu5VAMVjqjZ9FW2OXoucUkYrUPU0
-         n4Zw==
-X-Gm-Message-State: AOAM530u73+LdanWo9E838aNdRjtbAr94LeROFKvNGKyPACCS5Rg908+
-        bNl1+s6RZTRnJk1i/MC3XQu/ymjTHbCm3mtJd5q0macijllyt5iUZxMa1up9+dt7bzfzyQFC7Yz
-        Vd7IZ8zcNOeOwBslACOrlmTK1/Jn8bnC/1u6RzdcDpA==
-X-Received: by 2002:a05:6402:d5c:: with SMTP id ec28mr3565077edb.3.1628865379502;
-        Fri, 13 Aug 2021 07:36:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuMoY4+XcabAYYpTGyWYyBxRg6Csmgkh9iJI2Xs9pb8x6z6Xqx0ACIqM/rZBFia4ZB4i5W9w==
-X-Received: by 2002:a05:6402:d5c:: with SMTP id ec28mr3565051edb.3.1628865379337;
-        Fri, 13 Aug 2021 07:36:19 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id d26sm989219edp.90.2021.08.13.07.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 07:36:18 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Alban Bedel <albeu@free.fr>, Paul Burton <paul.burton@mips.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH] dt-bindings: memory: convert Qualcomm Atheros DDR to dtschema
-Date:   Fri, 13 Aug 2021 16:35:37 +0200
-Message-Id: <20210813143537.130310-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S240794AbhHMOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:37:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:54144 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235396AbhHMOhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 10:37:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1622C1042;
+        Fri, 13 Aug 2021 07:37:23 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3942E3F718;
+        Fri, 13 Aug 2021 07:37:22 -0700 (PDT)
+Subject: Re: [PATCH v6] arm pl011 serial: support multi-irq request
+To:     Bing Fan <hptsfb@gmail.com>, gregkh@linuxfoundation.org,
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1d691b6b-dbc4-36b0-2e2a-beb95c4c9cb6@arm.com>
+Date:   Fri, 13 Aug 2021 15:37:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Qualcomm Atheros AR7xxx/AR9xxx DDR controller to DT schema
-format using json-schema.
+[ +Russell as the listed PL011 maintainer ]
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../ath79-ddr-controller.txt                  | 35 -----------
- .../qca,ath79-ddr-controller.yaml             | 61 +++++++++++++++++++
- 2 files changed, 61 insertions(+), 35 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml
+On 2021-08-13 04:31, Bing Fan wrote:
+> From: Bing Fan <tombinfan@tencent.com>
+> 
+> In order to make pl011 work better, multiple interrupts are
+> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+> at the same time, pl011 to GIC does not merge the interrupt
+> lines(each serial-interrupt corresponding to different GIC hardware
+> interrupt), so need to enable and request multiple gic interrupt
+> numbers in the driver.
+> 
+> Signed-off-by: Bing Fan <tombinfan@tencent.com>
+> ---
+>   drivers/tty/serial/amba-pl011.c | 39 +++++++++++++++++++++++++++++++--
+>   1 file changed, 37 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+> index e14f3378b8a0..eaac3431459c 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -1701,6 +1701,41 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
+>   	}
+>   }
+>   
+> +static void pl011_release_multi_irqs(struct uart_amba_port *uap, unsigned int max_cnt)
+> +{
+> +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
+> +	int i;
+> +
+> +	for (i = 0; i < max_cnt; i++)
+> +		if (amba_dev->irq[i])
+> +			free_irq(amba_dev->irq[i], uap);
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt b/Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt
-deleted file mode 100644
-index c81af75bcd88..000000000000
---- a/Documentation/devicetree/bindings/memory-controllers/ath79-ddr-controller.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--Binding for Qualcomm  Atheros AR7xxx/AR9xxx DDR controller
--
--The DDR controller of the AR7xxx and AR9xxx families provides an interface
--to flush the FIFO between various devices and the DDR. This is mainly used
--by the IRQ controller to flush the FIFO before running the interrupt handler
--of such devices.
--
--Required properties:
--
--- compatible: has to be "qca,<soc-type>-ddr-controller",
--  "qca,[ar7100|ar7240]-ddr-controller" as fallback.
--  On SoC with PCI support "qca,ar7100-ddr-controller" should be used as
--  fallback, otherwise "qca,ar7240-ddr-controller" should be used.
--- reg: Base address and size of the controller's memory area
--- #qca,ddr-wb-channel-cells: Specifies the number of cells needed to encode
--			     the write buffer channel index, should be 1.
--
--Example:
--
--	ddr_ctrl: memory-controller@18000000 {
--		compatible = "qca,ar9132-ddr-controller",
--				"qca,ar7240-ddr-controller";
--		reg = <0x18000000 0x100>;
--
--		#qca,ddr-wb-channel-cells = <1>;
--	};
--
--	...
--
--	interrupt-controller {
--		...
--		qca,ddr-wb-channel-interrupts = <2>, <3>, <4>, <5>;
--		qca,ddr-wb-channels = <&ddr_ctrl 3>, <&ddr_ctrl 2>,
--					<&ddr_ctrl 0>, <&ddr_ctrl 1>;
--	};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml b/Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml
-new file mode 100644
-index 000000000000..9566b3421f03
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/qca,ath79-ddr-controller.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/qca,ath79-ddr-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Atheros AR7xxx/AR9xxx DDR controller
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+description: |
-+  The DDR controller of the AR7xxx and AR9xxx families provides an interface to
-+  flush the FIFO between various devices and the DDR. This is mainly used by
-+  the IRQ controller to flush the FIFO before running the interrupt handler of
-+  such devices.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: qca,ar9132-ddr-controller
-+          - const: qca,ar7240-ddr-controller
-+      - items:
-+          - enum:
-+              - qca,ar7100-ddr-controller
-+              - qca,ar7240-ddr-controller
-+
-+  "#qca,ddr-wb-channel-cells":
-+    description: |
-+      Specifies the number of cells needed to encode the write buffer channel
-+      index.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    const: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - "#qca,ddr-wb-channel-cells"
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ddr_ctrl: memory-controller@18000000 {
-+        compatible = "qca,ar9132-ddr-controller",
-+                     "qca,ar7240-ddr-controller";
-+        reg = <0x18000000 0x100>;
-+
-+        #qca,ddr-wb-channel-cells = <1>;
-+    };
-+
-+    interrupt-controller {
-+        // ...
-+        qca,ddr-wb-channel-interrupts = <2>, <3>, <4>, <5>;
-+        qca,ddr-wb-channels = <&ddr_ctrl 3>, <&ddr_ctrl 2>,
-+                              <&ddr_ctrl 0>, <&ddr_ctrl 1>;
-+    };
--- 
-2.30.2
+When you request the IRQs you break at the first zero, so this could 
+potentially try to free IRQs that you haven't requested, if there happen 
+to be any nonzero values beyond that. Maybe that can never happen, but 
+there seems little need for deliberate inconsistency here.
 
+> +}
+> +
+> +static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
+> +{
+> +	int ret = 0;
+> +	int i;
+> +	unsigned int virq;
+> +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
+> +
+> +	pl011_write(uap->im, uap, REG_IMSC);
+> +
+> +	for (i = 0; i < AMBA_NR_IRQS; i++) {
+
+It's not clear where these extra IRQs are expected to come from given 
+that the DT binding explicitly defines only one :/
+
+> +		virq = amba_dev->irq[i];
+> +		if (virq == 0)
+> +			break;
+> +
+> +		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
+
+Note that using dev_name() here technically breaks user ABI - scripts 
+looking in /proc for an irq named "uart-pl011" will no longer find it.
+
+Furthermore, the "dev" cookie passed to request_irq is supposed to be 
+globally unique, which "uap" isn't once you start registering it 
+multiple times. If firmware did describe all the individual PL011 IRQ 
+outputs on a system where they are muxed to the same physical IRQ 
+anyway, you'd end up registering ambiguous IRQ actions here. Of course 
+in practice you might still get away with that, but it is technically wrong.
+
+Robin.
+
+> +		if (ret) {
+> +			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
+> +			pl011_release_multi_irqs(uap, i - 1);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>   static int pl011_allocate_irq(struct uart_amba_port *uap)
+>   {
+>   	pl011_write(uap->im, uap, REG_IMSC);
+> @@ -1753,7 +1788,7 @@ static int pl011_startup(struct uart_port *port)
+>   	if (retval)
+>   		goto clk_dis;
+>   
+> -	retval = pl011_allocate_irq(uap);
+> +	retval = pl011_allocate_multi_irqs(uap);
+>   	if (retval)
+>   		goto clk_dis;
+>   
+> @@ -1864,7 +1899,7 @@ static void pl011_shutdown(struct uart_port *port)
+>   
+>   	pl011_dma_shutdown(uap);
+>   
+> -	free_irq(uap->port.irq, uap);
+> +	pl011_release_multi_irqs(uap, AMBA_NR_IRQS);
+>   
+>   	pl011_disable_uart(uap);
+>   
+> 
