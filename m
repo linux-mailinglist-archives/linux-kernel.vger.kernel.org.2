@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BDA3EAFDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E165C3EAFE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238798AbhHMGJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:09:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60056 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbhHMGJE (ORCPT
+        id S238801AbhHMGLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:11:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40308 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234716AbhHMGLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:09:04 -0400
+        Fri, 13 Aug 2021 02:11:15 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7770C22289;
-        Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id E810E1FD90;
+        Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628834917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1628835047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
-        b=0eJYYo/SgEGE2hyACqZQTiCYJZYXPKqZO2TgjJ8vrxDf8V0twVdrpHRDvYw8MYumqnacYa
-        iQpFfcNAAZtHnntYObYhHS9Owt9j4YvTpN1wnx7VSP675Vkuh4LNvIIxaBU7vHZpm48Hig
-        4I2Tb6DR/vXamQp/pi7mPk+KkmHuu5E=
+        bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
+        b=gCyH+u89wcAxHSXRzVLE7LRQGjVdUF5Yfbdr3Jc6BieHi2xbtch0JKriDS3ydz5lGfCs5O
+        XybX+4XM1Smk0bTcmFz1poRg9YAz7Irw6vd2tq2Z5s6A3OppzzBahz84AA8FTF2POjjyFF
+        l88HNwcR8Q8ZdinuZmipf/cj5wBPzPw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628834917;
+        s=susede2_ed25519; t=1628835047;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
-        b=P1d8fIq/Namc1PBRTvvjuVUOa0XcqaKaCjIqbx2sfUsqYh4uBIK7m5OsqpMXNw4ZmlmkWI
-        dzsx2wdMspnxedAA==
+        bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
+        b=Nf4AzfPJJZhIe1hEDRIaJEVNBJRzlFvxuoPL1r+4ybXT3OISzpTb+nWwVGV3AZoalHjZz/
+        8fPLFbsp/EtqHUAw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 58FE3A3B88;
-        Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
-Date:   Fri, 13 Aug 2021 08:08:37 +0200
-Message-ID: <s5h35rdlvve.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id DC400A3B84;
+        Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
+Date:   Fri, 13 Aug 2021 08:10:47 +0200
+Message-ID: <s5h1r6xlvrs.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Prevent pops and clicks during suspend
-In-Reply-To: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during reboot
+In-Reply-To: <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
 References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+        <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -54,19 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 20:34:32 +0200,
+On Thu, 12 Aug 2021 20:34:33 +0200,
 Vitaly Rodionov wrote:
 > 
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Some of the register values set for type detection cause pops during suspend,
-> ensure these are cleaned up after type detection completes, as well
-> ensuring that these are cleared when we suspend.
+> During reboot, when the CS42L42 powers down, pops and clicks
+> may occur due to the codec not being shutdown gracefully.
+> This can be fixed by going through the suspend sequence,
+> which shuts down the codec cleanly inside the reboot_notify
+> hook, which is called on reboot.
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Thanks, this one is applied now.
+I hold this one for now, as there is a fix series that deprecates the
+reboot_notify callback of HD-audio by forcibly doing runtime-suspend
+at shutdown.  Please check the three patches in
+  https://bugzilla.kernel.org/show_bug.cgi?id=214045
 
+I'm going to submit those soon in anyway.
+
+
+thanks,
 
 Takashi
