@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB343EB0B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1CC3EB0B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238144AbhHMGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:55:13 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36078 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238810AbhHMGzD (ORCPT
+        id S239077AbhHMGzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:55:15 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59478 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239057AbhHMGzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:55:03 -0400
-X-UUID: bcc07c054d81495e8274260409a9a235-20210813
-X-UUID: bcc07c054d81495e8274260409a9a235-20210813
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        Fri, 13 Aug 2021 02:55:12 -0400
+X-UUID: 90841cd5836f4ed9b1eb1e92419fb548-20210813
+X-UUID: 90841cd5836f4ed9b1eb1e92419fb548-20210813
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 13452952; Fri, 13 Aug 2021 14:54:35 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 361292937; Fri, 13 Aug 2021 14:54:42 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
  mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 13 Aug 2021 14:54:33 +0800
+ 15.0.1497.2; Fri, 13 Aug 2021 14:54:40 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 13 Aug 2021 14:54:32 +0800
+ Transport; Fri, 13 Aug 2021 14:54:39 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v2 07/29] iommu/mediatek: Add a flag NON_STD_AXI
-Date:   Fri, 13 Aug 2021 14:53:02 +0800
-Message-ID: <20210813065324.29220-8-yong.wu@mediatek.com>
+Subject: [PATCH v2 08/29] iommu/mediatek: Remove for_each_m4u in tlb_sync_all
+Date:   Fri, 13 Aug 2021 14:53:03 +0800
+Message-ID: <20210813065324.29220-9-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210813065324.29220-1-yong.wu@mediatek.com>
 References: <20210813065324.29220-1-yong.wu@mediatek.com>
@@ -53,83 +53,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new flag NON_STD_AXI, All the previous SoC support this flag.
-Prepare for adding infra and apu iommu which don't support this.
+The tlb_sync_all is called from these three functions:
+a) flush_iotlb_all: it will be called for each a iommu HW.
+b) tlb_flush_range_sync: it already has for_each_m4u.
+c) in irq: some IOMMU HW translation fault, Only need flush itself.
+
+Thus, No need for_each_m4u in this tlb_sync_all. Remove it.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/iommu/mtk_iommu.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index bd50f3020bc1..175065b76509 100644
+index 175065b76509..1e18fff76e61 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -123,6 +123,7 @@
- #define IOVA_34_EN			BIT(8)
- #define SHARE_PGTABLE			BIT(9) /* 2 HW share pgtable */
- #define DCM_DISABLE			BIT(10)
-+#define NOT_STD_AXI_MODE		BIT(11)
+@@ -207,19 +207,15 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
  
- #define MTK_IOMMU_HAS_FLAG(pdata, _x) \
- 		((((pdata)->flags) & (_x)) == (_x))
-@@ -753,7 +754,8 @@ static int mtk_iommu_hw_init(const struct mtk_iommu_data *data)
- 		regval = 0;
- 	} else {
- 		regval = readl_relaxed(data->base + REG_MMU_MISC_CTRL);
--		regval &= ~F_MMU_STANDARD_AXI_MODE_MASK;
-+		if (MTK_IOMMU_HAS_FLAG(data->plat_data, NOT_STD_AXI_MODE))
-+			regval &= ~F_MMU_STANDARD_AXI_MODE_MASK;
- 		if (MTK_IOMMU_HAS_FLAG(data->plat_data, OUT_ORDER_WR_EN))
- 			regval &= ~F_MMU_IN_ORDER_WR_EN_MASK;
- 	}
-@@ -1016,7 +1018,8 @@ static const struct dev_pm_ops mtk_iommu_pm_ops = {
+ static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
+ {
+-	struct list_head *head = data->hw_list;
+-
+-	for_each_m4u(data, head) {
+-		if (pm_runtime_get_if_in_use(data->dev) <= 0)
+-			continue;
++	if (pm_runtime_get_if_in_use(data->dev) <= 0)
++		return;
  
- static const struct mtk_iommu_plat_data mt2712_data = {
- 	.m4u_plat     = M4U_MT2712,
--	.flags        = HAS_4GB_MODE | HAS_BCLK | HAS_VLD_PA_RNG | SHARE_PGTABLE,
-+	.flags        = HAS_4GB_MODE | HAS_BCLK | HAS_VLD_PA_RNG | SHARE_PGTABLE |
-+			NOT_STD_AXI_MODE,
- 	.hw_list      = &m4ulist,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
- 	.iova_region  = single_domain,
-@@ -1026,7 +1029,8 @@ static const struct mtk_iommu_plat_data mt2712_data = {
+-		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
+-			       data->base + data->plat_data->inv_sel_reg);
+-		writel_relaxed(F_ALL_INVLD, data->base + REG_MMU_INVALIDATE);
+-		wmb(); /* Make sure the tlb flush all done */
++	writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
++		       data->base + data->plat_data->inv_sel_reg);
++	writel_relaxed(F_ALL_INVLD, data->base + REG_MMU_INVALIDATE);
++	wmb(); /* Make sure the tlb flush all done */
  
- static const struct mtk_iommu_plat_data mt6779_data = {
- 	.m4u_plat      = M4U_MT6779,
--	.flags         = HAS_SUB_COMM | OUT_ORDER_WR_EN | WR_THROT_EN,
-+	.flags         = HAS_SUB_COMM | OUT_ORDER_WR_EN | WR_THROT_EN |
-+			 NOT_STD_AXI_MODE,
- 	.inv_sel_reg   = REG_MMU_INV_SEL_GEN2,
- 	.iova_region   = single_domain,
- 	.iova_region_nr = ARRAY_SIZE(single_domain),
-@@ -1035,7 +1039,7 @@ static const struct mtk_iommu_plat_data mt6779_data = {
+-		pm_runtime_put(data->dev);
+-	}
++	pm_runtime_put(data->dev);
+ }
  
- static const struct mtk_iommu_plat_data mt8167_data = {
- 	.m4u_plat     = M4U_MT8167,
--	.flags        = RESET_AXI | HAS_LEGACY_IVRP_PADDR,
-+	.flags        = RESET_AXI | HAS_LEGACY_IVRP_PADDR | NOT_STD_AXI_MODE,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
- 	.iova_region  = single_domain,
- 	.iova_region_nr = ARRAY_SIZE(single_domain),
-@@ -1045,7 +1049,7 @@ static const struct mtk_iommu_plat_data mt8167_data = {
- static const struct mtk_iommu_plat_data mt8173_data = {
- 	.m4u_plat     = M4U_MT8173,
- 	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI |
--			HAS_LEGACY_IVRP_PADDR,
-+			HAS_LEGACY_IVRP_PADDR | NOT_STD_AXI_MODE,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
- 	.iova_region  = single_domain,
- 	.iova_region_nr = ARRAY_SIZE(single_domain),
-@@ -1064,7 +1068,7 @@ static const struct mtk_iommu_plat_data mt8183_data = {
- static const struct mtk_iommu_plat_data mt8192_data = {
- 	.m4u_plat       = M4U_MT8192,
- 	.flags          = HAS_BCLK | HAS_SUB_COMM | OUT_ORDER_WR_EN |
--			  WR_THROT_EN | IOVA_34_EN,
-+			  WR_THROT_EN | IOVA_34_EN | NOT_STD_AXI_MODE,
- 	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
- 	.iova_region    = mt8192_multi_dom,
- 	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom),
+ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
 -- 
 2.18.0
 
