@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647863EB485
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D403EB48D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240318AbhHML1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 07:27:49 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:5435 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234969AbhHML1s (ORCPT
+        id S240329AbhHML3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 07:29:23 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:35393 "EHLO
+        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240328AbhHML3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:27:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UitBNND_1628854029;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UitBNND_1628854029)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 13 Aug 2021 19:27:10 +0800
-Subject: Re: [PATCH v6 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
-        osandov@fb.com, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210812094532.145497-1-xianting.tian@linux.alibaba.com>
- <20210812094532.145497-2-xianting.tian@linux.alibaba.com>
- <YRYeyeZ/22rR26u7@kroah.com>
-From:   Xianting TIan <xianting.tian@linux.alibaba.com>
-Message-ID: <aca8a77c-f608-ef2f-5bcb-9411cec3e99d@linux.alibaba.com>
-Date:   Fri, 13 Aug 2021 19:27:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Fri, 13 Aug 2021 07:29:12 -0400
+Received: by mail-ej1-f42.google.com with SMTP id w5so17695335ejq.2;
+        Fri, 13 Aug 2021 04:28:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IBXCYPUTTAcQyneOGCdcbZVJIuyUOiqeKb7yjSzy5ro=;
+        b=H1xeqy4Arf0Dhg0qzfQD1tqndkr0ESP+MGQdZCf4FFEZdPakxrXMeD+5MSr6QcR/L2
+         UHm6RS8h+H1FSMxuk41wI/CwFks0yK41CREAi6cp2JHRhK1rDpShnfKD80Bgf8qk3BU2
+         4VrSvafR8SCilYICNRWSSkvpK/qaEqemitBDdqAiKMQot1nZ1xvhtJHCIclSFanEwJzs
+         wtVcVv3fWFFCvMpYs3yMoeq+upSYOKJuknFObN3LcthKj2yy9nvY1+FRT1+gkfN8al5w
+         O+tjJn2WXgfysJ5esWLTlBW48PHu2BoM7cPdZhi0wRbMKNud+0u9DZZ8oRruTOpj9qKr
+         F72w==
+X-Gm-Message-State: AOAM531sw2I2m0iIEdrtowvfFcxzBx77NWu+zJR5ltp/sV6FKMEKqjRZ
+        qDneB8/nIDlwug24Kgx2yUA=
+X-Google-Smtp-Source: ABdhPJzRlKknfKMJ9vBxYJA90SRDKtySk+QkGHwljDv8+3DU07AmJnnsBAgDcecQHnDPe1G86t1KAQ==
+X-Received: by 2002:a17:907:7609:: with SMTP id jx9mr1988040ejc.432.1628854124552;
+        Fri, 13 Aug 2021 04:28:44 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.googlemail.com with ESMTPSA id o23sm769708eds.75.2021.08.13.04.28.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 04:28:43 -0700 (PDT)
+To:     Chester Lin <clin@suse.com>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-serial@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-3-clin@suse.com>
+ <1ff13837-e6ca-c476-376d-b4f80450a259@suse.de> <YRZTSJPFLFFIR+gx@linux-8mug>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 2/8] dt-bindings: serial: fsl-linflexuart: convert to
+ json-schema format
+Message-ID: <0b42dc7e-a7c1-fe41-e39a-89627d44cbe4@kernel.org>
+Date:   Fri, 13 Aug 2021 13:28:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YRYeyeZ/22rR26u7@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <YRZTSJPFLFFIR+gx@linux-8mug>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/08/2021 13:11, Chester Lin wrote:
+> Hi Andreas,
+> 
+> On Thu, Aug 12, 2021 at 06:04:44PM +0200, Andreas Färber wrote:
+>> On 05.08.21 08:54, Chester Lin wrote:
+>>> Convert the FSL LINFlexD UART binding to json-schema.
+>>>
+>>> Signed-off-by: Chester Lin <clin@suse.com>
+>>> ---
+>>>  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
+>>>  .../bindings/serial/fsl,s32-linflexuart.yaml  | 48 +++++++++++++++++++
+>>>  2 files changed, 48 insertions(+), 22 deletions(-)
+>>>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+>>>  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+>>
+>> Thanks for your effort, Chester.
+>>
+>>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+>>> deleted file mode 100644
+>>> index f1bbe0826be5..000000000000
+>>> --- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+>>> +++ /dev/null
+>>> @@ -1,22 +0,0 @@
+>>> -* Freescale LINFlexD UART
+>>> -
+>>> -The LINFlexD controller implements several LIN protocol versions, as well as
+>>> -support for full-duplex UART communication through 8-bit and 9-bit frames.
+>>> -
+>>> -See chapter 47 ("LINFlexD") in the reference manual[1].
+>>> -
+>>> -Required properties:
+>>> -- compatible :
+>>> -  - "fsl,s32v234-linflexuart" for LINFlexD configured in UART mode, which
+>>> -    is compatible with the one integrated on S32V234 SoC
+>>> -- reg : Address and length of the register set for the device
+>>> -- interrupts : Should contain uart interrupt
+>>> -
+>>> -Example:
+>>> -uart0: serial@40053000 {
+>>> -	compatible = "fsl,s32v234-linflexuart";
+>>> -	reg = <0x0 0x40053000 0x0 0x1000>;
+>>> -	interrupts = <0 59 4>;
+>>> -};
+>>> -
+>>> -[1] https://www.nxp.com/webapp/Download?colCode=S32V234RM
+>>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+>>> new file mode 100644
+>>> index 000000000000..acfe34706ccb
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
+>>> @@ -0,0 +1,48 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>
+>> Since this is dual-licensed and BSD-2-Clause would seem compatible with
+>> GPLv3, this could probably be s/GPL-2.0-only/GPL-2.0-or-later/ ? Not a
+>> blocker.
+> 
+> There's no license identifier in the original file so it's not a problem to
+> choose "GPL-2.0-or-later".
 
-在 2021/8/13 下午3:27, Greg KH 写道:
-> On Thu, Aug 12, 2021 at 05:45:31PM +0800, Xianting Tian wrote:
->> As well known, hvc backend can register its opertions to hvc backend.
->> the opertions contain put_chars(), get_chars() and so on.
->>
->> Some hvc backend may do dma in its opertions. eg, put_chars() of
->> virtio-console. But in the code of hvc framework, it may pass DMA
->> incapable memory to put_chars() under a specific configuration, which
->> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
->> 1, c[] is on stack,
->>     hvc_console_print():
->> 	char c[N_OUTBUF] __ALIGNED__;
->> 	cons_ops[index]->put_chars(vtermnos[index], c, i);
->> 2, ch is on stack,
->>     static void hvc_poll_put_char(,,char ch)
->>     {
->> 	struct tty_struct *tty = driver->ttys[0];
->> 	struct hvc_struct *hp = tty->driver_data;
->> 	int n;
->>
->> 	do {
->> 		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->> 	} while (n <= 0);
->>     }
->>
->> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
->> is passed to virtio-console by hvc framework in above code. But I think
->> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
->> from kmalloc area and do memcpy no matter the memory is in kmalloc area
->> or not. But most importantly, it should better be fixed in the hvc
->> framework, by changing it to never pass stack memory to the put_chars()
->> function in the first place. Otherwise, we still face the same issue if
->> a new hvc backend using dma added in the furture.
->>
->> We make 'char c[N_OUTBUF]' part of 'struct hvc_struct', so hp->c is no
->> longer the stack memory. we can use it in above two cases.
->>
->> Other fix is use L1_CACHE_BYTES as the alignment, use 'sizeof(long)' as
->> dma alignment is wrong. And use struct_size() to calculate size of
->> hvc_struct.
->>
->> Introduce another array(cons_outbuf[]) for the hp->c pointers next to
->> the cons_ops[] and vtermnos[] arrays.
->>
->> With the patch, we can remove the fix c4baad5029.
->>
->> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
->> Tested-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> As the build shows, you obviously did not test this code :(
->
-> Also, no need to add a tested-by line as that should be implicit if you
-> wrote and signed off on it.
->
-> I am going to ask you to get some help from some other developers at
-> your company, and get them to test and sign off on this series before
-> sending it out again, as there seems to be a bit of a disconnect as to
-> what is actually needed to do when sending a patch for us to review.
->
-> That is now a requirement for us to be able to take your changes here.
->
-> thanks,
+That is not entirely correct. If there is no explicit license in the
+file, it's kernel's default so GPL-2.0-only. You cannot relicense
+derivative work without getting permission from authors and copyright
+holders.
 
-Sorry for this.
+However if you did not copy the text/description from original bindings,
+your work won't be derivative so you can relicense it.
 
-I tested V1-V4,  But for V6, I take it for granted that there is no 
-problem when I just switch to use array(cons_outbuf[]).  I indeed didn't 
-test it:(
-
-I will test it and find virtualization test expert to test again before 
-sending next patch.
-
->
-> greg k-h
+Best regards,
+Krzysztof
