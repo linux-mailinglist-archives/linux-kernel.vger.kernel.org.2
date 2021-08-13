@@ -2,173 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5173EBE2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DE43EBE2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhHMWJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 18:09:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235079AbhHMWJj (ORCPT
+        id S235270AbhHMWKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 18:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235079AbhHMWKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:09:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628892551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=usaJn38f6PQ2CzV8drMKktA3mbOE//g70lzrQ5h58AU=;
-        b=Q91w6U4GVeLXgnN7is/at6MSpYiOzebYkPZ9pkmciYvqSrT4TSW8JAO6MpcovpheT6NPeW
-        AxGTPuZON6aMvMi4ydg9f2cZrkI+I5UYlkp3uO9A07ywMwUxh7lIlBv4Uz0Gls48MeMOOp
-        xl1F1pWsmD1Sm2WwZOpB7WlXzOq87c0=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-Tumdt5s2PZayfZzWRoyRcA-1; Fri, 13 Aug 2021 18:09:10 -0400
-X-MC-Unique: Tumdt5s2PZayfZzWRoyRcA-1
-Received: by mail-ot1-f69.google.com with SMTP id q5-20020a9d65450000b0290510db97edd8so4245440otl.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 15:09:10 -0700 (PDT)
+        Fri, 13 Aug 2021 18:10:22 -0400
+Received: from mail-io1-xd49.google.com (mail-io1-xd49.google.com [IPv6:2607:f8b0:4864:20::d49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1CCC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 15:09:54 -0700 (PDT)
+Received: by mail-io1-xd49.google.com with SMTP id c14-20020a6bfd0e0000b02905b2d3028604so577306ioi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 15:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=dkH736UO2whYaPRMkgIy8/mDOeX3AUXNM7Fd5nVe07E=;
+        b=i9HwI+8X9LmOWiN6miSpTYU+HxPbqRqVGjXaniio5YKDolqGahqrPrE69V+RLUf/ZR
+         n3ywlApSEywUsihYxOGmZNQiOajbV233QOONlShGiQkvYpp4eN173ggajmmb95ro+wwy
+         lUoMeuL7uV+PHwZwEANcAu/77Ncmz8/nCdnWmGDoufm/ptJCfmjJaKjg49b2U1vxKH0Q
+         lGMDUM+ZgZH+4ZfRM/wphV+xMOsyBDSF7bs8rOJx+LyccczeLprl1RivBZ7CP3jl8jHn
+         aN8gAu3bLKbxDdIHoZeEyNiokFRaPpqWOtDsaBWhGDd7i64ZOFpaDM0MIGpYaz4H6TEA
+         ggbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=usaJn38f6PQ2CzV8drMKktA3mbOE//g70lzrQ5h58AU=;
-        b=qPpXK2cLIabARpxt0tA0d0ONcOubw8wOnYvySSDZ+Hu7T7C9CTPUZsTM6tjD/YmMcW
-         naSRcOEkwriYp1aVGV7sV95xuEY3WTpN8kmky8cduq1ldnqB4cUxc7UTmqPSIteoSqVi
-         xtfYcTI6XyMPZSk8MwGwKYaY8BGQsykipIyXQZ8WakLjBWUwVW1vViXp9y7OuCx1QCZG
-         8Hkc0QUBEQvL344VtZn9Zk+ViElhe4s9cqARmiwt1F+ihVxCCN0AhqltCtxh4KFVmqea
-         iLDFCfDVK86OQ+3ZugHMeJmYY/gWocmWrYqrp+sdfFKYEYtmTbKoYw7tdH/zNLWDi9gX
-         WQhA==
-X-Gm-Message-State: AOAM533gBvm+/Zmy6jrXSbTcUSKm0HI2K9AGQdqwHm5KTyoK1qEOG9J3
-        rw1s3ay77P3cHBH4aV28MsgFRjalCD2NBpUnHv8idro+U35Cy71idKXhmjS1aTpJNe0w3bPZxxt
-        b+mHlzdiUSTlgGOqw874Yrzqk
-X-Received: by 2002:a54:4406:: with SMTP id k6mr3854319oiw.179.1628892549455;
-        Fri, 13 Aug 2021 15:09:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrtmAC9v5cTUDvPTZBFMmcfmQM8HkAFjsF0PeUK7JuAMy5pZyoyDzsd6OWX3BtLoSAuKKw4w==
-X-Received: by 2002:a54:4406:: with SMTP id k6mr3854309oiw.179.1628892549258;
-        Fri, 13 Aug 2021 15:09:09 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id i8sm576186otk.51.2021.08.13.15.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 15:09:08 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:09:07 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        "Adler, Michael" <michael.adler@intel.com>,
-        "Whisonant, Tim" <tim.whisonant@intel.com>, <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tom Rix <trix@redhat.com>
-Subject: Re: BUG REPORT: vfio_pci driver
-Message-ID: <20210813160907.7b143b51.alex.williamson@redhat.com>
-In-Reply-To: <ca6977da-5657-51aa-0ef2-fb4a7e8c15dd@intel.com>
-References: <ca6977da-5657-51aa-0ef2-fb4a7e8c15dd@intel.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=dkH736UO2whYaPRMkgIy8/mDOeX3AUXNM7Fd5nVe07E=;
+        b=Mc5JKHhx99qOurhoBeHcSRaLk3KCJ4zK/U2Hg4hy5yG2/LdHrLOop5OX7MdIDbfM2V
+         vmLho2pPs1OJYqBevJ4HAZ6WW79wardZvjkdz4iO4ygA3QDXbEi0j27Ae5DHzo8unOEb
+         Zr6iqZ0aJZKutexXP1WyEcg3qAvF1oUCze6I12Od+1cZPI3CRec8tkplgwmIW4fQDhjm
+         eq7ik7CMTtSXrVQsgT79Z1hQyBh1RRQ1M81JVjaOYbUAxBl4nG0CoYThfOjWAmHFe+UX
+         krMMsuCm3rZ8VBLUSaHAhE0+H2HuXYysorV2rtUhr5GKf6yIozom8xQcMKryLNs5lujZ
+         iILw==
+X-Gm-Message-State: AOAM5306vsWlpfvtRTezagh0ATkqztjNVqcFqqOHAFGiKP4zSbp4bjaq
+        0RMbR7TGVlp3IPEMj9iv/EWSaaf9ai8=
+X-Google-Smtp-Source: ABdhPJyBPHNjsEFOFDZn6y5egPuZ7XgVNnWbBEkEwRy2gZiOk/kaKH5YPf0lwNsYHMRFicyFMQThQOrbTFs=
+X-Received: from cjense.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:6d0])
+ (user=cjense job=sendgmr) by 2002:a05:6638:10c7:: with SMTP id
+ q7mr4092301jad.97.1628892594249; Fri, 13 Aug 2021 15:09:54 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 22:09:37 +0000
+Message-Id: <20210813220936.2105426-1-cjense@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH v2 1/1] Add field checking tests for perf stat JSON output.
+From:   Claire Jensen <cjense@google.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, yao.jin@linux.intel.com,
+        song@kernel.org, andi@firstfloor.org, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        alexander.antonov@linux.intel.com, changbin.du@intel.com,
+        liuqi115@huawei.com, irogers@google.com, eranian@google.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        clairej735@gmail.com
+Cc:     Claire Jensen <cjense@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 11:34:51 -0700
-Russ Weight <russell.h.weight@intel.com> wrote:
+Counts number of fields to make sure expected fields are present.
 
-> Bug Description:
->=20
-> A bug in the vfio_pci driver was reported in junction with work on FPGA
+Signed-off-by: Claire Jensen <cjense@google.com>
+---
+ .../tests/shell/lib/perf_json_output_lint.py  |  48 ++++++++
+ tools/perf/tests/shell/stat+json_output.sh    | 114 ++++++++++++++++++
+ 2 files changed, 162 insertions(+)
+ create mode 100644 tools/perf/tests/shell/lib/perf_json_output_lint.py
+ create mode 100644 tools/perf/tests/shell/stat+json_output.sh
 
-This looks like the documented behavior of an IRQ index reporting the
-VFIO_IRQ_INFO_NORESIZE flag.  We can certainly work towards trying to
-remove the flag from this index, but it seems the userspace driver is
-currently ignoring the flag and expecting exactly the behavior the flag
-indicates is not available.  Thanks,
-
-Alex
-
-> cards. We were able to reproduce and root-cause the bug using system-tap.
-> The original bug description is below. An understanding of the referenced
-> dfl and opae tools is not required - it is the sequence of IOCTL calls and
-> IRQ vectors that matters:
->=20
-> > I=E2=80=99m trying to get an example AFU working that uses 2 IRQs, acti=
-ve at the same=20
-> > time. I=E2=80=99m hitting what looks to be a dfl_pci driver bug.
-> >
-> > The code tries to allocate two IRQ vectors: 0 and 1. I see opaevfio.c d=
-oing the=20
-> > right thing, picking the MSIX index. Allocating either IRQ 0 or IRQ 1 w=
-orks fine=20
-> > and I confirm that the VFIO_DEVICE_SET_IRQS looks reasonable, choosing =
-MSIX and=20
-> > either start of 0 or 1 and count 1.
-> >
-> > Note that opaevfio.c always passes count 1, so it will make separate ca=
-lls for=20
-> > each IRQ vector.
-> >
-> > When I try to allocate both, I see the following:
-> >
-> >   * If the VFIO_DEVICE_SET_IRQS ioctl is called first with start 0 and =
-then
-> >     start 1 (always count 1), the start 1 (second) ioctl trap returns E=
-INVAL.
-> >   * If I set up the vectors in decreasing order, so start 1 followed by=
- start 0,
-> >     the program works!
-> >   * I ruled out OPAE SDK user space problems by setting up my program to
-> >     allocate in increasing order, which would normally fail. I changed =
-only the
-> >     ioctl call in user space opaevfio.c, inverting bit 0 of start so th=
-at the
-> >     driver is called in decreasing index order. Of course this binds th=
-e wrong
-> >     vectors to the fds, but I don=E2=80=99t care about that for now. Th=
-is works! From
-> >     this, I conclude that it can=E2=80=99t be a user space problem sinc=
-e the difference
-> >     between working and failing is solely the order in which IRQ vector=
-s are
-> >     bound in ioctl calls. =20
->=20
-> The EINVAL is coming from vfio_msi_set_block() here:
-> https://github.com/torvalds/linux/blob/master/drivers/vfio/pci/vfio_pci_i=
-ntrs.c#L373
->=20
-> vfio_msi_set_block() is being called from vfio_pci_set_msi_trigger() here=
- on
-> the second IRQ request:
-> https://github.com/torvalds/linux/blob/master/drivers/vfio/pci/vfio_pci_i=
-ntrs.c#L530
->=20
-> We believe the bug is in vfio_pci_set_msi_trigger(), in the 2nd parameter=
- to the call
-> to vfio_msi_enable() here:
-> https://github.com/torvalds/linux/blob/master/drivers/vfio/pci/vfio_pci_i=
-ntrs.c#L533
->=20
-> In both the passing and failing cases, the first IRQ request results in a=
- call
-> to vfio_msi_enable() at line 533 and the second IRQ request results in the
-> call to vfio_msi_set_block() at line 530. It is during the first IRQ requ=
-est
-> that vfio_msi_enable() sets vdev->num_ctx based on the 2nd parameter (nve=
-c).
-> vdev->num_ctx is part of the conditional that results in the EINVAL for t=
-he
-> failing case.
->=20
-> In the passing case, vdev->num_ctx is 2. In the failing case, it is 1.
->=20
-> I am attaching two text files containing trace information from systemtap=
-: one for
-> the failing case and one for the passing case. They contain a lot more in=
-formation
-> than is needed, but if you search for vfio_pci_set_msi_trigger and vfio_m=
-si_set_block,
-> you will see values for some of the call parameters.
->=20
-> - Russ
->=20
+diff --git a/tools/perf/tests/shell/lib/perf_json_output_lint.py b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+new file mode 100644
+index 000000000000..45d9163e7423
+--- /dev/null
++++ b/tools/perf/tests/shell/lib/perf_json_output_lint.py
+@@ -0,0 +1,48 @@
++#!/usr/bin/python
++
++from __future__ import print_function
++import argparse
++import sys
++
++# Basic sanity check of perf JSON output as specified in the man page.
++# Currently just checks the number of fields per line in output.
++
++ap = argparse.ArgumentParser()
++ap.add_argument('--no-args', action='store_true')
++ap.add_argument('--interval', action='store_true')
++ap.add_argument('--all-cpus-no-aggr', action='store_true')
++ap.add_argument('--all-cpus', action='store_true')
++ap.add_argument('--event', action='store_true')
++ap.add_argument('--per-core', action='store_true')
++ap.add_argument('--per-thread', action='store_true')
++ap.add_argument('--per-die', action='store_true')
++ap.add_argument('--per-node', action='store_true')
++ap.add_argument('--per-socket', action='store_true')
++args = ap.parse_args()
++
++Lines = sys.stdin.readlines()
++ch = ','
++
++
++def check_json_output(exp):
++  for line in Lines:
++    if 'failed' not in line:
++      count = 0
++      count = line.count(ch)
++      if count != exp:
++        sys.stdout.write(''.join(Lines))
++        raise RuntimeError('wrong number of fields. counted {0}'
++                           ' expected {1} in {2}\n'.format(count, exp, line))
++
++
++try:
++  if args.no_args or args.all_cpus or args.event:
++    check_json_output(6)
++  if args.interval or args.per_thread:
++    check_json_output(7)
++  if args.per_core or args.per_socket or args.per_node or args.per_die:
++    check_json_output(8)
++
++except:
++  sys.stdout.write('Test failed for input:\n' + ''.join(Lines))
++  raise
+diff --git a/tools/perf/tests/shell/stat+json_output.sh b/tools/perf/tests/shell/stat+json_output.sh
+new file mode 100644
+index 000000000000..8a772badae45
+--- /dev/null
++++ b/tools/perf/tests/shell/stat+json_output.sh
+@@ -0,0 +1,114 @@
++#!/bin/bash
++# perf stat JSON output linter
++# SPDX-License-Identifier: GPL-2.0
++# Checks various perf stat JSON output commands for the
++# correct number of fields.
++
++set -e
++set -x
++
++pythonchecker=$(dirname $0)/lib/perf_json_output_lint.py
++file="/proc/sys/kernel/perf_event_paranoid"
++paranoia=$(cat "$file" | grep -o -E '[0-9]+')
++
++check_no_args()
++{
++	perf stat -j sleep 1 2>&1 | \
++	python $pythonchecker --no-args
++}
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_all_cpus test skipped because of paranoia level.
++else
++	check_all_cpus()
++	{
++		perf stat -j -a 2>&1 sleep 1 | \
++		python $pythonchecker --all-cpus
++	}
++	check_all_cpus
++fi
++
++check_interval()
++{
++	perf stat -j -I 1000 2>&1 sleep 1 | \
++	python $pythonchecker --interval
++}
++
++check_all_cpus_no_aggr()
++{
++	perf stat -j -A -a --no-merge 2>&1 sleep 1 | \
++	python $pythonchecker --all-cpus-no-aggr
++}
++
++check_event()
++{
++	perf stat -j -e cpu-clock 2>&1 sleep 1 | \
++	python $pythonchecker --event
++}
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_all_cpus test skipped because of paranoia level.
++else
++	check_per_core()
++	{
++		perf stat -j --per-core -a 2>&1 sleep 1 | \
++		python $pythonchecker --per-core
++	}
++	check_per_core
++fi
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_all_cpus test skipped because of paranoia level.
++else
++	check_per_thread()
++	{
++		perf stat -j --per-thread -a 2>&1 sleep 1 | \
++		python $pythonchecker --per-thread
++	}
++	check_per_thread
++fi
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_per_die test skipped because of paranoia level.
++else
++	check_per_die()
++	{
++		perf stat -j --per-die -a 2>&1 sleep 1 | \
++		python $pythonchecker --per-die
++	}
++	check_per_die
++fi
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_per_node test skipped because of paranoia level.
++else
++	check_per_node()
++	{
++		perf stat -j --per-node -a 2>&1 sleep 1 | \
++		python $pythonchecker --per-node
++	}
++	check_per_node
++fi
++
++if [ $paranoia -gt 0 ];
++then
++	echo check_per_socket test skipped because of paranoia level.
++else
++	check_per_socket()
++	{
++		perf stat -j --per-socket -a 2>&1 sleep 1 | \
++		python $pythonchecker --per-socket
++	}
++	check_per_socket
++fi
++
++check_no_args
++check_interval
++check_all_cpus_no_aggr
++check_event
++exit 0
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
 
