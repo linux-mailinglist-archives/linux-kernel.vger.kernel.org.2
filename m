@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61D53EB0BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D217B3EB0D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239108AbhHMGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:55:37 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36956 "EHLO
+        id S239029AbhHMGzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:55:48 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:37212 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239087AbhHMGze (ORCPT
+        with ESMTP id S238879AbhHMGzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:55:34 -0400
-X-UUID: 24bc6fc50ec74215ba63985d2f8d0843-20210813
-X-UUID: 24bc6fc50ec74215ba63985d2f8d0843-20210813
+        Fri, 13 Aug 2021 02:55:43 -0400
+X-UUID: 5c2eadb220b04228b6cc6d47d06b030c-20210813
+X-UUID: 5c2eadb220b04228b6cc6d47d06b030c-20210813
 Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2113665822; Fri, 13 Aug 2021 14:55:04 +0800
+        with ESMTP id 1822091167; Fri, 13 Aug 2021 14:55:12 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 13 Aug 2021 14:55:02 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 13 Aug 2021 14:55:11 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 13 Aug 2021 14:55:01 +0800
+ Transport; Fri, 13 Aug 2021 14:55:10 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v2 10/29] iommu/mediatek: Remove the granule in the tlb flush
-Date:   Fri, 13 Aug 2021 14:53:05 +0800
-Message-ID: <20210813065324.29220-11-yong.wu@mediatek.com>
+Subject: [PATCH v2 11/29] iommu/mediatek: Always pm_runtime_get while tlb flush
+Date:   Fri, 13 Aug 2021 14:53:06 +0800
+Message-ID: <20210813065324.29220-12-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210813065324.29220-1-yong.wu@mediatek.com>
 References: <20210813065324.29220-1-yong.wu@mediatek.com>
@@ -53,45 +53,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MediaTek IOMMU don't care about granule when tlb flushing.
-Remove this variable.
+Prepare for 2 HWs that sharing pgtable in different power-domains.
+
+The previous SoC don't have PM. Only mt8192 has power-domain,
+and it is display's power-domain which nearly always is enabled.
+
+When there are 2 M4U HWs, it may has problem.
+In this function, we get the pm_status via the m4u dev, but it don't
+reflect the real power-domain status of the HW since there may be other
+HW also use that power-domain.
+
+Currently we could not get the real power-domain status, thus always
+pm_runtime_get here.
+
+Prepare for mt8195, thus, no need fix tags here.
+
+This patch may drop the performance, we expect the user could
+pm_runtime_get_sync before dma_alloc_attrs which need tlb ops.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/iommu/mtk_iommu.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index d64139ab59d0..add23a36a5e2 100644
+index add23a36a5e2..abc721a1da21 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -228,7 +228,6 @@ static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
- }
+@@ -238,8 +238,11 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
  
- static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
--					   size_t granule,
- 					   struct mtk_iommu_data *data)
- {
- 	struct list_head *head = data->hw_list;
-@@ -550,8 +549,7 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
- 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
- 	size_t length = gather->end - gather->start + 1;
+ 	for_each_m4u(data, head) {
+ 		if (has_pm) {
+-			if (pm_runtime_get_if_in_use(data->dev) <= 0)
++			ret = pm_runtime_resume_and_get(data->dev);
++			if (ret < 0) {
++				dev_err(data->dev, "tlb flush: pm get fail %d.\n", ret);
+ 				continue;
++			}
+ 		}
  
--	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
--				       dom->data);
-+	mtk_iommu_tlb_flush_range_sync(gather->start, length, dom->data);
- }
- 
- static void mtk_iommu_sync_map(struct iommu_domain *domain, unsigned long iova,
-@@ -559,7 +557,7 @@ static void mtk_iommu_sync_map(struct iommu_domain *domain, unsigned long iova,
- {
- 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
- 
--	mtk_iommu_tlb_flush_range_sync(iova, size, size, dom->data);
-+	mtk_iommu_tlb_flush_range_sync(iova, size, dom->data);
- }
- 
- static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
+ 		spin_lock_irqsave(&data->tlb_lock, flags);
 -- 
 2.18.0
 
