@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEED3EB7DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0453EB76E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241309AbhHMPJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:09:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
+        id S241143AbhHMPIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:08:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241417AbhHMPJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:09:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D855C6109E;
-        Fri, 13 Aug 2021 15:09:02 +0000 (UTC)
+        id S241123AbhHMPIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5318E6109E;
+        Fri, 13 Aug 2021 15:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867343;
-        bh=f4o1mvX6h39J6ZBNiBvDg03L4G+YikDRBmibOIXxJQM=;
+        s=korg; t=1628867285;
+        bh=ZvhGvJNzjXWCpSiOHxmHHy8hjNHLrQl0CUUjDzJJ3ZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfxZySUY18nnLbHiv8B8VuHrkHBGhRMZhwUb8h1Lt8rVMRdQJ6hqj0AyzMlN1gSb7
-         TSvyXKJy5aWkRoX85VENgU/dAJolCSvAqeIp9vvFtO8TFFzpVf6DLqFSpeuV0F/vU8
-         A4xMIzwI5+gyjp1VJLf2uCnfSGkTl22EwNMu/puw=
+        b=JOS+uM3aVLFnUKN6yx+wC3jxbxtqyqT5jclnxt+XF3DT4TVLEEpULRNv2k6y6MMSY
+         WROWXqPcXn9cpnd2f2mlGTZLpTYXoZyXbPF+YBuA9pOxcUfkpoIVljQKfmY5ZrgGJC
+         PjFD8ffRQMo1MOLYwFi46C4f2Sk8wWqB3mYaRe8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 03/25] media: videobuf2-core: dequeue if start_streaming fails
-Date:   Fri, 13 Aug 2021 17:06:27 +0200
-Message-Id: <20210813150520.838261525@linuxfoundation.org>
+Subject: [PATCH 4.4 04/25] net: natsemi: Fix missing pci_disable_device() in probe and remove
+Date:   Fri, 13 Aug 2021 17:06:28 +0200
+Message-Id: <20210813150520.866473423@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
 References: <20210813150520.718161915@linuxfoundation.org>
@@ -42,69 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit c592b46907adbeb81243f7eb7a468c36692658b8 ]
+[ Upstream commit 7fe74dfd41c428afb24e2e615470832fa997ff14 ]
 
-If a vb2_queue sets q->min_buffers_needed then when the number of
-queued buffers reaches q->min_buffers_needed, vb2_core_qbuf() will call
-the start_streaming() callback. If start_streaming() returns an error,
-then that error was just returned by vb2_core_qbuf(), but the buffer
-was still queued. However, userspace expects that if VIDIOC_QBUF fails,
-the buffer is returned dequeued.
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() and pci_release_regions() will be
+called in release automatically.
 
-So if start_streaming() fails, then remove the buffer from the queue,
-thus avoiding this unwanted side-effect.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Tested-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Fixes: b3379c6201bb ("[media] vb2: only call start_streaming if sufficient buffers are queued")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/videobuf2-core.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/natsemi/natsemi.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/videobuf2-core.c b/drivers/media/v4l2-core/videobuf2-core.c
-index e0041fcfa783..c1faa1332e32 100644
---- a/drivers/media/v4l2-core/videobuf2-core.c
-+++ b/drivers/media/v4l2-core/videobuf2-core.c
-@@ -1361,6 +1361,7 @@ static int vb2_start_streaming(struct vb2_queue *q)
- int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- {
- 	struct vb2_buffer *vb;
-+	enum vb2_buffer_state orig_state;
- 	int ret;
+diff --git a/drivers/net/ethernet/natsemi/natsemi.c b/drivers/net/ethernet/natsemi/natsemi.c
+index 122c2ee3dfe2..58527a2ec455 100644
+--- a/drivers/net/ethernet/natsemi/natsemi.c
++++ b/drivers/net/ethernet/natsemi/natsemi.c
+@@ -817,7 +817,7 @@ static int natsemi_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		printk(version);
+ #endif
  
- 	if (q->error) {
-@@ -1390,6 +1391,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- 	 * Add to the queued buffers list, a buffer will stay on it until
- 	 * dequeued in dqbuf.
- 	 */
-+	orig_state = vb->state;
- 	list_add_tail(&vb->queued_entry, &q->queued_list);
- 	q->queued_count++;
- 	q->waiting_for_buffers = false;
-@@ -1420,8 +1422,17 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb)
- 	if (q->streaming && !q->start_streaming_called &&
- 	    q->queued_count >= q->min_buffers_needed) {
- 		ret = vb2_start_streaming(q);
--		if (ret)
-+		if (ret) {
-+			/*
-+			 * Since vb2_core_qbuf will return with an error,
-+			 * we should return it to state DEQUEUED since
-+			 * the error indicates that the buffer wasn't queued.
-+			 */
-+			list_del(&vb->queued_entry);
-+			q->queued_count--;
-+			vb->state = orig_state;
- 			return ret;
-+		}
+-	i = pci_enable_device(pdev);
++	i = pcim_enable_device(pdev);
+ 	if (i) return i;
+ 
+ 	/* natsemi has a non-standard PM control register
+@@ -850,7 +850,7 @@ static int natsemi_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	ioaddr = ioremap(iostart, iosize);
+ 	if (!ioaddr) {
+ 		i = -ENOMEM;
+-		goto err_ioremap;
++		goto err_pci_request_regions;
  	}
  
- 	dprintk(1, "qbuf of buffer %d succeeded\n", vb->index);
+ 	/* Work around the dropped serial bit. */
+@@ -968,9 +968,6 @@ static int natsemi_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+  err_register_netdev:
+ 	iounmap(ioaddr);
+ 
+- err_ioremap:
+-	pci_release_regions(pdev);
+-
+  err_pci_request_regions:
+ 	free_netdev(dev);
+ 	return i;
+@@ -3228,7 +3225,6 @@ static void natsemi_remove1(struct pci_dev *pdev)
+ 
+ 	NATSEMI_REMOVE_FILE(pdev, dspcfg_workaround);
+ 	unregister_netdev (dev);
+-	pci_release_regions (pdev);
+ 	iounmap(ioaddr);
+ 	free_netdev (dev);
+ }
 -- 
 2.30.2
 
