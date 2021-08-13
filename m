@@ -2,172 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF23EAF9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72D03EAF9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238640AbhHMF0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 01:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S238674AbhHMF1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 01:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238309AbhHMF0l (ORCPT
+        with ESMTP id S238309AbhHMF1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 01:26:41 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0580AC061756;
-        Thu, 12 Aug 2021 22:26:14 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id nt11so13724379pjb.2;
-        Thu, 12 Aug 2021 22:26:14 -0700 (PDT)
+        Fri, 13 Aug 2021 01:27:08 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3701C0617AD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:26:42 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id w6so3388384plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:26:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ifU4YaTP5glt6FA8YFBttr5ZK1KwGCdKH8AhfhzRPlY=;
-        b=Yn9awT7NRJ0161QHid3jaXK6q4gbEX6V//YQ/PkbW8Ua7/JagfD/kOtV31f7tiJsT+
-         4N/PNCwMchIlP+oFMTVYBTJrY52Ay75KnmizoW7k+IO7GWMK9tgdAFo8Sr73bFXIncA5
-         Rwf5sTzNGLB6m0V/63Vs4GIexfWMjqMyLZ6+8h9jhRcCdGjFRutvVyyQqahd+dBDofla
-         ghEPhaya+Oi/KLsPAlwqHyZ7jt1svIi3Zw4jFj9MGZtxpcrV+g96L4isPY952XBRMEAi
-         IKo8Lzqw0i+VWbG1+Xim1/U4nVadwEg1/vprQJTdpoANFoG70cPSU5zgmJUhMLZVKJ4D
-         gfGA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ocdM6c2cinlXX1kZNnF83LUMUxlQMibTtFjKC/p0qQ=;
+        b=R+AVgrUdAT0DO61zcf2nNP6YwLVeEH+xYBgVGH2ye7tbv2+LN/mtkD2DBac6fUdKyO
+         iE7rqZZACC/Za5jIIuAaiAFFHcx45bf0+VrfEc2nDoiZk8tLtpxx3g7J4erxBSNNzVzg
+         HSLpxfDNUdVNkHCqYG6NDmEH7faLalmesZdIM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ifU4YaTP5glt6FA8YFBttr5ZK1KwGCdKH8AhfhzRPlY=;
-        b=b1UYijE218Za8QqkdvAFC6YDagkrtHx+bYMqh8hhTa0FQktnGpNej/UUwwt2HBcY2/
-         zxNAZvEoqbfiGI2vl/2Qrh1uY3es40awGtqW8YXGlB+7H+YWP2tmfhIxF/Gt7d8vOdq/
-         bfR1QuxiW6m+dAE0Qpkz42mdXZJQZP5QNVEoEQ68jWVmAYxy1596XXiPHyM3YD3OHgFG
-         fwntzdh5gxnyMAAKfqPs0thmem57oB/2z5VkMfKbyHmuF45h5iIEIShxWbhp5lr97E/l
-         JuYkl37uLiMynnSByQCfVfxZP8Rc9iHWjozxbOWb47E3/mnKMCsnVpY9ZzPnqC83RXLJ
-         CQYA==
-X-Gm-Message-State: AOAM532BagSXHIbwywpA9rk+q/sU+IIDJJulCTjfa7OpNRpL9iaEuK/9
-        LQZg5alHLCiAAc0wOJPkFsQ=
-X-Google-Smtp-Source: ABdhPJyCiotCl+Zn73YO/JFHeaNb6TSs2F7oMUxTmRNZHoslgcqQ4bw2eRmaOBCIbNHRbC2qANYDMw==
-X-Received: by 2002:a63:d04c:: with SMTP id s12mr744150pgi.148.1628832374345;
-        Thu, 12 Aug 2021 22:26:14 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id s5sm759585pgp.81.2021.08.12.22.26.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Aug 2021 22:26:14 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH] misc_cgroup: use a counter to count the number of failures
-Date:   Fri, 13 Aug 2021 13:26:11 +0800
-Message-Id: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ocdM6c2cinlXX1kZNnF83LUMUxlQMibTtFjKC/p0qQ=;
+        b=W9CjBNhqnH4K2SnM0eMH7yByWDS+LakONhD6RYe53LOxJazhuMMGaLlMy+AHvcIoXr
+         NjRDERWIDB4zdeoIZQmVJUKKnmaPwL/VZ0+VZqLKLi5R1bv7zds8ljymKn+U0Xr74EWX
+         XWdi+BG7rcrbo7K9Ri/Uma2LavgbX7lbHpNpFwlgo7x6k26a2KFsFdtvhwHG2eUUXFpR
+         1cnm7BTmqVCyFhm96kCbia7icLSNSvbAKJlxwg7Po2UQnXsjpoAFcymDQhG6crzjf+Do
+         rgvB6+B7BkaNqDWN/ic/a3FM3Dm2jzxQ++FxpCYlFqCk+ttIEYth+z4DTXjEYOLetfMM
+         rNTA==
+X-Gm-Message-State: AOAM530TbA0bJtooNdAiyZpkPwhVWPJnFhcSTuJ7zu+EIZLXANPWKCNQ
+        aPqxhsuU2vvjXT8XeKKJxCAYVXuQzbXfTNKrdh31lQ==
+X-Google-Smtp-Source: ABdhPJyQaVIf1p9CcXmskDZyungHHN1Ox9/AmjAJTBtnxFY1rjsASN0ix1i9LxTbcmzwWe60qju7DBet2NbT00eBwMU=
+X-Received: by 2002:a63:682:: with SMTP id 124mr713904pgg.299.1628832402140;
+ Thu, 12 Aug 2021 22:26:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com> <1627635002-24521-4-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1627635002-24521-4-git-send-email-chunfeng.yun@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 13 Aug 2021 13:26:30 +0800
+Message-ID: <CAATdQgBeFHJV+=phaEBaXpKwMJygtGVzxJ0yC5hfvijpgwVMAg@mail.gmail.com>
+Subject: Re: [PATCH 04/11] usb: xhci-mtk: fix use-after-free of mtk->hcd
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Fri, Jul 30, 2021 at 4:50 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+>  BUG: KASAN: use-after-free in usb_hcd_is_primary_hcd+0x38/0x60
+>  Call trace:
+>   dump_backtrace+0x0/0x3dc
+>   show_stack+0x20/0x2c
+>   dump_stack+0x15c/0x1d4
+>   print_address_description+0x7c/0x510
+>   kasan_report+0x164/0x1ac
+>   __asan_report_load8_noabort+0x44/0x50
+>   usb_hcd_is_primary_hcd+0x38/0x60
+>   xhci_mtk_runtime_suspend+0x68/0x148
+>   pm_generic_runtime_suspend+0x90/0xac
+>   __rpm_callback+0xb8/0x1f4
+>   rpm_callback+0x54/0x1d0
+>   rpm_suspend+0x4e0/0xc84
+>   __pm_runtime_suspend+0xc4/0x114
+>   xhci_mtk_probe+0xa58/0xd00
+>
+> This may happen when probe fails, needn't suspend it synchronously,
+> fix it by using pm_runtime_put_noidle().
+>
+> Reported-by: Pi Hsun <pihsun@google.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-For a container, we only print an error log when the resource
-charge fails. There may be some problems here:
+Reviewed-and-Tested-by: Ikjoon Jang <ikjn@chromium.org>
 
-1. If a large number of containers are created and deleted,
-   there will be a lot of error logs.
-2. According to an error log, we cannot better understand
-   the actual pressure of resources.
 
-Therefore, perhaps we should use a failcnt counter to count
-the number of failures, so that we can easily understand the
-actual pressure of resources and avoid too many error log..
-
-This is a partial patch of the previous serial, which may
-be useful, so I resend it.
-
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- include/linux/misc_cgroup.h |  4 ++--
- kernel/cgroup/misc.c        | 37 ++++++++++++++++++++++++++++++-------
- 2 files changed, 32 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-index 8450a5e..32f6fc0 100644
---- a/include/linux/misc_cgroup.h
-+++ b/include/linux/misc_cgroup.h
-@@ -32,12 +32,12 @@ enum misc_res_type {
-  * struct misc_res: Per cgroup per misc type resource
-  * @max: Maximum limit on the resource.
-  * @usage: Current usage of the resource.
-- * @failed: True if charged failed for the resource in a cgroup.
-+ * @failcnt: Failure count of the resource
-  */
- struct misc_res {
- 	unsigned long max;
- 	atomic_long_t usage;
--	bool failed;
-+	atomic_long_t failcnt;
- };
- 
- /**
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index 5d51b8e..1057901 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -158,13 +158,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
- 		new_usage = atomic_long_add_return(amount, &res->usage);
- 		if (new_usage > READ_ONCE(res->max) ||
- 		    new_usage > READ_ONCE(misc_res_capacity[type])) {
--			if (!res->failed) {
--				pr_info("cgroup: charge rejected by the misc controller for %s resource in ",
--					misc_res_name[type]);
--				pr_cont_cgroup_path(i->css.cgroup);
--				pr_cont("\n");
--				res->failed = true;
--			}
-+			atomic_long_inc(&res->failcnt);
- 			ret = -EBUSY;
- 			goto err_charge;
- 		}
-@@ -313,6 +307,29 @@ static int misc_cg_current_show(struct seq_file *sf, void *v)
- }
- 
- /**
-+ * misc_cg_failcnt_show() - Show the fail count of the misc cgroup.
-+ * @sf: Interface file
-+ * @v: Arguments passed
-+ *
-+ * Context: Any context.
-+ * Return: 0 to denote successful print.
-+ */
-+static int misc_cg_failcnt_show(struct seq_file *sf, void *v)
-+{
-+	int i;
-+	unsigned long failcnt;
-+	struct misc_cg *cg = css_misc(seq_css(sf));
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		failcnt = atomic_long_read(&cg->res[i].failcnt);
-+		if (READ_ONCE(misc_res_capacity[i]) || failcnt)
-+			seq_printf(sf, "%s %lu\n", misc_res_name[i], failcnt);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * misc_cg_capacity_show() - Show the total capacity of misc res on the host.
-  * @sf: Interface file
-  * @v: Arguments passed
-@@ -350,6 +367,11 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 	},
- 	{
-+		.name = "failcnt",
-+		.seq_show = misc_cg_failcnt_show,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
-+	{
- 		.name = "capacity",
- 		.seq_show = misc_cg_capacity_show,
- 		.flags = CFTYPE_ONLY_ON_ROOT,
-@@ -383,6 +405,7 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
- 	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
- 		WRITE_ONCE(cg->res[i].max, MAX_NUM);
- 		atomic_long_set(&cg->res[i].usage, 0);
-+		atomic_long_set(&cg->res[i].failcnt, 0);
- 	}
- 
- 	return &cg->css;
--- 
-1.8.3.1
-
+> ---
+>  drivers/usb/host/xhci-mtk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> index 2548976bcf05..cb27569186a0 100644
+> --- a/drivers/usb/host/xhci-mtk.c
+> +++ b/drivers/usb/host/xhci-mtk.c
+> @@ -569,7 +569,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         xhci_mtk_ldos_disable(mtk);
+>
+>  disable_pm:
+> -       pm_runtime_put_sync_autosuspend(dev);
+> +       pm_runtime_put_noidle(dev);
+>         pm_runtime_disable(dev);
+>         return ret;
+>  }
+> --
+> 2.18.0
+>
