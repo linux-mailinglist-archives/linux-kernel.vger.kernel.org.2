@@ -2,256 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8162A3EAE4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 03:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B863EAE58
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhHMB7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 21:59:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:26461 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhHMB7o (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 21:59:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="195073404"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
-   d="scan'208";a="195073404"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 18:59:16 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
-   d="scan'208";a="517749378"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.30.176]) ([10.255.30.176])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 18:59:12 -0700
-Subject: Re: [PATCH v4 1/2] perf pmu: Add PMU alias support
-To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        rickyman7@gmail.com, Kan Liang <kan.liang@linux.intel.com>
-References: <20210811024827.9483-1-yao.jin@linux.intel.com>
- <20210811024827.9483-2-yao.jin@linux.intel.com>
- <8730872e-dae1-4d95-48aa-60b15dec2fa7@huawei.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <3f74ca01-8e15-d393-969c-e9d222a989ef@linux.intel.com>
-Date:   Fri, 13 Aug 2021 09:59:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236910AbhHMCAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhHMCAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:00:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE4EC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 19:00:04 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso18403854pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 19:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=ybEye3erQCPfxRHTMkvZ/e1edKMy3xAgKOf7xkRwPvg=;
+        b=JUI2zm4v7yCcwYaCGhjNlBcAfc5deUJDbYG9DBZyM5BWS7TF8XVgaYgp+eT/tq1+kz
+         fgfSg9DxhNeO3Eot91XANkOScdRkqxJbdVzwlf2UTmkmWruw608v3ObZ3Jq3XKlRw7BW
+         CAXtDktR4+2JPJAkcuqA4Y08qUx+VowDQR6hZzD5LR8Vs0uR/+AhlOqVTfR4wKt7kW4e
+         1+j7N336WuzVy5ZdePxCt7nfVoyiEL9SL2w8O6EMvRJyyIn/yal+XLe2iaEtSIgb5S1T
+         pX8xkEfX5DfqH3v86bSf+BiqmFT8GuB+rBQV22z5qmumSDoHjLWbgQVOn63zdQk+5+JN
+         s/ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=ybEye3erQCPfxRHTMkvZ/e1edKMy3xAgKOf7xkRwPvg=;
+        b=l/pfBU9SdHzYKxnlJef7WZsbhIB5gPgASl8uER2PiwO8dmd1F9IAr8Rst81LYGHzru
+         d/psZJONxUG2rSuNV2gawVs15xhyEy5AvqGRub6O+LPaJixNAqUIwa/SDV5ILUA2iD57
+         J49tmAwmC7jlsOIK1euhC621jOtPAPBQmgWfPEPq+ZnGSKMySlOkx+Cv1rlb4kyG4enR
+         EJhgIhRbQasIaT8lQfPpcpzr9fII0rgyPltBK9Fic3+9nlj3zOAcD1No8e0ki1OaYus7
+         15hs7/yjXfisgg5hTrQ116gf6EOUgENNxOGNkDc4E8Hdd1mTNUaq5rNg2v1HQ/UVGNNp
+         PDmA==
+X-Gm-Message-State: AOAM5305E/cPjx4jM/7f3DCqicbGO990LmKVdqqAZX/FwtdS97k0HZc+
+        AqFHYsD7aO4jOwhBZxp87fE=
+X-Google-Smtp-Source: ABdhPJxleBEI2b02jwlblqKGiBSThKU4pGnT2xD+wIsOCnNWbzqbHACHogeIwvyrRncu6H7ZccNzVg==
+X-Received: by 2002:a63:2152:: with SMTP id s18mr28001pgm.25.1628820004254;
+        Thu, 12 Aug 2021 19:00:04 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
+        by smtp.gmail.com with ESMTPSA id s36sm157434pgk.64.2021.08.12.19.00.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 19:00:03 -0700 (PDT)
+Subject: [PATCH] checkpatch: Fix MACRO_ARG_REUSE false positives for offsetof
+ and sizeof_field
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+To:     apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
+        lukas.bulwahn@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 12 Aug 2021 19:00:02 -0700
+Message-ID: <162881998124.70219.4038998149078838864.stgit@localhost.localdomain>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <8730872e-dae1-4d95-48aa-60b15dec2fa7@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+From: Alexander Duyck <alexanderduyck@fb.com>
 
-On 8/12/2021 8:14 PM, John Garry wrote:
-> perf pmu: Add x86 PMU alias support
-> 
->> +char *pmu_find_real_name(const char *name)
->> +{
->> +    static bool cached_list;
->> +
->> +    if (cached_list)
->> +        return __pmu_find_real_name(name);
->> +
->> +    setup_pmu_alias_list();
->> +    cached_list = true;
->> +
->> +    return __pmu_find_real_name(name);
->> +}
->> +
->> +char *pmu_find_alias_name(const char *name)
->> +{
->> +    struct perf_pmu_alias_name *pmu;
->> +
->> +    list_for_each_entry(pmu, &pmu_alias_name_list, list) {
->> +        if (!strcmp(name, pmu->name))
->> +            return strdup(pmu->alias);
-> 
-> I would not expect a function which does a "find" to duplicate the name.
-> 
-> Same goes for all the other places which does similar.
-> 
+The MACRO_ARG_REUSE check was generating false positives when run against
+macros that made use of offsetof and sizeof_field. This was due to the fact
+that the type variable was not being checked for and as a result they were
+not being stripped from the final use count for the macro argument.
 
-Yes, you are right. Jiri has the similar comment for the name duplicating here. We will still keep 
-the 'pmu->name = strdup(name);' in pmu_lookup() in v5.
+Reproduction steps below:
+  # ./scripts/checkpatch.pl --strict --no-tree -types MACRO_ARG_REUSE \
+	-f drivers/net/ethernet/intel/igb/igb_ethtool.c
+CHECK: Macro argument reuse '_stat' - possible side-effects?
+  #27: FILE: drivers/net/ethernet/intel/igb/igb_ethtool.c:27:
+  +#define IGB_STAT(_name, _stat) { \
+  + .stat_string = _name, \
+  + .sizeof_stat = sizeof_field(struct igb_adapter, _stat), \
+  + .stat_offset = offsetof(struct igb_adapter, _stat) \
+  +}
 
->> +    }
->> +    return NULL;
->> +}
->> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
->> index 9321bd0e2f76..d94e48e1ff9b 100644
->> --- a/tools/perf/util/parse-events.y
->> +++ b/tools/perf/util/parse-events.y
->> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
->>               if (!strncmp(name, "uncore_", 7) &&
->>                   strncmp($1, "uncore_", 7))
->>                   name += 7;
->> -            if (!perf_pmu__match(pattern, name, $1)) {
->> +            if (!perf_pmu__match(pattern, name, $1) ||
->> +                !perf_pmu__match(pattern, pmu->alias_name, $1)) {
->>                   if (parse_events_copy_term_list(orig_terms, &terms))
->>                       CLEANUP_YYABORT;
->>                   if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index fc683bc41715..796a4be752f4 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -946,6 +946,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->>       return NULL;
->>   }
->> +char * __weak
->> +pmu_find_real_name(const char *name)
->> +{
->> +    return strdup(name);
->> +}
-> 
-> That's not finding anything.
-> 
+  CHECK: Macro argument reuse '_net_stat' - possible side-effects?
+  #77: FILE: drivers/net/ethernet/intel/igb/igb_ethtool.c:77:
+  +#define IGB_NETDEV_STAT(_net_stat) { \
+  + .stat_string = __stringify(_net_stat), \
+  + .sizeof_stat = sizeof_field(struct rtnl_link_stats64, _net_stat), \
+  + .stat_offset = offsetof(struct rtnl_link_stats64, _net_stat) \
+  +}
 
-Will just return name in non-x86 implementation.
+  total: 0 errors, 0 warnings, 2 checks, 3498 lines checked
 
-pmu_find_real_name(const char *name)
-{
-	return name;
-}
+Address that by adding the type to the offset and sizeof_field checks so
+that they will properly strip both the macro and the two arguments. With
+this change the result is 0 checks as the two argument macros correctly
+strip the type and argument.
 
->> +
->> +char * __weak
->> +pmu_find_alias_name(const char *name __maybe_unused)
->> +{
->> +    return NULL;
->  > +}
->> +
->>   static int pmu_max_precise(const char *name)
->>   {
->>       char path[PATH_MAX];
->> @@ -959,19 +971,25 @@ static int pmu_max_precise(const char *name)
->>       return max_precise;
->>   }
->> -static struct perf_pmu *pmu_lookup(const char *name)
->> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->>   {
->> -    struct perf_pmu *pmu;
->> +    struct perf_pmu *pmu = NULL;
->>       LIST_HEAD(format);
->>       LIST_HEAD(aliases);
->>       __u32 type;
->> -    bool is_hybrid = perf_pmu__hybrid_mounted(name);
->> +    bool is_hybrid;
->> +    char *name = pmu_find_real_name(lookup_name);
->> +
->> +    if (!name)
->> +        return NULL;
->> +
->> +    is_hybrid = perf_pmu__hybrid_mounted(name);
->>       /*
->>        * Check pmu name for hybrid and the pmu may be invalid in sysfs
->>        */
->>       if (!strncmp(name, "cpu_", 4) && !is_hybrid)
->> -        return NULL;
->> +        goto out;
->>       /*
->>        * The pmu data we store & need consists of the pmu
->> @@ -979,23 +997,24 @@ static struct perf_pmu *pmu_lookup(const char *name)
->>        * now.
->>        */
->>       if (pmu_format(name, &format))
->> -        return NULL;
->> +        goto out;
->>       /*
->>        * Check the type first to avoid unnecessary work.
->>        */
->>       if (pmu_type(name, &type))
->> -        return NULL;
->> +        goto out;
->>       if (pmu_aliases(name, &aliases))
->> -        return NULL;
->> +        goto out;
->>       pmu = zalloc(sizeof(*pmu));
->>       if (!pmu)
->> -        return NULL;
->> +        goto out;
->>       pmu->cpus = pmu_cpumask(name);
->> -    pmu->name = strdup(name);
->> +    pmu->name = name;
->> +    pmu->alias_name = pmu_find_alias_name(name);
->>       pmu->type = type;
->>       pmu->is_uncore = pmu_is_uncore(name);
->>       if (pmu->is_uncore)
->> @@ -1017,6 +1036,10 @@ static struct perf_pmu *pmu_lookup(const char *name)
->>       pmu->default_config = perf_pmu__get_default_config(pmu);
->> +out:
->> +    if (!pmu)
->> +        free(name);
-> 
-> I don't understand this. There are lots of places this function can fail , but we don't free 
-> memories allocated previously - why just free this one?
->
+Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+---
+ scripts/checkpatch.pl |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's because it's only introduced by my patch (duplicating name). :)
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4..cda33bb71ad6 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5833,7 +5833,7 @@ sub process {
+ 			        next if ($arg =~ /\.\.\./);
+ 			        next if ($arg =~ /^type$/i);
+ 				my $tmp_stmt = $define_stmt;
+-				$tmp_stmt =~ s/\b(__must_be_array|offsetof|sizeof|sizeof_field|__stringify|typeof|__typeof__|__builtin\w+|typecheck\s*\(\s*$Type\s*,|\#+)\s*\(*\s*$arg\s*\)*\b//g;
++				$tmp_stmt =~ s/\b(__must_be_array|offsetof\s*\(\s*$Type\s*,|\#+|sizeof|sizeof_field\s*\(\s*$Type\s*,|\#+|__stringify|typeof|__typeof__|__builtin\w+|typecheck\s*\(\s*$Type\s*,|\#+)\s*\(*\s*$arg\s*\)*\b//g;
+ 				$tmp_stmt =~ s/\#+\s*$arg\b//g;
+ 				$tmp_stmt =~ s/\b$arg\s*\#\#//g;
+ 				my $use_cnt = () = $tmp_stmt =~ /\b$arg\b/g;
 
-But if we keep 'pmu->name = strdup(name)' in pmu_lookup(), I'm OK to keep original code/behavior.
 
->> +
->>       return pmu;
->>   }
->> @@ -1025,7 +1048,8 @@ static struct perf_pmu *pmu_find(const char *name)
->>       struct perf_pmu *pmu;
->>       list_for_each_entry(pmu, &pmus, list)
->> -        if (!strcmp(pmu->name, name))
->> +        if (!strcmp(pmu->name, name) ||
->> +            (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->>               return pmu;
-> 
-> I'd be inclined to use {} for the list_for_each_entry() call
-> 
-
-OK, I will add {}, thanks!
-
->>       return NULL;
->> @@ -1920,6 +1944,9 @@ bool perf_pmu__has_hybrid(void)
->>   int perf_pmu__match(char *pattern, char *name, char *tok)
->>   {
->> +    if (!name)
->> +        return -1;
->> +
->>       if (fnmatch(pattern, name, 0))
->>           return -1;
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index 926da483a141..f6ca9f6a06ef 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -21,6 +21,7 @@ enum {
->>   #define PERF_PMU_FORMAT_BITS 64
->>   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->>   #define CPUS_TEMPLATE_CPU    "%s/bus/event_source/devices/%s/cpus"
->> +#define MAX_PMU_NAME_LEN 128
->>   struct perf_event_attr;
->> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->>   struct perf_pmu {
->>       char *name;
->> +    char *alias_name;    /* PMU alias name */
-> 
-> useless comment
-> 
-
-OK, remove it :)
-
-Thanks
-Jin Yao
-
->>       char *id;
->>       __u32 type;
->>       bool selectable;
->> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->>   bool perf_pmu__has_hybrid(void);
->>   int perf_pmu__match(char *pattern, char *name, char *tok);
->> +char *pmu_find_real_name(const char *name);
->> +char *pmu_find_alias_name(const char *name);
->> +
->>   #endif /* __PMU_H */
->>
-> 
