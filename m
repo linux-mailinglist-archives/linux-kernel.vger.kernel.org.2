@@ -2,75 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A6E3EBB71
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB86B3EBB85
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhHMR2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:28:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38046 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhHMR2G (ORCPT
+        id S230131AbhHMRdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhHMRdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:28:06 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628875658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXTaSydLQd13Wt3GN8lQTythfyuBI5u6fx4bdjj3qSg=;
-        b=VLTc/NGS01W+I7Tlg4jxZ/rgRXF32oKOJjtdocgDY+RPIkowZnl3vDNsWUcC4q4Yga2BMF
-        2wbW+YBdmz1PBFt+LXhB6OqnJ8DzTPNb8Sdg1yQsN7lG69N4Wc97lJxUrCmhyX1fu/rCD9
-        eUSK8XWfLmzJUCWEFSnWCrJ9gwcb/QoK4xQk6nS5go0yrbop8VoO8HIFKOix4VM8l2/qfW
-        vuAtle7ZBCVS35jtLccUg8RbuPF9IuNWWJn/RNQwhV+abr5nkr42IAJbuI8YHr5J/XG2bO
-        ONgm+C4Pt/KYIQ4wb4sJx3ESzwBz6d2wSKMFb8L1x7z+mthbGBJPCk9sH6To4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628875658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXTaSydLQd13Wt3GN8lQTythfyuBI5u6fx4bdjj3qSg=;
-        b=+C58gskZdXfZhavBAInUT9TFk9MBa4c7jqWdWExTuhHBWCGEBVHtqq9BHpJftcWd409HWO
-        bNhtQ37dB9iXedBQ==
-To:     Waiman Long <llong@redhat.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     wangle6@huawei.com, xiaoqian9@huawei.com, shaolexi@huawei.com
-Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
-In-Reply-To: <48cddad4-0388-ae8b-f98b-1629b9ae590a@redhat.com>
-References: <20210809021215.19991-1-nixiaoming@huawei.com>
- <48cddad4-0388-ae8b-f98b-1629b9ae590a@redhat.com>
-Date:   Fri, 13 Aug 2021 19:27:37 +0200
-Message-ID: <877dgpp852.ffs@tglx>
+        Fri, 13 Aug 2021 13:33:46 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A745C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 10:33:19 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so12917954oth.7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 10:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T8OEJ0/DfNYzSKTeZkxD23Gy87W8zwO51wj73rgksrQ=;
+        b=JESa9g5aaaaCF1y1elHvztrDLIciDsjdQt+82RK/MNFx9vn4u6mARLGlKteIl1i+lq
+         UTpHZGJjiLGyFLJhseHG38lhqJmNpsLHXJwlxrh6zrM1OayUdIarDNjjDxSz8jxuq5hj
+         rtOYQlO/YHqvTmAjgX8f0Tbwpxux4jeIe+3nA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T8OEJ0/DfNYzSKTeZkxD23Gy87W8zwO51wj73rgksrQ=;
+        b=VP7sB5WDdORqM3JyXY+JaCvQO0yYCiHk4S/MZ0fhRCZsUgWTALHa5S3rttHQUW6g1z
+         W5VgpFtDZnMNy3xT//BiTl/8fvvhqLx/+/7O13CVgEX/iQzAeG8ZKPulKvNYJLqi4NfB
+         JjeszlJXkrLmJkmdTVNbov/3DYfCKUnNCeYZME9zQT7QFNc9Xw+l1Kgfc7XHCnZbBD3k
+         fRBcLGbCJdfqMFSslKhkBSy3aFIYtf9GXMPljacW6oyPhfzHt9O2s0SvGuZrmBx6VL4A
+         acx02Brbcua4aTMyGvV3yEox3TlY6CBcBfXQLk9MQ5HWJPVz4ZnpFsXpWIGrMuJnN4BX
+         RevA==
+X-Gm-Message-State: AOAM533tYGbvWBDHIX76AZrvpUJz5yDZEYNjXcczdIadNSMccFFAzQbH
+        5OIL8vI8IiydAGuNBQW7Cg4KFQ==
+X-Google-Smtp-Source: ABdhPJwYke0vW2ZjfpTmneIbMUrd1MH8HL+Dglj/3ch/im2ZcLs194mx/BcIxtbq9/RbeuO0sdJMvQ==
+X-Received: by 2002:a9d:887:: with SMTP id 7mr3013539otf.120.1628875998401;
+        Fri, 13 Aug 2021 10:33:18 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j6sm386809ooj.11.2021.08.13.10.33.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 10:33:17 -0700 (PDT)
+Subject: Re: [PATCH v4 1/8] x86/sgx: Add /sys/kernel/debug/x86/sgx_total_mem
+To:     Jarkko Sakkinen <jarkko@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210809093127.76264-1-jarkko@kernel.org>
+ <20210809093127.76264-2-jarkko@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4bcc069d-fafe-11e8-3fac-135e9ece2eec@linuxfoundation.org>
+Date:   Fri, 13 Aug 2021 11:33:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210809093127.76264-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08 2021 at 23:01, Waiman Long wrote:
-> On 8/8/21 10:12 PM, Xiaoming Ni wrote:
->> Semaphore is sleeping lock. Add might_sleep() to down*() family
->> (with exception of down_trylock()) to detect atomic context sleep.
->> @@ -157,6 +160,7 @@ int down_timeout(struct semaphore *sem, long timeout)
->>   	unsigned long flags;
->>   	int result = 0;
->>   
->> +	might_sleep();
->>   	raw_spin_lock_irqsave(&sem->lock, flags);
->>   	if (likely(sem->count > 0))
->>   		sem->count--;
->
-> I think it is simpler to just put a "might_sleep()" in __down_common() 
-> which is the function where sleep can actually happen.
+On 8/9/21 3:31 AM, Jarkko Sakkinen wrote:
+> Just like normal memory, SGX memory can be overcommitted.  SGX has its
+> own reclaim mechanism which kicks in when physical SGX memory (Enclave
+> Page Cache / EPC) is exhausted.  That reclaim mechanism is relatively
+> rarely exercised and needs selftests to poke at it.
+> 
+> The amount of EPC on the system is determined by the BIOS and it varies
+> wildly between systems.  It can be dozens of MB on desktops, or many GB
+> on servers.
+> 
+> To run in a reasonable amount of time, the selftest needs to know how
+> much EPC there is in the system.
+> 
+> Introduce a new debugfs file to export that information.
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> 
+> v3:
+> * Describe the units of sgx_total_mem in Dcumentation/x86/sgx.rst.
+> * Rewrite of the commit message (suggested by Dave):
+>    https://lore.kernel.org/linux-sgx/5d3614af-2393-6744-9d85-7001241ca76e@intel.com/
+> 
+> v2:
+> * sgx_nr_all_pages -> sgx_total_mem
+> 
+>   Documentation/x86/sgx.rst      |  6 ++++++
+>   arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+>   2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> index dd0ac96ff9ef..f11bfb331b93 100644
+> --- a/Documentation/x86/sgx.rst
+> +++ b/Documentation/x86/sgx.rst
+> @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+>   on the same machine, the user should reserve enough EPC (by taking out
+>   total virtual EPC size of all SGX VMs from the physical EPC size) for
+>   host SGX applications so they can run with acceptable performance.
+> +
+> +Debugging
+> +=========
+> +
+> +*/sys/kernel/debug/x86/sgx_total_mem* contains an integer describing
+> +the total SGX reserved memory in bytes, available in the system.
 
-No. Putting it in __down_common() is wrong, because that covers only the
-contended case.
+Why not add the details you have in the commit log to the document?
+Also add more details on how to debug/test.
 
-But we want to cover the potential sleep, i.e. checking even in the
-non-contended case, which is what might_sleep() is about.
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 63d3de02bbcc..b65da19a53ee 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*  Copyright(c) 2016-20 Intel Corporation. */
+>   
+> +#include <linux/debugfs.h>
+>   #include <linux/file.h>
+>   #include <linux/freezer.h>
+>   #include <linux/highmem.h>
+> @@ -28,7 +29,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+>   static LIST_HEAD(sgx_active_page_list);
+>   static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+>   
+> -/* The free page list lock protected variables prepend the lock. */
+> +/* Total EPC memory available in bytes. */
+> +static unsigned long sgx_total_mem;
+> +
+> +/* The number of free EPC pages in all nodes. */
+>   static unsigned long sgx_nr_free_pages;
+>   
+>   /* Nodes with one or more EPC sections. */
+> @@ -656,6 +660,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+>   		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+>   	}
+>   
+> +	sgx_total_mem += nr_pages * PAGE_SIZE;
+> +
+>   	return true;
+>   }
+>   
+> @@ -823,6 +829,8 @@ static int __init sgx_init(void)
+>   	if (sgx_vepc_init() && ret)
+>   		goto err_provision;
+>   
+> +	debugfs_create_ulong("sgx_total_mem", 0444, arch_debugfs_dir, &sgx_total_mem);
+> +
+>   	return 0;
+>   
+>   err_provision:
+> 
 
-Thanks,
-
-        tglx
+thanks,
+-- Shuah
