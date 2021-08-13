@@ -2,159 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B223EAFF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E92D3EB004
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 08:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238824AbhHMGU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 02:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238646AbhHMGU2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 02:20:28 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560A0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 23:20:02 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d17so10501147plr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 23:20:02 -0700 (PDT)
+        id S238866AbhHMG1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 02:27:41 -0400
+Received: from mail-eopbgr150074.outbound.protection.outlook.com ([40.107.15.74]:18659
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238523AbhHMG1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 02:27:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=akXw0FACeeNStdWiTC5a4XpGvsCIse7ABYkWx6jXBgtiU+RbgPad9nmZoDG/Xw6k5QVD/vySywrnThSAKXLrZFszYDtJ2+apzT1Mw5ckcn68bGSs9D9y14rB/lfq2iVaQOCNm+4RfoRWkAhWSACKs4/UPZmdJmOMFAGtEKDnAnAMVU308y6l1d7tc0AGR91LIy1x/MoiUONsfOFaU4a81uLWwYwrh0RA2DPLAh8YAy4sNjVjhujgRY1gexEtONLrUykJ2WWoO5T0v8uIKfyzxESY7xuTiH+m2kZ4NCYt/zHziPQ722xrEx2EBPCoxzuq+4yEKd1VXyJnlw2TAEcvsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rf1/Mhg9ke9LCkex7LchiW2xX7A4FaB+JV/GxfLTCmo=;
+ b=lcGKNpS7WeCK3aK3QWp5Dwv+UR22s/tD2DgGQNu9FA733fKKUbkPMdls+iyo72FXCo5H6JX7KY1IaIDcvYKoIqQpTMJUBitoMNzJht54A3gZKY/g0fK0yrozi6aYWW/e4qUvnMl65myPp+q+LQ+LLeKwkT4ItyhWasjX6NA64st3s8PdQgmEZStqvxnlt+eFaBn4MPkr4k1NpgDZz4m9ToR+hFJaeX/lZ3d2FXUNQtBJzG5rvtvuQcWLnCYtd/XPSs6k7j2pBrDJvLFUmMsZw8kfv6OkEbb3ngVZ53iuZny6OUYEufpQMzHFfSt6xKCWu5oWun+050ybWwRk1hfqRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kococonnector.com; dmarc=pass action=none
+ header.from=kococonnector.com; dkim=pass header.d=kococonnector.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=3Plf9kYprckAlJtYbb7SyhR3dTcw+NdeOwPa/nQw2qQ=;
-        b=uh320nEJ2La0l2ayXToOEW/pFFNDV4IY+u1oTBcLjMAFVRSG3DAPfo/hPs+T7LiKFI
-         dly3bhsDBpKtyQRzECa444UPfQVrIB3XDQXtPifiYLDJkREE4qAQZunXeaiX4qxO3uAz
-         CE6fUWMzZDQ7NsW3nBfncRxjGIgKPSgd89onfG4mPkDt0WNiWtplH9sw+JWpjcsRif0b
-         lrOU/mBCAlrAZUob8UR3RLm3cVtRilQ0PU2RTX9BsF4Yi/FPpxD4PprjhOKGzOjdLUcc
-         tHiy/gjnnpvJ+SwLoxwavleSITLsTGBh5VarwFOoH9e82cCKLUAE93OetgTrgUMLm1Uo
-         jMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=3Plf9kYprckAlJtYbb7SyhR3dTcw+NdeOwPa/nQw2qQ=;
-        b=G4JkkJ4jC+UnpxCn5fY7ijFKWVsp/mtgyelDr/8QhNEm3+mzpK+DF75DblKpqunXw+
-         Ig3wa4uDpStJKnias2J1wAtJoAcHCwcj645oPEqpeXXJhTu0cmD3pwrK67z9ypl/raz6
-         AGZTBTOAHR8e+w9/jlX/KUQOFBtRV/BNtiHntEW8Woh9c46mY6LPpy/akEHT/EjYzanK
-         eHkdIbdRhLFELvcv6tk6ztMqJAfFI3ScrsSYVoUI4vRvuQ2H+12WF1sPrTMWy7lSjxix
-         v2HSoHGvapkN0fEkFCfP0FU3WP14EdYlN+NrCmMg6wel48sqKpRdr0y4btxnt3A10cg9
-         tpfA==
-X-Gm-Message-State: AOAM5324l64cPea5kjhsm1kXNlKFELvCMnhLTHwZEl1veUG5VG7wbulu
-        7YughQo2L/eJ1GHw49Ks3fc=
-X-Google-Smtp-Source: ABdhPJwjY9sww6bgXsU1OD1U78Y9YWxbhl7MSl2Q+cyvPbyaE3AzOVb4t7pilHfLFPL8vJ4tHmwfaA==
-X-Received: by 2002:a17:90a:db09:: with SMTP id g9mr1068009pjv.205.1628835601865;
-        Thu, 12 Aug 2021 23:20:01 -0700 (PDT)
-Received: from localhost (60-242-208-220.static.tpgi.com.au. [60.242.208.220])
-        by smtp.gmail.com with ESMTPSA id y23sm810874pfb.130.2021.08.12.23.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 23:20:01 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:19:56 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
- WARN_ON/__WARN_FLAGS() with asm goto
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
-        <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+ d=KoCoConnector.onmicrosoft.com; s=selector2-KoCoConnector-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rf1/Mhg9ke9LCkex7LchiW2xX7A4FaB+JV/GxfLTCmo=;
+ b=T+pUX8iiXW2KNaFyKiZKUeNsmNWwSQUQDhDKjxmU6VXvriJO1QViWLttggfae7EpPkgQgrBLO55k0NiUUFlV/Abs4elHvRK/AjeoJNb70GHmHPJXRltz+/yli5NaNp7ifSY9Gykcy1bsusm4E+hAAmn8H1VDyoXjNeegve4vFSI=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=kococonnector.com;
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com (2603:10a6:20b:281::9)
+ by AM9PR09MB4643.eurprd09.prod.outlook.com (2603:10a6:20b:286::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Fri, 13 Aug
+ 2021 06:27:11 +0000
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::35c9:eaa2:9d67:9ec1]) by AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::35c9:eaa2:9d67:9ec1%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 06:27:10 +0000
+From:   Oliver Graute <oliver.graute@kococonnector.com>
+To:     dmitry.torokhov@gmail.com
+Cc:     oliver.graute@gmail.com,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Simon Budig <simon.budig@kernelconcepts.de>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v1] Input: edt-ft5x06 - added case for EDT EP0110M09
+Date:   Fri, 13 Aug 2021 08:21:09 +0200
+Message-Id: <20210813062110.13950-1-oliver.graute@kococonnector.com>
+X-Mailer: git-send-email 2.17.1
+X-Patchwork-Bot: notify
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0056.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::36) To AM9PR09MB4884.eurprd09.prod.outlook.com
+ (2603:10a6:20b:281::9)
 MIME-Version: 1.0
-Message-Id: <1628834900.ecs68prq9x.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2.207.138.2) by AM0PR10CA0056.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Fri, 13 Aug 2021 06:27:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 590b5a44-d2f2-432e-99b4-08d95e2361b7
+X-MS-TrafficTypeDiagnostic: AM9PR09MB4643:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM9PR09MB464388F852312F94DF06A74BEBFA9@AM9PR09MB4643.eurprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iDkBOUrmSGRCQRnyC+076pFO7GY1N6loGo6aSLT3q1L4wMQUFlWKt1N0wpID99bKXHWBYPKS/vwasoqT4S8ruo24McueT6u8BP626WPWb9QZ6g1oXouSYf3t8VGTMi2GZeJOGOod/9OxP4wRgeouyAhqXm7ZIU50WI698WJw1taeHpIhQYEy/0X3JkZdlg5soqhWfpbMgBoRzrYR5vUHhXV0477KWR+kmV9w1fjc3guLCmzG8tCEw5WTortqlndP5LHKFbGz0thCF5pkdrtAcIkP4+Tv85MowePU0Dyq8oPc9ta0s2fzfq9cuW1rgWL3+RTuLTc4m9GTmvYf4CIxBnvEOaMGokVtTc5xrclpC93zgvR6jaog2VtcxiPi6e6CMdeOxxFgHUZZwPDMMruOJnBCQgd33cgIMA2PBxVsrYGf9wDJjJSjxke40mcYQBlb1tDjX+Q/PkD0j4/n3n9a0LRnsTUuFGfcG1q5UwjUbjamF/KOAoGGYHrLpFtGo2PdzRclHCeSEUEpJgC+pPkQdgZ2wWIb8uFBGcJ0lXeRwV3uPYsnHePCyH686a0FhFbKezmKyvnN+iMrfTmmWtDYxSCDftoR0UN/MqayAUnosuXWeFjsH9657bzJpbv5j6g3CG4ZYZ0kc9xedByLtYv1yTxSV7j3Ldw+15hmYXrZKc0TiYzQ6SL8PrIpcq4aj9mMKKjCqJ7S+RZT4RkID8S+Rw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR09MB4884.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(396003)(39830400003)(376002)(52116002)(66946007)(44832011)(956004)(2616005)(6496006)(66556008)(66476007)(5660300002)(2906002)(186003)(86362001)(36756003)(8936002)(54906003)(4326008)(6916009)(4744005)(6486002)(8676002)(316002)(478600001)(26005)(1076003)(38100700002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NamRQuV0KOH8cA6mbnqX79A99Iwph/+dOYok4t/tJ/lYBr1XO5vBIyDI/QLz?=
+ =?us-ascii?Q?U1Ve19/7YlQJy2jwoVwTb59cby9TFav55b0a661itZJhTzRO4rp3xpJ/NaBI?=
+ =?us-ascii?Q?vbeNl6v0qic7tnPCBLgoMu909sv7RxTRx5mLtFd/e9iFBnB9F5I1FGBy8ptu?=
+ =?us-ascii?Q?lOF5ZeCxPTiVNr4z8PG2zeoKAHfoAi23E16WUYSlxGGFTdwRUqLurUOJ2y5W?=
+ =?us-ascii?Q?p5OaCllWjQZyvtzYqZHLyETqMcF+2vyPgyEgXPJgQDevfqxD/UV5AQOuHxrH?=
+ =?us-ascii?Q?YsX7sA//zdCkKMFU1l0klmb7yQZ7/yrfkOTLqanCWmfmPiKy5673FBT3YKgM?=
+ =?us-ascii?Q?+rVl3MqDbxHkdtYw7GLLiSRvYTSyJVi+LkEiOlS+ejn94o4dhtT9Mholsl+o?=
+ =?us-ascii?Q?3OQGxL4QwuS9BnkLBd1tI9rMbNPEUvdZ/UX4awif1TugKyTZeyO4JI5CnLtW?=
+ =?us-ascii?Q?lI8OyaxWKp3kPANlm3c6YGuI2UHIGGQySiWAX2eUvOnxYggTYuaKEMh9QRov?=
+ =?us-ascii?Q?koObxwk7l0TpE1ZTOtz3dZGXUbR/L9aAgb/XAl4Hn6DKEJ2UlxyMEBi5uoow?=
+ =?us-ascii?Q?FleX7apug1HiuUp2AWyo6CltNkSMDGL1ah/aOs+FXfc754lq0t81zS9AOCad?=
+ =?us-ascii?Q?0nZheOozLirYmvEpzcVm7iQMCMqlNt/+3R2uoDJTwOE4qOEFxWyNw11zShmP?=
+ =?us-ascii?Q?y44GBWYuZmAhXs/j0bsMivzyQxwmVFSVRaPLOBSZA7Ivz2u3ku+cX05iIXgB?=
+ =?us-ascii?Q?81XVCwHkA5duhwd4l/9VeJvSYlX6U0W1Ik7qsw2VPDjra+SoaVSTwJXfPBda?=
+ =?us-ascii?Q?Ni8t9RETgWTT9oZu/gq3aGWBoX/5qsp0RQGYo3J2G+PdLqncRGk8WkCX7rBs?=
+ =?us-ascii?Q?fEddQzhjpcMItdmhWePo3ulBgDPhuSLCNDG/mZvNOkF8C6EKrXVFPKJCkurZ?=
+ =?us-ascii?Q?H3GxzcQh9S77zR1UzjahxeMh7wG/JE/PuZpAHInT0uIVgPmMRxVx9pdAYm8X?=
+ =?us-ascii?Q?Z8R9OategSYq1TtmVfhRps64sjqyMsVHTvJaqTEdpYB2/mFVgmTHsDdNzUFO?=
+ =?us-ascii?Q?2yDPGvXCz/O5awbJuJb8IEgubYV0N7MEFrcewKihZUjAFqhFQwZZAB9R6rp2?=
+ =?us-ascii?Q?escHq/XUV8kjI/lmnPSSEGfq9PCgtGu+XyguPYlsz5SiXIsOICdD/ZVJmZ7m?=
+ =?us-ascii?Q?MFzDtf5/nrYLMMunw0/jGMFfV0o1G+VSDNwBqvBf259yQyTN9VTie/NHMQAL?=
+ =?us-ascii?Q?+QZeTl7dxSB3EJ5KT2QdElrjZhW33t37tb8cx4GAONdV9ztXDozdTts3VucR?=
+ =?us-ascii?Q?1zYpq5dpgkvl7Z1DkMbGwNaG?=
+X-OriginatorOrg: kococonnector.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 590b5a44-d2f2-432e-99b4-08d95e2361b7
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR09MB4884.eurprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 06:27:10.8901
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 59845429-0644-4099-bd7e-17fba65a2f2b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kck7M3HUJ3Cl3MBT4eqicsVCnf5HeS1/hiJ2OpUs0pkQEh2xua6qPxyUvMz+uB32xCaVGD1QRK6HhmmT5ySy7Ra2H+VekAfUKZqZUEjxrF0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR09MB4643
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of April 14, 2021 2:38 am:
-> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
-> flexibility to GCC.
->=20
-> For that add an entry to the exception table so that
-> program_check_exception() knowns where to resume execution
-> after a WARNING.
+Add Support for EP011M09 Firmware
 
-Nice idea. How much does it bloat the exception table?
-How easy would it be to make a different exception table for
-unimportant stuff like WARN_ON faults?
+Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
+---
+ drivers/input/touchscreen/edt-ft5x06.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->=20
-> Here are two exemples. The first one is done on PPC32 (which
-> benefits from the previous patch), the second is on PPC64.
->=20
-> 	unsigned long test(struct pt_regs *regs)
-> 	{
-> 		int ret;
->=20
-> 		WARN_ON(regs->msr & MSR_PR);
->=20
-> 		return regs->gpr[3];
-> 	}
->=20
-> 	unsigned long test9w(unsigned long a, unsigned long b)
-> 	{
-> 		if (WARN_ON(!b))
-> 			return 0;
-> 		return a / b;
-> 	}
->=20
-> Before the patch:
->=20
-> 	000003a8 <test>:
-> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
-> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
-> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
-> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3b8:	4e 80 00 20 	blr
->=20
-> 	 3bc:	0f e0 00 00 	twui    r0,0
-> 	 3c0:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3c4:	4e 80 00 20 	blr
->=20
-> 	0000000000000bf0 <.test9w>:
-> 	 bf0:	7c 89 00 74 	cntlzd  r9,r4
-> 	 bf4:	79 29 d1 82 	rldicl  r9,r9,58,6
-> 	 bf8:	0b 09 00 00 	tdnei   r9,0
-> 	 bfc:	2c 24 00 00 	cmpdi   r4,0
-> 	 c00:	41 82 00 0c 	beq     c0c <.test9w+0x1c>
-> 	 c04:	7c 63 23 92 	divdu   r3,r3,r4
-> 	 c08:	4e 80 00 20 	blr
->=20
-> 	 c0c:	38 60 00 00 	li      r3,0
-> 	 c10:	4e 80 00 20 	blr
->=20
-> After the patch:
->=20
-> 	000003a8 <test>:
-> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
-> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
-> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
-> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3b8:	4e 80 00 20 	blr
->=20
-> 	 3bc:	0f e0 00 00 	twui    r0,0
->=20
-> 	0000000000000c50 <.test9w>:
-> 	 c50:	7c 89 00 74 	cntlzd  r9,r4
-> 	 c54:	79 29 d1 82 	rldicl  r9,r9,58,6
-> 	 c58:	0b 09 00 00 	tdnei   r9,0
-> 	 c5c:	7c 63 23 92 	divdu   r3,r3,r4
-> 	 c60:	4e 80 00 20 	blr
->=20
-> 	 c70:	38 60 00 00 	li      r3,0
-> 	 c74:	4e 80 00 20 	blr
-
-One thing that would be nice for WARN_ON_ONCE is to patch out the trap
-after the program interrupt. I've seen sometimes the WARN_ON_ONCE starts
-firing a lot and slows down the kernel. That gets harder to do if the
-trap is now part of the control flow.
-
-I guess that's less important case for performance though. And in theory
-you might be able to replace the trap with an equivalent cmp and branch
-(but that's probably going too over engineering it).
-
-Thanks,
-Nick
+diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+index 6ff81d48da86..600c818b2181 100644
+--- a/drivers/input/touchscreen/edt-ft5x06.c
++++ b/drivers/input/touchscreen/edt-ft5x06.c
+@@ -895,6 +895,7 @@ static int edt_ft5x06_ts_identify(struct i2c_client *client,
+ 		 * the identification registers.
+ 		 */
+ 		switch (rdbuf[0]) {
++		case 0x11:   /* EDT EP0110M09 */
+ 		case 0x35:   /* EDT EP0350M09 */
+ 		case 0x43:   /* EDT EP0430M09 */
+ 		case 0x50:   /* EDT EP0500M09 */
+-- 
+2.17.1
 
