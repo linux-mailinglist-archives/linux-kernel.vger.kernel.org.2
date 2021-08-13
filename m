@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31343EB7F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80033EB7C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241514AbhHMPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:10:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
+        id S241279AbhHMPJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:09:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241505AbhHMPJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:09:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A62610F7;
-        Fri, 13 Aug 2021 15:09:28 +0000 (UTC)
+        id S241212AbhHMPI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:08:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CED0A610CC;
+        Fri, 13 Aug 2021 15:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867369;
-        bh=i4TTYNWsN50jOCsFBt6qSWhYDFVD5pufKMKlu/WKUls=;
+        s=korg; t=1628867311;
+        bh=qZ4IcnHx3383ghvLlZ7qJxumrSCLaF9VxZIGvrEvCWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeJn2U+CcaV2wsXWGjB9pl86Dw8LIqj0E/Jl/uA9kgur0vrxFG9ambt6dbruev03s
-         +ZDyaKg1tD+fXTZqeGxYORBXXEVKiltz990K8Lw/dHqqi09a6UXUXyM/NrSK2ssSk+
-         Unn3qGLZkzqkQqzoHwOgd4svQenDPdrHDsn9TYj4=
+        b=PMgrNWGVocq7FjoES3D7TjbHt8QBqqS0wey4YkzVCnLIe44mVRLVUZkFekNMP3qNM
+         4/vQ53kO9AfwctdoD8+RmJDSf/HjY/DeO6djCrDNTGf5mxUh7N5suY3GDPewJlUvlf
+         M/QI2PgKIRbnV+2nq93P/m3PE93xTIpi9D08Eu/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 18/30] pipe: increase minimum default pipe size to 2 pages
+Subject: [PATCH 4.4 22/25] pipe: increase minimum default pipe size to 2 pages
 Date:   Fri, 13 Aug 2021 17:06:46 +0200
-Message-Id: <20210813150523.030183074@linuxfoundation.org>
+Message-Id: <20210813150521.439309896@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-References: <20210813150522.445553924@linuxfoundation.org>
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
+References: <20210813150520.718161915@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -70,13 +70,14 @@ Link: https://lore.kernel.org/lkml/1628127094.lxxn016tj7.none@localhost/
 Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/pipe.c |   19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ fs/pipe.c |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
 --- a/fs/pipe.c
 +++ b/fs/pipe.c
-@@ -29,6 +29,21 @@
+@@ -28,6 +28,21 @@
  #include "internal.h"
  
  /*
@@ -98,16 +99,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
   * The max size that a non-root user is allowed to grow the pipe. Can
   * be set by root in /proc/sys/fs/pipe-max-size
   */
-@@ -653,8 +668,8 @@ struct pipe_inode_info *alloc_pipe_info(
- 	user_bufs = account_pipe_buffers(user, 0, pipe_bufs);
+@@ -621,7 +636,7 @@ struct pipe_inode_info *alloc_pipe_info(
  
- 	if (too_many_pipe_buffers_soft(user_bufs) && is_unprivileged_user()) {
--		user_bufs = account_pipe_buffers(user, pipe_bufs, 1);
--		pipe_bufs = 1;
-+		user_bufs = account_pipe_buffers(user, pipe_bufs, PIPE_MIN_DEF_BUFFERS);
-+		pipe_bufs = PIPE_MIN_DEF_BUFFERS;
- 	}
+ 		if (!too_many_pipe_buffers_hard(user)) {
+ 			if (too_many_pipe_buffers_soft(user))
+-				pipe_bufs = 1;
++				pipe_bufs = PIPE_MIN_DEF_BUFFERS;
+ 			pipe->bufs = kzalloc(sizeof(struct pipe_buffer) * pipe_bufs, GFP_KERNEL);
+ 		}
  
- 	if (too_many_pipe_buffers_hard(user_bufs) && is_unprivileged_user())
 
 
