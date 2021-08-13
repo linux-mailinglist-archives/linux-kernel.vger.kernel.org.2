@@ -2,154 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB733EBD40
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414F33EBD44
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhHMUWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbhHMUWn (ORCPT
+        id S234276AbhHMUY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:24:28 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:35375 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233875AbhHMUYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:22:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE327C061756;
-        Fri, 13 Aug 2021 13:22:15 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id d4so21950022lfk.9;
-        Fri, 13 Aug 2021 13:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7yfeT04tjUL7ni0Yt8y/2t/fuxpmrzJm7LGRe7fQGzE=;
-        b=edN0LhhIrqQ06BnpYKmePZuINDREBj4Vg4HmsJfZEJumcvXIgS+6Jn8pkssXze2FCP
-         dpRCv3rpvoQl5Q24npLm959uFpi3Z+34sfiJ8TNJ6SLwhqMGfF8fXr3PUnlVVjqgBbC5
-         AMlC2/9lRIZVE4+X3fJ7/Ha0auTa5rkYkdf6CatOk7ZPNGgM1whkHODI5gohanuT5o1g
-         r9Ipn2OweaqzyJbl0mlkvzrXfWAv5Ft4zxU8mHwqb+hHUm6FYioH23JdWglKQIpnXSc1
-         jyVUkDnX87yChzGLn+KMkkc6QlGh0ZQCvPz66gg4Rwr0ZwtiXuE2u76u0rf3cykjuhzh
-         hdxA==
+        Fri, 13 Aug 2021 16:24:25 -0400
+Received: by mail-ot1-f54.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so13469852otq.2;
+        Fri, 13 Aug 2021 13:23:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7yfeT04tjUL7ni0Yt8y/2t/fuxpmrzJm7LGRe7fQGzE=;
-        b=Kw6iCOHfLmn6QfmyayF9gg9UvCsQOkUCIrUhhhImsvyBfrWp9aYKSKqrASTU3yHNjt
-         0XqF5RkL7irP3j5iOeUmuTawEZM1IwNSWYcx6ZKIaakKd/T1LjCe4zJcHATv75RW8cgk
-         jKCLXJrrceDVsCxIDCxCfR1D6O0OVNxZ8RYN2ktW1J3hB6XHYnpbUfFFZUDfk/nrzpGk
-         l+QdhcJYhCRZ0q2Dr4VQ5HYcUCmL1tld55I1219nTXHdWDPvPDBDcRdcYuflRLjnwsMm
-         T30msF/1U/jP3y9BdrlaWKLBlwycRpzAd9t7j8sh5m2GYg48NypepCjECHXUm1eW3YW8
-         gXRA==
-X-Gm-Message-State: AOAM532mIDo6egHpjtMLTHtNvfK4NmBTOrSdIiiW4pyWDjfU1ACal+cy
-        U1zZ6tYBBPxJVB27mzOT1WDhwwLtwLrPUw==
-X-Google-Smtp-Source: ABdhPJyAdbA8wN2UeAbOsI93HcBJOLw/Dv/Fzut774JJ7yspwylBcA0NOjnTcynazvYAPtzwmBJvMw==
-X-Received: by 2002:ac2:410e:: with SMTP id b14mr2853493lfi.114.1628886134157;
-        Fri, 13 Aug 2021 13:22:14 -0700 (PDT)
-Received: from reki (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id n8sm239853lfl.103.2021.08.13.13.22.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G5GJqobectD9I3QiKt1pYv/rhZ007RjyGQ0PhxTSAes=;
+        b=UblapYUZ4fDNPE6XELWDmfBowqmUcA9yyK4G+ZAn08fkQK52zYO9wqZYjPcNRquFzx
+         9fP0dqOLH794dijsW6kJySxnPh12tOD9fnlhJ9EHRufVhi5RWXFn70WYR3zwLK8RCMTT
+         bffsOM3MipOhSGa8Z/MtPfYPdMZpS6lRvDuoYOUb50nZL2cPJ7EEgECDHWAwa7fUyuu6
+         gLOJsnj7fXFLDe2Y/BnqcyNCPruPpQBdRE5jBHKhPAUuKzsjEwNoRRjkvwHcRfwJT1bm
+         GAR1NRredg+AiPDsOZTSCVcmpFtQChHi+aF1YH43M0kAPV6oAtoSukSK4n2ReoTCl91V
+         /auw==
+X-Gm-Message-State: AOAM530fELK3uXMOMz27oAobZjv8nsbiCo5Wxd2Y/wD3HhdeIGerZTyp
+        dgYhnkxEWCdVqueF4Q5HAw==
+X-Google-Smtp-Source: ABdhPJxHmdkVN3w0pkbBAvep1kmZBeHOY5DJblDrmCZZrwhtBv5GIJPUw3iaHTaXyu/42R+C/ffNbg==
+X-Received: by 2002:a9d:66d1:: with SMTP id t17mr3510683otm.152.1628886237846;
+        Fri, 13 Aug 2021 13:23:57 -0700 (PDT)
+Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
+        by smtp.gmail.com with ESMTPSA id 17sm551246oiy.50.2021.08.13.13.23.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:22:13 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 23:22:12 +0300
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        ruslan.bilovol@gmail.com, mika.westerberg@linux.intel.com,
-        maze@google.com, jj251510319013@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Message-ID: <20210813232212.5cba6d33@reki>
-In-Reply-To: <20210813145823.GA38198@rowland.harvard.edu>
-References: <20210813114551.72898-1-mdevaev@gmail.com>
-        <20210813145823.GA38198@rowland.harvard.edu>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Fri, 13 Aug 2021 13:23:57 -0700 (PDT)
+Received: (nullmailer pid 3963897 invoked by uid 1000);
+        Fri, 13 Aug 2021 20:23:56 -0000
+Date:   Fri, 13 Aug 2021 15:23:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     ulf.hansson@linaro.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/4] mmc: pwrseq: sd8787: add support for selectable
+Message-ID: <YRbU3NtbYamh7UGH@robh.at.kernel.org>
+References: <20210806113001.821660-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806113001.821660-1-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alan Stern <stern@rowland.harvard.edu> wrote:
-> In other words, a device does not need to have an interrupt-OUT 
-> endpoint, but if it does have one then the host must use it.
-
-You're right. Although the actual behavior of the hosts is not different
-from what I wrote - they really just ignore out endpoint.
-I will eventually fix this in the patch description.
-
-> > However, this raises several problems.
-> > 
-> > (1) Some host OS drivers without OUT Endpoint support can't receive  
+On Fri, Aug 06, 2021 at 02:29:57PM +0300, Claudiu Beznea wrote:
+> Hi,
 > 
-> Can't _transmit_ output reports.  This is understandable, since such 
-> hosts aren't compliant with the standard.
+> This series adds support for selecting the delay b/w reset and power
+> lines on pwrseq-sd8787. With this the driver could also be used by
+> other devices (e.g. WILC1000/WILC3000 which needs a delay of 5ms). Along
+> with this added the DT bindings for WILC3000 device present on
+> SAMA5D27 WLSOM1 board.
 
-Thank you, this is a typo. With the replacement of the word, the meaning
-is fixed. They really don't work. Hosts do not use OUT endpoint
-and transmit reports.
+A 300ms delay doesn't work? Is powering on the device so timing 
+critical?
 
-> >     reports at all. In the case of the keyboard, it becomes impossible
-> >     to get the status of the LEDs from the host OS.
-> > 
-> > (2) Some BIOSes and UEFIs not only don't support the OUT Endpoint,
-> >     they cannot work with HID with this configuration at all.  
-> 
-> What configuration, exactly?  Do you mean that they can't work with 
-> HID interfaces that include an interrupt-OUT endpoint?
+Add a new compatible for your device and imply the timing from that. 
+That way we're not extending the binding a property at a time in a 
+poorly designed way for each new timing quirk.
 
-Yep. They see OUT endpoint and refuse to use the device in various ways,
-for example, they don't continue the initialization process after receiving
-the descriptor. The failure behavior may differ, but it always leads to
-a refuse or to the fact that the device simply does not poll IN endpoint.
-
-> >     For example, absolutely all Apple UEFIs in all Macs can't handle
-> >     the OUT Endpoint in accordance with the HID standard so it makes
-> >     impossible to enter the Boot Menu using the hotkey at boot.  
-> 
-> These hosts simply give up when they see an HID interface with an 
-> interrupt-OUT endpoint?  They don't just ignore it and continue on?
-
-Exactly. Hosts will either stop the initialization process when they receive
-a handle with an OUT endpoint, or they will not be able to work in any other way.
-
-While investigating the problem with Apple, I realized that their UEFI
-is presumably iterated over endpoints and simply does not break the loop
-when an IN endpoint is detected. They reach OUT endpoint (which follows IN),
-see that it is not IN endpoint, repeat the last initialization ops three times
-(SET_IDLE, etc.) and refuse to work with our keyboard. If I change the order
-of the endpoints in the descriptor and do OUT first and then IN, then everything
-will work in the case of Apple, but this is obviously a violation of the standard,
-since it explicitly describes the order of IN and then the optional OUT.
-
-And it only helps with Apple. So the correct solution was to make SETUP/SET_REPORT
-because this satisfies all devices. For the order of the endpoints, see 7.2 of HID 1.11:
-
-> The HID class uses the standard request Get_Descriptor as described in the USB
-> Specification ... That is, the order shall be:
-> Configuration descriptor
->   Interface descriptor (specifying HID Class)
->     HID descriptor (associated with above Interface)
->       Endpoint descriptor (for HID Interrupt In Endpoint)
->       Optional Endpoint descriptor (for HID Interrupt Out Endpoint)
-
-> Why not always allow f_hid to receive reports over ep0?  The HID 
-> standard doesn't forbid this.
-
-Previously, this was the case, but then this functionality was removed
-for two reasons: using OUT endpoint takes up a USB channel less than SETUP
-and allows you to transfer more data from HID gadget, and also allows you
-to organize a queue. The queue could have been organized without this change,
-but the first point is more significant. I found the correspondence
-so that you can read the history of the issue, link below.
-
-That change was not a problem as long as f_hid was mainly used for the keyboard
-at the OS level. Now I am making an open source KVM-over-IP based on this
-and the compatibility hell have risen to full height.
-
-> Missing the SHA value of the commit.
-
-99c515005857ff7d6cd5c2ba272ccab5dc0ea648
-
-Also the descussion: https://www.spinics.net/lists/linux-usb/msg65494.html
-
-Sorry, I couldn't find this on lore.kernel.org. Maybe I didn't search well,
-or this correspondence is too old, 2012.
+Rob
