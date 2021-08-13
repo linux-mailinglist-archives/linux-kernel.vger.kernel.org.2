@@ -2,77 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E239A3EBE6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 00:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5843EBE82
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhHMW6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 18:58:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49386 "EHLO vps0.lunn.ch"
+        id S235362AbhHMXE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 19:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235029AbhHMW6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:58:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=FYuUdJcFQOnbiiBadjNTfXqj9uF9g7KISuzsDGYuIvY=; b=C085qsX/52ve+v3DUlpobQXO/P
-        xQqpZwVxtMvm7cREVO5zkVU4jchLMtKkpNwVA1i1wYi2Sm4PW0/Jf/kNbMMbvmd42qQmONNay4cCu
-        ubMgBINKx5U6Yhpv8H94DHq+ccliTuHltIfKJI9v5l2i5Qt3fW4Siny1Gh1imVLJy2p4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mEg7D-00HZox-WF; Sat, 14 Aug 2021 00:57:28 +0200
-Date:   Sat, 14 Aug 2021 00:57:27 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
-        himadrispandya@gmail.com, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] net: asix: fix uninit value in asix_mdio_read
-Message-ID: <YRb419yLsAtDVShf@lunn.ch>
-References: <YRbw1psAc8jQu4ob@lunn.ch>
- <20210813224219.11359-1-paskripkin@gmail.com>
+        id S235029AbhHMXE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 19:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D77660FC4;
+        Fri, 13 Aug 2021 23:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628895870;
+        bh=9rCG4K5QGdBbXevN+TWBdv/NHnDbcxAS1nXAzuid5ck=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pAu42LjzV5HFEnhpBwAd8pbywG611Fn7Kz0sVLS9fk8sYBLjQWljAzsKQEnHQubhl
+         PrpwJNg7+MJYKZgiv/b+x6N3xbur7gxQRLNfhmZlgmuPgqI9yYokg6t332I9s378zF
+         NhYOUc+AQkx/dwqgFvhkCBsui4fsDURplv8Z+aaX0J7LE5mfqVO2lYUw+ERjwTMfnQ
+         Wu4fLIk4khKLx0lYnAtgoB8ocG7PELLrENAD3zOT31zG2cgXejZDfnSPTqqVgOi1no
+         Xl60v6DGyxTlCDH9HTrARLxSCZnPqL19y2OoS8k5tPV5aashHiwZYMoyUMkslW7z2N
+         p1gd7N/FEtkrA==
+Date:   Fri, 13 Aug 2021 18:04:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v15 7/9] PCI: Setup ACPI fwnode early and at the same
+ time with OF
+Message-ID: <20210813230428.GA2745285@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210813224219.11359-1-paskripkin@gmail.com>
+In-Reply-To: <20210805162917.3989-8-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/drivers/net/usb/asix_common.c b/drivers/net/usb/asix_common.c
-> index ac92bc52a85e..7019c25e591c 100644
-> --- a/drivers/net/usb/asix_common.c
-> +++ b/drivers/net/usb/asix_common.c
-> @@ -468,18 +468,25 @@ int asix_mdio_read(struct net_device *netdev, int phy_id, int loc)
->  	struct usbnet *dev = netdev_priv(netdev);
->  	__le16 res;
->  	u8 smsr;
-> -	int i = 0;
-> +	int i;
->  	int ret;
+[+cc Ben, Mika]
+
+On Thu, Aug 05, 2021 at 09:59:15PM +0530, Amey Narkhede wrote:
+> From: Shanker Donthineni <sdonthineni@nvidia.com>
+> 
+> The pci_dev objects are created through two mechanisms 1) during PCI
+> bus scan and 2) from I/O Virtualization. The fwnode in pci_dev object
+> is being set at different places depends on the type of firmware used,
+> device creation mechanism, and acpi_pci_bridge_d3().
+> 
+> The software features which have a dependency on ACPI fwnode properties
+> and need to be handled before device_add() will not work. One use case,
+> the software has to check the existence of _RST method to support ACPI
+> based reset method.
+> 
+> This patch does the two changes in order to provide fwnode consistently.
+>  - Set ACPI and OF fwnodes from pci_setup_device().
+>  - Remove pci_set_acpi_fwnode() in acpi_pci_bridge_d3().
+> 
+> After this patch, ACPI/OF firmware properties are visible at the same
+> time during the early stage of pci_dev setup. And also call sites should
+> be able to use firmware agnostic functions device_property_xxx() for the
+> early PCI quirks in the future.
+> 
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/pci/pci-acpi.c | 1 -
+>  drivers/pci/probe.c    | 7 ++++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index eaddbf701759..dae021322b3f 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+>  		return false;
 >  
->  	mutex_lock(&dev->phy_mutex);
-> -	do {
-> +	for (i = 0; i < 30; ++i) {
->  		ret = asix_set_sw_mii(dev, 0);
->  		if (ret == -ENODEV || ret == -ETIMEDOUT)
->  			break;
->  		usleep_range(1000, 1100);
->  		ret = asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG,
->  				    0, 0, 1, &smsr, 0);
-> -	} while (!(smsr & AX_HOST_EN) && (i++ < 30) && (ret != -ENODEV));
-> +		if (ret == -ENODEV)
-> +			break;
-> +		else if (ret < 0)
-> +			continue;
-> +		else if (smsr & AX_HOST_EN)
-> +			break;
-> +	}
-> +
+>  	/* Assume D3 support if the bridge is power-manageable by ACPI. */
+> -	pci_set_acpi_fwnode(dev);
+>  	adev = ACPI_COMPANION(&dev->dev);
 
-Yes, this looks good. And Jakub is correct, there are 3 other bits of
-similar code you should look at.
+I *think* the Root Port code farther down in this function is also now
+unnecessary:
 
-     Andrew
+  acpi_pci_bridge_d3(...)
+  {
+    ...
+    root = pcie_find_root_port(dev);
+    adev = ACPI_COMPANION(&root->dev);
+    if (root == dev) {
+      /*
+       * It is possible that the ACPI companion is not yet bound
+       * for the root port so look it up manually here.
+       */
+      if (!adev && !pci_dev_is_added(root))
+        adev = acpi_pci_find_companion(&root->dev);
+    }
+
+Since we're now setting the ACPI_COMPANION for every pci_dev long
+before we get here, I think this could now be simplified to something
+like this:
+
+  acpi_pci_bridge_d3(...)
+  {
+    if (!dev->is_hotplug_bridge)
+      return false;
+
+    adev = ACPI_COMPANION(&dev->dev);
+    if (adev && acpi_device_power_manageable(adev))
+      return true;
+
+    root = pcie_find_root_port(dev);
+    if (!root)
+      return false;
+
+    adev = ACPI_COMPANION(&root->dev);
+    if (!adev)
+      return false;
+
+    rc = acpi_dev_get_property(dev, "HotPlugSupportInD3",
+                               ACPI_TYPE_INTEGER, &val);
+    if (rc < 0)
+      return false;
+
+    return val == 1;
+  }
+
+acpi_pci_bridge_d3() was added by 26ad34d510a8 ("PCI / ACPI: Whitelist
+D3 for more PCIe hotplug ports") [1], so I cc'd Mika in case he has
+any comment.
+
+>  	if (adev && acpi_device_power_manageable(adev))
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 379e85037d9b..15a6975d3757 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1789,6 +1789,9 @@ int pci_setup_device(struct pci_dev *dev)
+>  	dev->error_state = pci_channel_io_normal;
+>  	set_pcie_port_type(dev);
+>  
+> +	pci_set_of_node(dev);
+> +	pci_set_acpi_fwnode(dev);
+
+Is there a reason why you moved pci_set_of_node() from
+pci_scan_device() to here?  I think it's a good change; I'm just
+curious if you tripped over something that required it.
+
+The pci_set_of_node() was added to pci_scan_device() by 98d9f30c820d
+("pci/of: Match PCI devices to OF nodes dynamically") [2], so I cc'd
+Ben just in case there's some reason he didn't put it in
+pci_setup_device() in the first place.
+
+>  	pci_dev_assign_slot(dev);
+>  
+>  	/*
+> @@ -1924,6 +1927,7 @@ int pci_setup_device(struct pci_dev *dev)
+>  	default:				    /* unknown header */
+>  		pci_err(dev, "unknown header type %02x, ignoring device\n",
+>  			dev->hdr_type);
+> +		pci_release_of_node(dev);
+>  		return -EIO;
+>  
+>  	bad:
+> @@ -2351,10 +2355,7 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
+>  	dev->vendor = l & 0xffff;
+>  	dev->device = (l >> 16) & 0xffff;
+>  
+> -	pci_set_of_node(dev);
+> -
+>  	if (pci_setup_device(dev)) {
+> -		pci_release_of_node(dev);
+>  		pci_bus_put(dev->bus);
+>  		kfree(dev);
+>  		return NULL;
+
+[1] https://git.kernel.org/linus/26ad34d510a8
+[2] https://git.kernel.org/linus/98d9f30c820d
