@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D403EB48D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A2E3EB48F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240329AbhHML3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 07:29:23 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:35393 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240328AbhHML3M (ORCPT
+        id S240348AbhHML3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 07:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240335AbhHML32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:29:12 -0400
-Received: by mail-ej1-f42.google.com with SMTP id w5so17695335ejq.2;
-        Fri, 13 Aug 2021 04:28:45 -0700 (PDT)
+        Fri, 13 Aug 2021 07:29:28 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11E3C0613A4;
+        Fri, 13 Aug 2021 04:28:59 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a7so15149966ljq.11;
+        Fri, 13 Aug 2021 04:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACKfswNNvHRBBpNemW++qzxjOqdIX0HI3XRS7XVqFYw=;
+        b=oUkhvc5gv8BZBW5FLmApDisWxSrrMdPvdrSD3FPpvW3oNA4LTa+G3AkccS251UuOpJ
+         YCihrqpl0EFV/Md1ONntGnIJ8dyvKNUZr8yHd4VymjFQJbQj7lexQALWYDch+Tkge0xZ
+         RhotYnORed/zVVBO5E+LLej/tlMNtZteuNyTQ0EUbaAYva5rcLAougQjwDzoB682WinD
+         NR11eozp63Mkn8eQxqptaiHxoQlx02abVzc6kvQIAV7IcClT7ZC+j37rWvBqwOBx1Gei
+         fwecd4IyjLIUmxO4VH9ROi395Utmp93f3cJlAOtFsVSXwPQnEq1YWj5COxIQ/8Q5uU2e
+         HoXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IBXCYPUTTAcQyneOGCdcbZVJIuyUOiqeKb7yjSzy5ro=;
-        b=H1xeqy4Arf0Dhg0qzfQD1tqndkr0ESP+MGQdZCf4FFEZdPakxrXMeD+5MSr6QcR/L2
-         UHm6RS8h+H1FSMxuk41wI/CwFks0yK41CREAi6cp2JHRhK1rDpShnfKD80Bgf8qk3BU2
-         4VrSvafR8SCilYICNRWSSkvpK/qaEqemitBDdqAiKMQot1nZ1xvhtJHCIclSFanEwJzs
-         wtVcVv3fWFFCvMpYs3yMoeq+upSYOKJuknFObN3LcthKj2yy9nvY1+FRT1+gkfN8al5w
-         O+tjJn2WXgfysJ5esWLTlBW48PHu2BoM7cPdZhi0wRbMKNud+0u9DZZ8oRruTOpj9qKr
-         F72w==
-X-Gm-Message-State: AOAM531sw2I2m0iIEdrtowvfFcxzBx77NWu+zJR5ltp/sV6FKMEKqjRZ
-        qDneB8/nIDlwug24Kgx2yUA=
-X-Google-Smtp-Source: ABdhPJzRlKknfKMJ9vBxYJA90SRDKtySk+QkGHwljDv8+3DU07AmJnnsBAgDcecQHnDPe1G86t1KAQ==
-X-Received: by 2002:a17:907:7609:: with SMTP id jx9mr1988040ejc.432.1628854124552;
-        Fri, 13 Aug 2021 04:28:44 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.googlemail.com with ESMTPSA id o23sm769708eds.75.2021.08.13.04.28.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 04:28:43 -0700 (PDT)
-To:     Chester Lin <clin@suse.com>,
-        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-serial@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
- <20210805065429.27485-3-clin@suse.com>
- <1ff13837-e6ca-c476-376d-b4f80450a259@suse.de> <YRZTSJPFLFFIR+gx@linux-8mug>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 2/8] dt-bindings: serial: fsl-linflexuart: convert to
- json-schema format
-Message-ID: <0b42dc7e-a7c1-fe41-e39a-89627d44cbe4@kernel.org>
-Date:   Fri, 13 Aug 2021 13:28:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=ACKfswNNvHRBBpNemW++qzxjOqdIX0HI3XRS7XVqFYw=;
+        b=qWSvh72phNa+xcCkrY+D2CjEv5Qg0xCgiH+ToOgm50njcIpnNMDY4d35u1Y2bkt8DK
+         dSO1XwWnK8QJMPkowbnRbfg+IukSPh7XI8rcBhnttjxC/4bXReUsTpETQRu7UM4qjyVI
+         8Z20hCTnB+u27p4chDJop/mNPAV2QlmgZmPiQBJ1enUZn1YFu7/iRwHlgaN86sP7cQJ5
+         Hhdvw1gv9pl0acxQ29KITivHDALMwxodVlqdWrn8zLPEKHXClSod/E3lsQxBP/v4cXQ6
+         hD/mCflKUFpl2kpVbq6INXOn7cYifLWB/r9AmQwO36btzFZrjmGxxgn2FYQvUhywYFLy
+         kokQ==
+X-Gm-Message-State: AOAM532j9yQ6vC6s2tzv1NNPW7NSTekaVnnSvjFI+UKl5gddTt+bNw0V
+        eCiUzeI3fNNi02CXMgcoZ40=
+X-Google-Smtp-Source: ABdhPJxZcizFKCHScyg2ZDtVHg+jRD89Fo/wQcR8aM/5ZaKSYKHB+K8rGqUqjzLsoGXXWaBsoVg5uw==
+X-Received: by 2002:a2e:b60d:: with SMTP id r13mr1484935ljn.218.1628854138037;
+        Fri, 13 Aug 2021 04:28:58 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id d24sm142979lfs.80.2021.08.13.04.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 04:28:57 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+Subject: [PATCH] net: 6pack: fix slab-out-of-bounds in decode_data
+Date:   Fri, 13 Aug 2021 14:28:55 +0300
+Message-Id: <20210813112855.11170-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YRZTSJPFLFFIR+gx@linux-8mug>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/08/2021 13:11, Chester Lin wrote:
-> Hi Andreas,
-> 
-> On Thu, Aug 12, 2021 at 06:04:44PM +0200, Andreas Färber wrote:
->> On 05.08.21 08:54, Chester Lin wrote:
->>> Convert the FSL LINFlexD UART binding to json-schema.
->>>
->>> Signed-off-by: Chester Lin <clin@suse.com>
->>> ---
->>>  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
->>>  .../bindings/serial/fsl,s32-linflexuart.yaml  | 48 +++++++++++++++++++
->>>  2 files changed, 48 insertions(+), 22 deletions(-)
->>>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
->>>  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
->>
->> Thanks for your effort, Chester.
->>
->>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
->>> deleted file mode 100644
->>> index f1bbe0826be5..000000000000
->>> --- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
->>> +++ /dev/null
->>> @@ -1,22 +0,0 @@
->>> -* Freescale LINFlexD UART
->>> -
->>> -The LINFlexD controller implements several LIN protocol versions, as well as
->>> -support for full-duplex UART communication through 8-bit and 9-bit frames.
->>> -
->>> -See chapter 47 ("LINFlexD") in the reference manual[1].
->>> -
->>> -Required properties:
->>> -- compatible :
->>> -  - "fsl,s32v234-linflexuart" for LINFlexD configured in UART mode, which
->>> -    is compatible with the one integrated on S32V234 SoC
->>> -- reg : Address and length of the register set for the device
->>> -- interrupts : Should contain uart interrupt
->>> -
->>> -Example:
->>> -uart0: serial@40053000 {
->>> -	compatible = "fsl,s32v234-linflexuart";
->>> -	reg = <0x0 0x40053000 0x0 0x1000>;
->>> -	interrupts = <0 59 4>;
->>> -};
->>> -
->>> -[1] https://www.nxp.com/webapp/Download?colCode=S32V234RM
->>> diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
->>> new file mode 100644
->>> index 000000000000..acfe34706ccb
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
->>> @@ -0,0 +1,48 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>
->> Since this is dual-licensed and BSD-2-Clause would seem compatible with
->> GPLv3, this could probably be s/GPL-2.0-only/GPL-2.0-or-later/ ? Not a
->> blocker.
-> 
-> There's no license identifier in the original file so it's not a problem to
-> choose "GPL-2.0-or-later".
+Syzbot reported slab-out-of bounds write in decode_data().
+The problem was in missing validation checks.
 
-That is not entirely correct. If there is no explicit license in the
-file, it's kernel's default so GPL-2.0-only. You cannot relicense
-derivative work without getting permission from authors and copyright
-holders.
+Syzbot's reproducer generated malicious input, which caused
+decode_data() to be called a lot in sixpack_decode(). Since
+rx_count_cooked is only 400 bytes and noone reported before,
+that 400 bytes is not enough, let's just check if input is malicious
+and complain about buffer overrun.
 
-However if you did not copy the text/description from original bindings,
-your work won't be derivative so you can relicense it.
+Fail log:
+==================================================================
+BUG: KASAN: slab-out-of-bounds in drivers/net/hamradio/6pack.c:843
+Write of size 1 at addr ffff888087c5544e by task kworker/u4:0/7
 
-Best regards,
-Krzysztof
+CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.6.0-rc3-syzkaller #0
+...
+Workqueue: events_unbound flush_to_ldisc
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+ __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_store1_noabort+0x17/0x20 mm/kasan/generic_report.c:137
+ decode_data.part.0+0x23b/0x270 drivers/net/hamradio/6pack.c:843
+ decode_data drivers/net/hamradio/6pack.c:965 [inline]
+ sixpack_decode drivers/net/hamradio/6pack.c:968 [inline]
+
+Reported-and-tested-by: syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/hamradio/6pack.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index fcf3af76b6d7..f4ffc2a80ab7 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -827,6 +827,12 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
+ 		return;
+ 	}
+ 
++	if (sp->rx_count_cooked + 3 >= sizeof(sp->cooked_buf)) {
++		pr_err("6pack: cooked buffer overrun, data loss\n");
++		sp->rx_count = 0;
++		return;
++	}
++
+ 	buf = sp->raw_buf;
+ 	sp->cooked_buf[sp->rx_count_cooked++] =
+ 		buf[0] | ((buf[1] << 2) & 0xc0);
+-- 
+2.32.0
+
