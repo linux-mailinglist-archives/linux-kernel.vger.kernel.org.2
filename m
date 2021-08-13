@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA103EB5A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6BA3EB5B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 14:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240465AbhHMMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 08:37:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17017 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240408AbhHMMh2 (ORCPT
+        id S240359AbhHMMnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 08:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240145AbhHMMnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:37:28 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GmNJ04zgxzb16Q;
-        Fri, 13 Aug 2021 20:33:04 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 13 Aug 2021 20:36:45 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 13 Aug 2021 20:36:44 +0800
-Subject: Re: [PATCH] blk-mq: clear active_queues before clearing
- BLK_MQ_F_TAG_QUEUE_SHARED
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210731062130.1533893-1-yukuai3@huawei.com>
- <YQydfkffPhBEFpwB@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <0f8e7e8c-9c4d-7b88-a967-c54cbbe038c8@huawei.com>
-Date:   Fri, 13 Aug 2021 20:36:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 13 Aug 2021 08:43:23 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB5FC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:42:56 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id cn28so3412416edb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 05:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=j5cesUquFX2JBEkMkdsasfYAHaeYxSrvX2zDvFjDIdA=;
+        b=B3RpgQQ73H0cGGfZhP8uQYfICYqjRQB1OAZntvON1HvBTXd/JYRmxYb8TsVjAjX5f2
+         WSHHMkwgXM+ocdrrRYsk60I12aE1i/5VhXQX+4RMb0p43WxeR5/IwNkSUfXnx32tDDsK
+         1cVMUvU2M1IsJzZSdALYAmEK8Yimeq8EJKCpuMjw+CE30fCodNj1pukmQhKMBd7tImt0
+         uYjRXwE6ko9FRYRJdZwLa5n7zioaetCmTTFhLdej4j5f6N53pnQFVzkUFbUqit+sPhLT
+         8gonpjEw3fUEsp1g3PVSH8/dOEF9O+oOAap4uzaAcry/w6g7CMWdWVEFUWhYov7Z541a
+         EDrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=j5cesUquFX2JBEkMkdsasfYAHaeYxSrvX2zDvFjDIdA=;
+        b=UXVvwQe9e3+cQ6XsjlghcFFr/cae38soocAKas3DhwrnjyY2eMLepKORwLm7h4exrc
+         KHWIZ6S5qPpwrNJV18aoLMRqlhURHAvQKyMTPUTx5fgARvDvE2KSgbvWLeUYHoiD7sj7
+         U0sMUfNABe1nCREGGqof9+K+FX91XXoBsLBb9HvN5mJP3cWXq6Z9PhErrKA29o4dgF1j
+         9Qux70GwmfMR/68TsfdRPGGXQOGl/gYOThshJL9fcCtIaGfElGkN+3F8s4e/ghN2ke6p
+         SHykMVZaM2qhjeRXwF3LDeJETXIWrg9koGodK77bf96yf25wu0lkA9ns7jugWZjNcSz8
+         cEwA==
+X-Gm-Message-State: AOAM533qYO1eG5L7TAqHOXntuKZ4zeO9ulqblch/lvzEzN5rjsZTwEma
+        eLI6pEOeVRRLnkc1pFUjui0=
+X-Google-Smtp-Source: ABdhPJzUCqK0yxFfUoRmBAhGQ9r/gqdDdz4SKziPv/XlXexKz3SMu7V0zaCW9QVmseQb9O5La3VHtQ==
+X-Received: by 2002:a50:cdcb:: with SMTP id h11mr2919357edj.366.1628858575243;
+        Fri, 13 Aug 2021 05:42:55 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id k18sm864460edo.62.2021.08.13.05.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 05:42:54 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] staging: r8188eu: (trivial) remove a duplicate debug print
+Date:   Fri, 13 Aug 2021 14:42:53 +0200
+Message-ID: <2555683.U4YhqVPOqN@localhost.localdomain>
+In-Reply-To: <20210813100536.xkjzfq5pstbhdwru@viti.kaiser.cx>
+References: <20210811201450.31366-1-martin@kaiser.cx> <20210812061759.GW22532@kadam> <20210813100536.xkjzfq5pstbhdwru@viti.kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <YQydfkffPhBEFpwB@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, jens
+On Friday, August 13, 2021 12:05:36 PM CEST Martin Kaiser wrote:
+> Hi Dan and Phil,
+> 
+> Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
+> > Please think of the subject and the commit message as two different
+> > things.  Often it's people reviewing on email will only read one or the
+> 
+> > other.  In other words just restate the subject:
+> OK, I'll keep that in mind for further patches.
+> 
+> > > Dear Martin,
+> > > 
+> > > Just my personal opinion, but I'd be inclined to strip out all DBG_88E
+> > > calls totally. If there are necessary functions being called such as
+> > > device_may_wakeup() we can always just keep this part and remove the
+> > > macro call (not checked this function out myself yet). Thanks.
+> 
+> I'd agree with you, Phil. Most DBG_88E prints don't say anything useful.
+> 
+> This comment from Greg made me drop the DBG_88E removal for now
+> 
+> https://lore.kernel.org/linux-staging/20210803201511.29000-1-martin@kaiser.cx/T/#m05d82a
+> 0ca8ed36180ebdc987114b4d892445c52d
+> 
+Hi Martin,
 
-Can you please consider to apply this patch.
+I think you misunderstood what Greg was trying to convey with the above-
+mentioned message.
 
-By the way, sorry about the wrong email I replied.
+Well, he doesn't like to feed developers with little spoons :-)
 
-Thanks
-Kuai
+I'm pretty sure that, by "Why not use the proper debugging calls instead of 
+just deleting them?", he meant you should research, understand, and use the 
+proper APIs for printing debug messages.
 
-On 2021/08/06 10:25, Ming Lei wrote:
-> On Sat, Jul 31, 2021 at 02:21:30PM +0800, Yu Kuai wrote:
->> We run a test that delete and recover devcies frequently(two devices on
->> the same host), and we found that 'active_queues' is super big after a
->> period of time.
->>
->> If device a and device b share a tag set, and a is deleted, then
->> blk_mq_exit_queue() will clear BLK_MQ_F_TAG_QUEUE_SHARED because there
->> is only one queue that are using the tag set. However, if b is still
->> active, the active_queues of b might never be cleared even if b is
->> deleted.
->>
->> Thus clear active_queues before BLK_MQ_F_TAG_QUEUE_SHARED is cleared.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/blk-mq.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/block/blk-mq.c b/block/blk-mq.c
->> index 2c4ac51e54eb..2fe396385a4a 100644
->> --- a/block/blk-mq.c
->> +++ b/block/blk-mq.c
->> @@ -2994,10 +2994,12 @@ static void queue_set_hctx_shared(struct request_queue *q, bool shared)
->>   	int i;
->>   
->>   	queue_for_each_hw_ctx(q, hctx, i) {
->> -		if (shared)
->> +		if (shared) {
->>   			hctx->flags |= BLK_MQ_F_TAG_QUEUE_SHARED;
->> -		else
->> +		} else {
->> +			blk_mq_tag_idle(hctx);
->>   			hctx->flags &= ~BLK_MQ_F_TAG_QUEUE_SHARED;
->> +		}
->>   	}
->>   }
+Please check out pr_debug(), dev_dbg(), netdev_dbg(). Use them appropriately, 
+according to the subsystem you're working in and to the different types of 
+arguments they take.
+
+Thanks,
+
+Fabio
+>
+> A compromise would be to remove only those DBG_88E prints which are
+> really not helpful.
 > 
-> Looks correct, the only remained queue in tagset has to be idled before
-> clearing BLK_MQ_F_TAG_QUEUE_SHARED:
-> 
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> 
-> 
-> 
-> Thanks,
-> Ming
-> 
-> .
-> 
+> Best regards,
+> Martin
+
+
+
+
