@@ -2,203 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE3B3EBD97
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77063EBD9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhHMUr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:47:28 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:41814 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbhHMUr0 (ORCPT
+        id S234587AbhHMUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:49:12 -0400
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:40685 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234644AbhHMUtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:47:26 -0400
-Received: by mail-oo1-f43.google.com with SMTP id f33-20020a4a89240000b029027c19426fbeso3161500ooi.8;
-        Fri, 13 Aug 2021 13:46:59 -0700 (PDT)
+        Fri, 13 Aug 2021 16:49:10 -0400
+Received: by mail-oo1-f54.google.com with SMTP id h7-20020a4ab4470000b0290263c143bcb2so3173575ooo.7;
+        Fri, 13 Aug 2021 13:48:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=B9ZjlpepAqxi24gGPGuLYAWFUHictoqyOAnCw/D5l9g=;
-        b=QpwNu4e6D2cNs+3mLGCKXznmv8+FbxZAyfBH0c4SzpwvsJFyzFoHy4gPqlo2xD458h
-         6Py7ltFnOq3VkGjeRwPsTWod3DRmBtkT3W4fuch9nA8L1Hqow/OPz0DO3aqo87ih3AfT
-         t6sB+TPGD4WI3syb8XGAu4yLJpqcWouQpgGxwrMCUMDSgajvdRk1CLW/MEKGvblgClRT
-         BknyZV93FvVRF/5kQOGTMLPquDFOp7u1Q16f8keevRa4dk0ZGiqreVbop2XVEW3eZdkN
-         i3OPmmo/obYcLnL0s3Lb1aVhJr5EJEQ4F0+MOrjLNYyhPUA3u6u6Wh2EkdmrVo3NGaof
-         veMg==
-X-Gm-Message-State: AOAM533zQ2my4C8oOOUMCg8eSHX19l0crYzXb3CEMUmT0FqQy3TJSIJw
-        ZdLUGd1nllzfh+HHIZHAVA==
-X-Google-Smtp-Source: ABdhPJy1Argzkclr6/MKlttJ/MCqekQRM+vtI1gkxyy0UK2CnCCMm06YDilB7oYoIPeq39W29GuJ8w==
-X-Received: by 2002:a4a:e291:: with SMTP id k17mr3184266oot.91.1628887614278;
-        Fri, 13 Aug 2021 13:46:54 -0700 (PDT)
+        bh=bPCRYSb4R3QRR/TZOTUEc168jUR0KRnGrwUUxVnp0ZY=;
+        b=Xed6Ww3bhTAm48+wuR7PdmZOFTeS9JbxLPFuVbbuz+g4Y/TEsS4cPxzS6x3iKnanXi
+         tLWwBoYdWrGhKu8YhcCVkKqFi8p3l6DY19dMyjHmTrHL4NtW6cnHNfivTL0uBrv1YXm1
+         dxjmxkSDcMQDB51Ey6TkdJWtblrUbFKdeXbW5921LfTeh6r/SFGJhr6dcuwiKKscYuEi
+         /570zRDipWXimNjyoY7M4Wlj1+4tAyg596V6rZt9Eqc1/t+dM7+AFXe5ZV+ygvQfFLlk
+         bm5CcmLHEXaqeVv7gJoQmvQF+vz4eyhuealksTgyEt6VktmFGm2kNy/gK5sS40YYQGJe
+         QoHg==
+X-Gm-Message-State: AOAM532YGm1txnvDmUbtQCn/D1Oe6WpHnZYOL9gnF8xpeHexiAoTbhmZ
+        /a0G5J8Om9nbtLbOrgLfjQ==
+X-Google-Smtp-Source: ABdhPJyZNXWYZLbhbYEyv82dBusJ4poQxct5LqJsFDCJXH2Khf0S/rfsNnLPdLrkZXj63k50uh2bgw==
+X-Received: by 2002:a4a:e907:: with SMTP id z7mr3212174ood.20.1628887723401;
+        Fri, 13 Aug 2021 13:48:43 -0700 (PDT)
 Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
-        by smtp.gmail.com with ESMTPSA id x13sm357809otk.42.2021.08.13.13.46.52
+        by smtp.gmail.com with ESMTPSA id w16sm559046oiv.15.2021.08.13.13.48.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:46:53 -0700 (PDT)
-Received: (nullmailer pid 4001992 invoked by uid 1000);
-        Fri, 13 Aug 2021 20:46:51 -0000
-Date:   Fri, 13 Aug 2021 15:46:51 -0500
+        Fri, 13 Aug 2021 13:48:42 -0700 (PDT)
+Received: (nullmailer pid 4005099 invoked by uid 1000);
+        Fri, 13 Aug 2021 20:48:41 -0000
+Date:   Fri, 13 Aug 2021 15:48:41 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 5/9] dt-bindings: display: Add ingenic-jz4780-hdmi DT
- Schema
-Message-ID: <YRbaO++oZiKaFDoN@robh.at.kernel.org>
-References: <cover.1628399442.git.hns@goldelico.com>
- <606e22c2ef4d32d63937976860fb24f4cb39b720.1628399442.git.hns@goldelico.com>
+To:     Sungbo Eo <mans0n@gorani.run>
+Cc:     linux-mediatek@lists.infradead.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Min Guo <min.guo@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] arm: dts: mt7623: add musb device nodes
+Message-ID: <YRbaqdF0EJxNcpsX@robh.at.kernel.org>
+References: <20210803151320.71531-1-mans0n@gorani.run>
+ <20210808123840.176738-1-mans0n@gorani.run>
+ <20210808123840.176738-3-mans0n@gorani.run>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <606e22c2ef4d32d63937976860fb24f4cb39b720.1628399442.git.hns@goldelico.com>
+In-Reply-To: <20210808123840.176738-3-mans0n@gorani.run>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 07:10:39AM +0200, H. Nikolaus Schaller wrote:
-> From: Sam Ravnborg <sam@ravnborg.org>
+On Sun, Aug 08, 2021 at 09:38:40PM +0900, Sungbo Eo wrote:
+> MT7623 has an musb controller that is compatible with the one from MT2701.
 > 
-> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
-> Based on .txt binding from Zubair Lutfullah Kakakhel
-> 
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
 > ---
->  .../bindings/display/ingenic-jz4780-hdmi.yaml | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> v2:
+> * rename usb3 label to usb0
+> * move usb0 & u2phy1 nodes to the right sorted place
+> * disable u2phy1 by default
+> * correct u2port2 node name to match its reg address
+> ---
+>  arch/arm/boot/dts/mt7623.dtsi  | 34 ++++++++++++++++++++++++++++++++++
+>  arch/arm/boot/dts/mt7623a.dtsi |  4 ++++
+>  2 files changed, 38 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> new file mode 100644
-> index 0000000000000..a545ff8704ebd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
+> index 3c11f7cfcc40..790d74439cc6 100644
+> --- a/arch/arm/boot/dts/mt7623.dtsi
+> +++ b/arch/arm/boot/dts/mt7623.dtsi
+> @@ -585,6 +585,40 @@ spi2: spi@11017000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	usb0: usb@11200000 {
+> +		compatible = "mediatek,mt7623-musb",
+> +			     "mediatek,mtk-musb";
+> +		reg = <0 0x11200000 0 0x1000>;
+> +		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
+> +		interrupt-names = "mc";
+> +		phys = <&u2port2 PHY_TYPE_USB2>;
+> +		dr_mode = "otg";
+> +		clocks = <&pericfg CLK_PERI_USB0>,
+> +			 <&pericfg CLK_PERI_USB0_MCU>,
+> +			 <&pericfg CLK_PERI_USB_SLV>;
+> +		clock-names = "main","mcu","univpll";
+> +		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
+> +		status = "disabled";
+> +	};
 > +
-> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
+> +	u2phy1: t-phy@11210000 {
+> +		compatible = "mediatek,mt7623-tphy",
+> +			     "mediatek,generic-tphy-v1";
+> +		reg = <0 0x11210000 0 0x0800>;
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +		status = "disabled";
 > +
-> +maintainers:
-> +  - H. Nikolaus Schaller <hns@goldelico.com>
-> +
-> +description: |
-> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HDMI 1.4
-> +  TX controller IP with accompanying PHY IP.
-> +
-> +allOf:
-> +  - $ref: panel/panel-common.yaml#
+> +		u2port2: usb-phy@11210800 {
+> +			reg = <0 0x11210800 0 0x0100>;
+> +			clocks = <&topckgen CLK_TOP_USB_PHY48M>;
+> +			clock-names = "ref";
+> +			#phy-cells = <1>;
+> +			status = "okay";
 
-This isn't a panel...
+Enabled is the default and doesn't really make sense here given the 
+parent is disabled. Drop.
 
+> +		};
+> +	};
 > +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: ingenic,jz4780-hdmi
+>  	audsys: clock-controller@11220000 {
+>  		compatible = "mediatek,mt7623-audsys",
+>  			     "mediatek,mt2701-audsys",
+> diff --git a/arch/arm/boot/dts/mt7623a.dtsi b/arch/arm/boot/dts/mt7623a.dtsi
+> index 0735a1fb8ad9..d304b62d24b5 100644
+> --- a/arch/arm/boot/dts/mt7623a.dtsi
+> +++ b/arch/arm/boot/dts/mt7623a.dtsi
+> @@ -35,6 +35,10 @@ &scpsys {
+>  	clock-names = "ethif";
+>  };
+>  
+> +&usb0 {
+> +	power-domains = <&scpsys MT7623A_POWER_DOMAIN_IFR_MSC>;
+> +};
 > +
-> +  reg:
-> +    maxItems: 1
-> +    description: the address & size of the LCD controller registers
-
-Drop. Don't need generic descriptions. Plus, this isn't an LCD 
-controller.
-
-> +
-> +  reg-io-width:
-> +    const: 4
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: Specifies the interrupt provided by parent
-
-Drop. Don't need generic descriptions.
-
-> +
-> +  clocks:
-> +    maxItems: 2
-> +    description: Clock specifiers for isrf and iahb clocks
-> +
-> +  clock-names:
-> +    items:
-> +      - const: isfr
-> +      - const: iahb
-> +
-> +  ddc-i2c-bus: true
-
-This belongs in a connector or panel node.
-
-> +  ports: true
-
-You have to define what each 'port' node is and reference the graph 
-schema. Given you are using 'ports', I assume there is more than 1. The 
-example says not, but you need to add an output port for a connector 
-node.
-
-> +
-> +required:
-> +    - compatible
-> +    - clocks
-> +    - clock-names
-> +    - ports
-> +    - reg-io-width
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/jz4780-cgu.h>
-> +
-> +    hdmi: hdmi@10180000 {
-> +        compatible = "ingenic,jz4780-hdmi";
-> +        reg = <0x10180000 0x8000>;
-> +        reg-io-width = <4>;
-> +        ddc-i2c-bus = <&i2c4>;
-> +        interrupt-parent = <&intc>;
-> +        interrupts = <3>;
-> +        clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
-> +        clock-names = "isfr", "iahb";
-> +
-> +        ports {
-> +            hdmi_in: port {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                hdmi_in_lcd: endpoint@0 {
-> +                    reg = <0>;
-> +                    remote-endpoint = <&jz4780_out_hdmi>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
+>  &usb1 {
+>  	power-domains = <&scpsys MT7623A_POWER_DOMAIN_HIF>;
+>  };
 > -- 
-> 2.31.1
+> 2.32.0
 > 
 > 
