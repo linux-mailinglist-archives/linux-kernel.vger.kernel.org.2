@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D8A3EB96C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2D63EB978
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241317AbhHMPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:47:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:55140 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241269AbhHMPrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:47:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A43EC1042;
-        Fri, 13 Aug 2021 08:46:50 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC6CD3F718;
-        Fri, 13 Aug 2021 08:46:48 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:46:46 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        bhelgaas@google.com
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Kostya Porotchkin <kostap@marvell.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH 2/5] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
-Message-ID: <20210813154646.GB15515@lpieralisi>
-References: <20210624222621.4776-1-pali@kernel.org>
- <20210624222621.4776-3-pali@kernel.org>
+        id S240849AbhHMPth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241098AbhHMPtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:49:36 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667F3C0617AF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:49:09 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so11405865pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wwWCtmitPIziHrsVDs3e/WXMsT5Htg5FsOmnBCodSj8=;
+        b=IYdotH9NOHI+p6YKBepbynbdJfSmXJkJybgDCe1TtlsZi9d8s2ARhtWMwxaW4OtCLq
+         bFaaxwtms7kw7v0QGyAhrDtCCioiCLcGglpFR8y2So3ynzX/1/r1QDH+OpSsyD4XSNXW
+         e09KeqUi7PPKNy3dHFxjXD1hHHD+rZWpC+hMA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wwWCtmitPIziHrsVDs3e/WXMsT5Htg5FsOmnBCodSj8=;
+        b=iXLMBLIPPl0zMDiquNwpZu4x25bK/IFD+WU5NOKgjzyjwGFdOZEUJD5pxr7AzdzW5W
+         x/hwTCSC8CjC1sLiHC+ahqs2RLWlxacpd9pZJQSNVWXPFOPUI1vzoLNXgEYBg0FOv6xi
+         S2C2LRHE0NrhV9Q0nMdxZ2X77V5O0miATI7CmcZIpeywC/xRbJ3z0kB2FF+jYE41ekVr
+         hrsGN26hDRhX1f4w+Xs0I6dyk8H+QpKQCxTdl2nok8u1KXLRwV1h758K3Cg+zxbdB/zH
+         VBtZBOCzPkX2Mc+oCULeXBCPd2VEvduFQXdAXLN7pXYWFhk+niZRGDSmRVA+zXobSuZV
+         kdqA==
+X-Gm-Message-State: AOAM532il88CEfB6IbUdx3AvwbGlz2a3zwGwc/36sGj6YW7SjYf2kJPo
+        aNHKVR1BiORYNYUO8yLLROsOuA==
+X-Google-Smtp-Source: ABdhPJyv0yGI/+CjV3WSksJoELQp2QfXxshGvk60ssRFFyGXixHmNtvKKEOi+49tFIULL6ceroPwFw==
+X-Received: by 2002:a05:6a00:150d:b029:3c8:e86e:79ec with SMTP id q13-20020a056a00150db02903c8e86e79ecmr3123596pfu.62.1628869748959;
+        Fri, 13 Aug 2021 08:49:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u21sm2725385pfh.163.2021.08.13.08.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 08:49:08 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 08:49:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 10/64] lib80211: Use struct_group() for memcpy() region
+Message-ID: <202108130846.EC339BCA@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-11-keescook@chromium.org>
+ <a9c8ae9e05cfe2679cd8a7ef0ab20b66cf38b930.camel@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210624222621.4776-3-pali@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a9c8ae9e05cfe2679cd8a7ef0ab20b66cf38b930.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:26:18AM +0200, Pali Rohár wrote:
-> Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
-> Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
+On Fri, Aug 13, 2021 at 10:04:09AM +0200, Johannes Berg wrote:
+> On Tue, 2021-07-27 at 13:58 -0700, Kees Cook wrote:
+> > 
+> > +++ b/include/linux/ieee80211.h
+> > @@ -297,9 +297,11 @@ static inline u16 ieee80211_sn_sub(u16 sn1, u16 sn2)
+> >  struct ieee80211_hdr {
+> >  	__le16 frame_control;
+> >  	__le16 duration_id;
+> > -	u8 addr1[ETH_ALEN];
+> > -	u8 addr2[ETH_ALEN];
+> > -	u8 addr3[ETH_ALEN];
+> > +	struct_group(addrs,
+> > +		u8 addr1[ETH_ALEN];
+> > +		u8 addr2[ETH_ALEN];
+> > +		u8 addr3[ETH_ALEN];
+> > +	);
+> >  	__le16 seq_ctrl;
+> >  	u8 addr4[ETH_ALEN];
+> >  } __packed __aligned(2);
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-> ---
->  include/uapi/linux/pci_regs.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-
-I'd need Bjorn's ACK to proceed with this series.
-
-Thanks,
-Lorenzo
-
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index e709ae8235e7..ff6ccbc6efe9 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -504,6 +504,12 @@
->  #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
->  #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
->  #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
->  #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
->  #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
->  #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
-> -- 
-> 2.20.1
+> This file isn't really just lib80211, it's also used by everyone else
+> for 802.11, but I guess that's OK - after all, this doesn't really
+> result in any changes here.
 > 
+> > +++ b/net/wireless/lib80211_crypt_ccmp.c
+> > @@ -136,7 +136,8 @@ static int ccmp_init_iv_and_aad(const struct ieee80211_hdr *hdr,
+> >  	pos = (u8 *) hdr;
+> >  	aad[0] = pos[0] & 0x8f;
+> >  	aad[1] = pos[1] & 0xc7;
+> > -	memcpy(aad + 2, hdr->addr1, 3 * ETH_ALEN);
+> > +	BUILD_BUG_ON(sizeof(hdr->addrs) != 3 * ETH_ALEN);
+> > +	memcpy(aad + 2, &hdr->addrs, ETH_ALEN);
+> 
+> 
+> However, how is it you don't need the same change in net/mac80211/wpa.c?
+> 
+> We have three similar instances:
+> 
+>         /* AAD (extra authenticate-only data) / masked 802.11 header
+>          * FC | A1 | A2 | A3 | SC | [A4] | [QC] */
+>         put_unaligned_be16(len_a, &aad[0]);
+>         put_unaligned(mask_fc, (__le16 *)&aad[2]);
+>         memcpy(&aad[4], &hdr->addr1, 3 * ETH_ALEN);
+> 
+> 
+> and
+> 
+>         memcpy(&aad[4], &hdr->addr1, 3 * ETH_ALEN);
+> 
+> and
+> 
+>         memcpy(aad + 2, &hdr->addr1, 3 * ETH_ALEN);
+> 
+> so those should also be changed, it seems?
+
+Ah! Yes, thanks for pointing this out. During earlier development I split
+the "cross-field write" changes from the "cross-field read" changes, and
+it looks like I missed moving lib80211_crypt_ccmp.c into that portion of
+the series (which I haven't posted nor finished -- it's lower priority
+than fixing the cross-field writes).
+
+> In which case I'd probably prefer to do this separately from the staging
+> drivers ...
+
+Agreed. Sorry for the noise on that part. I will double-check the other
+patches.
+
+-- 
+Kees Cook
