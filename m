@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A663EB92D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AEF3EB929
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243215AbhHMPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:22:30 -0400
-Received: from mga04.intel.com ([192.55.52.120]:49165 "EHLO mga04.intel.com"
+        id S243064AbhHMPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:22:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242861AbhHMPTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:19:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10075"; a="213723622"
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="213723622"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 08:13:30 -0700
-X-IronPort-AV: E=Sophos;i="5.84,319,1620716400"; 
-   d="scan'208";a="674442754"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 08:13:27 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mEYs5-009HGN-S5; Fri, 13 Aug 2021 18:13:21 +0300
-Date:   Fri, 13 Aug 2021 18:13:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v1 net-next 4/7] ptp_pch: Switch to use
- module_pci_driver() macro
-Message-ID: <YRaMEfTvOCsi40Je@smile.fi.intel.com>
-References: <20210813122932.46152-4-andriy.shevchenko@linux.intel.com>
- <202108132237.jJSESPou-lkp@intel.com>
+        id S242662AbhHMPSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:18:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D30D860EE4;
+        Fri, 13 Aug 2021 15:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628867869;
+        bh=97FxDBhO+gj5hTWln0ptZn6i/yb6QPwappDqtDluh0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LVeb2thJxXDJATCxsv91PjHEbhEmwPMZw6lcyLvj2UZIfPpWvNmUlmykXYJpviYHv
+         cZR0Ju0yGs3qK4fZZmQMTvFO0WFfGY3JiI621qzAA2bfSW2Ip932jC0+KjhBSUxz2N
+         bggO4B2ddBF1gUzIqJfJq0Q8fvQfCjL7MMKfe3AA=
+Date:   Fri, 13 Aug 2021 17:14:08 +0200
+From:   gregkh <gregkh@linuxfoundation.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>,
+        =?utf-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
+        Bing Fan <hptsfb@gmail.com>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
+ request
+Message-ID: <YRaMQL+YOaky+x9Q@kroah.com>
+References: <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
+ <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
+ <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
+ <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
+ <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
+ <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
+ <09918b566884413898f63b92ddd037a0@tencent.com>
+ <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
+ <YRaJVZOJMKtAM8Sl@kroah.com>
+ <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202108132237.jJSESPou-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f77be70-08fd-6fdd-227d-611c01c54788@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 10:34:17PM +0800, kernel test robot wrote:
-> Hi Andy,
+On Fri, Aug 13, 2021 at 04:09:50PM +0100, Robin Murphy wrote:
+> On 2021-08-13 16:01, gregkh wrote:
+> > On Fri, Aug 13, 2021 at 09:42:52AM -0400, Qian Cai wrote:
+> > > 
+> > > 
+> > > On 8/12/2021 11:32 PM, tombinfan(范兵) wrote:
+> > > > hello,
+> > > > 
+> > > > I have sent the modified patch to the following mailboxes. THX
+> > > > 
+> > > > gregkh@linuxfoundation.org
+> > > > linux-serial@vger.kernel.org
+> > > > linux-kernel@vger.kernel.org
+> > > 
+> > > Thanks for the pointer. It is good to get some reviews from Arm
+> > > people in the first place, so we don't break Arm like this.
+> > > 
+> > > Anyway, for anyone who might be watching, here is the new patch,
+> > > 
+> > > https://lore.kernel.org/linux-serial/1628825490-18937-1-git-send-email-hptsfb@gmail.com/
+> > > 
+> > > Unfortunately, I saw Greg mentioned that it was not based on
+> > > tty-next, so not something I can apply easily on linux-next here
+> > > as well.
+> > 
+> > That is because the code in tty-next (and linux-next), looks to already
+> > do exactly what you submitted, right?
+> > 
+> > So is this working now for everyone in linux-next?
 > 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on net-next/master]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/ptp_pch-use-mac_pton/20210813-203135
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git b769cf44ed55f4b277b89cf53df6092f0c9082d0
-> config: nios2-randconfig-r023-20210813 (attached as .config)
-> compiler: nios2-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/6c1fff5c80fe8f1a12c20bac2d28ebfa5960bde7
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Andy-Shevchenko/ptp_pch-use-mac_pton/20210813-203135
->         git checkout 6c1fff5c80fe8f1a12c20bac2d28ebfa5960bde7
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=nios2 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> AFAICS commit b0819465be8b in linux-next still results in
+> amba_device-specific code being called from sbsa_uart_startup() and
+> sbsa_uart_shutdown(), which is what blows up.
 
-Thanks!
+Ick,  ok, can someone send me a revert with this information in it
+please?
 
-Definitely I have compiled it in my local branch. I'll check what is the root
-cause of this.
+thanks,
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
