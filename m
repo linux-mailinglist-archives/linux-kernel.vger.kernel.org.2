@@ -2,79 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FC33EBA05
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCE03EBA07
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhHMQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
+        id S235579AbhHMQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235642AbhHMQ3O (ORCPT
+        with ESMTP id S234367AbhHMQ3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:29:14 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDFCC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:28:47 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id e19so12645568pla.10
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5vsrCAhIhqleSp4ilnt79j6IYc6DztFKdxcos4U/Zdw=;
-        b=s/gPWOK8ezdqks7mEUKZQGuY3ur/s9nmz5Xm799RPiVLlhDeWVeLaq4jwY6wGUpZzk
-         kfQBYmld7FNccLGlURTq+4X5SM0Ld67qddVGTEfkj/tWtjysVvvlgA9C5m3Fkd/bpjp/
-         MU6i66OntDLzok1dUjkKiGJO+DggV18HL7D+s7JnFal3Pi8D4HjcE9JwyuF7DVt7YChG
-         uZ9Uv4Wg0ycik3MJ+eAR6cidd+x9kNOjv4dOGPtG1xUGr8TFzJYENi8fjK+8UyN3tbmS
-         rJdtxUQgeUwXjnACaHFBTrHv7iCLgOiVCAPRsmuN5zOCQFBrMI5BUO/2T2vUe5ahZfjp
-         zrMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5vsrCAhIhqleSp4ilnt79j6IYc6DztFKdxcos4U/Zdw=;
-        b=paOiovrySwolCD3+G9N2jaQhm7XA1JaRuK0V41IBWFJS908cVLQPqsD/I1MrXNHE4V
-         wrqG7vgiUlCTAezd/3qIdiihq497xDQopuRhFLoelqIghZD+H8n2riSyFmz+KFkdfPK6
-         lWDxNIv2SDarIGPpYiEg8s21ha4Q/ypj5lzYPN9JMahq6quN6uVz690BUZp0sTnLik7l
-         AxCMelrvnBKEzsXb7a5Uyq4A/MSUQr9ZB3hMX8c6d+YAO0wiJjQzjf4VtK3Umfxwp+3p
-         cs7x1lEndsjKeTVFRN6iRkgCQsdPJfD2lnn2eBu1vBje6we7SDEbNaeWgtJ+f9Cs6o9r
-         zcNA==
-X-Gm-Message-State: AOAM530L0/lKI6jBPN64Qm4NDCOKbhfXrRetOuXJ6s5Nst8+Y3vWMzbK
-        CoHnnWeV5sRL/9OiYnLB2F9A0Q==
-X-Google-Smtp-Source: ABdhPJzFcDg42Qi/QLxlT+AItPtHajHKKItsai4wbDeuQpZVXo0+ztFHB94T39wdHTdSuIGS4ouPdw==
-X-Received: by 2002:aa7:8a04:0:b029:3e0:ec4a:6e65 with SMTP id m4-20020aa78a040000b02903e0ec4a6e65mr3227176pfa.47.1628872126672;
-        Fri, 13 Aug 2021 09:28:46 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f6sm2745044pfv.69.2021.08.13.09.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 09:28:45 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:28:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
-        peterx@redhat.com
-Subject: Re: [PATCH 02/16] KVM: x86: clamp host mapping level to max_level in
- kvm_mmu_max_mapping_level
-Message-ID: <YRaduAFaHZ+w643k@google.com>
-References: <20210807134936.3083984-1-pbonzini@redhat.com>
- <20210807134936.3083984-3-pbonzini@redhat.com>
+        Fri, 13 Aug 2021 12:29:45 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFEBC061756;
+        Fri, 13 Aug 2021 09:29:17 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 60E1F1F44925
+Received: by earth.universe (Postfix, from userid 1000)
+        id 406E53C0C99; Fri, 13 Aug 2021 18:29:14 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 18:29:14 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] power: supply: bq24735: add watchdog timer delay
+ support
+Message-ID: <20210813162914.p3mzc47ixpmdk62f@earth.universe>
+References: <20210709142731.23418-1-bruno.meneguele@smartgreen.net>
+ <20210709142731.23418-3-bruno.meneguele@smartgreen.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qozfxa223fazoxhr"
 Content-Disposition: inline
-In-Reply-To: <20210807134936.3083984-3-pbonzini@redhat.com>
+In-Reply-To: <20210709142731.23418-3-bruno.meneguele@smartgreen.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021, Paolo Bonzini wrote:
-> This patch started as a way to make kvm_mmu_hugepage_adjust a bit simpler,
-> in preparation for switching it to struct kvm_page_fault, but it does
-> fix a microscopic bug in zapping collapsible PTEs.
 
-I think this also fixes a bug where userspace backs guest memory with a 1gb hugepage
-but only assigns a subset of the page to the guest.  1gb pages would be disallowed
-by the memslot, but not 2mb.  kvm_mmu_max_mapping_level() would fall through to the
-host_pfn_mapping_level() logic, see the 1gb huge, and map the whole thing into the
-guest.  I can't imagine any userspace would actually do something like that, but the
-failure mode is serious enough that it warrants a Fixes: + Cc: stable@.
+--qozfxa223fazoxhr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Jul 09, 2021 at 11:27:31AM -0300, Bruno Meneguele wrote:
+> The BQ24735 charger allows the user to set the watchdog timer delay betwe=
+en
+> two consecutives ChargeCurrent or ChargeVoltage command writes, if the IC
+> doesn't receive any command before the timeout happens, the charge is tur=
+ned
+> off.
+>=20
+> This patch adds the support to the user to change the default/POR value w=
+ith
+> four discrete values:
+>=20
+>   0 - disabled
+>   1 - enabled, 44 sec
+>   2 - enabled, 88 sec
+>   3 - enabled, 175 sec (default at POR)
+>=20
+> These are the options supported in the ChargeOptions register bits 13&14.
+>=20
+> Also, this patch make one additional check when poll-interval is set by t=
+he
+> user: if the interval set is greater than the WDT timeout it'll fail duri=
+ng
+> the probe stage, preventing the user to set non-compatible values between
+> the two options.
+>=20
+> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
+> ---
+>  .../bindings/power/supply/bq24735.yaml        | 13 +++++
+
+Patches for the DT bindings needs to be CC'd to the DT binding
+maintainers and should be in their own patch.
+
+>  drivers/power/supply/bq24735-charger.c        | 48 +++++++++++++++++++
+>  include/linux/power/bq24735-charger.h         |  1 +
+>  3 files changed, 62 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq24735.yaml =
+b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
+> index 131be6782c4b..62399efab467 100644
+> --- a/Documentation/devicetree/bindings/power/supply/bq24735.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
+> @@ -56,6 +56,19 @@ properties:
+>        The POR value is 0x1000h. This number is in mA (e.g. 8064).
+>        See the spec for more information about the InputCurrent (0x3fh) r=
+egister.
+> =20
+> +  ti,wdt-timeout:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Used to control and set the charger watchdog delay between consecu=
+tive
+> +      charge voltage and charge current commands.
+> +      This value must be:
+> +        0 - disabled
+> +        1 - 44 seconds
+> +        2 - 88 seconds
+> +        3 - 175 seconds
+> +      The POR value is 0x11 (3).
+> +      See the spec for more information about the ChargeOptions(0x12h) r=
+egister.
+> +
+
+This is missing=20
+
+minimum: 0
+maximum: 3
+
+>    ti,external-control:
+>      type: boolean
+>      description: |
+> diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/suppl=
+y/bq24735-charger.c
+> index 3ce36d09c017..88f1cb1e9fee 100644
+> --- a/drivers/power/supply/bq24735-charger.c
+> +++ b/drivers/power/supply/bq24735-charger.c
+> @@ -45,6 +45,8 @@
+>  /* ChargeOptions bits of interest */
+>  #define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
+>  #define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
+> +#define BQ24735_CHARGE_OPT_WDT_OFFSET	13
+> +#define BQ24735_CHARGE_OPT_WDT		(3 << BQ24735_CHARGE_OPT_WDT_OFFSET)
+> =20
+>  struct bq24735 {
+>  	struct power_supply		*charger;
+> @@ -156,6 +158,20 @@ static int bq24735_config_charger(struct bq24735 *ch=
+arger)
+>  		}
+>  	}
+> =20
+> +	if (pdata->wdt_timeout) {
+> +		value =3D pdata->wdt_timeout;
+> +
+> +		ret =3D bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
+> +					  BQ24735_CHARGE_OPT_WDT,
+> +					  (value << BQ24735_CHARGE_OPT_WDT_OFFSET));
+> +		if (ret < 0) {
+> +			dev_err(&charger->client->dev,
+> +				"Failed to write watchdog timer: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+
+binding says '0' =3D disabled, but code implements '0' =3D do not
+change.
+
+-- Sebastian
+
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -347,6 +363,17 @@ static struct bq24735_platform *bq24735_parse_dt_dat=
+a(struct i2c_client *client)
+>  	if (!ret)
+>  		pdata->input_current =3D val;
+> =20
+> +	ret =3D of_property_read_u32(np, "ti,wdt-timeout", &val);
+> +	if (!ret) {
+> +		if (val <=3D 3) {
+> +			pdata->wdt_timeout =3D val;
+> +		} else {
+> +			dev_warn(&client->dev,
+> +				 "Invalid value for ti,wdt-timeout: %d",
+> +				 val);
+> +		}
+> +	}
+> +
+>  	pdata->ext_control =3D of_property_read_bool(np, "ti,external-control");
+> =20
+>  	return pdata;
+> @@ -476,6 +503,27 @@ static int bq24735_charger_probe(struct i2c_client *=
+client,
+>  			return 0;
+>  		if (!charger->poll_interval)
+>  			return 0;
+> +		if (charger->pdata->wdt_timeout) {
+> +			int wdt_ms;
+> +
+> +			switch (charger->pdata->wdt_timeout) {
+> +			case 1:
+> +				wdt_ms =3D 44000;
+> +				break;
+> +			case 2:
+> +				wdt_ms =3D 88000;
+> +				break;
+> +			case 3:
+> +				wdt_ms =3D 175000;
+> +				break;
+> +			}
+> +
+> +			if (charger->poll_interval > wdt_ms) {
+> +				dev_err(&client->dev,
+> +					"Poll interval greater than WDT timeout\n");
+> +				return -EINVAL;
+> +			}
+> +		}
+> =20
+>  		ret =3D devm_delayed_work_autocancel(&client->dev, &charger->poll,
+>  						   bq24735_poll);
+> diff --git a/include/linux/power/bq24735-charger.h b/include/linux/power/=
+bq24735-charger.h
+> index 321dd009ce66..ce5a030ca111 100644
+> --- a/include/linux/power/bq24735-charger.h
+> +++ b/include/linux/power/bq24735-charger.h
+> @@ -12,6 +12,7 @@ struct bq24735_platform {
+>  	uint32_t charge_current;
+>  	uint32_t charge_voltage;
+>  	uint32_t input_current;
+> +	uint32_t wdt_timeout;
+> =20
+>  	const char *name;
+> =20
+> --=20
+> 2.31.1
+>=20
+
+--qozfxa223fazoxhr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWndoACgkQ2O7X88g7
++pphhg/7BS4jcSO/H83ZVDfrtbLGQnug9SCxp6S3QXkBxMzyeUfpDVwtmgCyhfPO
+U10iR78V1mD25gLJAaUWExZpukZKGl3gOg+yg6tfEVzP06FuEgSmDdg4cGQUzc2i
+Z1DS5sB4q125ewfdPJjGaPBBh9PzV3DEl+76jRyyK3VS01FaC0zYUhkumbEHbzLG
+C4XAaB6QdMQRnDChtGdCS49qH19AePqHJsPZ8xyxg9M/C9h7j+ekFMpzJjSuOaY0
+rdV1iCDe7ehEpVXzdQXXb/qU5PrqpbEv2fsqdpeHyyq/IiOHb6/P/mQXQMsdWndk
+nbaw4L2IgDCNE4fQDDDfsjg8qB33FDMCeMs3AUca9OMKd4tuH6UF9whNEKZ558Qy
+iVpf066iwfSVhMZVyJQIbZ5elSXaTa3h7hc6BVPY1mM4HAdsQdh6FjC4hYriywcK
+lR640lLWkCUPrIwZyGbRoMyBEQjARjTzjNlHXdHreY/ahvcyXkcTlMGdscnj3ZlW
+Km9/P3eFWF5LmenSfjyS70KVlY6YnMccQqZswbY7khDcqgaF/c492sxsqI7yI5KE
+ZBaGEHw6IxMj+Zm1lIcH0yEwAWCJO/h5UlSKfhcKlWsmOdjPmuk+LWt++n1RIcvF
+YUnx+3fzSc7CVzBWRmVjbzdJivZe4ac3Ws+GRI/lXdwAkrk4pOM=
+=pjxb
+-----END PGP SIGNATURE-----
+
+--qozfxa223fazoxhr--
