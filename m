@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F223EAE37
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 03:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711193EAE4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 03:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238267AbhHMBon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 21:44:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48897 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238130AbhHMBol (ORCPT
+        id S233920AbhHMBwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 21:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhHMBwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 21:44:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628819055; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=yKB585e+W6FgF524wGRfYxwHeT/TqmQJg/xn/cG/j0Y=;
- b=dbXTaWZBFWC+5H331uwM9jeCOAwyVktTwdQxRAsVIe33D7wikszMIrcjEuY1TVINXpGzRLQ6
- L/bH6s2YSdEbqnTUjhNtMOfOJplFV1iU5/39OnAYUgUKiH4Ovh/pgwCbMEpYitiKwT3vJepn
- LKjhjnBZCjlQVOPUEr51/yyZrhI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6115ce61b14e7e2ecb67cbfc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 01:44:01
- GMT
-Sender: wat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2693CC433D3; Fri, 13 Aug 2021 01:44:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69100C4338A;
-        Fri, 13 Aug 2021 01:44:00 +0000 (UTC)
+        Thu, 12 Aug 2021 21:52:23 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED69C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 18:51:57 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id z11so12909521edb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 18:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=64W0Rzrur5DnbHP4hOalW0KQb9n7hi068OYFKUZ/rMA=;
+        b=a3OBnfSG1E1v3eOiKJUDUlDQVAufOTaVtSAqXF2WxNLIZgUGWGwtwDKFokVO87OwJ/
+         woUexZdBe0fxBlnuK/XRDIyR0CTGYuR2Q526MR6km3Hpxm2Bwg3GQeT5Pgugfr/9d0jQ
+         EN0+y7PgXlCQ1gDuGQcrf6Js5GvxB/ENCuj/Kjix48zoWrTxL59JGJGjWzKrFgR1M9dw
+         K/CFzcHetyeZmGWdVcVYa0vmnYBoLfH2xgH2oHAaw1hrP1eJbDJvqUlyCiEBDtlRon15
+         URuluZX1xSh6Yfb95+zBXJMj9wlzdhDDC7pQZwE9NgREMViLgV/U4aMMpUoKeQHTOHAp
+         Dz2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=64W0Rzrur5DnbHP4hOalW0KQb9n7hi068OYFKUZ/rMA=;
+        b=cXVsYSx6QtQC/L0FLA+XN+WKJed08aFm2dGVxEj+bzF7rS4cMe7Zu9I5vVfOVFprrl
+         dae7ILd/yT9mLfOipd5maAgTyXcCGgiWz8aCFqO9auZbLQTUF4ewhpmMZbrkyPnJ6Gww
+         oBjr4SsLPYuLvUqT6ZvNw98rCVgzYgRa3v6/LNIvmAi70oO//HGEA1jXZpS3S27k+AAO
+         P4IFR0Te9xERnMPt7N390mfKfWgl7e3eVdIBPdCxJigjsU/WXgsmDFSsVFI0wHXinqba
+         6oMN7cYsXyWK0q8PtRuo8u50YaXG96rTpRHwnkQXBkoygbrn76tffA6R7ajG4/npCfXP
+         qHVw==
+X-Gm-Message-State: AOAM530LLK7f5lYKJ1e2EWhP+tmPQv/lPgeoXX+nBQZjqnZEzF+VzGoV
+        nAGvvK6u+PUYkDIQorIJ1DKEO674Ej4=
+X-Google-Smtp-Source: ABdhPJywOR3hB+4JheUjP0fa23pwj8BOxVC08FZvIhMDVBGCMWQxtuMXNIs4Dy8makWnc5tJ2wssdQ==
+X-Received: by 2002:aa7:d3cc:: with SMTP id o12mr8971391edr.335.1628819516107;
+        Thu, 12 Aug 2021 18:51:56 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id j27sm1402843ejk.18.2021.08.12.18.51.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 18:51:55 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 3/3] staging: r8188eu: Reorganize error handling in rtw_drv_init()
+Date:   Fri, 13 Aug 2021 03:51:54 +0200
+Message-ID: <2890624.vKDRqAKio7@localhost.localdomain>
+In-Reply-To: <24e15d45-40b8-b8a7-b633-9e538324a29b@kernel.org>
+References: <20210812204027.338872-1-nathan@kernel.org> <1651213.ETx7SW4KbR@localhost.localdomain> <24e15d45-40b8-b8a7-b633-9e538324a29b@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 13 Aug 2021 09:44:00 +0800
-From:   wat@codeaurora.org
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     quic_wat@quicinc.com, wat@codeaurora.org
-Subject: Re: [PATCH] usb: xhci-ring: USB SSD may fail to unmount if disconnect
- during data transferring.
-In-Reply-To: <1628769727-45046-1-git-send-email-wat@codeaurora.org>
-References: <1628769727-45046-1-git-send-email-wat@codeaurora.org>
-Message-ID: <83812530fbe1ba6f93c0978019bf118b@codeaurora.org>
-X-Sender: wat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi usb teams,
-
-I have a patch about xhci-ring, can you help me to check?
-
-you can contact me if you have any question.
-
-
-On 2021-08-12 20:02, Tao Wang wrote:
-> From: Tao Wang <quic_wat@quicinc.com>
+On Friday, August 13, 2021 1:14:01 AM CEST Nathan Chancellor wrote:
+> On 8/12/2021 4:11 PM, Fabio M. De Francesco wrote:
+> > On Thursday, August 12, 2021 10:40:27 PM CEST Nathan Chancellor wrote:
+> > [...]
+> > Therefore, apart that minor misuse of the "global" class in your commit
+> > message, it's a nice work and so...
 > 
-> it stuck in usb_kill_urb() due to urb use_count will not become zero,
-> this means urb giveback is not happen.
-> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
-> equal to TD_CLEARING_CACHE,
-> but in xhci_invalidate_cancelled_tds(), only last canceled td's
-> cancel_status change to TD_CLEARING_CACHE,
-> thus giveback only happen to last urb.
+> I am happy to redo the commit message if you and others so desire.
 > 
-> this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
-> rather than the last one, so all urb can giveback.
+> > Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > 
-> Signed-off-by: Tao Wang <quic_wat@quicinc.com>
-> ---
->  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+> Thank you for the review and ack!
 > 
-> diff --git a/drivers/usb/host/xhci-ring.c 
-> b/drivers/usb/host/xhci-ring.c
-> index 8fea44b..c7dd7c0 100644
-> --- a/drivers/usb/host/xhci-ring.c
-> +++ b/drivers/usb/host/xhci-ring.c
-> @@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct
-> xhci_virt_ep *ep)
->  			td_to_noop(xhci, ring, td, false);
->  			td->cancel_status = TD_CLEARED;
->  		}
-> -	}
-> -	if (cached_td) {
-> -		cached_td->cancel_status = TD_CLEARING_CACHE;
-> -
-> -		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
-> -						cached_td->urb->stream_id,
-> -						cached_td);
-> -		/* Failed to move past cached td, try just setting it noop */
-> -		if (err) {
-> -			td_to_noop(xhci, ring, cached_td, false);
-> -			cached_td->cancel_status = TD_CLEARED;
-> +		if (cached_td) {
-> +			cached_td->cancel_status = TD_CLEARING_CACHE;
-> +
-> +			err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
-> +							cached_td->urb->stream_id,
-> +							cached_td);
-> +			/* Failed to move past cached td, try just setting it noop */
-> +			if (err) {
-> +				td_to_noop(xhci, ring, cached_td, false);
-> +				cached_td->cancel_status = TD_CLEARED;
-> +			}
-> +			cached_td = NULL;
->  		}
-> -		cached_td = NULL;
->  	}
->  	return 0;
->  }
+> Cheers,
+> Nathan
+>
+Maybe that for that minor misuse of the definition of "global variable" it 
+isn't worth to redo three patches. If I were you, I'd wait for feedback from 
+Greg K-H and then I'd act accordingly. 
+
+But, at my first read of your patch, I didn't notice that when you return the 
+error from within the block starting at the "err:" label, "ret" is always set 
+as "-ENODEV".
+
+So, why not simply "return -ENODEV;" and get rid of the "ret" variable?
+
+Thanks,
+
+Fabio 
+
+
+
