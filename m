@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942463EB42B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F28B3EB42E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240172AbhHMKnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239003AbhHMKnY (ORCPT
+        id S240194AbhHMKnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:43:32 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47968
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239223AbhHMKn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:43:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E39C061756;
-        Fri, 13 Aug 2021 03:42:57 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 10:42:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628851375;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=gYaPQC1iR/8lxOIJ6UaW6f1/CfQJrXbXQIPCGSOB3wM=;
-        b=sqwsIftx4VKdad1QTzwLkw+nfRqIazNaJVtfpY5aJdgdxg/vjOUZ1KOc5fsvEmmWTfmd5G
-        s+XSIV4mCb4Q8i2jdhKEltXZLWcN/g4j0CVI2doo03AD3mSpjuRUB/asmX2wKkh5DFJA32
-        qEpk0YiRvbLp23QtTZaRq6OIl04qvJaJyfS2X+p3BXJUmVMmJ06kcAT63wJM6dJ23UiJXs
-        GQKejAWCZffilwpgq5inX61NIrh44r/HTTMPPfuQS95pQztvpX8hZ+LXQbb9FEXCb5+3Qr
-        g3VxjBc9efqTQ1uZleUjkIDHHH35su2MgWEb2PZPPrA2YU333ewAL6daoft3Jw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628851375;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=gYaPQC1iR/8lxOIJ6UaW6f1/CfQJrXbXQIPCGSOB3wM=;
-        b=WspQEkISx0C+Qgf1tHPsJiSWb+GqLi+M5sBaL2V1A8dn0M+nc3Fk/5jXP6e9DUVXTpbIDQ
-        oJYnpkXUU61nfwDQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] driver core: Add missing kernel doc for device::msi_lock
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
+        Fri, 13 Aug 2021 06:43:27 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D022F4061A;
+        Fri, 13 Aug 2021 10:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628851379;
+        bh=6my1meBweLsHucmiSRvtuTv5eVAc6MQgpR5ufkNa+nQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=XoqV7W5jC8mUg2bkwNzNiZIK0C+xIjL0zMPY93KupTyL9vTKOXrocmJMqUiDGV0aA
+         KJRktND0f9Tn6iEpwm0hROLHRgSRQhPTlb8E2P17rBRF72DNOFIgRdmK1vQpliunls
+         W0fxXn2YqWkvDqeOWkHdnSazjaLtqqbJy1PiKZidmVO+pwy4TnQ9AmE1qaVyOoJDCj
+         fWJVg8KxfWr2bvW5E2JLPzX5q0jJcu0ExaUqdHopNaEQ+tb4NhAPsRG5UMZcnru17J
+         gUr6MTopi6JQpb7p154JBKAFQvZEO1r0hFqY4Z3NYBgeG2huupnj38tTpWQd553ewj
+         IASAGM+9r9Y3w==
+From:   Colin King <colin.king@canonical.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Zhengxun Li <zhengxunli@mxic.com.tw>, linux-spi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: mxic: Fix missing { } around an if code block
+Date:   Fri, 13 Aug 2021 11:42:59 +0100
+Message-Id: <20210813104259.17612-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Message-ID: <162885137454.395.4291921020038807852.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+From: Colin Ian King <colin.king@canonical.com>
 
-Commit-ID:     7a3dc4f35bf8e1a07e5c3f8ecc8ac923f48493fe
-Gitweb:        https://git.kernel.org/tip/7a3dc4f35bf8e1a07e5c3f8ecc8ac923f48493fe
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 13 Aug 2021 12:36:14 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 13 Aug 2021 12:38:48 +02:00
+There is a code block that is missing the { } around it. Fix this
+by adding them.
 
-driver core: Add missing kernel doc for device::msi_lock
-
-Fixes: 77e89afc25f3 ("PCI/MSI: Protect msi_desc::masked for multi-MSI")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: d05aaa66ba3c ("spi: mxic: patch for octal DTR mode support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/linux/device.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-mxic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index e53aa50..65d84b6 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -407,6 +407,7 @@ struct dev_links_info {
-  * @em_pd:	device's energy model performance domain
-  * @pins:	For device pin management.
-  *		See Documentation/driver-api/pin-control.rst for details.
-+ * @msi_lock:	Lock to protect MSI mask cache and mask register
-  * @msi_list:	Hosts MSI descriptors
-  * @msi_domain: The generic MSI domain this device is using.
-  * @numa_node:	NUMA node this device is close to.
+diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+index 32e757a04f14..45889947afed 100644
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -398,10 +398,11 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	if (op->data.nbytes) {
+ 		ss_ctrl |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
+ 			   (op->data.dtr ? OP_DATA_DDR : 0);
+-		if (op->data.dir == SPI_MEM_DATA_IN)
++		if (op->data.dir == SPI_MEM_DATA_IN) {
+ 			ss_ctrl |= OP_READ;
+ 			if (op->data.dtr)
+ 				ss_ctrl |= OP_DQS_EN;
++		}
+ 	}
+ 
+ 	writel(ss_ctrl, mxic->regs + SS_CTRL(mem->spi->chip_select));
+-- 
+2.31.1
+
