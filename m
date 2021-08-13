@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FF23EB261
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA00C3EB268
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 10:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239795AbhHMINX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 04:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        id S239702AbhHMIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 04:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239698AbhHMINW (ORCPT
+        with ESMTP id S234844AbhHMIPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 04:13:22 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE7CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:12:55 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id t68so9861962qkf.8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:12:55 -0700 (PDT)
+        Fri, 13 Aug 2021 04:15:25 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F45C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id t66so9929470qkb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=rqKy9El38Ijq4tYdGCeWyBDAmZwgGz7n0gBvxv5RSNg=;
-        b=bR19vG9HGiUHDxigIPxsvn3usFtuL+jqe+qjINDJtg0rVpIadKkYEKYKy8k7FgHnWS
-         ZMw7LoMoaG7GFeaqxGJKesr0bPj5qrM9pZ8gcYC7pOMCigWt7egNN69ffLNz6GZB/Cwa
-         0BVDZ9z/n59+uG5aJ1muGMK+P0mr4YZfKc+jDFnBIneOkMyJ3Lm0nOOJuObALI55dZV7
-         YsBK3978l7j+bufGYegy0ENQfSVkzJZzMPHpS/csAFlkBkX5mITfQJ8OeDGkVFhIcsai
-         KX5oiwUw4A6KsIZ2uRYaeaG2vbKu4Ch0dYWl3yJg1QPr3qRGH5OaTS01UNhuZypJlcoB
-         Po0Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=nmbUvnf/USoc9AmsYZayjj+Bsv4n/4XSVzeQZeHCY/w=;
+        b=VY3rnbKfC6IyMIF2mQCvcO3/p1MrleXlgTgNxeWSBXT9iJw3CBZFN3z2XXGgMQdSbI
+         TbqHQUQPUP7CY43Yx06VPYqyrcoeX6o8i3UnYo9aW/VkFIG3dcJNQ1ake9dlvnaXDbi8
+         SyIoqLR1GG5fX1OKF/8NeJmGX2XBjM/XQfF3V0w25q/RUbd7NYlx0dvdN/LhjAbc2BbU
+         py1wKpcYHDd8ZwuXMSQiYQljbWcfItimubLcy3OW6L9QmMoYNG0IXQwP7I9gox6ywe60
+         YilRF+Ku5B+cO+nXNL2prqfMW1kLH8TIzekXuxCr2q7JdzMwExtofJOvTDb55Rr/USlZ
+         wfxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rqKy9El38Ijq4tYdGCeWyBDAmZwgGz7n0gBvxv5RSNg=;
-        b=cTQenljYRd1gUaOaOZHN/TTvrm4rnoVQKuhjpKcJjYnoj1NHzh+qxkKHANyR7gXmCI
-         o10G5yXL89enq3p4+iFotARCH4bAeUyTs2R3+W+j8k2mLyt4zKmWItTO4UBDwBf2PaI6
-         7+b1RPZAC6PA6iEzdeBlxK8b8bw5/eKV+ZSf5bwjza8nca/vrrkVcBSNn0Aih7uMDg7V
-         vJX4yaxbM3NezQfF5DyqOgdAupl889MwcGfyrWclQdPK0JnoJA4lGd2jl13WcCBpKTCa
-         0Qlx2UYn65kAUSx3snDxV8fGej0+3imxuBpZfcMPGHFV5u3clctCBJ8RoTtXVtdTWFsZ
-         TPpw==
-X-Gm-Message-State: AOAM530bq8QZEpzRLqZa1AwyFpNRhGG7Pg/aXgvfrULfsRh3xRJlsjQN
-        FVqYRrRVEvMkBdFZfTFQfPE=
-X-Google-Smtp-Source: ABdhPJwMEJtePlInhkbqFaKu8p1btYdBnKUcEXtaDFaAzMmQHk7RQ+pcuKI+ewHNHSGzpmmmNi1pAA==
-X-Received: by 2002:a37:6643:: with SMTP id a64mr912038qkc.256.1628842375064;
-        Fri, 13 Aug 2021 01:12:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=nmbUvnf/USoc9AmsYZayjj+Bsv4n/4XSVzeQZeHCY/w=;
+        b=ZD25x3hYLZ+xFos81hy615to72vAmLCWx0LgOl6JEn/yfeK1ZUjk/DRXrjchNf74ik
+         0NC8hWqDi6titJ3qS8uT2zqCC1cjFs6w14TPKK+UoXTJ3sWvOdnOiCVmXU845JHRsYRa
+         hP0i0fLXknqL3Cf79tpgddi7En4Tm73tBtxpQDEoBXdn7vq2sxkbG522Wz5KhObgd0Ae
+         BUXTXE/hsktHVnCGcaBgrjJwVsv/tWzj9+hFW68t97Iz5U0BE0ekK1nQjHFGdql+jJNx
+         sG4LsuRQ+Z4Wpt8MHBminBIV0jdCG289hOKD5Na3EHkJVXu4AcVwsr0DrDVz+8RZRZ9E
+         v0Hw==
+X-Gm-Message-State: AOAM5300qo3PrxDR6DgJkwTOZ6Dod2V+VWMGKEVlgFqFOuSMLoXeLuhO
+        wgalpcXYoq3ea0CU7J7KOkE=
+X-Google-Smtp-Source: ABdhPJy5IJcev/70U0W5olAYgc/Xqjg6SLl1FzSP3Q2Gzhie+jQp3XWe3d9tZt0n0JnKtppozgum3A==
+X-Received: by 2002:a05:620a:1722:: with SMTP id az34mr900560qkb.115.1628842498132;
+        Fri, 13 Aug 2021 01:14:58 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id g145sm487893qke.25.2021.08.13.01.12.54
+        by smtp.gmail.com with ESMTPSA id q184sm505955qkd.35.2021.08.13.01.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 01:12:54 -0700 (PDT)
+        Fri, 13 Aug 2021 01:14:57 -0700 (PDT)
 From:   SeongJae Park <sj38.park@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     valdis.kletnieks@vt.edu, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH] mm/damon/Kconfig: Hide PAGE_IDLE_FLAG from users
-Date:   Fri, 13 Aug 2021 08:12:38 +0000
-Message-Id: <20210813081238.34705-1-sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj38.park@gmail.com>,
+        =?UTF-8?q?=20Valdis=20Kl=C4=93tnieks=20?= <valdis.kletnieks@vt.edu>,
+        "SeongJae Park" <sjpark@amazon.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:
+Date:   Fri, 13 Aug 2021 08:14:52 +0000
+Message-Id: <20210813081452.34784-1-sjpark@amazon.de>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210812131921.a1c5c85213290e1729cc72a3@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-Commit 2a058a1a9914 ("mm/idle_page_tracking: make PG_idle reusable") of
-linux-mm[1] makes CONFIG_PAGE_IDLE_FLAG option to be presented to the
-user.  However, the option is hard to be understood by users.  Also, it
-is not intended to be set by users but other kernel subsystems like
-DAMON or IDLE_PAGE_TRACKING.  To avoid confusions, this commit removes
-the prompt so that the option is not presented to the user.
+On Thu, 12 Aug 2021 13:19:21 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
 
-[1] https://github.com/hnaz/linux-mm/commit/2a058a1a9914
+> On Thu, 12 Aug 2021 09:42:40 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> 
+> > > +config PAGE_IDLE_FLAG
+> > > +       bool "Add PG_idle and PG_young flags"
+> > > +       help
+> > > +         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> > > +         Accessed bit writers can set the state of the bit in the flags to let
+> > > +         other PTE Accessed bit readers don't disturbed.
+> > > 
+> > > This needs to be converted to proper, or at least comprehensible, English....
+> > 
+> > Thank you for the comment.
+> > 
+> > How about below?
+> > 
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -743,9 +743,9 @@ config PAGE_IDLE_FLAG
+> >         bool "Add PG_idle and PG_young flags"
+> >         select PAGE_EXTENSION if !64BIT
+> >         help
+> > -         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> > -         Accessed bit writers can set the state of the bit in the flags to let
+> > -         other PTE Accessed bit readers don't disturbed.
+> > +         This feature adds 'PG_idle' and 'PG_young' flags in 'struct page'.
+> > +         PTE Accessed bit writers can save the state of the bit in the flags
+> > +         to let other PTE Accessed bit readers don't get disturbed.
+> 
+> How about this?
+> 
+> --- a/mm/Kconfig~mm-idle_page_tracking-make-pg_idle-reusable-fix-fix
+> +++ a/mm/Kconfig
+> @@ -743,9 +743,9 @@ config PAGE_IDLE_FLAG
+>  	bool "Add PG_idle and PG_young flags"
+>  	select PAGE_EXTENSION if !64BIT
+>  	help
+> -	  This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> -	  Accessed bit writers can set the state of the bit in the flags to let
+> -	  other PTE Accessed bit readers don't disturbed.
+> +	  This adds PG_idle and PG_young flags to 'struct page'.  PTE Accessed
+> +	  bit writers can set the state of the bit in the flags so that PTE
+> +	  Accessed bit readers may avoid disturbance.
+>  
+>  config IDLE_PAGE_TRACKING
+>  	bool "Enable idle page tracking"
 
-Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- mm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So good, thank you!
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 8d3a005edea5..be726f61ef9b 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -740,7 +740,7 @@ config DEFERRED_STRUCT_PAGE_INIT
- 	  initialisation.
- 
- config PAGE_IDLE_FLAG
--	bool "Add PG_idle and PG_young flags"
-+	bool
- 	select PAGE_EXTENSION if !64BIT
- 	help
- 	  This adds PG_idle and PG_young flags to 'struct page'.  PTE Accessed
--- 
-2.17.1
+> 
+> Also, is there any way in which we can avoid presenting this option to
+> the user?  Because most users will have real trouble understanding what
+> this thing is for.  Can we simply select it when needed, as dictated by
+> other, higher-level config options?
 
+I believe this is the right way to go!  I sent a patch for removing the prompt
+of this option:
+https://lore.kernel.org/linux-mm/20210813081238.34705-1-sj38.park@gmail.com/
+
+
+Thanks,
+SeongJae Park
