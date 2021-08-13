@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664D23EB8EB
+	by mail.lfdr.de (Postfix) with ESMTP id D2CE13EB8EC
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242566AbhHMPSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55900 "EHLO mail.kernel.org"
+        id S242665AbhHMPSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242698AbhHMPOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:14:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16239610CF;
-        Fri, 13 Aug 2021 15:14:08 +0000 (UTC)
+        id S241822AbhHMPOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:14:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB0886113C;
+        Fri, 13 Aug 2021 15:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867649;
-        bh=wxC2BJHbVvWK0CrPHUrgXcHsT/DCnS0d6ToQ1p6AQrY=;
+        s=korg; t=1628867652;
+        bh=BcajKMJQd6PiG4fl+SSqsb2Fdc1IAQcX40wnpdS6pHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AvWz8NrZ7sIETBZLmfaKZkLSmMj7zZobgThSygHfdmROCVpC1MQGG+oElYy827MJU
-         O07lofY49/AvDEAJ77D5o5ASaGEnWhtRWfN4tvdaW2OvYcxG8oeX/OuWQcEPy4hjF/
-         8+Z5e68i4LirC22Qzhqz5M+Z5IZpXRs6PyisL3/0=
+        b=CgEx+yzlyxWSenoNkgDlh8hrB1aLtYPUr1jRvzqa91h1n31yrLvqC0FG3DS+NTIqn
+         n4ZGLu+HxbYmA8JwwRGHywO/t3SSAwX8LLpVNogQtP2bBxDngJtnKk/4Ylho+cRcqd
+         hfLgekIB8yYBS4aBbY41ADNsJF/9HNr2MNxe3Upo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 01/19] KVM: SVM: Fix off-by-one indexing when nullifying last used SEV VMCB
-Date:   Fri, 13 Aug 2021 17:07:18 +0200
-Message-Id: <20210813150522.671018477@linuxfoundation.org>
+Subject: [PATCH 5.10 02/19] tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
+Date:   Fri, 13 Aug 2021 17:07:19 +0200
+Message-Id: <20210813150522.708120827@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150522.623322501@linuxfoundation.org>
 References: <20210813150522.623322501@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,50 +41,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Sumit Garg <sumit.garg@linaro.org>
 
-[ Upstream commit 179c6c27bf487273652efc99acd3ba512a23c137 ]
+[ Upstream commit 376e4199e327a5cf29b8ec8fb0f64f3d8b429819 ]
 
-Use the raw ASID, not ASID-1, when nullifying the last used VMCB when
-freeing an SEV ASID.  The consumer, pre_sev_run(), indexes the array by
-the raw ASID, thus KVM could get a false negative when checking for a
-different VMCB if KVM manages to reallocate the same ASID+VMCB combo for
-a new VM.
+Currently TEE_SHM_DMA_BUF flag has been inappropriately used to not
+register shared memory allocated for private usage by underlying TEE
+driver: OP-TEE in this case. So rather add a new flag as TEE_SHM_PRIV
+that can be utilized by underlying TEE drivers for private allocation
+and usage of shared memory.
 
-Note, this cannot cause a functional issue _in the current code_, as
-pre_sev_run() also checks which pCPU last did VMRUN for the vCPU, and
-last_vmentry_cpu is initialized to -1 during vCPU creation, i.e. is
-guaranteed to mismatch on the first VMRUN.  However, prior to commit
-8a14fe4f0c54 ("kvm: x86: Move last_cpu into kvm_vcpu_arch as
-last_vmentry_cpu"), SVM tracked pCPU on its own and zero-initialized the
-last_cpu variable.  Thus it's theoretically possible that older versions
-of KVM could miss a TLB flush if the first VMRUN is on pCPU0 and the ASID
-and VMCB exactly match those of a prior VM.
+With this corrected, allow tee_shm_alloc_kernel_buf() to allocate a
+shared memory region without the backing of dma-buf.
 
-Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Co-developed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tee/optee/call.c     | 2 +-
+ drivers/tee/optee/core.c     | 3 ++-
+ drivers/tee/optee/rpc.c      | 5 +++--
+ drivers/tee/optee/shm_pool.c | 8 ++++++--
+ drivers/tee/tee_shm.c        | 4 ++--
+ include/linux/tee_drv.h      | 1 +
+ 6 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 01547bdbfb06..6c82ef22985d 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -124,7 +124,7 @@ static void sev_asid_free(int asid)
+diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+index 1231ce56e712..f8f1594bea43 100644
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -181,7 +181,7 @@ static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
+ 	struct optee_msg_arg *ma;
  
- 	for_each_possible_cpu(cpu) {
- 		sd = per_cpu(svm_data, cpu);
--		sd->sev_vmcbs[pos] = NULL;
-+		sd->sev_vmcbs[asid] = NULL;
+ 	shm = tee_shm_alloc(ctx, OPTEE_MSG_GET_ARG_SIZE(num_params),
+-			    TEE_SHM_MAPPED);
++			    TEE_SHM_MAPPED | TEE_SHM_PRIV);
+ 	if (IS_ERR(shm))
+ 		return shm;
+ 
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index 7b17248f1527..823a81d8ff0e 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -278,7 +278,8 @@ static void optee_release(struct tee_context *ctx)
+ 	if (!ctxdata)
+ 		return;
+ 
+-	shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
++	shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg),
++			    TEE_SHM_MAPPED | TEE_SHM_PRIV);
+ 	if (!IS_ERR(shm)) {
+ 		arg = tee_shm_get_va(shm, 0);
+ 		/*
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index 6cbb3643c6c4..9dbdd783d6f2 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -313,7 +313,7 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+ 		shm = cmd_alloc_suppl(ctx, sz);
+ 		break;
+ 	case OPTEE_MSG_RPC_SHM_TYPE_KERNEL:
+-		shm = tee_shm_alloc(ctx, sz, TEE_SHM_MAPPED);
++		shm = tee_shm_alloc(ctx, sz, TEE_SHM_MAPPED | TEE_SHM_PRIV);
+ 		break;
+ 	default:
+ 		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+@@ -501,7 +501,8 @@ void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
+ 
+ 	switch (OPTEE_SMC_RETURN_GET_RPC_FUNC(param->a0)) {
+ 	case OPTEE_SMC_RPC_FUNC_ALLOC:
+-		shm = tee_shm_alloc(ctx, param->a1, TEE_SHM_MAPPED);
++		shm = tee_shm_alloc(ctx, param->a1,
++				    TEE_SHM_MAPPED | TEE_SHM_PRIV);
+ 		if (!IS_ERR(shm) && !tee_shm_get_pa(shm, 0, &pa)) {
+ 			reg_pair_from_64(&param->a1, &param->a2, pa);
+ 			reg_pair_from_64(&param->a4, &param->a5,
+diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+index da06ce9b9313..c41a9a501a6e 100644
+--- a/drivers/tee/optee/shm_pool.c
++++ b/drivers/tee/optee/shm_pool.c
+@@ -27,7 +27,11 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+ 	shm->paddr = page_to_phys(page);
+ 	shm->size = PAGE_SIZE << order;
+ 
+-	if (shm->flags & TEE_SHM_DMA_BUF) {
++	/*
++	 * Shared memory private to the OP-TEE driver doesn't need
++	 * to be registered with OP-TEE.
++	 */
++	if (!(shm->flags & TEE_SHM_PRIV)) {
+ 		unsigned int nr_pages = 1 << order, i;
+ 		struct page **pages;
+ 
+@@ -60,7 +64,7 @@ err:
+ static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+ 			 struct tee_shm *shm)
+ {
+-	if (shm->flags & TEE_SHM_DMA_BUF)
++	if (!(shm->flags & TEE_SHM_PRIV))
+ 		optee_shm_unregister(shm->ctx, shm);
+ 
+ 	free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+index c65e44707cd6..8a9384a64f3e 100644
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+ 		return ERR_PTR(-EINVAL);
  	}
  
- 	mutex_unlock(&sev_bitmap_lock);
+-	if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
++	if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_PRIV))) {
+ 		dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+@@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+  */
+ struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
+ {
+-	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED);
+ }
+ EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
+ 
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 9b24cc3d3024..459e9a76d7e6 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -27,6 +27,7 @@
+ #define TEE_SHM_USER_MAPPED	BIT(4)  /* Memory mapped in user space */
+ #define TEE_SHM_POOL		BIT(5)  /* Memory allocated from pool */
+ #define TEE_SHM_KERNEL_MAPPED	BIT(6)  /* Memory mapped in kernel space */
++#define TEE_SHM_PRIV		BIT(7)  /* Memory private to TEE driver */
+ 
+ struct device;
+ struct tee_device;
 -- 
 2.30.2
 
