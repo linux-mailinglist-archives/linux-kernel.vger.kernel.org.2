@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3D3EBD80
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777743EBD82
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 22:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhHMUkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 16:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbhHMUkx (ORCPT
+        id S234561AbhHMUlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 16:41:39 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:36720 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233915AbhHMUlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 16:40:53 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE6BC061756;
-        Fri, 13 Aug 2021 13:40:26 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id n6so17363892ljp.9;
-        Fri, 13 Aug 2021 13:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EdjJ5WkYh23R+5q3/cVLvQ2hscpaA4GqqB6R6gmdArg=;
-        b=r08iXLqVSjelGTsw/vjC/K6iKbAKENdSr2Xj3kRn5jjWki4T2/0qvLOPAoWWTHAjut
-         kw73Ne2EITcwTG96lxq6Dw2T4EXDGMbt3p5I4PyiXpd73D2NPxK8evdnxP7hhtTmFlmJ
-         +cCvYeHx/4awvFil5MjqQJ+KMaKYsq0cvpydGZZdDhXtAVmQtZTBs1eQVuzwGz0Xqp+/
-         vIf6e4poZX7eG2zFY24tD3hi6ySm9FkANXqFs2HTBR5ZNjiWaNpY5D3vBhZ13E20GRY/
-         sSrGUKdyGV9RCh6d/lLp4GJ6f7QouVUT7wMfeZjvZLxPWo/WDOGhY4MAOg20hnMF9I7A
-         0Ctw==
+        Fri, 13 Aug 2021 16:41:37 -0400
+Received: by mail-oi1-f176.google.com with SMTP id bd1so10244355oib.3;
+        Fri, 13 Aug 2021 13:41:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EdjJ5WkYh23R+5q3/cVLvQ2hscpaA4GqqB6R6gmdArg=;
-        b=BDxSaiH5/Ei4uh03Vuylur1QkQvZZDVTMT47rQR4KxT+Z0fHiqjf3OtDQBxxuJt6vf
-         8O6puiMsT0sIDk7KMgwZLCk5StigoxhJULB3GB9MXYDiAi2dFRielu+wUJMhRAS9qhnc
-         i41LazwEiYTY3NmQJs0kP+3mZgyoRh6PRBjpe3j2tWirMFJUZaRYEf3o7s+UmsD66fKC
-         O8dNCyEmRo56iuqx3pz5sEAKB+FxJE2QVF7RU3tqd0Y04r+0MrsW2Oq75bzP4MQ8r6sB
-         lomO3oEARqj+jPXLkRUiLZ0IHL4Z7GqCkcc7RBVAif7BnYYt8uMW81FekzdfltRGH+lr
-         rsPQ==
-X-Gm-Message-State: AOAM532tXx97vOUGyESAXfyPxQDA+zQb6HNel23kOi4idzdSAM+N7/8I
-        EfPs7bWW6M3U3p15fqr2omc=
-X-Google-Smtp-Source: ABdhPJxEZ6LaVms2MRDEFQgjeuGwuYHCpWDMSbjpnTqRJXbrvOsszilKZuZbv/dfH9D3DwPIC0Kmyw==
-X-Received: by 2002:a2e:2f0f:: with SMTP id v15mr3013919ljv.203.1628887224745;
-        Fri, 13 Aug 2021 13:40:24 -0700 (PDT)
-Received: from reki (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id z4sm241695lfi.98.2021.08.13.13.40.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0SsWZijZ/OzRMl6BiNQIDWPa6YRhMZn0k/FbWIlqlck=;
+        b=Jwv0JjqnlbFE9sfuj6vA6Xb+rcdUAsJ4ca2OUgYfPl4wuNQM/IKrNfJfWMEleOnK2L
+         1e8fcTnsA5sB578t3N7JAnG+fQftAur1opwz4TlgABRmbreP+86ugeOe9hlVCKGZ400L
+         ElRzJQTi8/rdak7liOuQHJYXgD19c+qajyBAQEOk0rzfRph6DkdUU6vUr9tGzB8HmvUi
+         JE67aGdYDp7CidyiBPGIH6dOYjk0waOYUYaZJLc4tVVWtIqkdSImDk3upSEMLzOyW56z
+         svLN8iG9n7gQQTKTNlcp8nITXeao+1qTOSNHOB5iOBWUjTF4WX+Ic00vWTFAvNGDtsdM
+         QSUg==
+X-Gm-Message-State: AOAM530WsI4I9AhR8KuT8oZBZLsZLh3kJPoUWBH/jA5hsnxOZGyGjmuu
+        lk+Dc2WfHBH7o6x43a14xg==
+X-Google-Smtp-Source: ABdhPJxIe0dRYdYroVcwOivLZ7rp/imyF64v62VnramgauO11+lTL97LS3Boj1WVh+q1Hvt6OnWYLg==
+X-Received: by 2002:a05:6808:98c:: with SMTP id a12mr3573067oic.65.1628887270318;
+        Fri, 13 Aug 2021 13:41:10 -0700 (PDT)
+Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
+        by smtp.gmail.com with ESMTPSA id z23sm573865oib.36.2021.08.13.13.41.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:40:24 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 23:40:22 +0300
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        ruslan.bilovol@gmail.com, mika.westerberg@linux.intel.com,
-        maze@google.com, jj251510319013@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Message-ID: <20210813234022.5d5644ae@reki>
-In-Reply-To: <20210813232212.5cba6d33@reki>
-References: <20210813114551.72898-1-mdevaev@gmail.com>
-        <20210813145823.GA38198@rowland.harvard.edu>
-        <20210813232212.5cba6d33@reki>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Fri, 13 Aug 2021 13:41:09 -0700 (PDT)
+Received: (nullmailer pid 3992679 invoked by uid 1000);
+        Fri, 13 Aug 2021 20:41:08 -0000
+Date:   Fri, 13 Aug 2021 15:41:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Markuss Broks <markuss.broks@gmail.com>
+Cc:     thierry.reding@gmail.com, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        daniel@ffwll.ch, phone-devel@vger.kernel.org,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie
+Subject: Re: [PATCH v2 1/2] drm/panel: Add DT bindings for Samsung S6D27A1
+ display panel
+Message-ID: <YRbY5OMjxQxA2CDb@robh.at.kernel.org>
+References: <YQw7M7OF6OZLcLjk@ravnborg.org>
+ <20210807133111.5935-1-markuss.broks@gmail.com>
+ <20210807133111.5935-2-markuss.broks@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807133111.5935-2-markuss.broks@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=D0=92 Fri, 13 Aug 2021 23:22:12 +0300
-Maxim Devaev <mdevaev@gmail.com> =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+On Sat, 07 Aug 2021 16:31:10 +0300, Markuss Broks wrote:
+> This adds device-tree bindings for the Samsung S6D27A1 RGB
+> DPI display panel.
+> 
+> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
+> 
+> v1 -> v2:
+> changed additionalProperties to unevaluatedProperties;
+> added vci-supply and vccio-supply as required;
+> ---
+>  .../display/panel/samsung,s6d27a1.yaml        | 98 +++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/samsung,s6d27a1.yaml
+> 
 
-> Alan Stern <stern@rowland.harvard.edu> wrote:
-> > In other words, a device does not need to have an interrupt-OUT=20
-> > endpoint, but if it does have one then the host must use it.
->=20
-> You're right. Although the actual behavior of the hosts is not different
-> from what I wrote - they really just ignore out endpoint.
-> I will eventually fix this in the patch description.
-
-It seems that I have confused everything even more, sorry. I will explain.
-There are three possible host behaviors:
-
-(1) The host works with the OUT endpoint as it describes the standard
-    and transmits reports through it.
-
-(2) The host works with IN endpoint, but refuses to transmit reports
-    via OUT endpoint at all. In the case of the keyboard, it will work,
-    but it will not receive the status of the LEDs.
-
-(3) The host sees OUT endpoint and either refuses to use such a device at a=
-ll,
-    or goes crazy in various ways.
-
-In both cases (2) and (3), using SETUP/SET_REPORT solves the problem.
-Therefore, I offer this as an option to solve compatibility problems.
-Yes, in fact, this is not our problem, but it is impossible to fix the driv=
-ers
-of all these proprietary devices. Moreover, I have never met a keyboard
-with OUT endpoint, absolutely all of them use SETUP/SET_REPORT.
+Reviewed-by: Rob Herring <robh@kernel.org>
