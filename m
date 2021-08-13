@@ -2,226 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D113EB62D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D653EB62E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240673AbhHMNp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:45:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240645AbhHMNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:42:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE3960F11;
-        Fri, 13 Aug 2021 13:42:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628862141;
-        bh=Radl4pPmym29zKnvSluX6pjnKXnMALkTFS4XBhELDe0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ovxa1ucL3c7DZ6Dbvwem0ix7QmgczSXzEQeDcG/qdzEEkDZvcKJQQolAhTTOjkBk5
-         ngR+o65v4bb8E/DMkLU6CtUKa5GZTCe2bq75AFw/LagEpAewVlrYayLF6u6Dais0lk
-         k1yGDwlOzEbaOREoNaDx4zPTkCGld3MC/ZErM9lmhy/eIpgQnL1OJljKiIAthCRmtp
-         GjWcdosb1ciYUaYMfiIChgmK9g9huWfPUGbr+BhuHt15rWCUA6C+rw8azZOsLbNZUh
-         yWlH3QZVklvo/cFWcPEcDnLZNSu6YtMvTJ8yorMWCBv3jGLtG6lG9/hFrKZGAm96bb
-         GfQAPHGFfryUg==
-Subject: Re: [PATCH v2] f2fs: Don't create discard thread when device not
- support realtime discard
-To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Fengnan Chang <changfengnan@vivo.com>
-References: <20210813101132.441389-1-frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <746edfbc-ae29-b84b-f83f-4093a398804b@kernel.org>
-Date:   Fri, 13 Aug 2021 21:42:15 +0800
+        id S240686AbhHMNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:46:22 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:45481 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240654AbhHMNn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 09:43:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1628862182; x=1660398182;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bOvhMYYM/9/bZhaOKUzBARsH5nstcvz2xXOwb+iD0Ss=;
+  b=w63ZOozMgs5tNv/uD9buPxLz8kAF9XCb/gQ/q7/Los3jllOwvape20pO
+   bbOH+AQSF9790AVxZVZi8odSunfR5/uAdt/a9dDJ4MaWhAkAibW36mUYW
+   GV7X8/H/q0+dhpTe9HYA15/p9vS83ZwFDgCf609q3yDF7W1Uw/IFq7uMY
+   0=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 13 Aug 2021 06:42:55 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 06:42:55 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.858.15; Fri, 13 Aug 2021 06:42:55 -0700
+Received: from [10.111.172.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.15; Fri, 13 Aug
+ 2021 06:42:53 -0700
+Subject: Re: [Internet]Re: [PATCH v5] arm pl011 serial: support multi-irq
+ request
+To:     =?UTF-8?B?dG9tYmluZmFuKOiMg+WFtSk=?= <tombinfan@tencent.com>,
+        Bing Fan <hptsfb@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        gregkh <gregkh@linuxfoundation.org>
+CC:     linux-serial <linux-serial@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
+ <60f007b3-bb01-dd0a-b1a2-a6da62a486e5@quicinc.com>
+ <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
+ <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
+ <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
+ <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
+ <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
+ <bddf2712-72f4-2e20-da17-33b3de08f769@gmail.com>
+ <0819592c-1baa-e98d-9118-5abde8b8c562@quicinc.com>
+ <67cd6c830e33491e99ea4d2480f4a89d@tencent.com>
+ <09918b566884413898f63b92ddd037a0@tencent.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <0206c94d-c91b-b7da-8132-d06e23c9d964@quicinc.com>
+Date:   Fri, 13 Aug 2021 09:42:52 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210813101132.441389-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <09918b566884413898f63b92ddd037a0@tencent.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/13 18:11, Yangtao Li wrote:
-> From: Fengnan Chang <changfengnan@vivo.com>
+
+
+On 8/12/2021 11:32 PM, tombinfan(范兵) wrote:
+> hello,
 > 
-> Don't create discard thread when device not support realtime discard.
+> I have sent the modified patch to the following mailboxes. THX
 > 
-> Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->   fs/f2fs/f2fs.h    |  1 +
->   fs/f2fs/segment.c | 29 +++++++++++++++++++++--------
->   fs/f2fs/super.c   | 34 ++++++++++++++++++++++++++++++++--
->   3 files changed, 54 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index d24fd5045712..60a408af53a3 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -3483,6 +3483,7 @@ int f2fs_flush_device_cache(struct f2fs_sb_info *sbi);
->   void f2fs_destroy_flush_cmd_control(struct f2fs_sb_info *sbi, bool free);
->   void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr);
->   bool f2fs_is_checkpointed_data(struct f2fs_sb_info *sbi, block_t blkaddr);
-> +int f2fs_start_discard_thread(struct f2fs_sb_info *sbi);
->   void f2fs_drop_discard_cmd(struct f2fs_sb_info *sbi);
->   void f2fs_stop_discard_thread(struct f2fs_sb_info *sbi);
->   bool f2fs_issue_discard_timeout(struct f2fs_sb_info *sbi);
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index ca9876a6d396..b83a4a1e5023 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2112,7 +2112,27 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
->   wakeup:
->   	wake_up_discard_thread(sbi, false);
->   }
+> gregkh@linuxfoundation.org
+> linux-serial@vger.kernel.org
+> linux-kernel@vger.kernel.org
 
-Need a blank line here.
+Thanks for the pointer. It is good to get some reviews from Arm
+people in the first place, so we don't break Arm like this.
 
-> +int f2fs_start_discard_thread(struct f2fs_sb_info *sbi)
-> +{
-> +	dev_t dev = sbi->sb->s_bdev->bd_dev;
-> +	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-> +	int err = 0;
->   
-> +	if (!dcc)
-> +		return -EINVAL;
-> +	if (!f2fs_realtime_discard_enable(sbi))
-> +		return 0;
-> +
-> +	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
-> +				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
-> +	if (IS_ERR(dcc->f2fs_issue_discard)) {
-> +		err = PTR_ERR(dcc->f2fs_issue_discard);
-> +		kfree(dcc);
-> +		SM_I(sbi)->dcc_info = NULL;
-> +		return err;
-> +	}
-> +	return err;
-> +}
+Anyway, for anyone who might be watching, here is the new patch,
 
-Ditto,
+https://lore.kernel.org/linux-serial/1628825490-18937-1-git-send-email-hptsfb@gmail.com/
 
->   static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
->   {
->   	dev_t dev = sbi->sb->s_bdev->bd_dev;
-
-Need to remove unused dev.
-
-> @@ -2153,14 +2173,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
->   	init_waitqueue_head(&dcc->discard_wait_queue);
->   	SM_I(sbi)->dcc_info = dcc;
->   init_thread:
-> -	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
-> -				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
-> -	if (IS_ERR(dcc->f2fs_issue_discard)) {
-> -		err = PTR_ERR(dcc->f2fs_issue_discard);
-> -		kfree(dcc);
-> -		SM_I(sbi)->dcc_info = NULL;
-> -		return err;
-> -	}
-> +	err = f2fs_start_discard_thread(sbi);
->   
->   	return err;
-
-return f2fs_start_discard_thread(sbi);
-
-err becomes unused.
-
->   }
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 84cd085020cd..ff19c30cd6a1 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2101,12 +2101,15 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	bool need_restart_gc = false, need_stop_gc = false;
->   	bool need_restart_ckpt = false, need_stop_ckpt = false;
->   	bool need_restart_flush = false, need_stop_flush = false;
-> +	bool need_enable_ckpt = false, need_disable_ckpt = false;
->   	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
->   	bool enable_checkpoint = !test_opt(sbi, DISABLE_CHECKPOINT);
->   	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
->   	bool no_atgc = !test_opt(sbi, ATGC);
-> +	bool no_discard = !test_opt(sbi, DISCARD);
->   	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
->   	bool block_unit_discard = f2fs_block_unit_discard(sbi);
-> +	struct discard_cmd_control *dcc;
->   #ifdef CONFIG_QUOTA
->   	int i, j;
->   #endif
-> @@ -2274,7 +2277,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	} else {
->   		err = f2fs_create_flush_cmd_control(sbi);
->   		if (err)
-> -			goto restore_ckpt;
-> +			goto restore_ckpt_thread;
->   		need_stop_flush = true;
->   	}
->   
-> @@ -2283,8 +2286,28 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   			err = f2fs_disable_checkpoint(sbi);
->   			if (err)
->   				goto restore_flush;
-> +			need_enable_ckpt = true;
->   		} else {
->   			f2fs_enable_checkpoint(sbi);
-> +			need_disable_ckpt = true;
-> +		}
-> +	}
-> +
-> +	if (no_discard == !!test_opt(sbi, DISCARD)) {
-> +		if (test_opt(sbi, DISCARD)) {
-> +			err = f2fs_start_discard_thread(sbi);
-> +			if (err)
-> +				goto restore_ckpt;
-> +
-
-Unneeded blank line.
-
-> +		} else {
-> +			dcc = SM_I(sbi)->dcc_info;
-> +			if (!dcc) {
-> +				err = -EINVAL;
-> +				goto restore_ckpt;
-> +			}
-> +			f2fs_stop_discard_thread(sbi);
-> +			if (unlikely(atomic_read(&dcc->discard_cmd_cnt)))
-
-I don't think this is an unlikely case.
-
-> +				f2fs_issue_discard_timeout(sbi);
-
-How about starting/stopping discard thread after flush thread status update,
-leaving complicated checkpoint disabling status change in the last stage of
-remount().
-
-Thanks,
-
->   		}
->   	}
->   
-> @@ -2302,6 +2325,13 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	adjust_unusable_cap_perc(sbi);
->   	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
->   	return 0;
-> +restore_ckpt:
-> +	if (need_enable_ckpt) {
-> +		f2fs_enable_checkpoint(sbi);
-> +	} else if (need_disable_ckpt) {
-> +		if (f2fs_disable_checkpoint(sbi))
-> +			f2fs_warn(sbi, "checkpoint has been enable");
-> +	}
->   restore_flush:
->   	if (need_restart_flush) {
->   		if (f2fs_create_flush_cmd_control(sbi))
-> @@ -2310,7 +2340,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   		clear_opt(sbi, FLUSH_MERGE);
->   		f2fs_destroy_flush_cmd_control(sbi, false);
->   	}
-> -restore_ckpt:
-> +restore_ckpt_thread:
->   	if (need_restart_ckpt) {
->   		if (f2fs_start_ckpt_thread(sbi))
->   			f2fs_warn(sbi, "background ckpt thread has stopped");
-> 
+Unfortunately, I saw Greg mentioned that it was not based on
+tty-next, so not something I can apply easily on linux-next here
+as well.
