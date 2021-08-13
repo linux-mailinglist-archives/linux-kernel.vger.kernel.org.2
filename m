@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE543EAE79
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64AB3EAE7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbhHMCSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
+        id S238449AbhHMCSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:18:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237630AbhHMCRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237496AbhHMCRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Aug 2021 22:17:52 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37778610CF;
+        by mail.kernel.org (Postfix) with ESMTPSA id 35B0D60FC0;
         Fri, 13 Aug 2021 02:17:26 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mEMlA-003wW0-UQ; Thu, 12 Aug 2021 22:17:24 -0400
+        id 1mEMlA-003wW2-VL; Thu, 12 Aug 2021 22:17:24 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5/7] libtracefs: Add API tracefs_synth_save()
-Date:   Thu, 12 Aug 2021 22:16:53 -0400
-Message-Id: <20210813021655.939819-6-rostedt@goodmis.org>
+Subject: [PATCH 6/7] libtracefs: Update the libtracefs-sql man page for the new tracefs_synth APIs
+Date:   Thu, 12 Aug 2021 22:16:54 -0400
+Message-Id: <20210813021655.939819-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210813021655.939819-1-rostedt@goodmis.org>
 References: <20210813021655.939819-1-rostedt@goodmis.org>
@@ -42,176 +42,203 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add an API tracefs_synth_save() that will save fields when onmax() or
-onchange() handlers are executed.
+Update the libtracfes-sql man page to have the sqlhist program utilize the
+new APIs:
+
+  tracefs_synth_trace()
+  tracefs_synth_snapshot()
+  tracefs_synth_save()
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/libtracefs-synth2.txt |  9 ++++
- include/tracefs.h                   |  3 ++
- src/tracefs-hist.c                  | 73 ++++++++++++++++++++++++++++-
- 3 files changed, 83 insertions(+), 2 deletions(-)
+ Documentation/libtracefs-sql.txt    | 105 ++++++++++++++++++++++++++--
+ Documentation/libtracefs-synth2.txt |   2 +
+ 2 files changed, 102 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index 194a4e021f62..cfcae7411f58 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -25,6 +25,9 @@ int tracefs_synth_trace(struct tracefs_synth pass:[*]synth,
- 			enum tracefs_synth_handler type, const char pass:[*]var);
- int tracefs_synth_snapshot(struct tracefs_synth pass:[*]synth,
- 			   enum tracefs_synth_handler type, const char pass:[*]var);
-+int tracefs_synth_save(struct tracefs_synth pass:[*]synth,
-+		       enum tracefs_synth_handler type, const char pass:[*]var,
-+		       char pass:[**]save_fields);
- --
+diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
+index 35ccaf5cd1a5..95625157590e 100644
+--- a/Documentation/libtracefs-sql.txt
++++ b/Documentation/libtracefs-sql.txt
+@@ -305,23 +305,47 @@ EXAMPLE
  
- DESCRIPTION
-@@ -84,6 +87,12 @@ into a "snapshot" buffer, that can be accessed via the "snapshot" file in the
- top level tracefs directory, or one of the instances.  _var_ changes. _var_ must be one of
- the _name_ elements used in *tracefs_synth_add_end_field*(3).
- 
-+*tracefs_synth_save*() When the given variable _var_ is either a new max if
-+_handler_ is TRACEFS_SYNTH_HANDLE_MAX_ or simpy changed if TRACEFS_SYNTH_HANDLE_CHANGE_
-+then saven the given _save_fields_ list. The fields will be stored in the histogram
-+"hist" file of the event that can be retrieved with *tracefs_event_file_read*(3).
-+_var_ changes. _var_ must be one of the _name_ elements used in *tracefs_synth_add_end_field*(3).
-+
- RETURN VALUE
- ------------
- Returns zero on success or -1 on error.
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 45a5bb2df2de..25abbdc10ebf 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -480,6 +480,9 @@ int tracefs_synth_trace(struct tracefs_synth *synth,
- 			enum tracefs_synth_handler type, const char *field);
- int tracefs_synth_snapshot(struct tracefs_synth *synth,
- 			   enum tracefs_synth_handler type, const char *field);
-+int tracefs_synth_save(struct tracefs_synth *synth,
-+		       enum tracefs_synth_handler type, const char *field,
-+		       char **save_fields);
- bool tracefs_synth_complete(struct tracefs_synth *synth);
- struct tracefs_hist *tracefs_synth_get_start_hist(struct tracefs_synth *synth);
- int tracefs_synth_create(struct tracefs_instance *instance,
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 2c9c37b8ec23..003715fa693c 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -525,6 +525,7 @@ enum action_type {
- 	ACTION_NONE,
- 	ACTION_TRACE,
- 	ACTION_SNAPSHOT,
-+	ACTION_SAVE,
- };
- 
- struct action {
-@@ -532,6 +533,7 @@ struct action {
- 	enum action_type		type;
- 	enum tracefs_synth_handler	handler;
- 	char				*handle_field;
-+	char				*save;
- };
- 
- /*
-@@ -580,6 +582,13 @@ struct tracefs_synth {
- 	int			arg_cnt;
- };
- 
-+static void action_free(struct action *action)
-+{
-+	free(action->handle_field);
-+	free(action->save);
-+	free(action);
-+}
-+
- /**
-  * tracefs_synth_free - free the resources alloced to a synth
-  * @synth: The tracefs_synth descriptor
-@@ -610,8 +619,7 @@ void tracefs_synth_free(struct tracefs_synth *synth)
- 
- 	while ((action = synth->actions)) {
- 		synth->actions = action->next;
--		free(action->handle_field);
--		free(action);
-+		action_free(action);
- 	}
- 
- 	free(synth);
-@@ -1445,6 +1453,64 @@ int tracefs_synth_snapshot(struct tracefs_synth *synth,
- 	return 0;
+ static void usage(char **argv)
+ {
+-	fprintf(stderr, "usage: %s [-ed][-n name][-t dir][-f file | sql-command-line]\n"
++	fprintf(stderr, "usage: %s [-ed][-n name][-s][-S fields][-m var][-c var][-T][-t dir][-f file | sql-command-line]\n"
+ 		"  -n name - name of synthetic event 'Anonymous' if left off\n"
+ 		"  -t dir - use dir instead of /sys/kernel/tracing\n"
+ 		"  -e - execute the commands to create the synthetic event\n"
++		"  -m - trigger the action when var is a new max.\n"
++		"  -c - trigger the action when var changes.\n"
++		"  -s - used with -m or -c to do a snapshot of the tracing buffer\n"
++		"  -S - used with -m or -c to save fields of the end event (comma deliminated)\n"
++		"  -T - used with -m or -c to do both a snapshot and a trace\n"
+ 		"  -f file - read sql lines from file otherwise from the command line\n"
+ 		"            if file is '-' then read from standard input.\n",
+ 		argv[0]);
+ 	exit(-1);
  }
  
-+/**
-+ * tracefs_synth_save - create a save command to the histogram
-+ * @synth: The tracefs_synth descriptor
-+ * @type: The type of handler to attach the save action
-+ * @max_field: The field for handlers onmax and onchange
-+ * @fields: The fields to save for the end variable
-+ *
-+ * Add the action to save fields for handlers onmax and onchange.
-+ *
-+ * Returns 0 on succes, -1 on error.
-+ */
-+int tracefs_synth_save(struct tracefs_synth *synth,
-+		       enum tracefs_synth_handler type, const char *max_field,
-+		       char **fields)
-+{
-+	struct action *action;
-+	char *save;
-+	int i;
+-static int do_sql(const char *buffer, const char *name,
+-		  const char *trace_dir, bool execute)
++enum action {
++	ACTION_DEFAULT		= 0,
++	ACTION_SNAPSHOT		= (1 << 0),
++	ACTION_TRACE		= (1 << 1),
++	ACTION_SAVE		= (1 << 2),
++	ACTION_MAX		= (1 << 3),
++	ACTION_CHANGE		= (1 << 4),
++};
 +
-+	if (!synth || !max_field || (type == TRACEFS_SYNTH_HANDLE_MATCH)) {
-+		errno = EINVAL;
-+		return -1;
-+	}
++#define ACTIONS ((ACTION_MAX - 1))
 +
-+	action = create_action(type, synth, max_field);
-+	if (!action)
-+		return -1;
-+
-+	action->type = ACTION_SAVE;
-+	action->handler = type;
-+	*synth->next_action = action;
-+	synth->next_action = &action->next;
-+
-+	save = strdup(".save(");
-+	if (!save)
-+		goto error;
-+
-+	for (i = 0; fields[i]; i++) {
-+		char *delim = i ? "," : NULL;
-+
-+		if (!trace_verify_event_field(synth->end_event, fields[i], NULL))
-+			goto error;
-+		save = append_string(save, delim, fields[i]);
-+	}
-+	save = append_string(save, NULL, ")");
-+	if (!save)
-+		goto error;
-+
-+	action->save = save;
-+	add_action(synth, action);
-+	return 0;
-+ error:
-+	action_free(action);
-+	free(save);
-+	return -1;
-+	return 0;
-+}
-+
- static char *create_synthetic_event(struct tracefs_synth *synth)
++static int do_sql(const char *buffer, const char *name, const char *var,
++		  const char *trace_dir, bool execute, int action,
++		  char **save_fields)
  {
- 	char *synthetic_event;
-@@ -1596,6 +1662,9 @@ static char *create_actions(char *hist, struct tracefs_synth *synth)
- 		case ACTION_SNAPSHOT:
- 			hist = append_string(hist, NULL, ".snapshot()");
+ 	struct tracefs_synth *synth;
+ 	struct tep_handle *tep;
+ 	struct trace_seq seq;
++	enum tracefs_synth_handler handler;
+ 	char *err;
++	int ret;
++
++	if ((action & ACTIONS) && !var) {
++		fprintf(stderr, "Error: -s, -S and -T not supported without -m or -c");
++		exit(-1);
++	}
+ 
+ 	if (!name)
+ 		name = "Anonymous";
+@@ -345,6 +369,43 @@ static int do_sql(const char *buffer, const char *name,
+ 	}
+ 
+ 	if (tracefs_synth_complete(synth)) {
++		if (var) {
++			if (action & ACTION_MAX)
++				handler = TRACEFS_SYNTH_HANDLE_MAX;
++			else
++				handler = TRACEFS_SYNTH_HANDLE_CHANGE;
++
++			if (action & ACTION_SAVE) {
++				ret = tracefs_synth_save(synth, handler, var, save_fields);
++				if (ret < 0) {
++					err = "adding save";
++					goto failed_action;
++				}
++			}
++			if (action & ACTION_TRACE) {
++				/*
++				 * By doing the trace before snapshot, it will be included
++				 * in the snapshot.
++				 */
++				ret = tracefs_synth_trace(synth, handler, var);
++				if (ret < 0) {
++					err = "adding trace";
++					goto failed_action;
++				}
++			}
++			if (action & ACTION_SNAPSHOT) {
++				ret = tracefs_synth_snapshot(synth, handler, var);
++				if (ret < 0) {
++					err = "adding snapshot";
++ failed_action:
++					perror(err);
++					if (errno == ENODEV)
++						fprintf(stderr, "ERROR: '%s' is not a variable\n",
++							var);
++					exit(-1);
++				}
++			}
++		}
+ 		tracefs_synth_show(&seq, NULL, synth);
+ 		if (execute)
+ 			tracefs_synth_create(NULL, synth);
+@@ -375,14 +436,18 @@ int main (int argc, char **argv)
+ 	int buffer_size = 0;
+ 	const char *file = NULL;
+ 	bool execute = false;
++	char **save_fields = NULL;
+ 	const char *name;
++	const char *var;
++	int action = 0;
++	char *tok;
+ 	FILE *fp;
+ 	size_t r;
+ 	int c;
+ 	int i;
+ 
+ 	for (;;) {
+-		c = getopt(argc, argv, "ht:f:en:");
++		c = getopt(argc, argv, "ht:f:en:m:c:sS:T");
+ 		if (c == -1)
  			break;
-+		case ACTION_SAVE:
-+			hist = append_string(hist, NULL, action->save);
+ 
+@@ -398,12 +463,42 @@ int main (int argc, char **argv)
+ 		case 'e':
+ 			execute = true;
+ 			break;
++		case 'm':
++			action |= ACTION_MAX;
++			var = optarg;
 +			break;
- 		default:
- 			continue;
++		case 'c':
++			action |= ACTION_CHANGE;
++			var = optarg;
++			break;
++		case 's':
++			action |= ACTION_SNAPSHOT;
++			break;
++		case 'S':
++			action |= ACTION_SAVE;
++			tok = strtok(optarg, ",");
++			while (tok) {
++				save_fields = tracefs_list_add(save_fields, tok);
++				tok = strtok(NULL, ",");
++			}
++			if (!save_fields) {
++				perror(optarg);
++				exit(-1);
++			}
++			break;
++		case 'T':
++			action |= ACTION_TRACE | ACTION_SNAPSHOT;
++			break;
+ 		case 'n':
+ 			name = optarg;
+ 			break;
  		}
+ 	}
+ 
++	if ((action & (ACTION_MAX|ACTION_CHANGE)) == (ACTION_MAX|ACTION_CHANGE)) {
++		fprintf(stderr, "Can not use both -m and -c together\n");
++		exit(-1);
++	}
+ 	if (file) {
+ 		if (!strcmp(file, "-"))
+ 			fp = stdin;
+@@ -434,7 +529,7 @@ int main (int argc, char **argv)
+ 		}
+ 	}
+ 
+-	do_sql(buffer, name, trace_dir, execute);
++	do_sql(buffer, name, var, trace_dir, execute, action, save_fields);
+ 	free(buffer);
+ 
+ 	return 0;
+diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
+index cfcae7411f58..4c4425325393 100644
+--- a/Documentation/libtracefs-synth2.txt
++++ b/Documentation/libtracefs-synth2.txt
+@@ -117,6 +117,8 @@ And more errors may have happened from the system calls to the system.
+ 
+ EXAMPLE
+ -------
++See *tracefs_sql*(3) for a more indepth use of some of this code.
++
+ [source,c]
+ --
+ #include <stdlib.h>
 -- 
 2.30.2
 
