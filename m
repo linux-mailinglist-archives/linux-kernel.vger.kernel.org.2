@@ -2,107 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C713EBB4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE4E3EBB5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhHMRVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhHMRVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:21:20 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E1AC061756;
-        Fri, 13 Aug 2021 10:20:52 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so7376072wmi.1;
-        Fri, 13 Aug 2021 10:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IHcHwoO+YvyHAqpESPLSfrO5JSgyr2FJHdd37yi0v1g=;
-        b=jmnNZ8IBrqfqveCnY/74OylQQ1OVLyVgSuiiQ+4pw8p9yz2FMPFKv4aj0ZEcDtCv4+
-         IZ3TM8+5kYW9lhmNbqjpW2MiIoXetHivjSM5D3+ptF1/v8XLbPXAb10ivIscmZsZBhYm
-         3Ynrov3pB0whCJSqHLT70CQqOjOMgBn/FRF2rT4DlHxduoMMzgagjJ9qw4OjqPsXMuV7
-         Uop3AwxRmjdqGwU4SKrr+2Iob7ukF6rjG0SnK9afrjCIv3KA3VoFkcYeLVvLTZ99rvvm
-         UXPEaxTJD19FQSOwK7jLSu2pVYhbf/xo5nm0HHrl/ECVDDnYLBBMnuHTn0mdlDr7jR4a
-         LEUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IHcHwoO+YvyHAqpESPLSfrO5JSgyr2FJHdd37yi0v1g=;
-        b=GBAaAYkyGDIPr6yWaAFNTJ8tz+LuVKbseWXyyLBfkfNG9xgsOYz7wXWXmV4BtgqlfD
-         YSCMTmPSKtxSXluv4Out7nZKZhH4ovLHMck8dkPPKQTaB7huaRtUEUU85wBc6KAcdGg3
-         nw9gbQmbchH/U6dl/1ekH0IyiI33b7a+EQvNdDYimjck9kAoD8DoBWClkWcgPU64kM8P
-         8YzpCDXp/p/BqhM9F12t2xvFX5EtEUN7u7MiBcq4+ssNR8oGNc4aBFkNEOHjn1JzzPrD
-         eVhGwuUb5dmNXAM5VxaJCP2QPEnBXK2gHJxIFXNGpo8LMWNAKHDnx71SC42yyO6wtDpp
-         9rHw==
-X-Gm-Message-State: AOAM533MB0t/YNEbUi8YvjtrvQO4XOOCzFrnea0Ov32xZVdl25ncrEfe
-        q97npey+32DlGNBdZNysxkE=
-X-Google-Smtp-Source: ABdhPJyO7cQ+riv/1XGihAr8zLgoQGQ53CQe0uL62INja0KU8Je4XsNs1YjMNMJFTpqxQoPOar73AA==
-X-Received: by 2002:a1c:2381:: with SMTP id j123mr33179wmj.68.1628875250690;
-        Fri, 13 Aug 2021 10:20:50 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.210])
-        by smtp.gmail.com with ESMTPSA id i3sm2003543wmb.17.2021.08.13.10.20.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 10:20:50 -0700 (PDT)
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-iio@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-References: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: IIO, dmabuf, io_uring
-Message-ID: <a343b14f-6b7e-e377-9ae0-871e23b70453@gmail.com>
-Date:   Fri, 13 Aug 2021 18:20:19 +0100
+        id S231182AbhHMRX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:23:26 -0400
+Received: from mail-dm6nam10on2076.outbound.protection.outlook.com ([40.107.93.76]:12512
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229705AbhHMRXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:23:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q5KcLB+YN5nErDPgWwKk4assRc0Yto8sv9C8W7IA5DXzVMlYsVDqi1csBCh9VJVuNy4JYWV3nKpvCru2mTqQZSDO55qXWsXTgYeT2hxkdIuFgNuGhm2MMNhNY7dM0MViPFb2G5Z317FZ6C9sTb6UdQa+jFTshlNH3t/rFn7VKKgm9v7OhKoeFL97qMLPEFWa/qyklWkkESkpWnLIq4SY4qtizOIimP2c5AOE9f+Oc6QmerFFZM/cSB4WSKT7Woz2IOngkF9Fsn9NwIlrtaOF8LOao5XorhT7c+vpKswigTRdhY7YEjT6RcYcfbtdtMYomEcSbbiiom0+ZKNBNHT6gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h6RvfefU119MSrSgTAgvn6AIvZu84Wui9FRpOrjCKiA=;
+ b=PUJo/fSqVIyx4p2e3K8XIkPhLi8QA857Pw9UiFSF/eUUDlhuxq9uXRaP3EsntilZLbu8cjrkCDJ/Z1U+PLzt2QphuH7nEC93NHIWNYWiTxDXj8gOz3yULLpBNGvSjqpfhDKLQNQTOPNM1En5ZYlhUKxoOVhLmBoEP1d9/OdERuYZpAug++hniiwp3PK4e1+NsxhQn91RNhdWDgsOaFvBpF0wNLvg2l1KyyuZhWn04pNNIvzs4FSyvs7JqaxeYtaYzSDZyCa4GCWTCdgYIwvC3M95prcaEha41Phjb05PMxi5oXqll22DmKdN8/zLFCqvZpWZ7EW+JIrPyWEUyUSU4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h6RvfefU119MSrSgTAgvn6AIvZu84Wui9FRpOrjCKiA=;
+ b=ogDzJzpzVLvfrDsNISSdL/C+9bqb3m1SBEb4xGlC8iiwNQ4tnPOqHADvMjhKx1RozuzfasCa6Eee1uDMgpvIFlCIKO9M7y9n3noMT8TYkILL7BSuyCo3sw1mrz7gGp+OwTWRPl4iypZ1cIRks+Qe4swTZjRNvr+d47hM/fHBXxA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5214.namprd12.prod.outlook.com (2603:10b6:5:395::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Fri, 13 Aug
+ 2021 17:22:54 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 17:22:54 +0000
+Subject: Re: [PATCH v2 00/12] Implement generic prot_guest_has() helper
+ function
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>
+References: <cover.1628873970.git.thomas.lendacky@amd.com>
+Message-ID: <5c5443e1-1168-078f-89d2-70275706be6a@amd.com>
+Date:   Fri, 13 Aug 2021 12:22:50 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
-Content-Type: text/plain; charset=utf-8
+ Thunderbird/78.11.0
+In-Reply-To: <cover.1628873970.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR10CA0003.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::8) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9PR10CA0003.namprd10.prod.outlook.com (2603:10b6:806:a7::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Fri, 13 Aug 2021 17:22:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9969e273-9a71-4807-01fc-08d95e7efc41
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5214:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5214A11425D4B1238BCB4A77ECFA9@DM4PR12MB5214.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OLsGDn0lrE8RKaN7ImSaDuO8ZE0Ezx9lRA68/4BNy6piwFHMoiNKQodyJRKpQLS7jvEKfAPsx2l3qhESpsmbCM6XUX2lCUsT4V/+A1baxddR11K2VnYVC0tOhG+yANdck5Y0rs/SxsltxgJVNaq7etewEoFK4et4+0AOSF0h1jOHRBxHu5E2zFQiaD0gOrvI8XPQugNOg6YABH+9IoqHEOnD92FhoT+KV4pWV2BjhRUgrr9aXGgYSAKqc86iusnm2/la6TVAHEgmVLBfHff4/TBuyK1MlJDHZRh8PUEn0je4rDlBNU9qMQE7GGnbW04L8RZP07JGqYr+WLYmJ+TUhgCma+XOq0YhpYoeQKKZdfB9QYW/xh2/170wuHHhl2uHGs2XQ+96sGijmeJLXOao/+KV/ClE4zYLJlYgD0CRx3HTRTJGcPMzD5Dz0G4m/9tgkX/t60as6gjuExAq41J9L/YIc/AvcqU8GAxwvCYm/6jEkWSrJ6pAWv6/uFaT1+dBFKHvqjTF6keLICITcBKfxsQ4GGVMkKKaCnAiI0ImJ3XUC3WRnC1ZoUrNmUcdnTSd72OrkeJodd4fskyAzkX62zdBKVoa6r7/wpu/weLAzr4JFampey5FOEVjCunuQ2ShRPSNJp6ae5nGbR4eIzk8gITFuSvXI9Qg3i+wbx4BXKvbPeNqMy4avPpDQKbzDgTSOFWuAALFi9091x69ct4WEAEwooT0mKlHAlsJdEitXjt49Mc+6E+vP/93AveXnJQt33sMRyV+JM4cmsKRUWSXLw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(66476007)(83380400001)(7416002)(66556008)(8676002)(86362001)(7406005)(2906002)(26005)(31686004)(4326008)(4744005)(921005)(186003)(31696002)(8936002)(36756003)(6512007)(66946007)(2616005)(6506007)(478600001)(38100700002)(5660300002)(316002)(6486002)(53546011)(54906003)(956004)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c0dSdlVvc0JlSDFvZ2VjUi92VXJld25CKzMwejJiQTNUMUdRa1RhT0E5TWI4?=
+ =?utf-8?B?cmw0VlZMemhzVGdxRzB4NE4zclpaL2xFZDFDZFVDYy9uNFE1dFZ1ZUFlRjEz?=
+ =?utf-8?B?SmwvZFZQMnpsRXREZEJZaGpqMys3Zzg4MkVveWVVaGJxakIzN1lBVWh5aTBF?=
+ =?utf-8?B?dXhnU1VHTXBacGZSQ2R3ZUFpQ21tTUYzMXd5OWdsZk0zNUEwbExiRjJKaXZv?=
+ =?utf-8?B?dDlsMWpCV1RGajhsTE12YnFublBCWWtrdWxFUi9zaWIyZnluVFdmeHNQaW5M?=
+ =?utf-8?B?dWJCOVV6WVplSG9XcE9kVWh5NFoySXRnTGl2YjEyeDlnR28yZEs2QVhjbGhH?=
+ =?utf-8?B?T0VMeTk5UjZPSzhwOE90WmVjQVJEY1pVL3BvQTZuT1R6RnFWbjBZVHNFRzIy?=
+ =?utf-8?B?TW1ic1F2dkNpS01ZNlVKZWdnWkpHbXF5dmV0MjVqa1IrcFMveFlSRi85MTVX?=
+ =?utf-8?B?NTV3dm5UcFI2WmhkRG05ZTNmM3pESjNMVFlyQ01Jeld3OVBaZENjeUZqMlJk?=
+ =?utf-8?B?VVBMMjkwTkZUZ2tjMzNVWmR5UWszb1J0aExPd3BDbkYxSHVFVi8xTy9TWTRx?=
+ =?utf-8?B?MkxRU3ZaWnBLc2RVUVdSSW90MVNrcWl2OXlpSTVVTmN3blFCN1dkUyt0WGoz?=
+ =?utf-8?B?eFBBZmk2Y2ZnbkYzR3VkZzBNbXRHYXlFYlhVM0JkYmFIblJ6WnR2QVZsNTAx?=
+ =?utf-8?B?ME1tWUpYRE5ZNnJBMU8wR0RpbWJyZUhocDFtM2RyZ0VoYTNGSXlDczBuWjdn?=
+ =?utf-8?B?K1FBYU4vcDN0SkxCN3NnNUQ1eERoaHZjeDRoaXR4cjVsdEJ0cU1tMTRUSWpM?=
+ =?utf-8?B?aWhWUUhnQjhhRC9JWEFqdFZNc1ZYcDdaeWZVTXhqbDkyUDdhT1crVGRyTVF2?=
+ =?utf-8?B?a0taUEZDRml4SHYyLzlJRWFsZ0MzdHdTRE1telMxQ01sanBkdCs5cjhRcVRn?=
+ =?utf-8?B?R3NHT0RjTGwwdTRDY2RkMDZOZW01T1I3U3VzNUUvaGdVd21RQ2NMQjNNRmty?=
+ =?utf-8?B?NW5jZTdGQjRMRWQ0eFN6cllJWjRlTnJ4ZDhnbERJeFF5b3kyTDRHSkNKWE1W?=
+ =?utf-8?B?MFJzb2w4RWRheVpwUDZOVkZEa0pvSlRmN0pWQklEVlAxVmIzN2t1RzhkREsx?=
+ =?utf-8?B?YXJSRnh1QzFrcDZsaW56aUs3V0dDNnVybnVSa3loRlV1QnRXQXdmZ3U4Wmpu?=
+ =?utf-8?B?bWRDUlpUdXBMUWlmRnNIeUU5OUlvVG9FZFZaek5iZVNwUmxlQlA1TkNkdVRW?=
+ =?utf-8?B?ejc1b2E0U2hsTGZna1lyUHM3Z1BIVHlkMW1BRzJjV3VkTzhhMlZCbWs0dGFF?=
+ =?utf-8?B?dUwrRHVNNnBiQVM5ajhaU0p4NFpUWHNQQXY3SEErczl5ejBQRW9YOEFyUFdT?=
+ =?utf-8?B?c0hRNnNlUUFpL1V2eDJYbUQ2am93STJDMXRiWjFWSjlTRzBZL2hTTXJDamVE?=
+ =?utf-8?B?ODNhMUVlUWVNMGFXbTVsWjZkQnFaZTJVMXAvVE5jN3Jycy90Zkc3K05nd0Fl?=
+ =?utf-8?B?L1J4UE14QkJTblYzQkNuSThGekY1N1ZzbXc5Mit2dHpmR0F2eis0OW9QeXRJ?=
+ =?utf-8?B?SEo1aUtuYk1McDNrbmd4ai9Kc3ZoQ0FVREpTWWtzYlR0Rkd1YjlKRjdqR3Zj?=
+ =?utf-8?B?YmdwcytwTnVXS0paMC85L00wS1J1NG1JREU5d0ZMOUh5dTZDam9JaERjaHI5?=
+ =?utf-8?B?akgrWXYyQzBlU3pHeDVEd3Ztbm8vS0FydzB0aEdiR2RKdENtVFZ1aE5ZL09l?=
+ =?utf-8?Q?Z02W9AkJz7sBg9wEjSky1jrugMay/nZZQAI+Wdg?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9969e273-9a71-4807-01fc-08d95e7efc41
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 17:22:54.2217
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uj6QcnXXEHT0CXIxlKEIH/IA+azLA8VsCm+jOAbcy2bvSShnzEWVnDEefF9wit7AKRRZPssiJtbSJFUHliohnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5214
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On 8/13/21 11:59 AM, Tom Lendacky wrote:
+> This patch series provides a generic helper function, prot_guest_has(),
+> to replace the sme_active(), sev_active(), sev_es_active() and
+> mem_encrypt_active() functions.
+> 
+> It is expected that as new protected virtualization technologies are
+> added to the kernel, they can all be covered by a single function call
+> instead of a collection of specific function calls all called from the
+> same locations.
+> 
+> The powerpc and s390 patches have been compile tested only. Can the
+> folks copied on this series verify that nothing breaks for them.
 
-On 8/13/21 12:41 PM, Paul Cercueil wrote:
-> Hi,
-> 
-> A few months ago we (ADI) tried to upstream the interface we use with our high-speed ADCs and DACs. It is a system with custom ioctls on the iio device node to dequeue and enqueue buffers (allocated with dma_alloc_coherent), that can then be mmap'd by userspace applications. Anyway, it was ultimately denied entry [1]; this API was okay in ~2014 when it was designed but it feels like re-inventing the wheel in 2021.
-> 
-> Back to the drawing table, and we'd like to design something that we can actually upstream. This high-speed interface looks awfully similar to DMABUF, so we may try to implement a DMABUF interface for IIO, unless someone has a better idea.
-> 
-> Our first usecase is, we want userspace applications to be able to dequeue buffers of samples (from ADCs), and/or enqueue buffers of samples (for DACs), and to be able to manipulate them (mmapped buffers). With a DMABUF interface, I guess the userspace application would dequeue a dma buffer from the driver, mmap it, read/write the data, unmap it, then enqueue it to the IIO driver again so that it can be disposed of. Does that sound sane?
-> 
-> Our second usecase is - and that's where things get tricky - to be able to stream the samples to another computer for processing, over Ethernet or USB. Our typical setup is a high-speed ADC/DAC on a dev board with a FPGA and a weak soft-core or low-power CPU; processing the data in-situ is not an option. Copying the data from one buffer to another is not an option either (way too slow), so we absolutely want zero-copy.
-> 
-> Usual userspace zero-copy techniques (vmsplice+splice, MSG_ZEROCOPY etc) don't really work with mmapped kernel buffers allocated for DMA [2] and/or have a huge overhead, so the way I see it, we would also need DMABUF support in both the Ethernet stack and USB (functionfs) stack. However, as far as I understood, DMABUF is mostly a DRM/V4L2 thing, so I am really not sure we have the right idea here.
-> 
-> And finally, there is the new kid in town, io_uring. I am not very literate about the topic, but it does not seem to be able to handle DMA buffers (yet?). The idea that we could dequeue a buffer of samples from the IIO device and send it over the network in one single syscall is appealing, though.
+There are some patches related to PPC that added new calls to the 
+mem_encrypt_active() function that are not yet in the tip tree. After the 
+merge window, I'll need to send a v3 with those additional changes before 
+this series can be applied.
 
-You might be interested to look up zctap, previously a.k.a netgpu.
-
-For io_uring, it's work in progress as well.
-
-> 
-> Any thoughts? Feedback would be greatly appreciated.
-> 
-> Cheers,
-> -Paul
-> 
-> [1]: https://lore.kernel.org/linux-iio/20210217073638.21681-1-alexandru.ardelean@analog.com/T/#m6b853addb77959c55e078fbb06828db33d4bf3d7
-> [2]: https://newbedev.com/zero-copy-user-space-tcp-send-of-dma-mmap-coherent-mapped-memory
-
--- 
-Pavel Begunkov
+Thanks,
+Tom
