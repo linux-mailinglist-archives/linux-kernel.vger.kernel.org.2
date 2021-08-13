@@ -2,101 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCD03EB323
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B893EB327
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239939AbhHMJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239165AbhHMJGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:06:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC4F06103E;
-        Fri, 13 Aug 2021 09:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628845545;
-        bh=UjJXRNc/DQIe9/Jw4J5eMPHJMcIsyW+Z48GBMG2E3+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=etzdedsZpBXHgp9QFpnZLRWf5gs7Rbzdvzij5UheUG679G/NWJqBi5q0jlVVsYTCU
-         y0l7cdhhdKTQY/m+qnjEeIWuD50yiKPPPqeRLW1Remlj1AL3zruwGsgpPaw/v0127u
-         CVMBXcSmu7nXkNotXDByoOhlfgS9OUq2uIDhy9ej46XeGH4TpNH530qgWQU4DjLIK+
-         iAJcvYRErcQAG0HuDvnDF7MUrqODzd5Be3P0rqnmFGK6y0Rt/7LB4oc18EJj5M0Gs2
-         /9w6LxaXUna0fAIbf5+ntt0JCxwwr65acDlj0WXWge3+NdSfacBTgQj6o1KGJaW0dL
-         x1FVbsg5Wu8KA==
-Date:   Fri, 13 Aug 2021 10:05:40 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S239947AbhHMJGU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Aug 2021 05:06:20 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41181 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239686AbhHMJGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 05:06:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-193-osqxqi2TPd6TNQ-lyh6w7Q-1; Fri, 13 Aug 2021 10:05:49 +0100
+X-MC-Unique: osqxqi2TPd6TNQ-lyh6w7Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 13 Aug 2021 10:05:44 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 13 Aug 2021 10:05:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Eric W. Biederman'" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-Subject: Re: [PATCH 3/5] arm64: Detect disabled HVC early
-Message-ID: <20210813090539.GA7536@willie-the-truck>
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-4-maz@kernel.org>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: RE: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Topic: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Index: AQHXj6qO2FP1eIrarUmjR9CxLZPkE6txIhrA
+Date:   Fri, 13 Aug 2021 09:05:43 +0000
+Message-ID: <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+ <87eeay8pqx.fsf@disp2133>
+In-Reply-To: <87eeay8pqx.fsf@disp2133>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210812190213.2601506-4-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 08:02:11PM +0100, Marc Zyngier wrote:
-> Having HVC disabled from EL3 while the kernel is entered at EL2
-> is a complete nightmare.
-> 
-> We end-up taking an UNDEF at the worse possible moment (checking
-> for VHE) and even if we didn't, having KVM enabled would signify
-> the premature end of the kernel.
-> 
-> Instead, try and detect this stupid case by issuing a HVC
-> for HVC_RESET_VECTORS, which does nothing when the stubs
-> are live. If we get HVC_STUB_ERR back, that's because the
-> UNDEF handler has kicked in.
-> 
-> In this situation, close your eyes, block your nose, and gracefully
-> pretend we have booted at EL1.
-> 
-> Reported-by: Rafał Miłecki <zajec5@gmail.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/kernel/head.S | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 9d5aa56a98cc..d6b2b05f5d3a 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -519,6 +519,28 @@ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
->  	msr	vbar_el2, x0
->  	isb
->  
-> +	// Check that HVC actually works...
-> +	mov	x0, #HVC_RESET_VECTORS
-> +	hvc	#0
-> +
-> +	mov_q	x1, HVC_STUB_ERR
-> +	cmp	x0, x1
-> +	b.ne	0f
-> +
-> +	/*
-> +	 * HVC is unusable, so pretend we actually booted at EL1.
-> +	 * Once we have left EL2, there will be no going back.
-> +	 */
+From: Eric W. Biederman
+> Sent: 12 August 2021 19:47
+...
+> So today the best advice I can give to userspace is to mark their
+> executables and shared libraries as read-only and immutable.  Otherwise
+> a change to the executable file can change what is mapped into memory.
+> MAP_PRIVATE does not help.
 
-This comment got me thinking...
+While 'immutable' might be ok for files installed by distributions
+it would be a PITA in development.
 
-	.macro	host_hvc0
-	mrs	xzr, actlr_el1
-	.endm
+ETXTBUSY is a useful reminder that the file you are copying from
+machine A to machine B (etc) is still running and probably ought
+to be killed/stopped before you get confused.
 
-then set HCR_EL2.TACR=1 while we still can and match the ISS against a
-constant in the handler. Too awful?
+I've never really understood why it doesn't stop shared libraries
+being overwritten - but they do tend to be updated less often.
 
-Will
+Overwriting an in-use shared library could be really confusing.
+It is likely that all the code is actually in memory.
+So everything carries on running as normal.
+Until the kernel gets under memory pressure and discards a page.
+Then a page from the new version is faulted in and random
+programs start getting SEGVs.
+This could be days after the borked update.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
