@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B893EB327
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39E73EB32B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239947AbhHMJGU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Aug 2021 05:06:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41181 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239686AbhHMJGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:06:17 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-193-osqxqi2TPd6TNQ-lyh6w7Q-1; Fri, 13 Aug 2021 10:05:49 +0100
-X-MC-Unique: osqxqi2TPd6TNQ-lyh6w7Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Fri, 13 Aug 2021 10:05:44 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Fri, 13 Aug 2021 10:05:44 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Eric W. Biederman'" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Andy Lutomirski <luto@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Shawn Anastasio" <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Marco Elver" <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: RE: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Thread-Topic: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Thread-Index: AQHXj6qO2FP1eIrarUmjR9CxLZPkE6txIhrA
-Date:   Fri, 13 Aug 2021 09:05:43 +0000
-Message-ID: <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
-        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
-        <87lf56bllc.fsf@disp2133>
-        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133>
-In-Reply-To: <87eeay8pqx.fsf@disp2133>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S239584AbhHMJH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:07:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11965 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239035AbhHMJHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 05:07:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215523443"
+X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
+   d="scan'208";a="215523443"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2021 02:07:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,318,1620716400"; 
+   d="scan'208";a="508072260"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2021 02:07:26 -0700
+Subject: Re: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to
+ TD_CLEARING_CACHE
+To:     wat@codeaurora.org, Ikjoon Jang <ikjn@chromium.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
+ <CAATdQgDWPqoSyPxQpvdhupjWVKHDy6SqBy2kgitNLjaioPRviQ@mail.gmail.com>
+ <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Message-ID: <39525c12-e8f3-8587-5714-5a22ca1e8e4f@linux.intel.com>
+Date:   Fri, 13 Aug 2021 12:09:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <a87c1d9563c03afb609543e7abe63708@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman
-> Sent: 12 August 2021 19:47
-...
-> So today the best advice I can give to userspace is to mark their
-> executables and shared libraries as read-only and immutable.  Otherwise
-> a change to the executable file can change what is mapped into memory.
-> MAP_PRIVATE does not help.
+On 13.8.2021 11.44, wat@codeaurora.org wrote:
+> On 2021-08-13 15:25, Ikjoon Jang wrote:
+>> Hi,
+>>
+>> On Fri, Aug 13, 2021 at 10:44 AM Tao Wang <wat@codeaurora.org> wrote:
+>>>
+>>> USB SSD may fail to unmount if disconnect during data transferring.
+>>>
+>>> it stuck in usb_kill_urb() due to urb use_count will not become zero,
+>>> this means urb giveback is not happen.
+>>> in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
+>>> equal to TD_CLEARING_CACHE,
+>>> but in xhci_invalidate_cancelled_tds(), only last canceled td's
+>>> cancel_status change to TD_CLEARING_CACHE,
+>>> thus giveback only happen to last urb.
+>>>
+>>> this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
+>>> rather than the last one, so all urb can giveback.
+>>>
+>>> Signed-off-by: Tao Wang <wat@codeaurora.org>
+>>> ---
+>>>  drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
+>>>  1 file changed, 12 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+>>> index 8fea44b..c7dd7c0 100644
+>>> --- a/drivers/usb/host/xhci-ring.c
+>>> +++ b/drivers/usb/host/xhci-ring.c
+>>> @@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
+>>>                         td_to_noop(xhci, ring, td, false);
+>>>                         td->cancel_status = TD_CLEARED;
+>>>                 }
+>>> -       }
+>>> -       if (cached_td) {
+>>> -               cached_td->cancel_status = TD_CLEARING_CACHE;
+>>> -
+>>> -               err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+>>> -                                               cached_td->urb->stream_id,
+>>> -                                               cached_td);
+>>> -               /* Failed to move past cached td, try just setting it noop */
+>>> -               if (err) {
+>>> -                       td_to_noop(xhci, ring, cached_td, false);
+>>> -                       cached_td->cancel_status = TD_CLEARED;
+>>> +               if (cached_td) {
+>>> +                       cached_td->cancel_status = TD_CLEARING_CACHE;
+>>> +
+>>> +                       err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
+>>> +                                                       cached_td->urb->stream_id,
+>>> +                                                       cached_td);
+>>> +                       /* Failed to move past cached td, try just setting it noop */
+>>> +                       if (err) {
+>>> +                               td_to_noop(xhci, ring, cached_td, false);
+>>> +                               cached_td->cancel_status = TD_CLEARED;
+>>> +                       }
+>>> +                       cached_td = NULL;
+>>>                 }
+>>> -               cached_td = NULL;
+>>
+>> I think we can call xhci_move_dequeue_past_td() just once to
+>> the last halted && cancelled TD in a ring.
+>>
+>> But that might need to compare two TDs to see which one is
+>> the latter, I'm not sure how to do this well. :-/
+>>
+>> if (!cached_td || cached_td < td)
+>>   cached_td = td;
+>>
+> 
+> thanks, I think you are correct that we can call xhci_move_dequeue_past_td() just once to
+>  the last halted && cancelled TD in a ring,
+> but the set status "cached_td->cancel_status = TD_CLEARING_CACHE;" should be every cancelled TD.
+> I am not very good at td and ring, I have a question why we need to
+> compare two TDs to see which one is the latter.
 
-While 'immutable' might be ok for files installed by distributions
-it would be a PITA in development.
+I'm debugging the exact same issue.
+For normal endpoints (no streams) it should be enough to set cancel_td->cancel_status = TD_CLEARING_CACHE
+in the TD_DIRTY and TD_HALTED case.
 
-ETXTBUSY is a useful reminder that the file you are copying from
-machine A to machine B (etc) is still running and probably ought
-to be killed/stopped before you get confused.
+We don't need to move the dq past the last cancelled TD as other cancelled TDs are set to no-op, and
+the command to move the dq will flush the xHC controllers TD cache and read the no-ops.
+(just make sure we call xhci_move_dequeue_past_td() _after_ overwriting cancelled TDs with no-op)
 
-I've never really understood why it doesn't stop shared libraries
-being overwritten - but they do tend to be updated less often.
+Streams get trickier as each endpoint has several rings, and we might need to move the dq pointer for
+many stream rings on that endpoint. This needs more work as we shouldn't start the endpoint before all
+the all move dq commands complete. i.e. the current  ep->ep_state &= ~SET_DEQ_PENDING isn't enough.
 
-Overwriting an in-use shared library could be really confusing.
-It is likely that all the code is actually in memory.
-So everything carries on running as normal.
-Until the kernel gets under memory pressure and discards a page.
-Then a page from the new version is faulted in and random
-programs start getting SEGVs.
-This could be days after the borked update.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-Mathias
