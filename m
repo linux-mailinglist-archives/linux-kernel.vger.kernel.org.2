@@ -2,131 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C281E3EB92A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA653EB8F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243077AbhHMPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242626AbhHMPSM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:18:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AF0C0698C6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=p67Ofyq4VTWuxUbSULjdsrUDt9m7Z7Au2Rp1QiwAyI8=; b=3yXkaLZv6aDJpI6HPzR4DECQKK
-        TSbr+qnCGZL9Hgp4TaCAdHSx4mtW6VzraR7ZKGbIGumP40S4iYzDUrmyrt5wMitmKYRAulJXq4zNU
-        2s9qiBkQaQgEabiJ7PQ8z+g88b5KbpBYG2vSOcnhFUqUdYlyERoWFSxCbBRrx2OVdP+Bm+Hq+mrnR
-        DksmW3rySZSAF6uH9SzZCCriiIyln7gd6aqlATP3HlGGWJw3ud1cTCU5KXUXcC6vGYJNhkKNGB78O
-        Aio7kn7zxzNx+/aBKveBFik14r6dnJoBKiSk8xVS8AoBd4jigG2bYmKcT6GLVgdGaeHr4NGG1uAbe
-        uQsjfxsw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEYqH-00CuJy-Hc; Fri, 13 Aug 2021 15:11:29 +0000
-Subject: Re: Error: kernelrelease not valid - run 'make prepare' to update it
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-References: <202108111155.RvN9J3Hs-lkp@intel.com>
- <5ec75ad9-a861-4402-9c16-ae7cb0aaeaba@infradead.org>
- <CAK7LNATk21qWbgWORfmCLPD3Cieon-fwtuLtFhgOo1XORWJT6g@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cd21ef08-1c4a-d039-d861-cd1c5e6eba02@infradead.org>
-Date:   Fri, 13 Aug 2021 08:11:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241769AbhHMPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:18:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:54686 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242125AbhHMPNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:13:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF4A11042;
+        Fri, 13 Aug 2021 08:13:20 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.41.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD9FB3F718;
+        Fri, 13 Aug 2021 08:13:18 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Wei Liu <liuwe@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 1/1] PCI: hv: Support for create interrupt v3
+Date:   Fri, 13 Aug 2021 16:13:13 +0100
+Message-Id: <162886758112.5295.14629171411388600322.b4-ty@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <MW4PR21MB20026A6EA554A0B9EC696AA8C0159@MW4PR21MB2002.namprd21.prod.outlook.com>
+References: <MW4PR21MB20026A6EA554A0B9EC696AA8C0159@MW4PR21MB2002.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATk21qWbgWORfmCLPD3Cieon-fwtuLtFhgOo1XORWJT6g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 3:18 AM, Masahiro Yamada wrote:
-> On Wed, Aug 11, 2021 at 12:19 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 8/10/21 8:16 PM, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   9e723c5380c6e14fb91a8b6950563d040674afdb
->>> commit: ba64beb17493a4bfec563100c86a462a15926f24 kbuild: check the minimum assembler version in Kconfig
->>> date:   4 months ago
->>> config: riscv-randconfig-r025-20210810 (attached as .config)
->>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d39ebdae674c8efc84ebe8dc32716ec353220530)
->>> reproduce (this is a W=1 build):
->>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>           chmod +x ~/bin/make.cross
->>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ba64beb17493a4bfec563100c86a462a15926f24
->>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>           git fetch --no-tags linus master
->>>           git checkout ba64beb17493a4bfec563100c86a462a15926f24
->>>           # save the attached .config to linux build tree
->>>           mkdir build_dir
->>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=riscv prepare
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>>> Error: kernelrelease not valid - run 'make prepare' to update it
->>> --
->>>      clang --target=riscv64-linux-gnu -no-integrated-as --prefix=riscv64-linux-gnu- -Werror=unknown-warning-option: unknown assembler invoked
->>>      scripts/Kconfig.include:50: Sorry, this assembler is not supported.
->>>      make[3]: *** [scripts/kconfig/Makefile:63: syncconfig] Error 1
->>>      make[2]: *** [Makefile:617: syncconfig] Error 2
->>>      make[1]: *** [Makefile:726: include/config/auto.conf.cmd] Error 2
->>>      make[1]: Failed to remake makefile 'include/config/auto.conf.cmd'.
->>>      make[1]: Failed to remake makefile 'include/config/auto.conf'.
->>>>> Error: kernelrelease not valid - run 'make prepare' to update it
->>>      make[1]: Target 'prepare' not remade because of errors.
->>>      make: *** [Makefile:215: __sub-make] Error 2
->>>      make: Target 'prepare' not remade because of errors.
->>
->> Yes, I have noticed this one and a few other ('static') make targets that
->> should not need a .config file. I have a note to myself to ask about these,
->> so thanks for bringing it up.
-> 
-> 
-> I think it is unrelated.
-> 
-> 
-> 
-> The 0-day bot has already shown the real reason
-> of the error:
-> 
->     clang --target=riscv64-linux-gnu -no-integrated-as
-> --prefix=riscv64-linux-gnu- -Werror=unknown-warning-option: unknown
-> assembler invoked
->     scripts/Kconfig.include:50: Sorry, this assembler is not supported.
-> 
-> 
-> 
-> 
-> This happens when the proper toolchains are not found.
-> 
-> That is, make.cross passed CROSS_COMPILE=riscv64-linux-gnu-
-> to the make command line, but riscv64-linux-gnu binutils
-> are not installed on the system.
-> 
-> 
-> 
-> Without installing binutils-riscv64-linux-gnu,
-> I can see a similar error log.
+On Mon, 12 Jul 2021 21:58:18 +0000, Sunil Muthuswamy wrote:
+> Hyper-V vPCI protocol version 1_4 adds support for create interrupt
+> v3. Create interrupt v3 essentially makes the size of the vector
+> field bigger in the message, thereby allowing bigger vector values.
+> For example, that will come into play for supporting LPI vectors
+> on ARM, which start at 8192.
 
-Hi,
+Applied to pci/hv, thanks!
 
-Thanks for the detailed info. I get it.
+[1/1] PCI: hv: Support for create interrupt v3
+      https://git.kernel.org/lpieralisi/pci/c/8f6a6b3c50
 
--- 
-~Randy
-
+Thanks,
+Lorenzo
