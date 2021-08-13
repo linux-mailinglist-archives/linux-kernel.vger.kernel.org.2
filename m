@@ -2,167 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392D53EB3D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1863EB3D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239875AbhHMKLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:11:48 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44334
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239613AbhHMKLr (ORCPT
+        id S239941AbhHMKMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:12:05 -0400
+Received: from mail-m17636.qiye.163.com ([59.111.176.36]:40340 "EHLO
+        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239613AbhHMKMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:11:47 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EBD1A3F109
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 10:11:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628849479;
-        bh=XktaWb5OarhZZWhK207tWNHGLgGwQeK53+2iSkcLfrA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=ZN+kLYnlR8gRBoVyKhLfkq/ec5eUHU4u6OEpPcd1wCZPUFLrfKaeMap98TyTi5c5t
-         moMzrBZbUrdYwoeZabGmZ6BT8/0Jm7ZTq7X3DIgx7VtU5Cj2B0PGPiWNI4ywFmKW1m
-         AbxatJrXMd0qtTi85Jxz0kZZwCNGVB+hrH1kz1HF66RcrpYgBmVT0J5x2+g19HH05x
-         Hrs7OvxKBj1T1aNmXBHbhDWS+E7KQqtG41wc9XKIfHL1NI4yZ324MqdBlCP3haDxpf
-         wzCZI/7OIAtIf2qD/+LblQoTWKrIjoBnmG8FeasQIpqEpNYKEJXGCO6aX4DXmY8N3x
-         TjLGQ3tkaxxoQ==
-Received: by mail-ed1-f70.google.com with SMTP id v11-20020a056402348bb02903be68e116adso4611411edc.14
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XktaWb5OarhZZWhK207tWNHGLgGwQeK53+2iSkcLfrA=;
-        b=P3NTdhp1IW4peGXjpqRJds2zsr1Xl6+Jy3FsSkL4gjQGx84J8Qp+w6lNcTAHZYx5Yu
-         MXIw18m+Nga5LrD7uglrne636ZOyWjmNcrl0DGhxeM/ZRHJ0lAfCbpr9TnJXqJzb9hUF
-         vSG5otdfYc2qiTQm4RN2iRmq7kTLJ14cuX/gYksFu/+BYuAYfWP9ARjQRM72gYRGl0zl
-         GsvZOIx9gdQzETiYmIC93BjYFJfl7F8iC0GCQoTNb9t5X/hZ66Sz550ESHZtJRuYfUru
-         W84Bzk9Uxtk3Orbd3xH2hc8OT2dbgXnVOCeVuvg9hH3K05hSw57LLWPZgg8CFIkvDu5L
-         o1pg==
-X-Gm-Message-State: AOAM530F2gpHs4v5cPzbhbXCpswVereDWbMHhe0qvhbSnO6FFg4UB+eF
-        TeuWq81ymoVuDoD31HCzkZ+uF63b4oSz15vxFg3bv8x2fi0H9McJyyijsIoMbL96MCi1D4b7IFo
-        HPN0WROh+WpIpap5q2P/BZVDtEWS+3rXi3K7PF+cnvDqq++WI1ochaSoJdg==
-X-Received: by 2002:a17:907:3345:: with SMTP id yr5mr1657230ejb.542.1628849479559;
-        Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx54a+seJ6N2++kphZ8J3++CuGLKdwh8/E5ah2nd49CpMNozv5E8xFHxj6PzaHtWLKKdcjORItwf19KoGuY2gg=
-X-Received: by 2002:a17:907:3345:: with SMTP id yr5mr1657216ejb.542.1628849479230;
- Fri, 13 Aug 2021 03:11:19 -0700 (PDT)
+        Fri, 13 Aug 2021 06:12:02 -0400
+Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
+        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 19449C40221;
+        Fri, 13 Aug 2021 18:11:34 +0800 (CST)
+From:   Yangtao Li <frank.li@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Fengnan Chang <changfengnan@vivo.com>,
+        Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH v2] f2fs: Don't create discard thread when device not support realtime discard
+Date:   Fri, 13 Aug 2021 18:11:32 +0800
+Message-Id: <20210813101132.441389-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210812155341.817031-1-kai.heng.feng@canonical.com>
- <20210812155341.817031-2-kai.heng.feng@canonical.com> <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
-In-Reply-To: <3633f984-8dd6-f81b-85f9-6083420b4516@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 13 Aug 2021 18:11:06 +0800
-Message-ID: <CAAd53p6KGTVWp5PgZux5t2mdTXK29XdyB5Ke5YbR_-UacR03Sg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] r8169: Enable ASPM for selected NICs
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRkdTk5WSE1LHk9PSEMfTE
+        IZVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6Ayo4TT8MIRhOLUJJIQkT
+        SDwaCQhVSlVKTUlDQ09CT0JPTE1KVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
+        VUpLT1VKQ0NVSk1OWVdZCAFZQU1JSE03Bg++
+X-HM-Tid: 0a7b3efed916d996kuws19449c40221
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 3:39 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 12.08.2021 17:53, Kai-Heng Feng wrote:
-> > The latest vendor driver enables ASPM for more recent r8168 NICs, do the
-> > same here to match the behavior.
-> >
-> > In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
-> > vendor driver, also match that.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v2:
-> >  - No change
-> >
-> >  drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
-> >  1 file changed, 26 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> > index 7ab2e841dc69..caa29e72a21a 100644
-> > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > @@ -623,7 +623,7 @@ struct rtl8169_private {
-> >       } wk;
-> >
-> >       unsigned supports_gmii:1;
-> > -     unsigned aspm_manageable:1;
-> > +     unsigned aspm_supported:1;
-> >       unsigned aspm_enabled:1;
-> >       struct delayed_work aspm_toggle;
-> >       struct mutex aspm_mutex;
-> > @@ -2667,8 +2667,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
-> >
-> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> >  {
-> > +     if (!tp->aspm_supported)
-> > +             return;
-> > +
-> >       /* Don't enable ASPM in the chip if OS can't control ASPM */
-> > -     if (enable && tp->aspm_manageable) {
-> > +     if (enable) {
-> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
-> >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
-> >       } else {
-> > @@ -5284,6 +5287,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
-> >       rtl_rar_set(tp, mac_addr);
-> >  }
-> >
-> > +static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
-> > +{
-> > +     switch (tp->mac_version) {
-> > +     case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
-> > +     case RTL_GIGA_MAC_VER_38:
-> > +     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
-> > +     case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
-> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
->
-> This shouldn't be needed because ASPM support is announced the
-> standard PCI way. Max a blacklist should be needed if there are
-> chip versions that announce ASPM support whilst in reality they
-> do not support it (or support is completely broken).
+From: Fengnan Chang <changfengnan@vivo.com>
 
-So can we also remove aspm_manageable since blacklist will be used?
+Don't create discard thread when device not support realtime discard.
 
-Kai-Heng
+Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+---
+ fs/f2fs/f2fs.h    |  1 +
+ fs/f2fs/segment.c | 29 +++++++++++++++++++++--------
+ fs/f2fs/super.c   | 34 ++++++++++++++++++++++++++++++++--
+ 3 files changed, 54 insertions(+), 10 deletions(-)
 
->
-> > +             return 1;
-> > +
-> > +     default:
-> > +             return 0;
-> > +     }
-> > +}
-> > +
-> >  static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >  {
-> >       struct rtl8169_private *tp;
-> > @@ -5315,12 +5333,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >       if (rc)
-> >               return rc;
-> >
-> > -     /* Disable ASPM completely as that cause random device stop working
-> > -      * problems as well as full system hangs for some PCIe devices users.
-> > -      */
-> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> > -                                       PCIE_LINK_STATE_L1);
-> > -     tp->aspm_manageable = !rc;
-> > +     if (tp->mac_version == RTL_GIGA_MAC_VER_25)
-> > +             pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> > +                                    PCIE_LINK_STATE_L1 |
-> > +                                    PCIE_LINK_STATE_CLKPM);
-> > +
-> > +     tp->aspm_supported = rtl_hw_aspm_supported(tp);
-> >
-> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
-> >       rc = pcim_enable_device(pdev);
-> >
->
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index d24fd5045712..60a408af53a3 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3483,6 +3483,7 @@ int f2fs_flush_device_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_flush_cmd_control(struct f2fs_sb_info *sbi, bool free);
+ void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr);
+ bool f2fs_is_checkpointed_data(struct f2fs_sb_info *sbi, block_t blkaddr);
++int f2fs_start_discard_thread(struct f2fs_sb_info *sbi);
+ void f2fs_drop_discard_cmd(struct f2fs_sb_info *sbi);
+ void f2fs_stop_discard_thread(struct f2fs_sb_info *sbi);
+ bool f2fs_issue_discard_timeout(struct f2fs_sb_info *sbi);
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index ca9876a6d396..b83a4a1e5023 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2112,7 +2112,27 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ wakeup:
+ 	wake_up_discard_thread(sbi, false);
+ }
++int f2fs_start_discard_thread(struct f2fs_sb_info *sbi)
++{
++	dev_t dev = sbi->sb->s_bdev->bd_dev;
++	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
++	int err = 0;
+ 
++	if (!dcc)
++		return -EINVAL;
++	if (!f2fs_realtime_discard_enable(sbi))
++		return 0;
++
++	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
++				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
++	if (IS_ERR(dcc->f2fs_issue_discard)) {
++		err = PTR_ERR(dcc->f2fs_issue_discard);
++		kfree(dcc);
++		SM_I(sbi)->dcc_info = NULL;
++		return err;
++	}
++	return err;
++}
+ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ {
+ 	dev_t dev = sbi->sb->s_bdev->bd_dev;
+@@ -2153,14 +2173,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ 	init_waitqueue_head(&dcc->discard_wait_queue);
+ 	SM_I(sbi)->dcc_info = dcc;
+ init_thread:
+-	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
+-				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
+-	if (IS_ERR(dcc->f2fs_issue_discard)) {
+-		err = PTR_ERR(dcc->f2fs_issue_discard);
+-		kfree(dcc);
+-		SM_I(sbi)->dcc_info = NULL;
+-		return err;
+-	}
++	err = f2fs_start_discard_thread(sbi);
+ 
+ 	return err;
+ }
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 84cd085020cd..ff19c30cd6a1 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2101,12 +2101,15 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	bool need_restart_gc = false, need_stop_gc = false;
+ 	bool need_restart_ckpt = false, need_stop_ckpt = false;
+ 	bool need_restart_flush = false, need_stop_flush = false;
++	bool need_enable_ckpt = false, need_disable_ckpt = false;
+ 	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
+ 	bool enable_checkpoint = !test_opt(sbi, DISABLE_CHECKPOINT);
+ 	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+ 	bool no_atgc = !test_opt(sbi, ATGC);
++	bool no_discard = !test_opt(sbi, DISCARD);
+ 	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
+ 	bool block_unit_discard = f2fs_block_unit_discard(sbi);
++	struct discard_cmd_control *dcc;
+ #ifdef CONFIG_QUOTA
+ 	int i, j;
+ #endif
+@@ -2274,7 +2277,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	} else {
+ 		err = f2fs_create_flush_cmd_control(sbi);
+ 		if (err)
+-			goto restore_ckpt;
++			goto restore_ckpt_thread;
+ 		need_stop_flush = true;
+ 	}
+ 
+@@ -2283,8 +2286,28 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 			err = f2fs_disable_checkpoint(sbi);
+ 			if (err)
+ 				goto restore_flush;
++			need_enable_ckpt = true;
+ 		} else {
+ 			f2fs_enable_checkpoint(sbi);
++			need_disable_ckpt = true;
++		}
++	}
++
++	if (no_discard == !!test_opt(sbi, DISCARD)) {
++		if (test_opt(sbi, DISCARD)) {
++			err = f2fs_start_discard_thread(sbi);
++			if (err)
++				goto restore_ckpt;
++
++		} else {
++			dcc = SM_I(sbi)->dcc_info;
++			if (!dcc) {
++				err = -EINVAL;
++				goto restore_ckpt;
++			}
++			f2fs_stop_discard_thread(sbi);
++			if (unlikely(atomic_read(&dcc->discard_cmd_cnt)))
++				f2fs_issue_discard_timeout(sbi);
+ 		}
+ 	}
+ 
+@@ -2302,6 +2325,13 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	adjust_unusable_cap_perc(sbi);
+ 	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
+ 	return 0;
++restore_ckpt:
++	if (need_enable_ckpt) {
++		f2fs_enable_checkpoint(sbi);
++	} else if (need_disable_ckpt) {
++		if (f2fs_disable_checkpoint(sbi))
++			f2fs_warn(sbi, "checkpoint has been enable");
++	}
+ restore_flush:
+ 	if (need_restart_flush) {
+ 		if (f2fs_create_flush_cmd_control(sbi))
+@@ -2310,7 +2340,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		clear_opt(sbi, FLUSH_MERGE);
+ 		f2fs_destroy_flush_cmd_control(sbi, false);
+ 	}
+-restore_ckpt:
++restore_ckpt_thread:
+ 	if (need_restart_ckpt) {
+ 		if (f2fs_start_ckpt_thread(sbi))
+ 			f2fs_warn(sbi, "background ckpt thread has stopped");
+-- 
+2.32.0
+
