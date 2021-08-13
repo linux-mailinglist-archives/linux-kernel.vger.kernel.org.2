@@ -2,301 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611D23EBC38
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFA43EBC3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 20:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhHMSty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 14:49:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:56640 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233213AbhHMStR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:49:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEB77D6E;
-        Fri, 13 Aug 2021 11:48:49 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC95E3F40C;
-        Fri, 13 Aug 2021 11:48:46 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
-In-Reply-To: <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-4-valentin.schneider@arm.com> <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
-Date:   Fri, 13 Aug 2021 19:48:41 +0100
-Message-ID: <87v9496v06.mognet@arm.com>
+        id S233305AbhHMSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 14:53:15 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:41790 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232803AbhHMSxO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 14:53:14 -0400
+Received: by mail-oi1-f175.google.com with SMTP id be20so17240936oib.8;
+        Fri, 13 Aug 2021 11:52:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mdzy0KX+fl8Q5N04J1STf/fVrOxfUwyLIOn26vpnuiI=;
+        b=YUWXlDymuvCcwKHMxhaiLGGFk5deq3MkhFKraasdq59R1oT/7eoSGgZPYc5MyoKSwW
+         m8yAQzmOe0i3SibRixWid9PObkjgPvVY0MppmGGOuO46r6fXRQ2oAmn2K6ENE4/ynoQS
+         Cw7XW9lYNhhhqznRpwuKrYxg/NuWZp9/gNEOIjMdNo6XhsGaJitwnkAjubkEYeyGtrVV
+         LLueRy2d6fwl8YkVipEjKK4MadvYHFUeFQvTGbd9vqwkLqMSX0KcCMIEaqLR+Mbn9KHP
+         yEDap0xM7kJFxYuTrkPukc1HDEmJ1ofh09m8xXKdreBq7sh7O1j/xO/jmHNxIPft3AOY
+         pq3A==
+X-Gm-Message-State: AOAM533588C751MTy5rzqAZ3bvbH69voyDdkDVS5uIRfbCVXGduNJr12
+        ddK3HwKehnCBpOvn73gIDA==
+X-Google-Smtp-Source: ABdhPJyLUXUJRcE/jMjACT75yHjEPAVxS+dLaQGxKczevuNEaqic1Wiop2DZjTPspxeR0wQaHMxqHw==
+X-Received: by 2002:aca:230f:: with SMTP id e15mr657649oie.154.1628880767430;
+        Fri, 13 Aug 2021 11:52:47 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u14sm412251oot.36.2021.08.13.11.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 11:52:46 -0700 (PDT)
+Received: (nullmailer pid 3854710 invoked by uid 1000);
+        Fri, 13 Aug 2021 18:52:45 -0000
+Date:   Fri, 13 Aug 2021 13:52:45 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Yu Chen <chenyu56@huawei.com>,
+        John Stultz <john.stultz@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: misc: add schema for USB hub on Kirin
+ devices
+Message-ID: <YRa/fURTp8QncIEZ@robh.at.kernel.org>
+References: <d428b90bb655c7992e9e13fc50130ed223812d2d.1628159456.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d428b90bb655c7992e9e13fc50130ed223812d2d.1628159456.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/21 17:20, Paul E. McKenney wrote:
-> On Wed, Aug 11, 2021 at 09:13:53PM +0100, Valentin Schneider wrote:
->> rcu_core() preemptability considerations
->> ========================================
->> 
->> As pointed out by Paul [2], keeping rcu_check_quiescent_state() preemptible
->> (which is the case under CONFIG_PREEMPT_RT) requires some consideration.
->> 
->> note_gp_changes() itself runs with irqs off, and enters
->> __note_gp_changes() with rnp->lock held (raw_spinlock), thus is safe vs
->> preemption.
->> 
->> rdp->core_needs_qs *could* change after being read by the RCU core
->> kthread if it then gets preempted. Consider, with
->> CONFIG_RCU_STRICT_GRACE_PERIOD:
->> 
->>   rcuc/x                                   task_foo
->> 
->>     rcu_check_quiescent_state()
->>     `\
->>       rdp->core_needs_qs == true
->> 			     <PREEMPT>
->> 					   rcu_read_unlock()
->> 					   `\
->> 					     rcu_preempt_deferred_qs_irqrestore()
->> 					     `\
->> 					       rcu_report_qs_rdp()
->> 					       `\
->> 						 rdp->core_needs_qs := false;
->> 
->> This would let rcuc/x's rcu_check_quiescent_state() proceed further down to
->> rcu_report_qs_rdp(), but if task_foo's earlier rcu_report_qs_rdp()
->> invocation would have cleared the rdp grpmask from the rnp mask, so
->> rcuc/x's invocation would simply bail.
->> 
->> Since rcu_report_qs_rdp() can be safely invoked, even if rdp->core_needs_qs
->> changed, it appears safe to keep rcu_check_quiescent_state() preemptible.
->
-> Another concern...
->
-> During the preemption of rcu_check_quiescent_state() someone might report
-> a quiescent state on behalf of CPU x (perhaps due to its having recently
-> been idle) and then the RCU grace-period kthread might start running on
-> CPU x, where it might initialize a new grace period in rcu_gp_init().
-> It can then invoke __note_gp_changes(), also on CPU x.
->
+On Thu, Aug 05, 2021 at 12:31:00PM +0200, Mauro Carvalho Chehab wrote:
+> From: Yu Chen <chenyu56@huawei.com>
+> 
+> This patch adds binding documentation to support USB HUB and
+> USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
 
-(this is me "writing out loud" to make sure I can follow)
+Like PCIe, there's a standard way to describe USB devices in DT. Though 
+PCI is easy compared to USB. :(
 
-I take it the preemption of rcuc/x itself would count as a quiescent state,
-if the current grace period started before rcuc/x's rcu_read_lock()
-(rcuc/x would end up in ->blkd_tasks but wouldn't affect ->gp_tasks).
+Also like PCIe on Hikey, I'm less than thrilled to define how this 
+should look for a board that's generally not widely available or well 
+supported.
 
-Then if we get something to run rcu_report_qs_rnp() with a mask spanning
-CPU x - I think the GP kthread doing quiescent state forcing might fit the
-bill - we'll let the GP kthread initialize a new GP.
+> 
+> [mchehab: updated OF names and added support for HiKey970]
+> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../bindings/misc/hisilicon,hikey-usb.yaml    | 95 +++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> new file mode 100644
+> index 000000000000..857f9bd802fe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2019 Linaro Ltd.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiKey960/970 onboard USB GPIO Hub
+> +
+> +maintainers:
+> +  - John Stultz <john.stultz@linaro.org>
+> +
+> +description: |
+> +  Supports the onboard USB GPIO hub found on HiKey960/970.
+> +  The HUB, which acts as a role-switch intermediary to detect the state of
+> +  the USB-C port, to switch the hub into dual-role USB-C or host mode,
+> +  which enables the onboard USB-A host ports.
+> +
+> +  Schematics about the hub can be found here:
+> +    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
+> +    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - hisilicon,gpio_hubv1
+> +      - hisilicon,kirin970_hikey_usbhub
 
-> If preempted as shown above just after checking >core_needs_qs, the
-> ->cpu_no_qs.b.norm field will be set by the grace-period kthread, which
-> will cause the rcu_check_quiescent_state() function's subsequent check
-> of ->cpu_no_qs.b.norm to take an early exit.  So OK here.
->
+s/_/-/
 
-Right
+Why is one compatible pretty generic and the other very specific?
 
-> On the other hand, if preempted just after the rcu_check_quiescent_state()
-> function's check of ->cpu_no_qs.b.norm, the later invocation of
-> rcu_report_qs_rdp() should take an early exit due to ->gp_seq mismatch.
-> So OK here.
->
+> +
+> +  typec-vbus:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the typec-vbus gpio
 
-If, as described in your scenario above, the GP kthread has preempted
-rcuc/x, initialized a new GP and has run __note_gp_changes() (on CPU x),
-then wouldn't the rdp->gp_seq and rnp->gp_seq match when rcuc/x gets to run
-again?
+If a GPIO, why is it not using a GPIO DT property?
 
-And because we would've then had a context switch between the GP kthread
-and rcuc/x, we would've noted a quiescent state for CPU x, which would let
-rcuc/x's rcu_report_qs_rdp() continue - or have I erred on the way there?
+> +
+> +  otg-switch:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the otg-switch gpio
 
-> However, this should be added to the commit log.  Might be a big commit
-> log, but mass storage is cheap these days.  ;-)
->
+Ditto?
 
-No objections here!
+> +
+> +  hub-vdd33-en:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the hub 3.3v power enablement gpio
 
-> This needs a review of each and every manipulation of ->core_needs_qs
-> and ->cpu_no_qs.b.norm.  For example, the preemptions will cause the
-> scheduler to invoke RCU's context-switch hooks, which also mess with
-> ->cpu_no_qs.b.norm.  I can get to that some time next week (or tomorrow,
-> if things go better than expected), but it would be good for you (and
-> others) to check as well.
->
+GPIOs controlling a power rail should use a gpio-regulator.
 
-I have some notes scribbled down regarding those that I need to go through
-again, but that won't be before a week's time - I'll be away next week.
+> +
+> +  hub_reset_en_gpio:
 
-> Frederic should look this over, but I am taking a quick pass in the
-> meantime.  Please see below.
->
+s/_/-/
 
-Thanks!
+And still, not a GPIO DT property...
 
->> @@ -210,6 +210,8 @@ struct rcu_data {
->>  	struct timer_list nocb_timer;	/* Enforce finite deferral. */
->>  	unsigned long nocb_gp_adv_time;	/* Last call_rcu() CB adv (jiffies). */
->>  
->> +	local_lock_t nocb_local_lock;
->
-> Should this go near the beginning of the structure, given that code
-> paths taking this lock tend to access ->cpu_no_qs, ->core_needs_qs,
-> and so on?
->
-> Given that it is used to protect core processing (not just offloaded
-> callbacks), might ->core_local_lock be a better name?
->
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: phandle to the hub reset gpio
+> +
+> +  usb-role-switch:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: Support role switch.
+> +
+> +  hub-vdd-supply:
+> +    description: regulator for hub power
+> +
+> +  port:
+> +    description: |
+> +      any connector to the data bus of this controller should be modelled
+> +      using the OF graph bindings specified, if the "usb-role-switch"
+> +      property is used. Note for this driver, two ports are supported,
+> +      the first being the endpoint that will be notified by this driver,
+> +      and the second being the endpoint that notifies this driver of a
+> +      role switch.
 
-It would still have to be in a #define CONFIG_RCU_NOCB_CPU region IMO, as
-it only exists to protect access of the offloading state - hence the name,
-but I'm not particularly attached to it.
+You're describing this in terms of driver connections rather than h/w 
+connections.
 
-> Please keep in mind that you can build kernels that offload callbacks
-> but that still use softirq for RCU core processing.  And vice versa,
-> that is, kernels that use rcuc kthreads but do not offload callbacks.
->
+But we've already got ways to describe the data connections. For 
+starters, it should be a child of the USB host.
 
-AFAICT the problem only stands if core processing becomes preemptible,
-which is only the case under PREEMPT_RT (at least for now), and that implies
-core processing done purely via kthreads.
+And how does all this tie in with the USB connector binding?
 
->> +
->>  	/* The following fields are used by call_rcu, hence own cacheline. */
->>  	raw_spinlock_t nocb_bypass_lock ____cacheline_internodealigned_in_smp;
->>  	struct rcu_cblist nocb_bypass;	/* Lock-contention-bypass CB list. */
->> @@ -445,6 +447,8 @@ static void rcu_nocb_unlock(struct rcu_data *rdp);
->>  static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
->>  				       unsigned long flags);
->>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
->> +static void rcu_nocb_local_lock(struct rcu_data *rdp);
->> +static void rcu_nocb_local_unlock(struct rcu_data *rdp);
->>  #ifdef CONFIG_RCU_NOCB_CPU
->>  static void __init rcu_organize_nocb_kthreads(void);
->>  #define rcu_nocb_lock_irqsave(rdp, flags)				\
->> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->> index 0ff5e4fb933e..11c4ff00afde 100644
->> --- a/kernel/rcu/tree_plugin.h
->> +++ b/kernel/rcu/tree_plugin.h
->> @@ -21,6 +21,17 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
->>  	return lockdep_is_held(&rdp->nocb_lock);
->>  }
->>  
->> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
->> +{
->> +	return lockdep_is_held(
->> +#ifdef CONFIG_PREEMPT_RT
->> +		&rdp->nocb_local_lock.lock
->> +#else
->> +		&rdp->nocb_local_lock
->> +#endif
->
-> It would be good if this was abstracted.  Or is this the only place
-> in the kernel that needs this #ifdef?  Maybe a lockdep_is_held_rt()
-> or lockdep_is_held_local(), as the case may be?
->
-
-It does look like the first/only place that tries to access a local_lock's
-dep_map regardless of CONFIG_PREEMPT_RT. Looking at it some more, I'm not
-sure if it's really useful: !PREEMPT_RT local_locks disable preemption, so
-the preemption check in rcu_rdp_is_offloaded() will short circuit the
-lockdep check when !PREEMPT_RT...
-
-One thing I should perhaps point out - the local lock is only really needed
-for PREEMPT_RT; for !PREEMPT_RT it will just disable preemption, and it's
-only used in places that *already* disabled preemption (when !PREEMPT_RT).
-I initially gated the lock under CONFIG_PREEMPT_RT, but changed that as I
-found it reduced the ifdeffery.
-
->> +	);
->> +}
->> +
->>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  {
->>  	/* Race on early boot between thread creation and assignment */
->> @@ -38,7 +49,10 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
->>  {
->>  	return 0;
->>  }
->> -
->> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
->> +{
->> +	return 0;
->
-> This is backwards of normal lockdep practice, which defaults to locks
-> always held.  And that will be what happens once lockdep has detected
-> its first deadlock, correct?  At which point, this function and its
-> earlier instance will be in conflict.
->
-> Or is there some subtle reason why this conflict would be OK?
->
-
-This follows the !CONFIG_RCU_NOCB definition of rcu_lockdep_is_held_nocb(),
-which looked fine to me.
-
-Actually with the way I wrote rcu_local_offload_access_safe(), we don't
-even access that function when !CONFIG_RCU_NOCB...
-
->> +}
->>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  {
->>  	return false;
->> @@ -46,23 +60,44 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  
->>  #endif /* #ifdef CONFIG_RCU_NOCB_CPU */
->>  
->> +/*
->> + * Is a local read of the rdp's offloaded state safe and stable?
->> + * See rcu_nocb_local_lock() & family.
->> + */
->> +static inline bool rcu_local_offload_access_safe(struct rcu_data *rdp)
->> +{
->> +	if (!preemptible())
->> +		return true;
->> +
->> +	if (!migratable()) {
->> +		if (!IS_ENABLED(CONFIG_RCU_NOCB))
->
-> Do we also need to consult the use_softirq module parameter that controls
-> whether or not there are rcuc kthreads?
->
-> Actually, if !IS_ENABLED(CONFIG_RCU_NOCB) then rcu_rdp_is_offloaded()
-> can simply return false without bothering with the RCU_LOCKDEP_WARN().
-> Might be worth getting that out of the way of the RCU_LOCKDEP_WARN()
-> condition.  ;-)
->
-
-I _assumed_ the check was there even for !CONFIG_RCU_NOCB to provide a wider
-test coverage of the calling conditions.
-
-If that RCU_LOCKDEP_WARN() becomes conditionnal on CONFIG_RCU_NOCB then
-yes, we could clean that up.
-
->> +			return true;
->> +
->> +		return rcu_lockdep_is_held_nocb_local(rdp);
->> +	}
->> +
->> +	return false;
->> +}
->> +
+> +
+> +
+> +required:
+> +  - compatible
+> +  - typec-vbus
+> +  - otg-switch
+> +  - usb-role-switch
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    hisi_hikey_usb: hisi_hikey_usb {
+> +        compatible = "hisilicon,gpio_hubv1";
+> +        typec-vbus = <&gpio25 2 GPIO_ACTIVE_HIGH>;
+> +        otg-switch = <&gpio25 6 GPIO_ACTIVE_HIGH>;
+> +        hub-vdd33-en = <&gpio5 6 GPIO_ACTIVE_HIGH>;
+> +        usb-role-switch;
+> +
+> +        port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            hikey_usb_ep0: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&dwc3_role_switch>;
+> +            };
+> +            hikey_usb_ep1: endpoint@1 {
+> +                reg = <1>;
+> +                remote-endpoint = <&rt1711h_ep>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.31.1
+> 
+> 
