@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ACC3EB322
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCD03EB323
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 11:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239940AbhHMJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 05:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239963AbhHMJEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:04:12 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE056C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id x10so12286112iop.13
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
-        b=sTYXnW/fKO7LUe4ClSyArlRitSMo4bEAWIg7vqVDpkgmbE1VgFg3P4nV46iIdvALci
-         a9/t4uCskiGn6aR1Nl0xh3HgeK9CNskpGKSJPE6zBlUo7GuXSB9SYG8LMA5KX+c0bfV8
-         UqB9Mtv+I+YIiC+btrHC1vkgjQbyhlI25Y02cx/s4lzN+xmga6wwr6Wwykx3DAL6EmLV
-         ebHi8mj+JqKgg9zzIGdrt7BAqIw7Sn+DHhD20j/HPOT4qeRupbJQVwnqDHrXrTgbc3pa
-         HN1OEQ/FDTiQGroOiPODK0nQM1WOcA9f/DsIP2/ddRRna/Y43QS/7wvU8a94XaHBJMuF
-         8V7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
-        b=gux8D6Vjcc5Gtt+1f9KdwQCXFFwSQkMqAL58XtqDMU/HXJHeM76Ql20XdtJICXRm1H
-         ykalLb82ALUshy314Z4RDNZUAJ1PMDcMukaW7v5Kf+bGhHVCAVWkSowa7AhQtvThQKQX
-         VbjXDrGYT1okYmbvFgrg9crvSeYYx+a+3lgqCn2hWZBhWoE20n/ZNWWgg6ikR7ZpK9u+
-         0mOSLeN5B7v5aBT0OqDycpoQ7VK1so9CjhtfS3kcYAMGNw1O704mfyAvcgDPw2nbZakf
-         3QriwQid/ha7nVYCviqFgOHTeErtxKqs3y3Y0N8pGrypU3kk6HCUqyZv9u8K3FwierFB
-         iA7A==
-X-Gm-Message-State: AOAM5330xVAxmmNsw/tl5w6nWa0F+9wBDoNqnhWCo9wa8v1nAS+hWGwh
-        SfMtjnimKujp5yfb2th1A+Jbd4N1ZbPjMzWMnQ==
-X-Google-Smtp-Source: ABdhPJxGmnUY5DN3VhROx6vIh8ZBIJFGk30t0z+9nI1UDSl2kgbuiAN+BiHZWdKxhvD2C8W1aTZldLJi5zzsr9sGu4s=
-X-Received: by 2002:a05:6638:1513:: with SMTP id b19mr1330287jat.109.1628845425322;
- Fri, 13 Aug 2021 02:03:45 -0700 (PDT)
+        id S239939AbhHMJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 05:06:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239165AbhHMJGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 05:06:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC4F06103E;
+        Fri, 13 Aug 2021 09:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628845545;
+        bh=UjJXRNc/DQIe9/Jw4J5eMPHJMcIsyW+Z48GBMG2E3+Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=etzdedsZpBXHgp9QFpnZLRWf5gs7Rbzdvzij5UheUG679G/NWJqBi5q0jlVVsYTCU
+         y0l7cdhhdKTQY/m+qnjEeIWuD50yiKPPPqeRLW1Remlj1AL3zruwGsgpPaw/v0127u
+         CVMBXcSmu7nXkNotXDByoOhlfgS9OUq2uIDhy9ej46XeGH4TpNH530qgWQU4DjLIK+
+         iAJcvYRErcQAG0HuDvnDF7MUrqODzd5Be3P0rqnmFGK6y0Rt/7LB4oc18EJj5M0Gs2
+         /9w6LxaXUna0fAIbf5+ntt0JCxwwr65acDlj0WXWge3+NdSfacBTgQj6o1KGJaW0dL
+         x1FVbsg5Wu8KA==
+Date:   Fri, 13 Aug 2021 10:05:40 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+Subject: Re: [PATCH 3/5] arm64: Detect disabled HVC early
+Message-ID: <20210813090539.GA7536@willie-the-truck>
+References: <20210812190213.2601506-1-maz@kernel.org>
+ <20210812190213.2601506-4-maz@kernel.org>
 MIME-Version: 1.0
-Reply-To: zahirikeen@gmail.com
-Sender: ali.wa1234ara@gmail.com
-Received: by 2002:a02:6a56:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 02:03:44
- -0700 (PDT)
-From:   Zahiri Keen <zahirikeen2@gmail.com>
-Date:   Fri, 13 Aug 2021 09:03:44 +0000
-X-Google-Sender-Auth: 4nZYkZ0cu-iM3nvJKssnBYpOUmM
-Message-ID: <CA+0F4TGLSiKHmJGR4Eg4NVCYi7WU0-bR-1WhNr=Rtjtjd_rkBA@mail.gmail.com>
-Subject: Greetings to you.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210812190213.2601506-4-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+On Thu, Aug 12, 2021 at 08:02:11PM +0100, Marc Zyngier wrote:
+> Having HVC disabled from EL3 while the kernel is entered at EL2
+> is a complete nightmare.
+> 
+> We end-up taking an UNDEF at the worse possible moment (checking
+> for VHE) and even if we didn't, having KVM enabled would signify
+> the premature end of the kernel.
+> 
+> Instead, try and detect this stupid case by issuing a HVC
+> for HVC_RESET_VECTORS, which does nothing when the stubs
+> are live. If we get HVC_STUB_ERR back, that's because the
+> UNDEF handler has kicked in.
+> 
+> In this situation, close your eyes, block your nose, and gracefully
+> pretend we have booted at EL1.
+> 
+> Reported-by: Rafał Miłecki <zajec5@gmail.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kernel/head.S | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index 9d5aa56a98cc..d6b2b05f5d3a 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -519,6 +519,28 @@ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
+>  	msr	vbar_el2, x0
+>  	isb
+>  
+> +	// Check that HVC actually works...
+> +	mov	x0, #HVC_RESET_VECTORS
+> +	hvc	#0
+> +
+> +	mov_q	x1, HVC_STUB_ERR
+> +	cmp	x0, x1
+> +	b.ne	0f
+> +
+> +	/*
+> +	 * HVC is unusable, so pretend we actually booted at EL1.
+> +	 * Once we have left EL2, there will be no going back.
+> +	 */
 
-            I have a Mutual/Beneficial Business Project that would be
-beneficial to you. I only have two questions to ask of you, if you are
-interested.
+This comment got me thinking...
 
-1. Can you handle this project?
-2. Can I give you this trust?
+	.macro	host_hvc0
+	mrs	xzr, actlr_el1
+	.endm
 
-Please note that the deal requires high level of maturity, honesty and
-secrecy. This will involve moving some money from my office, on trust
-to your hands or bank account. Also note that i will do everything to
-make sure that the money is moved as a purely legitimate fund, so you
-will not be exposed to any risk.
+then set HCR_EL2.TACR=1 while we still can and match the ISS against a
+constant in the handler. Too awful?
 
-I request for your full co-operation. I will give you details and
-procedure when I receive your reply, to commence this transaction, I
-require you to immediately indicate your interest by a return reply. I
-will be waiting for your response in a timely manner.
-
-Contact  Email: zahirikeen@gmail.com
-Best Regard,
-Mr Zahiri Keen.
+Will
