@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378013EAE60
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285D53EAE5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhHMCHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhHMCHk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 22:07:40 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECA5C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 19:07:14 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id q11so3994496ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 19:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wO1M5UtLvug2A5hRgVYIWY9DDzdDk6/rku4F6KahBzI=;
-        b=M3lBRyHWWH+V0YBic7XL0KW58RxXBvsq9HD7dXw5K+8C4XYDnPHRC5hFNzl/0GxeaF
-         LNWxSxjk9GpTNDuZSStPk1XGVSYgH5U9viil0hj8D/iK1+rYz95LfBees0AF5iU36YC4
-         ZSty7lye4qCg+zyTpkbQEX2LhsuMyXzutn05I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wO1M5UtLvug2A5hRgVYIWY9DDzdDk6/rku4F6KahBzI=;
-        b=m7/u9RRLx0mI4jz7Gb6I7JCEf1BUo7uI2KEQHggolkr9CZEJSU0DAp+108eN5UxEkF
-         x9R/ycZczEO52AWemLemIOOpTjFli4fVALzw2Pwq4jXgU1XYWsBuq5ybdTZbLhaP+xB/
-         Y/XKBkS5Xk3B6R3dqPA3ADjP8f1HYpNQpauSH5namDrW2yfmvDD28fqSVKNNe3SL4vCi
-         jJlzdrknRqarQwgPP9eZRREyiVB57cygSOh7kDPSpZogL978Gn8RRwvqF+VSMQofAZFX
-         +7PTI3Vqo1WC03uNaLHKv2uC7iY3ud/SLKmqFuCeYDvSVDqFxuKqQFpRwzHEdHtrFIxl
-         8y+Q==
-X-Gm-Message-State: AOAM531pT9a2+STj0N4VLO8ZroJ0eTE/2roT4f7jC7V9s7nlT+aEzebI
-        REjC3GhbY/kAh9qGQcRi78FRo4x+OgTiQlVbxFw=
-X-Google-Smtp-Source: ABdhPJylaGTc7lgqfD5Y7gKZUH1H3lR7x69XqPof8kK4E2+FSFha+KRELIqp0wJAwJhAvBmHH6yKOQ==
-X-Received: by 2002:a2e:a781:: with SMTP id c1mr57088ljf.138.1628820432377;
-        Thu, 12 Aug 2021 19:07:12 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id u18sm510788ljj.2.2021.08.12.19.07.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 19:07:11 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id y34so17153921lfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 19:07:11 -0700 (PDT)
-X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr7300lfg.40.1628820431608;
- Thu, 12 Aug 2021 19:07:11 -0700 (PDT)
+        id S237108AbhHMCGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:06:31 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30899 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233641AbhHMCG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:06:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="202648433"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="202648433"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 19:06:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="504062317"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 12 Aug 2021 19:06:00 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 64DDC580B0E;
+        Thu, 12 Aug 2021 19:05:58 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: pcs: xpcs: Add Pause Mode support for SGMII and 2500BaseX
+Date:   Fri, 13 Aug 2021 10:11:29 +0800
+Message-Id: <20210813021129.1141216-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210812112938.3748c7f5@oasis.local.home> <CAHk-=whHxeUjaNrWOLb0qx=-nibRZzQomwkw9xMPH_aHCf=BWQ@mail.gmail.com>
- <20210812133306.1c480741@oasis.local.home> <CAHk-=wj=8xh+AcwQ+w62-QHfVU6wXC2xW8L17VvVBaR6dR6Ttg@mail.gmail.com>
- <cef5b624-b5f8-7729-3b05-3543578c6e3e@infradead.org> <CAHk-=wiEK+RooMgy+-vUbvfJi2PXCVh2K+ENeJszo6HyzYb-Cw@mail.gmail.com>
- <a294a454-89c8-d32c-3b0a-1c53480a8ab6@infradead.org> <2f39ab4d-695f-c5ed-5991-82a3aeacdba0@infradead.org>
-In-Reply-To: <2f39ab4d-695f-c5ed-5991-82a3aeacdba0@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Aug 2021 16:06:55 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgLUYU3QX_sWKUxQzFa18snv5iz_E=xsXnv27FZb+tqQw@mail.gmail.com>
-Message-ID: <CAHk-=wgLUYU3QX_sWKUxQzFa18snv5iz_E=xsXnv27FZb+tqQw@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Fixes and clean ups for v5.14
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:47 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> I probably misread that a bit. To be clear, my patch only set -Wno-main
-> for this one source file, not for the entire kernel tree, whereas Steven
-> wanted it to be set to the full kernel tree.
+SGMII/2500BaseX supports Pause frame as defined in the IEEE802.3x
+Flow Control standardization.
 
-Ack, let's just set it globally, there's no need for this to be some
-surgical strike thing.
+Add this as a supported feature under the xpcs_sgmii_features struct.
 
-                Linus
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/pcs/pcs-xpcs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index 63fda3fc40aa..0930ec201cd4 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -65,6 +65,9 @@ static const int xpcs_xlgmii_features[] = {
+ };
+ 
+ static const int xpcs_sgmii_features[] = {
++	ETHTOOL_LINK_MODE_Pause_BIT,
++	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
++	ETHTOOL_LINK_MODE_Autoneg_BIT,
+ 	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
+ 	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+ 	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+@@ -75,6 +78,7 @@ static const int xpcs_sgmii_features[] = {
+ };
+ 
+ static const int xpcs_2500basex_features[] = {
++	ETHTOOL_LINK_MODE_Pause_BIT,
+ 	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+ 	ETHTOOL_LINK_MODE_Autoneg_BIT,
+ 	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
+-- 
+2.25.1
+
