@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA3B3EAEAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A552E3EAEB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 04:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238470AbhHMCou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 22:44:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30302 "EHLO m43-7.mailgun.net"
+        id S238518AbhHMCvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 22:51:10 -0400
+Received: from smtpbgsg1.qq.com ([54.254.200.92]:54888 "EHLO smtpbgsg1.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238357AbhHMCou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 22:44:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628822664; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=+sXnDd5NzLQp8aMTaouqrcnUqs/sQpYuHKr+B/RA/Ro=; b=w+mWhwsydM9D8zaeKyIB0/M3D70uXGIoMSVA3jc3rBcgdKP0p1ND6ouzMzebHNDFtbZDpcwa
- DTthHThH4WtdviKswzSeQTWMqaKbtb+a58uHFq3XX+qUBuRwWFheRB5qwEyLxPTcQFozMqnB
- 5+q4OposM+ELKSPrW9hxRaypWfs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6115dc7191487ad5207df2fc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Aug 2021 02:44:01
- GMT
-Sender: wat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3BACC43217; Fri, 13 Aug 2021 02:44:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from cbsp-sh-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F584C433F1;
-        Fri, 13 Aug 2021 02:43:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F584C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wat@codeaurora.org
-From:   Tao Wang <wat@codeaurora.org>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org (open list:USB XHCI DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Tao Wang <wat@codeaurora.org>
-Subject: [PATCH] usb: xhci-ring: set all cancelled_td's cancel_status to TD_CLEARING_CACHE
-Date:   Fri, 13 Aug 2021 10:43:23 +0800
-Message-Id: <1628822604-29239-1-git-send-email-wat@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S238493AbhHMCvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Aug 2021 22:51:07 -0400
+X-QQ-mid: bizesmtp46t1628823028tijooz83
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 13 Aug 2021 10:50:26 +0800 (CST)
+X-QQ-SSF: 0140000000200030C000B00A0000000
+X-QQ-FEAT: uPKj8ga2w7ESWVvJHcmLVBUglknZ1E0sLKTu7P2qT8OYmTUvr96VidDPVKua7
+        T2X1JM/vks1y4uRxQ82D4VGrU53vhF1KOx053mpkxu1mJUlY7nOZq6KPqpkdj95qucz0pTu
+        Yyt6jBE8CWj06DQ9NX+2elety9yXdFp/E/nVFGxXiIFOPlMlNvVL7xbQ3OoDBifes2VIORr
+        NbNtjUMtg8t5HuI9FdiHFDAX7irw0GdFXGBMIJ3Y2LDYpBuzqr2Yj2ymX36AEKuTfjya1TD
+        37dnamWzq2N2a3epJj3JyfRW96Y43JSH2UY27fWb5ssuv4VfECDp7EoV/SHJE5uz1Up5Zue
+        cly1YHqSnSYaKJViTw=
+X-QQ-GoodBg: 2
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     chenhc@lemote.com
+Cc:     ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
+        linux-mips@linux-mips.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] MIPS: Loongson64: Make some functions static in irq.c
+Date:   Fri, 13 Aug 2021 10:50:25 +0800
+Message-Id: <20210813025025.26580-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB SSD may fail to unmount if disconnect during data transferring.
+Make some functions static to fix the following sparse warnings:
+arch/mips/loongson64/loongson-3/irq.c:15:14: warning: symbol 'irq_cpu' was not declared. Should it be static?
+arch/mips/loongson64/loongson-3/irq.c:16:14: warning: symbol 'ht_irq' was not declared. Should it be static?
+arch/mips/loongson64/loongson-3/irq.c:17:14: warning: symbol 'local_irq' was not declared. Should it be static?
+arch/mips/loongson64/loongson-3/irq.c:19:5: warning: symbol 'plat_set_irq_affinity' was not declared. Should it be static?
+arch/mips/loongson64/loongson-3/irq.c:112:6: warning: symbol 'irq_router_init' was not declared. Should it be static?
 
-it stuck in usb_kill_urb() due to urb use_count will not become zero,
-this means urb giveback is not happen.
-in xhci_handle_cmd_set_deq() will giveback urb if td's cancel_status
-equal to TD_CLEARING_CACHE,
-but in xhci_invalidate_cancelled_tds(), only last canceled td's
-cancel_status change to TD_CLEARING_CACHE,
-thus giveback only happen to last urb.
-
-this change set all cancelled_td's cancel_status to TD_CLEARING_CACHE
-rather than the last one, so all urb can giveback.
-
-Signed-off-by: Tao Wang <wat@codeaurora.org>
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 ---
- drivers/usb/host/xhci-ring.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ arch/mips/loongson64/loongson-3/irq.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 8fea44b..c7dd7c0 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -960,19 +960,19 @@ static int xhci_invalidate_cancelled_tds(struct xhci_virt_ep *ep)
- 			td_to_noop(xhci, ring, td, false);
- 			td->cancel_status = TD_CLEARED;
- 		}
--	}
--	if (cached_td) {
--		cached_td->cancel_status = TD_CLEARING_CACHE;
--
--		err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
--						cached_td->urb->stream_id,
--						cached_td);
--		/* Failed to move past cached td, try just setting it noop */
--		if (err) {
--			td_to_noop(xhci, ring, cached_td, false);
--			cached_td->cancel_status = TD_CLEARED;
-+		if (cached_td) {
-+			cached_td->cancel_status = TD_CLEARING_CACHE;
-+
-+			err = xhci_move_dequeue_past_td(xhci, slot_id, ep->ep_index,
-+							cached_td->urb->stream_id,
-+							cached_td);
-+			/* Failed to move past cached td, try just setting it noop */
-+			if (err) {
-+				td_to_noop(xhci, ring, cached_td, false);
-+				cached_td->cancel_status = TD_CLEARED;
-+			}
-+			cached_td = NULL;
- 		}
--		cached_td = NULL;
- 	}
- 	return 0;
- }
+diff --git a/arch/mips/loongson64/loongson-3/irq.c b/arch/mips/loongson64/loongson-3/irq.c
+index 5605061f5f98..f68098c6d0f6 100644
+--- a/arch/mips/loongson64/loongson-3/irq.c
++++ b/arch/mips/loongson64/loongson-3/irq.c
+@@ -12,11 +12,11 @@
+ 
+ extern void loongson3_send_irq_by_ipi(int cpu, int irqs);
+ 
+-unsigned int irq_cpu[16] = {[0 ... 15] = -1};
+-unsigned int ht_irq[] = {0, 1, 3, 4, 5, 6, 7, 8, 12, 14, 15};
+-unsigned int local_irq = 1<<0 | 1<<1 | 1<<2 | 1<<7 | 1<<8 | 1<<12;
++static unsigned int irq_cpu[16] = {[0 ... 15] = -1};
++static unsigned int ht_irq[] = {0, 1, 3, 4, 5, 6, 7, 8, 12, 14, 15};
++static unsigned int local_irq = 1<<0 | 1<<1 | 1<<2 | 1<<7 | 1<<8 | 1<<12;
+ 
+-int plat_set_irq_affinity(struct irq_data *d, const struct cpumask *affinity,
++static int plat_set_irq_affinity(struct irq_data *d, const struct cpumask *affinity,
+ 			  bool force)
+ {
+ 	unsigned int cpu;
+@@ -109,7 +109,7 @@ static struct irq_chip loongson_irq_chip = {
+ 	.irq_eoi	= unmask_loongson_irq,
+ };
+ 
+-void irq_router_init(void)
++static void irq_router_init(void)
+ {
+ 	int i;
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.20.1
+
+
 
