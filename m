@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FFA3EBB6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6613EBB6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 19:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhHMR0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 13:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
+        id S232328AbhHMR1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 13:27:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhHMR0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 13:26:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC23960F51;
-        Fri, 13 Aug 2021 17:26:22 +0000 (UTC)
+        id S229554AbhHMR0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 13:26:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 604FF60F57;
+        Fri, 13 Aug 2021 17:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628875583;
-        bh=FNN6mBHCMTkjdP5X3toqTBdl9AYPY2/K4P7dwNzC9lM=;
+        s=k20201202; t=1628875585;
+        bh=VThyJvP43YmAmnkp3rqr1CPohIuzoclnjntpTJXxW7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S1SZcZa9g/vpfP3Oj3TIjsMwgcPtZwRykBae8Aunjeb3buYgOtU3z60mgCwCK7V92
-         0pP99io+iU6A057I4G5HedJtpxx8ofLp6x+qVVk0tCwEDB1EB+71KtCZmk2N74wTcw
-         VuHL5xkpuvSzrwb0jd+m6Hi2MBVzFfZEoSCx7r5OdAGLzyvY00GWp2SsFzkTiveDGH
-         LjKrqXDAd6XPOzjywduCdlvQnoVQM2WnBEhI39YrY3ZWBlakW4eVfSTSN4sE54y1Qs
-         a4HPgIVm+/HW6l02YTrUa9hr8wV1PkHTKOLjsoUEI4x1000SP6fRBjqSz5gm8ICSKE
-         Pj7apYXyNIguw==
+        b=aPUZgdaswye7wTBsjEWm4y/fB50R9EeVpV2SFWjaLX1ikmwuogbyrNeaMeziZoEbA
+         eh+2+lgPmteJ5DrpEMViPUyqFaJQMW/Su5GEtDqH+yHLon0/XnZQDddnovHOaWo6TS
+         u0lGmkoxE7Z3yanYENgcnrqv+zaAhWG1i8j60khqBZyrMsc1tj1H1gBuAZgO7wXV5f
+         3Dx+NOSIb0Q//zPDt0lv2M8WpyH7y8MSRaeqVSCTHc5IcS+ffoISur6fx0KM0YUuRk
+         PqWfO6YZEwmcyE0iefMiU7er9Ld3BVIy88Lu0rIWpL9tANjmykJyAc/gYiuIlMzwUu
+         ImOLbKFM7vowQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, zhengxunli@mxic.com.tw
-Subject: Re: [PATCH -next] spi: mxic: add missing braces
-Date:   Fri, 13 Aug 2021 18:25:59 +0100
-Message-Id: <162887483202.19992.2868965211824266055.b4-ty@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] ASoC: rt5682: Remove unused variable in rt5682_i2c_remove()
+Date:   Fri, 13 Aug 2021 18:26:00 +0100
+Message-Id: <162887455325.19744.837395939498410454.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810142405.2221540-1-yangyingliang@huawei.com>
-References: <20210810142405.2221540-1-yangyingliang@huawei.com>
+In-Reply-To: <20210813073402.1.Iaa9425cfab80f5233afa78b32d02b6dc23256eb3@changeid>
+References: <20210813073402.1.Iaa9425cfab80f5233afa78b32d02b6dc23256eb3@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,27 +45,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 22:24:05 +0800, Yang Yingliang wrote:
-> Fix the following waring:
+On Fri, 13 Aug 2021 07:34:05 -0700, Douglas Anderson wrote:
+> In commit 772d44526e20 ("ASoC: rt5682: Properly turn off regulators if
+> wrong device ID") I deleted code but forgot to delete a variable
+> that's now unused. Delete it.
 > 
-> drivers/spi/spi-mxic.c: In function ‘mxic_spi_mem_exec_op’:
-> drivers/spi/spi-mxic.c:401:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
->    if (op->data.dir == SPI_MEM_DATA_IN)
->    ^~
-> drivers/spi/spi-mxic.c:403:4: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
->     if (op->data.dtr)
->     ^~
+> 
+> 
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] spi: mxic: add missing braces
-      commit: aca196842a9729a198af57c417725c3ac9ca05db
+[1/1] ASoC: rt5682: Remove unused variable in rt5682_i2c_remove()
+      commit: a1ea05723c27a6f77894a60038a7b2b12fcec9a7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
