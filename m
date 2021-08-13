@@ -2,116 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90283EAFBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B033EAFC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 07:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238747AbhHMFsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 01:48:38 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:58364 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbhHMFsh (ORCPT
+        id S238789AbhHMFtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 01:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238776AbhHMFtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 01:48:37 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 17D5UDmZ018826;
-        Fri, 13 Aug 2021 13:30:13 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 13 Aug
- 2021 13:48:05 +0800
-From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <cyrilbur@gmail.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Subject: [PATCH 2/2] ARM: dts: aspeed: Add mailbox to device tree
-Date:   Fri, 13 Aug 2021 13:47:58 +0800
-Message-ID: <20210813054758.13189-3-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210813054758.13189-1-chiawei_wang@aspeedtech.com>
-References: <20210813054758.13189-1-chiawei_wang@aspeedtech.com>
+        Fri, 13 Aug 2021 01:49:19 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75097C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:48:53 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id dt3so2781945qvb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 22:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=Ew8YcVLq5FQAmQt+w/696ZQ+dYhpUxeVp3xpR9y58W5jnIJ/bTgYDm8PFeCBP622sj
+         cLmqU0dpTv7jJ7vv+0dqpqVMfCR548RHr/n9IOvWWpntc/pvMZeU97kztiTlS1UqMroS
+         7AvsbUKC8LmtNEy3lLpTegXfMuclJFIGUiMnm88TMSgDPSsduGuIz7Rs4jHlDdnV/jyy
+         MuycsqQ2AlklMjg2dTe38xZ9LN4CKYP2BqM8+zsLTDIJLQ3ekd8vd1DZlmNAu3ubFXK2
+         kB6kA1HXFh7NyhoZxhtO1P83aaPi2/9x7G2TxxsOMsEPBHbLEQLKC+0VxbOzp+LTEJom
+         P75g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=d46EEyIcvmOh6V3C+Rka7pycSUC5Qx4MimUxOs40HelswhzQ0d8/5l7sd2MdLzAgKu
+         GtLKK1iFKIhpe7qvQX2cl0t3YDszkEsBQEYTaBKKXIRMEjjfmrmBsH7tq0+Lj5gK1M/9
+         H05Gmte38kjvawM4vZZTRgAEM5jmq8xZvxzEtKXDyJjahTkQlQaa0x6sloJIWg20hpsc
+         AFyY80WKaTUKfty/uJ1qUSgexWsRv+fFHYoatOEP16p6jT8Z9jU+05nQgSxjT5DIGc22
+         0yYOwSDAHgDklisftpyL27KRTtAHBSTxSWW8S5bJG7dt5G13y6plLieLcEo5xguDrbbG
+         uRng==
+X-Gm-Message-State: AOAM533icbmR8EQ1LQn0COV9UqeZzSz3EwvW4Mc3sOaEO7Z/9AdU0dLp
+        spP541IwiL2IQ2FvjA1UBX0cyzLrkUtcbj+WLh4=
+X-Google-Smtp-Source: ABdhPJxwocZTfX7cEEFjgiizN8+XI+djFA4jETjJxLZ9caoS2q5NkJVMtxyKhuZOwamMhjB//mayuxBXZ+rk5W3vlUM=
+X-Received: by 2002:a0c:aa9b:: with SMTP id f27mr901114qvb.7.1628833732583;
+ Thu, 12 Aug 2021 22:48:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 17D5UDmZ018826
+Reply-To: godwinppter@gmail.com
+Sender: maxwelljohn205@gmail.com
+Received: by 2002:ac8:c0e:0:0:0:0:0 with HTTP; Thu, 12 Aug 2021 22:48:51 -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Fri, 13 Aug 2021 07:48:51 +0200
+X-Google-Sender-Auth: 8CCOlsv1ZDz9h--NQZNIL6lZQ_w
+Message-ID: <CAHiReTyMTA6+j9-AwZAJGqZjVwgWYgT+SNL+vTh=qxKYxBS5ow@mail.gmail.com>
+Subject: I need your response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mailbox to the device tree for Aspeed AST24xx/AST25xx/AST26xx SoCs.
+My good friend,
 
-Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-g4.dtsi | 7 +++++++
- arch/arm/boot/dts/aspeed-g5.dtsi | 8 +++++++-
- arch/arm/boot/dts/aspeed-g6.dtsi | 7 +++++++
- 3 files changed, 21 insertions(+), 1 deletion(-)
+I just want to know if you, can help me to transfer the amount of
+($6Million). After the transfer we have to share it, 50% for me, and
+50% for you. Please let me know if you can help me for more
+information in regards with the transfer. I hope you can work with me
+honestly?
 
-diff --git a/arch/arm/boot/dts/aspeed-g4.dtsi b/arch/arm/boot/dts/aspeed-g4.dtsi
-index c5aeb3cf3a09..6298d69df415 100644
---- a/arch/arm/boot/dts/aspeed-g4.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g4.dtsi
-@@ -383,6 +383,13 @@
- 					interrupts = <8>;
- 					status = "disabled";
- 				};
-+
-+				mbox: mbox@200 {
-+					compatible = "aspeed,ast2500-mbox";
-+					reg = <0x200 0x30>;
-+					interrupts = <46>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			uart2: serial@1e78d000 {
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index 329eaeef66fb..ab9453d7803c 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -497,13 +497,19 @@
- 					reg = <0xa0 0x24 0xc8 0x8>;
- 				};
- 
--
- 				ibt: ibt@140 {
- 					compatible = "aspeed,ast2500-ibt-bmc";
- 					reg = <0x140 0x18>;
- 					interrupts = <8>;
- 					status = "disabled";
- 				};
-+
-+				mbox: mbox@200 {
-+					compatible = "aspeed,ast2500-mbox";
-+					reg = <0x200 0x30>;
-+					interrupts = <46>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			uart2: serial@1e78d000 {
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index f96607b7b4e2..09b286f2ece2 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -529,6 +529,13 @@
- 					interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
- 					status = "disabled";
- 				};
-+
-+				mbox: mbox@200 {
-+					compatible = "aspeed,ast2600-mbox";
-+					reg = <0x200 0xc0>;
-+					interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			sdc: sdc@1e740000 {
--- 
-2.17.1
 
+Thanks.
+
+Godwin Peter,
