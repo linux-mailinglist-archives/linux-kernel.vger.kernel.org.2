@@ -2,545 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426AD3EB4B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AAC3EB4E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240108AbhHMLrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 07:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbhHMLrB (ORCPT
+        id S239207AbhHMLyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 07:54:43 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54488 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238980AbhHMLyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:47:01 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7498EC061756;
-        Fri, 13 Aug 2021 04:46:34 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id q11so5756511ljp.4;
-        Fri, 13 Aug 2021 04:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Slcf20YcQHOeXfH3Wb6+pvooPBBwocla813nCCSTz4=;
-        b=JeBH9sxZIIifBZQ9CHLYGkZm7g7Apkemg3P2XAfn9l+tp+O3v2djZLXzAS2rOAM+0g
-         9qUjc58/RIUxegXkyf6dWKyZlh0/RCKD0fWMO6QXuuCDplSGHrpo3C7as3fBwZ3LcRrB
-         XSdeFCvJoMX4+2ism5Qw6hohXLjCiiKpI4pRFJIu1lJXdfb9yOguyucI44ew2plcpMoY
-         l5dZBNTqEIbCbRAqKrjwBzGVZXNzXxAHNbUB8isIDLTL4bMEG+uY3jfm6xthmVmbmjIv
-         o/7Vb97WooHq3j0wKSIq4P+ZkYPrRubn3mCJMFcxurJp9MwstqljnLgFXCU8UrlZFLn9
-         LXDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Slcf20YcQHOeXfH3Wb6+pvooPBBwocla813nCCSTz4=;
-        b=RsrrNefnYMpghUDu9+Mtzf8FrJJB+/vRDEYJcOVK+1/5NWfM1rVa71RKjxpFgwjb79
-         jur5Oe2yrwv2+XwcTcTlH7zoc2kPWREYbtoauvGmI46W4E//L9u9aGH7n3BBzb1NjKbF
-         6NI5EzayB7wOrdbrFkxRbbqmxZyi/2K0zoykqRtfATXjBkeEFOwMdXL0IJEVms074WB+
-         +Fcbp4t8GbPnnHc7Rm7nFYKQD/ZMEodF2OPcVYZ3oZ2rbAhSgx8KEzRVDMd13HP+RycV
-         q6cUtpSz5UO2MI8f1pND56m/4ups+feG2YMmYvGi8l9YaBm8NSaRx8PA+uwmMv90FC1P
-         tkqA==
-X-Gm-Message-State: AOAM531sMN/BRhPBpt68J8XiIIkedko+NMDjA5THZuHDOoZaQemRxA6I
-        8N0ux5GRV2M/e955x0nw+qBq/hS6v7fwDw==
-X-Google-Smtp-Source: ABdhPJyVdr0eLVl6uqlPRCPDvIUDdFmsFNTgIEeTitlc3QG0YggrwfeKIXVMB+/mMMzBuf9I/1NwcQ==
-X-Received: by 2002:a05:651c:311:: with SMTP id a17mr355820ljp.450.1628855192659;
-        Fri, 13 Aug 2021 04:46:32 -0700 (PDT)
-Received: from localhost.localdomain (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id a24sm137569ljk.63.2021.08.13.04.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 04:46:32 -0700 (PDT)
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     balbi@kernel.org
-Cc:     gregkh@linuxfoundation.org, mdevaev@gmail.com,
-        ruslan.bilovol@gmail.com, mika.westerberg@linux.intel.com,
-        maze@google.com, jj251510319013@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Date:   Fri, 13 Aug 2021 14:45:51 +0300
-Message-Id: <20210813114551.72898-1-mdevaev@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 13 Aug 2021 07:54:40 -0400
+X-UUID: 6df1da1d6b944cbe899b914833a71db4-20210813
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vUAOvzKSeucK2ubkFgtwhNsDy8US+nwjlSJMvKmjoe8=;
+        b=ZkRZ4861eI09cgGp2PUdKktCTYzQkBKPMWJmBMy5Ay3gwPsNQ5jD+qD0ihHgqYg3cLOjRjvREAq6wLE0Yz4huFhjSRoniVZ5xGEkJqvfrzbaMRJmXmQ/iplJNGoiqROjeOByJHtIcQCNzGA1ISVLpizKrOQo8awy1jcv4L1mowY=;
+X-UUID: 6df1da1d6b944cbe899b914833a71db4-20210813
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <ben.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 983002196; Fri, 13 Aug 2021 19:54:09 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 13 Aug 2021 19:54:07 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 13 Aug 2021 19:54:08 +0800
+Message-ID: <c419fd718799cd2352d5deaadfb1eae805538e70.camel@mediatek.com>
+Subject: Re: [PATCH v8] thermal: mediatek: add another get_temp ops for
+ thermal sensors
+From:   Ben Tseng <ben.tseng@mediatek.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>, <linux-pm@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>, <hsinyi@chromium.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Michael Kao <michael.kao@mediatek.com>
+Date:   Fri, 13 Aug 2021 19:54:08 +0800
+In-Reply-To: <eeb2a96d-5cd0-ef11-b16e-872d9f3dcb09@linaro.org>
+References: <20210603110042.21688-1-ben.tseng@mediatek.com>
+         <eeb2a96d-5cd0-ef11-b16e-872d9f3dcb09@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-f_hid provides the OUT Endpoint for receiving reports from the host.
-The USB HID standard describes the OUT Endpoint support as optional,
-and hosts can ignore it if they don't support it.
-However, this raises several problems.
-
-(1) Some host OS drivers without OUT Endpoint support can't receive
-    reports at all. In the case of the keyboard, it becomes impossible
-    to get the status of the LEDs from the host OS.
-
-(2) Some BIOSes and UEFIs not only don't support the OUT Endpoint,
-    they cannot work with HID with this configuration at all.
-    For example, absolutely all Apple UEFIs in all Macs can't handle
-    the OUT Endpoint in accordance with the HID standard so it makes
-    impossible to enter the Boot Menu using the hotkey at boot.
-    This problem also occurs on HP and DELL BIOSes and in some dumb
-    devices with primitive embedded firmware like KVM switches.
-
-This patch adds option no_out_endpoint=1 to disable the OUT Endpoint
-and allow f_hid to receive reports from the host via SETUP/SET_REPORT.
-
-Previously, there was such a feature in f_hid, but it was replaced
-by the OUT Endpoint ("usb: gadget: hidg: register OUT INT endpoint
-for SET_REPORT"). It seems that no one knew at the time that it would
-cause problems with BIOS. So this patch actually returns the removed
-functionality making it optional. For backward compatibility reasons,
-the OUT Endpoint mode remains the default behaviour.
-
-If the SETUP/SET_REPORT mode is used, there is no event processing queue,
-so the user will only read the last report. For classic HID devices
-like keyboard this is not a problem, since it is intended to transmit
-the status of the LEDs and only the last report is important.
-
-Both modes pass USBCV tests. Checking with the USB protocol analyzer
-also confirms that everything is working as it should and the new mode
-ensures operability in all of the described cases.
-
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
----
- drivers/usb/gadget/function/f_hid.c | 217 +++++++++++++++++++++++-----
- drivers/usb/gadget/function/u_hid.h |   1 +
- 2 files changed, 185 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index bb476e121eae..e3fb73ed696d 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -45,12 +45,17 @@ struct f_hidg {
- 	unsigned short			report_desc_length;
- 	char				*report_desc;
- 	unsigned short			report_length;
-+	bool				use_out_ep;
- 
- 	/* recv report */
--	struct list_head		completed_out_req;
- 	spinlock_t			read_spinlock;
- 	wait_queue_head_t		read_queue;
-+	/* recv report - interrupt out only (use_out_ep == 1) */
-+	struct list_head		completed_out_req;
- 	unsigned int			qlen;
-+	/* recv report - setup set_report only (use_out_ep == 0) */
-+	char				*set_report_buf;
-+	unsigned int			set_report_length;
- 
- 	/* send report */
- 	spinlock_t			write_spinlock;
-@@ -79,7 +84,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
- 	.bDescriptorType	= USB_DT_INTERFACE,
- 	/* .bInterfaceNumber	= DYNAMIC */
- 	.bAlternateSetting	= 0,
--	.bNumEndpoints		= 2,
-+	/* .bNumEndpoints	= DYNAMIC */
- 	.bInterfaceClass	= USB_CLASS_HID,
- 	/* .bInterfaceSubClass	= DYNAMIC */
- 	/* .bInterfaceProtocol	= DYNAMIC */
-@@ -140,7 +145,7 @@ static struct usb_ss_ep_comp_descriptor hidg_ss_out_comp_desc = {
- 	/* .wBytesPerInterval   = DYNAMIC */
- };
- 
--static struct usb_descriptor_header *hidg_ss_descriptors[] = {
-+static struct usb_descriptor_header *hidg_ss_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_ss_in_ep_desc,
-@@ -150,6 +155,14 @@ static struct usb_descriptor_header *hidg_ss_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_ss_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_ss_in_ep_desc,
-+	(struct usb_descriptor_header *)&hidg_ss_in_comp_desc,
-+	NULL,
-+};
-+
- /* High-Speed Support */
- 
- static struct usb_endpoint_descriptor hidg_hs_in_ep_desc = {
-@@ -176,7 +189,7 @@ static struct usb_endpoint_descriptor hidg_hs_out_ep_desc = {
- 				      */
- };
- 
--static struct usb_descriptor_header *hidg_hs_descriptors[] = {
-+static struct usb_descriptor_header *hidg_hs_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_hs_in_ep_desc,
-@@ -184,6 +197,13 @@ static struct usb_descriptor_header *hidg_hs_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_hs_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_hs_in_ep_desc,
-+	NULL,
-+};
-+
- /* Full-Speed Support */
- 
- static struct usb_endpoint_descriptor hidg_fs_in_ep_desc = {
-@@ -210,7 +230,7 @@ static struct usb_endpoint_descriptor hidg_fs_out_ep_desc = {
- 				       */
- };
- 
--static struct usb_descriptor_header *hidg_fs_descriptors[] = {
-+static struct usb_descriptor_header *hidg_fs_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_fs_in_ep_desc,
-@@ -218,6 +238,13 @@ static struct usb_descriptor_header *hidg_fs_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_fs_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_fs_in_ep_desc,
-+	NULL,
-+};
-+
- /*-------------------------------------------------------------------------*/
- /*                                 Strings                                 */
- 
-@@ -241,9 +268,11 @@ static struct usb_gadget_strings *ct_func_strings[] = {
- /*-------------------------------------------------------------------------*/
- /*                              Char Device                                */
- 
--static ssize_t f_hidg_read(struct file *file, char __user *buffer,
--			size_t count, loff_t *ptr)
-+static ssize_t f_hidg_intout_read(struct file *file, char __user *buffer,
-+				  size_t count, loff_t *ptr)
- {
-+	/* used only if the OUT endpoint is configured */
-+
- 	struct f_hidg *hidg = file->private_data;
- 	struct f_hidg_req_list *list;
- 	struct usb_request *req;
-@@ -255,15 +284,15 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
- 
- 	spin_lock_irqsave(&hidg->read_spinlock, flags);
- 
--#define READ_COND (!list_empty(&hidg->completed_out_req))
-+#define READ_COND_INTOUT (!list_empty(&hidg->completed_out_req))
- 
- 	/* wait for at least one buffer to complete */
--	while (!READ_COND) {
-+	while (!READ_COND_INTOUT) {
- 		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 		if (file->f_flags & O_NONBLOCK)
- 			return -EAGAIN;
- 
--		if (wait_event_interruptible(hidg->read_queue, READ_COND))
-+		if (wait_event_interruptible(hidg->read_queue, READ_COND_INTOUT))
- 			return -ERESTARTSYS;
- 
- 		spin_lock_irqsave(&hidg->read_spinlock, flags);
-@@ -313,6 +342,62 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
- 	return count;
- }
- 
-+#define READ_COND_SSREPORT (hidg->set_report_buf != NULL)
-+
-+static ssize_t f_hidg_ssreport_read(struct file *file, char __user *buffer,
-+				    size_t count, loff_t *ptr)
-+{
-+	/* used only if the OUT endpoint is NOT configured */
-+
-+	struct f_hidg *hidg = file->private_data;
-+	char *tmp_buf = NULL;
-+	unsigned long flags;
-+
-+	if (!count)
-+		return 0;
-+
-+	spin_lock_irqsave(&hidg->read_spinlock, flags);
-+
-+	while (!READ_COND_SSREPORT) {
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+		if (file->f_flags & O_NONBLOCK)
-+			return -EAGAIN;
-+
-+		if (wait_event_interruptible(hidg->read_queue, READ_COND_SSREPORT))
-+			return -ERESTARTSYS;
-+
-+		spin_lock_irqsave(&hidg->read_spinlock, flags);
-+	}
-+
-+	count = min_t(unsigned int, count, hidg->set_report_length);
-+	tmp_buf = hidg->set_report_buf;
-+	hidg->set_report_buf = NULL;
-+
-+	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+
-+	if (tmp_buf != NULL) {
-+		count -= copy_to_user(buffer, tmp_buf, count);
-+		kfree(tmp_buf);
-+	} else {
-+		count = -ENOMEM;
-+	}
-+
-+	wake_up(&hidg->read_queue);
-+
-+	return count;
-+}
-+
-+static ssize_t f_hidg_read(struct file *file, char __user *buffer,
-+			   size_t count, loff_t *ptr)
-+{
-+	struct f_hidg *hidg = file->private_data;
-+
-+	if (hidg->use_out_ep)
-+		return f_hidg_intout_read(file, buffer, count, ptr);
-+	else
-+		return f_hidg_ssreport_read(file, buffer, count, ptr);
-+}
-+
- static void f_hidg_req_complete(struct usb_ep *ep, struct usb_request *req)
- {
- 	struct f_hidg *hidg = (struct f_hidg *)ep->driver_data;
-@@ -433,14 +518,20 @@ static __poll_t f_hidg_poll(struct file *file, poll_table *wait)
- 	if (WRITE_COND)
- 		ret |= EPOLLOUT | EPOLLWRNORM;
- 
--	if (READ_COND)
--		ret |= EPOLLIN | EPOLLRDNORM;
-+	if (hidg->use_out_ep) {
-+		if (READ_COND_INTOUT)
-+			ret |= EPOLLIN | EPOLLRDNORM;
-+	} else {
-+		if (READ_COND_SSREPORT)
-+			ret |= EPOLLIN | EPOLLRDNORM;
-+	}
- 
- 	return ret;
- }
- 
- #undef WRITE_COND
--#undef READ_COND
-+#undef READ_COND_SSREPORT
-+#undef READ_COND_INTOUT
- 
- static int f_hidg_release(struct inode *inode, struct file *fd)
- {
-@@ -467,8 +558,10 @@ static inline struct usb_request *hidg_alloc_ep_req(struct usb_ep *ep,
- 	return alloc_ep_req(ep, length);
- }
- 
--static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
-+static void hidg_intout_complete(struct usb_ep *ep, struct usb_request *req)
- {
-+	/* used only if the OUT endpoint is configured */
-+
- 	struct f_hidg *hidg = (struct f_hidg *) req->context;
- 	struct usb_composite_dev *cdev = hidg->func.config->cdev;
- 	struct f_hidg_req_list *req_list;
-@@ -502,6 +595,39 @@ static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
- 	}
- }
- 
-+static void hidg_ssreport_complete(struct usb_ep *ep, struct usb_request *req)
-+{
-+	/* used only if the OUT endpoint is NOT configured */
-+
-+	struct f_hidg *hidg = (struct f_hidg *)req->context;
-+	struct usb_composite_dev *cdev = hidg->func.config->cdev;
-+	char *new_buf = NULL;
-+	unsigned long flags;
-+
-+	if (req->status != 0 || req->buf == NULL || req->actual == 0) {
-+		ERROR(cdev,
-+		      "%s FAILED: status=%d, buf=%p, actual=%d\n",
-+		      __func__, req->status, req->buf, req->actual);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&hidg->read_spinlock, flags);
-+
-+	new_buf = krealloc(hidg->set_report_buf, req->actual, GFP_ATOMIC);
-+	if (new_buf == NULL) {
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+		return;
-+	}
-+	hidg->set_report_buf = new_buf;
-+
-+	hidg->set_report_length = req->actual;
-+	memcpy(hidg->set_report_buf, req->buf, req->actual);
-+
-+	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+
-+	wake_up(&hidg->read_queue);
-+}
-+
- static int hidg_setup(struct usb_function *f,
- 		const struct usb_ctrlrequest *ctrl)
- {
-@@ -549,7 +675,11 @@ static int hidg_setup(struct usb_function *f,
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_REPORT):
- 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
--		goto stall;
-+		if (hidg->use_out_ep)
-+			goto stall;
-+		req->complete = hidg_ssreport_complete;
-+		req->context  = hidg;
-+		goto respond;
- 		break;
- 
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-@@ -637,15 +767,18 @@ static void hidg_disable(struct usb_function *f)
- 	unsigned long flags;
- 
- 	usb_ep_disable(hidg->in_ep);
--	usb_ep_disable(hidg->out_ep);
- 
--	spin_lock_irqsave(&hidg->read_spinlock, flags);
--	list_for_each_entry_safe(list, next, &hidg->completed_out_req, list) {
--		free_ep_req(hidg->out_ep, list->req);
--		list_del(&list->list);
--		kfree(list);
-+	if (hidg->out_ep) {
-+		usb_ep_disable(hidg->out_ep);
-+
-+		spin_lock_irqsave(&hidg->read_spinlock, flags);
-+		list_for_each_entry_safe(list, next, &hidg->completed_out_req, list) {
-+			free_ep_req(hidg->out_ep, list->req);
-+			list_del(&list->list);
-+			kfree(list);
-+		}
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 	}
--	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 
- 	spin_lock_irqsave(&hidg->write_spinlock, flags);
- 	if (!hidg->write_pending) {
-@@ -691,8 +824,7 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 		}
- 	}
- 
--
--	if (hidg->out_ep != NULL) {
-+	if (hidg->use_out_ep && hidg->out_ep != NULL) {
- 		/* restart endpoint */
- 		usb_ep_disable(hidg->out_ep);
- 
-@@ -717,7 +849,7 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 					hidg_alloc_ep_req(hidg->out_ep,
- 							  hidg->report_length);
- 			if (req) {
--				req->complete = hidg_set_report_complete;
-+				req->complete = hidg_intout_complete;
- 				req->context  = hidg;
- 				status = usb_ep_queue(hidg->out_ep, req,
- 						      GFP_ATOMIC);
-@@ -743,7 +875,8 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 	}
- 	return 0;
- disable_out_ep:
--	usb_ep_disable(hidg->out_ep);
-+	if (hidg->out_ep)
-+		usb_ep_disable(hidg->out_ep);
- free_req_in:
- 	if (req_in)
- 		free_ep_req(hidg->in_ep, req_in);
-@@ -795,14 +928,21 @@ static int hidg_bind(struct usb_configuration *c, struct usb_function *f)
- 		goto fail;
- 	hidg->in_ep = ep;
- 
--	ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_out_ep_desc);
--	if (!ep)
--		goto fail;
--	hidg->out_ep = ep;
-+	hidg->out_ep = NULL;
-+	if (hidg->use_out_ep) {
-+		ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_out_ep_desc);
-+		if (!ep)
-+			goto fail;
-+		hidg->out_ep = ep;
-+	}
-+
-+	/* used only if use_out_ep == 1 */
-+	hidg->set_report_buf = NULL;
- 
- 	/* set descriptor dynamic values */
- 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
- 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
-+	hidg_interface_desc.bNumEndpoints = hidg->use_out_ep ? 2 : 1;
- 	hidg->protocol = HID_REPORT_PROTOCOL;
- 	hidg->idle = 1;
- 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
-@@ -833,12 +973,19 @@ static int hidg_bind(struct usb_configuration *c, struct usb_function *f)
- 	hidg_ss_out_ep_desc.bEndpointAddress =
- 		hidg_fs_out_ep_desc.bEndpointAddress;
- 
--	status = usb_assign_descriptors(f, hidg_fs_descriptors,
--			hidg_hs_descriptors, hidg_ss_descriptors,
--			hidg_ss_descriptors);
-+#define CHOOSE_DESC(prefix)	\
-+	(hidg->use_out_ep ? prefix##_intout : prefix##_ssreport)
-+
-+	status = usb_assign_descriptors(f,
-+		CHOOSE_DESC(hidg_fs_descriptors),
-+		CHOOSE_DESC(hidg_hs_descriptors),
-+		CHOOSE_DESC(hidg_ss_descriptors),
-+		CHOOSE_DESC(hidg_ss_descriptors));
- 	if (status)
- 		goto fail;
- 
-+#undef CHOOSE_DESC
-+
- 	spin_lock_init(&hidg->write_spinlock);
- 	hidg->write_pending = 1;
- 	hidg->req = NULL;
-@@ -950,6 +1097,7 @@ CONFIGFS_ATTR(f_hid_opts_, name)
- 
- F_HID_OPT(subclass, 8, 255);
- F_HID_OPT(protocol, 8, 255);
-+F_HID_OPT(no_out_endpoint, 8, 1);
- F_HID_OPT(report_length, 16, 65535);
- 
- static ssize_t f_hid_opts_report_desc_show(struct config_item *item, char *page)
-@@ -1009,6 +1157,7 @@ CONFIGFS_ATTR_RO(f_hid_opts_, dev);
- static struct configfs_attribute *hid_attrs[] = {
- 	&f_hid_opts_attr_subclass,
- 	&f_hid_opts_attr_protocol,
-+	&f_hid_opts_attr_no_out_endpoint,
- 	&f_hid_opts_attr_report_length,
- 	&f_hid_opts_attr_report_desc,
- 	&f_hid_opts_attr_dev,
-@@ -1093,6 +1242,7 @@ static void hidg_free(struct usb_function *f)
- 	hidg = func_to_hidg(f);
- 	opts = container_of(f->fi, struct f_hid_opts, func_inst);
- 	kfree(hidg->report_desc);
-+	kfree(hidg->set_report_buf);
- 	kfree(hidg);
- 	mutex_lock(&opts->lock);
- 	--opts->refcnt;
-@@ -1139,6 +1289,7 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
- 			return ERR_PTR(-ENOMEM);
- 		}
- 	}
-+	hidg->use_out_ep = !opts->no_out_endpoint;
- 
- 	mutex_unlock(&opts->lock);
- 
-diff --git a/drivers/usb/gadget/function/u_hid.h b/drivers/usb/gadget/function/u_hid.h
-index 98d6af558c03..84bb70292855 100644
---- a/drivers/usb/gadget/function/u_hid.h
-+++ b/drivers/usb/gadget/function/u_hid.h
-@@ -20,6 +20,7 @@ struct f_hid_opts {
- 	int				minor;
- 	unsigned char			subclass;
- 	unsigned char			protocol;
-+	unsigned char			no_out_endpoint;
- 	unsigned short			report_length;
- 	unsigned short			report_desc_length;
- 	unsigned char			*report_desc;
--- 
-2.32.0
+RGVhciBEYW5pZWwsDQoNClNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseQ0KDQoNCk9uIE1vbiwgMjAy
+MS0wNi0xNCBhdCAxODo1OCArMDIwMCwgRGFuaWVsIExlemNhbm8gd3JvdGU6DQo+IE9uIDAzLzA2
+LzIwMjEgMTM6MDAsIEJlbiBUc2VuZyB3cm90ZToNCj4gPiBGcm9tOiBNaWNoYWVsIEthbyA8bWlj
+aGFlbC5rYW9AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IFByb3ZpZGUgdGhlcm1hbCB6b25lIHRv
+IHJlYWQgdGhlcm1hbCBzZW5zb3INCj4gPiBpbiB0aGUgU29DLiBXZSBjYW4gcmVhZCBhbGwgdGhl
+IHRoZXJtYWwgc2Vuc29ycw0KPiA+IHZhbHVlIGluIHRoZSBTb0MgYnkgdGhlIG5vZGUgL3N5cy9j
+bGFzcy90aGVybWFsLw0KPiA+IA0KPiA+IEluIG10a190aGVybWFsX2JhbmtfdGVtcGVyYXR1cmUs
+IHJldHVybiAtRUFHQUlOIGluc3RlYWQgb2YgLUVBQ0NFU1MNCj4gPiBvbiB0aGUgZmlyc3QgcmVh
+ZCBvZiBzZW5zb3IgdGhhdCBvZnRlbiBhcmUgYm9ndXMgdmFsdWVzLg0KPiA+IFRoaXMgY2FuIGF2
+b2lkIGZvbGxvd2luZyB3YXJuaW5nIG9uIGJvb3Q6DQo+ID4gDQo+ID4gICB0aGVybWFsIHRoZXJt
+YWxfem9uZTY6IGZhaWxlZCB0byByZWFkIG91dCB0aGVybWFsIHpvbmUgKC0xMykNCj4gPiANCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIEthbyA8bWljaGFlbC5rYW9AbWVkaWF0ZWsuY29tPg0K
+PiA+IFNpZ25lZC1vZmYtYnk6IEJlbiBUc2VuZyA8YmVuLnRzZW5nQG1lZGlhdGVrLmNvbT4NCj4g
+PiANCj4gPiAtLS0NCj4gPiANCj4gPiBUaGlzIHBhdGNoc2V0IHN1cHBvcnRzIGZvciBNVDgxODMg
+Y2hpcCB0byBtdGtfdGhlcm1hbC5jLg0KPiA+IEFkZCB0aGVybWFsIHpvbmUgb2YgYWxsIHRoZSB0
+aGVybWFsIHNlbnNvciBpbiBTb0MgZm9yDQo+ID4gYW5vdGhlciBnZXQgdGVtcGVyYXRydWUuIFRo
+ZXkgZG9uJ3QgbmVlZCB0byB0aGVybWFsIHRocm90dGxlLg0KPiA+IEFuZCB3ZSBiaW5kIGNvb2xl
+cnMgZm9yIHRoZXJtYWwgem9uZSBub2RlcyBvZiBjcHVfdGhlcm1hbC4NCj4gPiANCj4gPiBDaGFu
+Z2VzIGluIFY4Og0KPiA+ICAgICAtIFJlYmFzZSB0byBrZXJuZWwtdjUuMTMtcmMxDQo+ID4gICAg
+IC0gUmVzZW5kDQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2NzoNCj4gPiAgICAgLSBGaXggYnVpbGQg
+ZXJyb3IgaW4gdjYuDQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2NjoNCj4gPiAgICAgLSBSZWJhc2Ug
+dG8ga2VybmVsLTUuMTEtcmMxLg0KPiA+ICAgICAtIFsxLzNdDQo+ID4gICAgICAgICAtIGFkZCBp
+bnRlcnJ1cHRzIHByb3BlcnR5Lg0KPiA+ICAgICAtIFsyLzNdDQo+ID4gICAgICAgICAtIGFkZCB0
+aGUgVGVzdGVkLWJ5IGluIHRoZSBjb21taXQgbWVzc2FnZS4NCj4gPiAgICAgLSBbMy8zXQ0KPiA+
+ICAgICAgICAgLSB1c2UgdGhlIG10LT5jb25mLT5tc3JbaWRdIGluc3RlYWQgb2YgY29uZi0+bXNy
+W2lkXSBpbiB0aGUNCj4gPiAgICAgICAgICAgX2dldF9zZW5zb3JfdGVtcCBhbmQgbXRrX3RoZXJt
+YWxfYmFua190ZW1wZXJhdHVyZS4NCj4gPiAgICAgICAgIC0gcmVtb3ZlIHRoZSByZWR1bmRhbnQg
+c3BhY2UgaW4gX2dldF9zZW5zb3JfdGVtcCBhbmQNCj4gPiAgICAgICAgICAgbXRrX3JlYWRfc2Vu
+c29yX3RlbXAuDQo+ID4gICAgICAgICAtIGNoYW5nZSBrbWFsbG9jIHRvIGRldl9rbWFsbG9jIGlu
+IG10a190aGVybWFsX3Byb2JlLg0KPiA+IA0KPiA+IENoYW5nZXMgaW4gdjU6DQo+ID4gICAgIC0g
+UmViYXNlIHRvIGtlcm5lbC01LjktcmMxLg0KPiA+ICAgICAtIFJldmlzZSB0aGUgdGl0bGUgb2Yg
+Y292ZXIgbGV0dGVyLg0KPiA+ICAgICAtIERyb3AgIlt2NCw3LzddIHRoZXJtYWw6IG1lZGlhdGVr
+OiB1c2Ugc3BpbmxvY2sgdG8gcHJvdGVjdA0KPiA+IFBUUENPUkVTRUwiDQo+ID4gICAgIC0gWzIv
+Ml0NCj4gPiAgICAgICAgIC0gIEFkZCB0aGUganVkZ2VtZW50IHRvIHRoZSB2ZXJzaW9uIG9mIHJh
+d190b19tY2Vsc2l1cy4NCj4gPiANCj4gPiBDaGFuZ2VzIGluIHY0Og0KPiA+ICAgICAtIFJlYmFz
+ZSB0byBrZXJuZWwtNS42LXJjMS4NCj4gPiAgICAgLSBbMS83XQ0KPiA+ICAgICAgICAgLSBTcXVh
+c2ggdGhlcm1hbCB6b25lIHNldHRpbmdzIGluIHRoZSBkdHNpIGZyb20gW3YzLDUvOF0NCj4gPiAg
+ICAgICAgICAgYXJtNjQ6IGR0czogbXQ4MTgzOiBJbmNyZWFzZSBwb2xsaW5nIGZyZXF1ZW5jeSBm
+b3IgQ1BVDQo+ID4gdGhlcm1hbCB6b25lLg0KPiA+ICAgICAgICAgLSBSZW1vdmUgdGhlIHByb3Bl
+cnR5IG9mIGludGVycnVwdHMgYW5kIG1lZGlhdGVrLGh3LXJlc2V0LQ0KPiA+IHRlbXAuDQo+ID4g
+ICAgIC0gWzIvN10NCj4gPiAgICAgICAgIC0gQ29ycmVjdCBjb21taXQgbWVzc2FnZS4NCj4gPiAg
+ICAgLSBbNC83XQ0KPiA+ICAgICAgICAgLSBDaGFuZ2UgdGhlIHRhcmdldCB0ZW1wZXJhdHVyZSB0
+byB0aGUgODBDIGFuZCBjaGFuZ2UgdGhlDQo+ID4gY29tbWl0IG1lc3NhZ2UuDQo+ID4gICAgIC0g
+WzYvN10NCj4gPiAgICAgICAgIC0gQWRqdXN0IG5ld2xpbmUgYWxpZ25tZW50Lg0KPiA+ICAgICAg
+ICAgLSBGaXggdGhlIGp1ZGdlbWVudCBvbiB0aGUgcmV0dXJuIHZhbHVlIG9mIHJlZ2lzdGVyaW5n
+DQo+ID4gdGhlcm1hbCB6b25lLg0KPiA+IA0KPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4gICAgIC0g
+UmViYXNlIHRvIGtlcm5lbC01LjUtcmMxLg0KPiA+ICAgICAtIFsxLzhdDQo+ID4gICAgICAgICAt
+IFVwZGF0ZSBzdXN0YWluYWJsZSBwb3dlciBvZiBjcHUsIHR6dHMxfjUgYW5kIHR6dHNBQkIuDQo+
+ID4gICAgIC0gWzcvOF0NCj4gPiAgICAgICAgIC0gQnlwYXNzIHRoZSBmYWlsdXJlIHRoYXQgbm9u
+IGNwdV90aGVybWFsIHNlbnNvciBpcyBub3QNCj4gPiBmaW5kIGluIHRoZXJtYWwtem9uZXMNCj4g
+PiAgICAgICAgICAgaW4gZHRzLCB3aGljaCBpcyBub3JtYWwgZm9yIG10ODE3Mywgc28gcHJvbXB0
+IGEgd2FybmluZw0KPiA+IGhlcmUgaW5zdGVhZCBvZg0KPiA+ICAgICAgICAgICBmYWlsaW5nLg0K
+PiA+IA0KPiA+IAlSZXR1cm4gLUVBR0FJTiBpbnN0ZWFkIG9mIC1FQUNDRVNTIG9uIHRoZSBmaXJz
+dCByZWFkIG9mIHNlbnNvcg0KPiA+IHRoYXQNCj4gPiAgICAgICAgIG9mdGVuIGFyZSBib2d1cyB2
+YWx1ZXMuIFRoaXMgY2FuIGF2b2lkIGZvbGxvd2luZyB3YXJuaW5nIG9uDQo+ID4gYm9vdDoNCj4g
+PiANCj4gPiAgICAgICAgICAgdGhlcm1hbCB0aGVybWFsX3pvbmU2OiBmYWlsZWQgdG8gcmVhZCBv
+dXQgdGhlcm1hbCB6b25lICgtDQo+ID4gMTMpDQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2MjoNCj4g
+PiAgICAgLSBbMS84XQ0KPiA+ICAgICAgICAgLSBBZGQgdGhlIHN1c3RhaW5hYmxlLXBvd2VyLHRy
+aXBzLGNvb2xpbmctbWFwcyB0byB0aGUNCj4gPiB0enRzMX50enRzQUJCLg0KPiA+ICAgICAtIFs0
+LzhdDQo+ID4gICAgICAgICAtIEFkZCB0aGUgbWluIG9wcCBvZiBjcHUgdGhyb3R0bGUuDQo+ID4g
+DQo+ID4gTWF0dGhpYXMgS2FlaGxja2UgKDEpOg0KPiA+ICAgYXJtNjQ6IGR0czogbXQ4MTgzOiBD
+b25maWd1cmUgQ1BVIGNvb2xpbmcNCj4gPiANCj4gPiBNaWNoYWVsIEthbyAoMik6DQo+ID4gICB0
+aGVybWFsOiBtZWRpYXRlazogYWRkIGFub3RoZXIgZ2V0X3RlbXAgb3BzIGZvciB0aGVybWFsIHNl
+bnNvcnMNCj4gPiAgIGFybTY0OiBkdHM6IG10ODE4MzogYWRkIHRoZXJtYWwgem9uZSBub2RlDQo+
+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdGhlcm1hbC9tdGtfdGhlcm1hbC5jIHwgMTAwDQo+ID4gKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFu
+Z2VkLCA3NSBpbnNlcnRpb25zKCspLCAyNSBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy90aGVybWFsL210a190aGVybWFsLmMNCj4gPiBiL2RyaXZlcnMvdGhlcm1h
+bC9tdGtfdGhlcm1hbC5jDQo+ID4gaW5kZXggOTdlODY3OC4uYjZiZWU0NTEgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy90aGVybWFsL210a190aGVybWFsLmMNCj4gPiArKysgYi9kcml2ZXJzL3Ro
+ZXJtYWwvbXRrX3RoZXJtYWwuYw0KPiA+IEBAIC0yNDUsNiArMjQ1LDExIEBAIGVudW0gbXRrX3Ro
+ZXJtYWxfdmVyc2lvbiB7DQo+ID4gIA0KPiA+ICBzdHJ1Y3QgbXRrX3RoZXJtYWw7DQo+ID4gIA0K
+PiA+ICtzdHJ1Y3QgbXRrX3RoZXJtYWxfem9uZSB7DQo+ID4gKwlzdHJ1Y3QgbXRrX3RoZXJtYWwg
+Km10Ow0KPiA+ICsJaW50IGlkOw0KPiA+ICt9Ow0KPiANCj4gSG93IGRvZXMgaXQgZGlmZmVyIGZy
+b20gJ3N0cnVjdCBtdGtfdGhlcm1hbF9iYW5rJyA/DQoNCiJ0cnVjdCBtdGtfdGhlcm1hbF96b25l
+IiBpcyBkdXBsaWNhdGVkLiBJdCB3aWxsIGJlIHJlbW92ZWQgbmV4dCB2ZXJzaW9uDQoNCj4gDQo+
+ID4gIHN0cnVjdCB0aGVybWFsX2JhbmtfY2ZnIHsNCj4gPiAgCXVuc2lnbmVkIGludCBudW1fc2Vu
+c29yczsNCj4gPiAgCWNvbnN0IGludCAqc2Vuc29yczsNCj4gPiBAQCAtNjM3LDYgKzY0MiwzMCBA
+QCBzdGF0aWMgdm9pZCBtdGtfdGhlcm1hbF9wdXRfYmFuayhzdHJ1Y3QNCj4gPiBtdGtfdGhlcm1h
+bF9iYW5rICpiYW5rKQ0KPiA+ICAJCW11dGV4X3VubG9jaygmbXQtPmxvY2spOw0KPiA+ICB9DQo+
+ID4gIA0KPiA+ICtzdGF0aWMgdTMyIF9nZXRfc2Vuc29yX3RlbXAoc3RydWN0IG10a190aGVybWFs
+ICptdCwgaW50IGlkKQ0KPiA+ICt7DQo+ID4gKwl1MzIgcmF3Ow0KPiA+ICsJaW50IHRlbXA7DQo+
+ID4gKw0KPiA+ICsJcmF3ID0gcmVhZGwobXQtPnRoZXJtYWxfYmFzZSArIG10LT5jb25mLT5tc3Jb
+aWRdKTsNCj4gPiArDQo+ID4gKwlpZiAobXQtPmNvbmYtPnZlcnNpb24gPT0gTVRLX1RIRVJNQUxf
+VjEpDQo+ID4gKwkJdGVtcCA9IHJhd190b19tY2Vsc2l1c192MShtdCwgaWQsIHJhdyk7DQo+ID4g
+KwllbHNlDQo+ID4gKwkJdGVtcCA9IHJhd190b19tY2Vsc2l1c192MihtdCwgaWQsIHJhdyk7DQo+
+IA0KPiBQbGVhc2UgYWRkIHRoZSBwcm9wZXIgY29udmVyc2lvbiBmdW5jdGlvbiBhcyBhIGNhbGxi
+YWNrIGFuZCBzZXQgaXQgYXQNCj4gcHJvYmUgdGltZSwgaW5zdGVhZCBvZiBjaGVja2luZyBhdCBl
+dmVyeSBjYWxsLg0KPiANCg0KVGhhbmtzIGZvciB5b3VyIGFkdmlzZW1lbnQuIFYxIG9yIFYyIHdp
+bGwgYmUgYXNzaWduZWQgdG8gYSBmdW5jdGlvbg0KcG9pbnRlciBkdXJpbmcgcHJvYmUuDQoNCj4g
+PiArCS8qDQo+ID4gKwkgKiBUaGUgZmlyc3QgcmVhZCBvZiBhIHNlbnNvciBvZnRlbiBjb250YWlu
+cyB2ZXJ5IGhpZ2ggYm9ndXMNCj4gPiArCSAqIHRlbXBlcmF0dXJlIHZhbHVlLiBGaWx0ZXIgdGhl
+c2Ugb3V0IHNvIHRoYXQgdGhlIHN5c3RlbSBkb2VzDQo+ID4gKwkgKiBub3QgaW1tZWRpYXRlbHkg
+c2h1dCBkb3duLg0KPiA+ICsJICovDQo+IA0KPiBJZiBpdCBoYXBwZW5zIG9ubHkgb25jZSwgd2h5
+IG5vdCBjYWxsIHRoaXMgZnVuY3Rpb24gYXQgcHJvYmUgdGltZSBzbw0KPiB0aGlzIHRlc3Qgd29u
+J3QgYmUgbmVlZGVkLg0KPiANCg0KSXQncyBleGlzdCBpbiBwcmV2aW91cyB1cHN0cmVhbSB2ZXJz
+aW9uLCBhbmQgb2xkIGNoaXBzIHNob3VsZCBiZQ0KY29tcGF0aWJsZS4gU28gd2UgbmVlZCB0byBr
+ZWVwIHRoaXMgZmlsdGVyIHRvIGF2b2lkIHdyb25nIHNlbnNvcg0KcmVhZGluZy4NCg0KPiA+ICsJ
+aWYgKHRlbXAgPiAyMDAwMDApDQo+ID4gKwkJcmV0dXJuIC1FQUdBSU47DQo+ID4gKwllbHNlDQo+
+ID4gKwkJcmV0dXJuIHRlbXA7DQo+ID4gK30NCj4gPiArDQo+ID4gIC8qKg0KPiA+ICAgKiBtdGtf
+dGhlcm1hbF9iYW5rX3RlbXBlcmF0dXJlIC0gZ2V0IHRoZSB0ZW1wZXJhdHVyZSBvZiBhIGJhbmsN
+Cj4gPiAgICogQGJhbms6CVRoZSBiYW5rDQo+ID4gQEAgLTY0NywyOCArNjc2LDExIEBAIHN0YXRp
+YyB2b2lkIG10a190aGVybWFsX3B1dF9iYW5rKHN0cnVjdA0KPiA+IG10a190aGVybWFsX2Jhbmsg
+KmJhbmspDQo+ID4gIHN0YXRpYyBpbnQgbXRrX3RoZXJtYWxfYmFua190ZW1wZXJhdHVyZShzdHJ1
+Y3QgbXRrX3RoZXJtYWxfYmFuaw0KPiA+ICpiYW5rKQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgbXRr
+X3RoZXJtYWwgKm10ID0gYmFuay0+bXQ7DQo+ID4gLQljb25zdCBzdHJ1Y3QgbXRrX3RoZXJtYWxf
+ZGF0YSAqY29uZiA9IG10LT5jb25mOw0KPiA+ICAJaW50IGksIHRlbXAgPSBJTlRfTUlOLCBtYXgg
+PSBJTlRfTUlOOw0KPiA+IC0JdTMyIHJhdzsNCj4gPiAtDQo+ID4gLQlmb3IgKGkgPSAwOyBpIDwg
+Y29uZi0+YmFua19kYXRhW2JhbmstPmlkXS5udW1fc2Vuc29yczsgaSsrKSB7DQo+ID4gLQkJcmF3
+ID0gcmVhZGwobXQtPnRoZXJtYWxfYmFzZSArIGNvbmYtPm1zcltpXSk7DQo+ID4gIA0KPiA+IC0J
+CWlmIChtdC0+Y29uZi0+dmVyc2lvbiA9PSBNVEtfVEhFUk1BTF9WMSkgew0KPiA+IC0JCQl0ZW1w
+ID0gcmF3X3RvX21jZWxzaXVzX3YxKA0KPiA+IC0JCQkJbXQsIGNvbmYtPmJhbmtfZGF0YVtiYW5r
+LQ0KPiA+ID5pZF0uc2Vuc29yc1tpXSwgcmF3KTsNCj4gPiAtCQl9IGVsc2Ugew0KPiA+IC0JCQl0
+ZW1wID0gcmF3X3RvX21jZWxzaXVzX3YyKA0KPiA+IC0JCQkJbXQsIGNvbmYtPmJhbmtfZGF0YVti
+YW5rLQ0KPiA+ID5pZF0uc2Vuc29yc1tpXSwgcmF3KTsNCj4gPiAtCQl9DQo+ID4gKwlmb3IgKGkg
+PSAwOyBpIDwgbXQtPmNvbmYtPmJhbmtfZGF0YVtiYW5rLT5pZF0ubnVtX3NlbnNvcnM7IGkrKykN
+Cj4gPiB7DQo+ID4gIA0KPiA+IC0JCS8qDQo+ID4gLQkJICogVGhlIGZpcnN0IHJlYWQgb2YgYSBz
+ZW5zb3Igb2Z0ZW4gY29udGFpbnMgdmVyeSBoaWdoDQo+ID4gYm9ndXMNCj4gPiAtCQkgKiB0ZW1w
+ZXJhdHVyZSB2YWx1ZS4gRmlsdGVyIHRoZXNlIG91dCBzbyB0aGF0IHRoZQ0KPiA+IHN5c3RlbSBk
+b2VzDQo+ID4gLQkJICogbm90IGltbWVkaWF0ZWx5IHNodXQgZG93bi4NCj4gPiAtCQkgKi8NCj4g
+PiAtCQlpZiAodGVtcCA+IDIwMDAwMCkNCj4gPiAtCQkJdGVtcCA9IDA7DQo+ID4gKwkJdGVtcCA9
+IF9nZXRfc2Vuc29yX3RlbXAobXQsIGkpOw0KPiA+ICANCj4gPiAgCQlpZiAodGVtcCA+IG1heCkN
+Cj4gPiAgCQkJbWF4ID0gdGVtcDsNCj4gPiBAQCAtNjc5LDcgKzY5MSw4IEBAIHN0YXRpYyBpbnQg
+bXRrX3RoZXJtYWxfYmFua190ZW1wZXJhdHVyZShzdHJ1Y3QNCj4gPiBtdGtfdGhlcm1hbF9iYW5r
+ICpiYW5rKQ0KPiA+ICANCj4gPiAgc3RhdGljIGludCBtdGtfcmVhZF90ZW1wKHZvaWQgKmRhdGEs
+IGludCAqdGVtcGVyYXR1cmUpDQo+ID4gIHsNCj4gPiAtCXN0cnVjdCBtdGtfdGhlcm1hbCAqbXQg
+PSBkYXRhOw0KPiA+ICsJc3RydWN0IG10a190aGVybWFsX3pvbmUgKnR6ID0gZGF0YTsNCj4gPiAr
+CXN0cnVjdCBtdGtfdGhlcm1hbCAqbXQgPSB0ei0+bXQ7DQo+ID4gIAlpbnQgaTsNCj4gPiAgCWlu
+dCB0ZW1wbWF4ID0gSU5UX01JTjsNCj4gPiAgDQo+ID4gQEAgLTY5OCwxMCArNzExLDI4IEBAIHN0
+YXRpYyBpbnQgbXRrX3JlYWRfdGVtcCh2b2lkICpkYXRhLCBpbnQNCj4gPiAqdGVtcGVyYXR1cmUp
+DQo+ID4gIAlyZXR1cm4gMDsNCj4gPiAgfQ0KPiA+ICANCj4gPiArc3RhdGljIGludCBtdGtfcmVh
+ZF9zZW5zb3JfdGVtcCh2b2lkICpkYXRhLCBpbnQgKnRlbXBlcmF0dXJlKQ0KPiA+ICt7DQo+ID4g
+KwlzdHJ1Y3QgbXRrX3RoZXJtYWxfem9uZSAqdHogPSBkYXRhOw0KPiA+ICsJc3RydWN0IG10a190
+aGVybWFsICptdCA9IHR6LT5tdDsNCj4gPiArCWludCBpZCA9IHR6LT5pZCAtIDE7DQo+ID4gKw0K
+PiA+ICsJaWYgKGlkIDwgMCkNCj4gPiArCQlyZXR1cm4gLUVBQ0NFUzsNCj4gDQo+IEhvdyB0aGlz
+IGNhbiBoYXBwZW4gPw0KPiANCg0KdHotPmlkID4gMCBpcyBhbHdheXMgdHJ1ZS4gSXQgd2lsbCBi
+ZSByZW1vdmVkIGluIG5leHQgdmVyc2lvbi4NCg0KDQo+ID4gDQo+ID4gKwkqdGVtcGVyYXR1cmUg
+PSBfZ2V0X3NlbnNvcl90ZW1wKG10LCBpZCk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4g
+K30NCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgdGhlcm1hbF96b25lX29mX2Rldmlj
+ZV9vcHMgbXRrX3RoZXJtYWxfb3BzID0gew0KPiA+ICAJLmdldF90ZW1wID0gbXRrX3JlYWRfdGVt
+cCwNCj4gPiAgfTsNCj4gPiAgDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgdGhlcm1hbF96b25l
+X29mX2RldmljZV9vcHMNCj4gPiBtdGtfdGhlcm1hbF9zZW5zb3Jfb3BzID0gew0KPiA+ICsJLmdl
+dF90ZW1wID0gbXRrX3JlYWRfc2Vuc29yX3RlbXAsDQo+ID4gK307DQo+ID4gKw0KPiA+ICBzdGF0
+aWMgdm9pZCBtdGtfdGhlcm1hbF9pbml0X2Jhbmsoc3RydWN0IG10a190aGVybWFsICptdCwgaW50
+IG51bSwNCj4gPiAgCQkJCSAgdTMyIGFwbWl4ZWRfcGh5c19iYXNlLCB1MzINCj4gPiBhdXhhZGNf
+cGh5c19iYXNlLA0KPiA+ICAJCQkJICBpbnQgY3RybF9pZCkNCj4gPiBAQCAtOTkyLDYgKzEwMjMs
+NyBAQCBzdGF0aWMgaW50IG10a190aGVybWFsX3Byb2JlKHN0cnVjdA0KPiA+IHBsYXRmb3JtX2Rl
+dmljZSAqcGRldikNCj4gPiAgCXU2NCBhdXhhZGNfcGh5c19iYXNlLCBhcG1peGVkX3BoeXNfYmFz
+ZTsNCj4gPiAgCXN0cnVjdCB0aGVybWFsX3pvbmVfZGV2aWNlICp0emRldjsNCj4gPiAgCXZvaWQg
+X19pb21lbSAqYXBtaXhlZF9iYXNlLCAqYXV4YWRjX2Jhc2U7DQo+ID4gKwlzdHJ1Y3QgbXRrX3Ro
+ZXJtYWxfem9uZSAqdHo7DQo+ID4gIA0KPiA+ICAJbXQgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRl
+diwgc2l6ZW9mKCptdCksIEdGUF9LRVJORUwpOw0KPiA+ICAJaWYgKCFtdCkNCj4gPiBAQCAtMTA4
+MCwxMSArMTExMiwyOSBAQCBzdGF0aWMgaW50IG10a190aGVybWFsX3Byb2JlKHN0cnVjdA0KPiA+
+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgDQo+ID4gIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0
+YShwZGV2LCBtdCk7DQo+ID4gIA0KPiA+IC0JdHpkZXYgPSBkZXZtX3RoZXJtYWxfem9uZV9vZl9z
+ZW5zb3JfcmVnaXN0ZXIoJnBkZXYtPmRldiwgMCwgbXQsDQo+ID4gLQkJCQkJCSAgICAgJm10a190
+aGVybWFsX29wcyk7DQo+ID4gLQlpZiAoSVNfRVJSKHR6ZGV2KSkgew0KPiA+IC0JCXJldCA9IFBU
+Ul9FUlIodHpkZXYpOw0KPiA+IC0JCWdvdG8gZXJyX2Rpc2FibGVfY2xrX3BlcmlfdGhlcm07DQo+
+ID4gKwlmb3IgKGkgPSAwOyBpIDwgbXQtPmNvbmYtPm51bV9zZW5zb3JzICsgMTsgaSsrKSB7DQo+
+ID4gKwkJdHogPSBkZXZtX2ttYWxsb2MoJnBkZXYtPmRldiwgc2l6ZW9mKCp0eiksIEdGUF9LRVJO
+RUwpOw0KPiA+ICsJCWlmICghdHopDQo+ID4gKwkJCXJldHVybiAtRU5PTUVNOw0KPiA+ICsNCj4g
+PiArCQl0ei0+bXQgPSBtdDsNCj4gPiArCQl0ei0+aWQgPSBpOw0KPiA+ICsNCj4gPiArCQl0emRl
+diA9IGRldm1fdGhlcm1hbF96b25lX29mX3NlbnNvcl9yZWdpc3RlcigmcGRldi0NCj4gPiA+ZGV2
+LCBpLCB0eiwgKGkgPT0gMCkgPw0KPiA+ICsJCQkJCQkJICAgICAmbXRrX3RoZXJtDQo+ID4gYWxf
+b3BzIDoNCj4gPiArCQkJCQkJCSAgICAgJm10a190aGVybQ0KPiA+IGFsX3NlbnNvcl9vcHMpOw0K
+PiA+ICsNCj4gPiArCQlpZiAoSVNfRVJSKHR6ZGV2KSkgew0KPiA+ICsJCQlpZiAoUFRSX0VSUih0
+emRldikgPT0gLUVOT0RFVikgew0KPiA+ICsJCQkJZGV2X3dhcm4oJnBkZXYtPmRldiwNCj4gPiAr
+CQkJCQkgInNlbnNvciAlZCBub3QgcmVnaXN0ZXJlZCBpbg0KPiA+IHRoZXJtYWwgem9uZSBpbiBk
+dFxuIiwgaSk7DQo+ID4gKwkJCQljb250aW51ZTsNCj4gPiArCQkJfQ0KPiA+ICsJCQlpZiAoUFRS
+X0VSUih0emRldikgPT0gLUVBQ0NFUykgew0KPiA+ICsJCQkJcmV0ID0gUFRSX0VSUih0emRldik7
+DQo+ID4gKwkJCQlnb3RvIGVycl9kaXNhYmxlX2Nsa19wZXJpX3RoZXJtOw0KPiA+ICsJCQl9DQo+
+IA0KPiBJZiB0aGUgZXJyb3IgaXMgbm9uZSBvZiB0aGUgYWJvdmUsIHRoZSBsb29wIGNvbnRpbnVl
+cy4gSXMgdGhhdCB3aGF0DQo+IHlvdQ0KPiB3YW50ID8NCg0KTmV4dCB2ZXJzaW9uLCBBcyBzb29u
+IGFzIHRoZXJtYWwgem9uZSByZWdpc3RlciBmYWlsLCBicmVhayBhbmQgcmV0dXJuLg0KDQo+ID4g
+KwkJfQ0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCXJldHVybiAwOw0KPiA+IA0KPiANCj4gDQo=
 
