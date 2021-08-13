@@ -2,184 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5843EBE82
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A5C3EBE86
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 01:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235362AbhHMXE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 19:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235029AbhHMXE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 19:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D77660FC4;
-        Fri, 13 Aug 2021 23:04:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628895870;
-        bh=9rCG4K5QGdBbXevN+TWBdv/NHnDbcxAS1nXAzuid5ck=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=pAu42LjzV5HFEnhpBwAd8pbywG611Fn7Kz0sVLS9fk8sYBLjQWljAzsKQEnHQubhl
-         PrpwJNg7+MJYKZgiv/b+x6N3xbur7gxQRLNfhmZlgmuPgqI9yYokg6t332I9s378zF
-         NhYOUc+AQkx/dwqgFvhkCBsui4fsDURplv8Z+aaX0J7LE5mfqVO2lYUw+ERjwTMfnQ
-         Wu4fLIk4khKLx0lYnAtgoB8ocG7PELLrENAD3zOT31zG2cgXejZDfnSPTqqVgOi1no
-         Xl60v6DGyxTlCDH9HTrARLxSCZnPqL19y2OoS8k5tPV5aashHiwZYMoyUMkslW7z2N
-         p1gd7N/FEtkrA==
-Date:   Fri, 13 Aug 2021 18:04:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v15 7/9] PCI: Setup ACPI fwnode early and at the same
- time with OF
-Message-ID: <20210813230428.GA2745285@bjorn-Precision-5520>
+        id S235429AbhHMXGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 19:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235029AbhHMXF6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 19:05:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94770C061756;
+        Fri, 13 Aug 2021 16:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uAZTMo4Rfh5y3K2qzERRkfKi4Wt3yJD428edoeLiOiE=; b=fnL0JZj/h9CM/tXv8idY37OUly
+        gB+cG/25fu0ElSyUDuFgAxX0/ykzuE3WUhpiITZYujBFcwLwzWiYrQCDbquS05vWMOIRRqCVAnNI6
+        k6VB8ThQL/LYUVlDQ4WjOvSEYIVdliSPeAbdt4wYAIom28EzFCbEWcuht1iXf9HQnIO57E0kPy9cl
+        vlAU54B5l/elAKbNGUc+6jDyn+4At0zARrv4tNWI3FdhueIr76hSSP/OW8mOdkzjVe4vLaUsaiZ0e
+        IBMIOBoe/UXsr3H5NR7aTjyJLRrOS1/OswuxRf+vxgYv0d2iEUYC7BhYWfCN3J/qZq2kPdTi4Ci9h
+        USR+0nqQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mEgE2-00GADO-FD; Fri, 13 Aug 2021 23:04:36 +0000
+Date:   Sat, 14 Aug 2021 00:04:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 038/138] mm/memcg: Add folio_memcg() and related
+ functions
+Message-ID: <YRb6fr/Czz9jwqLJ@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-39-willy@infradead.org>
+ <1eb08e30-3a84-eaae-e9ee-07d59cbde807@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805162917.3989-8-ameynarkhede03@gmail.com>
+In-Reply-To: <1eb08e30-3a84-eaae-e9ee-07d59cbde807@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Ben, Mika]
-
-On Thu, Aug 05, 2021 at 09:59:15PM +0530, Amey Narkhede wrote:
-> From: Shanker Donthineni <sdonthineni@nvidia.com>
+On Wed, Aug 11, 2021 at 12:32:45PM +0200, Vlastimil Babka wrote:
+> >  static inline bool PageMemcgKmem(struct page *page);
 > 
-> The pci_dev objects are created through two mechanisms 1) during PCI
-> bus scan and 2) from I/O Virtualization. The fwnode in pci_dev object
-> is being set at different places depends on the type of firmware used,
-> device creation mechanism, and acpi_pci_bridge_d3().
-> 
-> The software features which have a dependency on ACPI fwnode properties
-> and need to be handled before device_add() will not work. One use case,
-> the software has to check the existence of _RST method to support ACPI
-> based reset method.
-> 
-> This patch does the two changes in order to provide fwnode consistently.
->  - Set ACPI and OF fwnodes from pci_setup_device().
->  - Remove pci_set_acpi_fwnode() in acpi_pci_bridge_d3().
-> 
-> After this patch, ACPI/OF firmware properties are visible at the same
-> time during the early stage of pci_dev setup. And also call sites should
-> be able to use firmware agnostic functions device_property_xxx() for the
-> early PCI quirks in the future.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
-> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->  drivers/pci/pci-acpi.c | 1 -
->  drivers/pci/probe.c    | 7 ++++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index eaddbf701759..dae021322b3f 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
->  		return false;
->  
->  	/* Assume D3 support if the bridge is power-manageable by ACPI. */
-> -	pci_set_acpi_fwnode(dev);
->  	adev = ACPI_COMPANION(&dev->dev);
+> I think this fwd declaration is no longer needed.
 
-I *think* the Root Port code farther down in this function is also now
-unnecessary:
-
-  acpi_pci_bridge_d3(...)
-  {
-    ...
-    root = pcie_find_root_port(dev);
-    adev = ACPI_COMPANION(&root->dev);
-    if (root == dev) {
-      /*
-       * It is possible that the ACPI companion is not yet bound
-       * for the root port so look it up manually here.
-       */
-      if (!adev && !pci_dev_is_added(root))
-        adev = acpi_pci_find_companion(&root->dev);
-    }
-
-Since we're now setting the ACPI_COMPANION for every pci_dev long
-before we get here, I think this could now be simplified to something
-like this:
-
-  acpi_pci_bridge_d3(...)
-  {
-    if (!dev->is_hotplug_bridge)
-      return false;
-
-    adev = ACPI_COMPANION(&dev->dev);
-    if (adev && acpi_device_power_manageable(adev))
-      return true;
-
-    root = pcie_find_root_port(dev);
-    if (!root)
-      return false;
-
-    adev = ACPI_COMPANION(&root->dev);
-    if (!adev)
-      return false;
-
-    rc = acpi_dev_get_property(dev, "HotPlugSupportInD3",
-                               ACPI_TYPE_INTEGER, &val);
-    if (rc < 0)
-      return false;
-
-    return val == 1;
-  }
-
-acpi_pci_bridge_d3() was added by 26ad34d510a8 ("PCI / ACPI: Whitelist
-D3 for more PCIe hotplug ports") [1], so I cc'd Mika in case he has
-any comment.
-
->  	if (adev && acpi_device_power_manageable(adev))
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 379e85037d9b..15a6975d3757 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1789,6 +1789,9 @@ int pci_setup_device(struct pci_dev *dev)
->  	dev->error_state = pci_channel_io_normal;
->  	set_pcie_port_type(dev);
->  
-> +	pci_set_of_node(dev);
-> +	pci_set_acpi_fwnode(dev);
-
-Is there a reason why you moved pci_set_of_node() from
-pci_scan_device() to here?  I think it's a good change; I'm just
-curious if you tripped over something that required it.
-
-The pci_set_of_node() was added to pci_scan_device() by 98d9f30c820d
-("pci/of: Match PCI devices to OF nodes dynamically") [2], so I cc'd
-Ben just in case there's some reason he didn't put it in
-pci_setup_device() in the first place.
-
->  	pci_dev_assign_slot(dev);
->  
->  	/*
-> @@ -1924,6 +1927,7 @@ int pci_setup_device(struct pci_dev *dev)
->  	default:				    /* unknown header */
->  		pci_err(dev, "unknown header type %02x, ignoring device\n",
->  			dev->hdr_type);
-> +		pci_release_of_node(dev);
->  		return -EIO;
->  
->  	bad:
-> @@ -2351,10 +2355,7 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
->  	dev->vendor = l & 0xffff;
->  	dev->device = (l >> 16) & 0xffff;
->  
-> -	pci_set_of_node(dev);
-> -
->  	if (pci_setup_device(dev)) {
-> -		pci_release_of_node(dev);
->  		pci_bus_put(dev->bus);
->  		kfree(dev);
->  		return NULL;
-
-[1] https://git.kernel.org/linus/26ad34d510a8
-[2] https://git.kernel.org/linus/98d9f30c820d
+I agree.  Deleted.
