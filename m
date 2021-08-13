@@ -2,68 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250063EB98F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EFE3EB991
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241301AbhHMPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:54:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:55230 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236895AbhHMPx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:53:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84EAD1FB;
-        Fri, 13 Aug 2021 08:53:32 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3439B3F718;
-        Fri, 13 Aug 2021 08:53:31 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:53:28 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>, kishon@ti.com
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Subject: Re: [PATCH v2 0/4] PCI: dwc: pci-dra7xx: miscellaneous improvements
-Message-ID: <20210813155328.GC15515@lpieralisi>
-References: <20210531085934.2662457-1-luca@lucaceresoli.net>
- <20210621144109.GC27516@lpieralisi>
+        id S241427AbhHMPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241357AbhHMPyR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:54:17 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBD0C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:53:51 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id js7so5446651qvb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 08:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CwihxQvLtJhhIw8oFBGmVElpiNeOrquat4Xu9F0jAOg=;
+        b=UobTjhUsdatqGjnwoy+XW7bcjQSD/T9CvT2bXzZDpMrL2ktB4pTVorEnfKGLiRVdsd
+         SaCfPQUapfOVtf/dnRmTOERUsFeylckFCTl+VqV+5VK9Jk1l5lUG8GC3BbBtEvOGembA
+         kCJ7V2LGik3JBVB5ag0re4REBTCXwxQpA6QyEy4WncXKDBkKjtXaIuMcE9/kNug6sx5O
+         o2vYbmZZBOEW8v0h5xcAO45+OPC8p4EDjc17/i3oqbbgC583wR+6AtFLGKJJ4anAlcJY
+         r4Ovg9Tg0l+YDPYnACSdAvADw1B1vrJYG/7WPco/q7rLwaVrVuCFB3Kk/drhiwO5SOZH
+         CmYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CwihxQvLtJhhIw8oFBGmVElpiNeOrquat4Xu9F0jAOg=;
+        b=g2Z5IqDcpbOE+39bRBRJKQJjIf/CgSivpCFLnRPHxC2w1FwRg5kNBC/14VoJM+Hids
+         gymJZyAIBB9EUWhiDYl0wf0z64c4L3KnyfzNDYjHvgkpp4nB/7ftf63S9GEue5kN2C34
+         HIevJDYWNQn67Z3EMjEtnLscM+dUclyEVHjt6IZevrJ1dfqa5urG66BmkHsin5k8UNhA
+         Db1lsk06qeQuHHr5TL7BIGcPCBjXtU2ahAswa3PAiWGXD06B7Mlsh+jfO9eyU8tRxUXP
+         cjYrLa7T5A2ADpAz5Zfu+QmsKczjzZ+j3Qm2c76lGqPmnwqPvDdppfcYjl7iCs+fZdEe
+         OWug==
+X-Gm-Message-State: AOAM532Wybm2E29/rfTnQkJeuICoIXPLu2h5LqxDsyFTLfKCWSey0AhR
+        +OI/hfl7p92ZYHgapn6kRmX69Q==
+X-Google-Smtp-Source: ABdhPJyYmLSrD3vLL1+cF8UUwaEG2k11P+wOic5kAZmLdn06ptIPRaFjlYyvsipkypN3if7BppYm7A==
+X-Received: by 2002:a0c:ef84:: with SMTP id w4mr3256725qvr.34.1628870030094;
+        Fri, 13 Aug 2021 08:53:50 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id q26sm1141166qki.120.2021.08.13.08.53.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 08:53:49 -0700 (PDT)
+Subject: Re: [PATCH -next v3] nbd: add the check to prevent overflow in
+ __nbd_ioctl()
+To:     Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Cc:     patchwork@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210804021212.990223-1-libaokun1@huawei.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <49104529-74e4-27ed-945f-75e04c1b5968@toxicpanda.com>
+Date:   Fri, 13 Aug 2021 11:53:48 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621144109.GC27516@lpieralisi>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210804021212.990223-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 03:41:09PM +0100, Lorenzo Pieralisi wrote:
-> On Mon, May 31, 2021 at 10:59:30AM +0200, Luca Ceresoli wrote:
-> > This is an series of mixed improvements to the DRA7 PCI controller driver:
-> > allow building as a loadabel module, allow to get and enable a clock and a
-> > small cleanup.
-> > 
-> > Luca
-> > 
-> > Luca Ceresoli (4):
-> >   PCI: dwc: Export more symbols to allow modular drivers
-> >   PCI: dra7xx: Make it a kernel module
-> >   PCI: dra7xx: Remove unused include
-> >   PCI: dra7xx: Get an optional clock
-> > 
-> >  drivers/pci/controller/dwc/Kconfig            |  6 ++---
-> >  drivers/pci/controller/dwc/pci-dra7xx.c       | 22 +++++++++++++++++--
-> >  .../pci/controller/dwc/pcie-designware-ep.c   |  1 +
-> >  drivers/pci/controller/dwc/pcie-designware.c  |  1 +
-> >  4 files changed, 25 insertions(+), 5 deletions(-)
+On 8/3/21 10:12 PM, Baokun Li wrote:
+> If user specify a large enough value of NBD blocks option, it may trigger
+> signed integer overflow which may lead to nbd->config->bytesize becomes a
+> large or small value, zero in particular.
 > 
-> Hi Kishon,
+> UBSAN: Undefined behaviour in drivers/block/nbd.c:325:31
+> signed integer overflow:
+> 1024 * 4611686155866341414 cannot be represented in type 'long long int'
+> [...]
+> Call trace:
+> [...]
+>   handle_overflow+0x188/0x1dc lib/ubsan.c:192
+>   __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
+>   nbd_size_set drivers/block/nbd.c:325 [inline]
+>   __nbd_ioctl drivers/block/nbd.c:1342 [inline]
+>   nbd_ioctl+0x998/0xa10 drivers/block/nbd.c:1395
+>   __blkdev_driver_ioctl block/ioctl.c:311 [inline]
+> [...]
 > 
-> I'd need your ACK to proceed with this series that looks like it
-> is ready to go, please let me know.
+> Although it is not a big deal, still silence the UBSAN by limit
+> the input value.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> V1->V2:
+> 	Use check_mul_overflow().
+> V2->V3:
+> 	The check_mul_overflow function requires the same input parameter type.
+> 
+>   drivers/block/nbd.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index c38317979f74..5a42b838d26c 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -1384,6 +1384,7 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
+>   		       unsigned int cmd, unsigned long arg)
+>   {
+>   	struct nbd_config *config = nbd->config;
+> +	loff_t bytesize;
+>   
+>   	switch (cmd) {
+>   	case NBD_DISCONNECT:
+> @@ -1398,8 +1399,11 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
+>   	case NBD_SET_SIZE:
+>   		return nbd_set_size(nbd, arg, config->blksize);
+>   	case NBD_SET_SIZE_BLOCKS:
+> -		return nbd_set_size(nbd, arg * config->blksize,
+> -				    config->blksize);
+> +		if (unlikely(check_mul_overflow((loff_t)arg,
+> +						config->blksize,
+> +						&bytesize)))
+> +			return -EINVAL;
+> +		return nbd_set_size(nbd, bytesize, config->blksize);
 
-Still need it - please let me know.
+The unlikely isn't needed here, just makes it harder to read the thing, drop it 
+and then you can add
 
-Lorenzo
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
