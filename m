@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5B53EB8B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143263EB8A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242490AbhHMPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
+        id S241782AbhHMPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242286AbhHMPNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:13:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F2B6112F;
-        Fri, 13 Aug 2021 15:13:13 +0000 (UTC)
+        id S242014AbhHMPNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55D6C610FF;
+        Fri, 13 Aug 2021 15:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867594;
-        bh=l3FbYfO0WriBgfC4cxzcPJhwLD20Rl43IQrV7LR5xqc=;
+        s=korg; t=1628867567;
+        bh=5bM0VwdyJN9ot4hCjJftDeLaiVlC+Sip1objMN7EOk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h9MaSLGK4DdOt6STe6Bcil4hAsld971C6sq/6hOXpEi71+28P7/0ujnNSkdemVqrX
-         TycrA9yVEAHXs40lZMZtpaLHh7QjlPL/Mucaampsc3At8Utqd8OGLeKn8ep7+APsDz
-         f5XQlo5ywDV6r9ArCVq/SYhrt2AWGKRK7zer5nZs=
+        b=N6yBDrTq0l592mjZnyJpJJIE/XIT2DuKeKMDRq6LiOWe7nmSLRUoUAC+WIolz/NUV
+         N79/qQUFTVnocefI+wTedVVo/FIa2Ja/yNBF6K3mlW2TsZkLE7037AF8Es7XwK6DW2
+         iNh+AKl4rz0YzrhQged7iLvviugDQ1N0b6jjnzJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alois Wohlschlager <alois1@gmx-topmail.de>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.4 16/27] ovl: prevent private clone if bind mount is not allowed
-Date:   Fri, 13 Aug 2021 17:07:14 +0200
-Message-Id: <20210813150523.896203260@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Longfang Liu <liulongfang@huawei.com>
+Subject: [PATCH 4.19 08/11] USB:ehci:fix Kunpeng920 ehci hardware problem
+Date:   Fri, 13 Aug 2021 17:07:15 +0200
+Message-Id: <20210813150520.340771651@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210813150523.364549385@linuxfoundation.org>
-References: <20210813150523.364549385@linuxfoundation.org>
+In-Reply-To: <20210813150520.072304554@linuxfoundation.org>
+References: <20210813150520.072304554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,97 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Longfang Liu <liulongfang@huawei.com>
 
-commit 427215d85e8d1476da1a86b8d67aceb485eb3631 upstream.
+commit 26b75952ca0b8b4b3050adb9582c8e2f44d49687 upstream.
 
-Add the following checks from __do_loopback() to clone_private_mount() as
-well:
+Kunpeng920's EHCI controller does not have SBRN register.
+Reading the SBRN register when the controller driver is
+initialized will get 0.
 
- - verify that the mount is in the current namespace
+When rebooting the EHCI driver, ehci_shutdown() will be called.
+if the sbrn flag is 0, ehci_shutdown() will return directly.
+The sbrn flag being 0 will cause the EHCI interrupt signal to
+not be turned off after reboot. this interrupt that is not closed
+will cause an exception to the device sharing the interrupt.
 
- - verify that there are no locked children
+Therefore, the EHCI controller of Kunpeng920 needs to skip
+the read operation of the SBRN register.
 
-Reported-by: Alois Wohlschlager <alois1@gmx-topmail.de>
-Fixes: c771d683a62e ("vfs: introduce clone_private_mount()")
-Cc: <stable@vger.kernel.org> # v3.18
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+Link: https://lore.kernel.org/r/1617958081-17999-1-git-send-email-liulongfang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/namespace.c |   42 ++++++++++++++++++++++++++++--------------
- 1 file changed, 28 insertions(+), 14 deletions(-)
+ drivers/usb/host/ehci-pci.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -1861,6 +1861,20 @@ void drop_collected_mounts(struct vfsmou
- 	namespace_unlock();
- }
+--- a/drivers/usb/host/ehci-pci.c
++++ b/drivers/usb/host/ehci-pci.c
+@@ -298,6 +298,9 @@ static int ehci_pci_setup(struct usb_hcd
+ 	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
+ 	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
+ 		;	/* ConneXT has no sbrn register */
++	else if (pdev->vendor == PCI_VENDOR_ID_HUAWEI
++			 && pdev->device == 0xa239)
++		;	/* HUAWEI Kunpeng920 USB EHCI has no sbrn register */
+ 	else
+ 		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
  
-+static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
-+{
-+	struct mount *child;
-+
-+	list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
-+		if (!is_subdir(child->mnt_mountpoint, dentry))
-+			continue;
-+
-+		if (child->mnt.mnt_flags & MNT_LOCKED)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * clone_private_mount - create a private clone of a path
-  *
-@@ -1875,14 +1889,27 @@ struct vfsmount *clone_private_mount(con
- 	struct mount *old_mnt = real_mount(path->mnt);
- 	struct mount *new_mnt;
- 
-+	down_read(&namespace_sem);
- 	if (IS_MNT_UNBINDABLE(old_mnt))
--		return ERR_PTR(-EINVAL);
-+		goto invalid;
-+
-+	if (!check_mnt(old_mnt))
-+		goto invalid;
-+
-+	if (has_locked_children(old_mnt, path->dentry))
-+		goto invalid;
- 
- 	new_mnt = clone_mnt(old_mnt, path->dentry, CL_PRIVATE);
-+	up_read(&namespace_sem);
-+
- 	if (IS_ERR(new_mnt))
- 		return ERR_CAST(new_mnt);
- 
- 	return &new_mnt->mnt;
-+
-+invalid:
-+	up_read(&namespace_sem);
-+	return ERR_PTR(-EINVAL);
- }
- EXPORT_SYMBOL_GPL(clone_private_mount);
- 
-@@ -2234,19 +2261,6 @@ static int do_change_type(struct path *p
- 	return err;
- }
- 
--static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
--{
--	struct mount *child;
--	list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
--		if (!is_subdir(child->mnt_mountpoint, dentry))
--			continue;
--
--		if (child->mnt.mnt_flags & MNT_LOCKED)
--			return true;
--	}
--	return false;
--}
--
- static struct mount *__do_loopback(struct path *old_path, int recurse)
- {
- 	struct mount *mnt = ERR_PTR(-EINVAL), *old = real_mount(old_path->mnt);
 
 
