@@ -2,165 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353BB3EB66E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944193EB676
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 16:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240749AbhHMOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 10:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234353AbhHMOAx (ORCPT
+        id S240764AbhHMOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 10:01:51 -0400
+Received: from mail-m17636.qiye.163.com ([59.111.176.36]:54738 "EHLO
+        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240703AbhHMOBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 10:00:53 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38FEC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:00:26 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id c12so2707713ljr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 07:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZVM0vplmy/19oK/cXrcKqIhbxHNaKwUpDUiALp+Y6aE=;
-        b=qCdruYefutWcjRrs3M/Y8Udlh9BzmfI2VBGmQAwmpPOdLXo/52OU1jEr0frSqAsfB0
-         pr5SZqxxMxH3RL88RSRRY8v2rViEd5gUbtZXzxRPkgcgW93uMYQ+8Hngw6ZH7lSTF0XK
-         E63VgjFuBAS+uJ8k6CaaVIJePYuSncm+wtyml15y9bEmJlswD6yhITjfhLL+UFhRx9m6
-         9iTi8HHmLLoo/7i584xEqHSczw/5hapOBgYB2caJwq8eux6APBgaztvWyVYq87so8fn+
-         sH4rOIidwbuHvvRypbps4CZsG9iy/9EaOM94w7cMSc2073AcnIRL/vzXDEHRgJLgsMJ8
-         p0LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZVM0vplmy/19oK/cXrcKqIhbxHNaKwUpDUiALp+Y6aE=;
-        b=YMPHUYgOhqtM9ewX0axYtaFgGZRKO0jFH+foYSAvprXL8adarHhMX6Hih0BhuoKcIn
-         uMTLdwH5EPHZ0O/lrru/AT8Os0PNjeG9TlQb3CRBUBUfjP0bbtF8SqdX+QzOqiRpbQHA
-         rak6mxTrFykZ5TKNKNjOn7yjGdMsSCtBOYf2yhZE6Gtt2GQn5k4EtzKdVOPBFDcG+f7q
-         RSaQ0pMvxcuJnn6zKkxHL4sUapn2DbPmhwF4ez1wlJqa3cj/f/6Il1RPrlX+LrmpVCVu
-         3g0aLiHui3s+MnZdEWdqR9YHtwzccsLH/2u4yp4BsAZY3c3FdpNKlM3ChoIm4hyw6iyw
-         zOZg==
-X-Gm-Message-State: AOAM532Feu3/yVF6ohoVwknp/wCxPQep1OXtfhzXNAnMq2/M0cARekLT
-        409+l3IvTE4gWBUmEg1RNhXMI4SZBqyXsw==
-X-Google-Smtp-Source: ABdhPJxtJmMaaBxGAbInWk8Sqlc4Ietf7STHLSTXHytqFjsXm17SZQxD6cM/rca40hCqGYZfE9H2Aw==
-X-Received: by 2002:a2e:824e:: with SMTP id j14mr1926569ljh.77.1628863225011;
-        Fri, 13 Aug 2021 07:00:25 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id u10sm165002lft.252.2021.08.13.07.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 07:00:24 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     rostedt@goodmis.org, penguin-kernel@I-love.SAKURA.ne.jp,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: [PATCH v2] profiling: fix shift-out-of-bounds bugs
-Date:   Fri, 13 Aug 2021 17:00:22 +0300
-Message-Id: <20210813140022.5011-1-paskripkin@gmail.com>
+        Fri, 13 Aug 2021 10:01:50 -0400
+Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
+        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 6E8D4C40129;
+        Fri, 13 Aug 2021 22:01:20 +0800 (CST)
+From:   Yangtao Li <frank.li@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH] f2fs: convert /sys/fs/f2fs/<disk>/stat/sb_status to use string
+Date:   Fri, 13 Aug 2021 22:01:19 +0800
+Message-Id: <20210813140119.130321-1-frank.li@vivo.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
-References: <99b9e091-9e95-5e45-5914-38a938840aa6@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpNT0xWHRhDH04ZTk1DTB
+        kYVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PBg6Kjo5GD9KNRgUCxA*Kgox
+        DBMwCS9VSlVKTUlDQ01ISUNKS0lNVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
+        VUpLT1VKQ0NVSk1OWVdZCAFZQU1ISE43Bg++
+X-HM-Tid: 0a7b3fd135d6d996kuws6e8d4c40129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported shift-out-of-bounds bug in profile_init().
-The problem was in incorrect prof_shift. Since prof_shift value comes from
-userspace we need to clamp this value into [0, BITS_PER_LONG -1]
-boundaries.
+Do not use numbers but strings to improve readability when flag is set.
 
-Second possible shiht-out-of-bounds was found by Tetsuo:
-sample_step local variable in read_profile() had "unsigned int" type,
-but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
-possible shiht-out-of-bounds sample_step type was changed to
-"unsigned long".
-
-Also, "unsigned short int" will be sufficient for storing
-[0, BITS_PER_LONG] value, that's why there is no need for
-"unsigned long" prof_shift.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
+This patch is based on [v2] f2fs: improve sbi status info in debugfs/f2fs/status
 
-Changes in v2:
-	1. Fixed possible shiht-out-of-bounds in read_profile()
-	   (Reported by Tetsuo)
+ Documentation/ABI/testing/sysfs-fs-f2fs | 34 ++++++++++++-------------
+ fs/f2fs/debug.c                         | 19 +-------------
+ fs/f2fs/f2fs.h                          |  1 +
+ fs/f2fs/sysfs.c                         | 26 ++++++++++++++++++-
+ 4 files changed, 44 insertions(+), 36 deletions(-)
 
-	2. Changed prof_shift type from "unsigned long" to
-	   "unsigned short int"
-
----
- kernel/profile.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/profile.c b/kernel/profile.c
-index c2ebddb5e974..eb9c7f0f5ac5 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -41,7 +41,8 @@ struct profile_hit {
- #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 73211f77d11e..b07eb1e27c97 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -410,23 +410,23 @@ Date:		December 2020
+ Contact:	"Chao Yu" <yuchao0@huawei.com>
+ Description:	Show status of f2fs superblock in real time.
  
- static atomic_t *prof_buffer;
--static unsigned long prof_len, prof_shift;
-+static unsigned long prof_len;
-+static unsigned short int prof_shift;
+-		====== ===================== =================================
+-		value  sb status macro       description
+-		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
+-		0x2    SBI_IS_CLOSE          specify unmounting
+-		0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
+-		0x8    SBI_POR_DOING         recovery is doing or not
+-		0x10   SBI_NEED_SB_WRITE     need to recover superblock
+-		0x20   SBI_NEED_CP           need to checkpoint
+-		0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
+-		0x80   SBI_IS_RECOVERED      recovered orphan/data
+-		0x100  SBI_CP_DISABLED       CP was disabled last mount
+-		0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
+-		0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
+-		0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
+-		0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
+-		0x2000 SBI_IS_RESIZEFS       resizefs is in process
+-		====== ===================== =================================
++		=====================	=================================
++		sb status		description
++		fs_dirty		dirty flag for checkpoint
++		closing			specify unmounting
++		need_fsck		need fsck.f2fs to fix
++		recovering		recovery is doing or not
++		sb_dirty		need to recover superblock
++		need_cp			need to checkpoint
++		shutdown		shutdown by ioctl
++		recovered		recovered orphan/data
++		cp_disabled		CP was disabled last mount
++		cp_disabled_quick	CP was disabled quickly
++		quota_need_flush	need to flush quota info in CP
++		quota_skip_flush	skip flushing quota in current CP
++		quota_need_repair	quota file may be corrupted
++		resizefs		resizefs is in process
++		=====================	=================================
  
- int prof_on __read_mostly;
- EXPORT_SYMBOL_GPL(prof_on);
-@@ -67,8 +68,8 @@ int profile_setup(char *str)
- 		if (str[strlen(sleepstr)] == ',')
- 			str += strlen(sleepstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel sleep profiling enabled (shift: %u)\n",
- 			prof_shift);
- #else
- 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
-@@ -78,21 +79,21 @@ int profile_setup(char *str)
- 		if (str[strlen(schedstr)] == ',')
- 			str += strlen(schedstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel schedule profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
- 		prof_on = KVM_PROFILING;
- 		if (str[strlen(kvmstr)] == ',')
- 			str += strlen(kvmstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel KVM profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (get_option(&str, &par)) {
--		prof_shift = par;
-+		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
- 		prof_on = CPU_PROFILING;
--		pr_info("kernel profiling enabled (shift: %ld)\n",
-+		pr_info("kernel profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	}
- 	return 1;
-@@ -468,7 +469,7 @@ read_profile(struct file *file, char __user *buf, size_t count, loff_t *ppos)
- 	unsigned long p = *ppos;
- 	ssize_t read;
- 	char *pnt;
--	unsigned int sample_step = 1 << prof_shift;
-+	unsigned long sample_step = 1UL << prof_shift;
+ What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
+ Date:		January 2021
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index d8c09346545d..298bf41a13b6 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -323,23 +323,6 @@ static void update_mem_info(struct f2fs_sb_info *sbi)
+ #endif
+ }
  
- 	profile_flip_buffers();
- 	if (p >= (prof_len+1)*sizeof(unsigned int))
+-static char *s_flag[] = {
+-	[SBI_IS_DIRTY]		= " fs_dirty",
+-	[SBI_IS_CLOSE]		= " closing",
+-	[SBI_NEED_FSCK]		= " need_fsck",
+-	[SBI_POR_DOING]		= " recovering",
+-	[SBI_NEED_SB_WRITE]	= " sb_dirty",
+-	[SBI_NEED_CP]		= " need_cp",
+-	[SBI_IS_SHUTDOWN]	= " shutdown",
+-	[SBI_IS_RECOVERED]	= " recovered",
+-	[SBI_CP_DISABLED]	= " cp_disabled",
+-	[SBI_CP_DISABLED_QUICK]	= " cp_disabled_quick",
+-	[SBI_QUOTA_NEED_FLUSH]	= " quota_need_flush",
+-	[SBI_QUOTA_SKIP_FLUSH]	= " quota_skip_flush",
+-	[SBI_QUOTA_NEED_REPAIR]	= " quota_need_repair",
+-	[SBI_IS_RESIZEFS]	= " resizefs",
+-};
+-
+ static int stat_show(struct seq_file *s, void *v)
+ {
+ 	struct f2fs_stat_info *si;
+@@ -357,7 +340,7 @@ static int stat_show(struct seq_file *s, void *v)
+ 		if (si->sbi->s_flag) {
+ 			seq_puts(s, "[SBI:");
+ 			for_each_set_bit(j, &si->sbi->s_flag, 32)
+-				seq_puts(s, s_flag[j]);
++				seq_printf(s, " %s", s_flag[j]);
+ 			seq_puts(s, "]\n");
+ 		}
+ 		seq_printf(s, "[SB: 1] [CP: 2] [SIT: %d] [NAT: %d] ",
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 67faa43cc141..772dd3352c64 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1257,6 +1257,7 @@ enum {
+ 	SBI_QUOTA_NEED_REPAIR,			/* quota file may be corrupted */
+ 	SBI_IS_RESIZEFS,			/* resizefs is in process */
+ };
++extern char *s_flag[];
+ 
+ enum {
+ 	CP_TIME,
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 0954761341d7..e6f87e3d8f2e 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -111,10 +111,34 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+ 				sbi->sectors_written_start) >> 1)));
+ }
+ 
++char *s_flag[] = {
++	[SBI_IS_DIRTY]		= "fs_dirty",
++	[SBI_IS_CLOSE]		= "closing",
++	[SBI_NEED_FSCK]		= "need_fsck",
++	[SBI_POR_DOING]		= "recovering",
++	[SBI_NEED_SB_WRITE]	= "sb_dirty",
++	[SBI_NEED_CP]		= "need_cp",
++	[SBI_IS_SHUTDOWN]	= "shutdown",
++	[SBI_IS_RECOVERED]	= "recovered",
++	[SBI_CP_DISABLED]	= "cp_disabled",
++	[SBI_CP_DISABLED_QUICK]	= "cp_disabled_quick",
++	[SBI_QUOTA_NEED_FLUSH]	= "quota_need_flush",
++	[SBI_QUOTA_SKIP_FLUSH]	= "quota_skip_flush",
++	[SBI_QUOTA_NEED_REPAIR]	= "quota_need_repair",
++	[SBI_IS_RESIZEFS]	= "resizefs",
++};
++
+ static ssize_t sb_status_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+-	return sprintf(buf, "%lx\n", sbi->s_flag);
++	int len = 0, i = 0;
++
++	for_each_set_bit(i, &sbi->s_flag, 32)
++		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
++				 len ? ", " : "", s_flag[i]);
++	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
++
++	return len;
+ }
+ 
+ static ssize_t features_show(struct f2fs_attr *a,
 -- 
 2.32.0
 
