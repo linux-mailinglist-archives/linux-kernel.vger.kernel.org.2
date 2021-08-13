@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7583EBCAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 21:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF533EBCB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 21:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhHMTpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 15:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhHMTpc (ORCPT
+        id S233794AbhHMTr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 15:47:59 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59904 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhHMTr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 15:45:32 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F27FC061756;
-        Fri, 13 Aug 2021 12:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=vGxwLQwFO2S7TTjs1yBKTvR75GNMnpeXiG3mZABQ1io=;
-        t=1628883905; x=1630093505; b=pk97yo0ziCaTXhJO1U8NwHm2jV76Y1SaMwLWw+oePwsCEI4
-        /k80LWcPeO/cALwT9OL5KTQkkm9mEHdtcnFhrJaaBlfgHE8aOrb4x/ZeSluTZXL/didolW5u8Zs9Z
-        bdwbalR72Mqq8K97CK7TiMbG1iz2x6MbEZ8YUiMw31HJNn7vBfxDWUXmczj94VPwWq05wTWxE6U0C
-        H2v26+p/PcH1k3fe7Dev7l/mECrDmmJWH1PKMDIwkJjmVtFfs492L6GS8qdPDJFCGZA1bsGdxbnTr
-        izLUxRkmVFYineHvfmu+L5HCo0cyFqAtG1sXP/U4S/EnF1TotvO9/LYFmwC/zVzw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mEd6u-00ANL4-Up; Fri, 13 Aug 2021 21:44:57 +0200
-Message-ID: <6488ed24d2ce0ccb1987c271064e25bc72c30863.camel@sipsolutions.net>
-Subject: Re: [PATCH 10/64] lib80211: Use struct_group() for memcpy() region
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Fri, 13 Aug 2021 21:44:55 +0200
-In-Reply-To: <202108130846.EC339BCA@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
-         <20210727205855.411487-11-keescook@chromium.org>
-         <a9c8ae9e05cfe2679cd8a7ef0ab20b66cf38b930.camel@sipsolutions.net>
-         <202108130846.EC339BCA@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Fri, 13 Aug 2021 15:47:58 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 4FD241F44A5A
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     shuah@kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, luto@kernel.org,
+        linux-kselftest@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v2] selftest: Add test for Soft-Dirty PTE bit
+Organization: Collabora
+References: <20210603151518.2437813-1-krisman@collabora.com>
+        <20210813150009.GC8451@willie-the-truck>
+Date:   Fri, 13 Aug 2021 15:47:23 -0400
+In-Reply-To: <20210813150009.GC8451@willie-the-truck> (Will Deacon's message
+        of "Fri, 13 Aug 2021 16:00:10 +0100")
+Message-ID: <87lf553z5g.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-13 at 08:49 -0700, Kees Cook wrote:
-> 
-> Ah! Yes, thanks for pointing this out. During earlier development I split
-> the "cross-field write" changes from the "cross-field read" changes, and
-> it looks like I missed moving lib80211_crypt_ccmp.c into that portion of
-> the series (which I haven't posted nor finished -- it's lower priority
-> than fixing the cross-field writes).
+Will Deacon <will@kernel.org> writes:
 
-Oh, OK. I think all of this patch was cross-field read though.
+> On Thu, Jun 03, 2021 at 11:15:18AM -0400, Gabriel Krisman Bertazi wrote:
+>> This introduces three tests:
+>> 
+>> 1) Sanity check soft dirty basic semantics: allocate area, clean, dirty,
+>> check if the SD bit flipped.
+>> 
+>> 2) Check VMA reuse: validate the VM_SOFTDIRTY usage
+>> 
+>> 3) Check soft-dirty on huge pages
+>> 
+>> This was motivated by Will Deacon's fix commit 912efa17e512 ("mm: proc:
+>> Invalidate TLB after clearing soft-dirty page state"). I was tracking the
+>> same issue that he fixed, and this test would have caught it.
+>> 
+>> Cc: Will Deacon <will@kernel.org>
+>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> 
+>> --
+>> Changes since V1:
+>>   - Fix last minute build break with page_size
+>> ---
+>>  tools/testing/selftests/Makefile              |   1 +
+>>  tools/testing/selftests/soft-dirty/.gitignore |   1 +
+>>  tools/testing/selftests/soft-dirty/Makefile   |   9 +
+>>  .../testing/selftests/soft-dirty/soft-dirty.c | 254 ++++++++++++++++++
+>>  4 files changed, 265 insertions(+)
+>>  create mode 100644 tools/testing/selftests/soft-dirty/.gitignore
+>>  create mode 100644 tools/testing/selftests/soft-dirty/Makefile
+>>  create mode 100644 tools/testing/selftests/soft-dirty/soft-dirty.c
+>
+> Although I think adding a test for this is great (and I certainly wouldn't
+> want to get in the way of that; quite the opposite), I notice that we
+> already have test_softdirty() in selftests/vm/madv_populate.c. Would we be
+> better off extending that test instead of introducing another one?
 
-Anyway, the patch itself is fine, just seems incomplete and somewhat
-badly organised :)
+Hi, Will. Thanks for the review.
 
-johannes
+Looks like selftests/vm/madv_populate.c was merged after I sent this,
+which explains why I missed it.  From a quick look, it also doesn't
+verify the corner case of I'm checking here.  I will look into merging
+the two tests, or at least moving this to vm/ and remove the overlap.
 
+Thanks,
 
+-- 
+Gabriel Krisman Bertazi
