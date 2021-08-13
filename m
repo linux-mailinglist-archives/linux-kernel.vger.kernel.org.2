@@ -2,177 +2,471 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1A13EB41D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D44E3EB422
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 12:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbhHMKim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 06:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbhHMKil (ORCPT
+        id S240164AbhHMKjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 06:39:48 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:60031 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239030AbhHMKjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 06:38:41 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D44C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:38:15 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso1040888pjh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 03:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wb+uduTJVU+Q+I0bdgQ7CYu7XXOHIlVR7bsVSo1eKE4=;
-        b=doDCzqDIpeCdeqR4X+xvbtG6wia6MICmN7cfZE1GICfZwgHFvUrAdt5bOUSA/RFNrd
-         LtcNVNJRT4hNJh12FSM5n2wLVUzykZck0U1QQOuGMVcGQKlan6prUU7AvcFuAq3u+ruk
-         R7841akUmq1nVR9DGmzyTUJkciEFohBawAVEqKF5xRi1YLUPAxW4dKe3c+AA6CNmyFkK
-         5NqVBVjRDygxHKONRPUJlZCwlMdh32moX1CSB7luF2y3QxqmJRa6AHYOmbSpd+0jDU0g
-         Dr3JG2MRQWb3aMM2trI/ULgBkTuONQSALTK01+hfVPAtfAHrn/sdMpqigSuL/k2vL48p
-         evVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wb+uduTJVU+Q+I0bdgQ7CYu7XXOHIlVR7bsVSo1eKE4=;
-        b=eFNwpRJtS4y+HPRrGEVzgu8KRA9t481ZyYUpfgtP6SKrlR+91Zaj5baaI75AxlhXD8
-         w364KAdoBIjfEk5tkcUDH/QxBjeNaVxsWQHAw1+Q/tfPiUdetF7oDF7iYKROleTx+CaV
-         w0ybemk60AVZtwpz+4OOLj+d1yf6vEJGKTxdJYjBbrwPpyNb/oViaQ5eOHJQATbPfDBY
-         K4a4ROK/ryqk7vyg8rz1BPXNVEfR9S3LLOdzfYAOVKPX6TA2QJZ+uchaZzMgX1HXuwad
-         C8eWCps6OGkF1LkvRuZcoqddcca5Q/MSrSf9k6aYoO+3rnN9LcSbtE44+6Pjr1BXRtAk
-         2N/Q==
-X-Gm-Message-State: AOAM53237nrCKyPcqtzy8aoUJWvSXoXLZ29F+9xfe9H+CXH8GkWlPoQN
-        Aof7SkIzzkvUZgVFLdq8BYYZJw==
-X-Google-Smtp-Source: ABdhPJyalLlpcNVdYB/LwDrXDGBqzJJxmPbAFFX7ylbJhEFjtdt3EOwq7IpwXrq61/Z5lNsO4v0EVw==
-X-Received: by 2002:a63:2217:: with SMTP id i23mr1801072pgi.448.1628851094686;
-        Fri, 13 Aug 2021 03:38:14 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id r11sm1522653pjd.26.2021.08.13.03.38.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Aug 2021 03:38:14 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] x86/unwind/orc: fix the check of stack addresses
-Date:   Fri, 13 Aug 2021 18:38:04 +0800
-Message-Id: <20210813103804.62215-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Fri, 13 Aug 2021 06:39:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1628851160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hI05B3vKevKapNXpCG14aO4HwxPCiPfU++4oWyXo8Eo=;
+        b=mwQaAohcrJlZ61m7t0Ts6SVJv215msjSpfUW1AriS89CQIAXN0TxSAaNpB/39J5CZHL89s
+        BeO3ny9qNs8jrycPgxKKCXD4W/kBMoD+oNH9gfNT3mzMWWv8mgwNYVXQK93Kp5xP8Dwr6U
+        j5pGRNuF8Ol6Zh2t6gqImR4FjeM8Wuc=
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01lp2053.outbound.protection.outlook.com [104.47.1.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-39-LDIrlG2cNGqwwdmg9Qah5w-1; Fri, 13 Aug 2021 12:39:19 +0200
+X-MC-Unique: LDIrlG2cNGqwwdmg9Qah5w-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lRc6TnEAd7AldG9qqvgQWT1ePmcEDjz1DZjVMmV9Fn1C710DI/fKep0VUXOG8w6wwPLp2CwLO6kgqQDXmMamvn91bH+iNoDwEhAN6VzaE7fiwYfJ0Px0IMTnRm6pQt2+CaiSueaOhKVAY1fmUu+sT+1T4urqk/7XinmzBpMTvn0c/1iIDkH4hkMc7EHnmul0U93fX6FGxYjEWwSl3EdaiCYBlxKZ+jD3SEJ2cZzl49ve1LB+cvekoubpfuHv1GA6KelW46eXSbgDr23qw2F92nBvYOmjk8G6X8PVVYTBwraTZkzyJLdIvwuxg3gVwPQ/O6COg90pFBkG1tv2uQjg5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xlh2hwiPXnPeXIpWig+0a1BxtbkPnvQElJHXCqoXq+8=;
+ b=Z/fwB95xSFSnY7LHeAlLGr1N/v0m8BFuddWySoiuvg1QrA46Io44yLw3oX3L6TjJnp/Glda3Ivwbgd4bTH5PwLG8KpSVjtR+OyQRIM2PkZXEGABVcmH4kd51806JskOD3D8Av7YHJVC5sGH0vaHB98j2zoGJtPKtYd/2nJ8njAxT6N+SrnmzrUEN9C1H8wFpW7QAezBcJsQhBvOiT9MDLIYXSo9BKtRt+6af+JnvfW2d+s2pQHVJBxfWZOkZDRr61laOwDCOBoKJ6rnbtP3TbieKkn4EQyXNdMXUSiqHWkbCKX2YFUUHBm62D82q5e7+rsJO9ne/lJaGVbvk161DmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM7PR04MB6773.eurprd04.prod.outlook.com (2603:10a6:20b:dc::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13; Fri, 13 Aug
+ 2021 10:39:17 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::3510:ed3f:66d7:cf48]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::3510:ed3f:66d7:cf48%6]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 10:39:16 +0000
+Subject: Re: [PATCH 4/7] btrfs: qgroup: try to flush qgroup space when we get
+ -EDQUOT
+To:     Anand Jain <anand.jain@oracle.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+CC:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+References: <cover.1628845854.git.anand.jain@oracle.com>
+ <740e4978ebebfc08491db3f52264f7b5ba60ed96.1628845854.git.anand.jain@oracle.com>
+ <0711671b-b08c-ee78-7271-b756dd1b579e@gmx.com>
+ <b49529b9-3f1c-be5f-f95a-dadceae057ec@oracle.com>
+From:   Qu Wenruo <wqu@suse.com>
+Message-ID: <6f45f8c6-03df-b2e0-cfda-85fd0b41212a@suse.com>
+Date:   Fri, 13 Aug 2021 18:39:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <b49529b9-3f1c-be5f-f95a-dadceae057ec@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: BYAPR01CA0062.prod.exchangelabs.com (2603:10b6:a03:94::39)
+ To AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR01CA0062.prod.exchangelabs.com (2603:10b6:a03:94::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16 via Frontend Transport; Fri, 13 Aug 2021 10:39:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 200eef2c-38f5-4874-e4e0-08d95e469997
+X-MS-TrafficTypeDiagnostic: AM7PR04MB6773:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR04MB677327DE202B48D9A99357F6D6FA9@AM7PR04MB6773.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p5hbkPSmpIS5UqZE40eAyZ6crRnyzC97QXmDZZxkMuAZZyUeoezjYdWAljx51DAHKne0HaSG96Mi75sHfyTZjScbD6nKc1AjVShN3LjXu4CHZ7V6mP5D9K2sBvtyDRTGK3/D5K8jQEZ7gD1zTRZ2atJoBdi7QC3Zp8QGGxOrzYD35NF6W3T0HzJZXANs+AxOSi2EzttMtdKcvXiN3/4Aj8PHjgCu7CzG4YodeMMjaBDrdm96jnNauR96g1VjQ2IHtBW6vZklkow+ZQHfJBSGf72JvBjg157nb3h1qFkcJ9apwgIYvr2pk7rURqFXjmgLIE/XaqqmRZClO02io6HxAzVB4sr+tdBOTjP/vld1oBOXb7+49Id/g/rUXie2LlRuAWB32qmNG+WnfScrDi/k6sxhP53V6YWomeUWvFo5FjBlyDcPw3K9ja4JuZ1pO931E5Bxtm9AekGdzQJankjkErwstm9fsgSTDDoZ3pK01gCoHnhYzp23sZRbpR7+vhnIH+DiDAw2IcGvKomHPQjh4rip2TJKUadzxzUgbNlE65rVGn9f5nKTq0lb1A8IPotaguBvqfcUJRO6XF/MlOytMTsoXXpwZVuDUymn5+9AjZxLqUTLxaK9PAtY8GYwUqHFhzdX0lU69mv2sH9dnDVY8inHOyBbBvaXv7HnNQJ/0d0twiEp2EtW1/5I5QDOdTxDjq+tgzaLPpEdrzwYoe6E+/Hfr5YENCJugShajspQTyA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(39840400004)(376002)(2906002)(30864003)(2616005)(26005)(956004)(31696002)(6666004)(53546011)(5660300002)(316002)(4001150100001)(16576012)(8676002)(38100700002)(110136005)(66946007)(4326008)(107886003)(6486002)(66476007)(31686004)(6706004)(8936002)(86362001)(186003)(54906003)(36756003)(66556008)(83380400001)(478600001)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?++ufpwrKepfO1ScQPujGlUH0JTw1PJxt+uSfcPp83sHi1AuiRcIqGdBTL2D5?=
+ =?us-ascii?Q?F+X/wtXXaoM0WpoIvvXg0pux6hX9C5vqQCP0ilocsfZfwWMVfwOEKn+uGCgU?=
+ =?us-ascii?Q?2BlfVKvlmTptBX+rML+qRNf1ZD1C3QOaFB/wXRR7qAnmhV7efOvrzy4wPxn2?=
+ =?us-ascii?Q?YLcNo/z7rhZpm15JUXzaH4QU6ldP0WZ+gRjvQ1oaYJuLxF1j5wSUCsnUy3Gv?=
+ =?us-ascii?Q?Sl4mlcy473DkuBHeTZaCczn0dcKn07AssFDjrMeTFhhA3lPkw0wOKmT/FPP+?=
+ =?us-ascii?Q?saI2ajfFHIZqFyBTH1oD3cJmvUnB3L6oPijWZSivlJOp8SVEFxpcKqoreGlF?=
+ =?us-ascii?Q?eHFXlZ9Mf9ZEA6RyMzqRKG7Zy0u5HSyv8OunFDdrMAImHK5iGuxthKsHxYwm?=
+ =?us-ascii?Q?EzHAlvx7UYuLVQlOY2M0zuhlRoyllaSdQmpvQ5AUmHv/qmg26TMqTDcBTwkj?=
+ =?us-ascii?Q?DuuXU+8THD/OaNUAnKktm5dBmfB2ifZHeAGosv0lIZ2fKP1Q2fMohf+pLWU3?=
+ =?us-ascii?Q?clPF6DkKETNdHNs4De/UytwNer5WbmLKhkSZC3+wJmwmyOCo++83RF8V7baQ?=
+ =?us-ascii?Q?e5K51ljFblZhBPINa3c0aeVKfZqLa9ubVPqJKBF7WUlCOwUT9ApOhO5bZx96?=
+ =?us-ascii?Q?es2+DZZxDB76qwPRJqDjbmyaA84u42e5zuI8CKjCd4XK3tr1bMtd2sZESpvy?=
+ =?us-ascii?Q?tPXwa/aGfMK7yx8GXmoho/I2YKemh0BZHKuvJ/3JwxLY79d3SYsD0jJpZ9ln?=
+ =?us-ascii?Q?0jUk32vKzgqaHieYck+PynMK7h08NXwUepYyEyb19gTo3LaPVa3blhYpIUjL?=
+ =?us-ascii?Q?6iXBo+hJkkNmdD06kD/H/zYeQfYMHNYKiCS48+k3E5+Y3WAFmJ0qj6cs/QBv?=
+ =?us-ascii?Q?qQKghfF54TPfrRaG/jFR0y4zyZGQSsc9b++acJ2gaxS4F7tAIoO81B/MQerO?=
+ =?us-ascii?Q?unlfobbRNySHAEihp33i8U7BH1NzAm/M0MqU+lv9S9kLPydYDy4tJL+GnLxh?=
+ =?us-ascii?Q?4Jc684V0SIfAIhaXDok5YybWImAC0f1wmvXTRZbRWmi6kh/JxZMkYUNX8PvD?=
+ =?us-ascii?Q?ke4dcXcSE5/oi1ehqF2iluN2NG2gULv1VIcVbqKIBpGafUI3IcM/e/7RPiK3?=
+ =?us-ascii?Q?7XXd4pxxmb83krWvRrrBwh2n5OMIFw4MjDRPanQoma7u5u5+chkVs2AtGo/G?=
+ =?us-ascii?Q?7WM7cMcKhbNO8G07rjM3vsi1mvQc58ymnyzeVDyFWTOPKzCwPYTSbNg5DTTW?=
+ =?us-ascii?Q?IcmkpbixhGnBfSWpDxQjlLuyU+5v/l97Speu5J7jODXgXsJzKulEwYY9YhJr?=
+ =?us-ascii?Q?KoguwKdIlWX6DR1oXCzKh4GD?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 200eef2c-38f5-4874-e4e0-08d95e469997
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 10:39:16.8142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tMQb3h+5+lcB5ocKvwNzLL+NgUWObngXHwizY7L/KCVFuqyM6hzzlzz+kxxCkTCh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6773
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In our server, we saw a kernel panic, the call trace is like below.
 
-  BUG: stack guard page was hit at 000000001ff76a9e (stack is
-       0000000095d6f9f7..00000000dd56db03)
-  kernel stack overflow (page fault): 0000 [#1] SMP NOPTI
-  RIP: 0010:unwind_next_frame+0x34e/0x570
-  RSP: 0000:fffffe000221a8f0 EFLAGS: 00010002
-  RAX: 0000000000000001 RBX: fffffe000221a930 RCX: 0000000000000001
-  RDX: 0000000000000010 RSI: ffff8a01c3b0adc0 RDI: ffffa6b9f75c7fc8
-  RBP: 0000000000000004 R08: ffffffff9b200982 R09: ffffffff9bc48718
-  R10: ffffffff9bc48714 R11: 0000000000000014 R12: ffffffff9bdf54fa
-  R13: ffffffff9b20098c R14: fffffe0002213ff0 R15: ffffa6b9f75c7fc8
-  FS:  00007f1ea9f0c700(0000) GS:ffff8a4c4f7c0000(0000)
-  knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: ffffa6b9f75c8048 CR3: 00000025c7064000 CR4: 0000000000340ee0
-  Call Trace:
-   <NMI>
-   perf_callchain_kernel+0x125/0x140
-   ? interrupt_entry+0xac/0xc3
-   get_perf_callchain+0x113/0x280
-   perf_callchain+0x6f/0x80
-   perf_prepare_sample+0x87/0x510
-   perf_event_output_forward+0x2a/0x80
-   ? sched_clock+0x5/0x10
-   ? sched_clock_cpu+0xc/0xa0
-   ? arch_perf_update_userpage+0xd0/0xe0
-   __perf_event_overflow+0x4f/0xf0
-   perf_ibs_handle_irq+0x37d/0x4e0
-   ? interrupt_entry+0xac/0xc3
-   ? interrupt_entry+0xac/0xc3
-   ? __set_pte_vaddr+0x32/0x50
-   ? __set_pte_vaddr+0x32/0x50
-   ? set_pte_vaddr+0x3c/0x60
-   ? __native_set_fixmap+0x24/0x30
-   ? native_set_fixmap+0x40/0x60
-   ? ghes_copy_tofrom_phys+0x99/0x130
-   ? apei_read+0x90/0xb0
-   ? interrupt_entry+0xac/0xc3
-   ? __ghes_peek_estatus.isra.15+0x51/0xc0
-   ? perf_ibs_nmi_handler+0x34/0x56
-   ? sched_clock+0x5/0x10
-   perf_ibs_nmi_handler+0x34/0x56
-   nmi_handle+0x70/0x170
-   default_do_nmi+0x4e/0x100
-   do_nmi+0x156/0x1a0
-   end_repeat_nmi+0x16/0x50
 
-The register of CR2 is the fault address, where is 0xffffa6b9f75c8048.
-And the stack range of the current task is [0xffffa6b9f75c4000,
-0xffffa6b9f75c7fff]. We can see that 0xffffa6b9f75c8048 goes beyond
-the range. So we saw kernel panic.
+On 2021/8/13 =E4=B8=8B=E5=8D=886:30, Anand Jain wrote:
+>=20
+>=20
+> On 13/08/2021 18:26, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/13 =E4=B8=8B=E5=8D=885:55, Anand Jain wrote:
+>>> From: Qu Wenruo <wqu@suse.com>
+>>>
+>>> commit c53e9653605dbf708f5be02902de51831be4b009 upstream
+>>
+>> This lacks certain upstream fixes for it:
+>>
+>> f9baa501b4fd6962257853d46ddffbc21f27e344 btrfs: fix deadlock when
+>> cloning inline extents and using qgroups
+>>
+>> 4d14c5cde5c268a2bc26addecf09489cb953ef64 btrfs: don't flush from
+>> btrfs_delayed_inode_reserve_metadata
+>>
+>> 6f23277a49e68f8a9355385c846939ad0b1261e7 btrfs: qgroup: don't commit
+>> transaction when we already hold the handle
+>>
+>> All these fixes are to ensure we don't try to flush in context where we
+>> shouldn't.
+>>
+>> Without them, it can hit various deadlock.
+>>
+>=20
+> Qu,
+>=20
+>  =C2=A0=C2=A0 Thanks for taking a look. I will send it in v2.
 
-    perf_callchain_kernel
-        unwind_next_frame
-            deref_stack_regs(state, addr, ip, sp)
-            {
-                struct pt_regs *regs = (struct pt_regs *)addr;
+I guess you only need to add the missing fixes?
 
-                if (!stack_access_ok(state, addr, sizeof(struct pt_regs)))
-                    return false;
-
-                *ip = READ_ONCE_NOCHECK(regs->ip); // regs->ip trigger panic
-            }
-
-We can see the value of @state through crash tool, and the @addr and
-@regs are 0xffffa6b9f75c7fc8.
-
-crash> struct unwind_state.stack_info fffffe000221a930 -x
-  stack_info = {
-    type = STACK_TYPE_TASK,
-    begin = 0xffffa6b9f75c4000,
-    end = 0xffffa6b9f75c8000,
-    next_sp = 0x0
-  }
-
-The aim of stack_access_ok() is to check the range if it is valid, where
-the range is [0xffffa6b9f75c7fc8, 0xffffa6b9f75c7fc8 + sizeof(struct
-pt_regs)]. The size of 'struct pt_regs' is 168, so the range goes beyond
-the stack range. However, it passes its check. The reason is that
-get_stack_info() only checks the @addr whether it is in the valid stack
-range but ignores the 'len'. We need to recheck the range if it is valid
-after get_stack_info returns to fix this issue.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- arch/x86/kernel/unwind_orc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 187a86e0e753..54c3037d2687 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -336,11 +336,13 @@ static bool stack_access_ok(struct unwind_state *state, unsigned long _addr,
- 	struct stack_info *info = &state->stack_info;
- 	void *addr = (void *)_addr;
- 
--	if (!on_stack(info, addr, len) &&
--	    (get_stack_info(addr, state->task, info, &state->stack_mask)))
-+	if (on_stack(info, addr, len))
-+		return true;
-+
-+	if (get_stack_info(addr, state->task, info, &state->stack_mask))
- 		return false;
- 
--	return true;
-+	return on_stack(info, addr, len);
- }
- 
- static bool deref_stack_reg(struct unwind_state *state, unsigned long addr,
--- 
-2.11.0
+Thanks,
+Qu
+>=20
+> -Anand
+>=20
+>=20
+>> Thanks,
+>> Qu
+>>>
+>>> [PROBLEM]
+>>> There are known problem related to how btrfs handles qgroup reserved
+>>> space.=C2=A0 One of the most obvious case is the the test case btrfs/15=
+3,
+>>> which do fallocate, then write into the preallocated range.
+>>>
+>>> =C2=A0=C2=A0 btrfs/153 1s ... - output mismatch (see=20
+>>> xfstests-dev/results//btrfs/153.out.bad)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/153.out=C2=A0=C2=
+=A0=C2=A0=C2=A0 2019-10-22 15:18:14.068965341 +0800
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +++ xfstests-dev/results//btrfs/15=
+3.out.bad=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2020-07-01=20
+>>> 20:24:40.730000089 +0800
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,2 +1,5 @@
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output created by 153
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +pwrite: Disk quota exceeded
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/testfile2: Disk quot=
+a exceeded
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/testfile2: Disk quot=
+a exceeded
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Silence is golden
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (Run 'diff -u xfstests-dev/tests/b=
+trfs/153.out=20
+>>> xfstests-dev/results//btrfs/153.out.bad'=C2=A0 to see the entire diff)
+>>>
+>>> [CAUSE]
+>>> Since commit c6887cd11149 ("Btrfs: don't do nocow check unless we=20
+>>> have to"),
+>>> we always reserve space no matter if it's COW or not.
+>>>
+>>> Such behavior change is mostly for performance, and reverting it is not
+>>> a good idea anyway.
+>>>
+>>> For preallcoated extent, we reserve qgroup data space for it already,
+>>> and since we also reserve data space for qgroup at buffered write time,
+>>> it needs twice the space for us to write into preallocated space.
+>>>
+>>> This leads to the -EDQUOT in buffered write routine.
+>>>
+>>> And we can't follow the same solution, unlike data/meta space check,
+>>> qgroup reserved space is shared between data/metadata.
+>>> The EDQUOT can happen at the metadata reservation, so doing NODATACOW
+>>> check after qgroup reservation failure is not a solution.
+>>>
+>>> [FIX]
+>>> To solve the problem, we don't return -EDQUOT directly, but every time
+>>> we got a -EDQUOT, we try to flush qgroup space:
+>>>
+>>> - Flush all inodes of the root
+>>> =C2=A0=C2=A0 NODATACOW writes will free the qgroup reserved at=20
+>>> run_dealloc_range().
+>>> =C2=A0=C2=A0 However we don't have the infrastructure to only flush NOD=
+ATACOW
+>>> =C2=A0=C2=A0 inodes, here we flush all inodes anyway.
+>>>
+>>> - Wait for ordered extents
+>>> =C2=A0=C2=A0 This would convert the preallocated metadata space into pe=
+r-trans
+>>> =C2=A0=C2=A0 metadata, which can be freed in later transaction commit.
+>>>
+>>> - Commit transaction
+>>> =C2=A0=C2=A0 This will free all per-trans metadata space.
+>>>
+>>> Also we don't want to trigger flush multiple times, so here we introduc=
+e
+>>> a per-root wait list and a new root status, to ensure only one thread
+>>> starts the flushing.
+>>>
+>>> Fixes: c6887cd11149 ("Btrfs: don't do nocow check unless we have to")
+>>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> Reviewed-by: David Sterba <dsterba@suse.com>
+>>> Signed-off-by: David Sterba <dsterba@suse.com>
+>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>> ---
+>>> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0 |=C2=A0=C2=A0 3 ++
+>>> =C2=A0 fs/btrfs/disk-io.c |=C2=A0=C2=A0 1 +
+>>> =C2=A0 fs/btrfs/qgroup.c=C2=A0 | 100 ++++++++++++++++++++++++++++++++++=
++++++++----
+>>> =C2=A0 3 files changed, 96 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>> index 7960359dbc70..5448dc62e915 100644
+>>> --- a/fs/btrfs/ctree.h
+>>> +++ b/fs/btrfs/ctree.h
+>>> @@ -945,6 +945,8 @@ enum {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_ROOT_DEAD_TREE,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* The root has a log tree. Used only fo=
+r subvolume roots. */
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_ROOT_HAS_LOG_TREE,
+>>> +=C2=A0=C2=A0=C2=A0 /* Qgroup flushing is in progress */
+>>> +=C2=A0=C2=A0=C2=A0 BTRFS_ROOT_QGROUP_FLUSHING,
+>>> =C2=A0 };
+>>>
+>>> =C2=A0 /*
+>>> @@ -1097,6 +1099,7 @@ struct btrfs_root {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t qgroup_meta_rsv_lock;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 qgroup_meta_rsv_pertrans;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 qgroup_meta_rsv_prealloc;
+>>> +=C2=A0=C2=A0=C2=A0 wait_queue_head_t qgroup_flush_wait;
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Number of active swapfiles */
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_t nr_swapfiles;
+>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>> index e6aa94a583e9..e3bcab38a166 100644
+>>> --- a/fs/btrfs/disk-io.c
+>>> +++ b/fs/btrfs/disk-io.c
+>>> @@ -1154,6 +1154,7 @@ static void __setup_root(struct btrfs_root=20
+>>> *root, struct btrfs_fs_info *fs_info,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_init(&root->log_mutex);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_init(&root->ordered_extent_mutex);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_init(&root->delalloc_mutex);
+>>> +=C2=A0=C2=A0=C2=A0 init_waitqueue_head(&root->qgroup_flush_wait);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 init_waitqueue_head(&root->log_writer_wa=
+it);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 init_waitqueue_head(&root->log_commit_wa=
+it[0]);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 init_waitqueue_head(&root->log_commit_wa=
+it[1]);
+>>> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+>>> index 50c45b4fcfd4..b312ac645e08 100644
+>>> --- a/fs/btrfs/qgroup.c
+>>> +++ b/fs/btrfs/qgroup.c
+>>> @@ -3479,17 +3479,58 @@ static int qgroup_unreserve_range(struct=20
+>>> btrfs_inode *inode,
+>>> =C2=A0 }
+>>>
+>>> =C2=A0 /*
+>>> - * Reserve qgroup space for range [start, start + len).
+>>> + * Try to free some space for qgroup.
+>>> =C2=A0=C2=A0 *
+>>> - * This function will either reserve space from related qgroups or=20
+>>> doing
+>>> - * nothing if the range is already reserved.
+>>> + * For qgroup, there are only 3 ways to free qgroup space:
+>>> + * - Flush nodatacow write
+>>> + *=C2=A0=C2=A0 Any nodatacow write will free its reserved data space a=
+t=20
+>>> run_delalloc_range().
+>>> + *=C2=A0=C2=A0 In theory, we should only flush nodatacow inodes, but i=
+t's not yet
+>>> + *=C2=A0=C2=A0 possible, so we need to flush the whole root.
+>>> =C2=A0=C2=A0 *
+>>> - * Return 0 for successful reserve
+>>> - * Return <0 for error (including -EQUOT)
+>>> + * - Wait for ordered extents
+>>> + *=C2=A0=C2=A0 When ordered extents are finished, their reserved metad=
+ata is=20
+>>> finally
+>>> + *=C2=A0=C2=A0 converted to per_trans status, which can be freed by la=
+ter commit
+>>> + *=C2=A0=C2=A0 transaction.
+>>> =C2=A0=C2=A0 *
+>>> - * NOTE: this function may sleep for memory allocation.
+>>> + * - Commit transaction
+>>> + *=C2=A0=C2=A0 This would free the meta_per_trans space.
+>>> + *=C2=A0=C2=A0 In theory this shouldn't provide much space, but any mo=
+re=20
+>>> qgroup space
+>>> + *=C2=A0=C2=A0 is needed.
+>>> =C2=A0=C2=A0 */
+>>> -int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
+>>> +static int try_flush_qgroup(struct btrfs_root *root)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 struct btrfs_trans_handle *trans;
+>>> +=C2=A0=C2=A0=C2=A0 int ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 /*
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * We don't want to run flush again and again,=
+ so if there is a=20
+>>> running
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * one, we won't try to start a new flush, but=
+ exit directly.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> +=C2=A0=C2=A0=C2=A0 if (test_and_set_bit(BTRFS_ROOT_QGROUP_FLUSHING, &r=
+oot->state)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wait_event(root->qgroup_flu=
+sh_wait,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !te=
+st_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state));
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_start_delalloc_snapshot(root);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>>> +=C2=A0=C2=A0=C2=A0 btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-=
+1);
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 trans =3D btrfs_join_transaction(root);
+>>> +=C2=A0=C2=A0=C2=A0 if (IS_ERR(trans)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D PTR_ERR(trans);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_commit_transaction(trans);
+>>> +out:
+>>> +=C2=A0=C2=A0=C2=A0 clear_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state)=
+;
+>>> +=C2=A0=C2=A0=C2=A0 wake_up(&root->qgroup_flush_wait);
+>>> +=C2=A0=C2=A0=C2=A0 return ret;
+>>> +}
+>>> +
+>>> +static int qgroup_reserve_data(struct btrfs_inode *inode,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct extent_changeset **reserved_ret, u64 start,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 u64 len)
+>>> =C2=A0 {
+>>> @@ -3542,6 +3583,34 @@ int btrfs_qgroup_reserve_data(struct=20
+>>> btrfs_inode *inode,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> =C2=A0 }
+>>>
+>>> +/*
+>>> + * Reserve qgroup space for range [start, start + len).
+>>> + *
+>>> + * This function will either reserve space from related qgroups or=20
+>>> do nothing
+>>> + * if the range is already reserved.
+>>> + *
+>>> + * Return 0 for successful reservation
+>>> + * Return <0 for error (including -EQUOT)
+>>> + *
+>>> + * NOTE: This function may sleep for memory allocation, dirty page=20
+>>> flushing and
+>>> + *=C2=A0=C2=A0=C2=A0=C2=A0 commit transaction. So caller should not ho=
+ld any dirty page=20
+>>> locked.
+>>> + */
+>>> +int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 str=
+uct extent_changeset **reserved_ret, u64 start,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64=
+ len)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 int ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D qgroup_reserve_data(inode, reserved_ret, st=
+art, len);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret <=3D 0 && ret !=3D -EDQUOT)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D try_flush_qgroup(inode->root);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +=C2=A0=C2=A0=C2=A0 return qgroup_reserve_data(inode, reserved_ret, sta=
+rt, len);
+>>> +}
+>>> +
+>>> =C2=A0 /* Free ranges specified by @reserved, normally in error path */
+>>> =C2=A0 static int qgroup_free_reserved_data(struct btrfs_inode *inode,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct extent_changeset *reserved, u64 start, u64 len)
+>>> @@ -3712,7 +3781,7 @@ static int sub_root_meta_rsv(struct btrfs_root=20
+>>> *root, int num_bytes,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return num_bytes;
+>>> =C2=A0 }
+>>>
+>>> -int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes=
+,
+>>> +static int qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum btrfs_qgroup_rsv_type type, bool enf=
+orce)
+>>> =C2=A0 {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D root->=
+fs_info;
+>>> @@ -3739,6 +3808,21 @@ int __btrfs_qgroup_reserve_meta(struct=20
+>>> btrfs_root *root, int num_bytes,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> =C2=A0 }
+>>>
+>>> +int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes=
+,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 enum btrfs_qgroup_rsv_type type, bool enforce)
+>>> +{
+>>> +=C2=A0=C2=A0=C2=A0 int ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D qgroup_reserve_meta(root, num_bytes, type, =
+enforce);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret <=3D 0 && ret !=3D -EDQUOT)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D try_flush_qgroup(root);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +=C2=A0=C2=A0=C2=A0 return qgroup_reserve_meta(root, num_bytes, type, e=
+nforce);
+>>> +}
+>>> +
+>>> =C2=A0 void btrfs_qgroup_free_meta_all_pertrans(struct btrfs_root *root=
+)
+>>> =C2=A0 {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D root->=
+fs_info;
+>>>
+>=20
 
