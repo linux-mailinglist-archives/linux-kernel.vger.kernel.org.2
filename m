@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6B13EB831
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC783EB833
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 17:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241863AbhHMPLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 11:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54020 "EHLO mail.kernel.org"
+        id S241111AbhHMPLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 11:11:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241712AbhHMPK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:10:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58A626113B;
-        Fri, 13 Aug 2021 15:10:31 +0000 (UTC)
+        id S241344AbhHMPLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:11:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB776113E;
+        Fri, 13 Aug 2021 15:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867431;
-        bh=YR0X7P5rPSdiyvL8r9FdeCj/5iLxqGgzw8fCEvqO/xE=;
+        s=korg; t=1628867434;
+        bh=ZzV4QEj4kEZU7uAWg4HDmIrIlFVTGr/+FeC+pZdENAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W4TSIwU+IJthExYsuDGqpY5C1nWhX7CwWvQZRmu0yk+PZIwptcWgbLbmo3JaJlkUI
-         zAqREZZJoUxaclhhcuKqhH4fV3hDs8+fmGmF23GAdQyv3FSX58GaM1A/X9VM3YsvvY
-         taQyOnQ9oFtZw62sqKTmEwpCqzmKbf8hbiONE7Rc=
+        b=mEcOZP1kNR3K+W1+EPwn8P4FS/KZGg60yhkv//1fYW6EKVCkXkgXF637K2adYvNCz
+         pWYs57PRnYweOhi+0KZB+VVjrnP/AZN8wHr0ilQ3tSE6IelkklWBUq9zNgI4ZRO3U6
+         3dfbFx1hTNy0wPZkoJKmP0Kk8QaUQGNXg8UmFx4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 11/42] net: pegasus: fix uninit-value in get_interrupt_interval
-Date:   Fri, 13 Aug 2021 17:06:37 +0200
-Message-Id: <20210813150525.486992786@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 12/42] net: fec: fix use-after-free in fec_drv_remove
+Date:   Fri, 13 Aug 2021 17:06:38 +0200
+Message-Id: <20210813150525.518279512@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150525.098817398@linuxfoundation.org>
 References: <20210813150525.098817398@linuxfoundation.org>
@@ -43,92 +45,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit af35fc37354cda3c9c8cc4961b1d24bdc9d27903 ]
+[ Upstream commit 44712965bf12ae1758cec4de53816ed4b914ca1a ]
 
-Syzbot reported uninit value pegasus_probe(). The problem was in missing
-error handling.
+Smatch says:
+	drivers/net/ethernet/freescale/fec_main.c:3994 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
+	drivers/net/ethernet/freescale/fec_main.c:3995 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
 
-get_interrupt_interval() internally calls read_eprom_word() which can
-fail in some cases. For example: failed to receive usb control message.
-These cases should be handled to prevent uninit value bug, since
-read_eprom_word() will not initialize passed stack variable in case of
-internal failure.
+Since fep pointer is netdev private data, accessing it after free_netdev()
+call can cause use-after-free bug. Fix it by moving free_netdev() call at
+the end of the function
 
-Fail log:
-
-BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
-BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
-...
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
- pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-....
-
-Local variable ----data.i@pegasus_probe created at:
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
-
-Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: a31eda65ba21 ("net: fec: fix clock count mis-match")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/20210804143005.439-1-paskripkin@gmail.com
+Reviewed-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/pegasus.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
-index 5435c34dfcc7..d18a283a0ccf 100644
---- a/drivers/net/usb/pegasus.c
-+++ b/drivers/net/usb/pegasus.c
-@@ -750,12 +750,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
- 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 22f964ef859e..29902b8709f1 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3581,13 +3581,13 @@ fec_drv_remove(struct platform_device *pdev)
+ 	if (of_phy_is_fixed_link(np))
+ 		of_phy_deregister_fixed_link(np);
+ 	of_node_put(fep->phy_node);
+-	free_netdev(ndev);
+ 
+ 	clk_disable_unprepare(fep->clk_ahb);
+ 	clk_disable_unprepare(fep->clk_ipg);
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
++	free_netdev(ndev);
+ 	return 0;
  }
  
--static inline void get_interrupt_interval(pegasus_t *pegasus)
-+static inline int get_interrupt_interval(pegasus_t *pegasus)
- {
- 	u16 data;
- 	u8 interval;
-+	int ret;
-+
-+	ret = read_eprom_word(pegasus, 4, &data);
-+	if (ret < 0)
-+		return ret;
- 
--	read_eprom_word(pegasus, 4, &data);
- 	interval = data >> 8;
- 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
- 		if (interval < 0x80) {
-@@ -770,6 +774,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
- 		}
- 	}
- 	pegasus->intr_interval = interval;
-+
-+	return 0;
- }
- 
- static void set_carrier(struct net_device *net)
-@@ -1188,7 +1194,9 @@ static int pegasus_probe(struct usb_interface *intf,
- 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
- 
- 	pegasus->features = usb_dev_id[dev_index].private;
--	get_interrupt_interval(pegasus);
-+	res = get_interrupt_interval(pegasus);
-+	if (res)
-+		goto out2;
- 	if (reset_mac(pegasus)) {
- 		dev_err(&intf->dev, "can't reset MAC\n");
- 		res = -EIO;
 -- 
 2.30.2
 
