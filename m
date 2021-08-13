@@ -2,70 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C78F3EB13B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A701C3EB13F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 09:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239358AbhHMHOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 03:14:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41306 "EHLO mail.kernel.org"
+        id S239382AbhHMHOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 03:14:47 -0400
+Received: from verein.lst.de ([213.95.11.211]:46644 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239314AbhHMHOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 03:14:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4549060241;
-        Fri, 13 Aug 2021 07:13:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628838818;
-        bh=/GuW+vfkm3S/fbyXBVALq4+2Ghnm0NY3NP3b3vJEa/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nfPHm63KAOfk7dqgKEJMXI0JNXKX+4AOVW93sRb507frK2yL8vQ9ntCkLkVW0re11
-         d4Z2DXbNcsHSD64oHZUQUSdgI7bfcdMYO1UGQiuqJ74AZxcb36EJjPNXqiFemt+FPg
-         F6sLlN3UUrUABmkToyZcm8rJclOdRPVXoLJLUTCc=
-Date:   Fri, 13 Aug 2021 09:13:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3 1/2] serdev: Split and export
- serdev_acpi_get_uart_resource()
-Message-ID: <YRYboAR9g/193T48@kroah.com>
-References: <20210806111736.66591-1-andriy.shevchenko@linux.intel.com>
- <a955083a-a985-0b7d-460f-af196c5113c5@redhat.com>
+        id S239291AbhHMHOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 03:14:45 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5E36368B05; Fri, 13 Aug 2021 09:14:17 +0200 (CEST)
+Date:   Fri, 13 Aug 2021 09:14:15 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, trond.myklebust@primarydata.com,
+        darrick.wong@oracle.com, hch@lst.de, viro@zeniv.linux.org.uk,
+        jlayton@kernel.org, sfrench@samba.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/5] mm: Remove swap BIO paths and only use DIO
+ paths [BROKEN]
+Message-ID: <20210813071415.GD26339@lst.de>
+References: <162879971699.3306668.8977537647318498651.stgit@warthog.procyon.org.uk> <162879976139.3306668.12495248062404308890.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a955083a-a985-0b7d-460f-af196c5113c5@redhat.com>
+In-Reply-To: <162879976139.3306668.12495248062404308890.stgit@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:08:42PM +0200, Hans de Goede wrote:
-> Hi,
+On Thu, Aug 12, 2021 at 09:22:41PM +0100, David Howells wrote:
+> [!] NOTE: This doesn't work and might damage your disk's contents.
 > 
-> On 8/6/21 1:17 PM, Andy Shevchenko wrote:
-> > The same as for I²C Serial Bus resource split and export
-> > serdev_acpi_get_uart_resource(). We have already a few users
-> > one of which is converted here.
-> > 
-> > Rationale of this is to consolidate parsing UART Serial Bus
-> > resource in one place as it's done, e.g., for I²C Serial Bus.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Delete the BIO-generating swap read/write paths and always use
+> ->direct_IO().  This puts the mapping layer in the filesystem.
 > 
-> As mentioned before I believe it is best if this series is
-> merged in its entirety through to the tty tree, here is my
-> ack for patch 2/2 for that:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Greg, can you pickup the entire series please?
+> This doesn't work - probably due to ki_pos being set to
+> page_file_offset(page) which then gets remapped.
 
-Now picked up, thanks.
-
-greg k-h
+Also because most common block file systems do not actually implement
+a ->direct_IO that does anything (noop_direct_IO).
