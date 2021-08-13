@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4ECC3EB475
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647263EB47C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 13:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240051AbhHMLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 07:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbhHMLQw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:16:52 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2567C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 04:16:25 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id j26so586524vkn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 04:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=truzF62HDJI3twhgvIQQSrroY3TJqn5zL5pQkMiPoDE=;
-        b=OA9A8EUHW1uWQi67oONvGtFlZNQVwVl8d1w5R42AH2smLGbnmnyHkjTC4nFLM0OMyA
-         t+UJkmij7syfr7QPbNguMGJ15r2cQRa9XXC7IsMQe35jHDE2/x/yNlfuhMWgFPUuvXsb
-         w5Fe1aIO2pjOvID/ZFlVxBgNOYOg/o6EJ7qVXO/eRWkNcKxSu8NzefYnLzDuRoIUx6L0
-         lSBkoaN4m2OY8PRfFx+lWZHLbjlpjVfo8smP5OxAVajrL91zpqqLBNH+WV23fAM0Dbgt
-         ig4ZOk7cH3U60nVWeuRXQEHgnaE2z74BylAx24bAQjyzrlxzndpcCGYW2KNkp4mrTH4Q
-         aqlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=truzF62HDJI3twhgvIQQSrroY3TJqn5zL5pQkMiPoDE=;
-        b=ksLxnMkyQCnBVp4QBevEO8UdXE8+cz2VFWTgK3HwtyiGqtPTBl4LleG5SlxPNtGdbH
-         QLvydwlTpkP0WvOw6crDOdf4QSZUEzlexXsU2zfrrjwkx/impTdeEZPD3OERFi5gLBG8
-         6GlO33ERHUYmfgHtRtUTSNZimZwpmf02lSpE5Tn4oGq1DymbuihNuM+ycuUgLXXDcqrQ
-         jnVb0Hu+/ok0ZlK+Z1t+EOCIYP3d339NQlVcemD2UJah1caOSQ8OnULCciKxkd7Eqg22
-         J2pHAUFzhsn6qM/LVZc6bKL4dKGOaneqJyghE/iowRpIpOipN4nmxkNfbCIslFrk1nad
-         GnqQ==
-X-Gm-Message-State: AOAM533cWE06a7oJQlC9fJJPDvHUrYfu2RKGFZ+tnmTK4Z98QXCBxRte
-        XILqsaincen8xWeF8JaV5D7Lc4MlemWdJjN4NYc=
-X-Google-Smtp-Source: ABdhPJxPJZx9nShgFw4XXOEiC368ymxZBVs24vbt+oR1hJlpiW4TusPLQRfGZeR/ul+azcXwraddzikuCgY/XIvJJ/Q=
-X-Received: by 2002:ac5:c183:: with SMTP id z3mr943544vkb.12.1628853384645;
- Fri, 13 Aug 2021 04:16:24 -0700 (PDT)
+        id S240284AbhHMLU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 07:20:28 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:35224 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239428AbhHMLU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 07:20:27 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 17DBJrpP022478;
+        Fri, 13 Aug 2021 13:19:53 +0200
+Date:   Fri, 13 Aug 2021 13:19:53 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, jason@jlekstrand.net,
+        Jonathan Gray <jsg@jsg.id.au>
+Subject: Re: Determining corresponding mainline patch for stable patches Re:
+ [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in eb_parse()
+Message-ID: <20210813111953.GB21912@1wt.eu>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.050147269@linuxfoundation.org>
+ <20210811072843.GC10829@duo.ucw.cz>
+ <YROARN2fMPzhFMNg@kroah.com>
+ <20210811122702.GA8045@duo.ucw.cz>
+ <YRPLbV+Dq2xTnv2e@kroah.com>
+ <20210813093104.GA20799@duo.ucw.cz>
+ <20210813095429.GA21912@1wt.eu>
+ <20210813102429.GA28610@duo.ucw.cz>
+ <YRZRU4JIh5LQjDfE@kroah.com>
 MIME-Version: 1.0
-Received: by 2002:a67:f9d5:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 04:16:24
- -0700 (PDT)
-Reply-To: j4778@outlook.com
-From:   "Mr. John" <a86335544@gmail.com>
-Date:   Fri, 13 Aug 2021 04:16:24 -0700
-Message-ID: <CAEDnyUkWCO-yDYVL=zjRjdedB3DTV7=4QB2jTw=UWhyWk2ThCQ@mail.gmail.com>
-Subject: ,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRZRU4JIh5LQjDfE@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+On Fri, Aug 13, 2021 at 01:02:43PM +0200, Greg Kroah-Hartman wrote:
+> > > I ended up writing this trivial script that did the job well for me
+> > > and also supported the "git cherry-pick -x" format that I was using
+> > > a lot. Feel free to reuse that as a starting point, here it comes, a
+> > > bit covered in dust :-)
+> > 
+> > Please see previous discussion. Yes, I have my regexps, too, but there
+> > are variations, and there were even false positives.. One of them is
+> > in this email thread.
+> > 
+> > Greg suggests to simply ignore context and look for SHA1 sum; that
+> > does not work, either.
+> 
+> The number of patches that your regex does not work on is a very tiny %,
+> right?  Can't you just handle those "by hand"?
 
-Greetings to you, i am Mr. John Zaka the Manager of the Coris bank
-international Burkina faso.
+I agree, that's what I used to do as well and this never caused me
+any particular difficult. The rare cases where the script emits no ID
+just have to be dealt with manually. It used to happen less than once
+per series (with series containing ~1k input patches). I'd say that the
+amount of failed backports is roughly in the same order of magnitude as
+the ones that could be missed this way, this needs to be put in
+perspective!
 
-I want to transfer the sum of 12.7 million dollars into your bank
-account through the swift fund transfer.
+> > So what I'm asking is for single, easy to parse format. I don't quite
+> > care what it is, but
+> 
+> As long as people end up sending us patches as backports, they will get
+> the format wrong in odd ways over time.  Heck, we can't even all get a
+> simple signed-off-by: right all the time, look at the kernel logs for
+> loads of issues where long-time developers mess that one up.
 
-Please there is no risk involved, and if you are interested please
-kindly send me these below needed information to get started.
+Plus this adds some cognitive load on those writing these patches, which
+increases the global effort. It's already difficult enough to figure the
+appropriate Cc list when writing a fix, let's not add more burden in this
+chain.
 
-1. Your name and surname.
-2. Your country name and address.
-3. Your Occupation.
-4. Your identity card or passport copy scanned.
-5. Your phone number.
+> The phrase "perfect is the enemy of good" or something like that applies
+> here.  I'm giving you backported patches "for free", the number of ones
+> that someone messes up the text on is so small it should be lost in the
+> noise...
 
-If i have recieved these above needed information from you, then i
-will give you the details of this transaction and we get started.
+I'm also defending this on other projects. I find it important that
+efforts are reasonably shared. If tolerating 1% failures saves 20%
+effort on authors and adds 2% work on recipients, that's a net global
+win. You never completely eliminate mistakes anyway, regardless of the
+cost.
 
-Thanks from,
-Mr. John Zaka.
+Willy
