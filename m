@@ -2,176 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B223EB9D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9443EB9D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 18:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhHMQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 12:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        id S231800AbhHMQN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 12:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhHMQM4 (ORCPT
+        with ESMTP id S229468AbhHMQN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 12:12:56 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AB0C061756;
-        Fri, 13 Aug 2021 09:12:29 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 516D71F44A4C
-Received: by earth.universe (Postfix, from userid 1000)
-        id 3D07F3C0C99; Fri, 13 Aug 2021 18:12:26 +0200 (CEST)
-Date:   Fri, 13 Aug 2021 18:12:26 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] power: supply: bq24735: reorganize ChargeOption
- command macros
-Message-ID: <20210813161226.phnswlf7lnpjkizu@earth.universe>
-References: <20210709142731.23418-1-bruno.meneguele@smartgreen.net>
- <20210709142731.23418-2-bruno.meneguele@smartgreen.net>
+        Fri, 13 Aug 2021 12:13:56 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B068C0617AD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:13:29 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a20so12661115plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 09:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kgEwqaMXas/gINmvu6DHt4AAtxtOhJftfQkG8U2AMqQ=;
+        b=uFWr7KTM06wIgz0mjW60tVP7wO0TmJ8v4RJFZr6hMx2hXy4TKa7SumsWtqezVBxAHe
+         RcQi1bVKo0BOA1/+h90j5Oilv8CNaSNB+g1ufyp0S7jhjiaxLuvQ7/91SnmXDlnvdxT7
+         TIHKJS2O18dWd9hZfrwufke9B8WAkCqtuQxiL6g/LHCDt2TcZiT9V5depEPo5Vcf3bv3
+         FfKX3SFrFY7BiBrR28M0iNwc8RLp1jGDWf9NhahUw4eeOkwUH11m0Ubbx0LWYeS42PrZ
+         EWdbG4dZOKK0eDXvcNzqhJgjoHG0lAeedX0vfbQicLwrj4glbndRIwfUrENnA8l+9aEo
+         odSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kgEwqaMXas/gINmvu6DHt4AAtxtOhJftfQkG8U2AMqQ=;
+        b=KYco9jJYzEOA7iMvso/bU+KE3roorvN0oSlNPmfkwKdLJQu/DwIY+7eaIquNGbp9Oc
+         lUYmoe6x2iqGAW4aZGRDsJloG9LHaCljDXELbMpg+yTULqQasP6kwkkgy2/Q43pUC0Kw
+         ZlJ7NS2/+vNiXn19PR9JMMaIf+e7sq+O/9khxzWhMfYGkLZ/ItSQy92qg0zrk5i5w44B
+         P7QxRya7iownUxDQBkReZe3YTVQkvAQ+u79rWLT7wGMjhwo44uSGbJ8v4Ob1wxvpP4BD
+         hl+ZU30THVWBxfJ4d5VGRIrik41XY1eLiMeJlS4oVkb88a5Y8+BYYjxuBVdlsXGp4EYm
+         YOcA==
+X-Gm-Message-State: AOAM533mpyKHc8u+lnynAxVpVEYdYqQenPravl6etWtOD7DedG4r35Iu
+        OxTqanfgI4H4jI+6GQi2z36EKw==
+X-Google-Smtp-Source: ABdhPJy9NUBZKSxbiMd/jy9FHfW9074y2neNJoLC4L0Bb660MJqYsWE86HB5EAVAbiRs7r/NckyxYA==
+X-Received: by 2002:a63:df0d:: with SMTP id u13mr2896558pgg.417.1628871208868;
+        Fri, 13 Aug 2021 09:13:28 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x81sm2720481pfc.22.2021.08.13.09.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 09:13:28 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 16:13:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Don't step down in the TDP iterator
+ when zapping all SPTEs
+Message-ID: <YRaaIi9Go38E3mUh@google.com>
+References: <20210812050717.3176478-1-seanjc@google.com>
+ <20210812050717.3176478-3-seanjc@google.com>
+ <CANgfPd8HSYZbqmi21XQ=XeMCndXJ0+Ld0eZNKPWLa1fKtutiBA@mail.gmail.com>
+ <YRVVWC31fuZiw9tT@google.com>
+ <928be04d-e60e-924c-1f3a-cb5fef8b0042@redhat.com>
+ <YRVbamoQhvPmrEgK@google.com>
+ <7a95b2f6-a7ad-5101-baa5-6a19194695a3@redhat.com>
+ <YRVebIjxEv87I55b@google.com>
+ <b08a7751-20c3-26fc-522e-c4cf274d9a6c@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ay3hu2slrqbfq2lf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709142731.23418-2-bruno.meneguele@smartgreen.net>
+In-Reply-To: <b08a7751-20c3-26fc-522e-c4cf274d9a6c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 13, 2021, Paolo Bonzini wrote:
+> On 12/08/21 19:46, Sean Christopherson wrote:
+> > > > 	if (iter->level == iter->min_level)
+> > > > 		return false;
+> > > > 
+> > > > 	/*
+> > > > 	 * Reread the SPTE before stepping down to avoid traversing into page
+> > > > 	 * tables that are no longer linked from this entry.
+> > > > 	 */
+> > > > 	iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));  \
+> > > >                                                                        ---> this is the code that is avoided
+> > > > 	child_pt = spte_to_child_pt(iter->old_spte, iter->level);   /
+> > > > 	if (!child_pt)
+> > > > 		return false;
+> > > Ah, right - so I agree with Ben that it's not too important.
+> > Ya.  There is a measurable performance improvement, but it's really only
+> > meaningful when there aren't many SPTEs to zap, otherwise the cost of zapping
+> > completely dominates the time.
+> 
+> I don't understand.  When try_step_down is called by tdp_iter_next, all it
+> does is really just the READ_ONCE, because spte_to_child_pt will see a
+> non-present PTE and return immediately.  Why do two, presumably cache hot,
+> reads cause a measurable performance improvement?
 
---ay3hu2slrqbfq2lf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Jul 09, 2021 at 11:27:30AM -0300, Bruno Meneguele wrote:
-> Rename ChargeOption macros to match the others for ChargeCurrent and
-> ChargeVoltage and also separate the command & masks macros from the bits =
-of
-> interest macros for each command.  This macro doesn't introduce any
-> functional change, only code re-org.
->=20
-> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/bq24735-charger.c | 27 ++++++++++++++------------
->  1 file changed, 15 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/suppl=
-y/bq24735-charger.c
-> index b5d619db79f6..3ce36d09c017 100644
-> --- a/drivers/power/supply/bq24735-charger.c
-> +++ b/drivers/power/supply/bq24735-charger.c
-> @@ -31,9 +31,8 @@
-> =20
->  #include <linux/power/bq24735-charger.h>
-> =20
-> -#define BQ24735_CHG_OPT			0x12
-> -#define BQ24735_CHG_OPT_CHARGE_DISABLE	(1 << 0)
-> -#define BQ24735_CHG_OPT_AC_PRESENT	(1 << 4)
-> +/* BQ24735 available commands and their respective masks */
-> +#define BQ24735_CHARGE_OPT		0x12
->  #define BQ24735_CHARGE_CURRENT		0x14
->  #define BQ24735_CHARGE_CURRENT_MASK	0x1fc0
->  #define BQ24735_CHARGE_VOLTAGE		0x15
-> @@ -43,6 +42,10 @@
->  #define BQ24735_MANUFACTURER_ID		0xfe
->  #define BQ24735_DEVICE_ID		0xff
-> =20
-> +/* ChargeOptions bits of interest */
-> +#define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
-> +#define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
-> +
->  struct bq24735 {
->  	struct power_supply		*charger;
->  	struct power_supply_desc	charger_desc;
-> @@ -167,8 +170,8 @@ static inline int bq24735_enable_charging(struct bq24=
-735 *charger)
->  	if (ret)
->  		return ret;
-> =20
-> -	return bq24735_update_word(charger->client, BQ24735_CHG_OPT,
-> -				   BQ24735_CHG_OPT_CHARGE_DISABLE, 0);
-> +	return bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
-> +				   BQ24735_CHARGE_OPT_CHG_DISABLE, 0);
->  }
-> =20
->  static inline int bq24735_disable_charging(struct bq24735 *charger)
-> @@ -176,9 +179,9 @@ static inline int bq24735_disable_charging(struct bq2=
-4735 *charger)
->  	if (charger->pdata->ext_control)
->  		return 0;
-> =20
-> -	return bq24735_update_word(charger->client, BQ24735_CHG_OPT,
-> -				   BQ24735_CHG_OPT_CHARGE_DISABLE,
-> -				   BQ24735_CHG_OPT_CHARGE_DISABLE);
-> +	return bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
-> +				   BQ24735_CHARGE_OPT_CHG_DISABLE,
-> +				   BQ24735_CHARGE_OPT_CHG_DISABLE);
->  }
-> =20
->  static bool bq24735_charger_is_present(struct bq24735 *charger)
-> @@ -188,14 +191,14 @@ static bool bq24735_charger_is_present(struct bq247=
-35 *charger)
->  	} else {
->  		int ac =3D 0;
-> =20
-> -		ac =3D bq24735_read_word(charger->client, BQ24735_CHG_OPT);
-> +		ac =3D bq24735_read_word(charger->client, BQ24735_CHARGE_OPT);
->  		if (ac < 0) {
->  			dev_dbg(&charger->client->dev,
->  				"Failed to read charger options : %d\n",
->  				ac);
->  			return false;
->  		}
-> -		return (ac & BQ24735_CHG_OPT_AC_PRESENT) ? true : false;
-> +		return (ac & BQ24735_CHARGE_OPT_AC_PRESENT) ? true : false;
->  	}
-> =20
->  	return false;
-> @@ -208,11 +211,11 @@ static int bq24735_charger_is_charging(struct bq247=
-35 *charger)
->  	if (!bq24735_charger_is_present(charger))
->  		return 0;
-> =20
-> -	ret  =3D bq24735_read_word(charger->client, BQ24735_CHG_OPT);
-> +	ret  =3D bq24735_read_word(charger->client, BQ24735_CHARGE_OPT);
->  	if (ret < 0)
->  		return ret;
-> =20
-> -	return !(ret & BQ24735_CHG_OPT_CHARGE_DISABLE);
-> +	return !(ret & BQ24735_CHARGE_OPT_CHG_DISABLE);
->  }
-> =20
->  static void bq24735_update(struct bq24735 *charger)
-> --=20
-> 2.31.1
->=20
-
---ay3hu2slrqbfq2lf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEWmeUACgkQ2O7X88g7
-+pojqw/8D02O/nqnfBLzGbC/szuhXuvSNNjch3qGxCdcRxQ8nRkRqP27/jxFlzVG
-KTZpywsMek/txT+EoUuMawWpD/VtdDj6X2nvGAnmXLV8+S6/wVSSLRzJoba3QOWt
-AddeNNB/yuJDiDssRBMcFDyFyr7iFvg+jlGtgdtDRCzJ79MeEVNdFU5OlBnarHn9
-o4B9HLys1eUXDYqAmADXFFm16Q3S90tuHdzjxEfITlXxQHicCPevGmJ07s8kw+/5
-p0RmAWBjOQA42bo9tPJTJ0cdds3YTIyzhzZEuuNF6B7f+cYRoVYkoMWnVqF/LjmL
-UXR1frqHu7HxB254N2MnYfUkM0viaR9x5F1LW7BZG2NiZzbK4uh2KRQ87c/EWdKd
-uWt4Cebk2Ma5voAAFBZBGbo7nNdGbqWuOpM3f9QPH7QcXcqSWQ/KQF212X8G7uGk
-gVWqBDGYRg4/a8SVORFPkSDsMfIGvBc5DYraFVydU9hoBqDKHRVGfHQwYtnmmFhj
-gRaKChxeJva8UT9ZiGpETGYMlFcp8wzT/p6PcEFqO56tO2eJsbLbsPfWKDEGHWwV
-U31mNHyMpdjPl7whlmoGUqyxgN0bQoHTspjCuEaDzc1H86WKLRDnHuVjxk6vClrE
-4RVI2jg/D0xas7OIP/UPDLS3StzGI83ETb+nEnKFG0mzDUO3j7U=
-=35pV
------END PGP SIGNATURE-----
-
---ay3hu2slrqbfq2lf--
+It's entirely possible my measurements were bad and/or noisy.  Ah, and my kernel
+was running with CONFIG_PROVE_RCU=y, which makes the rcu_dereference() quite a bit
+more expensive.
