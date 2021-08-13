@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F2C3EAEF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E35E3EAEF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 05:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238602AbhHMDaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Aug 2021 23:30:55 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:47818 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237040AbhHMDav (ORCPT
+        id S238616AbhHMDcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Aug 2021 23:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237040AbhHMDb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Aug 2021 23:30:51 -0400
-Received: by mail-io1-f69.google.com with SMTP id p7-20020a6b63070000b02904f58bb90366so4625352iog.14
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Aug 2021 20:30:25 -0700 (PDT)
+        Thu, 12 Aug 2021 23:31:59 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBD1C061756;
+        Thu, 12 Aug 2021 20:31:33 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e19so10086911pla.10;
+        Thu, 12 Aug 2021 20:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rKxkk1OGoYLIBCFaY2z2KhD/DQkY6T8I7zVzhchtmnQ=;
+        b=uIvMPinvSOI6li292hHx6mgL1Cvq6feCCTJR8F/XKxVNkxn8J6Q5lvwud2TiFC/be9
+         Jo+JQUcC9n6btS8i/Bb+fJ09TMlOIe8ZAoy1Md8FAU4w5yoij+qxCiGM2VCZ1w3pOPFY
+         QZEZI4+tF8sUSRwKqidOuyn3Gpk9i1sHn3NAne3VUQuJVlSZpGfi0cLHlJc6g7KmWUKJ
+         6demgcu2NSzFLglg6VjqiySFweqIOZteouOJQvTONI/0Coe9yvLOE97RJhTaQmneseKO
+         O03teI9DQ5OSjqcZRSILJswKQBCbk0QcbOe1MsII37Elmp3jOnZ+lTfyvLkXc/rFUKz5
+         gs3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=7MglwI/yX/ewU3i1nPDYLSNM5Et0vKbSBNWk8oJbUeU=;
-        b=g9+FJwzMuR03CYJfITv7B/uRNMyqvj/7Lw7f2ZNVkkJxGZ1f154rn9qy4tyYmCjZB0
-         HorMbsnA/f9nKywf2LLNM/W2to0sXOnuBZS3DRV+nuUgiymUspJ5f/2cfvYLpmz8upeT
-         Dv+H/spsYnXA1Das1w3Qu59l24d7cNEFpPIDmEjvjZHgWO8Phq79Lpy3MZBQi7MX4sBT
-         vzwNHT70VO9Y48fiycOdEWnl5UeqkVo4UIIYMYSZOqedkmxC1MCOGDqmtKFN1fPPm00P
-         z1iv89XDuZFaXqHwKXmw6idgTz/LLSxvmfCtt+3D5q9t718HCebtBo+64Qz5ssapy9Ic
-         qGbQ==
-X-Gm-Message-State: AOAM530BdJUPEtlHJVTpc+FQhq2Nvu8fHRCkncDU8wSBysccpBEmusXg
-        mMikM8M98a9yjSru4U4DCOdC9WitdVk7tHFVJcacaZ6WXXaO
-X-Google-Smtp-Source: ABdhPJwDa3tKW9uDPQb05kcGCNNCkytknzX2FL2wy4e1UeXCiakil2fVGUCcLKn6CcuEnvGQ5WPhDNeXIN7dLN2G8xcxAosp17LV
-MIME-Version: 1.0
-X-Received: by 2002:a6b:490d:: with SMTP id u13mr357643iob.176.1628825425086;
- Thu, 12 Aug 2021 20:30:25 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 20:30:25 -0700
-In-Reply-To: <000000000000b25bb805c798a1a5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dd0bf405c96878b9@google.com>
-Subject: Re: [syzbot] WARNING in __set_page_dirty
-From:   syzbot <syzbot+0d5b462a6f07447991b3@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, akpm@linux-foundation.org,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rpeterso@redhat.com, swhiteho@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rKxkk1OGoYLIBCFaY2z2KhD/DQkY6T8I7zVzhchtmnQ=;
+        b=itxa/wepoXVqO/SS9zKt+P/iVZk9V9aeV5Xe/+ITX9cX4rcYIr5UroOLsMEudAeyem
+         f6jgS8cBD1tl0vlTW+xPN6MC3KH8dE12/NvILUW140CpAXaiGD24qg5mcGrvSf7mVR31
+         q7XzFzKVOSy/CXDJfoBG4vA9f4Kfuu9Laywn9xrm4+tsMdBLcm+vEXViEyWA9w+SZBz+
+         bg59OPjaIWBZ80Fp2Iq6gaaVBN/8kj6VdSxv/8Jy10OnYTPFtNmV44ZTmVasdFAKsIq6
+         G1VFYk7H7kSFPBdqJ1mKqAgokp6fjo7g5VUvxIu3TFNBSGdKRZxktGEbY8ePIH2oCZu3
+         JTLg==
+X-Gm-Message-State: AOAM532iBU2x1gt0j1Z4D6sn0aAeET4nJVETbI03rsb4bfwXaQoOI0FO
+        9p0cXRjpjqRTih4u3uEUsCkKcHqeujEF2HCG
+X-Google-Smtp-Source: ABdhPJzJucFmDBDGxN1ed9G6xFCh9M14DT4TYxWxlCY1Eu5QFB4Jy8lY31YKEKYgjAsA6hlRd62TEw==
+X-Received: by 2002:a63:6c5:: with SMTP id 188mr345143pgg.39.1628825492871;
+        Thu, 12 Aug 2021 20:31:32 -0700 (PDT)
+Received: from localhost.localdomain ([150.109.127.35])
+        by smtp.gmail.com with ESMTPSA id 4sm203125pjb.21.2021.08.12.20.31.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 12 Aug 2021 20:31:32 -0700 (PDT)
+From:   Bing Fan <hptsfb@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6] arm pl011 serial: support multi-irq request
+Date:   Fri, 13 Aug 2021 11:31:30 +0800
+Message-Id: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+From: Bing Fan <tombinfan@tencent.com>
 
-HEAD commit:    f8fbb47c6e86 Merge branch 'for-v5.14' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=125aadf6300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
-dashboard link: https://syzkaller.appspot.com/bug?extid=0d5b462a6f07447991b3
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122742ee300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17925381300000
+In order to make pl011 work better, multiple interrupts are
+required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+at the same time, pl011 to GIC does not merge the interrupt
+lines(each serial-interrupt corresponding to different GIC hardware
+interrupt), so need to enable and request multiple gic interrupt
+numbers in the driver.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0d5b462a6f07447991b3@syzkaller.appspotmail.com
+Signed-off-by: Bing Fan <tombinfan@tencent.com>
+---
+ drivers/tty/serial/amba-pl011.c | 39 +++++++++++++++++++++++++++++++--
+ 1 file changed, 37 insertions(+), 2 deletions(-)
 
-NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 inode_to_wb include/linux/backing-dev.h:283 [inline]
-WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 account_page_dirtied mm/page-writeback.c:2435 [inline]
-WARNING: CPU: 0 PID: 8496 at include/linux/backing-dev.h:283 __set_page_dirty+0xace/0x1070 mm/page-writeback.c:2483
-Modules linked in:
-CPU: 0 PID: 8496 Comm: segctord Not tainted 5.14.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:inode_to_wb include/linux/backing-dev.h:283 [inline]
-RIP: 0010:account_page_dirtied mm/page-writeback.c:2435 [inline]
-RIP: 0010:__set_page_dirty+0xace/0x1070 mm/page-writeback.c:2483
-Code: a8 01 00 00 be ff ff ff ff 48 8d 78 70 e8 ea 60 8d 07 31 ff 89 c3 89 c6 e8 cf a6 d8 ff 85 db 0f 85 ac f7 ff ff e8 82 9f d8 ff <0f> 0b e9 a0 f7 ff ff e8 76 9f d8 ff 4c 8d 75 08 48 b8 00 00 00 00
-RSP: 0018:ffffc9000175f8c8 EFLAGS: 00010093
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880263b9c40 RSI: ffffffff819d083e RDI: 0000000000000003
-RBP: ffffea000082dac0 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff819d0831 R11: 0000000000000000 R12: 0000000000000293
-R13: ffff888037e60138 R14: ffff888037e60488 R15: ffff888037e602e0
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005593610abbe0 CR3: 0000000016882000 CR4: 0000000000350ef0
-Call Trace:
- mark_buffer_dirty+0x49a/0x5e0 fs/buffer.c:1108
- nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
- nilfs_btree_propagate+0x4ae/0xea0 fs/nilfs2/btree.c:2085
- nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
- nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
- nilfs_segctor_apply_buffers+0x14a/0x470 fs/nilfs2/segment.c:1009
- nilfs_segctor_scan_file+0x3e4/0x700 fs/nilfs2/segment.c:1058
- nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1224 [inline]
- nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
- nilfs_segctor_do_construct+0x16ee/0x6b20 fs/nilfs2/segment.c:2036
- nilfs_segctor_construct+0x7a7/0xb30 fs/nilfs2/segment.c:2372
- nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
- nilfs_segctor_thread+0x3c3/0xf90 fs/nilfs2/segment.c:2563
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0:	a8 01                	test   $0x1,%al
-   2:	00 00                	add    %al,(%rax)
-   4:	be ff ff ff ff       	mov    $0xffffffff,%esi
-   9:	48 8d 78 70          	lea    0x70(%rax),%rdi
-   d:	e8 ea 60 8d 07       	callq  0x78d60fc
-  12:	31 ff                	xor    %edi,%edi
-  14:	89 c3                	mov    %eax,%ebx
-  16:	89 c6                	mov    %eax,%esi
-  18:	e8 cf a6 d8 ff       	callq  0xffd8a6ec
-  1d:	85 db                	test   %ebx,%ebx
-  1f:	0f 85 ac f7 ff ff    	jne    0xfffff7d1
-  25:	e8 82 9f d8 ff       	callq  0xffd89fac
-  2a:	0f 0b                	ud2     <-- trapping instruction
-  2c:	e9 a0 f7 ff ff       	jmpq   0xfffff7d1
-  31:	e8 76 9f d8 ff       	callq  0xffd89fac
-  36:	4c 8d 75 08          	lea    0x8(%rbp),%r14
-  3a:	48                   	rex.W
-  3b:	b8 00 00 00 00       	mov    $0x0,%eax
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index e14f3378b8a0..eaac3431459c 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -1701,6 +1701,41 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
+ 	}
+ }
+ 
++static void pl011_release_multi_irqs(struct uart_amba_port *uap, unsigned int max_cnt)
++{
++	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
++	int i;
++
++	for (i = 0; i < max_cnt; i++)
++		if (amba_dev->irq[i])
++			free_irq(amba_dev->irq[i], uap);
++}
++
++static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
++{
++	int ret = 0;
++	int i;
++	unsigned int virq;
++	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
++
++	pl011_write(uap->im, uap, REG_IMSC);
++
++	for (i = 0; i < AMBA_NR_IRQS; i++) {
++		virq = amba_dev->irq[i];
++		if (virq == 0)
++			break;
++
++		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
++		if (ret) {
++			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
++			pl011_release_multi_irqs(uap, i - 1);
++			break;
++		}
++	}
++
++	return ret;
++}
++
+ static int pl011_allocate_irq(struct uart_amba_port *uap)
+ {
+ 	pl011_write(uap->im, uap, REG_IMSC);
+@@ -1753,7 +1788,7 @@ static int pl011_startup(struct uart_port *port)
+ 	if (retval)
+ 		goto clk_dis;
+ 
+-	retval = pl011_allocate_irq(uap);
++	retval = pl011_allocate_multi_irqs(uap);
+ 	if (retval)
+ 		goto clk_dis;
+ 
+@@ -1864,7 +1899,7 @@ static void pl011_shutdown(struct uart_port *port)
+ 
+ 	pl011_dma_shutdown(uap);
+ 
+-	free_irq(uap->port.irq, uap);
++	pl011_release_multi_irqs(uap, AMBA_NR_IRQS);
+ 
+ 	pl011_disable_uart(uap);
+ 
+-- 
+2.17.1
 
