@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921873EB646
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD1D3EB648
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Aug 2021 15:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239951AbhHMNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 09:52:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:53750 "EHLO foss.arm.com"
+        id S240652AbhHMNxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 09:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235656AbhHMNw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:52:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBB871042;
-        Fri, 13 Aug 2021 06:52:01 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 854913F718;
-        Fri, 13 Aug 2021 06:52:00 -0700 (PDT)
-Subject: Re: [PATCH v3] arm64: dts: rockchip: add thermal fan control to
- rockpro64
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210730151727.729822-1-pgwipeout@gmail.com>
- <ad6d8025-977c-9ff2-81ff-a417df48231c@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <893701da-ea17-00ab-5e31-c745051ac9b9@arm.com>
-Date:   Fri, 13 Aug 2021 14:51:54 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231127AbhHMNxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 09:53:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 943A660F11;
+        Fri, 13 Aug 2021 13:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628862773;
+        bh=sqXtbAsweP69K+laj3aPbLYAw5spnrPTjCYsrVji+U4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rJOLF0/TwQauuFK48Og23uQa8sTBjXk53YQjsGZJy1rBYqRwg6VN3Oh/xhrMO+jFY
+         FK8OKoKtJCFrxW55AUs1HgqMFvfn+iOGWa9jypc1y0T5jE52YuAyomwxqfi3s+kK2K
+         +4DA49q1POVTmg5Tk8cOjCqjZ15e09Qtp1wM5Sf6ENPqN4Swz1QLJIwZfQQ4xYyyWS
+         ts+9RCYyQ1O+rVLgL2Nl7/EcX9uTzSOeE+m62j9jcciYbeSHXW0nn0c/NIdfjS3YA1
+         Qdt1x/EteZd5O+Nx4d/zUjKtXN9iT0maKoNBvuLO3smIriupzWhyvKswkXtOcf6bGP
+         VQm0UxdJ5XHUw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 61F285C0373; Fri, 13 Aug 2021 06:52:53 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 06:52:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: linux-next: manual merge of the rcu tree with the irqchip tree
+Message-ID: <20210813135253.GA4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210813140437.79035655@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <ad6d8025-977c-9ff2-81ff-a417df48231c@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813140437.79035655@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 13:59, Daniel Lezcano wrote:
-> On 30/07/2021 17:17, Peter Geis wrote:
->> The rockpro64 had a fan node since
->> commit 5882d65c1691 ("arm64: dts: rockchip: Add PWM fan for RockPro64")
->> however it was never tied into the thermal driver for automatic control.
->>
->> Add the links to the thermal node to permit the kernel to handle this
->> automatically.
->> Borrowed from the (rk3399-khadas-edge.dtsi).
->>
->> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
->> ---
->>
->> Changelog:
->> v3:
->> Removed the gpu nodes to prevent in-fighting (thanks Robin!)
->>
->> v2:
->> Adjusted fan setpoints for less noise
->>
->>   .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 29 +++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
->> index 6bff8db7d33e..83db4ca67334 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
->> @@ -69,6 +69,7 @@ diy_led: led-1 {
->>   
->>   	fan: pwm-fan {
->>   		compatible = "pwm-fan";
->> +		cooling-levels = <0 100 150 200 255>;
->>   		#cooling-cells = <2>;
->>   		fan-supply = <&vcc12v_dcin>;
->>   		pwms = <&pwm1 0 50000 0>;
->> @@ -245,6 +246,34 @@ &cpu_b1 {
->>   	cpu-supply = <&vdd_cpu_b>;
->>   };
->>   
->> +&cpu_thermal {
->> +	trips {
->> +		cpu_warm: cpu_warm {
->> +			temperature = <55000>;
->> +			hysteresis = <2000>;
->> +			type = "active";
->> +		};
->> +
->> +		cpu_hot: cpu_hot {
->> +			temperature = <65000>;
->> +			hysteresis = <2000>;
->> +			type = "active";
->> +		};
->> +	};
->> +
+On Fri, Aug 13, 2021 at 02:04:37PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Why two trip points ?
+> Today's linux-next merge of the rcu tree got a conflict in:
 > 
-> Why not one functioning temperature and no lower / upper limits for the
-> cooling maps ?
+>   kernel/irq/chip.c
+> 
+> between commit:
+> 
+>   56707bb845f5 ("genirq, irq-gic-v3: Make NMI flow handlers use ->irq_ack() if available")
+> 
+> from the irqchip tree and commit:
+> 
+>   ef62bf7e92d8 ("irq: abstract irqaction handler invocation")
+> 
+> from the rcu tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Certainly when I first did this for NanoPC-T4, IIRC it was to avoid the 
-fan ramping up too eagerly, since level 1 for my fan is effectively 
-silent but still cools enough to let a moderate load eventually settle 
-to a steady state below the second trip.
+I had pulled these two in just for testing only because I was chasing
+a problem that looked like long-running irq handlers, but which proved
+to be something rather different.
 
-Robin.
+ef62bf7e92d8 ("irq: abstract irqaction handler invocation")
+2eeaae3c02b9 ("irq: detect long-running IRQ handlers")
 
->> +	cooling-maps {
->> +		map2 {
->> +			trip = <&cpu_warm>;
->> +			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
->> +		};
->> +
->> +		map3 {
->> +			trip = <&cpu_hot>;
->> +			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
->> +		};
->> +	};
->> +};
->> +
->>   &emmc_phy {
->>   	status = "okay";
->>   };
->>
+I will be dropping these this morning, Pacific Time.
+
+							Thanx, Paul
+
+> -- 
+> Cheers,
+> Stephen Rothwell
 > 
-> 
+> diff --cc kernel/irq/chip.c
+> index 1b1171113437,804c2791315d..000000000000
+> --- a/kernel/irq/chip.c
+> +++ b/kernel/irq/chip.c
+> @@@ -768,11 -744,6 +768,9 @@@ void handle_nmi(struct irq_desc *desc
+>   
+>   	__kstat_incr_irqs_this_cpu(desc);
+>   
+>  +	if (chip->irq_ack)
+>  +		chip->irq_ack(&desc->irq_data);
+>  +
+> - 	trace_irq_handler_entry(irq, action);
+>   	/*
+>   	 * NMIs cannot be shared, there is only one action.
+>   	 */
+> @@@ -1050,13 -954,7 +1044,10 @@@ void handle_percpu_devid_nmi(struct irq
+>   
+>   	__kstat_incr_irqs_this_cpu(desc);
+>   
+>  +	if (chip->irq_ack)
+>  +		chip->irq_ack(&desc->irq_data);
+>  +
+> - 	trace_irq_handler_entry(irq, action);
+> - 	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
+> - 	trace_irq_handler_exit(irq, action, res);
+> + 	handle_irqaction_percpu_devid(irq, action);
+>   
+>   	if (chip->irq_eoi)
+>   		chip->irq_eoi(&desc->irq_data);
+
+
