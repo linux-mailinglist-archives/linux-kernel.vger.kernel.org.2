@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83AB3EBF38
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4712A3EBF39
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbhHNBJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235870AbhHNBJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:09:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD825610FA;
-        Sat, 14 Aug 2021 01:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628903346;
-        bh=g+yGs1QxXqIF7fZn9mqGtHxhJ13Lzjmgxxhoh2KLeHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MNhjakI1i4ckxvyHmJ8qiH8Q8aNeoCHvIsMtV9qwGzgj54y0R3+mfWL0B0TdI9Cx/
-         IXAXqN30GOHsG9Wvs+Act/RI1uLjczlNXeso7Dj4uV8QWg31Xzq0yKAXGgHqvI9qxR
-         ugxWXbIfthQtvilktTwhR0fH7RHL5GMPKfobkxd+QHbbPCbjJvcNdiyBvr7MA821cs
-         twgdJow+pLpeANMioY8RfALhU56FDH34Y+JseAtXw6WSREHvjXAIRheSOmAZNHsDYV
-         RM6b+KNkIUZW0fyV9ZtkQzTUHbRdGN6F7NJQYgbGQSa3Csyyravwh67H4RA4leefOa
-         ZE7xn4a2kPQUw==
-Date:   Fri, 13 Aug 2021 18:09:03 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, clang-built-linux@googlegroups.com,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [block:io_uring-fops.v6 58/64] io_uring.c:undefined reference to
- `__compiletime_assert_833'
-Message-ID: <YRcXr8o56PIYHY27@Ryzen-9-3900X.localdomain>
-References: <202108140731.bUZsdUjG-lkp@intel.com>
+        id S236271AbhHNBKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235870AbhHNBJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 21:09:54 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045BDC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:09:27 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f3so14206030plg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5D/+fbzE5sNokosW3SJuO12q+qyf/as7HJwwSlZSGn0=;
+        b=ncZlge2rIcvnJzYI7PRcWnBtNtgdLh3ETnIGmYI7cdag5xJh+7XA98f/YDMZ5xal6l
+         RVGBw7XNAsD6Pdthj3Kr3b9mWrymbm8tIRSo/lNJBNOZdo2dNqbrnVR9XpQdoOhcKt5/
+         2ARxnegKHFG927RnQvtw2w9uPGfQ8HyP3wqr1/KXVjz3adUJoZktg7fpi1Gp/396qPgU
+         KQtZcS4hULZ6a6aR3JAQEfgQtdCYjALQMH5K+jBCu+ecJpLaUYXN2JKGQbN6sC1dm49M
+         AjDCzYkSknQBr+YR8QUqlX2StHykTJhgZ2Zz9ChjocQI4Sll+p+NPoCipc8abIXEvP+U
+         OH/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5D/+fbzE5sNokosW3SJuO12q+qyf/as7HJwwSlZSGn0=;
+        b=S6vsgjp7wp7aowMuzi0lKvizsyglyxvI2MRtGFPACASNBhX9zm/wPL+79cgyP8BbJu
+         bMJVU9m5UUTHnjEQ+EYHtJ0SqD5GJW6V458VS1fQlQXxDzXKEAmCQ47htw8jlsuPg0EY
+         bNsSNp5bvhBbt6y+E03xsjzy3E5OnFRK+rfMOiYDOZoKpP/J9UaA8XYkeNgLfuBIbgu8
+         yKQJPZxoX0/l0MXj42jAuY2sNBtvAMj/wenxlPqZ1EVugE/Tg0E4AyEQ5iXKdHnGOOvE
+         F/0hZAxlDQsWpIqNxZYNBSpOFwO38iqxFsd9Kw/UyMNxET5w620g3vTkoHLiNygbtWdU
+         P4wA==
+X-Gm-Message-State: AOAM5322nIHLs6kyOGWACWqXIwcv3IUYBnQV5F0cNjh8ewHmJxJe3A6K
+        TCFo0aajzeg+5W4nKhKxtUw=
+X-Google-Smtp-Source: ABdhPJxm/MRTek6CZZ0jeJciQa83JlPsvJsBAAqNZuUhMX56iBF7Lyt7/7Tiovo/vN7zMjNXfXsonA==
+X-Received: by 2002:a17:90a:e507:: with SMTP id t7mr4518482pjy.208.1628903366573;
+        Fri, 13 Aug 2021 18:09:26 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id j5sm2971339pjv.56.2021.08.13.18.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 18:09:26 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alasdair Kergon <agk@redhat.com>
+Cc:     Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] md: in_irq() cleanup
+Date:   Sat, 14 Aug 2021 09:09:09 +0800
+Message-Id: <20210814010909.4558-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108140731.bUZsdUjG-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 07:11:36AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git io_uring-fops.v6
-> head:   4e0c34c9b129fe84c63d3f76053d2e55d944e8a9
-> commit: 834d3e42c71acf4653f840ac3998f8601f37021c [58/64] io_uring: add infrastructure around io_uring_cmd_sqe issue type
-> config: s390-randconfig-r033-20210813 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 62df4df41c939205b2dc0a2a3bfb75b8c1ed74fa)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install s390 cross compiling tool for clang build
->         # apt-get install binutils-s390x-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?id=834d3e42c71acf4653f840ac3998f8601f37021c
->         git remote add block https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
->         git fetch --no-tags block io_uring-fops.v6
->         git checkout 834d3e42c71acf4653f840ac3998f8601f37021c
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=s390 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    s390x-linux-gnu-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
->    coherent.c:(.text+0xc4): undefined reference to `memunmap'
->    s390x-linux-gnu-ld: coherent.c:(.text+0x1c4): undefined reference to `memunmap'
->    s390x-linux-gnu-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
->    coherent.c:(.text+0x2b4): undefined reference to `memremap'
->    s390x-linux-gnu-ld: coherent.c:(.text+0x564): undefined reference to `memunmap'
->    s390x-linux-gnu-ld: fs/io_uring.o: in function `io_uring_init':
-> >> io_uring.c:(.init.text+0x30): undefined reference to `__compiletime_assert_833'
-> >> s390x-linux-gnu-ld: io_uring.c:(.init.text+0x4a): undefined reference to `__compiletime_assert_835'
->    s390x-linux-gnu-ld: drivers/dma/fsl-edma.o: in function `fsl_edma_probe':
->    fsl-edma.c:(.text+0x1bc): undefined reference to `devm_ioremap_resource'
->    s390x-linux-gnu-ld: fsl-edma.c:(.text+0x40a): undefined reference to `devm_ioremap_resource'
->    s390x-linux-gnu-ld: drivers/dma/idma64.o: in function `idma64_platform_probe':
->    idma64.c:(.text+0xc6): undefined reference to `devm_ioremap_resource'
->    s390x-linux-gnu-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
->    xillybus_of.c:(.text+0xc4): undefined reference to `devm_platform_ioremap_resource'
->    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
->    cistpl.c:(.text+0x1d6): undefined reference to `iounmap'
->    s390x-linux-gnu-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
->    cistpl.c:(.text+0xb10): undefined reference to `ioremap'
->    s390x-linux-gnu-ld: cistpl.c:(.text+0xbbe): undefined reference to `iounmap'
->    s390x-linux-gnu-ld: cistpl.c:(.text+0xf4e): undefined reference to `iounmap'
->    s390x-linux-gnu-ld: cistpl.c:(.text+0xf8c): undefined reference to `ioremap'
->    s390x-linux-gnu-ld: drivers/clocksource/timer-of.o: in function `timer_of_base_init':
->    timer-of.c:(.init.text+0x576): undefined reference to `of_iomap'
->    s390x-linux-gnu-ld: drivers/clocksource/timer-of.o: in function `timer_of_base_exit':
->    timer-of.c:(.init.text+0x17ba): undefined reference to `iounmap'
+Replace the obsolete and ambiguos macro in_irq() with new
+macro in_hardirq().
 
-Grabbing Nick's patch [1] to support the error function attribute turns
-this into:
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ drivers/md/dm-crypt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-fs/io_uring.c:10531:2: error: call to '__compiletime_assert_833' declared with 'error' attribute: BUILD_BUG_ON failed: offsetof(struct io_uring_cmd_sqe, user_data) != sqe_offsets[1].user_data
-        BUILD_BUG_SQEC_ELEM(sqe_offsets[1].user_data,   __u64,  user_data);
-        ^
-fs/io_uring.c:10528:2: note: expanded from macro 'BUILD_BUG_SQEC_ELEM'
-        __BUILD_BUG_VERIFY_ELEMENT(struct io_uring_cmd_sqe, eoffset, etype, ename)
-        ^
-fs/io_uring.c:10489:2: note: expanded from macro '__BUILD_BUG_VERIFY_ELEMENT'
-        BUILD_BUG_ON(offsetof(stype, ename) != eoffset); \
-        ^
-./include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
-        BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-        ^
-note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-./include/linux/compiler_types.h:310:2: note: expanded from macro '_compiletime_assert'
-        __compiletime_assert(condition, msg, prefix, suffix)
-        ^
-./include/linux/compiler_types.h:303:4: note: expanded from macro '__compiletime_assert'
-                        prefix ## suffix();                             \
-                        ^
-<scratch space>:17:1: note: expanded from here
-__compiletime_assert_833
-^
-fs/io_uring.c:10532:2: error: call to '__compiletime_assert_835' declared with 'error' attribute: BUILD_BUG_ON failed: offsetof(struct io_uring_cmd_sqe, personality) != sqe_offsets[1].personality
-        BUILD_BUG_SQEC_ELEM(sqe_offsets[1].personality, __u16,  personality);
-        ^
-fs/io_uring.c:10528:2: note: expanded from macro 'BUILD_BUG_SQEC_ELEM'
-        __BUILD_BUG_VERIFY_ELEMENT(struct io_uring_cmd_sqe, eoffset, etype, ename)
-        ^
-fs/io_uring.c:10489:2: note: expanded from macro '__BUILD_BUG_VERIFY_ELEMENT'
-        BUILD_BUG_ON(offsetof(stype, ename) != eoffset); \
-        ^
-./include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
-        BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-        ^
-note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-./include/linux/compiler_types.h:310:2: note: expanded from macro '_compiletime_assert'
-        __compiletime_assert(condition, msg, prefix, suffix)
-        ^
-./include/linux/compiler_types.h:303:4: note: expanded from macro '__compiletime_assert'
-                        prefix ## suffix();                             \
-                        ^
-<scratch space>:25:1: note: expanded from here
-__compiletime_assert_835
-^
-2 errors generated.
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 50f4cbd600d5..d1de93873a91 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -2223,11 +2223,11 @@ static void kcryptd_queue_crypt(struct dm_crypt_io *io)
+ 	if ((bio_data_dir(io->base_bio) == READ && test_bit(DM_CRYPT_NO_READ_WORKQUEUE, &cc->flags)) ||
+ 	    (bio_data_dir(io->base_bio) == WRITE && test_bit(DM_CRYPT_NO_WRITE_WORKQUEUE, &cc->flags))) {
+ 		/*
+-		 * in_irq(): Crypto API's skcipher_walk_first() refuses to work in hard IRQ context.
++		 * in_hardirq(): Crypto API's skcipher_walk_first() refuses to work in hard IRQ context.
+ 		 * irqs_disabled(): the kernel may run some IO completion from the idle thread, but
+ 		 * it is being executed with irqs disabled.
+ 		 */
+-		if (in_irq() || irqs_disabled()) {
++		if (in_hardirq() || irqs_disabled()) {
+ 			tasklet_init(&io->tasklet, kcryptd_crypt_tasklet, (unsigned long)&io->work);
+ 			tasklet_schedule(&io->tasklet);
+ 			return;
+-- 
+2.30.2
 
-Is this a legitimate failure? I do not see this with GCC 11.2.0.
-
-[1]: https://reviews.llvm.org/D106030 + https://lore.kernel.org/r/20210802202326.1817503-1-ndesaulniers@google.com/
-
-Cheers,
-Nathan
