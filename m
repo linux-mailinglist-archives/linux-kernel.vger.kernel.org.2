@@ -2,156 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9973EC07C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 06:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0890B3EC080
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 06:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237038AbhHNE3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 00:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        id S235205AbhHNEaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 00:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237133AbhHNE3A (ORCPT
+        with ESMTP id S231135AbhHNEaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 00:29:00 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E4DC0612A6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 21:28:28 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id j1so18275243pjv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 21:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=fvOuwKoQ212hPJxpvu+eXB3l+9X9CTwdzNpm6t+0yppO7P2Ljyx4B/EmO1jpcR2QP7
-         knVA8TnyhNcEUc9tIhW2IDYZ8950Jljd4/UHe9yusWxYZo974Pm0pME1hm6EWLKhhRS0
-         qP6HEgf5D/92s22ehSAmz5RXzInWlQ4xTL/WSbZirekHKLIns2VtYFE8tRhs86P1szll
-         DndmkUznlfGQzIdOvKnT1Kw0WipbuPvFQN47/fzlJSqpWCtPiUdVQKdCnx2VRmO3AkEI
-         0Lp6rbuZLzt8yjXn2lRMwOI9H91Xy6WWqt8S6Qx90aB9e6Ls+p+sxMvhX3703LXt3Cl/
-         wz7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=r3PSHkcAjyf4A/8pjnoX3efBhkwY/dr25m2VYWD45VMebcf3N7ci7AKXkaDW7Ajujc
-         ad93sFgBE7AOa9fFjn0hNIRCxNvH4TSlHAmTC+VftJyDueGnC6CYp3nxBOpB5bFMSSpH
-         r7XGYdPAsX1mUQ1mNg/ZC2N7X/4WFNy75HsYl34iLdva0fhGy3a2krUaZfTfojMFVRS8
-         eeaBR7k1wocR9b17tVSj8aV+T2SVKgUAy5QxNamntsNaS7w/mz6yFqVJFQE0bDqIvOfj
-         3gSmFNPL993caEpJcuiWEgazrOWgvq0kmBN2EvahobRuxkLsj4r60WoPXKKO/2D3WjY5
-         7DAw==
-X-Gm-Message-State: AOAM531TPB8RK1+vcrFBzY4UWtACq07Bbi4EMG7NITyURiFvkaf2fXRb
-        o0my6nX/rSgrLgcjbZUKPnTVSQ==
-X-Google-Smtp-Source: ABdhPJz1shFcNtkiOYR2XlqZ6VkjnLAxDcTtXHEXvByLTscUuYyQ1GhLzojS5ieOy9CVWNaH0T+s0g==
-X-Received: by 2002:a63:7c5:: with SMTP id 188mr5331402pgh.211.1628915307941;
-        Fri, 13 Aug 2021 21:28:27 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id q21sm4420492pgk.71.2021.08.13.21.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 21:28:27 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v6 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
-Date:   Sat, 14 Aug 2021 04:27:50 +0000
-Message-Id: <20210814042754.3351268-6-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210814042754.3351268-1-jiang.wang@bytedance.com>
-References: <20210814042754.3351268-1-jiang.wang@bytedance.com>
+        Sat, 14 Aug 2021 00:30:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248AAC061756;
+        Fri, 13 Aug 2021 21:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lwU/IB+Nm5xyRqkYrurF6eOIosLOeIB9lERbwxGE+Dg=; b=mEigd+RjClZCSGpcrcOTkqnqZC
+        nehtbqTGvEHUl1RMBpynmAyfNh6+qTtT/xN1hvdmx006BQ5OIlAMvytLJxpnJjfoIRv8AHK0yDO4C
+        Yf8wPQ+/B2EvniCanoYo44kn17z/G2Zyya6TWHI35HGTEnjMNw1EX6xNFvBb4Do2ewQrtjR6mbgCg
+        Zx3V9cjoeuLI+o121oULU00ybt3BWHeE6ndrlLnL2vzx/f0jFkbLLX4H80xJBc/NnIfwXksjydpua
+        ZRMJ7fT17o2Q9cv07DaLzCStkjt9evQpLrSko4LRKP4wf164VVRb3SlUDrvpbjHa/vt8ElsRXiopS
+        oIyVRHaA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mElHU-00GNYa-Oq; Sat, 14 Aug 2021 04:28:44 +0000
+Date:   Sat, 14 Aug 2021 05:28:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 080/138] mm/workingset: Convert workingset_refault()
+ to take a folio
+Message-ID: <YRdGaKsLkAwpadW5@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-81-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-81-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new test cases in sockmap tests, where unix stream is
-redirected to tcp and vice versa.
+On Thu, Jul 15, 2021 at 04:36:06AM +0100, Matthew Wilcox (Oracle) wrote:
+>  /**
+> - * workingset_refault - evaluate the refault of a previously evicted page
+> - * @page: the freshly allocated replacement page
+> - * @shadow: shadow entry of the evicted page
+> + * workingset_refault - evaluate the refault of a previously evicted folio
+> + * @page: the freshly allocated replacement folio
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Randy pointed out this doc mistake.  Which got me looking at this
+whole patch again, and I noticed that we're counting an entire folio as
+a single page.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 07ed8081f9ae..afa14fb66f08 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	xclose(p0);
- }
+So I'm going to apply this patch on top of the below patch.
+
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 241bd0f53fb9..bfe38869498d 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -597,12 +597,6 @@ static inline void mod_lruvec_page_state(struct page *page,
  
--static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
+ #endif /* CONFIG_MEMCG */
+ 
+-static inline void inc_lruvec_state(struct lruvec *lruvec,
+-				    enum node_stat_item idx)
+-{
+-	mod_lruvec_state(lruvec, idx, 1);
+-}
+-
+ static inline void __inc_lruvec_page_state(struct page *page,
+ 					   enum node_stat_item idx)
  {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 10830211a187..9f91c28cc0ce 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -273,9 +273,9 @@ void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg)
  }
  
--static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_INGRESS);
+ /**
+- * workingset_refault - evaluate the refault of a previously evicted folio
+- * @page: the freshly allocated replacement folio
+- * @shadow: shadow entry of the evicted folio
++ * workingset_refault - Evaluate the refault of a previously evicted folio.
++ * @folio: The freshly allocated replacement folio.
++ * @shadow: Shadow entry of the evicted folio.
+  *
+  * Calculates and evaluates the refault distance of the previously
+  * evicted folio in the context of the node and the memcg whose memory
+@@ -295,6 +295,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	unsigned long refault;
+ 	bool workingset;
+ 	int memcgid;
++	long nr;
  
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
- 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
- 	if (!test__start_subtest(s))
- 		return;
--	udp_unix_skb_redir_to_connected(skel, map, family);
--	unix_udp_skb_redir_to_connected(skel, map, family);
-+	inet_unix_skb_redir_to_connected(skel, map, family);
-+	unix_inet_skb_redir_to_connected(skel, map, family);
- }
+ 	unpack_shadow(shadow, &memcgid, &pgdat, &eviction, &workingset);
  
- static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
--- 
-2.20.1
+@@ -347,10 +348,11 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	 * However, the cgroup that will own the folio is the one that
+ 	 * is actually experiencing the refault event.
+ 	 */
++	nr = folio_nr_pages(folio);
+ 	memcg = folio_memcg(folio);
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 
+-	inc_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file);
++	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+ 
+ 	/*
+ 	 * Compare the distance to the existing workingset size. We
+@@ -376,15 +378,15 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 		goto out;
+ 
+ 	folio_set_active(folio);
+-	workingset_age_nonresident(lruvec, folio_nr_pages(folio));
+-	inc_lruvec_state(lruvec, WORKINGSET_ACTIVATE_BASE + file);
++	workingset_age_nonresident(lruvec, nr);
++	mod_lruvec_state(lruvec, WORKINGSET_ACTIVATE_BASE + file, nr);
+ 
+ 	/* Folio was active prior to eviction */
+ 	if (workingset) {
+ 		folio_set_workingset(folio);
+ 		/* XXX: Move to lru_cache_add() when it supports new vs putback */
+ 		lru_note_cost_folio(folio);
+-		inc_lruvec_state(lruvec, WORKINGSET_RESTORE_BASE + file);
++		mod_lruvec_state(lruvec, WORKINGSET_RESTORE_BASE + file, nr);
+ 	}
+ out:
+ 	rcu_read_unlock();
 
+> + * @shadow: shadow entry of the evicted folio
+>   *
+>   * Calculates and evaluates the refault distance of the previously
+> - * evicted page in the context of the node and the memcg whose memory
+> + * evicted folio in the context of the node and the memcg whose memory
+>   * pressure caused the eviction.
+>   */
+> -void workingset_refault(struct page *page, void *shadow)
+> +void workingset_refault(struct folio *folio, void *shadow)
+>  {
+> -	bool file = page_is_file_lru(page);
+> +	bool file = folio_is_file_lru(folio);
+>  	struct mem_cgroup *eviction_memcg;
+>  	struct lruvec *eviction_lruvec;
+>  	unsigned long refault_distance;
+> @@ -301,10 +301,10 @@ void workingset_refault(struct page *page, void *shadow)
+>  	rcu_read_lock();
+>  	/*
+>  	 * Look up the memcg associated with the stored ID. It might
+> -	 * have been deleted since the page's eviction.
+> +	 * have been deleted since the folio's eviction.
+>  	 *
+>  	 * Note that in rare events the ID could have been recycled
+> -	 * for a new cgroup that refaults a shared page. This is
+> +	 * for a new cgroup that refaults a shared folio. This is
+>  	 * impossible to tell from the available data. However, this
+>  	 * should be a rare and limited disturbance, and activations
+>  	 * are always speculative anyway. Ultimately, it's the aging
+> @@ -340,14 +340,14 @@ void workingset_refault(struct page *page, void *shadow)
+>  	refault_distance = (refault - eviction) & EVICTION_MASK;
+>  
+>  	/*
+> -	 * The activation decision for this page is made at the level
+> +	 * The activation decision for this folio is made at the level
+>  	 * where the eviction occurred, as that is where the LRU order
+> -	 * during page reclaim is being determined.
+> +	 * during folio reclaim is being determined.
+>  	 *
+> -	 * However, the cgroup that will own the page is the one that
+> +	 * However, the cgroup that will own the folio is the one that
+>  	 * is actually experiencing the refault event.
+>  	 */
+> -	memcg = page_memcg(page);
+> +	memcg = folio_memcg(folio);
+>  	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+>  
+>  	inc_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file);
+> @@ -375,15 +375,15 @@ void workingset_refault(struct page *page, void *shadow)
+>  	if (refault_distance > workingset_size)
+>  		goto out;
+>  
+> -	SetPageActive(page);
+> -	workingset_age_nonresident(lruvec, thp_nr_pages(page));
+> +	folio_set_active(folio);
+> +	workingset_age_nonresident(lruvec, folio_nr_pages(folio));
+>  	inc_lruvec_state(lruvec, WORKINGSET_ACTIVATE_BASE + file);
+>  
+> -	/* Page was active prior to eviction */
+> +	/* Folio was active prior to eviction */
+>  	if (workingset) {
+> -		SetPageWorkingset(page);
+> +		folio_set_workingset(folio);
+>  		/* XXX: Move to lru_cache_add() when it supports new vs putback */
+> -		lru_note_cost_page(page);
+> +		lru_note_cost_folio(folio);
+>  		inc_lruvec_state(lruvec, WORKINGSET_RESTORE_BASE + file);
+>  	}
+>  out:
+> -- 
+> 2.30.2
+> 
