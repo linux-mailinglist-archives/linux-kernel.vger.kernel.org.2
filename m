@@ -2,184 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690993EC09F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 07:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAEB3EC0A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 07:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhHNFNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 01:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S235923AbhHNFXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 01:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236542AbhHNFNt (ORCPT
+        with ESMTP id S231890AbhHNFXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 01:13:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795C3C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 22:13:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id b10so13618414eju.9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 22:13:21 -0700 (PDT)
+        Sat, 14 Aug 2021 01:23:04 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE39C061575;
+        Fri, 13 Aug 2021 22:22:36 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so3418671pjz.0;
+        Fri, 13 Aug 2021 22:22:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JALH4gdR/CQtQSL/RLDHtTvz9LKofM9QnZEJnouJmDc=;
-        b=uoCBGfZTQOQdQ2y3T5Ls/MpvS/jC4k8pRoy6mQBl09zCj8+a57JG0tYbews0t9HYKv
-         XbNlL/ir7CKGJ5zyzVMS4KvgVEncNgLBGuzvIVU/Tbf4ktYhfCl58OfYa6RJlUW0aDki
-         uGo+m49+0xqpCJpu5Wj1j9EsA6ECwxejG60yLeG+3khAuVVqCsRtrYD7j3f8s0n8bQcm
-         ZaVj/fOVkEQ8lfeGWwzY6M3jFlS5UDsoF4EDvuMKOziiFApoXTP1vvXQGwDMvrnGkFAS
-         uhBk0WBZ5KwetfXMocJ6E9uQVNrVc5NryxK/E2ldGqo6xtcJSeDPo1tZWLiIQLs5P7Ur
-         HdjQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qUlgCGK8+0KVcRwvfAdukdAi2gP9bLhzHb2DkcgfzQY=;
+        b=OQqyGWEnIPLyf3mXTtyAaEWzqjlcyCUdbsTZsFKYqa8gAZOSlHOHrA++SGAjDCM22p
+         anVJ+uBmvz9kl/eeKRiNY53lZBTvP4HgO021aS2HzrnH0XB3vWa/khh3xHM367OVTYRE
+         8CpdEsiV5Duh5fXigEio/fXfI1uyps2jzP4LWgQQU3ckEhDYLd6enyJJUkooyVLbdsAa
+         69I0VwvlzYUdSkA9d/D5fqBq4F9eCUXJ6GlF8wWTLjY31rZseLDIaNp+yh+hbwzbdTGK
+         Sh40dkDnJUbxJaTx6hsdpIhjI9TlMVFj2aWH0qJ5ZO+A9bWGoaT0ufqA25AHNn39HLpW
+         SpTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JALH4gdR/CQtQSL/RLDHtTvz9LKofM9QnZEJnouJmDc=;
-        b=YADgHp5sn4fXtg2O2vFNcsLoIaEM+Gk0ZfpH4aj2YbhAZbKWewGymPCD9+qXGAmH+5
-         32jjMMmAxnQyRl4AdLYqeUrdJPyItuhRb77PaK8Mvx1Mt7L3fPoo+MXjtR6lozn0ga/U
-         9DZ3Zu28SMTW5GkDe4qQytYwkoH7Fbqc3IzFtndR+FadrO4Vot6WIslj87L47mFE6AXh
-         /NSORSWfkEF6i3/zVXzcJ/1KQYyhblLM9fz9455wD+Xbxuib800NITyODRRQb5bkNuzj
-         /pwWs+Q5Dxb36aUZtkJgtzCcNnKnVh9MHVpI6VshXArTfmucT0DB2oVZqrCfuXLjcXoc
-         wJhQ==
-X-Gm-Message-State: AOAM5322hhfPpnzumM0Fs0Bu92CUxM/KwRXcFoqqYSfjQOjhNZKKQSrx
-        DC8halUL29fMYaMuUfTU8H+mTCQS/a7oH/wQAdM/kg==
-X-Google-Smtp-Source: ABdhPJzfH+akykLr5kX8n4VDZSQ8O9o1C4k3cQiTlFzXcECL4AJ8Eb2H8I/8HbJqOkdjqDD98Ll8Vo5oNo3APA4uVsQ=
-X-Received: by 2002:a17:906:8606:: with SMTP id o6mr5951812ejx.247.1628917999875;
- Fri, 13 Aug 2021 22:13:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qUlgCGK8+0KVcRwvfAdukdAi2gP9bLhzHb2DkcgfzQY=;
+        b=txpOHCG2uwglZ3XdScTqqN6RL1guxTGu1vlDEXPVG6uCHzzFy5WxmGD7AVkakCBMa6
+         ImTpbKt8/Cx+VEC88/0N6AR+jLX5MxQm6Vsqb9a417gI3xPuni5qrCgRs3d47P5bF7xx
+         yGe7vs5F+luWITS0oxPLAyPoKcggJfz1blKLRYUpXy9H9Jp2YY71hd3suzZaVFVjzIzG
+         kQpOJaMuUdKsG3MBFCdomxYUEL+bv7WKDAaOKW++7cGpOaOksmjRckyelVDbx0FimqE3
+         1x5Gx4JkRihA84KVBqJCIe6BeVNMuF3/9txavOj+7hTk1vtsCoUYsv3ivnKY8OTFiPLR
+         yFoQ==
+X-Gm-Message-State: AOAM533O4X40Xax52D6p4YY4WQnHEuKG+XLVfy4alydzOl46o79TjsyS
+        wuhZqJwSiERy8Yt8NPZoJbM=
+X-Google-Smtp-Source: ABdhPJwD5gIcmIVuMlWVrreOkxKSMiaVBIuW/nBKpzkRSs0ejSmabXcCcl3mKEjdXsaLElfILCT8Bg==
+X-Received: by 2002:a65:608f:: with SMTP id t15mr5420277pgu.452.1628918556102;
+        Fri, 13 Aug 2021 22:22:36 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-92-48-112.hsd1.ca.comcast.net. [73.92.48.112])
+        by smtp.gmail.com with ESMTPSA id b3sm4102861pfi.179.2021.08.13.22.22.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 13 Aug 2021 22:22:35 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 22:22:29 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Joel Stanley <joel@jms.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH v2 4/6] ARM: dts: aspeed: Add Facebook Cloudripper
+ (AST2600) BMC
+Message-ID: <20210814052228.GA1298@taoren-ubuntu-R90MNF91>
+References: <20210805222818.8391-1-rentao.bupt@gmail.com>
+ <20210805222818.8391-5-rentao.bupt@gmail.com>
+ <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
+ <20210813034016.GA21895@taoren-ubuntu-R90MNF91>
+ <YRaFpq1LvRzMYr/A@lunn.ch>
 MIME-Version: 1.0
-References: <20210810190159.4103778-1-richardsonnick@google.com> <20210810190159.4103778-3-richardsonnick@google.com>
-In-Reply-To: <20210810190159.4103778-3-richardsonnick@google.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 14 Aug 2021 10:43:08 +0530
-Message-ID: <CA+G9fYszRMoz-FKDJKzOuw7VkEyy-YQF1NR_0q4dc5Dpvb6ykw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] pktgen: Add imix distribution bins
-To:     Nicholas Richardson <richardsonnick@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, nrrichar@ncsu.edu,
-        promanov@google.com, arunkaly@google.com,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Di Zhu <zhudi21@huawei.com>, Leesoo Ahn <dev@ooseel.net>,
-        Ye Bin <yebin10@huawei.com>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Mark Brown <broonie@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRaFpq1LvRzMYr/A@lunn.ch>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 00:32, Nicholas Richardson
-<richardsonnick@google.com> wrote:
->
-> From: Nick Richardson <richardsonnick@google.com>
->
-> In order to represent the distribution of imix packet sizes, a
-> pre-computed data structure is used. It features 100 (IMIX_PRECISION)
-> "bins". Contiguous ranges of these bins represent the respective
-> packet size of each imix entry. This is done to avoid the overhead of
-> selecting the correct imix packet size based on the corresponding weights.
->
-> Example:
-> imix_weights 40,7 576,4 1500,1
-> total_weight = 7 + 4 + 1 = 12
->
-> pkt_size 40 occurs 7/total_weight = 58% of the time
-> pkt_size 576 occurs 4/total_weight = 33% of the time
-> pkt_size 1500 occurs 1/total_weight = 9% of the time
->
-> We generate a random number between 0-100 and select the corresponding
-> packet size based on the specified weights.
-> Eg. random number = 358723895 % 100 = 65
-> Selects the packet size corresponding to index:65 in the pre-computed
-> imix_distribution array.
-> An example of the  pre-computed array is below:
->
-> The imix_distribution will look like the following:
-> 0        ->  0 (index of imix_entry.size == 40)
-> 1        ->  0 (index of imix_entry.size == 40)
-> 2        ->  0 (index of imix_entry.size == 40)
-> [...]    ->  0 (index of imix_entry.size == 40)
-> 57       ->  0 (index of imix_entry.size == 40)
-> 58       ->  1 (index of imix_entry.size == 576)
-> [...]    ->  1 (index of imix_entry.size == 576)
-> 90       ->  1 (index of imix_entry.size == 576)
-> 91       ->  2 (index of imix_entry.size == 1500)
-> [...]    ->  2 (index of imix_entry.size == 1500)
-> 99       ->  2 (index of imix_entry.size == 1500)
->
-> Create and use "bin" representation of the imix distribution.
->
-> Signed-off-by: Nick Richardson <richardsonnick@google.com>
-> ---
->  net/core/pktgen.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->
-> diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-> index a7e45eaccef7..ac1de15000e2 100644
-> --- a/net/core/pktgen.c
-> +++ b/net/core/pktgen.c
-> @@ -177,6 +177,7 @@
->  #define MPLS_STACK_BOTTOM htonl(0x00000100)
->  /* Max number of internet mix entries that can be specified in imix_weights. */
->  #define MAX_IMIX_ENTRIES 20
-> +#define IMIX_PRECISION 100 /* Precision of IMIX distribution */
->
->  #define func_enter() pr_debug("entering %s\n", __func__);
->
-> @@ -354,6 +355,8 @@ struct pktgen_dev {
->         /* IMIX */
->         unsigned int n_imix_entries;
->         struct imix_pkt imix_entries[MAX_IMIX_ENTRIES];
-> +       /* Maps 0-IMIX_PRECISION range to imix_entry based on probability*/
-> +       __u8 imix_distribution[IMIX_PRECISION];
->
->         /* MPLS */
->         unsigned int nr_labels; /* Depth of stack, 0 = no MPLS */
-> @@ -483,6 +486,7 @@ static void pktgen_stop_all_threads(struct pktgen_net *pn);
->
->  static void pktgen_stop(struct pktgen_thread *t);
->  static void pktgen_clear_counters(struct pktgen_dev *pkt_dev);
-> +static void fill_imix_distribution(struct pktgen_dev *pkt_dev);
+Hi Andrew,
 
-Linux next 20210813 tag arm builds failed due to following build errors.
+On Fri, Aug 13, 2021 at 04:45:58PM +0200, Andrew Lunn wrote:
+> On Thu, Aug 12, 2021 at 08:40:17PM -0700, Tao Ren wrote:
+> > On Fri, Aug 13, 2021 at 01:29:17AM +0000, Joel Stanley wrote:
+> > > On Thu, 5 Aug 2021 at 22:28, <rentao.bupt@gmail.com> wrote:
+> > > > +&mdio1 {
+> > > > +       status = "okay";
+> > > 
+> > > You're enabling this but it looks like it's unused?
+> > 
+> > Thanks Joel for the careful review. The MDIO controller is not paired
+> > with BMC MAC; instead, it's connected to the MDC/MDIO interface of the
+> > on-board switch (whose ports are connected to BMC, Host and front panel
+> > management port).
+> 
+> What switch is it? Is there a DSA driver for it? drivers/net/dsa/*
+> Ideally you want Linux to be controlling the switch, in the standard
+> linux way.
+> 
+>      Andrew
 
-Regressions found on arm:
+Thanks for jumping in. We are using BCM5389 and the MDIO bus is used to
+access BCM5389 MDC/MDIO interface in Pseudo-PHY mode.
 
- - build/gcc-10-ixp4xx_defconfig
- - build/gcc-10-orion5x_defconfig
- - build/gcc-10-multi_v5_defconfig
+I didn't know drivers/net/dsa, but let me check out the drivers and see
+if it works in the Cloudripper environment.
 
-net/core/pktgen.c:489:13: warning: 'fill_imix_distribution' used but
-never defined
- static void fill_imix_distribution(struct pktgen_dev *pkt_dev);
-             ^~~~~~~~~~~~~~~~~~~~~~
-ERROR: modpost: "fill_imix_distribution" [net/core/pktgen.ko] undefined!
-make[2]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
-make[2]: *** Deleting file 'modules-only.symvers'
-make[2]: Target '__modpost' not remade because of errors.
-make[1]: *** [Makefile:1918: modules] Error 2
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thanks,
 
-Steps to reproduce:
-
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime podman --target-arch arm --toolchain gcc-10
---kconfig orion5x_defconfig
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Tao
