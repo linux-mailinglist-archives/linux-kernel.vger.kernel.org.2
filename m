@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F503EC125
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E573EC129
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237345AbhHNHW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 03:22:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29931 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237275AbhHNHWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 03:22:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628925745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1TtSUDMLTyWrnaOTR2UJPOGTDs88Lu3pvS9ZFwMmYSo=;
-        b=JELr58FcRMuQeDYfk+6ORCWiJhK53Ug73j3OvpxiAmK/WV6jerbDxq9ov0n3ymC+jCUniJ
-        oyObYGWp+umchUEU2PIB85hMxLkBjX1zfxPTBHLfPbAuPubi7Ck9aFcTQPBzWTIH6t++A/
-        XiW+4/EHCC92HPbCwz3OhcNREFfN6v0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-TM9ftO-XPUOiuzObTWLX2w-1; Sat, 14 Aug 2021 03:22:21 -0400
-X-MC-Unique: TM9ftO-XPUOiuzObTWLX2w-1
-Received: by mail-ed1-f69.google.com with SMTP id eg56-20020a05640228b8b02903be79801f9aso5940937edb.21
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 00:22:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1TtSUDMLTyWrnaOTR2UJPOGTDs88Lu3pvS9ZFwMmYSo=;
-        b=JfgsAf3nl0MlanQS7Ng090Oias0DKtnkuptkEvuhtzhExQrPxJ9lJgV6ep23NdPnjR
-         bXT4lOC3qlI5SlQVi0pLDggauJvdQoospU7pjM70pmo9T65sMHaYvkokOslKuolGxu3Z
-         +VrXOQzblwDOYF5Y93jH8lOPKIIw2ThskIkXPZWa04rCCyFFOZVKPsUdeOCkx/Ph+qqo
-         qXTr/bcz0ezlkXx5jx+uQ1uiE7khuVhDhesUYsOCKpHNXxd7yd1fDL7XLqd+XSS/AFup
-         CttzjxVdt63XKlY32Av+zO4Lw4y/16uQJd2uIp062L20IWDS7f80+CX/mDVhUK1g9d4x
-         vZOg==
-X-Gm-Message-State: AOAM532mKi6YK7xXLqkrJB1HyFe4EiMzDSKBFoE18nE0QOTXgd8jY0XM
-        PyzVGcpM9wbmS19rrhAUJoYf8j5ZtUy+OhMZ9QhrbsIES50O7gY/g9JWQgC7QRwwQSUSdGLMgT6
-        4pcjQOsuJ99chE5+g9iZ6Sw+h
-X-Received: by 2002:a05:6402:1d33:: with SMTP id dh19mr7880369edb.10.1628925740649;
-        Sat, 14 Aug 2021 00:22:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzlMdYxdPuv4hxHiu5mdrKEcsJmNgUQPIOBIw33CfjXaNdkfdzNZcQUx/8sGWC1f+auRLo1Gw==
-X-Received: by 2002:a05:6402:1d33:: with SMTP id dh19mr7880346edb.10.1628925740441;
-        Sat, 14 Aug 2021 00:22:20 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id z4sm1412515edc.33.2021.08.14.00.22.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 00:22:19 -0700 (PDT)
-To:     Hikaru Nishida <hikalium@chromium.org>,
-        linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
-        mlevitsk@redhat.com
-Cc:     suleiman@google.com, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-References: <20210806100710.2425336-1-hikalium@chromium.org>
- <20210806190607.v2.3.Ib0cb8ecae99f0ccd0e2814b310adba00b9e81d94@changeid>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [v2 PATCH 3/4] x86/kvm: Add host side support for virtual suspend
- time injection
-Message-ID: <2ec642dd-dde6-bee6-3de3-0fa78d288995@redhat.com>
-Date:   Sat, 14 Aug 2021 09:22:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237248AbhHNHaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 03:30:52 -0400
+Received: from verein.lst.de ([213.95.11.211]:49474 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236542AbhHNHav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 03:30:51 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DBFA567373; Sat, 14 Aug 2021 09:30:19 +0200 (CEST)
+Date:   Sat, 14 Aug 2021 09:30:19 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@lst.de>, linux-iio@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: IIO, dmabuf, io_uring
+Message-ID: <20210814073019.GC21175@lst.de>
+References: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20210806190607.v2.3.Ib0cb8ecae99f0ccd0e2814b310adba00b9e81d94@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 12:07, Hikaru Nishida wrote:
-> +#if defined(CONFIG_KVM_VIRT_SUSPEND_TIMING) || \
-> +	defined(CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST)
-> +#define VIRT_SUSPEND_TIMING_VECTOR	0xec
-> +#endif
+On Fri, Aug 13, 2021 at 01:41:26PM +0200, Paul Cercueil wrote:
+> Hi,
+>
+> A few months ago we (ADI) tried to upstream the interface we use with our 
+> high-speed ADCs and DACs. It is a system with custom ioctls on the iio 
+> device node to dequeue and enqueue buffers (allocated with 
+> dma_alloc_coherent), that can then be mmap'd by userspace applications. 
+> Anyway, it was ultimately denied entry [1]; this API was okay in ~2014 when 
+> it was designed but it feels like re-inventing the wheel in 2021.
+>
+> Back to the drawing table, and we'd like to design something that we can 
+> actually upstream. This high-speed interface looks awfully similar to 
+> DMABUF, so we may try to implement a DMABUF interface for IIO, unless 
+> someone has a better idea.
 
-No need to use a new vector.  You can rename the existing 
-MSR_KVM_ASYNC_PF_INT to MSR_KVM_HYPERVISOR_CALLBACK_INT or something 
-like that, and add the code to sysvec_kvm_asyncpf_interrupt.
+To me this does sound a lot like a dma buf use case.  The interesting
+question to me is how to signal arrival of new data, or readyness to
+consume more data.  I suspect that people that are actually using
+dmabuf heavily at the moment (dri/media folks) might be able to chime
+in a little more on that.
 
-> +static void kvm_make_suspend_time_interrupt(struct kvm_vcpu *vcpu)
-> +{
-> +	kvm_queue_interrupt(vcpu, VIRT_SUSPEND_TIMING_VECTOR, false);
-> +	kvm_make_request(KVM_REQ_EVENT, vcpu);
-> +}
+> Our first usecase is, we want userspace applications to be able to dequeue 
+> buffers of samples (from ADCs), and/or enqueue buffers of samples (for 
+> DACs), and to be able to manipulate them (mmapped buffers). With a DMABUF 
+> interface, I guess the userspace application would dequeue a dma buffer 
+> from the driver, mmap it, read/write the data, unmap it, then enqueue it to 
+> the IIO driver again so that it can be disposed of. Does that sound sane?
+>
+> Our second usecase is - and that's where things get tricky - to be able to 
+> stream the samples to another computer for processing, over Ethernet or 
+> USB. Our typical setup is a high-speed ADC/DAC on a dev board with a FPGA 
+> and a weak soft-core or low-power CPU; processing the data in-situ is not 
+> an option. Copying the data from one buffer to another is not an option 
+> either (way too slow), so we absolutely want zero-copy.
+>
+> Usual userspace zero-copy techniques (vmsplice+splice, MSG_ZEROCOPY etc) 
+> don't really work with mmapped kernel buffers allocated for DMA [2] and/or 
+> have a huge overhead, so the way I see it, we would also need DMABUF 
+> support in both the Ethernet stack and USB (functionfs) stack. However, as 
+> far as I understood, DMABUF is mostly a DRM/V4L2 thing, so I am really not 
+> sure we have the right idea here.
+>
+> And finally, there is the new kid in town, io_uring. I am not very literate 
+> about the topic, but it does not seem to be able to handle DMA buffers 
+> (yet?). The idea that we could dequeue a buffer of samples from the IIO 
+> device and send it over the network in one single syscall is appealing, 
+> though.
 
-Use kvm_apic_set_irq which will inject the interrupt as soon as 
-possible, so you do not even need to check 
-kvm_vcpu_ready_for_interrupt_injection.
-
-> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING
-> +		if (kvm->suspend_injection_requested &&
-> +			kvm_vcpu_ready_for_interrupt_injection(vcpu)) {
-> +			kvm_write_suspend_time(kvm);
-> +			kvm_make_suspend_time_interrupt(vcpu);
-> +			kvm->suspend_injection_requested = false;
-> +		}
-> +#endif
-
-Do not read variables in vcpu_run; There is KVM_REQ_* if you need to do 
-work in the vCPU run loop.
-
-> +	mutex_lock(&kvm_lock);
-> +	list_for_each_entry(kvm, &vm_list, vm_list) {
-> +		if (!(kvm->arch.msr_suspend_time & KVM_MSR_ENABLED))
-> +			continue;
-> +
-> +		kvm_for_each_vcpu(i, vcpu, kvm)
-> +			vcpu->arch.tsc_offset_adjustment -= adj;
-> +
-> +		/*
-> +		 * Move the offset of kvm_clock here as if it is stopped
-> +		 * during the suspension.
-> +		 */
-> +		kvm->arch.kvmclock_offset -= suspend_time_ns;
-> +
-> +		/* suspend_time is accumulated per VM. */
-> +		kvm->suspend_time_ns += suspend_time_ns;
-> +		kvm->suspend_injection_requested = true;
-> +		/*
-> +		 * This adjustment will be reflected to the struct provided
-> +		 * from the guest via MSR_KVM_HOST_SUSPEND_TIME before
-> +		 * the notification interrupt is injected.
-> +		 */
-> +	}
-> +	mutex_unlock(&kvm_lock);
-> +}
-
-As pointed out by Thomas, this should be a work item.
-
-Paolo
-
+Think of io_uring really just as an async syscall layer.  It doesn't
+replace DMA buffers, but can be used as a different and for some
+workloads more efficient way to dispatch syscalls.
