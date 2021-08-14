@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B74F3EC60A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F693EC60C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhHNXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234330AbhHNXnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:43:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 444C560F48;
-        Sat, 14 Aug 2021 23:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628984588;
-        bh=nipsjhHCi02+bGpq1NI464aFtAGGb9opafHbiKjdbAk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NTmxIQK/EkQOFxz+Xj/L87q6LcD8LiYeqfoc4xP4rA2cz2SmOuHYC1gA9FKLTXRpg
-         reS/Bqdu/G2FhmszJ5kju49LberxoEgcbU8IBLkFuDS+Vq/AyGz30/GvVkhPXWy8LO
-         esXjdw5LXXy8ezNboutxGMH0xS4G5M7Adf7ayP84tkfNieRUU4Ss4aOzBEISHAzmqb
-         OIzCxY8ydFUg0JrwMd4hr7EQUABddM5yiJ+8e0OZPFbMxuSit6X7PGJaohAuv+XnEl
-         CR2msEbk7VRUe37vE7JUuh6ZSwhlfzRJYqxhXdUGgK0bNK9LQ4eBsNdP36nGfkvlAL
-         mwiuHv/9Ztokg==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Luca Coelho <luciano.coelho@intel.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] iwlwifi: mvm: Fix bitwise vs logical operator in iwl_mvm_scan_fits()
-Date:   Sat, 14 Aug 2021 16:42:48 -0700
-Message-Id: <20210814234248.1755703-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc2
+        id S234058AbhHNXun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:50:43 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:32428 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233549AbhHNXuk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 19:50:40 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 17ENnpW3026713
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:49:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17ENnpW3026713
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628984992;
+        bh=4qC4AERb0Snk+55rk2CLhMwMYEU3AtPhxGssFF1Wn6E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2dbOfK20z85mtZRexmRyPdAfSlmQ0bHm8Jl+QEWw2ylAPkiK0jgeuKXizVsKL19BK
+         ZLrJQdxtYIzkS4rBn948m0KKuMH/Vyy7/yOm50LEQcGJGMPRClb5MT2wNdxA9ribrw
+         rXUQ3D1vpTW+/lpNrsnKze/ikY1CxKA1/wPDylZt67zO61DRpVpGNSkNp76BrUGBeh
+         G1nNauOf+DA2J7WeIl55xMHl10zgACZ9CPFpsDkZ/Ze3k8e2gXVvDjpKU161zaK8WG
+         GxV68Ntoklzat2/3Dxul8PmOzfJjeVBg83WmOtgyaCmrQkBKPcY1EgRO3CSjMTc7dB
+         WVU48LLmjWpcw==
+X-Nifty-SrcIP: [209.85.214.180]
+Received: by mail-pl1-f180.google.com with SMTP id a5so16530294plh.5
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:49:51 -0700 (PDT)
+X-Gm-Message-State: AOAM53350/QOPUgB/frm8Hd5xw09DmflAwF24yZg3p/QVhRVeEfpq8hO
+        ZvBkY7aLO00qpf2+cIIggcipafrXnjiRLI/ChkY=
+X-Google-Smtp-Source: ABdhPJz5XOqnHANztna/aYDFzteB9C6xf5kkT9BSKSsHlNBNwwsYo2uIuqDV+v3Cw8m6EcYrntZp4ngs/Fdz8lEcXDE=
+X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr8993112pjg.153.1628984990887;
+ Sat, 14 Aug 2021 16:49:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20210729142147.445593-1-masahiroy@kernel.org> <mhng-fe558e10-6cee-4e55-b975-8c525c2bcb02@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-fe558e10-6cee-4e55-b975-8c525c2bcb02@palmerdabbelt-glaptop>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 15 Aug 2021 08:49:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARVjdVf5QRFduKrxb-TJyiCdUPkpSSMtYiS7yN2yAZhEQ@mail.gmail.com>
+Message-ID: <CAK7LNARVjdVf5QRFduKrxb-TJyiCdUPkpSSMtYiS7yN2yAZhEQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: move the (z)install rules to arch/riscv/Makefile
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tobias Klauser <tklauser@distanz.ch>, vitaly.wool@konsulko.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+On Sat, Aug 14, 2021 at 2:00 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Thu, 29 Jul 2021 07:21:47 PDT (-0700), masahiroy@kernel.org wrote:
+> > Currently, the (z)install targets in arch/riscv/Makefile descend into
+> > arch/riscv/boot/Makefile to invoke the shell script, but there is no
+> > good reason to do so.
+> >
+> > arch/riscv/Makefile can run the shell script directly.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/riscv/Makefile      | 7 +++++--
+> >  arch/riscv/boot/Makefile | 8 --------
+> >  2 files changed, 5 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > index bc74afdbf31e..3c437fb09a07 100644
+> > --- a/arch/riscv/Makefile
+> > +++ b/arch/riscv/Makefile
+> > @@ -126,8 +126,11 @@ $(BOOT_TARGETS): vmlinux
+> >  Image.%: Image
+> >       $(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+> >
+> > -zinstall install:
+> > -     $(Q)$(MAKE) $(build)=$(boot) $@
+> > +install: install-image = Image
+> > +zinstall: install-image = Image.gz
+> > +install zinstall:
+> > +     $(CONFIG_SHELL) $(srctree)/$(boot)/install.sh $(KERNELRELEASE) \
+> > +     $(boot)/$(install-image) System.map "$(INSTALL_PATH)"
+> >
+> >  archclean:
+> >       $(Q)$(MAKE) $(clean)=$(boot)
+> > diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+> > index 6bf299f70c27..becd0621071c 100644
+> > --- a/arch/riscv/boot/Makefile
+> > +++ b/arch/riscv/boot/Makefile
+> > @@ -58,11 +58,3 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
+> >
+> >  $(obj)/loader.bin: $(obj)/loader FORCE
+> >       $(call if_changed,objcopy)
+> > -
+> > -install:
+> > -     $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+> > -     $(obj)/Image System.map "$(INSTALL_PATH)"
+> > -
+> > -zinstall:
+> > -     $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+> > -     $(obj)/Image.gz System.map "$(INSTALL_PATH)"
+>
+> Admittidly I don't see a reason to do it this way either, but it looks
+> like the other common ports (I checked arm64 and x86) are doing things
+> this way.  I don't really care that much about which way we do it, but
+> it'd be better to keep everyone aligned.
+>
+> Are you converting the other ports over as well?
 
-drivers/net/wireless/intel/iwlwifi/mvm/scan.c:835:3: warning: bitwise
-and of boolean expressions; did you mean logical and?
-[-Wbool-operation-and]
-                (n_channels <= mvm->fw->ucode_capa.n_scan_channels) &
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                                                    &&
-1 warning generated.
+Yes.
 
-Replace the bitwise AND with a logical one to solve the warning, which
-is clearly what was intended.
 
-Fixes: 999d2568ee0c ("iwlwifi: mvm: combine scan size checks into a common function")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/net/wireless/intel/iwlwifi/mvm/scan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-index 0368b7101222..494379fc9224 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-@@ -832,7 +832,7 @@ static inline bool iwl_mvm_scan_fits(struct iwl_mvm *mvm, int n_ssids,
- 				     int n_channels)
- {
- 	return ((n_ssids <= PROBE_OPTION_MAX) &&
--		(n_channels <= mvm->fw->ucode_capa.n_scan_channels) &
-+		(n_channels <= mvm->fw->ucode_capa.n_scan_channels) &&
- 		(ies->common_ie_len +
- 		 ies->len[NL80211_BAND_2GHZ] +
- 		 ies->len[NL80211_BAND_5GHZ] <=
-
-base-commit: ba31f97d43be41ca99ab72a6131d7c226306865f
 -- 
-2.33.0.rc2
-
+Best Regards
+Masahiro Yamada
