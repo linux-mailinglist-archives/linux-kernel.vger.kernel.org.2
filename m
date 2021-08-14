@@ -2,109 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BF73EBFBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 04:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0119F3EBFBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 04:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbhHNCZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 22:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236487AbhHNCZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 22:25:52 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E5AC0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 19:25:25 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id y3so12802503ilm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 19:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g+h4YdA10rVYLoy91RdRh05aT4UGlm+BaDf29HhFh7M=;
-        b=JrmfQNjDCsooCATbytaYIpJCtaeY7BuUCMpzvndME5z1Xl8ifWHr0gP+uIKxvgGOt/
-         eopFms6IIU7bYWzj3aJNfMR2EHMRPMzlWoL4v6sH3PYFZOARe2Bh2MLM4gTDzv1D7gKO
-         2dk8N3fN6yfK3EAtY2WiDbmOIACaTVTJH1RsJW21b20bu+DLi1+ZmVGLkhY88WiLIrcE
-         0UNQIGqXRaxchmodrll6oOMxqt2A65Tnw2lVLuW2xz+ilTW6LgOaE8EiMVgjqtIns1WK
-         p6J9z7tHpQ0bP6+rRy4vrpMY8oI0ifCtZA568J7TESQQoax2miGv0bEZH5jYKGNokzYb
-         1qHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g+h4YdA10rVYLoy91RdRh05aT4UGlm+BaDf29HhFh7M=;
-        b=gLsNiwT7M2qn7YEB2EVlapvqYkiuBFhr6AxCnrXPAJkrHD39nkdSWbFAa7rAzeRkN9
-         nWUdBZJFU30K27HlU+gmZeY6wHuqq+HrHpXSYevkSdB/td/ZjXo7ODzMzW+19jFgvw2I
-         P2VvbiF5PU4TbgqgkgdGbH4JoVwHDbym3yKRJapFe4CH7E4fBtmJswFW7SnR07g1K8/u
-         ANgqPlQcrf44zxu8lIj/H6AzQW+4kCemLqdg8a9VzJaMaS/lrakpyvPgw1GBlBxgWas7
-         GBM4XjrAZ87dheEjlRuPb+WbOmssWuGoqLbOKVD2V3RNC6lfCVVoINZqR4+j4+i+ypNO
-         px3A==
-X-Gm-Message-State: AOAM532+ed+GwzpO/mtI5EfheoEfUMor24nA04T/WEeRIzGmac4tm8ce
-        sGqUPb5b41SS9Yog4H7AJ526MWXH0U3lIRU9
-X-Google-Smtp-Source: ABdhPJyiu8IqRevIYCzioaezJsh+oox9gmD3WFSm5hvZ+RUcbZO6D2Cf9Rw/0beInKmSEYDK2wCaog==
-X-Received: by 2002:a05:6e02:1107:: with SMTP id u7mr3622311ilk.39.1628907924549;
-        Fri, 13 Aug 2021 19:25:24 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id w10sm1921603ioc.55.2021.08.13.19.25.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 19:25:24 -0700 (PDT)
-Subject: Re: [PATCH net-next 4/6] net: ipa: ensure hardware has power in
- ipa_start_xmit()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210812195035.2816276-1-elder@linaro.org>
- <20210812195035.2816276-5-elder@linaro.org>
- <20210813174655.1d13b524@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <3a9e82cc-c09e-62e8-4671-8f16d4f6a35b@linaro.org>
-Date:   Fri, 13 Aug 2021 21:25:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236628AbhHNC0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 22:26:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232651AbhHNC0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 22:26:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7373F60EE4;
+        Sat, 14 Aug 2021 02:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628907967;
+        bh=O6JwrVx/Rxq1kGiTLTrYIEi3n37ORdpwYUIjTU55S6o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sfuB4dsqYS2W3jnEar0BiP3jCu57Xunhmj2E+21dG+sCxFKLTY/f+6bOhuYzOZN3r
+         wwwq7iW2q/kMn4+31QcmvTDSwYnszdcUlwpgi6QFDHWQa8qR/Z5rvr95kdFHBzFi2m
+         6V2qOnjBLbjWgux32EoP7Q/bgcCMPe6M0wNm1FWnTVxV1aOgHU4oIsIQxhDcgqMSvo
+         GnRqvkLFoEwtk3PXaum+xeSxiSHN/GCPB0oQ3YiqrCqF7wtyb47buhVnvQpuEF3ROz
+         lkSVQtn7YA8S3j9+nMinqGksPoFT19K0U2DtrxCCKTfONY+MeouLwSeD7rR1vQWJaR
+         JMbXEJiFo93CQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3C8455C0393; Fri, 13 Aug 2021 19:26:07 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 19:26:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] kernel: in_irq() cleanup
+Message-ID: <20210814022607.GG4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210813145101.85782-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210813174655.1d13b524@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813145101.85782-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 7:46 PM, Jakub Kicinski wrote:
-> On Thu, 12 Aug 2021 14:50:33 -0500 Alex Elder wrote:
->> +	/* The hardware must be powered for us to transmit */
->> +	dev = &ipa->pdev->dev;
->> +	ret = pm_runtime_get(dev);
->> +	if (ret < 1) {
->> +		/* If a resume won't happen, just drop the packet */
->> +		if (ret < 0 && ret != -EINPROGRESS) {
->> +			pm_runtime_put_noidle(dev);
->> +			goto err_drop_skb;
->> +		}
+On Fri, Aug 13, 2021 at 10:51:01PM +0800, Changbin Du wrote:
+> Replace the obsolete and ambiguos macro in_irq() with new
+> macro in_hardirq().
 > 
-> This is racy, what if the pm work gets scheduled on another CPU and
-> calls wake right here (i.e. before you call netif_stop_queue())?
-> The queue may never get woken up?
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
-I haven't been seeing this happen but I think you may be right.
+From an RCU viewpoint:
 
-I did think about this race, but I think I was relying on the
-PM work queue to somehow avoid the problem.  I need to think
-about this again after a good night's sleep.  I might need
-to add an atomic flag or something.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-					-Alex
-
->> +		/* No power (yet).  Stop the network stack from transmitting
->> +		 * until we're resumed; ipa_modem_resume() arranges for the
->> +		 * TX queue to be started again.
->> +		 */
->> +		netif_stop_queue(netdev);
->> +
->> +		(void)pm_runtime_put(dev);
->> +
->> +		return NETDEV_TX_BUSY;
-
+> ---
+>  include/linux/lockdep.h              |  2 +-
+>  include/linux/rcutiny.h              |  2 +-
+>  kernel/irq/irqdesc.c                 |  2 +-
+>  kernel/rcu/tree.c                    |  2 +-
+>  kernel/rcu/tree_plugin.h             |  2 +-
+>  kernel/softirq.c                     | 10 +++++-----
+>  kernel/time/timer.c                  |  4 ++--
+>  kernel/trace/trace.h                 |  2 +-
+>  kernel/trace/trace_functions_graph.c |  2 +-
+>  lib/locking-selftest.c               |  4 ++--
+>  lib/vsprintf.c                       |  2 +-
+>  11 files changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 5cf387813754..e7aa0050bfd8 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -633,7 +633,7 @@ do {									\
+>  #define lockdep_assert_in_softirq()					\
+>  do {									\
+>  	WARN_ON_ONCE(__lockdep_enabled			&&		\
+> -		     (!in_softirq() || in_irq() || in_nmi()));		\
+> +		     (!in_softirq() || in_hardirq() || in_nmi()));		\
+>  } while (0)
+>  
+>  #else
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index 953e70fafe38..7fedbd33d5d2 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -88,7 +88,7 @@ static inline void rcu_irq_enter_irqson(void) { }
+>  static inline void rcu_irq_exit(void) { }
+>  static inline void rcu_irq_exit_check_preempt(void) { }
+>  #define rcu_is_idle_cpu(cpu) \
+> -	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
+> +	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+>  static inline void exit_rcu(void) { }
+>  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>  {
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index fadb93766020..0ffd6c19259f 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -640,7 +640,7 @@ int handle_irq_desc(struct irq_desc *desc)
+>  		return -EINVAL;
+>  
+>  	data = irq_desc_get_irq_data(desc);
+> -	if (WARN_ON_ONCE(!in_irq() && handle_enforce_irqctx(data)))
+> +	if (WARN_ON_ONCE(!in_hardirq() && handle_enforce_irqctx(data)))
+>  		return -EPERM;
+>  
+>  	generic_handle_irq_desc(desc);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 51f24ecd94b2..18f6658f0713 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1510,7 +1510,7 @@ static void rcu_gp_kthread_wake(void)
+>  {
+>  	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+>  
+> -	if ((current == t && !in_irq() && !in_serving_softirq()) ||
+> +	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+>  	    !READ_ONCE(rcu_state.gp_flags) || !t)
+>  		return;
+>  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index de1dc3bb7f70..953171af6d0c 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -672,7 +672,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+>  			    t->rcu_blocked_node);
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
+> +		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+>  			// Using softirq, safe to awaken, and either the
+>  			// wakeup is free or there is either an expedited
+>  			// GP in flight or a potential need to deboost.
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index f3a012179f47..e8c62c4b1e5d 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -222,7 +222,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  	u32 pending;
+>  	int curcnt;
+>  
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	lockdep_assert_irqs_enabled();
+>  
+>  	local_irq_save(flags);
+> @@ -305,7 +305,7 @@ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+>  {
+>  	unsigned long flags;
+>  
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  
+>  	raw_local_irq_save(flags);
+>  	/*
+> @@ -352,14 +352,14 @@ static void __local_bh_enable(unsigned int cnt)
+>   */
+>  void _local_bh_enable(void)
+>  {
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	__local_bh_enable(SOFTIRQ_DISABLE_OFFSET);
+>  }
+>  EXPORT_SYMBOL(_local_bh_enable);
+>  
+>  void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  {
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	lockdep_assert_irqs_enabled();
+>  #ifdef CONFIG_TRACE_IRQFLAGS
+>  	local_irq_disable();
+> @@ -617,7 +617,7 @@ static inline void tick_irq_exit(void)
+>  
+>  	/* Make sure that timer wheel updates are propagated */
+>  	if ((idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
+> -		if (!in_irq())
+> +		if (!in_hardirq())
+>  			tick_nohz_irq_exit();
+>  	}
+>  #endif
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index e3d2c23c413d..dfdbb114a43d 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1369,7 +1369,7 @@ int del_timer_sync(struct timer_list *timer)
+>  	 * don't use it in hardirq context, because it
+>  	 * could lead to deadlock.
+>  	 */
+> -	WARN_ON(in_irq() && !(timer->flags & TIMER_IRQSAFE));
+> +	WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
+>  
+>  	/*
+>  	 * Must be able to sleep on PREEMPT_RT because of the slowpath in
+> @@ -1784,7 +1784,7 @@ void update_process_times(int user_tick)
+>  	run_local_timers();
+>  	rcu_sched_clock_irq(user_tick);
+>  #ifdef CONFIG_IRQ_WORK
+> -	if (in_irq())
+> +	if (in_hardirq())
+>  		irq_work_tick();
+>  #endif
+>  	scheduler_tick();
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index a180abf76d4e..2ed5b77b60ca 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -876,7 +876,7 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
+>  		 * is set, and called by an interrupt handler, we still
+>  		 * want to trace it.
+>  		 */
+> -		if (in_irq())
+> +		if (in_hardirq())
+>  			trace_recursion_set(TRACE_IRQ_BIT);
+>  		else
+>  			trace_recursion_clear(TRACE_IRQ_BIT);
+> diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+> index 0de6837722da..b08d3923de98 100644
+> --- a/kernel/trace/trace_functions_graph.c
+> +++ b/kernel/trace/trace_functions_graph.c
+> @@ -120,7 +120,7 @@ static inline int ftrace_graph_ignore_irqs(void)
+>  	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
+>  		return 0;
+>  
+> -	return in_irq();
+> +	return in_hardirq();
+>  }
+>  
+>  int trace_graph_entry(struct ftrace_graph_ent *trace)
+> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+> index 161108e5d2fe..a4edff9ffc33 100644
+> --- a/lib/locking-selftest.c
+> +++ b/lib/locking-selftest.c
+> @@ -196,7 +196,7 @@ static void init_shared_classes(void)
+>  	local_irq_disable();			\
+>  	__irq_enter();				\
+>  	lockdep_hardirq_threaded();		\
+> -	WARN_ON(!in_irq());
+> +	WARN_ON(!in_hardirq());
+>  
+>  #define HARDIRQ_EXIT()				\
+>  	__irq_exit();				\
+> @@ -2456,7 +2456,7 @@ static void hardirq_exit(int *_)
+>  	int notthreaded_hardirq_guard_##name __guard(hardirq_exit);	\
+>  	local_irq_disable();						\
+>  	__irq_enter();							\
+> -	WARN_ON(!in_irq());
+> +	WARN_ON(!in_hardirq());
+>  
+>  static void softirq_exit(int *_)
+>  {
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 26c83943748a..2c5b4351330c 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
+>  		 * kptr_restrict==1 cannot be used in IRQ context
+>  		 * because its test for CAP_SYSLOG would be meaningless.
+>  		 */
+> -		if (in_irq() || in_serving_softirq() || in_nmi()) {
+> +		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
+>  			if (spec.field_width == -1)
+>  				spec.field_width = 2 * sizeof(ptr);
+>  			return error_string(buf, end, "pK-error", spec);
+> -- 
+> 2.30.2
+> 
