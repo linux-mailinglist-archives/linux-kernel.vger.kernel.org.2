@@ -2,89 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C0C3EC024
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 06:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4102B3EC028
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 06:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhHNEGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 00:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhHNEGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 00:06:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A73CC061756;
-        Fri, 13 Aug 2021 21:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OzjG0eOWjSaTVzdwrlhA4xUXM2AfVf8c6T5tJbSz1go=; b=GMiVEV1pzyYY/voBVEbEdW1p52
-        Adwfq2c++/p1q6s7sYbZIB4lPhSO6EsiSYSVWWPKqWfGyfrQp5smbanCUzny8pnpGkA3QDiekO/pW
-        3NReojatqkPbUVwSQCM3ZsWP25Bhn0l5SprZRHWP5B+fnvD2iAredMtPzWEsP4RYda4/WM1oaNDvl
-        aVD6eISnjsEaYsMaVxUUCCjTVqTnw/yvPq0cYw6TCSZHENEB3rlP1M1Q80nJVWCQNlsvqKqnxOrvy
-        s7y6aQJglqgqgGVO2GYxukH1CQ7NzOYmIbyh/MgwxMCntHb/A63Nj+ozRwYlrajhauphJJfjTLjw0
-        qPKNw+8Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEkvY-00GMni-8p; Sat, 14 Aug 2021 04:05:53 +0000
-Date:   Sat, 14 Aug 2021 05:05:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 050/138] mm/workingset: Convert workingset_activation
- to take a folio
-Message-ID: <YRdBGCATQHPXrmTD@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-51-willy@infradead.org>
- <YPfuPTtlhGXBjhCL@kernel.org>
+        id S229960AbhHNELS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 00:11:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhHNELR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 00:11:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7705D60F9E;
+        Sat, 14 Aug 2021 04:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628914249;
+        bh=W531wcBDCphnO0AKoG3om/WSDwZu3f3Xp80WMcYdRxo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=XZeg82UaKPxIIAlhFITb8QZM3IR1b/2RwZZ7Q3cHUCWKGdD6bQfhJeFSUjaHAayc8
+         GzxwfFvJPvaNiHP/UMrs7W8OnGUEMeF1D/p3KMq6rQpKHMbZXBNufzBVkKsIh8ZARI
+         MrECVbCKqrvEDHF2oRVMY9qe0j40Ad93n0melzBj+qq+rmCp0bUyyOyexhWAW+d7iL
+         1FimLyzFE0ix5xmjXbLPCth17Y2DlRv+8Y2jDZP1UbWnPYyPIrotj9jNm0qetCdpb5
+         l5ivlEDegEYX5OfdtyYpSbiVvf8YdfZcmEEeBeo6Dkge9qeDXxyb1b8d5fPnRXa+qr
+         kbEDyzB0Vw+aQ==
+Date:   Fri, 13 Aug 2021 23:10:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v15 7/9] PCI: Setup ACPI fwnode early and at the same
+ time with OF
+Message-ID: <20210814041048.GA2765970@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YPfuPTtlhGXBjhCL@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ed12600-a6d4-f6f1-6250-a8ff9a3625a6@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:51:57PM +0300, Mike Rapoport wrote:
-> >  /*
-> > - * page_memcg_rcu - locklessly get the memory cgroup associated with a page
-> > - * @page: a pointer to the page struct
-> > + * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
-> > + * @folio: Pointer to the folio.
-> >   *
-> > - * Returns a pointer to the memory cgroup associated with the page,
-> > - * or NULL. This function assumes that the page is known to have a
-> > + * Returns a pointer to the memory cgroup associated with the folio,
-> > + * or NULL. This function assumes that the folio is known to have a
-> >   * proper memory cgroup pointer. It's not safe to call this function
-> > - * against some type of pages, e.g. slab pages or ex-slab pages.
-> > + * against some type of folios, e.g. slab folios or ex-slab folios.
+On Fri, Aug 13, 2021 at 10:35:46PM -0500, Shanker R Donthineni wrote:
+> Hi Bjorn,
 > 
-> Maybe
+> On 8/13/21 6:04 PM, Bjorn Helgaas wrote:
+> > External email: Use caution opening links or attachments
+> >
+> >
+> > [+cc Ben, Mika]
+> >
+> > On Thu, Aug 05, 2021 at 09:59:15PM +0530, Amey Narkhede wrote:
+> >> From: Shanker Donthineni <sdonthineni@nvidia.com>
+> >>
+> >> The pci_dev objects are created through two mechanisms 1) during PCI
+> >> bus scan and 2) from I/O Virtualization. The fwnode in pci_dev object
+> >> is being set at different places depends on the type of firmware used,
+> >> device creation mechanism, and acpi_pci_bridge_d3().
+> >>
+> >> The software features which have a dependency on ACPI fwnode properties
+> >> and need to be handled before device_add() will not work. One use case,
+> >> the software has to check the existence of _RST method to support ACPI
+> >> based reset method.
+> >>
+> >> This patch does the two changes in order to provide fwnode consistently.
+> >>  - Set ACPI and OF fwnodes from pci_setup_device().
+> >>  - Remove pci_set_acpi_fwnode() in acpi_pci_bridge_d3().
+> >>
+> >> After this patch, ACPI/OF firmware properties are visible at the same
+> >> time during the early stage of pci_dev setup. And also call sites should
+> >> be able to use firmware agnostic functions device_property_xxx() for the
+> >> early PCI quirks in the future.
+> >>
+> >> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> >> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+> >> ---
+> >>  drivers/pci/pci-acpi.c | 1 -
+> >>  drivers/pci/probe.c    | 7 ++++---
+> >>  2 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> >> index eaddbf701759..dae021322b3f 100644
+> >> --- a/drivers/pci/pci-acpi.c
+> >> +++ b/drivers/pci/pci-acpi.c
+> >> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> >>               return false;
+> >>
+> >>       /* Assume D3 support if the bridge is power-manageable by ACPI. */
+> >> -     pci_set_acpi_fwnode(dev);
+> >>       adev = ACPI_COMPANION(&dev->dev);
+> > I *think* the Root Port code farther down in this function is also now
+> > unnecessary:
+> >
+> >   acpi_pci_bridge_d3(...)
+> >   {
+> >     ...
+> >     root = pcie_find_root_port(dev);
+> >     adev = ACPI_COMPANION(&root->dev);
+> >     if (root == dev) {
+> >       /*
+> >        * It is possible that the ACPI companion is not yet bound
+> >        * for the root port so look it up manually here.
+> >        */
+> >       if (!adev && !pci_dev_is_added(root))
+> >         adev = acpi_pci_find_companion(&root->dev);
+> >     }
+> >
+> > Since we're now setting the ACPI_COMPANION for every pci_dev long
+> > before we get here, I think this could now be simplified to something
+> > like this:
+> >
+> >   acpi_pci_bridge_d3(...)
+> >   {
+> >     if (!dev->is_hotplug_bridge)
+> >       return false;
+> >
+> >     adev = ACPI_COMPANION(&dev->dev);
+> >     if (adev && acpi_device_power_manageable(adev))
+> >       return true;
+> >
+> >     root = pcie_find_root_port(dev);
+> >     if (!root)
+> >       return false;
+> >
+> >     adev = ACPI_COMPANION(&root->dev);
+> >     if (!adev)
+> >       return false;
+> >
+> >     rc = acpi_dev_get_property(dev, "HotPlugSupportInD3",
+> >                                ACPI_TYPE_INTEGER, &val);
+> >     if (rc < 0)
+> >       return false;
+> >
+> >     return val == 1;
+> >   }
 > 
-> - * Returns a pointer to the memory cgroup associated with the page,
-> - * or NULL. This function assumes that the page is known to have a
-> + * This function assumes that the folio is known to have a
->   * proper memory cgroup pointer. It's not safe to call this function
-> - * against some type of pages, e.g. slab pages or ex-slab pages.
-> + * against some type of folios, e.g. slab folios or ex-slab folios.
-> + *
-> + * Return: a pointer to the memory cgroup associated with the folio,
-> + * or NULL.
+> Agree, thanks for your suggestion. Yes, it can be simplified too.
+> Can I do something like this using the unified device property API?
+> 
+> static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> {
+>         struct acpi_device *adev;
+>         struct pci_dev *root;
+>         u8 val;
+> 
+>         if (!dev->is_hotplug_bridge)
+>                 return false;
+> 
+>         adev = ACPI_COMPANION(&dev->dev);
+>         if (adev && acpi_device_power_manageable(adev))
+>                 return true;
+> 
+>         root = pcie_find_root_port(dev);
+>         if (!root)
+>                 return false;
+> 
+>         if (device_property_read_u8(&root->dev, "HotPlugSupportInD3", &val))
+>                 return false;
 
-I substantially included this change a few days ago and forgot to reply
-to this email; sorry.  It now reads:
+I guess that might be OK.
 
-/**
- * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
- * @folio: Pointer to the folio.
- *
- * This function assumes that the folio is known to have a
- * proper memory cgroup pointer. It's not safe to call this function
- * against some type of folios, e.g. slab folios or ex-slab folios.
- *
- * Return: A pointer to the memory cgroup associated with the folio,
- * or NULL.
- */
+TBH I don't really like the device_property_read_u8() thing because
+(1) we know this is an ACPI property and I don't see a reason to use
+an "generic" interface that doesn't buy us anything, and (2) the
+connection to the source of the data (a _DSD method) is really, really
+hard to find.
 
+Admittedly, it's still pretty hard to connect acpi_dev_get_property()
+with "_DSD".  The only real clue is the comment about "Look for a
+special _DSD property ..."
+
+>         return val == 1;
+> }
+> 
+> > acpi_pci_bridge_d3() was added by 26ad34d510a8 ("PCI / ACPI: Whitelist
+> > D3 for more PCIe hotplug ports") [1], so I cc'd Mika in case he has
+> > any comment.
+> >
+> >>       if (adev && acpi_device_power_manageable(adev))
+> >> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> >> index 379e85037d9b..15a6975d3757 100644
+> >> --- a/drivers/pci/probe.c
+> >> +++ b/drivers/pci/probe.c
+> >> @@ -1789,6 +1789,9 @@ int pci_setup_device(struct pci_dev *dev)
+> >>       dev->error_state = pci_channel_io_normal;
+> >>       set_pcie_port_type(dev);
+> >>
+> >> +     pci_set_of_node(dev);
+> >> +     pci_set_acpi_fwnode(dev);
+> > Is there a reason why you moved pci_set_of_node() from
+> > pci_scan_device() to here?  I think it's a good change; I'm just
+> > curious if you tripped over something that required it.
+> 
+> There is no specific reason and not required but setting both the fwnodes
+> at the same time improves the code readability and provides consistent
+> device properties for callers.
+
+Sounds good.
+
+Bjorn
