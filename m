@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349D23EC3F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E843EC3F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238507AbhHNQvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233116AbhHNQvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:51:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 998DE60C3F;
-        Sat, 14 Aug 2021 16:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628959878;
-        bh=VGvyUX+8AuHJ3eE8+d6NOBplowHQI6uJJayRDqyGygs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=U+M6mqLoNEOJwIpPd8W1kfTC4wB1xKt6ZnGtTM7/ozIa6lHh5wINVdBVQCFwtsEg1
-         XqubzeXTm1Gbtyl+eaKyC7FYn+B7G0nLaffrNDUkTXneJv45XHM1MvO4KmVDnW4TbX
-         m9gTqQpYPHJxHc8LTEgJeQbXH+Zoe3bhW2Vk+PQU=
-Date:   Sat, 14 Aug 2021 18:51:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB fix for 5.14-rc6
-Message-ID: <YRf0g0jpHTNIhObs@kroah.com>
+        id S238690AbhHNQw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233116AbhHNQwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 12:52:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E8FC061764;
+        Sat, 14 Aug 2021 09:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=THZ//hV3fEyfAA4zhklKtKpMz1OFaHnMmtlB1qWq1hg=; b=KedV6pi3ZXiTo5WIk8Uo2beK0N
+        UcDULdF2vZ9BxASpNSR7UaI3c3iU/fWiKCtM21zMX/YvS+njS/e7R7SFyUR7qS6rWQx7yWwOgru57
+        YHUe/u6pKQCQNFOnyiy7OIxhdCbQOLf6SbXAkG0qb1TD/mn5A4jclTnUweo/sNgHczjL3GEVzIIXp
+        BYFLhjat+sF4Cux8JG401ykGk9DojGJgPQLsQvUmQsP43U+/lTWzkpL1V4Z9O6sjMAe2Fn5aO0Bw4
+        llNeag6pF+9c07EG4MLzC00Sr6PDfMHl+C5ANf1ZX6DJs551Qxec74qm1Xg1l6zSHTSYcbuJ+QNuj
+        aUEdqxfQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mEwsX-00GrRQ-Rk; Sat, 14 Aug 2021 16:51:33 +0000
+Date:   Sat, 14 Aug 2021 17:51:25 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 052/138] mm: Add folio_raw_mapping()
+Message-ID: <YRf0jTttJIjMcnkp@casper.infradead.org>
+References: <20210715033704.692967-53-willy@infradead.org>
+ <20210715033704.692967-1-willy@infradead.org>
+ <1811270.1628628133@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1811270.1628628133@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
+On Tue, Aug 10, 2021 at 09:42:13PM +0100, David Howells wrote:
+> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+> 
+> > Convert __page_rmapping to folio_raw_mapping and move it to mm/internal.h.
+> > It's only a couple of instructions (load and mask), so it's definitely
+> > going to be cheaper to inline it than call it.  Leave page_rmapping
+> > out of line.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> I assume you're going to call it from another source file at some point,
+> otherwise this is unnecessary.
 
-  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
+Yes, it gets called from mm/ksm.c in a later patch in this series.
+__page_rmapping() assumes it's being passed a head page and
+folio_raw_mapping() asserts that.  Eventually, page_rmapping() can
+go away (and maybe it should have been moved to folio-compat.c),
+but I'm not inclined to do that now.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc6
-
-for you to fetch changes up to 664cc971fb259007e49cc8a3ac43b0787d89443f:
-
-  Revert "usb: dwc3: gadget: Use list_replace_init() before traversing lists" (2021-08-10 09:12:32 +0200)
-
-----------------------------------------------------------------
-USB fix for 5.14-rc6
-
-Here is a single revert of a commit that caused problems in 5.14-rc5 for
-5.14-rc6.  It has been in linux-next almost all week, and has resolved
-the issues that were reported on lots of different systems that were not
-the platform that the change was originally tested on (gotta love SoC
-cores used in multiple devices from multiple vendors...)
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Greg Kroah-Hartman (1):
-      Revert "usb: dwc3: gadget: Use list_replace_init() before traversing lists"
-
- drivers/usb/dwc3/gadget.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+> Apart from that,
+> 
+> Reviewed-by: David Howells <dhowells@redhat.com>
+> 
