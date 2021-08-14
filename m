@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21623EC393
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F543EC396
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238753AbhHNPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 11:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
+        id S238750AbhHNPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 11:37:31 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50054 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234654AbhHNPdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 11:33:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF6F761038;
-        Sat, 14 Aug 2021 15:33:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628955190;
-        bh=Vu7c+q16xCBmJetZKt4s19I/pNzV/5d/rx4XA7/YLyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NdAlSsGL18mjz9+dOvWiW/8KyeZ1z6pyDtP9UIFRjr9ju4Xos9XEgWZjNqhYSfSMj
-         VHAZlviX+LAZuyNJFzmDbe1qvPrgpfKDfh3iVAgc8KHW9QAKhZKxpR/A3EJrIGEUMH
-         GKL2Lq+KjfECC1Ioy9Ai3s4Xct4R6fYPRR4Tz4ucPyAbGoVU8NCFNNQNNdVBNRwpPL
-         PG1vhnBbYlqr7slp3OLFR2fseSIJ9WspsVKNNk3OTGo2qgTGIAobWsO9+cMmFHp9QW
-         TeeIQeFZW8BeqmipyogtiYXI5ZAYjEU+HPabDvfSSUMcbp8/8pfYGDoGmIAv8DJdMD
-         FfsX/0EuSMhyA==
-Received: by pali.im (Postfix)
-        id C826E9CA; Sat, 14 Aug 2021 17:33:07 +0200 (CEST)
-Date:   Sat, 14 Aug 2021 17:33:07 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: arm: marvell: Add 88F6825 model into list
-Message-ID: <20210814153307.vxun5jgy7ooeovgh@pali>
-References: <20210814124805.14568-1-pali@kernel.org>
- <YRfhOJttJlXRYSzL@lunn.ch>
+        id S234654AbhHNPha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 11:37:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=sQ+X1nOHW0Y0aKmJBa2mRiazMXs7QZuokAPbxAsRxD8=; b=CXjZYPd1IemzfTg8ePhC5u+qAZ
+        DMCZ7sDD/HiJ5Bzd7wpXV5whRszPhza9An+wS0GMnysZPWmrk453W03AqviTRhhC00uCG+TwPA+jf
+        SzziaMxz8SY1gdR6LGuA4Rkr+qZEI8jrZ4N9k0x9gpaU60jowtWlvKLeS7csl5HrXRO0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mEviQ-00050a-RI; Sat, 14 Aug 2021 17:36:54 +0200
+Date:   Sat, 14 Aug 2021 17:36:54 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
+        robert.foss@collabora.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3] net: asix: fix uninit value bugs
+Message-ID: <YRfjFr9GbcoJrycc@lunn.ch>
+References: <20210813155226.651c74f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210814135505.11920-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YRfhOJttJlXRYSzL@lunn.ch>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210814135505.11920-1-paskripkin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 14 August 2021 17:28:56 Andrew Lunn wrote:
-> On Sat, Aug 14, 2021 at 02:48:05PM +0200, Pali Rohár wrote:
-> > 88F6825 is just 88F6820 but without encryption acceleration hardware and is
-> > used e.g. in DTS file arch/arm/boot/dts/armada-385-clearfog-gtr.dtsi
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > 
-> > ---
-> > Depends on patch: https://lore.kernel.org/linux-doc/20210625215437.2156-1-pali@kernel.org/
-> > ---
-> >  Documentation/arm/marvell.rst | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
-> > index 85169bc3f538..56bb592dbd0c 100644
-> > --- a/Documentation/arm/marvell.rst
-> > +++ b/Documentation/arm/marvell.rst
-> > @@ -140,6 +140,7 @@ EBU Armada family
-> >  	- 88F6821 Armada 382
-> >  	- 88F6W21 Armada 383
-> >  	- 88F6820 Armada 385
-> > +	- 88F6825
+On Sat, Aug 14, 2021 at 04:55:05PM +0300, Pavel Skripkin wrote:
+> Syzbot reported uninit-value in asix_mdio_read(). The problem was in
+> missing error handling. asix_read_cmd() should initialize passed stack
+> variable smsr, but it can fail in some cases. Then while condidition
+> checks possibly uninit smsr variable.
 > 
-> Hi Pali
+> Since smsr is uninitialized stack variable, driver can misbehave,
+> because smsr will be random in case of asix_read_cmd() failure.
+> Fix it by adding error handling and just continue the loop instead of
+> checking uninit value.
 > 
-> Does it have the marketing name of Armada 385?
+> Also, same loop was used in 3 other functions. Fixed uninit value bug
+> in them too.
 
-No, there is no marking. The only name in Marvell documents and also in
-DTS files and on wikis/internet is just 88F6825.
+Hi Pavel
 
-I found only this statement from Marvell:
+Which suggests it might make sense to refactor the code to make a
+helper? I will leave you to decide if you want to do that.
 
-"The 88F6825 device is a member of the ARMADA® 380, 385, and 388 Family
-of devices."
+The code does looks correct now.
 
-> 
->      Andrew
+	Andrew
