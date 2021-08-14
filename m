@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C733EC1BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E493EC1BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237730AbhHNJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 05:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbhHNJlo (ORCPT
+        id S237778AbhHNJoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 05:44:06 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8412 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235202AbhHNJoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 05:41:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13A8C06175F;
-        Sat, 14 Aug 2021 02:41:16 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id a20so15181432plm.0;
-        Sat, 14 Aug 2021 02:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XyuDZlwBiPoWoWGJzxCdc8Deaw0UN+jSJdhqBxitwE8=;
-        b=uLM6TRFmvYT6dULUfJfkeaEbbdKYdxM46SUDZaDxUjDEcpTT7Kdu6n0bqWgyRGBp2t
-         pnnWkNN2Y5usrq9OFg2aPewb9cgYmd+yjsXL2KbTmI7/iQaorLNNbAKxq2SCr1i8TIB/
-         pilkpNEuWlQBibC6EtwJ0Bv5WXlvS+K8JiROE6YPLtw5o2tIuK/u4wL7suw6BHYxR7b+
-         0Q7WFM+DL/Ju3YWJCho6pz9W+WkPOXVF4jS2Zh0kS5Ef/zZIR8UDNv797G6Ic69esOmI
-         F67a2eRSfTFFzkBQm1/yUoVEgoIwAYPWXbqqy4ck4WWY/Rv+Mk3qix8ozYMS9cDxGoIc
-         1A/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XyuDZlwBiPoWoWGJzxCdc8Deaw0UN+jSJdhqBxitwE8=;
-        b=PjCnOZmBMWAGarLDjJxGRfnTxDV9Ng0WoQC0boXzPylCpkMFgdUprkXArZAcmlVEgH
-         RO6zmFxGmATqrMniwe7om40TochwkiY/ZeZyAv5NwPicIS735yft4ALe5cOZaxXcjF3C
-         2cWNikh45uN5vWyN3N/kl0QU+F+hP6HbUUZqFIQ20JGkPALjc8yJN8QkMYgdTEdNH85Z
-         BQ851XIstGuRGD5XkxvRIIaxqOWbPNNL1Fg5DRNq2KSw6uFexGTga9wL90Jk1aYsQ5hK
-         pxm4eViSwZR0r6oyI6fLI8icaEy9ZhyUEEUTBvt69u9LS7FBV9X6b1Zqh/4YXVfMgSvW
-         xDOw==
-X-Gm-Message-State: AOAM533v3BPSPnfeMQ1s8kS7MHZeqeVw3Rtn7e/ViTjMhYOY0YjLyFBE
-        t5NYZJ/TSRexhs8okzx5cCr6fbad2rD9UYCUgEjhKWnik/0ngDRt
-X-Google-Smtp-Source: ABdhPJxI2pl/kKvpnICTDHUe3oGKhvtzIHAbXdBKZhchFTfpiPEliSAtvo38F6eq7qCyvy3LkiUPDBHNIfEYqZ0XEFQ=
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
- j11-20020aa7800b0000b0290330455f57a8mr6423874pfi.7.1628934076343; Sat, 14 Aug
- 2021 02:41:16 -0700 (PDT)
+        Sat, 14 Aug 2021 05:44:05 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GmwPN2P0hz865v;
+        Sat, 14 Aug 2021 17:39:36 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 14 Aug 2021 17:43:35 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 14 Aug 2021 17:43:35 +0800
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+ <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
+ <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+ <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+ <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
+ <a63fbd36-5a43-e412-c0a2-a06730945a13@huawei.com>
+ <b4603b71-4306-4542-e4fb-bf30133f89a8@acm.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <010fcd39-c819-8e0e-c188-62b1947603bf@huawei.com>
+Date:   Sat, 14 Aug 2021 17:43:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210814043103.2535842-1-luke@ljones.dev> <20210814043103.2535842-2-luke@ljones.dev>
-In-Reply-To: <20210814043103.2535842-2-luke@ljones.dev>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 14 Aug 2021 12:40:39 +0300
-Message-ID: <CAHp75VcCzjb7TKZ84iVjJr27+nCcA10n38nwCAGATucfAAMkKA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] asus-wmi: Add support for platform_profile
-To:     "Luke D. Jones" <luke@ljones.dev>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b4603b71-4306-4542-e4fb-bf30133f89a8@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 7:33 AM Luke D. Jones <luke@ljones.dev> wrote:
->
-> Add initial support for platform_profile where the support is
-> based on availability of ASUS_THROTTLE_THERMAL_POLICY.
->
-> Because throttle_thermal_policy is used by platform_profile and is
-> writeable separately to platform_profile any userspace changes to
-> throttle_thermal_policy need to notify platform_profile.
->
-> In future throttle_thermal_policy sysfs should be removed so that
-> only one method controls the laptop power profile.
+On 2021/08/06 10:43, Bart Van Assche wrote:
+> On 8/5/21 6:50 PM, yukuai (C) wrote:
+>> After applying this configuration, the number of null_blk in my
+>> machine is about 650k(330k before). Is this still too low?
+> 
+> That seems low to me. If I run the attached script on a six year old
+> desktop with an eight core i7-4790 CPU it reports a little more than 5
+> million IOPS. Has kernel debugging perhaps been enabled in the kernel on
+> the test setup? Or is the system perhaps slowed down by security
+> mitigations?
+> 
 
-Some comments below.
+Hi, Bart
 
-...
+Sorry for the delay. I was too busy with other things recently.
 
-> +       /*
-> +        * Ensure that platform_profile updates userspace with the change to ensure
-> +        * that platform_profile and throttle_thermal_policy_mode are in sync
+After disable all the kernel debuging config I can think of, the
+numbers can increase to millions.
 
-Missed period here and in other multi-line comments.
+setup cmd:
+modprobe null_blk nr_devices=0 &&
+     udevadm settle &&
+     cd /sys/kernel/config/nullb &&
+     mkdir nullb0 &&
+     cd nullb0 &&
+     echo 0 > completion_nsec &&
+     echo 512 > blocksize &&
+     echo 0 > home_node &&
+     echo 0 > irqmode &&
+     echo 1024 > size &&
+     echo 0 > memory_backed &&
+     echo 2 > queue_mode &&
+     echo 1 > power ||
+     exit $?
 
-> +        */
+test cmd:
+fio -filename=/dev/nullb0 -name=test -ioengine=io_uring -direct=1
+-numjobs=32 -iodepth=32 -bs=4k -rw=write -group_reporting -runtime=30
+--thread --gtod_reduce=1 --ioscheduler=none -time_based
 
-...
+test result:
+| test round | with this patch | without this patch |
+| ---------- | --------------- | ------------------ |
+| 1          | 4310k           | 4265k              |
+| 2          | 4295k           | 4327k              |
+| 3          | 4217k           | 4213k              |
+| 4          | 4355k           | 4236k              |
+| 5          | 4315k           | 4337k              |
+| average    | 4294k           | 4275k              |
 
-> +       /* All possible toggles like throttle_thermal_policy here */
-> +       if (asus->throttle_thermal_policy_available) {
-> +               tp = asus->throttle_thermal_policy_mode;
-> +       } else {
-> +               return -1;
-> +       }
-> +
-> +       if (tp < 0)
-> +               return tp;
-
-This will be better in a form
-
-    if (!..._available)
-        return -ENODATA; // what -1 means?
-
-    tp = ...;
-    if (tp < 0)
-        return tp;
-
-...
-
-> +       /* All possible toggles like throttle_thermal_policy here */
-> +       if (!asus->throttle_thermal_policy_available) {
-> +               return -1;
-
-See above.
-
-> +       }
-
-...
-
-> +       if (asus->throttle_thermal_policy_available) {
-> +               pr_info("Using throttle_thermal_policy for platform_profile support\n");
-
-Why pr_*()?
-
-> +       } else {
-> +               /*
-> +                * Not an error if a component platform_profile relies on is unavailable
-> +                * so early return, skipping the setup of platform_profile.
-> +               */
-> +               return 0;
-
-Do it other way around,
-
-/*
- * Comment
- */
-if (!...)
-  return 0;
-
-> +       }
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks
+Kuai
