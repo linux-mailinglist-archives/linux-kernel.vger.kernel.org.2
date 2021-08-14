@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4A93EC294
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1094B3EC296
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhHNMfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 08:35:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55590 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhHNMfk (ORCPT
+        id S238262AbhHNMgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 08:36:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234030AbhHNMgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 08:35:40 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Sat, 14 Aug 2021 08:36:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628944550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Zi9rp4A/ofXDkM+2FBhAwSRraea93QLDveGmuBcx8js=;
+        b=R9JuWxmGhRqMwEn8i3vQgsGVObuc+q58M/CKhzeF0irdFnhO/HQRlV0gCn6dK6Dswaa6za
+        72r/46I4fdT4pYg4HoUXN9xvNwQGQWNvQCeWXrO9JuSScKkH48nqx8x6CXJzhzOyz9i0Ag
+        h6GR9dx4e0n3GDhYulAqO9BQN2scPtU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-a7BetHQTNHW64izu1qUtqg-1; Sat, 14 Aug 2021 08:35:46 -0400
+X-MC-Unique: a7BetHQTNHW64izu1qUtqg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 054E91FDA6;
-        Sat, 14 Aug 2021 12:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628944511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mSLRG4xDh73yGpT5sZqSuFSCGEpnHG4QqeLtGAJFSk=;
-        b=OJLfPIOlAMT9RiExgo0tp08cwdLVDY69jfF957PcCwowIcmKgonUjPdmbkVFGkGX5h3bGr
-        /OmboTwBT22nzRF/Mbb+ay+MDijm19u2cNKg93dN6u6tg8Iu8mGJ/yZM44UoFhtPChgXng
-        D7+d1wuYDsAncWiR28MEqJ+lxo87HZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628944511;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mSLRG4xDh73yGpT5sZqSuFSCGEpnHG4QqeLtGAJFSk=;
-        b=q6zCyHElYT9TcjjFWV2mXyhGHAVUjHtrTMkSOWGxmRFnwYtC98ziQdSzdOik1dQBkAq4WB
-        u77jn2RP7fev0ABA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AFA9C13733;
-        Sat, 14 Aug 2021 12:35:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id tAvMKX64F2GDPQAAGKfGzw
-        (envelope-from <hare@suse.de>); Sat, 14 Aug 2021 12:35:10 +0000
-Subject: Re: [PATCH 2/3] scsi: fnic: Stop setting scsi_cmnd.tag
-To:     Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     John Garry <john.garry@huawei.com>, satishkh@cisco.com,
-        sebaddel@cisco.com, kartilak@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
- <1628862553-179450-3-git-send-email-john.garry@huawei.com>
- <3e5d1bd4-cee9-7fd0-93a4-58d808e198f6@acm.org>
- <20210814073948.GA21536@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <b6216e3f-5339-18e4-ca31-61c7968efbb1@suse.de>
-Date:   Sat, 14 Aug 2021 14:35:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 916B894DE1;
+        Sat, 14 Aug 2021 12:35:44 +0000 (UTC)
+Received: from localhost (ovpn-8-25.pek2.redhat.com [10.72.8.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC6B960C9F;
+        Sat, 14 Aug 2021 12:35:38 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH 0/7] genirq/affinity: abstract new API from managed irq affinity spread
+Date:   Sat, 14 Aug 2021 20:35:25 +0800
+Message-Id: <20210814123532.229494-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210814073948.GA21536@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 9:39 AM, Christoph Hellwig wrote:
-> On Fri, Aug 13, 2021 at 08:17:45PM -0700, Bart Van Assche wrote:
->> On 8/13/21 6:49 AM, John Garry wrote:
->>> It is never read. Setting it and the request tag seems dodgy
->>> anyway.
->>
->> This is done because there is code in the SCSI error handler that may
->> allocate a SCSI command without allocating a tag. See also
->> scsi_ioctl_reset().
-> 
-> Yes.  Hannes had a great series to stop passing the pointless scsi_cmnd
-> to the reset methods.  Hannes, any chance you coul look into
-> resurrecting that?
-> 
-Sure.
+Hello,
 
-Cheers,
+irq_build_affinity_masks() actually grouping CPUs evenly into each managed
+irq vector according to NUMA and CPU locality, and it is reasonable to abstract
+one generic API for grouping CPUs evenly, the idea is suggested by Thomas
+Gleixner.
 
-Hannes
+group_cpus_evenly() is abstracted and put into lib/, so blk-mq can re-use
+it to build default queue mapping.
+
+Please comments!
+
+Since RFC:
+	- remove RFC
+	- rebase on -next tree
+
+
+Ming Lei (7):
+  genirq/affinity: remove the 'firstvec' parameter from
+    irq_build_affinity_masks
+  genirq/affinity: pass affinity managed mask array to
+    irq_build_affinity_masks
+  genirq/affinity: don't pass irq_affinity_desc array to
+    irq_build_affinity_masks
+  genirq/affinity: rename irq_build_affinity_masks as group_cpus_evenly
+  genirq/affinity: move group_cpus_evenly() into lib/
+  lib/group_cpus: allow to group cpus in case of !CONFIG_SMP
+  blk-mq: build default queue map via group_cpus_evenly()
+
+ block/blk-mq-cpumap.c      |  64 ++----
+ include/linux/group_cpus.h |  28 +++
+ kernel/irq/affinity.c      | 404 +-----------------------------------
+ lib/Makefile               |   2 +
+ lib/group_cpus.c           | 413 +++++++++++++++++++++++++++++++++++++
+ 5 files changed, 465 insertions(+), 446 deletions(-)
+ create mode 100644 include/linux/group_cpus.h
+ create mode 100644 lib/group_cpus.c
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.31.1
+
