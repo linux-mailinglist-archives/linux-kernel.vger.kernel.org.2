@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AFE3EC4CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CD83EC4D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhHNTuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        id S232617AbhHNTuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhHNTtz (ORCPT
+        with ESMTP id S229489AbhHNTu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 15:49:55 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0871EC061764;
-        Sat, 14 Aug 2021 12:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=IcLAKSwUaSyWeX8CewShNI1+JQS2DeeaQy6TF7SHBIw=; b=enl4Ym/NxcY+je6Fqd7UkvoKr
-        XBdVoUXrjWEr4rj8aE/9wVgY3aJY4BF7S96smg1b7v585l5gUH4GclOXICEOQK9eF05DYQTstOaay
-        jyEROVuTOsiBVaonHXSI9tvd8hLohARihcUdkaKVSOKgyeNppXtT7Y2VDbMbTdbx5vXGYlKNJDyqC
-        p2i6UN8U7VK6r3sFj+W2Qk2heY6fh9SZlWA08BIg/FmW3aLezwJqCajz072hfJZX8Hb2umsT8lWRq
-        mqnChVltjyik1xxW5i0zleTUv2AFatY8QxDXBMdyOZw0+MqqR1yUlNWvaOBX/uOn5nUFy8wuS4Z7e
-        eNGTFW7og==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47298)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mEzeh-0005Zg-Kp; Sat, 14 Aug 2021 20:49:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mEzef-0006Jz-7Y; Sat, 14 Aug 2021 20:49:17 +0100
-Date:   Sat, 14 Aug 2021 20:49:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Song Yoong Siang <yoong.siang.song@intel.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
- to WOL event
-Message-ID: <20210814194916.GB22278@shell.armlinux.org.uk>
-References: <20210813084536.182381-1-yoong.siang.song@intel.com>
- <20210814172656.GA22278@shell.armlinux.org.uk>
- <YRgFxzIB3v8wS4tF@lunn.ch>
+        Sat, 14 Aug 2021 15:50:26 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E37AC061764;
+        Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id a8so20345499pjk.4;
+        Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H55D/hatpxv6wsHj/kV2cIDtO8yZ68G4AWzJyEwImqI=;
+        b=vIwpytlXpOqYADP4f+RqCmpmRzgGJtLie3NhxzperJCgH6Bfh17xTDj5mG+xpvs5pX
+         XWm11d2R0Y90jxAUO5Nno0ZRT7qtG+AOOVF8JuJZsxjhfDZXppx6W8i7NGbno0v1IMap
+         l83zpPjqZxW/QU6mHx51RLXsRlOymfAwvdSPuxKNi13fjMaN/Yqs1QCxanl7cDT5gqTe
+         Hu/AKa3wygl1xDlt2gu6dPgxSgaeCyN1EXLuxw3x9t2Gq33JcX7VD5qqDGrOIxr+VAg1
+         LiK+RiTto13a6cY7IgG5AKR9OqI3Hu8RykdFvvt7x44FGVvyIj4iWUk8+pnxvPTVPu4n
+         wkig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H55D/hatpxv6wsHj/kV2cIDtO8yZ68G4AWzJyEwImqI=;
+        b=Mdw514ryYDXlJ5UwK5796QU+kx0ZN7l0DLjO7y3VSw6WorRFewaH5WE4/lpT4zKGz5
+         dwuO/akXUllKDFmBdeByVQ52bNQkE3t646itRdnykMySXC+nSCvBZV1W/8m86JGxVWOQ
+         S5WKCO19rn2pfhcYPGz7FHkVcsYGrP3PV5PsTq7pY83+2DJTUJBBI722JUMeyc2lyLyZ
+         8PMWCWkhbF54sMGeRf4X+pKwuBw7W+Ju/0RT71CF1PhN+ocluA6sffMlr6u0PBuQdnUX
+         l8/HWVvl8d7oCCjroYECiO/WMnvqkXnS/gt2+K0RH1c43xeuhNLV7grNzjNa7GEeFtTY
+         JpfQ==
+X-Gm-Message-State: AOAM531uvRgUiK3M39vBL1t9eQ9kL4dik7qBy/+FSGQzDZtjU1pUpPZJ
+        dvWCB/c4uAOhGDk+4+wf3zE5ppnZWlvtv4H2lrlH/G1y0Ctgxw==
+X-Google-Smtp-Source: ABdhPJz5JIrjdib84kyhpEN0ITHSybOUFi+IHRxmLBBQjG6+xQJOflN3m3h/gdDrt5UWfd9mZW5qZScjG2stKZqP2eo=
+X-Received: by 2002:a17:90a:cf18:: with SMTP id h24mr8693629pju.228.1628970597029;
+ Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRgFxzIB3v8wS4tF@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210814043103.2535842-1-luke@ljones.dev> <20210814043103.2535842-2-luke@ljones.dev>
+ <CAHp75VcCzjb7TKZ84iVjJr27+nCcA10n38nwCAGATucfAAMkKA@mail.gmail.com> <UCVTXQ.8ME64G0S1BQ8@ljones.dev>
+In-Reply-To: <UCVTXQ.8ME64G0S1BQ8@ljones.dev>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 14 Aug 2021 22:49:21 +0300
+Message-ID: <CAHp75VdS5v_wGEs5vWcyc1Y2NZ7pXbamSHn7MgWj6ie8ahnoBQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] asus-wmi: Add support for platform_profile
+To:     Luke Jones <luke@ljones.dev>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 08:04:55PM +0200, Andrew Lunn wrote:
-> Agreed. If the interrupt register is being used, i think we need this
-> patchset to add proper interrupt support. Can you recommend a board
-> they can buy off the shelf with the interrupt wired up? Or maybe Intel
-> can find a hardware engineer to add a patch wire to link the interrupt
-> output to a SoC pin that can do interrupts.
+On Sat, Aug 14, 2021 at 2:46 PM Luke Jones <luke@ljones.dev> wrote:
+> On Sat, Aug 14 2021 at 12:40:39 +0300, Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sat, Aug 14, 2021 at 7:33 AM Luke D. Jones <luke@ljones.dev> wrote:
 
-The only board I'm aware of with the 88x3310 interrupt wired is the
-Macchiatobin double-shot. :)
+...
 
-I forget why I didn't implement interrupt support though - I probably
-need to revisit that. Sure enough, looking at the code I was tinkering
-with, adding interrupt support would certainly conflict with this
-patch.
+> >>  +               pr_info("Using throttle_thermal_policy for
+> >> platform_profile support\n");
+> >
+> > Why pr_*()?
+>
+> That seemed to be the convention? I see there is also dev_info(), so
+> I've switched to that as it seems more appropriate.
+
+The rule of thumb is if you have the device the message belongs to,
+use dev_*(), if it's really stuff before we know anything about
+devices, use pr_*(). In some cases if you have ACPI handle, you may
+use acpi_handle_*().
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
