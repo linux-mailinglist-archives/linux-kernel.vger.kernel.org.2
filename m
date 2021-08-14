@@ -2,323 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DE23EC5F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B449E3EC5F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhHNX2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:28:08 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:48735 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhHNX2C (ORCPT
+        id S234279AbhHNX3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:29:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54935 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233223AbhHNX3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:28:02 -0400
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 17ENR3F9016741;
-        Sun, 15 Aug 2021 08:27:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17ENR3F9016741
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628983624;
-        bh=7z+omtu8gmqaOgMf41PFzvC+a++lkF72UQ6ovQ7SYtM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gAk2iqYKYlL5djzwU9V9CEFlUcdvR1rXne8LxZF27Id3LPl178D7A0B1ZkRyxCmw1
-         FuXF8c7XzoMuyxP4IV8zF/fp4nJu5os5j70CnkTHD6VkhSpzavn9UyoBT83tN8j4+l
-         ZtCz2XmcCG2BeNmGLPNRZvNyR3WcyifOWdFDgMzkkg26GQHwumnZ+wLVc0s9ulMj88
-         V9vL8LJLoBAQtnkC1WoRlB5SSBP8MuMXYizGaSTCzfF86nq5E4YtMZSrFZgZdQbKXy
-         6phlr0PU7+3xZ3htr2s+uAb1KCos2HOV4dcci2PzYDWvB8/Vv/rXO4/kMmyKowHSa0
-         3fb9HPgaql8+g==
-X-Nifty-SrcIP: [209.85.214.169]
-Received: by mail-pl1-f169.google.com with SMTP id q2so16470699plr.11;
-        Sat, 14 Aug 2021 16:27:04 -0700 (PDT)
-X-Gm-Message-State: AOAM532YOWc5t7v/FP/L1osdbC1Ds9taYUC80rnFicYve/4OhSRHvzsg
-        lSm9IYVF+F2Jws24Ei6qfdealMcOu9Zq0CN2Fl8=
-X-Google-Smtp-Source: ABdhPJwtxVPWxqKubL4jUEY9FYp4nG3g60OA5ZtmvJTETngsClsH6k8brZlgIsWPU7lZjg/lopntRjp2lST4Jv/t1u8=
-X-Received: by 2002:aa7:94ac:0:b0:3e0:f21a:e6ff with SMTP id
- a12-20020aa794ac000000b003e0f21ae6ffmr8732818pfl.76.1628983623343; Sat, 14
- Aug 2021 16:27:03 -0700 (PDT)
+        Sat, 14 Aug 2021 19:29:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628983727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Xpvmc3EbPpIx4Ba3zUZgWrgU9kprzptPH5U2eEMm7Q=;
+        b=MOGltdk9Ws+AWE2ds7Kf5emSVFxRuBtte3zbQKY3cYUqHy4ebdmbhyhGDj1qZfxaVumzvc
+        z6boIYu8zHjRezUos3G5i5668ZKjK8fG7TFAECayyX1ShaPKY1Wa3sy/SSmzHxIVbqHyxJ
+        HShkxr5m+Hdfdf5dzNYRlO3GIwxdOGg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-601-Xy9qpofGNRSm6SC-fSg_JQ-1; Sat, 14 Aug 2021 19:28:44 -0400
+X-MC-Unique: Xy9qpofGNRSm6SC-fSg_JQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81D9E871803;
+        Sat, 14 Aug 2021 23:28:42 +0000 (UTC)
+Received: from rh (vpn2-54-123.bne.redhat.com [10.64.54.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B5645D6D5;
+        Sat, 14 Aug 2021 23:28:41 +0000 (UTC)
+Received: from [::1] (helo=rh)
+        by rh with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <dchinner@redhat.com>)
+        id 1mF34v-0004HJ-BW; Sun, 15 Aug 2021 09:28:37 +1000
+Date:   Sun, 15 Aug 2021 09:28:35 +1000
+From:   Dave Chinner <dchinner@redhat.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@linux.intel.com
+Subject: Re: [xfs]  6df693ed7b:  aim7.jobs-per-min -15.7% regression
+Message-ID: <20210814232835.GD2959@rh>
+References: <20210809064248.GB5761@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-References: <20210812214614.1797845-1-samitolvanen@google.com>
-In-Reply-To: <20210812214614.1797845-1-samitolvanen@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 15 Aug 2021 08:26:26 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
-Message-ID: <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
-Subject: Re: [PATCH v3] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210809064248.GB5761@xsang-OptiPlex-9020>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 6:46 AM 'Sami Tolvanen' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> With CONFIG_LTO_CLANG, we currently link modules into native
-> code just before modpost, which means with TRIM_UNUSED_KSYMS
-> enabled, we still look at the LLVM bitcode in the .o files when
-> generating the list of used symbols. As the bitcode doesn't
-> yet have calls to compiler intrinsics and llvm-nm doesn't see
-> function references that only exist in function-level inline
-> assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
-> work with LTO.
->
-> This change moves module LTO linking to happen earlier, and
-> thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
-> entirely, allowing us to also drop the whitelist from
-> gen_autoksyms.sh.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1369
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Alexander Lobakin <alobakin@pm.me>
-> Tested-by: Alexander Lobakin <alobakin@pm.me>
-> ---
-> Changes in v3:
-> - Added missing FORCE.
+On Mon, Aug 09, 2021 at 02:42:48PM +0800, kernel test robot wrote:
+> 
+> 
+> Greeting,
+> 
+> FYI, we noticed a -15.7% regression of aim7.jobs-per-min due to commit:
+> 
+> 
+> commit: 6df693ed7ba9ec03cafc38d5064de376a11243e2 ("xfs: per-cpu deferred inode inactivation queues")
+> https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git xfs-5.15-merge
+> 
+> 
+> in testcase: aim7
+> on test machine: 88 threads 2 sockets Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz with 128G memory
+> with following parameters:
+> 
+> 	disk: 4BRD_12G
+> 	md: RAID1
+> 	fs: xfs
+> 	test: disk_wrt
+> 	load: 3000
+> 	cpufreq_governor: performance
+> 	ucode: 0x5003006
+> 
+> test-description: AIM7 is a traditional UNIX system level benchmark suite which is used to test and measure the performance of multiuser system.
+> test-url: https://sourceforge.net/projects/aimbench/files/aim-suite7/
 
+.....
 
+> commit: 
+>   52cba078c8 ("xfs: detach dquots from inode if we don't need to inactivate it")
+>   6df693ed7b ("xfs: per-cpu deferred inode inactivation queues")
+> 
+> 52cba078c8b4b003 6df693ed7ba9ec03cafc38d5064 
+> ---------------- --------------------------- 
+>          %stddev     %change         %stddev
+>              \          |                \  
+>     539418           -15.7%     454630        aim7.jobs-per-min
+>      33.57           +18.5%      39.79        aim7.time.elapsed_time
+>      33.57           +18.5%      39.79        aim7.time.elapsed_time.max
+>       2056 ±  7%    +779.6%      18087 ±  2%  aim7.time.involuntary_context_switches
+>     673.92 ±  4%     +29.2%     870.54 ±  2%  aim7.time.system_time
+>     912022           -34.2%     599694        aim7.time.voluntary_context_switches
 
-All the modules are recompiled every time.
+OK, performance went down, system time went up massively. I'm
+betting the improvement made something else fast enough to trigger
+spinning lock breakdown somewhere in the kernel...
 
+>       0.01 ±223%      +0.9        0.93 ±  4%  perf-profile.children.cycles-pp.ret_from_fork
+>       0.01 ±223%      +0.9        0.93 ±  4%  perf-profile.children.cycles-pp.kthread
+>      67.40 ±  5%      +8.7       76.14 ±  2%  perf-profile.children.cycles-pp.entry_SYSCALL_64_after_hwframe
+>      67.02 ±  5%      +8.8       75.81 ±  2%  perf-profile.children.cycles-pp.do_syscall_64
+>       2.02 ±  3%     +15.4       17.42 ±  2%  perf-profile.children.cycles-pp.creat64
+>       1.99 ±  4%     +15.4       17.40 ±  2%  perf-profile.children.cycles-pp.do_sys_open
+>       1.99 ±  3%     +15.4       17.40 ±  2%  perf-profile.children.cycles-pp.do_sys_openat2
+>       1.96 ±  4%     +15.4       17.38 ±  2%  perf-profile.children.cycles-pp.path_openat
+>       1.96 ±  3%     +15.4       17.38 ±  2%  perf-profile.children.cycles-pp.do_filp_open
+>       2.23 ±  6%     +15.6       17.82 ±  2%  perf-profile.children.cycles-pp.unlink
+>       2.18 ±  6%     +15.6       17.78 ±  2%  perf-profile.children.cycles-pp.do_unlinkat
+>       0.66 ± 19%     +30.7       31.40 ±  2%  perf-profile.children.cycles-pp.osq_lock
+>       2.34 ±  8%     +31.0       33.33 ±  2%  perf-profile.children.cycles-pp.rwsem_down_write_slowpath
 
+Well, looky there. Lots of new rwsem lock contention.
 
+....
 
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1 LLVM_IAS=1  -j24
-  DESCEND objtool
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  LTO [M] net/netfilter/nf_log_syslog.lto.o
-  LTO [M] net/netfilter/xt_mark.lto.o
-  LTO [M] net/netfilter/xt_nat.lto.o
-  LTO [M] net/netfilter/xt_LOG.lto.o
-  LTO [M] drivers/thermal/intel/x86_pkg_temp_thermal.lto.o
-  LTO [M] net/netfilter/xt_MASQUERADE.lto.o
-  LTO [M] net/netfilter/xt_addrtype.lto.o
-  LTO [M] fs/efivarfs/efivarfs.lto.o
-  LTO [M] net/ipv4/netfilter/iptable_nat.lto.o
-  CHK     include/generated/autoksyms.h
-  MODPOST modules-only.symvers
-  GEN     Module.symvers
-  LD [M]  drivers/thermal/intel/x86_pkg_temp_thermal.ko
-  LD [M]  fs/efivarfs/efivarfs.ko
-  LD [M]  net/ipv4/netfilter/iptable_nat.ko
-  LD [M]  net/netfilter/nf_log_syslog.ko
-  LD [M]  net/netfilter/xt_LOG.ko
-  LD [M]  net/netfilter/xt_MASQUERADE.ko
-  LD [M]  net/netfilter/xt_addrtype.ko
-  LD [M]  net/netfilter/xt_mark.ko
-  LD [M]  net/netfilter/xt_nat.ko
-Kernel: arch/x86/boot/bzImage is ready  (#20)
+>       1.54 ±  3%      +0.2        1.74        perf-profile.self.cycles-pp.rwsem_spin_on_owner
+>       0.66 ± 19%     +30.6       31.21 ±  2%  perf-profile.self.cycles-pp.osq_lock
 
+Yup, we now have catastrophic spin-on-onwer breakdown of a rwsem.
 
+IOWs, what this commit has done is put pressure on a rwsem in a
+different way, and on this specific machine configuration on this
+specific workload, it results in the rwsem breaking down into
+catastrophic spin-on-owner contention. This looks like a rwsem bug,
+not a bug in the XFS code.
 
+Given that this is showing up in the open and unlink paths, this
+is likely the parent directory inode lock being contended due to
+concurrent modifications in the same directory.
 
-> Changes in v2:
-> - Fixed a couple of typos.
-> - Fixed objtool arguments for .lto.o to always include --module.
->
-> ---
->  scripts/Makefile.build    | 24 +++++++++++++++++++++++-
->  scripts/Makefile.lib      |  7 +++++++
->  scripts/Makefile.modfinal | 21 ++-------------------
->  scripts/Makefile.modpost  | 22 +++-------------------
->  scripts/gen_autoksyms.sh  | 12 ------------
->  5 files changed, 35 insertions(+), 51 deletions(-)
->
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 02197cb8e3a7..524701d9896b 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -271,12 +271,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
->         $(call if_changed_rule,cc_o_c)
->         $(call cmd,force_checksrc)
->
-> +ifdef CONFIG_LTO_CLANG
-> +# Module .o files may contain LLVM bitcode, compile them into native code
-> +# before ELF processing
-> +quiet_cmd_cc_lto_link_modules = LTO [M] $@
-> +cmd_cc_lto_link_modules =                                              \
-> +       $(LD) $(ld_flags) -r -o $@                                      \
-> +               $(shell [ -s $(@:.lto.o=.o.symversions) ] &&            \
-> +                       echo -T $(@:.lto.o=.o.symversions))             \
-> +               --whole-archive $(filter-out FORCE,$^)
-> +
-> +ifdef CONFIG_STACK_VALIDATION
-> +# objtool was skipped for LLVM bitcode, run it now that we have compiled
-> +# modules into native code
-> +cmd_cc_lto_link_modules += ;                                           \
-> +       $(objtree)/tools/objtool/objtool $(objtool_args) --module       \
-> +               $(@:.ko=$(mod-prelink-ext).o)
-> +endif
-> +
-> +$(obj)/%.lto.o: $(obj)/%.o FORCE
-> +       $(call if_changed,cc_lto_link_modules)
-> +endif
-> +
->  cmd_mod = { \
->         echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
->         $(undefined_syms) echo; \
->         } > $@
->
-> -$(obj)/%.mod: $(obj)/%.o FORCE
-> +$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
->         $(call if_changed,mod)
->
->  quiet_cmd_cc_lst_c = MKLST   $@
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 10950559b223..af1c920a585c 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
->                  $(addprefix -I,$(DTC_INCLUDE))                          \
->                  -undef -D__DTS__
->
-> +ifeq ($(CONFIG_LTO_CLANG),y)
-> +# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
-> +# need to run LTO to compile them into native code (.lto.o) before further
-> +# processing.
-> +mod-prelink-ext := .lto
-> +endif
-> +
->  # Objtool arguments are also needed for modfinal with LTO, so we define
->  # then here to avoid duplication.
->  objtool_args =                                                         \
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 5e9b8057fb24..ff805777431c 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -9,7 +9,7 @@ __modfinal:
->  include include/config/auto.conf
->  include $(srctree)/scripts/Kbuild.include
->
-> -# for c_flags and objtool_args
-> +# for c_flags and mod-prelink-ext
->  include $(srctree)/scripts/Makefile.lib
->
->  # find all modules listed in modules.order
-> @@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
->
->  ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
->
-> -ifdef CONFIG_LTO_CLANG
-> -# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
-> -# avoid a second slow LTO link
-> -prelink-ext := .lto
-> -
-> -# ELF processing was skipped earlier because we didn't have native code,
-> -# so let's now process the prelinked binary before we link the module.
-> -
-> -ifdef CONFIG_STACK_VALIDATION
-> -cmd_ld_ko_o +=                                                         \
-> -       $(objtree)/tools/objtool/objtool $(objtool_args)                \
-> -               $(@:.ko=$(prelink-ext).o);
-> -
-> -endif # CONFIG_STACK_VALIDATION
-> -
-> -endif # CONFIG_LTO_CLANG
-> -
->  quiet_cmd_ld_ko_o = LD [M]  $@
->        cmd_ld_ko_o +=                                                   \
->         $(LD) -r $(KBUILD_LDFLAGS)                                      \
-> @@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
->
->
->  # Re-generate module BTFs if either module's .ko or vmlinux changed
-> -$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
-> +$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
->         +$(call if_changed_except,ld_ko_o,vmlinux)
->  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->         +$(if $(newer-prereqs),$(call cmd,btf_ko))
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index c383ba33d837..eef56d629799 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -41,7 +41,7 @@ __modpost:
->  include include/config/auto.conf
->  include $(srctree)/scripts/Kbuild.include
->
-> -# for ld_flags
-> +# for mod-prelink-ext
->  include $(srctree)/scripts/Makefile.lib
->
->  MODPOST = scripts/mod/modpost                                                          \
-> @@ -118,22 +118,6 @@ $(input-symdump):
->         @echo >&2 '         Modules may not have dependencies or modversions.'
->         @echo >&2 '         You may get many unresolved symbol warnings.'
->
-> -ifdef CONFIG_LTO_CLANG
-> -# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
-> -# LTO to compile them into native code before running modpost
-> -prelink-ext := .lto
-> -
-> -quiet_cmd_cc_lto_link_modules = LTO [M] $@
-> -cmd_cc_lto_link_modules =                                              \
-> -       $(LD) $(ld_flags) -r -o $@                                      \
-> -               $(shell [ -s $(@:.lto.o=.o.symversions) ] &&            \
-> -                       echo -T $(@:.lto.o=.o.symversions))             \
-> -               --whole-archive $^
-> -
-> -%.lto.o: %.o
-> -       $(call if_changed,cc_lto_link_modules)
-> -endif
-> -
->  modules := $(sort $(shell cat $(MODORDER)))
->
->  # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
-> @@ -144,9 +128,9 @@ endif
->  # Read out modules.order to pass in modpost.
->  # Otherwise, allmodconfig would fail with "Argument list too long".
->  quiet_cmd_modpost = MODPOST $@
-> -      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
-> +      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
->
-> -$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
-> +$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
->         $(call if_changed,modpost)
->
->  targets += $(output-symdump)
-> diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-> index da320151e7c3..6ed0d225c8b1 100755
-> --- a/scripts/gen_autoksyms.sh
-> +++ b/scripts/gen_autoksyms.sh
-> @@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
->         needed_symbols="$needed_symbols module_layout"
->  fi
->
-> -# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
-> -# when the .mod files are generated, which means they don't yet contain
-> -# references to certain symbols that will be present in the final binaries.
-> -if [ -n "$CONFIG_LTO_CLANG" ]; then
-> -       # intrinsic functions
-> -       needed_symbols="$needed_symbols memcpy memmove memset"
-> -       # ftrace
-> -       needed_symbols="$needed_symbols _mcount"
-> -       # stack protector symbols
-> -       needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
-> -fi
-> -
->  ksym_wl=
->  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
->         # Use 'eval' to expand the whitelist path and check if it is relative
->
-> base-commit: f8fbb47c6e86c0b75f8df864db702c3e3f757361
-> --
-> 2.33.0.rc1.237.g0d66db33f3-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210812214614.1797845-1-samitolvanen%40google.com.
+That correlates with the change that the deferred inactivation
+brings to unlink worklaods - the unlink() syscall does about a third
+of the work it used to, so results in locking the directory inode
+*much* more frequently with only very short pauses in userspace to
+make the next unlink() call.
 
+Because of the way the worker threads are CPU bound and all the XFS
+objects involved in repeated directory ops will stay CPU affine, the
+unlink() syscall is likely to run hot and not block until the queue
+limits are hit and it is forced to throttle and let the worker run
+to drain the queue.
 
+Now, rwsems are *supposed to be sleeping locks*. In which case, we
+should switch away on contention and let the CPU be used for some
+other useful work until we are granted the lock. But, no, spinning
+on exclusive locks makes some other benchmark go faster, so now on
+this benchmark burn *30% of 88 CPUs* spinning on rwsems across this
+benchmark.
+
+So this regression is caused by an rwsem bug. XFS is, as usual, just
+the messenger for iproblems arising from the misbehaviour of rwsems.
+
+Try turning off rwsem spin-on-owner behaviour and see what
+difference that makes to performance...
+
+Cheers,
+
+Dave.
 
 -- 
-Best Regards
-Masahiro Yamada
+Dave Chinner
+dchinner@redhat.com
+
