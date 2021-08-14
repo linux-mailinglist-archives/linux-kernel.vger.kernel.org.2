@@ -2,59 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10983EC3E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD9C3EC3E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238693AbhHNQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:39:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235824AbhHNQiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:38:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6CDD360F9F;
-        Sat, 14 Aug 2021 16:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628959107;
-        bh=usl2dHOeVd2/n1Dj7xONUdcyHGEOpZSc2wjxJW5H6Uc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZUsULPyUtp1xevDliWYOX4rp+Ufhm/VrOqRNkrbJZKwDGjWuQf+0ZZLmlPBtXKDXN
-         c919A6MMNMnQC0ZAKnLyVDSR9baRxX3bKuxWHhNf32sDc8QWMb1ecC2A0QQrBBG9RY
-         KeS9uuefLrJ7UivngIy2LONGgcgmv24bTRZLy4vZmE8AeRhQxkjIeToiqftrhxTWVN
-         WtcUhsI8AnbLqUCytVwcHzww5k9QI7MLsBQ4/9nAE09/TurMFiIjn67t2a+QFSliH1
-         919s4bp/inMCXVYtBAHf6f2Hzpzv+Dd5WApZHVI0gsw1KZHVP1bSKhSci3ALlIzu95
-         0NvCNIEb/9xgA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 66F2A60A4D;
-        Sat, 14 Aug 2021 16:38:27 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.14-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-eb8a31c1-f921-487c-8e96-8d4c32f8ed16@palmerdabbelt-glaptop>
-References: <mhng-eb8a31c1-f921-487c-8e96-8d4c32f8ed16@palmerdabbelt-glaptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <mhng-eb8a31c1-f921-487c-8e96-8d4c32f8ed16@palmerdabbelt-glaptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc6
-X-PR-Tracked-Commit-Id: fdf3a7a1e0a67a52f631b055975c6ac7e0e49a65
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a7a4f1c0c8455657b3e19eaaffbad64a5f750c43
-Message-Id: <162895910741.32142.6255521916706120489.pr-tracker-bot@kernel.org>
-Date:   Sat, 14 Aug 2021 16:38:27 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S235776AbhHNQno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235305AbhHNQm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 12:42:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F38C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:42:22 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso20625686pjy.5
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=E7J0a3nB+KRH/RcO5Wo7vfOzyuYujnQGs0nqzSJPQU4=;
+        b=KU2gilMxKiRPQ+odUyQ2bSlRYAZKR+/UfrBzaSJJRsFsnrxbUS61Dqx2/CMjlccTSZ
+         D+2npq6MTxZW9qvLbYZklkqEoQPCZ3Stf63sF7SPFg1inyiMhbg2464MNAkXUjNx555q
+         f6djyz0smfXvqGxbXxSSPFl+0XYDeM09Bjp+2F79nKwTzv1GGq8xYHtXs4C7ACS+POlK
+         0TwCdMvIPogrcSBKl18dAHX9S6End6TL1LIjfyW2deyoYBkwQY/1U55T1jEPqICivBbA
+         CknzwfkqnXbZxREz09IfylS1aj22oy8zrHQzDSXwRrhLF89guNnjlO2yVNyllEm/C2OJ
+         xuxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=E7J0a3nB+KRH/RcO5Wo7vfOzyuYujnQGs0nqzSJPQU4=;
+        b=hsAMtHF9fGHzPIIVE3x+RlYm7wx6MjcVfSzjcD+46F+tADPUYp+Y0wfcbpQ8BPGJ4N
+         dIH8kDl6RxhW0qanhLPVC8P0QL4RxnaRLgFSdAAGXaEGnKDFNKFURicwd/zFsqcwjgWV
+         VRN4wQ2kIfGqJ+yH2NpQTIZfu+0ETVqjht92RPUgs4UzZWmcQPeOrlm+Jkk9Nund9t5b
+         NMFi6RBhUvcv5DR0D6NQn61K3MQPYw+MB5LUNKhMIggQKjRKiptHqoj4Zmnv+N7WFiFT
+         h5dU0OtVzKjtmuDxOsVjZIxG0+OLRFmdj3e/sZlk0zl9RCu+fYeJEnbxxPkfrxw1YzrF
+         tPnQ==
+X-Gm-Message-State: AOAM533b7/0vgWKYMn9RzvHRPH/1h8fj7+A5ZnXKt4X7PXR9FVhqXF07
+        Fvd7FbhZAltEeeCuE5bbKb/ajxnJk9MYxOpyRnM=
+X-Google-Smtp-Source: ABdhPJyhZrT9yE31lpkMWdk0lecUOnqsk3wwOahaLESksF96Muj+rQpRq4BS46iTIVZjz/8ucCsvy7iV4wy12mpVwU0=
+X-Received: by 2002:a17:90a:c8c:: with SMTP id v12mr8155541pja.37.1628959341928;
+ Sat, 14 Aug 2021 09:42:21 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a17:90a:d511:0:0:0:0 with HTTP; Sat, 14 Aug 2021 09:42:21
+ -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <qrtzzertaz13@gmail.com>
+Date:   Sat, 14 Aug 2021 09:42:21 -0700
+Message-ID: <CAC2k2h-vMb29Z77ejM3nDDSrmafexC42mMO6kioUEkPfxnsNbQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Aug 2021 23:51:59 -0700 (PDT):
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc6
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a7a4f1c0c8455657b3e19eaaffbad64a5f750c43
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
+ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
+stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
+stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
+0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
+tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
+0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
+sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
+sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
+gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
+0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
+0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
+0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
+0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
+0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
+0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
+INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
+sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
+0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
+INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
+0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
+u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
+0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
+vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0K3Qu9C10LrRgtGA0L7QvdC90LDRjyDQv9C+0YfRgtCw
+OiBzb2xvbW9uYnJhbmR5Zml2ZW9uZUBnbWFpbC5jb20NCg0K0J/QvtC20LDQu9GD0LnRgdGC0LAs
+INC/0L7QtNGC0LLQtdGA0LTQuNGC0LUg0LXQvNGDINGB0LvQtdC00YPRjtGJ0YPRjiDQuNC90YTQ
+vtGA0LzQsNGG0LjRjiDQvdC40LbQtToNCg0K0JLQsNGI0LUg0L/QvtC70L3QvtC1INC40LzRj19f
+X19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDQsNC00YDQtdGB0YFfX19fX19fX19fX19f
+X19fX19fX19fX19fXw0K0KLQstC+0Y8g0YHRgtGA0LDQvdCwX19fX19fX19fX19fX19fX19fX19f
+X19fX19fDQrQotCy0L7QuSDQstC+0LfRgNCw0YHRgl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXw0K0JLQsNGIINGA0L7QtCDQt9Cw0L3Rj9GC0LjQuV9fX19fX19fX19fX19fX19fX19fX19f
+Xw0K0JLQsNGIINC90L7QvNC10YAg0LzQvtCx0LjQu9GM0L3QvtCz0L4g0YLQtdC70LXRhNC+0L3Q
+sCBfX19fX19fX19fX19fX19fX19fX19fDQoNCtCe0LHRgNCw0YLQuNGC0LUg0LLQvdC40LzQsNC9
+0LjQtTog0LXRgdC70Lgg0LLRiyDQvdC1INC+0YLQv9GA0LDQstC40LvQuCDQtdC80YMg0L/QvtC7
+0L3Rg9GOINC40L3RhNC+0YDQvNCw0YbQuNGOLCDQvtC9INC90LUNCtCy0YvQtNCw0YHRgiDQstCw
+0Lwg0LrQsNGA0YLRgyDQsdCw0L3QutC+0LzQsNGC0LAsINC/0L7RgtC+0LzRgyDRh9GC0L4g0L7Q
+vSDQtNC+0LvQttC10L0g0LHRi9GC0Ywg0YPQstC10YDQtdC9LCDRh9GC0L4g0Y3RgtC+DQrQstGL
+LiDQn9C+0L/RgNC+0YHQuNGC0LUg0LXQs9C+INCy0YvRgdC70LDRgtGMINCy0LDQvCDQutCw0YDR
+gtGDINCx0LDQvdC60L7QvNCw0YLQsCDQvdCwINC+0LHRidGD0Y4g0YHRg9C80LzRgyAoMzUwIDAw
+MA0K0LTQvtC70LvQsNGA0L7QsiDQodCo0JApLCDQutC+0YLQvtGA0YPRjiDRjyDQvtGB0YLQsNCy
+0LjQuyDQtNC70Y8g0LLQsNGBLg0KDQrQoSDRg9Cy0LDQttC10L3QuNC10LwsDQoNCtCTLdC9INGD
+0YfQtdC90L3QsCDQuNC70L7QsdC4DQo=
