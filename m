@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A173EC371
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B273EC375
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238660AbhHNPDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 11:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        id S238644AbhHNPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 11:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhHNPC7 (ORCPT
+        with ESMTP id S234654AbhHNPI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 11:02:59 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D53FC061764;
-        Sat, 14 Aug 2021 08:02:29 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so15688430otl.1;
-        Sat, 14 Aug 2021 08:02:29 -0700 (PDT)
+        Sat, 14 Aug 2021 11:08:59 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7255C061764;
+        Sat, 14 Aug 2021 08:08:30 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so4803956pjz.0;
+        Sat, 14 Aug 2021 08:08:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=unEHXrg/gyVGx45zTcbq/Ok+pB3H3OtyAMxgD943pU4=;
-        b=GL3Kk6SPiYBxtG8EpjPRhswBL4ECIz+kGv2lIbFx3F3F2VL+xbhj+Xj92PGwhURFoP
-         S9E2VBpFrJHfpcGSEXyKvWN8XeR37wgzkb/t5J5ytVKoz+jl5uOIMc4dX0l+GekdMbZr
-         0BInhrwgQ7p3Es6nsOfyqIYvs4qgDdmu0/wVtl95Cyw5M8nqqCGMsznFlGgaKgviKERX
-         NX16ABZLa9LB2Uz9oYhsUXMoC51H+zUTzLWNcmaGWZPUJjB+A0s1CC4VvB4Pd+D1QMYY
-         nk6tMjhyh/4cpnuoCx3aWYThc10dl7BzOU6a+xzO/t6izvueuvWMHmM3FbZsP6/6tCL9
-         juLg==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=XMF/oNxkox6j6WayZ+IvJ9qMAcyG7XB6Wyw1ESeG0qQ=;
+        b=W8NJnlsuR4vVItclEtfC3bdt/EfrfUesqBYbuFoyESW3AYsaXuZ6CqMEUgZZTMCj4r
+         uiWYkwFEKu+mgaATS7yvZXO1sWuuqyI3++tmgImonXm4jF+i22jdyxPzox2hgXDyh30S
+         eQ0RA3Xh4djqE6zFsLxel8iXN9r47FCmkgcTtui34xaUQXp2o/A1FyBz5Bx6Byzw2J8x
+         60/am+8PzKPMt5E+T8l6QIVB1KxB87GNufPMBGa8+OSQXVSe/ta10P3bEqGiqX9XA2tN
+         u38ES2tdhqMNfzhfBjOTLOiLEvHPSpHtB5xkGBMsjUXPJmzFv6KFxjNpMLrtfa7hqbt9
+         HTYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=unEHXrg/gyVGx45zTcbq/Ok+pB3H3OtyAMxgD943pU4=;
-        b=YiEqWeStq2z1HDnqrsRwt/rd0kT957RYJPSNzzUfe6CKPJ0D9dYrz1BfJIhmfYYrFh
-         nwmUdqZWPb0BvJhIRFyIBf0+UfVKNKJwfGHiV32u6TmbTot3CjROfdz5DxY8M68EOrqc
-         GYDzM6qGIGL6U34xr8kiJzDcmlayt6H6HPhkTkqO+ry8pwKVpFSyCzgDT8Ucpi9oEqs4
-         bkS3qhX/+xzcZC/7dCxzT+Maqo4FiCZnWnPO8S5l/yyzsurLfTqxdkph6XzXlXP/tiH5
-         CcCyfKLC/hW118drRnJ+kFOprrp8mzGbyCkd/LNqxFYU5enBufC3a6i5Q2jSnQNumZn6
-         rdOg==
-X-Gm-Message-State: AOAM533cKp6iqEdEmPCtimCBrEYsLJvxzBbGzlcDbhpQtvc08oLPUeh2
-        ZO8tYAJh40ReVYEy+MzMrGOVu0JWugA=
-X-Google-Smtp-Source: ABdhPJwSJcQUxXRA5sql7TG+AjoqRsYkWuBuWhM3o47G5qr1WQb0HGcf4Jiu0wLEPdHBveS9QTodzA==
-X-Received: by 2002:a05:6830:1108:: with SMTP id w8mr6228079otq.88.1628953348644;
-        Sat, 14 Aug 2021 08:02:28 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a6sm1037132oto.13.2021.08.14.08.02.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 08:02:27 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: stm32_iwdg: drop superfluous error message
-To:     Tang Bin <tangbin@cmss.chinamobile.com>, wim@linux-watchdog.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com
-Cc:     linux-watchdog@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-References: <20210814142741.7396-1-tangbin@cmss.chinamobile.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <500cc974-bc39-74d5-1e1c-f763e25caa8b@roeck-us.net>
-Date:   Sat, 14 Aug 2021 08:02:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210814142741.7396-1-tangbin@cmss.chinamobile.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        bh=XMF/oNxkox6j6WayZ+IvJ9qMAcyG7XB6Wyw1ESeG0qQ=;
+        b=dUJ4bWWIWjlwklukEJZKBR0AHHjebjXdFytsld51feU3L4H//DTwvhtwyDjnBQWoip
+         yZatkEyFNZG3n8Bv713uLWLldr68a+icuHjzahajBfQtVtzg/3KDEXH4lcar65j4ncGo
+         Vwa530A8ZcE3zeSRmGUO85EgRkpdVSs/qQy5AeoVAUXio1jillYl3BhQcUpTVzJbSQCt
+         XeEjTLlLE0mpRp1yLwFekLl3rkozagPPtmxbwQ/t1e9o807L3m/m7dDUNSkWmkwxzZA6
+         gutA84+8TLWHNc2BZnap9Rxcq0GwdGeBnJvX/cxNbiagLwhIAO16G8NoawnA22jTVwLc
+         v/QA==
+X-Gm-Message-State: AOAM531My6+rQyn9dQymsnB+RYMmVJMs9ApdfOahaV6PfEQ0e+5Eh1Fd
+        7P853l/CNbfg2NCpVBUKcNJFCgCSTCdwEwYd27Q=
+X-Google-Smtp-Source: ABdhPJwNMDQB/UoFIwgMd4qbDX3QCxFfZkd7lijbKFQTFDb7LLpLW+Saq/ZqLLRdXXi6Oyfl2f4pyQ==
+X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr7566754pfl.51.1628953709870;
+        Sat, 14 Aug 2021 08:08:29 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id c15sm5841553pfl.181.2021.08.14.08.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 08:08:29 -0700 (PDT)
+Message-ID: <6117dc6d.1c69fb81.5eef3.ecbd@mx.google.com>
+Date:   Sat, 14 Aug 2021 08:08:29 -0700 (PDT)
+X-Google-Original-Date: Sat, 14 Aug 2021 15:08:23 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210813150522.623322501@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/19] 5.10.59-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 7:27 AM, Tang Bin wrote:
-> In the function stm32_iwdg_probe(), devm_platform_ioremap_resource
-> has already contained error message, so drop the redundant one.
+On Fri, 13 Aug 2021 17:07:17 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.59 release.
+> There are 19 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.59-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->   drivers/watchdog/stm32_iwdg.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-> index a3436c296..570a71509 100644
-> --- a/drivers/watchdog/stm32_iwdg.c
-> +++ b/drivers/watchdog/stm32_iwdg.c
-> @@ -237,10 +237,8 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
->   
->   	/* This is the timer base. */
->   	wdt->regs = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(wdt->regs)) {
-> -		dev_err(dev, "Could not get resource\n");
-> +	if (IS_ERR(wdt->regs))
->   		return PTR_ERR(wdt->regs);
-> -	}
->   
->   	ret = stm32_iwdg_clk_init(pdev, wdt);
->   	if (ret)
-> 
+5.10.59-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
