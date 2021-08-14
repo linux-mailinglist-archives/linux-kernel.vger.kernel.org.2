@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC453EBF45
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7DD3EBF48
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236317AbhHNBM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:12:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59334 "EHLO mail.kernel.org"
+        id S236448AbhHNBNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:13:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236038AbhHNBMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 32E8A6109D;
-        Sat, 14 Aug 2021 01:12:28 +0000 (UTC)
+        id S236353AbhHNBM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 21:12:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E24A16109D;
+        Sat, 14 Aug 2021 01:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628903548;
-        bh=jCtPAJRypDQBzXlmJwDbG2/A5Fb/1o9M5CDasKbqzEc=;
+        s=k20201202; t=1628903549;
+        bh=m441pVncbtbET6aNLJ5kYSM3mGYbzRbFWyAZaLu53Dc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=p+MAKuY61nj5Jx4XA4ktaBoNKAn2iWsEGnrNBct5kVRW9AeOij6vP+fJulzd/cPdN
-         2sb8/CDZqeCB0n8XUHyjGRre7gsPZSIoaPQfChgB+nztPU3L8x+BTNd2MXOEzESjEe
-         WZZDxd0+/aTLv+vx6eOmxDss4K/6HUMVfRhA8t2t+ksrTxI3sUO6RfhXMcznKb0wN4
-         DCW50stYV+HJ5l4Fxmtj6KSdA721r5Ae8kysFBdIoQtT6GcoM4m6XwTU4qJt0i8LCx
-         LRK2XIZAwQ4WGU0X+71lSI71AvHmzKPgVDREZbJcB1v3qqQd44UwYXZJI0v/9idLXX
-         AvPvwq7jTxgkQ==
+        b=Xy27V8TP/GS+NO4LqmtUPTBrSgg/gcQ4UAAHJ7/aQu1niLqG7d3pDgx+U1/FevvPY
+         2nmzSrfOXhoQ1m/6XPG+1o7/22YYDHa6WhpA/WjtXbuQcmmoomBAl0x24AkLoUhE/9
+         kl6cVmWz+po52d3qlrFdnljhCE4Yxp+bu4gJ/OnJmFZwZP4RQAzoXhGV9H03zl6YwD
+         CN5+IwhfoO7KgOEti3+ba7aYOsnPiX4e80z19rdqQXHCLUHeZMAmIl0VoTwagC1KXx
+         A/PcmBJGt6rH5gxJr48p8REM4jwdtaMWpJI3H+Ooq1NnAJmrsd+BeVRV3MmhfQ9p4b
+         uq17ROYDUyAUw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2CC26609AF;
-        Sat, 14 Aug 2021 01:12:28 +0000 (UTC)
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.14-rc6
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD045609AF;
+        Sat, 14 Aug 2021 01:12:29 +0000 (UTC)
+Subject: Re: [GIT PULL] pin control fixes for v5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <f27686fd-6fb5-a906-b2d0-1e07cdf83594@linuxfoundation.org>
-References: <f27686fd-6fb5-a906-b2d0-1e07cdf83594@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
-X-PR-Tracked-Message-Id: <f27686fd-6fb5-a906-b2d0-1e07cdf83594@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.14-rc6
-X-PR-Tracked-Commit-Id: 567c39047dbee341244fe3bf79fea24ee0897ff9
+In-Reply-To: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
+References: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-2
+X-PR-Tracked-Commit-Id: c4b68e513953c3370ce02c3208c1c628c0b86fd3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a83ed2257774071e2d821ec361954782a7c01f8f
-Message-Id: <162890354817.25277.15076177438444208700.pr-tracker-bot@kernel.org>
-Date:   Sat, 14 Aug 2021 01:12:28 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
+X-PR-Merge-Commit-Id: 462938cd48f2516cfc56187617280f2daa3debf7
+Message-Id: <162890354989.25277.15362299449872003838.pr-tracker-bot@kernel.org>
+Date:   Sat, 14 Aug 2021 01:12:29 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Aug 2021 14:28:50 -0600:
+The pull request you sent on Fri, 13 Aug 2021 11:21:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.14-rc6
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a83ed2257774071e2d821ec361954782a7c01f8f
+https://git.kernel.org/torvalds/c/462938cd48f2516cfc56187617280f2daa3debf7
 
 Thank you!
 
