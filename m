@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18553EC4D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03003EC4D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhHNTv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S230523AbhHNTwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhHNTun (ORCPT
+        with ESMTP id S229532AbhHNTwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 15:50:43 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576DFC0617AD;
-        Sat, 14 Aug 2021 12:50:14 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id o185so20962920oih.13;
-        Sat, 14 Aug 2021 12:50:14 -0700 (PDT)
+        Sat, 14 Aug 2021 15:52:22 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A98C061764;
+        Sat, 14 Aug 2021 12:51:53 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d1so16210125pll.1;
+        Sat, 14 Aug 2021 12:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IZpSMudFs8aVE3pfGd1Gr+76BBhEIf1kzdvwdneZmoM=;
-        b=icvOJzQz0gYcSfo7ALzjND6PYIhmFUUt2iRVLkcOz9tiXMEZtdoQez2tCkJdpgM8oD
-         Haa5qMC7FWyatQcmsxhzdqR+HPJtvkGWSE29A6Zn7TQamEwwjNT58iqPbWc2wom7w4H+
-         0ojgRAOd9Wh9kAcZB1LMUotzRgcVMQmSdTnyjonOSdm1qVNncXlIJKSYvPNFC1gcKipO
-         5iXtZwKc5WvW5XMZB82pufdpE//oeCTyTTgxJb8DiSgPl/2xh9vAlGwdbrKY8r/c2tHp
-         m+kFWmhP6wj9ydPJNFfqIbNK7Vi5WZNfSyumanhouPLq8rigemxB6YiM8Fkm4jTDxB2c
-         dORw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MxxGG+b1/SO8O7pZQFU6nsAVt6WPk1hghVx+kIHzs1U=;
+        b=ce4Hm7thxTM0nRMTHfVtf7tM3GYn+4Kc3WuDFAzeUQ+kuQzj+aokoG92fDE9WfMJ8R
+         9DDZGwmCb3o1iWicjVTFKKjr64stYimATPF8dT2Q1BAFQLmVZ7DnZVGyH7ZYE9tYf+zx
+         gDdb/hCYQqbFwx64yHLefc/l9oKhyiFDC+mU/6LhumT2SsMZsZH8vStKRqcRn0xsWxE6
+         knXkZ9ZKjzGRkmGf+otJglsgitOsUJo84edaFIuMkv5bk5EFKANxYqvFK7D2XrLsnyBj
+         oqykMyQT5IcyyS8SnJjwmsrCmEEn4HkSj8amL09pMDDmEhYch3tkA9K7xS/Dfr8FqXgk
+         12LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IZpSMudFs8aVE3pfGd1Gr+76BBhEIf1kzdvwdneZmoM=;
-        b=GuVZZe8Fj1EsbV5pAf8ife4sQlSSHnnzzx11OnH6tdYqOO/xYm5NVSmOFQPrjSDedY
-         rt3GvBzlwbYj82PNzu20Yd85AD1pPb7V1e6PKp8W4+ZLtMFilZbf5AtRjqbnoxWALDdW
-         0UWB3x6p0yV2BmHepK8TzdImHEDiL4ISaL63m53hiczjRUQfDP2lYg1GfVeSiLylkkcp
-         +RXkcDXtFDFvtG3ujuSSRgHSb1ELNltX6pAXZsnYHfp7deLbdFFAQSj8I3W5yBlC0hZa
-         WbOByqGuk+sGqekdZbWZr3cTcoVIE7+nNjzIe1xlGD5L+qrkeEGAeFzKgki32KqjYPAL
-         k7og==
-X-Gm-Message-State: AOAM532eNNi+b9yFBeNL8uD8THrpSOwz3aDxKqYdSLXOaOOiDeNbCx89
-        Osemy3e6QPO4bmpip/OiRkQ=
-X-Google-Smtp-Source: ABdhPJyR08Lk47bOc8/6600640KQuN07Chwm4w8/dNDmspGPyjWV9jGL6zPbxmlG3KbYZG9rtW2KTQ==
-X-Received: by 2002:a54:4619:: with SMTP id p25mr6103133oip.5.1628970613802;
-        Sat, 14 Aug 2021 12:50:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r1sm1042546ooi.21.2021.08.14.12.50.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 12:50:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 14 Aug 2021 12:50:12 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.9 00/30] 4.9.280-rc1 review
-Message-ID: <20210814195012.GA3951799@roeck-us.net>
-References: <20210813150522.445553924@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MxxGG+b1/SO8O7pZQFU6nsAVt6WPk1hghVx+kIHzs1U=;
+        b=N00TYuBJEXxjZkzoIKuIoHJo8HZQSExPhoiFhlHQUBZxYMDGJbwHBlcvVFrGp7YLtP
+         dC1QEp0pdLWZHNGiqzO+AZI5D1gMfdjRvi2huRxUBFxhYKhwTeaDdroCuXQwI1m1RZLI
+         4TUuILQ2l1PZysg3rtiA15YIsFdT7numiAIayppsS74O99fVRa54qsaLguiluu+tR8Rb
+         voVEuruitMMOQ6KrbqafAGNvhJFwisX7T77WCB/2PkSH8o5vLopxoQ5q8ueA4kLtWeC9
+         nrooYcrFtR6UQq5uQj/JghP4vAIB+z9WyOCg2snPEfHnekyNfXrvQXTwNvVpd+N+wYdu
+         v1Lw==
+X-Gm-Message-State: AOAM531EqMVsUGRlD+VKJY5rE+vgbGo4IHeNtm1c+nTLS9d48u/84F7c
+        wP/AkLrsH0HM6nF5rnpbKpyH2FAk+IvZ7NIdneg=
+X-Google-Smtp-Source: ABdhPJz1RVJrAZDM6jzLNgZfJaGyWPQ09MSmLz9bOP3ak1gQUnqkZmLyTc9guQBg+sr6l6+wAKk64xTN4MWnpZj8fUU=
+X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
+ j11-20020aa7800b0000b0290330455f57a8mr8355749pfi.7.1628970713254; Sat, 14 Aug
+ 2021 12:51:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
+References: <20210814043103.2535842-1-luke@ljones.dev> <20210814043103.2535842-2-luke@ljones.dev>
+ <CAHp75VcCzjb7TKZ84iVjJr27+nCcA10n38nwCAGATucfAAMkKA@mail.gmail.com>
+ <UCVTXQ.8ME64G0S1BQ8@ljones.dev> <T6YTXQ.N7QG3527OXWU1@ljones.dev>
+In-Reply-To: <T6YTXQ.N7QG3527OXWU1@ljones.dev>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 14 Aug 2021 22:51:17 +0300
+Message-ID: <CAHp75VfytvCwAgFdo+J_MnRJ3knYmmD8MR80ZbyX0re4hB0vTg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] asus-wmi: Add support for platform_profile
+To:     Luke Jones <luke@ljones.dev>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 05:06:28PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.280 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
-> 
+On Sat, Aug 14, 2021 at 3:47 PM Luke Jones <luke@ljones.dev> wrote:
+> A very quick question: should I be enabling platform_profile by default
+> if asus_wmi is enabled in kconfig?
 
-Build results:
-	total: 163 pass: 163 fail: 0
-Qemu test results:
-	total: 394 pass: 394 fail: 0
+Very quick for you, but me. I dunno. I think the best thing is what
+Hans can tell here.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Nevertheless, I think that this kind of default should be applied to
+all modules (yes, I know there might be possible exceptions).
 
-Guenter
+-- 
+With Best Regards,
+Andy Shevchenko
