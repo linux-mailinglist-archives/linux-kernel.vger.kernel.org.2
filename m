@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2283EC167
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 10:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3453C3EC168
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 10:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbhHNI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 04:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        id S237547AbhHNIcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 04:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237426AbhHNI21 (ORCPT
+        with ESMTP id S237426AbhHNIcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 04:28:27 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4402DC06175F;
-        Sat, 14 Aug 2021 01:27:59 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso19470461pjb.1;
-        Sat, 14 Aug 2021 01:27:59 -0700 (PDT)
+        Sat, 14 Aug 2021 04:32:09 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF9C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 01:31:41 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g21so5052358edw.4
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 01:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TTT7tWdh4cjIutAwW4KPW5eOxCd5OB9OazN7ATKrsNw=;
-        b=A0lpoSPq41usL0zUBaK+Yw2NCD/ApVc7G2rf/NHKfOJg9fFkWhF8HSzKPIv0Bxo0KH
-         kIYanzW1zVLjZPMQCWT9S4yT4cZMulNbPkuF+YMkvMSw1pLkS4YhKTByopHNOI89hO3v
-         jsa6Gw1Nwd6Qj6BYTAlMEnoNWZE4OiiLbMwyNkfb+dB/5D0ct+qxX69qKim9+tfPgrbp
-         iED0VmVKd2cpuOVR1WVczG4CHtLBF8hAQCH5y3WwH0JheRBfInrkOaM/ktFW2riJrkJ9
-         btac0W3rVujJRBCpzSjG0hS79QCc4VAQT6D1REkbwDPyIjEmd5UH71/lNKX1WwU7xpct
-         ZGPw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TGP0YepJ0SC8YWnj17lZ1oBllSsNV7Wv1XWRAlQBKPY=;
+        b=L4cONV+UVAREsvBuIsb0yA0EJQm9KbrrP1AGRhf4vuDzBJjptaRzVB/1/LCZjOEEyB
+         4FrCTbxVYr6Vr4CSWCMJVbNPFBQMfBivZGcrwpp8jJ6dbntwntGXZJMjpZvnMEX9ryht
+         Sc/4dNYLCgb8ZFMjyHcA1u2sM+zzVrgGCd9duyGD6O0TFaBwidZcZfORsiFuHavyqMY5
+         uPkdP1D8FLSkeovn1UYylPStd5dGgc+4+eDkIu+KElh9lJ8lvpn41MZNq8yhbKrRapAF
+         HGJVmZhqf2MvHNLyWfMPm+kWxM+2aWgF7zg/sfzs+a2CkaXk8pJOAj7vVvN7TsCYakzI
+         gaNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TTT7tWdh4cjIutAwW4KPW5eOxCd5OB9OazN7ATKrsNw=;
-        b=ug7izTEVeJwzIlhtrxfluuDcxc63l9dC4yWHjEZURu54iOJo7UDwU/PsnQS9OX4+yU
-         ACUv068z2FnHxjlXEosiKaC2vRsIDDflOKD00OISabB1lP91NX7jIsTooBpAmqItTSW5
-         wWofKVWhTAvyY3ywGlA9TG6QWm0rJKp/uUUzBtT7oGMLOzGBDYE4jUZ8SGVR+4T8VBNd
-         OMNIZfzUoxjoDNT7NKYaHvpkRdJlTzPTXp3LJ9nprW/TO6IrfwsFyEXK9nVmYg+nwVYi
-         QKwq/0bhpuSedTcq392sUq+AxeQYq8uc/Uvvw+gOpCpE8kHSkfadm8tnt1PxCPhgzFbR
-         HPKA==
-X-Gm-Message-State: AOAM530lfg3UCOjRvHGZPp4IooQ+ca6I1h0Ie+pfOzzkAfolTZROvntz
-        5zrPBuClLGU2GG/jLJsZVUo5db4xN6aNvdpb
-X-Google-Smtp-Source: ABdhPJyazibiXh+ieZulvePaFVpy/LHnKoeg0qfE5WYrjtXi1iWGpni0uW7o3UyKWaex1oOlbH1ETQ==
-X-Received: by 2002:a17:902:d511:b029:12d:5f23:339b with SMTP id b17-20020a170902d511b029012d5f23339bmr5190895plg.68.1628929678626;
-        Sat, 14 Aug 2021 01:27:58 -0700 (PDT)
-Received: from localhost ([119.3.119.21])
-        by smtp.gmail.com with ESMTPSA id r10sm4718358pff.7.2021.08.14.01.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 01:27:58 -0700 (PDT)
-From:   Tianxing Zhang <anakinzhang96@gmail.com>
-To:     zohar@linux.ibm.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tianxing Zhang <anakinzhang96@gmail.com>
-Subject: [PATCH 1/1] ima: check control characters in policy file path
-Date:   Sat, 14 Aug 2021 16:27:23 +0800
-Message-Id: <20210814082723.261-1-anakinzhang96@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TGP0YepJ0SC8YWnj17lZ1oBllSsNV7Wv1XWRAlQBKPY=;
+        b=UJU3FrbTLCzWVhpi75iwuZbt0njSxsQui83aiA1j7Hck7A1qnDOHYerQFcwyKla+dp
+         qMtBq4UaI3mUTRgMj2eneFY5SziN8NOe2eknzBSBeRJJY3XR9Qok+8cAUPy4sP1DJ1lo
+         Nvpxj3zpN8LTQW8jDTT9ezLOPuYNj3P+PljiZ+MJSTT08Rcovb4Y1qHeYIr8Xt2VqEUY
+         /I5aMLhGGc+p8k4lZyQ3vvvVdwzx744lUoZFg/2kqozKs6pIxpez4sVyhgzyS15CywGC
+         YqlewRWYV+Er6/kewvmDqVzDgMBRrHPkveCrHUDh8Zil2uF83sEH+CUQT6y+Byh5qjf8
+         Wn1A==
+X-Gm-Message-State: AOAM532cM+BY+ehqBpREjUciBZhvq514y8AHVgJT3ORp+2RegYWhveiu
+        eiDaywHKjm3cB22eKtjJgAEn3Kg9hCGCKjYYlrY=
+X-Google-Smtp-Source: ABdhPJxMf74X/URQ9Zdt298MTFshstSVJlME8lR7Nmsf9msZAFsFNt4rZqvw8poNxX0Ovz3c9hYu2yRZESWoF6W5Gk4=
+X-Received: by 2002:a50:ef11:: with SMTP id m17mr7911716eds.233.1628929900133;
+ Sat, 14 Aug 2021 01:31:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:906:9b4e:0:0:0:0 with HTTP; Sat, 14 Aug 2021 01:31:39
+ -0700 (PDT)
+Reply-To: dramirparnian58@gmail.com
+From:   "Dr.Amir Parnian," <mrsnicolebenoitemarois09@gmail.com>
+Date:   Sat, 14 Aug 2021 01:31:39 -0700
+Message-ID: <CAL90gPi=0yEK9G1raKDPCc1cjXOioX8bnG9r-xAcWcsihNcAhQ@mail.gmail.com>
+Subject: VERY URGENT!!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a policy file path contains control characters like '\r' or '\b',
-invalid error messages can be printed to overwrite system messages:
-
-$ echo -e "/\rtest 12345678" > /sys/kernel/security/ima/policy
-
-This patch rejects policy paths with control characters.
-
-Signed-off-by: Tianxing Zhang <anakinzhang96@gmail.com>
----
- security/integrity/ima/ima_fs.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
-index 3d8e9d5db5aa..e6daa138de89 100644
---- a/security/integrity/ima/ima_fs.c
-+++ b/security/integrity/ima/ima_fs.c
-@@ -316,6 +316,7 @@ static ssize_t ima_write_policy(struct file *file, const char __user *buf,
- {
- 	char *data;
- 	ssize_t result;
-+	int i;
- 
- 	if (datalen >= PAGE_SIZE)
- 		datalen = PAGE_SIZE - 1;
-@@ -331,6 +332,14 @@ static ssize_t ima_write_policy(struct file *file, const char __user *buf,
- 		goto out;
- 	}
- 
-+	for (i = 0; data[i] != '\n' && data[i] != '\0'; i++) {
-+		if (iscntrl(data[i])) {
-+			pr_err_once("file path with no control characters required\n");
-+			result = -EINVAL;
-+			goto out_free;
-+		}
-+	}
-+
- 	result = mutex_lock_interruptible(&ima_write_mutex);
- 	if (result < 0)
- 		goto out_free;
--- 
-2.25.1
-
+Dear Friend,
+My Name is Dr.Amir Parnian; I am a banker by profession. My reason for
+contacting you is to transfer abandoned $15.5 Million United States
+Dollars to your account.
+Further details of the transaction shall be forwarded to you as soon
+as I receive your return mail indicating your interest.
+Thanks and hope to hear from you soon.
+Dr.Amir Parnian;
