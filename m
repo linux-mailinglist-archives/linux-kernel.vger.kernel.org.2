@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219C73EC4F9
+	by mail.lfdr.de (Postfix) with ESMTP id 99D5E3EC4FA
 	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 22:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhHNUUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 16:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S232476AbhHNUUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 16:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhHNUUT (ORCPT
+        with ESMTP id S229489AbhHNUUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 16:20:19 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383EC061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:51 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so21098381pjl.4
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
+        Sat, 14 Aug 2021 16:20:22 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0D0C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:54 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j1so20426303pjv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mAtgpgJZGh5qZDIf6I2YBn2p3wmsbATJ34UD7KVweM4=;
-        b=bS0bw4Nb73a6l7jcuM2wSDV4P0TeaiKE/QC1+0xoOtIlTgDbjac5q6rtGwB8Euyw7j
-         9TGQP0A3Ykl4gyK2Hy5wyX72Mzwl8zazjXZ6dgUU4Psy9B3RpjDOT5kl+kLV6ffVbX5C
-         2CDUqQqXEXJhCapE+J4G2939goYOMgEtYgX2LgCysAELwLyqR0PYiy11PWVlmxvbtaKx
-         RBiXADztgCXYZibRjY3NkraMFQxVhK0ncsWN47nuDpnSAv8RdIBZUONo/GSU34hKclSx
-         JQfrCmli4QVEh7fKwXZmpCI/SzZ4k+jl/A7WrLy8mfOLF1joLAqYH5dMZrsBJjbc5xI8
-         ty+Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=B5k7GWGp6zz6FFJMpbfsb/wqc1GC34css4EKFgIvTFU=;
+        b=aw8w4Wno9Dz2PJ1rQMJgC4h+thEdCERa1X2zFtnQ+64fLv7bgIyTSL/D99Z19mNG0b
+         FsG9715dSap8EPnVA9X3bhuYQG7eUq5wNr9lwW4b/0sP3keSGYR9mtQy0KtRPlGsYBeJ
+         aOJsRiZZ2WcIVJG0xmj1gFmeBz0PU6ONKogngmKv7PzAH4EvwpHryplf+zsCdT+bCE1F
+         0MM7P2QYzuDEjyvdRoGSCRAr6Z1P5bwAJkQEpvsW+xRZC62hQ5+uzN/sN6+YTJbANMtu
+         E+LUyEBn2nMzUI1PhqCzlIDlYUVLwyOazsynJd9NukFBEsIuG8+XCCUfAOaMyUhkSobw
+         d7Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mAtgpgJZGh5qZDIf6I2YBn2p3wmsbATJ34UD7KVweM4=;
-        b=VyC1fgJraGr+po0HYfJrk3kYXjhUdfM1S4wGYBe13JGyeOFFq8isTvpgvAg99fmvWi
-         HldH9Nyf6c/TxyuDSbQze9H4sd7gf7ap2wXY7E+MOke09ZWx+Z2NaPzdtyVI9zBAVBYW
-         W/f3Y0NQViCdeoXGHsVw6ghbRKm/DgK5kpxcs5CHk1J6cSKs08cLt6YBzphnmNLVERjy
-         pxf1fj5DOehhpjtICIQxLHk4qUcY2JrHsEjUEc7+2dTUMefM5W+845x2CT1akKhBRHfz
-         StcwwtoXG8CIaPdSu+U7qQCkanMTABH8bhimwKzueoALpBShMmD9WWdZqE1c2FyiaHm4
-         nTfw==
-X-Gm-Message-State: AOAM530Jh0pOBpERw3G1RUiXDVeAcqCp13l9/Z1NnE96on5iHEivk+VN
-        R7TZAnREcRoUBtjnfFtC++Q=
-X-Google-Smtp-Source: ABdhPJxhPvqKjOaL6Gm/B7DK5CcgcrHKajWNwm/TbgU99bhnT1KC0ts35LjRkITbB9hyun/unyGbeg==
-X-Received: by 2002:a17:90a:2802:: with SMTP id e2mr8871836pjd.215.1628972390593;
-        Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=B5k7GWGp6zz6FFJMpbfsb/wqc1GC34css4EKFgIvTFU=;
+        b=HiJO+MMn6i2hAT6I6NcxzJOgnIJg0obykPPkytnz8E858eyHKh6kZa5FljktcnyzYw
+         MoyRYcWQwv4RnIcq0cxBLws2MvsFSudTTnzLSrc5kixB39v3yhJgRIVp6Kwhcuiu86lA
+         re2FPSI4res6Ra7Pa3zA1kpXwn5LbkuMnPEZS2AJeJPZxKsfyqyrDnARgW9IXaumU94D
+         ORgAIz6nrJBl/vgdvyzvZhvRLpaMeqqA/FYyhXIv+zsLUDgvH+PNmbG4GZL8nvTJdFQq
+         fJeB/6LxW416xlfIQ2mbmA4zMdAdcCveBQv0W/xa2q7IBs5bHjTgPow0aM9gOMyxPxUf
+         DDDg==
+X-Gm-Message-State: AOAM530n8VgTUvWMhZGBYZKXCyAt3OjxGMhufvKKQ3IGhcSRBGFKqGUc
+        WWQaPWZ/Jy70KiHbRVPtA3g=
+X-Google-Smtp-Source: ABdhPJzQa6P1b996Rhma2rJ5WA3QLSQV46gIgVX4Uo6Z5DywjTwgLpQESuRb0uCzCzIYFEiSlhRihQ==
+X-Received: by 2002:a63:b47:: with SMTP id a7mr8201504pgl.181.1628972393665;
+        Sat, 14 Aug 2021 13:19:53 -0700 (PDT)
 Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id u13sm6413121pfi.51.2021.08.14.13.19.47
+        by smtp.gmail.com with ESMTPSA id u13sm6413121pfi.51.2021.08.14.13.19.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
+        Sat, 14 Aug 2021 13:19:53 -0700 (PDT)
 From:   Aakash Hemadri <aakashhemadri123@gmail.com>
 To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -56,30 +56,41 @@ Cc:     Takashi Iwai <tiwai@suse.com>, Jawoslav Kysela <perex@perex.cz>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>,
         Bjorn Helgaas <bjorn@helgaas.com>
-Subject: [PATCH 0/3] ASoC: ti: Use of_device_get_match_data
-Date:   Sun, 15 Aug 2021 01:49:38 +0530
-Message-Id: <cover.1628972198.git.aakashhemadri123@gmail.com>
+Subject: [PATCH 1/3] ASoC: ti: davinci-mcasp: Use of_device_get_match_data
+Date:   Sun, 15 Aug 2021 01:49:39 +0530
+Message-Id: <ffe9b568be52cc075df56bbf07f20a92cb54f07d.1628972198.git.aakashhemadri123@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1628972198.git.aakashhemadri123@gmail.com>
+References: <cover.1628972198.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-	This patch series will apply cleanly on for-next
-Prefer `of_device_get_match_data` over `of_match_device`.
+Prefer `of_device_get_match_data` over `of_match_device`
 
-Aakash Hemadri (3):
-  ASoC: ti: davinci-mcasp: Use of_device_get_match_data
-  ASoC: ti: omap-mcbsp: Use of_device_get_match_data
-  ASoC: ti: davinci-evm: Use of_device_get_match_data
+Retrieve OF match data using `of_device_get_match_data`, this is cleaner
+and better expresses intent.
 
- sound/soc/ti/davinci-evm.c   | 2 +-
+Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+---
  sound/soc/ti/davinci-mcasp.c | 2 +-
- sound/soc/ti/omap-mcbsp.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 56a19eeec5c7..b26e8d324078 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1881,7 +1881,7 @@ static bool davinci_mcasp_have_gpiochip(struct davinci_mcasp *mcasp)
+ static int davinci_mcasp_get_config(struct davinci_mcasp *mcasp,
+ 				    struct platform_device *pdev)
+ {
+-	const struct of_device_id *match = of_match_device(mcasp_dt_ids, &pdev->dev);
++	const struct of_device_id *match = of_device_get_match_data(&pdev->dev);
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct davinci_mcasp_pdata *pdata = NULL;
+ 	const u32 *of_serial_dir32;
 -- 
 2.32.0
 
