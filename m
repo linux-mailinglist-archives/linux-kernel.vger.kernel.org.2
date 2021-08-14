@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F693EC60C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ABC3EC60F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhHNXun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:50:43 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:32428 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbhHNXuk (ORCPT
+        id S234172AbhHNXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233549AbhHNXxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:50:40 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 17ENnpW3026713
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:49:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17ENnpW3026713
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628984992;
-        bh=4qC4AERb0Snk+55rk2CLhMwMYEU3AtPhxGssFF1Wn6E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2dbOfK20z85mtZRexmRyPdAfSlmQ0bHm8Jl+QEWw2ylAPkiK0jgeuKXizVsKL19BK
-         ZLrJQdxtYIzkS4rBn948m0KKuMH/Vyy7/yOm50LEQcGJGMPRClb5MT2wNdxA9ribrw
-         rXUQ3D1vpTW+/lpNrsnKze/ikY1CxKA1/wPDylZt67zO61DRpVpGNSkNp76BrUGBeh
-         G1nNauOf+DA2J7WeIl55xMHl10zgACZ9CPFpsDkZ/Ze3k8e2gXVvDjpKU161zaK8WG
-         GxV68Ntoklzat2/3Dxul8PmOzfJjeVBg83WmOtgyaCmrQkBKPcY1EgRO3CSjMTc7dB
-         WVU48LLmjWpcw==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id a5so16530294plh.5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:49:51 -0700 (PDT)
-X-Gm-Message-State: AOAM53350/QOPUgB/frm8Hd5xw09DmflAwF24yZg3p/QVhRVeEfpq8hO
-        ZvBkY7aLO00qpf2+cIIggcipafrXnjiRLI/ChkY=
-X-Google-Smtp-Source: ABdhPJz5XOqnHANztna/aYDFzteB9C6xf5kkT9BSKSsHlNBNwwsYo2uIuqDV+v3Cw8m6EcYrntZp4ngs/Fdz8lEcXDE=
-X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr8993112pjg.153.1628984990887;
- Sat, 14 Aug 2021 16:49:50 -0700 (PDT)
+        Sat, 14 Aug 2021 19:53:40 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ED7C061764;
+        Sat, 14 Aug 2021 16:53:11 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n5so423115pjt.4;
+        Sat, 14 Aug 2021 16:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ieV+NzFBwSkcV+dUMdH1Zwl99MJbYbRKj6zgzR3HYo8=;
+        b=fw2wAsjVNzwOXlztdlYhKMmryILu560cBP1n1eH1E7aNbT75pBui01fq4RdxbFfy6O
+         4X+hk8Du9XGkpszCNLHSaKIRL85MFDBDOmB6WRixaLMNPxFEmhI+cwExRoiOjkktHPzy
+         qKRgf/J15GqAlMmi8/MFo8IPGgj3JCnjLeYCTcRL5gQ1Z9LY04wKApcl0jTRTEoXU3Vp
+         L0R2iWJmAgY3BW+sJ3U4F50kIuWE5Odxw2XOdyY5ekowFJV/VCS5CFmTdLnpeQUP1lZ8
+         zkkPoBsy6LTuWu6ByZrUMPxsEJmPSBUIiKNkFtPbABERuOFVHpngZ52xDrmn2F0lu4r/
+         UDpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ieV+NzFBwSkcV+dUMdH1Zwl99MJbYbRKj6zgzR3HYo8=;
+        b=YUhUFl8jK1J42HFcMEqbpSpNGzU0/rv/MWIPJckSE4odCJ3pubygdaivvyZ4GX4s2P
+         keUiSNvpkahoCGqxymXvIqoRr2eAraIGkyZfTiXhIfj6AMDtEc11xnYNb6lDuIO2Lcva
+         zFE5K+asS7YbH389SFsgRV+IosCQ98N7BXTQelSknfY+fMSHq2iwPZEDfWi+tb8GrhhH
+         Lt0Mvg0JnLeCAm7kk6QTv6+fWx5qjXLjjiZc5I/ZQW3Uj+mkpy5A3C8xlIWtuRYcuXQ/
+         7pFDlUJcua8LoU3pD6T8lH/rqorJraqz63k/qNvCU0aITOhq3A+amt8AFTnPVCiCGDsT
+         zrbg==
+X-Gm-Message-State: AOAM531fGddN2m2Fsjoze+1E7bFI8wATwUm+5vwknn5iOwUVAYf6+eC/
+        6cHasJ3dp3loogeO04O98kQ=
+X-Google-Smtp-Source: ABdhPJzi7PWieEMc/eyz+VFweMge+uC+jyrMu5EICWwignPRXHUbiwHQ9je+q4eX4SVG9F/8twbhCw==
+X-Received: by 2002:a17:90a:7aca:: with SMTP id b10mr9241895pjl.172.1628985190829;
+        Sat, 14 Aug 2021 16:53:10 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.113])
+        by smtp.gmail.com with ESMTPSA id w5sm1272085pgp.79.2021.08.14.16.53.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Aug 2021 16:53:09 -0700 (PDT)
+Subject: Re: [PATCH v3] blk-throtl: optimize IOPS throttle for large IO
+ scenarios
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
+References: <65869aaad05475797d63b4c3fed4f529febe3c26.1627876014.git.brookxu@tencent.com>
+ <YRGumHUfK5sJc4A/@mtj.duckdns.org>
+From:   "brookxu.cn" <brookxu.cn@gmail.com>
+Message-ID: <98864178-cf4d-b86e-81e1-70713a0f1d06@gmail.com>
+Date:   Sun, 15 Aug 2021 07:53:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729142147.445593-1-masahiroy@kernel.org> <mhng-fe558e10-6cee-4e55-b975-8c525c2bcb02@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-fe558e10-6cee-4e55-b975-8c525c2bcb02@palmerdabbelt-glaptop>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 15 Aug 2021 08:49:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARVjdVf5QRFduKrxb-TJyiCdUPkpSSMtYiS7yN2yAZhEQ@mail.gmail.com>
-Message-ID: <CAK7LNARVjdVf5QRFduKrxb-TJyiCdUPkpSSMtYiS7yN2yAZhEQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: move the (z)install rules to arch/riscv/Makefile
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Tobias Klauser <tklauser@distanz.ch>, vitaly.wool@konsulko.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRGumHUfK5sJc4A/@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 2:00 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Thu, 29 Jul 2021 07:21:47 PDT (-0700), masahiroy@kernel.org wrote:
-> > Currently, the (z)install targets in arch/riscv/Makefile descend into
-> > arch/riscv/boot/Makefile to invoke the shell script, but there is no
-> > good reason to do so.
-> >
-> > arch/riscv/Makefile can run the shell script directly.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/riscv/Makefile      | 7 +++++--
-> >  arch/riscv/boot/Makefile | 8 --------
-> >  2 files changed, 5 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> > index bc74afdbf31e..3c437fb09a07 100644
-> > --- a/arch/riscv/Makefile
-> > +++ b/arch/riscv/Makefile
-> > @@ -126,8 +126,11 @@ $(BOOT_TARGETS): vmlinux
-> >  Image.%: Image
-> >       $(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
-> >
-> > -zinstall install:
-> > -     $(Q)$(MAKE) $(build)=$(boot) $@
-> > +install: install-image = Image
-> > +zinstall: install-image = Image.gz
-> > +install zinstall:
-> > +     $(CONFIG_SHELL) $(srctree)/$(boot)/install.sh $(KERNELRELEASE) \
-> > +     $(boot)/$(install-image) System.map "$(INSTALL_PATH)"
-> >
-> >  archclean:
-> >       $(Q)$(MAKE) $(clean)=$(boot)
-> > diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-> > index 6bf299f70c27..becd0621071c 100644
-> > --- a/arch/riscv/boot/Makefile
-> > +++ b/arch/riscv/boot/Makefile
-> > @@ -58,11 +58,3 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
-> >
-> >  $(obj)/loader.bin: $(obj)/loader FORCE
-> >       $(call if_changed,objcopy)
-> > -
-> > -install:
-> > -     $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
-> > -     $(obj)/Image System.map "$(INSTALL_PATH)"
-> > -
-> > -zinstall:
-> > -     $(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
-> > -     $(obj)/Image.gz System.map "$(INSTALL_PATH)"
->
-> Admittidly I don't see a reason to do it this way either, but it looks
-> like the other common ports (I checked arm64 and x86) are doing things
-> this way.  I don't really care that much about which way we do it, but
-> it'd be better to keep everyone aligned.
->
-> Are you converting the other ports over as well?
+Hi Jens:
 
-Yes.
+Should we apply this patch for new and older kernel ?
 
+Thanks.
 
--- 
-Best Regards
-Masahiro Yamada
+On 2021/8/10 6:39 AM, Tejun Heo wrote:
+> On Mon, Aug 02, 2021 at 11:51:56AM +0800, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> After patch 54efd50 (block: make generic_make_request handle
+>> arbitrarily sized bios), the IO through io-throttle may be larger,
+>> and these IOs may be further split into more small IOs. However,
+>> IOPS throttle does not seem to be aware of this change, which
+>> makes the calculation of IOPS of large IOs incomplete, resulting
+>> in disk-side IOPS that does not meet expectations. Maybe we should
+>> fix this problem.
+>>
+>> We can reproduce it by set max_sectors_kb of disk to 128, set
+>> blkio.write_iops_throttle to 100, run a dd instance inside blkio
+>> and use iostat to watch IOPS:
+>>
+>> dd if=/dev/zero of=/dev/sdb bs=1M count=1000 oflag=direct
+>>
+>> As a result, without this change the average IOPS is 1995, with
+>> this change the IOPS is 98.
+>>
+>> v3: Optimize the use of atomic variables.
+>> v2: Use atomic variables to solve synchronization problems.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+>
+> Thanks.
+>
