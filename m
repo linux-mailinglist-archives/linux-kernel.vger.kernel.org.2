@@ -2,157 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774673EC4AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2B93EC4BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhHNTJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhHNTIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 15:08:52 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79A8C061764;
-        Sat, 14 Aug 2021 12:08:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1db90092f0c5d5424adff0.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:92f0:c5d5:424a:dff0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 54E261EC03D5;
-        Sat, 14 Aug 2021 21:08:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628968096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mDvb80MdTaf2VGaprn1/RrktzLeXuWn32fRrJqO4RnI=;
-        b=n25sOE9lUdWfF/+b9LVVu/c0RTBIvawG0223WpI1YjhZEQbLgR8M8pMHyOitDdblT/KimW
-        wNA1cSGSX7URig9TBS5k8aka8wDk2wkKQnurLH+/Lu/L/dwizp44Ektb+n/sT1fMvyEOwE
-        k/pW/5vABtT/pfK15uGy1LwHKVyiZxY=
-Date:   Sat, 14 Aug 2021 21:08:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 03/12] x86/sev: Add an x86 version of prot_guest_has()
-Message-ID: <YRgUxyhoqVJ0Kxvt@zn.tnic>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
+        id S231417AbhHNTag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229489AbhHNTae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 15:30:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA65F60F9F;
+        Sat, 14 Aug 2021 19:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628969405;
+        bh=34CIw8rTdHGZQQqWjzKu3L/hQZ6AvxI1r7zYiHnEIBc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Jh6gkhkBr+zfvpgzdDs2Grh9U15Ye77iOTxzitOcqgIMY1LYaGAOuhieiOElp2KDy
+         uLqMNoXPxs4oPAMUV9pU/ZrE02Ay4VfKlCLaAc/jG+ndCJKIAPtYOCkGoZdU0YJcbg
+         oVk2C8/0fp8g8MhRyT56XkhsIc8azL+zpI/4XrwZmSdA5yHcxAFL9m1rlCV9+P6jKg
+         zFfBgXXbTSU5SBmb5NC3stP0aOVzlJUAIHXseQXzwwozyQyZytu5zOEen8V5fvD7OD
+         WDCRNXbRabSUHwZ+4wVylLkTjxJTPVZTgEqD0dB3+0IE5oj57Bm6XMB2mPpD6VsWG5
+         osHVcynbtXd5Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9E21C609AF;
+        Sat, 14 Aug 2021 19:30:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/2] net: Remove the ipx network layer header files 
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162896940564.11276.8513936095062837252.git-patchwork-notify@kernel.org>
+Date:   Sat, 14 Aug 2021 19:30:05 +0000
+References: <20210813120803.101-1-caihuoqing@baidu.com>
+In-Reply-To: <20210813120803.101-1-caihuoqing@baidu.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 11:59:22AM -0500, Tom Lendacky wrote:
-> diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
-> new file mode 100644
-> index 000000000000..51e4eefd9542
-> --- /dev/null
-> +++ b/arch/x86/include/asm/protected_guest.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Protected Guest (and Host) Capability checks
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
-> + */
-> +
-> +#ifndef _X86_PROTECTED_GUEST_H
-> +#define _X86_PROTECTED_GUEST_H
-> +
-> +#include <linux/mem_encrypt.h>
-> +
-> +#ifndef __ASSEMBLY__
-> +
-> +static inline bool prot_guest_has(unsigned int attr)
-> +{
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +	if (sme_me_mask)
-> +		return amd_prot_guest_has(attr);
-> +#endif
-> +
-> +	return false;
-> +}
-> +
-> +#endif	/* __ASSEMBLY__ */
-> +
-> +#endif	/* _X86_PROTECTED_GUEST_H */
+Hello:
 
-I think this can be simplified more, diff ontop below:
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-- no need for the ifdeffery as amd_prot_guest_has() has versions for
-both when CONFIG_AMD_MEM_ENCRYPT is set or not.
+On Fri, 13 Aug 2021 20:08:01 +0800 you wrote:
+> commit <47595e32869f> ("<MAINTAINERS: Mark some staging directories>")
+> indicated the ipx network layer as obsolete in Jan 2018,
+> updated in the MAINTAINERS file.
+> 
+> now, after being exposed for 3 years to refactoring, so to
+> remove the ipx network layer header files
+> 
+> [...]
 
-- the sme_me_mask check is pushed there too.
+Here is the summary with links:
+  - [1/2] net: Remove net/ipx.h and uapi/linux/ipx.h header files
+    https://git.kernel.org/netdev/net-next/c/6c9b40844751
+  - [2/2] MAINTAINERS: Remove the ipx network layer info
+    https://git.kernel.org/netdev/net-next/c/e4637f621203
 
-- and since this is vendor-specific, I'm checking the vendor bit. Yeah,
-yeah, cross-vendor but I don't really believe that.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
----
-diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
-index 51e4eefd9542..8541c76d5da4 100644
---- a/arch/x86/include/asm/protected_guest.h
-+++ b/arch/x86/include/asm/protected_guest.h
-@@ -12,18 +12,13 @@
- 
- #include <linux/mem_encrypt.h>
- 
--#ifndef __ASSEMBLY__
--
- static inline bool prot_guest_has(unsigned int attr)
- {
--#ifdef CONFIG_AMD_MEM_ENCRYPT
--	if (sme_me_mask)
-+	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
-+	    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON)
- 		return amd_prot_guest_has(attr);
--#endif
- 
- 	return false;
- }
- 
--#endif	/* __ASSEMBLY__ */
--
- #endif	/* _X86_PROTECTED_GUEST_H */
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index edc67ddf065d..5a0442a6f072 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -392,6 +392,9 @@ bool noinstr sev_es_active(void)
- 
- bool amd_prot_guest_has(unsigned int attr)
- {
-+	if (!sme_me_mask)
-+		return false;
-+
- 	switch (attr) {
- 	case PATTR_MEM_ENCRYPT:
- 		return sme_me_mask != 0;
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
