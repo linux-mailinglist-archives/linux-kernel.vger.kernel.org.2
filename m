@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699433EC2C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712283EC2C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238358AbhHNNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 09:06:05 -0400
-Received: from gate.crashing.org ([63.228.1.57]:45632 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhHNNGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 09:06:04 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17ECwEDi013900;
-        Sat, 14 Aug 2021 07:58:14 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17ECwCY0013899;
-        Sat, 14 Aug 2021 07:58:12 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sat, 14 Aug 2021 07:58:12 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        Paul Mackerras <paulus@samba.org>,
-        Bill Wendling <morbo@google.com>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-Message-ID: <20210814125812.GC1583@gate.crashing.org>
-References: <20210812204951.1551782-1-morbo@google.com> <87sfzde8lk.fsf@linkitivity.dja.id.au> <20210813200508.7bqehxgd6ruerds5@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813200508.7bqehxgd6ruerds5@google.com>
-User-Agent: Mutt/1.4.2.3i
+        id S238498AbhHNNHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 09:07:48 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51893 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhHNNHd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 09:07:33 -0400
+Received: by mail-il1-f200.google.com with SMTP id g9-20020a92cda90000b029020cc3319a86so6759037ild.18
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 06:07:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=t5YQUGSZE6EI9BhxfatfxY8kQRFsuaqSI5BxeVjzuZ0=;
+        b=WiKvJElvU4piRPBgpQ/cMtMh+siM3caWTjn6pKUp1lr3SanWR29+KtR2G3lXkOhK+w
+         1tp+9VdfYMxzHD+1udaq2huC31aVKNKVbwc7YHEKpzwKgaPDBvFJ/89QtjPA5Hcx/27m
+         KKZianEl+b8rpRc8nNn5z1EJ/rgwx40tA0dM7FlkcFRJF1ysuMNtpxJbeQA+0nNVm8SD
+         s7bIV9hERYGvptsyVxx/ERk+io05SAVP4i2ZTzvIN6SlRzKdomKhbS32FX0SI+yIWMVF
+         PDhfbBv9BQfdwml/HRAQMAKdY8IvQ3UvRcXOn27d62i9pgTnEguBXFQ/X4pscjlCWVwG
+         kFKA==
+X-Gm-Message-State: AOAM530At55N1lucP1+DUZqAw7wp75YY7SA87ZGEiS8iMfRIzgjoWtw/
+        GMoq/2Qx7gv/uh8WtzBkAU7mX0/kO9qRQrTbXCgwmRznPyY/
+X-Google-Smtp-Source: ABdhPJy2AvLguRSMEmfyW87t0JS484ypKZ9GNlz2YX0HW0onFVHA9gtYaOLblHldyW0ZHNRgbBvtlICabAwh4/WuQloazRiOUvWa
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:17cf:: with SMTP id z15mr2152427ilu.103.1628946425097;
+ Sat, 14 Aug 2021 06:07:05 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 06:07:05 -0700
+In-Reply-To: <00000000000006e7be05bda1c084@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000006b42305c984a5d3@google.com>
+Subject: Re: [syzbot] general protection fault in scatterwalk_copychunks (4)
+From:   syzbot <syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com>
+To:     aviadye@mellanox.com, borisp@mellanox.com, bp@alien8.de,
+        daniel@iogearbox.net, davem@davemloft.net,
+        herbert@gondor.apana.org.au, hpa@zytor.com,
+        john.fastabend@gmail.com, kuba@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vfedorenko@novek.ru, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 01:05:08PM -0700, Fangrui Song wrote:
-> Text relocations are considered very awful by linker developers.
+syzbot has bisected this issue to:
 
-By very few linker developers.
+commit 635d9398178659d8ddba79dd061f9451cec0b4d1
+Author: Vadim Fedorenko <vfedorenko@novek.ru>
+Date:   Wed May 20 08:41:44 2020 +0000
 
-> binutils 2.35 added --enable-textrel-check={no,warn,error}
-> https://sourceware.org/bugzilla/show_bug.cgi?id=20824
+    net/tls: free record only on encryption error
 
-Yes, some people wanted the default to be configurable.  So now we have
-a default default that is sane, so most people get to reap the benefits
-of having defaults at all, but we also allow other people to shoot
-themselves (and people who have to deal with them) in the foot.
-"Progress".  Changing the defaults should be a one-time event, only done
-when the benefits strongly outweigh the costs.  Defaults should never be
-configurable (by the user).
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=144095e6300000
+start commit:   f8fbb47c6e86 Merge branch 'for-v5.14' of git://git.kernel...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=164095e6300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=124095e6300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=171d57d5a48c8cad
+dashboard link: https://syzkaller.appspot.com/bug?extid=66e3ea42c4b176748b9c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b8db9e300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c21581300000
 
-> I can imagine that in the future some Linux distributions (especially those
-> focusing on security) will default their binutils to use
-> --enable-textrel-check={no,warn,error}.
+Reported-by: syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com
+Fixes: 635d93981786 ("net/tls: free record only on encryption error")
 
-How would this be a benefit to security?
-
-> In -no-pie links, R_PPC64_ADDR64 relocations are link-time constants.
-
-Where "link" includes dynamic links as well.  There are no constants.
-
-> There are no text relocations, therefore no need for -z notext.
-
-This is a choice by the compiler, nothing more.  It saves some process
-startup time, and allows slightly more maps to be shared by processes
-that run the same images.  But it is a tradeoff, so it might change; and
-of course it is not an ABI requirement.
-
-
-Segher
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
