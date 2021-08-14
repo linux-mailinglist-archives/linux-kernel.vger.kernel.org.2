@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C633EC479
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC75B3EC482
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhHNScp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:32:45 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59380 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233713AbhHNSco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:32:44 -0400
-Received: from zn.tnic (p200300ec2f1db90092f0c5d5424adff0.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:92f0:c5d5:424a:dff0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 18F4D1EC03D5;
-        Sat, 14 Aug 2021 20:32:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628965930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=wF+abY2BQsJbjTrcR+vEXegmF8fSVZNnTVHwv8EJcnQ=;
-        b=E4Qk5UWHuniXg4G1qquKyzpgwZxdDOaCXRqHrAIJykq2qzFHsvToSzhtSszwEfmGfSV6v2
-        I5QqIZa+pz8OAA9XFKUyZCM9wxA5OIK4n52a7NMv/GJIh9ii9QfkxahlKZf58K1pY/P4Uq
-        2W5ojEdMC06o3XDrAinHQLW8qtTO9aY=
-Date:   Sat, 14 Aug 2021 20:32:48 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 02/12] mm: Introduce a function to check for
- virtualization protection features
-Message-ID: <YRgMUHqdH60jDB06@zn.tnic>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
+        id S239009AbhHNSfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:35:18 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:38661 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhHNSfR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 14:35:17 -0400
+Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MBlgy-1mMhBF450u-00CDbq; Sat, 14 Aug 2021 20:34:34 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-audit@redhat.com
+Subject: [PATCH v2 0/3] dm: audit event logging
+Date:   Sat, 14 Aug 2021 20:33:52 +0200
+Message-Id: <20210814183359.4061-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:upD3yRH5hFfQxAWGBD+cbK34kBXTUgHSWOzn/0o6eeF1UV6INC8
+ nWPgpTusd43NAKiNW/RRkfsimIls0/5covPu+MlMNO1CgSuOgsKyCxP67wyycvX6bpXZW8j
+ 9ntlEWN0juSCWi5UL3LWVABcW/IB1QL8mClvRBJ8NtfMnFH31qoERcZEl9qwYdCKD8OduYI
+ erw+aM7QGnaCuvKgh6J/g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eWWgpQeMjvI=:T0Hp/BqnPHfzstvVBrwuaq
+ d9wZNcguphCGb0uUPPLHkAr47mebdBJ1ENtO7PAbg+r6Chhv2q5M4BuDxrSUkVAAEGqMaZhtX
+ JwJTrLwnMMWcDYGgeAW0ew+0Mh6lLGRAO5qoScBCKB/YD2sS7+W46wFW1mIhj7p8ziCkGI1cn
+ zs89DeL0zb17GPxBXOu6FkJxuYXL/N6PkzsJ3LYSqNItwmXHY86BD8hnwtXCZdZ7D1gO62Qzs
+ F2Vwi2qXtsWiMJwm6aQShqpCqLAJTbJSBz5bECiLDv/6aJW8jt0AqjO4IQ9en1POH3SylTJiG
+ mwuRk0rxHiih5CcY/a6zh8OHtTWKPBgg38xm2RIMa/skMskrJ2EYANQPmVZsfSQaMLEXpUlbs
+ FKNShznyjfCzqhIteNK74OEZxfTPsuRMD2xrL3yBdFfTTZmW5psKg5q9k8/T/noMJDW9MzVvj
+ QExk+2XP/0xvGc6H4pv2tuFN3xt40y9exlHpzG+T1GGfM05CjQaI6NNsdS9c5RvZVfwpyK0+c
+ 0zWCyEENWVoCzN7ewNeIxQaDiKaT3a7LeFpnT5n/M7DtDv+/ZD+TL1pBOaO/792n45O44aD5W
+ ummoytgWaKbeMDdKAqJ8fLf136lbDLKOAlp5y3tsrWRZfX2IeEiXz876R2qyL5g3wxLhTfpUM
+ KvDc1vQEiXFutEmjN6RKvpuBdLvx1oz6v3s0weoyCbzXOEzeDzZ39h+uknhcA5ZC8dzqzSAkr
+ MMnasIL/khokW7o2JUAyAAWE/JqnEK9VfxJxPb3z2B07MuJ3yFaWKbS7I9yUoGMXIr6HpjiJ7
+ UqrJGoBwQzUHP4cOcT9ioEmtfpyistA47sNu8AT1dQnGWT5vcikQ/4bWNaQOQMZtxNVs4+z0g
+ Vv31CrOmyEIG6jcszs1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 11:59:21AM -0500, Tom Lendacky wrote:
-> In prep for other protected virtualization technologies, introduce a
-> generic helper function, prot_guest_has(), that can be used to check
-> for specific protection attributes, like memory encryption. This is
-> intended to eliminate having to add multiple technology-specific checks
-> to the code (e.g. if (sev_active() || tdx_active())).
-> 
-> Reviewed-by: Joerg Roedel <jroedel@suse.de>
-> Co-developed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/Kconfig                    |  3 +++
->  include/linux/protected_guest.h | 35 +++++++++++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
->  create mode 100644 include/linux/protected_guest.h
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 98db63496bab..bd4f60c581f1 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1231,6 +1231,9 @@ config RELR
->  config ARCH_HAS_MEM_ENCRYPT
->  	bool
->  
-> +config ARCH_HAS_PROTECTED_GUEST
-> +	bool
-> +
->  config HAVE_SPARSE_SYSCALL_NR
->         bool
->         help
-> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
-> new file mode 100644
-> index 000000000000..43d4dde94793
-> --- /dev/null
-> +++ b/include/linux/protected_guest.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Protected Guest (and Host) Capability checks
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
-> + */
-> +
-> +#ifndef _PROTECTED_GUEST_H
-> +#define _PROTECTED_GUEST_H
-> +
-> +#ifndef __ASSEMBLY__
-	   ^^^^^^^^^^^^^
+dm integrity and also stacked dm crypt devices track integrity
+violations internally. Thus, integrity violations could be polled
+from user space, e.g., by 'integritysetup status'.
 
-Do you really need that guard? It builds fine without it too. Or
-something coming later does need it...?
+From an auditing perspective, we only could see that there were
+a number of integrity violations, but not when and where the
+violation exactly was taking place. The current error log to
+the kernel ring buffer, contains those information, time stamp and
+sector on device. However, for auditing the audit subsystem provides
+a separate logging mechanism which meets certain criteria for secure
+audit logging.
+
+With this small series we make use of the kernel audit framework
+and extend the dm driver to log audit events in case of such
+integrity violations. Further, we also log construction and
+destruction of the device mappings.
+
+We focus on dm-integrity and stacked dm-crypt devices for now.
+However, the helper functions to log audit messages should be
+applicable to dm verity too.
+
+The first patch introduce generic audit wrapper functions.
+The second patch makes use of the audit wrapper functions in the
+dm-integrity.c.
+The third patch uses the wrapper functions in dm-crypt.c.
+
+The audit logs look like this if executing the following simple test:
+
+# dd if=/dev/zero of=test.img bs=1M count=1024
+# losetup -f test.img
+# integritysetup -vD format --integrity sha256 -t 32 /dev/loop0 
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# integritysetup close integritytest
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# dd if=/dev/urandom of=/dev/loop0 bs=512 count=1 seek=100000
+# dd if=/dev/mapper/integritytest of=/dev/null
+
+-------------------------
+audit.log from auditd
+
+type=UNKNOWN[1336] msg=audit(1628692862.187:409): module=integrity dev=254:3 op=ctr res=1
+type=UNKNOWN[1336] msg=audit(1628692862.443:410): module=integrity dev=254:3 op=dtr res=1
+type=UNKNOWN[1336] msg=audit(1628692862.543:411): module=integrity dev=254:3 op=ctr res=1
+type=UNKNOWN[1336] msg=audit(1628692877.943:412): module=integrity dev=254:3 op=dtr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692887.287:413): module=integrity dev=254:3 op=ctr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692925.156:417): module=integrity dev=254:3 op=dtr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692930.720:418): module=integrity dev=254:3 op=ctr res=1
+
+type=UNKNOWN[1336] msg=audit(1628692989.344:419): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:420): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:421): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:422): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:423): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:424): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:425): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:426): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:427): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+type=UNKNOWN[1336] msg=audit(1628692989.348:428): module=integrity dev=254:3 op=integrity-checksum sector=77480 res=0
+
+v2 Changes:
+- Fixed compile errors if CONFIG_DM_AUDIT is not set
+- Fixed formatting and typos as suggested by Casey
+
+Michael Weiß (3):
+  dm: introduce audit event module for device mapper
+  dm integrity: log audit events for dm-integrity target
+  dm crypt: log aead integrity violations to audit subsystem
+
+ drivers/md/Kconfig         | 10 +++++++
+ drivers/md/Makefile        |  4 +++
+ drivers/md/dm-audit.c      | 59 ++++++++++++++++++++++++++++++++++++++
+ drivers/md/dm-audit.h      | 33 +++++++++++++++++++++
+ drivers/md/dm-crypt.c      | 22 +++++++++++---
+ drivers/md/dm-integrity.c  | 25 +++++++++++++---
+ include/uapi/linux/audit.h |  1 +
+ 7 files changed, 146 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/md/dm-audit.c
+ create mode 100644 drivers/md/dm-audit.h
 
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
