@@ -2,164 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E0A3EBF0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 02:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9633EBF12
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 02:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhHNAkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 20:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235330AbhHNAkc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 20:40:32 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF118C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 17:40:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hs10so21470339ejc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 17:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IjaD5q8QKwN+jVDLQ1RW7mDtRCj+6oZDCsHq9KfG01Y=;
-        b=YpOsIIGWVbrxvz1V+JMlOsSqwlXM3DAd2BzbAfkLqR4kAf3OBmXelOKWLmXLhmfuGJ
-         GCgWpJKZXGVCvc3L1o2SMTScR6NM9a1dV9DxbX2yx8cNWio3lx9uqdF+TNZfvO08YgDr
-         +4aalKdiJdLNJEYdvsumzmmrrfihiRB2cpXmE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IjaD5q8QKwN+jVDLQ1RW7mDtRCj+6oZDCsHq9KfG01Y=;
-        b=K6/68SpzzEstPWBVblNcpoR0xvZVuj5fYjIr1azFt7ritzgNkTTu1BxRE7SQVqFb3B
-         Q6Fqj4pL7H8Ud1cOcmtX1XoHg88Ji3q5Tx54xftqqVCpuGG2y3q4DAh7KyBojysUFP+x
-         0SAfwDedw0xRDrptxvXiqlY2K3KrmQ8o1UPCqPLY40CW/fC9EomH8kvA97iMxzD74tq5
-         5M+6BIvpRGFSgk1QmqKIdv4wfnibzAE4hyu4k8IzQXaBISwb2DDWXwmi2npalM5Q+ewG
-         SQioVXiHNbrpOe18wy7SYAFemQ8JaYaSVDsclu3VG60Pljrnd3tNdlAbD2+12lqVAYxF
-         EgeQ==
-X-Gm-Message-State: AOAM532Anw79UAddWeHOhN9dkJ32AVXeka140EOHPKWLehRUbaOGs7iR
-        mlVmNl9ZgV/G5xYV7z8likI0YWqy9bsewJ//7Vk=
-X-Google-Smtp-Source: ABdhPJz5gKH4dZikgIYIA2wGX0QFO7OZdYQ0TrU7M168PFX0q91gkDFWac4UsVK/vENe+BYRvRkEcg==
-X-Received: by 2002:a17:906:4ad8:: with SMTP id u24mr5148041ejt.186.1628901603283;
-        Fri, 13 Aug 2021 17:40:03 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id c8sm1156476ejp.124.2021.08.13.17.40.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 17:40:03 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id i6so17913258edu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 17:40:03 -0700 (PDT)
-X-Received: by 2002:a05:6512:1290:: with SMTP id u16mr3294932lfs.487.1628901124175;
- Fri, 13 Aug 2021 17:32:04 -0700 (PDT)
+        id S236007AbhHNAof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 20:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235330AbhHNAoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 20:44:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25BF760FBF;
+        Sat, 14 Aug 2021 00:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628901847;
+        bh=G+5OzDZx9dP3JaM+1Iut/Gwy5KjuYkh5MvoFa/6DAiA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S3WAg5bG7oKZVEqbXdEc89pXe9i185EftwfLL9JslUgsAvRMMvbXM/XPlTK9fehrV
+         sO5VTUc5AhwVvVRjj+gz8jMSyOiLDsFPzjz0CUv3OqulU3HS+3RXng76JBZzspLXoH
+         6swN2jMNl3nUyz2u8TWeTuApILBd3MObVL2bOUZMTouIEp+HurWyJb22aDrfxcdUPo
+         yEp39ji8PHn7m+hsWRuy3WMDhUlqvW/GVbKumCkWZtWqK4b+tJ5+DsA6cB/gL+rmqt
+         J7y8DgCfmbH2GmqRrU3FUe2046l9zZl9FTgL2aTIKgW0snTwFvxUTDYMByvgE08OPp
+         WMts+b3NUo8qA==
+Date:   Fri, 13 Aug 2021 17:44:06 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/6] net: ipa: re-enable transmit in PM WQ
+ context
+Message-ID: <20210813174406.5e7fc350@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210812195035.2816276-4-elder@linaro.org>
+References: <20210812195035.2816276-1-elder@linaro.org>
+        <20210812195035.2816276-4-elder@linaro.org>
 MIME-Version: 1.0
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com> <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com> <87h7ft2j68.fsf@disp2133>
-In-Reply-To: <87h7ft2j68.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Aug 2021 14:31:46 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-Message-ID: <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 10:18 AM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Florian Weimer, would it be possible to get glibc's ld.so implementation to use
-> MAP_SHARED?  Just so people reading the code know what to expect of the
-> kernel?  As far as I can tell there is not a practical difference
-> between a read-only MAP_PRIVATE and a read-only MAP_SHARED.
+On Thu, 12 Aug 2021 14:50:32 -0500 Alex Elder wrote:
+> +/**
+> + * ipa_modem_wake_queue_work() - enable modem netdev queue
+> + * @work:	Work structure
+> + *
+> + * Re-enable transmit on the modem network device.  This is called
+> + * in (power management) work queue context, scheduled when resuming
+> + * the modem.
+> + */
+> +static void ipa_modem_wake_queue_work(struct work_struct *work)
+> +{
+> +	struct ipa_priv *priv = container_of(work, struct ipa_priv, work);
+> +
+> +	netif_wake_queue(priv->ipa->modem_netdev);
+> +}
+> +
+>  /** ipa_modem_resume() - resume callback for runtime_pm
+>   * @dev: pointer to device
+>   *
+> @@ -205,7 +226,8 @@ void ipa_modem_resume(struct net_device *netdev)
+>  	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
+>  	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
+>  
+> -	netif_wake_queue(netdev);
+> +	/* Arrange for the TX queue to be restarted */
+> +	(void)queue_pm_work(&priv->work);
+>  }
 
-There's a huge difference.
-
-For one, you actually don't necessarily want read-only. Doing COW on
-library images is quite common for things like relocation etc (you'd
-_hope_ everything is PC-relative, but no)
-
-So no. Never EVER use MAP_SHARED unless you literally expect to have
-two different mappings that need to be kept in sync and one writes the
-other.
-
-I'll just repeat: stop arguing about this case. If somebody writes to
-a busy library, THAT IS A FUNDAMENTAL BUG, and nobody sane should care
-at all about it apart from the "you get what you deserve".
-
-What's next? Do you think glibc should also map every byte in the user
-address space so that user programs don't get SIGSEGV when they have
-wild pointers?
-
-Again - that's a user BUG and trying to "work around" a wild pointer
-is a worse fix than the problem it tries to fix.
-
-The exact same thing is true for shared library (or executable)
-mappings. Trying to work around people writing to them is *worse* than
-the bug of doing so.
-
-Stop this completely inane discussion already.
-
-                  Linus
+Why move the wake call to a work queue, tho? It's okay to call it 
+from any context.
