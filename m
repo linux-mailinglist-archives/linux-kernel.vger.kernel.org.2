@@ -2,197 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C9E3EC5FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1136B3EC5FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhHNXhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhHNXhL (ORCPT
+        id S234058AbhHNXlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:41:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233613AbhHNXlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:37:11 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FB3C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:36:42 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so16686170oti.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AGQNo3LDL6M3B8eK0c7+ePqVBjdL6NZghUoNIH4nlgk=;
-        b=BepU/EuvRoZuvYst1T8BQbbGsTlOHeQfmOMwVJcA5LDh6s/fAZWhoCThl1urPhbF+e
-         SMbhCf2YY/rqOIhphkZBbCHXMzMU1ekRC2AL/iwqQDujQcoaArR372iQAKcZ7Y/8yj5M
-         0BPQ3YYy6PnmEv5BFFqH0+7LtqkB6cTMJqCAnl+dJfydLPDky5mVUPV77NUO24oL5Y06
-         cph8RF7cxCTQeWhL2OtTcNK/bBnM/9EBr92cbBzcLjfSLIev/JQcL5xMDN7H2uc+1Ux+
-         fc8U9UXA4VOW1UlRT2mROYq4WFooqDgDhjZAjQrxxy5UsWdKkizhH019x2VA0fRkt78t
-         2Nnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AGQNo3LDL6M3B8eK0c7+ePqVBjdL6NZghUoNIH4nlgk=;
-        b=ubzmh3jK0PpEeo+9dHVKyxgxhzJ0F7nEvUplzP9iS/QWrWptFqbgznE8IYV25nrDC0
-         kVh1uDYzkacqhvxeNI0+wo6RTrGFBC/fjWPiokNoi9p6ATetM/qGZV71T6Uhg+02OGMh
-         /Fl6GSvJj1x+5tEK2Oo1Gi+eOhqjI7QA2EwLKu4B/TprVokSQAypdG1YEE9+Nir/8p6T
-         rSPyIWBM5ylHbW8GhRrUOfG80Vft15K9rVz8tz047ZwPbOLKeinKq6UJ4LPLUxDHLTqC
-         zo//SN96ZMoFUBDM3g2BVWaFpTVtOjzzaSdEK17hYZWd0MKai7/8j5OpCFhjmsl51Pmk
-         YuWg==
-X-Gm-Message-State: AOAM531hziab33lepH4eFsqq0YUwILIBE5XE8IdHPZ3MFgqd/OQOb6oY
-        Y916Mr3JO1+KeL9t9WkPheg=
-X-Google-Smtp-Source: ABdhPJyZ7eKD3MowulOyCf7l0M9f/ysznG1no6DF0my521fbcN5DGhqa4YwwKAmqSqY5qvukwwO85w==
-X-Received: by 2002:a05:6830:1be6:: with SMTP id k6mr7198738otb.273.1628984201777;
-        Sat, 14 Aug 2021 16:36:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e10sm1222269oig.42.2021.08.14.16.36.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 16:36:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] irqchip/gic: Convert to handle_strict_flow_irq()
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>
-References: <20210814194737.GA3951530@roeck-us.net>
- <87sfzb7jeo.mognet@arm.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <7284ea6c-14d9-ba4d-ea37-9f78533dbb51@roeck-us.net>
-Date:   Sat, 14 Aug 2021 16:36:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 14 Aug 2021 19:41:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628984448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8sQcQ3MfKHjSyRvS2CzUaH0PtEjudnhFYbbiX4zYZjo=;
+        b=XigQXc0fm25+C4b9KkD9OrqivbNOvx/XMB30AjKE3pys+LBss4mkHdjcqPjs+TL/9PIW+n
+        lwepZQ2sgUASGk//jloQIzx1LfedYY39RDE1jqj8pxUZIhla4oAe05gLSlx9SL2lV68O3z
+        6hV6yYgVsmOrI3TKq6pxtiu/Tub05IA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-ii6GDD7JM4Op2C_y8Q2Yjw-1; Sat, 14 Aug 2021 19:40:44 -0400
+X-MC-Unique: ii6GDD7JM4Op2C_y8Q2Yjw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 282A41008063;
+        Sat, 14 Aug 2021 23:40:43 +0000 (UTC)
+Received: from rh (vpn2-54-123.bne.redhat.com [10.64.54.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 56C5C69CBB;
+        Sat, 14 Aug 2021 23:40:42 +0000 (UTC)
+Received: from [::1] (helo=rh)
+        by rh with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <dchinner@redhat.com>)
+        id 1mF3GX-0007ph-Sd; Sun, 15 Aug 2021 09:40:38 +1000
+Date:   Sun, 15 Aug 2021 09:40:35 +1000
+From:   Dave Chinner <dchinner@redhat.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@intel.com,
+        zhengjun.xing@linux.intel.com
+Subject: Re: [xfs]  6df693ed7b:  aim7.jobs-per-min -15.7% regression
+Message-ID: <20210814234035.GE2959@rh>
+References: <20210809064248.GB5761@xsang-OptiPlex-9020>
+ <20210809093114.3179-1-hdanton@sina.com>
 MIME-Version: 1.0
-In-Reply-To: <87sfzb7jeo.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809093114.3179-1-hdanton@sina.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 3:26 PM, Valentin Schneider wrote:
-> Hi,
+On Mon, Aug 09, 2021 at 05:31:14PM +0800, Hillf Danton wrote:
+> On Mon, 9 Aug 2021 14:42:48 +0800
+> > 
+> > FYI, we noticed a -15.7% regression of aim7.jobs-per-min due to commit:
+> > 
+> > 
+> > commit: 6df693ed7ba9ec03cafc38d5064de376a11243e2 ("xfs: per-cpu deferred inode inactivation queues")
+> > https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git xfs-5.15-merge
+> > 
+> > 
+> > in testcase: aim7
+> > on test machine: 88 threads 2 sockets Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz with 128G memory
+> > with following parameters:
+> > 
+> > 	disk: 4BRD_12G
+> > 	md: RAID1
+> > 	fs: xfs
+> > 	test: disk_wrt
+> > 	load: 3000
+> > 	cpufreq_governor: performance
+> > 	ucode: 0x5003006
+> > 
 > 
-> On 14/08/21 12:47, Guenter Roeck wrote:
->> On Tue, Jun 29, 2021 at 01:50:09PM +0100, Valentin Schneider wrote:
->>> Now that the proper infrastructure is in place, convert the irq-gic chip to
->>> use handle_strict_flow_irq() along with IRQCHIP_AUTOMASKS_FLOW.
->>>
->>> For EOImode=1, the Priority Drop is moved from gic_handle_irq() into
->>> chip->irq_ack(). This effectively pushes the EOI write down into
->>> ->handle_irq(), but doesn't change its ordering wrt the irqaction
->>> handling.
->>>
->>> The EOImode=1 irqchip also gains IRQCHIP_EOI_THREADED, which allows the
->>> ->irq_eoi() call to be deferred to the tail of ONESHOT IRQ threads. This
->>> means a threaded ONESHOT IRQ can now be handled entirely without a single
->>> chip->irq_mask() call.
->>>
->>> EOImode=0 handling remains unchanged.
->>>
->>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>> Link: https://lore.kernel.org/r/20210629125010.458872-13-valentin.schneider@arm.com
->>> ---
->>
->> This patch results in a variety of crashes in -next.
->>
+> See if scheduling can help assuming a bound worker should run as short as
+> it could.
 > 
-> Thanks for testing & reporting.
-> 
->> Example:
->>
->> [    0.025729] Unable to handle kernel NULL pointer dereference at virtual address 00000000
->> [    0.025811] pgd = (ptrval)
->> [    0.026029] [00000000] *pgd=00000000
->> [    0.027301] Internal error: Oops: 80000005 [#1] SMP ARM
->> [    0.027650] Modules linked in:
->> [    0.027986] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0-rc5-next-20210813 #1
->> [    0.028162] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
->> [    0.028311] PC is at 0x0
->> [    0.028485] LR is at handle_strict_flow_irq+0xc8/0x2b8
->> [    0.028538] pc : [<00000000>]    lr : [<c01a59c4>]    psr: 400001d3
->> [    0.028566] sp : c1701e60  ip : c17097cc  fp : 00000050
->> [    0.028594] r10: c1700000  r9 : 00000057  r8 : c2012400
->> [    0.028641] r7 : 00000000  r6 : c1711268  r5 : c2083c6c  r4 : c2083c00
->> [    0.028674] r3 : 00000000  r2 : 00000000  r1 : 0a728000  r0 : c2083c18
->> [    0.028766] Flags: nZcv  IRQs off  FIQs off  Mode SVC_32  ISA ARM  Segment none
->> [    0.028821] Control: 10c5387d  Table: 8000406a  DAC: 00000051
->> [    0.028881] Register r0 information: slab kmalloc-512 start c2083c00 pointer offset 24 size 512
->> [    0.029482] Register r1 information: non-paged memory
->> [    0.029649] Register r2 information: NULL pointer
->> [    0.029672] Register r3 information: NULL pointer
->> [    0.029692] Register r4 information: slab kmalloc-512 start c2083c00 pointer offset 0 size 512
->> [    0.029752] Register r5 information: slab kmalloc-512 start c2083c00 pointer offset 108 size 512
->> [    0.029809] Register r6 information: non-slab/vmalloc memory
->> [    0.029876] Register r7 information: NULL pointer
->> [    0.029897] Register r8 information: slab kmalloc-1k start c2012400 pointer offset 0 size 1024
->> [    0.029958] Register r9 information: non-paged memory
->> [    0.029980] Register r10 information: non-slab/vmalloc memory
->> [    0.030002] Register r11 information: non-paged memory
->> [    0.030023] Register r12 information: non-slab/vmalloc memory
->> [    0.030064] Process swapper/0 (pid: 0, stack limit = 0x(ptrval))
->> [    0.030167] Stack: (0xc1701e60 to 0xc1702000)
->> [    0.030562] 1e60: c168fcd8 c1700000 c17097cc c019fa2c c1709a44 d080c00c c168fcfc c1700000
->> [    0.030754] 1e80: c17097cc c1701eb8 c1700000 c076fe04 c1700000 600000d3 c0824188 80000053
->> [    0.030924] 1ea0: ffffffff c1701eec 00000000 c1700000 c1700000 c0100b70 c2013400 c20a0000
->> [    0.031096] 1ec0: 00000050 00000000 c20a00a0 c07c0ad4 00000910 c2013400 00000000 c20a0000
->> [    0.031267] 1ee0: c1700000 00000050 00000000 c1701f08 c0824188 c0824188 80000053 ffffffff
->> [    0.031439] 1f00: 00000051 00000000 00000000 c168f31c c17097cc c2013400 c2013708 3123ccba
->> [    0.031614] 1f20: 00000001 c2013400 00000960 c20a0000 c1422958 c1709380 c16804d8 c1646020
->> [    0.031790] 1f40: c14d1eec c082626c c1f6f4e0 c2013400 00000000 c1422958 c1709380 c16461d4
->> [    0.031961] 1f60: 00000000 00000000 00000000 c0f7d3a4 c186fdcc c1700000 c17093cc c16804d8
->> [    0.032155] 1f80: c18f8e20 c160fe80 c1903000 c1663a80 00000012 c1700000 c1709380 00000000
->> [    0.032327] 1fa0: c170caf0 c1600e50 ffffffff ffffffff 00000000 c1600588 00000000 c1700000
->> [    0.032500] 1fc0: 00000000 c1663a80 3126c2ba 00000000 00000000 c1600330 00000051 10c0387d
->> [    0.032671] 1fe0: ffffffff 8833b000 410fc075 10c5387d 00000000 00000000 00000000 00000000
->> [    0.032889] [<c01a59c4>] (handle_strict_flow_irq) from [<c019fa2c>] (handle_domain_irq+0x64/0xa4)
->> [    0.033027] [<c019fa2c>] (handle_domain_irq) from [<c076fe04>] (gic_handle_irq+0x84/0xbc)
->> [    0.033076] [<c076fe04>] (gic_handle_irq) from [<c0100b70>] (__irq_svc+0x70/0x98)
->> [    0.033140] Exception stack(0xc1701eb8 to 0xc1701f00)
->> [    0.033204] 1ea0:                                                       c2013400 c20a0000
->> [    0.033377] 1ec0: 00000050 00000000 c20a00a0 c07c0ad4 00000910 c2013400 00000000 c20a0000
->> [    0.033551] 1ee0: c1700000 00000050 00000000 c1701f08 c0824188 c0824188 80000053 ffffffff
->> [    0.033596] [<c0100b70>] (__irq_svc) from [<c0824188>] (do_update_region+0x108/0x19c)
->> [    0.033652] [<c0824188>] (do_update_region) from [<c082626c>] (csi_J+0xf0/0x290)
->> [    0.033685] [<c082626c>] (csi_J) from [<c16461d4>] (con_init+0x1b4/0x248)
->> [    0.033726] [<c16461d4>] (con_init) from [<c160fe80>] (console_init+0x21c/0x330)
->> [    0.033760] [<c160fe80>] (console_init) from [<c1600e50>] (start_kernel+0x508/0x6d4)
->> [    0.033797] [<c1600e50>] (start_kernel) from [<00000000>] (0x0)
->> [    0.034079] Code: bad PC value
->> [    0.034726] ---[ end trace c1324fc4facef313 ]---
->> [    0.035004] Kernel panic - not syncing: Fatal exception in interrupt
->>
->> https://kerneltests.org/builders/qemu-arm-v7-next/builds/66 provides
->> a more detailed log.
->>
->> Reverting this patch fixes the problem.
->>
-> 
-> Passing the stacktrace through scripts/decode_stracktrace.sh would help by
-> giving line numbers - that said I'm pretty sure this is caused by the
-> flow-handler now issuing a chip->irq_ack(), and this has an irqchip that
-> doesn't have one.
-> 
-> The hardware name points me at arch/arm/mach-imx/mach-imx6ul.c, but I can't
-> figure out an actual devicetree/irqchip layout from this.
-> 
-> Ah, with some more grepping I did find arch/arm/mach-imx/gpc.c, and bingo,
-> no .irq_ack().
-> 
-> Now, the above makes me feel like this is the start of a wild goose chase
-> for irqchips in a similar situation. I'm tempted to apply a dumb
-> 
->    .irq_ack = irq_chip_ack_parent
-> 
-> to all irqchips without one specified. Let's see how bad this gets, does
-> the below help?
-> 
+> The change below is
+> 1/ add schedule entry in inodegc worker, and as compensation allow it to
+> repeat gc until no more c available.
 
-As a follow-up, Coccinelle tells me that there are more than 300 declarations of
-struct irq_chip variables without irq_ack pointer in the kernel. Does this problem
-affect all of them or just a subset ? If it doesn't affect all of them, how does
-one know when irq_ack is mandatory and when not ?
+Do you have any evidence that this is a problem?
 
-Thanks,
-Guenter
+I mean, we bound queue depth to 256 items, and my direct
+measurements of workloads show that and typical inactivation
+processing does not block and takes roughly 50-100us per item. On
+inodes that require lots of work (maybe minutes!), we end up
+sleeping on locks or resource reservations fairly quickly, hence we
+don't tend to rack up significant amount of uninterrupted CPU time
+in this loop at all.
+
+> 2/ make inodegc_wq unbound to spawn workers because they are no longer
+> potential CPU hogs (and this is not mandatory but optional).
+> 
+> to see if hot cache outweights spawning of workers.
+
+NACK. We already know what impact that has:  moving to bound
+workqueues erased a 50-60% performance degradation in the original
+queueing mechanism that used unbound workqueues and required
+inactivation to run on cold caches. IOWs, performance analysis lead
+us to short bound depth per-cpu queues and single depth bound
+per-cpu workqueues. We don't do complex stuff like this unless it is
+necessary for performance and scalability...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+dchinner@redhat.com
+
