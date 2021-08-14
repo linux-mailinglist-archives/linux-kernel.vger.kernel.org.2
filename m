@@ -2,159 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9DC3EC2BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699433EC2C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238469AbhHNMv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 08:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233664AbhHNMvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 08:51:25 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63006C061764;
-        Sat, 14 Aug 2021 05:50:57 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k4so8572927wms.3;
-        Sat, 14 Aug 2021 05:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=soZxiF/fS/bDbNIY5Pv+IiDOKKvkkGO1ADByBRpWDy8=;
-        b=HcJ7wj/lPNp3DOnCJLsFHUL9NnsHMAlUw11LCm/YBqGHkMN1ZPhNy7j10qcaFXFYwY
-         acM1IXXv9ynptXepwBRH93Nwvs5//OEvrtnTcR6lPlCpTSbaoZ0Fsq/H5U9QGDq+VMFl
-         aHTdPvSYn3lsvzy8Z0r9ET3txH0zBZ1dpjlcvnK2O4MnCXEfK4qBfLGxfz8eux0Zddhu
-         QvaYX0HLGDq1Ui2Lo8akYKl31hwuGDJbbrAZVRJfongyhSSciXbfvdBI9ZJzYAq9O4IA
-         7kSOqHm4uWfrp7sJgb/83Kua3vCyJGh5ZXc4WADqtOt7vwFtCtQKSC4WFeR6iAVDtqJM
-         IsSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=soZxiF/fS/bDbNIY5Pv+IiDOKKvkkGO1ADByBRpWDy8=;
-        b=atrVQivpBpdhqCesxY6DdTgC70Mkx96H0ltnrha9S7CWmb6AqB0YKnwJEzXPz8vCf6
-         /dQIj/4a/yPQgX6qg3tQ5CjB5f4yjqhTbczR/7KUo+5akcN6T/kR2Cx2/+mj7Akd9zn0
-         6H9URTRgl27/EtfXLWlPXXkWsQEKnc1HcOx/TwahSVVS8fvXTdhynIP7s93P6L7nwLw1
-         Kjjapm7ziJrvzgQa3F3BhaPIfu+j81eXjnU3EblsGSlVmd8gL2Ko6UoWkUY3JN5MuHw7
-         C17SIVzHGPhVtDZR9qq0dK1roTxkhLpfr584KV9yfDVfC/95ji39J5TyepQBIrisiDKl
-         phfg==
-X-Gm-Message-State: AOAM532QSKlIK1ot2LmXNTl3iOVArHzzo5iqMIfwzC/IMTJuF7ytxMtM
-        JIlgILa+4bo5PWQMpN1qkFs=
-X-Google-Smtp-Source: ABdhPJydnkBamMX2SjiEWQZK3lfNfaRkXU+iudNL9RKS/t2j5+yfZJC5sGrwEPyIl0vsFOm/dAqVXw==
-X-Received: by 2002:a7b:cd10:: with SMTP id f16mr6957016wmj.104.1628945456055;
-        Sat, 14 Aug 2021 05:50:56 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.133.97])
-        by smtp.gmail.com with ESMTPSA id u23sm4223047wmc.24.2021.08.14.05.50.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 05:50:55 -0700 (PDT)
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-References: <cover.1628871893.git.asml.silence@gmail.com>
- <YRbBYCn29B+kgZcy@localhost>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
- table
-Message-ID: <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
-Date:   Sat, 14 Aug 2021 13:50:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YRbBYCn29B+kgZcy@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S238358AbhHNNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 09:06:05 -0400
+Received: from gate.crashing.org ([63.228.1.57]:45632 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhHNNGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 09:06:04 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17ECwEDi013900;
+        Sat, 14 Aug 2021 07:58:14 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17ECwCY0013899;
+        Sat, 14 Aug 2021 07:58:12 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sat, 14 Aug 2021 07:58:12 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     Daniel Axtens <dja@axtens.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        Paul Mackerras <paulus@samba.org>,
+        Bill Wendling <morbo@google.com>, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
+Message-ID: <20210814125812.GC1583@gate.crashing.org>
+References: <20210812204951.1551782-1-morbo@google.com> <87sfzde8lk.fsf@linkitivity.dja.id.au> <20210813200508.7bqehxgd6ruerds5@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813200508.7bqehxgd6ruerds5@google.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 8:00 PM, Josh Triplett wrote:
-> On Fri, Aug 13, 2021 at 05:43:09PM +0100, Pavel Begunkov wrote:
->> Add an optional feature to open/accept directly into io_uring's fixed
->> file table bypassing the normal file table. Same behaviour if as the
->> snippet below, but in one operation:
->>
->> sqe = prep_[open,accept](...);
->> cqe = submit_and_wait(sqe);
->> // error handling
->> io_uring_register_files_update(uring_idx, (fd = cqe->res));
->> // optionally
->> close((fd = cqe->res));
->>
->> The idea in pretty old, and was brough up and implemented a year ago
->> by Josh Triplett, though haven't sought the light for some reasons.
-> 
-> Thank you for working to get this over the finish line!
-> 
->> Tested on basic cases, will be sent out as liburing patches later.
->>
->> A copy paste from 2/2 describing user API and some notes:
->>
->> The behaviour is controlled by setting sqe->file_index, where 0 implies
->> the old behaviour. If non-zero value is specified, then it will behave
->> as described and place the file into a fixed file slot
->> sqe->file_index - 1. A file table should be already created, the slot
->> should be valid and empty, otherwise the operation will fail.
->>
->> Note 1: we can't use IOSQE_FIXED_FILE to switch between modes, because
->> accept takes a file, and it already uses the flag with a different
->> meaning.
->>
->> Note 2: it's u16, where in theory the limit for fixed file tables might
->> get increased in the future. If would ever happen so, we'll better
->> workaround later, e.g. by making ioprio to represent upper bits 16 bits.
->> The layout for open is tight already enough.
-> 
-> Rather than using sqe->file_index - 1, which feels like an error-prone
-> interface, I think it makes sense to use a dedicated flag for this, like
-> IOSQE_OPEN_FIXED. That flag could work for any open-like operation,
-> including open, accept, and in the future many other operations such as
-> memfd_create. (Imagine using a single ring submission to open a memfd,
-> write a buffer into it, seal it, send it over a UNIX socket, and then
-> close it.)
-> 
-> The only downside is that you'll need to reject that flag in all
-> non-open operations. One way to unify that code might be to add a flag
-> in io_op_def for open-like operations, and then check in common code for
-> the case of non-open-like operations passing IOSQE_OPEN_FIXED.
+On Fri, Aug 13, 2021 at 01:05:08PM -0700, Fangrui Song wrote:
+> Text relocations are considered very awful by linker developers.
 
-io_uring is really thin, and so I absolutely don't want any extra
-overhead in the generic path, IOW anything affecting
-reads/writes/sends/recvs.
+By very few linker developers.
 
-The other reason is that there are only 2 bits left in sqe->flags,
-and we may use them for something better, considering that it's
-only open/accept and not much as this.
+> binutils 2.35 added --enable-textrel-check={no,warn,error}
+> https://sourceware.org/bugzilla/show_bug.cgi?id=20824
 
-I agree that it feels error-prone, but at least it can be wrapped
-nicely enough in liburing, e.g.
+Yes, some people wanted the default to be configurable.  So now we have
+a default default that is sane, so most people get to reap the benefits
+of having defaults at all, but we also allow other people to shoot
+themselves (and people who have to deal with them) in the foot.
+"Progress".  Changing the defaults should be a one-time event, only done
+when the benefits strongly outweigh the costs.  Defaults should never be
+configurable (by the user).
 
-void io_uring_prep_openat_direct(struct io_uring_sqe *sqe, int dfd,
-				 const char *path, int flags,
-				 mode_t mode, int slot_idx);
+> I can imagine that in the future some Linux distributions (especially those
+> focusing on security) will default their binutils to use
+> --enable-textrel-check={no,warn,error}.
+
+How would this be a benefit to security?
+
+> In -no-pie links, R_PPC64_ADDR64 relocations are link-time constants.
+
+Where "link" includes dynamic links as well.  There are no constants.
+
+> There are no text relocations, therefore no need for -z notext.
+
+This is a choice by the compiler, nothing more.  It saves some process
+startup time, and allows slightly more maps to be shared by processes
+that run the same images.  But it is a tradeoff, so it might change; and
+of course it is not an ABI requirement.
 
 
-> Also, rather than using a 16-bit index for the fixed file table and
-> potentially requiring expansion into a different field in the future,
-> what about overlapping it with the nofile field in the open and accept
-> requests? If they're not opening a normal file descriptor, they don't
-> need nofile. And in the original sqe, you can then overlap it with a
-> 32-bit field like splice_fd_in.
-
-There is no nofile in SQEs, though
-
-req->open.nofile = rlimit(RLIMIT_NOFILE);
- 
-> EEXIST seems like the wrong error-code to use if the index is already in
-> use; open can already return EEXIST if you pass O_EXCL. How about EBADF,
-> or better yet EBADSLT which is unlikely to be returned for any other
-> reason?
-
-Sure, sounds better indeed!
-
--- 
-Pavel Begunkov
+Segher
