@@ -2,88 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A24F3EC27C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 13:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26BC3EC27F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 13:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238358AbhHNLrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 07:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238215AbhHNLry (ORCPT
+        id S238296AbhHNL5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 07:57:47 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43808 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238064AbhHNL5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 07:47:54 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5A6C061764;
-        Sat, 14 Aug 2021 04:47:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id lo4so23054005ejb.7;
-        Sat, 14 Aug 2021 04:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6fVxHAvWlssbPGnAjACjDDC6cX/QS/Q7T20gaYnDfwY=;
-        b=nXar+Fb6Z41qkO+UfRLNSH4MzJUD/CFBMJmYmxVqrQgPdUt9UWL9KCO4Q3LKHF4WcR
-         Uh9N0zy7cwDvk2TP/wopizmOcvurlKx3brV3a9nJdGE9haNegYwvtaQDAf57zeG1GpQH
-         gMMBv6jbhFaCOzzcanypWHj7yMb4VtRi5FU7LoFshtzVC+nHtne1+S6W5whBUuylmeiA
-         wjfH6qd2WFPX49hC8XngkrIFtwGMVZMib2WMvtgNjadY8m8ZBYvr5bwloD3pSjsS0Qk+
-         bAYaXQTc6MHe+QrtYLL/7hbZ6WWQdnrBnM1vZ9pWbJnkSIPmNuJwALJ2Un/zXe/Vj4Hu
-         FD3A==
+        Sat, 14 Aug 2021 07:57:46 -0400
+Received: by mail-il1-f197.google.com with SMTP id v5-20020a92ab050000b02902223cc2accaso6676960ilh.10
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 04:57:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6fVxHAvWlssbPGnAjACjDDC6cX/QS/Q7T20gaYnDfwY=;
-        b=MkMQQFADtYXn/3bG+PyvOL2VPMwThgnMpSX5rUptNey2ZFBD6B0qTLwFTFWEExg9/Z
-         dzc18VIKawacOwP4QP+LfrI93z+nFuCZxJ7ehB0YGwkgnpjMhPmSZ9HOs9dvB31G+Eqi
-         n42648PTYG6gUNNoO41kTe6GtpVAuoDiRgRANkUSukXjrthYcjee5cwp1O6NryFAybDu
-         C5nBuE7Nj1vzLq+3D85Ighm26kMRedQMNgNf8cxHF3XXV1ssbNXkFl65SO/utQWyYLaE
-         ac6dDiS35KT48s1w1UraOlAXBBYWHYGCzCpx/AvuVy18nedTNj/b8+OZTABVUQLJtvMl
-         Q1nQ==
-X-Gm-Message-State: AOAM532hK2fp3aZec5sIPrDP3lt+NZ6Tdr51U9sy9Uc6PC6QdDXqJprQ
-        qzzRMTqA0Bq669Uash+ejuo=
-X-Google-Smtp-Source: ABdhPJzKGyZWzbhTFdFDXEKgUPm/21rGlLcpUIMuecj78Sz8Sf5MiwhW6Ny8EzWonSMWqIzdIiL09A==
-X-Received: by 2002:a17:906:fcd7:: with SMTP id qx23mr7171164ejb.267.1628941643732;
-        Sat, 14 Aug 2021 04:47:23 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id f20sm1698383ejz.30.2021.08.14.04.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 04:47:23 -0700 (PDT)
-Date:   Sat, 14 Aug 2021 14:47:21 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 net-next 10/10] docs: devicetree: add
- documentation for the VSC7512 SPI device
-Message-ID: <20210814114721.ncxi6xwykdi4bfqy@skbuf>
-References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
- <20210814025003.2449143-11-colin.foster@in-advantage.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tFwx9H+sTjbqXalUaqlUwVvV3lDLGUXGvavN83jop28=;
+        b=AAWEeFnz05FZq3UCjP6LwTXrdkX9y0O3QEGU+LHOxAmzH3os6WWdaVyjipRwp+mSqf
+         E7yVM4aV9hmBJopwblWzbf7UJl/HFMKLgeRPoY8YtSGi/KJMth3TZ7rWlPzDuka2cI8b
+         aArpqInkkl8p+SZi+MsX4Vdn3WYVyX+rbsR96P3gLED008ZOmEQ2CP/1rCEb6JzdYBbb
+         JrNFaE/wL7i0pYJmd5pc2dcn7o9PoHic8mOeSlDOyEHyvsqIqde4D/Kwv7J7Ic+lmxzj
+         87a/gCiZcSfkI4ufV44XUKJNKLriZrBvnOC0DUjRizw+SEFTesauQDAPM/uY1BdDfNz0
+         zbrA==
+X-Gm-Message-State: AOAM5323yG2Q1F93RWKs23bfykspOeO8+rX1M5B8vj92kasZOELqCFeV
+        DsMr7K7+lCxs4Mf9GoJ6iJ7x3sifHx9kmFK6K+p+TGpws0kQ
+X-Google-Smtp-Source: ABdhPJx2KYasBtFCquvNNnoSEfrJhdXzPJS2wgtVNcnJ0uRu/Bx/fyxDCdatYD6EOfAXSKMOiuIt7tEd4KPWzqTWYWyfaKGHjcId
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210814025003.2449143-11-colin.foster@in-advantage.com>
+X-Received: by 2002:a92:b312:: with SMTP id p18mr4924224ilh.233.1628942237883;
+ Sat, 14 Aug 2021 04:57:17 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 04:57:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000072e53a05c983ab22@google.com>
+Subject: [syzbot] general protection fault in wb_timer_fn
+From:   syzbot <syzbot+aa0801b6b32dca9dda82@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jmattson@google.com,
+        jolsa@redhat.com, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        pbonzini@redhat.com, peterz@infradead.org, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 07:50:03PM -0700, Colin Foster wrote:
-> +* phy_mode = "sgmii": on ports 0, 1, 2, 3
+Hello,
 
-> +			port@0 {
-> +				reg = <0>;
-> +				ethernet = <&mac>;
-> +				phy-mode = "sgmii";
-> +
-> +				fixed-link {
-> +					speed = <100>;
-> +					full-duplex;
-> +				};
-> +			};
+syzbot found the following issue on:
 
-Your driver is unconditionally setting up the NPI port at gigabit and
-you claim it works, yet the device tree sees a 100Mbps fixed-link? Which
-one is right, what speed does the port operate at?
+HEAD commit:    92d00774360d Add linux-next specific files for 20210810
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=127f1f79300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a6933fa6f9a86ca9
+dashboard link: https://syzkaller.appspot.com/bug?extid=aa0801b6b32dca9dda82
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145a8ff1300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1496e9fa300000
+
+The issue was bisected to:
+
+commit 9483409ab5067941860754e78a4a44a60311d276
+Author: Namhyung Kim <namhyung@kernel.org>
+Date:   Mon Mar 15 03:34:36 2021 +0000
+
+    perf core: Allocate perf_buffer in the target node memory
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16fd40f9300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15fd40f9300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11fd40f9300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aa0801b6b32dca9dda82@syzkaller.appspotmail.com
+Fixes: 9483409ab506 ("perf core: Allocate perf_buffer in the target node memory")
+
+general protection fault, probably for non-canonical address 0xdffffc00000000aa: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000550-0x0000000000000557]
+CPU: 0 PID: 6563 Comm: systemd-udevd Not tainted 5.14.0-rc5-next-20210810-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:latency_exceeded block/blk-wbt.c:237 [inline]
+RIP: 0010:wb_timer_fn+0x149/0x1740 block/blk-wbt.c:360
+Code: 03 80 3c 02 00 0f 85 68 13 00 00 48 8b 9b c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 50 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 35 13 00 00 48 8b 9b 50 05 00 00 48 b8 00 00 00
+RSP: 0018:ffffc90000007cd8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
+RDX: 00000000000000aa RSI: ffffffff83d107dd RDI: 0000000000000550
+RBP: ffff88801ab3cc00 R08: 0000000000000003 R09: ffff88801ab3cd83
+R10: ffffffff83d107d2 R11: 0000000000027e24 R12: 0000000000000003
+R13: 0000000000000000 R14: ffff888146318000 R15: ffff88801ab3ccd0
+FS:  00007fc1898e38c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055aed4a39410 CR3: 0000000025577000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+ expire_timers kernel/time/timer.c:1466 [inline]
+ __run_timers.part.0+0x675/0xa20 kernel/time/timer.c:1734
+ __run_timers kernel/time/timer.c:1715 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1747
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:tomoyo_domain_quota_is_ok+0x105/0x550 security/tomoyo/util.c:1054
+Code: 68 10 48 3b 2c 24 0f 84 f4 00 00 00 49 be 00 00 00 00 00 fc ff df eb 5f e8 f8 8b d7 fd 48 89 e8 48 89 ee 48 c1 e8 03 83 e6 07 <42> 0f b6 0c 30 48 8d 45 07 48 89 c2 48 c1 ea 03 42 0f b6 14 32 40
+RSP: 0018:ffffc900011df908 EFLAGS: 00000246
+RAX: 1ffff1100f264000 RBX: 0000000000000010 RCX: 0000000000000000
+RDX: ffff888019120000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: ffff888079320000 R08: 0000000000000000 R09: 0000000000000010
+R10: ffffffff839e1c9a R11: 0000000000000010 R12: 0000000000000002
+R13: 00000000000000e1 R14: dffffc0000000000 R15: 0000000000000000
+ tomoyo_supervisor+0x2f2/0xf00 security/tomoyo/common.c:2089
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+ tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
+ security_inode_getattr+0xcf/0x140 security/security.c:1332
+ vfs_getattr fs/stat.c:157 [inline]
+ vfs_fstat+0x43/0xb0 fs/stat.c:182
+ __do_sys_newfstat+0x81/0x100 fs/stat.c:422
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc1887552e2
+Code: 48 8b 05 b9 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 77 33 48 63 fe b8 05 00 00 00 48 89 d6 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 8b 15 81 db 2b 00 f7
+RSP: 002b:00007ffed32f4de8 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc1887552e2
+RDX: 00007ffed32f4e00 RSI: 00007ffed32f4e00 RDI: 0000000000000007
+RBP: 00007ffed32f4f80 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000080000 R11: 0000000000000246 R12: 000055aed49f40e0
+R13: 000055aed4a06f10 R14: 00007ffed32f4ee0 R15: 00007ffed32f4f40
+Modules linked in:
+---[ end trace 85971c24ea99db54 ]---
+RIP: 0010:latency_exceeded block/blk-wbt.c:237 [inline]
+RIP: 0010:wb_timer_fn+0x149/0x1740 block/blk-wbt.c:360
+Code: 03 80 3c 02 00 0f 85 68 13 00 00 48 8b 9b c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 50 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 35 13 00 00 48 8b 9b 50 05 00 00 48 b8 00 00 00
+RSP: 0018:ffffc90000007cd8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
+RDX: 00000000000000aa RSI: ffffffff83d107dd RDI: 0000000000000550
+RBP: ffff88801ab3cc00 R08: 0000000000000003 R09: ffff88801ab3cd83
+R10: ffffffff83d107d2 R11: 0000000000027e24 R12: 0000000000000003
+R13: 0000000000000000 R14: ffff888146318000 R15: ffff88801ab3ccd0
+FS:  00007fc1898e38c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055aed4a39410 CR3: 0000000025577000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
