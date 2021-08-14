@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5173E3EC283
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200323EC2E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238329AbhHNMAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 08:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        id S238547AbhHNNhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 09:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238064AbhHNMAO (ORCPT
+        with ESMTP id S238495AbhHNNhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 08:00:14 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A384C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 04:59:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GmzW15xPNz9sWS;
-        Sat, 14 Aug 2021 21:59:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1628942382;
-        bh=g2G5hFPZF1lKhi3yGSAgG83UWIDupBfi4QPY+qfq8Ks=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FQidGTPhoSPHk+7MUkS1XOt7q1mfSsaWmyfom77eiQuSbVMsn6TqP69Id9NYkwwPW
-         nduK249GoXidT8AYETQWmqCbcQKJvMyKrTQl6GskubYpekRwOjZlkmBRhkUFEL1Mi2
-         8qWUtBPx3WI6SO9WgTdID53BPzo316jWb0bQxuU3E5Isb52IVpStcBWm4h824hT8Fu
-         LGhm34VNFBBWLNyp+gztGESFnSBB3zjGoSpvQrcUC88bm8v9dLbP+At5kBbq/22icG
-         mQ2J1rt2Y6nXJVwwsceAGkjwc2qBogmj9TeLU1XDSTp501O9L95w6rjZSEZkYYJR1z
-         Isf1s9ZkWN7yg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Bill Wendling <morbo@google.com>, Daniel Axtens <dja@axtens.net>,
-        Fangrui Song <maskray@google.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-In-Reply-To: <CAGG=3QUz2LNgC8Hn6rU68ejjv4=J9Uidef0oH9A7=sKTs+vf7g@mail.gmail.com>
-References: <20210812204951.1551782-1-morbo@google.com>
- <87sfzde8lk.fsf@linkitivity.dja.id.au>
- <CAGG=3QUz2LNgC8Hn6rU68ejjv4=J9Uidef0oH9A7=sKTs+vf7g@mail.gmail.com>
-Date:   Sat, 14 Aug 2021 21:59:40 +1000
-Message-ID: <87a6lkme37.fsf@mpe.ellerman.id.au>
+        Sat, 14 Aug 2021 09:37:09 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068B6C061764;
+        Sat, 14 Aug 2021 06:36:41 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id c17so10249550plz.2;
+        Sat, 14 Aug 2021 06:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8k5tK7Xqetu9bwPZdm4ZTikD0tIPa7BMMwO2o7nECfc=;
+        b=kqh5dyse8qfkx84NXESqb2gXZp2P1MH3qcsicz0UZ7rSX8DtnWzD4vSA1aD+e1LQVC
+         anNwmzoLa9XWnK5m9HxsYTpz4NW33IvWeXfv2smRA+LTphW5Y3rurk+cwhOKpxnp94KH
+         B3+6YIP3DqzOO0o5Q5uR6fD7XFLmgv9CdNkO55NNfflIpUBoLb2D3UtuhqgfCF2aqrZ/
+         orlgt7P+72Nue6u6mpJ8jXMwvD+7v7O8Fxz8CtYeXoA45plqVC4F6prGMQeqe+3U+Me3
+         tU/E+INNG3sYnikqU+O+3pBK4S1m7WqSuraHNG2HpKZDgnqiGYUGjgNQpm5yVBJPdM69
+         e2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8k5tK7Xqetu9bwPZdm4ZTikD0tIPa7BMMwO2o7nECfc=;
+        b=P50Ju4yYqVeqC4ErUw1efMoHfcPODJNrcjBGi35W8j8gxoFQIwPbI7FArM0QZLoVMC
+         479I39kWSs4TMCFqDGEGF6vZuDTvaKhSa+8kkNmnm4CtdWAZkpMrHjD0pU+dxGJ3cvcB
+         ViB6IEDcHdQa2V0znv8Nrx7LKWxE1S1SHSi3Kgzf5irhk7NQxaYmdOv7zxB9yUPwM9eO
+         G1zymzubFtSh+/Z2SKedjyOBqYo/C44mbvF3Ils6BzOAWmXvCOCmyiOZWORnHFzQOj7U
+         80n49CTdgZ0ch5ChqcWoyDWgVPdVOjOy70CRym/0LUbUcSegYGk87Vw8FAqEgCNSDzx2
+         R9Jw==
+X-Gm-Message-State: AOAM530ZQOVT+hs/SB7X6yxFEWST0HpnkKvLF0BmZM3fh+MDfsPIEffh
+        cb+eOPel4a9KXepvsxnfHvR7YcZs/Ds=
+X-Google-Smtp-Source: ABdhPJy5AVxtMN/QA4LnK23itxMB/U8L8Nq3aEBoSdUzsHuZU4iKFEiCiLUmcNrMOA5LvZFkwgZsbw==
+X-Received: by 2002:a17:90a:cc8:: with SMTP id 8mr7675159pjt.194.1628948200349;
+        Sat, 14 Aug 2021 06:36:40 -0700 (PDT)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id z24sm4665788pjq.43.2021.08.14.06.36.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 14 Aug 2021 06:36:40 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: [PATCH] x86/kvm: Don't enable IRQ when IRQ enabled in kvm_wait
+Date:   Sat, 14 Aug 2021 11:51:29 +0800
+Message-Id: <20210814035129.154242-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bill Wendling <morbo@google.com> writes:
-> On Fri, Aug 13, 2021 at 7:13 AM Daniel Axtens <dja@axtens.net> wrote:
->> Bill Wendling <morbo@google.com> writes:
-...
->> > diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
->> > index 6505d66f1193..17a9fbf9b789 100644
->> > --- a/arch/powerpc/Makefile
->> > +++ b/arch/powerpc/Makefile
->> > @@ -122,6 +122,7 @@ endif
->> >
->> >  LDFLAGS_vmlinux-y := -Bstatic
->> >  LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) := -pie
->> > +LDFLAGS_vmlinux-$(CONFIG_RELOCATABLE) += -z notext
-...
->
-> Unrelated question: Should the "-pie" flag be added with "+= -pie"
-> (note the plus sign)?
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-I noticed that too.
+Commit f4e61f0c9add3 ("x86/kvm: Fix broken irq restoration in kvm_wait")
+replaced "local_irq_restore() when IRQ enabled" with "local_irq_enable()
+when IRQ enabled" to suppress a warnning.
 
-It's been like that since the original relocatable support was added in
-2008, commit 549e8152de80 ("powerpc: Make the 64-bit kernel as a
-position-independent executable"), which did:
+Although there is no similar debugging warnning for doing local_irq_enable()
+when IRQ enabled as doing local_irq_restore() in the same IRQ situation.  But
+doing local_irq_enable() when IRQ enabled is no less broken as doing
+local_irq_restore() and we'd better avoid it.
 
--LDFLAGS_vmlinux	:= -Bstatic
-+LDFLAGS_vmlinux-yy := -Bstatic
-+LDFLAGS_vmlinux-$(CONFIG_PPC64)$(CONFIG_RELOCATABLE) := -pie
-+LDFLAGS_vmlinux	:= $(LDFLAGS_vmlinux-yy)
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
 
+The original debugging warnning was introduced in commit 997acaf6b4b5
+("lockdep: report broken irq restoration").  I think a similar debugging
+check and warnning should also be added to "local_irq_enable() when IRQ
+enabled" and even maybe "local_irq_disable() when IRQ disabled" to detect
+something this:
 
-There's no mention of those flags in the change log. But the way it's
-written suggests the intention was to not pass -Bstatic for relocatable
-builds, otherwise it could have been more simply:
+    | local_irq_save(flags);
+    | local_irq_disable();
+    | local_irq_restore(flags);
+    | local_irq_enable();
 
-+LDFLAGS_vmlinux-$(CONFIG_PPC64)$(CONFIG_RELOCATABLE) := -pie
-+LDFLAGS_vmlinux	:= -Bstatic $(LDFLAGS_vmlinux-yy)
+Or even we can do the check in lockdep+TRACE_IRQFLAGS:
 
+In lockdep_hardirqs_on_prepare(), lockdep_hardirqs_enabled() was checked
+(and exit) before checking DEBUG_LOCKS_WARN_ON(!irqs_disabled()), so lockdep
+can't give any warning for these kind of situations.  If we did the check
+in lockdep, we would have found the problem before, and we don't need
+997acaf6b4b5.
 
-So I think it was deliberate to not use +=, but whether that's actually
-correct I can't say. Maybe in the past -Bstatic and -pie were
-incompatible?
+Any thought? Mark? Peter?
 
-cheers
+ arch/x86/kernel/kvm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index a26643dc6bd6..b656456c3a94 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -884,10 +884,11 @@ static void kvm_wait(u8 *ptr, u8 val)
+ 	} else {
+ 		local_irq_disable();
+ 
++		/* safe_halt() will enable IRQ */
+ 		if (READ_ONCE(*ptr) == val)
+ 			safe_halt();
+-
+-		local_irq_enable();
++		else
++			local_irq_enable();
+ 	}
+ }
+ 
+-- 
+2.19.1.6.gb485710b
+
