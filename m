@@ -2,142 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACEF3EC5DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 00:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B65B3EC5E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbhHNWxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 18:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
+        id S234129AbhHNXET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhHNWxQ (ORCPT
+        with ESMTP id S233549AbhHNXER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 18:53:16 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13BEC061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 15:52:47 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id c12so8265404ljr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 15:52:47 -0700 (PDT)
+        Sat, 14 Aug 2021 19:04:17 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EED6C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:03:47 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id x5so2057885ill.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 16:03:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=gkJO73YRk3QGSnXa3a/jzv/FQTbPeEQgelsyLZQoqKU=;
-        b=r82EXC6mAkPDrvFMZW4X8doFflMMnxOdP8em34Yi13pMRUhr3qtpGvibRm6l25ch4Y
-         Gh1r3xhgfphKRiIWrg+NZiWHpfKHDDPCrr4LT1d842XokIlbTGGJ/iUM1bBGvKIzrzKK
-         VL/jEsDymKxkS8ntVfNfmFNiSnYtAhT0IRPuSCqyTHYmtsTtFx1IUO9JwBYe31PSgtN4
-         lJL2pjHRUT8EbCnhfh8Px8KX7Gg3fifHVSKMYYWobB+Ae/XApS7IU40UhC1Go206g25G
-         yg91wBgwB1L9cDSJG+T1R2ZadavjrMSGOTp5VtJfNnEiYubBpyP8MFA/UTwSTZc2beak
-         LAJA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qmFkeUHwny/Th4/3e9gJVXZ8p7Kjf4pDQS/FEdz+8YE=;
+        b=kXW9tb0UCZ2N5bGDjQPAvvLu1hM04NlMdl58Yc5hHnWxbLTNABC8DLnuZLyP8kkpz+
+         WjnZyXOM9ffsmeZGLUEl5mp3KWbAwReS7sAIH2Gpos4a9wAeMRA06ErmF/MuYQMLHB7L
+         Z1ud8ayhOxx4MxdkLXxeiL1bruw9kS7vTt+1YOwSZjoTYCUwjNd7lkddkc7WYZYMWK11
+         dNp5DkNmRuoId9uQ4Yz7NYs+MMvMmhGI/gvC5nQ9qj3/NYmmjc7zplg0g5y1JFVBt2lX
+         vgyZMItX9qp4eFQgfSj20PkG8rXNu6bHGdkqbQgUMl5RRnRPH2tLqpUxEnLGPLAhMz1f
+         c3fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=gkJO73YRk3QGSnXa3a/jzv/FQTbPeEQgelsyLZQoqKU=;
-        b=c4eX3LNA8tXolbLEDbnau2cmKEsu1tdqIKrNyYMvpiBaUgWNh97Gu4RWKjN7l1Z8NR
-         BQSFjwWPbNWiKqCKV4jbznpY8l+jNxJ+8AOuSia7wIsLGKsyDoROduhyuW/tNkB+D6ni
-         VCeaqWSt3fgBgZHP8l0okP84kCcsGdpJ0HyHMLdSu8Sd9Ib1Vb2pxYgpmB1KeCNE7v7q
-         CQNvbnv7SFTlBd/vTFKUnBxyxHO5/+iEZ3Sc4OUQZYXtkGoI/qRNexoktC9zHF0Uc9gg
-         62ZL00Kh8F3mNqlpTEp0le8dQQVizZENc5HSXOuHBVBx9Un6vKI4xf2u96jtQWQKsNVk
-         eEsg==
-X-Gm-Message-State: AOAM5311xKGqehEJHw7lpFpTtgZVviOohEqAxbNjyR3J5NsVfne3sY1/
-        SFZz7gbVOXNQ1atoGlRhenDCH7MTcuk=
-X-Google-Smtp-Source: ABdhPJyz9JyeCQK+xFsUbdk6/HOJTWQ9sQsEnfN1pJQW0W4Mz2PmGn0r8KOfWglt6OIof0/FTMmOPQ==
-X-Received: by 2002:a2e:a784:: with SMTP id c4mr6968438ljf.479.1628981565946;
-        Sat, 14 Aug 2021 15:52:45 -0700 (PDT)
-Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
-        by smtp.gmail.com with ESMTPSA id y6sm516221lfa.122.2021.08.14.15.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 15:52:45 -0700 (PDT)
-Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
-        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 17EMqhbc008737;
-        Sun, 15 Aug 2021 01:52:44 +0300
-Received: (from paul@localhost)
-        by home.paul.comp (8.15.2/8.15.2/Submit) id 17EMqgX4008736;
-        Sun, 15 Aug 2021 01:52:42 +0300
-Date:   Sun, 15 Aug 2021 01:52:42 +0300
-From:   Paul Fertser <fercerpav@gmail.com>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc: pch-rtc: add RTC driver for Intel Series PCH
-Message-ID: <20210814225242.GY15173@home.paul.comp>
-References: <20210810154436.125678-1-i.mikhaylov@yadro.com>
- <20210810154436.125678-2-i.mikhaylov@yadro.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qmFkeUHwny/Th4/3e9gJVXZ8p7Kjf4pDQS/FEdz+8YE=;
+        b=hzm9QGNKQfpAj58nEUiUkGyB6wOGmhKPOpxE2n201au6NMCd3qN/FAflS13wRvfTnx
+         EfcxkKz0gwgTw5tPVmVQP253OVOJDimU5Z5JAF3uuNuRuwwvk51Fvy/pFvTSINGGjXPG
+         YiverwJHQlwvZo4OviG2AMvOqTrQUIUqyLQ19s9m/y5qLTG5mpS7oMbenq5X7IlxR/cN
+         wVHmtv4AOaGqkqFdfTe/S26ENaiHKPfc7KBeALS+t90BuvSHwjGqp7wP7w0blhhvjBvr
+         BuTflUoFd7z5qRmY466uaRuZ7VnXau4VSvg1Y5XL8gnAWkf7GdRsY/MsJyUNtrw0zv72
+         84hQ==
+X-Gm-Message-State: AOAM532guPT5YdC+Ey5RNojYzNxkclEH1/R3KNJLeh2r0RabvR0+JIam
+        skztoj3gU5zaNoOKN1tl/W9XPA==
+X-Google-Smtp-Source: ABdhPJz9JNmQC0uFEVHBIP3yvL3q4yXkIoDBB/M0W13fT7lR0LrtJwhpFT44iJsVz9F098giwQajkw==
+X-Received: by 2002:a92:d7c1:: with SMTP id g1mr6542553ilq.24.1628982227203;
+        Sat, 14 Aug 2021 16:03:47 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id l9sm3054927ilv.31.2021.08.14.16.03.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Aug 2021 16:03:46 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
+ table
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Cc:     io-uring@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1628871893.git.asml.silence@gmail.com>
+ <YRbBYCn29B+kgZcy@localhost> <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5cf40313-d151-9d10-3ebd-967eb2f53b1f@kernel.dk>
+Date:   Sat, 14 Aug 2021 17:03:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210810154436.125678-2-i.mikhaylov@yadro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:44:35PM +0300, Ivan Mikhaylov wrote:
-> +config RTC_DRV_PCH
-> +	tristate "PCH RTC driver"
-> +	help
-> +	  If you say yes here you get support for the Intel Series PCH
+On 8/14/21 6:50 AM, Pavel Begunkov wrote:
+> On 8/13/21 8:00 PM, Josh Triplett wrote:
+>> On Fri, Aug 13, 2021 at 05:43:09PM +0100, Pavel Begunkov wrote:
+>>> Add an optional feature to open/accept directly into io_uring's fixed
+>>> file table bypassing the normal file table. Same behaviour if as the
+>>> snippet below, but in one operation:
+>>>
+>>> sqe = prep_[open,accept](...);
+>>> cqe = submit_and_wait(sqe);
+>>> // error handling
+>>> io_uring_register_files_update(uring_idx, (fd = cqe->res));
+>>> // optionally
+>>> close((fd = cqe->res));
+>>>
+>>> The idea in pretty old, and was brough up and implemented a year ago
+>>> by Josh Triplett, though haven't sought the light for some reasons.
+>>
+>> Thank you for working to get this over the finish line!
+>>
+>>> Tested on basic cases, will be sent out as liburing patches later.
+>>>
+>>> A copy paste from 2/2 describing user API and some notes:
+>>>
+>>> The behaviour is controlled by setting sqe->file_index, where 0 implies
+>>> the old behaviour. If non-zero value is specified, then it will behave
+>>> as described and place the file into a fixed file slot
+>>> sqe->file_index - 1. A file table should be already created, the slot
+>>> should be valid and empty, otherwise the operation will fail.
+>>>
+>>> Note 1: we can't use IOSQE_FIXED_FILE to switch between modes, because
+>>> accept takes a file, and it already uses the flag with a different
+>>> meaning.
+>>>
+>>> Note 2: it's u16, where in theory the limit for fixed file tables might
+>>> get increased in the future. If would ever happen so, we'll better
+>>> workaround later, e.g. by making ioprio to represent upper bits 16 bits.
+>>> The layout for open is tight already enough.
+>>
+>> Rather than using sqe->file_index - 1, which feels like an error-prone
+>> interface, I think it makes sense to use a dedicated flag for this, like
+>> IOSQE_OPEN_FIXED. That flag could work for any open-like operation,
+>> including open, accept, and in the future many other operations such as
+>> memfd_create. (Imagine using a single ring submission to open a memfd,
+>> write a buffer into it, seal it, send it over a UNIX socket, and then
+>> close it.)
+>>
+>> The only downside is that you'll need to reject that flag in all
+>> non-open operations. One way to unify that code might be to add a flag
+>> in io_op_def for open-like operations, and then check in common code for
+>> the case of non-open-like operations passing IOSQE_OPEN_FIXED.
+> 
+> io_uring is really thin, and so I absolutely don't want any extra
+> overhead in the generic path, IOW anything affecting
+> reads/writes/sends/recvs.
+> 
+> The other reason is that there are only 2 bits left in sqe->flags,
+> and we may use them for something better, considering that it's
+> only open/accept and not much as this.
+> 
+> I agree that it feels error-prone, but at least it can be wrapped
+> nicely enough in liburing, e.g.
+> 
+> void io_uring_prep_openat_direct(struct io_uring_sqe *sqe, int dfd,
+> 				 const char *path, int flags,
+> 				 mode_t mode, int slot_idx);
+> 
+> 
+>> Also, rather than using a 16-bit index for the fixed file table and
+>> potentially requiring expansion into a different field in the future,
+>> what about overlapping it with the nofile field in the open and accept
+>> requests? If they're not opening a normal file descriptor, they don't
+>> need nofile. And in the original sqe, you can then overlap it with a
+>> 32-bit field like splice_fd_in.
+> 
+> There is no nofile in SQEs, though
+> 
+> req->open.nofile = rlimit(RLIMIT_NOFILE);
 
-I'm afraid this is really lacking some specification of devices that
-are supported. Is it really everything that Intel currently calls PCH?
+What's the plan in terms of limiting the amount of direct descriptors
+(for lack of a better word)? That seems like an important aspect that
+should get sorted out upfront.
 
-> +static int pch_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct i2c_client *client = to_i2c_client(dev);
-> +	struct pch *pch = i2c_get_clientdata(client);
-> +	unsigned char rtc_data[NUM_TIME_REGS] = {0};
-> +	int rc;
-> +
-> +	rc = regmap_bulk_read(pch->regmap, PCH_REG_SC, rtc_data, NUM_TIME_REGS);
-> +	if (rc < 0) {
-> +		dev_err(dev, "fail to read time reg(%d)\n", rc);
-> +		return rc;
-> +	}
+Do we include the regular file table max_fds count for creating a new
+direct descriptor, and limit to RLIMIT_NOFILE? That would seem logical,
+but then that also implies that the regular file table should include
+the ctx (potentially several) direct descriptors. And the latter is much
+worse.
 
-Citing 26.7.2.3 from C620 (Lewisburg/Purley) datasheet:
+Maybe we have a way to size the direct table, which will consume entries
+from the same pool that the regular file table does? That would then
+work both ways, and could potentially just be done dynamically similarly
+to how we expand the regular file table when we exceed its current size.
 
-"The PCH SMBus slave interface only supports Byte Read operation. The
-external SMBus master will read the RTC time bytes one after
-another. It is software’s responsibility to check and manage the
-possible time rollover when subsequent time bytes are read.
-
-For example, assuming the RTC time is 11 hours: 59 minutes: 59
-seconds. When the external SMBus master reads the hour as 11, then
-proceeds to read the minute, it is possible that the rollover happens
-between the reads and the minute is read as 0. This results in 11
-hours: 0 minutes instead of the correct time of 12 hours: 0 minutes.
-Unless it is certain that rollover will not occur, software is
-required to detect the possible time rollover by reading multiple
-times such that the read time bytes can be adjusted accordingly if
-needed."
-
-Should this be taken additional care of somehow?
-
-> +static ssize_t force_off_store(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       const char *buf, size_t count)
-> +{
-> +	struct i2c_client *client = to_i2c_client(dev);
-> +	struct pch *pch = i2c_get_clientdata(client);
-> +	unsigned long val;
-> +	int rc;
-> +
-> +	if (kstrtoul(buf, 10, &val))
-> +		return -EINVAL;
-> +
-> +	if (val) {
-> +		/* 0x02 host force off */
-
-I wonder why you write "host force off" while the C620 datasheet calls
-it "Unconditional Power Down", does your PCH manual use different
-naming?
-
-In any case this doesn't belong to an RTC driver, as previously noted.
+Anyway, just throwing a few ideas out there, with the intent to spark a
+bit of discussion on this topic. I really like the direct descriptors,
+it'll be a lot more efficient for certain use cases.
 
 -- 
-Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
-mailto:fercerpav@gmail.com
+Jens Axboe
+
