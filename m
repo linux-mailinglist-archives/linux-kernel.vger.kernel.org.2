@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C48E3EC44E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78943EC457
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbhHNR7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 13:59:17 -0400
-Received: from mail-m17636.qiye.163.com ([59.111.176.36]:23394 "EHLO
-        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238785AbhHNR7O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 13:59:14 -0400
-Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
-        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 04E8CC400F1;
-        Sun, 15 Aug 2021 01:58:43 +0800 (CST)
-From:   Yangtao Li <frank.li@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH 2/2] f2fs: fix description about main_blkaddr node
-Date:   Sun, 15 Aug 2021 01:58:40 +0800
-Message-Id: <20210814175840.115938-2-frank.li@vivo.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210814175840.115938-1-frank.li@vivo.com>
-References: <20210814175840.115938-1-frank.li@vivo.com>
+        id S238902AbhHNSFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:05:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50176 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238785AbhHNSFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 14:05:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=VE21kR+EuEDNxIJsfgnVJoyX8+amKCpRdo0kK4BLWmQ=; b=E/n34eVaiz/c6PN4sSDKcRZ+WF
+        k6G7fP0wWvVetyteNcjd4RTCACETw6XRYHHMsIi9e4hMg2RSxxyj1OlD4B6Hhxojt6wHqel+W2yHJ
+        y2pvzxTYESLHzuUzo5wRB3OiMX2w3P84f4cKzinStHiRteFJYzQ0KboJnrdb5HdsI6/E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mEy1f-0005it-Qr; Sat, 14 Aug 2021 20:04:55 +0200
+Date:   Sat, 14 Aug 2021 20:04:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Song Yoong Siang <yoong.siang.song@intel.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
+ to WOL event
+Message-ID: <YRgFxzIB3v8wS4tF@lunn.ch>
+References: <20210813084536.182381-1-yoong.siang.song@intel.com>
+ <20210814172656.GA22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRkaGU9WSx8aHk0eQkMZSU
-        8YVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kxw6Ezo*Pz9DAx8#KzQzDxBK
-        CzoKCwpVSlVKTUlDQk1IQklPTk1KVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
-        VUpLT1VKQ0NVSk1OWVdZCAFZQUpDT0s3Bg++
-X-HM-Tid: 0a7b45d0e8c3d996kuws04e8cc400f1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210814172656.GA22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't leave a blank line, to keep the style consistent
-with other node descriptions.
+> How does this work if the driver has no interrupt support? What is
+> the hardware setup this has been tested with?
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- Documentation/ABI/testing/sysfs-fs-f2fs | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi Russell
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 32df6d16d74f..ff5a8fdadbfc 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -41,8 +41,7 @@ Description:	This parameter controls the number of prefree segments to be
- What:		/sys/fs/f2fs/<disk>/main_blkaddr
- Date:		November 2019
- Contact:	"Ramon Pantin" <pantin@google.com>
--Description:
--		 Shows first block address of MAIN area.
-+Description:	Shows first block address of MAIN area.
- 
- What:		/sys/fs/f2fs/<disk>/ipu_policy
- Date:		November 2013
--- 
-2.32.0
+We already know from previous patches that the Intel hardware is
+broken, and does not actually deliver the interrupt which caused the
+wake up. So i assume this just continues on with the same broken
+hardware, but they have a different PHY connected.
 
+> What if we later want to add interrupt support to this driver to
+> support detecting changes in link state - isn't using this bit
+> in the interrupt enable register going to confict with that?
+
+Agreed. If the interrupt register is being used, i think we need this
+patchset to add proper interrupt support. Can you recommend a board
+they can buy off the shelf with the interrupt wired up? Or maybe Intel
+can find a hardware engineer to add a patch wire to link the interrupt
+output to a SoC pin that can do interrupts.
+
+	  Andrew
