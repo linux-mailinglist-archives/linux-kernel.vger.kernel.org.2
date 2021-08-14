@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F18E3EBF26
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84B03EBF29
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbhHNBBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        id S236182AbhHNBCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235870AbhHNBBl (ORCPT
+        with ESMTP id S235870AbhHNBCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:01:41 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DE6C061756;
-        Fri, 13 Aug 2021 18:01:14 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso18413049pjy.5;
-        Fri, 13 Aug 2021 18:01:14 -0700 (PDT)
+        Fri, 13 Aug 2021 21:02:10 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF01C061756;
+        Fri, 13 Aug 2021 18:01:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id cn28so6068067edb.6;
+        Fri, 13 Aug 2021 18:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o8WfKmwINea2dak8eWcmeq5nymhBz5xQuf8CqG8OJr4=;
-        b=sme3zgAmzQduFkzUo7E7f5eQZMJa3fnQrOektKNNlG3qHZyjx+gugUTEvhxDweudgc
-         Xrn1f/qVwH1SZ6EHgp5YzIM/GA4q1A/Xh8MTzcyQqO3k/kTHeIHGgLMEZn0rWPP3r1ZS
-         S0X02Og4zzGF62aWtQGVrS9J/VHGBVYyRIyeNHbwrFVO1NhuDge1QU4aYsAlT2xf/Pln
-         qV218p69LURe2muWVW3NuOYDZnA3MB8i8Qp1fMFiRmfh/yXdhDkeRYJg/bdS/vAEkwV9
-         k7wYRHRnOo9gnRAUDlY2GIF8PWhbfLZm7UJ56YFC/QPSwRzmjNAaeerPAIQlWCcivAy1
-         JwRA==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=b/BAppsRBqmgyavAEAzIPlCSKhLp58aHdhcqLbgbh0A=;
+        b=R6wsenaGFKbhHdCfuWgFgYzG+3O+JeyD1xHV4+EC1VmfgWcxFp30v8OB+RaTSGdFiw
+         MVXOfNgHHfftDhaEHOCP+wsH6sV/PllgEGvYuR6BRKGlIWyHulHcf4Ztz/0qArt2Db7S
+         KOLXgBdUUv+6iI8HZfXygnwLORLB2TnMvFRtQnmSMx/OPXRqaXbA31J+vqbpM/GY1QmW
+         uotd7mCXz90DtoEf1gwZqMkUOna7o+MBF1JO6Eb0Jn7bK86XAePJVfPWKcyTFTVb+q8R
+         qICV909W/vLwtWRQKg3EzRSsV2w9bJwS4FlMpxkUE+yNnBpJHjiWMpDIYQaTYor9/07t
+         rVIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o8WfKmwINea2dak8eWcmeq5nymhBz5xQuf8CqG8OJr4=;
-        b=g0cvQ95zXFPts9GpGyhpI/8HqF17KRzoOjDyXYs7pk3XqH8vAXgvaNSsBcB1LlrI7b
-         t99vjzYG6ckP8yB01rEJgBTmU7xaLXZ3Dru1rbFJJiL1Ichw3Z+/mtuq1xy7Bxt+MAA2
-         MhoLnsVUJlWoZovZEm5aNkLV6mR/TqrOidVQwgru/zDjpJRQJ94THkNf1/RQ689+wpoT
-         4ZrM6heHC8Y+mR0Avyg4bzdIhpX+J8AVUTPw9nXQAv+8//rW/Yz5YrPcDlJzW19C9vh+
-         X0w0x6G4FUOA5uDPALXAAuqebijcFvjI50pwvU2CaYC7UEQOiKiIBo6gn69xgYh155rA
-         D0GQ==
-X-Gm-Message-State: AOAM531V6QI4njh0idaBESKlg0dPUcWp1TUM7ZANVpUQ3nUDm1aY+pTE
-        9M6EIiIvmmVc6z4BxfpIntJSWi6pUAQ=
-X-Google-Smtp-Source: ABdhPJyvqIYq99aYHZZ4QxkLEnzM+vZyY2LJsYVQru7UAbCFTMMITPvHy9591bOseWCwgr4vXYUr3A==
-X-Received: by 2002:a65:63d7:: with SMTP id n23mr4788455pgv.46.1628902874156;
-        Fri, 13 Aug 2021 18:01:14 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id p17sm2905008pjg.54.2021.08.13.18.01.09
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=b/BAppsRBqmgyavAEAzIPlCSKhLp58aHdhcqLbgbh0A=;
+        b=Rl/YWnFTmjvj6QX2kGGjVhE7jHvdTOC138HEddVpTYMXLY7d0kOrUS5fLuhR7mDxb3
+         S+imsmosmB1eFWkASTe2P+U5L+ClUFRZKYpOyzPHKdOqzawIGPUL+V/9ZN/GqdaQhXMw
+         C1u/iX4CVvg8td6FVlSZx7Hthdkq+FM7Xu0Vjfq/eSWKfezEqun5NXkoQt+3J5CpI18B
+         s6z+SyAKBGocq+FMT3+UOf4G95ZurnbMdxsPyulc2NUyrV3AYzQmXSbyPi74mJdSZfl+
+         zer0oXLyNdZpkciTsI1P5VxWeoULcJ36tApagrDROQr5kDEou7Mqr3AX0Pw/RtXsbRh0
+         uwAg==
+X-Gm-Message-State: AOAM531U3ffpFWIfKMdllBAlbPHeB6Z1fDPeJkCfOtDYhLFTb+fuczCR
+        LCltHoG3TDL8zJGZ16KaQqY=
+X-Google-Smtp-Source: ABdhPJzMsX8eMmrCUWSIzY+daPTkI/yZMoBWwNpo658rCHzvz+DFrT98xWvELDgbn6/PlB8kLU+nMw==
+X-Received: by 2002:aa7:c3d0:: with SMTP id l16mr6459339edr.122.1628902901439;
+        Fri, 13 Aug 2021 18:01:41 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id gu2sm1185310ejb.96.2021.08.13.18.01.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 18:01:13 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] alpha: in_irq() cleanup
-Date:   Sat, 14 Aug 2021 09:01:03 +0800
-Message-Id: <20210814010103.3929-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 13 Aug 2021 18:01:40 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 04:01:39 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: of_node_put() usage is buggy all over drivers/of/base.c?!
+Message-ID: <20210814010139.kzryimmp4rizlznt@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the obsolete and ambiguos macro in_irq() with new
-macro in_hardirq().
+Hi,
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- arch/alpha/kernel/process.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I was debugging an RCU stall which happened during the probing of a
+driver. Activating lock debugging, I see:
 
-diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
-index a5123ea426ce..a524de9f1c98 100644
---- a/arch/alpha/kernel/process.c
-+++ b/arch/alpha/kernel/process.c
-@@ -134,7 +134,7 @@ common_shutdown_1(void *generic_ptr)
- #ifdef CONFIG_DUMMY_CONSOLE
- 		/* If we've gotten here after SysRq-b, leave interrupt
- 		   context before taking over the console. */
--		if (in_irq())
-+		if (in_hardirq())
- 			irq_exit();
- 		/* This has the effect of resetting the VGA video origin.  */
- 		console_lock();
--- 
-2.30.2
+[  101.710694] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+[  101.719119] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 1534, name: sh
+[  101.726763] INFO: lockdep is turned off.
+[  101.730674] irq event stamp: 0
+[  101.733716] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[  101.739973] hardirqs last disabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+[  101.748146] softirqs last  enabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+[  101.756313] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[  101.762569] CPU: 4 PID: 1534 Comm: sh Not tainted 5.14.0-rc5+ #272
+[  101.774558] Call trace:
+[  101.794734]  __might_sleep+0x50/0x88
+[  101.798297]  __mutex_lock+0x60/0x938
+[  101.801863]  mutex_lock_nested+0x38/0x50
+[  101.805775]  kernfs_remove+0x2c/0x50             <---- this takes mutex_lock(&kernfs_mutex);
+[  101.809341]  sysfs_remove_dir+0x54/0x70
+[  101.813166]  __kobject_del+0x3c/0x80
+[  101.816733]  kobject_put+0xf8/0x108
+[  101.820211]  of_node_put+0x18/0x28
+[  101.823602]  of_find_compatible_node+0xa8/0xf8    <--- this takes raw_spin_lock_irqsave(&devtree_lock)
+[  101.828036]  sja1105_mdiobus_register+0x264/0x7a8
 
+The pattern of calling of_node_put from under the atomic devtree_lock
+context is pretty widespread in drivers/of/base.c.
+
+Just by inspecting the code, this seems to be an issue since commit:
+
+commit 75b57ecf9d1d1e17d099ab13b8f48e6e038676be
+Author: Grant Likely <grant.likely@linaro.org>
+Date:   Thu Feb 20 18:02:11 2014 +0000
+
+    of: Make device nodes kobjects so they show up in sysfs
+
+    Device tree nodes are already treated as objects, and we already want to
+    expose them to userspace which is done using the /proc filesystem today.
+    Right now the kernel has to do a lot of work to keep the /proc view in
+    sync with the in-kernel representation. If device_nodes are switched to
+    be kobjects then the device tree code can be a whole lot simpler. It
+    also turns out that switching to using /sysfs from /proc results in
+    smaller code and data size, and the userspace ABI won't change if
+    /proc/device-tree symlinks to /sys/firmware/devicetree/base.
+
+    v7: Add missing sysfs_bin_attr_init()
+    v6: Add __of_add_property() early init fixes from Pantelis
+    v5: Rename firmware/ofw to firmware/devicetree
+        Fix updating property values in sysfs
+    v4: Fixed build error on Powerpc
+        Fixed handling of dynamic nodes on powerpc
+    v3: Fixed handling of duplicate attribute and child node names
+    v2: switch to using sysfs bin_attributes which solve the problem of
+        reporting incorrect property size.
+
+    Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+    Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+    Cc: Rob Herring <rob.herring@calxeda.com>
+    Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+    Cc: David S. Miller <davem@davemloft.net>
+    Cc: Nathan Fontenot <nfont@linux.vnet.ibm.com>
+    Cc: Pantelis Antoniou <panto@antoniou-consulting.com>
+
+because up until that point, of_node_put() was:
+
+void of_node_put(struct device_node *node)
+{
+	if (node)
+		kref_put(&node->kref, of_node_release);
+}
+
+and not:
+
+void of_node_put(struct device_node *node)
+{
+	if (node)
+		kobject_put(&node->kobj);
+}
+
+Either I'm holding it very, very wrong, or this is a very severe
+oversight that just happened somehow to go unnoticed for 7 years.
+
+Please tell me it's me.
