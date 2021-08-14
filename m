@@ -2,243 +2,730 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F8C3EC3F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFD23EC3F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238774AbhHNQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhHNQ4l (ORCPT
+        id S238793AbhHNQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:57:12 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:46335 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238790AbhHNQ5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:56:41 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B150DC061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:56:11 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id u16so464283wrn.5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CuFF1XRj1ccxohvvCGWKXvne2UStQOkNmnbqQ6AQ8dw=;
-        b=oW9QzXZbnPxcZ5wN2iedQALHl7Su4nJLXiSXARLOiOV7Uj0g981iA2gsfX2YfstyPC
-         jnTTnsOXccgo3gSTdE/8EuO5WxQAwrnzLVFk0slX5hXpESimtF6cMK8Zkw71TT4EbRH2
-         Rn6l+FlT33SjxAvOyoyJP8aURIDTL3dHGxsrcGq6HnRtnZYscw2mqralplErbO+tb5xc
-         /zWYPSIgE4oR5VT5mVAMkJIw9znrmihj7um5R3gGGIeUzIlnOHOrR/ZBwgMI3psPUGoN
-         iqkU2weaCGZM27GjHoV+e45jPj7+h1eO3GFswjSevqui8hboK43/ExCpWunEe3hO3HOm
-         tYwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CuFF1XRj1ccxohvvCGWKXvne2UStQOkNmnbqQ6AQ8dw=;
-        b=PG9g4gl4UJWW5YnbcQ/tSnYiDQMGt9b16qmFvA9mF/3US5MFeJqqdgilX/YeEaEm1z
-         kd872tvPffw2Hj/R1fgR3uU9jCfmkv0hRwGAjlCX5reBMmJi0I5/86Y2rDKZGyNzLcPf
-         s6qTSy/D3bPNRfsjFSu1ooeO88ceDAGfGjKdxSU/yWwuJFpWGHkW6DnheyqxuwdHx44C
-         Kzl5yPoYVI6fO9/vyofC/+lxbK9l5AXAr+nV6NqBjEL/WX0iZGHwRr0Kqi2aB9+d6032
-         lC1KfNj/KPpfsZOYig1DGxU30d67cdE0v99bV9t/r/QU/E5eQHsEiuzBC3M33FYAjLmV
-         oc4A==
-X-Gm-Message-State: AOAM5323wyJgRykpFZFjJEE05VdeZCgxh5dOuwqXec+FjkpVO2sKZIZ7
-        0gxpsW78fI1v7zUU5SsZlfKCHEmQQ8c=
-X-Google-Smtp-Source: ABdhPJyxvOy3yc6BJQwYfWnzwNX62vct+Iln8nBlkCLAQoSU1CyZso9vGDENRSd8qeJh8ufY8ean5A==
-X-Received: by 2002:a05:6000:1864:: with SMTP id d4mr9612164wri.250.1628960169850;
-        Sat, 14 Aug 2021 09:56:09 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id w14sm5079229wrt.23.2021.08.14.09.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 09:56:09 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: use common ieee80211 constants
-Date:   Sat, 14 Aug 2021 18:55:18 +0200
-Message-Id: <20210814165518.8672-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 14 Aug 2021 12:57:08 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E30A2C0004;
+        Sat, 14 Aug 2021 16:56:33 +0000 (UTC)
+Date:   Sat, 14 Aug 2021 18:56:33 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        robh+dt@kernel.org, claudiu.manoil@nxp.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 06/10] net: mscc: ocelot: split register
+ definitions to a separate file
+Message-ID: <YRf1wbHyS4EFt4Jn@piout.net>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-7-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210814025003.2449143-7-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many defined constants in wifi.h are unused and/or available from
-<linux/ieee80211.h>, some with slightly different names. Remove
-the constants from wifi.h and use the common ones. Rename where
-necessary.
+Hello,
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_ap.c        | 12 ++---
- drivers/staging/r8188eu/core/rtw_mlme.c      |  8 ++--
- drivers/staging/r8188eu/include/wifi.h       | 50 --------------------
- drivers/staging/r8188eu/os_dep/ioctl_linux.c |  2 +-
- 4 files changed, 11 insertions(+), 61 deletions(-)
+On 13/08/2021 19:49:59-0700, Colin Foster wrote:
+> Moving these to a separate file will allow them to be shared to other
+> drivers.
+> 
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  drivers/net/ethernet/mscc/Makefile         |   1 +
+>  drivers/net/ethernet/mscc/ocelot_regs.c    | 309 +++++++++++++++++++++
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index bc4c6dbd5aa3..f1b519d20989 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -630,7 +630,7 @@ void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta)
- 			phtpriv_sta->sgi = true;
- 
- 		/*  bwmode */
--		if ((sta_cap_info & ap_cap_info) & IEEE80211_HT_CAP_SUP_WIDTH) {
-+		if ((sta_cap_info & ap_cap_info) & IEEE80211_HT_CAP_SUP_WIDTH_20_40) {
- 			phtpriv_sta->bwmode = pmlmeext->cur_bwmode;
- 			phtpriv_sta->ch_offset = pmlmeext->cur_ch_offset;
- 		}
-@@ -1015,12 +1015,12 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
- 
- 		if ((psecuritypriv->wpa_pairwise_cipher & WPA_CIPHER_CCMP) ||
- 		    (psecuritypriv->wpa2_pairwise_cipher & WPA_CIPHER_CCMP))
--			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY&(0x07<<2));
-+			pht_cap->ampdu_params_info |= (IEEE80211_HT_AMPDU_PARM_DENSITY & (0x07 << 2));
- 		else
--			pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY&0x00);
-+			pht_cap->ampdu_params_info |= (IEEE80211_HT_AMPDU_PARM_DENSITY & 0x00);
- 
- 		/* set  Max Rx AMPDU size  to 64K */
--		pht_cap->ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_FACTOR & 0x03);
-+		pht_cap->ampdu_params_info |= (IEEE80211_HT_AMPDU_PARM_FACTOR & 0x03);
- 
- 		if (rf_type == RF_1T1R) {
- 			pht_cap->mcs.rx_mask[0] = 0xff;
-@@ -1447,7 +1447,7 @@ static int rtw_ht_operation_update(struct adapter *padapter)
- 	    (pmlmepriv->ht_op_mode & HT_INFO_OPERATION_MODE_NON_GF_DEVS_PRESENT))
- 		new_op_mode = OP_MODE_MIXED;
- 	else if ((le16_to_cpu(phtpriv_ap->ht_cap.cap_info) &
--		  IEEE80211_HT_CAP_SUP_WIDTH) &&
-+		  IEEE80211_HT_CAP_SUP_WIDTH_20_40) &&
- 		 pmlmepriv->num_sta_ht_20mhz)
- 		new_op_mode = OP_MODE_20MHZ_HT_STA_ASSOCED;
- 	else if (pmlmepriv->olbc_ht)
-@@ -1597,7 +1597,7 @@ void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta)
- 				   pmlmepriv->num_sta_ht_no_gf);
- 		}
- 
--		if ((ht_capab & IEEE80211_HT_CAP_SUP_WIDTH) == 0) {
-+		if ((ht_capab & IEEE80211_HT_CAP_SUP_WIDTH_20_40) == 0) {
- 			if (!psta->ht_20mhz_set) {
- 				psta->ht_20mhz_set = 1;
- 				pmlmepriv->num_sta_ht_20mhz++;
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-index 5088b555f55d..9189f5c845f3 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-@@ -2001,7 +2001,7 @@ unsigned int rtw_restructure_ht_ie(struct adapter *padapter, u8 *in_ie, u8 *out_
- 
- 		memset(&ht_capie, 0, sizeof(struct ieee80211_ht_cap));
- 
--		ht_capie.cap_info = cpu_to_le16(IEEE80211_HT_CAP_SUP_WIDTH |
-+		ht_capie.cap_info = cpu_to_le16(IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
- 						IEEE80211_HT_CAP_SGI_20 |
- 						IEEE80211_HT_CAP_SGI_40 |
- 						IEEE80211_HT_CAP_TX_STBC |
-@@ -2019,9 +2019,9 @@ unsigned int rtw_restructure_ht_ie(struct adapter *padapter, u8 *in_ie, u8 *out_
- 		ht_capie.ampdu_params_info = (max_rx_ampdu_factor&0x03);
- 
- 		if (padapter->securitypriv.dot11PrivacyAlgrthm == _AES_)
--			ht_capie.ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY&(0x07<<2));
-+			ht_capie.ampdu_params_info |= (IEEE80211_HT_AMPDU_PARM_DENSITY & (0x07 << 2));
- 		else
--			ht_capie.ampdu_params_info |= (IEEE80211_HT_CAP_AMPDU_DENSITY&0x00);
-+			ht_capie.ampdu_params_info |= (IEEE80211_HT_AMPDU_PARM_DENSITY & 0x00);
- 
- 		rtw_set_ie(out_ie+out_len, _HT_CAPABILITY_IE_,
- 			   sizeof(struct ieee80211_ht_cap), (unsigned char *)&ht_capie, pout_len);
-@@ -2072,7 +2072,7 @@ void rtw_update_ht_cap(struct adapter *padapter, u8 *pie, uint ie_len)
- 	p = rtw_get_ie(pie+sizeof(struct ndis_802_11_fixed_ie), _HT_CAPABILITY_IE_, &len, ie_len-sizeof(struct ndis_802_11_fixed_ie));
- 	if (p && len > 0) {
- 		pht_capie = (struct ieee80211_ht_cap *)(p+2);
--		max_ampdu_sz = (pht_capie->ampdu_params_info & IEEE80211_HT_CAP_AMPDU_FACTOR);
-+		max_ampdu_sz = (pht_capie->ampdu_params_info & IEEE80211_HT_AMPDU_PARM_FACTOR);
- 		max_ampdu_sz = 1 << (max_ampdu_sz+3); /*  max_ampdu_sz (kbytes); */
- 		phtpriv->rx_ampdu_maxlen = max_ampdu_sz;
- 	}
-diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
-index f4212c4f4ada..0b3fd94cea18 100644
---- a/drivers/staging/r8188eu/include/wifi.h
-+++ b/drivers/staging/r8188eu/include/wifi.h
-@@ -597,10 +597,6 @@ struct rtw_ieee80211_bar {
- 	__le16 start_seq_num;
- } __packed;
- 
--/* 802.11 BAR control masks */
--#define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL     0x0000
--#define IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA  0x0004
--
- /**
-  * struct ieee80211_ht_cap - HT additional information
-  *
-@@ -662,52 +658,6 @@ enum ht_cap_ampdu_factor {
- 	MAX_AMPDU_FACTOR_64K	= 3,
- };
- 
--/* 802.11n HT capabilities masks */
--#define IEEE80211_HT_CAP_SUP_WIDTH		0x0002
--#define IEEE80211_HT_CAP_SM_PS			0x000C
--#define IEEE80211_HT_CAP_GRN_FLD		0x0010
--#define IEEE80211_HT_CAP_SGI_20			0x0020
--#define IEEE80211_HT_CAP_SGI_40			0x0040
--#define IEEE80211_HT_CAP_TX_STBC		0x0080
--#define IEEE80211_HT_CAP_RX_STBC		0x0300
--#define IEEE80211_HT_CAP_DELAY_BA		0x0400
--#define IEEE80211_HT_CAP_MAX_AMSDU		0x0800
--#define IEEE80211_HT_CAP_DSSSCCK40		0x1000
--/* 802.11n HT capability AMPDU settings */
--#define IEEE80211_HT_CAP_AMPDU_FACTOR		0x03
--#define IEEE80211_HT_CAP_AMPDU_DENSITY		0x1C
--/* 802.11n HT capability MSC set */
--#define IEEE80211_SUPP_MCS_SET_UEQM		4
--#define IEEE80211_HT_CAP_MAX_STREAMS		4
--#define IEEE80211_SUPP_MCS_SET_LEN		10
--/* maximum streams the spec allows */
--#define IEEE80211_HT_CAP_MCS_TX_DEFINED		0x01
--#define IEEE80211_HT_CAP_MCS_TX_RX_DIFF		0x02
--#define IEEE80211_HT_CAP_MCS_TX_STREAMS		0x0C
--#define IEEE80211_HT_CAP_MCS_TX_UEQM		0x10
--/* 802.11n HT IE masks */
--#define IEEE80211_HT_IE_CHA_SEC_OFFSET		0x03
--#define IEEE80211_HT_IE_CHA_SEC_NONE		0x00
--#define IEEE80211_HT_IE_CHA_SEC_ABOVE		0x01
--#define IEEE80211_HT_IE_CHA_SEC_BELOW		0x03
--#define IEEE80211_HT_IE_CHA_WIDTH		0x04
--#define IEEE80211_HT_IE_HT_PROTECTION		0x0003
--#define IEEE80211_HT_IE_NON_GF_STA_PRSNT	0x0004
--#define IEEE80211_HT_IE_NON_HT_STA_PRSNT	0x0010
--
--/* block-ack parameters */
--#define IEEE80211_ADDBA_PARAM_POLICY_MASK 0x0002
--#define IEEE80211_ADDBA_PARAM_TID_MASK 0x003C
--#define RTW_IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFC0
--#define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
--#define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
--
--/*
-- * A-PMDU buffer sizes
-- * According to IEEE802.11n spec size varies from 8K to 64K (in powers of 2)
-- */
--#define IEEE80211_MIN_AMPDU_BUF 0x8
--
- /* Spatial Multiplexing Power Save Modes */
- #define WLAN_HT_CAP_SM_PS_STATIC	0
- #define WLAN_HT_CAP_SM_PS_DYNAMIC	1
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 38ee41f9d2ba..0f82ed1b4469 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -195,7 +195,7 @@ static char *translate_scan(struct adapter *padapter,
- 		pht_capie = (struct ieee80211_ht_cap *)(p+2);
- 		memcpy(&mcs_rate, pht_capie->mcs.rx_mask, 2);
- 		bw_40MHz = (le16_to_cpu(pht_capie->cap_info) &
--			    IEEE80211_HT_CAP_SUP_WIDTH) ? 1 : 0;
-+			    IEEE80211_HT_CAP_SUP_WIDTH_20_40) ? 1 : 0;
- 		short_GI = (le16_to_cpu(pht_capie->cap_info) &
- 			    (IEEE80211_HT_CAP_SGI_20|IEEE80211_HT_CAP_SGI_40)) ? 1 : 0;
- 	}
+Maybe this should be named
+drivers/net/ethernet/mscc/ocelot_vsc7514_regs.c in the case we had more
+chips later on. The naming we chose is that ocelot refers generically to
+the switch IP instead of a specific implementation.
+
+>  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 295 +-------------------
+>  include/soc/mscc/ocelot_regs.h             |  20 ++
+>  4 files changed, 331 insertions(+), 294 deletions(-)
+>  create mode 100644 drivers/net/ethernet/mscc/ocelot_regs.c
+>  create mode 100644 include/soc/mscc/ocelot_regs.h
+> 
+> diff --git a/drivers/net/ethernet/mscc/Makefile b/drivers/net/ethernet/mscc/Makefile
+> index 722c27694b21..d539a231a478 100644
+> --- a/drivers/net/ethernet/mscc/Makefile
+> +++ b/drivers/net/ethernet/mscc/Makefile
+> @@ -7,6 +7,7 @@ mscc_ocelot_switch_lib-y := \
+>  	ocelot_vcap.o \
+>  	ocelot_flower.o \
+>  	ocelot_ptp.o \
+> +	ocelot_regs.o \
+>  	ocelot_devlink.o
+>  mscc_ocelot_switch_lib-$(CONFIG_BRIDGE_MRP) += ocelot_mrp.o
+>  obj-$(CONFIG_MSCC_OCELOT_SWITCH) += mscc_ocelot.o
+> diff --git a/drivers/net/ethernet/mscc/ocelot_regs.c b/drivers/net/ethernet/mscc/ocelot_regs.c
+> new file mode 100644
+> index 000000000000..b7ba137a7c90
+> --- /dev/null
+> +++ b/drivers/net/ethernet/mscc/ocelot_regs.c
+> @@ -0,0 +1,309 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Microsemi Ocelot Switch driver
+> + *
+> + * Copyright (c) 2017 Microsemi Corporation
+> + */
+> +#include "ocelot.h"
+> +
+> +const u32 ocelot_ana_regmap[] = {
+> +	REG(ANA_ADVLEARN,				0x009000),
+> +	REG(ANA_VLANMASK,				0x009004),
+> +	REG(ANA_PORT_B_DOMAIN,				0x009008),
+> +	REG(ANA_ANAGEFIL,				0x00900c),
+> +	REG(ANA_ANEVENTS,				0x009010),
+> +	REG(ANA_STORMLIMIT_BURST,			0x009014),
+> +	REG(ANA_STORMLIMIT_CFG,				0x009018),
+> +	REG(ANA_ISOLATED_PORTS,				0x009028),
+> +	REG(ANA_COMMUNITY_PORTS,			0x00902c),
+> +	REG(ANA_AUTOAGE,				0x009030),
+> +	REG(ANA_MACTOPTIONS,				0x009034),
+> +	REG(ANA_LEARNDISC,				0x009038),
+> +	REG(ANA_AGENCTRL,				0x00903c),
+> +	REG(ANA_MIRRORPORTS,				0x009040),
+> +	REG(ANA_EMIRRORPORTS,				0x009044),
+> +	REG(ANA_FLOODING,				0x009048),
+> +	REG(ANA_FLOODING_IPMC,				0x00904c),
+> +	REG(ANA_SFLOW_CFG,				0x009050),
+> +	REG(ANA_PORT_MODE,				0x009080),
+> +	REG(ANA_PGID_PGID,				0x008c00),
+> +	REG(ANA_TABLES_ANMOVED,				0x008b30),
+> +	REG(ANA_TABLES_MACHDATA,			0x008b34),
+> +	REG(ANA_TABLES_MACLDATA,			0x008b38),
+> +	REG(ANA_TABLES_MACACCESS,			0x008b3c),
+> +	REG(ANA_TABLES_MACTINDX,			0x008b40),
+> +	REG(ANA_TABLES_VLANACCESS,			0x008b44),
+> +	REG(ANA_TABLES_VLANTIDX,			0x008b48),
+> +	REG(ANA_TABLES_ISDXACCESS,			0x008b4c),
+> +	REG(ANA_TABLES_ISDXTIDX,			0x008b50),
+> +	REG(ANA_TABLES_ENTRYLIM,			0x008b00),
+> +	REG(ANA_TABLES_PTP_ID_HIGH,			0x008b54),
+> +	REG(ANA_TABLES_PTP_ID_LOW,			0x008b58),
+> +	REG(ANA_MSTI_STATE,				0x008e00),
+> +	REG(ANA_PORT_VLAN_CFG,				0x007000),
+> +	REG(ANA_PORT_DROP_CFG,				0x007004),
+> +	REG(ANA_PORT_QOS_CFG,				0x007008),
+> +	REG(ANA_PORT_VCAP_CFG,				0x00700c),
+> +	REG(ANA_PORT_VCAP_S1_KEY_CFG,			0x007010),
+> +	REG(ANA_PORT_VCAP_S2_CFG,			0x00701c),
+> +	REG(ANA_PORT_PCP_DEI_MAP,			0x007020),
+> +	REG(ANA_PORT_CPU_FWD_CFG,			0x007060),
+> +	REG(ANA_PORT_CPU_FWD_BPDU_CFG,			0x007064),
+> +	REG(ANA_PORT_CPU_FWD_GARP_CFG,			0x007068),
+> +	REG(ANA_PORT_CPU_FWD_CCM_CFG,			0x00706c),
+> +	REG(ANA_PORT_PORT_CFG,				0x007070),
+> +	REG(ANA_PORT_POL_CFG,				0x007074),
+> +	REG(ANA_PORT_PTP_CFG,				0x007078),
+> +	REG(ANA_PORT_PTP_DLY1_CFG,			0x00707c),
+> +	REG(ANA_OAM_UPM_LM_CNT,				0x007c00),
+> +	REG(ANA_PORT_PTP_DLY2_CFG,			0x007080),
+> +	REG(ANA_PFC_PFC_CFG,				0x008800),
+> +	REG(ANA_PFC_PFC_TIMER,				0x008804),
+> +	REG(ANA_IPT_OAM_MEP_CFG,			0x008000),
+> +	REG(ANA_IPT_IPT,				0x008004),
+> +	REG(ANA_PPT_PPT,				0x008ac0),
+> +	REG(ANA_FID_MAP_FID_MAP,			0x000000),
+> +	REG(ANA_AGGR_CFG,				0x0090b4),
+> +	REG(ANA_CPUQ_CFG,				0x0090b8),
+> +	REG(ANA_CPUQ_CFG2,				0x0090bc),
+> +	REG(ANA_CPUQ_8021_CFG,				0x0090c0),
+> +	REG(ANA_DSCP_CFG,				0x009100),
+> +	REG(ANA_DSCP_REWR_CFG,				0x009200),
+> +	REG(ANA_VCAP_RNG_TYPE_CFG,			0x009240),
+> +	REG(ANA_VCAP_RNG_VAL_CFG,			0x009260),
+> +	REG(ANA_VRAP_CFG,				0x009280),
+> +	REG(ANA_VRAP_HDR_DATA,				0x009284),
+> +	REG(ANA_VRAP_HDR_MASK,				0x009288),
+> +	REG(ANA_DISCARD_CFG,				0x00928c),
+> +	REG(ANA_FID_CFG,				0x009290),
+> +	REG(ANA_POL_PIR_CFG,				0x004000),
+> +	REG(ANA_POL_CIR_CFG,				0x004004),
+> +	REG(ANA_POL_MODE_CFG,				0x004008),
+> +	REG(ANA_POL_PIR_STATE,				0x00400c),
+> +	REG(ANA_POL_CIR_STATE,				0x004010),
+> +	REG(ANA_POL_STATE,				0x004014),
+> +	REG(ANA_POL_FLOWC,				0x008b80),
+> +	REG(ANA_POL_HYST,				0x008bec),
+> +	REG(ANA_POL_MISC_CFG,				0x008bf0),
+> +};
+> +EXPORT_SYMBOL(ocelot_ana_regmap);
+> +
+> +const u32 ocelot_qs_regmap[] = {
+> +	REG(QS_XTR_GRP_CFG,				0x000000),
+> +	REG(QS_XTR_RD,					0x000008),
+> +	REG(QS_XTR_FRM_PRUNING,				0x000010),
+> +	REG(QS_XTR_FLUSH,				0x000018),
+> +	REG(QS_XTR_DATA_PRESENT,			0x00001c),
+> +	REG(QS_XTR_CFG,					0x000020),
+> +	REG(QS_INJ_GRP_CFG,				0x000024),
+> +	REG(QS_INJ_WR,					0x00002c),
+> +	REG(QS_INJ_CTRL,				0x000034),
+> +	REG(QS_INJ_STATUS,				0x00003c),
+> +	REG(QS_INJ_ERR,					0x000040),
+> +	REG(QS_INH_DBG,					0x000048),
+> +};
+> +EXPORT_SYMBOL(ocelot_qs_regmap);
+> +
+> +const u32 ocelot_qsys_regmap[] = {
+> +	REG(QSYS_PORT_MODE,				0x011200),
+> +	REG(QSYS_SWITCH_PORT_MODE,			0x011234),
+> +	REG(QSYS_STAT_CNT_CFG,				0x011264),
+> +	REG(QSYS_EEE_CFG,				0x011268),
+> +	REG(QSYS_EEE_THRES,				0x011294),
+> +	REG(QSYS_IGR_NO_SHARING,			0x011298),
+> +	REG(QSYS_EGR_NO_SHARING,			0x01129c),
+> +	REG(QSYS_SW_STATUS,				0x0112a0),
+> +	REG(QSYS_EXT_CPU_CFG,				0x0112d0),
+> +	REG(QSYS_PAD_CFG,				0x0112d4),
+> +	REG(QSYS_CPU_GROUP_MAP,				0x0112d8),
+> +	REG(QSYS_QMAP,					0x0112dc),
+> +	REG(QSYS_ISDX_SGRP,				0x011400),
+> +	REG(QSYS_TIMED_FRAME_ENTRY,			0x014000),
+> +	REG(QSYS_TFRM_MISC,				0x011310),
+> +	REG(QSYS_TFRM_PORT_DLY,				0x011314),
+> +	REG(QSYS_TFRM_TIMER_CFG_1,			0x011318),
+> +	REG(QSYS_TFRM_TIMER_CFG_2,			0x01131c),
+> +	REG(QSYS_TFRM_TIMER_CFG_3,			0x011320),
+> +	REG(QSYS_TFRM_TIMER_CFG_4,			0x011324),
+> +	REG(QSYS_TFRM_TIMER_CFG_5,			0x011328),
+> +	REG(QSYS_TFRM_TIMER_CFG_6,			0x01132c),
+> +	REG(QSYS_TFRM_TIMER_CFG_7,			0x011330),
+> +	REG(QSYS_TFRM_TIMER_CFG_8,			0x011334),
+> +	REG(QSYS_RED_PROFILE,				0x011338),
+> +	REG(QSYS_RES_QOS_MODE,				0x011378),
+> +	REG(QSYS_RES_CFG,				0x012000),
+> +	REG(QSYS_RES_STAT,				0x012004),
+> +	REG(QSYS_EGR_DROP_MODE,				0x01137c),
+> +	REG(QSYS_EQ_CTRL,				0x011380),
+> +	REG(QSYS_EVENTS_CORE,				0x011384),
+> +	REG(QSYS_CIR_CFG,				0x000000),
+> +	REG(QSYS_EIR_CFG,				0x000004),
+> +	REG(QSYS_SE_CFG,				0x000008),
+> +	REG(QSYS_SE_DWRR_CFG,				0x00000c),
+> +	REG(QSYS_SE_CONNECT,				0x00003c),
+> +	REG(QSYS_SE_DLB_SENSE,				0x000040),
+> +	REG(QSYS_CIR_STATE,				0x000044),
+> +	REG(QSYS_EIR_STATE,				0x000048),
+> +	REG(QSYS_SE_STATE,				0x00004c),
+> +	REG(QSYS_HSCH_MISC_CFG,				0x011388),
+> +};
+> +EXPORT_SYMBOL(ocelot_qsys_regmap);
+> +
+> +const u32 ocelot_rew_regmap[] = {
+> +	REG(REW_PORT_VLAN_CFG,				0x000000),
+> +	REG(REW_TAG_CFG,				0x000004),
+> +	REG(REW_PORT_CFG,				0x000008),
+> +	REG(REW_DSCP_CFG,				0x00000c),
+> +	REG(REW_PCP_DEI_QOS_MAP_CFG,			0x000010),
+> +	REG(REW_PTP_CFG,				0x000050),
+> +	REG(REW_PTP_DLY1_CFG,				0x000054),
+> +	REG(REW_DSCP_REMAP_DP1_CFG,			0x000690),
+> +	REG(REW_DSCP_REMAP_CFG,				0x000790),
+> +	REG(REW_STAT_CFG,				0x000890),
+> +	REG(REW_PPT,					0x000680),
+> +};
+> +EXPORT_SYMBOL(ocelot_rew_regmap);
+> +
+> +const u32 ocelot_sys_regmap[] = {
+> +	REG(SYS_COUNT_RX_OCTETS,			0x000000),
+> +	REG(SYS_COUNT_RX_UNICAST,			0x000004),
+> +	REG(SYS_COUNT_RX_MULTICAST,			0x000008),
+> +	REG(SYS_COUNT_RX_BROADCAST,			0x00000c),
+> +	REG(SYS_COUNT_RX_SHORTS,			0x000010),
+> +	REG(SYS_COUNT_RX_FRAGMENTS,			0x000014),
+> +	REG(SYS_COUNT_RX_JABBERS,			0x000018),
+> +	REG(SYS_COUNT_RX_CRC_ALIGN_ERRS,		0x00001c),
+> +	REG(SYS_COUNT_RX_SYM_ERRS,			0x000020),
+> +	REG(SYS_COUNT_RX_64,				0x000024),
+> +	REG(SYS_COUNT_RX_65_127,			0x000028),
+> +	REG(SYS_COUNT_RX_128_255,			0x00002c),
+> +	REG(SYS_COUNT_RX_256_1023,			0x000030),
+> +	REG(SYS_COUNT_RX_1024_1526,			0x000034),
+> +	REG(SYS_COUNT_RX_1527_MAX,			0x000038),
+> +	REG(SYS_COUNT_RX_PAUSE,				0x00003c),
+> +	REG(SYS_COUNT_RX_CONTROL,			0x000040),
+> +	REG(SYS_COUNT_RX_LONGS,				0x000044),
+> +	REG(SYS_COUNT_RX_CLASSIFIED_DROPS,		0x000048),
+> +	REG(SYS_COUNT_TX_OCTETS,			0x000100),
+> +	REG(SYS_COUNT_TX_UNICAST,			0x000104),
+> +	REG(SYS_COUNT_TX_MULTICAST,			0x000108),
+> +	REG(SYS_COUNT_TX_BROADCAST,			0x00010c),
+> +	REG(SYS_COUNT_TX_COLLISION,			0x000110),
+> +	REG(SYS_COUNT_TX_DROPS,				0x000114),
+> +	REG(SYS_COUNT_TX_PAUSE,				0x000118),
+> +	REG(SYS_COUNT_TX_64,				0x00011c),
+> +	REG(SYS_COUNT_TX_65_127,			0x000120),
+> +	REG(SYS_COUNT_TX_128_511,			0x000124),
+> +	REG(SYS_COUNT_TX_512_1023,			0x000128),
+> +	REG(SYS_COUNT_TX_1024_1526,			0x00012c),
+> +	REG(SYS_COUNT_TX_1527_MAX,			0x000130),
+> +	REG(SYS_COUNT_TX_AGING,				0x000170),
+> +	REG(SYS_RESET_CFG,				0x000508),
+> +	REG(SYS_CMID,					0x00050c),
+> +	REG(SYS_VLAN_ETYPE_CFG,				0x000510),
+> +	REG(SYS_PORT_MODE,				0x000514),
+> +	REG(SYS_FRONT_PORT_MODE,			0x000548),
+> +	REG(SYS_FRM_AGING,				0x000574),
+> +	REG(SYS_STAT_CFG,				0x000578),
+> +	REG(SYS_SW_STATUS,				0x00057c),
+> +	REG(SYS_MISC_CFG,				0x0005ac),
+> +	REG(SYS_REW_MAC_HIGH_CFG,			0x0005b0),
+> +	REG(SYS_REW_MAC_LOW_CFG,			0x0005dc),
+> +	REG(SYS_CM_ADDR,				0x000500),
+> +	REG(SYS_CM_DATA,				0x000504),
+> +	REG(SYS_PAUSE_CFG,				0x000608),
+> +	REG(SYS_PAUSE_TOT_CFG,				0x000638),
+> +	REG(SYS_ATOP,					0x00063c),
+> +	REG(SYS_ATOP_TOT_CFG,				0x00066c),
+> +	REG(SYS_MAC_FC_CFG,				0x000670),
+> +	REG(SYS_MMGT,					0x00069c),
+> +	REG(SYS_MMGT_FAST,				0x0006a0),
+> +	REG(SYS_EVENTS_DIF,				0x0006a4),
+> +	REG(SYS_EVENTS_CORE,				0x0006b4),
+> +	REG(SYS_CNT,					0x000000),
+> +	REG(SYS_PTP_STATUS,				0x0006b8),
+> +	REG(SYS_PTP_TXSTAMP,				0x0006bc),
+> +	REG(SYS_PTP_NXT,				0x0006c0),
+> +	REG(SYS_PTP_CFG,				0x0006c4),
+> +};
+> +EXPORT_SYMBOL(ocelot_sys_regmap);
+> +
+> +const u32 ocelot_vcap_regmap[] = {
+> +	/* VCAP_CORE_CFG */
+> +	REG(VCAP_CORE_UPDATE_CTRL,			0x000000),
+> +	REG(VCAP_CORE_MV_CFG,				0x000004),
+> +	/* VCAP_CORE_CACHE */
+> +	REG(VCAP_CACHE_ENTRY_DAT,			0x000008),
+> +	REG(VCAP_CACHE_MASK_DAT,			0x000108),
+> +	REG(VCAP_CACHE_ACTION_DAT,			0x000208),
+> +	REG(VCAP_CACHE_CNT_DAT,				0x000308),
+> +	REG(VCAP_CACHE_TG_DAT,				0x000388),
+> +	/* VCAP_CONST */
+> +	REG(VCAP_CONST_VCAP_VER,			0x000398),
+> +	REG(VCAP_CONST_ENTRY_WIDTH,			0x00039c),
+> +	REG(VCAP_CONST_ENTRY_CNT,			0x0003a0),
+> +	REG(VCAP_CONST_ENTRY_SWCNT,			0x0003a4),
+> +	REG(VCAP_CONST_ENTRY_TG_WIDTH,			0x0003a8),
+> +	REG(VCAP_CONST_ACTION_DEF_CNT,			0x0003ac),
+> +	REG(VCAP_CONST_ACTION_WIDTH,			0x0003b0),
+> +	REG(VCAP_CONST_CNT_WIDTH,			0x0003b4),
+> +	REG(VCAP_CONST_CORE_CNT,			0x0003b8),
+> +	REG(VCAP_CONST_IF_CNT,				0x0003bc),
+> +};
+> +EXPORT_SYMBOL(ocelot_vcap_regmap);
+> +
+> +const u32 ocelot_ptp_regmap[] = {
+> +	REG(PTP_PIN_CFG,				0x000000),
+> +	REG(PTP_PIN_TOD_SEC_MSB,			0x000004),
+> +	REG(PTP_PIN_TOD_SEC_LSB,			0x000008),
+> +	REG(PTP_PIN_TOD_NSEC,				0x00000c),
+> +	REG(PTP_PIN_WF_HIGH_PERIOD,			0x000014),
+> +	REG(PTP_PIN_WF_LOW_PERIOD,			0x000018),
+> +	REG(PTP_CFG_MISC,				0x0000a0),
+> +	REG(PTP_CLK_CFG_ADJ_CFG,			0x0000a4),
+> +	REG(PTP_CLK_CFG_ADJ_FREQ,			0x0000a8),
+> +};
+> +EXPORT_SYMBOL(ocelot_ptp_regmap);
+> +
+> +const u32 ocelot_dev_gmii_regmap[] = {
+> +	REG(DEV_CLOCK_CFG,				0x0),
+> +	REG(DEV_PORT_MISC,				0x4),
+> +	REG(DEV_EVENTS,					0x8),
+> +	REG(DEV_EEE_CFG,				0xc),
+> +	REG(DEV_RX_PATH_DELAY,				0x10),
+> +	REG(DEV_TX_PATH_DELAY,				0x14),
+> +	REG(DEV_PTP_PREDICT_CFG,			0x18),
+> +	REG(DEV_MAC_ENA_CFG,				0x1c),
+> +	REG(DEV_MAC_MODE_CFG,				0x20),
+> +	REG(DEV_MAC_MAXLEN_CFG,				0x24),
+> +	REG(DEV_MAC_TAGS_CFG,				0x28),
+> +	REG(DEV_MAC_ADV_CHK_CFG,			0x2c),
+> +	REG(DEV_MAC_IFG_CFG,				0x30),
+> +	REG(DEV_MAC_HDX_CFG,				0x34),
+> +	REG(DEV_MAC_DBG_CFG,				0x38),
+> +	REG(DEV_MAC_FC_MAC_LOW_CFG,			0x3c),
+> +	REG(DEV_MAC_FC_MAC_HIGH_CFG,			0x40),
+> +	REG(DEV_MAC_STICKY,				0x44),
+> +	REG(PCS1G_CFG,					0x48),
+> +	REG(PCS1G_MODE_CFG,				0x4c),
+> +	REG(PCS1G_SD_CFG,				0x50),
+> +	REG(PCS1G_ANEG_CFG,				0x54),
+> +	REG(PCS1G_ANEG_NP_CFG,				0x58),
+> +	REG(PCS1G_LB_CFG,				0x5c),
+> +	REG(PCS1G_DBG_CFG,				0x60),
+> +	REG(PCS1G_CDET_CFG,				0x64),
+> +	REG(PCS1G_ANEG_STATUS,				0x68),
+> +	REG(PCS1G_ANEG_NP_STATUS,			0x6c),
+> +	REG(PCS1G_LINK_STATUS,				0x70),
+> +	REG(PCS1G_LINK_DOWN_CNT,			0x74),
+> +	REG(PCS1G_STICKY,				0x78),
+> +	REG(PCS1G_DEBUG_STATUS,				0x7c),
+> +	REG(PCS1G_LPI_CFG,				0x80),
+> +	REG(PCS1G_LPI_WAKE_ERROR_CNT,			0x84),
+> +	REG(PCS1G_LPI_STATUS,				0x88),
+> +	REG(PCS1G_TSTPAT_MODE_CFG,			0x8c),
+> +	REG(PCS1G_TSTPAT_STATUS,			0x90),
+> +	REG(DEV_PCS_FX100_CFG,				0x94),
+> +	REG(DEV_PCS_FX100_STATUS,			0x98),
+> +};
+> +EXPORT_SYMBOL(ocelot_dev_gmii_regmap);
+> diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> index 4bd7e9d9ec61..ef1bf24f51b5 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> @@ -16,303 +16,10 @@
+>  #include <net/switchdev.h>
+>  
+>  #include <soc/mscc/ocelot_vcap.h>
+> +#include <soc/mscc/ocelot_regs.h>
+>  #include <soc/mscc/ocelot_hsio.h>
+>  #include "ocelot.h"
+>  
+> -static const u32 ocelot_ana_regmap[] = {
+> -	REG(ANA_ADVLEARN,				0x009000),
+> -	REG(ANA_VLANMASK,				0x009004),
+> -	REG(ANA_PORT_B_DOMAIN,				0x009008),
+> -	REG(ANA_ANAGEFIL,				0x00900c),
+> -	REG(ANA_ANEVENTS,				0x009010),
+> -	REG(ANA_STORMLIMIT_BURST,			0x009014),
+> -	REG(ANA_STORMLIMIT_CFG,				0x009018),
+> -	REG(ANA_ISOLATED_PORTS,				0x009028),
+> -	REG(ANA_COMMUNITY_PORTS,			0x00902c),
+> -	REG(ANA_AUTOAGE,				0x009030),
+> -	REG(ANA_MACTOPTIONS,				0x009034),
+> -	REG(ANA_LEARNDISC,				0x009038),
+> -	REG(ANA_AGENCTRL,				0x00903c),
+> -	REG(ANA_MIRRORPORTS,				0x009040),
+> -	REG(ANA_EMIRRORPORTS,				0x009044),
+> -	REG(ANA_FLOODING,				0x009048),
+> -	REG(ANA_FLOODING_IPMC,				0x00904c),
+> -	REG(ANA_SFLOW_CFG,				0x009050),
+> -	REG(ANA_PORT_MODE,				0x009080),
+> -	REG(ANA_PGID_PGID,				0x008c00),
+> -	REG(ANA_TABLES_ANMOVED,				0x008b30),
+> -	REG(ANA_TABLES_MACHDATA,			0x008b34),
+> -	REG(ANA_TABLES_MACLDATA,			0x008b38),
+> -	REG(ANA_TABLES_MACACCESS,			0x008b3c),
+> -	REG(ANA_TABLES_MACTINDX,			0x008b40),
+> -	REG(ANA_TABLES_VLANACCESS,			0x008b44),
+> -	REG(ANA_TABLES_VLANTIDX,			0x008b48),
+> -	REG(ANA_TABLES_ISDXACCESS,			0x008b4c),
+> -	REG(ANA_TABLES_ISDXTIDX,			0x008b50),
+> -	REG(ANA_TABLES_ENTRYLIM,			0x008b00),
+> -	REG(ANA_TABLES_PTP_ID_HIGH,			0x008b54),
+> -	REG(ANA_TABLES_PTP_ID_LOW,			0x008b58),
+> -	REG(ANA_MSTI_STATE,				0x008e00),
+> -	REG(ANA_PORT_VLAN_CFG,				0x007000),
+> -	REG(ANA_PORT_DROP_CFG,				0x007004),
+> -	REG(ANA_PORT_QOS_CFG,				0x007008),
+> -	REG(ANA_PORT_VCAP_CFG,				0x00700c),
+> -	REG(ANA_PORT_VCAP_S1_KEY_CFG,			0x007010),
+> -	REG(ANA_PORT_VCAP_S2_CFG,			0x00701c),
+> -	REG(ANA_PORT_PCP_DEI_MAP,			0x007020),
+> -	REG(ANA_PORT_CPU_FWD_CFG,			0x007060),
+> -	REG(ANA_PORT_CPU_FWD_BPDU_CFG,			0x007064),
+> -	REG(ANA_PORT_CPU_FWD_GARP_CFG,			0x007068),
+> -	REG(ANA_PORT_CPU_FWD_CCM_CFG,			0x00706c),
+> -	REG(ANA_PORT_PORT_CFG,				0x007070),
+> -	REG(ANA_PORT_POL_CFG,				0x007074),
+> -	REG(ANA_PORT_PTP_CFG,				0x007078),
+> -	REG(ANA_PORT_PTP_DLY1_CFG,			0x00707c),
+> -	REG(ANA_OAM_UPM_LM_CNT,				0x007c00),
+> -	REG(ANA_PORT_PTP_DLY2_CFG,			0x007080),
+> -	REG(ANA_PFC_PFC_CFG,				0x008800),
+> -	REG(ANA_PFC_PFC_TIMER,				0x008804),
+> -	REG(ANA_IPT_OAM_MEP_CFG,			0x008000),
+> -	REG(ANA_IPT_IPT,				0x008004),
+> -	REG(ANA_PPT_PPT,				0x008ac0),
+> -	REG(ANA_FID_MAP_FID_MAP,			0x000000),
+> -	REG(ANA_AGGR_CFG,				0x0090b4),
+> -	REG(ANA_CPUQ_CFG,				0x0090b8),
+> -	REG(ANA_CPUQ_CFG2,				0x0090bc),
+> -	REG(ANA_CPUQ_8021_CFG,				0x0090c0),
+> -	REG(ANA_DSCP_CFG,				0x009100),
+> -	REG(ANA_DSCP_REWR_CFG,				0x009200),
+> -	REG(ANA_VCAP_RNG_TYPE_CFG,			0x009240),
+> -	REG(ANA_VCAP_RNG_VAL_CFG,			0x009260),
+> -	REG(ANA_VRAP_CFG,				0x009280),
+> -	REG(ANA_VRAP_HDR_DATA,				0x009284),
+> -	REG(ANA_VRAP_HDR_MASK,				0x009288),
+> -	REG(ANA_DISCARD_CFG,				0x00928c),
+> -	REG(ANA_FID_CFG,				0x009290),
+> -	REG(ANA_POL_PIR_CFG,				0x004000),
+> -	REG(ANA_POL_CIR_CFG,				0x004004),
+> -	REG(ANA_POL_MODE_CFG,				0x004008),
+> -	REG(ANA_POL_PIR_STATE,				0x00400c),
+> -	REG(ANA_POL_CIR_STATE,				0x004010),
+> -	REG(ANA_POL_STATE,				0x004014),
+> -	REG(ANA_POL_FLOWC,				0x008b80),
+> -	REG(ANA_POL_HYST,				0x008bec),
+> -	REG(ANA_POL_MISC_CFG,				0x008bf0),
+> -};
+> -
+> -static const u32 ocelot_qs_regmap[] = {
+> -	REG(QS_XTR_GRP_CFG,				0x000000),
+> -	REG(QS_XTR_RD,					0x000008),
+> -	REG(QS_XTR_FRM_PRUNING,				0x000010),
+> -	REG(QS_XTR_FLUSH,				0x000018),
+> -	REG(QS_XTR_DATA_PRESENT,			0x00001c),
+> -	REG(QS_XTR_CFG,					0x000020),
+> -	REG(QS_INJ_GRP_CFG,				0x000024),
+> -	REG(QS_INJ_WR,					0x00002c),
+> -	REG(QS_INJ_CTRL,				0x000034),
+> -	REG(QS_INJ_STATUS,				0x00003c),
+> -	REG(QS_INJ_ERR,					0x000040),
+> -	REG(QS_INH_DBG,					0x000048),
+> -};
+> -
+> -static const u32 ocelot_qsys_regmap[] = {
+> -	REG(QSYS_PORT_MODE,				0x011200),
+> -	REG(QSYS_SWITCH_PORT_MODE,			0x011234),
+> -	REG(QSYS_STAT_CNT_CFG,				0x011264),
+> -	REG(QSYS_EEE_CFG,				0x011268),
+> -	REG(QSYS_EEE_THRES,				0x011294),
+> -	REG(QSYS_IGR_NO_SHARING,			0x011298),
+> -	REG(QSYS_EGR_NO_SHARING,			0x01129c),
+> -	REG(QSYS_SW_STATUS,				0x0112a0),
+> -	REG(QSYS_EXT_CPU_CFG,				0x0112d0),
+> -	REG(QSYS_PAD_CFG,				0x0112d4),
+> -	REG(QSYS_CPU_GROUP_MAP,				0x0112d8),
+> -	REG(QSYS_QMAP,					0x0112dc),
+> -	REG(QSYS_ISDX_SGRP,				0x011400),
+> -	REG(QSYS_TIMED_FRAME_ENTRY,			0x014000),
+> -	REG(QSYS_TFRM_MISC,				0x011310),
+> -	REG(QSYS_TFRM_PORT_DLY,				0x011314),
+> -	REG(QSYS_TFRM_TIMER_CFG_1,			0x011318),
+> -	REG(QSYS_TFRM_TIMER_CFG_2,			0x01131c),
+> -	REG(QSYS_TFRM_TIMER_CFG_3,			0x011320),
+> -	REG(QSYS_TFRM_TIMER_CFG_4,			0x011324),
+> -	REG(QSYS_TFRM_TIMER_CFG_5,			0x011328),
+> -	REG(QSYS_TFRM_TIMER_CFG_6,			0x01132c),
+> -	REG(QSYS_TFRM_TIMER_CFG_7,			0x011330),
+> -	REG(QSYS_TFRM_TIMER_CFG_8,			0x011334),
+> -	REG(QSYS_RED_PROFILE,				0x011338),
+> -	REG(QSYS_RES_QOS_MODE,				0x011378),
+> -	REG(QSYS_RES_CFG,				0x012000),
+> -	REG(QSYS_RES_STAT,				0x012004),
+> -	REG(QSYS_EGR_DROP_MODE,				0x01137c),
+> -	REG(QSYS_EQ_CTRL,				0x011380),
+> -	REG(QSYS_EVENTS_CORE,				0x011384),
+> -	REG(QSYS_CIR_CFG,				0x000000),
+> -	REG(QSYS_EIR_CFG,				0x000004),
+> -	REG(QSYS_SE_CFG,				0x000008),
+> -	REG(QSYS_SE_DWRR_CFG,				0x00000c),
+> -	REG(QSYS_SE_CONNECT,				0x00003c),
+> -	REG(QSYS_SE_DLB_SENSE,				0x000040),
+> -	REG(QSYS_CIR_STATE,				0x000044),
+> -	REG(QSYS_EIR_STATE,				0x000048),
+> -	REG(QSYS_SE_STATE,				0x00004c),
+> -	REG(QSYS_HSCH_MISC_CFG,				0x011388),
+> -};
+> -
+> -static const u32 ocelot_rew_regmap[] = {
+> -	REG(REW_PORT_VLAN_CFG,				0x000000),
+> -	REG(REW_TAG_CFG,				0x000004),
+> -	REG(REW_PORT_CFG,				0x000008),
+> -	REG(REW_DSCP_CFG,				0x00000c),
+> -	REG(REW_PCP_DEI_QOS_MAP_CFG,			0x000010),
+> -	REG(REW_PTP_CFG,				0x000050),
+> -	REG(REW_PTP_DLY1_CFG,				0x000054),
+> -	REG(REW_DSCP_REMAP_DP1_CFG,			0x000690),
+> -	REG(REW_DSCP_REMAP_CFG,				0x000790),
+> -	REG(REW_STAT_CFG,				0x000890),
+> -	REG(REW_PPT,					0x000680),
+> -};
+> -
+> -static const u32 ocelot_sys_regmap[] = {
+> -	REG(SYS_COUNT_RX_OCTETS,			0x000000),
+> -	REG(SYS_COUNT_RX_UNICAST,			0x000004),
+> -	REG(SYS_COUNT_RX_MULTICAST,			0x000008),
+> -	REG(SYS_COUNT_RX_BROADCAST,			0x00000c),
+> -	REG(SYS_COUNT_RX_SHORTS,			0x000010),
+> -	REG(SYS_COUNT_RX_FRAGMENTS,			0x000014),
+> -	REG(SYS_COUNT_RX_JABBERS,			0x000018),
+> -	REG(SYS_COUNT_RX_CRC_ALIGN_ERRS,		0x00001c),
+> -	REG(SYS_COUNT_RX_SYM_ERRS,			0x000020),
+> -	REG(SYS_COUNT_RX_64,				0x000024),
+> -	REG(SYS_COUNT_RX_65_127,			0x000028),
+> -	REG(SYS_COUNT_RX_128_255,			0x00002c),
+> -	REG(SYS_COUNT_RX_256_1023,			0x000030),
+> -	REG(SYS_COUNT_RX_1024_1526,			0x000034),
+> -	REG(SYS_COUNT_RX_1527_MAX,			0x000038),
+> -	REG(SYS_COUNT_RX_PAUSE,				0x00003c),
+> -	REG(SYS_COUNT_RX_CONTROL,			0x000040),
+> -	REG(SYS_COUNT_RX_LONGS,				0x000044),
+> -	REG(SYS_COUNT_RX_CLASSIFIED_DROPS,		0x000048),
+> -	REG(SYS_COUNT_TX_OCTETS,			0x000100),
+> -	REG(SYS_COUNT_TX_UNICAST,			0x000104),
+> -	REG(SYS_COUNT_TX_MULTICAST,			0x000108),
+> -	REG(SYS_COUNT_TX_BROADCAST,			0x00010c),
+> -	REG(SYS_COUNT_TX_COLLISION,			0x000110),
+> -	REG(SYS_COUNT_TX_DROPS,				0x000114),
+> -	REG(SYS_COUNT_TX_PAUSE,				0x000118),
+> -	REG(SYS_COUNT_TX_64,				0x00011c),
+> -	REG(SYS_COUNT_TX_65_127,			0x000120),
+> -	REG(SYS_COUNT_TX_128_511,			0x000124),
+> -	REG(SYS_COUNT_TX_512_1023,			0x000128),
+> -	REG(SYS_COUNT_TX_1024_1526,			0x00012c),
+> -	REG(SYS_COUNT_TX_1527_MAX,			0x000130),
+> -	REG(SYS_COUNT_TX_AGING,				0x000170),
+> -	REG(SYS_RESET_CFG,				0x000508),
+> -	REG(SYS_CMID,					0x00050c),
+> -	REG(SYS_VLAN_ETYPE_CFG,				0x000510),
+> -	REG(SYS_PORT_MODE,				0x000514),
+> -	REG(SYS_FRONT_PORT_MODE,			0x000548),
+> -	REG(SYS_FRM_AGING,				0x000574),
+> -	REG(SYS_STAT_CFG,				0x000578),
+> -	REG(SYS_SW_STATUS,				0x00057c),
+> -	REG(SYS_MISC_CFG,				0x0005ac),
+> -	REG(SYS_REW_MAC_HIGH_CFG,			0x0005b0),
+> -	REG(SYS_REW_MAC_LOW_CFG,			0x0005dc),
+> -	REG(SYS_CM_ADDR,				0x000500),
+> -	REG(SYS_CM_DATA,				0x000504),
+> -	REG(SYS_PAUSE_CFG,				0x000608),
+> -	REG(SYS_PAUSE_TOT_CFG,				0x000638),
+> -	REG(SYS_ATOP,					0x00063c),
+> -	REG(SYS_ATOP_TOT_CFG,				0x00066c),
+> -	REG(SYS_MAC_FC_CFG,				0x000670),
+> -	REG(SYS_MMGT,					0x00069c),
+> -	REG(SYS_MMGT_FAST,				0x0006a0),
+> -	REG(SYS_EVENTS_DIF,				0x0006a4),
+> -	REG(SYS_EVENTS_CORE,				0x0006b4),
+> -	REG(SYS_CNT,					0x000000),
+> -	REG(SYS_PTP_STATUS,				0x0006b8),
+> -	REG(SYS_PTP_TXSTAMP,				0x0006bc),
+> -	REG(SYS_PTP_NXT,				0x0006c0),
+> -	REG(SYS_PTP_CFG,				0x0006c4),
+> -};
+> -
+> -static const u32 ocelot_vcap_regmap[] = {
+> -	/* VCAP_CORE_CFG */
+> -	REG(VCAP_CORE_UPDATE_CTRL,			0x000000),
+> -	REG(VCAP_CORE_MV_CFG,				0x000004),
+> -	/* VCAP_CORE_CACHE */
+> -	REG(VCAP_CACHE_ENTRY_DAT,			0x000008),
+> -	REG(VCAP_CACHE_MASK_DAT,			0x000108),
+> -	REG(VCAP_CACHE_ACTION_DAT,			0x000208),
+> -	REG(VCAP_CACHE_CNT_DAT,				0x000308),
+> -	REG(VCAP_CACHE_TG_DAT,				0x000388),
+> -	/* VCAP_CONST */
+> -	REG(VCAP_CONST_VCAP_VER,			0x000398),
+> -	REG(VCAP_CONST_ENTRY_WIDTH,			0x00039c),
+> -	REG(VCAP_CONST_ENTRY_CNT,			0x0003a0),
+> -	REG(VCAP_CONST_ENTRY_SWCNT,			0x0003a4),
+> -	REG(VCAP_CONST_ENTRY_TG_WIDTH,			0x0003a8),
+> -	REG(VCAP_CONST_ACTION_DEF_CNT,			0x0003ac),
+> -	REG(VCAP_CONST_ACTION_WIDTH,			0x0003b0),
+> -	REG(VCAP_CONST_CNT_WIDTH,			0x0003b4),
+> -	REG(VCAP_CONST_CORE_CNT,			0x0003b8),
+> -	REG(VCAP_CONST_IF_CNT,				0x0003bc),
+> -};
+> -
+> -static const u32 ocelot_ptp_regmap[] = {
+> -	REG(PTP_PIN_CFG,				0x000000),
+> -	REG(PTP_PIN_TOD_SEC_MSB,			0x000004),
+> -	REG(PTP_PIN_TOD_SEC_LSB,			0x000008),
+> -	REG(PTP_PIN_TOD_NSEC,				0x00000c),
+> -	REG(PTP_PIN_WF_HIGH_PERIOD,			0x000014),
+> -	REG(PTP_PIN_WF_LOW_PERIOD,			0x000018),
+> -	REG(PTP_CFG_MISC,				0x0000a0),
+> -	REG(PTP_CLK_CFG_ADJ_CFG,			0x0000a4),
+> -	REG(PTP_CLK_CFG_ADJ_FREQ,			0x0000a8),
+> -};
+> -
+> -static const u32 ocelot_dev_gmii_regmap[] = {
+> -	REG(DEV_CLOCK_CFG,				0x0),
+> -	REG(DEV_PORT_MISC,				0x4),
+> -	REG(DEV_EVENTS,					0x8),
+> -	REG(DEV_EEE_CFG,				0xc),
+> -	REG(DEV_RX_PATH_DELAY,				0x10),
+> -	REG(DEV_TX_PATH_DELAY,				0x14),
+> -	REG(DEV_PTP_PREDICT_CFG,			0x18),
+> -	REG(DEV_MAC_ENA_CFG,				0x1c),
+> -	REG(DEV_MAC_MODE_CFG,				0x20),
+> -	REG(DEV_MAC_MAXLEN_CFG,				0x24),
+> -	REG(DEV_MAC_TAGS_CFG,				0x28),
+> -	REG(DEV_MAC_ADV_CHK_CFG,			0x2c),
+> -	REG(DEV_MAC_IFG_CFG,				0x30),
+> -	REG(DEV_MAC_HDX_CFG,				0x34),
+> -	REG(DEV_MAC_DBG_CFG,				0x38),
+> -	REG(DEV_MAC_FC_MAC_LOW_CFG,			0x3c),
+> -	REG(DEV_MAC_FC_MAC_HIGH_CFG,			0x40),
+> -	REG(DEV_MAC_STICKY,				0x44),
+> -	REG(PCS1G_CFG,					0x48),
+> -	REG(PCS1G_MODE_CFG,				0x4c),
+> -	REG(PCS1G_SD_CFG,				0x50),
+> -	REG(PCS1G_ANEG_CFG,				0x54),
+> -	REG(PCS1G_ANEG_NP_CFG,				0x58),
+> -	REG(PCS1G_LB_CFG,				0x5c),
+> -	REG(PCS1G_DBG_CFG,				0x60),
+> -	REG(PCS1G_CDET_CFG,				0x64),
+> -	REG(PCS1G_ANEG_STATUS,				0x68),
+> -	REG(PCS1G_ANEG_NP_STATUS,			0x6c),
+> -	REG(PCS1G_LINK_STATUS,				0x70),
+> -	REG(PCS1G_LINK_DOWN_CNT,			0x74),
+> -	REG(PCS1G_STICKY,				0x78),
+> -	REG(PCS1G_DEBUG_STATUS,				0x7c),
+> -	REG(PCS1G_LPI_CFG,				0x80),
+> -	REG(PCS1G_LPI_WAKE_ERROR_CNT,			0x84),
+> -	REG(PCS1G_LPI_STATUS,				0x88),
+> -	REG(PCS1G_TSTPAT_MODE_CFG,			0x8c),
+> -	REG(PCS1G_TSTPAT_STATUS,			0x90),
+> -	REG(DEV_PCS_FX100_CFG,				0x94),
+> -	REG(DEV_PCS_FX100_STATUS,			0x98),
+> -};
+> -
+>  static const u32 *ocelot_regmap[TARGET_MAX] = {
+>  	[ANA] = ocelot_ana_regmap,
+>  	[QS] = ocelot_qs_regmap,
+> diff --git a/include/soc/mscc/ocelot_regs.h b/include/soc/mscc/ocelot_regs.h
+> new file mode 100644
+> index 000000000000..d4508eb9e04a
+> --- /dev/null
+> +++ b/include/soc/mscc/ocelot_regs.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> +/*
+> + * Microsemi Ocelot Switch driver
+> + *
+> + * Copyright (c) 2021 Innovative Advantage Inc.
+> + */
+> +
+> +#ifndef OCELOT_REGS_H
+> +#define OCELOT_REGS_H
+> +
+> +extern const u32 ocelot_ana_regmap[];
+> +extern const u32 ocelot_qs_regmap[];
+> +extern const u32 ocelot_qsys_regmap[];
+> +extern const u32 ocelot_rew_regmap[];
+> +extern const u32 ocelot_sys_regmap[];
+> +extern const u32 ocelot_vcap_regmap[];
+> +extern const u32 ocelot_ptp_regmap[];
+> +extern const u32 ocelot_dev_gmii_regmap[];
+> +
+> +#endif
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.32.0
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
