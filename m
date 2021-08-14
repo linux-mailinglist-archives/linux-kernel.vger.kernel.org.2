@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1136B3EC5FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693273EC604
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhHNXlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:41:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34239 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233613AbhHNXlR (ORCPT
+        id S234363AbhHNXmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:42:24 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:22619 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233223AbhHNXmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:41:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628984448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sQcQ3MfKHjSyRvS2CzUaH0PtEjudnhFYbbiX4zYZjo=;
-        b=XigQXc0fm25+C4b9KkD9OrqivbNOvx/XMB30AjKE3pys+LBss4mkHdjcqPjs+TL/9PIW+n
-        lwepZQ2sgUASGk//jloQIzx1LfedYY39RDE1jqj8pxUZIhla4oAe05gLSlx9SL2lV68O3z
-        6hV6yYgVsmOrI3TKq6pxtiu/Tub05IA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-546-ii6GDD7JM4Op2C_y8Q2Yjw-1; Sat, 14 Aug 2021 19:40:44 -0400
-X-MC-Unique: ii6GDD7JM4Op2C_y8Q2Yjw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 282A41008063;
-        Sat, 14 Aug 2021 23:40:43 +0000 (UTC)
-Received: from rh (vpn2-54-123.bne.redhat.com [10.64.54.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 56C5C69CBB;
-        Sat, 14 Aug 2021 23:40:42 +0000 (UTC)
-Received: from [::1] (helo=rh)
-        by rh with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <dchinner@redhat.com>)
-        id 1mF3GX-0007ph-Sd; Sun, 15 Aug 2021 09:40:38 +1000
-Date:   Sun, 15 Aug 2021 09:40:35 +1000
-From:   Dave Chinner <dchinner@redhat.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@intel.com,
-        zhengjun.xing@linux.intel.com
-Subject: Re: [xfs]  6df693ed7b:  aim7.jobs-per-min -15.7% regression
-Message-ID: <20210814234035.GE2959@rh>
-References: <20210809064248.GB5761@xsang-OptiPlex-9020>
- <20210809093114.3179-1-hdanton@sina.com>
+        Sat, 14 Aug 2021 19:42:23 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 17ENf7AF008297;
+        Sun, 15 Aug 2021 08:41:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 17ENf7AF008297
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628984467;
+        bh=p77MqZ/bQE0NRNaOYH8SC4jbtPVunqpmSihwUeNOgTs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wiY5maaWjgFa28oHNA7cBRQlu1O2z0zZRlAxExMsblSL85YCq9PvZ2zV86EizK49l
+         MUZxlJN6VprMeuL0EuRV1J51zmRfZI9fnbYACpRNdLYN+F0KULssR5E5+mjoKHLYpq
+         anC40b6z0A4M3h86BPvyCTg6lG01zANxBUlcG7MltsJOh1dwa9SnU6QQWdEe51eVbn
+         BWwyLfNh7/h7rDo3goLlY4Z/yM0elZxQHvQUVP3Q1QzdNXEufqv8O/+KQSWV+QvEMQ
+         oe8Bp5ixZZv1mXkk3faKfHlxMqrgdB5m2n38rstARogBPpsYpK8fkAi0sIzT3AsPo7
+         xGToFOaODK0iw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] kbuild: Fix 'no symbols' warning when CONFIG_TRIM_UNUSD_KSYMS=y
+Date:   Sun, 15 Aug 2021 08:41:02 +0900
+Message-Id: <20210814234102.2315551-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809093114.3179-1-hdanton@sina.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 05:31:14PM +0800, Hillf Danton wrote:
-> On Mon, 9 Aug 2021 14:42:48 +0800
-> > 
-> > FYI, we noticed a -15.7% regression of aim7.jobs-per-min due to commit:
-> > 
-> > 
-> > commit: 6df693ed7ba9ec03cafc38d5064de376a11243e2 ("xfs: per-cpu deferred inode inactivation queues")
-> > https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git xfs-5.15-merge
-> > 
-> > 
-> > in testcase: aim7
-> > on test machine: 88 threads 2 sockets Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz with 128G memory
-> > with following parameters:
-> > 
-> > 	disk: 4BRD_12G
-> > 	md: RAID1
-> > 	fs: xfs
-> > 	test: disk_wrt
-> > 	load: 3000
-> > 	cpufreq_governor: performance
-> > 	ucode: 0x5003006
-> > 
-> 
-> See if scheduling can help assuming a bound worker should run as short as
-> it could.
-> 
-> The change below is
-> 1/ add schedule entry in inodegc worker, and as compensation allow it to
-> repeat gc until no more c available.
+When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
 
-Do you have any evidence that this is a problem?
+  nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
 
-I mean, we bound queue depth to 256 items, and my direct
-measurements of workloads show that and typical inactivation
-processing does not block and takes roughly 50-100us per item. On
-inodes that require lots of work (maybe minutes!), we end up
-sleeping on locks or resource reservations fairly quickly, hence we
-don't tend to rack up significant amount of uninterrupted CPU time
-in this loop at all.
+$NM (both GNU nm and llvm-nm) warns when no symbol is found in the
+object. Suppress the stderr.
 
-> 2/ make inodegc_wq unbound to spawn workers because they are no longer
-> potential CPU hogs (and this is not mandatory but optional).
-> 
-> to see if hot cache outweights spawning of workers.
+Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-NACK. We already know what impact that has:  moving to bound
-workqueues erased a 50-60% performance degradation in the original
-queueing mechanism that used unbound workqueues and required
-inactivation to run on cold caches. IOWs, performance analysis lead
-us to short bound depth per-cpu queues and single depth bound
-per-cpu workqueues. We don't do complex stuff like this unless it is
-necessary for performance and scalability...
+ scripts/gen_ksymdeps.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Cheers,
-
-Dave.
+diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
+index 1324986e1362..5493124e8ee6 100755
+--- a/scripts/gen_ksymdeps.sh
++++ b/scripts/gen_ksymdeps.sh
+@@ -4,7 +4,10 @@
+ set -e
+ 
+ # List of exported symbols
+-ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
++#
++# If the object has no symbol, $NM warns 'no symbols'.
++# Suppress the stdout.
++ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
+ 
+ if [ -z "$ksyms" ]; then
+ 	exit 0
 -- 
-Dave Chinner
-dchinner@redhat.com
+2.30.2
 
