@@ -2,224 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272B93EC321
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 16:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0279B3EC326
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 16:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238450AbhHNONn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 10:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S238563AbhHNOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 10:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238486AbhHNONd (ORCPT
+        with ESMTP id S231956AbhHNOSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 10:13:33 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797D4C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 07:13:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v2so9199530edq.10
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 07:13:04 -0700 (PDT)
+        Sat, 14 Aug 2021 10:18:15 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495ADC061764;
+        Sat, 14 Aug 2021 07:17:47 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p38so25695895lfa.0;
+        Sat, 14 Aug 2021 07:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uP6RbH8Pgo9wDsPbdfuuwayUA6fJ/RxF+MP+Rr5vsro=;
-        b=WYVzTIjdNDUeOmoJKfzdTJUacAlCp0s5TeM9WPVCUIN9cQ97bvvoqeT4rke7Ojh/Dc
-         /ZyDhv9LFqkJo91hiPZTOhZNoiYe4hsmaQJMecS+xoStN5ObJ0gGVoz92Mqmg8ffCjer
-         pHX+i4hsLMGJ8Lteh32LzpmXlBS0ZP8RZKI2YTTlldENPfCOOfF66eapemNDae3k9nEo
-         /DTF1fudaQKy8sGIVLNIfIMaPMg9IBic1v6NnIjDxNmBmilPluaHX3p/hjE54iEItfn8
-         TMi9ow7uJLui+acthVtByapnhvdpG4O/G6rmBhmlml0vzDWnWsebC3W1WkSbCfLZARUJ
-         WIYA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LmN8AjLyVtZIe0c8A8b2Bofe2fcHgxC16V0C8hTy0RA=;
+        b=GLvRpM7DDVbbViD09WZVyRPPCR9PHvtB3Qgoj65HXazddUlbbgyihC+4bg6jbwIkSz
+         MFCHvmPMM1MUBFGFfKkXl9dxMRwMSMD1LNvlftvLe6wLIsUkUiGauNEej1nphCrYDv4r
+         AlF85v+Rrynvq12W+UK55uQ1oDd3Ko/dmTqzjlFOg/zecaV8pKdcprnEN7aSm+eIMwhx
+         Sh+R3sDVcXBwpkXZOLoOVV3NGP0igG0BSLhwUyR+J8VQg8XA6rHg9UVWVj3/HvCbz88Y
+         BLOiOnp0Am9GF4008pfP64+JcQEATtcrhBl8zfytvilU7+E2Pj9swRUEdvKeqXPe7F13
+         FShA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uP6RbH8Pgo9wDsPbdfuuwayUA6fJ/RxF+MP+Rr5vsro=;
-        b=pA0YfT5GJOORle4WcsCwG0h43YMFmVqrVzT795HzDyBUXBWAGc8WheS8QTpzGxs1H8
-         vYeHjbJHtV2ccIV9R5/9hVp12jwqBBNZUNugdULrpMttJgiCQx5cwefBbyy4S62+D99Y
-         vYNyqP+t8CXfp9qeqP9ObbPnXbqmPisD+ciyIHIJ/l1UY8Q+8CHwSnw/UVRAFWWQ8bba
-         tnZ911PWRRSXTgebzGjrCR8ZY/AQaPRV+/KJSsZ2sXSpJU426f+lnHU5Mc4PCjKkkS8j
-         LgMgT3aVAxN30Xb4bmVEMwOjW25oE33KaVYP8f8FUXXt7tUMQ2K5XRmK/RNC2gpfUI4q
-         XBFA==
-X-Gm-Message-State: AOAM530S4kVjSo3JxRmaCl+sxmdZ6Myz8Zo6ht8AVLurGd9EVGKjzkdn
-        oSy4/V1wonFd+zmArUicM9MlItL6j8SQwQVt/gp2Bg==
-X-Google-Smtp-Source: ABdhPJzMElQAJA1X4G2K5OxvaFn7gB8Fq+kPAzlkCwfszq65w0z9hbbU8tIt46cWISXmpcGPXBfMBhyzfZ/tqzg6TMU=
-X-Received: by 2002:a05:6402:1a23:: with SMTP id be3mr9175661edb.23.1628950382884;
- Sat, 14 Aug 2021 07:13:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LmN8AjLyVtZIe0c8A8b2Bofe2fcHgxC16V0C8hTy0RA=;
+        b=YkMImn0Cenjwx5NRv3CNl7byq0KT5Tg2AfZQZXctUnWNFVBqRS+vNc+eKK1uMb1XiW
+         QXDOoZNYnuXqmdMxsiL73n65yEg/PfKCdK9NM/JnPF7W/hJoJ0t7a05gWl7hwhwn8hLQ
+         K7xSWSbogOtf8xyJdG/cite7a6lwFO5Lf69KnMyEAzQ5nVL1SENrulYiYypKWQPFDM96
+         PUZ3e6SgDRrDpgbDehyP10wRZgDU4a052Jnz/kKPmxBf+Zi58IXMRgOQ6kHxeN6OuX73
+         poYB+AOM3YCaB4e1NYrBIzPBa6/J1TM4Bn3SF9WLYnwMHPBzxPDRfkzkepm/syZbuapi
+         PH+A==
+X-Gm-Message-State: AOAM531XBEUaQN8AsFBnODf3oGnKlNGbRJscFDC+gJhe/7ywuEZD2E5N
+        /HMfGXszQTO9dVaNw+sEa/Y=
+X-Google-Smtp-Source: ABdhPJxT+k9E8RhU1d+/0pnEsSkDnVgHOfRoZ9nXTb+8W6/geyg7abLUP823Tnzmd2b5vpHK8WLJFA==
+X-Received: by 2002:a19:610d:: with SMTP id v13mr1650665lfb.641.1628950665530;
+        Sat, 14 Aug 2021 07:17:45 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.122])
+        by smtp.gmail.com with ESMTPSA id u2sm426506lfd.43.2021.08.14.07.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Aug 2021 07:17:45 -0700 (PDT)
+Subject: Re: [PATCH] net: 6pack: fix slab-out-of-bounds in decode_data
+To:     Kevin Dawson <hal@kd.net.au>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fc8cd9a673d4577fb2e4@syzkaller.appspotmail.com
+References: <20210813112855.11170-1-paskripkin@gmail.com>
+ <20210813145834.GC1931@kadam> <20210814002345.GA19994@auricle.kd>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <1021b8cb-e763-255f-1df9-753ed2934b69@gmail.com>
+Date:   Sat, 14 Aug 2021 17:17:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210813150522.445553924@linuxfoundation.org>
-In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 14 Aug 2021 19:42:51 +0530
-Message-ID: <CA+G9fYsSq_LooJ=_UV-=XJmOcg-vrRDGZvUCvo3GnMF0c8pvSA@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/30] 4.9.280-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210814002345.GA19994@auricle.kd>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 at 20:40, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On 8/14/21 3:23 AM, Kevin Dawson wrote:
+> On Fri, Aug 13, 2021 at 05:58:34PM +0300, Dan Carpenter wrote:
+>> On Fri, Aug 13, 2021 at 02:28:55PM +0300, Pavel Skripkin wrote:
+>> > Syzbot reported slab-out-of bounds write in decode_data().
+>> > The problem was in missing validation checks.
+>> > 
+>> > Syzbot's reproducer generated malicious input, which caused
+>> > decode_data() to be called a lot in sixpack_decode(). Since
+>> > rx_count_cooked is only 400 bytes and noone reported before,
+>> > that 400 bytes is not enough, let's just check if input is malicious
+>> > and complain about buffer overrun.
+>> > 
+>> > ...
+>> > 
+>> > diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+>> > index fcf3af76b6d7..f4ffc2a80ab7 100644
+>> > --- a/drivers/net/hamradio/6pack.c
+>> > +++ b/drivers/net/hamradio/6pack.c
+>> > @@ -827,6 +827,12 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
+>> >  		return;
+>> >  	}
+>> >  
+>> > +	if (sp->rx_count_cooked + 3 >= sizeof(sp->cooked_buf)) {
+>> 
+>> It should be + 2 instead of + 3.
+>> 
+>> We write three bytes.  idx, idx + 1, idx + 2.  Otherwise, good fix!
+> 
+> I would suggest that the statement be:
+> 
+> 	if (sp->rx_count_cooked + 3 > sizeof(sp->cooked_buf)) {
+> 
+> or even, because it's a buffer overrun test:
+> 
+> 	if (sp->rx_count_cooked > sizeof(sp->cooked_buf) - 3) {
 >
-> This is the start of the stable review cycle for the 4.9.280 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+Hmm, I think, it will be more straightforward for someone not aware 
+about driver details.
+
+@Dan, can I add your Reviewed-by tag to v3 and what do you think about 
+Kevin's suggestion?
+
+
+> This is because if there are three bytes being written, that is the number that should be obvious in the test.
+> 
+> I haven't looked at the surrounding code and there may be some other consideration why the "+ 2 >=" rather than "+ 3 >" (and from the description of "idx, idx + 1, idx + 2", I suspect it's visual consistency), so if that is important, feel free to adjust as required.
 >
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.280-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-## Build
-* kernel: 4.9.280-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: 5124b049250fa384487453ee2be70fbf82aea45c
-* git describe: v4.9.279-31-g5124b049250f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-79-31-g5124b049250f
+With regards,
+Pavel Skripkin
 
-## No regressions (compared to v4.9.279-31-g58fff7715c9c)
 
-## No fixes (compared to v4.9.279-31-g58fff7715c9c)
-
-## Test result summary
-total: 74784, pass: 58530, fail: 535, skip: 13533, xfail: 2186
-
-## Build Summary
-* arm: 98 total, 98 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
