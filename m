@@ -2,136 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF943EC488
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97A23EC48B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239067AbhHNSfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:35:41 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:60663 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239044AbhHNSf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:35:27 -0400
-Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MsI4Q-1n4JvY1XQ2-00th0a; Sat, 14 Aug 2021 20:34:46 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-audit@redhat.com
-Subject: [PATCH v2 3/3] dm crypt: log aead integrity violations to audit subsystem
-Date:   Sat, 14 Aug 2021 20:33:55 +0200
-Message-Id: <20210814183359.4061-4-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210814183359.4061-1-michael.weiss@aisec.fraunhofer.de>
-References: <20210814183359.4061-1-michael.weiss@aisec.fraunhofer.de>
+        id S239009AbhHNSlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:41:16 -0400
+Received: from mail-bn7nam10on2092.outbound.protection.outlook.com ([40.107.92.92]:34400
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233713AbhHNSlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 14:41:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cN36BEYNGftDV4k99LzpJzM7qCE70+XZv719066uBOHzDysPODSRsnHMwrIXFkiAqGQMdOlY0Q3N2cxvwlScqG92fPGJnORB0oKWBhTVsCGBQ92W5Uneo2sc+UlWe9s9MTerK/pIUiKgYDXYT6G07GF303rnFv2eNni2Dds7LekPILB0lKv6+/+jvyPHeIHQbnA50LB6s1ZLfDMevlsMNJi4aR3edDh+d2JrvhopIOchyS1hk0lgp8bZBoZGImV8Y5tam5TF1q3SBiColRK/ShZR3sSPoLywI8YDtxmh/hyyNCrWEyf09fNCQOn5bssDqeULRGU2OPDdgVHYuyOqfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kr2r2Ngn1gcFBVPUa8Pej5l7xFYevbHkC5JWBO9Lqf8=;
+ b=AnkJAiiREruAeBse8KjRA1OJMyq3gkio3mrIn8V5HhBHolqwwkUAFaaYTKYQh4x3dlisr1/uWix8LMhElxtVO48+9wbPpy6FTv6Jisv4a0/9u1eMcrIKhz1gEFRgkywTglVOpCsjF6kfWMYkPYwPA+W4uDBeItWsArtl8LCUMYsjuPpqrFKCpe4SuscEaou5Wj/XZBWH6pKutlrFzaes/GufMglcUz7eviiRA3S1b+Gt1OaLhfRh4Awhj0M4Noq6PBjbqE0L2L/5BqlnTorDZPsuhbI0kNOv6hB0Ybpkwp74xk6AxDOg3lNoor/z/e7UHEZ5kRT7vcoirHPXIvFMGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kr2r2Ngn1gcFBVPUa8Pej5l7xFYevbHkC5JWBO9Lqf8=;
+ b=HePrG9vDSqPXQnoZJQMPLcUzrT1iNkhNMqMGA9gNuA3lkinu+Z5hhgrWzFqgTv3Tq/ReM6eBnyNlJKBGzga9MwB75iRehHHu7qPqSji0G2CtCj649tMZ4vfXDLWDAszIpXwM7ud+0VYHxUssW/+VV0CLLLdFINihqzwQ712TqIY=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by CO1PR10MB4401.namprd10.prod.outlook.com
+ (2603:10b6:303:6d::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13; Sat, 14 Aug
+ 2021 18:40:43 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d%3]) with mapi id 15.20.4415.019; Sat, 14 Aug 2021
+ 18:40:43 +0000
+Date:   Sat, 14 Aug 2021 11:40:40 -0700
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 10/10] docs: devicetree: add
+ documentation for the VSC7512 SPI device
+Message-ID: <20210814184040.GD3244288@euler>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-11-colin.foster@in-advantage.com>
+ <20210814114721.ncxi6xwykdi4bfqy@skbuf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210814114721.ncxi6xwykdi4bfqy@skbuf>
+X-ClientProxiedBy: MWHPR21CA0030.namprd21.prod.outlook.com
+ (2603:10b6:300:129::16) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:CtoNFbEPV+8vqd27K0MnUwjFtAOw4axb5mfVZuAB5lwMuU7vLD7
- LG+BqLl4mtMr28N9LOxMPgHZ4MK5i50M6Q9smlyXuQ2WsFal4LxZQBCw4T0xBSt0b4P5Sc2
- M1OskO1MB8QXSnNwbyXYLmM5yIOgRLt0q0wCOpum2mojGFMZCGWPZGzjc5jS6jTp3AbLWa8
- pqomu0QeuppvzAGyhozaQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+j3i/Gx0nXI=:lGogq2PrmQmbJOoU4JQ8Bu
- HAsUK52kNoePuQt8BO3ZSA8QRj7zItln8iyNRuHxl9s1EerAQPfRNEy3zfmfdwz+ls+o9O15W
- APi3zCwu8DV9izQv71XocknUUqtQ/Y/9c6BNRqZgSpgvEzVYFBPxzDYEuQpoUxkbIl0f65p7O
- glhJ6xZ6kMrL8I6bMtMRuEVke1BtBBmVtfP1afBTlcbsrGSA7n4U4oMuf3pbpX4AhKnT4JeV5
- k4FNlxcnoOZmPbdO7FH0I6vAGRxhB94k3xa3IBPDKqAbjmUZTn60wj2cDxcEpZC+KCyPcgnL/
- 5P46+rXIzV0kTy3hy1ypzrXL4zNRRGIVl7MTEGIK/V0ApSS8y2E0gvUe9gsPPzx2FA7zaHeew
- PN9fcHBFWQgc5hZAloClyaHQcdg/YOAa9XREO0W1nf2z7Mkx/ieD4vw/dRsVR8Vlnv9uWc1WP
- CMImBlY70hAgCaB8/tszaYeeSG18mHyOfszLFaZu0BbvrZc7OqZptyPxY9wAYQ8RGUhVYqgLl
- gZgiEDxhucrioOmMv86XG7HkGrTFXKFgpeMnVGdbierKP2ZyIULtndJ2zNpw4p43ttuCL1DHW
- qtM9Dk7vS1j4jOPxn5WGVwyVd911HwvKHoVLbwwhkgoCqR6A2XeKdD4+bayar7UKr1+KImws7
- vRc1rHpXOqVeAS5lSQmfVLwlXvJfPbg1YylM0bjobAiHH0O8YMm0z5wSNPT8NWZ9t1dI3QBF0
- q+2rVCp7IVHyBuWmZKO2w6kIY81Rt6JPmth1BC0QApvN7Ryuul9D84M7DqJYEXl+BuC5r9xkd
- 6O2xUCs6k0CLWTWoHDbXh/Ar9+vsHrGl7vWrwqZQD6E08Kq+Q1Ft6Irmia5MxNCMl7YrKVhsv
- 5SL3t8JrhdT8pWxIJtkg==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from euler (67.185.175.147) by MWHPR21CA0030.namprd21.prod.outlook.com (2603:10b6:300:129::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.1 via Frontend Transport; Sat, 14 Aug 2021 18:40:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78c661d4-6551-4a75-a6df-08d95f5305d1
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4401:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB44012731196AC2D46A93E746A4FB9@CO1PR10MB4401.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2jkaGGuMFPAzyDmG++25kWLgfaMRzsc1ifdhfFfIFRP+BPKSFMkd2yoGSir926XKTbj2MTJwGL8zorAQZC6eH4+AfsW4tk31BE4GmIgzEPhMmBXHJIztCjld6t39SkwVTg0Eh6YB35vxr4XNC1ZsrxiYV7QEp+cptCZfuSTHftHk48v8SC8qzxJ8CgwkyuciygVq403KTWcTuVzt6CKt6a65Nwefft0z0C6pz3/lX4lcK4/S5QdA+kvvpLyqhfl+6QEBJ+UfIYWqbIXn2xk5spZTiEN2nZuLSEeMQw/frgXWahG21raBrad8XkYWVNpMdB8Rsj4rbMaFa0J801iUvfWDCrNar3Eswzt2DqrkF+y+rFdFwo86jJ+EJJpT49sAHa99xHKOpYA8Vhf62HWWLr8VFra/LX75bjlT6tYf7WySe+wEtAU3hTtqgO20YMruZccCeJN4SmR1W1VyhAAlvvIA8ysiRwhl81auB2kcUPkj7tU70JMdIAlO+9wyZPTxo0YGt/HszLJ6sIdWU2rOG+oDrfysHRpTn5NCmLZoWMAknCs8Y2zLppUd5OGl7lxfiv30GS9MBftRLZT/Mmk0vS4k3rFje7vtpxTDifPdgPc6u6Oz1Fg4/Zpvtixw+GurCQJ56Ym5PUiKsj83zS11pei+vAiisPODhJOcEAtpFIBWej5ZcFdq/A4whlWy7fz5AROc4+CNAi/1lv/kSGr6KA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39830400003)(136003)(346002)(396003)(366004)(26005)(5660300002)(38350700002)(8676002)(6496006)(956004)(66556008)(33716001)(316002)(186003)(8936002)(38100700002)(44832011)(33656002)(66476007)(86362001)(9686003)(478600001)(9576002)(4326008)(83380400001)(52116002)(55016002)(1076003)(66946007)(2906002)(7416002)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1ogxzDBZbtZ6BLg6rw+oa2Jj3XMHb46V6J7C5LCqp0riDz33bzKG9kCkXiWq?=
+ =?us-ascii?Q?iHSy7D2c2Zqrqw8n5naVIpG2Jlk6EC6rVL8w8BJepDrc/gpEbwqIfY/137FJ?=
+ =?us-ascii?Q?i97Zt27uC81spfPJtMsvLEjGQbKe7TIIfzaflQ5Y9z12kDeCPQoMbq22Atfh?=
+ =?us-ascii?Q?F+yg6fbgFZbof2riLr9wtjdEy8L42hTw2nm56NjzQYvfGjDJ/zvBBCWBePnp?=
+ =?us-ascii?Q?QXEb8SY42U4LaEb98kAVKt3R1EYSx96jBzfAQ3c4iFRdg8uBziLtxRvlB8Ty?=
+ =?us-ascii?Q?lm/e5dbvVVCWzGSS+Hh/jHPF41ZPFEfpMr9ALevcrwcduSX9SCEp6BO9IpT+?=
+ =?us-ascii?Q?CW4P7D6JmU0/LnrSdghHUahmf9vz09eMkFARrR1Xhawa4Fhpx/1ztiNb/t4d?=
+ =?us-ascii?Q?JMhM6MOh7qJS1ZQ3f8w6fnWWCxLXceOfnAF1oGHWHwTlL17eJv/DReLWAGE/?=
+ =?us-ascii?Q?I2Gvi3V+eVV6tiicLfZ851xSZM3MKk0RbYPS/XqUdC62tSZjsk2R0ZCEdmNe?=
+ =?us-ascii?Q?c9E9Z1h0gDeeGY1saPHF/CAzKBH+hNsrEfgL6J0piZlsl0vJ8E5p4igeeRk6?=
+ =?us-ascii?Q?dwguQOGbrkwLQSrDGXhwJGBfYmLBK7aEF2/cKPGTG871yzywhsMTgKwWjglc?=
+ =?us-ascii?Q?89e4bK+03bmZVqtaL0CUCKn6vLAiS2wZGzhOM9FMrchvwtP+gTTMbxeGGwQL?=
+ =?us-ascii?Q?LNKrG0amJ1IpyZ/D0rpFwZgaVCmWqxaZ9zhB5yt9IgH5iRfqoF19+5sEtCWj?=
+ =?us-ascii?Q?G5OyG5Skc2uBtNEnUhRRFRHCbaioOdkvPOi3QM4nCMbhuG2aNEtmozllZGuh?=
+ =?us-ascii?Q?BAlGp3T+TjlEvIY+HktPQ0Lu/0nayEQuZ73ZeyQMZ/E4b7ymFwBPumJyL5gG?=
+ =?us-ascii?Q?jNM+T7/BQTdMj7J+fMGFnMdCrPw6OmXvr46ngh0KBsK598oBfpgBP0ITDfFr?=
+ =?us-ascii?Q?eooooTV2uVTpn2XfBLpcAouzmlIdzOkR2FiVDkkoGBy+kLJGB7V/hrrrf0N6?=
+ =?us-ascii?Q?22mj6l31DzYEUIrmSeXSH2KGEiTFVKGK79yHGmUIq/dZHeeZuyggDR+8rNYv?=
+ =?us-ascii?Q?mDIsDo1AAcjx0UCl/YbUytiP/Bl3dBM8oR0e0e7UCGS2pGJLopbUcbIVQQCM?=
+ =?us-ascii?Q?X9IS4dWbdr2pOUqYVp72XogsID97FWcjGftQhU0sEc8LgtZYToJUNkmfX0gk?=
+ =?us-ascii?Q?88AsOnQQ/Q1ZwgzXReNmd+Ng+e6mk40Ed8S0yJFQfPhElN5zFpVX83q0MV4E?=
+ =?us-ascii?Q?ZlasqcwN4MKla7ijC6sXpCTtm/OydNvUkR8Sk5/HyLJmjCS6BDafB/+j36ae?=
+ =?us-ascii?Q?JpSAMrfWp6IALik4FZSdApxE?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78c661d4-6551-4a75-a6df-08d95f5305d1
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2021 18:40:43.7314
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nl3z/L5gboiQSNWHBv7RIcKaS+io5X+ZEftMD9l6n7clf49NiaoYfpc24QLMbRIy6dJMlTKpLnZtsMjYvtPv6YSJrklju7j6kYF4OfVl4jE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4401
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since dm-crypt target can be stacked on dm-integrity targets to
-provide authenticated encryption, integrity violations are recognized
-here during aead computation. We use the dm-audit submodule to
-signal those events to user space, too.
+On Sat, Aug 14, 2021 at 02:47:21PM +0300, Vladimir Oltean wrote:
+> On Fri, Aug 13, 2021 at 07:50:03PM -0700, Colin Foster wrote:
+> > +* phy_mode =3D "sgmii": on ports 0, 1, 2, 3
+>=20
+> > +			port@0 {
+> > +				reg =3D <0>;
+> > +				ethernet =3D <&mac>;
+> > +				phy-mode =3D "sgmii";
+> > +
+> > +				fixed-link {
+> > +					speed =3D <100>;
+> > +					full-duplex;
+> > +				};
+> > +			};
+>=20
+> Your driver is unconditionally setting up the NPI port at gigabit and
+> you claim it works, yet the device tree sees a 100Mbps fixed-link? Which
+> one is right, what speed does the port operate at?
 
-The construction and destruction of crypt device mappings are also
-logged as audit events.
+Good catch!
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- drivers/md/dm-crypt.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+I made the change to ocelot_spi_vsc7512 yesterday to set it up as
+gigabit, tested it, and it still works. Previously for my testing I'd
+had it hard-coded to 100, because the Beaglebone I'm using only supports
+100Mbps on eth0.
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 50f4cbd600d5..2a336eacb50c 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -41,6 +41,8 @@
- 
- #include <linux/device-mapper.h>
- 
-+#include "dm-audit.h"
-+
- #define DM_MSG_PREFIX "crypt"
- 
- /*
-@@ -1362,8 +1364,12 @@ static int crypt_convert_block_aead(struct crypt_config *cc,
- 
- 	if (r == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*sector));
-+		sector_t s = le64_to_cpu(*sector);
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 	}
- 
- 	if (!r && cc->iv_gen_ops && cc->iv_gen_ops->post)
-@@ -2173,8 +2179,12 @@ static void kcryptd_async_done(struct crypto_async_request *async_req,
- 
- 	if (error == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*org_sector_of_dmreq(cc, dmreq)));
-+		sector_t s = le64_to_cpu(*org_sector_of_dmreq(cc, dmreq));
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 		io->error = BLK_STS_PROTECTION;
- 	} else if (error < 0)
- 		io->error = BLK_STS_IOERR;
-@@ -2729,6 +2739,8 @@ static void crypt_dtr(struct dm_target *ti)
- 	dm_crypt_clients_n--;
- 	crypt_calculate_pages_per_client();
- 	spin_unlock(&dm_crypt_clients_lock);
-+
-+	dm_audit_log_target(DM_MSG_PREFIX, "dtr", ti, 1);
- }
- 
- static int crypt_ctr_ivmode(struct dm_target *ti, const char *ivmode)
-@@ -3357,9 +3369,11 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	ti->num_flush_bios = 1;
- 	ti->limit_swap_bios = true;
- 
-+	dm_audit_log_target(DM_MSG_PREFIX, "ctr", ti, 1);
- 	return 0;
- 
- bad:
-+	dm_audit_log_target(DM_MSG_PREFIX, "ctr", ti, 0);
- 	crypt_dtr(ti);
- 	return ret;
- }
--- 
-2.20.1
+# phytool print swp1/0
+
+ieee-phy: id:0x00070540
+
+   ieee-phy: reg:BMCR(0x00) val:0x1040
+      flags:          -reset -loopback =1B[1m+aneg-enable=1B[0m -power-down=
+ -isolate -aneg-restart -collision-test
+      speed:          1000-half
+
+   ieee-phy: reg:BMSR(0x01) val:0x796d
+      capabilities:   -100-b4 =1B[1m+100-f=1B[0m =1B[1m+100-h=1B[0m =1B[1m+=
+10-f=1B[0m =1B[1m+10-h=1B[0m -100-t2-f -100-t2-h
+      flags:          =1B[1m+ext-status=1B[0m =1B[1m+aneg-complete=1B[0m -r=
+emote-fault =1B[1m+aneg-capable=1B[0m =1B[1m+link=1B[0m -jabber =1B[1m+ext-=
+register=1B[0m
+
+
+Of course I understand that "it works" is not the same as "it's correct"
+
+What I wanted to accomplish was to use the speed parameter and set up
+the link based on that. I looked through all the DSA drivers and
+couldn't find anything that seems to do that. The closest thing I saw
+was in mt7531_cpu_port_config where they set the speed to either 2500 or
+1000 based on the interface. But nothing that I saw would explicitly set
+the speed based on this parameter.
+
+So I think there's something I'm missing. The fixed-link speed should apply=
+ to=20
+the CPU port on the switch (port@0)? Then eth0 can be manually set to a
+specific speed, but if it doesn't match the fixed-link speed I'd be out
+of luck? Or should an ip link or ethtool command to eth0 modify the
+speeds of both sides of the connection? It feels like setting port@0 to
+the fastest speed and letting it negotiate down to eth0 makes sense...
+
+To ask the same question a different way:
+
+I can currently run "ethtool -s eth0 speed 10 duplex full autoneg on"=20
+and the link at eth0 drops to 10Mbps. Pinging my desktop jumps from=20
+about 400us to about 600us when I do that.
+
+Should I not be able to do that? It should be fixed at 100Mbps without
+autoneg, end of story? Because in the current configuration it feels
+like the fixed-link settings are more a suggestion than a rule...
 
