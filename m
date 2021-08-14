@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CD83EC4D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18553EC4D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhHNTuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        id S229818AbhHNTv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhHNTu0 (ORCPT
+        with ESMTP id S232930AbhHNTun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 15:50:26 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E37AC061764;
-        Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id a8so20345499pjk.4;
-        Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
+        Sat, 14 Aug 2021 15:50:43 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576DFC0617AD;
+        Sat, 14 Aug 2021 12:50:14 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id o185so20962920oih.13;
+        Sat, 14 Aug 2021 12:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H55D/hatpxv6wsHj/kV2cIDtO8yZ68G4AWzJyEwImqI=;
-        b=vIwpytlXpOqYADP4f+RqCmpmRzgGJtLie3NhxzperJCgH6Bfh17xTDj5mG+xpvs5pX
-         XWm11d2R0Y90jxAUO5Nno0ZRT7qtG+AOOVF8JuJZsxjhfDZXppx6W8i7NGbno0v1IMap
-         l83zpPjqZxW/QU6mHx51RLXsRlOymfAwvdSPuxKNi13fjMaN/Yqs1QCxanl7cDT5gqTe
-         Hu/AKa3wygl1xDlt2gu6dPgxSgaeCyN1EXLuxw3x9t2Gq33JcX7VD5qqDGrOIxr+VAg1
-         LiK+RiTto13a6cY7IgG5AKR9OqI3Hu8RykdFvvt7x44FGVvyIj4iWUk8+pnxvPTVPu4n
-         wkig==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IZpSMudFs8aVE3pfGd1Gr+76BBhEIf1kzdvwdneZmoM=;
+        b=icvOJzQz0gYcSfo7ALzjND6PYIhmFUUt2iRVLkcOz9tiXMEZtdoQez2tCkJdpgM8oD
+         Haa5qMC7FWyatQcmsxhzdqR+HPJtvkGWSE29A6Zn7TQamEwwjNT58iqPbWc2wom7w4H+
+         0ojgRAOd9Wh9kAcZB1LMUotzRgcVMQmSdTnyjonOSdm1qVNncXlIJKSYvPNFC1gcKipO
+         5iXtZwKc5WvW5XMZB82pufdpE//oeCTyTTgxJb8DiSgPl/2xh9vAlGwdbrKY8r/c2tHp
+         m+kFWmhP6wj9ydPJNFfqIbNK7Vi5WZNfSyumanhouPLq8rigemxB6YiM8Fkm4jTDxB2c
+         dORw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H55D/hatpxv6wsHj/kV2cIDtO8yZ68G4AWzJyEwImqI=;
-        b=Mdw514ryYDXlJ5UwK5796QU+kx0ZN7l0DLjO7y3VSw6WorRFewaH5WE4/lpT4zKGz5
-         dwuO/akXUllKDFmBdeByVQ52bNQkE3t646itRdnykMySXC+nSCvBZV1W/8m86JGxVWOQ
-         S5WKCO19rn2pfhcYPGz7FHkVcsYGrP3PV5PsTq7pY83+2DJTUJBBI722JUMeyc2lyLyZ
-         8PMWCWkhbF54sMGeRf4X+pKwuBw7W+Ju/0RT71CF1PhN+ocluA6sffMlr6u0PBuQdnUX
-         l8/HWVvl8d7oCCjroYECiO/WMnvqkXnS/gt2+K0RH1c43xeuhNLV7grNzjNa7GEeFtTY
-         JpfQ==
-X-Gm-Message-State: AOAM531uvRgUiK3M39vBL1t9eQ9kL4dik7qBy/+FSGQzDZtjU1pUpPZJ
-        dvWCB/c4uAOhGDk+4+wf3zE5ppnZWlvtv4H2lrlH/G1y0Ctgxw==
-X-Google-Smtp-Source: ABdhPJz5JIrjdib84kyhpEN0ITHSybOUFi+IHRxmLBBQjG6+xQJOflN3m3h/gdDrt5UWfd9mZW5qZScjG2stKZqP2eo=
-X-Received: by 2002:a17:90a:cf18:: with SMTP id h24mr8693629pju.228.1628970597029;
- Sat, 14 Aug 2021 12:49:57 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=IZpSMudFs8aVE3pfGd1Gr+76BBhEIf1kzdvwdneZmoM=;
+        b=GuVZZe8Fj1EsbV5pAf8ife4sQlSSHnnzzx11OnH6tdYqOO/xYm5NVSmOFQPrjSDedY
+         rt3GvBzlwbYj82PNzu20Yd85AD1pPb7V1e6PKp8W4+ZLtMFilZbf5AtRjqbnoxWALDdW
+         0UWB3x6p0yV2BmHepK8TzdImHEDiL4ISaL63m53hiczjRUQfDP2lYg1GfVeSiLylkkcp
+         +RXkcDXtFDFvtG3ujuSSRgHSb1ELNltX6pAXZsnYHfp7deLbdFFAQSj8I3W5yBlC0hZa
+         WbOByqGuk+sGqekdZbWZr3cTcoVIE7+nNjzIe1xlGD5L+qrkeEGAeFzKgki32KqjYPAL
+         k7og==
+X-Gm-Message-State: AOAM532eNNi+b9yFBeNL8uD8THrpSOwz3aDxKqYdSLXOaOOiDeNbCx89
+        Osemy3e6QPO4bmpip/OiRkQ=
+X-Google-Smtp-Source: ABdhPJyR08Lk47bOc8/6600640KQuN07Chwm4w8/dNDmspGPyjWV9jGL6zPbxmlG3KbYZG9rtW2KTQ==
+X-Received: by 2002:a54:4619:: with SMTP id p25mr6103133oip.5.1628970613802;
+        Sat, 14 Aug 2021 12:50:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r1sm1042546ooi.21.2021.08.14.12.50.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 12:50:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 14 Aug 2021 12:50:12 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/30] 4.9.280-rc1 review
+Message-ID: <20210814195012.GA3951799@roeck-us.net>
+References: <20210813150522.445553924@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210814043103.2535842-1-luke@ljones.dev> <20210814043103.2535842-2-luke@ljones.dev>
- <CAHp75VcCzjb7TKZ84iVjJr27+nCcA10n38nwCAGATucfAAMkKA@mail.gmail.com> <UCVTXQ.8ME64G0S1BQ8@ljones.dev>
-In-Reply-To: <UCVTXQ.8ME64G0S1BQ8@ljones.dev>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 14 Aug 2021 22:49:21 +0300
-Message-ID: <CAHp75VdS5v_wGEs5vWcyc1Y2NZ7pXbamSHn7MgWj6ie8ahnoBQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] asus-wmi: Add support for platform_profile
-To:     Luke Jones <luke@ljones.dev>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813150522.445553924@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 2:46 PM Luke Jones <luke@ljones.dev> wrote:
-> On Sat, Aug 14 2021 at 12:40:39 +0300, Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Sat, Aug 14, 2021 at 7:33 AM Luke D. Jones <luke@ljones.dev> wrote:
+On Fri, Aug 13, 2021 at 05:06:28PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.280 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-...
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 394 pass: 394 fail: 0
 
-> >>  +               pr_info("Using throttle_thermal_policy for
-> >> platform_profile support\n");
-> >
-> > Why pr_*()?
->
-> That seemed to be the convention? I see there is also dev_info(), so
-> I've switched to that as it seems more appropriate.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-The rule of thumb is if you have the device the message belongs to,
-use dev_*(), if it's really stuff before we know anything about
-devices, use pr_*(). In some cases if you have ACPI handle, you may
-use acpi_handle_*().
-
--- 
-With Best Regards,
-Andy Shevchenko
+Guenter
