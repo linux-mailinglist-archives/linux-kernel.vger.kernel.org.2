@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A9D3EC4F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 22:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219C73EC4F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 22:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhHNUNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 16:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S229818AbhHNUUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 16:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbhHNUNG (ORCPT
+        with ESMTP id S229489AbhHNUUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 16:13:06 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59681C061764;
-        Sat, 14 Aug 2021 13:12:37 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so21165115pjb.0;
-        Sat, 14 Aug 2021 13:12:37 -0700 (PDT)
+        Sat, 14 Aug 2021 16:20:19 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383EC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:51 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so21098381pjl.4
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lil9AoIO0pvXft/wgCoMRBl14pUNq2Bwl4VjQXc1qVI=;
-        b=sVw7hCV8yRTqkPORb847X6o48bQC2n0dn45Eh7Lyqtd7a39t/SEH/EtoSSngFP82GN
-         So162zopl0Mfj7ghGwdyPWKUnows5xRA/kDf5CHjikzrj1LwvaGtaO5hgmJ8LPri+Jas
-         XWqJ25D+g6NCK+fpXa2ZML8Iw2F0W8825kuwgtwXZ7ymBhsNw3C/c79RqneE/yCvp1b2
-         g1EOY1X70c+kZj+albuZp7XnUi8ODg0Qhd8EB2JT0Skz3ZvqGiDYW0WOwDrs01azprdA
-         0NdvaOxSuaaWQaFy79GEurrwCVQ2p/k29esGGmSFr9629L3YSMWxGXsXQClRsaUgeVOL
-         QCbQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mAtgpgJZGh5qZDIf6I2YBn2p3wmsbATJ34UD7KVweM4=;
+        b=bS0bw4Nb73a6l7jcuM2wSDV4P0TeaiKE/QC1+0xoOtIlTgDbjac5q6rtGwB8Euyw7j
+         9TGQP0A3Ykl4gyK2Hy5wyX72Mzwl8zazjXZ6dgUU4Psy9B3RpjDOT5kl+kLV6ffVbX5C
+         2CDUqQqXEXJhCapE+J4G2939goYOMgEtYgX2LgCysAELwLyqR0PYiy11PWVlmxvbtaKx
+         RBiXADztgCXYZibRjY3NkraMFQxVhK0ncsWN47nuDpnSAv8RdIBZUONo/GSU34hKclSx
+         JQfrCmli4QVEh7fKwXZmpCI/SzZ4k+jl/A7WrLy8mfOLF1joLAqYH5dMZrsBJjbc5xI8
+         ty+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lil9AoIO0pvXft/wgCoMRBl14pUNq2Bwl4VjQXc1qVI=;
-        b=E2jFJc5zaULbZ6XHp2pchlMhsdrulw6rQdXjs0704v+AhxR2dSO4guwoG2ZUNEXddB
-         MFMD0GuRaFA3jPWSVGtrU6zFJYPcv4ttJBpVnRoKVEaNzvb855FWvi3FpGGJSwK7vXvD
-         kzpzA156PVaLlCU3FdROb58W+9GoJxzGtzNyjpZ40WLEailvHtphpGg3MTAAgyZRpkU3
-         /XI30bIrslAhv1Apj51aoTQRLwa+IX+5tqB/XGDQUiCALDHFKyyvOaF+nopvGr0CSjkG
-         ROGOu0j+tgibBveKh+gg2eTH4K/pRtkWyL1H5+UhL/QHwzFpTwOn2J3CFyIy7a8JC3Nv
-         /bVA==
-X-Gm-Message-State: AOAM5320iDP//cFP2BYhCfk3/+SUuHMgSMOxYxE27OgVvm0wBjbXAppq
-        Ajly38UK2RTjU45bII9e660=
-X-Google-Smtp-Source: ABdhPJxHkBe/kNjoFSqi6fNUoIZJHki5U4Q7eFa+ruFr7SX7NFjotH1BFbtYN4tQAkwqY/jIvhFAnQ==
-X-Received: by 2002:a17:90b:395:: with SMTP id ga21mr8974448pjb.159.1628971956923;
-        Sat, 14 Aug 2021 13:12:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mAtgpgJZGh5qZDIf6I2YBn2p3wmsbATJ34UD7KVweM4=;
+        b=VyC1fgJraGr+po0HYfJrk3kYXjhUdfM1S4wGYBe13JGyeOFFq8isTvpgvAg99fmvWi
+         HldH9Nyf6c/TxyuDSbQze9H4sd7gf7ap2wXY7E+MOke09ZWx+Z2NaPzdtyVI9zBAVBYW
+         W/f3Y0NQViCdeoXGHsVw6ghbRKm/DgK5kpxcs5CHk1J6cSKs08cLt6YBzphnmNLVERjy
+         pxf1fj5DOehhpjtICIQxLHk4qUcY2JrHsEjUEc7+2dTUMefM5W+845x2CT1akKhBRHfz
+         StcwwtoXG8CIaPdSu+U7qQCkanMTABH8bhimwKzueoALpBShMmD9WWdZqE1c2FyiaHm4
+         nTfw==
+X-Gm-Message-State: AOAM530Jh0pOBpERw3G1RUiXDVeAcqCp13l9/Z1NnE96on5iHEivk+VN
+        R7TZAnREcRoUBtjnfFtC++Q=
+X-Google-Smtp-Source: ABdhPJxhPvqKjOaL6Gm/B7DK5CcgcrHKajWNwm/TbgU99bhnT1KC0ts35LjRkITbB9hyun/unyGbeg==
+X-Received: by 2002:a17:90a:2802:: with SMTP id e2mr8871836pjd.215.1628972390593;
+        Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
 Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id u6sm7309420pgr.3.2021.08.14.13.12.33
+        by smtp.gmail.com with ESMTPSA id u13sm6413121pfi.51.2021.08.14.13.19.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 13:12:36 -0700 (PDT)
+        Sat, 14 Aug 2021 13:19:50 -0700 (PDT)
 From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Mark Brown <broonie@kernel.org>,
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Takashi Iwai <tiwai@suse.com>, Jawoslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>,
         Bjorn Helgaas <bjorn@helgaas.com>
-Subject: [PATCH 2/2] ASoC: tegra30: i2s: Use of_device_get_match_data
-Date:   Sun, 15 Aug 2021 01:42:19 +0530
-Message-Id: <f4e632e0023d90c43b2b927e752585142a9d9c26.1628971397.git.aakashhemadri123@gmail.com>
+Subject: [PATCH 0/3] ASoC: ti: Use of_device_get_match_data
+Date:   Sun, 15 Aug 2021 01:49:38 +0530
+Message-Id: <cover.1628972198.git.aakashhemadri123@gmail.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1628971397.git.aakashhemadri123@gmail.com>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer `of_device_get_match_data` over `of_match_device`
+Hi,
+	This patch series will apply cleanly on for-next
+Prefer `of_device_get_match_data` over `of_match_device`.
 
-Retrieve OF match data using `of_device_get_match_data`, this is cleaner
-and better expresses intent.
+Aakash Hemadri (3):
+  ASoC: ti: davinci-mcasp: Use of_device_get_match_data
+  ASoC: ti: omap-mcbsp: Use of_device_get_match_data
+  ASoC: ti: davinci-evm: Use of_device_get_match_data
 
-Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
----
- sound/soc/tegra/tegra30_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ti/davinci-evm.c   | 2 +-
+ sound/soc/ti/davinci-mcasp.c | 2 +-
+ sound/soc/ti/omap-mcbsp.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 36344f0a64c1..d4c5594efaf1 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -418,7 +418,7 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
- 	}
- 	dev_set_drvdata(&pdev->dev, i2s);
- 
--	match = of_match_device(tegra30_i2s_of_match, &pdev->dev);
-+	match = of_device_get_match_data(&pdev->dev);
- 	if (!match) {
- 		dev_err(&pdev->dev, "Error: No device match found\n");
- 		ret = -ENODEV;
 -- 
 2.32.0
 
