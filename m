@@ -2,171 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A219B3EC4AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38ED3EC4B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237556AbhHNTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:09:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37844 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhHNTJ0 (ORCPT
+        id S238592AbhHNTJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234279AbhHNTJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 14 Aug 2021 15:09:26 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 58D391FDCE;
-        Sat, 14 Aug 2021 19:08:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628968136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=127TjAPx8KQOwIpkvIdUi/9Nroy0dYk4GGz2yrb3uZ0=;
-        b=FGBicascI1IKpUNA4S6XZfRZX0jlhyPmCUYzT2gNyDOCUhtuVBjs7veJGdATer9LsMUPA5
-        a4IuNs8EqhWn7AhKNBj8Rd0cyoZOyfJTNiNn460syqFR+sFyLZ8+6hNVRWQc8w/bvyZBwn
-        DDe9nsrhORGeDSVA6oejvSzTvltZeak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628968136;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=127TjAPx8KQOwIpkvIdUi/9Nroy0dYk4GGz2yrb3uZ0=;
-        b=MLsg8OIU1bHUcslfIWhql2eSKPI3FG/n7BYgTCiylPTYw9vwrxi6+6zJGecefbKfxxOCT/
-        cuYTiWp/THaKhfBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E682013D20;
-        Sat, 14 Aug 2021 19:08:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JPiPNMcUGGFWbAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Sat, 14 Aug 2021 19:08:55 +0000
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-To:     Clark Williams <williams@redhat.com>,
-        Mike Galbraith <efault@gmx.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
- <20210812151803.52f84aaf@theseus.lan>
- <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
- <20210812162448.26274298@theseus.lan>
- <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
- <20210812164440.0426d8b7@theseus.lan>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
-Date:   Sat, 14 Aug 2021 21:08:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE7EC061764;
+        Sat, 14 Aug 2021 12:08:57 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id v2so9888280edq.10;
+        Sat, 14 Aug 2021 12:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qn4GvlYQZobCtErWEed4YL0Byg/5djbyOa0HzbMWBys=;
+        b=boZRjvM7xpxdS0E1QfjU5IZ9WLtxktShHeHdvt18Moj9gGCOwNQprZv7maryrLov3v
+         9FNWG933qdVw7mri3DelTJqveBRtWjBv2HenahVTzAztDqQL+UMsp8rw/QALe6qJneqv
+         44qWWPpg+r4/bpRpvQTuw9OVSxq4WhBTuMhEMvy7xSpR+B1Jacv407xPfiwxBOCzpg8i
+         jUMboy4uGbGXF9Qv4uWyMSECqHDcZ+T6etOeMj1UgZTKXnwnv7KxqwyWrYiFzQuah8O6
+         Vmkwwqg+pNIlXqqXGgrA50Xp4ruK+7LtWOVZC7HA3Q6iDiJXd4VDY6Gg8wmYrO9TWQnW
+         l2Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qn4GvlYQZobCtErWEed4YL0Byg/5djbyOa0HzbMWBys=;
+        b=QJBN3WluhK/U4o3OC2nLqEgdNGZ+CdKYhk4/zRESEo6USrEOy5k0HDutHFbD+17xlw
+         bgEgFizvW5qfr0vWeTxBuC1XJT3/eK8kUvOIpqNcJbEQMN4SGDN+mHHtHE2irdRLVaQ7
+         KAiLxIcsxZ35+CBZlJImZUAeRZDQZz10s+ksfk/2wWyb6hA1W/kEBuFrH0A0K1OeRCvw
+         +sK/DnV2QHkHTHJXLAhHmw/Q/prfUdgCEjPSvPStZoNbemBF0cTO0bYme75DUp22pECv
+         QeiT19g4CcmadI7VDDgzapl8TW+ViiiwgBZ6Mmlyv+GzCOLbP/c7Fw3AwO3llBTtdcsS
+         /ScA==
+X-Gm-Message-State: AOAM533Gm23MG1TbrTTnS7LK/2YLcOIuwnUI3vhkzhgNR9GTM5ap+fOF
+        35aBZ0Yw37wkNYgq9Reouqk=
+X-Google-Smtp-Source: ABdhPJwSLCyFZTPzB5aTk1qDwj19iWfjv8VIB6T8Hr/6xelhT/gNQ/uoG7h4MyNQwJh9RkEBBcbbSg==
+X-Received: by 2002:a05:6402:5112:: with SMTP id m18mr10540742edd.47.1628968136529;
+        Sat, 14 Aug 2021 12:08:56 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id n15sm2531680edw.70.2021.08.14.12.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 12:08:56 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 22:08:54 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 10/10] docs: devicetree: add
+ documentation for the VSC7512 SPI device
+Message-ID: <20210814190854.z6b33nfjd4wmlow3@skbuf>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-11-colin.foster@in-advantage.com>
+ <20210814114721.ncxi6xwykdi4bfqy@skbuf>
+ <20210814184040.GD3244288@euler>
 MIME-Version: 1.0
-In-Reply-To: <20210812164440.0426d8b7@theseus.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210814184040.GD3244288@euler>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 11:44 PM, Clark Williams wrote:
-> On Thu, 12 Aug 2021 23:30:29 +0200
-> Vlastimil Babka <vbabka@suse.cz> wrote:
-> 
->> On 8/12/21 11:24 PM, Clark Williams wrote:
->>> On Thu, 12 Aug 2021 22:45:19 +0200
->>> Vlastimil Babka <vbabka@suse.cz> wrote:
->>>   
->>>> On 8/12/21 10:18 PM, Clark Williams wrote:  
->>>>> On Tue, 10 Aug 2021 18:37:31 +0200
->>>>> Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
->>>>>
->>>>> Sebastian, et al,
->>>>>
->>>>> Got the following panic running v5.14-rc5-rt8:
->>>>>
->>>>> Aug 13 06:35:05 oberon kernel: page:000000009ac5dd73 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1ab3db
->>>>> Aug 13 06:35:05 oberon kernel: flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
->>>>> Aug 13 06:35:05 oberon kernel: raw: 0017ffffc0000000 ffffee1286aceb88 ffffee1287b66288 0000000000000000
->>>>> Aug 13 06:35:05 oberon kernel: raw: 0000000000000000 0000000000100000 00000000ffffffff 0000000000000000
->>>>> Aug 13 06:35:05 oberon kernel: page dumped because: VM_BUG_ON_PAGE(!PageSlab(page))
->>>>> Aug 13 06:35:05 oberon kernel: ------------[ cut here ]------------
->>>>> Aug 13 06:35:05 oberon kernel: kernel BUG at include/linux/page-flags.h:814!
->>>>> Aug 13 06:35:05 oberon kernel: invalid opcode: 0000 [#1] PREEMPT_RT SMP PTI
->>>>> Aug 13 06:35:05 oberon kernel: CPU: 3 PID: 12345 Comm: hackbench Not tainted 5.14.0-rc5-rt8+ #12
->>>>> Aug 13 06:35:05 oberon kernel: Hardware name:  /NUC5i7RYB, BIOS RYBDWi35.86A.0359.2016.0906.1028 09/06/2016
->>>>> Aug 13 06:35:05 oberon kernel: RIP: 0010:___slab_alloc+0x340/0x940    
->>>>
->>>> Are you able to translate this RIP via addr2line?  
->>>
->>> $ addr2line -e /data/o/linux-5.14.y-rt/vmlinux ___slab_alloc+0x340/0x940
->>> <snip>/arch/x86/include/asm/processor.h:440  
->>
->> Hm that's not much useful, I'd need the line in mm/slub.c
->> does ./scripts/faddr2line give better output?
-> 
-> Why, yes it does!  :)
-> 
-> $ ./scripts/faddr2line /data/o/linux-5.14.y-rt/vmlinux ___slab_alloc+0x340/0x940
-> ___slab_alloc+0x340/0x940:
-> PageSlabPfmemalloc at include/linux/page-flags.h:814
-> (inlined by) pfmemalloc_match at mm/slub.c:2772
-> (inlined by) ___slab_alloc at mm/slub.c:2874
+On Sat, Aug 14, 2021 at 11:40:40AM -0700, Colin Foster wrote:
+> On Sat, Aug 14, 2021 at 02:47:21PM +0300, Vladimir Oltean wrote:
+> > On Fri, Aug 13, 2021 at 07:50:03PM -0700, Colin Foster wrote:
+> > > +* phy_mode =3D "sgmii": on ports 0, 1, 2, 3
+> >=20
+> > > +			port@0 {
+> > > +				reg =3D <0>;
+> > > +				ethernet =3D <&mac>;
+> > > +				phy-mode =3D "sgmii";
+> > > +
+> > > +				fixed-link {
+> > > +					speed =3D <100>;
+> > > +					full-duplex;
+> > > +				};
+> > > +			};
+> >=20
+> > Your driver is unconditionally setting up the NPI port at gigabit and
+> > you claim it works, yet the device tree sees a 100Mbps fixed-link? Which
+> > one is right, what speed does the port operate at?
+>=20
+> Good catch!
+>=20
+> I made the change to ocelot_spi_vsc7512 yesterday to set it up as
+> gigabit, tested it, and it still works. Previously for my testing I'd
+> had it hard-coded to 100, because the Beaglebone I'm using only supports
+> 100Mbps on eth0.
+>=20
+> # phytool print swp1/0
 
-Aha! That's helpful. Hopefully it's just a small issue where we
-opportunistically test flags on a page that's protected by the local
-lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
-which can trigger if our page went away (which we would have realized
-after taking the lock).
+Why are you showing the PHY registers of swp1? Why are these relevant at al=
+l?
 
-So hopefully the below diff with uninspired naming should help?
+>=20
+> ieee-phy: id:0x00070540
+>=20
+>    ieee-phy: reg:BMCR(0x00) val:0x1040
+>       flags:          -reset -loopback =1B[1m+aneg-enable=1B[0m -power-do=
+wn -isolate -aneg-restart -collision-test
+>       speed:          1000-half
 
-----8<----
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 5922031ffab6..24579f71001e 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -815,6 +815,11 @@ static inline int PageSlabPfmemalloc(struct page *page)
- 	return PageActive(page);
- }
- 
-+static inline int __PageSlabPfmemalloc(struct page *page)
-+{
-+	return PageActive(page);
-+}
-+
- static inline void SetPageSlabPfmemalloc(struct page *page)
- {
- 	VM_BUG_ON_PAGE(!PageSlab(page), page);
-diff --git a/mm/slub.c b/mm/slub.c
-index ef022fe159c6..3cc7d58a08fa 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2775,6 +2775,14 @@ static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags)
- 	return true;
- }
- 
-+static inline bool try_pfmemalloc_match(struct page *page, gfp_t gfpflags)
-+{
-+	if (unlikely(__PageSlabPfmemalloc(page)))
-+		return gfp_pfmemalloc_allowed(gfpflags);
-+
-+	return true;
-+}
-+
- /*
-  * Check the page->freelist of a page and either transfer the freelist to the
-  * per cpu freelist or deactivate the page.
-@@ -2871,7 +2879,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	 * PFMEMALLOC but right now, we are losing the pfmemalloc
- 	 * information when the page leaves the per-cpu allocator
- 	 */
--	if (unlikely(!pfmemalloc_match(page, gfpflags)))
-+	if (unlikely(!try_pfmemalloc_match(page, gfpflags)))
- 		goto deactivate_slab;
- 
- 	/* must check again c->page in case we got preempted and it changed */
+Also, 1000/half sounds like an odd speed to end negotiation at.
+
+>=20
+>    ieee-phy: reg:BMSR(0x01) val:0x796d
+>       capabilities:   -100-b4 =1B[1m+100-f=1B[0m =1B[1m+100-h=1B[0m =1B[1=
+m+10-f=1B[0m =1B[1m+10-h=1B[0m -100-t2-f -100-t2-h
+>       flags:          =1B[1m+ext-status=1B[0m =1B[1m+aneg-complete=1B[0m =
+-remote-fault =1B[1m+aneg-capable=1B[0m =1B[1m+link=1B[0m -jabber =1B[1m+ex=
+t-register=1B[0m
+>=20
+>=20
+> Of course I understand that "it works" is not the same as "it's correct"
+>=20
+> What I wanted to accomplish was to use the speed parameter and set up
+> the link based on that. I looked through all the DSA drivers and
+> couldn't find anything that seems to do that. The closest thing I saw
+> was in mt7531_cpu_port_config where they set the speed to either 2500 or
+> 1000 based on the interface. But nothing that I saw would explicitly set
+> the speed based on this parameter.
+
+As I mentioned in the other email, .phylink_mac_link_up is the function
+you are looking for. Phylink parses the fixed-link and calls that
+function for fixed-link ports with the speed and duplex specified. Check
+and see if felix_phylink_mac_link_up is not in fact called with
+link_an_mode =3D=3D MLO_AN_FIXED, speed =3D=3D SPEED_100 and duplex =3D=3D =
+DUPLEX_FULL,
+then what you are doing with that and if it makes sense for what you are
+trying to do.
+
+>=20
+> So I think there's something I'm missing. The fixed-link speed should app=
+ly to=20
+> the CPU port on the switch (port@0)?
+
+Is this a question? It is under port@0, the port with the 'ethernet'
+property i.e. the CPU port, so why should it not?
+
+> Then eth0 can be manually set to a specific speed, but if it doesn't
+> match the fixed-link speed I'd be out of luck? Or should an ip link or
+> ethtool command to eth0 modify the speeds of both sides of the
+> connection? It feels like setting port@0 to the fastest speed and
+> letting it negotiate down to eth0 makes sense...
+>=20
+> To ask the same question a different way:
+>=20
+> I can currently run "ethtool -s eth0 speed 10 duplex full autoneg on"=20
+> and the link at eth0 drops to 10Mbps. Pinging my desktop jumps from=20
+> about 400us to about 600us when I do that.
+
+If eth0 is also a fixed-link, you should not be able to do that, no.
+But the fact that you are able to do that means it's not a fixed-link,
+you have a pair of PHYs that freely auto-negotiate the speed between the
+BeagleBone and the switch.
+
+>=20
+> Should I not be able to do that? It should be fixed at 100Mbps without
+> autoneg, end of story? Because in the current configuration it feels
+> like the fixed-link settings are more a suggestion than a rule...
+>=20
+
+It should describe the hardware configuration, of course. It is
+incorrect to describe one side of a copper PHY connection as fixed-link
+and the other as having a phy-handle, and it sounds like this is what
+you're doing. We need to see the device tree binding for eth0, and
+maybe a picture of your setup if that is possible. How do you connect
+the switch board to the BeagleBone? Is it an RJ45 cable or some sort of
+PCIe-style connector with fingers for an SGMII SERDES lane, in which the
+board is plugged?
+
+The device tree says SGMII, the behavior says RJ45.
