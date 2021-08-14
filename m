@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D0E3EC1E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBEC3EC1E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 12:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238158AbhHNJ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 05:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238141AbhHNJ62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 05:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8484E60F14;
-        Sat, 14 Aug 2021 09:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628935079;
-        bh=M7YYC86V3snE++Hi6R8B+ecf16khmRjxEgwHZa+z11c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V9TD8i89tEyt7fAdnOxqyLQEl4CdbSNmDwgUiJqGumySPI/4rvQi25wgI5OPRJ6c/
-         tA3ukyLLE7qmoW1oVVlfbC5bUxidpZWk+Ebqem134SKYpxG1juNfQfuaB4pRK//cQV
-         NRVO3156KNQVkFAwkdvF1NKJ/iWxSSeIf7CUilExE1ZH2CEmrdywZ7HrNCm82xAFCe
-         FUe7bdqnwZ+cUY7gtkC2TeaXaw1y0ly8Y+Dt5j+Dy4DRDEJ8vgBNayrxJVqimyKVnY
-         rCqNhl1ewWgmPKu3wkqctqXRwT3GUZAUaHEuLT8EDv34hDyom0mT2gWNy6D/kCwg1O
-         YVI8Rx3RyuB2A==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>
-Subject: [PATCH net-next 6/6] net: hns3: remove always exist devlink pointer check
-Date:   Sat, 14 Aug 2021 12:57:31 +0300
-Message-Id: <0dfcfa8b12f29955e0aa48d8532bc829b0903b3c.1628933864.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628933864.git.leonro@nvidia.com>
-References: <cover.1628933864.git.leonro@nvidia.com>
+        id S237697AbhHNKJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 06:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhHNKJw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 06:09:52 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9DFC061764;
+        Sat, 14 Aug 2021 03:09:24 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id b7so15173690plh.7;
+        Sat, 14 Aug 2021 03:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XAHgbwonCeesahvHLBdcLZ4Rxo0MiUJAmQUW5HriCGk=;
+        b=iM/nlNUE04IUh6TJwkTihJgEWvT70Qfz0Zj6+y3vSn3TjMHV0SxElc+kLPxwYlXQMe
+         q834O/qcJ0GFjXTn5JGOieBLJ4XBtvwsrmkrLHaITHamHO0e327IViMav2T7pGKIaAbc
+         VHWx5hvtB2AY5QF/2O/azTnyAec7VvDt0SPcQV61POh7oV1hwkwEx4ADwjHxIzaSKYbh
+         ij6+kO27GoOHVaukMz/T+h/0f6iKGcG8U71zRtP9LdoCCSjz/9jfyyqCFnH747Uj0GiX
+         yEouH5D2cXVLrTueLLHN+jxLK1C5YjhDH31djUDwFm6wPcQt7ex88NKKLmxPbxBPr/AH
+         rprg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XAHgbwonCeesahvHLBdcLZ4Rxo0MiUJAmQUW5HriCGk=;
+        b=uUpmg7REgHXJPNMrq3cfpsQCSuoU3RZh+HxgL2nVaeVqVoUNYxdO0LHVJWwYyKYP8L
+         atDBvMiv9THoAg4oM5OTH7ADDW4NH0JpTfOf87pH6XNHdhGq9lqZl3tFiNhn9m0dI7wt
+         a8CVnns07wbCMAFkfHrpLPNgj7qx1VKE7fmt0Xj/oJ8c8jXrSpJrAHMc5bxFbZqYwNNU
+         G3fme3O28/CFMl8PF9vHoDqf9se86LKEjXrfgHDh7vVTGWSWTII8IHybZtUuKlo2NPRJ
+         7OqPHBXukQ8C2Vtlx+9azWED6/5XchP31vLmtZ69Ugrl6dH0MTCM4YKGHaGwHw79OOMQ
+         oYOQ==
+X-Gm-Message-State: AOAM533ZFTQLwW7BUAXSx6bXarNJfZNZsJ/Cr0T/nuqZCMF3hdleQ/ol
+        I5iG78OC/o8qkJPBojPjdTvjF11+S8w8GuivJd0=
+X-Google-Smtp-Source: ABdhPJyN6UP54Y0+Pb8P9xpTbWW0GLRBfwUf9GkVs11BPvR1SXXP1r4s/cxRhBdhWCFNnhyIiyYlX9K9enJ2k7m3iWk=
+X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
+ cp6-20020a170902e786b029012d02a7365fmr5492149plb.21.1628935764456; Sat, 14
+ Aug 2021 03:09:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210814090618.8920-1-len.baker@gmx.com>
+In-Reply-To: <20210814090618.8920-1-len.baker@gmx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 14 Aug 2021 13:08:48 +0300
+Message-ID: <CAHp75VfxYd0pS-WmE62F5w4SFWchDS=7iedaG1rY0Nc9+092RQ@mail.gmail.com>
+Subject: Re: [PATCH v3] drivers/iio: Remove all strcpy() uses
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Sat, Aug 14, 2021 at 12:06 PM Len Baker <len.baker@gmx.com> wrote:
+>
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. So, remove all the uses and add
+> devm_kstrdup() or devm_kasprintf() instead.
+>
+> This patch is an effort to clean up the proliferation of str*()
+> functions in the kernel and a previous step in the path to remove
+> the strcpy function from the kernel entirely [1].
+>
+> [1] https://github.com/KSPP/linux/issues/88
 
-The devlink pointer always exists after hclge_devlink_init() succeed.
-Remove that check together with NULL setting after release and ensure
-that devlink_register is last command prior to call to devlink_reload_enable().
+Thanks for an update, my comments below.
 
-Fixes: b741269b2759 ("net: hns3: add support for registering devlink for PF")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c    | 8 +-------
- .../net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c  | 8 +-------
- 2 files changed, 2 insertions(+), 14 deletions(-)
+...
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-index 448f29aa4e6b..e4aad695abcc 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-@@ -118,6 +118,7 @@ int hclge_devlink_init(struct hclge_dev *hdev)
- 
- 	priv = devlink_priv(devlink);
- 	priv->hdev = hdev;
-+	hdev->devlink = devlink;
- 
- 	ret = devlink_register(devlink);
- 	if (ret) {
-@@ -126,8 +127,6 @@ int hclge_devlink_init(struct hclge_dev *hdev)
- 		goto out_reg_fail;
- 	}
- 
--	hdev->devlink = devlink;
--
- 	devlink_reload_enable(devlink);
- 
- 	return 0;
-@@ -141,14 +140,9 @@ void hclge_devlink_uninit(struct hclge_dev *hdev)
- {
- 	struct devlink *devlink = hdev->devlink;
- 
--	if (!devlink)
--		return;
--
- 	devlink_reload_disable(devlink);
- 
- 	devlink_unregister(devlink);
- 
- 	devlink_free(devlink);
--
--	hdev->devlink = NULL;
- }
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-index 1e6061fb8ed4..f478770299c6 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-@@ -120,6 +120,7 @@ int hclgevf_devlink_init(struct hclgevf_dev *hdev)
- 
- 	priv = devlink_priv(devlink);
- 	priv->hdev = hdev;
-+	hdev->devlink = devlink;
- 
- 	ret = devlink_register(devlink);
- 	if (ret) {
-@@ -128,8 +129,6 @@ int hclgevf_devlink_init(struct hclgevf_dev *hdev)
- 		goto out_reg_fail;
- 	}
- 
--	hdev->devlink = devlink;
--
- 	devlink_reload_enable(devlink);
- 
- 	return 0;
-@@ -143,14 +142,9 @@ void hclgevf_devlink_uninit(struct hclgevf_dev *hdev)
- {
- 	struct devlink *devlink = hdev->devlink;
- 
--	if (!devlink)
--		return;
--
- 	devlink_reload_disable(devlink);
- 
- 	devlink_unregister(devlink);
- 
- 	devlink_free(devlink);
--
--	hdev->devlink = NULL;
- }
+> This patch doesn't change the logic. I think it is better to use the
+> current logic and not use always the plus and minus signs as suggested
+> in the previous version. I don't like the idea that 0 has sign.
+
+Agree on that, the safest way to go with.
+
+...
+
+>         const char *orient;
+>         char *str;
+>         int i;
+> +       struct device *dev;
+
+Please, keep this in reversed xmas tree order (longer lines first).
+
+...
+
+> +               dev = regmap_get_device(st->map);
+
+I haven't checked the code in between, but maybe it's possible to move
+an assignment directly to the definition block above.
+
+...
+
+> +                       /*
+> +                        * The value is inverted according to the following
+
+"to one of the"
+And technically speaking "inversion" is not the same as negation
+(which is "sign inversion").
+
+> +                        * rules:
+> +                        *
+> +                        * 1) Drop leading minus.
+> +                        * 2) Add leading minus.
+> +                        * 3) Leave 0 as is.
+> +                        */
+> +                       if (orient[0] == '-')
+> +                               str = devm_kstrdup(dev, orient + 1, GFP_KERNEL);
+
+> +                       else if (orient[0] != '0' || orient[1] != '\0')
+> +                               str = devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
+
+I would go with the logic I suggested later on, i.e.
+
+                       else if (orient[0] == '0' && orient[1] == '\0')
+                               str = devm_kstrdup(dev, orient, GFP_KERNEL);
+
+and below changed accordingly. It will clarify the "0" check.
+
+> +                       else
+> +                               str = devm_kstrdup(dev, orient, GFP_KERNEL);
+
+> +
+
+Redundant blank line.
+
+> +                       if (!str)
+>                                 return -ENOMEM;
+
 -- 
-2.31.1
-
+With Best Regards,
+Andy Shevchenko
