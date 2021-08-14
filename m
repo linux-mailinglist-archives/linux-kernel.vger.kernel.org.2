@@ -2,160 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D3D3EC329
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 16:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795113EC34C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 16:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238522AbhHNOV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 10:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232315AbhHNOVW (ORCPT
+        id S238600AbhHNO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 10:27:48 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39522 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232315AbhHNO1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 10:21:22 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 07:20:54 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id d11so23640834eja.8
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 07:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K9ySd9QwI6Z0DGa9QcEVatnWGOcz3I37bgjjX3gmx6I=;
-        b=L9IlHQ+qB/66KM0MdYN2ZqoRDKXabFjTQP+DBxHGIbdkigrvYsIl8Sp07/+Jnwo9oL
-         +JwrUEVftn93SY9f1XI/s03yyYnqvZElfdwewLQKDmzqfqxXWK9P5h39TPaNU/gWumMt
-         FCwijn+eJKv0CxmhO2/UfROINR1uysHvdBttnnP326AcuNjN90/B/7AMOzqobQtttQP/
-         5malFJyC9gQ/Vaz50zMrfkdNGfZlT4rKYHLSuvWU0ad5Imx1HZmatFbSfsekhcs/D6qo
-         Kpwcn45EAFxgVVCnO04sb664Q4hcu84i53yduhjbm8GD9s5IffBbMAwEWugTI0WGJEkd
-         sBZQ==
+        Sat, 14 Aug 2021 10:27:43 -0400
+Received: by mail-il1-f198.google.com with SMTP id i4-20020a056e0212c4b029022291c9f509so6849829ilm.6
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 07:27:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K9ySd9QwI6Z0DGa9QcEVatnWGOcz3I37bgjjX3gmx6I=;
-        b=Pk4PAVow9kZewxQLkCv7Q3UIdYxGDWVvuxlW9+Iq3o8dlMzgYu0kdFnQzydIcg5ljY
-         XrPvV9luw5OhGMhcNErAZAsyRC0JLOCuZ8LjMELpKcnbZhktBAxSNcr6l1ElNV4vldVp
-         +2as6rdKfprCi+31FfoSv5ma8oUKrjpyMFpRA+or10Lj2R3MGXgQqCajzr6DyjB/Qrdv
-         Fzg3tb23/l3A9ueWxwtMlvyIQdGX7PmrxfUdqdtc/iQZF4p/O4kfRC/kGGp5hpM4HHLW
-         83zxHDnWUczWOKMxAqCEEZu1YHrWV2lAWocFN3O/qBFWRAHuFn43vHWYYVGrxY0SHyPo
-         +iug==
-X-Gm-Message-State: AOAM531h+mEVx3VbbfeATy8ddgppLxF79nL+gpB0qbv46F0D2mKosBrf
-        qq0A4vL/+RY1rMDZgj/hbNMsqnn/jVVIkZE0QVT+FQ==
-X-Google-Smtp-Source: ABdhPJy/dA2HG2sCNZFB1hxWMxjiUlAE/p/R2JXEAIjY/KxHahEjCerW9BiPGgimhwLJqJbbTb9u7DS+3nUsTMuKubY=
-X-Received: by 2002:a17:907:2110:: with SMTP id qn16mr7610522ejb.170.1628950852514;
- Sat, 14 Aug 2021 07:20:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CoOp6XK/alayd/uCXGJgcJu3j2utGypWBGbbqN8xiek=;
+        b=SNu+lDpkoK3Whf3G046KEgQugCVI3kwns4/E6fXr4jJvq+S1X/7cXeXveL4P/reJ/V
+         uEKxafm/Wb7ClItRyb4NIP1Tkfa8uMbxOiYjuxU1TkYnCQBMuGyNICjI68QDDxcT1+QQ
+         KDlTrI6oSJo2qLbAryZ69ivpk+7CMQfsjICVhDKKOA9oA+or4FBfSWLGVUQhJKWlOSM8
+         EQ8Vis0KrCVgY0dQs/qAY80A927d/2m3hu3XIbdDU12v0kM3Svws1ca8Unrpsh+vu63C
+         FUqMSPUBTdTwlB6+DNcK/WOxqXv6eRaQH1BtpzXvRtKEgvq3jPKkGu3iMHd/nd8JcOLO
+         scOA==
+X-Gm-Message-State: AOAM533+Tyg/gc9p9Kk9lvULge8XMcFs38K7XR5Je0pkAFLYiMAdL7qb
+        uB/G5hTujlh2m+gjwCJzVD6RkiBoUezQPDkycT70KMlEx/Pc
+X-Google-Smtp-Source: ABdhPJwareTMMqhQylhLWit1TIzuGV0G13xcI4DxTWKMTghob/HKhrTBVZ4pIB2yZGdYR7PjcAqmNXWGNLq6QZMq5yB2QepeNvpJ
 MIME-Version: 1.0
-References: <20210813150520.718161915@linuxfoundation.org>
-In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 14 Aug 2021 19:50:41 +0530
-Message-ID: <CA+G9fYtsfaaS7jasRmi=D8CO5z7bttSy3gYZg4ZTa5R4dwiYOw@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/25] 4.4.281-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+X-Received: by 2002:a92:cf4a:: with SMTP id c10mr5513577ilr.269.1628951235079;
+ Sat, 14 Aug 2021 07:27:15 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 07:27:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b931f005c985c34f@google.com>
+Subject: [syzbot] INFO: task hung in sys_acct
+From:   syzbot <syzbot+2a9f6d6707c6afef5056@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, sh_def@163.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 at 20:38, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.281 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.281-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+syzbot found the following issue on:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+HEAD commit:    9a73fa375d58 Merge branch 'for-5.14-fixes' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1551216e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
+dashboard link: https://syzkaller.appspot.com/bug?extid=2a9f6d6707c6afef5056
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e0d7be300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14325779300000
 
-## Build
-* kernel: 4.4.281-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.4.y
-* git commit: 82678f26470c11cf26eb8a91e303b47fde424a40
-* git describe: v4.4.279-38-g82678f26470c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-79-38-g82678f26470c
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2a9f6d6707c6afef5056@syzkaller.appspotmail.com
 
-## No regressions (compared to v4.4.280-26-g26378ad308bb)
+INFO: task syz-executor050:8462 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc5-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor050 state:D stack:29784 pid: 8462 ppid:     1 flags:0x00000000
+Call Trace:
+ context_switch kernel/sched/core.c:4681 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
+ schedule+0xd3/0x270 kernel/sched/core.c:6017
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6076
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
+ __do_sys_acct kernel/acct.c:285 [inline]
+ __se_sys_acct kernel/acct.c:273 [inline]
+ __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445779
+RSP: 002b:00007f219fbcd308 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445779
+RDX: 0000000000445779 RSI: 0000000000000000 RDI: 00000000200001c0
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
+R13: 000000000049a074 R14: 0030656c69662f2e R15: 0000000000022000
+INFO: task syz-executor050:8465 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc5-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor050 state:D stack:29784 pid: 8465 ppid:     1 flags:0x00000000
+Call Trace:
+ context_switch kernel/sched/core.c:4681 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
+ schedule+0xd3/0x270 kernel/sched/core.c:6017
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6076
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
+ __do_sys_acct kernel/acct.c:285 [inline]
+ __se_sys_acct kernel/acct.c:273 [inline]
+ __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445779
+RSP: 002b:00007f219fbcd308 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445779
+RDX: 0000000000445779 RSI: 0000000000000000 RDI: 00000000200001c0
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
+R13: 000000000049a074 R14: 0030656c69662f2e R15: 0000000000022000
+INFO: task syz-executor050:8468 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc5-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor050 state:D stack:29904 pid: 8468 ppid:     1 flags:0x00000000
+Call Trace:
+ context_switch kernel/sched/core.c:4681 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
+ schedule+0xd3/0x270 kernel/sched/core.c:6017
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6076
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
+ __do_sys_acct kernel/acct.c:285 [inline]
+ __se_sys_acct kernel/acct.c:273 [inline]
+ __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445779
+RSP: 002b:00007f219fbcd308 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445779
+RDX: 0000000000445779 RSI: 00000000000f4240 RDI: 00000000200001c0
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
+R13: 000000000049a074 R14: 0030656c69662f2e R15: 0000000000022000
+INFO: task syz-executor050:8470 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc5-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor050 state:D stack:28280 pid: 8470 ppid:  8441 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:4681 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
+ schedule+0xd3/0x270 kernel/sched/core.c:6017
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6076
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
+ __do_sys_acct kernel/acct.c:285 [inline]
+ __se_sys_acct kernel/acct.c:273 [inline]
+ __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445779
+RSP: 002b:00007f219fbcd308 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445779
+RDX: 0000000000445779 RSI: 0000000000000000 RDI: 00000000200001c0
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
+R13: 000000000049a074 R14: 0030656c69662f2e R15: 0000000000022000
 
-## No fixes (compared to v4.4.280-26-g26378ad308bb)
+Showing all locks held in the system:
+1 lock held by khungtaskd/1646:
+ #0: ffffffff8b97c1c0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
+1 lock held by in:imklog/8353:
+ #0: ffff888018f6e0f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
+1 lock held by syz-executor050/8459:
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __do_sys_acct kernel/acct.c:285 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __se_sys_acct kernel/acct.c:273 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+1 lock held by syz-executor050/8462:
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __do_sys_acct kernel/acct.c:285 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __se_sys_acct kernel/acct.c:273 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+1 lock held by syz-executor050/8465:
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __do_sys_acct kernel/acct.c:285 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __se_sys_acct kernel/acct.c:273 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+1 lock held by syz-executor050/8468:
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __do_sys_acct kernel/acct.c:285 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __se_sys_acct kernel/acct.c:273 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
+1 lock held by syz-executor050/8470:
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __do_sys_acct kernel/acct.c:285 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __se_sys_acct kernel/acct.c:273 [inline]
+ #0: ffffffff8b9b4088 (acct_on_mutex){+.+.}-{3:3}, at: __x64_sys_acct+0xa3/0x1f0 kernel/acct.c:273
 
-## Test result summary
-total: 51670, pass: 41488, fail: 264, skip: 8792, xfail: 1126
+=============================================
 
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
+NMI backtrace for cpu 0
+CPU: 0 PID: 1646 Comm: khungtaskd Not tainted 5.14.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
 
-## Test suites summary
-* fwts
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* ssuite
-* v4l2-compliance
 
---
-Linaro LKFT
-https://lkft.linaro.org
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
