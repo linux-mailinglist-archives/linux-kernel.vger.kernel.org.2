@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8B83EC3EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F473EC3EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237223AbhHNQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:46:02 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:38440 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhHNQqA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:46:00 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEwmg-00Bk4d-4g; Sat, 14 Aug 2021 16:45:22 +0000
-Date:   Sat, 14 Aug 2021 16:45:22 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH] checkpatch: prefer = {} initializations to = {0}
-Message-ID: <YRfzIuSjvt8Dc/YL@zeniv-ca.linux.org.uk>
-References: <20210805104353.GD26417@kili>
- <1b94e688-a070-998a-3014-96bcbaed4cae@wanadoo.fr>
- <YRfVYxQ126AOuexl@unreal>
- <YRfZwrJUutB4IO+G@zeniv-ca.linux.org.uk>
- <YRfm2RRYla7Nemsj@unreal>
+        id S236394AbhHNQv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:51:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233116AbhHNQvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 12:51:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A87CD60FC1;
+        Sat, 14 Aug 2021 16:50:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628959850;
+        bh=iiuMofXzRk6v81QnjzS89U7OMiEid8a03rKgMEXE3SU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pwkbJyyfYCt5FauavwpFMY9380wHxURzWRZFGPGTLRPID6gRDhYUWpSIutD3bTP1Y
+         zW2YO2EqBpPuQQkeHY9+4Zm/OxsSfrM2gkyqeKtxYXXZ/X9LRCih1it9KMdQQStl9N
+         RKTvmvTRAh4RcA4byHZzBtVHKW1jDXrUXmjM53Mg=
+Date:   Sat, 14 Aug 2021 18:50:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [GIT PULL] IIO driver fixes for 5.14-rc6
+Message-ID: <YRf0Zwu0SySEe2g9@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YRfm2RRYla7Nemsj@unreal>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 06:52:57PM +0300, Leon Romanovsky wrote:
+The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
 
-> I reread gcc/c/c-typeck.c and at lest for GCC 10, I'm wrong about padding.
-> Sorry about that.
-> 
->    8630 struct c_expr
->    8631 pop_init_level (location_t loc, int implicit,
->    8632                 struct obstack *braced_init_obstack,
->    8633                 location_t insert_before)
-> ....
->    8692   switch (vec_safe_length (constructor_elements))
->    8693     {
->    8694     case 0:
->    8695       /* Initialization with { } counts as zeroinit.  */
->    8696       constructor_zeroinit = 1;
->    8697       break;
->    8698     case 1:
->    8699       /* This might be zeroinit as well.  */
->    8700       if (integer_zerop ((*constructor_elements)[0].value))
->    8701         constructor_zeroinit = 1;
->    8702       break;
->    8703     default:
->    8704       /* If the constructor has more than one element, it can't be { 0 }.  */
->    8705       constructor_zeroinit = 0;
->    8706       break;
->    8707     }
+  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
 
-FWIW, that reads more like "in those cases we might quietly turn the whole
-thing into memset()" optimization, with no promise that it will be done
-that way in future versions.
+are available in the Git repository at:
 
-And considering the fun effects (infoleaks from stack or heap), it's not
-something I'd rely upon - not without a much more explicit promise...
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.14-rc6
+
+for you to fetch changes up to a5056c0bc24f6c9982cfe6f4e3301f3c7d682191:
+
+  Merge tag 'iio-fixes-5.14a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into staging-linus (2021-08-10 08:54:36 +0200)
+
+----------------------------------------------------------------
+IIO fixes for 5.14-rc6
+
+Here are some small IIO driver fixes for reported problems for 5.14-rc6
+(no staging driver fixes at the moment).
+
+All of them resolve reported issues and have been in linux-next all week
+with no reported problems.  Full details are in the shortlog.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Antti Keränen (1):
+      iio: adis: set GPIO reset pin direction
+
+Arnd Bergmann (1):
+      iio: accel: fxls8962af: fix i2c dependency
+
+Chris Lesiak (1):
+      iio: humidity: hdc100x: Add margin to the conversion time
+
+Colin Ian King (1):
+      iio: adc: Fix incorrect exit of for-loop
+
+Greg Kroah-Hartman (1):
+      Merge tag 'iio-fixes-5.14a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into staging-linus
+
+Maxime Ripard (1):
+      dt-bindings: iio: st: Remove wrong items length check
+
+Sean Nyekjaer (1):
+      iio: accel: fxls8962af: fix potential use of uninitialized symbol
+
+Uwe Kleine-König (1):
+      iio: adc: ti-ads7950: Ensure CS is deasserted after reading channels
+
+ .../devicetree/bindings/iio/st,st-sensors.yaml     | 41 ----------------------
+ drivers/iio/accel/Kconfig                          |  2 ++
+ drivers/iio/accel/fxls8962af-core.c                |  2 +-
+ drivers/iio/adc/palmas_gpadc.c                     |  4 +--
+ drivers/iio/adc/ti-ads7950.c                       |  1 -
+ drivers/iio/humidity/hdc100x.c                     |  6 ++--
+ drivers/iio/imu/adis.c                             |  3 +-
+ 7 files changed, 10 insertions(+), 49 deletions(-)
