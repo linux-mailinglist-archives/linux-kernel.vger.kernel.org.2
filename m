@@ -2,183 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8253EC45B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B3C3EC45D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238932AbhHNSNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
+        id S238944AbhHNSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238871AbhHNSNx (ORCPT
+        with ESMTP id S229751AbhHNSPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:13:53 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F0BC061764;
-        Sat, 14 Aug 2021 11:13:24 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id z20so26304431lfd.2;
-        Sat, 14 Aug 2021 11:13:24 -0700 (PDT)
+        Sat, 14 Aug 2021 14:15:05 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E4FC061764;
+        Sat, 14 Aug 2021 11:14:36 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id o185so20766244oih.13;
+        Sat, 14 Aug 2021 11:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Fr280+14Qksdr9bVHi5lpgCEVsgQK8GCDdNrcSUDUaM=;
-        b=LlSeeiK7NbrcogoSlTzRe3hKc/MSAKtkznDjl5/wTnlPdhGIeKv7Zej9DzYYKJgP02
-         cc+YdkNP0PuHLtihb+cvvnJjGJkxAI0VPh+x27jExD8bcgbioVq7xtW6SRNeeWSqauyn
-         aRmdH1FD0Z0Q9YIBv1S7c80QCXBu9Wwd93CjuUISgmPViQRMDnPQpUWcqGcMMbhYv0Gy
-         RtC8vArEFRDVW/i/97GJITXi70Nej5g6AHdlS4LLuFOJgbTbnxm6WdCETddoqkjqxeCv
-         e42SpOCzqPekVrR5xfyGD0L94YxycIZPJ44rxzjdY4UQRGGwz2hO7F57zBLlvDRRPvnG
-         0JiQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QOiftqgvbImVUv1mEUfkL2wosmJ7LXw5rCPg1vCf7X4=;
+        b=JJlrmr8cpd00ilaSwDl+vgAPGG7Hm0t8dPl2FEdf0MbabeYwrHecdGHFqSmPotClcW
+         31or+jUz9sOynwOmo6T0rDZH4ECjmJXhYypouCV6l/RlOEQrcrFVUgJ4wKlD0nh5Em3a
+         /kBRW+X3UVOm3bzV5HJkEJsuMKwsOLOywrBoAsijIejQrgOU1JIDI2curFUsmUNm54ok
+         Hmp2i1RDj8SRVydpRJOsU3D20JzPrXULVmMGymyrMo+vyzOOJXN5F1Q6FuKEJq4THmP2
+         zNBDU7zIvBlVvx4sPuML7wgTCapglsDMv4x05WvI8kbDRhJ2WPSJoUrK8YvvmvJXYnBA
+         pTTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Fr280+14Qksdr9bVHi5lpgCEVsgQK8GCDdNrcSUDUaM=;
-        b=GTkHFhvvxY1BmrPINZUMm6YBDoGy/xEJf2Wx/PYwQ5HjK3CU++G3dqclscNB0mt4rA
-         Kw/rfg5bwOv95yb+GjR3WPeFjKR3ismJ5+MIq5unbFmVxA0DE4hLOH/BDGqIwb08x7sH
-         IYsJ7Fp52PlWLAEbe51wwzWCJWbi8/Fbq4yKKiKjCdbDKahy1T2F1TJc5cKdCyMA7LPj
-         m0t9ofIaAwn4j9tmRdJdpgVLMQIgIJczhimMAEneoXGX0Mhaxbuk6mCOTw2KfDHG9FWB
-         WU3tW6xcuGVxummi7st92lMQs0VW4XriWvH0ZlosWFYXcH7rA+HOVB0LipflqxTySljv
-         m0MA==
-X-Gm-Message-State: AOAM532Y/sDM9JffFVqRJt5tVlpXIBQkLA0EDmd8pQpZUUzZqc/DcjBP
-        hEs0Uc9g/xUA5/euQ/4M++mmIi4mCPguYvuLm/4=
-X-Google-Smtp-Source: ABdhPJy54Cd63VxN4BqT4/L5a6ogEuyBj3U9DKFv4wu9Fi+Ls6EIEkwiEpz0IkESb5BPgdtbW7yWgXSHIBvLG0j9fqg=
-X-Received: by 2002:a05:6512:3d13:: with SMTP id d19mr5454662lfv.607.1628964803086;
- Sat, 14 Aug 2021 11:13:23 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QOiftqgvbImVUv1mEUfkL2wosmJ7LXw5rCPg1vCf7X4=;
+        b=lsbSZXGaEDSl2BMDtlG5i5Ou2rWqLTxff0mztwFobG5UIIUpjRQoUfRfMQjJW8frrY
+         icf/mfrr0bFeC6ZYk/ODE7TIKBN0sHup2aH+p6WRQemJACT+nswLIzHXGvDq76m1P2w9
+         fuj6cFUvDNo32NwIWiYt24mkZKDDlsEoaoX67u01+yxLW0jyrvJpnCCXRehHlr9N1LA7
+         bFnHUe0iF+CFhbRMLevtZUx8sZA5W0J9ekBC2sSy3u4UYpYkB/pJKdFe3MTA0OYm8+po
+         agY4r1QQJJuUhOHC03q7NUCVruBKw6i+bH3dwF5fgfJWuzYvg4PZEEgVNDSFu+2Qyv22
+         y5Hw==
+X-Gm-Message-State: AOAM532BJBGctvo5bUbfenqmu4yO3YyMt0fjbGjrgaiDjFxjjoPe7Pyd
+        nR6AEqqcD30ZELuYAUM6+GI=
+X-Google-Smtp-Source: ABdhPJzYyxQsjDc3+DpQ0CQMn6/H61jWnEYrh1C4Zf0vG/UlbXIyjTufxu4OBlfpWDBzanTd9WLqMw==
+X-Received: by 2002:a05:6808:13c5:: with SMTP id d5mr6175098oiw.56.1628964875932;
+        Sat, 14 Aug 2021 11:14:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h14sm1010095otm.5.2021.08.14.11.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 11:14:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 14 Aug 2021 11:14:34 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/25] 4.4.281-rc1 review
+Message-ID: <20210814181434.GA2785521@roeck-us.net>
+References: <20210813150520.718161915@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210811073027.124619-1-puranjay12@gmail.com> <20210811073027.124619-2-puranjay12@gmail.com>
-In-Reply-To: <20210811073027.124619-2-puranjay12@gmail.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Sat, 14 Aug 2021 23:43:11 +0530
-Message-ID: <CANk7y0hhkDBmN3bJuhBpMUm2YLAvV-z6=A7zVrk-d86ZxmZ9bg@mail.gmail.com>
-Subject: Re: [PATCH v12 1/2] dt-bindings: iio: accel: Add DT binding doc for ADXL355
-To:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        "Berghe, Darius" <Darius.Berghe@analog.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813150520.718161915@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+cc Rob Herring <robh+dt@kernel.org>
+On Fri, Aug 13, 2021 at 05:06:24PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.281 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Wed, Aug 11, 2021 at 1:00 PM Puranjay Mohan <puranjay12@gmail.com> wrote:
->
-> Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  .../bindings/iio/accel/adi,adxl355.yaml       | 88 +++++++++++++++++++
->  1 file changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
->
-> diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-> new file mode 100644
-> index 000000000..ba54d6998
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/accel/adi,adxl355.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer
-> +
-> +maintainers:
-> +  - Puranjay Mohan <puranjay12@gmail.com>
-> +
-> +description: |
-> +  Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer that supports
-> +  both I2C & SPI interfaces
-> +    https://www.analog.com/en/products/adxl355.html
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,adxl355
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 3
-> +    description: |
-> +      Type for DRDY should be IRQ_TYPE_EDGE_RISING.
-> +      Three configurable interrupt lines exist.
-> +
-> +  interrupt-names:
-> +    description: Specify which interrupt line is in use.
-> +    items:
-> +      enum:
-> +        - INT1
-> +        - INT2
-> +        - DRDY
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  vdd-supply:
-> +    description: Regulator that provides power to the sensor
-> +
-> +  vddio-supply:
-> +    description: Regulator that provides power to the bus
-> +
-> +  spi-max-frequency: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/gpio/gpio.h>
-> +        #include <dt-bindings/interrupt-controller/irq.h>
-> +        i2c {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                /* Example for a I2C device node */
-> +                accelerometer@1d {
-> +                        compatible = "adi,adxl355";
-> +                        reg = <0x1d>;
-> +                        interrupt-parent = <&gpio>;
-> +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
-> +                        interrupt-names = "DRDY";
-> +                };
-> +        };
-> +  - |
-> +        #include <dt-bindings/gpio/gpio.h>
-> +        #include <dt-bindings/interrupt-controller/irq.h>
-> +        spi {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                accelerometer@0 {
-> +                        compatible = "adi,adxl355";
-> +                        reg = <0>;
-> +                        spi-max-frequency = <1000000>;
-> +                        interrupt-parent = <&gpio>;
-> +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
-> +                        interrupt-names = "DRDY";
-> +                };
-> +        };
-> --
-> 2.30.1
->
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 339 pass: 339 fail: 0
 
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Thanks and Regards
-
-Yours Truly,
-
-Puranjay Mohan
+Guenter
