@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962853EC14C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 10:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE8A3EC14E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 10:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbhHNIBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 04:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
+        id S237540AbhHNICs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 04:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236519AbhHNIBk (ORCPT
+        with ESMTP id S237447AbhHNICm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 04:01:40 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28254C06175F;
-        Sat, 14 Aug 2021 01:01:12 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id d6so18803358edt.7;
-        Sat, 14 Aug 2021 01:01:12 -0700 (PDT)
+        Sat, 14 Aug 2021 04:02:42 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4536EC06175F;
+        Sat, 14 Aug 2021 01:02:03 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so19407466pjb.3;
+        Sat, 14 Aug 2021 01:02:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=M8zJWAK5zC502WBtr9TH/CUwQWjnvyStpDdJfvN9iH0=;
-        b=nPEBvsm7bss9sW336uGhK2zgsPOoD4EhEfZqf8Z/GnAuZNvLXdGSvRYOfAdT0xbi+k
-         MJL0JMED69nRCQZwCX2pLkomk7h0kKRwvDLM16ZeGiZrVwv+v0NbKYq9ewPu1SBx/FSk
-         MMUf83twUNvZAL2GCzKiuo5v2Guxz+Xvr3swmLghVitINcXMKbKE8cbB3C3pitekzJlt
-         iJMrxMT/2BeNod7KDbQt8Whd0QkAwS743hY1dIDppZhM/KfyrEC0uGEJqR94nKoRdxxX
-         tYwrTq/IMmvRytbitlHcSyjHCXwP0xsnTnNZ2GeG6nV1rTNZwewsAJmAzkixM2KQj/ek
-         IvoQ==
+         :cc;
+        bh=PYmA/1frNak+/JEKetRqAi453W74LmX6mwHsC/CUI1o=;
+        b=Y9jIfM3ejXMOylyMOMJRthUV+gDv7owyzGDBBsBXIF9YeLgwDblvEHYNrU54D1ZMEl
+         7CkFDmXAy9YkmIbCLpTbOVbd688+sb4SGu8NoRK/XchJhBfRF5frLut4I2JWdiYLnrqQ
+         hGqSDorEMWyHsSLzDUzRTiIZrG3O/xEBR5jE77adD1I3YhOJEtytYUPvBPzI80eXw81z
+         2S/5xNon2iLxiAwn5og1Plvgt+NDjP3Tjl5UkBuYwm5MoRDk4Psl0lFuITIEq8lGI9Rw
+         bnkWP/Pd3h16G4NyRKczLm3XGTO3oJyu8g4VXwYHx+dIw86pglQyMprUGVTPB8H1jiqv
+         uL3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=M8zJWAK5zC502WBtr9TH/CUwQWjnvyStpDdJfvN9iH0=;
-        b=F9dy1nlFm2pVXFpGMZbe+iPapdbV7hr4a9n18f9td0viz6QPjI9eLKKfEGMJA72Qcn
-         uLnMTRhGkbhqwMup6BPYGed70JTA6zsdPS/yT9OTpSyznXUGc/kDp7ZsQ3C/yobZL+Qy
-         ECzhYdchPgp48W+MGweKnr+sgoQjVVMfBJEMl/6+whD99HtxPAwlMs24N5PIjpEOsErg
-         ralpVS2zQeL1nRqgwtIPIuDq42fdB0sAhSKXL1teTATUPf2asZrMWKPR4uMuxTgAtu8t
-         IkBhhuawCX+D2WJJYGIvFz4VCmcqOIhAAhOf46L0Q9jCZVBEXYLa/phuiQXotkaUHd6W
-         TDJw==
-X-Gm-Message-State: AOAM531oLJ/Cr9ZJtJSaU62fmshTVzUHozIZXksgU7Hs3oa62lNeG8ZX
-        8vSr0E9B2m2QgWpVn9cz60pI+Inqx+SDiK8TXEIpM/ACmIWauVud
-X-Google-Smtp-Source: ABdhPJy96iMPtLKAhge+HQrINHRM+HE1h2voBaa9+9D8EYGnZm1juQRycHOZb4nLyjJ1ixV3yDpd2NNIyqyu3lPXt0Q=
-X-Received: by 2002:aa7:d6cc:: with SMTP id x12mr7847672edr.171.1628928070806;
- Sat, 14 Aug 2021 01:01:10 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=PYmA/1frNak+/JEKetRqAi453W74LmX6mwHsC/CUI1o=;
+        b=SGaAQBbcGTah4LMlsItK960MSI5gZuFaiZGlKlwu6SEltpxpWNqwLN77J+eWoRlJTz
+         06L05ypljohA5juAuO9qxNBuQwmxED51HWyXu8TwPxev5TmE5zKljTxhNBkQyJAksTGZ
+         QmoAJBRu0pno2Aam6k+cfvaphRJQSx1hIRJkw/vojE/Rvd3tPp0O5PU+aSnVchxByuJI
+         SYOMxd/38TcXYyp84FQUY0dBf47s9OC/YaitvmZzR0espNkVwxhRCBThwGxTol30s6Vi
+         3z3aZX82dYyJJn1b6rveMYx+vDkE1ZAGM3ckTa/FTm3xbtcZGfGUT7aJjaRAadYaEcZw
+         uFBQ==
+X-Gm-Message-State: AOAM532IErqMWeE80DsgICdy/40+eNCNcsVFLUjfoS+jgLNqfOTKsWAL
+        ZJhaOBZGOGeIjPyErOs818VlE/BM5nF9ynEaYSU=
+X-Google-Smtp-Source: ABdhPJylso2eqrMBsnpZ4X9Ay9Q6gCvZwhzjlijyvf6sqXnS7a0kvqgkcwVEghYUQ8J4G754nEWQZPTJKN+TAwUSyow=
+X-Received: by 2002:a17:903:192:b029:12c:bf13:ab28 with SMTP id
+ z18-20020a1709030192b029012cbf13ab28mr1545449plg.17.1628928122795; Sat, 14
+ Aug 2021 01:02:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn> <YRZnMYCN1ArhM3wE@chrisdown.name>
-In-Reply-To: <YRZnMYCN1ArhM3wE@chrisdown.name>
-From:   yong w <yongw.pur@gmail.com>
-Date:   Sat, 14 Aug 2021 16:00:59 +0800
-Message-ID: <CAOH5QeDgyDfN2knD+HnfyvOQNbM_9Hz_i98BXF5LqNB33rd+Tw@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: Add configuration to control whether vmpressure
- notifier is enabled
-To:     Chris Down <chris@chrisdown.name>
-Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, tglx@linutronix.de,
-        peterz@infradead.org, Shakeel Butt <shakeelb@google.com>,
-        guro@fb.com, alexs@kernel.org, richard.weiyang@gmail.com,
-        sh_def@163.com, sfr@canb.auug.org.au, wang.yong12@zte.com.cn,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.yang29@zte.com.cn
+References: <xmqqo8a37eim.fsf@gitster.g>
+In-Reply-To: <xmqqo8a37eim.fsf@gitster.g>
+From:   =?UTF-8?Q?Martin_=C3=85gren?= <martin.agren@gmail.com>
+Date:   Sat, 14 Aug 2021 10:01:49 +0200
+Message-ID: <CAN0heSrPXdpPXTpY3Cdn-HHcuzLvc--Y_L+SgK-QGt5yS8u54w@mail.gmail.com>
+Subject: Re: [ANNOUNCE] Git v2.33.0-rc2
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Git Mailing List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Down <chris@chrisdown.name> =E4=BA=8E2021=E5=B9=B48=E6=9C=8813=E6=97=
-=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=888:36=E5=86=99=E9=81=93=EF=BC=9A
+On Thu, 12 Aug 2021 at 01:23, Junio C Hamano <gitster@pobox.com> wrote:
 >
-> yongw.pur@gmail.com writes:
-> >From: wangyong <wang.yong12@zte.com.cn>
-> >Inspired by PSI features, vmpressure inotifier function should also be
-> >configured to decide whether it is used, because it is an independent
-> >feature which notifies the user of memory pressure.
-> >
-> >Since the vmpressure interface is used in kernel common code, for
-> >users who do not use the vmpressure function, there will be
-> >additional overhead.
+> Git 2.33 Release Notes (draft)
+> ==============================
+
+rc1 had a section "Backward compatibility notes" where the recent work
+on "git log -m" was mentioned. That was then dropped because of
+6a38e33331 ("Revert 'diff-merges: let "-m" imply "-p"'", 2021-08-05), so
+there are no backward compatibility notes in rc2.
+
+> Updates since Git 2.32
+> ----------------------
 >
-> Could you please demonstrate this additional overhead with profiles or
-> demonstrations of other real world effects? Thanks.
+> UI, Workflows & Features
 
-Thanks for your reply. In terms of code, it will reduce the operation
-of some code.
+>  * The "-m" option in "git log -m" that does not specify which format,
+>    if any, of diff is desired did not have any visible effect; it now
+>    implies some form of diff (by default "--patch") is produced.
 
-To  demonstrate this additional overhead, It is planned to use lmbench and
-Christoph Lamenter=E2=80=99s pagefault tool  (https://lkml.org/lkml/2006/8/=
-29/294)
-for comparative testing.
+This is basically the same blurb. It was duplicated in rc1, and one of
+the copies remains in rc2. I believe it should be dropped.
 
-Thanks.
+Martin
