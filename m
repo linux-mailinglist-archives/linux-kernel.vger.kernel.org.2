@@ -2,208 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B423EC142
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F1E3EC144
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237402AbhHNHyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 03:54:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
+        id S237410AbhHNH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 03:56:43 -0400
+Received: from mout.gmx.net ([212.227.15.15]:60763 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236519AbhHNHyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 03:54:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADBE3604D7;
-        Sat, 14 Aug 2021 07:53:37 +0000 (UTC)
-Date:   Sat, 14 Aug 2021 09:53:33 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        id S236519AbhHNH4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 03:56:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628927745;
+        bh=ZZfa3D/xlj1AhWpX8cfXOHAVJvxO9sqXF8P5vPPNy68=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=LUpBBn4pE7R3svYl5tl/e8uMT5w73lp5XJqygBtQPA05Su0kJvxRcYcqYqOZqqaUF
+         XZAjHrKOl+coh26CPl4qXoo92fDwbV6AmWlmWsD8kZaJ5idhx5IhyX0PdIPKSwisLY
+         oFajPtA9BgwlMa1BfpjronVsKNOqcIWDIz0Jt1nc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M1HZo-1mGTDH2G7e-002n4J; Sat, 14 Aug 2021 09:55:45 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@ACULAB.COM>,
         Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Message-ID: <20210814075333.7333bxduk4tei57i@wittgenstein>
-References: <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133>
- <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
- <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
- <CAHk-=wgi2+OSk2_uYwhL56NGzN8t2To8hm+c0BdBEbuBuzhg6g@mail.gmail.com>
- <YRcjCwfHvUZhcKf3@zeniv-ca.linux.org.uk>
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] EDAC/mc: Prefer strscpy over strcpy
+Date:   Sat, 14 Aug 2021 09:55:27 +0200
+Message-Id: <20210814075527.5999-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YRcjCwfHvUZhcKf3@zeniv-ca.linux.org.uk>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:javi5gFL5vgU8bODNsXF3HGI+TugHhiTkzGQTTjX81sD3qjiqeF
+ 8N1cA2oYzzMXpiaj91SAM7RoivrD/xR2Ym3yTeajR5xn3cLdKGt9aMy89VEE2Kldm6xOcqU
+ jkh3gT5bzUii5ik/f9+rE9sNAgB/o9e6LRKYh3/LJvAd7xmm2lojbRlsjzWqyk+ZAQF1fCr
+ j8ZHinAr0RW0jKqDddTDA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Wwa9qhrL6+M=:h0Ty1K8JmOj3iwQHBA6TxX
+ F1mebYma032LVwQb9rtP4Ax43FXttpyTYbQfi/LyyYqCYStIYa09fLQ+6NMWIZerAoiS9wiUI
+ ZsNfrW35NVRIb/2mMj7b0DWxWB/n6HKWF9rM+eCc/gCKZqOZMG2ZvRZ6a/4dXh2q9yjum4JYZ
+ ZhtA1SZgrbxgOP7p4lEL/72FhKNfzEFejBcuHbJch1+tThcc1gWRH/xn40y6cWT6TcHjL9Ux/
+ 3sRy6aMpmD0GhrfENR3cXk9s3SuEe3WqNaa9vXkVt0IH0Cs/oQodx9AWfuPo9FrTk0CviXje8
+ YvVdZhaxPsgIGz+ByTw55NvPyUY6osHTS/n5zmKmNLCSsFc0vWX8BY7lLqOn5J48V98yef11t
+ 2E2M+gbuDFoG2fckN260LvJtKA49dum52FOaYM2RglMwqkJp7k/XGEtWTokN27E6aUhhlUwgy
+ Z+YOZTOYVqgYqTbvqpqK7i9rFU7vj0YE+9RoqALw9d6BJ5Hsi6j10I5j3D+AOm0ezUBWodkG5
+ k+46er9ZNc5Nz7/iMCCCKDX8IwcmX6C4qOCzCJOSbtFNsQ3bKrPyGJ8p8nQeYjRZy2NHHVR6/
+ MusqNmPsn1NnkxGob6JpxGlfrdJN2xJH4ZChW9cLaDCSu+93gi2xv9/M/0unQu/U1mDv5GWVD
+ dNd1SBo23GLaF/NtxlBhTSpG55+Y9+wPSkSS9M6wAdD0WXc4E8bVcZdKiPPmG0wRhq0zfTRtK
+ zKk4tQnTny2lQJOVSHhqXedcg+e/RBMt7ild6m/WjaY7bYDLI7EyP/nUS0619NlgrbvKqjBwi
+ ghZ/a1teSk++5Cut1eIyMakQaCNG1KhUy74XTYUleEL4jNXIE7QH4ySIv2GW3iyzZ1HwtHoch
+ n0+nmUFD4JQN4SSd4PRrNUnmHVPkgyEV6ZGEMwTlvNNGop+BraDe0NuVF4Ftxftbradxsrbl4
+ BsR3uMfI7cULvQnUUIqn1InmRKGOEsbCV+AdLo68fKtwI/gInu/ecLmOaaPuvTi+oKsLcYbXI
+ Vq8fZkrrh6Soqr+XCvXfR6K9n5iJQ0vWMfmKhLQxp+4SnijMX5XKUmf6EV/edXgXzJ3T9HWTH
+ YzWyUNR7qAgXSIlrclD5DU+7IMmi9J241Q0L5pvFwlG4ntBO6zk/1f0Og==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 01:57:31AM +0000, Al Viro wrote:
-> On Fri, Aug 13, 2021 at 02:58:57PM -1000, Linus Torvalds wrote:
-> > On Fri, Aug 13, 2021 at 2:54 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > And nobody really complained when we weakened it, so maybe removing it
-> > > entirely might be acceptable.
-> > 
-> > I guess we could just try it and see... Worst comes to worst, we'll
-> > have to put it back, but at least we'd know what crazy thing still
-> > wants it..
-> 
-> Umm...  I'll need to go back and look through the thread, but I'm
-> fairly sure that there used to be suckers that did replacement of
-> binary that way (try to write, count on exclusion with execve while
-> it's being written to) instead of using rename.  Install scripts
-> of weird crap and stuff like that...
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-I'm not agains trying to remove it, but I think Al has a point.
+This is a previous step in the path to remove the strcpy() function
+entirely from the kernel.
 
-Removing the write protection will also most certainly make certain
-classes of attacks _easier_. For example, the runC container breakout
-from last year using privileged containers issued CVE-2019-5736 would be
-easier. I'm quoting from the commit I fixed this with:
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Hi,
 
-    The attack can be made when attaching to a running container or when starting a
-    container running a specially crafted image.  For example, when runC attaches
-    to a container the attacker can trick it into executing itself. This could be
-    done by replacing the target binary inside the container with a custom binary
-    pointing back at the runC binary itself. As an example, if the target binary
-    was /bin/bash, this could be replaced with an executable script specifying the
-    interpreter path #!/proc/self/exe (/proc/self/exec is a symbolic link created
-    by the kernel for every process which points to the binary that was executed
-    for that process). As such when /bin/bash is executed inside the container,
-    instead the target of /proc/self/exe will be executed - which will point to the
-    runc binary on the host. The attacker can then proceed to write to the target
-    of /proc/self/exe to try and overwrite the runC binary on the host.
+Following the comments in the previous version I don't use the scnprintf
+function avoiding speed penalties. Instead I use the strscpy.
 
-and then the write protection kicks in of course:
+Thanks,
+Len
 
-    However in general, this will not succeed as the kernel will not
-    permit it to be overwritten whilst runC is executing.
+This is a task of the KSPP [1]
 
-which the attack can of course already overcome nowadays with minimal
-smarts:
+[1] https://github.com/KSPP/linux/issues/88
 
-    To overcome this, the attacker can instead open a file descriptor to
-    /proc/self/exe using the O_PATH flag and then proceed to reopen the
-    binary as O_WRONLY through /proc/self/fd/<nr> and try to write to it
-    in a busy loop from a separate process. Ultimately it will succeed
-    when the runC binary exits. After this the runC binary is
-    compromised and can be used to attack other containers or the host
-    itself.
+Changelog v1 -> v2
+- Use the strscpy() instead of scnprintf() to add labels and follow a
+  code pattern more similar to the current one (advance "p" and
+  decrement "left") (Robert Richter).
 
-But with write protection removed you'd allow such attacks to succeed
-right away. It's not a huge deal to remove it since we need to have
-other protection mechanisms in place already:
+Changelog v2 -> v3
+- Rename the "left" variable to "len" (Robert Richter).
+- Use strlen(p) instead of strlen(OTHER_LABEL) to decrement "len" and
+  increment "p" as otherwise "left" could underflow and p overflow
+  (Robert Richter).
 
-    To prevent this attack, LXC has been patched to create a temporary copy of the
-    calling binary itself when it starts or attaches to containers. To do this LXC
-    creates an anonymous, in-memory file using the memfd_create() system call and
-    copies itself into the temporary in-memory file, which is then sealed to
-    prevent further modifications. LXC then executes this sealed, in-memory file
-    instead of the original on-disk binary. Any compromising write operations from
-    a privileged container to the host LXC binary will then write to the temporary
-    in-memory binary and not to the host binary on-disk, preserving the integrity
-    of the host LXC binary. Also as the temporary, in-memory LXC binary is sealed,
-    writes to this will also fail.
+Changelog v3 -> v4
+- Change the commit subject (Joe Perches).
+- Fix broken logic (Robert Richter).
+- Rebase against v5.14-rc5.
 
-    Note: memfd_create() was added to the Linux kernel in the 3.17 release.
+Previous versions:
 
-However, I still like to pich the upgrade mask idea Aleksa and we tried
-to implement when we did openat2(). If we leave write-protection in
-preventing /proc/self/exe from being written to:
+v1
+https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gm=
+x.com/
 
-we can take some time and upstream the upgrade mask patchset which was
-part of the initial openat2() patchset but was dropped back then (and I
-had Linus remove the last remants of the idea in [1]).
+v2
+https://lore.kernel.org/linux-hardening/20210801143558.12674-1-len.baker@g=
+mx.com/
 
-The idea was to add a new field to struct open_how "upgrade_mask" that
-would allow a caller to specify with what permissions an fd could be
-reopened with. I still like this idea a great deal and it would be a
-very welcome addition to system management programs. The upgrade mask is
-of course optional, i.e. the caller would have to specify the upgrade
-mask at open time to restrict reopening (lest we regress the whole
-world).
+v3
+https://lore.kernel.org/linux-hardening/20210807155957.10069-1-len.baker@g=
+mx.com/
 
-But, we could make it so that an O_PATH fd gotten from opening
-/proc/<pid>/exe always gets a restricted upgrade mask set and so it
-can't be upgraded to a O_WRONLY fd afterwards. For this to be
-meaningful, write protection for /proc/self/exe would need to be kept.
+ drivers/edac/edac_mc.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-[1]: commit 5c350aa11b441b32baf3bfe4018168cb8d10cef7
-     Author: Christian Brauner <christian.brauner@ubuntu.com>
-     Date:   Fri May 28 11:24:15 2021 +0200
-     
-         fcntl: remove unused VALID_UPGRADE_FLAGS
-     
-         We currently do not maky use of this feature and should we implement
-         something like this in the future it's trivial to add it back.
-     
-         Link: https://lore.kernel.org/r/20210528092417.3942079-2-brauner@kernel.org
-         Cc: Christoph Hellwig <hch@lst.de>
-         Cc: Aleksa Sarai <cyphar@cyphar.com>
-         Cc: Al Viro <viro@zeniv.linux.org.uk>
-         Cc: linux-fsdevel@vger.kernel.org
-         Suggested-by: Richard Guy Briggs <rgb@redhat.com>
-         Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-         Reviewed-by: Christoph Hellwig <hch@lst.de>
-         Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+index f6d462d0be2d..7aea6c502316 100644
+=2D-- a/drivers/edac/edac_mc.c
++++ b/drivers/edac/edac_mc.c
+@@ -1032,6 +1032,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	int i, n_labels =3D 0;
+ 	struct edac_raw_error_desc *e =3D &mci->error_desc;
+ 	bool any_memory =3D true;
++	size_t len;
+
+ 	edac_dbg(3, "MC%d\n", mci->mc_idx);
+
+@@ -1086,6 +1087,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	 */
+ 	p =3D e->label;
+ 	*p =3D '\0';
++	len =3D sizeof(e->label);
+
+ 	mci_for_each_dimm(mci, dimm) {
+ 		if (top_layer >=3D 0 && top_layer !=3D dimm->location[0])
+@@ -1114,10 +1116,12 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
+rr_type type,
+ 			*p =3D '\0';
+ 		} else {
+ 			if (p !=3D e->label) {
+-				strcpy(p, OTHER_LABEL);
+-				p +=3D strlen(OTHER_LABEL);
++				strscpy(p, OTHER_LABEL, len);
++				len -=3D strlen(p);
++				p +=3D strlen(p);
+ 			}
+-			strcpy(p, dimm->label);
++			strscpy(p, dimm->label, len);
++			len -=3D strlen(p);
+ 			p +=3D strlen(p);
+ 		}
+
+@@ -1140,9 +1144,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	}
+
+ 	if (any_memory)
+-		strcpy(e->label, "any memory");
++		strscpy(e->label, "any memory", sizeof(e->label));
+ 	else if (!*e->label)
+-		strcpy(e->label, "unknown memory");
++		strscpy(e->label, "unknown memory", sizeof(e->label));
+
+ 	edac_inc_csrow(e, row, chan);
+
+=2D-
+2.25.1
+
