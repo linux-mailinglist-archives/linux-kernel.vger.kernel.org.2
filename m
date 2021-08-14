@@ -2,162 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE283EC498
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A219B3EC4AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239035AbhHNSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:50:01 -0400
-Received: from mail-bn8nam11on2048.outbound.protection.outlook.com ([40.107.236.48]:17792
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233256AbhHNSt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:49:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hdkGwytLwN3cAhLEDcnpf64Be2KWxZ0qWnAqDxE+jL7NlINqhuR5gNcWiSCqBj1zjzI1NWuLWUs2RNwl1zLMlQaE9fKK1XedD2jt5tjs4GKF/G+G6Mosib20foxqIxipkp0Ai1SxkVhCapWwQsw9LVbissVU9v3N6rqHYp3yLpsc3uE9jBqrV+aRDNikcHZBy/79SgdhFYsisk9xuo7q+0LNoFKqiB5GhlDCtvZeBLEaRfZ+CkJrKitHC1oa9rldNrjIyh9yURLCSCQobhmVLA7UdStZs4aZO7QlYhqnymyYTktxGwa3AU8o6mwnhGqgNRvFft2E2W7SAtSHbetHpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vgskADnp/JlKbzn/ZXphTbBHXqx9vosHmjhDimPp5Vc=;
- b=T/rwZgyVNKgKUu/O9KV9MmtpDxX2VVs991lXWwA5x35fCWKv21/McNu8ypSUPFXcjQhAHUmrxwGq0toHeXk1DiQ+jAazx2m0xdbI++gGM0Z8KdJzky5lxUdxIG3tMvUNwo0eiz44QN3XXNQUhEci7By43qCTqgnIc1D/UoYB7cbT/Zp/4VJrG772PgezKoQ+hiWaB/IQG1eqTB8va/9JGVuzzP9g+Y4KbCIMddMxQcRgq7f+Bgn3d+v9pBUo36FagPLBv0Ery1fHlDesWt5WLxLRVuQnh+LRCH3UEChaJAPIhoKjkNYk8VBztJUIoTtWU8BurCdowPAE7Zg2jeQDQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vgskADnp/JlKbzn/ZXphTbBHXqx9vosHmjhDimPp5Vc=;
- b=bqpaEsdIvd1A0QaI47PgcG0OkBy/zfLg2oalA/CxYw1nQKClrFO0BehZjQ3njzQXgEho5MyyMpAIOFDs5BtpIpba54V8KwWYxkcWWnZSys5qScCrw6JbNG6xWKKWXGGdoZrJH5O8upde8EtpMxBEIffX4Wam4z8h7351mBZ2iaI=
-Authentication-Results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5341.namprd12.prod.outlook.com (2603:10b6:5:39e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Sat, 14 Aug
- 2021 18:49:24 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4415.022; Sat, 14 Aug 2021
- 18:49:23 +0000
-Subject: Re: [PATCH v2 02/12] mm: Introduce a function to check for
- virtualization protection features
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Joerg Roedel <jroedel@suse.de>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
- <YRgMUHqdH60jDB06@zn.tnic>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <9279dcd1-ccd9-c187-1b95-8934d1bf298c@amd.com>
-Date:   Sat, 14 Aug 2021 13:49:20 -0500
+        id S237556AbhHNTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:09:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37844 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhHNTJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 15:09:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 58D391FDCE;
+        Sat, 14 Aug 2021 19:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628968136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=127TjAPx8KQOwIpkvIdUi/9Nroy0dYk4GGz2yrb3uZ0=;
+        b=FGBicascI1IKpUNA4S6XZfRZX0jlhyPmCUYzT2gNyDOCUhtuVBjs7veJGdATer9LsMUPA5
+        a4IuNs8EqhWn7AhKNBj8Rd0cyoZOyfJTNiNn460syqFR+sFyLZ8+6hNVRWQc8w/bvyZBwn
+        DDe9nsrhORGeDSVA6oejvSzTvltZeak=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628968136;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=127TjAPx8KQOwIpkvIdUi/9Nroy0dYk4GGz2yrb3uZ0=;
+        b=MLsg8OIU1bHUcslfIWhql2eSKPI3FG/n7BYgTCiylPTYw9vwrxi6+6zJGecefbKfxxOCT/
+        cuYTiWp/THaKhfBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E682013D20;
+        Sat, 14 Aug 2021 19:08:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JPiPNMcUGGFWbAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Sat, 14 Aug 2021 19:08:55 +0000
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+To:     Clark Williams <williams@redhat.com>,
+        Mike Galbraith <efault@gmx.de>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+ <20210812151803.52f84aaf@theseus.lan>
+ <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
+ <20210812162448.26274298@theseus.lan>
+ <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
+ <20210812164440.0426d8b7@theseus.lan>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+Date:   Sat, 14 Aug 2021 21:08:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YRgMUHqdH60jDB06@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210812164440.0426d8b7@theseus.lan>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0202.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::27) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA0PR11CA0202.namprd11.prod.outlook.com (2603:10b6:806:1bc::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend Transport; Sat, 14 Aug 2021 18:49:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d3836133-80ec-4656-720a-08d95f543bc7
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5341:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5341139F5DC8386A15241D86ECFB9@DM4PR12MB5341.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4y+HzWp+Gz2Rsm2daSWF2dKwvAwhG7l9BpPgSoW4ghfw/K+IKyEU4niY2FM1c8P5/a3CFRUOyNg6BnnmPgExZy52+CX4ZoyJwnvA/+YAapBLaz0PHUGAe3Jg+0R5Ko71WXzQ12SnxWiwIUEJUQPKYmfgqqzcSdtOE3KfGMQsTKh5qIH6q/q3wC3UTqlyl9vhlcqoYWr3dAlEH5eFmfMuzdEmnVx8px9e70xkRhmma6nUE4BE6skeFU2aXqdKSAZLSCimr0Oqj7RmP+j9BKjfTpL0brlUoq9ibBgrD+vNLBbIXAHnrfhZJ8hl5NA4ceDM0/K1WEejDuzBVybmBJWbfBYtW/u3mjdGQmHCqc06TBwXTzZ58Co4ZU5yqRHZVxn2L/rBzkpQpbRP8Ak/aowsOIMHUpkjSRRsAOPau/JGeclrEXLf9xgd091H4uPdzDlug8eoz4GPG2bTIfi8Q3JgEr25//woFm4UN/NvXDnF8/gredfliHkalPgH0mlPOVp6/8VTC91eqMR9fZqbQknYLbuzY6PJQYjJRrozlab+G3SG9OCGmprMXPPWrWgNYHoAQ4zG0R3HuwrHFvgKPqZJdz4pvcWassDoS4w49XUlUwkJRirCm4RXg8ssiY/IPCduItotmBnr0X73P5qvUbXNd+NtT6PqfWNzKPEW1jhyYa5zEj/hbfG6ZUkRxt7U+N8bnLb934cPMtiYq/S1QWjU/kA/5HJp0ez/PRJPGKkOEW8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(31696002)(54906003)(4326008)(186003)(53546011)(2906002)(6506007)(31686004)(86362001)(6486002)(478600001)(8936002)(8676002)(5660300002)(26005)(66556008)(7416002)(316002)(38100700002)(6512007)(6916009)(36756003)(66946007)(66476007)(956004)(2616005)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rll5ZmhJUlRCblFWRHV3bmYyQnhSTTQ1U1FEMUJDa3IvYUJSMWpCMUp3NG5B?=
- =?utf-8?B?aENGdjJhMzgyNExxaFR3WlRLMkpZczd4ZXdRcTJyZHd2ajViazVRYTJWZmtw?=
- =?utf-8?B?K24rc1pTbzgxQm0wT3hLdlFrNE9UUmRqTGwzdER4ZXk4bWduRDhGMG03eUdn?=
- =?utf-8?B?Vk55U1RKTklMRzVManFzdkdCQ0hrSE1FaUhHZG1NV1F6V2JXUmJaVWUrZnJp?=
- =?utf-8?B?ZjQ3RkVDNFE4T3YvTUltOHBod01GNWRkSW93Ym5meGlscFZkM1FBOHN5TnZs?=
- =?utf-8?B?NTh2UlZ4SUxrN0wyYVRuUmYrbUs1SXVPM0NPMWplMUhyMVdJTnpRR3E2aDFm?=
- =?utf-8?B?RGxTanlYbFNWTkxKSDUvaW04VzdPNW1QTUVmejM2VmplY2pBbjJ5WmhFeFpk?=
- =?utf-8?B?NGlmOGpiTXZneW91K0Q1Y3pBTERhRU5sSzRCckdxblA1SGs4UE5tVWpxNnBS?=
- =?utf-8?B?OFg3SnJMcUh6NHgxdjg0Q1RuMnN4TVB1MktQZjBkZ0lrc09oZC9scUdSUSs3?=
- =?utf-8?B?NHhreFpsYWh3VldOYlVMS2UwVUZmOTFxRGJTVFBKd3g4Tlk1NUh4UFhlelVl?=
- =?utf-8?B?aGc4dndXdlhucVl6aHQ3eDJSZlZBblBXdWgzZXYwMlJqL1J1TW9mWExjOTI0?=
- =?utf-8?B?ZlYvTk11b09UeGFzMDNISERGNUw3UFNXQWtmSkVIcjJpazBjS3BMTjVIRmQw?=
- =?utf-8?B?azlVNTJuSHZCN3NKVXhKSjRRUk03TFNIMVUzQTQwWEtHOTFacVd5UUo0bGYv?=
- =?utf-8?B?WHFmN2MwQTJIay9KSUp3eXpEUUd4MkYxdU0zQmY4VkNDdFdDQXdGOTdPMXA2?=
- =?utf-8?B?aFNlcEd2RWFBSzFBL2h2a1JHb1kwcFhOMnpJK3dyaFMzbzJESlM5QktHaklB?=
- =?utf-8?B?R1VxbHdPaDliOTJPdmpyNFlsZWlxaFRTejJ4QWRFQWNzaHVkd1Y0REJ4b2VN?=
- =?utf-8?B?S2tyNzhIamo4RGcraWJwZ2NFRTdEUE5zbDFPRlIwRGpMVmJxem5uTUxmUnFO?=
- =?utf-8?B?K2R5bVBHd3RiK25LMUpMcUZ0ZXkxejRhcm1ub1BINnlwVng4NC9haUZZSStJ?=
- =?utf-8?B?SitvS3JUTldlTVl1Wm9MeHlZRUV6Unk3VlE4YWJRRTVoMitqcnhMKzVpNWsr?=
- =?utf-8?B?VnRTNTFDSkhBVEloMkRKMTRXNlB1ZDRIMThXL2FJRWNnWkJ3UzYzWTdqbVpq?=
- =?utf-8?B?dGFoNGRtVUtZZjdqOU1zeCtrQ2swdGlSWTVlK2gwSURBYVRoeWx2Nm0vTkhK?=
- =?utf-8?B?SzFyTDRoNm00Q0NqZ3Y2eTJSKzdQNTZDZjQvY3pYWkU2OFB6eFc2SlRCcjFG?=
- =?utf-8?B?ZndMVVorOWRqU1Z2eTdkbXp3MS9YdlZBalZhSkY2UW84cTc2UVBtVkJrYzdZ?=
- =?utf-8?B?VzR6NHdhZjZmb2E5MVhEN3RRTSt1V0habWRuVEJodWdCMTNweW15MExldmN3?=
- =?utf-8?B?d3pGVFBmWEFNSml1eHF5c0s4M3pNUnk0aGMwZHN3SFQyZ3dKbnlJOEx2UWdj?=
- =?utf-8?B?VTBTcjJVd295VlpaUnVSYktXa2VFTjM1NjNBR0lIcXpKcEJ4YmhPM2xJc1ND?=
- =?utf-8?B?Tm9nOGd4Tzg2ek4rZGtZaEd6Q1pqVm9kcnQvdnhNdmNzR1BRYjNGTWJ5enVh?=
- =?utf-8?B?LzJyMHhYSllHUHg3K3FXdUJIdWwwWks4a25uc2hxemh6R1hUa2VuK1haNFB2?=
- =?utf-8?B?aFpQRml4U2RvdS9wNmx0azF4NHgvYjJKZ0l3SjFBOE1pa09UODViZ1VONFM0?=
- =?utf-8?Q?VDQ3NBldIRAaVphVU3iNoZMUi+NgKtN9V3karmx?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3836133-80ec-4656-720a-08d95f543bc7
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2021 18:49:23.7719
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g3KxbEwNYZvFBg8WDMyZfkMRzJWgpOX28PP/qqAT4rSzD+BzTZPnUl7DcHAKu2KoLjTOsqh+WZiTE631wkpfcw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 1:32 PM, Borislav Petkov wrote:
-> On Fri, Aug 13, 2021 at 11:59:21AM -0500, Tom Lendacky wrote:
->> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
->> new file mode 100644
->> index 000000000000..43d4dde94793
->> --- /dev/null
->> +++ b/include/linux/protected_guest.h
->> @@ -0,0 +1,35 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Protected Guest (and Host) Capability checks
->> + *
->> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
->> + *
->> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
->> + */
->> +
->> +#ifndef _PROTECTED_GUEST_H
->> +#define _PROTECTED_GUEST_H
->> +
->> +#ifndef __ASSEMBLY__
-> 	   ^^^^^^^^^^^^^
+On 8/12/21 11:44 PM, Clark Williams wrote:
+> On Thu, 12 Aug 2021 23:30:29 +0200
+> Vlastimil Babka <vbabka@suse.cz> wrote:
 > 
-> Do you really need that guard? It builds fine without it too. Or
-> something coming later does need it...?
-
-No, I probably did it out of habit. I can remove it in the next version.
-
-Thanks,
-Tom
-
+>> On 8/12/21 11:24 PM, Clark Williams wrote:
+>>> On Thu, 12 Aug 2021 22:45:19 +0200
+>>> Vlastimil Babka <vbabka@suse.cz> wrote:
+>>>   
+>>>> On 8/12/21 10:18 PM, Clark Williams wrote:  
+>>>>> On Tue, 10 Aug 2021 18:37:31 +0200
+>>>>> Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+>>>>>
+>>>>> Sebastian, et al,
+>>>>>
+>>>>> Got the following panic running v5.14-rc5-rt8:
+>>>>>
+>>>>> Aug 13 06:35:05 oberon kernel: page:000000009ac5dd73 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1ab3db
+>>>>> Aug 13 06:35:05 oberon kernel: flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
+>>>>> Aug 13 06:35:05 oberon kernel: raw: 0017ffffc0000000 ffffee1286aceb88 ffffee1287b66288 0000000000000000
+>>>>> Aug 13 06:35:05 oberon kernel: raw: 0000000000000000 0000000000100000 00000000ffffffff 0000000000000000
+>>>>> Aug 13 06:35:05 oberon kernel: page dumped because: VM_BUG_ON_PAGE(!PageSlab(page))
+>>>>> Aug 13 06:35:05 oberon kernel: ------------[ cut here ]------------
+>>>>> Aug 13 06:35:05 oberon kernel: kernel BUG at include/linux/page-flags.h:814!
+>>>>> Aug 13 06:35:05 oberon kernel: invalid opcode: 0000 [#1] PREEMPT_RT SMP PTI
+>>>>> Aug 13 06:35:05 oberon kernel: CPU: 3 PID: 12345 Comm: hackbench Not tainted 5.14.0-rc5-rt8+ #12
+>>>>> Aug 13 06:35:05 oberon kernel: Hardware name:  /NUC5i7RYB, BIOS RYBDWi35.86A.0359.2016.0906.1028 09/06/2016
+>>>>> Aug 13 06:35:05 oberon kernel: RIP: 0010:___slab_alloc+0x340/0x940    
+>>>>
+>>>> Are you able to translate this RIP via addr2line?  
+>>>
+>>> $ addr2line -e /data/o/linux-5.14.y-rt/vmlinux ___slab_alloc+0x340/0x940
+>>> <snip>/arch/x86/include/asm/processor.h:440  
+>>
+>> Hm that's not much useful, I'd need the line in mm/slub.c
+>> does ./scripts/faddr2line give better output?
 > 
+> Why, yes it does!  :)
+> 
+> $ ./scripts/faddr2line /data/o/linux-5.14.y-rt/vmlinux ___slab_alloc+0x340/0x940
+> ___slab_alloc+0x340/0x940:
+> PageSlabPfmemalloc at include/linux/page-flags.h:814
+> (inlined by) pfmemalloc_match at mm/slub.c:2772
+> (inlined by) ___slab_alloc at mm/slub.c:2874
+
+Aha! That's helpful. Hopefully it's just a small issue where we
+opportunistically test flags on a page that's protected by the local
+lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
+which can trigger if our page went away (which we would have realized
+after taking the lock).
+
+So hopefully the below diff with uninspired naming should help?
+
+----8<----
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 5922031ffab6..24579f71001e 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -815,6 +815,11 @@ static inline int PageSlabPfmemalloc(struct page *page)
+ 	return PageActive(page);
+ }
+ 
++static inline int __PageSlabPfmemalloc(struct page *page)
++{
++	return PageActive(page);
++}
++
+ static inline void SetPageSlabPfmemalloc(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageSlab(page), page);
+diff --git a/mm/slub.c b/mm/slub.c
+index ef022fe159c6..3cc7d58a08fa 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2775,6 +2775,14 @@ static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags)
+ 	return true;
+ }
+ 
++static inline bool try_pfmemalloc_match(struct page *page, gfp_t gfpflags)
++{
++	if (unlikely(__PageSlabPfmemalloc(page)))
++		return gfp_pfmemalloc_allowed(gfpflags);
++
++	return true;
++}
++
+ /*
+  * Check the page->freelist of a page and either transfer the freelist to the
+  * per cpu freelist or deactivate the page.
+@@ -2871,7 +2879,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	 * PFMEMALLOC but right now, we are losing the pfmemalloc
+ 	 * information when the page leaves the per-cpu allocator
+ 	 */
+-	if (unlikely(!pfmemalloc_match(page, gfpflags)))
++	if (unlikely(!try_pfmemalloc_match(page, gfpflags)))
+ 		goto deactivate_slab;
+ 
+ 	/* must check again c->page in case we got preempted and it changed */
