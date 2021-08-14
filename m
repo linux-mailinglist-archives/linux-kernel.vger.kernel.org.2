@@ -2,555 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F7E3EC00A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 05:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807E43EC00D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 05:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbhHNDNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 23:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236466AbhHNDNd (ORCPT
+        id S236818AbhHNDSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 23:18:17 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:34383 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236466AbhHNDSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 23:13:33 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994AAC061756;
-        Fri, 13 Aug 2021 20:13:05 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id y6so1758598lje.2;
-        Fri, 13 Aug 2021 20:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UFIZsxqHoA0MbHCSxQdhPAZe+pabJ6hNNfzUq6NZcs8=;
-        b=gxYlFNep0rineog9tKM6BJqa90D/btKfTMrGtEEsUT4WTs+dqxoDtJ0b5YrvyjmAXw
-         H41ll5zkKgJAsFi6Te6V+DhfvaWMc0cHCExcKa0IG7Xynlb0t1UY7Ct1cA2JOUKhfOig
-         /TLMeQ7jAI9c5Hlgiy9M99uvU5WYCLT7R2UHbKdH29dKZTwFz+ZBOaNAYi+fZ2m6wFRf
-         0A/OGyZMuhD0JL62pa6aKLO51GO1OJp9l6/IWFGifwWqX11kLCHWPRrvzH5WbIdWOORf
-         +uKEi4gFLwme44BgZE95e6s5TqT7IPD2tbKzuevO1Ax2nycOiqycu3LUxxcnGboHS8qj
-         JaJw==
+        Fri, 13 Aug 2021 23:18:15 -0400
+Received: by mail-pj1-f52.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso13634027pjb.1;
+        Fri, 13 Aug 2021 20:17:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UFIZsxqHoA0MbHCSxQdhPAZe+pabJ6hNNfzUq6NZcs8=;
-        b=X0aPDhZsU01uIIljuja1J74K2Rof0c6iel9GB7hAVXWzOItv46cYG4+QWz8zRlMh6M
-         q2EqMdvr582t49kY90JNrcOsV1Cuy7j2YYuTzZ7EIOLaflXUl5dfiP7J7KeUtA3uXpGI
-         FI4ZjlwIET7OGFmqg/cuJVW+17F9gEGmnL2ALuCdmU8ViOsBLhGnYr1bWHCLblFH/vTz
-         feIvUl/IhigV3Q+5BP6+gbx5xuk8UTMvPfIwLEzTV1GMfJ/tphuMT/mmDuIdlZcm7B6Q
-         j4+vvXd4xfaUSi/R7FjM0bkI/NSrjZycShCO6SGw4XmLpzZSraYKW+v7EewAKNV77qKF
-         RszQ==
-X-Gm-Message-State: AOAM531drxrDljs6HB+lAcR6P8FV1+SfyqjS3ufuTeM7q1HspzyQ7dZZ
-        EWtROu/XtauiuOUgkZCg5lY=
-X-Google-Smtp-Source: ABdhPJwUCEi4Cb9svmU9rpFa2uQsGCGaJZ4lhmlR8MmKMfk0slQ04BSa8I0W9+umL1Qcah8SS7W9CQ==
-X-Received: by 2002:a05:651c:542:: with SMTP id q2mr3979916ljp.192.1628910783904;
-        Fri, 13 Aug 2021 20:13:03 -0700 (PDT)
-Received: from localhost.localdomain (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id v2sm309035lfg.112.2021.08.13.20.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 20:13:03 -0700 (PDT)
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     balbi@kernel.org
-Cc:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
-        mdevaev@gmail.com, ruslan.bilovol@gmail.com,
-        mika.westerberg@linux.intel.com, maze@google.com,
-        jj251510319013@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Date:   Sat, 14 Aug 2021 06:12:32 +0300
-Message-Id: <20210814031231.32125-1-mdevaev@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        bh=zq4l0+Pr/f31cKMp4VFkf9/Ag5nmI+uhXvgd4QMPJwM=;
+        b=Z1vCLMdVOQg+IXFSLwA5qery3o9MzeYfLBacq3Sv2xZP+00WI402P6+kpq/Ytbf3fp
+         WREv4bLNyaEhP4Xjpm2gJyfUriaxUFtL0r3A2WAr8VkXuGd2V3ofnv/WDh6e6DNDXxP7
+         1/NQ42so5HFpJHJYHwdwDQ4+6Jg6haqAyChaIaqTCBOAGwfiWmS31oYA/kHKLXm/V885
+         5TpS2GVGIbtnQiMzCcYbuyQlrvlxu3teoUx2YIyUPdHozsH/jwI9ZflKwugh7ZSAT7aH
+         jxmtqdX90oz+AWq6yO+EBPqNN8Aq/LYEvifgIyz7/iB/lPcf6NCicLHYSHxLrQKggyt4
+         bu/w==
+X-Gm-Message-State: AOAM530fX0YUk8ZwXncWLQr57SVrkHUv8VWo8NfbBNgWfLkVweONMyMH
+        GFBcDlakISphKwA1QBET1IY=
+X-Google-Smtp-Source: ABdhPJy038U4F49ZXeNOKwyqtaRvWuFwCZACQJLv+Tqb7Ly2PTzE+8eD8ntKOtI9+SFs662RFmj/9Q==
+X-Received: by 2002:a17:90a:a016:: with SMTP id q22mr5724600pjp.34.1628911067714;
+        Fri, 13 Aug 2021 20:17:47 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:55d6:7aa0:a6ad:d964? ([2601:647:4000:d7:55d6:7aa0:a6ad:d964])
+        by smtp.gmail.com with ESMTPSA id nr6sm3010060pjb.39.2021.08.13.20.17.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 20:17:46 -0700 (PDT)
+Subject: Re: [PATCH 2/3] scsi: fnic: Stop setting scsi_cmnd.tag
+To:     John Garry <john.garry@huawei.com>, satishkh@cisco.com,
+        sebaddel@cisco.com, kartilak@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hare@suse.de, hch@lst.de
+References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
+ <1628862553-179450-3-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <3e5d1bd4-cee9-7fd0-93a4-58d808e198f6@acm.org>
+Date:   Fri, 13 Aug 2021 20:17:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1628862553-179450-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-f_hid provides the OUT Endpoint as only way for receiving reports
-from the host. SETUP/SET_REPORT method is not supported, and this causes
-a number of compatibility problems with various host drivers, especially
-in the case of keyboard emulation using f_hid.
+On 8/13/21 6:49 AM, John Garry wrote:
+> It is never read. Setting it and the request tag seems dodgy
+> anyway.
 
-- Some hosts do not support the OUT Endpoint and ignore it,
-  so it becomes impossible for the gadget to receive a report
-  from the host. In the case of a keyboard, the gadget loses the ability
-  to get the status of the LEDs.
+This is done because there is code in the SCSI error handler that may
+allocate a SCSI command without allocating a tag. See also
+scsi_ioctl_reset().
 
-- Some BIOSes/UEFIs can't work with HID with the OUT Endpoint at all.
-  This may be due to their bugs or incomplete implementation
-  of the HID standard.
-  For example, absolutely all Apple UEFIs can't handle the OUT Endpoint
-  if it goes after IN Endpoint in the descriptor and require the reverse
-  order (OUT, IN) which is a violation of the standard.
-  Other hosts either do not initialize gadgets with a descriptor
-  containing the OUT Endpoint completely (like some HP and DELL BIOSes
-  and embedded firmwares like on KVM switches), or initialize them,
-  but will not poll.
+> ---
+>  drivers/scsi/fnic/fnic_scsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+> index 0f9cedf78872..f8afbfb468dc 100644
+> --- a/drivers/scsi/fnic/fnic_scsi.c
+> +++ b/drivers/scsi/fnic/fnic_scsi.c
+> @@ -2213,7 +2213,7 @@ fnic_scsi_host_start_tag(struct fnic *fnic, struct scsi_cmnd *sc)
+>  	if (IS_ERR(dummy))
+>  		return SCSI_NO_TAG;
+>  
+> -	sc->tag = rq->tag = dummy->tag;
+> +	rq->tag = dummy->tag;
+>  	sc->host_scribble = (unsigned char *)dummy;
 
-This patch adds option no_out_endpoint=1 to disable the OUT Endpoint
-and allow f_hid to receive reports from the host via SETUP/SET_REPORT.
-
-Previously, there was such a feature in f_hid, but it was replaced
-by the OUT Endpoint [1] in the commit 99c515005857 ("usb: gadget: hidg:
-register OUT INT endpoint for SET_REPORT"). So this patch actually returns
-the removed functionality making it optional. For backward compatibility
-reasons, the OUT Endpoint mode remains the default behaviour.
-
-- The OUT Endpoint mode provides the report queue and reduces USB overhead
-  (eliminating SETUP routine) on transmitting a report from the host.
-
-- If the SETUP/SET_REPORT mode is used, there is no report queue,
-  so the userspace will only read the last report. For classic HID
-  devices like keyboard this is not a problem, since it is intended
-  to transmit the status of the LEDs and only the last report
-  is important. This mode provides better compatibility with strange
-  and buggy host drivers.
-
-Both modes passed USBCV tests. Checking with the USB protocol analyzer
-also confirmed that everything is working as it should and the new mode
-ensures operability in all of the described cases.
-
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Link: https://www.spinics.net/lists/linux-usb/msg65494.html [1]
----
- drivers/usb/gadget/function/f_hid.c | 217 +++++++++++++++++++++++-----
- drivers/usb/gadget/function/u_hid.h |   1 +
- 2 files changed, 185 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index bb476e121eae..e3fb73ed696d 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -45,12 +45,17 @@ struct f_hidg {
- 	unsigned short			report_desc_length;
- 	char				*report_desc;
- 	unsigned short			report_length;
-+	bool				use_out_ep;
- 
- 	/* recv report */
--	struct list_head		completed_out_req;
- 	spinlock_t			read_spinlock;
- 	wait_queue_head_t		read_queue;
-+	/* recv report - interrupt out only (use_out_ep == 1) */
-+	struct list_head		completed_out_req;
- 	unsigned int			qlen;
-+	/* recv report - setup set_report only (use_out_ep == 0) */
-+	char				*set_report_buf;
-+	unsigned int			set_report_length;
- 
- 	/* send report */
- 	spinlock_t			write_spinlock;
-@@ -79,7 +84,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
- 	.bDescriptorType	= USB_DT_INTERFACE,
- 	/* .bInterfaceNumber	= DYNAMIC */
- 	.bAlternateSetting	= 0,
--	.bNumEndpoints		= 2,
-+	/* .bNumEndpoints	= DYNAMIC */
- 	.bInterfaceClass	= USB_CLASS_HID,
- 	/* .bInterfaceSubClass	= DYNAMIC */
- 	/* .bInterfaceProtocol	= DYNAMIC */
-@@ -140,7 +145,7 @@ static struct usb_ss_ep_comp_descriptor hidg_ss_out_comp_desc = {
- 	/* .wBytesPerInterval   = DYNAMIC */
- };
- 
--static struct usb_descriptor_header *hidg_ss_descriptors[] = {
-+static struct usb_descriptor_header *hidg_ss_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_ss_in_ep_desc,
-@@ -150,6 +155,14 @@ static struct usb_descriptor_header *hidg_ss_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_ss_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_ss_in_ep_desc,
-+	(struct usb_descriptor_header *)&hidg_ss_in_comp_desc,
-+	NULL,
-+};
-+
- /* High-Speed Support */
- 
- static struct usb_endpoint_descriptor hidg_hs_in_ep_desc = {
-@@ -176,7 +189,7 @@ static struct usb_endpoint_descriptor hidg_hs_out_ep_desc = {
- 				      */
- };
- 
--static struct usb_descriptor_header *hidg_hs_descriptors[] = {
-+static struct usb_descriptor_header *hidg_hs_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_hs_in_ep_desc,
-@@ -184,6 +197,13 @@ static struct usb_descriptor_header *hidg_hs_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_hs_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_hs_in_ep_desc,
-+	NULL,
-+};
-+
- /* Full-Speed Support */
- 
- static struct usb_endpoint_descriptor hidg_fs_in_ep_desc = {
-@@ -210,7 +230,7 @@ static struct usb_endpoint_descriptor hidg_fs_out_ep_desc = {
- 				       */
- };
- 
--static struct usb_descriptor_header *hidg_fs_descriptors[] = {
-+static struct usb_descriptor_header *hidg_fs_descriptors_intout[] = {
- 	(struct usb_descriptor_header *)&hidg_interface_desc,
- 	(struct usb_descriptor_header *)&hidg_desc,
- 	(struct usb_descriptor_header *)&hidg_fs_in_ep_desc,
-@@ -218,6 +238,13 @@ static struct usb_descriptor_header *hidg_fs_descriptors[] = {
- 	NULL,
- };
- 
-+static struct usb_descriptor_header *hidg_fs_descriptors_ssreport[] = {
-+	(struct usb_descriptor_header *)&hidg_interface_desc,
-+	(struct usb_descriptor_header *)&hidg_desc,
-+	(struct usb_descriptor_header *)&hidg_fs_in_ep_desc,
-+	NULL,
-+};
-+
- /*-------------------------------------------------------------------------*/
- /*                                 Strings                                 */
- 
-@@ -241,9 +268,11 @@ static struct usb_gadget_strings *ct_func_strings[] = {
- /*-------------------------------------------------------------------------*/
- /*                              Char Device                                */
- 
--static ssize_t f_hidg_read(struct file *file, char __user *buffer,
--			size_t count, loff_t *ptr)
-+static ssize_t f_hidg_intout_read(struct file *file, char __user *buffer,
-+				  size_t count, loff_t *ptr)
- {
-+	/* used only if the OUT endpoint is configured */
-+
- 	struct f_hidg *hidg = file->private_data;
- 	struct f_hidg_req_list *list;
- 	struct usb_request *req;
-@@ -255,15 +284,15 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
- 
- 	spin_lock_irqsave(&hidg->read_spinlock, flags);
- 
--#define READ_COND (!list_empty(&hidg->completed_out_req))
-+#define READ_COND_INTOUT (!list_empty(&hidg->completed_out_req))
- 
- 	/* wait for at least one buffer to complete */
--	while (!READ_COND) {
-+	while (!READ_COND_INTOUT) {
- 		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 		if (file->f_flags & O_NONBLOCK)
- 			return -EAGAIN;
- 
--		if (wait_event_interruptible(hidg->read_queue, READ_COND))
-+		if (wait_event_interruptible(hidg->read_queue, READ_COND_INTOUT))
- 			return -ERESTARTSYS;
- 
- 		spin_lock_irqsave(&hidg->read_spinlock, flags);
-@@ -313,6 +342,62 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
- 	return count;
- }
- 
-+#define READ_COND_SSREPORT (hidg->set_report_buf != NULL)
-+
-+static ssize_t f_hidg_ssreport_read(struct file *file, char __user *buffer,
-+				    size_t count, loff_t *ptr)
-+{
-+	/* used only if the OUT endpoint is NOT configured */
-+
-+	struct f_hidg *hidg = file->private_data;
-+	char *tmp_buf = NULL;
-+	unsigned long flags;
-+
-+	if (!count)
-+		return 0;
-+
-+	spin_lock_irqsave(&hidg->read_spinlock, flags);
-+
-+	while (!READ_COND_SSREPORT) {
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+		if (file->f_flags & O_NONBLOCK)
-+			return -EAGAIN;
-+
-+		if (wait_event_interruptible(hidg->read_queue, READ_COND_SSREPORT))
-+			return -ERESTARTSYS;
-+
-+		spin_lock_irqsave(&hidg->read_spinlock, flags);
-+	}
-+
-+	count = min_t(unsigned int, count, hidg->set_report_length);
-+	tmp_buf = hidg->set_report_buf;
-+	hidg->set_report_buf = NULL;
-+
-+	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+
-+	if (tmp_buf != NULL) {
-+		count -= copy_to_user(buffer, tmp_buf, count);
-+		kfree(tmp_buf);
-+	} else {
-+		count = -ENOMEM;
-+	}
-+
-+	wake_up(&hidg->read_queue);
-+
-+	return count;
-+}
-+
-+static ssize_t f_hidg_read(struct file *file, char __user *buffer,
-+			   size_t count, loff_t *ptr)
-+{
-+	struct f_hidg *hidg = file->private_data;
-+
-+	if (hidg->use_out_ep)
-+		return f_hidg_intout_read(file, buffer, count, ptr);
-+	else
-+		return f_hidg_ssreport_read(file, buffer, count, ptr);
-+}
-+
- static void f_hidg_req_complete(struct usb_ep *ep, struct usb_request *req)
- {
- 	struct f_hidg *hidg = (struct f_hidg *)ep->driver_data;
-@@ -433,14 +518,20 @@ static __poll_t f_hidg_poll(struct file *file, poll_table *wait)
- 	if (WRITE_COND)
- 		ret |= EPOLLOUT | EPOLLWRNORM;
- 
--	if (READ_COND)
--		ret |= EPOLLIN | EPOLLRDNORM;
-+	if (hidg->use_out_ep) {
-+		if (READ_COND_INTOUT)
-+			ret |= EPOLLIN | EPOLLRDNORM;
-+	} else {
-+		if (READ_COND_SSREPORT)
-+			ret |= EPOLLIN | EPOLLRDNORM;
-+	}
- 
- 	return ret;
- }
- 
- #undef WRITE_COND
--#undef READ_COND
-+#undef READ_COND_SSREPORT
-+#undef READ_COND_INTOUT
- 
- static int f_hidg_release(struct inode *inode, struct file *fd)
- {
-@@ -467,8 +558,10 @@ static inline struct usb_request *hidg_alloc_ep_req(struct usb_ep *ep,
- 	return alloc_ep_req(ep, length);
- }
- 
--static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
-+static void hidg_intout_complete(struct usb_ep *ep, struct usb_request *req)
- {
-+	/* used only if the OUT endpoint is configured */
-+
- 	struct f_hidg *hidg = (struct f_hidg *) req->context;
- 	struct usb_composite_dev *cdev = hidg->func.config->cdev;
- 	struct f_hidg_req_list *req_list;
-@@ -502,6 +595,39 @@ static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
- 	}
- }
- 
-+static void hidg_ssreport_complete(struct usb_ep *ep, struct usb_request *req)
-+{
-+	/* used only if the OUT endpoint is NOT configured */
-+
-+	struct f_hidg *hidg = (struct f_hidg *)req->context;
-+	struct usb_composite_dev *cdev = hidg->func.config->cdev;
-+	char *new_buf = NULL;
-+	unsigned long flags;
-+
-+	if (req->status != 0 || req->buf == NULL || req->actual == 0) {
-+		ERROR(cdev,
-+		      "%s FAILED: status=%d, buf=%p, actual=%d\n",
-+		      __func__, req->status, req->buf, req->actual);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&hidg->read_spinlock, flags);
-+
-+	new_buf = krealloc(hidg->set_report_buf, req->actual, GFP_ATOMIC);
-+	if (new_buf == NULL) {
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+		return;
-+	}
-+	hidg->set_report_buf = new_buf;
-+
-+	hidg->set_report_length = req->actual;
-+	memcpy(hidg->set_report_buf, req->buf, req->actual);
-+
-+	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
-+
-+	wake_up(&hidg->read_queue);
-+}
-+
- static int hidg_setup(struct usb_function *f,
- 		const struct usb_ctrlrequest *ctrl)
- {
-@@ -549,7 +675,11 @@ static int hidg_setup(struct usb_function *f,
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_REPORT):
- 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
--		goto stall;
-+		if (hidg->use_out_ep)
-+			goto stall;
-+		req->complete = hidg_ssreport_complete;
-+		req->context  = hidg;
-+		goto respond;
- 		break;
- 
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-@@ -637,15 +767,18 @@ static void hidg_disable(struct usb_function *f)
- 	unsigned long flags;
- 
- 	usb_ep_disable(hidg->in_ep);
--	usb_ep_disable(hidg->out_ep);
- 
--	spin_lock_irqsave(&hidg->read_spinlock, flags);
--	list_for_each_entry_safe(list, next, &hidg->completed_out_req, list) {
--		free_ep_req(hidg->out_ep, list->req);
--		list_del(&list->list);
--		kfree(list);
-+	if (hidg->out_ep) {
-+		usb_ep_disable(hidg->out_ep);
-+
-+		spin_lock_irqsave(&hidg->read_spinlock, flags);
-+		list_for_each_entry_safe(list, next, &hidg->completed_out_req, list) {
-+			free_ep_req(hidg->out_ep, list->req);
-+			list_del(&list->list);
-+			kfree(list);
-+		}
-+		spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 	}
--	spin_unlock_irqrestore(&hidg->read_spinlock, flags);
- 
- 	spin_lock_irqsave(&hidg->write_spinlock, flags);
- 	if (!hidg->write_pending) {
-@@ -691,8 +824,7 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 		}
- 	}
- 
--
--	if (hidg->out_ep != NULL) {
-+	if (hidg->use_out_ep && hidg->out_ep != NULL) {
- 		/* restart endpoint */
- 		usb_ep_disable(hidg->out_ep);
- 
-@@ -717,7 +849,7 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 					hidg_alloc_ep_req(hidg->out_ep,
- 							  hidg->report_length);
- 			if (req) {
--				req->complete = hidg_set_report_complete;
-+				req->complete = hidg_intout_complete;
- 				req->context  = hidg;
- 				status = usb_ep_queue(hidg->out_ep, req,
- 						      GFP_ATOMIC);
-@@ -743,7 +875,8 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
- 	}
- 	return 0;
- disable_out_ep:
--	usb_ep_disable(hidg->out_ep);
-+	if (hidg->out_ep)
-+		usb_ep_disable(hidg->out_ep);
- free_req_in:
- 	if (req_in)
- 		free_ep_req(hidg->in_ep, req_in);
-@@ -795,14 +928,21 @@ static int hidg_bind(struct usb_configuration *c, struct usb_function *f)
- 		goto fail;
- 	hidg->in_ep = ep;
- 
--	ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_out_ep_desc);
--	if (!ep)
--		goto fail;
--	hidg->out_ep = ep;
-+	hidg->out_ep = NULL;
-+	if (hidg->use_out_ep) {
-+		ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_out_ep_desc);
-+		if (!ep)
-+			goto fail;
-+		hidg->out_ep = ep;
-+	}
-+
-+	/* used only if use_out_ep == 1 */
-+	hidg->set_report_buf = NULL;
- 
- 	/* set descriptor dynamic values */
- 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
- 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
-+	hidg_interface_desc.bNumEndpoints = hidg->use_out_ep ? 2 : 1;
- 	hidg->protocol = HID_REPORT_PROTOCOL;
- 	hidg->idle = 1;
- 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
-@@ -833,12 +973,19 @@ static int hidg_bind(struct usb_configuration *c, struct usb_function *f)
- 	hidg_ss_out_ep_desc.bEndpointAddress =
- 		hidg_fs_out_ep_desc.bEndpointAddress;
- 
--	status = usb_assign_descriptors(f, hidg_fs_descriptors,
--			hidg_hs_descriptors, hidg_ss_descriptors,
--			hidg_ss_descriptors);
-+#define CHOOSE_DESC(prefix)	\
-+	(hidg->use_out_ep ? prefix##_intout : prefix##_ssreport)
-+
-+	status = usb_assign_descriptors(f,
-+		CHOOSE_DESC(hidg_fs_descriptors),
-+		CHOOSE_DESC(hidg_hs_descriptors),
-+		CHOOSE_DESC(hidg_ss_descriptors),
-+		CHOOSE_DESC(hidg_ss_descriptors));
- 	if (status)
- 		goto fail;
- 
-+#undef CHOOSE_DESC
-+
- 	spin_lock_init(&hidg->write_spinlock);
- 	hidg->write_pending = 1;
- 	hidg->req = NULL;
-@@ -950,6 +1097,7 @@ CONFIGFS_ATTR(f_hid_opts_, name)
- 
- F_HID_OPT(subclass, 8, 255);
- F_HID_OPT(protocol, 8, 255);
-+F_HID_OPT(no_out_endpoint, 8, 1);
- F_HID_OPT(report_length, 16, 65535);
- 
- static ssize_t f_hid_opts_report_desc_show(struct config_item *item, char *page)
-@@ -1009,6 +1157,7 @@ CONFIGFS_ATTR_RO(f_hid_opts_, dev);
- static struct configfs_attribute *hid_attrs[] = {
- 	&f_hid_opts_attr_subclass,
- 	&f_hid_opts_attr_protocol,
-+	&f_hid_opts_attr_no_out_endpoint,
- 	&f_hid_opts_attr_report_length,
- 	&f_hid_opts_attr_report_desc,
- 	&f_hid_opts_attr_dev,
-@@ -1093,6 +1242,7 @@ static void hidg_free(struct usb_function *f)
- 	hidg = func_to_hidg(f);
- 	opts = container_of(f->fi, struct f_hid_opts, func_inst);
- 	kfree(hidg->report_desc);
-+	kfree(hidg->set_report_buf);
- 	kfree(hidg);
- 	mutex_lock(&opts->lock);
- 	--opts->refcnt;
-@@ -1139,6 +1289,7 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
- 			return ERR_PTR(-ENOMEM);
- 		}
- 	}
-+	hidg->use_out_ep = !opts->no_out_endpoint;
- 
- 	mutex_unlock(&opts->lock);
- 
-diff --git a/drivers/usb/gadget/function/u_hid.h b/drivers/usb/gadget/function/u_hid.h
-index 98d6af558c03..84bb70292855 100644
---- a/drivers/usb/gadget/function/u_hid.h
-+++ b/drivers/usb/gadget/function/u_hid.h
-@@ -20,6 +20,7 @@ struct f_hid_opts {
- 	int				minor;
- 	unsigned char			subclass;
- 	unsigned char			protocol;
-+	unsigned char			no_out_endpoint;
- 	unsigned short			report_length;
- 	unsigned short			report_desc_length;
- 	unsigned char			*report_desc;
--- 
-2.32.0
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
