@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9C93EC2CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19F73EC2D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238479AbhHNNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 09:16:08 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:20348 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238358AbhHNNO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 09:14:57 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96117c17fa0c-8ce31; Sat, 14 Aug 2021 21:13:38 +0800 (CST)
-X-RM-TRANSID: 2ee96117c17fa0c-8ce31
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.22.250.151])
-        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56117c17dce6-27868;
-        Sat, 14 Aug 2021 21:13:37 +0800 (CST)
-X-RM-TRANSID: 2ee56117c17dce6-27868
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com
-Cc:     linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] serial: stm32: use devm_platform_get_and_ioremap_resource()
-Date:   Sat, 14 Aug 2021 21:14:18 +0800
-Message-Id: <20210814131418.13608-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S238450AbhHNNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 09:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235352AbhHNNUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 09:20:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4813F60F4B;
+        Sat, 14 Aug 2021 13:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628947206;
+        bh=u3joZo33K1BMERI6Nfy8tsRx+Q4OxCCgCXmenGuQimM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ATGSnZREyU6JsRdF8vxScOkM19lOhduprJC0qyAINuAyvoAhMWb7mrrNR4r48VIhh
+         qgDwncjTSct3EtkgvFwW/e4THWE2jq0rOGz5mS1JWPvzGTKcS0EDrWdRW4e8LA+1vN
+         4+XBe0zkxpqo3X/Alpgtc1l7yk7OG1Kle+UpLH+AGCTQHH3FeeG065nnisvB0TxVBS
+         DYm4exYX/S3BYpmzkZoXI8b4sPBn0s9AlShxD2SpgKgAhC79MIb//GXEgrecFTtFPy
+         r0qOCeWfxdeZvapb9pgqY03GUHGrNoGx66MCCcoMFZWFcg8jGb18X8FbUu6PIB26ge
+         mNqwidR5vPdvA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B5D460A69;
+        Sat, 14 Aug 2021 13:20:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/6] net: ipa: last things before PM conversion
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162894720623.8342.3825370378058195273.git-patchwork-notify@kernel.org>
+Date:   Sat, 14 Aug 2021 13:20:06 +0000
+References: <20210812195035.2816276-1-elder@linaro.org>
+In-Reply-To: <20210812195035.2816276-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify code.
+Hello:
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/tty/serial/stm32-usart.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 090822cd1..d4ea86e28 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -1064,8 +1064,7 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
- 				      &stm32port->txftcfg);
- 	}
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	port->membase = devm_ioremap_resource(&pdev->dev, res);
-+	port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(port->membase))
- 		return PTR_ERR(port->membase);
- 	port->mapbase = res->start;
--- 
-2.20.1.windows.1
+On Thu, 12 Aug 2021 14:50:29 -0500 you wrote:
+> This series contains a few remaining changes needed before fully
+> switching over to using runtime power management rather than the
+> previous "IPA clock" mechanism.
+> 
+> The first patch moves the calls to enable and disable the IPA
+> interrupt as a system wakeup interrupt into "ipa_clock.c" with the
+> rest of the power-related code.
+> 
+> [...]
 
+Here is the summary with links:
+  - [net-next,1/6] net: ipa: enable wakeup in ipa_power_setup()
+    https://git.kernel.org/netdev/net-next/c/d430fe4bac02
+  - [net-next,2/6] net: ipa: distinguish system from runtime suspend
+    https://git.kernel.org/netdev/net-next/c/b9c532c11cab
+  - [net-next,3/6] net: ipa: re-enable transmit in PM WQ context
+    https://git.kernel.org/netdev/net-next/c/a96e73fa1269
+  - [net-next,4/6] net: ipa: ensure hardware has power in ipa_start_xmit()
+    https://git.kernel.org/netdev/net-next/c/6b51f802d652
+  - [net-next,5/6] net: ipa: don't stop TX on suspend
+    https://git.kernel.org/netdev/net-next/c/8dcf8bb30f17
+  - [net-next,6/6] net: ipa: don't hold clock reference while netdev open
+    https://git.kernel.org/netdev/net-next/c/8dc181f2cd62
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
