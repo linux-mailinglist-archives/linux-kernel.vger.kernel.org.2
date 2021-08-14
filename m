@@ -2,76 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D303EC08E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 06:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504563EC093
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 07:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhHNEri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 00:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhHNErh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 00:47:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81E4D60ED5;
-        Sat, 14 Aug 2021 04:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628916429;
-        bh=XM44hiFvUZcKVHqfpXQVZsW5QF3yfvaruepxYJ4tch0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pk+wsmtIFB9+vToHFqru+TSC6a9oiJuMmXm3ObKVkl+uehKIhE/b0MUt3FtyA9BX0
-         J7ySV3g8FPNkZpuHNXZadobBWCUXUX69ZVrjXtRdNl+F1MO4Y52+VSURmu5+7aAiXD
-         YR/170sSNy53ycdF/CVb4VjeR4aO4W+rDmK9SuJamul9dvyNhY4ua3Pym8gYmIufwO
-         v8wskIXQ2yynT2+wn43gFnPZ/cVtK4rLbWm976nJQtQNTldbaRjhtMkU8RZXxLX7SP
-         UuvzZYJG867PiYswSSzfGpRQUktOtSpVWwbaUouRtqczTW06kzmw5jrK2i4InSJkbL
-         s0nZp6zDHIX6A==
-Date:   Sat, 14 Aug 2021 12:47:04 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Leo Li <leoyang.li@nxp.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-Message-ID: <20210814044703.GU30984@dragon>
-References: <20210615131605.616-1-thunder.leizhen@huawei.com>
- <20210615131605.616-2-thunder.leizhen@huawei.com>
- <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S234479AbhHNFAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 01:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhHNFAr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 01:00:47 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35115C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 22:00:19 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id a8so18334349pjk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 22:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B7FsBNBl1wj9+CpdzAHHpu0R9bUtnuFq39y817XmkFk=;
+        b=NJdF3EZsOlDwSne+vtkjUBcH1AZOC4GOUjlZ5fnpjrHxP9WE/gpfot+AqbVzKwkbdg
+         F3YXEEG5HM3l6othuu3gEz8SfuxLZD1R8zlakNoSwb/WsayG9ZQQKx8OStvLWo4F7uIA
+         EnX3sP9b3wSLCjK9c5aGuQO8nEI5hkOuul/oxQQt/3EPBFB6VwFl1Ih0vkkkkB0ssauE
+         CXofDqJ0+mvig3ij/AoqcoxnIY4BhMKwVCfAiKWHpnLbydLgydaF/cKZUnmYYFVYz5A/
+         GfmbeEcNhwHdb5/wnKh75F7WkLUoOTJ390BFtWDL8hrPxQWKzG9ZK/HmgzfxK6ncNUuO
+         HcTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=B7FsBNBl1wj9+CpdzAHHpu0R9bUtnuFq39y817XmkFk=;
+        b=QE4quJMhhZ+mMTWLOnoXxsGnknNsRzmDZfw/renEI8lWvsBkHnGTFhma2kenCXO+gd
+         t7GWdLdPRi3DpHCSlpOfi3UJTxTXMJekl680NCUc2BTsxShSNmjGtj/GPcD6OGQ9gdBh
+         OepVtT4RERgD+JrsbWJg/v1YYlKqTlFb3C0y9BcCzGQrdJ3KwGi3QrFgPGvVoFU9sJGD
+         4ToxDogmKKzWH857BKYxaFvmUbLd8tWb0wVsKMD95yQJAryFfMR+Qxjm1xa5d0mDXNrN
+         dhTl633XgfsoNqFcOB9fYhwQ1CwP4ggC8ehGrcCrR1CyLlTUADaWRH4CjmCbBG3bGf39
+         HaQg==
+X-Gm-Message-State: AOAM533C3C7jAUmnLBLYoHU5MA4MYf9KtKjYXnUXw6p0/6BnKOnLL9tU
+        xMNWj5XWMB/IEF1qlsSlFRQVCQ==
+X-Google-Smtp-Source: ABdhPJwMlw7acwFz2mAUfup1HEbyw3SEnSxVvFM1Chp5vy1/GQc4QIe3ivH9k5TurwcCpV58whzhow==
+X-Received: by 2002:a17:902:c602:b029:12c:daac:c89f with SMTP id r2-20020a170902c602b029012cdaacc89fmr4663469plr.78.1628917218314;
+        Fri, 13 Aug 2021 22:00:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 4sm3252160pjb.21.2021.08.13.22.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 22:00:17 -0700 (PDT)
+Date:   Fri, 13 Aug 2021 22:00:17 -0700 (PDT)
+X-Google-Original-Date: Fri, 13 Aug 2021 15:33:53 PDT (-0700)
+Subject:     Re: [PATCH v2] riscv: fix the global name pfn_base confliction error
+In-Reply-To: <20210728071557.400163-1-nek.in.cn@gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        alex@ghiti.fr, anup@brainfault.org,
+        Atish Patra <Atish.Patra@wdc.com>, liguozhu@hisilicon.com,
+        wangkefeng.wang@huawei.com, vitaly.wool@konsulko.com,
+        guoren@linux.alibaba.com, jszhang@kernel.org, rppt@kernel.org,
+        mick@ics.forth.gr, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, guohanjun@huawei.com,
+        wangzhou1@hisilicon.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nek.in.cn@gmail.com
+Message-ID: <mhng-90c1822d-54dc-4212-bddd-515bba4787e7@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:52:04PM +0000, Leo Li wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Zhen Lei <thunder.leizhen@huawei.com>
-> > Sent: Tuesday, June 15, 2021 8:16 AM
-> > To: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
-> > Herring <robh+dt@kernel.org>; Mark Kettenis <mark.kettenis@xs4all.nl>;
-> > devicetree <devicetree@vger.kernel.org>; linux-arm-kernel <linux-arm-
-> > kernel@lists.infradead.org>; linux-kernel <linux-kernel@vger.kernel.org>
-> > Cc: Zhen Lei <thunder.leizhen@huawei.com>
-> > Subject: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
-> > LX2160A UART
-> > 
-> > Mark Kettenis told us that:
-> > According to the NXP documentation, the LX2160A has a real PL011 UART.
-> > 
-> > Therefore, rewrite it to the compatible string of pl011. The property "current-
-> > speed" specific to "arm,sbsa-uart" is also deleted.
-> 
-> Sorry that I missed the discussion on the v1.  But looks like this change breaks the LX2160 boot.  The AMBA matching doesn't seem to work.  And the console is not registered correctly.
-> 
-> [    0.639055] OF: amba_device_add() failed (-2) for /soc/serial@21c0000
-> [    0.645612] OF: amba_device_add() failed (-2) for /soc/serial@21d0000
+On Wed, 28 Jul 2021 00:15:57 PDT (-0700), nek.in.cn@gmail.com wrote:
+> From: Kenneth Lee <liguozhu@hisilicon.com>
+>
+> RISCV uses a global variable pfn_base for page/pfn translation. But this
+> is a common name and will be used elsewhere. In those cases, the
+> page-pfn macros which refer to this name will be referred to the
+> local/input variable instead. (such as in vfio_pin_pages_remote). This
+> make everything wrong.
+>
+> This patch changes the name from pfn_base to riscv_pfn_base to fix
+> this problem
+>
+> Chagne from V1:
+> 	use riscv_pfn_base instead of riscv_global_pfn_base.
+>
+> Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+> ---
+>  arch/riscv/include/asm/page.h | 4 ++--
+>  arch/riscv/mm/init.c          | 6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index cca8764aed83..c690e83bde23 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
+>  #endif
+>
+>  #ifdef CONFIG_MMU
+> -extern unsigned long pfn_base;
+> -#define ARCH_PFN_OFFSET		(pfn_base)
+> +extern unsigned long riscv_pfn_base;
+> +#define ARCH_PFN_OFFSET		(riscv_pfn_base)
+>  #else
+>  #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
+>  #endif /* CONFIG_MMU */
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index a14bf3910eec..788f12bb586b 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
+>  #define pt_ops _pt_ops
+>  #endif
+>
+> -unsigned long pfn_base __ro_after_init;
+> -EXPORT_SYMBOL(pfn_base);
+> +unsigned long riscv_pfn_base __ro_after_init;
+> +EXPORT_SYMBOL(riscv_pfn_base);
+>
+>  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> @@ -572,7 +572,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
+>  #endif
+>
+> -	pfn_base = PFN_DOWN(kernel_map.phys_addr);
+> +	riscv_pfn_base = PFN_DOWN(kernel_map.phys_addr);
+>
+>  	/*
+>  	 * Enforce boot alignment requirements of RV32 and
 
-Patch dropped.
-
-Shawn
+Thanks, this is on for-next.
