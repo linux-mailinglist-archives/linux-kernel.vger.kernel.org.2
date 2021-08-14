@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D2F3EC467
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BC23EC46E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhHNSRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
+        id S238964AbhHNSTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238989AbhHNSRE (ORCPT
+        with ESMTP id S238929AbhHNSTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:17:04 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BBFC061764;
-        Sat, 14 Aug 2021 11:16:36 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so16043257otq.2;
-        Sat, 14 Aug 2021 11:16:36 -0700 (PDT)
+        Sat, 14 Aug 2021 14:19:09 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBA1C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:18:39 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id z20so24337630ejf.5
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:18:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Elw94D5PlXVQU7Hq+hlZOaMuFkxOR0XFqmHqmifax8=;
-        b=JO0yo1a/ThG5UH4KK92KPBp8AjmxWUtD6HzgxhSrYsnmESpMFzZZ4shAUli8MCwK3Y
-         +ZyouPHvoBbCNIwmLHPM/12GbrqxSWOxgNJbSS5aftRFGli2VmKkjHatrhasVNpNf+Lm
-         gETqDSd6a6zCQE8EJsFfb2IbzZIdvf8QFMXNgNUe6lJNQgn3gadAGx4gV1B602JDpT7j
-         y6huUeWHCViReYGwyaTpu7CYzlCHJpQBcXYOqscUTEFMMrgSOSREuRPEmdgqzQfHOyhR
-         wOvn6naBdCBEV60pNXpH5r0Do+IwIijSya1dgOtCjNB+3nj5zeLUaQJtVA0XpXcp6MeG
-         8FlA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cwTwNa68q3D0CQBjSY7s+KH59ivLkffGCGL24NHGJ/w=;
+        b=WRZPLeSgDAhjSqVYzVsciYjnoMAlLeGqz4xvSeJOFvV3qvd3Qr7jOB/LnJ7Hi2kYHD
+         a2JVnFPoMUMo/9btDEAaOzA+nlDADVKrdjScvF+XzQ+29+8Z+s9t7XMRV0ng1f1XlpcB
+         MVJrzO8LImmdEpmry5NCxov4iNrP7VncpENDQi9urO3XTEPuO3+y4fJWTc6azBjm5BVw
+         vDqTTm1nQn3ZNBNWy6wIL+oCRA4/V838++s01peOwzDgPd9CPSWwM62TRy+Q+QD3p5tS
+         MhvW5gpfX12YleSafpCNuvzLJhNmOpvgrd/vgurGN6ZzzEdDxHYEYONR4jWyqOgcxAvI
+         XJHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6Elw94D5PlXVQU7Hq+hlZOaMuFkxOR0XFqmHqmifax8=;
-        b=H1FUKQ5LbtaLLFfLsclL/6ynCGX3ImqtpQQhp0a11Z/vnECDu3aKN+38MumK4e5fy0
-         xYibXnGO4OND8ylLf0gbfZna9noh2yT6HCC4IeW+sIg9+0+bkh6XObuNvK4qw9P/Gxp2
-         oljSWXkKCl9DycNWSAsbv/Bor07r57wOUQ/CO7Bf+DObWXvJDBjJ/wk0Grm6K5OVOU0F
-         TK0zKpoNpNRGTFt9A69yKg5IHrBBELw2Rc3sd8C13QU6ukr9FvhuMw4uiK6c//XtEENy
-         CwcXGIQCJaN2OcAxc6crEcp+eh5HG2AxaCI2f93bfZ8GEGtvwWKdf90YXvmFMe6BVT0A
-         N9aA==
-X-Gm-Message-State: AOAM532BoRLTnF08GHQCCYyRDlYon9IAwbej9TXN/j37RSQOTQB4C7Ov
-        NQZWzuaeg7ZSuF2CIDIyGYw=
-X-Google-Smtp-Source: ABdhPJx2NVe2Scg6pbZozR1PkCvtuBpaDCKGAWT7XzysOiA/Syz60oIBYC8aaVttnaNcw2W4lrNCAQ==
-X-Received: by 2002:a05:6830:110a:: with SMTP id w10mr2318543otq.291.1628964995612;
-        Sat, 14 Aug 2021 11:16:35 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m16sm1020836oop.3.2021.08.14.11.16.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cwTwNa68q3D0CQBjSY7s+KH59ivLkffGCGL24NHGJ/w=;
+        b=MP4BYKb0aVgrq80a3ylMMo8M+9w8ZpWxyV2IUYCuLH8Ban6IwdagIVdRlRsT8H7r4w
+         mYEgxWnYQjHu/CQnOnjhSnZhd6gntbmJPPhL32Jk8+o4jw5PtLYZvX92vzplHF8Q45aj
+         9QT8g0VHnxbxnkfDjOdLQiZf+Y0/uQ3JGe5cBKalEcZzRsvTRMTVHKBLjiiSCjOpeSa9
+         b1sTgfcYCILbWjK8NrGWJlfNciI+BQ0ST+IEtMD4QhwRRB2GFbzoO4Lr67Cfq8MEbUe1
+         N3Y1lvInmwwvn0krVCdyZUVu9ilNuiV4QIrtQPiE2LKDQqyMNAD5PExMlBU7cilY9uXU
+         uc3Q==
+X-Gm-Message-State: AOAM532SQCN62UxBQKMdhc5UiucNMWG4Z9EkEp1Fd9QvYvDe5mdmkXBl
+        1J5jYSjtkbRYJqarCiH7ZcY=
+X-Google-Smtp-Source: ABdhPJwmUsJLLd7nqyCKi5XVQBvBfgH27+SptBGP6UmIAP5YKxr/AvyiZ7TIFDfSyudgVCZJew/IZg==
+X-Received: by 2002:a17:906:c4e:: with SMTP id t14mr3648887ejf.436.1628965118531;
+        Sat, 14 Aug 2021 11:18:38 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id r6sm2531968edq.20.2021.08.14.11.18.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 11:16:35 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 14 Aug 2021 11:16:34 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 0/8] 5.13.11-rc1 review
-Message-ID: <20210814181634.GF2785521@roeck-us.net>
-References: <20210813150520.090373732@linuxfoundation.org>
+        Sat, 14 Aug 2021 11:18:38 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Martin Kaiser <martin@kaiser.cx>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] staging: r8188eu: (trivial) remove a duplicate debug print
+Date:   Sat, 14 Aug 2021 20:18:36 +0200
+Message-ID: <4137099.1RPUidUiak@localhost.localdomain>
+In-Reply-To: <CAA=Fs0kyzRjR1b_QfseyKE4mAp4W-Bxa97esf5QDoUFiOhA-zQ@mail.gmail.com>
+References: <20210811201450.31366-1-martin@kaiser.cx> <2555683.U4YhqVPOqN@localhost.localdomain> <CAA=Fs0kyzRjR1b_QfseyKE4mAp4W-Bxa97esf5QDoUFiOhA-zQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813150520.090373732@linuxfoundation.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 05:07:37PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.11 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Saturday, August 14, 2021 6:54:40 PM CEST Phillip Potter wrote:
+> On Fri, 13 Aug 2021 at 13:42, Fabio M. De Francesco
 > 
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
+> <fmdefrancesco@gmail.com> wrote:
+> > On Friday, August 13, 2021 12:05:36 PM CEST Martin Kaiser wrote:
+> > > Hi Dan and Phil,
+> > > [...] 
+> > > > > Just my personal opinion, but I'd be inclined to strip out all 
+DBG_88E
+> > > > > calls totally. If there are necessary functions being called such as
+> > > > > device_may_wakeup() we can always just keep this part and remove the
+> > > > > macro call (not checked this function out myself yet). Thanks.
+> > > 
+> > > I'd agree with you, Phil. Most DBG_88E prints don't say anything useful.
+> > > 
+> > > This comment from Greg made me drop the DBG_88E removal for now
+> > > 
+> > > https://lore.kernel.org/linux-staging/20210803201511.29000-1-martin@kaiser.cx/T/#m05
+> > > d82a 0ca8ed36180ebdc987114b4d892445c52d
+> > 
+> > Hi Martin,
+> > 
+> > I think you misunderstood what Greg was trying to convey with the above-
+> > mentioned message.
+> > 
+> > Well, he doesn't like to feed developers with little spoons :-)
+> > 
+> > I'm pretty sure that, by "Why not use the proper debugging calls instead 
+of
+> > just deleting them?", he meant you should research, understand, and use 
+the
+> > proper APIs for printing debug messages.
+> > 
+> > Please check out pr_debug(), dev_dbg(), netdev_dbg(). Use them 
+appropriately,
+> > according to the subsystem you're working in and to the different types of
+> > arguments they take.
+> > 
+> > Thanks,
+> > 
+> > Fabio
+> > 
+> > > A compromise would be to remove only those DBG_88E prints which are
+> > > really not helpful.
+> > > 
+> > > Best regards,
+> > > Martin
 > 
+> The problem I see is that this driver is so littered with unnecessary
+> macro calls, how do we decide which ones to keep? In my mind, the
+> better option is to remove them all and then come up with some new
+> ones in the vein of netdev_dbg() and friends. I could be wrong of
+> course :-) I tried going down the route of keeping/converting some to
+> proper calls such as netdev_dbg() and the issue is a lot of the calls
+> don't have an obvious value anyway.
+> 
+> Regards,
+> Phil
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+I think that you'd better remove only the ones that "have no obvious value" 
+and convert the others to using netdev_dbg(). Obviously, telling which have no 
+value is at the discretion of whoever wants to carry on this work.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Regards,
 
-Guenter
+Fabio
+
+
