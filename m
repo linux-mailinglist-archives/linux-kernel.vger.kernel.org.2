@@ -2,55 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CAA3EC471
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E643EC472
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238963AbhHNS0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:26:08 -0400
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:33399 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238921AbhHNS0H (ORCPT
+        id S238984AbhHNS3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:29:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60884 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhHNS3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:26:07 -0400
-Received: by mail-pl1-f169.google.com with SMTP id a20so16108166plm.0;
-        Sat, 14 Aug 2021 11:25:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V/UunbGPn7b9qeiuqDc7nUnLkftRm49BxQKgOeX29LI=;
-        b=akaPopfFBXG5HUqZx5qGZGVNDoy0XKHbE/pvqZsrypYInpAp0MWYWeewxPwRRtu6d7
-         6zTTtjjnSCtR8Nd0c2aJ6C2SHADLVVdNwaQQS+FUlYwXgi4b3jt69Eed++tRnsUbekVf
-         3n6Ge8YU3bg2NeAevjnPzdhQpzQ7EwhAyaQhmyHonXC8YF9ycHY+/ZRq3tBfdBhE2FBc
-         BbbLTu20jXHJwIqY6IZbjNyZgmB20tPRl3Dn6sbSItit5no3J+PcRqcqcPVj2elFjz5F
-         92gLNbrrj+79l5DjU2lDTXadbhCqINXBrAtprXsa82e9ErSVKlSXYRW+O85vWrvpQP3E
-         6ghA==
-X-Gm-Message-State: AOAM5324/ocYh/T1vNfn1Hdfey4+hczur5gavfZ6Xl3OA1NKAG9kwTzy
-        +oJpl7Zagd8AxCnG80AJYAd9q4MpiSA=
-X-Google-Smtp-Source: ABdhPJwqQsnbZrocVZuoL85A8ndRmQw0cVFw2+cnn8XXH0bJv9BAiXryV4q8SchXa9agAStxa7MrKQ==
-X-Received: by 2002:a17:902:c386:b029:12d:4eda:9e42 with SMTP id g6-20020a170902c386b029012d4eda9e42mr6572776plg.57.1628965538283;
-        Sat, 14 Aug 2021 11:25:38 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:ec45:c824:1851:d6df? ([2601:647:4000:d7:ec45:c824:1851:d6df])
-        by smtp.gmail.com with ESMTPSA id u17sm6330929pfh.184.2021.08.14.11.25.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 11:25:37 -0700 (PDT)
-Subject: Re: [GIT PULL] configfs fix for Linux 5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Bodo Stroesser <bostroesser@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YRdp2yz+4Oo2/zHy@infradead.org>
- <CAHk-=whh8F-9Q=h=V=bKczqfRPbUN_A3h21aVfkk2HNhCWF+Pw@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <eca7f963-7ee1-d062-8020-a2a32a69a9e6@acm.org>
-Date:   Sat, 14 Aug 2021 11:25:35 -0700
+        Sat, 14 Aug 2021 14:29:52 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1A1B321EFF;
+        Sat, 14 Aug 2021 18:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628965762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pBOJ3hxcgsKbFU0ZOokocEo7Rl62uXx2/3KVpDBVQSM=;
+        b=CEFtwACknsaZVwf751g/qT36xHLOivQu96BzWYOZzcfSiKRAaWnlglklPr66OdXM/3c3/p
+        leWMo5xxja3NH/BghsQ07NdZwCDOSaFtVhJGl+vGh1yNsUjgokioLXQRXp8TSeZDiGv9vG
+        qX0lX5qAbesX5jjbNJiGaSl56UW99N4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628965762;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pBOJ3hxcgsKbFU0ZOokocEo7Rl62uXx2/3KVpDBVQSM=;
+        b=hYR8w//bIJv29dU90qDV/us49OOjlRuIkmpJ4yIgjWBVzeRgRs4mABWOoLSXj7XtCXz4BV
+        mFh/Pai3WLWv8rDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC1B413D1B;
+        Sat, 14 Aug 2021 18:29:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jWZpJoELGGGeRgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Sat, 14 Aug 2021 18:29:21 +0000
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+To:     Mike Galbraith <efault@gmx.de>,
+        Clark Williams <williams@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+ <20210812151803.52f84aaf@theseus.lan>
+ <8c012c35852e98af99a6b6234a3f57ac27cd980a.camel@gmx.de>
+ <522000b97adcfbc581e7e5ed1afc94519b1388b8.camel@gmx.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <94d74c8a-1e10-2500-468a-11c0ae7e2417@suse.cz>
+Date:   Sat, 14 Aug 2021 20:28:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whh8F-9Q=h=V=bKczqfRPbUN_A3h21aVfkk2HNhCWF+Pw@mail.gmail.com>
+In-Reply-To: <522000b97adcfbc581e7e5ed1afc94519b1388b8.camel@gmx.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,27 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 9:27 AM, Linus Torvalds wrote:
-> On Fri, Aug 13, 2021 at 9:00 PM Christoph Hellwig <hch@infradead.org> wrote:
+On 8/14/21 7:33 AM, Mike Galbraith wrote:
+> On Fri, 2021-08-13 at 12:56 +0200, Mike Galbraith wrote:
+>> On Thu, 2021-08-12 at 15:18 -0500, Clark Williams wrote:
+>>>
+>>> Sebastian, et al,
+>>>
+>>> Got the following panic running v5.14-rc5-rt8:
+>>>
+>>> ...
 >>
->> configfs fix for Linux 5.14
+>>> Config is attached.
+>>>
+>>> I was running the rteval script that kicks off parallel kernel builds
+>>> and hackbench runs as loads and runs cyclictest with a thread on each
+>>> core:
+>>>
+>>> $ sudo rteval --duration=10m
 >>
->>  - fix to revert to the historic write behavior (Bart Van Assche)
+>> It took my box more than 10 minutes to explode, but with all those
+>> debug options turned on, it did manage to do so in fairly short order.
+>>
+>> Off to build a fixed up 5.13-rt...
 > 
-> It would have been lovely to see what the problem was, but the commit
-> doesn't actually explain that.
-> 
-> I suspect it's this
-> 
->     https://lkml.org/lkml/2021/7/26/581
-> 
-> but there might have been more.
+> ...and it reproduced.  Transplanted 5.12-rt slub seems stable in both
+> 5.1[34]-rt trees FWIW.
 
-Hi Linus,
+Why didn't you see it in earlier testing though? What's different now.
 
-Bodo explained to me via a private email that the historic behavior is
-the behavior he needs for a patch that he is still working on. I'm not
-aware of any existing user space software that relies on the historic
-(non-POSIX) behavior of configfs writes.
+> 	-Mike
+> 
+> 
 
-Bart.
