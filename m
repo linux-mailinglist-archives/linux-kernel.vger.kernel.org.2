@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82C53EC4E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 22:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFFE3EC4E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 22:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhHNUIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 16:08:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58194 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229489AbhHNUIQ (ORCPT
+        id S231826AbhHNUMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 16:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhHNUMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 16:08:16 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-19-2ppITmkqNDG-dDY-1LwSrA-1; Sat, 14 Aug 2021 21:07:44 +0100
-X-MC-Unique: 2ppITmkqNDG-dDY-1LwSrA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Sat, 14 Aug 2021 21:07:43 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Sat, 14 Aug 2021 21:07:43 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Khalid Aziz' <khalid.aziz@oracle.com>,
-        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>, Matthew Wilcox <willy@infradead.org>
-CC:     Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: RE: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Thread-Topic: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Thread-Index: AQHXkHxypLAjl++vx02znmkvS7SQp6tzbmww
-Date:   Sat, 14 Aug 2021 20:07:42 +0000
-Message-ID: <6775a78fa70b4868bfd24c750ec24bdd@AcuMS.aculab.com>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-         <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
-         <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
-         <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
-         <YOubKmDwxMIvdAed@casper.infradead.org>
-         <a94973ab83ce48bd85c91397f82d7915@huawei.com>
- <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
-In-Reply-To: <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 14 Aug 2021 16:12:50 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F57C061764;
+        Sat, 14 Aug 2021 13:12:21 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id nt11so20455378pjb.2;
+        Sat, 14 Aug 2021 13:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FeRiprFlpPVzPCtA8RRkEVykyAMT4IjUsIViSG345yQ=;
+        b=u/GfAISJYwg1MyajSONuDvq48noQQQYe/yRqSD8ziV+3q4eJ0H4KJ4KxsvgzDt4bQ9
+         dVidgglWcRDrV+TTZb2N95fFjy8IqQScnOZboiAJbRy8aOsXT1rv7eC7WE6w/hiJdc47
+         IYhjSGixssCy93FNCx1OXGrC/AKdOAbcruviR7+PeUKwj1nYg2YvTVSWk4pGJ1dUybKB
+         BoOfX5oI2vg1bsc0iKK73H/RJnLHYt0NKwAwxs8LDKG4xwTprtcdj41ds7o2no5o576y
+         MYb6Mo+Lv6cbLTkXJCbmpvKFKqjOFtdxHiPALWBbXfuMywXuIFUkOT4t1n56i4CwtgUp
+         1p6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FeRiprFlpPVzPCtA8RRkEVykyAMT4IjUsIViSG345yQ=;
+        b=EeKIeub95VynmSG5Rk7jchMtjdG7JC0Lyb0wwgdpHgzXeB+AoJnQTYoMjm/6XJLNmr
+         K9hWuN/MUxVUK9m0N9WJ2Q8usQKqbo19TjerIlKtpWV2u5pOM0DXM/xginnekdcu7YHD
+         3OkxxsmGRwTJGjf8wo7UTItF5waTuKAsU2+F4+DWzuww1lIH8/00pms0gdT7fihPF8KJ
+         1bqgX2yz9gVz9RSHTakjr+I/eeG2dDeeKiYQmwsU2cMQjFRjDX7ZZIaLjwZtxWL+ua4Q
+         dtJmhxnUDBQb0TQ1vFSCS5IloZYCXlxb7PizlxjRGpjGt67UM9QBFTL9wJvNolpAFJJT
+         k3sw==
+X-Gm-Message-State: AOAM532IRrWEszEE/vf8wVxwqdTeqJw320TjdbB0rq/9wJodb20f2mTb
+        xDGT4ez9h7xTlAhCoTMCfA7jFlBsipGmOA==
+X-Google-Smtp-Source: ABdhPJxp3w3FelmnYJ8i9OLiKe4sZ9EowDPx3NWLv3+lHAVyBg84TuyeA7+pBt8brY6U08Tl5V/txg==
+X-Received: by 2002:a62:bd15:0:b029:31c:a584:5f97 with SMTP id a21-20020a62bd150000b029031ca5845f97mr8451346pff.33.1628971941445;
+        Sat, 14 Aug 2021 13:12:21 -0700 (PDT)
+Received: from xps.yggdrasil ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id r14sm6511132pff.106.2021.08.14.13.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 13:12:21 -0700 (PDT)
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Shuah Khan <skhan@foundation.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Fix checkpatch.pl WARNINGS
+Date:   Sun, 15 Aug 2021 01:42:03 +0530
+Message-Id: <cover.1628957100.git.aakashhemadri123@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+ID4gPiA+IExldCBtZSBkZXNjcmliZSBteSB1c2UgY2FzZSBtb3JlIGNsZWFybHkgKGp1
-c3QgaWdub3JlIGlmIHlvdSdyZSBub3QNCj4gPiA+ID4gaW50ZXJlc3RlZCBpbiBpdCk6DQo+ID4g
-PiA+DQo+ID4gPiA+IDEuIFByb2cgQSBtbWFwKCkgNEdCIG1lbW9yeSAoYW5vbiBvciBmaWxlLW1h
-cHBpbmcpLCBzdXBwb3NlIHRoZQ0KPiA+ID4gPiBhbGxvY2F0ZWQgVkEgcmFuZ2UgaXMgWzB4NDAw
-MDAwMDAsMHgxNDAwMDAwMDApDQo+ID4gPiA+DQo+ID4gPiA+IDIuIFByb2cgQSBzcGVjaWZpZXMg
-WzB4NDgwMDAwMDAsMHg1MDAwMDAwMCkgYW5kDQo+ID4gPiA+IFsweDgwMDAwMDAwLDB4MTAwMDAw
-MDAwKSB3aWxsIGJlIHNoYXJlZCBieSBpdHMgY2hpbGQuDQo+ID4gPiA+DQo+ID4gPiA+IDMuIFBy
-b2cgQSBmb3JrKCkgUHJvZyBCIGFuZCB0aGVuIFByb2cgQiBleGVjKCkgYSBuZXcgRUxGIGJpbmFy
-eS4NCj4gPiA+ID4NCj4gPiA+ID4gNC4gUHJvZyBCIG5vdGljZSB0aGUgc2hhcmVkIHJhbmdlcyAo
-ZS5nLiBieSBpbnB1dCBwYXJhbWV0ZXJzIG9yDQo+ID4gPiA+IC4uLikNCj4gPiA+ID4gYW5kIHJl
-bWFwIHRoZW0gdG8gYSBjb250aW51b3VzIFZBIHJhbmdlLg0KDQpSZW1hcHBpbmcgdG8gY29udGln
-dW91cyBWQSBpcyBnb2luZyB0byBiZSBkaWZmaWN1bHQgaW4gdGhlDQpnZW5lcmFsIGNhc2UgZm9y
-IChJSVJDKSBWSVZUIGNhY2hlcy4NClRoZSByZXF1aXJlZCBjYWNoZSBjb2hlcmVuY2UgbWF5IG9u
-bHkgYmUgYXR0YWluYWJsZSBieQ0KdXNpbmcgdW5jYWNoZWQgbWFwcGluZ3MuDQoNCglEYXZpZA0K
-DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
-bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
-V2FsZXMpDQo=
+Hi,
+	This patch series fixes checkpatch.pl WARNINGS in slot.c
+This patch series will apply cleanly on pci-v5.14-changes
+
+Aakash Hemadri (4):
+  PCI: Missing blank line after declarations
+  PCI: Symbolic permissions 'S_IRUGO' are not preferred
+  PCI: Prefer IS_ENABLED(CONFIG_HOTPLUG_PCI)
+  PCI: No space before tabs
+
+ drivers/pci/slot.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+-- 
+2.32.0
 
