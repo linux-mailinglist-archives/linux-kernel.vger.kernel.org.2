@@ -2,133 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164403EC3F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682373EC3F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236394AbhHNQzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
+        id S238712AbhHNQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhHNQzU (ORCPT
+        with ESMTP id S233116AbhHNQ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:55:20 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0A9C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:54:52 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d17so15859182plr.12
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:54:52 -0700 (PDT)
+        Sat, 14 Aug 2021 12:56:22 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B795C061764;
+        Sat, 14 Aug 2021 09:55:53 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id q16so15148852ioj.0;
+        Sat, 14 Aug 2021 09:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JY7pPLjj/B269stty41QL9NGb4G8n6jLdrZkp/18n68=;
-        b=HKoDnzK0/PrmlfEIpY60lBk7/fCES5ZNmTZiiQD/fUX/D9mqkjvjksQDpy0KkWV4gg
-         bqUZ7fsovYzQy9y65XdOOiG4w4r5L6sYeIwpd85VG8kGxCD2k0ZrZXWEJ4pmieo/CBIf
-         w3Tn/Kku7fmE92HIiTQ1HkLVlwmDZv0QAvglMXZCvYYJJ9S/T3Ffi25aRc7amG4ZKl6p
-         UnRSAolSO3XtG6fWXGRxmDoo3J3m0um/2JbZHC8deegQUvAtl+s2HaJr+4JFu8zJQA7S
-         F++mX4sy3eZumvK32/gFoaUrRy9HA3suLsckvak8kYVvDwj49GNZgr66ixFxp5hMutXX
-         Q3Gg==
+        bh=TkKxZT4mLxk5mIde0v6z+9Gul4yrYdjCFOtjnU1rDPg=;
+        b=sTYMOrGZvwIXsLStVXxA9LYq3pNG88CR7XUkoBJ7bRT09rILeQ7+5PzZOUHkc8ojCf
+         pj14BWZ+A/FmZJaKVj08tR3sITuA+U6pMh2BcUdM3XPk0lB5LT/CmEJUCvrmI5Cos/Ot
+         vVW/HqC63LuXlaYQUgAcW+u0uReAdw7yA6VF/SpXNzVGrobeNE1DvR0q1KUKiu1xlRJo
+         Y+PYS8Swz/UtuapW9ngwl7am9vUrVuUsw5n0MIvm1JLmUY7HWdfSb9hidlumw3fqH4lb
+         fFk2OKeooV3gqd4kN+rDGCPlKF53K4jt7msfdlnUx5v/VOoW7Yqa0QvWj8kTLcT64jk9
+         BZSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JY7pPLjj/B269stty41QL9NGb4G8n6jLdrZkp/18n68=;
-        b=Jz7QM7LZhNDgACOPGEsKATAKRhOKDRKJZwESN2/Il17HuJchBa0Ei68iLLLuzyV+0u
-         vKklqwnyqHpfZN5FvJkqkTDvk5JA9xQ+gRhx/Vyge99ZEbNLNvrqDgpZ674N4IzmxYaT
-         3Vp7bwVyYnO2S1ucnDq9WOv4RaC7M4fhD0VhFrx/OSHLbnBiwnUNBiUjbfKdxG/UgNeF
-         6Ut0O+3jQBXpuj3hYONJfLZZeenOi+zlaeGNQSFXQcsLS1i5u4A4NAGrMTD5Yy7Y+B4M
-         RjD/GRARk1DuRpJivGUr5pWGjA8XaizlBQOgGKhcPH2aYBuTHz4jmLGwnDDh8krtjVCM
-         6bOg==
-X-Gm-Message-State: AOAM532q7SC3S5Ctmr11FaC2Asj/0yRRTfROI7ecoxbw+m4lyTDcXXXg
-        Ba5VIOv126sSgRUJJwY6OJKxj47OlEDb4Me0U/G/Eg==
-X-Google-Smtp-Source: ABdhPJyzauVMKmxIEgzrH7QoiUYrH5ZkZG4IbF0CAJAigPhwmxnF9WDkC7hooa6ju2/StjBttBQaQGBEQUn44Dv3AUI=
-X-Received: by 2002:a62:88c8:0:b029:3a3:94e9:8ab0 with SMTP id
- l191-20020a6288c80000b02903a394e98ab0mr7914007pfd.2.1628960091691; Sat, 14
- Aug 2021 09:54:51 -0700 (PDT)
+        bh=TkKxZT4mLxk5mIde0v6z+9Gul4yrYdjCFOtjnU1rDPg=;
+        b=J65QqjiXYEOrLKM1BFFsntCp2/SbM3iGCclbMMuD4Ra3Ht+HS5Ic2X9387NqX8YvOg
+         Bz1QvIO5CqNa7POYeUmoFkao/1qgd+xssENhYmx/Rtg8r4G2eUu/58mSTdfhBuAsF8Ef
+         XoNfBsdPhCaBRaJQwkoUN7pMrGCstV8ul6py2tcoUoWcsq7QzC0UodH31lb4pv9HCrUK
+         i5kcWHt/TPCqrv1MR+2p1xdC1RwcrsuzlcoEJxQWopFccf9yBadmenbmySWABACOVTf7
+         UJKHGwcHiSWeLWaGkvR+SGTvzODp1UXAgE2OOMa/dNq3KR/zdz22Ttp2n+rRXuAKp/Ih
+         EPrQ==
+X-Gm-Message-State: AOAM530aqGfOM0F8WDBoyMmiEWmRPLLnHvfEU/fO0xxqzBWTvyuJEhoR
+        WFrNJG+rXuAwCyZkGbfnuMNlGHIMKVnuQr9W4pw=
+X-Google-Smtp-Source: ABdhPJx0e6ayA20p27N/AVvpeQ/S9ofFLEn5vP5MNt5K39nC/5o0Xumu9QTwWrg9yInJbQywan5g/4UFQ7tnJJowl9Q=
+X-Received: by 2002:a5e:8e04:: with SMTP id a4mr4449132ion.56.1628960152421;
+ Sat, 14 Aug 2021 09:55:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210811201450.31366-1-martin@kaiser.cx> <20210812061759.GW22532@kadam>
- <20210813100536.xkjzfq5pstbhdwru@viti.kaiser.cx> <2555683.U4YhqVPOqN@localhost.localdomain>
-In-Reply-To: <2555683.U4YhqVPOqN@localhost.localdomain>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 14 Aug 2021 17:54:40 +0100
-Message-ID: <CAA=Fs0kyzRjR1b_QfseyKE4mAp4W-Bxa97esf5QDoUFiOhA-zQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] staging: r8188eu: (trivial) remove a duplicate debug print
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CGME20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8@epcas5p2.samsung.com>
+ <20210803032539.15676-1-alim.akhtar@samsung.com>
+In-Reply-To: <20210803032539.15676-1-alim.akhtar@samsung.com>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Sat, 14 Aug 2021 22:25:17 +0530
+Message-ID: <CAGOxZ53emv4H4UqT2L7tDtTXRgDrtrqti=FtfkNWo2M3rTnZMw@mail.gmail.com>
+Subject: Re: [PATCH v11] dt-bindings: ufs: Add bindings for Samsung ufs host
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "robh+dt" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 at 13:42, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
+Ping!!
+
+On Wed, Aug 4, 2021 at 9:01 AM Alim Akhtar <alim.akhtar@samsung.com> wrote:
 >
-> On Friday, August 13, 2021 12:05:36 PM CEST Martin Kaiser wrote:
-> > Hi Dan and Phil,
-> >
-> > Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
-> > > Please think of the subject and the commit message as two different
-> > > things.  Often it's people reviewing on email will only read one or the
-> >
-> > > other.  In other words just restate the subject:
-> > OK, I'll keep that in mind for further patches.
-> >
-> > > > Dear Martin,
-> > > >
-> > > > Just my personal opinion, but I'd be inclined to strip out all DBG_88E
-> > > > calls totally. If there are necessary functions being called such as
-> > > > device_may_wakeup() we can always just keep this part and remove the
-> > > > macro call (not checked this function out myself yet). Thanks.
-> >
-> > I'd agree with you, Phil. Most DBG_88E prints don't say anything useful.
-> >
-> > This comment from Greg made me drop the DBG_88E removal for now
-> >
-> > https://lore.kernel.org/linux-staging/20210803201511.29000-1-martin@kaiser.cx/T/#m05d82a
-> > 0ca8ed36180ebdc987114b4d892445c52d
-> >
-> Hi Martin,
+> This patch adds DT bindings for Samsung ufs hci
 >
-> I think you misunderstood what Greg was trying to convey with the above-
-> mentioned message.
+> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+> ---
+> Changes since v10
+> * Rebased on v5.14-rc2
+> * removed Rob Herring earlier Reviewed-by tag
 >
-> Well, he doesn't like to feed developers with little spoons :-)
+> This patch was part of exynos ufs driver series, somehow
+> this got missed to applied on the tree, sending again as a new
+> patch v11, removing Rob's earlier Reviewed-by tag.
 >
-> I'm pretty sure that, by "Why not use the proper debugging calls instead of
-> just deleting them?", he meant you should research, understand, and use the
-> proper APIs for printing debug messages.
+>  .../bindings/ufs/samsung,exynos-ufs.yaml      | 89 +++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
 >
-> Please check out pr_debug(), dev_dbg(), netdev_dbg(). Use them appropriately,
-> according to the subsystem you're working in and to the different types of
-> arguments they take.
+> diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+> new file mode 100644
+> index 000000000000..38193975c9f1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ufs/samsung,exynos-ufs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung SoC series UFS host controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Alim Akhtar <alim.akhtar@samsung.com>
+> +
+> +description: |
+> +  Each Samsung UFS host controller instance should have its own node.
+> +  This binding define Samsung specific binding other then what is used
+> +  in the common ufshcd bindings
+> +  [1] Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> +
+> +properties:
+> +
+> +  compatible:
+> +    enum:
+> +      - samsung,exynos7-ufs
+> +
+> +  reg:
+> +    items:
+> +     - description: HCI register
+> +     - description: vendor specific register
+> +     - description: unipro register
+> +     - description: UFS protector register
+> +
+> +  reg-names:
+> +    items:
+> +      - const: hci
+> +      - const: vs_hci
+> +      - const: unipro
+> +      - const: ufsp
+> +
+> +  clocks:
+> +    items:
+> +      - description: ufs link core clock
+> +      - description: unipro main clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core_clk
+> +      - const: sclk_unipro_main
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    const: ufs-phy
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - phys
+> +  - phy-names
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/exynos7-clk.h>
+> +
+> +    ufs: ufs@15570000 {
+> +       compatible = "samsung,exynos7-ufs";
+> +       reg = <0x15570000 0x100>,
+> +             <0x15570100 0x100>,
+> +             <0x15571000 0x200>,
+> +             <0x15572000 0x300>;
+> +       reg-names = "hci", "vs_hci", "unipro", "ufsp";
+> +       interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
+> +       clocks = <&clock_fsys1 ACLK_UFS20_LINK>,
+> +                <&clock_fsys1 SCLK_UFSUNIPRO20_USER>;
+> +       clock-names = "core_clk", "sclk_unipro_main";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
+> +       phys = <&ufs_phy>;
+> +       phy-names = "ufs-phy";
+> +    };
+> +...
 >
-> Thanks,
->
-> Fabio
-> >
-> > A compromise would be to remove only those DBG_88E prints which are
-> > really not helpful.
-> >
-> > Best regards,
-> > Martin
->
->
->
+> base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+> --
+> 2.17.1
 >
 
-The problem I see is that this driver is so littered with unnecessary
-macro calls, how do we decide which ones to keep? In my mind, the
-better option is to remove them all and then come up with some new
-ones in the vein of netdev_dbg() and friends. I could be wrong of
-course :-) I tried going down the route of keeping/converting some to
-proper calls such as netdev_dbg() and the issue is a lot of the calls
-don't have an obvious value anyway.
 
+-- 
 Regards,
-Phil
+Alim
