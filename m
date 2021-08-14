@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47803EC418
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE433EC41A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238873AbhHNRWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 13:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S238785AbhHNRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 13:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238763AbhHNRVk (ORCPT
+        with ESMTP id S238690AbhHNRXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 13:21:40 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43190C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:21:12 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so25580518pjn.4
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:21:12 -0700 (PDT)
+        Sat, 14 Aug 2021 13:23:00 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA52C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id w14so19997431pjh.5
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fyesMPCu3k5uc0fgNeqD03U46W6GxKBW5HWGQ4LWGoI=;
-        b=dr3K0lC3+hydsYfmF4LNXP9kNBYbRwbwvG1cqCwLp2I4avlJX2/VcIxp4K1H6+U2e/
-         7YN1MViTWvTNkpou/ORaB56Mn4+wyR8rq+CRb3yOvwip9Ghsjv1lcZSqnRL4HXrjEnsi
-         3c2X1WeWyOC9xbCteobrr7i3lZO/9ofZ2ClKb28THncJHcQKViJLkM+21z3S7EfmGEgd
-         yyUs3mkf0lsN+Gs6FOpL+/vSxKt4p1sxxfNa8jDCgvQmOsnCGy9MJymc+hpy7vJpP3ko
-         aEFu2db80lUQZ5vgsU4VZ/cUzD05bujAS392WV+j+i+2TOG3CCkbCnr4q8yd7GhaXwej
-         sQ3g==
+        bh=Cj3brR7/gBmdZFywr+8Ggozpje7JHKDRwC1PgsV8mJA=;
+        b=GqhHLlJmqw12wvkn0UJ/QoTElJtmFzwFMo0xTTgqQTlSlTWGYf0uQVyd5mlfXnzTz/
+         epRzJ4XXvPVgVEgWba/nno+gnkTX0eEM8vms6v92iLD0T8/GojxVPOp2cFxXAMxzBw92
+         aIHDkv8QQXyn+eh6GLeofqLcG89QBEY0cuUomgphY144DGbBjCaj0fnKx8PzctJ9oSZY
+         WGLZo5xiIJeCfJtruvetrnbCvkbQAjYew/dPichw/R3ZSGa8VHr7fs7hPMNl1k9VIWwc
+         RJJ3tDQpIOC7ZupSjb7MGOG8ZC60+U7Psyw7x+5l70HiG4uIY7OrtFvmms9kmru8RiA4
+         eRJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fyesMPCu3k5uc0fgNeqD03U46W6GxKBW5HWGQ4LWGoI=;
-        b=DtFkI9IdcqU5JRoZJvGDbW5VmMToQvnOFN9wFuXGNaBg2llRogu7gVUyhAH+xJr3rM
-         ARHp/0o5c1rNyVsgzvnr5517F87/YAk9aB/Og38ec2/AzUvZS8SLknSazOlKaH3FwMo4
-         +KipaLqU5YKv6yRmhqrTNlOiCK4nNXuNNz44oVVGI1T3xCKVvi06Js38rClqwGaGpKIO
-         3nOxQ5IOJWgCdCmifZ7wDCI741ui459IJzXYJN+9J2Ta9RT8lPEs8lgw1hXOMGx/s0OV
-         P6AtxmJLLqnFbhE5ynv7MBiYhczaMWcbBKGg3dNrdOTaMlTf7jjkOz44NT8pOo1FrBsk
-         8HRg==
-X-Gm-Message-State: AOAM5324DOsyO8vCrKoViU9ybXYpXjo1ZwAU3OB/VK9HTHy1ExZB+UXG
-        DNFzls02RIC3i6Ob5eLvS1Hxj7UBJv4m5XwlXbwi9Q==
-X-Google-Smtp-Source: ABdhPJydsTE5t381NdSdc+1LZBbPFmloDE3yb7+LSMrr/cWBNFjwpATbqkHkxCLrr7et+tBaGj+zopm3SmbyD0Iy6po=
-X-Received: by 2002:a17:902:f704:b029:11a:cdee:490 with SMTP id
- h4-20020a170902f704b029011acdee0490mr6434306plo.37.1628961671656; Sat, 14 Aug
- 2021 10:21:11 -0700 (PDT)
+        bh=Cj3brR7/gBmdZFywr+8Ggozpje7JHKDRwC1PgsV8mJA=;
+        b=O92RcXVacsdjnzVokqn7AfhTn3S1Vusy96L5eLpkmNxDLuwx016ZAI+WE19+Znm5R4
+         f8g7njBrV2/FnFx0kQno0DQhhIeBrLh65MPmMF5XpTB18NlcE6m+78VZ7Kr+xoBSi9yM
+         5+Ld8+gnd76OmBWqjWhacdyZTFHVL33UYAaiqq2WJ4QZUE0lYy1/eQij3c1ZKtSj3v7n
+         +J04osgGRnbOeiWjNU3xCD/+xK1UlkflU9jtmPc0t5nv1NihQPHNAI5/8DmEt/EqqXeD
+         ZHtDgrEqLD4Dy5rhiZ1iP9KLK+pJ83iaF4iXTjXTzLogE0FIpheOXuLnqM82HlP/479a
+         jGiw==
+X-Gm-Message-State: AOAM5336ZWSg5CSNN1zZo2givGIl9al3uNov0PdX/sIaOYYhabU6RnDg
+        mHfhg7BJj7QSmsBCCiZpjEr20dJvFRKfmP68qjqQUg==
+X-Google-Smtp-Source: ABdhPJxbf3pmQsG8AgZuA9FcoS3029YBFQL8bd3yFDPJ2qyt5ncnYj6PI92zQdiVpMS7euZ1iU5CWU79QKBj63x/mAw=
+X-Received: by 2002:a63:aa43:: with SMTP id x3mr7683855pgo.208.1628961751198;
+ Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210814073920.3551-1-straube.linux@gmail.com>
-In-Reply-To: <20210814073920.3551-1-straube.linux@gmail.com>
+References: <20210814160804.11634-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210814160804.11634-1-fmdefrancesco@gmail.com>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 14 Aug 2021 18:21:00 +0100
-Message-ID: <CAA=Fs0nH4x3TQnN3AVUMXJbCVa=a1mA2t2rF87cYUazttdsNOg@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove ODM_GetRightChnlPlaceforIQK()
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
+Date:   Sat, 14 Aug 2021 18:22:20 +0100
+Message-ID: <CAA=Fs0nR+Jh-1V1DdsZB9pMpeLRRwbQNh2X9UMMabh-vAubvqw@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: os_dep: Remove defined but not used variables
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
         Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -64,81 +63,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Aug 2021 at 08:40, Michael Straube <straube.linux@gmail.com> wrote:
+On Sat, 14 Aug 2021 at 17:08, Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
 >
-> Function ODM_GetRightChnlPlaceforIQK() returns always zero for
-> channels <= 14. The driver is for chips that do not support 5 GHz,
-> so remove the function and replace the usage of its return value
-> with zero.
+> Remove defined but not used const variables. Issues detected by GCC
+> running with -Wunused-const-variable option enabled.
 >
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
->  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c | 29 ++------------------
->  1 file changed, 3 insertions(+), 26 deletions(-)
+>  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 21 --------------------
+>  1 file changed, 21 deletions(-)
 >
-> diff --git a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
-> index 643a4d348b2e..c92a76aebc11 100644
-> --- a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
-> +++ b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
-> @@ -1004,27 +1004,6 @@ static void phy_IQCalibrate_8188E(struct adapter *adapt, s32 result[][8], u8 t,
->         }
->  }
+> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> index 38ee41f9d2ba..d9fdd83218dc 100644
+> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> @@ -84,11 +84,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
+>         6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
+>         48000000, 54000000};
 >
-> -#define ODM_TARGET_CHNL_NUM_2G_5G      59
-> -static u8 ODM_GetRightChnlPlaceforIQK(u8 chnl)
-> -{
-> -       u8      channel_all[ODM_TARGET_CHNL_NUM_2G_5G] = {
-> -               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-> -               36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64,
-> -               100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122,
-> -               124, 126, 128, 130, 132, 134, 136, 138, 140, 149, 151, 153,
-> -               155, 157, 159, 161, 163, 165
-> -       };
-> -       u8      place = chnl;
+> -static const char * const iw_operation_mode[] = {
+> -       "Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
+> -       "Secondary", "Monitor"
+> -};
 > -
-> -       if (chnl > 14) {
-> -               for (place = 14; place < sizeof(channel_all); place++) {
-> -                       if (channel_all[place] == chnl)
-> -                               return place-13;
-> -               }
-> -       }
-> -       return 0;
-> -}
-> -
->  static void phy_LCCalibrate_8188E(struct adapter *adapt, bool is2t)
+>  void indicate_wx_scan_complete_event(struct adapter *padapter)
 >  {
->         u8 tmpreg;
-> @@ -1088,7 +1067,7 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
->         struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
->         struct mpt_context *pMptCtx = &adapt->mppriv.MptCtx;
->         s32 result[4][8];       /* last is final result */
-> -       u8 i, final_candidate, Indexforchannel;
-> +       u8 i, final_candidate;
->         bool pathaok, pathbok;
->         s32 RegE94, RegE9C, RegEA4, RegEB4, RegEBC, RegEC4;
->         bool is12simular, is13simular, is23simular;
-> @@ -1200,14 +1179,12 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
->                         pathb_fill_iqk(adapt, pathbok, result, final_candidate, (RegEC4 == 0));
->         }
->
-> -       Indexforchannel = ODM_GetRightChnlPlaceforIQK(pHalData->CurrentChannel);
+>         union iwreq_data wrqu;
+> @@ -6666,19 +6661,3 @@ struct iw_handler_def rtw_handlers_def = {
+>         .num_private_args = sizeof(rtw_private_args) / sizeof(struct iw_priv_args),
+>         .get_wireless_stats = rtw_get_wireless_stats,
+>  };
 > -
->  /* To Fix BSOD when final_candidate is 0xff */
->  /* by sherry 20120321 */
->         if (final_candidate < 4) {
->                 for (i = 0; i < IQK_Matrix_REG_NUM; i++)
-> -                       dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[Indexforchannel].Value[0][i] = result[final_candidate][i];
-> -               dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[Indexforchannel].bIQKDone = true;
-> +                       dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[0].Value[0][i] = result[final_candidate][i];
-> +               dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[0].bIQKDone = true;
->         }
->
->         _PHY_SaveADDARegisters(adapt, IQK_BB_REG_92C, dm_odm->RFCalibrateInfo.IQK_BB_backup_recover, 9);
+> -/*  copy from net/wireless/wext.c start */
+> -/* ---------------------------------------------------------------- */
+> -/*
+> - * Calculate size of private arguments
+> - */
+> -static const char iw_priv_type_size[] = {
+> -       0,                            /* IW_PRIV_TYPE_NONE */
+> -       1,                            /* IW_PRIV_TYPE_BYTE */
+> -       1,                            /* IW_PRIV_TYPE_CHAR */
+> -       0,                            /* Not defined */
+> -       sizeof(__u32),            /* IW_PRIV_TYPE_INT */
+> -       sizeof(struct iw_freq),  /* IW_PRIV_TYPE_FLOAT */
+> -       sizeof(struct sockaddr),        /* IW_PRIV_TYPE_ADDR */
+> -       0,                            /* Not defined */
+> -};
 > --
 > 2.32.0
 >
 
-Nice work, thanks.
+Thanks Fabio.
 
 Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
