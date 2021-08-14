@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B57B3EC37F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF9B3EC388
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238728AbhHNPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 11:25:03 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36246 "EHLO mail.skyhub.de"
+        id S238741AbhHNP1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 11:27:36 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50024 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238554AbhHNPZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 11:25:01 -0400
-Received: from zn.tnic (p200300ec2f1db9002f4996680da31890.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:2f49:9668:da3:1890])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4181EC0570;
-        Sat, 14 Aug 2021 17:24:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628954665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sbUZXYrGBCnkdsaMVDuLw+c4h20LmEtsdOYx/LANX0Q=;
-        b=C00yjn7cBmQqRpOaWrEEj5l68AxFibYiJHAi3z1eBk5RnJifb6ywdjAO9bEEyQcQGDqW2O
-        EISCtsZnVhg2cwZvHYBEu32siB+BgLQO9Fc7VRjIta+kozXWnAdLDck7yaUcVc1AXUpVdO
-        qhH8pNHGUmDKEa/M9P+kxf+ZpIhdVbo=
-Date:   Sat, 14 Aug 2021 17:25:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v2 01/12] x86/ioremap: Selectively build arch override
- encryption functions
-Message-ID: <YRfgTzhKCn7otSzy@zn.tnic>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <a4338245609a6be63b162e3516d3f6614db782a4.1628873970.git.thomas.lendacky@amd.com>
+        id S238554AbhHNP1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 11:27:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=k5oaY0yxV1bCHw1gaOjIPXieerYTHQ1q9Of4rT8QusE=; b=ZptVl3mdz5xew2/cEvmLXeaPEx
+        kfWsMX17M/uIERuvvQsegMfyaHuAX+EZ0mziXAYD6MRw/qUSF8wXGeHQfxqFrdwsOxsuBRizEhpky
+        n27x1Z+yZTYummSjmDQhYN0vbxL9ccLr1+BQa7sGLKWPIJaRaI0VJuxGiCR0Z4OWZYio=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mEvYl-0004x1-9S; Sat, 14 Aug 2021 17:26:55 +0200
+Date:   Sat, 14 Aug 2021 17:26:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Tao Ren <rentao.bupt@gmail.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH v2 4/6] ARM: dts: aspeed: Add Facebook Cloudripper
+ (AST2600) BMC
+Message-ID: <YRfgv5OknMluW7jj@lunn.ch>
+References: <20210805222818.8391-1-rentao.bupt@gmail.com>
+ <20210805222818.8391-5-rentao.bupt@gmail.com>
+ <CACPK8XcV5On2D4D+SXnfw1M0owwfCL4Su19jOEA7yWpq+T3jLw@mail.gmail.com>
+ <20210813034016.GA21895@taoren-ubuntu-R90MNF91>
+ <YRaFpq1LvRzMYr/A@lunn.ch>
+ <20210814052228.GA1298@taoren-ubuntu-R90MNF91>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a4338245609a6be63b162e3516d3f6614db782a4.1628873970.git.thomas.lendacky@amd.com>
+In-Reply-To: <20210814052228.GA1298@taoren-ubuntu-R90MNF91>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 11:59:20AM -0500, Tom Lendacky wrote:
-> In prep for other uses of the prot_guest_has() function besides AMD's
-> memory encryption support, selectively build the AMD memory encryption
-> architecture override functions only when CONFIG_AMD_MEM_ENCRYPT=y. These
-> functions are:
-> - early_memremap_pgprot_adjust()
-> - arch_memremap_can_ram_remap()
+> Thanks for jumping in. We are using BCM5389 and the MDIO bus is used to
+> access BCM5389 MDC/MDIO interface in Pseudo-PHY mode.
 > 
-> Additionally, routines that are only invoked by these architecture
-> override functions can also be conditionally built. These functions are:
-> - memremap_should_map_decrypted()
-> - memremap_is_efi_data()
-> - memremap_is_setup_data()
-> - early_memremap_is_setup_data()
-> 
-> And finally, phys_mem_access_encrypted() is conditionally built as well,
-> but requires a static inline version of it when CONFIG_AMD_MEM_ENCRYPT is
-> not set.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/include/asm/io.h | 8 ++++++++
->  arch/x86/mm/ioremap.c     | 2 +-
->  2 files changed, 9 insertions(+), 1 deletion(-)
+> I didn't know drivers/net/dsa, but let me check out the drivers and see
+> if it works in the Cloudripper environment.
 
-LGTM.
+The b53 driver knows about this switch, so please make use of that
+driver. See Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
+for how you describe it in DT.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+    Andrew
