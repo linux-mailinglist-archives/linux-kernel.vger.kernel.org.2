@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED623EBEFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 02:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74593EBEFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 02:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbhHNA3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 20:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235746AbhHNA3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 20:29:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7F2C061756;
-        Fri, 13 Aug 2021 17:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=3ytcuNKrUYyEpzQAg5Vbs9xRcoKj59oPLdwRg+fuDi4=; b=E0m7L18VxLNdUox/pvclOZthc5
-        XGy0reRyYCopsPI/QKNIR4hUlZzx9JYo0PgMFNGywBvcXdHH2LHblDot87fYyP9+fr9QFEjFF4426
-        0Q7S1v9NTAfQQ4GEHLRISnZkGN6Dv2AAFFeCndIeZSMZBSvyNavpFtCDXYYYcR016grO4VMG1H8lY
-        NRDtjXp+lNw8hzZkY6nMDzzlWWFWngcoZJcASDcmmyL5oA7msQaToKYH0diL160YmxjwceVhAN1Yl
-        LUHaeKndk1uG19QgqWnO936LO7GnGNTYCBP8s1jToLMZV7eSmOrAPnQVtDRoHvd2pZT6yW86brl6U
-        k5ZC/Luw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEhXu-00DiKV-9s; Sat, 14 Aug 2021 00:29:06 +0000
-Subject: Re: [PATCH] Makefile: use -Wno-main in the full kernel tree
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-References: <20210813224131.25803-1-rdunlap@infradead.org>
- <CAHk-=wj4chmL3TUdXHhAV+eU-YVNj-ZtZBjNJEFBzTnPMP3_bA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <71efee23-92fd-2d19-47cb-ece2e50f0bc8@infradead.org>
-Date:   Fri, 13 Aug 2021 17:29:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235935AbhHNAae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 20:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235776AbhHNAad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 20:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 70B9D610FF;
+        Sat, 14 Aug 2021 00:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628901006;
+        bh=FRDgaUPmWkcZ+kT7qqTy5+zn7xCaZH9oBYVJGnyqFnY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ic66SUHo/R6aGDKp0kgmfaHc7Ry8oDliJWyDGbdquuN2byHHTl3PTPpKuuAGiVmC0
+         39Vaj+v79TQ+wXNhd8UGqaNJkJkTnG8GpoPNhR/kHMElDeVbgTARowJ+osmRbfaxG/
+         zHSKeSeeyt1h00e0l51X8O9FL+b25lZ6MCK5uOWoHjXqEGUHSZGKEGq39+hBvhSrkD
+         J/iY2Ac9e5eoDTSxptMZYOMyl6kt6tXVGZLV74as2gk4H9c4zfaYqC5mv9D7V7xkoe
+         thLM3jaXscuocZZpmGDgieKZv8S6pfONNGWKdJgwXKdnxWLBg3XUcpSylU4Pd1uuhY
+         LkoroPTQoih0Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 67E51609AF;
+        Sat, 14 Aug 2021 00:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wj4chmL3TUdXHhAV+eU-YVNj-ZtZBjNJEFBzTnPMP3_bA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: phy: marvell: add SFP support for 88E1510
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162890100642.6872.17258777970674718027.git-patchwork-notify@kernel.org>
+Date:   Sat, 14 Aug 2021 00:30:06 +0000
+References: <20210812134256.2436-1-i.bornyakov@metrotek.ru>
+In-Reply-To: <20210812134256.2436-1-i.bornyakov@metrotek.ru>
+To:     Ivan Bornyakov <i.bornyakov@metrotek.ru>
+Cc:     system@metrotek.ru, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/21 5:01 PM, Linus Torvalds wrote:
-> On Fri, Aug 13, 2021 at 12:41 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Build-tested on most ARCHes.
-> 
-> How about old versions of gcc? Or clang?
-> 
->  From a quick google, it seems like '-Wmain' means something else for
-> clang. But it is probably ok.
+Hello:
 
-Dunno. Let's just let it ride in linux-next for a bit to see what it hits.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Thu, 12 Aug 2021 16:42:56 +0300 you wrote:
+> Add support for SFP cages connected to the Marvell 88E1512 transceiver.
+> 88E1512 supports for SGMII/1000Base-X/100Base-FX media type with RGMII
+> on system interface. Configure PHY to appropriate mode depending on the
+> type of SFP inserted. On SFP removal configure PHY to the RGMII-copper
+> mode so RJ-45 port can still work.
+> 
+> Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: phy: marvell: add SFP support for 88E1510
+    https://git.kernel.org/netdev/net-next/c/b697d9d38a5a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
