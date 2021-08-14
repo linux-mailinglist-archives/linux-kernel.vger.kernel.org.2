@@ -2,150 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765A93EC3A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433163EC3A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbhHNPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 11:44:55 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:44586 "EHLO mail.ispras.ru"
+        id S238803AbhHNPpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 11:45:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234654AbhHNPoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 11:44:54 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 4366440A2BD1;
-        Sat, 14 Aug 2021 15:44:22 +0000 (UTC)
-Subject: Re: [PATCH] media: pt3: Fix IO unmapping on error handling paths in
- probe
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Akihiro Tsukada <tskd08@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210812092435.8255-1-novikov@ispras.ru>
- <CAHp75VcBnc_76E3KbmPPQKP5xfd73jAxz4Nx1WqCgPCnQN-Lsg@mail.gmail.com>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <45928f64-49ee-3a54-f2f4-79b059dd289a@ispras.ru>
-Date:   Sat, 14 Aug 2021 18:44:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238763AbhHNPo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 11:44:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 698D860F92;
+        Sat, 14 Aug 2021 15:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628955868;
+        bh=QII7/Obag25Xr03PZZ/pofMlG3w80AxigjvxgXiYhWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h6r0v/32SlNA1mP8bma4MFg3tJJf7dmgZ6b3lGUdsVQQZcqsk88kB6ZSe8VmqG6p+
+         e9KkyXwKgdh8aldiJvdKlzNMSU0XUmaD8uk96CoyhjKEf3/yj3mnBj2W9VU3+rGRrq
+         QTwOiOmvk7v3ubFPWn7DPrx1qYMonz2sVHh3L+IeQz8TUazydFOC/kY97mKoiGtb8A
+         1yHyM2wgpxuhjX1BQd7ILD8JmTsSTj0dVozKRdWh+lw4WNyJLhKKS6cGFcMSR6OoCm
+         5+Ram7IsDyGeFMgerXcgNt68tWVod0GmMRMO9j7jn2evruXUpx33LQiIDcsXWfDonF
+         FeHskXBx6uz4w==
+Received: by pali.im (Postfix)
+        id 27D4C9CA; Sat, 14 Aug 2021 17:44:26 +0200 (CEST)
+Date:   Sat, 14 Aug 2021 17:44:25 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: arm: marvell: Add 88F6825 model into list
+Message-ID: <20210814154425.4rrelaju6lilzdju@pali>
+References: <20210814124805.14568-1-pali@kernel.org>
+ <YRfhOJttJlXRYSzL@lunn.ch>
+ <20210814153307.vxun5jgy7ooeovgh@pali>
+ <YRfjpjrCcLdIHLSc@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcBnc_76E3KbmPPQKP5xfd73jAxz4Nx1WqCgPCnQN-Lsg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <YRfjpjrCcLdIHLSc@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Saturday 14 August 2021 17:39:18 Andrew Lunn wrote:
+> On Sat, Aug 14, 2021 at 05:33:07PM +0200, Pali Rohár wrote:
+> > On Saturday 14 August 2021 17:28:56 Andrew Lunn wrote:
+> > > On Sat, Aug 14, 2021 at 02:48:05PM +0200, Pali Rohár wrote:
+> > > > 88F6825 is just 88F6820 but without encryption acceleration hardware and is
+> > > > used e.g. in DTS file arch/arm/boot/dts/armada-385-clearfog-gtr.dtsi
+> > > > 
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > > 
+> > > > ---
+> > > > Depends on patch: https://lore.kernel.org/linux-doc/20210625215437.2156-1-pali@kernel.org/
+> > > > ---
+> > > >  Documentation/arm/marvell.rst | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > > 
+> > > > diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
+> > > > index 85169bc3f538..56bb592dbd0c 100644
+> > > > --- a/Documentation/arm/marvell.rst
+> > > > +++ b/Documentation/arm/marvell.rst
+> > > > @@ -140,6 +140,7 @@ EBU Armada family
+> > > >  	- 88F6821 Armada 382
+> > > >  	- 88F6W21 Armada 383
+> > > >  	- 88F6820 Armada 385
+> > > > +	- 88F6825
+> > > 
+> > > Hi Pali
+> > > 
+> > > Does it have the marketing name of Armada 385?
+> > 
+> > No, there is no marking. The only name in Marvell documents and also in
+> > DTS files and on wikis/internet is just 88F6825.
+> > 
+> > I found only this statement from Marvell:
+> > 
+> > "The 88F6825 device is a member of the ARMADA® 380, 385, and 388 Family
+> > of devices."
+> 
+> O.K, thanks
 
-On 12.08.2021 15:08, Andy Shevchenko wrote:
->
->
-> On Thursday, August 12, 2021, Evgeny Novikov <novikov@ispras.ru 
-> <mailto:novikov@ispras.ru>> wrote:
->
->     pt3_probe() did not free one of IO mappings in case when one of
->     them was
->     successful while another one failed. The patch fixed that.
->
->
->
-> It makes code not better, what really may do is a conversion to 
-> pcim_*() and devm_*() APIs.
-Thank you for the good suggestion. I will resend the patch. But you 
-should take into account, that I have not an ability to test upcoming 
-changes except for compiling them and checking some requirement 
-specifications included into our verification framework. So, further 
-work and decisions are up to driver developers.
+Normally I do not care about such thing... but as kernel already
+supports this SoC and also have DTS file for some device, it
+indicates that it is in use and supported... so mentioning this SoC in
+documentation is a good idea, even it does not have "code name".
 
-Best regards,
-Evgeny Novikov
->
->
->     Found by Linux Driver Verification project (linuxtesting.org
->     <http://linuxtesting.org>).
->
->     Signed-off-by: Evgeny Novikov <novikov@ispras.ru
->     <mailto:novikov@ispras.ru>>
->     Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com
->     <mailto:kirill.shilimanov@huawei.com>>
->     Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com
->     <mailto:kirill.shilimanov@huawei.com>>
->     ---
->      drivers/media/pci/pt3/pt3.c | 20 +++++++++++++-------
->      1 file changed, 13 insertions(+), 7 deletions(-)
->
->     diff --git a/drivers/media/pci/pt3/pt3.c b/drivers/media/pci/pt3/pt3.c
->     index c0bc86793355..f1bd2644435b 100644
->     --- a/drivers/media/pci/pt3/pt3.c
->     +++ b/drivers/media/pci/pt3/pt3.c
->     @@ -736,19 +736,24 @@ static int pt3_probe(struct pci_dev *pdev,
->     const struct pci_device_id *ent)
->             pt3->pdev = pdev;
->             mutex_init(&pt3->lock);
->             pt3->regs[0] = pci_ioremap_bar(pdev, 0);
->     -       pt3->regs[1] = pci_ioremap_bar(pdev, 2);
->     -       if (pt3->regs[0] == NULL || pt3->regs[1] == NULL) {
->     +       if (pt3->regs[0] == NULL) {
->                     dev_err(&pdev->dev, "Failed to ioremap\n");
->                     ret = -ENOMEM;
->                     goto err_kfree;
->             }
->     +       pt3->regs[1] = pci_ioremap_bar(pdev, 2);
->     +       if (pt3->regs[1] == NULL) {
->     +               dev_err(&pdev->dev, "Failed to ioremap\n");
->     +               ret = -ENOMEM;
->     +               goto err_iounmap0;
->     +       }
->
->             ver = ioread32(pt3->regs[0] + REG_VERSION);
->             if ((ver >> 16) != 0x0301) {
->                     dev_warn(&pdev->dev, "PT%d, I/F-ver.:%d not
->     supported\n",
->                              ver >> 24, (ver & 0x00ff0000) >> 16);
->                     ret = -ENODEV;
->     -               goto err_iounmap;
->     +               goto err_iounmap1;
->             }
->
->             pt3->num_bufs = clamp_val(num_bufs, MIN_DATA_BUFS,
->     MAX_DATA_BUFS);
->     @@ -756,7 +761,7 @@ static int pt3_probe(struct pci_dev *pdev,
->     const struct pci_device_id *ent)
->             pt3->i2c_buf = kmalloc(sizeof(*pt3->i2c_buf), GFP_KERNEL);
->             if (pt3->i2c_buf == NULL) {
->                     ret = -ENOMEM;
->     -               goto err_iounmap;
->     +               goto err_iounmap1;
->             }
->             i2c = &pt3->i2c_adap;
->             i2c->owner = THIS_MODULE;
->     @@ -801,11 +806,12 @@ static int pt3_probe(struct pci_dev *pdev,
->     const struct pci_device_id *ent)
->             i2c_del_adapter(i2c);
->      err_i2cbuf:
->             kfree(pt3->i2c_buf);
->     -err_iounmap:
->     -       if (pt3->regs[0])
->     -               pci_iounmap(pdev, pt3->regs[0]);
->     +err_iounmap1:
->             if (pt3->regs[1])
->                     pci_iounmap(pdev, pt3->regs[1]);
->     +err_iounmap0:
->     +       if (pt3->regs[0])
->     +               pci_iounmap(pdev, pt3->regs[0]);
->      err_kfree:
->             kfree(pt3);
->      err_release_regions:
->     -- 
->     2.26.2
->
->
->
-> -- 
-> With Best Regards,
-> Andy Shevchenko
->
->
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> 
+>     Andrew
