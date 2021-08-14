@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42693EC3BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859C13EC3B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235440AbhHNQJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237816AbhHNQJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:09:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A6FC061292
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:08:09 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id gt38so2804195ejc.13
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 09:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jatPwNH/0Yq3VWyyUNES2xrcQ7Q23B3cMA7m1PqwGKw=;
-        b=OdKuCFCAl6xHd2V3Meq15Cmuu9u2rXQxGX4WhZCEGmIbSMEoKi81LxSuUYjYoJFxFl
-         4kfdFyUTa/XJ6chxidNojWYuiVnZwlspbvZg6yykn/TZ1R+FyAu7LccHKpCbb9ENgo3o
-         15DlWBeHyc5iLXZH2DcFgqQVRgGvSKMN4LPd1axcb+Gd1YAygGGKA5SHLplDbW8Hl3aN
-         6fps0HKb3MY/Wu+/qHZ6v77u4DcaR+InRlUwPfyq2ceAezyG/d1p6HOmffm81ftU3sCc
-         5GKrcdUM8ffIhwshL0zY1PfH6P6amYKQe4rwDEgSddGTVick1Y+GKf2wfb6g5G4F4O35
-         iaKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jatPwNH/0Yq3VWyyUNES2xrcQ7Q23B3cMA7m1PqwGKw=;
-        b=Tu5zYkqOqvHwlPpKQtaFpULOFu9mVo+c87fquGb33RruWf50D1M82CHaUt5lgSeU7d
-         t5ctsCf8skjc5e4Sov6OZXsQUiU5mAdTvM5I/wzqoGXYj1c8fpF5fsi22Cpi6fyJWzqE
-         9aihUWX2WeUEMcW030cRpURNCuDc1E0Vp6AKX3uO1Thkn2IkflAUgfWFM+vcOyC1IMm/
-         4Rn/K7+640KMiuU68wx0hPHWGy81jiwVeG15RCGni52IUiPZqzxOj/BTax5ueSMWQUVY
-         d6bkpuMnBvcPJxKO4Tjzt5a8JqJRoa0iEGg8xXFkWuGCUnpwfnD0wY63X8LyKcScw8zH
-         YyOA==
-X-Gm-Message-State: AOAM530oXPzbQZ7X55jjLGdSif/SN2xhbKnP56FknCPwDG6xHjIcnkIh
-        HK3+uarhpN4Ml+v4crrcoUo=
-X-Google-Smtp-Source: ABdhPJwwRzJ2CiNCExpL2HqPhfUqDxiYmB1WUbm1hlRrm/mLnGIQQoiVVbCBzjZyLirPJmOHh2YF5A==
-X-Received: by 2002:a17:907:265b:: with SMTP id ar27mr8183248ejc.300.1628957287877;
-        Sat, 14 Aug 2021 09:08:07 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id 8sm1893759ejz.88.2021.08.14.09.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 09:08:07 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: r8188eu: os_dep: Remove defined but not used variables
-Date:   Sat, 14 Aug 2021 18:08:04 +0200
-Message-Id: <20210814160804.11634-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S236394AbhHNQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235458AbhHNQHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 12:07:44 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6B1660F21;
+        Sat, 14 Aug 2021 16:07:10 +0000 (UTC)
+Date:   Sat, 14 Aug 2021 17:10:07 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "hui.liu" <hui.liu@mediatek.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        <robh+dt@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <chun-hung.wu@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <seiya.wang@mediatek.com>, <matthias.bgg@gmail.com>,
+        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v1 1/2] iio: mtk-auxadc: add support IIO_CHAN_INFO_RAW
+ case
+Message-ID: <20210814171007.6892ae94@jic23-huawei>
+In-Reply-To: <042625639032bffe73b60a5c6274511e58e34ef4.camel@mediatek.com>
+References: <20210812054844.30575-1-hui.liu@mediatek.com>
+        <20210812054844.30575-2-hui.liu@mediatek.com>
+        <20210812190725.00007449@Huawei.com>
+        <042625639032bffe73b60a5c6274511e58e34ef4.camel@mediatek.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove defined but not used const variables. Issues detected by GCC
-running with -Wunused-const-variable option enabled.
+On Fri, 13 Aug 2021 11:46:24 +0800
+hui.liu <hui.liu@mediatek.com> wrote:
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 21 --------------------
- 1 file changed, 21 deletions(-)
+> On Thu, 2021-08-12 at 19:07 +0100, Jonathan Cameron wrote:
+> > On Thu, 12 Aug 2021 13:48:43 +0800
+> > Hui Liu <hui.liu@mediatek.com> wrote:
+> >   
+> > > Add support IIO_CHAN_INFO_RAW case.  
+> > 
+> > Why?
+> > 
+> > We almost never support both RAW and PROCESSED as userspace should be
+> > fine to use either.  There are a few reasons we've let drivers do
+> > this but I would like know why it matters to you and it definitely
+> > needs to be in the patch description.
+> >   
+> Hi Jonathan,
+> 
+> 1. To support ADC consumers' different types of requirement: some
+> consumers want to call iio_read_channel_raw to get raw data, the others
+> use iio_read_channel_processed to get voltage.
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 38ee41f9d2ba..d9fdd83218dc 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -84,11 +84,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
- 	6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
- 	48000000, 54000000};
- 
--static const char * const iw_operation_mode[] = {
--	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
--	"Secondary", "Monitor"
--};
--
- void indicate_wx_scan_complete_event(struct adapter *padapter)
- {
- 	union iwreq_data wrqu;
-@@ -6666,19 +6661,3 @@ struct iw_handler_def rtw_handlers_def = {
- 	.num_private_args = sizeof(rtw_private_args) / sizeof(struct iw_priv_args),
- 	.get_wireless_stats = rtw_get_wireless_stats,
- };
--
--/*  copy from net/wireless/wext.c start */
--/* ---------------------------------------------------------------- */
--/*
-- * Calculate size of private arguments
-- */
--static const char iw_priv_type_size[] = {
--	0,			      /* IW_PRIV_TYPE_NONE */
--	1,			      /* IW_PRIV_TYPE_BYTE */
--	1,			      /* IW_PRIV_TYPE_CHAR */
--	0,			      /* Not defined */
--	sizeof(__u32),		  /* IW_PRIV_TYPE_INT */
--	sizeof(struct iw_freq),	 /* IW_PRIV_TYPE_FLOAT */
--	sizeof(struct sockaddr),	/* IW_PRIV_TYPE_ADDR */
--	0,			      /* Not defined */
--};
--- 
-2.32.0
+Give an example of the consumer using the raw channel readback (without
+acess to any scaling information?)
+
+> 2. In our origin driver, if consumer call iio_read_channel_processed,
+> read back value is raw data. 
+> 
+> Could we use SCALE instead of PROCESSED in patch for next version, or
+> what's your suggestion?
+
+That would unfortunately be a userspace ABI change.  We can add interfaces
+but taking them away is normally a problem :( 
+
+Your reasons here are fine, subject to information on what consumer cares
+about having _RAW, please resend the patch with this information added
+to the description.
+
+Thanks,
+
+Jonathan
+> 
+> Thanks.
+> 
+> > > 
+> > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>
+> > > ---
+> > >  drivers/iio/adc/mt6577_auxadc.c | 16 +++++++++++++++-
+> > >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/iio/adc/mt6577_auxadc.c
+> > > b/drivers/iio/adc/mt6577_auxadc.c
+> > > index 79c1dd68b909..e995d43287b2 100644
+> > > --- a/drivers/iio/adc/mt6577_auxadc.c
+> > > +++ b/drivers/iio/adc/mt6577_auxadc.c
+> > > @@ -60,7 +60,8 @@ static const struct mtk_auxadc_compatible
+> > > mt6765_compat = {
+> > >  		.type = IIO_VOLTAGE,				   
+> > >  \
+> > >  		.indexed = 1,					   
+> > >  \
+> > >  		.channel = (idx),				    \
+> > > -		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED), \
+> > > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	   
+> > >  \
+> > > +				      BIT(IIO_CHAN_INFO_PROCESSED), \
+> > >  }
+> > >  
+> > >  static const struct iio_chan_spec mt6577_auxadc_iio_channels[] = {
+> > > @@ -181,6 +182,19 @@ static int mt6577_auxadc_read_raw(struct
+> > > iio_dev *indio_dev,
+> > >  	struct mt6577_auxadc_device *adc_dev = iio_priv(indio_dev);
+> > >  
+> > >  	switch (info) {
+> > > +	case IIO_CHAN_INFO_RAW:
+> > > +		*val = mt6577_auxadc_read(indio_dev, chan);
+> > > +		if (*val < 0) {
+> > > +			dev_notice(indio_dev->dev.parent,
+> > > +				"failed to sample data on
+> > > channel[%d]\n",
+> > > +				chan->channel);
+> > > +			return *val;
+> > > +		}
+> > > +		if (adc_dev->dev_comp->sample_data_cali)
+> > > +			*val = mt_auxadc_get_cali_data(*val, true);
+> > > +
+> > > +		return IIO_VAL_INT;
+> > > +
+> > >  	case IIO_CHAN_INFO_PROCESSED:
+> > >  		*val = mt6577_auxadc_read(indio_dev, chan);
+> > >  		if (*val < 0) {  
+> > 
+> >   
 
