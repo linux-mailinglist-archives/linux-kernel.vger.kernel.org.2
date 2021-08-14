@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698E83EBF8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 04:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF53A3EBF8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 04:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236439AbhHNCF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 22:05:58 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:54920 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhHNCF5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 22:05:57 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mEj0c-00BTXs-As; Sat, 14 Aug 2021 02:02:50 +0000
-Date:   Sat, 14 Aug 2021 02:02:50 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Message-ID: <YRckSj32tCO3nPYI@zeniv-ca.linux.org.uk>
-References: <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133>
- <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
- <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
- <CAHk-=wgi2+OSk2_uYwhL56NGzN8t2To8hm+c0BdBEbuBuzhg6g@mail.gmail.com>
- <YRcjCwfHvUZhcKf3@zeniv-ca.linux.org.uk>
+        id S236485AbhHNCGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 22:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232651AbhHNCGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 22:06:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A48B6103A;
+        Sat, 14 Aug 2021 02:06:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628906769;
+        bh=AJyfRoBiN6vd4Qg70MgtNw0Vq/ShFqNrZMSRs0ia4OM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KXbOK6CmPDAZSIgOGq8qFrRCB/AqLpDaZmbm1i5bNjvQYzi8JrcOiaJ+Bg/nslpJb
+         Rg9rL5U1pGBCggSaHbiKqe0wJLbFYBxhFecTmww8XKnp01ttJPyOhutU7ZtcPUV1OV
+         zvi+mAFc2oNSlj6U7vPmb2yucVaD5k4YoXZF+FKAKSvl7cThTP/UO3SxML2IWX13jl
+         6UnZ8l69Gv/IMFtEc64Q3ddUJfmAJDyPoso1TE5zWoHsYOjKIMWjoWI6/AYh76F7ZB
+         X5IHHSFiWY4Pm8nCpzSTHN65qcie56Sl3eTPyW8LhH4CXixNB43ScV3Vbm3oUuNyTk
+         luIx8b4+wl79Q==
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce periodic iostat io latency
+ traces
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20210803225542.3487172-1-daeho43@gmail.com>
+ <2a79c1c5-366b-92d9-4025-dbda660b1178@kernel.org>
+ <YRWKKQe0bcgjKIIA@google.com>
+ <b1a7b8a6-89dc-9076-2388-ced59aa8c47c@kernel.org>
+ <YRbARsMfs2O2fz2s@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <b76b5b09-d806-992b-3256-fe7ebfc4a2df@kernel.org>
+Date:   Sat, 14 Aug 2021 10:06:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRcjCwfHvUZhcKf3@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <YRbARsMfs2O2fz2s@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 01:57:31AM +0000, Al Viro wrote:
-> On Fri, Aug 13, 2021 at 02:58:57PM -1000, Linus Torvalds wrote:
-> > On Fri, Aug 13, 2021 at 2:54 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > And nobody really complained when we weakened it, so maybe removing it
-> > > entirely might be acceptable.
-> > 
-> > I guess we could just try it and see... Worst comes to worst, we'll
-> > have to put it back, but at least we'd know what crazy thing still
-> > wants it..
+On 2021/8/14 2:56, Jaegeuk Kim wrote:
+> On 08/13, Chao Yu wrote:
+>> On 2021/8/13 4:52, Jaegeuk Kim wrote:
+>>> On 08/11, Chao Yu wrote:
+>>>> Hi Daeho,
+>>>>
+>>>> On 2021/8/4 6:55, Daeho Jeong wrote:
+>>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>>
+>>>>> Whenever we notice some sluggish issues on our machines, we are always
+>>>>> curious about how well all types of I/O in the f2fs filesystem are
+>>>>> handled. But, it's hard to get this kind of real data. First of all,
+>>>>> we need to reproduce the issue while turning on the profiling tool like
+>>>>> blktrace, but the issue doesn't happen again easily. Second, with the
+>>>>> intervention of any tools, the overall timing of the issue will be
+>>>>> slightly changed and it sometimes makes us hard to figure it out.
+>>>>>
+>>>>> So, I added F2FS_IOSTAT_IO_LATENCY config option to support printing out
+>>>>> IO latency statistics tracepoint events which are minimal things to
+>>>>> understand filesystem's I/O related behaviors. With "iostat_enable" sysfs
+>>>>> node on, we can get this statistics info in a periodic way and it
+>>>>> would cause the least overhead.
+>>>>>
+>>>>> [samples]
+>>>>>     f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
+>>>>> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+>>>>> rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
+>>>>> wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
+>>>>> wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
+>>>>> wr_async_node [0/0/0], wr_async_meta [0/0/0]
+>>>>>
+>>>>>     f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
+>>>>> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+>>>>> rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
+>>>>> wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
+>>>>> wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
+>>>>> wr_async_node [0/0/0], wr_async_meta [0/0/0]
+>>>>>
+>>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>>>
+>>>>> ---
+>>>>> v2: clean up with wrappers and fix a build breakage reported by
+>>>>>        kernel test robot <lkp@intel.com>
+>>>>> ---
+>>>>>     fs/f2fs/Kconfig             |   9 +++
+>>>>
+>>>> I try to apply this patch in my local dev branch, but it failed due to
+>>>> conflicting with below commit, it needs to rebase this patch to last dev
+>>>> branch.
+>>>
+>>> I applied this in dev branch. Could you please check?
+>>
+>> Yeah, I see.
+>>
+>>>>> +config F2FS_IOSTAT_IO_LATENCY
+>>>>> +	bool "F2FS IO statistics IO latency information"
+>>>>> +	depends on F2FS_FS
+>>>>> +	default n
+>>>>> +	help
+>>>>> +	  Support printing out periodic IO latency statistics tracepoint
+>>>>> +	  events. With this, you have to turn on "iostat_enable" sysfs
+>>>>> +	  node to print this out.
+>>>>
+>>>> This functionality looks independent, how about introuducing iostat.h
+>>>> and iostat.c (not sure, maybe trace.[hc])to include newly added structure
+>>>> and functions for dispersive codes cleanup.
+>>
+>> Thoughts? this also can avoid using CONFIG_F2FS_IOSTAT_IO_LATENCY in many places.
 > 
-> Umm...  I'll need to go back and look through the thread, but I'm
-> fairly sure that there used to be suckers that did replacement of
-> binary that way (try to write, count on exclusion with execve while
-> it's being written to) instead of using rename.  Install scripts
-> of weird crap and stuff like that...
+> It seems there's somewhat dependency with iostat which is done by default.
+> How about adding this by default as well in the existing iostat, and then
+> covering all together by F2FS_IOSTAT?
 
-... and before anyone goes off - I certainly agree that using that
-behaviour is not a good idea and had never been one.  All I'm saying
-is that there at least used to be very random (and rarely exercised)
-bits of userland relying upon that behaviour.
+Agreed.
+
+Any thoughts about using separated files to maintain these independent functionality
+codes? like we did in trace.[hc] previously.
+
+Thanks,
+
+> 
+>>
+>> Thanks,
