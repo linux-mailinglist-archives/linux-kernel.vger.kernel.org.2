@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0883F3EC46F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CAA3EC471
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238931AbhHNSXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhHNSXr (ORCPT
+        id S238963AbhHNS0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:26:08 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:33399 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238921AbhHNS0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:23:47 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596F6C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:23:18 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id k24so8353198vsg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Tf5xreh+EXaDOdBdIiJb4IE+S8DtM/q8kJSMh7+cvIA=;
-        b=FpHmPp34oY1RVF+T6bDjnCvN2W25HJHkLtU8oE8C6tvgd4YWcvyK9J02+6qdbJ7mYQ
-         wqx3blRaqxdJpWgZT0nHYWyTXMeqkv+snO15/SM5oEL60VUK1i1bEW8hGN/vinuD34p5
-         wUjmCaDVrraOwvMQrv8WKQbkTRiasZKH2+7sf3ZCk977+EbjGxdNbI0Lj2/rZpFLsgzV
-         VlznzGnT1KkhZGsESRk1fuUQd7+R1458EhmO3cZJHYZEJX/xmj9lpyzEDaPAl38+5KUU
-         JqZT3H8DLkUvGmXGRhWydynPPAJVJbn7/WZ43ThJhGHaQyfMQS7P5Gr38QRxqvi0NQbT
-         AOWg==
+        Sat, 14 Aug 2021 14:26:07 -0400
+Received: by mail-pl1-f169.google.com with SMTP id a20so16108166plm.0;
+        Sat, 14 Aug 2021 11:25:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Tf5xreh+EXaDOdBdIiJb4IE+S8DtM/q8kJSMh7+cvIA=;
-        b=rUR7R5+Aklqz3ZY3XEodfke3RKOAzb2uqI/PveT34kbr7Rqetkoke4XFyqwqR2kR13
-         ryP/ISnKoj/VQU07tLyohdBjAdnQBzzJcFsTitqszyRA7eeZN+xLeovPirqxaIZfa8dQ
-         5yY5XtM5djXKT+I2i/ebEZIAXIGhuh77KbjYeJ4zS9L3u7q+Epw8zUFN8n7eL3re3Aqn
-         PTS8izGTO2qZ0BhPqrGwMkF/BzCsXlho+6U6jYjkfqmyaK0SxXHqgeYWR1EL4Oiv233k
-         GModULQObZd1kqO0gaw6n6Hrv7EbJLMZ8WE+N5ivajE5DOVhOGyNCFE3KKp9cRCbfQ+c
-         R37w==
-X-Gm-Message-State: AOAM531jVJQ5vB1njRJuwwT4RXRq0lq+wDAObVr+1drylyDJ2BEkt2oL
-        rUYoHHBzWiyz8Sf0fSyKiFcAv3MTPYH9Yurzp7c=
-X-Google-Smtp-Source: ABdhPJwpknbiR9YPdoi+DMQqNTCrmr0yWSyj8P9gAdbGkqyGXNinyam/hP+JznnCCez5Jlpm917gVRIG74TbzssYfSc=
-X-Received: by 2002:a67:7f53:: with SMTP id a80mr4382324vsd.13.1628965397412;
- Sat, 14 Aug 2021 11:23:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V/UunbGPn7b9qeiuqDc7nUnLkftRm49BxQKgOeX29LI=;
+        b=akaPopfFBXG5HUqZx5qGZGVNDoy0XKHbE/pvqZsrypYInpAp0MWYWeewxPwRRtu6d7
+         6zTTtjjnSCtR8Nd0c2aJ6C2SHADLVVdNwaQQS+FUlYwXgi4b3jt69Eed++tRnsUbekVf
+         3n6Ge8YU3bg2NeAevjnPzdhQpzQ7EwhAyaQhmyHonXC8YF9ycHY+/ZRq3tBfdBhE2FBc
+         BbbLTu20jXHJwIqY6IZbjNyZgmB20tPRl3Dn6sbSItit5no3J+PcRqcqcPVj2elFjz5F
+         92gLNbrrj+79l5DjU2lDTXadbhCqINXBrAtprXsa82e9ErSVKlSXYRW+O85vWrvpQP3E
+         6ghA==
+X-Gm-Message-State: AOAM5324/ocYh/T1vNfn1Hdfey4+hczur5gavfZ6Xl3OA1NKAG9kwTzy
+        +oJpl7Zagd8AxCnG80AJYAd9q4MpiSA=
+X-Google-Smtp-Source: ABdhPJwqQsnbZrocVZuoL85A8ndRmQw0cVFw2+cnn8XXH0bJv9BAiXryV4q8SchXa9agAStxa7MrKQ==
+X-Received: by 2002:a17:902:c386:b029:12d:4eda:9e42 with SMTP id g6-20020a170902c386b029012d4eda9e42mr6572776plg.57.1628965538283;
+        Sat, 14 Aug 2021 11:25:38 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:ec45:c824:1851:d6df? ([2601:647:4000:d7:ec45:c824:1851:d6df])
+        by smtp.gmail.com with ESMTPSA id u17sm6330929pfh.184.2021.08.14.11.25.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Aug 2021 11:25:37 -0700 (PDT)
+Subject: Re: [GIT PULL] configfs fix for Linux 5.14
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Bodo Stroesser <bostroesser@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <YRdp2yz+4Oo2/zHy@infradead.org>
+ <CAHk-=whh8F-9Q=h=V=bKczqfRPbUN_A3h21aVfkk2HNhCWF+Pw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <eca7f963-7ee1-d062-8020-a2a32a69a9e6@acm.org>
+Date:   Sat, 14 Aug 2021 11:25:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Reply-To: afzzal.ahmed@aol.com
-Sender: hassin.ali2017@gmail.com
-Received: by 2002:a9f:2c0e:0:0:0:0:0 with HTTP; Sat, 14 Aug 2021 11:23:17
- -0700 (PDT)
-From:   Afzzal Ahmed <afzzalahmed0547@gmail.com>
-Date:   Sat, 14 Aug 2021 11:23:17 -0700
-X-Google-Sender-Auth: IZX8c7diR84tzx3xnNiTkOpAX5A
-Message-ID: <CAJsDfshTBKwD=kG4MYxzRYhSY1uBG0S1WW8oKg0kAKwk8HipSw@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=2ER=C3=A9=2EBase_on_your_reply?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=whh8F-9Q=h=V=bKczqfRPbUN_A3h21aVfkk2HNhCWF+Pw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assaalamu Alaikkum my dear friend,
-        I am Mr Afzzal Ahmed, the chief operating officer with my bank
-and I want to inform you that an amount of US$37.3 million will be
-moved on your name as the Foreign Business Partner to our late
-deceased customer Mr.Berry Bryan Floyd, I need your help to receive
-this money as we shall share the money in the ratio of 60:40%. You
-will receive this amount through a bank wire transfer.
+On 8/14/21 9:27 AM, Linus Torvalds wrote:
+> On Fri, Aug 13, 2021 at 9:00 PM Christoph Hellwig <hch@infradead.org> wrote:
+>>
+>> configfs fix for Linux 5.14
+>>
+>>  - fix to revert to the historic write behavior (Bart Van Assche)
+> 
+> It would have been lovely to see what the problem was, but the commit
+> doesn't actually explain that.
+> 
+> I suspect it's this
+> 
+>     https://lkml.org/lkml/2021/7/26/581
+> 
+> but there might have been more.
 
-Please send your full names, direct telephone numbers, and home
-address, more details of how to claim the form will be given upon your
-reply.
-Your quick response will be highly appreciated.
-Yours sincerely,
+Hi Linus,
 
-Mr.Afzzal Ahmed
+Bodo explained to me via a private email that the historic behavior is
+the behavior he needs for a patch that he is still working on. I'm not
+aware of any existing user space software that relies on the historic
+(non-POSIX) behavior of configfs writes.
+
+Bart.
