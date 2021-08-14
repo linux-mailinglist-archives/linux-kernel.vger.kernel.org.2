@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AAE3EC224
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 12:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444CF3EC22B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 13:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238053AbhHNKxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 06:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S238000AbhHNLAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 07:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237914AbhHNKxN (ORCPT
+        with ESMTP id S229919AbhHNLAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 06:53:13 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FA6C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 03:52:45 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id b13so16742424wrs.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 03:52:45 -0700 (PDT)
+        Sat, 14 Aug 2021 07:00:37 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACD6C061764;
+        Sat, 14 Aug 2021 04:00:09 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id f12-20020a05600c4e8c00b002e6bdd6ffe2so5647084wmq.5;
+        Sat, 14 Aug 2021 04:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ba4SAb2aBf6MmpZz3Xp6tADaKj/2tCplahLWQ77YhH8=;
-        b=Hdq5+2+wU2tURLfgliPF1+rONdMo1n5Cb2UlAEGOG5IiMxYGeNPgkNFt0i0fqymg1c
-         2mlLpylFGQh5L6RJBee2fZKdlfJB2rQtlN4kVhVS+AP6ZJfl5BQEisy+PqRUlFMbs9lx
-         7DQbsOVGWep+gfcR7IaA2/0Mwd0nOCfMlAIYeizVmDTPGiFGWXi+yYiph81rMxkLbItC
-         M3j4yWjAhWtG+da7rZulxg69LaV1G5QJHzwES34812r+eoGHNF1nhUT8AGR7wHi0o2wr
-         ea8RPTeb6c33IODTEl1BOM/XeZ1WAfKAbZWD34qmki99FDJ5a61SrWCeWAMo5qHoO0EH
-         V9PQ==
+        bh=fB1jBEy4ZcpTnTunznV8ts4UnCGebxmPq6yYD+jKJUo=;
+        b=Qo09iwekaKeyYOa8ONz+iP+5H0pyNiefTPidHb5JOvmXfc5C6ZChP3fyDrZkwgBhpo
+         Wcb7S4IHMFYXx/29vZd/Wy35kqWQFBxXTwYHVzudkptPVJshUkotYWbjMU65og+kUWC/
+         z9uxxyzXcRr7TMPeOGqG/g0vA1Z3AxmnG3y6ltmKzl4ustvlkQt7F1zn5RfAmSWUovfg
+         Wn2ipdgDQFuXNvMalTnw17e3yU+9q4NbbioQr9B+iKDGam3aXx1phP1+jbhsYdNCOA99
+         SbJKJvJQwkC/La34XFB9SzKfVBBHZWwuo78vQk8W/QlDO00G6MIJFmkMjGjudknouhfV
+         tDzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ba4SAb2aBf6MmpZz3Xp6tADaKj/2tCplahLWQ77YhH8=;
-        b=d1ODGf5l1HnhHSwUQdHxbw2NnsHnwJLuS+zWhPHNFnbyHVPCj/GPt2T+MnlPtVJ80S
-         27s0MOy1hrRrKXB0kCtugUV0JymVja3P5fOgXqFcFz0qrdN90fr030iVynfT6L+pNebg
-         iySkqNuyGqiKlGpR+sVHQ5Zewlol0SUa2TWBe5PwsH5lZgZ1Wd1dUOFBz6xdP3v789VT
-         TLedxIdGHbrgQ1J7m8xOpQs37QG44xvRxoZ5oTJEJnKkcgQlp3FZN3UriTaTBMuxXZXl
-         7gI2t3+EvCp/KC5rUcIdFmzfuqyq3Km5nn4M3p/CyTCDrf56QyXRDDZoYwsMCLr1tTPF
-         d5NA==
-X-Gm-Message-State: AOAM531L8eaoeCiHD2Q5P/Cq5MXFGxsqDIGG5MjH1V2T5p7Qadj5gUVs
-        OmsXX5ptUskzagPjmrq4GnzuVA==
-X-Google-Smtp-Source: ABdhPJwWNA17tyvLVZXpoO+MinyAHNFMLJO/QCMJeMsc+Bz46vBdUHzhRbGdNnDPD5/1C08z8MedMw==
-X-Received: by 2002:a05:6000:114d:: with SMTP id d13mr7838630wrx.295.1628938363570;
-        Sat, 14 Aug 2021 03:52:43 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5df3:d0eb:3945:640d? ([2a01:e34:ed2f:f020:5df3:d0eb:3945:640d])
-        by smtp.googlemail.com with ESMTPSA id r10sm5228134wrq.32.2021.08.14.03.52.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 03:52:43 -0700 (PDT)
-Subject: Re: [PATCH 19/38] thermal: Replace deprecated CPU-hotplug functions.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org
-References: <20210803141621.780504-1-bigeasy@linutronix.de>
- <20210803141621.780504-20-bigeasy@linutronix.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <3375c93a-a5ee-e2b6-2259-cfe23589bfb9@linaro.org>
-Date:   Sat, 14 Aug 2021 12:52:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=fB1jBEy4ZcpTnTunznV8ts4UnCGebxmPq6yYD+jKJUo=;
+        b=X3f2g2PXpDed6FJeJXSmziVb6jZDT6nAKx4rUldJAkSuWoe8wpsSfoXXXjkMRHQhrt
+         2hqvzvHBA177nC/vcEBdpmHPpTmo/8UwB5Ery9dv8qnlFSP4fFtcIQcTwTyeFmIb0gqM
+         9TnqgRbpo2n8KAY4ZzWCmO/sE/7FJ2i4tRy6tYVu7dVs6xQSPZGHjLSKexoLvq+jBV++
+         Tsal2QnsyIF8k8TF1HqTiW2OCDN3YDi/ziFMCRGyzZsVDto918VUFkwiZz6yG2eKZUnI
+         5rBojfgHocufOzWchSAjrX/sgs87El0zzebMpnro4nqa7yuuGX+VMXzuzQos/rqKTU6w
+         JHLw==
+X-Gm-Message-State: AOAM532GmWx2jLCZ6CiK3Okj0FiZnz/DzNrwqLpAnLsLejKfOlFDAMCP
+        NKLJ8ypPfKl8kDZgIos3Ors=
+X-Google-Smtp-Source: ABdhPJwJgwOWDrwgLVVzPIYDXK+AeNJS/Q06qABEfR9AS49IaB7qNu6pYdplbhtzUGwuFnplDo8X0A==
+X-Received: by 2002:a7b:c185:: with SMTP id y5mr6845707wmi.2.1628938807565;
+        Sat, 14 Aug 2021 04:00:07 -0700 (PDT)
+Received: from [192.168.0.48] (HSI-KBW-046-005-005-101.hsi8.kabel-badenwuerttemberg.de. [46.5.5.101])
+        by smtp.gmail.com with ESMTPSA id o11sm3453802wrj.47.2021.08.14.04.00.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 14 Aug 2021 04:00:06 -0700 (PDT)
+Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for file
+ /test-exec \(pid: 10094 comm: debootstrap\)
+To:     Metztli Information Technology <jose.r.r@metztli.com>
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210208125427.CFC7C75EED90@huitzilopochtli.metztli-it.com>
+ <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
+ <d85555853f76b7f46ce3b7514d2890091b304c12.camel@metztli.com>
+From:   Edward Shishkin <edward.shishkin@gmail.com>
+Message-ID: <12924b25-baa4-2965-65de-bc64ed43069f@gmail.com>
+Date:   Sat, 14 Aug 2021 13:00:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-In-Reply-To: <20210803141621.780504-20-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <d85555853f76b7f46ce3b7514d2890091b304c12.camel@metztli.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2021 16:16, Sebastian Andrzej Siewior wrote:
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
+On 08/13/2021 05:20 PM, Metztli Information Technology wrote:
+
+[...]
+
+>>>
+>>> Notwithstanding, I would appreciate if you can take a look at the
+>>> attached patch. Probably it can be streamlined and/or improved
+>>>    further to minimize pain on subsequent Linux kernel upgrades.
+>>
+>>
+>> That patch is an attempt to swim against the current ;)
+>>
+>> I no longer remember, why they want to get rid of set_fs for already
+>> 15
+>> years, but ->read() and ->write() methods seem to be deprecated, and
+>> the
+>> correct way would be to implement the new ->read_iter() and
+>> write_iter()
+>> methods, where reiser4 works with "chunked" streams, represented by
+>> iov_iter structure, rather than with "continuous" streams,
+>> represented
+>> by char __user *buf. The task is not that difficult, but rather time
+>> consuming - I don't have a time for this right now..
 > 
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
+> On Sun, Jun 20, 2021 at 10:45 AM Edward Shishkin
+> <edward.shishkin@gmail.com> wrote:
+>        So, I have implemented ->read_iter() for all plugins (*). It is
+>        included
+>        to reiser4-for-5.12 stuff. Not sure if it is enough to make distro with
+>        root over reiser4 though: ->write_iter() is not yet implemented (not so
+>        trivial because of transactions).
+>        
+>        (*)
+>        https://github.com/edward6/reiser4/commit/ac72aba7e8bb16a28755c1b2b762971927d17c3c
+>        
+>        https://github.com/edward6/reiser4/commit/4d3200fbcb2003c680cdb822e3f616d3fa83c391
+>        
+>        Edward.
+>        
+
+Hello,
+
+Now the new striped file plugin implements ->write_iter():
+https://github.com/edward6/reiser4/commit/a3795ffffbb841bfaa66bfb18c12fb317533d1ff
+
+[...]
+
+> I finally got around to creating an SFRN 5.1.3 -enabled Debian
+> Installer (d-i) for upcoming Debian 11 (codenamed Bullseye). Applied
+> your unstable reiser4 for 5.12 patch onto my debianized hack packaging
+> for Linux kernel 5.12.19 EOL.
 > 
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Amit Kucheria <amitk@kernel.org>
-> Cc: linux-pm@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  drivers/thermal/intel/intel_powerclamp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I gave the d-i a spin in VirtualBox 6.1.26 and it choked on the
+> following code fragment:
+> ---------------------------------------------------------------------
+> setup_dev_linux () {
+>          # Ensure static device nodes created during install are
+> preserved
+>          # Tests in MAKEDEV require this is done in the D-I environment
+>          mkdir -p /dev/.static/dev
+>          chmod 700 /dev/.static/
+>          mount --bind /target/dev /dev/.static/dev
+>          # Mirror device nodes in D-I environment to target
+>          mount --bind /dev /target/dev/
+> }
+> -----------------------------------------------------------------------
+> 
+> specifically:
+> mount --bind /target/dev /dev/.static/dev
+> 
+> See relevant code fragment next to VirtualBox VM, where I manually
+> entered the above directive:
+> < https://metztli.it/bullseye-reiser5/d-i-sfrn5-fail.jpg >
+> 
+> i.e., '--bind' is causing the SFRN5 -enabled installer to bail out
+> *only* for this reiser4 unstable SFRN 5.1.3 -patched kernel. On the
+> other hand, as reported previously, no such issue occurs with your
+> reiser4 stable SFRN 4.0.2 patch applied to the *same* debianized kernel
+> source tree, Ed.
 
-Applied.
+I have checked - everything works for me (Linux-5.12).
 
-Thanks
+# mount /dev/vdd1 /mnt/test
+# volume.reiser4 /mnt/test
 
-  -- D.
+Logical Volume Info:
+ID:             03ac5995-bf77-4851-a302-e875a6fd752f
+volume:         0x1 (asym)
+distribution:   0x1 (fsx32m)
+stripe:         262144
+segments:       1024
+bricks total:   3
+bricks in DSA:  3
+slots:          3
+map blocks:     2
+balanced:       Yes
+health:         OK
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+# mkdir bindmnt
+# mount --bind /mnt/test bindmnt
+# mount
+[...]
+/dev/vdd1 on /mnt/test type reiser4 
+(rw,relatime,atom_max_size=0x3d88e,atom_max_age=0x927c0,atom_min_size=0x100,atom_max_flushers=0x1,cbk_cache_slots=0x10)
+/dev/vdd1 on /root/bindmnt type reiser4 
+(rw,relatime,atom_max_size=0x3d88e,atom_max_age=0x927c0,atom_min_size=0x100,atom_max_flushers=0x1,cbk_cache_slots=0x10)
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks,
+Edward.
