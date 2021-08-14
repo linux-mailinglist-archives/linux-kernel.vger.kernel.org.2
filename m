@@ -2,92 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCEF3EC1B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF7C3EC1B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237681AbhHNJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 05:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbhHNJiT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 05:38:19 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D803DC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 02:37:50 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bo18so19032624pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 02:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P0UOfDH46LzJmA9HbmawuoAXG2ONdo7emlUDlsDL1UU=;
-        b=BCEDXF2GqTAbjF6KozkgnbvX0jT/36sp7MiceZGJcsHiSDxvvpyLDH7xhrYhxQ1krK
-         QOSogHoLRR3+rVtV579FKmkF55GLShIphnmIYu//HfYl8UaTZjxpv4a/4OUMnlhVcA9A
-         MXeRibqashXrb9ggOGo8ARfbniUXBO336lVFo8oJeg+LNaVT6dtt47Kke39/8uG787cK
-         Fu4iKEKlCwfCzyDCdbDK6T3Kd13vXAMlViXJDiaDNwuOrSOuMOlkWM7dKZwcuLaV8ENI
-         OldYeTqqXKJgymEDWBCynqLzrW4w68hpe9s1qYdrydJrLqtOvALxNek3HnUA0Zr1H0CX
-         jMjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P0UOfDH46LzJmA9HbmawuoAXG2ONdo7emlUDlsDL1UU=;
-        b=qyqc9f3gJ5kW/OMG4M3GXgoF9fCM69MhJLb0QCYs1FPWed+xdzD7TbCC+5dwfx2Gwo
-         BlObWtEi+15f4vJulF7YlgT62FlQ5MfLBvXDuuXaBA3QyNoicNzCtdlwmwHBf1sy5WSC
-         b6f0SnCj7pvo0RxpjGhrqTxsvhHbtY87TFb5ZPu2uVyl63ePU4nBoJUsJjZQ5bb3K6/+
-         UFbfDh2BopJXETEhRecQmBUgAQqNe335IR5fWLQGI8GAzUmIzkAPt4KZhBjItun4uP5e
-         M8oPet/pvX5LFnJJk4PPnRL+bcpsQki9092Z+AOvfrzM/VIgmj196RNnVBVSnTZLad6c
-         61lg==
-X-Gm-Message-State: AOAM533Qs7t/Sh/GCkAPw6Jdzq0VUbB7s64RHyNCj3gcQct/m43VTraG
-        v5OFU7uhn0REF+PWxYZmMph35tA41wE=
-X-Google-Smtp-Source: ABdhPJz+nieFEHUJ6l59zpPPdPVe5exRhXaszMQdIE0KsUqQTFnViD+aG8gs4Bia/2iEN9dPVt5AuA==
-X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr6711426pjo.41.1628933870224;
-        Sat, 14 Aug 2021 02:37:50 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q3sm5823010pgf.18.2021.08.14.02.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 02:37:49 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: xu.xin16@zte.com.cn
-To:     linux-kernel@vger.kernel.org
-Cc:     xu.xin16@zte.com.cn, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] dio: add iounmap when ioremap() is called.
-Date:   Sat, 14 Aug 2021 02:37:18 -0700
-Message-Id: <20210814093718.105825-1-xu.xin16@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S237732AbhHNJjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 05:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236824AbhHNJjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 05:39:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9369560EE4;
+        Sat, 14 Aug 2021 09:38:32 +0000 (UTC)
+Received: from 109-170-232-56.xdsl.murphx.net ([109.170.232.56] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mEq7a-004xKo-He; Sat, 14 Aug 2021 10:38:30 +0100
+Date:   Sat, 14 Aug 2021 10:38:30 +0100
+Message-ID: <87h7fs1i3t.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+Subject: Re: [PATCH 2/5] arm64: Handle UNDEF in the EL2 stub vectors
+In-Reply-To: <060ef66a-6d6f-082e-5f69-117235b8ce4e@arm.com>
+References: <20210812190213.2601506-1-maz@kernel.org>
+        <20210812190213.2601506-3-maz@kernel.org>
+        <2f6bf17f-d235-8311-13d5-dcb3d00e23c4@arm.com>
+        <87im091bu7.wl-maz@kernel.org>
+        <060ef66a-6d6f-082e-5f69-117235b8ce4e@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 109.170.232.56
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, zajec5@gmail.com, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, ardb@kernel.org, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xu_xin <xu.xin16@zte.com.cn>
+On Fri, 13 Aug 2021 19:17:56 +0100,
+Robin Murphy <robin.murphy@arm.com> wrote:
+> 
+> On 2021-08-13 18:41, Marc Zyngier wrote:
+> > On Fri, 13 Aug 2021 14:08:23 +0100,
+> > Robin Murphy <robin.murphy@arm.com> wrote:
+> >> 
+> >> On 2021-08-12 20:02, Marc Zyngier wrote:
+> >>> As we want to handle the silly case where HVC has been disabled
+> >>> from EL3, augment our ability to handle exception at EL2.
+> >>> 
+> >>> Check for unknown exceptions (usually UNDEF) coming from EL2,
+> >>> and treat them as a failing HVC call into the stubs. While
+> >>> this isn't great and obviously doesn't catter for the gigantic
+> >>> range of possible exceptions, it isn't any worse than what we
+> >>> have today.
+> >>> 
+> >>> Just don't try and use it for anything else.
+> >>> 
+> >>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> >>> ---
+> >>>    arch/arm64/kernel/hyp-stub.S | 19 ++++++++++++++++++-
+> >>>    1 file changed, 18 insertions(+), 1 deletion(-)
+> >>> 
+> >>> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> >>> index 43d212618834..026a34515b21 100644
+> >>> --- a/arch/arm64/kernel/hyp-stub.S
+> >>> +++ b/arch/arm64/kernel/hyp-stub.S
+> >>> @@ -46,7 +46,16 @@ SYM_CODE_END(__hyp_stub_vectors)
+> >>>    	.align 11
+> >>>      SYM_CODE_START_LOCAL(elx_sync)
+> >>> -	cmp	x0, #HVC_SET_VECTORS
+> >>> +	mrs	x4, spsr_el2
+> >>> +	and	x4, x4, #PSR_MODE_MASK
+> >>> +	orr	x4, x4, #1
+> >>> +	cmp	x4, #PSR_MODE_EL2h
+> >>> +	b.ne	0f
+> >>> +	mrs	x4, esr_el2
+> >>> +	eor	x4, x4, #ESR_ELx_IL
+> >>> +	cbz	x4, el2_undef
+> >> 
+> >> Hmm, might it be neater to check ESR_EL2.ISS to see if we landed here
+> >> for any reason *other* than a successfully-executed HVC?
+> > 
+> > We absolutely could. However, the sixpence question (yes, that's the
+> > Brexit effect for you) is "what do you do with exceptions that are
+> > neither UNDEF now HVC?".
+> > 
+> > We are taking a leap of faith by assuming that the only thing that
+> > will UNDEF at EL2 while the stubs are installed is HVC. If anything
+> > else occurs, I have no idea what to do with it. I guess we could always
+> > ignore it instead of treating it as a HVC (as it is done at the
+> > moment).
+> 
+> Right, I think that concern applies pretty much equally whichever way
+> you slice it. "Any exception other than an unknown from EL2 must imply
+> HVC" doesn't seem any less sketchy than "Any exception other than HVC
+> implies something is horribly wrong and abandoning EL2 might be wise"
+> to me, but it was primarily that the latter avoids having to faff with
+> the SPSR as well.
 
-In __init dio_ini(void), when kzalloc() fails, we add the operation of
-iounmap because ioremap is probably called in line 210.:
+Actually, that's not a bad idea at all. Here's my take on the theme,
+completely untested:
 
-Reported-by: Zeal Robot<zealci@zte.com.cn>
-Signed-off-by: xu_xin <xu.xin16@zte.com.cn>
----
- drivers/dio/dio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
-index b2ff5ff84b80..21bdb16dc2f3 100644
---- a/drivers/dio/dio.c
-+++ b/drivers/dio/dio.c
-@@ -218,8 +218,8 @@ static int __init dio_init(void)
+diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+index 43d212618834..5783dbab529f 100644
+--- a/arch/arm64/kernel/hyp-stub.S
++++ b/arch/arm64/kernel/hyp-stub.S
+@@ -46,6 +46,23 @@ SYM_CODE_END(__hyp_stub_vectors)
+ 	.align 11
  
-                 /* Found a board, allocate it an entry in the list */
- 		dev = kzalloc(sizeof(struct dio_dev), GFP_KERNEL);
--		if (!dev){
--			if(scode >= DIOII_SCBASE)
-+		if (!dev) {
-+			if (scode >= DIOII_SCBASE)
- 				iounmap(va);
- 			return 0;
- 		}
--- 
-2.25.1
+ SYM_CODE_START_LOCAL(elx_sync)
++	// tpidr_el2 isn't used for anything while the stubs are
++	// installed, so use it to save x0 while we guess the
++	// exception type. No, we don't have a stack...
++	msr	tpidr_el2, x0
++	mrs	x0, esr_el2
++	ubfx	x0, x0, #26, #6
++	cmp	x0, #ESR_ELx_EC_HVC64
++	b.eq	elx_hvc
++	cbz	x0, elx_unknown
++
++	// For anything else, we have no reasonable way to handle
++	// the exception. Go back to the faulting instruction...
++	mrs	x0, tpidr_el2
++	eret
++
++elx_hvc:
++	mrs	x0, tpidr_el2
+ 	cmp	x0, #HVC_SET_VECTORS
+ 	b.ne	1f
+ 	msr	vbar_el2, x1
+@@ -71,6 +88,14 @@ SYM_CODE_START_LOCAL(elx_sync)
+ 
+ 9:	mov	x0, xzr
+ 	eret
++
++elx_unknown:
++	// Assumes this was a HVC that went really wrong...
++	mrs	x0, elr_el2
++	add	x0, x0, #4
++	msr	elr_el2, x0
++	mov_q	x0, HVC_STUB_ERR
++	eret
+ SYM_CODE_END(elx_sync)
+ 
+ // nVHE? No way! Give me the real thing!
 
+
+> No big deal either way, just one of my "I reckon this could be
+> shorter..." musings; it's been particularly Friday today :)
+
+Well, I just made it a lot longer! :D Let me know what you think.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
