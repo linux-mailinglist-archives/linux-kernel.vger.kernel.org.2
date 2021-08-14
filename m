@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ABC3EC60F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9473EC613
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 01:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhHNXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 19:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbhHNXxk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 19:53:40 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ED7C061764;
-        Sat, 14 Aug 2021 16:53:11 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id n5so423115pjt.4;
-        Sat, 14 Aug 2021 16:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=ieV+NzFBwSkcV+dUMdH1Zwl99MJbYbRKj6zgzR3HYo8=;
-        b=fw2wAsjVNzwOXlztdlYhKMmryILu560cBP1n1eH1E7aNbT75pBui01fq4RdxbFfy6O
-         4X+hk8Du9XGkpszCNLHSaKIRL85MFDBDOmB6WRixaLMNPxFEmhI+cwExRoiOjkktHPzy
-         qKRgf/J15GqAlMmi8/MFo8IPGgj3JCnjLeYCTcRL5gQ1Z9LY04wKApcl0jTRTEoXU3Vp
-         L0R2iWJmAgY3BW+sJ3U4F50kIuWE5Odxw2XOdyY5ekowFJV/VCS5CFmTdLnpeQUP1lZ8
-         zkkPoBsy6LTuWu6ByZrUMPxsEJmPSBUIiKNkFtPbABERuOFVHpngZ52xDrmn2F0lu4r/
-         UDpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ieV+NzFBwSkcV+dUMdH1Zwl99MJbYbRKj6zgzR3HYo8=;
-        b=YUhUFl8jK1J42HFcMEqbpSpNGzU0/rv/MWIPJckSE4odCJ3pubygdaivvyZ4GX4s2P
-         keUiSNvpkahoCGqxymXvIqoRr2eAraIGkyZfTiXhIfj6AMDtEc11xnYNb6lDuIO2Lcva
-         zFE5K+asS7YbH389SFsgRV+IosCQ98N7BXTQelSknfY+fMSHq2iwPZEDfWi+tb8GrhhH
-         Lt0Mvg0JnLeCAm7kk6QTv6+fWx5qjXLjjiZc5I/ZQW3Uj+mkpy5A3C8xlIWtuRYcuXQ/
-         7pFDlUJcua8LoU3pD6T8lH/rqorJraqz63k/qNvCU0aITOhq3A+amt8AFTnPVCiCGDsT
-         zrbg==
-X-Gm-Message-State: AOAM531fGddN2m2Fsjoze+1E7bFI8wATwUm+5vwknn5iOwUVAYf6+eC/
-        6cHasJ3dp3loogeO04O98kQ=
-X-Google-Smtp-Source: ABdhPJzi7PWieEMc/eyz+VFweMge+uC+jyrMu5EICWwignPRXHUbiwHQ9je+q4eX4SVG9F/8twbhCw==
-X-Received: by 2002:a17:90a:7aca:: with SMTP id b10mr9241895pjl.172.1628985190829;
-        Sat, 14 Aug 2021 16:53:10 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.113])
-        by smtp.gmail.com with ESMTPSA id w5sm1272085pgp.79.2021.08.14.16.53.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 16:53:09 -0700 (PDT)
-Subject: Re: [PATCH v3] blk-throtl: optimize IOPS throttle for large IO
- scenarios
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
-References: <65869aaad05475797d63b4c3fed4f529febe3c26.1627876014.git.brookxu@tencent.com>
- <YRGumHUfK5sJc4A/@mtj.duckdns.org>
-From:   "brookxu.cn" <brookxu.cn@gmail.com>
-Message-ID: <98864178-cf4d-b86e-81e1-70713a0f1d06@gmail.com>
-Date:   Sun, 15 Aug 2021 07:53:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S234210AbhHNX65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 19:58:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233237AbhHNX6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 19:58:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD30260F4B;
+        Sat, 14 Aug 2021 23:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628985501;
+        bh=t8Q+1vcbRYWm0DqjrS1nRd/+A1arBzQyYrDSspaqKe0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=K1qJ92ZnvsqrMKYnSPkc+Qh3yLLopJOit2/jGIOmrzNDHmVlQWCMzxW3fje3w0ziT
+         4a2s+UEKQAd7/8doDZ4n/FgQzuK1XTSkLgpYDvGWmxh7umx2EhHyodhZjJTlEoMS2r
+         A7uZJ9g7rHXkrCkcoPR49p0PM5K/zQ0TWdXJJ7D2Tlu8Ts18b/wPCCHpc1K3Gxs77E
+         MJsHPJ+ZDEPqG7bNkDlK1kgVo6Pg+0W0cq7g8fbGBV+p1QCQMoBieEGJAuEqxcXcPY
+         Onl1MmNJolZ2Ph2yL+CmkTRd90rn6mR92aOrjDb3/Xa2mA18G3MUxc/h5UD2GLQpzW
+         y5zB1eI02J2wA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] staging: rtl8192u: Fix bitwise vs logical operator in TranslateRxSignalStuff819xUsb()
+Date:   Sat, 14 Aug 2021 16:56:26 -0700
+Message-Id: <20210814235625.1780033-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <YRGumHUfK5sJc4A/@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens:
+clang warns:
 
-Should we apply this patch for new and older kernel ?
+drivers/staging/rtl8192u/r8192U_core.c:4268:20: warning: bitwise and of
+boolean expressions; did you mean logical and? [-Wbool-operation-and]
+        bpacket_toself =  bpacket_match_bssid &
+                          ^~~~~~~~~~~~~~~~~~~~~
+                                              &&
+1 warning generated.
 
-Thanks.
+Replace the bitwise AND with a logical one to clear up the warning, as
+that is clearly what was intended.
 
-On 2021/8/10 6:39 AM, Tejun Heo wrote:
-> On Mon, Aug 02, 2021 at 11:51:56AM +0800, brookxu wrote:
->> From: Chunguang Xu <brookxu@tencent.com>
->>
->> After patch 54efd50 (block: make generic_make_request handle
->> arbitrarily sized bios), the IO through io-throttle may be larger,
->> and these IOs may be further split into more small IOs. However,
->> IOPS throttle does not seem to be aware of this change, which
->> makes the calculation of IOPS of large IOs incomplete, resulting
->> in disk-side IOPS that does not meet expectations. Maybe we should
->> fix this problem.
->>
->> We can reproduce it by set max_sectors_kb of disk to 128, set
->> blkio.write_iops_throttle to 100, run a dd instance inside blkio
->> and use iostat to watch IOPS:
->>
->> dd if=/dev/zero of=/dev/sdb bs=1M count=1000 oflag=direct
->>
->> As a result, without this change the average IOPS is 1995, with
->> this change the IOPS is 98.
->>
->> v3: Optimize the use of atomic variables.
->> v2: Use atomic variables to solve synchronization problems.
->>
->> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
->
-> Thanks.
->
+Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/staging/rtl8192u/r8192U_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index db26edeccea6..b6698656fc01 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -4265,7 +4265,7 @@ static void TranslateRxSignalStuff819xUsb(struct sk_buff *skb,
+ 	bpacket_match_bssid = (type != IEEE80211_FTYPE_CTL) &&
+ 			       (ether_addr_equal(priv->ieee80211->current_network.bssid,  (fc & IEEE80211_FCTL_TODS) ? hdr->addr1 : (fc & IEEE80211_FCTL_FROMDS) ? hdr->addr2 : hdr->addr3))
+ 			       && (!pstats->bHwError) && (!pstats->bCRC) && (!pstats->bICV);
+-	bpacket_toself =  bpacket_match_bssid &
++	bpacket_toself =  bpacket_match_bssid &&
+ 			  (ether_addr_equal(praddr, priv->ieee80211->dev->dev_addr));
+ 
+ 	if (WLAN_FC_GET_FRAMETYPE(fc) == IEEE80211_STYPE_BEACON)
+
+base-commit: 0bd35146642bdc56f1b87d75f047b1c92bd2bd39
+-- 
+2.33.0.rc2
+
