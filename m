@@ -2,66 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78943EC457
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666573EC458
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238902AbhHNSFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:05:39 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50176 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238785AbhHNSFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:05:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=VE21kR+EuEDNxIJsfgnVJoyX8+amKCpRdo0kK4BLWmQ=; b=E/n34eVaiz/c6PN4sSDKcRZ+WF
-        k6G7fP0wWvVetyteNcjd4RTCACETw6XRYHHMsIi9e4hMg2RSxxyj1OlD4B6Hhxojt6wHqel+W2yHJ
-        y2pvzxTYESLHzuUzo5wRB3OiMX2w3P84f4cKzinStHiRteFJYzQ0KboJnrdb5HdsI6/E=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mEy1f-0005it-Qr; Sat, 14 Aug 2021 20:04:55 +0200
-Date:   Sat, 14 Aug 2021 20:04:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Song Yoong Siang <yoong.siang.song@intel.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        id S238895AbhHNSMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238871AbhHNSME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 14:12:04 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0DAC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:11:35 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id h9so24322614ejs.4
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 11:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HroRd12HmrCYe8trgy762PzKYxaKFWieH1+iL5Ovs98=;
+        b=Qd3IPhzhatP3qAPIfGyD0FPyGBfD3JED6WHZdddh3tMRygq1BjKtDQsPFLof+NGPq9
+         S2/zzTgzqfZ0GqttvfWXMaIQonB3EZQHotdcIY5lbHTvXfP8lEX2DzPSJZEo+T3mVRVk
+         TE/32LC6fvEB4K2w6EjcZZMZlU9PiCDSmB6j1BuRwv3s1YDgRxOAk1HbYUDmFJcoEv4p
+         NY4/DlFR7V5/UB9t393YTtNuehR/JpCtISx+0i2vEJVmYnwejeZiTSKtCktXSNVjvGaM
+         Vk/A4cZ76fVTOc2EBnE7HxgP5H3WaHajbKBdxmlfHw2M3nEpc0NHbm+tqzm71WJl/5PO
+         sbAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HroRd12HmrCYe8trgy762PzKYxaKFWieH1+iL5Ovs98=;
+        b=DHbck2hjEzS6r8YvMWoFzTttBwba3O9AjIFAyEO8++wlFhQQ7ggytu67pe3QchJb8E
+         N9BSU0ow/Wsxy1Nv2aNVSKR2N0gv7r8ZHWbFm9dlGlnqW3kztpiolAk5ehbqnWKhHcyM
+         qFvbooHBBoHezalR6w+wixOUMCDIkHPrmZRenQ9ARr//IOrTYUbPelQNrWQX+6hibPnD
+         gWTQfaTb4sZTDj6+3mlrFrnrWumUhc+anwu9YB/0zvPpZypwUsu4M7K+ApwGCbxE6CjL
+         2lX+cuLmBnSYjdGvU2DcwBMI+f6HwavFR1hU7MkMHcSdKfI7lNcKXp9kMeLY12K6PMvd
+         AgCg==
+X-Gm-Message-State: AOAM533CV6BFzCpDQJ62CrtcURNno7OpvgGxZr6a+oqmMX5HLnl/4lXO
+        Fqh2Qqqv+muVpZ3AOQadJw8=
+X-Google-Smtp-Source: ABdhPJy+9MC4Tbn8SqweBJ7OV7wehX53FRl+nRPdIw7sUHqhXOCtu9KA96mk6bqKECYnenGrt5a2Ow==
+X-Received: by 2002:a17:906:c013:: with SMTP id e19mr8517616ejz.389.1628964694186;
+        Sat, 14 Aug 2021 11:11:34 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id e22sm2500749eds.45.2021.08.14.11.11.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 11:11:33 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
- to WOL event
-Message-ID: <YRgFxzIB3v8wS4tF@lunn.ch>
-References: <20210813084536.182381-1-yoong.siang.song@intel.com>
- <20210814172656.GA22278@shell.armlinux.org.uk>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] staging: greybus: Convert uart.c from IDR to XArray
+Date:   Sat, 14 Aug 2021 20:11:30 +0200
+Message-Id: <20210814181130.21383-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210814172656.GA22278@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> How does this work if the driver has no interrupt support? What is
-> the hardware setup this has been tested with?
+Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+is more memory-efficient, parallelisable, and cache friendly. It takes
+advantage of RCU to perform lookups without locking. Furthermore, IDR is
+deprecated because XArray has a better (cleaner and more consistent) API.
 
-Hi Russell
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-We already know from previous patches that the Intel hardware is
-broken, and does not actually deliver the interrupt which caused the
-wake up. So i assume this just continues on with the same broken
-hardware, but they have a different PHY connected.
+v1->v2:
+        Fixed an issue found by the kernel test robot. It was due to
+        passing to xa_*lock() the same old mutex that IDR used with
+        the previous version of the code.
 
-> What if we later want to add interrupt support to this driver to
-> support detecting changes in link state - isn't using this bit
-> in the interrupt enable register going to confict with that?
+ drivers/staging/greybus/uart.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
-Agreed. If the interrupt register is being used, i think we need this
-patchset to add proper interrupt support. Can you recommend a board
-they can buy off the shelf with the interrupt wired up? Or maybe Intel
-can find a hardware engineer to add a patch wire to link the interrupt
-output to a SoC pin that can do interrupts.
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 73f01ed1e5b7..5bf993e40f84 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -22,7 +22,7 @@
+ #include <linux/serial.h>
+ #include <linux/tty_driver.h>
+ #include <linux/tty_flip.h>
+-#include <linux/idr.h>
++#include <linux/xarray.h>
+ #include <linux/fs.h>
+ #include <linux/kdev_t.h>
+ #include <linux/kfifo.h>
+@@ -33,6 +33,7 @@
+ #include "gbphy.h"
+ 
+ #define GB_NUM_MINORS	16	/* 16 is more than enough */
++#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
+ #define GB_NAME		"ttyGB"
+ 
+ #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
+@@ -67,8 +68,7 @@ struct gb_tty {
+ };
+ 
+ static struct tty_driver *gb_tty_driver;
+-static DEFINE_IDR(tty_minors);
+-static DEFINE_MUTEX(table_lock);
++static DEFINE_XARRAY(tty_minors);
+ 
+ static int gb_uart_receive_data_handler(struct gb_operation *op)
+ {
+@@ -77,6 +77,7 @@ static int gb_uart_receive_data_handler(struct gb_operation *op)
+ 	struct tty_port *port = &gb_tty->port;
+ 	struct gb_message *request = op->request;
+ 	struct gb_uart_recv_data_request *receive_data;
++
+ 	u16 recv_data_size;
+ 	int count;
+ 	unsigned long tty_flags = TTY_NORMAL;
+@@ -341,8 +342,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ {
+ 	struct gb_tty *gb_tty;
+ 
+-	mutex_lock(&table_lock);
+-	gb_tty = idr_find(&tty_minors, minor);
++	xa_lock(&tty_minors);
++	gb_tty = xa_load(&tty_minors, minor);
+ 	if (gb_tty) {
+ 		mutex_lock(&gb_tty->mutex);
+ 		if (gb_tty->disconnected) {
+@@ -353,19 +354,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ 			mutex_unlock(&gb_tty->mutex);
+ 		}
+ 	}
+-	mutex_unlock(&table_lock);
++	xa_unlock(&tty_minors);
+ 	return gb_tty;
+ }
+ 
+ static int alloc_minor(struct gb_tty *gb_tty)
+ {
+ 	int minor;
++	int ret;
+ 
+-	mutex_lock(&table_lock);
+-	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
+-	mutex_unlock(&table_lock);
+-	if (minor >= 0)
+-		gb_tty->minor = minor;
++	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
++	if (ret)
++		return ret;
++	gb_tty->minor = minor;
+ 	return minor;
+ }
+ 
+@@ -374,9 +375,7 @@ static void release_minor(struct gb_tty *gb_tty)
+ 	int minor = gb_tty->minor;
+ 
+ 	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
+-	mutex_lock(&table_lock);
+-	idr_remove(&tty_minors, minor);
+-	mutex_unlock(&table_lock);
++	xa_erase(&tty_minors, minor);
+ }
+ 
+ static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+@@ -982,7 +981,7 @@ static void gb_tty_exit(void)
+ {
+ 	tty_unregister_driver(gb_tty_driver);
+ 	put_tty_driver(gb_tty_driver);
+-	idr_destroy(&tty_minors);
++	xa_destroy(&tty_minors);
+ }
+ 
+ static const struct gbphy_device_id gb_uart_id_table[] = {
+-- 
+2.32.0
 
-	  Andrew
