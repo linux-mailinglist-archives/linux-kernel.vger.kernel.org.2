@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0EE3EC37B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B57B3EC37F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 17:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238699AbhHNPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 11:23:34 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50010 "EHLO vps0.lunn.ch"
+        id S238728AbhHNPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 11:25:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36246 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238633AbhHNPXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 11:23:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+xcyqJGzVSzEHEA1fuUegCx0faWqscCzNFFs988EPSQ=; b=JeEF3Gbl/zVxAi7G0NZONVh8rX
-        x+bAcdPs1O2cIuLTVlZD3zJEyxsVB6/P0rf/9SMH9fEEfxzVa03u8DCRhoICnb5iIRNx88j/mqXVl
-        oOJj531k7PO9kEIwpOqG53+8OJIxHuzPlXTBgIsxBmH/RGvk4uw0x6pO1sIkTFhuGQKU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mEvUr-0004vU-Fz; Sat, 14 Aug 2021 17:22:53 +0200
-Date:   Sat, 14 Aug 2021 17:22:53 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] of: property: fw_devlink: Add support for
- "phy-handle" property
-Message-ID: <YRffzVgP2eBw7HRz@lunn.ch>
-References: <20210814023132.2729731-1-saravanak@google.com>
- <20210814023132.2729731-3-saravanak@google.com>
+        id S238554AbhHNPZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 11:25:01 -0400
+Received: from zn.tnic (p200300ec2f1db9002f4996680da31890.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:2f49:9668:da3:1890])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4181EC0570;
+        Sat, 14 Aug 2021 17:24:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628954665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=sbUZXYrGBCnkdsaMVDuLw+c4h20LmEtsdOYx/LANX0Q=;
+        b=C00yjn7cBmQqRpOaWrEEj5l68AxFibYiJHAi3z1eBk5RnJifb6ywdjAO9bEEyQcQGDqW2O
+        EISCtsZnVhg2cwZvHYBEu32siB+BgLQO9Fc7VRjIta+kozXWnAdLDck7yaUcVc1AXUpVdO
+        qhH8pNHGUmDKEa/M9P+kxf+ZpIhdVbo=
+Date:   Sat, 14 Aug 2021 17:25:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2 01/12] x86/ioremap: Selectively build arch override
+ encryption functions
+Message-ID: <YRfgTzhKCn7otSzy@zn.tnic>
+References: <cover.1628873970.git.thomas.lendacky@amd.com>
+ <a4338245609a6be63b162e3516d3f6614db782a4.1628873970.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210814023132.2729731-3-saravanak@google.com>
+In-Reply-To: <a4338245609a6be63b162e3516d3f6614db782a4.1628873970.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana
-
-> Hi Andrew,
+On Fri, Aug 13, 2021 at 11:59:20AM -0500, Tom Lendacky wrote:
+> In prep for other uses of the prot_guest_has() function besides AMD's
+> memory encryption support, selectively build the AMD memory encryption
+> architecture override functions only when CONFIG_AMD_MEM_ENCRYPT=y. These
+> functions are:
+> - early_memremap_pgprot_adjust()
+> - arch_memremap_can_ram_remap()
 > 
+> Additionally, routines that are only invoked by these architecture
+> override functions can also be conditionally built. These functions are:
+> - memremap_should_map_decrypted()
+> - memremap_is_efi_data()
+> - memremap_is_setup_data()
+> - early_memremap_is_setup_data()
+> 
+> And finally, phys_mem_access_encrypted() is conditionally built as well,
+> but requires a static inline version of it when CONFIG_AMD_MEM_ENCRYPT is
+> not set.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/include/asm/io.h | 8 ++++++++
+>  arch/x86/mm/ioremap.c     | 2 +-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
 
-> Also there
-> are so many phy related properties that my head is spinning. Is there a
-> "phy" property (which is different from "phys") that treated exactly as
-> "phy-handle"?
+LGTM.
 
-Sorry, i don't understand your question.
+-- 
+Regards/Gruss,
+    Boris.
 
-> +	/*
-> +	 * Device tree nodes pointed to by phy-handle never have struct devices
-> +	 * created for them even if they have a "compatible" property. So
-> +	 * return the parent node pointer.
-> +	 */
-
-We have a classic bus with devices on it. The bus master is registers
-with linux using one of the mdiobus_register() calls. That then
-enumerates the bus, looking at the 32 possible address on the bus,
-using mdiobus_scan. It then gets a little complex, due to
-history.
-
-Originally, the only thing you could have on an MDIO bus was a
-PHY. But devices on MDIO busses are more generic, and Linux gained
-support for Ethernet switches on an MDIO bus, and there are a few
-other sort device. So to keep the PHY API untouched, but to add these
-extra devices, we added the generic struct mdio_device which
-represents any sort of device on an MDIO bus. This has a struct device
-embedded in it.
-
-When we scan the bus and find a PHY, a struct phy_device is created,
-which has an embedded struct mdio_device. The struct device in that is
-then registered with the driver core.
-
-So a phy-handle does point to a device, but you need to do an object
-orientated style look at the base class to find it.
-
-	   Andrew
+https://people.kernel.org/tglx/notes-about-netiquette
