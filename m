@@ -2,158 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FA93EC2A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3169C3EC2A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238498AbhHNMhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 08:37:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238522AbhHNMhC (ORCPT
+        id S238185AbhHNMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 08:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhHNMkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 08:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628944593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nl05Atso+AuNvautQ00PbExeQ6q6lD+u2YEfbOwtiR0=;
-        b=BAGKUl0uCgDlFo722faMx0SkgZ7Swqy4x2Se/stixMlibTvDh1QbqA/LV3lzPIIb/Vwoq0
-        dGMScHjQoYxYTXD+FgqnNztocmiycKCffVyM5OOUiHwY2pLTsj1dj4vV5XkEbdAwuL/ELT
-        mMwLCW57dwDeVZWl126jGqDfjTqlBOA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-_ODL3EbMOUK7_XKg3EGxIg-1; Sat, 14 Aug 2021 08:36:32 -0400
-X-MC-Unique: _ODL3EbMOUK7_XKg3EGxIg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CB9794DC2;
-        Sat, 14 Aug 2021 12:36:31 +0000 (UTC)
-Received: from localhost (ovpn-8-25.pek2.redhat.com [10.72.8.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5491660BD8;
-        Sat, 14 Aug 2021 12:36:30 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH 7/7] blk-mq: build default queue map via group_cpus_evenly()
-Date:   Sat, 14 Aug 2021 20:35:32 +0800
-Message-Id: <20210814123532.229494-8-ming.lei@redhat.com>
-In-Reply-To: <20210814123532.229494-1-ming.lei@redhat.com>
-References: <20210814123532.229494-1-ming.lei@redhat.com>
+        Sat, 14 Aug 2021 08:40:45 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D3FC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 05:40:16 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so418401otk.9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 05:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=T1n5+mUMc9YmGQd5ynLG2K6ctXGGrIFK0L7hH10ZNa8=;
+        b=iBF3rFNKcgpKW+q5C6ja9K9V4Xyxya3EmqzCJ3VZI0tX7ltR3F3K7W27pJVze1b+ME
+         Tzf0w/JKJipZi2Y0xwd05XD86MLB3M2xwsZ1iIsM6UDHcOTq4jhU0uIfIDxXx9osmUP+
+         bDdcFHO//OS54USjGcXr5vMcFXl4q/TNQkksBkx7LUMiDpkHxi0EhqtkmN7eGzPrbKtd
+         pIyY4kSD4bxygnHBI8rVJel97t0YbhWesHOfbvv5EyEADkb6036G9lekX1LerdGpUh0f
+         O2plpND9KU+fvgsDGQoihH5EnISepWcM+OfsHqKBkGotFVC58kWFsCU+fC4In4OuRCWK
+         S2oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=T1n5+mUMc9YmGQd5ynLG2K6ctXGGrIFK0L7hH10ZNa8=;
+        b=BUOMpB3nXF1QUt3cZwbqNPKe7c/G49rQlfM7U9qW0kOuvzxT9X/QiKamTYQOBqOf+V
+         1VHeFW7WSNhzUtbLY9kHsJ0T4/K2OyRtxpESafSHEoGqLMbbfW9p67FfvioOKu3i3tUo
+         5J01rPpGcS72HC77EjRr1JC5Q2v4xQMsD4xJl85SCPRSBHiPZEEGsxeBVfB4c5Z5OwKR
+         ohSOhBpRLbAdAdA8CtmvVlCtIE/uAdpX3Q4Kx6b/4Y0fKhDVqn+nQDTtJNidcWl5zKzl
+         Co8KFYlPHzkF7ubPS/tQOK0BYcx3cAPjc/2fLfF7ZiTkuzGdbmReBCOubYfCVOFdlVVy
+         ZkYQ==
+X-Gm-Message-State: AOAM533aL/zMBzCx/3exfRiqt6zHjqL904oIxpdBwo7rQ0miztapCNkR
+        EPom0RDO34XYC+hSe33w6yupiHAwWM/Hv52BXr4=
+X-Google-Smtp-Source: ABdhPJz+vWoNXx9qw7fgbFGt+yUCnpcl3j1zGwyhGr3kjF6dNZRQh0MZD8SYM1LkodEL5WCwlobiyzl+qY1Eyg9UHG4=
+X-Received: by 2002:a05:6830:14d5:: with SMTP id t21mr168316otq.271.1628944815525;
+ Sat, 14 Aug 2021 05:40:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Received: by 2002:a05:6838:41d1:0:0:0:0 with HTTP; Sat, 14 Aug 2021 05:40:15
+ -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <moordavis0003@gmail.com>
+Date:   Sat, 14 Aug 2021 14:40:15 +0200
+Message-ID: <CAH26tOFo0+-j9QdwqvhYdNFT+Uxv0LAEhSEh2hj6DX6+3_icfA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default queue mapping builder of blk_mq_map_queues doesn't take NUMA
-topo into account, so the built mapping is pretty bad, since CPUs
-belonging to different NUMA node are assigned to same queue. It is
-observed that IOPS drops by ~30% when running two jobs on same hctx
-of null_blk from two CPUs belonging to two NUMA nodes compared with
-from same NUMA node.
+Hello
 
-Address the issue by reusing group_cpus_evenly() for addressing the
-issue since group_cpus_evenly() does group cpus according to CPU/NUMA
-locality.
+My name is George Mike I am a lawyer by profession. I wish to offer you
+the next of kin to my client. You will inherit the sum of ($8.5 Million)
+dollars my client left in the bank before his death.
 
-Lots of drivers may benefit from the change, such as nvme pci poll,
-nvme tcp, ...
+My client is a citizen of your country who died in auto crash with his wife
+and only son. I will be entitled with 50% of the total fund while 50% will
+be for you.
+Please contact my private email here for more details:georgemike7031@gmail.com
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- block/blk-mq-cpumap.c | 64 +++++++++----------------------------------
- 1 file changed, 13 insertions(+), 51 deletions(-)
-
-diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c
-index 3db84d3197f1..5f183f52626c 100644
---- a/block/blk-mq-cpumap.c
-+++ b/block/blk-mq-cpumap.c
-@@ -10,67 +10,29 @@
- #include <linux/mm.h>
- #include <linux/smp.h>
- #include <linux/cpu.h>
-+#include <linux/group_cpus.h>
- 
- #include <linux/blk-mq.h>
- #include "blk.h"
- #include "blk-mq.h"
- 
--static int queue_index(struct blk_mq_queue_map *qmap,
--		       unsigned int nr_queues, const int q)
--{
--	return qmap->queue_offset + (q % nr_queues);
--}
--
--static int get_first_sibling(unsigned int cpu)
--{
--	unsigned int ret;
--
--	ret = cpumask_first(topology_sibling_cpumask(cpu));
--	if (ret < nr_cpu_ids)
--		return ret;
--
--	return cpu;
--}
--
- int blk_mq_map_queues(struct blk_mq_queue_map *qmap)
- {
--	unsigned int *map = qmap->mq_map;
--	unsigned int nr_queues = qmap->nr_queues;
--	unsigned int cpu, first_sibling, q = 0;
--
--	for_each_possible_cpu(cpu)
--		map[cpu] = -1;
-+	const struct cpumask *masks;
-+	unsigned int queue, cpu;
- 
--	/*
--	 * Spread queues among present CPUs first for minimizing
--	 * count of dead queues which are mapped by all un-present CPUs
--	 */
--	for_each_present_cpu(cpu) {
--		if (q >= nr_queues)
--			break;
--		map[cpu] = queue_index(qmap, nr_queues, q++);
--	}
-+	masks = group_cpus_evenly(qmap->nr_queues);
-+	if (!masks)
-+		goto fallback;
- 
--	for_each_possible_cpu(cpu) {
--		if (map[cpu] != -1)
--			continue;
--		/*
--		 * First do sequential mapping between CPUs and queues.
--		 * In case we still have CPUs to map, and we have some number of
--		 * threads per cores then map sibling threads to the same queue
--		 * for performance optimizations.
--		 */
--		if (q < nr_queues) {
--			map[cpu] = queue_index(qmap, nr_queues, q++);
--		} else {
--			first_sibling = get_first_sibling(cpu);
--			if (first_sibling == cpu)
--				map[cpu] = queue_index(qmap, nr_queues, q++);
--			else
--				map[cpu] = map[first_sibling];
--		}
-+	for (queue = 0; queue < qmap->nr_queues; queue++) {
-+		for_each_cpu(cpu, &masks[queue])
-+			qmap->mq_map[cpu] = qmap->queue_offset + queue;
- 	}
--
-+	return 0;
-+ fallback:
-+	for_each_possible_cpu(cpu)
-+		qmap->mq_map[cpu] = qmap->queue_offset;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(blk_mq_map_queues);
--- 
-2.31.1
-
+Many thanks in advance,
+Mr.George Mike,
