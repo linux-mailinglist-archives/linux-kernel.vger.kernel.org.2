@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E643EC472
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C633EC479
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 20:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238984AbhHNS3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 14:29:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60884 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhHNS3w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 14:29:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S239001AbhHNScp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 14:32:45 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59380 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233713AbhHNSco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 14:32:44 -0400
+Received: from zn.tnic (p200300ec2f1db90092f0c5d5424adff0.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:92f0:c5d5:424a:dff0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1A1B321EFF;
-        Sat, 14 Aug 2021 18:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628965762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pBOJ3hxcgsKbFU0ZOokocEo7Rl62uXx2/3KVpDBVQSM=;
-        b=CEFtwACknsaZVwf751g/qT36xHLOivQu96BzWYOZzcfSiKRAaWnlglklPr66OdXM/3c3/p
-        leWMo5xxja3NH/BghsQ07NdZwCDOSaFtVhJGl+vGh1yNsUjgokioLXQRXp8TSeZDiGv9vG
-        qX0lX5qAbesX5jjbNJiGaSl56UW99N4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628965762;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pBOJ3hxcgsKbFU0ZOokocEo7Rl62uXx2/3KVpDBVQSM=;
-        b=hYR8w//bIJv29dU90qDV/us49OOjlRuIkmpJ4yIgjWBVzeRgRs4mABWOoLSXj7XtCXz4BV
-        mFh/Pai3WLWv8rDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC1B413D1B;
-        Sat, 14 Aug 2021 18:29:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jWZpJoELGGGeRgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Sat, 14 Aug 2021 18:29:21 +0000
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-To:     Mike Galbraith <efault@gmx.de>,
-        Clark Williams <williams@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
- <20210812151803.52f84aaf@theseus.lan>
- <8c012c35852e98af99a6b6234a3f57ac27cd980a.camel@gmx.de>
- <522000b97adcfbc581e7e5ed1afc94519b1388b8.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <94d74c8a-1e10-2500-468a-11c0ae7e2417@suse.cz>
-Date:   Sat, 14 Aug 2021 20:28:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 18F4D1EC03D5;
+        Sat, 14 Aug 2021 20:32:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628965930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wF+abY2BQsJbjTrcR+vEXegmF8fSVZNnTVHwv8EJcnQ=;
+        b=E4Qk5UWHuniXg4G1qquKyzpgwZxdDOaCXRqHrAIJykq2qzFHsvToSzhtSszwEfmGfSV6v2
+        I5QqIZa+pz8OAA9XFKUyZCM9wxA5OIK4n52a7NMv/GJIh9ii9QfkxahlKZf58K1pY/P4Uq
+        2W5ojEdMC06o3XDrAinHQLW8qtTO9aY=
+Date:   Sat, 14 Aug 2021 20:32:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v2 02/12] mm: Introduce a function to check for
+ virtualization protection features
+Message-ID: <YRgMUHqdH60jDB06@zn.tnic>
+References: <cover.1628873970.git.thomas.lendacky@amd.com>
+ <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <522000b97adcfbc581e7e5ed1afc94519b1388b8.camel@gmx.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 7:33 AM, Mike Galbraith wrote:
-> On Fri, 2021-08-13 at 12:56 +0200, Mike Galbraith wrote:
->> On Thu, 2021-08-12 at 15:18 -0500, Clark Williams wrote:
->>>
->>> Sebastian, et al,
->>>
->>> Got the following panic running v5.14-rc5-rt8:
->>>
->>> ...
->>
->>> Config is attached.
->>>
->>> I was running the rteval script that kicks off parallel kernel builds
->>> and hackbench runs as loads and runs cyclictest with a thread on each
->>> core:
->>>
->>> $ sudo rteval --duration=10m
->>
->> It took my box more than 10 minutes to explode, but with all those
->> debug options turned on, it did manage to do so in fairly short order.
->>
->> Off to build a fixed up 5.13-rt...
+On Fri, Aug 13, 2021 at 11:59:21AM -0500, Tom Lendacky wrote:
+> In prep for other protected virtualization technologies, introduce a
+> generic helper function, prot_guest_has(), that can be used to check
+> for specific protection attributes, like memory encryption. This is
+> intended to eliminate having to add multiple technology-specific checks
+> to the code (e.g. if (sev_active() || tdx_active())).
 > 
-> ...and it reproduced.  Transplanted 5.12-rt slub seems stable in both
-> 5.1[34]-rt trees FWIW.
-
-Why didn't you see it in earlier testing though? What's different now.
-
-> 	-Mike
+> Reviewed-by: Joerg Roedel <jroedel@suse.de>
+> Co-developed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/Kconfig                    |  3 +++
+>  include/linux/protected_guest.h | 35 +++++++++++++++++++++++++++++++++
+>  2 files changed, 38 insertions(+)
+>  create mode 100644 include/linux/protected_guest.h
 > 
-> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 98db63496bab..bd4f60c581f1 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1231,6 +1231,9 @@ config RELR
+>  config ARCH_HAS_MEM_ENCRYPT
+>  	bool
+>  
+> +config ARCH_HAS_PROTECTED_GUEST
+> +	bool
+> +
+>  config HAVE_SPARSE_SYSCALL_NR
+>         bool
+>         help
+> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+> new file mode 100644
+> index 000000000000..43d4dde94793
+> --- /dev/null
+> +++ b/include/linux/protected_guest.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Protected Guest (and Host) Capability checks
+> + *
+> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Tom Lendacky <thomas.lendacky@amd.com>
+> + */
+> +
+> +#ifndef _PROTECTED_GUEST_H
+> +#define _PROTECTED_GUEST_H
+> +
+> +#ifndef __ASSEMBLY__
+	   ^^^^^^^^^^^^^
 
+Do you really need that guard? It builds fine without it too. Or
+something coming later does need it...?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
