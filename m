@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852FE3EC18D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5E33EC193
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 11:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237666AbhHNJNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 05:13:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237562AbhHNJNe (ORCPT
+        id S237666AbhHNJTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 05:19:39 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:52130 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237547AbhHNJTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 05:13:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628932385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AgM9wQjlbA+g1qn4Zgr5hjXwUSBX0Df22ncvONuM9No=;
-        b=a7RZ+QL86dAfNveU91m7HL8yrbpuqQyAMpl5KqFcYTonlzUK9b9knUAvmQbRr+h9obM3n6
-        5fmb5PvQJZodDZ1CBj/5gRtRrbaBkkbFdnrLbX7jbeMl+jl3P2XJvR6DRla73FEt3Gos/K
-        3e4QdQJNDE7QCcD1KKDnXUbpksWz3WI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-l_UKb5ZgPBa4KBAH732zcA-1; Sat, 14 Aug 2021 05:13:03 -0400
-X-MC-Unique: l_UKb5ZgPBa4KBAH732zcA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D61968042F4;
-        Sat, 14 Aug 2021 09:13:01 +0000 (UTC)
-Received: from T590 (ovpn-8-25.pek2.redhat.com [10.72.8.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C31C73AC4;
-        Sat, 14 Aug 2021 09:12:52 +0000 (UTC)
-Date:   Sat, 14 Aug 2021 17:12:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH V4 0/7] loop: cleanup charging io to mem/blkcg
-Message-ID: <YReJDkp8kswVdvBj@T590>
-References: <20210806080302.298297-1-ming.lei@redhat.com>
- <20210809064159.GA19070@lst.de>
- <YRHx/qaKgEqWdXOP@T590>
- <20210812090037.GE2867@lst.de>
+        Sat, 14 Aug 2021 05:19:38 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by mwinf5d19 with ME
+        id hMJz250060zjR6y03MK6ip; Sat, 14 Aug 2021 11:19:09 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 14 Aug 2021 11:19:09 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 0/7] add the netlink interface for CAN-FD Transmitter Delay Compensation (TDC)
+Date:   Sat, 14 Aug 2021 18:17:43 +0900
+Message-Id: <20210814091750.73931-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812090037.GE2867@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+The main goal of this series is to add a netlink interface for the TDC
+parameters using netlink nested attributes. The series also contains a
+few fix on the current TDC implementation.
 
-On Thu, Aug 12, 2021 at 11:00:37AM +0200, Christoph Hellwig wrote:
-> On Tue, Aug 10, 2021 at 11:26:54AM +0800, Ming Lei wrote:
-> > Can you share us what your expectations are in the re-write? Such as:
-> > 
-> > 1) no impact on normal non-cgroup path
-> > 2) ...
-> > 3) ...
-> 
-> Get the call cgroup mess out of this driver entirely?
- 
-Firstly the patch 2/7 in this series cleans up cgroup references by
-killing unnecessary #ifdef and moving cgroup references into common
-helpers, and the cgroup uses have been cleaned a lot.
+This series completes the implementation of the Transmitter Delay
+Compensation (TDC) in the kernel which started in March with those two
+patches:
+  - commit 289ea9e4ae59 ("can: add new CAN FD bittiming parameters:
+    Transmitter Delay Compensation (TDC)")
+  - commit c25cc7993243 ("can: bittiming: add calculation for CAN FD
+    Transmitter Delay Compensation (TDC)")
 
-Secondly the issue is that we need to wire proper cgroups(blkcg & memcg) for
-loop's IO because loop uses wq or kthread for handling IO, and IMO it isn't
-possible to moving cgroup references out of loop entirely if we want to
-support this cgroup's function for loop driver.
+The netlink interface was missing from this series because the initial
+patch needed rework in order to make it more flexible for future
+changes.
 
-Finally the current cgroup reference is actually very simple: retrieve
-blkcg from bio_blkcg(bio) and memcg from the the blkcg. Then applies
-the two in the single function of loop_workfn() only.
+At that time, Marc suggested to take inspiration from the recently
+released ethtool-netlink interface.
+Ref: https://lore.kernel.org/linux-can/20210407081557.m3sotnepbgasarri@pengutronix.de/
 
+ethtool uses nested attributes (c.f. NLA_NESTED type in validation
+policy). A bit of trivia: the NLA_NESTED type was introduced in
+version 2.6.15 of the kernel and thus actually predates Socket CAN.
+Ref: commit bfa83a9e03cf ("[NETLINK]: Type-safe netlink messages/attributes interface")
 
-Thanks,
-Ming
+Since then, Stephan shared additional remarks for improvement which
+are addressed in revision v4 of this series:
+Ref: https://lore.kernel.org/linux-can/75fa87a71a3f5fd7d7407a2c514b71690e56eb4e.camel@esd.eu/
+
+The first patch allow a user to turn off a feature even if not
+supported (e.g. allow "ip link set can0 type can bitrate 500000 fd
+off" even if fd is not supported). This feature will be used later by
+the fifth patch of the series.
+
+The second patch allows TDCV and TDCO to be zero (previously, those
+values were assigned a special meaning).
+
+The third patch fixes the unit of the TDC parameters. In fact, those
+should be measured in clock period (a.k.a. minimum time quantum) and
+not in time quantum as it is done in current implementation.
+
+The fourth patch addresses the concern of Marc and Stefan concerning
+some devices which use a TDCO value relative to the Sample Point (so
+far, the TDC implementation used the formula SSP = TDCV + TDCO). To do
+so, an helper function to convert TDCO from an absolute value to a
+value relative to the sample point is added.
+
+The fifth patch is the real thing: the TDC netlink interface.
+
+The sixth patch allows to retrieve TDCV from the device through a
+callback function.
+
+The seventh and last patch does a bit of cleanup in the ES58x driver
+to remove some redundant TDC information from the documentation.
+
+** Changelog **
+
+v3 -> v4:
+  - add a patch to the series to change the unit from time quantum to
+    clock period (a.k.a. minimum time quantum).
+  - add a callback function to retrieve TDCV from the device.
+
+v2 -> v3:
+  - allows both TDCV and TDCO to be zero.
+  - introduce the can_tdc_get_relative_tdco() helper function
+  - other path of the series modified accordingly to above changes.
+
+RFC v1 -> v2:
+  The v2 fixes several issue in can_tdc_get_size() and
+  can_tdc_fill_info(). Namely: can_tdc_get_size() returned an
+  incorrect size if TDC was not implemented and can_tdc_fill_info()
+  did not include a fail path with nla_nest_cancel().
+
+Vincent Mailhol (7):
+  can: netlink: allow user to turn off unsupported features
+  can: bittiming: allow TDC{V,O} to be zero and add
+    can_tdc_const::tdc{v,o,f}_min
+  can: bittiming: change unit of TDC parameters to clock periods
+  can: dev: add can_tdc_get_relative_tdco() helper function
+  can: netlink: add interface for CAN-FD Transmitter Delay Compensation
+    (TDC)
+  can: netlink: add can_priv::do_get_auto_tdcv() to retrieve tdcv from
+    device
+  can: etas_es58x: clean-up documentation of struct es58x_fd_tx_conf_msg
+
+ drivers/net/can/dev/bittiming.c           |  19 ++-
+ drivers/net/can/dev/netlink.c             | 192 +++++++++++++++++++++-
+ drivers/net/can/usb/etas_es58x/es58x_fd.c |   7 +-
+ drivers/net/can/usb/etas_es58x/es58x_fd.h |  23 +--
+ include/linux/can/bittiming.h             |  80 ++++++---
+ include/linux/can/dev.h                   |  34 ++++
+ include/uapi/linux/can/netlink.h          |  31 +++-
+ 7 files changed, 332 insertions(+), 54 deletions(-)
+
+-- 
+2.31.1
 
