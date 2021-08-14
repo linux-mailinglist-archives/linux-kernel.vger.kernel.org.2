@@ -2,175 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD7F3EC4C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0BF3EC4C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 21:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhHNTe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 15:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
+        id S232122AbhHNTh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 15:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhHNTe4 (ORCPT
+        with ESMTP id S229489AbhHNThX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 15:34:56 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B57C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 12:34:27 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id i8so2449123ybt.7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 12:34:27 -0700 (PDT)
+        Sat, 14 Aug 2021 15:37:23 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45B4C061764;
+        Sat, 14 Aug 2021 12:36:54 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f3so16160326plg.3;
+        Sat, 14 Aug 2021 12:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R54d46ZCTxUfXPnbh/qJAxq3cKd/Q236Yg57kUVGbCs=;
-        b=Cofh1lT8f2sT10JRlByWFwtEPpdE32A62j96MckR7Jr62bOgToUJ0oV2e6yCd8dRER
-         YO36I9VjRVJE14ZwIV45hSV6W4flJm/ESb/M2df9GkPzSB55WCNrCIF3MP6/D3PWTyU2
-         i7TouIlqDnEgSTCpqq7lF3FH/Li8rILeok1NVAQV9RPNYrspFr9MDKmNisMJj87oEfJY
-         9KHah0PN9GgjbiwGi7siaTyw7aeX5hP93VFZNMSoAmpcyC7prSqwFEj3c+TyVz+F72G1
-         0dUyinRAZUFz9vQDVkviRP020gD2ocn5DxKcDEmDCMOaIZaxyA4oSh8WwM1xP5C5qhyj
-         D+tw==
+         :cc;
+        bh=KMa88ZgCB+pmOBkgSDJjtHbmNgQd6frmdHWpKQQEAuM=;
+        b=S1uZWzn+8JhxQyga0SXC1Zd6wfLiV6UZ+pL9/PMiilWNM9eCbSVa+lMRFCu8BoaJcc
+         gFbQ5qAFuO/bpT3NWPxKRYOrGebMUDqeWHyrtfJPNR5aZ+/Gc3MGX9YdvmCkFoVYwwI/
+         eW/eDhptxWiI9I4ISq53vtHhSLAWAdT+j63UZzUy7XyPq52Nyw9eKME42CnVMsAO6teV
+         rWNRUUH3IpxhfSHginc8gvP+9MT+nNWqv49wosZuX718OaH1B2p4jS6QWA23TRU7CyHl
+         IDQsVwoMwkomQVfQN41IxjUdOxsq8UAbvGXKAC3qlvV6gl7BX/gubsH3bWaDf366i/H1
+         0d6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R54d46ZCTxUfXPnbh/qJAxq3cKd/Q236Yg57kUVGbCs=;
-        b=NrA4e07IrDGU/JXfc5Rr10fs2q5Z/2SGP/SvFNXa2IFjj3uxjv9GopKf3NFpVrOZvQ
-         wX25km7eLs/1kp+vW7+/0KoRTslGi8JJDN/cFpzBFU5KnVhwOhkhewHhyqV9NWzffW6L
-         jzWxpzKaLVeLhBoqM0CXLubr7nnEwFTLbUwxiFVBsUPgjDrGxwL8hS8A11FuPqkWlsW9
-         Pc7dBkyHazbSflCYX9aJBrJWo+g6wKeKfkudltj4q60vDt4Frq1KeKwYFQpTPckrxZP5
-         9btPJLuXr26WjXD1qCGmG0mXR6LXYdrLQ2DnNC6ty7MktUjpylUjhIC15RLnL9dtoSZg
-         rQAA==
-X-Gm-Message-State: AOAM532chzJqyE2r4tee07qukSZqmTtSfdYTeYEpfoQT9PJ70rV28UtD
-        dwgvsjWo5OIO//pMx6KfPwWH59kaPcmpJzlDqKh/kA==
-X-Google-Smtp-Source: ABdhPJxz+c/j76Twwg7/NFFXZUWkpnVPXpGPArCSHwHjiSHkZ04rHl0pe/gHEShlRIjTKAsktUbAKrAMZe3ardmctl0=
-X-Received: by 2002:a25:5d6:: with SMTP id 205mr9830990ybf.382.1628969666230;
- Sat, 14 Aug 2021 12:34:26 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=KMa88ZgCB+pmOBkgSDJjtHbmNgQd6frmdHWpKQQEAuM=;
+        b=XyfE+9mwVl1+HzeMs1HY1g5cFRBenyPKbtgfFut8RyA60KJO4n8/sOW4xMjKM1+HoF
+         pP701TI2QTnUAVM3b7QfMIIpRwdDDjX+7IOOg6g4ndBER4t7DwN7bJhXX6bQEh3pdHRH
+         vcIZeaAkCIwtAm2mvA0xHkkGKeTRS5c3tmXpXxHOWPuMKwvIFWfbwYr2nTGagapAnCKD
+         7WFR/DNpduXQZfyx84ykyeKLXuWxEMEXSocD+twytb3aHt41Bfva5Ez5lNbuDNTWCLyi
+         9h5h63+3lDtqlYrKs0MTVd/6oNnzvgb5yquilzD/VZCTCGEcVNn/GCQnENxvPlTzn+DK
+         OWjA==
+X-Gm-Message-State: AOAM533bN2on5EU3IGD9yZO9/AwpMUEcNl9WZ65e+e44rBDRLNnhzPcO
+        BhXGQBgJELvyrdRCkRenJXF5Dly9wGo9nOc8ak4=
+X-Google-Smtp-Source: ABdhPJyxYRv8dIkJvibLt0nJ919CHV6jw4qAjCxZfRmiWkPkBwIT/SlZq+NQFhsHMj+EemYmUtwWdhboR6eaiNjeXYE=
+X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr8727886pjb.129.1628969814122;
+ Sat, 14 Aug 2021 12:36:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812204951.1551782-1-morbo@google.com> <87sfzde8lk.fsf@linkitivity.dja.id.au>
- <20210813200508.7bqehxgd6ruerds5@google.com> <20210814125812.GC1583@gate.crashing.org>
-In-Reply-To: <20210814125812.GC1583@gate.crashing.org>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Sat, 14 Aug 2021 12:34:15 -0700
-Message-ID: <CAFP8O3LZ3ZtpkF=RdyDyyXn40oYeDkqgY6NX7YRsBWeVnmPv1A@mail.gmail.com>
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        Paul Mackerras <paulus@samba.org>,
-        Bill Wendling <morbo@google.com>, linuxppc-dev@lists.ozlabs.org
+References: <20210814135509.4500-1-len.baker@gmx.com>
+In-Reply-To: <20210814135509.4500-1-len.baker@gmx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 14 Aug 2021 22:36:18 +0300
+Message-ID: <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
+Subject: Re: [PATCH v4] drivers/iio: Remove all strcpy() uses
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 5:59 AM Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
+On Sat, Aug 14, 2021 at 4:55 PM Len Baker <len.baker@gmx.com> wrote:
 >
-> On Fri, Aug 13, 2021 at 01:05:08PM -0700, Fangrui Song wrote:
-> > Text relocations are considered very awful by linker developers.
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. So, remove all the uses and add
+> devm_kstrdup() or devm_kasprintf() instead.
 >
-> By very few linker developers.
-
-https://groups.google.com/g/generic-abi/c/Ckq19PfLxyk/m/uW29sgkoAgAJ
-Ali Bahrami: "My opinion is that no one wants text relocations, but
-not labeling them if they do exist doesn't seem right. I find the
-presence of DF_TEXTREL very interesting when diagnosing various
-issues."
-
-https://gcc.gnu.org/legacy-ml/gcc/2016-04/msg00138.html
-( "So why not simply create 'dynamic text relocations' then?  Is that
-possible with a pure linker change?" )
-Cary Coutant: "Ugh. Besides being a bad idea from a performance point
-of view, it's not even always possible to do. Depending on the
-architecture, a direct reference from an executable to a variable in a
-shared library may not have the necessary reach."
-
-binutils-gdb commit "Add linker option: --warn-shared-textrel to
-produce warnings when adding a DT_TEXTREL to a shared object."
-Nick Clifton
-
-https://www.openwall.com/lists/musl/2020/09/26/3
-Szabolcs Nagy: "nice.  and gcc passes -z text for static pie code so
-that case should not end up with text rels."
-
-Someone wrote "Overall, the overhead of processing text relocations
-can cause serious performance degradation." in Solaris' Linker and
-Libraries Guide.
-
-Me :)
-(I wrote lld/ELF 9.0.0~13.0.0 release notes and filed dozen of GNU
-ld/gold bugs/feature requests)
-
-> > binutils 2.35 added --enable-textrel-check=3D{no,warn,error}
-> > https://sourceware.org/bugzilla/show_bug.cgi?id=3D20824
+> This patch is an effort to clean up the proliferation of str*()
+> functions in the kernel and a previous step in the path to remove
+> the strcpy function from the kernel entirely [1].
 >
-> Yes, some people wanted the default to be configurable.  So now we have
-> a default default that is sane, so most people get to reap the benefits
-> of having defaults at all, but we also allow other people to shoot
-> themselves (and people who have to deal with them) in the foot.
-> "Progress".  Changing the defaults should be a one-time event, only done
-> when the benefits strongly outweigh the costs.  Defaults should never be
-> configurable (by the user).
+> [1] https://github.com/KSPP/linux/issues/88
 
-ld.lld has such a non-configurable model and thus caught the issue
-(which the patch intends to address).
+Thank you very much for doing this!
+Now I like the result,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Future --enable-textrel-check=3D{yes,error} configured GNU ld will be simil=
-ar.
-
-> > I can imagine that in the future some Linux distributions (especially t=
-hose
-> > focusing on security) will default their binutils to use
-> > --enable-textrel-check=3D{no,warn,error}.
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+> The previous versions can be found in:
 >
-> How would this be a benefit to security?
-
-https://flameeyes.blog/2016/01/16/textrels-text-relocations-and-their-impac=
-t-on-hardening-techniques/
-
-https://github.com/golang/go/issues/9210
-Android: "libexample.so has text relocations. This is wasting memory
-and prevents security hardening. Please fix."
-
-FWIW I contributed a glibc patch allowing TEXTREL to co-exist with ifunc.
-It requires temporary mapping the text segment W^X.
-
-> > In -no-pie links, R_PPC64_ADDR64 relocations are link-time constants.
+> v1
+> https://lore.kernel.org/linux-hardening/20210801171157.17858-1-len.baker@gmx.com/
 >
-> Where "link" includes dynamic links as well.  There are no constants.
-
-"Link-time" usually refers to the processing of the static linker.
-
-Dynamic links can use load-time or run-time.
-
-> > There are no text relocations, therefore no need for -z notext.
+> v2
+> https://lore.kernel.org/linux-hardening/20210807152225.9403-1-len.baker@gmx.com/
 >
-> This is a choice by the compiler, nothing more.  It saves some process
-> startup time, and allows slightly more maps to be shared by processes
-> that run the same images.  But it is a tradeoff, so it might change; and
-> of course it is not an ABI requirement.
+> v3
+> https://lore.kernel.org/linux-hardening/20210814090618.8920-1-len.baker@gmx.com/
 >
+> Changelog v1 -> v2
+> - Modify the commit changelog to inform that the motivation of this
+>   patch is to remove the strcpy() function from the kernel entirely
+>   (Jonathan Cameron).
 >
-> Segher
+> Changelog v2 -> v3
+> - Rewrite the code using devm_kstrdup() and devm_kasprintf() functions
+>   (Andy Shevchenko).
+> - Rebase against v5.14-rc5.
+>
+> Changelog v3 -> v4
+> - Reorder the variables (Andy Shevchenko).
+> - Get the device in the definition block (Andy Shevchenko).
+> - Reword the comment (Andy Shevchenko).
+> - Change the conditions in the "if" statement to clarify the "0" check
+>   (Andy Shevchenko).
+>
+>  drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c | 30 +++++++++++++---------
+>  1 file changed, 18 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
+> index f282e9cc34c5..7eceae0012c9 100644
+> --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
+> +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
+> @@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu6050_state *st, int fifo_rate)
+>   */
+>  int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
+>  {
+> +       struct device *dev = regmap_get_device(st->map);
+>         const char *orient;
+>         char *str;
+>         int i;
+> @@ -281,19 +282,24 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
+>                 /* z <- -z */
+>                 for (i = 0; i < 3; ++i) {
+>                         orient = st->orientation.rotation[6 + i];
+> -                       /* use length + 2 for adding minus sign if needed */
+> -                       str = devm_kzalloc(regmap_get_device(st->map),
+> -                                          strlen(orient) + 2, GFP_KERNEL);
+> -                       if (str == NULL)
+> +
+> +                       /*
+> +                        * The value is negated according to one of the following
+> +                        * rules:
+> +                        *
+> +                        * 1) Drop leading minus.
+> +                        * 2) Leave 0 as is.
+> +                        * 3) Add leading minus.
+> +                        */
+> +                       if (orient[0] == '-')
+> +                               str = devm_kstrdup(dev, orient + 1, GFP_KERNEL);
+> +                       else if (orient[0] == '0' && orient[1] == '\0')
+> +                               str = devm_kstrdup(dev, orient, GFP_KERNEL);
+> +                       else
+> +                               str = devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
+> +                       if (!str)
+>                                 return -ENOMEM;
+> -                       if (strcmp(orient, "0") == 0) {
+> -                               strcpy(str, orient);
+> -                       } else if (orient[0] == '-') {
+> -                               strcpy(str, &orient[1]);
+> -                       } else {
+> -                               str[0] = '-';
+> -                               strcpy(&str[1], orient);
+> -                       }
+> +
+>                         st->magn_orient.rotation[6 + i] = str;
+>                 }
+>                 break;
+> --
+> 2.25.1
+>
 
-Text relocations are generally awful.
-GNU ld and gold's traditional "add DF_TEXTREL on-demand" behavior made
-such user errors easy to make.
-I understand that kernels are special applications where we apply
-relocations once and many user-space objection can be less of a
-concern/ignored.
-However, the Linux kernel is already in a position where many linker
-options are controlled and thus should specify -z notext to make
-the intention explicit, or fix the problems (I think x86-64 is good;
-that said, powerpc
-has a higher cost using PC-relative instructions so pay the oneshot relocat=
-ion
-time cost probably isn't a bad choice)
 
-
-
---
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+-- 
+With Best Regards,
+Andy Shevchenko
