@@ -2,496 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3BC3EC44C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4193EC44D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238916AbhHNR5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 13:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        id S238937AbhHNR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 13:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238921AbhHNR52 (ORCPT
+        with ESMTP id S238900AbhHNR5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 13:57:28 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34856C0613A3;
-        Sat, 14 Aug 2021 10:56:57 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so5245540pjz.0;
-        Sat, 14 Aug 2021 10:56:57 -0700 (PDT)
+        Sat, 14 Aug 2021 13:57:31 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4F0C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:57:02 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id bo19so20104433edb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3Mj45Aod6NU8JJCibJL5m4aKcOmGfin7r6cabNhSwhY=;
-        b=ofukr8JeI2IkgjcupiHcenw2JkdY/KV4HWeUM+mVFPU6yX/VhOzvUNP23dgJwi70OT
-         M9k1Vr23nqbC4BmtUEmR6E0MDpQv3VJ75U8PUo0mXMPNNgeUeOlxEfOJ7KwUjf3eEypH
-         XQNAgIxqDfCwx6K+rr1e1zLj4fDq5162CHDliadN3x4AUBI/wFh2GDt9Sf6LX9XKs3sM
-         rENT7MRlzfUoiDV2awDUvMfn253f/ihKGkXGqD+qH4i7cRxlN65UmRWGi54U5mhfJUlk
-         Mcy62BpTCOX9nQNLMPDtJ5qvMGzPmNhzdHCHZ5jLPpbxQc2TvSLp35pkQsHnW+YjC0Ne
-         i6og==
+        bh=HroRd12HmrCYe8trgy762PzKYxaKFWieH1+iL5Ovs98=;
+        b=ZSoVeipnm2sVJKSjl9rYDjsSY2G5ddE5AJt2kIszlfN39dX85Z/u5xM83scPUUCECw
+         C/t6hJR1aBFCONYVeu3T5/DECj6VaPXbUpT+RcD5VrARCGFFruv17c7tu/ptBpYwt7yr
+         ZVJLL1DoEOgU55gTt5nb41njsherhC+cIPbVy7Mq9P87+vU3ulhwdfnUgakdYgPvVeQv
+         RdhmA9S5OVPrW9F/FRe+UNec5OG9X6k/zfqWiUM0HmcVXQS7JtDeVVv/GXJzipxs9kmP
+         edmkjg2oVVr+md6c/5vGWBe7Rq8LRNfO4hjwt1pxoJihtwPIHCj2bs1Bs5949jPwBS0f
+         Z1Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3Mj45Aod6NU8JJCibJL5m4aKcOmGfin7r6cabNhSwhY=;
-        b=cCkNt6E7+74K78+aduTS2rz4xpwo4q7kLc1PpQ1vlCX2n0jlb5xRPNF9AC82MeBcwq
-         u2JW9CI5dmhS7dabO8feaZgl4kkOSYjEPen6FspbiLXZ68eY4auqYNmWHw7QNajwlMbr
-         wtz8DnjoJ59YoJYU7FSwVwjMWh9EUV5zsApDhi4leMUbxSYdMkVgmFFY+xFyUMpZZh9y
-         DP8hgpfQWgTaABQEjhF1P7h/+eBibj7XwiuF+Q0qJPQiez6hg2DdpPko6qSvD1bP8YM2
-         f81u8dsf+LaZVEm7anzpi3oMjC5EEx5OV+4t3YdaSns9oh7Pt9WsDBcTI5cs92d2YU3c
-         ixzQ==
-X-Gm-Message-State: AOAM533V144V28tqRc/rGpWFC+MA3NWtl1TCqK8gIkGNO9Os2GY2IR7M
-        0C/U8LWThA72Xo6zmYcfs4U=
-X-Google-Smtp-Source: ABdhPJwoX5VGMV2uTn/5kWaKJsgcZSb6whh5oVmQl+X8BdhygHAZ6pa3WJ/4BA03719pou2oGogzfw==
-X-Received: by 2002:a17:902:b487:b029:12c:4051:a8de with SMTP id y7-20020a170902b487b029012c4051a8demr6626048plr.76.1628963815993;
-        Sat, 14 Aug 2021 10:56:55 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:6293:2348:f0eb:567b:5544:c735])
-        by smtp.googlemail.com with ESMTPSA id q26sm6305380pff.174.2021.08.14.10.56.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HroRd12HmrCYe8trgy762PzKYxaKFWieH1+iL5Ovs98=;
+        b=dWD5ZMAqVwjfFIGGWu+qbRCtTUq4d2+b4ghZZkc2ib0CDIQWq6qbrdgSImsW/1lM13
+         bnGhjgQr/QcreRIO5CgoK3EBa4sllrsS/ya05s7mztv3lub9u5I9HNH0JDwbQRaB1Mdy
+         gBQp+UDQURZttvaxO4L3/eUrNzSMg/eR/B4fCCzre76WIB/d/nNkQQxvE/Ix3BkznRfk
+         NFmaCUGYA5Jqzt39QUTf1ODZDH3X90WoX2NmPAqmWeF/A62hfdrrTDTe7FnUi8mj753Y
+         7EwpHt6WG2FuCzKjf8TC9ayicvRD/ei2DfLMuNHri+qLEouzUoy9iLnKmEIyd2y9qg/t
+         GJeg==
+X-Gm-Message-State: AOAM533lJHg/9R6DBwQ2EMrJyylfjZw8wubTrlxZaGBxXdvdfU7aH7vO
+        +85xHi00AUnGlBLX2nNKb0c=
+X-Google-Smtp-Source: ABdhPJzeqNfKAPjUM6vJITkB5K1o3SD6RGIcWXB1Y3f3ZpilwSnSHd+vP8PWUuoQOxH+Hna1Y2URQA==
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr10529501edt.194.1628963820861;
+        Sat, 14 Aug 2021 10:57:00 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id j14sm2526614edk.7.2021.08.14.10.56.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 10:56:55 -0700 (PDT)
-From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-To:     Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Subject: [PATCH v3 2/2] iio: potentiometer: Add driver support for AD5110
-Date:   Sat, 14 Aug 2021 23:25:40 +0530
-Message-Id: <20210814175607.48399-3-dmugil2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210814175607.48399-1-dmugil2000@gmail.com>
-References: <20210814175607.48399-1-dmugil2000@gmail.com>
+        Sat, 14 Aug 2021 10:57:00 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] staging: greybus: Convert uart.c from IDR to XArray
+Date:   Sat, 14 Aug 2021 19:56:57 +0200
+Message-Id: <20210814175657.13403-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AD5110/AD5112/AD5114 provide a nonvolatile solution
-for 128-/64-/32-position adjustment applications, offering
-guaranteed low resistor tolerance errors of ±8% and up to
-±6 mA current density.
+Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+is more memory-efficient, parallelisable, and cache friendly. It takes
+advantage of RCU to perform lookups without locking. Furthermore, IDR is
+deprecated because XArray has a better (cleaner and more consistent) API.
 
-Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/AD5110_5112_5114.pdf
-Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- MAINTAINERS                        |   6 +
- drivers/iio/potentiometer/Kconfig  |  10 +
- drivers/iio/potentiometer/Makefile |   1 +
- drivers/iio/potentiometer/ad5110.c | 345 +++++++++++++++++++++++++++++
- 4 files changed, 362 insertions(+)
- create mode 100644 drivers/iio/potentiometer/ad5110.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..cf6e73b87b6e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -452,6 +452,12 @@ S:	Maintained
- W:	https://parisc.wiki.kernel.org/index.php/AD1889
- F:	sound/pci/ad1889.*
+v1->v2:
+	Fixed an issue found by the kernel test robot. It was due to
+	passing to xa_*lock() the same old mutex that IDR used with
+	the previous version of the code.
+
+ drivers/staging/greybus/uart.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 73f01ed1e5b7..5bf993e40f84 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -22,7 +22,7 @@
+ #include <linux/serial.h>
+ #include <linux/tty_driver.h>
+ #include <linux/tty_flip.h>
+-#include <linux/idr.h>
++#include <linux/xarray.h>
+ #include <linux/fs.h>
+ #include <linux/kdev_t.h>
+ #include <linux/kfifo.h>
+@@ -33,6 +33,7 @@
+ #include "gbphy.h"
  
-+AD5110 ANALOG DEVICES DIGITAL POTENTIOMETERS DRIVER
-+M:	Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-+L:	linux-iio@vger.kernel.org
-+S:	Supported
-+F:	drivers/iio/potentiometer/ad5110.c
-+
- AD525X ANALOG DEVICES DIGITAL POTENTIOMETERS DRIVER
- M:	Michael Hennerich <michael.hennerich@analog.com>
- S:	Supported
-diff --git a/drivers/iio/potentiometer/Kconfig b/drivers/iio/potentiometer/Kconfig
-index 4cac0173db8b..832df8da2bc6 100644
---- a/drivers/iio/potentiometer/Kconfig
-+++ b/drivers/iio/potentiometer/Kconfig
-@@ -6,6 +6,16 @@
+ #define GB_NUM_MINORS	16	/* 16 is more than enough */
++#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
+ #define GB_NAME		"ttyGB"
  
- menu "Digital potentiometers"
+ #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
+@@ -67,8 +68,7 @@ struct gb_tty {
+ };
  
-+config AD5110
-+	tristate "Analog Devices AD5110 and similar Digital Potentiometer driver"
-+	depends on I2C
-+	help
-+	  Say yes here to build support for the Analog Devices AD5110, AD5112 
-+	  and AD5114 digital potentiometer chip.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ad5110.
-+
- config AD5272
- 	tristate "Analog Devices AD5272 and similar Digital Potentiometer driver"
- 	depends on I2C
-diff --git a/drivers/iio/potentiometer/Makefile b/drivers/iio/potentiometer/Makefile
-index 091adf3cdd0b..5ebb8e3bbd76 100644
---- a/drivers/iio/potentiometer/Makefile
-+++ b/drivers/iio/potentiometer/Makefile
-@@ -4,6 +4,7 @@
- #
+ static struct tty_driver *gb_tty_driver;
+-static DEFINE_IDR(tty_minors);
+-static DEFINE_MUTEX(table_lock);
++static DEFINE_XARRAY(tty_minors);
  
- # When adding new entries keep the list in alphabetical order
-+obj-$(CONFIG_AD5110) += ad5110.o
- obj-$(CONFIG_AD5272) += ad5272.o
- obj-$(CONFIG_DS1803) += ds1803.o
- obj-$(CONFIG_MAX5432) += max5432.o
-diff --git a/drivers/iio/potentiometer/ad5110.c b/drivers/iio/potentiometer/ad5110.c
-new file mode 100644
-index 000000000000..ae18f9e115b2
---- /dev/null
-+++ b/drivers/iio/potentiometer/ad5110.c
-@@ -0,0 +1,345 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Analog Devices AD5110 digital potentiometer driver
-+ *
-+ * Copyright (C) 2021 Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-+ *
-+ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/AD5110_5112_5114.pdf
-+ */
+ static int gb_uart_receive_data_handler(struct gb_operation *op)
+ {
+@@ -77,6 +77,7 @@ static int gb_uart_receive_data_handler(struct gb_operation *op)
+ 	struct tty_port *port = &gb_tty->port;
+ 	struct gb_message *request = op->request;
+ 	struct gb_uart_recv_data_request *receive_data;
 +
-+#include <linux/bitfield.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+
-+#include <linux/iio/iio.h>
-+#include <linux/iio/sysfs.h>
-+
-+/* AD5110 commands */
-+#define AD5110_EEPROM_WR	1
-+#define AD5110_RDAC_WR		2
-+#define AD5110_SHUTDOWN	3
-+#define AD5110_RESET		4
-+#define AD5110_RDAC_RD		5
-+#define AD5110_EEPROM_RD	6
-+
-+/* AD5110_EEPROM_RD data */
-+#define AD5110_WIPER_POS	0
-+#define AD5110_RESISTOR_TOL	1
-+
-+#define AD5110_WIPER_RESISTANCE	70
-+
-+struct ad5110_cfg {
-+	int max_pos;
-+	int kohms;
-+	int shift;
-+};
-+
-+enum ad5110_type {
-+	AD5110_10,
-+	AD5110_80,
-+	AD5112_05,
-+	AD5112_10,
-+	AD5112_80,
-+	AD5114_10,
-+	AD5114_80,
-+};
-+
-+static const struct ad5110_cfg ad5110_cfg[] = {
-+	[AD5110_10] = { .max_pos = 128, .kohms = 10 },
-+	[AD5110_80] = { .max_pos = 128, .kohms = 80 },
-+	[AD5112_05] = { .max_pos = 64, .kohms = 5, .shift = 1 },
-+	[AD5112_10] = { .max_pos = 64, .kohms = 10, .shift = 1 },
-+	[AD5112_80] = { .max_pos = 64, .kohms = 80, .shift = 1 },
-+	[AD5114_10] = { .max_pos = 32, .kohms = 10, .shift = 2 },
-+	[AD5114_80] = { .max_pos = 32, .kohms = 80, .shift = 2 },
-+};
-+
-+struct ad5110_data {
-+	struct i2c_client       *client;
-+	s16			tol;		/* resistor tolerance */
-+	bool			enable;
-+	struct mutex            lock;
-+	const struct ad5110_cfg	*cfg;
-+	/*
-+	 * DMA (thus cache coherency maintenance) requires the
-+	 * transfer buffers to live in their own cache lines.
-+	 */
-+	u8			buf[2] ____cacheline_aligned;
-+};
-+
-+static const struct iio_chan_spec ad5110_channels[] = {
-+	{
-+		.type = IIO_RESISTANCE,
-+		.output = 1,
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_OFFSET) |
-+					BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_ENABLE),
-+	},
-+};
-+
-+static int ad5110_read(struct ad5110_data *data, u8 cmd, int *val)
-+{
+ 	u16 recv_data_size;
+ 	int count;
+ 	unsigned long tty_flags = TTY_NORMAL;
+@@ -341,8 +342,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ {
+ 	struct gb_tty *gb_tty;
+ 
+-	mutex_lock(&table_lock);
+-	gb_tty = idr_find(&tty_minors, minor);
++	xa_lock(&tty_minors);
++	gb_tty = xa_load(&tty_minors, minor);
+ 	if (gb_tty) {
+ 		mutex_lock(&gb_tty->mutex);
+ 		if (gb_tty->disconnected) {
+@@ -353,19 +354,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ 			mutex_unlock(&gb_tty->mutex);
+ 		}
+ 	}
+-	mutex_unlock(&table_lock);
++	xa_unlock(&tty_minors);
+ 	return gb_tty;
+ }
+ 
+ static int alloc_minor(struct gb_tty *gb_tty)
+ {
+ 	int minor;
 +	int ret;
-+
-+	mutex_lock(&data->lock);
-+	data->buf[0] = cmd;
-+	data->buf[1] = *val;
-+
-+	ret = i2c_master_send_dmasafe(data->client, data->buf, sizeof(data->buf));
-+	if (ret < 0) {
-+		goto error;
-+	} else if (ret != sizeof(data->buf)) {
-+		ret = -EIO;
-+		goto error;
-+	}
-+
-+	ret = i2c_master_recv_dmasafe(data->client, data->buf, 1);
-+	if (ret < 0) {
-+		goto error;
-+	} else if (ret != 1) {
-+		ret = -EIO;
-+		goto error;
-+	}
-+
-+	*val = data->buf[0];
-+	ret = 0;
-+
-+error:
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int ad5110_write(struct ad5110_data *data, u8 cmd, u8 val)
-+{
-+	int ret;
-+
-+	mutex_lock(&data->lock);
-+	data->buf[0] = cmd;
-+	data->buf[1] = val;
-+
-+	ret = i2c_master_send_dmasafe(data->client, data->buf, sizeof(data->buf));
-+	if (ret < 0) {
-+		goto error;
-+	} else if (ret != sizeof(data->buf)) {
-+		ret = -EIO;
-+		goto error;
-+	}
-+
-+	ret = 0;
-+
-+error:
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int ad5110_resistor_tol(struct ad5110_data *data, u8 cmd, int val)
-+{
-+	int ret;
-+
-+	ret = ad5110_read(data, cmd, &val);
+ 
+-	mutex_lock(&table_lock);
+-	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
+-	mutex_unlock(&table_lock);
+-	if (minor >= 0)
+-		gb_tty->minor = minor;
++	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
 +	if (ret)
 +		return ret;
-+
-+	data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 10 / 8;
-+	if (!(val & BIT(7)))
-+		data->tol *= -1;
-+
-+	return 0;
-+}
-+
-+static ssize_t store_eeprom_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *buf)
-+{
-+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-+	struct ad5110_data *data = iio_priv(indio_dev);
-+	int val = AD5110_WIPER_POS;
-+	int ret;
-+
-+	ret = ad5110_read(data, AD5110_EEPROM_RD, &val);
-+	if (ret)
-+		return ret;
-+
-+	val = val >> data->cfg->shift;
-+	return iio_format_value(buf, IIO_VAL_INT, 1, &val);
-+}
-+
-+static ssize_t store_eeprom_store(struct device *dev,
-+				   struct device_attribute *attr,
-+				   const char *buf, size_t len)
-+{
-+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-+	struct ad5110_data *data = iio_priv(indio_dev);
-+	int ret;
-+
-+	ret = ad5110_write(data, AD5110_EEPROM_WR, 0);
-+	if (ret) {
-+		dev_err(&data->client->dev, "RDAC to EEPROM write failed\n");
-+		return ret;
-+	}
-+
-+	/* The storing of EEPROM data takes approximately 18 ms. */
-+	msleep(20);
-+
-+	return len;
-+}
-+
-+static IIO_DEVICE_ATTR_RW(store_eeprom, 0);
-+
-+static struct attribute *ad5110_attributes[] = {
-+	&iio_dev_attr_store_eeprom.dev_attr.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group ad5110_attribute_group = {
-+	.attrs = ad5110_attributes,
-+};
-+
-+static int ad5110_read_raw(struct iio_dev *indio_dev,
-+			   struct iio_chan_spec const *chan,
-+			   int *val, int *val2, long mask)
-+{
-+	struct ad5110_data *data = iio_priv(indio_dev);
-+	int ret;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		ret = ad5110_read(data, AD5110_RDAC_RD, val);
-+		if (ret)
-+			return ret;
-+
-+		*val = *val >> data->cfg->shift;
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_OFFSET:
-+		*val = AD5110_WIPER_RESISTANCE * data->cfg->max_pos;
-+		*val2 = 1000 * data->cfg->kohms + data->tol;
-+		return IIO_VAL_FRACTIONAL;
-+	case IIO_CHAN_INFO_SCALE:
-+		*val = 1000 * data->cfg->kohms + data->tol;
-+		*val2 = data->cfg->max_pos;
-+		return IIO_VAL_FRACTIONAL;
-+	case IIO_CHAN_INFO_ENABLE:
-+		*val = data->enable;
-+		return IIO_VAL_INT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ad5110_write_raw(struct iio_dev *indio_dev,
-+			    struct iio_chan_spec const *chan,
-+			    int val, int val2, long mask)
-+{
-+	struct ad5110_data *data = iio_priv(indio_dev);
-+	int ret;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		if (val > data->cfg->max_pos || val < 0)
-+			return -EINVAL;
-+
-+		return ad5110_write(data, AD5110_RDAC_WR, val << data->cfg->shift);
-+	case IIO_CHAN_INFO_ENABLE:
-+		if (val < 0 || val > 1)
-+			return -EINVAL;
-+		if (data->enable == val)
-+			return 0;
-+		ret = ad5110_write(data, AD5110_SHUTDOWN, val ? 0 : 1);
-+		if (ret)
-+			return ret;
-+		data->enable = val;
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_info ad5110_info = {
-+	.read_raw = ad5110_read_raw,
-+	.write_raw = ad5110_write_raw,
-+	.attrs = &ad5110_attribute_group,
-+};
-+
-+#define AD5110_COMPATIBLE(of_compatible, cfg) {	\
-+			.compatible = of_compatible,	\
-+			.data = &ad5110_cfg[cfg],	\
-+}
-+
-+static const struct of_device_id ad5110_of_match[] = {
-+	AD5110_COMPATIBLE("adi,ad5110-10", AD5110_10),
-+	AD5110_COMPATIBLE("adi,ad5110-80", AD5110_80),
-+	AD5110_COMPATIBLE("adi,ad5112-05", AD5112_05),
-+	AD5110_COMPATIBLE("adi,ad5112-10", AD5112_10),
-+	AD5110_COMPATIBLE("adi,ad5112-80", AD5112_80),
-+	AD5110_COMPATIBLE("adi,ad5114-10", AD5114_10),
-+	AD5110_COMPATIBLE("adi,ad5114-80", AD5114_80),
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ad5110_of_match);
-+
-+static const struct i2c_device_id ad5110_id[] = {
-+	{ "ad5110-10", AD5110_10 },
-+	{ "ad5110-80", AD5110_80 },
-+	{ "ad5112-05", AD5112_05 },
-+	{ "ad5112-10", AD5112_10 },
-+	{ "ad5112-80", AD5112_80 },
-+	{ "ad5114-10", AD5114_10 },
-+	{ "ad5114-80", AD5114_80 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, ad5110_id);
-+
-+static int ad5110_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct iio_dev *indio_dev;
-+	struct ad5110_data *data;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	data = iio_priv(indio_dev);
-+	data->client = client;
-+	mutex_init(&data->lock);
-+	data->enable = 1;
-+	data->cfg = device_get_match_data(dev);
-+
-+	/* refresh RDAC register with EEPROM */
-+	ret = ad5110_write(data, AD5110_RESET, 0);
-+	if (ret) {
-+		dev_err(dev, "Refresh RDAC with EEPROM failed\n");
-+		return ret;
-+	}
-+
-+	ret = ad5110_resistor_tol(data, AD5110_EEPROM_RD, AD5110_RESISTOR_TOL);
-+	if (ret) {
-+		dev_err(dev, "Read resistor tolerance failed\n");
-+		return ret;
-+	}
-+
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->info = &ad5110_info;
-+	indio_dev->channels = ad5110_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(ad5110_channels);
-+	indio_dev->name = client->name;
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+
-+static struct i2c_driver ad5110_driver = {
-+	.driver = {
-+		.name	= "ad5110",
-+		.of_match_table = ad5110_of_match,
-+	},
-+	.probe_new	= ad5110_probe,
-+	.id_table	= ad5110_id,
-+};
-+module_i2c_driver(ad5110_driver);
-+
-+MODULE_AUTHOR("Mugilraj Dhavachelvan <dmugil2000@gmail.com>");
-+MODULE_DESCRIPTION("AD5110 digital potentiometer");
-+MODULE_LICENSE("GPL v2");
-+
++	gb_tty->minor = minor;
+ 	return minor;
+ }
+ 
+@@ -374,9 +375,7 @@ static void release_minor(struct gb_tty *gb_tty)
+ 	int minor = gb_tty->minor;
+ 
+ 	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
+-	mutex_lock(&table_lock);
+-	idr_remove(&tty_minors, minor);
+-	mutex_unlock(&table_lock);
++	xa_erase(&tty_minors, minor);
+ }
+ 
+ static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+@@ -982,7 +981,7 @@ static void gb_tty_exit(void)
+ {
+ 	tty_unregister_driver(gb_tty_driver);
+ 	put_tty_driver(gb_tty_driver);
+-	idr_destroy(&tty_minors);
++	xa_destroy(&tty_minors);
+ }
+ 
+ static const struct gbphy_device_id gb_uart_id_table[] = {
 -- 
-2.25.1
+2.32.0
 
