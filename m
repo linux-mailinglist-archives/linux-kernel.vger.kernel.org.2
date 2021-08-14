@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CC83EBF5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583163EBF64
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236358AbhHNBnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S236408AbhHNBph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236284AbhHNBnP (ORCPT
+        with ESMTP id S236284AbhHNBpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:43:15 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922FFC0617AD;
-        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so18532803pjb.3;
-        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
+        Fri, 13 Aug 2021 21:45:36 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EC3C061756;
+        Fri, 13 Aug 2021 18:45:08 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so18610876pjb.0;
+        Fri, 13 Aug 2021 18:45:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m5idM3Ueup4b94JMyXu62nSSGfYlEtXvaikv0F9J55U=;
-        b=vdmL6s1BTz5qC5et9VmTkY2s0iXRifELOl9oqWeoiEujLkdqwSicCYEIaJDubnBJGh
-         ki3rsrAOzjdWQD6uqzKSZAymDRP7XD+I/pT3bZifdWKu7M/FbFJEb7bwlgBWoPleJiLx
-         FWAABX3HqoByphFyNuDKSywZYlrJQGYaCS8MFftqXkLxfolK4/HB6X6hovWh3gH8Qznf
-         Kj5uJLYVDaO//EESOEdv2O77fyvQ9yZWBoaTvIY1rxUoe4hChjat4N1bhb7bxiPNtHw0
-         l807wnAqb9XbgXy06uTzg4fiMslOO9zNtnUrAvjr3hrRkjmcZoWGOFG0nulrmerdFc9R
-         867Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=07FaLwcmmX6AOmFfgsqh6GrkV1dN1p5dJytNMnSho7U=;
+        b=YlbngJoJ3f8Vv11tmVmRDAe/WJz03jxqYRsj4VIzgBv/GSyKCJ89pqGU7imCYjqdX1
+         rK+MQVg4YM6okfXTtPjYEH5mzwHgA3vpygUR2LKTUX1lkNAwOdsfCWtf3K0zQxPLOW7p
+         8Jc6TY3ib3/PEB2Cef6wlVzKPFRR3Y2rz5pfBRpLrLail0dbtMQB21AnyNxbw4Fm5DnT
+         gDL1wTnJnArvUrXGYsbu0bQH/PFkxrx7nCQF5ps2x6zvzLlAnuFi8hCHdjostQQ943G7
+         LMr21rZOdKSkvc/s7SyYOQDS9+XlyUQe/Kcahzxqjv1Vq44VVnAvjabKLIeVnjv4BXqR
+         AnkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m5idM3Ueup4b94JMyXu62nSSGfYlEtXvaikv0F9J55U=;
-        b=n9Umdhsay31xKhrZ3Cxfbph+/94hn9glVZwE+MnFI42H2kDKOf0ScZ901fJWG1bFDP
-         SX6IbncWZq27jHuvFbcm+5HDwvs+5tasnjyHHaZwKf7frZUy/lQ3MXOmGDR3aiH0YHrA
-         xB0LMfOJijnPKWQRjgH/ZugYwhu0UlPTvTDBI2ANlOFHNOXn84H3MCw6G0SQp/bgxjos
-         gNVFUII3h9Lp+bBmoxQNJl6t6z9B1otfnrRSJp6dM/Dfd4rNJYCCf0gBT3GuMXjD2PaK
-         Lfk1P070NNKqlaaqL9az/HEcUjkhk24D2PIs0cfdRFEJkwvrt8XCgye7tLFTy326fwwc
-         DkJw==
-X-Gm-Message-State: AOAM532O54sGV6brSQzTN4I69BkTMrYHHj2Zyp4M64Cm3tORz3yAnvkt
-        CBtzX3aVwHTHqoEYxsexR47RqMrMWH4=
-X-Google-Smtp-Source: ABdhPJxLHxY5B/1/24SCUn7XXKlwC94b5w3syA9kZtJZKyl6crABDt97iM/RyZ5rE5bZWb7g3CLTvQ==
-X-Received: by 2002:a17:90a:c7d5:: with SMTP id gf21mr5221555pjb.111.1628905366170;
-        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id w2sm2907847pjq.5.2021.08.13.18.42.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=07FaLwcmmX6AOmFfgsqh6GrkV1dN1p5dJytNMnSho7U=;
+        b=lCquCkrbg+X65lKh8xCgAQT5+JENgQMJ5bpvcssI4LKFKKuLowUYEj/Wtud6YTRqVm
+         c4BHj7p4yrp81ru8ex21Gc8mfF3oRghfGnvUXBdc+sgspjAxaPAL0e+UNjrQwaHGDWl/
+         7vzlsXM6ZgrL7akExwpzPwgPbpkt6O/Xh1iUHBbfrTM7wbnB+H21SeZW/H0I+AsIS0oB
+         aZRnx5aiJ1ESlKTFbecQiu1yUjDZuTet1dd1CJ/KRnV2zGLTzLNQKJ1U5J0Dx4mksPtL
+         gNdbjwKBdck+/6nxeKwJEyHWCfXMlyt3Mb8sMncqagGuJjN7A5QDwkuYuAAm3hK6Uh7j
+         axBA==
+X-Gm-Message-State: AOAM530nkU7DcIbuLNf/l6UylDtPuwXrRFzKRrG1+xzg62DJA/DeK0w1
+        VeE4goqLVwNCdGcepuDnTVo=
+X-Google-Smtp-Source: ABdhPJwvkHis4sOBiqm/ITKlGQRBIYW3ndn3dGo/AJ/jO3TNHJK7n5l4YvlKXA2L3qMWsvqac+Zi7w==
+X-Received: by 2002:a63:1e4e:: with SMTP id p14mr4804871pgm.261.1628905508159;
+        Fri, 13 Aug 2021 18:45:08 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id u20sm4298718pgm.4.2021.08.13.18.45.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 18:42:45 -0700 (PDT)
+        Fri, 13 Aug 2021 18:45:07 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 09:44:55 +0800
 From:   Changbin Du <changbin.du@gmail.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] preempt: add in_serving_irq() and apply to rcutiny and vsprintf
-Date:   Sat, 14 Aug 2021 09:42:34 +0800
-Message-Id: <20210814014234.51395-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: in_irq() cleanup
+Message-ID: <20210814014455.wffdzvtgz54y6mgn@mail.google.com>
+References: <20210813144713.85598-1-changbin.du@gmail.com>
+ <87o8a1xsbn.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8a1xsbn.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At some places we need to determine whether we're in nmi, hardirq or
-softirq context. This adds a macro in_serving_irq() as a shortcut for
-that.
+On Fri, Aug 13, 2021 at 09:44:28AM -0600, Jonathan Corbet wrote:
+> Changbin Du <changbin.du@gmail.com> writes:
+> 
+> > Replace the obsolete and ambiguos macro in_irq() with new
+> > macro in_hardirq().
+> >
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  Documentation/kernel-hacking/hacking.rst                    | 2 +-
+> >  Documentation/kernel-hacking/locking.rst                    | 4 ++--
+> >  Documentation/translations/it_IT/kernel-hacking/hacking.rst | 2 +-
+> >  Documentation/translations/it_IT/kernel-hacking/locking.rst | 4 ++--
+> >  Documentation/translations/zh_CN/kernel-hacking/hacking.rst | 2 +-
+> >  5 files changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
+> > index df65c19aa7df..f514cec8e16b 100644
+> > --- a/Documentation/kernel-hacking/hacking.rst
+> > +++ b/Documentation/kernel-hacking/hacking.rst
+> > @@ -77,7 +77,7 @@ fast: frequently it simply acknowledges the interrupt, marks a 'software
+> >  interrupt' for execution and exits.
+> >  
+> >  You can tell you are in a hardware interrupt, because
+> > -:c:func:`in_irq()` returns true.
+> > +:c:func:`in_hardirq()` returns true.
+> 
+> While you're in the neighborhood, can you please get rid of the :c:func:
+> markup?  We've not needed that for some time now; simply saying
+> in_hardirq() is sufficient.
+>
+No problem, will updaate it soon.
 
-Meanwhile, apply this new macro to existing code in rcutiny and vsprintf.
+> Thanks,
+> 
+> jon
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- include/linux/preempt.h | 4 +++-
- include/linux/rcutiny.h | 3 +--
- lib/vsprintf.c          | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 9881eac0698f..9a1c924e2c6c 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -92,12 +92,14 @@
-  * in_nmi()		- We're in NMI context
-  * in_hardirq()		- We're in hard IRQ context
-  * in_serving_softirq()	- We're in softirq context
-+ * in_serving_irq()	- We're in nmi, hardirq or softirq context
-  * in_task()		- We're in task context
-  */
- #define in_nmi()		(nmi_count())
- #define in_hardirq()		(hardirq_count())
- #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
--#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-+#define in_serving_irq()	(in_nmi() | in_hardirq() | in_serving_softirq())
-+#define in_task()		(!in_serving_irq())
- 
- /*
-  * The following macros are deprecated and should not be used in new code:
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 7fedbd33d5d2..812d42f22e9c 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -87,8 +87,7 @@ static inline void rcu_irq_exit_irqson(void) { }
- static inline void rcu_irq_enter_irqson(void) { }
- static inline void rcu_irq_exit(void) { }
- static inline void rcu_irq_exit_check_preempt(void) { }
--#define rcu_is_idle_cpu(cpu) \
--	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
-+#define rcu_is_idle_cpu(cpu) (is_idle_task(current) && !in_serving_irq())
- static inline void exit_rcu(void) { }
- static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- {
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 2c5b4351330c..9324439c8543 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
- 		 * kptr_restrict==1 cannot be used in IRQ context
- 		 * because its test for CAP_SYSLOG would be meaningless.
- 		 */
--		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
-+		if (in_serving_irq()) {
- 			if (spec.field_width == -1)
- 				spec.field_width = 2 * sizeof(ptr);
- 			return error_string(buf, end, "pK-error", spec);
 -- 
-2.30.2
-
+Cheers,
+Changbin Du
