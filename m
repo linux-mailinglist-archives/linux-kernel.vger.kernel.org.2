@@ -2,121 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE433EC41A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E533EC41C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238785AbhHNRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 13:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        id S238861AbhHNR1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 13:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238690AbhHNRXA (ORCPT
+        with ESMTP id S233455AbhHNR1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 13:23:00 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA52C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id w14so19997431pjh.5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cj3brR7/gBmdZFywr+8Ggozpje7JHKDRwC1PgsV8mJA=;
-        b=GqhHLlJmqw12wvkn0UJ/QoTElJtmFzwFMo0xTTgqQTlSlTWGYf0uQVyd5mlfXnzTz/
-         epRzJ4XXvPVgVEgWba/nno+gnkTX0eEM8vms6v92iLD0T8/GojxVPOp2cFxXAMxzBw92
-         aIHDkv8QQXyn+eh6GLeofqLcG89QBEY0cuUomgphY144DGbBjCaj0fnKx8PzctJ9oSZY
-         WGLZo5xiIJeCfJtruvetrnbCvkbQAjYew/dPichw/R3ZSGa8VHr7fs7hPMNl1k9VIWwc
-         RJJ3tDQpIOC7ZupSjb7MGOG8ZC60+U7Psyw7x+5l70HiG4uIY7OrtFvmms9kmru8RiA4
-         eRJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cj3brR7/gBmdZFywr+8Ggozpje7JHKDRwC1PgsV8mJA=;
-        b=O92RcXVacsdjnzVokqn7AfhTn3S1Vusy96L5eLpkmNxDLuwx016ZAI+WE19+Znm5R4
-         f8g7njBrV2/FnFx0kQno0DQhhIeBrLh65MPmMF5XpTB18NlcE6m+78VZ7Kr+xoBSi9yM
-         5+Ld8+gnd76OmBWqjWhacdyZTFHVL33UYAaiqq2WJ4QZUE0lYy1/eQij3c1ZKtSj3v7n
-         +J04osgGRnbOeiWjNU3xCD/+xK1UlkflU9jtmPc0t5nv1NihQPHNAI5/8DmEt/EqqXeD
-         ZHtDgrEqLD4Dy5rhiZ1iP9KLK+pJ83iaF4iXTjXTzLogE0FIpheOXuLnqM82HlP/479a
-         jGiw==
-X-Gm-Message-State: AOAM5336ZWSg5CSNN1zZo2givGIl9al3uNov0PdX/sIaOYYhabU6RnDg
-        mHfhg7BJj7QSmsBCCiZpjEr20dJvFRKfmP68qjqQUg==
-X-Google-Smtp-Source: ABdhPJxbf3pmQsG8AgZuA9FcoS3029YBFQL8bd3yFDPJ2qyt5ncnYj6PI92zQdiVpMS7euZ1iU5CWU79QKBj63x/mAw=
-X-Received: by 2002:a63:aa43:: with SMTP id x3mr7683855pgo.208.1628961751198;
- Sat, 14 Aug 2021 10:22:31 -0700 (PDT)
+        Sat, 14 Aug 2021 13:27:35 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F5DC061764;
+        Sat, 14 Aug 2021 10:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ts6p6DQyVVItKQ36n6pBKr81c8bi9xYRh03p1TenZaI=; b=VwZQ0ebrVRQEh16Wv2emfZGPQ
+        m7aTqirnFQfWuPWGcutZb/cvsfgATL3BFVunz4xEVgIX3/MLWA1A9paNiuioU4Q4ZiKMB9NqLnl5J
+        9nGEVyBDYQ+5J4XOZKcnIpfNiYJKSPTaMxzeb2tsIbK4EEQZD1+SL1mHJ2vgblwNHQjBdbSuF8ykX
+        TVnYIW+GYmRUnUp4sshsc+vVX2OEtanNrqNKyHfglFqgusd6SrgoS66jtLbO3QSMcJf3GmAHbBmhB
+        Z4gZ6zxTtGVx3+6NHyZPtnkdUBcmvwVvOXaqwvPJXB0i4fS4EsDt0aizk/FCk8bDd4E7dcXlOz2Rm
+        kQMod8q7g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47290)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mExQw-0005SN-V5; Sat, 14 Aug 2021 18:26:58 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mExQu-0006DJ-SL; Sat, 14 Aug 2021 18:26:56 +0100
+Date:   Sat, 14 Aug 2021 18:26:56 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Song Yoong Siang <yoong.siang.song@intel.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
+ to WOL event
+Message-ID: <20210814172656.GA22278@shell.armlinux.org.uk>
+References: <20210813084536.182381-1-yoong.siang.song@intel.com>
 MIME-Version: 1.0
-References: <20210814160804.11634-1-fmdefrancesco@gmail.com>
-In-Reply-To: <20210814160804.11634-1-fmdefrancesco@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 14 Aug 2021 18:22:20 +0100
-Message-ID: <CAA=Fs0nR+Jh-1V1DdsZB9pMpeLRRwbQNh2X9UMMabh-vAubvqw@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: os_dep: Remove defined but not used variables
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813084536.182381-1-yoong.siang.song@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Aug 2021 at 17:08, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
->
-> Remove defined but not used const variables. Issues detected by GCC
-> running with -Wunused-const-variable option enabled.
->
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On Fri, Aug 13, 2021 at 04:45:36PM +0800, Song Yoong Siang wrote:
+> Add Wake-on-PHY feature support by enabling the Link Status Changed
+> interrupt.
+> 
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
 > ---
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 21 --------------------
->  1 file changed, 21 deletions(-)
->
-> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> index 38ee41f9d2ba..d9fdd83218dc 100644
-> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> @@ -84,11 +84,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
->         6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
->         48000000, 54000000};
->
-> -static const char * const iw_operation_mode[] = {
-> -       "Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
-> -       "Secondary", "Monitor"
-> -};
-> -
->  void indicate_wx_scan_complete_event(struct adapter *padapter)
+>  drivers/net/phy/marvell10g.c | 33 ++++++++++++++++++++++++++++++++-
+>  1 file changed, 32 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
+> index 0b7cae118ad7..d46761c225f0 100644
+> --- a/drivers/net/phy/marvell10g.c
+> +++ b/drivers/net/phy/marvell10g.c
+> @@ -76,6 +76,11 @@ enum {
+>  	MV_PCS_CSSR1_SPD2_2500	= 0x0004,
+>  	MV_PCS_CSSR1_SPD2_10000	= 0x0000,
+>  
+> +	/* Copper Specific Interrupt registers */
+> +	MV_PCS_INTR_ENABLE	= 0x8010,
+> +	MV_PCS_INTR_ENABLE_LSC	= BIT(10),
+> +	MV_PCS_INTR_STS		= 0x8011,
+> +
+>  	/* Temperature read register (88E2110 only) */
+>  	MV_PCS_TEMP		= 0x8042,
+>  
+> @@ -1036,7 +1041,7 @@ static void mv3110_get_wol(struct phy_device *phydev,
 >  {
->         union iwreq_data wrqu;
-> @@ -6666,19 +6661,3 @@ struct iw_handler_def rtw_handlers_def = {
->         .num_private_args = sizeof(rtw_private_args) / sizeof(struct iw_priv_args),
->         .get_wireless_stats = rtw_get_wireless_stats,
->  };
-> -
-> -/*  copy from net/wireless/wext.c start */
-> -/* ---------------------------------------------------------------- */
-> -/*
-> - * Calculate size of private arguments
-> - */
-> -static const char iw_priv_type_size[] = {
-> -       0,                            /* IW_PRIV_TYPE_NONE */
-> -       1,                            /* IW_PRIV_TYPE_BYTE */
-> -       1,                            /* IW_PRIV_TYPE_CHAR */
-> -       0,                            /* Not defined */
-> -       sizeof(__u32),            /* IW_PRIV_TYPE_INT */
-> -       sizeof(struct iw_freq),  /* IW_PRIV_TYPE_FLOAT */
-> -       sizeof(struct sockaddr),        /* IW_PRIV_TYPE_ADDR */
-> -       0,                            /* Not defined */
-> -};
-> --
-> 2.32.0
->
+>  	int ret;
+>  
+> -	wol->supported = WAKE_MAGIC;
+> +	wol->supported = WAKE_MAGIC | WAKE_PHY;
+>  	wol->wolopts = 0;
+>  
+>  	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_WOL_CTRL);
+> @@ -1045,6 +1050,13 @@ static void mv3110_get_wol(struct phy_device *phydev,
+>  
+>  	if (ret & MV_V2_WOL_CTRL_MAGIC_PKT_EN)
+>  		wol->wolopts |= WAKE_MAGIC;
+> +
+> +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_PCS_INTR_ENABLE);
+> +	if (ret < 0)
+> +		return;
+> +
+> +	if (ret & MV_PCS_INTR_ENABLE_LSC)
+> +		wol->wolopts |= WAKE_PHY;
+>  }
+>  
+>  static int mv3110_set_wol(struct phy_device *phydev,
+> @@ -1099,6 +1111,25 @@ static int mv3110_set_wol(struct phy_device *phydev,
+>  			return ret;
+>  	}
+>  
+> +	if (wol->wolopts & WAKE_PHY) {
+> +		/* Enable the link status changed interrupt */
+> +		ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
+> +				       MV_PCS_INTR_ENABLE,
+> +				       MV_PCS_INTR_ENABLE_LSC);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* Clear the interrupt status register */
+> +		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_PCS_INTR_STS);
+> +	} else {
+> +		/* Disable the link status changed interrupt */
+> +		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_PCS,
+> +					 MV_PCS_INTR_ENABLE,
+> +					 MV_PCS_INTR_ENABLE_LSC);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
 
-Thanks Fabio.
+How does this work if the driver has no interrupt support? What is
+the hardware setup this has been tested with?
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+What if we later want to add interrupt support to this driver to
+support detecting changes in link state - isn't using this bit
+in the interrupt enable register going to confict with that?
 
-Regards,
-Phil
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
