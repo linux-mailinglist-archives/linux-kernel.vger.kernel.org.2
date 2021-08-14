@@ -2,60 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7DD3EBF48
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BFC3EBF49
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhHNBNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236353AbhHNBM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:12:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E24A16109D;
-        Sat, 14 Aug 2021 01:12:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628903549;
-        bh=m441pVncbtbET6aNLJ5kYSM3mGYbzRbFWyAZaLu53Dc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Xy27V8TP/GS+NO4LqmtUPTBrSgg/gcQ4UAAHJ7/aQu1niLqG7d3pDgx+U1/FevvPY
-         2nmzSrfOXhoQ1m/6XPG+1o7/22YYDHa6WhpA/WjtXbuQcmmoomBAl0x24AkLoUhE/9
-         kl6cVmWz+po52d3qlrFdnljhCE4Yxp+bu4gJ/OnJmFZwZP4RQAzoXhGV9H03zl6YwD
-         CN5+IwhfoO7KgOEti3+ba7aYOsnPiX4e80z19rdqQXHCLUHeZMAmIl0VoTwagC1KXx
-         A/PcmBJGt6rH5gxJr48p8REM4jwdtaMWpJI3H+Ooq1NnAJmrsd+BeVRV3MmhfQ9p4b
-         uq17ROYDUyAUw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD045609AF;
-        Sat, 14 Aug 2021 01:12:29 +0000 (UTC)
-Subject: Re: [GIT PULL] pin control fixes for v5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
-References: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdZzV_cCt6QPTHRtUNgWAJt6grE=CFYJH-qjnsP_Z0nnbw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-2
-X-PR-Tracked-Commit-Id: c4b68e513953c3370ce02c3208c1c628c0b86fd3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 462938cd48f2516cfc56187617280f2daa3debf7
-Message-Id: <162890354989.25277.15362299449872003838.pr-tracker-bot@kernel.org>
-Date:   Sat, 14 Aug 2021 01:12:29 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        id S236333AbhHNBOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236200AbhHNBOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Aug 2021 21:14:01 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83409C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:13:33 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so12484181pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkp5EdF8JGGUL9Fj5dPILwNGE1Ih8YlWbFZXceS3klc=;
+        b=uIIR8e+eVgkgXKMT5Z8N2ocY/YPRP2SmO8qGm2VygwKIk8v/s0gk7sHFBfOajHHQHV
+         x5gvKqP0J5P+VbwbG2axqXd88v+AAu8WVNFCkwY+6to6iosxs9rLktSRPDxF/8GAQ650
+         2o1wvUCL6jlIto7O3B2JyDoNSuLQUCDzDxzJj2KEo+I3AJpPqn0QxnpnlFAVrCCJT6wo
+         S8BMI+CpPFjVRCTFYdTOToBn7rrDBgWaptYQ5bvw8MZ2QK9OZnANJh6r/OHhoFVPT/cs
+         zGsRzDMidaZmaiYu4ka2yLb3M7jhZtDAPviPV7QIWeqecXK1Wv0gP3ri8HjJEBK6d/vl
+         8BRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkp5EdF8JGGUL9Fj5dPILwNGE1Ih8YlWbFZXceS3klc=;
+        b=ZQquW83i+Spl72WrU6Hu5Pl5GtRdIe6J39xm27RJ9oD4kz0P81cFLW/eLAWURoUJTb
+         TEkfh5JVACHPPGfkTUm8tFYLVDuCudcAskFh/UQnSnCSB8GBD8KRPkSdv52hkTBqaUGS
+         UfzxRzqjz0G02jFWYSRsa0HzpLiosb3dr1rZLAsoMiQymSHHMtPSXaXro9o+BWnwjEAd
+         dEpkw3CKmuzOaPHBmI+W/GFrkp7bSzG/IWNnZAAo7emlYQkz0Hus5SgmRYGGX+A3TDAm
+         vJRS3P6HjDyWOSN/5fQyB/Sj3QBPp6IfQETZFDO2wyOs2a1MNhOekERv4p9jMfD+eGTo
+         71OA==
+X-Gm-Message-State: AOAM530horjZcMg2UeVuMzP3sjHH9npXR06Z4uQBflFCV3w5K+/bVwj2
+        6A79/x/xAqcs/iSX2yvPrGs=
+X-Google-Smtp-Source: ABdhPJx8GmytcYeNUJoLJeC2P8mkrFQipWlkCPLfI8EAQ9TybqESWsl57QP9tgzX605KqvNf3H7ccg==
+X-Received: by 2002:a17:902:850a:b029:12c:8da9:8bd2 with SMTP id bj10-20020a170902850ab029012c8da98bd2mr4085938plb.58.1628903613158;
+        Fri, 13 Aug 2021 18:13:33 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id t1sm4292407pgr.65.2021.08.13.18.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 18:13:32 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] bus: fsl-mc: replace in_irq() with in_hardirq()
+Date:   Sat, 14 Aug 2021 09:13:19 +0800
+Message-Id: <20210814011319.5147-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Aug 2021 11:21:43 +0200:
+Replace the obsolete and ambiguos macro in_irq() with new
+macro in_hardirq().
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-2
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ drivers/bus/fsl-mc/mc-sys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/462938cd48f2516cfc56187617280f2daa3debf7
-
-Thank you!
-
+diff --git a/drivers/bus/fsl-mc/mc-sys.c b/drivers/bus/fsl-mc/mc-sys.c
+index f2052cd0a051..42662beb09b2 100644
+--- a/drivers/bus/fsl-mc/mc-sys.c
++++ b/drivers/bus/fsl-mc/mc-sys.c
+@@ -248,7 +248,7 @@ int mc_send_command(struct fsl_mc_io *mc_io, struct fsl_mc_command *cmd)
+ 	enum mc_cmd_status status;
+ 	unsigned long irq_flags = 0;
+ 
+-	if (in_irq() && !(mc_io->flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL))
++	if (in_hardirq() && !(mc_io->flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL))
+ 		return -EINVAL;
+ 
+ 	if (mc_io->flags & FSL_MC_IO_ATOMIC_CONTEXT_PORTAL)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.30.2
+
