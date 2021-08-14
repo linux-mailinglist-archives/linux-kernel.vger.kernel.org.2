@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AD83EC13C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC193EC13E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237240AbhHNHsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 03:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236519AbhHNHsb (ORCPT
+        id S237324AbhHNHwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 03:52:18 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:54191 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236519AbhHNHwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 03:48:31 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5437BC06175F;
-        Sat, 14 Aug 2021 00:48:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id d11so22518878eja.8;
-        Sat, 14 Aug 2021 00:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8fEyrpDTg47gFd31UzZ0ta6jHJGs7IbNEF5lPQeob9k=;
-        b=S5ZVB7A1d2RXw59YAFt0TXWz/Wt5TZ0DWeW0q+UryXgdVVKbqE2RcpAP6EsGasYPfD
-         5i8e5LogHj/0gy9QkBERQx0c7EYo761ovSOQLzu94EUaTuQ7BC1SarXd+r6impvMeoYn
-         chIdS/jV38XGr2LDPhhEQNyNh7hJsmRF9fwmSTbCq4INUT2bHBFtz7D43xQjVmljVD17
-         K62/SK/t7Wrx0LfoE90kYlKSoCYRbJoMXfkQnyEPx78yxHzJgixh/0lsNGkPKH+/LFhJ
-         tLKV/2hK31CzFKsNYqiUBT8I7KQ53oMLb+wgPuik1BpzKuYbiuQvYtNFhy9dq8hkpKqi
-         0wQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8fEyrpDTg47gFd31UzZ0ta6jHJGs7IbNEF5lPQeob9k=;
-        b=MCj8hFLOGQNQTH9GuHsx1+qlI4JVrdFVRao8An3fCIPlml+Dq8uP4/We9artOQQekA
-         tQ2u930a8Ch+jfozx5yp4cr4u7bwPLcXrCaY83r0ELvkrS1Gb6KIk+O4QYyxxofTW3dV
-         8N4xVO9cbORbXyPu/+kFBzjEBsVIsk3EyDfuS3vgyTmU/+1oro8ByswbIcvJa8fokI6S
-         JgaIYgcK2rPPQt2i7EptoHZNQ32joh8xa+JmGGkS/kz4qdD4U8cExf+TkZ9HzUq5tTMW
-         I9WTA6jmsHAEtsRaauVylmdcyRFfadTarmVvPWiavujz6gaiS/rmAm0fV1/jY4g7wYpD
-         FQ1g==
-X-Gm-Message-State: AOAM531vUqkHQX1VtfZtcRYzaX9WJDm6GDRCJEQYEeA+AYmSaIVe/UH5
-        tfCFeTwurc3uXKylrgDsbCN90iVxT7kLq8/6ges=
-X-Google-Smtp-Source: ABdhPJyH6+0VTBjoT8UzCN51zosB96oIt4y+27vaDfSDbSuQ54jYU96yIImbawQpmpBs6u/cfZkUk4/XkogxpUlDz+k=
-X-Received: by 2002:a17:906:b28d:: with SMTP id q13mr6205218ejz.308.1628927281732;
- Sat, 14 Aug 2021 00:48:01 -0700 (PDT)
+        Sat, 14 Aug 2021 03:52:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 826F75C00EE;
+        Sat, 14 Aug 2021 03:51:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 14 Aug 2021 03:51:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=r7z4wj
+        tS+5cvW6c8Afk88EXJJL+Kwa5QXm4fkgHzNpA=; b=DQF8I0D9YkUUr38GZ9oQ4q
+        ZnM6irqRgP7mK5XjC+8vdUT/mEqw38h2aNrXu02nLcBWJihLJpq8GYk+FPwE+ADC
+        w6fD+HE0b7SNfxR7/MapTCVBjcfwMc9xs0uESEyhq8jxqnmMJODUnZygmm1GHokx
+        u7xhC9J2WASa9DCuaueZrXTy0WCHF6RvCRPO/SkXSvZ1AAuRzEb8SNl7ddjHylK1
+        GKP1cb+EM1piQ4yQX4VBXHRHxPsbBquBN901BfLxc3B/2TmxihylKDm4oEZYOeaT
+        z1qpJwJYpz81PWmVSzctdFDyM89NM1abMmy5YIN6ik0dKLRYnAtgw03xVX4ZHVaw
+        ==
+X-ME-Sender: <xms:E3YXYXDgFaD_EUvRULYLLZju8AVEKlVRpUtXTrmFhdZwqZ3fvOLmrw>
+    <xme:E3YXYdhLKyANl8RAgRnX8zR_tRRMHLAnnj33BdB4RG94-EAa9zR_p5JvrpJhvsBLz
+    78ytdqc9m0ZAFl2I_8>
+X-ME-Received: <xmr:E3YXYSmzE8sjMFONtgHC0qaguejrTMyMOSor4tVuhpzM1NnusqfO2NN2ql7cFElUxcKe-w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeeigdduvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffuvffkjghfofggtgesthdtre
+    dtredtvdenucfhrhhomhepnfhukhgvucflohhnvghsuceolhhukhgvsehljhhonhgvshdr
+    uggvvheqnecuggftrfgrthhtvghrnhepgfeffedufffhgfeuheegffffgeegveeifeeute
+    fhieejffetudfgueevteehtdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:E3YXYZyKCScxwsJ6OykOqSFZxRrWymnWJvhHK5dveGgBEhSna3XlYw>
+    <xmx:E3YXYcTwq31rcRZuqaCHFzn7UYsE6ybFCA0yvPT8pX_FuaH9avbBZA>
+    <xmx:E3YXYcY3HGqw9eKvpBNc9mIJH1MIhvmKZiWYa35c0TrEBASL_bQXaw>
+    <xmx:FHYXYXLNNP2myXKJld2baGWzmhdshTpG2xLedVb8y0i51IUN60HoGw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 14 Aug 2021 03:51:43 -0400 (EDT)
+Date:   Sat, 14 Aug 2021 19:51:29 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v3 0/1] asus-wmi: add platform_profile support
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org
+Message-Id: <THKTXQ.ELSNF0TA7RAV1@ljones.dev>
+In-Reply-To: <20210814043103.2535842-1-luke@ljones.dev>
+References: <20210814043103.2535842-1-luke@ljones.dev>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-References: <1628855870-5070-1-git-send-email-wang.yong12@zte.com.cn> <YRZvAojYDsVPT+wr@casper.infradead.org>
-In-Reply-To: <YRZvAojYDsVPT+wr@casper.infradead.org>
-From:   yong w <yongw.pur@gmail.com>
-Date:   Sat, 14 Aug 2021 15:47:48 +0800
-Message-ID: <CAOH5QeAY2ENs1s8hGuaHr2j9dV4=TaoR08UDOYRKHx+LjDc1DQ@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: Add configuration to control whether vmpressure
- notifier is enabled
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, tglx@linutronix.de,
-        peterz@infradead.org, Shakeel Butt <shakeelb@google.com>,
-        guro@fb.com, alexs@kernel.org, richard.weiyang@gmail.com,
-        sh_def@163.com, sfr@canb.auug.org.au, wang.yong12@zte.com.cn,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.yang29@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> =E4=BA=8E2021=E5=B9=B48=E6=9C=8813=E6=
-=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=889:09=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Fri, Aug 13, 2021 at 04:57:50AM -0700, yongw.pur@gmail.com wrote:
-> > @@ -855,7 +856,7 @@ At reading, current status of OOM is shown.
-> >            The number of processes belonging to this cgroup killed by a=
-ny
-> >            kind of OOM killer.
-> >
-> > -11. Memory Pressure
-> > +11. Memory Pressure (CONFIG_MEMCG_VMPRESSURE)
-> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Did you build the documentation after changing it (eg make htmldocs)?
 
-Thank you for your reply.
-Sorry, I didn't  build the documentation after changing it.I will pay
-attention next time.
 
-Thanks.
+On Sat, Aug 14 2021 at 16:31:02 +1200, Luke D. Jones <luke@ljones.dev> 
+wrote:
+> Changelog:
+> - V2
+>   + Correctly unregister from platform_profile if
+>     throttle_thermal_policy fails
+>   + Do platform_profile_notify() in both 
+> throttle_thermal_policy_store()
+>     and in throttle_thermal_policy_switch_next()
+>   + Remove unnecessary prep for possible fan-boost modes as this
+>     doesn't match expected platform_profile behaviour
+> - V3
+>   + Add missing declaration for err in
+>     throttle_thermal_policy_switch_next
+> 
+> Luke D. Jones (1):
+>   asus-wmi: Add support for platform_profile
+> 
+>  drivers/platform/x86/asus-wmi.c | 139 
+> +++++++++++++++++++++++++++++++-
+>  1 file changed, 135 insertions(+), 4 deletions(-)
+> 
+> --
+> 2.31.1
+
+Hi,
+
+I teested the patch again and it appears that the 
+platform_profile_notify() in both throttle_thermal_policy_store() and 
+throttle_thermal_policy_switch_next() updates the 
+/sys/firmware/acpi/platform_profile sysfs path fine, but userspace 
+isn't updated?
+
+The way I'm checking is:
+1. echo 1 |sudo tee 
+/sys/devices/platform/asus-nb-wmi/throttle_thermal_policy
+2. cat -p /sys/firmware/acpi/platform_profile
+   - performance (updated correctly by platform_profile_notify)
+3. Check gnome-settings, not updated.
+
+Doing `echo "performance" |sudo tee 
+/sys/firmware/acpi/platform_profile` updates both 
+throttle_thermal_policy and userspace as expected. I'm wondering if 
+I've missed something?
+
+Cheers,
+Luke.
+
+
