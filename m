@@ -2,178 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512543EBF33
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071423EBF36
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236202AbhHNBHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236141AbhHNBHF (ORCPT
+        id S236206AbhHNBIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:08:48 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:27219 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236081AbhHNBIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:07:05 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0239C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:06:37 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id w20so23185318lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AzF6zd9JjX8F2cTA3zVGcFIEpz9eK1G/eiStB2DECqY=;
-        b=Uq3XLk6lrpFptnkzqvf21MBT0ct05kXZIy7vnGNZ4ojy8x26JVwiLYU0V03v8MZIHi
-         4fX6IB0zI4DIhX3wRjGxFFx8YAprU0uUcoFYDretIJV7d/gDwd9TGmAY2luBWFd1dqzr
-         NlZaWPD2mJ+HoSGvljAGrxaY0CTUaodrYkheMq/B5vPPUWRl0bkN5MVfqaVGwNu8A4Ku
-         Xj4/B0Z0Tf7JIAJg/3mQY95EegNhjOr7TBJaqyzcoEjw5D6mpEMs2MNy9rFVrBTzJIkq
-         F4haaMx/EBYDgMaXn+24h2Y+VbkA/mSiVitpJZaQ0V9VpnuWsvUowTeQL6RwpRjbveEa
-         YObQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AzF6zd9JjX8F2cTA3zVGcFIEpz9eK1G/eiStB2DECqY=;
-        b=IYjGA3I52NtX3qC3Tjr38aJsUaAz71MjaocDZsBDGpe/J3Ym3OWJULqSrv2BTq4fUv
-         18Ovkj8cuTQWJR+e9N/HtvT4zYnrcJCjWq6xRv2vYrefp11T4AXRIor4a4NGiDhQ3yIa
-         lykvBPMGUOEpeWpvSUeHjW6W22Nl8QVdSnUnrRtTST9q8jJVE84Loufk/998fy58B8DK
-         4Wft07OVpLsrSDs0EI8v0mJM4TUeexxclJqeIH9QxJeZlTkfLz+o126/geJANJxYjI1w
-         BI4vMcEHfzAgugl0sknOsW9pIUh1TtqDDN3XIYlOwbZ0sTRUwOHo3lVJeQTvp8cpVZeu
-         VrNg==
-X-Gm-Message-State: AOAM531ouzafq41Rs+MG/h1Veb99H6Eq9bPJ9+LBd2bhuKWkPpbDfjjy
-        f8PvLCN8YTNYJk31aqqTVAxbZGUg9pfsPoXllHSNjg==
-X-Google-Smtp-Source: ABdhPJzHnPFEzY1zOELKvkCEgi7MSs3DvC1sUZqfe5OG7rLv6iJWlv23/7I0qdSwbAy7OwqppQvUOsUfrn8k1hcCVDY=
-X-Received: by 2002:a19:4890:: with SMTP id v138mr3484589lfa.626.1628903196300;
- Fri, 13 Aug 2021 18:06:36 -0700 (PDT)
+        Fri, 13 Aug 2021 21:08:47 -0400
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 17E182bW009447
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 10:08:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 17E182bW009447
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628903283;
+        bh=IIOxmNpjJY0+mi9Qvj3dpkC38f3a/+t9vF+6h5pqjY4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VJ9LOAt5oQAtVD1u1zH4a1sKQThIKqLuk1ZB/+gDYznkhaNVNt4+tKiEQU1oI93hw
+         /IrshGmnwmp76dfZrrgnotrLlaAtavPkI1/fvgBsLmObISBW24nIHM0qlTO/NeECyQ
+         FGh1us7JVyHCn4o1vvp20tK7Q4UUF6ixx/pc8HDJTypaIOxjMLuYI3naWC+ZvEo9fQ
+         n94ZPJu/ixtnvMUvsrCMT/5DB5HZZVwkjf609PHfZTlJ+BvtnAYJ43RdepF8p3zm+0
+         lAhfflH7V3IojKlM4KRnyJXq4HZSB9326vHx66uRKu1NKfhP/HuRwSMWV/5C8Aa1Rv
+         JRF0lfaDjCvIQ==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso18428530pjy.5
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Aug 2021 18:08:02 -0700 (PDT)
+X-Gm-Message-State: AOAM5333W/4eWiB1Ob60mbJOumylk/0Y7xNxJHeTexZeU0er2heooyFL
+        OsSA8fseTiBd/lR0i49bDr+hEZUmJc45dW9oD2U=
+X-Google-Smtp-Source: ABdhPJwufRns1AaxLlrpUK03Hmu7to7ofq87FFEsnzYqyeKbm340Mup7IAl+gEh2rsC1Di2qAzPB0vWGy4tzvoqxCpA=
+X-Received: by 2002:a65:6459:: with SMTP id s25mr4768167pgv.7.1628903281994;
+ Fri, 13 Aug 2021 18:08:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210721100220.ddfxwugivsndsedv@mobilestation>
- <YPf29+ewbrYgHxRP@kroah.com> <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
- <YPf+shNM6cXb3mfe@kroah.com> <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
- <20210721112531.xvu6ni5ksaehsrjh@mobilestation> <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
- <20210722181221.xh3r5kyu7zlcojjx@mobilestation> <YPnEO6NVFZDS1s//@yoga>
- <CALAqxLUT0e+mHMVo685oVTxR8y76733cN0yciQ7ePS6GRE+_dg@mail.gmail.com> <20210722220918.l7j6zw3aaa27qato@mobilestation>
-In-Reply-To: <20210722220918.l7j6zw3aaa27qato@mobilestation>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 13 Aug 2021 18:06:24 -0700
-Message-ID: <CALAqxLXrs0_Xs0JV5H-wS1q2CJ7XhW5Dj90eu=uazkRXXEMUxQ@mail.gmail.com>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
+References: <20210810205611.4013424-1-ndesaulniers@google.com>
+In-Reply-To: <20210810205611.4013424-1-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 14 Aug 2021 10:07:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
+Message-ID: <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add Nick to Kbuild reviewers
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 3:09 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> On Thu, Jul 22, 2021 at 01:09:05PM -0700, John Stultz wrote:
-> > On Thu, Jul 22, 2021 at 12:17 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > > > On Jul 21, 2021, 1:45 PM +0200, Krzysztof Kozlowski wrote:
-> > > > > I had impression that kernel defines interfaces which should be used and
-> > > > > are stable (e.g. syscalls, sysfs and so on). This case is example of
-> > > > > user-space relying on something not being marked as part of ABI. Instead
-> > > > > they found something working for them and now it is being used in "we
-> > > > > cannot break existing systems". Basically, AOSP unilaterally created a
-> > > > > stable ABI and now kernel has to stick to it.
-> > > > >
-> > > > > Really, all normal systems depend on aliases or names and here we have
-> > > > > dependency on device address. I proposed way how AOSP should be fixed.
-> > > > > Anything happened? Nope.
-> > > >
-> > > > First time he sent a possible solution for the problem:
-> > > > https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
-> > > >
-> > > > To sum up you could have used one of the more portable approaches
-> > > > 1. add an udc alias to the controller and use it then to refer to the
-> > > > corresponding USB controller
-> > >
-> > > Is there such a thing as "UDC alias"? Or are you suggesting that we
-> > > should add such feature?
-> > >
-> > > I think it would be wonderful if we could identify the UDCs on our
-> > > boards as "USB1" and "USB2", or "the one and only USB-C connector". But
-> > > unless that will fall back to the existing naming it would break John's
-> > > _existing_ userspace.
-> >
+On Wed, Aug 11, 2021 at 5:56 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> > Well, I'd not hold up the existing userspace I'm using as sacrosanct
-> > (AOSP devices still usually don't have to work cross-kernel versions -
-> > devboards being the main exception). I'm fine if we can rework
-> > userland as proposed, so that the issues can be avoided, but I
-> > honestly don't have enough context to really understand what that
-> > looks like (no idea what udc aliases are).
-> >
-> > And whatever we do, the main constraint is that userland has to be
-> > able to work with existing LTS kernels and newer kernels.
->
-> As I said in my response to Bjorn even if it is added to the kernel it
-> won't get to the official LTSes as it would be a new kernel feature.
-> New features aren't normally backported to the older kernels.
->
-> >
-> > > > 2. search through DT-nodes looking for a specific compatible/reg
-> > > > DT-properties.
-> > > >
-> > >
-> > > We could define that this is the way, but again we didn't yesterday so
-> > > your proposal is not backwards compatible.
-> >
->
-> > It may be backwards compatible, but I'm still not clear exactly how it
-> > would work.
-> >
-> > I guess if we look through all
-> > sys/bus/platform/devices/*/of_node/compatbile strings for the desired
-> > "snps,dwc3", then find which of the directories have the desired
-> > address in the string? (The suggestion for looking at reg seems
-> > better, but I don't get a char value out of the dwc3 of_node/reg
-> > file).
->
-> The algorithm is simple:
-> 1) You know what USB controllers you have on your platform. They are
-> supposed to be compatible with snps,dwc3 string and have some pre-defined
-> base address.
-> 2) Find all the files in the directory /sys/class/udc/.
-> 3) Walk through all the directories in /sys/bus/platform/devices/ with
-> names found in 2) and stop on the device with matching compatible/base
-> address defined in 1).
->
-> In my case the strings could be retrieved like this:
-> USB_NAME_COMPAT=$(/sys/bus/platform/devices/1f100000.usb/of_node/compatible | tr '\0' '\t' | cut -f1)
-> USB_DEVICE_ADDR="$(head -c 4 /sys/bus/platform/devices/1f100000.usb/of_node/reg | hexdump -ve '/1 "%02x"' | sed -e 's/^0*//g')"
+> Kees' post inspired me to get more involved. I still have a long way to
+> go in terms of mastery of GNU make, but at the least I can help with
+> more code review. It's also helpful for me to pick up on what's missing
+> from the LLVM ecosystem.
 
 
-Hey Serge,
-   I just wanted to follow up here.  Amit has reworked the db845c AOSP
-userland so that it no longer uses the fixed node name, but instead
-probes for it:
-  https://android-review.googlesource.com/c/device/linaro/dragonboard/+/1774872
+Reviews and tests are always appreciated.
+Of course, not only from those who are listed in
+the MAINTAINERS file, but everybody can provide
+reviews to any patches in their interests.
 
-Admittedly, it does take a short-cut.  As your algorithm above,
-digging up the devices and finding the sys/bus path to read the reg
-value and pipe through hexdump (which android doesn't have) seemed
-overly obtuse when the address is in the node name itself (while the
-only way to be sure, one normally doesn't use spectroscopy to
-determine the value of a coin when you can read what's printed on it
-:).  But, should the node naming be further changed at least the
-infrastructure we have can be reworked fairly easily to adapt now.
+Applied to linux-kbuild. Thanks.
 
-In any case, as we can handle the name change now, if you want to
-resubmit your patch, we would no longer object (but can't promise no
-one else might be bitten).  Sorry for the delay this caused, and we
-appreciate you working with us to find a solution.
 
-thanks
--john
+BTW, one struggle about being a maintainter
+of this entry is I need to take a look
+into random stuff.
+
+KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Another BTW, this patch reminds me of Michal.
+He is inactive for a long time.
+I should ask him if he wants to continue
+to be a kbuild maintainer.
+
+
+
+
+
+> Link: https://security.googleblog.com/2021/08/linux-kernel-security-done-right.html
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index efac6221afe1..9768e4a19662 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10091,6 +10091,7 @@ F:      fs/autofs/
+>  KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
+>  M:     Masahiro Yamada <masahiroy@kernel.org>
+>  M:     Michal Marek <michal.lkml@markovi.net>
+> +R:     Nick Desaulniers <ndesaulniers@google.com>
+>  L:     linux-kbuild@vger.kernel.org
+>  S:     Maintained
+>  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+> --
+> 2.32.0.605.g8dce9f2422-goog
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
