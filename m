@@ -2,166 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1583EC308
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071CC3EC30B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238584AbhHNN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 09:56:24 -0400
-Received: from mout.gmx.net ([212.227.15.15]:37597 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238523AbhHNN4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 09:56:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628949327;
-        bh=oirWK8f53ZhGtQZRUdXIiwXN3jynfvqqDCGUwEMI3IE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=TjwoWCOGX4Y2yAtLejBCAlcqr12vaSceXnzM2yYFMXJw9X3s90Sf9qY8cWGCaFL+j
-         xTgVwzgu/LHv34Wp4Kusdmf/Tym6cLTjxnJX4txV/7Fme6EnEL2fpcaFfvyBxezMmz
-         J8wygowy/tHPTGgFG5hHnL2SXJN72HUISCbBI7Xw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1Ma24s-1mZn2p00MW-00VzQC; Sat, 14 Aug 2021 15:55:27 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] drivers/iio: Remove all strcpy() uses
-Date:   Sat, 14 Aug 2021 15:55:09 +0200
-Message-Id: <20210814135509.4500-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S238450AbhHNOAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 10:00:04 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:39087 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhHNN7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 09:59:55 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d27 with ME
+        id hRzN250073riaq203RzNel; Sat, 14 Aug 2021 15:59:25 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 14 Aug 2021 15:59:25 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH] checkpatch: prefer = {} initializations to = {0}
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Julia Lawall <julia.lawall@inria.fr>
+Newsgroups: gmane.linux.kernel,gmane.linux.kernel.janitors
+References: <20210805104353.GD26417@kili>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <1b94e688-a070-998a-3014-96bcbaed4cae@wanadoo.fr>
+Date:   Sat, 14 Aug 2021 15:59:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wbAZIvOyO/2NXW+GZdxft/SGny5ZuRJgvK+wr/u1uLz1G2lP8ss
- jLbRjodMtUcXyJYn0VSRKxVqCJk8tCsNDJZTmBDGWDkBw3rstrha39n08YnUoob18tnXDoi
- txp/51jbDH+kUqSsWdkIDFJkyF72oJJY9dhroNuIWYzYaEk6ovWzN8wI5KsGV2WMILkbOir
- e6YrEyzc5Tm7fTL5umFgQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:K1/PrZK0DaQ=:TC03UH+ejTIVRLIqpormzx
- Bl8npx9Nq83jwG7rdkdbn4UwzbRqc7ROxHHiCM1LUNmy1TYvFnsOZC/0bFAZt2O22l3YDiJUK
- jtUXWw3nudhotEsaZzVYox5UfF23YtlpumhV6UAYdemybtpGN3kuYz2jyKqLrqwFJ0weE7T/M
- F/C1YdZSW6AYYQ190rVgPi00fQBpgewecZn6WetOIFOOOLmRamxmL6DrD6vRXIEW1kAVKSOBe
- XdD7mBGFEc4ouI6MCrUFUMBziXJh6GFWHf/tEQsu6MKxw6B+SaTaiT7X7ZR8Vw/zd0x5YYi++
- RmZftFublOfb3NDPlA5jv8EB6mw9lgO3HcjUY3OuNJDcD4NCqX97VH/IpqhXUSpH5Y8RzHGt6
- ZJCk3oA8W1NIb8+fY+oCi0RgYI9FK+zT4k7qsTFAMX/WI0gO7kG3JmNUQfya2WvhSIRrTFW3c
- U8CBw3YxAWNtY6URrmI3An/7PNyuHQ5sxbutvdhJ6QHulrQ38K4T6pmi0cf8O05iUZU4eWmoN
- ELOvv/8s3UlTwAnaP3eF1lffGDgMJF+diEc4cNTtvMY4gRZSkKNfel+3bHt88Zb/ywM/05PkW
- M8gLfdDiUYzvOJeyhETjGUmIrAUe4+RGEKGqX0HJYkwkJK/0vkpMSvgJL38naBLZrXVohpqLE
- ts3rjE/OjwlGq591TUskjXOX+Ljhif68ToBVArNSNhSbG9uqSOpbiRHbgPWPWAQO0H7lP79ZA
- YsPHbtDn2BA1CWIhkH5NX0tX3nUiUxiJxnUezMRi27UThshOJIcif9PJ6ADThtbC5z4Nyars2
- lJ9R8G+qLrljsedcnQ+HDWUA2of2lWvP4ITfXkJVAfc4QaZvtk+0dJwMFCDeYSTZGfAs6R15Y
- MqTzmJV6pEvX08zk6ghg5nZXGs7HO9TsfhJ3XB5aLbjZhvGoPGmuJ7e8UPYzQ0sp7V1o2qkB2
- UtYxjr4Cd2mprEFLF0aLIgH6zIDQRzOfM02hVKykB8Rv8exuErA1Vqr4PxXnQmQTso2PUzcOA
- 1U4ey6oKUZsYKOD/fMyUB+VEuF5tmmpDGtRnmNWivqdR6cavLLS4n2gKP6dt7AZqAJmsjksLt
- olAg/euqwEY8juWoxynNcScfEFyqoJvzWBYiS6yViuWm7zgmTNP54EEhA==
+In-Reply-To: <20210805104353.GD26417@kili>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. So, remove all the uses and add
-devm_kstrdup() or devm_kasprintf() instead.
+Hi all,
 
-This patch is an effort to clean up the proliferation of str*()
-functions in the kernel and a previous step in the path to remove
-the strcpy function from the kernel entirely [1].
+Le 05/08/2021 à 12:43, Dan Carpenter a écrit :
+> The "= {};" style empty struct initializer is preferred over = {0}.
+> It avoids the situation where the first struct member is a pointer and
+> that generates a Sparse warning about assigning using zero instead of
+> NULL.  Also it's just nicer to look at.
+> 
+> Some people complain that {} is less portable but the kernel has
+> different portability requirements from userspace so this is not a
+> issue that we care about.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>   scripts/checkpatch.pl | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 461d4221e4a4..32c8a0ca6fd0 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -4029,6 +4029,12 @@ sub process {
+>   			     "Using $1 is unnecessary\n" . $herecurr);
+>   		}
+>   
+> +# prefer = {}; to = {0};
+> +		if ($line =~ /= \{ *0 *\}/) {
+> +			WARN("ZERO_INITIALIZER",
+> +			     "= {} is preferred over = {0}\n" . $herecurr);
+> +		}
+> +
+>   # Check for potential 'bare' types
+>   		my ($stat, $cond, $line_nr_next, $remain_next, $off_next,
+>   		    $realline_next);
+> 
 
-[1] https://github.com/KSPP/linux/issues/88
+[1] and [2] state that {} and {0} don't have the same effect. So if 
+correct, this is not only a matter of style.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-The previous versions can be found in:
+When testing with gcc 10.3.0, I arrived at the conclusion that both {} 
+and {0} HAVE the same behavior (i.e the whole structure and included 
+structures are completely zeroed) and I don't have a C standard to check 
+what the rules are.
+gcc online doc didn't help me either.
 
-v1
-https://lore.kernel.org/linux-hardening/20210801171157.17858-1-len.baker@g=
-mx.com/
+To test, I wrote a trivial C program, compiled it with gcc -S and looked 
+at the assembly files.
 
-v2
-https://lore.kernel.org/linux-hardening/20210807152225.9403-1-len.baker@gm=
-x.com/
 
-v3
-https://lore.kernel.org/linux-hardening/20210814090618.8920-1-len.baker@gm=
-x.com/
+Maybe, if it is an undefined behavior, other compilers behave 
+differently than gcc.
 
-Changelog v1 -> v2
-- Modify the commit changelog to inform that the motivation of this
-  patch is to remove the strcpy() function from the kernel entirely
-  (Jonathan Cameron).
 
-Changelog v2 -> v3
-- Rewrite the code using devm_kstrdup() and devm_kasprintf() functions
-  (Andy Shevchenko).
-- Rebase against v5.14-rc5.
+However, the 2 persons listed bellow have a much better Linux and C 
+background than me. So it is likely that my testings were too naive.
 
-Changelog v3 -> v4
-- Reorder the variables (Andy Shevchenko).
-- Get the device in the definition block (Andy Shevchenko).
-- Reword the comment (Andy Shevchenko).
-- Change the conditions in the "if" statement to clarify the "0" check
-  (Andy Shevchenko).
 
- drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c | 30 +++++++++++++---------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+Can someone provide some rational or compiler output that confirms that 
+{} and {0} are not the same?
 
-diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/iio/imu/=
-inv_mpu6050/inv_mpu_magn.c
-index f282e9cc34c5..7eceae0012c9 100644
-=2D-- a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
-+++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
-@@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu6050_sta=
-te *st, int fifo_rate)
-  */
- int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
- {
-+	struct device *dev =3D regmap_get_device(st->map);
- 	const char *orient;
- 	char *str;
- 	int i;
-@@ -281,19 +282,24 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050_state=
- *st)
- 		/* z <- -z */
- 		for (i =3D 0; i < 3; ++i) {
- 			orient =3D st->orientation.rotation[6 + i];
--			/* use length + 2 for adding minus sign if needed */
--			str =3D devm_kzalloc(regmap_get_device(st->map),
--					   strlen(orient) + 2, GFP_KERNEL);
--			if (str =3D=3D NULL)
-+
-+			/*
-+			 * The value is negated according to one of the following
-+			 * rules:
-+			 *
-+			 * 1) Drop leading minus.
-+			 * 2) Leave 0 as is.
-+			 * 3) Add leading minus.
-+			 */
-+			if (orient[0] =3D=3D '-')
-+				str =3D devm_kstrdup(dev, orient + 1, GFP_KERNEL);
-+			else if (orient[0] =3D=3D '0' && orient[1] =3D=3D '\0')
-+				str =3D devm_kstrdup(dev, orient, GFP_KERNEL);
-+			else
-+				str =3D devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
-+			if (!str)
- 				return -ENOMEM;
--			if (strcmp(orient, "0") =3D=3D 0) {
--				strcpy(str, orient);
--			} else if (orient[0] =3D=3D '-') {
--				strcpy(str, &orient[1]);
--			} else {
--				str[0] =3D '-';
--				strcpy(&str[1], orient);
--			}
-+
- 			st->magn_orient.rotation[6 + i] =3D str;
- 		}
- 		break;
-=2D-
-2.25.1
+Because if confirmed, I guess that there is some clean-up work to do all 
+over the code, not only to please Sparse!
 
+
+Thanks in advance.
+CJ
+
+
+
+[1]: Russell King - 
+https://lore.kernel.org/netdev/YRFGxxkNyJDxoGWu@shredder/T/#efe1b6c7862b7ca9588c2734f04be5ef94e03d446
+
+[2]: Leon Romanovsky - 
+https://lore.kernel.org/netdev/YRFGxxkNyJDxoGWu@shredder/T/#efe1b6c7862b7ca9588c2734f04be5ef94e03d446
