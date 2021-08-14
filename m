@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E573EC129
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327213EC12D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 09:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbhHNHaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 03:30:52 -0400
-Received: from verein.lst.de ([213.95.11.211]:49474 "EHLO verein.lst.de"
+        id S237176AbhHNHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 03:34:37 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:47986 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236542AbhHNHav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 03:30:51 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DBFA567373; Sat, 14 Aug 2021 09:30:19 +0200 (CEST)
-Date:   Sat, 14 Aug 2021 09:30:19 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Christoph Hellwig <hch@lst.de>, linux-iio@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: IIO, dmabuf, io_uring
-Message-ID: <20210814073019.GC21175@lst.de>
-References: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
+        id S236519AbhHNHeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 03:34:36 -0400
+Received: from 82-99-180-238.static.bluetone.cz ([82.99.180.238] helo=phil.sntech)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mEoB4-0003bg-2O; Sat, 14 Aug 2021 09:33:58 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Simon Xue <xxm@rock-chips.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 0/7] arm64: dts: rockchip: rk3568-evb1-v10: add sd card support
+Date:   Sat, 14 Aug 2021 09:33:54 +0200
+Message-Id: <162892642459.2674259.13856979859165200065.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210805120107.27007-1-michael.riesch@wolfvision.net>
+References: <20210805120107.27007-1-michael.riesch@wolfvision.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2H0SXQ.2KIK2PBVRFWH2@crapouillou.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 01:41:26PM +0200, Paul Cercueil wrote:
-> Hi,
->
-> A few months ago we (ADI) tried to upstream the interface we use with our 
-> high-speed ADCs and DACs. It is a system with custom ioctls on the iio 
-> device node to dequeue and enqueue buffers (allocated with 
-> dma_alloc_coherent), that can then be mmap'd by userspace applications. 
-> Anyway, it was ultimately denied entry [1]; this API was okay in ~2014 when 
-> it was designed but it feels like re-inventing the wheel in 2021.
->
-> Back to the drawing table, and we'd like to design something that we can 
-> actually upstream. This high-speed interface looks awfully similar to 
-> DMABUF, so we may try to implement a DMABUF interface for IIO, unless 
-> someone has a better idea.
+On Thu, 5 Aug 2021 14:01:00 +0200, Michael Riesch wrote:
+> This series enables the SD card reader on the RK3568 EVB1
+> and completes the support for the on-board eMMC.
+> 
+> As the PMU IO domains are required, the patch series that
+> introduces support for the RK3568 PMU IO domains [1] has been
+> revised and integrated in this series.
+> Additionally, the required voltage regulators of the RK809
+> PMIC are enabled.
+> 
+> [...]
 
-To me this does sound a lot like a dma buf use case.  The interesting
-question to me is how to signal arrival of new data, or readyness to
-consume more data.  I suspect that people that are actually using
-dmabuf heavily at the moment (dri/media folks) might be able to chime
-in a little more on that.
+Applied, thanks!
 
-> Our first usecase is, we want userspace applications to be able to dequeue 
-> buffers of samples (from ADCs), and/or enqueue buffers of samples (for 
-> DACs), and to be able to manipulate them (mmapped buffers). With a DMABUF 
-> interface, I guess the userspace application would dequeue a dma buffer 
-> from the driver, mmap it, read/write the data, unmap it, then enqueue it to 
-> the IIO driver again so that it can be disposed of. Does that sound sane?
->
-> Our second usecase is - and that's where things get tricky - to be able to 
-> stream the samples to another computer for processing, over Ethernet or 
-> USB. Our typical setup is a high-speed ADC/DAC on a dev board with a FPGA 
-> and a weak soft-core or low-power CPU; processing the data in-situ is not 
-> an option. Copying the data from one buffer to another is not an option 
-> either (way too slow), so we absolutely want zero-copy.
->
-> Usual userspace zero-copy techniques (vmsplice+splice, MSG_ZEROCOPY etc) 
-> don't really work with mmapped kernel buffers allocated for DMA [2] and/or 
-> have a huge overhead, so the way I see it, we would also need DMABUF 
-> support in both the Ethernet stack and USB (functionfs) stack. However, as 
-> far as I understood, DMABUF is mostly a DRM/V4L2 thing, so I am really not 
-> sure we have the right idea here.
->
-> And finally, there is the new kid in town, io_uring. I am not very literate 
-> about the topic, but it does not seem to be able to handle DMA buffers 
-> (yet?). The idea that we could dequeue a buffer of samples from the IIO 
-> device and send it over the network in one single syscall is appealing, 
-> though.
+[1/7] dt-bindings: power: add rk3568-pmu-io-domain support
+      commit: fadbd4e7847905d61dd333a0d3d31654f4510bc6
+[2/7] soc: rockchip: io-domain: add rk3568 support
+      commit: 28b05a64e47cbceebb8a5f3f643033148d5c06c3
+[3/7] arm64: dts: rockchip: enable io domains for rk356x
+      commit: 2e9ce86bbea81022540ede98cac152df5566205e
+[4/7] arm64: dts: rockchip: rk3568-evb1-v10: enable io domains
+      commit: 915186bd99a55642ae77d7f9c46e295b3fd9dc1c
+[5/7] arm64: dts: rockchip: rk3568-evb1-v10: add regulators of rk809 pmic
+      commit: e3f6b997b6b17810583af79f458b35fc0a34d939
+[6/7] arm64: dts: rockchip: rk3568-evb1-v10: add node for sd card
+      commit: ef180dba76f583efc19c7d5f3d2809e0aa8856e8
+[7/7] arm64: dts: rockchip: rk3568-evb1-v10: add pinctrl and alias to emmc node
+      commit: eb8d07586e13fc7aa4ed68820240d36a03418193
 
-Think of io_uring really just as an async syscall layer.  It doesn't
-replace DMA buffers, but can be used as a different and for some
-workloads more efficient way to dispatch syscalls.
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
