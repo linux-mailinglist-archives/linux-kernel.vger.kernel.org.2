@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E9C3EBF40
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870D43EBF3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 03:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236350AbhHNBLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Aug 2021 21:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        id S236282AbhHNBLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Aug 2021 21:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236317AbhHNBLu (ORCPT
+        with ESMTP id S235870AbhHNBLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:11:50 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB46C0617AE;
-        Fri, 13 Aug 2021 18:11:23 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id l11so14219016plk.6;
-        Fri, 13 Aug 2021 18:11:23 -0700 (PDT)
+        Fri, 13 Aug 2021 21:11:45 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF73C061756;
+        Fri, 13 Aug 2021 18:11:18 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id v2so7537523edq.10;
+        Fri, 13 Aug 2021 18:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q7ftbmGt3dtvIFzhyKs506CMgP9EQiBj0ylWETSYGUU=;
-        b=PfjepnBwOReI1jhsRoFZ/vC6hY6vzzrU3moCz4N4T6rgQrxWJqYaxuXGgPXYi2suJ9
-         Qg26cY5XM6sWKXe1evMcdw98Muq01SWz1Ro33Eo6nXI99Sz1EPY+p5H+gL1SWVb94Apm
-         Nxmz51FWZdbIooz3m51C4dQMyNvs6ziNxbCpmh7Ay7q0efEBGQwsBB05Rvxz55gxo6Hu
-         Kr2tL3X9LOBLy6F8z2m8ol2+OATu1hNSTp7ewrxCZZ8QPPEKHLoH3hh/PshwtzON7dPd
-         fX2iELBox/G/BKrCbU10c1xRBAmbjzTANvEb0hDVhfEAc0xjfqFogxYKdu9DjsrXp8eu
-         S3qg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PJhUcsspU97g7E83Bpc3xMjAAqh5e3B1I8VLV04Hlg4=;
+        b=lvQlGkQMovEbhDOLkEx9FfNMFdUym7QHjOg8TV2oep0SJ3tQ8K2y2owZAeCFaow50x
+         2VGtWy4UVBOA5Hgv2Um7p3LyrGWWlhoOMsocXgMiubAK4BqyJ7BiUZK3h2X8Llpv4ZQw
+         k6Gz4suycc94X9lIr3rsjrX+qEQZi/OrloEcd4zZTfo40c/z+ms8sY96+2HI94Hbgyx3
+         8ja3Youg4lK9LB9/A8W/qNaXmqTAfuDxcLGhYNslXyI9Olc4+3JxhEjZpUsjf3teFDlL
+         2oSbRcOpVlSav3/aqavxHG5/c1qX5sqQlWvB+P/I/MrqlkhgtOERuvKS4J1xGnLwyj2w
+         XsQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q7ftbmGt3dtvIFzhyKs506CMgP9EQiBj0ylWETSYGUU=;
-        b=OKbZwWVm7imPCEQ18PCJH9Mnw21c0GAUsunu/f34S65Wwus2veAtKINlRWom9PqTLb
-         VPhMF/jn3eo/h0DPXXCBaON3la8NoNGi3jSw5UFqFGrBXK1ERo8T61lmRE91tvVZ0Oio
-         mYKDbEIh1FNwd6hFVDhCV/0/ABlfkgW+nlGRaHAsSennqjmXaczA9OGrupkgUO5RJOU0
-         D0AmeJE6O7CZoNupOO6hGw8K3OSelyNylfcAHqoyDVwHRDO2mYVDLhg6FoZzGtj5I+fS
-         XHq4CFwYK1dfCuhmzmMwLN2JPJqiujmuFLBJm4Yi2hEU6ZN0BleWmGDldDCtStasHWZo
-         8+Fg==
-X-Gm-Message-State: AOAM53169HF8BHurpMkEJwX/3FKJuXoiwIHZEnHO/44f1YDktpR+Ue47
-        ZGG/sVSWCA7cKGnlGOTbgYs=
-X-Google-Smtp-Source: ABdhPJwKjBgv7YnUfaMkFe3s/Vjd7ZJOK6EP1oHCrED+19jzodYusHhv5U49HcEDcydWmfXiyFmc8g==
-X-Received: by 2002:a17:90b:3903:: with SMTP id ob3mr5109566pjb.44.1628903483065;
-        Fri, 13 Aug 2021 18:11:23 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id o20sm4235448pgv.80.2021.08.13.18.11.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJhUcsspU97g7E83Bpc3xMjAAqh5e3B1I8VLV04Hlg4=;
+        b=WqsmKrerJZuqN8VK0J1/kSCU66d/MzSAZLLJ0lwIZt8aGg+B3FUQwsKKUcgDX7vxTW
+         5936NEYntcymh7AL5WoKkpcoOh/CK2v7l6S3cWg5bX56MS3qA2rk5hgkQsfXYj3x0F8d
+         8PJlyFthJzpmZKAXs2vVBjFmZ8exM+Kj9ePSjcOZD5yjPsWnRO0RTE9RHzDKy5wNf8Z1
+         xztNZMVpcSezLUmacyTbuueoLb+4FljaBmZIElHIVqpsxN5GsPLtIUYd+1OSCXGrjfqu
+         McOsNBN2JawN/5JZc+l3MoSdXzlWMwi7qVvi4XTEcmBlRL7kMnap6JcO28Fg5NWQ6mys
+         H1PQ==
+X-Gm-Message-State: AOAM533A7AzsjCbYetKfln1CGRUCjbFSPUaIg0sKvzwstR8pk1iDM0Sy
+        lHg/2gN2UgPSNwxJBzFaTso=
+X-Google-Smtp-Source: ABdhPJzbEz1C74QjqaquNCIRacBK6HSghnVyTzV009KuRSd/PsM34mJM8RMUbtWj+RkNCDXH4rnY+w==
+X-Received: by 2002:a05:6402:26c6:: with SMTP id x6mr6754557edd.175.1628903476812;
+        Fri, 13 Aug 2021 18:11:16 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id q30sm1595434edi.84.2021.08.13.18.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 18:11:22 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] crypto: in_irq() cleanup
-Date:   Sat, 14 Aug 2021 09:11:14 +0800
-Message-Id: <20210814011114.4842-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 13 Aug 2021 18:11:16 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 04:11:15 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ivan Vecera <ivecera@redhat.com>,
+        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
+        "open list:ETHERNET BRIDGE" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [PATCH net-next v2] net: bridge: switchdev: pass more port flags
+ to drivers
+Message-ID: <20210814011115.agzyo3cydlupafvy@skbuf>
+References: <20210812142213.2251697-1-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812142213.2251697-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the obsolete and ambiguos macro in_irq() with new
-macro in_hardirq().
+On Thu, Aug 12, 2021 at 10:22:12PM +0800, DENG Qingfang wrote:
+> These 3 port flags: BR_HAIRPIN_MODE, BR_MULTICAST_TO_UNICAST, and
+> BR_ISOLATED, affect the data path and should be handled by switchdev
+> drivers.
+> 
+> Add them to BR_PORT_FLAGS_HW_OFFLOAD so they can be passed down to
+> the drivers.
+> 
+> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
+> v1 -> v2: added more flags
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- crypto/skcipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/crypto/skcipher.c b/crypto/skcipher.c
-index a15376245416..418211180cee 100644
---- a/crypto/skcipher.c
-+++ b/crypto/skcipher.c
-@@ -431,7 +431,7 @@ static int skcipher_copy_iv(struct skcipher_walk *walk)
- 
- static int skcipher_walk_first(struct skcipher_walk *walk)
- {
--	if (WARN_ON_ONCE(in_irq()))
-+	if (WARN_ON_ONCE(in_hardirq()))
- 		return -EDEADLK;
- 
- 	walk->buffer = NULL;
--- 
-2.30.2
-
+If you insist to not write a competent commit message which properly
+explains the motivation for the change, then please remove my
+Suggested-by tag and resend. Thanks
