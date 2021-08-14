@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A753EC3C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7048F3EC3C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 18:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhHNQVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 12:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
+        id S235776AbhHNQXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 12:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhHNQUy (ORCPT
+        with ESMTP id S229818AbhHNQXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 12:20:54 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A1CC061764;
-        Sat, 14 Aug 2021 09:20:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m18so20487101ljo.1;
-        Sat, 14 Aug 2021 09:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bl7r4qrb6xUTi4mDeMdsRG1lrv7yu9bngpbCfg8eQBA=;
-        b=vSqg0338evwSRFKeOprp+ufGTxcJvScmp8uXTYHopZ/i9ibmtMembxoQQmti1RoDBt
-         nDfmOuFbu3h0cz67yZbgD8yYGT+NMlr0C1IKhqxw0XzVeZZrX83kpzM2nk8K/tsJhSGm
-         mRKokRmx+payI7xvi6o1pfeKCgMxRRgBaaUz6OIG0NwVZhl020VjB5ZcQKkB+ONJS/Hq
-         8AbdLT2GW38CZhXdKnyhCk/Pe/zm0G/BY9OETlcbHRvNq5a76YhT51gF73yd2jKKPi92
-         s3q3p5l/LhHI3DB5Wp9BPaUcjZB4ykBcxLScJmDP+DepH+6224m8vrG/kDpif82Zwkus
-         mbvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bl7r4qrb6xUTi4mDeMdsRG1lrv7yu9bngpbCfg8eQBA=;
-        b=tiv5/Gj5boFmUD6UBdTLtwNwKJtECKdVOanzqw51AGmA1UAXB2kb6rrWoAFs2qFJfK
-         dKCXB2lOs7rDmbGC15ACcVKStwiL/R4XOzgRXrgJblAHZBGTrBJzothPb5/ZBXapi3Li
-         3UAqls0qrmP5HARAk7nVCVcx25p16R5PGYFJk6jxrfteeV7Fhag8mPVK7FIO/ABDVkJB
-         iJGK3s0qO9M1vwnAehg50lvKoCa/ipXb04CKxQ6Z9c6WZvr9fo7r5M5Is7tU7FYaPQYG
-         ttFHP0/6LRuuoyP+eCYPUHeo0vnj7mDZ6ttpmYqxSokPp2i4n8mNzhqntr3398IhyVnM
-         MCdw==
-X-Gm-Message-State: AOAM530CrUqEoUs0Ckzfd8P7bg/pF9NogqKhreGK1+EWA/p1sscYk7VF
-        5G1drAhFoM6jrt41dJ0oVi8=
-X-Google-Smtp-Source: ABdhPJwm0tquAnmFtYRlGkc3Lm6OjqWAu+hSXjijwVeKH03zh//qsNXqixJua657zMubYPfKTXNedA==
-X-Received: by 2002:a2e:9355:: with SMTP id m21mr5849920ljh.445.1628958023203;
-        Sat, 14 Aug 2021 09:20:23 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.122])
-        by smtp.gmail.com with ESMTPSA id f30sm449604lfj.219.2021.08.14.09.20.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 09:20:22 -0700 (PDT)
-Subject: Re: [PATCH v3] net: asix: fix uninit value bugs
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux@rempel-privat.de,
-        robert.foss@collabora.com, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+a631ec9e717fb0423053@syzkaller.appspotmail.com
-References: <20210813155226.651c74f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210814135505.11920-1-paskripkin@gmail.com> <YRfjFr9GbcoJrycc@lunn.ch>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <5bf26e79-b612-9590-0970-09a03e0ac0ea@gmail.com>
-Date:   Sat, 14 Aug 2021 19:20:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sat, 14 Aug 2021 12:23:24 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB22C061764;
+        Sat, 14 Aug 2021 09:22:55 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1db900ce77af1d85349a0a.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b900:ce77:af1d:8534:9a0a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F29E81EC0570;
+        Sat, 14 Aug 2021 18:22:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628958168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/brh2LY3ZxgqLfUVFe3O+xJ1nWBytl741a1Y0kx+hZ8=;
+        b=b8PJl1yU5zBqaA2/nWRJwh/Y1GFQpGr8U9i00b3uXAK038Jc2Z1POSCalShC5L7ljhom/o
+        fCO7xRLVffdQF0GweIKtmdPFvymLaNoyum8xoYvWOvNqL9K4onwtHo7DlZohuGq0Zs3adS
+        HqvSQaPyaR3nR1KdMycZfdDQxct9Lyg=
+Date:   Sat, 14 Aug 2021 18:23:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Stephan Mueller <smueller@chronox.de>, sachinp@linux.vnet.ibm.com,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: DRBG - select SHA512
+Message-ID: <YRft/tuKE6MjHhY7@zn.tnic>
+References: <304ee0376383d9ceecddbfd216c035215bbff861.camel@chronox.de>
+ <20210716081411.GA2062@gondor.apana.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YRfjFr9GbcoJrycc@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210716081411.GA2062@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 6:36 PM, Andrew Lunn wrote:
-> On Sat, Aug 14, 2021 at 04:55:05PM +0300, Pavel Skripkin wrote:
->> Syzbot reported uninit-value in asix_mdio_read(). The problem was in
->> missing error handling. asix_read_cmd() should initialize passed stack
->> variable smsr, but it can fail in some cases. Then while condidition
->> checks possibly uninit smsr variable.
->> 
->> Since smsr is uninitialized stack variable, driver can misbehave,
->> because smsr will be random in case of asix_read_cmd() failure.
->> Fix it by adding error handling and just continue the loop instead of
->> checking uninit value.
->> 
->> Also, same loop was used in 3 other functions. Fixed uninit value bug
->> in them too.
+On Fri, Jul 16, 2021 at 04:14:12PM +0800, Herbert Xu wrote:
+> Stephan Mueller <smueller@chronox.de> wrote:
+> > With the swtich to use HMAC(SHA-512) as the default DRBG type, the
+> > configuration must now also select SHA-512.
+> > 
+> > Fixes: 9b7b94683a9b "crypto: DRBG - switch to HMAC SHA512 DRBG as default
+> > DRBG"
+> > Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> > Signed-off-by: Stephan Mueller <smueller@chronox.com>
+> > ---
+> > crypto/Kconfig | 2 +-
+> > 1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Hi Pavel
-> 
-> Which suggests it might make sense to refactor the code to make a
-> helper? I will leave you to decide if you want to do that.
-> 
-> The code does looks correct now.
-> 
-> 	Andrew
-> 
+> Patch applied.  Thanks.
 
-I noticed strange thing. For example: driver looped 30 times, there 
-wasn't any errors with usb transfer, but Host_En bit is not set. 
-Datasheet says, that if Host_En is not set, that means software access 
-will be ignored. Driver code doesn't handle this situation. We only 
-check if ret is -ENODEV or -ETIMEOUT.
+Is that patch going to Linus anytime soon?
 
-I guess, next register access will fail, but anyway, does it make sense 
-to return when Host_En bit is not set?
+I still see it on latest rc5+:
 
+DRBG: could not allocate digest TFM handle: hmac(sha512)
+alg: drbg: Failed to reset rng
+alg: drbg: Test 0 failed for drbg_nopr_hmac_sha512
+------------[ cut here ]------------
+alg: self-tests for drbg_nopr_hmac_sha512 (stdrng) failed (rc=-22)
+WARNING: CPU: 3 PID: 76 at crypto/testmgr.c:5652 alg_test.part.0+0x132/0x3c0
+Modules linked in:
+CPU: 3 PID: 76 Comm: cryptomgr_test Not tainted 5.14.0-rc5+ #1
+Hardware name: LENOVO 2320CTO/2320CTO, BIOS G2ET86WW (2.06 ) 11/13/2012
+RIP: 0010:alg_test.part.0+0x132/0x3c0
+Code: c0 74 2e 80 3d 7f 61 ad 02 00 0f 85 c0 64 5f 00 44 89 c1 4c 89 f2 4c 89 ee 44 89 44 24 04 48 c7 c7 f8 0a 11 82 e8 8c 57 5e 00 <0f> 0b 44 8b 44 24 04 48 8b 84 24 98 00 00 00 65 48 2b 04 25 28 00
+RSP: 0000:ffffc9000078fe38 EFLAGS: 00010292
+RAX: 0000000000000042 RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff810f520f RDI: ffffffff810f520f
+RBP: 0000000000000053 R08: 0000000000000001 R09: 0000000000000001
+R10: ffff888219df9000 R11: 3fffffffffffffff R12: 0000000000000053
+R13: ffff888100c0ee00 R14: ffff888100c0ee80 R15: 00000000000014c0
+FS:  0000000000000000(0000) GS:ffff888211f80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000002412001 CR4: 00000000001706e0
+Call Trace:
+ ? lock_is_held_type+0xd5/0x130
+ ? find_held_lock+0x2b/0x80
+ ? preempt_count_sub+0x9b/0xd0
+ ? crypto_acomp_scomp_free_ctx+0x30/0x30
+ cryptomgr_test+0x27/0x50
+ kthread+0x144/0x170
+ ? set_kthread_struct+0x40/0x40
+ ret_from_fork+0x22/0x30
+irq event stamp: 411
+hardirqs last  enabled at (419): [<ffffffff810f6972>] console_unlock+0x332/0x570
+hardirqs last disabled at (426): [<ffffffff810f6a1f>] console_unlock+0x3df/0x570
+softirqs last  enabled at (234): [<ffffffff81c00329>] __do_softirq+0x329/0x496
+softirqs last disabled at (151): [<ffffffff8108248d>] irq_exit_rcu+0xdd/0x130
+---[ end trace edfdfd51982deb2d ]---
 
-With regards,
-Pavel Skripkin
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
