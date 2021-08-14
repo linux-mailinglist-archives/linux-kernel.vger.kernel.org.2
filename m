@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200323EC2E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 15:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F683EC287
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Aug 2021 14:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238547AbhHNNhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 09:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S238396AbhHNMCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 08:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238495AbhHNNhJ (ORCPT
+        with ESMTP id S238064AbhHNMCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 09:37:09 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068B6C061764;
-        Sat, 14 Aug 2021 06:36:41 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c17so10249550plz.2;
-        Sat, 14 Aug 2021 06:36:41 -0700 (PDT)
+        Sat, 14 Aug 2021 08:02:43 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54305C061764;
+        Sat, 14 Aug 2021 05:02:15 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id lo4so23096575ejb.7;
+        Sat, 14 Aug 2021 05:02:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8k5tK7Xqetu9bwPZdm4ZTikD0tIPa7BMMwO2o7nECfc=;
-        b=kqh5dyse8qfkx84NXESqb2gXZp2P1MH3qcsicz0UZ7rSX8DtnWzD4vSA1aD+e1LQVC
-         anNwmzoLa9XWnK5m9HxsYTpz4NW33IvWeXfv2smRA+LTphW5Y3rurk+cwhOKpxnp94KH
-         B3+6YIP3DqzOO0o5Q5uR6fD7XFLmgv9CdNkO55NNfflIpUBoLb2D3UtuhqgfCF2aqrZ/
-         orlgt7P+72Nue6u6mpJ8jXMwvD+7v7O8Fxz8CtYeXoA45plqVC4F6prGMQeqe+3U+Me3
-         tU/E+INNG3sYnikqU+O+3pBK4S1m7WqSuraHNG2HpKZDgnqiGYUGjgNQpm5yVBJPdM69
-         e2Wg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qpQN2aTKtGCMgoh9M7a5uv16Wg9lA0To7j/jpu/dotM=;
+        b=bKS4yGk6Fti2p1kFwiaS16i4xy5dlAA1rLYFW1Zxr+tWuJQwVgl+4zSh02FZ238J1j
+         WcaESiPePl+mM9B6+Z4raxEVXELqC4/r1uiGmtpx12MsAP+4dOmAJDQsMVy4IqRDyGyJ
+         JHPxEa9VwvG4Q/MglkZ6WFXG2QXlIOutehxfvMuowqLY/H0JGQHAqtw0uUsljI7UrJDS
+         pkw449U2HCXW87ukHgh1KeIJR8P5D6d1Gr5ZB8kAZtL6q6N4ytwqlyaLFMTPjqfWQKaS
+         7S21qTLEvcMx4ucd0jlqUuqf6ZtdcaGvqoXAohcsfJaocLZEC+I6RTpXBJiqYyQwYdn/
+         dvpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8k5tK7Xqetu9bwPZdm4ZTikD0tIPa7BMMwO2o7nECfc=;
-        b=P50Ju4yYqVeqC4ErUw1efMoHfcPODJNrcjBGi35W8j8gxoFQIwPbI7FArM0QZLoVMC
-         479I39kWSs4TMCFqDGEGF6vZuDTvaKhSa+8kkNmnm4CtdWAZkpMrHjD0pU+dxGJ3cvcB
-         ViB6IEDcHdQa2V0znv8Nrx7LKWxE1S1SHSi3Kgzf5irhk7NQxaYmdOv7zxB9yUPwM9eO
-         G1zymzubFtSh+/Z2SKedjyOBqYo/C44mbvF3Ils6BzOAWmXvCOCmyiOZWORnHFzQOj7U
-         80n49CTdgZ0ch5ChqcWoyDWgVPdVOjOy70CRym/0LUbUcSegYGk87Vw8FAqEgCNSDzx2
-         R9Jw==
-X-Gm-Message-State: AOAM530ZQOVT+hs/SB7X6yxFEWST0HpnkKvLF0BmZM3fh+MDfsPIEffh
-        cb+eOPel4a9KXepvsxnfHvR7YcZs/Ds=
-X-Google-Smtp-Source: ABdhPJy5AVxtMN/QA4LnK23itxMB/U8L8Nq3aEBoSdUzsHuZU4iKFEiCiLUmcNrMOA5LvZFkwgZsbw==
-X-Received: by 2002:a17:90a:cc8:: with SMTP id 8mr7675159pjt.194.1628948200349;
-        Sat, 14 Aug 2021 06:36:40 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id z24sm4665788pjq.43.2021.08.14.06.36.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Aug 2021 06:36:40 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH] x86/kvm: Don't enable IRQ when IRQ enabled in kvm_wait
-Date:   Sat, 14 Aug 2021 11:51:29 +0800
-Message-Id: <20210814035129.154242-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qpQN2aTKtGCMgoh9M7a5uv16Wg9lA0To7j/jpu/dotM=;
+        b=ii2TRoWRjcplHpxia5s4YyBKRsvQtETDgXPK/ci3bsMxorsq4fsop2SvPJU2TxNzsU
+         LrNAj1gxycHkqREv0ots9b6/CGiLG8RJ0bTRtUoT77okpXhMaOxn3pM89pknkr8DCQTu
+         ZgDnqFjHVo8B/fHGEPkz5AhbDy8vDXfN27SaXuYnviklXV9dRNmOQ5ADNSPClRbV9HK1
+         NR+J14h3xXq1++BdBT9CXUHRgXg32Jb2DfPzlrxMZo9XS8fan3jSpfYi+j/Yy3OTc5UU
+         SdnB14IB8WN+V6td4L+xkSV8yNouO09OpVo9SjU6a8sMHUbvbZDP5+JPan1RlSMdzHA5
+         oFlg==
+X-Gm-Message-State: AOAM532nczJrNnm9AEs1DvAH0ZX//GU0UZveOhFAW+PV3AukwjNHFoJX
+        2acTEX03Yp4E4Aegm3NDats=
+X-Google-Smtp-Source: ABdhPJyCAxqPk9pWqGfFemQsR7dWguvr+DAPui5Ks4oZDkZ9auxKP2h5JpJMabC1Cb/smYB3U+kkRQ==
+X-Received: by 2002:a17:906:13d2:: with SMTP id g18mr7170183ejc.280.1628942533886;
+        Sat, 14 Aug 2021 05:02:13 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id u2sm2172760edd.82.2021.08.14.05.02.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Aug 2021 05:02:13 -0700 (PDT)
+Date:   Sat, 14 Aug 2021 15:02:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 09/10] net: dsa: ocelot: felix: add
+ support for VSC75XX control over SPI
+Message-ID: <20210814120211.v2qjqgi6l3slnkq2@skbuf>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-10-colin.foster@in-advantage.com>
+ <20210814114329.mycpcfwoqpqxzsyl@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210814114329.mycpcfwoqpqxzsyl@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Sat, Aug 14, 2021 at 02:43:29PM +0300, Vladimir Oltean wrote:
+> The issue is that the registers for the PCS1G block look nothing like
+> the MDIO clause 22 layout, so anything that tries to map the struct
+> ocelot_pcs over a struct mdio_device is going to look like a horrible
+> shoehorn.
+> 
+> For that we might need Russell's assistance.
+> 
+> The documentation is at:
+> http://ww1.microchip.com/downloads/en/DeviceDoc/VMDS-10489.pdf
+> search for "Information about the registers for this product is available in the attached file."
+> and then open the PDF embedded within the PDF.
 
-Commit f4e61f0c9add3 ("x86/kvm: Fix broken irq restoration in kvm_wait")
-replaced "local_irq_restore() when IRQ enabled" with "local_irq_enable()
-when IRQ enabled" to suppress a warnning.
+In fact I do notice now that as long as you don't use any of the
+optional phylink_mii_c22_pcs_* helpers in your PCS driver, then
+struct phylink_pcs has pretty much zero dependency on struct mdio_device,
+which means that I'm wrong and it should be completely within reach to
+write a dedicated PCS driver for this hardware.
 
-Although there is no similar debugging warnning for doing local_irq_enable()
-when IRQ enabled as doing local_irq_restore() in the same IRQ situation.  But
-doing local_irq_enable() when IRQ enabled is no less broken as doing
-local_irq_restore() and we'd better avoid it.
+As to how to make the common felix.c work with different implementations
+of struct phylink_pcs, one thing that certainly has to change is that
+struct felix should hold a struct phylink_pcs **pcs and not a
+struct lynx_pcs **pcs.
 
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
+Does this mean that we should refactor lynx_pcs_create() to return a
+struct phylink_pcs * instead of struct lynx_pcs *, and lynx_pcs_destroy()
+to receive the struct phylink_pcs *, use container_of() and free the
+larger struct lynx_pcs *? Yes, probably.
 
-The original debugging warnning was introduced in commit 997acaf6b4b5
-("lockdep: report broken irq restoration").  I think a similar debugging
-check and warnning should also be added to "local_irq_enable() when IRQ
-enabled" and even maybe "local_irq_disable() when IRQ disabled" to detect
-something this:
-
-    | local_irq_save(flags);
-    | local_irq_disable();
-    | local_irq_restore(flags);
-    | local_irq_enable();
-
-Or even we can do the check in lockdep+TRACE_IRQFLAGS:
-
-In lockdep_hardirqs_on_prepare(), lockdep_hardirqs_enabled() was checked
-(and exit) before checking DEBUG_LOCKS_WARN_ON(!irqs_disabled()), so lockdep
-can't give any warning for these kind of situations.  If we did the check
-in lockdep, we would have found the problem before, and we don't need
-997acaf6b4b5.
-
-Any thought? Mark? Peter?
-
- arch/x86/kernel/kvm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index a26643dc6bd6..b656456c3a94 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -884,10 +884,11 @@ static void kvm_wait(u8 *ptr, u8 val)
- 	} else {
- 		local_irq_disable();
- 
-+		/* safe_halt() will enable IRQ */
- 		if (READ_ONCE(*ptr) == val)
- 			safe_halt();
--
--		local_irq_enable();
-+		else
-+			local_irq_enable();
- 	}
- }
- 
--- 
-2.19.1.6.gb485710b
-
+If you feel uncomfortable with this, I can try to refactor lynx_pcs to
+make it easier to accomodate a different PCS driver in felix.
