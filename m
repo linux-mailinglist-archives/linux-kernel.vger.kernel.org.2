@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282883EC709
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FBA3EC711
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 06:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbhHODuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:50:24 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39421 "EHLO ozlabs.org"
+        id S229633AbhHOERr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 00:17:47 -0400
+Received: from mout.gmx.net ([212.227.15.18]:59565 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233848AbhHODuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:50:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GnNbN0DtRz9sT6;
-        Sun, 15 Aug 2021 13:49:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1628999392;
-        bh=oksZwUuazJvyP/mu5YVIEDEnHdB0QX1GEAxzy9oOoGw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cW3zYHgZtt0iJ99/blGwvB5OhuCh9dutsTRQ8lskJyJ52uy8dvnIyedD4mt3Zhmky
-         E9ZteJ17gTt+F0m1KRUWAs7Kw8tUMmlWlEIr/WKT0dNcDDZmSY7Uu7Br4MVm/hb1Gk
-         Dz9s61tiVVeGeyOoZSW5MxBI7DVbKUKRQ1EWoRGGdQ40pyw/Z6xmZ3EKNbwKLWJ5a+
-         qYIIRIwEe0TeQVaBCaiz8rjbi9+dvD6HXSdAl3l0CLLRgNV5CIGu445K5Y036EEZNo
-         cvmReB7AxleDZePojBwV/pYS+lT6kXmRQ+qqebpo4YbbP3nGxHl4RHyAYK+ANCraFB
-         0UcW4tbWKwLTg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
- WARN_ON/__WARN_FLAGS() with asm goto
-In-Reply-To: <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
- <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
-Date:   Sun, 15 Aug 2021 13:49:50 +1000
-Message-ID: <87wnonl63l.fsf@mpe.ellerman.id.au>
+        id S229452AbhHOERq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 00:17:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629001022;
+        bh=28Cm88gB91O+DOo2cXrYee+kaKO5JMPkKnACkSuChu4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=CXer1sPzt2AIwzMLMHXGIwNF6/oDtbpZdLGBCW3YFUyLc4rCaJTsQJ0oFwxh3njky
+         JmhSkDcHNfijoiGF84VqSks9qKnoHvS+5J6OOnlZiBgrEcCEDFqPKW7fFTE3SgxbKg
+         TYYHXE8953fmDGvbHUA17XKGv1iOSz2pmYR85OVk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.48.238]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNswE-1mQBHC2AkS-00OJOZ; Sun, 15
+ Aug 2021 06:17:02 +0200
+Message-ID: <5dbf6cf9e82ef15ce0febf070608da2d5b128763.camel@gmx.de>
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Clark Williams <williams@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+Date:   Sun, 15 Aug 2021 06:17:01 +0200
+In-Reply-To: <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+         <20210812151803.52f84aaf@theseus.lan>
+         <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
+         <20210812162448.26274298@theseus.lan>
+         <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
+         <20210812164440.0426d8b7@theseus.lan>
+         <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zOks0Z9lu4N4TQjHJJD53Xx17gxenPlj6wnwUl+gsW3D30qhNSO
+ ErovfmyBVvAI2ONYC+X1kt3hSdMs5/y6WAnQN/q7OXYTNKq79pwIi0QfcjzFzk5NQRHJpQX
+ PM3A/fGgmWPuIXEekpw4K3+TPpLkv7UMLQLojc//MbY5yTfG/o/kKaMlFju0KkT5A+IU5ua
+ VAH2LoQ9XwrKhSK3weTnw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nP1cVzObGqs=:7Ui9MoAU51KEcfRbs8YPRA
+ AoFQzhZ99vY8S8jfP759kmx+/hBdtbTqtqaPkVuNlKpv185YmLSYXVRSSqwkWt7p6gR79MZHH
+ 5/lezqhtdryPdvZs9UVa4xUKiCk4e0EE+4yoooihHcxCV0Sz25ZVuifjmBU5ZnL5yLeTvwsQ4
+ 0EKadMWOrZic0xylEB61gwmPrE8n8scDqmZa4MzqZRfzCEKN12gILpof32V5+YHT2wQFOAgaP
+ NRnkG4yRhCVr4qNOHwthC8+FtmYzs0Z9ZLX3g28SRzjo3rSo0Rxugww88zGXcaK86Np1nSvYG
+ PV7+0E9Ng1+VHpYhWn0m2YqqYO6CyHYiGZteDsS9JdaIxAxQiV0/KQCRWQ1cdpi7gops9ovPp
+ MVTG/6eJj4VUYYi+1wk9ZWpNTL86cl5n3JoLwMCXrVZHeOHlJ/AjkBIvOyMclBWLHCsEjhL30
+ qm9ClweJm0aSV458H7XYLqKM638wlmPJotTgtvUKBMxaCqa6eT9W9XH9F0XNvlTJMNSD7Wsat
+ D3qvq60w5NeiXllQ9NyFIdDV26BGm6X/CGHiVuBl6rZ2uwSQAjvlAIztAhtXJ7fVxpQUF+9Uz
+ ik0mo3oh0jNSE02duoe9pZfNEJyC29pzFr3DTFxWihbuemMhR5IHbYq9uAMNl7OzUlvRLis9A
+ SHeJuNHdxUAm/jhfLxRxmTzzaw71fa8MehwyGIDIO8B1O4KPOfetbkks3iHiGYo8j+XbPGtBa
+ JRNzusZzBK5ri5a/9O4UsyohNEvuHvJbW81RvIGOHJmHzeePCKRu9z8OttJqNopaH1lm5anWl
+ VOGxcvejjParhhsbCmnjfMERPmCLg3H4YTjJMZrGL1w7TQACo8rcTaeGo6wMlukdtYqwQYaI4
+ hxKTBWtyo752getxWEu5ParTjyA6BNIdyWFKYFt9sC0BIb9HOfT1xyVqXuA0ZHg8lLwpANzC/
+ qTsiirJ7Ygilc1oxQUs5upKhbuwo1s4DHk4kqceL19isR+AQcTF1zpsX+TsMxxc6z8dx/L49t
+ WRq2ZKDaLZtfszYd/ruySGoppUyLHHQi2NuKzVmIibI8x5Y48Cv86VQjZ65DAbN5I5PVRsaN0
+ QQyHMzzo/nqC+VHChc4Ilcyg2Caaen4xPZP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 24725e50c7b4..34745f239208 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -926,7 +926,7 @@ static void check_section(const char *modname, struct elf_info *elf,
->  		".kprobes.text", ".cpuidle.text", ".noinstr.text"
->  #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
->  		".fixup", ".entry.text", ".exception.text", ".text.*", \
-> -		".coldtext"
-> +		".coldtext .softirqentry.text"
+On Sat, 2021-08-14 at 21:08 +0200, Vlastimil Babka wrote:
+>
+> Aha! That's helpful. Hopefully it's just a small issue where we
+> opportunistically test flags on a page that's protected by the local
+> lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
+> which can trigger if our page went away (which we would have realized
+> after taking the lock).
 
-This wasn't working, I updated it to:
+Speaking of optimistic peeking perhaps going badly, why is the below
+not true?  There's protection against ->partial going disappearing
+during a preemption... but can't it just as easily appear, so where is
+that protection?
 
-               ".coldtext", ".softirqentry.text"
+If the other side of that window is safe, it could use a comment so
+dummies reading this code don't end up asking mm folks why the heck
+they don't just take the darn lock and be done with it instead of tap
+dancing all around thething :)
 
-Which works.
+=2D--
+ mm/slub.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-cheers
+=2D-- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2937,17 +2937,16 @@ static void *___slab_alloc(struct kmem_c
+
+ new_slab:
+
++	/*
++	 * To avoid false negative race with put_cpu_partial() during a
++	 * preemption, we must call slub_percpu_partial() under lock.
++	 */
++	local_lock_irqsave(&s->cpu_slab->lock, flags);
+ 	if (slub_percpu_partial(c)) {
+-		local_lock_irqsave(&s->cpu_slab->lock, flags);
+ 		if (unlikely(c->page)) {
+ 			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+ 			goto reread_page;
+ 		}
+-		if (unlikely(!slub_percpu_partial(c))) {
+-			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+-			/* we were preempted and partial list got empty */
+-			goto new_objects;
+-		}
+
+ 		page =3D c->page =3D slub_percpu_partial(c);
+ 		slub_set_percpu_partial(c, page);
+@@ -2955,8 +2954,7 @@ static void *___slab_alloc(struct kmem_c
+ 		stat(s, CPU_PARTIAL_ALLOC);
+ 		goto redo;
+ 	}
+-
+-new_objects:
++	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+
+ 	freelist =3D get_partial(s, gfpflags, node, &page);
+ 	if (freelist)
+
+
