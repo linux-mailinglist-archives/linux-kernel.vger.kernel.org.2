@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D84C3ECD63
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81683ECD21
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhHPD6y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Aug 2021 23:58:54 -0400
-Received: from 177-131-1-103.netfacil.center ([177.131.1.103]:54974 "EHLO
-        mail.netfacil.net.br" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhHPD6x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 23:58:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.netfacil.net.br (Postfix) with ESMTP id 615DCAAEBDC;
-        Sun, 15 Aug 2021 15:35:22 -0300 (-03)
-Received: from mail.netfacil.net.br ([127.0.0.1])
-        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id OaBFcURVA57x; Sun, 15 Aug 2021 15:35:22 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.netfacil.net.br (Postfix) with ESMTP id 23BF5B7E089;
-        Sun, 15 Aug 2021 05:55:04 -0300 (-03)
-X-Virus-Scanned: amavisd-new at mail.netfacil.net.br
-Received: from mail.netfacil.net.br ([127.0.0.1])
-        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id To9Ibrjvj26j; Sun, 15 Aug 2021 05:55:04 -0300 (-03)
-Received: from [192.168.8.101] (unknown [197.185.109.197])
-        by mail.netfacil.net.br (Postfix) with ESMTPSA id 72E40B0638C;
-        Sat, 14 Aug 2021 20:59:11 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S233017AbhHPDSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 23:18:37 -0400
+Received: from [138.197.143.207] ([138.197.143.207]:45272 "EHLO rosenzweig.io"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S233081AbhHPDSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 23:18:32 -0400
+Date:   Sun, 15 Aug 2021 17:33:48 -0400
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/2] PCI: apple: Add driver for the Apple M1
+Message-ID: <YRmIPL3NA4zHkReL@sunset>
+References: <20210815042525.36878-1-alyssa@rosenzweig.io>
+ <20210815042525.36878-3-alyssa@rosenzweig.io>
+ <CAL_JsqJfhQr7fa4dD2cOQmo8bdj2fQ+2Hjrh_4Xie-zbr1g7KQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: RE
-To:     Recipients <yene.ntos@netfacil.net.br>
-From:   yene.ntos@netfacil.net.br
-Date:   Sat, 14 Aug 2021 16:58:59 -0700
-Reply-To: cristydavisfoundation0101@gmail.com
-X-Antivirus: Avast (VPS 210814-0, 08/13/2021), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20210814235911.72E40B0638C@mail.netfacil.net.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJfhQr7fa4dD2cOQmo8bdj2fQ+2Hjrh_4Xie-zbr1g7KQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Cristy Davis am from Michigan Two million dollars have been donated to you, I won the $70 million Powerball lottery on February 12, 2020, and I have voluntarily decided to donate the sum of $2 million to you,for more information get back to me  via email: cristydavisfoundation0101@gmail.com
+Hi Rob,
 
-Hope to hear from you as soon as possible.
+Thanks for the review.
 
-Mrs. Cristy Davis
+> > +#define CORE_RC_PHYIF_CTL              0x00024
+> > +#define   CORE_RC_PHYIF_CTL_RUN                BIT(0)
+> > +#define CORE_RC_PHYIF_STAT             0x00028
+> > +#define   CORE_RC_PHYIF_STAT_REFCLK    BIT(4)
+> > +#define CORE_RC_CTL                    0x00050
+> > +#define   CORE_RC_CTL_RUN              BIT(0)
+> > +#define CORE_RC_STAT                   0x00058
+> > +#define   CORE_RC_STAT_READY           BIT(0)
+> > +#define CORE_FABRIC_STAT               0x04000
+> > +#define   CORE_FABRIC_STAT_MASK                0x001F001F
+> > +#define CORE_PHY_CTL                   0x80000
+> > +#define   CORE_PHY_CTL_CLK0REQ         BIT(0)
+> > +#define   CORE_PHY_CTL_CLK1REQ         BIT(1)
+> > +#define   CORE_PHY_CTL_CLK0ACK         BIT(2)
+> > +#define   CORE_PHY_CTL_CLK1ACK         BIT(3)
+> > +#define   CORE_PHY_CTL_RESET           BIT(7)
+> 
+> I was going to say these should be a phy driver perhaps, but they are
+> unused. So for now, just drop them.
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+Removed in v2.
 
+CORE_PHY_CTRL is used in the asahi linux bootloader (m1n1, shared between
+linux+uboot+bsd) to do early pcie bringup. They are indeed not used
+here, nor are they used in the uboot/bsd drivers.
+
+> > +static int apple_pcie_setup_port(struct apple_pcie *pcie, unsigned int i)
+> > +{
+> > +       struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
+> 
+> Doesn't look like you ever use the fwnode, just get the DT node
+> pointer. Unless this driver is going to use ACPI someday (and ACPI
+> changes how PCI is done), there's no point in using fwnode.
+
+Dropped in v2.
+
+That was a copypaste fail splitting off apple_pcie_setup_port from
+apple_msi_init in an early revision.
+
+> It's preferred to use platform resource api and ioremap over DT functions.
+> ...
+> Use devm_platform_ioremap_resource instead.
+
+Done in v2.
+
+Thanks,
+
+Alyssa
