@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5BE3EC9D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8CC3EC9D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbhHOPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 11:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhHOPGb (ORCPT
+        id S237962AbhHOPHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 11:07:20 -0400
+Received: from smtprelay0238.hostedemail.com ([216.40.44.238]:35316 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229603AbhHOPHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:06:31 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702A9C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:06:01 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id a20so18035683plm.0
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K6dRiWVfqPYEGM0XTEKXwwPFa8TOMfctM2bCbgQM+j8=;
-        b=awukKEq7lju7+gP8fp5KAmtuR1zsNlohkntw3H98WvFvJYUmm13lITxVn4boMQFLw2
-         PPez7WBS9vEMXXfMKmzeigCCFJWIzjde/O7sYLV2rli9iRICFRo31ZJgy3+ZyHZa/Hcl
-         JTSfr9BfZcGEKUNHTU+dLBA1G2NXgUB/6Y0a48HOduIsjTB26zDYNJiTMkN5QGv/eVaZ
-         P7czhCYnin2PV0Y4XEN7Y5EYvh5U3AgGooxgzbK5iYMtRh3M99ny07we2LVoSvZOZ4Fr
-         KNjUG2NmVt55ENYY5awmmk8+FaIhCanRWEnUSF+LdflMuLyvP1hcjdFtrWMH/yPH1D0o
-         Y3JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K6dRiWVfqPYEGM0XTEKXwwPFa8TOMfctM2bCbgQM+j8=;
-        b=n9du3DqQHRbb8yGqS8+89WInXm9mBqsvv8RktAbPhj1V6vLYs9c1I6ZsXf3kyIFx/n
-         sazzHwfLEBi3tr3iT2FNVIPFAyiUoSBnCvjhk8Yo6MFx+ECdx+iY+EM2KWxGEg60UEy5
-         Ybay2135HVyNtN2P+hJxVb7ITLK0jJntDrhFcb6RCtYabKNLRUJHae3m4kM6Zp4pklcM
-         tQBnR0Lz7iVOr00pf68xqoFhHDbWCLEsQ5M1sK2Nz6qeLkraPlwBmEJxNLZhmG2Z5kH3
-         XD2XX1nnpZgQGk1RBjTrSkfs8zdqWe0LS4KiisTlcLqaASo22cmNHnlSzQ01omoL21Gt
-         efOA==
-X-Gm-Message-State: AOAM5310ZPH8E1Ihp5nRexqQflc175Hs0K7Ex8G4kYOdSv9M7TiN6pt8
-        GoTDA+S2vSGTXrAEoHMfdWPwrA==
-X-Google-Smtp-Source: ABdhPJwf3R7s+OxNSZpue4Hs5WG2pxqKsERxrpJSOdO/N0NS6P3UeDpiQ15qtMcCtC8i3dxqo5aQhQ==
-X-Received: by 2002:a17:902:7611:b029:12b:e55e:6ee8 with SMTP id k17-20020a1709027611b029012be55e6ee8mr9816536pll.4.1629039960768;
-        Sun, 15 Aug 2021 08:06:00 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id nl9sm6796837pjb.33.2021.08.15.08.05.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 08:06:00 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
- table
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-References: <cover.1628871893.git.asml.silence@gmail.com>
- <YRbBYCn29B+kgZcy@localhost> <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
- <5cf40313-d151-9d10-3ebd-967eb2f53b1f@kernel.dk> <YRiNGTL2Dp/7vNzt@localhost>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a2bd1600-5649-c4be-d2a9-79c89bae774a@kernel.dk>
-Date:   Sun, 15 Aug 2021 09:05:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 15 Aug 2021 11:07:19 -0400
+Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 8004C100E7B52;
+        Sun, 15 Aug 2021 15:06:48 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 329591124F5;
+        Sun, 15 Aug 2021 15:06:47 +0000 (UTC)
+Message-ID: <c08cfa8b6bbf07e1860d7dc93739e71ff5f4c0c4.camel@perches.com>
+Subject: Re: [PATCH v4] drivers/iio: Remove all strcpy() uses
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Len Baker <len.baker@gmx.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sun, 15 Aug 2021 08:06:45 -0700
+In-Reply-To: <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
+References: <20210814135509.4500-1-len.baker@gmx.com>
+         <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <YRiNGTL2Dp/7vNzt@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Stat-Signature: scyjwk97ndjnkxgp9nz9retqreya6djg
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 329591124F5
+X-Spam-Status: No, score=1.60
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+4BUvjSH6v/IegChk0z+GhPszkuLSdVFQ=
+X-HE-Tag: 1629040007-28485
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 9:42 PM, Josh Triplett wrote:
-> On Sat, Aug 14, 2021 at 05:03:44PM -0600, Jens Axboe wrote:
->> What's the plan in terms of limiting the amount of direct descriptors
->> (for lack of a better word)? That seems like an important aspect that
->> should get sorted out upfront.
-> [...]
->> Maybe we have a way to size the direct table, which will consume entries
->> from the same pool that the regular file table does? That would then
->> work both ways, and could potentially just be done dynamically similarly
->> to how we expand the regular file table when we exceed its current size.
+On Sat, 2021-08-14 at 22:36 +0300, Andy Shevchenko wrote:
+> On Sat, Aug 14, 2021 at 4:55 PM Len Baker <len.baker@gmx.com> wrote:
+> > 
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. So, remove all the uses and add
+> > devm_kstrdup() or devm_kasprintf() instead.
+> > 
+> > This patch is an effort to clean up the proliferation of str*()
+> > functions in the kernel and a previous step in the path to remove
+> > the strcpy function from the kernel entirely [1].
+> > 
+> > [1] https://github.com/KSPP/linux/issues/88
 > 
-> I think we'll want a way to size the direct table regardless, so that
-> it's pre-allocated and doesn't need to be resized when an index is used.
+> Thank you very much for doing this!
+> Now I like the result,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+[]
+> > diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
+[]
+> > @@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu6050_state *st, int fifo_rate)
+> >   */
+> >  int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
+> >  {
+> > +       struct device *dev = regmap_get_device(st->map);
+> >         const char *orient;
+> >         char *str;
+> >         int i;
+> > @@ -281,19 +282,24 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
+> >                 /* z <- -z */
+> >                 for (i = 0; i < 3; ++i) {
+> >                         orient = st->orientation.rotation[6 + i];
+> > -                       /* use length + 2 for adding minus sign if needed */
+> > -                       str = devm_kzalloc(regmap_get_device(st->map),
+> > -                                          strlen(orient) + 2, GFP_KERNEL);
+> > -                       if (str == NULL)
+> > +
+> > +                       /*
+> > +                        * The value is negated according to one of the following
+> > +                        * rules:
+> > +                        *
+> > +                        * 1) Drop leading minus.
+> > +                        * 2) Leave 0 as is.
+> > +                        * 3) Add leading minus.
+> > +                        */
+> > +                       if (orient[0] == '-')
+> > +                               str = devm_kstrdup(dev, orient + 1, GFP_KERNEL);
+> > +                       else if (orient[0] == '0' && orient[1] == '\0')
 
-But how do you size it then? I can see this being used into the hundreds
-of thousands of fds easily, and right now the table is just an array
-(though split into segments, avoiding huge allocs).
+bikeshed:
 
-> Then, we could do one of two equally easy things, depending on what
-> policy we want to set:
-> 
-> - Deduct the full size of the fixed-file table from the allowed number
->   of files the process can have open. So, if RLIMIT_NOFILE is 1048576,
->   and you pre-allocate 1000000 entries in the fixed-file table, you can
->   have no more than 48576 file descriptors open. Stricter, but
->   potentially problematic: a program *might* expect that it can
->   dup2(some_fd, nofile - 1) successfully.
-> 
-> - Use RLIMIT_NOFILE as the maximum size of the fixed-file table. There's
->   precedent for this: we already use RLIMIT_NOFILE as the maximum number
->   of file descriptors you can have in flight over UNIX sockets.
-> 
-> I personally would favor the latter; it seems simple and
-> straightforward.
+I think this change is less intelligible than the original strcmp.
 
-I strongly prefer the latter too, and hopefully that's palatable since
-the default limits are quite low anyway. And, as you say, it already is
-done for inflight fds as well.
+And separately, perhaps for loop would be more readable as
 
--- 
-Jens Axboe
+	for (i = 6; i < 9; i++)
+
+converting the 6 + i uses to just i.
+
+> > +                               str = devm_kstrdup(dev, orient, GFP_KERNEL);
+> > +                       else
+> > +                               str = devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
+> > +                       if (!str)
+> >                                 return -ENOMEM;
+> > -                       if (strcmp(orient, "0") == 0) {
+> > -                               strcpy(str, orient);
+> > -                       } else if (orient[0] == '-') {
+> > -                               strcpy(str, &orient[1]);
+> > -                       } else {
+> > -                               str[0] = '-';
+> > -                               strcpy(&str[1], orient);
+> > -                       }
+> > +
+> >                         st->magn_orient.rotation[6 + i] = str;
+> >                 }
+> >                 break;
+
 
