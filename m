@@ -2,191 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CD03EC83C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BB53EC843
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236971AbhHOJGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 05:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhHOJGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 05:06:51 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A8EC061764;
-        Sun, 15 Aug 2021 02:06:21 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f2so758739ljn.1;
-        Sun, 15 Aug 2021 02:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pzy7Bev12LeveIcKIogt+C21+5RUV0MqC2YzBhF4exY=;
-        b=P6uYhMO1bx8QQX88OIpGMqBjx3sclXp9YfunKOLr7Wq0Zy/+oGRbl7MKt88sDkVz3x
-         Ep5x6laeTNHjCOjrs2TF26dtord2U1RoU6SQ421d5jAgayclnVcUITdcjOBK40qLijv0
-         Q3TZrT2DIoOqip06slEnPwnRXacg1EGgt+OQKbmiy8Az3sZsD5zCa2dSAyKu9GIn6JqM
-         8z2iA9cw7JqNda6/qsEqj7JHo62R381nn+BllWvNeP7wefsI+vYV8bb2zIQSYuRt/CAv
-         ZDW5XwFYGsmL8KBJywEdTMBSVkGNBO95NJCIwI42qRxrISZaGJqRuN8ZEmxlALQaKbks
-         FL9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pzy7Bev12LeveIcKIogt+C21+5RUV0MqC2YzBhF4exY=;
-        b=MmI+SaUBtsAC5XUllrWlc/tKLcjuS/97FGI1dWE5+h+d7AU998fdV+wFf0OhGqelNG
-         9SOVeCzqULRbwB8q27CKfqd5nUo4DYEsWKnLm+RQ5t5PUPMYSBrweoHalEYiaX2Idgeu
-         1Fc5nD1aUBjKzxe2h+04vIk14oSAQBeLEMP+2XLhDUaBg98np9EZNW/mgDB1esDPvtja
-         k0hvSMV7ei1OFs6ozMtOjXsY4LxF1STANcp1n33S9Zp8O+a47jjB0eM4bzi0CWisuLLe
-         gnHXjBXezd/HywxMOpJCFM/62KfW0+aamgxEj9GH1RWpUf7LHl+Hne53tofYbnH4mqfP
-         JNng==
-X-Gm-Message-State: AOAM53101eyOex8IaK9yf+mzE6KLxSBi8iNhpEFzy50HhfqCnJSRwT66
-        rosVOsv6dETtAtt+SEiJ/ps=
-X-Google-Smtp-Source: ABdhPJz4q+pGxo8Hyt9MoQbcofal8aZiHOdu8bTwFQu/BZNlEg3A5gqqatzoYdGKUmgR4U2u/8nBGA==
-X-Received: by 2002:a05:651c:481:: with SMTP id s1mr7931307ljc.446.1629018379345;
-        Sun, 15 Aug 2021 02:06:19 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.79])
-        by smtp.gmail.com with ESMTPSA id c12sm624462lfh.248.2021.08.15.02.06.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 02:06:19 -0700 (PDT)
-Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Sean Young <sean@mess.org>
-Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-References: <20210730213829.2909-1-paskripkin@gmail.com>
- <20210815083755.GA1827@gofer.mess.org>
- <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
-Message-ID: <80648833-5f5a-0811-a281-0dba87938d3c@gmail.com>
-Date:   Sun, 15 Aug 2021 12:06:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S237093AbhHOJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 05:13:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231194AbhHOJNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 05:13:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DEF061042;
+        Sun, 15 Aug 2021 09:12:47 +0000 (UTC)
+Received: from 109-170-232-56.xdsl.murphx.net ([109.170.232.56] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mFCCD-0055bX-6K; Sun, 15 Aug 2021 10:12:45 +0100
+Date:   Sun, 15 Aug 2021 10:12:44 +0100
+Message-ID: <878s131377.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Kettenis <openbsd@xs4all.nl>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?UTF-8?B?V2ls?= =?UTF-8?B?Y3p5xYRza2k=?= 
+        <kw@linux.com>, Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] dt-bindings: PCI: Add Apple PCI controller
+In-Reply-To: <1566004903.6140692.1629015053757@ox-webmail.xs4all.nl>
+References: <20210815042525.36878-1-alyssa@rosenzweig.io>
+        <20210815042525.36878-2-alyssa@rosenzweig.io>
+        <87bl5z18vt.wl-maz@kernel.org>
+        <1566004903.6140692.1629015053757@ox-webmail.xs4all.nl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 109.170.232.56
+X-SA-Exim-Rcpt-To: openbsd@xs4all.nl, alyssa@rosenzweig.io, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, stan@corellium.com, kettenis@openbsd.org, sven@svenpeter.dev, marcan@marcan.st, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/21 11:49 AM, Pavel Skripkin wrote:
-> On 8/15/21 11:37 AM, Sean Young wrote:
->> On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
->>> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
->>> mutex. The problem was in wrong mutex_init() location.
->>> 
->>> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
->>> dvb_usbv2_init() has this order of calls:
->>> 
->>> 	dvb_usbv2_init()
->>> 	  dvb_usbv2_adapter_init()
->>> 	    dvb_usbv2_adapter_frontend_init()
->>> 	      props->frontend_attach()
->>> 
->>> 	  props->init()
->>> 
->>> Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
->>> internally we need to initialize state->msg_lock in it to make lockdep
->>> happy.
->> 
->> What about the other frontends like mxl111sf_frontend_attach_dvbt? They
->> no longer initialize the mutex.
->> 
-> Good point. I see, that all other frontends also call
-> mxl111sf_ctrl_msg() inside ->frontend_attach() call.
+Hi Mark,
+
+On Sun, 15 Aug 2021 09:10:53 +0100,
+Mark Kettenis <openbsd@xs4all.nl> wrote:
 > 
-> I think, that fixing dvb-usb core is not good idea, so, I will add
-> mutex_init() call inside all frontends, which use mxl111sf_init().
+> Hi Marc,
 > 
-> What do you think about it?
-> 
+> What can I do to make progress with my binding proposal? It seems we're stuck
+> on the MSI issue where you and robh disagree. I still think your idea of
+> describing the MSIs as a range makes much more sense than describing them
+> individually and bunching them together with the host bridge port interrupts.
 > 
 
+It looks like I missed an email from Rob, which explains why we're in
+limbo (it was left unread and unmarked, which in my flow means "read
+once I have too much time on my hands"). Apologies for that, I'll try
+and reply tonight (travelling at the moment).
 
-Something like this should work. Helper is just to not copy-paste code 
-parts. Build tested against v5.14-rc5
+>     Op 15-08-2021 09:09 schreef Marc Zyngier <maz@kernel.org>:
+> 
+>     Hi Alyssa,
+>    
+>     On Sun, 15 Aug 2021 05:25:24 +0100,
+>     Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
+>    
+>         Document the properties used by the Apple PCI controller. This is a
+>         fairly standard PCI controller, although it is not derived from any
+>         known non-Apple IP.
+>        
+>         Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+>    
+>     I would rather you post something as an extension to Mark's work, for
+>     multiple reasons:
+>    
+>     - Mark's patch is still being discussed, and is the current
+>     reference (specially given that it is already in use in OpenBSD and
+>     u-boot).
+>    
+>     - we cannot have multiple bindings. There can only be one, shared
+>     across implementations. Otherwise, you need a different kernel
+>     depending on whether you are booting from m1n1 or u-boot.
+>    
+>     - what you have here is vastly inconsistent (you are describing the
+>     MSIs twice, using two different methods).
+> 
+> That's probably my fault. The current u-boot device tree is a bit of a
+> Frankenstein thing to ease the transition from my initial binding to the
+> current proposal. I should clean that up at some point.
 
+That would certainly help. There are a lot of moving pieces at the
+moment, and it is getting hard to get a clear picture of what is using
+what.
 
-diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf.c 
-b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-index 7865fa0a8295..db1ad3815cd5 100644
---- a/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-+++ b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-@@ -49,6 +49,13 @@ MODULE_PARM_DESC(rfswitch, "force rf switch position 
-(0=auto, 1=ext, 2=int).");
+Thanks,
 
-  DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+	M.
 
-+static inline void mxl111sf_init_msg_mutex(struct dvb_usb_adapter *adap)
-+{
-+	struct mxl111sf_state *state = d_to_priv(adap_to_d(adap));
-+
-+	mutex_init(&state->msg_lock);
-+}
-+
-  int mxl111sf_ctrl_msg(struct mxl111sf_state *state,
-  		      u8 cmd, u8 *wbuf, int wlen, u8 *rbuf, int rlen)
-  {
-@@ -931,8 +938,6 @@ static int mxl111sf_init(struct dvb_usb_device *d)
-  		  .len = sizeof(eeprom), .buf = eeprom },
-  	};
-
--	mutex_init(&state->msg_lock);
--
-  	ret = get_chip_info(state);
-  	if (mxl_fail(ret))
-  		pr_err("failed to get chip info during probe");
-@@ -963,16 +968,19 @@ static int mxl111sf_init(struct dvb_usb_device *d)
-
-  static int mxl111sf_frontend_attach_dvbt(struct dvb_usb_adapter *adap)
-  {
-+	mxl111sf_init_msg_mutex(adap);
-  	return mxl111sf_attach_demod(adap, 0);
-  }
-
-  static int mxl111sf_frontend_attach_atsc(struct dvb_usb_adapter *adap)
-  {
-+	mxl111sf_init_msg_mutex(adap);
-  	return mxl111sf_lgdt3305_frontend_attach(adap, 0);
-  }
-
-  static int mxl111sf_frontend_attach_mh(struct dvb_usb_adapter *adap)
-  {
-+	mxl111sf_init_msg_mutex(adap);
-  	return mxl111sf_lg2160_frontend_attach(adap, 0);
-  }
-
-@@ -981,6 +989,7 @@ static int mxl111sf_frontend_attach_atsc_mh(struct 
-dvb_usb_adapter *adap)
-  	int ret;
-  	pr_debug("%s\n", __func__);
-
-+	mxl111sf_init_msg_mutex(adap);
-  	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
-  	if (ret < 0)
-  		return ret;
-@@ -1001,6 +1010,7 @@ static int mxl111sf_frontend_attach_mercury(struct 
-dvb_usb_adapter *adap)
-  	int ret;
-  	pr_debug("%s\n", __func__);
-
-+	mxl111sf_init_msg_mutex(adap);
-  	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
-  	if (ret < 0)
-  		return ret;
-@@ -1021,6 +1031,7 @@ static int 
-mxl111sf_frontend_attach_mercury_mh(struct dvb_usb_adapter *adap)
-  	int ret;
-  	pr_debug("%s\n", __func__);
-
-+	mxl111sf_init_msg_mutex(adap);
-  	ret = mxl111sf_attach_demod(adap, 0);
-  	if (ret < 0)
-  		return ret;
-
-
-
-With regards,
-Pavel Skripkin
+-- 
+Without deviation from the norm, progress is not possible.
