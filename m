@@ -2,153 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928673EC6CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C463EC6CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhHODNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhHODNf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:13:35 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD7EC061764;
-        Sat, 14 Aug 2021 20:13:06 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8DE67128037B;
-        Sat, 14 Aug 2021 20:12:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1628997178;
-        bh=rl9kYc74n8lnrEkjB/p9JncXEvAWK+gLVnJIzKpjUmY=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=IsDZ14arqq9SmNETfHTANCZAHYil4LZKkXTY/tNdKX/8qNaMc6OcYyNUFSVNblN7j
-         pjwridy5rempAN5XI8ZWD4XZ5/bbAQ6PDqxLKBSWt7GDZlbg6XH4n1SRFINDxNbdfa
-         6TQOEF97qqiyFbedhWD5xoI2XpCG0YbasZ2xGSYI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a75EmV1lwCc8; Sat, 14 Aug 2021 20:12:58 -0700 (PDT)
-Received: from [172.20.3.52] (unknown [216.54.114.90])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 90FAD128035C;
-        Sat, 14 Aug 2021 20:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1628997178;
-        bh=rl9kYc74n8lnrEkjB/p9JncXEvAWK+gLVnJIzKpjUmY=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=IsDZ14arqq9SmNETfHTANCZAHYil4LZKkXTY/tNdKX/8qNaMc6OcYyNUFSVNblN7j
-         pjwridy5rempAN5XI8ZWD4XZ5/bbAQ6PDqxLKBSWt7GDZlbg6XH4n1SRFINDxNbdfa
-         6TQOEF97qqiyFbedhWD5xoI2XpCG0YbasZ2xGSYI=
-Message-ID: <9672767623d4ca908c9405c0e7242b6e3131df7d.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.14-rc5
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sat, 14 Aug 2021 23:12:55 -0400
+        id S235238AbhHODN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:13:57 -0400
+Received: from mout.gmx.net ([212.227.15.15]:33501 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhHODN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 23:13:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628997192;
+        bh=e51c0SCycBJIAAANBaUWBL1Psc1wSIcAuol7HpYOH0Y=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=BXrJ729V1PeUtoEvIA7aooOtmv46CUyvxPbNbHps3a5sgxw2FVHgzcLwNyEgeEe2d
+         z6KEqS1MsPDIPi60A5euT5fW55UczfXXKNDLZ+guzAqqeIfe/5+DDMW/lsVzBQHT3I
+         58jpgkL3UD72VskQZNnlAFKHW1P/triOsDINwSGg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.48.238]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MOA3P-1mQTVB29kX-00Ob8b; Sun, 15
+ Aug 2021 05:13:12 +0200
+Message-ID: <0044f090d3919eef03048527f1baa34aec5198a8.camel@gmx.de>
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Clark Williams <williams@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+Date:   Sun, 15 Aug 2021 05:13:11 +0200
+In-Reply-To: <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+         <20210812151803.52f84aaf@theseus.lan>
+         <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
+         <20210812162448.26274298@theseus.lan>
+         <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
+         <20210812164440.0426d8b7@theseus.lan>
+         <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:d0d+Y/hFGZGYSxF11c8gaf9/joXkscGwd0hFKjj0pvkVAmfMMAg
+ bNr0rumtmMykjNNeyGvhfBQePTbnntT79BIz47VUX24H8KN5EWWYnpHZN0YXKlOIMVrMmFt
+ cjNQrpA3l34aY8qPMs5DpmW4WBIj0XCxvpInRt51kFYr8xn2K1GnQ8xwojiOeT7o/K5Dcm4
+ Ij4eL61IlizqsiyfXIXoA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2PooYY8Xq/g=:mJoCJIw5uS+jm02/czlfYP
+ 9RLp6bEgsrepvaHL15KZNnzG66OxIE4EsxHmkx67Oriy8ggnZxU7jJbECBqAAZddgwbNtGuVB
+ LjVlW+iHh+S9fXu041in7d6rmvr7tIJ4lD/bfS8pfhn4kBvzOWFQUhgeZ3sOk0Kgv/WbuPgzj
+ nIv1JyENs7mL/Xs+rg5aE7ANPPmILoxg25o0EADizu1ZEMbZx4vpEJCNY0zjsUHudroSDcZwP
+ PgT8DiQyrAk+yTkYPEHRyh1E4FWUBlusEBBB6cfW/LlmYWfv2JuZ813WkEEDttGNfCfkf7NQF
+ p0PNybCANnk/L/7tXsEJx8g7ktsLsCilOgNFZKUB/W3a5gKsGGUKGZINetrSkLxPOQLj4tJQO
+ TkqeKgnXPfcADUiVWS54KBJH3xNf1yfv/aZBo01559E4Z0TU7ky1pjk8NPzh+Np+QTjFa2irc
+ W1d5wq9lmPnf31ZgpA0QwH7kxQ+EnTir69zDFOnzgHq2sPpIZth1KltPeKxx/FeNhhS4EB9a0
+ 6YuOuJeNTrvcbUAxvq9Enob8l40CeDqVxtIwjxdZYF3vOZzl0guqE888jbbXvTeCGOWj5Dayr
+ kWCTNRwtfyfx0oQM/+tquIrhHXsgKZCLcXQVOX6V4ysFl15U2mFr7Eh+nL/rvqS9XrB3KiBvj
+ OXPmrEFQ4WLHffVBa/FXqlbr2r9wbUJWb7dYTepF/lDytFD4ywSI+ZOKPzUzzqImbS6AiUjn7
+ 3QWTQ0pD9N33qVLtt8lWQjTzbg7y/pYBZu94ELtqtC+3Wm2gJlkrhQPOLu38VopbP+QZBkUnB
+ VJS8lvFfg+iyfyhGe5/kU8EfKkO9lcOFvGaqOZZVwSX50tnWj3GWBUeT0jGj4bE9B8BMuNAyn
+ H32189Mmzks1dn0Y3/TgR8o+K+WRP4e7wm0yVAirHNyyl41d7pUinKFc3uGllb5a/nUxXboci
+ dEDmQTSRL0ndAlLa6tMgkcRkw8An/ud4opBGAgIm8RP/vfH4rDADvo7paQ5o+ly4gj+kiqQZw
+ 93suI/6dpUvNJ10ZdE7u6Td+JXAlbJLjELuGj6iAqzOcCQ7ROPg5R9FWCf+YlmLrFv+x8Rqrv
+ fOou3vdVuUhuWW6fAZIJZTHD1/rXnhBXk9s
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three minor fixes, all in drivers.
+On Sat, 2021-08-14 at 21:08 +0200, Vlastimil Babka wrote:
+> On 8/12/21 11:44 PM, Clark Williams wrote:
+> >
+> > $ ./scripts/faddr2line /data/o/linux-5.14.y-rt/vmlinux ___slab_alloc+0=
+x340/0x940
+> > ___slab_alloc+0x340/0x940:
+> > PageSlabPfmemalloc at include/linux/page-flags.h:814
+> > (inlined by) pfmemalloc_match at mm/slub.c:2772
+> > (inlined by) ___slab_alloc at mm/slub.c:2874
+>
+> Aha! That's helpful. Hopefully it's just a small issue where we
+> opportunistically test flags on a page that's protected by the local
+> lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
+> which can trigger if our page went away (which we would have realized
+> after taking the lock).
+>
+> So hopefully the below diff with uninspired naming should help?
 
-The patch is available here:
+I bet a nickle it does, shall let box slave away testing that theory
+while its master pedals around the sunny Bavarian countryside.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+	-Mike
 
-The short changelog is:
-
-Colin Ian King (1):
-      scsi: mpt3sas: Fix incorrectly assigned error return and check
-
-Ewan D. Milne (1):
-      scsi: lpfc: Move initialization of phba->poll_list earlier to avoid crash
-
-Michael Kelley (1):
-      scsi: storvsc: Log TEST_UNIT_READY errors as warnings
-
-And the diffstat:
-
- drivers/scsi/lpfc/lpfc_init.c       |  3 ++-
- drivers/scsi/mpt3sas/mpt3sas_base.c |  2 +-
- drivers/scsi/storvsc_drv.c          | 14 ++++++++++++--
- 3 files changed, 15 insertions(+), 4 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index 5983e05b648f..e29523a1b530 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -13193,6 +13193,8 @@ lpfc_pci_probe_one_s4(struct pci_dev *pdev, const struct pci_device_id *pid)
- 	if (!phba)
- 		return -ENOMEM;
- 
-+	INIT_LIST_HEAD(&phba->poll_list);
-+
- 	/* Perform generic PCI device enabling operation */
- 	error = lpfc_enable_pci_dev(phba);
- 	if (error)
-@@ -13327,7 +13329,6 @@ lpfc_pci_probe_one_s4(struct pci_dev *pdev, const struct pci_device_id *pid)
- 	/* Enable RAS FW log support */
- 	lpfc_sli4_ras_setup(phba);
- 
--	INIT_LIST_HEAD(&phba->poll_list);
- 	timer_setup(&phba->cpuhp_poll_timer, lpfc_sli4_poll_hbtimer, 0);
- 	cpuhp_state_add_instance_nocalls(lpfc_cpuhp_state, &phba->cpuhp);
- 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 19b1c0cf5f2a..cf4a3a2c22ad 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -7851,7 +7851,7 @@ _base_make_ioc_operational(struct MPT3SAS_ADAPTER *ioc)
- 			return r;
- 	}
- 
--	rc = _base_static_config_pages(ioc);
-+	r = _base_static_config_pages(ioc);
- 	if (r)
- 		return r;
- 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 328bb961c281..37506b3fe5a9 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1199,14 +1199,24 @@ static void storvsc_on_io_completion(struct storvsc_device *stor_device,
- 		vstor_packet->vm_srb.sense_info_length);
- 
- 	if (vstor_packet->vm_srb.scsi_status != 0 ||
--	    vstor_packet->vm_srb.srb_status != SRB_STATUS_SUCCESS)
--		storvsc_log(device, STORVSC_LOGGING_ERROR,
-+	    vstor_packet->vm_srb.srb_status != SRB_STATUS_SUCCESS) {
-+
-+		/*
-+		 * Log TEST_UNIT_READY errors only as warnings. Hyper-V can
-+		 * return errors when detecting devices using TEST_UNIT_READY,
-+		 * and logging these as errors produces unhelpful noise.
-+		 */
-+		int loglevel = (stor_pkt->vm_srb.cdb[0] == TEST_UNIT_READY) ?
-+			STORVSC_LOGGING_WARN : STORVSC_LOGGING_ERROR;
-+
-+		storvsc_log(device, loglevel,
- 			"tag#%d cmd 0x%x status: scsi 0x%x srb 0x%x hv 0x%x\n",
- 			request->cmd->request->tag,
- 			stor_pkt->vm_srb.cdb[0],
- 			vstor_packet->vm_srb.scsi_status,
- 			vstor_packet->vm_srb.srb_status,
- 			vstor_packet->status);
-+	}
- 
- 	if (vstor_packet->vm_srb.scsi_status == SAM_STAT_CHECK_CONDITION &&
- 	    (vstor_packet->vm_srb.srb_status & SRB_STATUS_AUTOSENSE_VALID))
 
