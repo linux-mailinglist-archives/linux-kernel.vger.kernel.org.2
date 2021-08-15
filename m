@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7468C3ECB30
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5023ECB2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhHOVab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:30:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48068 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbhHOV2m (ORCPT
+        id S233017AbhHOVa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhHOV2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:28:42 -0400
-Message-ID: <20210815211303.197113263@linutronix.de>
+        Sun, 15 Aug 2021 17:28:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577E0C061796
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 14:28:13 -0700 (PDT)
+Message-ID: <20210815211303.253614678@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629062890;
+        s=2020; t=1629062892;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=NPuiGoTkGySUcyiF0qz6LOiNNd6d7pwht3zfTC353yI=;
-        b=RMRjNIXTRh1EzpAKvhYfH93sy49ptVUcsfpf6xreysBXA6bgZQffrCgctxQaK42G+/DflT
-        N9O1Y8sBNhHopREtGn0BV/y/mafEfA8EZ3Nbi60Je6tKZd5olxk7bvR2mK8AN6rGCnGGJt
-        DL1HQPJpUs8TQIt+alSQgMZMo2qplzHekXkMKd17lcCCzIKhWDahdi0YabuGfdp/daD5Ok
-        Ev/pOZxGpM2lyUIHpMg1iODmoNCdXHXX1QW8I2eBsAYlpSH0h83QiYMuMMQVkjbJFIvG1o
-        kMRwerMKcLXHp/KVVqMyM8oIabgOT1DzlCUslIupToLGFTu73tyGR4yEMmDJuA==
+        bh=+YnMRjsnxk84Or/H+2smifp2SyRHTm7IycMX/nyQ9U0=;
+        b=p1bJZceizZAuQOIDEAf1H37lFi7qN4+oePUltuHgUAULOZB3eMqV2FIvwVtY3Ind5O+8Kb
+        5/EBA6gwRSaHOcLYaJM+lMfT2KAw28V1X98BG/OgnvbI5MWQYwg/L8chlD9vpqfkr0jzqN
+        GtfRzCXx6YhkWzECBmD2hBvaQmoo2TIUUacXiRg1KQGEQbF+pecSIpN++lnY2Z/IYXQ3Qy
+        GOJHeOWhx4dDcFwrQzJTBhWfxg88g7Ki9tFU1gGLbVyVKXkN51O1sE0JoyiP4xmClf6Dl7
+        zRSt92DV0Q3hGIzH4mckhb0qrchsdZNyODKVlroc84tmIyaajMjTljXWvgkSnQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629062890;
+        s=2020e; t=1629062892;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=NPuiGoTkGySUcyiF0qz6LOiNNd6d7pwht3zfTC353yI=;
-        b=TY15wGOok8TUF6j7eLcRT/cHuOTIp09dj2Q12SJmEExq9XXcUICpPMED6SUOftT8lyZNUv
-        lZ2hljVaKXLt4fCA==
+        bh=+YnMRjsnxk84Or/H+2smifp2SyRHTm7IycMX/nyQ9U0=;
+        b=lwHIGxp/I9FwYFMHGrcpKL+HuI7iz+nGEINPNsTOI8uzo4NKugAR38eHDq1DW2dCsC4rW5
+        xs9JaVSG7WpcyEDQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,182 +48,100 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V5 22/72] locking/rtmutex: Use rt_mutex_wake_q_head
+Subject: [patch V5 23/72] locking/rtmutex: Prepare RT rt_mutex_wake_q for RT locks
 References: <20210815203225.710392609@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Sun, 15 Aug 2021 23:28:09 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 23:28:11 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Prepare for the required state aware handling of waiter wakeups via wake_q
-and switch the rtmutex code over to the rtmutex specific wrapper.
+Add a rtlock_task pointer to rt_mutex_wake_q which allows to handle the RT
+specific wakeup for spin/rwlock waiters. The pointer is just consuming 4/8
+bytes on stack so it is provided unconditionaly to avoid #ifdeffery all
+over the place.
 
-No functional change.
+This cannot use a wake_q because a task can have concurrent wakeups which
+would make it miss either lock or the regular wakeup depending on what gets
+queued first unless task struct gains a separate wake_q_node for this which
+would be overkill because there can only be a single task which gets woken
+up in the spin/rw_lock unlock path.
+
+No functional change for non-RT enabled kernels.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Adopt to rename
+V3: Switch back to the working version (Mike)
+V2: Make it symmetric (PeterZ)
 ---
- kernel/futex.c                  |    8 ++++----
- kernel/locking/rtmutex.c        |   12 ++++++------
- kernel/locking/rtmutex_api.c    |   19 ++++++++-----------
- kernel/locking/rtmutex_common.h |    4 ++--
- 4 files changed, 20 insertions(+), 23 deletions(-)
+ include/linux/sched/wake_q.h    |    1 -
+ kernel/locking/rtmutex.c        |   18 ++++++++++++++++--
+ kernel/locking/rtmutex_common.h |    5 ++++-
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 ---
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1493,11 +1493,11 @@ static void mark_wake_futex(struct wake_
-  */
- static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_state)
- {
--	u32 curval, newval;
- 	struct rt_mutex_waiter *top_waiter;
- 	struct task_struct *new_owner;
- 	bool postunlock = false;
--	DEFINE_WAKE_Q(wake_q);
-+	DEFINE_RT_WAKE_Q(wqh);
-+	u32 curval, newval;
- 	int ret = 0;
- 
- 	top_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
-@@ -1549,14 +1549,14 @@ static int wake_futex_pi(u32 __user *uad
- 		 * not fail.
- 		 */
- 		pi_state_update_owner(pi_state, new_owner);
--		postunlock = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
-+		postunlock = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wqh);
- 	}
- 
- out_unlock:
- 	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
- 
- 	if (postunlock)
--		rt_mutex_postunlock(&wake_q);
-+		rt_mutex_postunlock(&wqh);
- 
- 	return ret;
- }
+--- a/include/linux/sched/wake_q.h
++++ b/include/linux/sched/wake_q.h
+@@ -62,5 +62,4 @@ static inline bool wake_q_empty(struct w
+ extern void wake_q_add(struct wake_q_head *head, struct task_struct *task);
+ extern void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task);
+ extern void wake_up_q(struct wake_q_head *head);
+-
+ #endif /* _LINUX_SCHED_WAKE_Q_H */
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1017,7 +1017,7 @@ static int __sched task_blocks_on_rt_mut
-  *
-  * Called with lock->wait_lock held and interrupts disabled.
-  */
--static void __sched mark_wakeup_next_waiter(struct wake_q_head *wake_q,
-+static void __sched mark_wakeup_next_waiter(struct rt_wake_q_head *wqh,
- 					    struct rt_mutex_base *lock)
+@@ -351,12 +351,26 @@ static __always_inline void rt_mutex_adj
+ static __always_inline void rt_mutex_wake_q_add(struct rt_wake_q_head *wqh,
+ 						struct rt_mutex_waiter *w)
  {
- 	struct rt_mutex_waiter *waiter;
-@@ -1054,10 +1054,10 @@ static void __sched mark_wakeup_next_wai
- 	 * deboost but before waking our donor task, hence the preempt_disable()
- 	 * before unlock.
- 	 *
--	 * Pairs with preempt_enable() in rt_mutex_postunlock();
-+	 * Pairs with preempt_enable() in rt_mutex_wake_up_q();
- 	 */
- 	preempt_disable();
--	wake_q_add(wake_q, waiter->task);
-+	rt_mutex_wake_q_add(wqh, waiter);
- 	raw_spin_unlock(&current->pi_lock);
+-	wake_q_add(&wqh->head, w->task);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && w->wake_state != TASK_NORMAL) {
++		if (IS_ENABLED(CONFIG_PROVE_LOCKING))
++			WARN_ON_ONCE(wqh->rtlock_task);
++		get_task_struct(w->task);
++		wqh->rtlock_task = w->task;
++	} else {
++		wake_q_add(&wqh->head, w->task);
++	}
  }
  
-@@ -1328,7 +1328,7 @@ static __always_inline int __rt_mutex_tr
-  */
- static void __sched rt_mutex_slowunlock(struct rt_mutex_base *lock)
+ static __always_inline void rt_mutex_wake_up_q(struct rt_wake_q_head *wqh)
  {
--	DEFINE_WAKE_Q(wake_q);
-+	DEFINE_RT_WAKE_Q(wqh);
- 	unsigned long flags;
+-	wake_up_q(&wqh->head);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && wqh->rtlock_task) {
++		wake_up_state(wqh->rtlock_task, TASK_RTLOCK_WAIT);
++		put_task_struct(wqh->rtlock_task);
++		wqh->rtlock_task = NULL;
++	}
++
++	if (!wake_q_empty(&wqh->head))
++		wake_up_q(&wqh->head);
  
- 	/* irqsave required to support early boot calls */
-@@ -1381,10 +1381,10 @@ static void __sched rt_mutex_slowunlock(
- 	 *
- 	 * Queue the next waiter for wakeup once we release the wait_lock.
- 	 */
--	mark_wakeup_next_waiter(&wake_q, lock);
-+	mark_wakeup_next_waiter(&wqh, lock);
- 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 
--	rt_mutex_postunlock(&wake_q);
-+	rt_mutex_wake_up_q(&wqh);
- }
- 
- static __always_inline void __rt_mutex_unlock(struct rt_mutex_base *lock)
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -137,10 +137,10 @@ int __sched __rt_mutex_futex_trylock(str
-  * do not use the fast-path, can be simple and will not need to retry.
-  *
-  * @lock:	The rt_mutex to be unlocked
-- * @wake_q:	The wake queue head from which to get the next lock waiter
-+ * @wqh:	The wake queue head from which to get the next lock waiter
-  */
- bool __sched __rt_mutex_futex_unlock(struct rt_mutex_base *lock,
--				     struct wake_q_head *wake_q)
-+				     struct rt_wake_q_head *wqh)
- {
- 	lockdep_assert_held(&lock->wait_lock);
- 
-@@ -157,23 +157,23 @@ bool __sched __rt_mutex_futex_unlock(str
- 	 * avoid inversion prior to the wakeup.  preempt_disable()
- 	 * therein pairs with rt_mutex_postunlock().
- 	 */
--	mark_wakeup_next_waiter(wake_q, lock);
-+	mark_wakeup_next_waiter(wqh, lock);
- 
- 	return true; /* call postunlock() */
- }
- 
- void __sched rt_mutex_futex_unlock(struct rt_mutex_base *lock)
- {
--	DEFINE_WAKE_Q(wake_q);
-+	DEFINE_RT_WAKE_Q(wqh);
- 	unsigned long flags;
- 	bool postunlock;
- 
- 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
--	postunlock = __rt_mutex_futex_unlock(lock, &wake_q);
-+	postunlock = __rt_mutex_futex_unlock(lock, &wqh);
- 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
- 
- 	if (postunlock)
--		rt_mutex_postunlock(&wake_q);
-+		rt_mutex_postunlock(&wqh);
- }
- 
- /**
-@@ -441,12 +441,9 @@ void __sched rt_mutex_adjust_pi(struct t
- /*
-  * Performs the wakeup of the top-waiter and re-enables preemption.
-  */
--void __sched rt_mutex_postunlock(struct wake_q_head *wake_q)
-+void __sched rt_mutex_postunlock(struct rt_wake_q_head *wqh)
- {
--	wake_up_q(wake_q);
--
--	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
--	preempt_enable();
-+	rt_mutex_wake_up_q(wqh);
- }
- 
- #ifdef CONFIG_DEBUG_RT_MUTEXES
+ 	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
+ 	preempt_enable();
 --- a/kernel/locking/rtmutex_common.h
 +++ b/kernel/locking/rtmutex_common.h
-@@ -76,9 +76,9 @@ extern int __rt_mutex_futex_trylock(stru
+@@ -42,15 +42,18 @@ struct rt_mutex_waiter {
+ /**
+  * rt_wake_q_head - Wrapper around regular wake_q_head to support
+  *		    "sleeping" spinlocks on RT
+- * @head:	The regular wake_q_head for sleeping lock variants
++ * @head:		The regular wake_q_head for sleeping lock variants
++ * @rtlock_task:	Task pointer for RT lock (spin/rwlock) wakeups
+  */
+ struct rt_wake_q_head {
+ 	struct wake_q_head	head;
++	struct task_struct	*rtlock_task;
+ };
  
- extern void rt_mutex_futex_unlock(struct rt_mutex_base *lock);
- extern bool __rt_mutex_futex_unlock(struct rt_mutex_base *lock,
--				struct wake_q_head *wake_q);
-+				struct rt_wake_q_head *wqh);
- 
--extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
-+extern void rt_mutex_postunlock(struct rt_wake_q_head *wqh);
+ #define DEFINE_RT_WAKE_Q(name)						\
+ 	struct rt_wake_q_head name = {					\
+ 		.head		= WAKE_Q_HEAD_INITIALIZER(name.head),	\
++		.rtlock_task	= NULL,					\
+ 	}
  
  /*
-  * Must be guarded because this header is included from rcu/tree_plugin.h
 
