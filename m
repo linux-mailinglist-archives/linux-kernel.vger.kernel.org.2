@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559E23ECB8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35FE3ECB91
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhHOVyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:54:12 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55358 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhHOVyL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:54:11 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 481211F42390
-Received: by earth.universe (Postfix, from userid 1000)
-        id 235823C0C9B; Sun, 15 Aug 2021 23:53:37 +0200 (CEST)
-Date:   Sun, 15 Aug 2021 23:53:37 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Kezhou Li <kezhou.li@tinno.com>
-Cc:     pali@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [External][PATCH] power: supply: bq2415x: fix deadlock in
- bq2415x_set_autotimer
-Message-ID: <20210815215337.kvxngq2ba7viqfip@earth.universe>
-References: <1624277660-11440-1-git-send-email-kezhou.li@tinno.com>
+        id S231506AbhHOVze convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Aug 2021 17:55:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230077AbhHOVzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 17:55:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E274E6138B;
+        Sun, 15 Aug 2021 21:55:02 +0000 (UTC)
+Received: from 109-170-232-56.xdsl.murphx.net ([109.170.232.56] helo=[127.0.0.1])
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mFO5s-005A7t-R6; Sun, 15 Aug 2021 22:55:00 +0100
+Date:   Sun, 15 Aug 2021 22:55:01 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     =?ISO-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        =?ISO-8859-1?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] PCI: aardvark: Fix masking MSI interrupts
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210815173659.2mjug3jffp6a4ybg@pali>
+References: <20210815103624.19528-1-pali@kernel.org> <20210815103624.19528-3-pali@kernel.org> <87zgtizly3.wl-maz@kernel.org> <20210815173659.2mjug3jffp6a4ybg@pali>
+Message-ID: <D64971ED-5502-4A7B-8176-B4FBF00CD80B@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lrodfk3q7x4pfbmq"
-Content-Disposition: inline
-In-Reply-To: <1624277660-11440-1-git-send-email-kezhou.li@tinno.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 109.170.232.56
+X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, bhelgaas@google.com, robh@kernel.org, kw@linux.com, kabel@kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---lrodfk3q7x4pfbmq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 15 August 2021 18:36:59 BST, "Pali Rohár" <pali@kernel.org> wrote:
+>On Sunday 15 August 2021 17:56:04 Marc Zyngier wrote:
+>> On Sun, 15 Aug 2021 11:36:23 +0100,
+>> Pali Rohár <pali@kernel.org> wrote:
+>> > 
+>> > Masking of individual MSI interrupts is done via PCIE_MSI_MASK_REG
+>> > register. At the driver probe time mask all MSI interrupts and then let
+>> > kernel IRQ chip code to unmask particular MSI interrupt when needed.
+>> > 
+>> > Signed-off-by: Pali Rohár <pali@kernel.org>
+>> > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
+>> > ---
+>> >  drivers/pci/controller/pci-aardvark.c | 44 ++++++++++++++++++++++++---
+>> >  1 file changed, 40 insertions(+), 4 deletions(-)
+>> > 
+>> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+>> > index bacfccee44fe..96580e1e4539 100644
+>> > --- a/drivers/pci/controller/pci-aardvark.c
+>> > +++ b/drivers/pci/controller/pci-aardvark.c
+>> > @@ -480,12 +480,10 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
+>> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_REG);
+>> >  	advk_writel(pcie, PCIE_IRQ_ALL_MASK, HOST_CTRL_INT_STATUS_REG);
+>> >  
+>> > -	/* Disable All ISR0/1 Sources */
+>> > +	/* Disable All ISR0/1 and MSI Sources */
+>> >  	advk_writel(pcie, PCIE_ISR0_ALL_MASK, PCIE_ISR0_MASK_REG);
+>> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_MASK_REG);
+>> > -
+>> > -	/* Unmask all MSIs */
+>> > -	advk_writel(pcie, ~(u32)PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
+>> > +	advk_writel(pcie, PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
+>> >  
+>> >  	/* Unmask summary MSI interrupt */
+>> >  	reg = advk_readl(pcie, PCIE_ISR0_MASK_REG);
+>> > @@ -1026,6 +1024,40 @@ static int advk_msi_set_affinity(struct irq_data *irq_data,
+>> >  	return -EINVAL;
+>> >  }
+>> >  
+>> > +static void advk_msi_irq_mask(struct irq_data *d)
+>> > +{
+>> > +	struct advk_pcie *pcie = d->domain->host_data;
+>> > +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+>> > +	u32 mask;
+>> > +
+>> > +	mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
+>> > +	mask |= BIT(hwirq);
+>> > +	advk_writel(pcie, mask, PCIE_MSI_MASK_REG);
+>> 
+>> This isn't atomic, and will results in corruption when two MSIs are
+>> masked/unmasked concurrently.
+>
+>Does it mean that also current implementation of masking legacy
+>interrupt is incorrect?
+>
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?h=v5.13#n874
 
-On Mon, Jun 21, 2021 at 08:14:20PM +0800, Kezhou Li wrote:
-> From: "Kezhou Li" <kezhou.li@tinno.com>
->=20
-> The bq2415x_timer_error called by bq2415x_timer_work when some error
-> happens, and then calls cancel_delayed_work_sync(&bq->work). Finally
-> this function is waiting for the work to finish but the work is
-> waiting for the return of the function. So it causes a deadlock.
->=20
-> Signed-off-by: Kezhou Li <kezhou.li@tinno.com>
-> ---
+Yes, that's completely busted. If you have configuration registers that are shared between interrupts and that the HW doesn't provide set/clear accessors so that it can cope with such races, you need mutual exclusion.
 
-The patch is not correct, since bq2415x_sysfs_set_timer() should
-call cancel_delayed_work_sync() for the "off" case.
+You'd think people would have worked that one out.... 60 years ago?
 
--- Sebastian
+        M.
 
->  drivers/power/supply/bq2415x_charger.c | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/power/supply/bq2415x_charger.c b/drivers/power/suppl=
-y/bq2415x_charger.c
-> index 5724001..7889edb 100644
-> --- a/drivers/power/supply/bq2415x_charger.c
-> +++ b/drivers/power/supply/bq2415x_charger.c
-> @@ -862,8 +862,6 @@ static void bq2415x_set_autotimer(struct bq2415x_devi=
-ce *bq, int state)
->  		schedule_delayed_work(&bq->work, BQ2415X_TIMER_TIMEOUT * HZ);
->  		bq2415x_exec_command(bq, BQ2415X_TIMER_RESET);
->  		bq->timer_error =3D NULL;
-> -	} else {
-> -		cancel_delayed_work_sync(&bq->work);
->  	}
-> =20
->  	mutex_unlock(&bq2415x_timer_mutex);
-> --=20
-> 1.9.1
->=20
-
---lrodfk3q7x4pfbmq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEZjN4ACgkQ2O7X88g7
-+ppnvRAAodF+sl1yWvvtAQSg15s5o+umWBmRxDTGaMYidY/rZ3z9uD/X2KbLwP0h
-nB9FzHo6Gzw0P2JFtFGU1ZCmmhNgZhd/+jhtVMFQGUqmRCCW+N5bu8ybO3ATElKp
-9wQEb47NMWCI1Qj0WJf3+n16xifopuZGEerbIuHJ9fI3BejBzW890p4dcXMp7TjR
-SDpJAIuxLltSGkxHrd1Av3UmCDYu48MbMgyuGQInwt/hIL8yNV3j6AtnRsAD+mF4
-dcE9EExUQXNCEW5bFtMtqqwdtqWkErNFYBfTZK75GpWm5LWdvLzHNuMtBvF/llaB
-H5PDV1AySzr/ton1TG/ieD5P7iVpacQj6ahpGtLmFdx+BqU1kj5RLp+ILv7BRSj4
-WAsZBMODDObjmkgQAEWjf5h3uLGRR9iR8loZdSye6wbWQacd0KPKkpQSaLaL7jkE
-IRcnGH17x9TCuCFDwd4xlqFCMcXdui9mbwLa6lr2vPxK6vlrVOwjuXpCObcGKIFY
-zLSSDsZxt3ZCr714eIr+JEIEqHow34W2Ty8f7WoqW1PJZM+en3wRRAfKWTmtHBV3
-Nb/MV7mFhj5CO5pvVJ0otcycmB4KZQLQqg/eRno+i+MZ74DRQHAtvmB7qw2xCspf
-RajjK4c+75QkKy8MKDWAG+Q90UKQorL1py+o/HZLcZVbKZHp9xM=
-=GbaK
------END PGP SIGNATURE-----
-
---lrodfk3q7x4pfbmq--
+Jazz is not dead, it just smells funny
