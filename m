@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35FE3ECB91
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DF83ECB96
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 00:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhHOVze convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Aug 2021 17:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhHOVzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:55:33 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E274E6138B;
-        Sun, 15 Aug 2021 21:55:02 +0000 (UTC)
-Received: from 109-170-232-56.xdsl.murphx.net ([109.170.232.56] helo=[127.0.0.1])
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mFO5s-005A7t-R6; Sun, 15 Aug 2021 22:55:00 +0100
-Date:   Sun, 15 Aug 2021 22:55:01 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     =?ISO-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        =?ISO-8859-1?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] PCI: aardvark: Fix masking MSI interrupts
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210815173659.2mjug3jffp6a4ybg@pali>
-References: <20210815103624.19528-1-pali@kernel.org> <20210815103624.19528-3-pali@kernel.org> <87zgtizly3.wl-maz@kernel.org> <20210815173659.2mjug3jffp6a4ybg@pali>
-Message-ID: <D64971ED-5502-4A7B-8176-B4FBF00CD80B@kernel.org>
+        id S231668AbhHOWBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 18:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhHOWBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 18:01:09 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A109BC061764;
+        Sun, 15 Aug 2021 15:00:38 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 5E0461F423BC
+Received: by earth.universe (Postfix, from userid 1000)
+        id 427D63C0C9B; Mon, 16 Aug 2021 00:00:33 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 00:00:33 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] misc: gehc-achc: Fix spelling mistake
+ "Verfication" -> "Verification"
+Message-ID: <20210815220033.vfz3v356ucmhgb5x@earth.universe>
+References: <20210815214206.47970-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-SA-Exim-Connect-IP: 109.170.232.56
-X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, bhelgaas@google.com, robh@kernel.org, kw@linux.com, kabel@kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sqzpx57nwoalmjlm"
+Content-Disposition: inline
+In-Reply-To: <20210815214206.47970-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--sqzpx57nwoalmjlm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 15 August 2021 18:36:59 BST, "Pali Rohár" <pali@kernel.org> wrote:
->On Sunday 15 August 2021 17:56:04 Marc Zyngier wrote:
->> On Sun, 15 Aug 2021 11:36:23 +0100,
->> Pali Rohár <pali@kernel.org> wrote:
->> > 
->> > Masking of individual MSI interrupts is done via PCIE_MSI_MASK_REG
->> > register. At the driver probe time mask all MSI interrupts and then let
->> > kernel IRQ chip code to unmask particular MSI interrupt when needed.
->> > 
->> > Signed-off-by: Pali Rohár <pali@kernel.org>
->> > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
->> > ---
->> >  drivers/pci/controller/pci-aardvark.c | 44 ++++++++++++++++++++++++---
->> >  1 file changed, 40 insertions(+), 4 deletions(-)
->> > 
->> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
->> > index bacfccee44fe..96580e1e4539 100644
->> > --- a/drivers/pci/controller/pci-aardvark.c
->> > +++ b/drivers/pci/controller/pci-aardvark.c
->> > @@ -480,12 +480,10 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
->> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_REG);
->> >  	advk_writel(pcie, PCIE_IRQ_ALL_MASK, HOST_CTRL_INT_STATUS_REG);
->> >  
->> > -	/* Disable All ISR0/1 Sources */
->> > +	/* Disable All ISR0/1 and MSI Sources */
->> >  	advk_writel(pcie, PCIE_ISR0_ALL_MASK, PCIE_ISR0_MASK_REG);
->> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_MASK_REG);
->> > -
->> > -	/* Unmask all MSIs */
->> > -	advk_writel(pcie, ~(u32)PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
->> > +	advk_writel(pcie, PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
->> >  
->> >  	/* Unmask summary MSI interrupt */
->> >  	reg = advk_readl(pcie, PCIE_ISR0_MASK_REG);
->> > @@ -1026,6 +1024,40 @@ static int advk_msi_set_affinity(struct irq_data *irq_data,
->> >  	return -EINVAL;
->> >  }
->> >  
->> > +static void advk_msi_irq_mask(struct irq_data *d)
->> > +{
->> > +	struct advk_pcie *pcie = d->domain->host_data;
->> > +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
->> > +	u32 mask;
->> > +
->> > +	mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
->> > +	mask |= BIT(hwirq);
->> > +	advk_writel(pcie, mask, PCIE_MSI_MASK_REG);
->> 
->> This isn't atomic, and will results in corruption when two MSIs are
->> masked/unmasked concurrently.
->
->Does it mean that also current implementation of masking legacy
->interrupt is incorrect?
->
->https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?h=v5.13#n874
+Hi,
 
-Yes, that's completely busted. If you have configuration registers that are shared between interrupts and that the HW doesn't provide set/clear accessors so that it can cope with such races, you need mutual exclusion.
+On Sun, Aug 15, 2021 at 10:42:06PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There is a spelling mistake in a dev_dbg debug message. Fix it.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-You'd think people would have worked that one out.... 60 years ago?
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-        M.
+-- Sebastian
 
-Jazz is not dead, it just smells funny
+> ---
+>  drivers/misc/gehc-achc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/misc/gehc-achc.c b/drivers/misc/gehc-achc.c
+> index 891d9a214454..02f33bc60c56 100644
+> --- a/drivers/misc/gehc-achc.c
+> +++ b/drivers/misc/gehc-achc.c
+> @@ -280,7 +280,7 @@ static int ezport_flash_compare(struct spi_device *sp=
+i, u32 address,
+>  	ret =3D memcmp(payload, buffer + 4 + 1, payload_size);
+>  	if (ret) {
+>  		ret =3D -EBADMSG;
+> -		dev_dbg(&spi->dev, "Verfication failure @ %06x", address);
+> +		dev_dbg(&spi->dev, "Verification failure @ %06x", address);
+>  		print_hex_dump_bytes("fw:  ", DUMP_PREFIX_OFFSET, payload, payload_siz=
+e);
+>  		print_hex_dump_bytes("dev: ", DUMP_PREFIX_OFFSET, buffer + 4, payload_=
+size);
+>  	}
+> --=20
+> 2.32.0
+>=20
+
+--sqzpx57nwoalmjlm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEZjoEACgkQ2O7X88g7
++pqFIg/9GGXPpAFtIMHh0gKssA/YS7dn7Z6P8b6B2Oz398kZJFs9UfyOhVLHNGdE
+6h62OHmV9anR8jS+8a0LIWvqZRCsGSfgquVssGChJqriPXEKnNJXwP2988IsnV+4
+MRB5SgeXawwjEW481yCB/TtUG5EjuS30YyCozKUkJsSbP+r05uVI9Y3tYn2IjQOL
+SePI6rDQz+SkGUioA44to/3IDODjwUyvLvln72Qg4hme7E4R+2CCCH6MS8tpC6Z9
+HzRIzbw9+5l0U3MhHD6JugFI+HUSx/iIhrAVzvS5J3PqIVrb+Tm9fnzg6GWmA/3T
+ZUZZGK0mj84k25nKqU8IQB3vssaWu0kZYrjBu1ygZQPvVvuT6lPF50Gk1MG/o0an
+tOJ7TjvOdsk8dlV2wmlVxExpQrIn7X7GsaUlconh2QGhorDf7TFJY1zaM23EJ82l
+DAbV23dgd/Izdm7syGCI41xy8IiKBLRzcey2j17qRJgqWikNvyvnzuu0AW3r/oWU
+7fvSO2CMUEf9sFcsvlJpRPo1XBCBQS+fdT3zuR4Uq5aKu4iEWUUG31z2W9A2gFnL
+epBtPKYIoDaNX6H0oM5zK8+zePo56bcwUnvL9IXi26Lg8IXzJ3iKkl0pzYNC7yXf
+kPBB7xg+TC2pEu0WjdwnuXgtcSfgX/syazA6ANvkw7BWClgLg9c=
+=UXeE
+-----END PGP SIGNATURE-----
+
+--sqzpx57nwoalmjlm--
