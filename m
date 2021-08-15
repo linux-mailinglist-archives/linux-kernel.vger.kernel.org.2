@@ -2,216 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1908C3EC8B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE943EC8BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhHOL0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 07:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhHOL0H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 07:26:07 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D356C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 04:25:37 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id bq25so16591052ejb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 04:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=XDJOtYqs3HqQfM6YXjLOfgdRWk7GtognCyKYYKdXAmU=;
-        b=onviHfUjgS17zKR6ZzjMaOc/UY5+ANGceMEDXMBUjJHMOEfttJlz+XBKUIqfChe05v
-         AuMqK+0+Cb2JG4IIobVp4qAhqfng8n4unlR2nUGMzSJMAiWGZv3x4FqI1W8Xk8LSCxfl
-         k4SxXE15pwxbozluZudph2pWMh8zpdhyyi4xY9vEZynbTjtkOPYsKhEK2ubOFdrUYrQ/
-         Xx/ex07UBhG+sD36G69FA0HPSs77EmoV5tCnjv7cIC2OLpkk4Dwkep5UMI4XEvlh09PJ
-         lgAC1gE0GK2vRCtN7HQ8/znV4g0r6CwlYEaqoWvU13iYaWadGyHA8dlE6V7hJZxmIZ9b
-         Gv6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=XDJOtYqs3HqQfM6YXjLOfgdRWk7GtognCyKYYKdXAmU=;
-        b=cC9Z8Q7Bzzy5ZeUEKdeq38GQQMaWAyWGnfJ+2Ha23t4gKvGBB7mQGZoDtrhmtSVgnk
-         lrGZGHC7Zta+uoj8a8WFj1rLXTtbsjHkT4wM1o3/wKozfOr1arrg+0wPQREWztlIRUPN
-         5PKCcoZVGcV+8fbgWkNgL7urw4vj6rbiwILC8u3MS+jOblVlDPm0wEI7wB+f/IOivTGs
-         7Dw5BPn0Q6B+1fzA1pD2qS3EZjvUF+nteIy4jzZMuZUI8NP07zX9JN/nQKTCtNnqMnz5
-         CU6rL3xDItYoX57zaHxcEq0Z+XMXF7BpwB7n4LFM3EsndQfuJ68nydZad8N/nfqJdppU
-         728w==
-X-Gm-Message-State: AOAM532YQ6diFahWeJH6Z8oLQKw0TUy20TxlM5qo910xFjMz9ouypVeh
-        js/flCdNL6nA0n3qRZ+2kJs7c6PDQCz6/4lVaCs=
-X-Google-Smtp-Source: ABdhPJwxlA/sZtjCNX6gnhrcSXZzwzeX36eYq2VYX96S9JZaZMgy4d7A0xPSv0mearacBsUZj+KTmezzu5IwTnAOYq8=
-X-Received: by 2002:a17:906:1c05:: with SMTP id k5mr6645903ejg.36.1629026735781;
- Sun, 15 Aug 2021 04:25:35 -0700 (PDT)
+        id S237569AbhHOLkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 07:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhHOLkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 07:40:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2DB56103A;
+        Sun, 15 Aug 2021 11:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629027606;
+        bh=a9bgzfKD8VILfCRL11SmJuGmcb6L9u8+Bd4nlW4OmkE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b4CH/RwPlnnsxMgw6B/74X3uR8IvcmqaxkMnNQ63N0H4yaSB1SAWb0b5DcUz9u999
+         kq3xoLyay65hm7FpkhTSFQcIK78yvxyRlvLQY05sx3HV8l9wvdtpFlyHiogQ03QqE0
+         xRvkPieOXirVDtXTabhLjNBVU9ejeYvBkGQ9icKs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.281
+Date:   Sun, 15 Aug 2021 13:40:02 +0200
+Message-Id: <162902760323945@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a05:6400:4211:0:0:0:0 with HTTP; Sun, 15 Aug 2021 04:25:35
- -0700 (PDT)
-In-Reply-To: <CAHp75VcFeDy9V3cJoS2V+bAsEKd03PoBVanX1bBb_-scNGdsdQ@mail.gmail.com>
-References: <20210815032132.14530-1-21cnbao@gmail.com> <CAHp75VcFeDy9V3cJoS2V+bAsEKd03PoBVanX1bBb_-scNGdsdQ@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sun, 15 Aug 2021 23:25:35 +1200
-Message-ID: <CAGsJ_4zSp0M9Mrbxs31FyGvm1pFH44MStEcuThju4u+DPf7Khw@mail.gmail.com>
-Subject: Re: [PATCH] lib: bitmap: Mute some odd section mismatch warning in
- xtensa kernel build
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        kernel test robot <lkp@intel.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Andrew Pinski <pinskia@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, Aug 15, 2021 at 6:23 AM Barry Song <21cnbao@gmail.com> wrote:
-> >
-> > From: Barry Song <song.bao.hua@hisilicon.com>
-> >
-> > Constanly there are some section mismatch issues reported in test_bitmap
->
-> Constantly
->
-> > for xtensa platform such as:
-> >
-> >   Section mismatch in reference from the function bitmap_equal() to the
-> >   variable .init.data:initcall_level_names
-> >   The function bitmap_equal() references the variable __initconst
-> >   __setup_str_initcall_blacklist. This is often because bitmap_equal
-> >   lacks a __initconst annotation or the annotation of
-> >   __setup_str_initcall_blacklist is wrong.
-> >
-> >   Section mismatch in reference from the function
-> bitmap_copy_clear_tail()
-> >   to the variable .init.rodata:__setup_str_initcall_blacklist
-> >   The function bitmap_copy_clear_tail() references the variable
-> __initconst
-> >   __setup_str_initcall_blacklist.
-> >   This is often because bitmap_copy_clear_tail lacks a __initconst
-> >   annotation or the annotation of __setup_str_initcall_blacklist is
-> wrong.
-> >
-> > To be honest, hardly to believe kernel code is wrong since bitmap_equal
-> is
->
-> bitmap_equal()
->
-> > always called in __init function in test_bitmap.c just like
-> __bitmap_equal.
->
-> __bitmap_equal()
->
-> > But gcc doesn't report any issue for __bitmap_equal even when
-> bitmap_equal
-> > and __bitmap_equal show in the same function such as:
->
-> Ditto as above in both lines.
->
-> >   static void noinline __init test_mem_optimisations(void)
-> >   {
-> >         ...
-> >           for (start = 0; start < 1024; start += 8) {
-> >                   for (nbits = 0; nbits < 1024 - start; nbits += 8) {
-> >                           if (!bitmap_equal(bmap1, bmap2, 1024)) {
-> >                                   failed_tests++;
-> >                           }
-> >                           if (!__bitmap_equal(bmap1, bmap2, 1024)) {
-> >                                   failed_tests++;
-> >                           }
-> >                         ...
-> >                   }
-> >           }
-> >   }
-> >
-> > The different between __bitmap_equal() and bitmap_equal() is that the
-> > former is extern and a EXPORT_SYMBOL. So noinline, and probably in fact
->
-> and an EXPORT_SYMBOL
->
-> > noclone. But the later is static and unfortunately not inlined at this
->
-> latter
->
-> > time though it has a "inline" flag.
->
-> has an "inline"
->
-> > bitmap_copy_clear_tail(), on the other hand, seems more innocent as it is
-> > accessing stack only by its wrapper bitmap_from_arr32() in function
-> > test_bitmap_arr32():
-> > static void __init test_bitmap_arr32(void)
-> > {
-> >         unsigned int nbits, next_bit;
-> >         u32 arr[EXP1_IN_BITS / 32];
-> >         DECLARE_BITMAP(bmap2, EXP1_IN_BITS);
-> >
-> >         memset(arr, 0xa5, sizeof(arr));
-> >
-> >         for (nbits = 0; nbits < EXP1_IN_BITS; ++nbits) {
-> >                 bitmap_to_arr32(arr, exp1, nbits);
-> >                 bitmap_from_arr32(bmap2, arr, nbits);
-> >                 expect_eq_bitmap(bmap2, exp1, nbits);
-> >                 ...
-> >         }
-> > }
-> > Looks like gcc optimized arr, bmap2 things to .init.data but it seems
-> > nothing is wrong in kernel since test_bitmap_arr32() is __init.
->
-> in the kernel
->
-> > Max Filippov reported a bug to gcc but gcc people don't ack. So here
-> > this patch removes the involved symbols by forcing inline. It might
-> > not be that elegant but I don't see any harm as bitmap_equal() and
-> > bitmap_copy_clear_tail() are both quite small. In addition, kernel
-> > doc also backs this modification "We don't use the 'inline' keyword
-> > because it's broken": www.kernel.org/doc/local/inline.html
-> >
-> > Another possible way to "fix" the warning is moving the involved
-> > symboms to lib/bitmap.c:
->
-> symbols
->
-> >
-> >   +int bitmap_equal(const unsigned long *src1,
-> >   +                       const unsigned long *src2, unsigned int nbits)
-> >   +{
-> >   +       if (small_const_nbits(nbits))
-> >   +               return !((*src1 ^ *src2) &
-> BITMAP_LAST_WORD_MASK(nbits));
-> >   +       if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
-> >   +           IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
-> >   +               return !memcmp(src1, src2, nbits / 8);
-> >   +       return __bitmap_equal(src1, src2, nbits);
-> >   +}
-> >   +EXPORT_SYMBOL(bitmap_equal);
-> >
-> > This is harmful to the performance.
->
-> I'm afraid it's a bit of a slippery road. These two are currently
-> being used in tests, what if somebody extends tests with something
-> else similar? Will we need to __always_inline more symbols because of
-> that? What about non-bitmap APIs?
->
+I'm announcing the release of the 4.4.281 kernel.
 
-you are right. Andy,  we will have to mark those functions one by one
-if gcc doesn't want to change. actually i am seeing the same issue in
-lib/find_bit_benchmark.c whose __init functions are also calling
-static inline bitmap api.
-not quite issue if it is specific to xentas. i'd welcome a global gcc
-option to disable this kind of clone for xentas or i would be happy to
-see gcc people ack this is a gcc issue.
+All users of the 4.4 kernel series must upgrade.
 
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
+thanks,
 
-Thanks
-Barry
+greg k-h
+
+------------
+
+ Makefile                                        |    2 
+ arch/alpha/kernel/smp.c                         |    2 
+ arch/mips/Makefile                              |    2 
+ arch/mips/mti-malta/malta-platform.c            |    3 -
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c         |   11 ++++-
+ drivers/media/v4l2-core/videobuf2-core.c        |   13 +++++-
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c |    3 -
+ drivers/net/ethernet/natsemi/natsemi.c          |    8 ---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c  |    6 +-
+ drivers/net/ethernet/qlogic/qla3xxx.c           |    6 +-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c   |    5 --
+ drivers/net/usb/pegasus.c                       |   14 +++++-
+ drivers/pcmcia/i82092.c                         |    1 
+ drivers/scsi/sr.c                               |    2 
+ drivers/tty/serial/8250/8250_port.c             |   12 ++++-
+ drivers/usb/host/ehci-pci.c                     |    3 +
+ drivers/usb/serial/ch341.c                      |    1 
+ drivers/usb/serial/ftdi_sio.c                   |    1 
+ drivers/usb/serial/ftdi_sio_ids.h               |    3 +
+ drivers/usb/serial/option.c                     |    2 
+ fs/namespace.c                                  |   42 +++++++++++++-------
+ fs/pipe.c                                       |   17 +++++++-
+ fs/reiserfs/stree.c                             |   31 ++++++++++++---
+ fs/reiserfs/super.c                             |    8 +++
+ include/net/bluetooth/hci_core.h                |    1 
+ net/bluetooth/hci_core.c                        |   16 +++----
+ net/bluetooth/hci_sock.c                        |   49 ++++++++++++++++--------
+ net/bluetooth/hci_sysfs.c                       |    3 +
+ scripts/tracing/draw_functrace.py               |    6 +-
+ sound/core/seq/seq_ports.c                      |   39 +++++++++++++------
+ 30 files changed, 223 insertions(+), 89 deletions(-)
+
+Alex Xu (Hello71) (1):
+      pipe: increase minimum default pipe size to 2 pages
+
+Dan Carpenter (1):
+      bnx2x: fix an error code in bnx2x_nic_load()
+
+Daniele Palmas (1):
+      USB: serial: option: add Telit FD980 composition 0x1056
+
+David Bauer (1):
+      USB: serial: ftdi_sio: add device ID for Auto-M3 OP-COM v2
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.281
+
+H. Nikolaus Schaller (1):
+      mips: Fix non-POSIX regexp
+
+Hans Verkuil (1):
+      media: videobuf2-core: dequeue if start_streaming fails
+
+Hui Su (1):
+      scripts/tracing: fix the bug that can't parse raw_trace_func
+
+Johan Hovold (1):
+      media: rtl28xxu: fix zero-length control request
+
+Letu Ren (1):
+      net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
+
+Li Manyi (1):
+      scsi: sr: Return correct event when media event code is 3
+
+Longfang Liu (1):
+      USB:ehci:fix Kunpeng920 ehci hardware problem
+
+Maciej W. Rozycki (2):
+      serial: 8250: Mask out floating 16/32-bit bus bits
+      MIPS: Malta: Do not byte-swap accesses to the CBUS UART
+
+Miklos Szeredi (1):
+      ovl: prevent private clone if bind mount is not allowed
+
+Pavel Skripkin (2):
+      net: pegasus: fix uninit-value in get_interrupt_interval
+      net: vxge: fix use-after-free in vxge_device_unregister
+
+Prarit Bhargava (1):
+      alpha: Send stop IPI to send to online CPUs
+
+Shreyansh Chouhan (1):
+      reiserfs: check directory items on read from disk
+
+Takashi Iwai (1):
+      ALSA: seq: Fix racy deletion of subscriber
+
+Tetsuo Handa (1):
+      Bluetooth: defer cleanup of resources in hci_unregister_dev()
+
+Wang Hai (1):
+      net: natsemi: Fix missing pci_disable_device() in probe and remove
+
+Willy Tarreau (1):
+      USB: serial: ch341: fix character loss at high transfer rates
+
+Yu Kuai (1):
+      reiserfs: add check for root_inode in reiserfs_fill_super
+
+YueHaibing (1):
+      net: xilinx_emaclite: Do not print real IOMEM pointer
+
+Zheyu Ma (1):
+      pcmcia: i82092: fix a null pointer dereference bug
+
