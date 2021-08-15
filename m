@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112593EC6DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794B03EC6E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbhHOD1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S235368AbhHODch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbhHOD1q (ORCPT
+        with ESMTP id S234528AbhHODcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:27:46 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DF5C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 20:27:17 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id cq23so3897047edb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 20:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c1I31bPTWK5wuJTQPwHbt2ClA+rvrrEVj/Bd+LldpDs=;
-        b=iB6NbZfjVgvfFozKMEq/pqlCV5NvI6JLXGWFadihUnvNz72rml/RQuaTzp1QCpzejo
-         faX34k3cDsY5UOMvd+j2nBrnHK5MmHrYJS/a/QZni6LJYi8FDIMkP21/S70pxp+muM8E
-         DjigKbYk8Wre1zf3TswBnZNMfODKwg6vK2Vd5yt8cgtvlQPprBH+subtTzaIbA/GBDrt
-         EUh3vdR77nwSyA97HDmZOtTbjEFCQXNmPCpxP9aciuQl6kdqCKVCcJKywXW5kYX91DVc
-         7jPNJfPyBiJfk99yCzlZdgwheg79NihF79hY16tSZ2OhmD7SbMSuForxxh5oHCjaERuZ
-         P4og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c1I31bPTWK5wuJTQPwHbt2ClA+rvrrEVj/Bd+LldpDs=;
-        b=pD8AzbTOb3NPkhSdFOnRmTTaNZRg4BwRdu2ZuWypfvgsQfqvioD8X+GO5Zq80A/p7u
-         Q0r9q8vAzeGbgBvLzvxgneC1J47IXRGFyZwi/TK7KTrguIt3y6dcNi3Khc1AGM9/kNMd
-         Unw8bav0oWEYgExWctH0ZbTxpTg/DlAqeMVIG79uUionABAnntPA7/GdfYdN1SyrHrhm
-         Dg4eQcYCh0FYnNR0iTnE/s4M8IRtEaptGRCQZVF8HEbHNaiBviwxbM5xtZSdqLAKrI8n
-         uX3IRxh6UKf+JpOz6k2MWAdSampgKA5ijzHvlC6lMK11wl8Aj4We/dSxzto+RGToWaEm
-         dSKQ==
-X-Gm-Message-State: AOAM530paVvoXkTEl5dW708b41Q1etY7qEqfhN/2WnLyqjh71jQbEGUu
-        SUGduDHvAyqPvli0Cl+kL747/5fULT2l4G4H7Ig=
-X-Google-Smtp-Source: ABdhPJyx81bZuaceSZKyp6p1j/NmW3aYa7p62yjWeU9ndTQMr7XIzo6nuwEIp5kaI1wbqiANIBbIIcI1yXVCTqte/9o=
-X-Received: by 2002:aa7:c585:: with SMTP id g5mr12122453edq.340.1628998035789;
- Sat, 14 Aug 2021 20:27:15 -0700 (PDT)
+        Sat, 14 Aug 2021 23:32:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4086DC061764;
+        Sat, 14 Aug 2021 20:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=myN/3ktl6FFXkebMKIg+oytfpFhkg7CNnOU5Il6HFzs=; b=m9c9/qWRcdjSRQ6g5Wh/GFTqBw
+        ybJTWwwMKF4g5qPy3pOZjSzNxPMwGljYeaCc5M2l8cJfSXPIgjXmTQe+uVlCjpeHCRpKUXNIPBB1r
+        NtbB8JCeOQBQQ1yrISnvDQQlWTdnQ9ksC+GQspSuQTEvpq+bb1Lw7kDXn30cXgTUEGxxtxyZTRNTc
+        jWl9mlYIRdEY6DBk8vvQWuMAHRTRjrSu8SBMR2a9LN+QjAfHEfRMf+zoCbAcdNpHJGrqwK0HUfj6E
+        6w4/jZQJ9/5Ecn71NDO4qfoz0uD1vyRPRcVuh1dBWdolAr6jw9r7WDVDWY7YWY2qjV/W+9t4g1utp
+        258jXAGQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mF6rU-00HN19-HY; Sun, 15 Aug 2021 03:31:11 +0000
+Date:   Sun, 15 Aug 2021 04:31:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 071/138] mm/writeback: Add filemap_dirty_folio()
+Message-ID: <YRiKdCEDHKZ4T0JY@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-72-willy@infradead.org>
+ <e393b874-eb35-7b78-8919-838a8149d259@suse.cz>
 MIME-Version: 1.0
-References: <202108141955.XlQXw3y4-lkp@intel.com> <YRfGfcwxFR0L/e77@kroah.com>
-In-Reply-To: <YRfGfcwxFR0L/e77@kroah.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sun, 15 Aug 2021 15:27:04 +1200
-Message-ID: <CAGsJ_4y+f1emWzRH5mX-t_1=PcY-uMe70n79WRacmmVM5UCUTw@mail.gmail.com>
-Subject: Re: [driver-core:driver-core-testing 28/31] WARNING: modpost:
- vmlinux.o(.text.unlikely+0x156c): Section mismatch in reference from the
- function bitmap_equal() to the variable .init.data:initcall_level_names
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e393b874-eb35-7b78-8919-838a8149d259@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 1:36 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Aug 14, 2021 at 07:03:00PM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git driver-core-testing
-> > head:   3b35f2a6a625126c57475aa56b5357d8e80b404c
-> > commit: 291f93ca339f5b5e6e90ad037bb8271f0f618165 [28/31] lib: test_bitmap: add bitmap_print_bitmask/list_to_buf test cases
-> > config: xtensa-randconfig-r004-20210814 (attached as .config)
-> > compiler: xtensa-linux-gcc (GCC) 11.2.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?id=291f93ca339f5b5e6e90ad037bb8271f0f618165
-> >         git remote add driver-core https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-> >         git fetch --no-tags driver-core driver-core-testing
-> >         git checkout 291f93ca339f5b5e6e90ad037bb8271f0f618165
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> >
-> > >> WARNING: modpost: vmlinux.o(.text.unlikely+0x156c): Section mismatch in reference from the function bitmap_equal() to the variable .init.data:initcall_level_names
-> > The function bitmap_equal() references
-> > the variable __initdata initcall_level_names.
-> > This is often because bitmap_equal lacks a __initdata
-> > annotation or the annotation of initcall_level_names is wrong.
-> >
-> > The below error/warnings are from parent commit:
-> > << WARNING: modpost: vmlinux.o(.data+0x1a86d8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:__setup_str_initcall_blacklist
-> > << WARNING: modpost: vmlinux.o(.data+0x1a87c8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:__setup_str_initcall_blacklist
-> > << WARNING: modpost: vmlinux.o(.data+0x1a8948): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:__setup_str_initcall_blacklist
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
-> Barry, can I get a fix for this?
+On Thu, Aug 12, 2021 at 06:07:05PM +0200, Vlastimil Babka wrote:
+> On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> > Reimplement __set_page_dirty_nobuffers() as a wrapper around
+> > filemap_dirty_folio().
+> 
+> I assume it becomes obvious later why the new "mapping" parameter instead of
+> taking it from the folio, but maybe the changelog should say it here?
 
-Hi Greg,
-As I replied to Andy, this warning has nothing to do with my commit as my
-commit doesn't call the involved functions at all.
+---
 
-It has been there for more than one year. but i still send a patch for
-this issue
-over here:
-https://lore.kernel.org/lkml/20210815032132.14530-1-21cnbao@gmail.com/T/#u
+mm/writeback: Add filemap_dirty_folio()
 
-Note this patch is not fixing the latest commits. It is a general
-patch for bitmap.
+Reimplement __set_page_dirty_nobuffers() as a wrapper around
+filemap_dirty_folio().  Eventually folio_mark_dirty() will pass
+the folio's mapping to the address space's ->dirty_folio()
+operation, so add the parameter to filemap_dirty_folio() now.
 
->
-> thanks,
->
-> greg k-h
+---
 
-Thanks
-Barry
+Nobody seems quite sure whether it's possible to truncate (or otherwise
+remove) a page from a file while it's being marked as dirty.  viz:
+
+int set_page_dirty(struct page *page)
+{
+        struct address_space *mapping = page_mapping(page);
+        if (likely(mapping)) {
+...
+                return mapping->a_ops->set_page_dirty(page);
+}
+
+so ->set_page_dirty can only be called if page has a mapping (obviously,
+otherwise we wouldn't know whose ->set_page_dirty to call).  But then
+in __set_page_dirty_nobuffers(), we check to see if mapping has
+become unset:
+
+        if (!TestSetPageDirty(page)) {
+                struct address_space *mapping = page_mapping(page);
+
+                if (!mapping) {
+                        unlock_page_memcg(page);
+                        return 1;
+                }
+
+Confusingly, the comment to __set_page_dirty_nobuffers says:
+
+ * The caller must ensure this doesn't race with truncation.  Most will simply
+ * hold the page lock, but e.g. zap_pte_range() calls with the page mapped and
+ * the pte lock held, which also locks out truncation.
+
+I believe this is left-over from commit 2d6d7f982846 in 2015.
+
+Anyway, passing mapping as a parameter is something we already do for
+just about every other address_space operation, and we already called
+page_mapping() to get it, so why make the callee call it again?  Not to
+mention people get confused about whether to call page_mapping() or just
+look at page->mapping.  Changing the ->set_page_dirty() operation to
+->dirty_folio() is something I've postponed until the 5.17/5.18 timeframe,
+but we might as well pass the parameter to filemap_dirty_folio() now.
