@@ -2,132 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2423EC85B
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5753EC85D
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhHOJ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 05:28:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232611AbhHOJ2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 05:28:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51B4D6103A;
-        Sun, 15 Aug 2021 09:28:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629019682;
-        bh=bWCuMi2hzwoR5TfaM4I5wjW1zTT6C2sePe/iQynDiGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MmMYihRVX4d0Giz/Syta0Qklt5WNIM1KtRwt2i82BUCvALd/ON/Yeh5jfWuZcAXvl
-         nagawa00bFpXiWCliOWuDuHWpYENqORSFoZUi1o0X2Fpt1KPyb905hesGPDOcvHFhF
-         5wtgFbaqg8NVGvcq+lsWGqpu8gtlo0Ak7LjvZ1Q4sTLrnjp8L8eqSIEfXFTyVfcSFJ
-         8+gTaKLNXvf/KL/5U1+XpoSbbDdUHviMEfjHV4G75aXs8yC1WF3/AFpmRAlJFtufTQ
-         3EU73i5SV/KSIeP4mwzUCt1wUsqTVOnd7Q0C4f4OS1dueJp2EllLUCFI6T1LN7l/Xj
-         GuCqut9eMtJtA==
-Date:   Sun, 15 Aug 2021 12:27:56 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH v2 16/19] ARC: mm: support 3 levels of page tables
-Message-ID: <YRjeHE19KXqYWgRp@kernel.org>
-References: <20210812233753.104217-1-vgupta@kernel.org>
- <20210812233753.104217-17-vgupta@kernel.org>
+        id S236862AbhHOJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 05:37:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47464 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhHOJhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 05:37:02 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CB3D021F81;
+        Sun, 15 Aug 2021 09:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629020191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Ibukn/K3owQg3BwObGXrD7WX0HnC+FfEGrDOQYj+I0=;
+        b=cMXji56ir5Ie0k7YUF8Gpx6wbA8F/kZvhcfaMVEBde6ZrvzV92MBFqeSz4lmCfOSnp3lyH
+        hPqXfyKy6NQJsYXoODAXvZkMckVKveHpMa3kQTsTwatvJsUqFu3SqIPzIYPWFPhXn5sM3q
+        kY2e6rPfY+PVOdCGpSZanV7+DyDd79o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629020191;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Ibukn/K3owQg3BwObGXrD7WX0HnC+FfEGrDOQYj+I0=;
+        b=K4N5TtdSnQy3SkG3a2nvFLW/JXrrJq3uHQZAb7bVeAclOj+iHLmJJvh8X7x/rHLOShBrz5
+        NiwGS6Pl67XwVKCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6ECB513A1C;
+        Sun, 15 Aug 2021 09:36:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +/7aFx/gGGEDRQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Sun, 15 Aug 2021 09:36:31 +0000
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+To:     Mike Galbraith <efault@gmx.de>,
+        Clark Williams <williams@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+ <20210812151803.52f84aaf@theseus.lan>
+ <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
+ <20210812162448.26274298@theseus.lan>
+ <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
+ <20210812164440.0426d8b7@theseus.lan>
+ <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+ <5dbf6cf9e82ef15ce0febf070608da2d5b128763.camel@gmx.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <c92fc2cb-03cd-d6a2-fb4a-7bc33e94e391@suse.cz>
+Date:   Sun, 15 Aug 2021 11:35:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812233753.104217-17-vgupta@kernel.org>
+In-Reply-To: <5dbf6cf9e82ef15ce0febf070608da2d5b128763.camel@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 04:37:50PM -0700, Vineet Gupta wrote:
-> ARCv2 MMU is software walked and Linux implements 2 levels of paging: pgd/pte.
-> Forthcoming hw will have multiple levels, so this change preps mm code
-> for same. It is also fun to try multi levels even on soft-walked code to
-> ensure generic mm code is robust to handle.
+On 8/15/21 6:17 AM, Mike Galbraith wrote:
+> On Sat, 2021-08-14 at 21:08 +0200, Vlastimil Babka wrote:
+>>
+>> Aha! That's helpful. Hopefully it's just a small issue where we
+>> opportunistically test flags on a page that's protected by the local
+>> lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
+>> which can trigger if our page went away (which we would have realized
+>> after taking the lock).
 > 
-> overview
-> ________
-> 
-> 2 levels {pgd, pte} : pmd is folded but pmd_* macros are valid and operate on pgd
-> 3 levels {pgd, pmd, pte}:
->   - pud is folded and pud_* macros point to pgd
->   - pmd_* macros operate on actual pmd
-> 
-> code changes
-> ____________
-> 
-> 1. #include <asm-generic/pgtable-nopud.h>
-> 
-> 2. Define CONFIG_PGTABLE_LEVELS 3
-> 
-> 3a. Define PMD_SHIFT, PMD_SIZE, PMD_MASK, pmd_t
-> 3b. Define pmd_val() which actually deals with pmd
->     (pmd_offset(), pmd_index() are provided by generic code)
-> 3c. pmd_alloc_one()/pmd_free() also provided by generic code
->     (pmd_populate/pmd_free already exist)
-> 
-> 4. Define pud_none(), pud_bad() macros based on generic pud_val() which
->    internally pertains to pgd now.
-> 4b. define pud_populate() to just setup pgd
-> 
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+> Speaking of optimistic peeking perhaps going badly, why is the below
+> not true?  There's protection against ->partial going disappearing
+> during a preemption... but can't it just as easily appear, so where is
+> that protection?
+
+If it appears, it appears, we don't care, we just leave it there and
+won't use it.
+
+> If the other side of that window is safe, it could use a comment so
+> dummies reading this code don't end up asking mm folks why the heck
+> they don't just take the darn lock and be done with it instead of tap
+> dancing all around thething :)
+
+Well, with your patch, ->partial might appear just after the unlock, so
+does that really change anything?
+The point is to avoid the taking the lock if it's almost certain there
+will be nothing to gain.
+
+c->partial appearing is easy to just ignore. c->page appearing, while we
+got our own page, is worse as there can be only one c->page. But it's
+unavoidable, we can't just keep holding the local lock while going to
+the page allocator etc. That's why under retry_load_page: we have to
+deactivate a c->page that appeared under us...
+
 > ---
+>  mm/slub.c |   14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2937,17 +2937,16 @@ static void *___slab_alloc(struct kmem_c
+> 
+>  new_slab:
+> 
+> +	/*
+> +	 * To avoid false negative race with put_cpu_partial() during a
+> +	 * preemption, we must call slub_percpu_partial() under lock.
+> +	 */
+> +	local_lock_irqsave(&s->cpu_slab->lock, flags);
+>  	if (slub_percpu_partial(c)) {
+> -		local_lock_irqsave(&s->cpu_slab->lock, flags);
+>  		if (unlikely(c->page)) {
+>  			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+>  			goto reread_page;
+>  		}
+> -		if (unlikely(!slub_percpu_partial(c))) {
+> -			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+> -			/* we were preempted and partial list got empty */
+> -			goto new_objects;
+> -		}
+> 
+>  		page = c->page = slub_percpu_partial(c);
+>  		slub_set_percpu_partial(c, page);
+> @@ -2955,8 +2954,7 @@ static void *___slab_alloc(struct kmem_c
+>  		stat(s, CPU_PARTIAL_ALLOC);
+>  		goto redo;
+>  	}
+> -
+> -new_objects:
+> +	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+> 
+>  	freelist = get_partial(s, gfpflags, node, &page);
+>  	if (freelist)
+> 
+> 
 
-...
-
-> diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-> index 8ece75335bb5..1c2f022d4ad0 100644
-> --- a/arch/arc/include/asm/pgtable-levels.h
-> +++ b/arch/arc/include/asm/pgtable-levels.h
-> @@ -10,6 +10,8 @@
->  #ifndef _ASM_ARC_PGTABLE_LEVELS_H
->  #define _ASM_ARC_PGTABLE_LEVELS_H
->  
-> +#if CONFIG_PGTABLE_LEVELS == 2
-> +
->  /*
->   * 2 level paging setup for software walked MMUv3 (ARC700) and MMUv4 (HS)
->   *
-> @@ -37,16 +39,38 @@
->  #define PGDIR_SHIFT		21
->  #endif
->  
-> -#define PGDIR_SIZE		BIT(PGDIR_SHIFT)	/* vaddr span, not PDG sz */
-> -#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
-> +#else
-
-Adding /* CONFIG_PGTABLE_LEVELS == 2 */ would make the whole thing a bit
-more readable, I think.
-
-> +
-> +/*
-> + * A default 3 level paging testing setup in software walked MMU
-> + *   MMUv4 (8K page): <4> : <7> : <8> : <13>
-> + */
-> +#define PGDIR_SHIFT		28
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +#define PMD_SHIFT		21
-> +#endif
-> +
-> +#endif
-
-and here as well.
-  
-> +#define PGDIR_SIZE		BIT(PGDIR_SHIFT)
-> +#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
->  #define PTRS_PER_PGD		BIT(32 - PGDIR_SHIFT)
->  
-> -#define PTRS_PER_PTE		BIT(PGDIR_SHIFT - PAGE_SHIFT)
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +#define PMD_SIZE		BIT(PMD_SHIFT)
-> +#define PMD_MASK		(~(PMD_SIZE - 1))
-> +#define PTRS_PER_PMD		BIT(PGDIR_SHIFT - PMD_SHIFT)
-> +#endif
-> +
-> +#define PTRS_PER_PTE		BIT(PMD_SHIFT - PAGE_SHIFT)
->  
-
--- 
-Sincerely yours,
-Mike.
