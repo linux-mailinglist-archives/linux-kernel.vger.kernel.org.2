@@ -2,114 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5C93EC971
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 15:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8912B3EC977
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238351AbhHON56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 09:57:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234012AbhHON56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 09:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629035847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z+FVfSl1vem65U43CNnC7At1r0k8wQFh2G3xl/DpsqI=;
-        b=DMxqqPp+OeKlEEeRN+WHTNlSMBAy0VZih9t4o+s1ziyVZn+IHPKjvON5W0nDh3XrJ+OoYZ
-        YbWml0SUNIFZFUWJsPvp7/GHo7MWr4jxN4EYYDDTQ7mFcLAH7978QOWzcnKJX5Lc9H0KmK
-        X3rx6575tvU8ESAYZA0AN2YGtPPbdXY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-bCrIlSW-N3S41mTZCbcHhw-1; Sun, 15 Aug 2021 09:57:26 -0400
-X-MC-Unique: bCrIlSW-N3S41mTZCbcHhw-1
-Received: by mail-ed1-f71.google.com with SMTP id u4-20020a50eac40000b02903bddc52675eso7404314edp.4
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 06:57:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z+FVfSl1vem65U43CNnC7At1r0k8wQFh2G3xl/DpsqI=;
-        b=lqw0kxGwrZypoHs6Bpxus+4n3i0GEmLz5XU8fR67eVriHEq0cwmiTGpXsne+Kv+A9Q
-         9cBjjopAHI5F6Lj5J5FepRCFWvj+CMHUt1rXU3OdlTsmGpR8IyteSYo18gff8bAmXgOF
-         HAYHEt+ObwiisbRBzrDkpdJmOAuyNnVNBfW623MMatOw6XMdoOQmUKDvk/T/fHZl4GHj
-         AAOWQOT9OXWd1F3si9T3xjAhg5ndrR2JJn87tj9NpwO45d99c1GovVERgjFb7lYgq8xF
-         SbSBn3rSNRA9Yvb0cihyNO0Ro1qmv5h51Z/o/wGTKEigSKnFN2htgG+VqJgOqwjKht1b
-         IqJQ==
-X-Gm-Message-State: AOAM531EaBPTQFnNLuVK/vZskKXt39RyAcy6E7ej1kpkjDGivR+DdW2y
-        3sSZyS+B/R/tbHtf1LD/WzN5KixK4CEj6rVOhD2ztVlKjXI6ntI9OrykMy0CiUG5aYmfvv2otoG
-        N0yHMCMmzxv1jr9GqesWg/VGl
-X-Received: by 2002:a05:6402:1a45:: with SMTP id bf5mr14393020edb.169.1629035845008;
-        Sun, 15 Aug 2021 06:57:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLX3Yr9Fwj+3Wtl5Zf6O/XficUHUKs2h7TQ6NiRxBlG99y8ta+Fc76Qclsr6Kn8X5xkcetpQ==
-X-Received: by 2002:a05:6402:1a45:: with SMTP id bf5mr14393012edb.169.1629035844887;
-        Sun, 15 Aug 2021 06:57:24 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id h10sm3478652edb.74.2021.08.15.06.57.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 06:57:24 -0700 (PDT)
-Subject: Re: [PATCH 5.10 12/19] vboxsf: Make vboxsf_dir_create() return the
- handle for the created file
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-References: <20210813150522.623322501@linuxfoundation.org>
- <20210813150523.032839314@linuxfoundation.org>
- <20210813193158.GA21328@duo.ucw.cz>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <26feedff-0fb4-01db-c809-81c932336b47@redhat.com>
-Date:   Sun, 15 Aug 2021 15:57:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234707AbhHOOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 10:06:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:44070 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232558AbhHOOGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 10:06:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="215773634"
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="215773634"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2021 07:05:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="509269972"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Aug 2021 07:05:40 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mFGlf-000PrL-RG; Sun, 15 Aug 2021 14:05:39 +0000
+Date:   Sun, 15 Aug 2021 22:05:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 04c2721d3530f0723b4c922a8fa9f26b202a20de
+Message-ID: <61191f32.ryndbItrj6NISPXX%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210813193158.GA21328@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 04c2721d3530f0723b4c922a8fa9f26b202a20de  genirq: Fix kernel doc indentation
 
-On 8/13/21 9:31 PM, Pavel Machek wrote:
-> Hi!
-> 
->> commit ab0c29687bc7a890d1a86ac376b0b0fd78b2d9b6 upstream
->>
->> Make vboxsf_dir_create() optionally return the vboxsf-handle for
->> the created file. This is a preparation patch for adding atomic_open
->> support.
-> 
-> Follow up commits using this functionality are in 5.13 but not in
-> 5.10, so I believe we don't need this in 5.10, either?
-> 
-> (Plus someone familiar with the code should check if we need "vboxsf:
-> Honor excl flag to the dir-inode create op" in 5.10; it may have same
-> problem).
+elapsed time: 3058m
 
-Actually those follow up commits fix an actual bug, so I was expecting
-the person who did the backport to also submit the rest of the set.
+configs tested: 191
+configs skipped: 4
 
-FWIW having these patches in but not the cannot hurt.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Hopefully the rest applies cleanly, I don't know.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210812
+i386                 randconfig-c001-20210813
+powerpc                     mpc5200_defconfig
+m68k                          hp300_defconfig
+sh                        edosk7760_defconfig
+powerpc                     asp8347_defconfig
+arm                     am200epdkit_defconfig
+powerpc                     tqm8541_defconfig
+m68k                          amiga_defconfig
+mips                        bcm47xx_defconfig
+xtensa                           alldefconfig
+sh                              ul2_defconfig
+powerpc                 mpc8540_ads_defconfig
+ia64                                defconfig
+arm                       imx_v6_v7_defconfig
+mips                           rs90_defconfig
+parisc                generic-32bit_defconfig
+mips                        workpad_defconfig
+openrisc                  or1klitex_defconfig
+m68k                        m5407c3_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arm                          ep93xx_defconfig
+arm                          iop32x_defconfig
+arm                     davinci_all_defconfig
+arm                       omap2plus_defconfig
+powerpc                     pq2fads_defconfig
+mips                  maltasmvp_eva_defconfig
+h8300                            alldefconfig
+powerpc                     tqm5200_defconfig
+powerpc                      walnut_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7619_defconfig
+arm                         orion5x_defconfig
+xtensa                           allyesconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     rainier_defconfig
+sh                            shmin_defconfig
+h8300                               defconfig
+sh                          rsk7269_defconfig
+ia64                          tiger_defconfig
+arm                             rpc_defconfig
+powerpc                      ppc40x_defconfig
+arm                          simpad_defconfig
+arm                        clps711x_defconfig
+sh                           se7750_defconfig
+powerpc                    socrates_defconfig
+riscv                             allnoconfig
+powerpc                     ksi8560_defconfig
+powerpc                 mpc837x_rdb_defconfig
+h8300                            allyesconfig
+h8300                       h8s-sim_defconfig
+arm                       aspeed_g4_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                       lemote2f_defconfig
+arc                              alldefconfig
+mips                           ip22_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          urquell_defconfig
+mips                     decstation_defconfig
+powerpc                         wii_defconfig
+arm                          exynos_defconfig
+powerpc                     redwood_defconfig
+mips                         tb0226_defconfig
+arm                      jornada720_defconfig
+mips                           ip27_defconfig
+powerpc                      obs600_defconfig
+arm                           stm32_defconfig
+m68k                       bvme6000_defconfig
+arm                         axm55xx_defconfig
+powerpc                    amigaone_defconfig
+mips                  decstation_64_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                     cu1830-neo_defconfig
+xtensa                          iss_defconfig
+powerpc                 canyonlands_defconfig
+arm                          pxa3xx_defconfig
+mips                         cobalt_defconfig
+openrisc                    or1ksim_defconfig
+mips                        nlm_xlp_defconfig
+arm                         bcm2835_defconfig
+arm                            pleb_defconfig
+arc                        nsim_700_defconfig
+mips                 decstation_r4k_defconfig
+arm                         lpc18xx_defconfig
+arm                        cerfcube_defconfig
+sh                           sh2007_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                         virt_defconfig
+arm                            mmp2_defconfig
+m68k                        mvme147_defconfig
+openrisc                 simple_smp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+parisc                              defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210814
+i386                 randconfig-a002-20210814
+i386                 randconfig-a001-20210814
+i386                 randconfig-a003-20210814
+i386                 randconfig-a006-20210814
+i386                 randconfig-a005-20210814
+i386                 randconfig-a004-20210813
+i386                 randconfig-a003-20210813
+i386                 randconfig-a001-20210813
+i386                 randconfig-a002-20210813
+i386                 randconfig-a006-20210813
+i386                 randconfig-a005-20210813
+x86_64               randconfig-a011-20210813
+x86_64               randconfig-a013-20210813
+x86_64               randconfig-a012-20210813
+x86_64               randconfig-a016-20210813
+x86_64               randconfig-a015-20210813
+x86_64               randconfig-a014-20210813
+i386                 randconfig-a011-20210814
+i386                 randconfig-a015-20210814
+i386                 randconfig-a013-20210814
+i386                 randconfig-a014-20210814
+i386                 randconfig-a016-20210814
+i386                 randconfig-a012-20210814
+i386                 randconfig-a011-20210813
+i386                 randconfig-a015-20210813
+i386                 randconfig-a014-20210813
+i386                 randconfig-a013-20210813
+i386                 randconfig-a016-20210813
+i386                 randconfig-a012-20210813
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-To be clear I'm talking about also adding the following to patches
-to 5.10.y:
+clang tested configs:
+x86_64               randconfig-c001-20210814
+x86_64               randconfig-c001-20210813
+x86_64               randconfig-a006-20210813
+x86_64               randconfig-a004-20210813
+x86_64               randconfig-a003-20210813
+x86_64               randconfig-a002-20210813
+x86_64               randconfig-a005-20210813
+x86_64               randconfig-a001-20210813
+x86_64               randconfig-a013-20210814
+x86_64               randconfig-a011-20210814
+x86_64               randconfig-a016-20210814
+x86_64               randconfig-a012-20210814
+x86_64               randconfig-a014-20210814
+x86_64               randconfig-a015-20210814
+x86_64               randconfig-a011-20210812
+x86_64               randconfig-a013-20210812
+x86_64               randconfig-a012-20210812
+x86_64               randconfig-a016-20210812
+x86_64               randconfig-a015-20210812
+x86_64               randconfig-a014-20210812
 
-02f840f90764 ("vboxsf: Add vboxsf_[create|release]_sf_handle() helpers")
-52dfd86aa568 ("vboxsf: Add support for the atomic_open directory-inode op")
-
-I have no idea of these will apply cleanly.
-
-Regards,
-
-Hans
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
