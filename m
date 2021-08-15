@@ -2,136 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C6A3EC987
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4EC3EC98C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbhHOOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 10:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S237039AbhHOOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 10:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbhHOOOs (ORCPT
+        with ESMTP id S233116AbhHOOY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 10:14:48 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09829C061764;
-        Sun, 15 Aug 2021 07:14:18 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id h18so15915562ilc.5;
-        Sun, 15 Aug 2021 07:14:18 -0700 (PDT)
+        Sun, 15 Aug 2021 10:24:29 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76794C061764;
+        Sun, 15 Aug 2021 07:23:57 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x10so13675931wrt.8;
+        Sun, 15 Aug 2021 07:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PwNI0p+kAxekQFEgThqJO01pCQz3VjRuWiNMPrnWSjo=;
-        b=EqJ6nAzEj98U58CglqH779zZgDCiRPuLUXMjDIrQ3Z0QpN1iMwN7FLIcm0ggEeo5Vy
-         jwq1LRP2mSo9gxBuDvlVtjEXv4rapF92dVf7TEOWKSTpOfMHxJw1TMGpI2R3H2fqzfhA
-         N91ZM4GFdQ34DhdtDrwMYzNo4Pegynvpykt2ifU8sHBwVjYl/tVVS0KZmhqRvOrV+4E7
-         fD4Oxez1J4NFPIaWX0NvfZPYoxUteTHVPz0UkDRbzagT5PONUM/IjuLBy6GDdeihzpNl
-         GDTzukVa0NEHjur3qybFDdVl3YL6G6By51pPV/EYyJWOszz6Gah0R7y+5IGyoKkYs++J
-         +F1Q==
+        h=from:to:cc:references:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CRJ1+O+VcHyTW4c7AMy1AHZjxvE1uhNkBIW8CcFWgPM=;
+        b=AXBVZSe25UBmXPWv67tPGh26bOe9s1RkD+hTxHQNvdS1qD8etYso0gGVVGXumJLIUN
+         wXBx/vojObCxwAdFViRUaOfdo115XxFMYFeYjEIxzz2jnIHDRwxj/5tgt1KuZLDov+le
+         8y3AL94DDQkBTQbXld2d+Xzvp5IPgVqdy469EIs3AnR4Nv9sn5Bhgid3rwprWwrCkfmf
+         6eHDp7cma8IcOUYatMAycp7ThWxkIyZimPIEmcwm4rfHyL7rCcw6dz7dyHbTFTc6904A
+         GVW8iSYqVbdWLXIDRujjTGXsdhq5aLdKrzTpACyrUuPSraJ3NFu/QPsN1FsDFnwpbnnR
+         ZHQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PwNI0p+kAxekQFEgThqJO01pCQz3VjRuWiNMPrnWSjo=;
-        b=lw+MpZPnrKsCBWbwIemMiY74KxiRDZzJPAO7NH2Do81AOueA1jywa346hkX1djfzwZ
-         74KYrYpjyclJ+4B+oivps2uAy8VbZa/ZwwWaRwZKxiVo47uWSwR+EgdLhAPqz4UcD0db
-         5ctRUGndtEK2IU20nM4VD2rUCzcH1V2zh+Xr33jOCgHlAvhofcW0AmgdTaQ2LiF11wuo
-         IGT9GypTT9VC7TTPGBGK2jgMVV+XTIg43s3W1h0xhDFz3XTlrzsLcl9QvpeGrWhj3FWP
-         Ack2Qyxywdu7d9jztRYYnzc4/PUPqqQ24j0e4Hm7Rf2lab+nmfSH90CWclCotteqCojp
-         KRlg==
-X-Gm-Message-State: AOAM533sCxR5xClR5uQaoam6mTF7vf9PGQ5717rEKl/cNxizO/PRhoXz
-        otiUPoJUAmoxtjIQkzUNy+ewDeC+43EuB8vqxqM=
-X-Google-Smtp-Source: ABdhPJwNCreaQS58j6/gBrdWWYCDmy26VPMH/XtAO27zsOZ8kEsHU1jV2ag80Zzo7fTl6l8aQrejDT4T9bZOUDzaGD8=
-X-Received: by 2002:a92:8702:: with SMTP id m2mr8765875ild.250.1629036857397;
- Sun, 15 Aug 2021 07:14:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CRJ1+O+VcHyTW4c7AMy1AHZjxvE1uhNkBIW8CcFWgPM=;
+        b=m3cCKVKER25rd7LsmnnyOqBNqHATKPf3o/zv6LPjLZI+fKzlDuiC+fxMX1u14oPVc9
+         uE90mmjNTZYqsaFsdctNDUtBFxiLM+NPVQiYXVWtZb153H5IhkP3KwoJaBeCdUwBX0zK
+         wIbjXjzHGtlbZApsFRKUZw0RH2Rd+cWIc/f4D8lBaWmBb3+XqNWe2cpyZjH+A9j8tgzd
+         yNeLYpEdz3ZmwIlTq9u1B68Ze4hqpfmHdTldKKXufBfmd5H72FS19I61qPcldGvP/9dH
+         WZPJ6hh4O0tBQuYTjw4zihwdTy2ZhuGGiTF7xMKTV9f8viG8z8+xzJ37+Kixb3cwQO8H
+         a8QA==
+X-Gm-Message-State: AOAM531PZ8Zwd+KSpTUz2dR+0XKjf4BpKccqsqLcaCMtaowMwnZPa6QM
+        gYt6JcFmZ6ZgvC6u/BkmARI=
+X-Google-Smtp-Source: ABdhPJz1HbknxFMJEc0y60VGBmPlbpc5Wdd3tN3vvmx1D9wvnG7olCY7TlZeQj2PMrJCvNp+uwjScA==
+X-Received: by 2002:a5d:694f:: with SMTP id r15mr13520580wrw.86.1629037436077;
+        Sun, 15 Aug 2021 07:23:56 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.133.97])
+        by smtp.gmail.com with ESMTPSA id k3sm3234567wms.28.2021.08.15.07.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 07:23:55 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1628871893.git.asml.silence@gmail.com>
+ <YRbBYCn29B+kgZcy@localhost> <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
+ <YRiKg7tV+8oMtXtg@localhost> <c6c0a1ee-2417-6e9d-4206-77f9498a4401@gmail.com>
+Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
+ table
+Message-ID: <4c607e25-b6bd-b24d-11d5-887dcee21e2b@gmail.com>
+Date:   Sun, 15 Aug 2021 15:23:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-6-groug@kaod.org>
-In-Reply-To: <20210520154654.1791183-6-groug@kaod.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 15 Aug 2021 17:14:06 +0300
-Message-ID: <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
-To:     Greg Kurz <groug@kaod.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Robert Krawitz <rlk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c6c0a1ee-2417-6e9d-4206-77f9498a4401@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 8/15/21 11:48 AM, Pavel Begunkov wrote:
+> On 8/15/21 4:31 AM, Josh Triplett wrote:
+>> On Sat, Aug 14, 2021 at 01:50:24PM +0100, Pavel Begunkov wrote:
+>>> On 8/13/21 8:00 PM, Josh Triplett wrote:
+>>>> Rather than using sqe->file_index - 1, which feels like an error-prone
+>>>> interface, I think it makes sense to use a dedicated flag for this, like
+>>>> IOSQE_OPEN_FIXED. That flag could work for any open-like operation,
+>>>> including open, accept, and in the future many other operations such as
+>>>> memfd_create. (Imagine using a single ring submission to open a memfd,
+>>>> write a buffer into it, seal it, send it over a UNIX socket, and then
+>>>> close it.)
+>>>>
+>>>> The only downside is that you'll need to reject that flag in all
+>>>> non-open operations. One way to unify that code might be to add a flag
+>>>> in io_op_def for open-like operations, and then check in common code for
+>>>> the case of non-open-like operations passing IOSQE_OPEN_FIXED.
+>>>
+>>> io_uring is really thin, and so I absolutely don't want any extra
+>>> overhead in the generic path, IOW anything affecting
+>>> reads/writes/sends/recvs.
+>>
+>> There are already several checks for valid flags in io_init_req. For
+>> instance:
+> 
+> Yes, it's horrible and I don't want to make it any worse.
+> 
+>>         if ((sqe_flags & IOSQE_BUFFER_SELECT) &&
+>>             !io_op_defs[req->opcode].buffer_select)
+>>                 return -EOPNOTSUPP;
+>> It'd be trivial to make io_op_defs have a "valid flags" byte, and one
+>> bitwise op tells you if any invalid flags were passed. *Zero* additional
+>> overhead for other operations.
+> 
+> Good point
+> 
+>> Alternatively, since there are so few operations that open a file
+>> descriptor, you could just add a separate opcode for those few
+>> operations. That still seems preferable to overloading a 16-bit index
+>> field for this.
+> 
+> I don't think so
+> 
+>> With this new mechanism, I think we're going to want to support more
+>> than 65535 fixed-file entries. I can easily imagine wanting to handle
+>> hundreds of thousands of files or sockets this way.
+> 
+> May be. What I'm curious about is that the feature doesn't really
+> change anything in this regard, but seems I haven't heard people
+> asking for larger tables.
+> 
+>>> The other reason is that there are only 2 bits left in sqe->flags,
+>>> and we may use them for something better, considering that it's
+>>> only open/accept and not much as this.
+>>
+>> pipe, dup3, socket, socketpair, pidfds (via either pidfd_open or a
+>> ring-based spawn mechanism), epoll_create, inotify, fanotify, signalfd,
+>> timerfd, eventfd, memfd_create, userfaultfd, open_tree, fsopen, fsmount,
+>> memfd_secret.
+> 
+> We could argue for many of those whether they should be in io_uring,
+> and whether there are many benefits having them async and so. It would
+> have another story if all the ecosystem was io_uring centric, but
+> that's speculations.
+> 
+>> Of those, I personally would *love* to have at least pipe, socket,
+>> pidfd, memfd_create, and fsopen/fsmount/open_tree, plus some manner of
+>> dup-like operation for moving things between the fixed-file table and
+>> file descriptors.
+>>
+>> I think this is valuable and versatile enough to merit a flag. It would
+>> also be entirely reasonable to create separate operations for these. But
+>> either way, I don't think this should just be determined by whether a
+>> 16-bit index is non-zero.
+>>
+>>> I agree that it feels error-prone, but at least it can be wrapped
+>>> nicely enough in liburing, e.g.
+>>>
+>>> void io_uring_prep_openat_direct(struct io_uring_sqe *sqe, int dfd,
+>>> 				 const char *path, int flags,
+>>> 				 mode_t mode, int slot_idx);
+>>
+>> That wrapper wouldn't be able to handle more than a 16-bit slot index
+>> though.
+> 
+> It would. Note, the index is "int" there, so if doesn't fit
+> into u16, we can fail it. And do conversion if required.
+> 
+>>>> Also, rather than using a 16-bit index for the fixed file table and
+>>>> potentially requiring expansion into a different field in the future,
+>>>> what about overlapping it with the nofile field in the open and accept
+>>>> requests? If they're not opening a normal file descriptor, they don't
+>>>> need nofile. And in the original sqe, you can then overlap it with a
+>>>> 32-bit field like splice_fd_in.
+>>>
+>>> There is no nofile in SQEs, though
+>>>
+>>> req->open.nofile = rlimit(RLIMIT_NOFILE);
+>>
+>> nofile isn't needed for opening into the fixed-file table, so it could
+>> be omitted in that case, and another field unioned with it.
+> 
+> There is no problem to place it internally. Moreover, it's at the
+> moment uniformly placed inside io_kiocb, but with nofile we'd need
+> to find the place on per-op basis.
+> 
+> Not like any matters, it's just bike shedding.
+> 
+>> allow passing a 32-bit fixed-file index into open and accept without
+>> growing the size of their structures. I think, with this new capability,
+>> we're going to want a large number of fixed files available.
+>>
+>> In the SQE, you could overlap it with the splice_fd_in field, which
+>> isn't needed by any calls other than splice.
+> 
+> But it doesn't mean it won't be used, as happened with pretty every
+> other field in SQE. So, it rather depends on what packing is wanted.
+> And reusing almost never used ->buf_index (and potentially ->ioprio),
+> sounds reasonable.
 
-Sorry for the late reply, I have some questions about this change...
+Aliasing with ->splice_fd_in looks better indeed (apart from it
+inherently not being checked, but meh?), But I still don't think
+it's a good option to use sqe->flags, and so still needs some way
+to switch between modes.
 
-On Fri, May 21, 2021 at 9:12 AM Greg Kurz <groug@kaod.org> wrote:
->
-> Even if POSIX doesn't mandate it, linux users legitimately expect
-> sync() to flush all data and metadata to physical storage when it
-> is located on the same system. This isn't happening with virtiofs
-> though : sync() inside the guest returns right away even though
-> data still needs to be flushed from the host page cache.
->
-> This is easily demonstrated by doing the following in the guest:
->
-> $ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
-> 5120+0 records in
-> 5120+0 records out
-> 5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
-> sync()                                  = 0 <0.024068>
-> +++ exited with 0 +++
->
-> and start the following in the host when the 'dd' command completes
-> in the guest:
->
-> $ strace -T -e fsync /usr/bin/sync virtiofs/foo
-> fsync(3)                                = 0 <10.371640>
-> +++ exited with 0 +++
->
-> There are no good reasons not to honor the expected behavior of
-> sync() actually : it gives an unrealistic impression that virtiofs
-> is super fast and that data has safely landed on HW, which isn't
-> the case obviously.
->
-> Implement a ->sync_fs() superblock operation that sends a new
-> FUSE_SYNCFS request type for this purpose. Provision a 64-bit
-> placeholder for possible future extensions. Since the file
-> server cannot handle the wait == 0 case, we skip it to avoid a
-> gratuitous roundtrip. Note that this is per-superblock : a
-> FUSE_SYNCFS is send for the root mount and for each submount.
->
-> Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
-> FUSE_SYNCFS in the file server is treated as permanent success.
-> This ensures compatibility with older file servers : the client
-> will get the current behavior of sync() not being propagated to
-> the file server.
+Can be sqe->rw_flags as once was done with SPLICE_F_FD_IN_FIXED,
+but it's IMHO an ugly hackish way. I still lean to the
+0 vs >0 encoding .
 
-I wonder - even if the server does not support SYNCFS or if the kernel
-does not trust the server with SYNCFS, fuse_sync_fs() can wait
-until all pending requests up to this call have been completed, either
-before or after submitting the SYNCFS request. No?
-
-Does virtiofsd track all requests prior to SYNCFS request to make
-sure that they were executed on the host filesystem before calling
-syncfs() on the host filesystem?
-
-I am not familiar enough with FUSE internals so there may already
-be a mechanism to track/wait for all pending requests?
-
->
-> Note that such an operation allows the file server to DoS sync().
-> Since a typical FUSE file server is an untrusted piece of software
-> running in userspace, this is disabled by default.  Only enable it
-> with virtiofs for now since virtiofsd is supposedly trusted by the
-> guest kernel.
-
-Isn't there already a similar risk of DoS to sync() from the ability of any
-untrusted (or malfunctioning) server to block writes?
-
-Thanks,
-Amir.
+-- 
+Pavel Begunkov
