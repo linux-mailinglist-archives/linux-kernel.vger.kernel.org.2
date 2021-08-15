@@ -2,183 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9D63ECA2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 18:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781513ECA38
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 18:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhHOQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 12:27:48 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:45633 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhHOQ1r (ORCPT
+        id S232098AbhHOQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 12:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhHOQa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 12:27:47 -0400
-Received: by mail-io1-f72.google.com with SMTP id d23-20020a056602281700b005b5b34670c7so1008368ioe.12
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 09:27:17 -0700 (PDT)
+        Sun, 15 Aug 2021 12:30:26 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4B3C061764;
+        Sun, 15 Aug 2021 09:29:55 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id k5so1931457lfu.4;
+        Sun, 15 Aug 2021 09:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FxVB4m6WpVX5TsdQT+ROYF840DCslqSPE+lxYEypnvA=;
+        b=L1HgO1qIyjFUeTEnEesC6aEKIjsox4z/KF2cADU+27r4ZScGmXnB7s2vLZ+vT6FnkT
+         qMBVvnxvqKVQQgwPfbZNSuPlJLMd2vo2y+HzZYqiMCool4uMyavIg2rChIXwEm/rcjxP
+         849jAtVsI9+VsJ4LmBOMexpBeOrgf167OwdfC5zqnTEVW2EplBpNIlclyOjHG/OD4bby
+         VKtGzTtAkKi0o6u/m8S3A+Lrg0vvxFsBWDBn4AnXSo9X2iB0oIF0y6salnXX/eaiNwKh
+         VCPYj8klzRsKIZXSQ+Mmp1ctGQuTQCsIXrZvSaH4lL0OzRUm4PdV/Lyeb2RMxBAgjgoF
+         BhdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=J9YvmhApo7LeDQzESKj7GYbqctC5oRNmbBAZx5Bpw0c=;
-        b=gHGblQuIlMy+hTUe8aaic2lM3KDfVd3jlw+yVOrID8q12Ryed95hG6/1PGWUv5vuaa
-         DI7JCH5JeyLHnsP89XdhymAI6JwgDnSPj+LvJ8XlDuT1PDY6P1zTFwMw1X+rS3gLkB5a
-         ndJwShZgzYWWDP9ymxF81rXOB0B4ET/7OXCR8F3dfF4OViNSKpMei0zL0NP7kd/A/j99
-         SmqUhlL7PgDP0BGJLis1k96O0oimMjU12u3cRXsyWzArJxgc+q1j7cz+sGNxaYoUPCDR
-         /Ctxwws2f6jm56Ret90Svj57VUFbRxh3SLGWWX3GF9BKM16aDnignjD5VmTZ8HRWGRAz
-         ffdQ==
-X-Gm-Message-State: AOAM530tXwqeJ5EFCgcICkQdLdLlbVzFd0pfpnmCH//NaXQcEGgBJ7DF
-        bsoDSgh3QaUwtLWj1j5yAiFOEVfcavL3XC6+EwLXtM8Q2tID
-X-Google-Smtp-Source: ABdhPJxAzL/vvtdRvohDGldM0Is+D8egscBb71ndzl9m/c5d2xV92U8GRk1euh1lacQJ/zenDCMXgAz7Z6JeHyKLYq1nNTBvCsp5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FxVB4m6WpVX5TsdQT+ROYF840DCslqSPE+lxYEypnvA=;
+        b=W65+DefoxK27/eAukABas7LHbwT4gbw4DGjheZqP0jcJphwVUzz9Dt9/e14uQUhBqy
+         T8O6J+nZN0vuQxqOfxPxb2X/f+qSJouLmV9U8IL5RXYndgo3T2rrXBwEhhKYjojM+u9I
+         0H+uox0QS4WyjLB3S4CoicqYjM5min20b3Vk8XbUc2LpYp3esmLuH26sd92ecWMgwBxS
+         xpnwaKPBu7TZES2E+zSlHWhnRY+MZ35MLuvV6tTX+uRu5vhprrFuyGYq1Fo0S9ZRd2JQ
+         8LSjuiG/FyURG3Cykpu1DQDgs0foHZRndcAoziarG3S6jJDAOes0QwKbLWGsY5veWF5+
+         GeQA==
+X-Gm-Message-State: AOAM530UE1ZhACK6Xto6/rtwdwvVm8um9O0MOrMFA1I5Wf//bG5Cg2bG
+        1qacjjp97wSPDORMGR5IZq8Jx7YB9AMVxamHBMM=
+X-Google-Smtp-Source: ABdhPJz0cJfsop34LQLGFN3gpynNv2/i0Lfb89Yoqt5OyDNs167qlGQdTqCeu9CC4Dj9QdeNlh+lcxGU1s7lo2u84R8=
+X-Received: by 2002:ac2:5d49:: with SMTP id w9mr8714624lfd.450.1629044993830;
+ Sun, 15 Aug 2021 09:29:53 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:b112:: with SMTP id t18mr8970939ilh.36.1629044837452;
- Sun, 15 Aug 2021 09:27:17 -0700 (PDT)
-Date:   Sun, 15 Aug 2021 09:27:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dc107905c99b8e53@google.com>
-Subject: [syzbot] KASAN: use-after-free Write in ext4_write_inline_data
-From:   syzbot <syzbot+1bd003b0dbaa786227e6@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, bvanassche@acm.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <20210811073027.124619-1-puranjay12@gmail.com> <20210811073027.124619-3-puranjay12@gmail.com>
+ <20210815164654.3c51a8e3@jic23-huawei>
+In-Reply-To: <20210815164654.3c51a8e3@jic23-huawei>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Sun, 15 Aug 2021 21:59:42 +0530
+Message-ID: <CANk7y0gY7HHdfwPYq3KFSTbaZM+sT4XSxv2yDvx2_io=9hLX0A@mail.gmail.com>
+Subject: Re: [PATCH v12 2/2] iio: accel: Add driver support for ADXL355
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Aug 15, 2021 at 9:14 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed, 11 Aug 2021 13:00:27 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> > ADXL355 is a 3-axis MEMS Accelerometer. It offers low noise density,
+> > low 0g offset drift, low power with selectable measurement ranges.
+> > It also features programmable high-pass and low-pass filters.
+> >
+> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> Hi Puranjay,
+>
+> I took one last look at this so I can apply it without looking again assuming
+> the dt review is fine.  Noticed one issue with error handling, but I can tidy
+> that up whilst applying assuming you aren't doing a v13 for some other reason.
+> If you are please incorporate these changes as well.
+>
 
-syzbot found the following issue on:
+Hi Jonathan, It would be great if you could make these changes while
+applying. I am not doing a v13 as all comments have been covered
+earlier.
+I shall be thankful to you.
 
-HEAD commit:    761c6d7ec820 Merge tag 'arc-5.14-rc6' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=117755e9300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e3a20bae04b96ccd
-dashboard link: https://syzkaller.appspot.com/bug?extid=1bd003b0dbaa786227e6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fbbfe9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124bbb81300000
+> Thanks,
+>
+> Jonathan
+>
+>
+> ...
+>
+> > +
+> > +static int adxl355_set_odr(struct adxl355_data *data,
+> > +                        enum adxl355_odr odr)
+> > +{
+> > +     int ret = 0;
+> > +
+> > +     mutex_lock(&data->lock);
+> > +
+> > +     if (data->odr == odr)
+> > +             goto out_unlock;
+> > +
+> > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > +     if (ret < 0)
+> > +             goto out_unlock;
+> > +
+> > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > +                              ADXL355_FILTER_ODR_MSK,
+> > +                              FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
+> > +     if (ret < 0)
+> > +             goto out_unlock;
+> > +
+> > +     data->odr = odr;
+> > +     adxl355_fill_3db_frequency_table(data);
+> > +
+> > +out_unlock:
+> > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+>
+> As below, we should do this because it risks returning success when a failure
+> actually occured.  Again, unless you are respinning for some other reason I'll
+> add the logic whilst applying.
+>
+> > +     mutex_unlock(&data->lock);
+> > +     return ret;
+> > +}
+> > +
+> > +static int adxl355_set_hpf_3db(struct adxl355_data *data,
+> > +                            enum adxl355_hpf_3db hpf)
+> > +{
+> > +     int ret = 0;
+> > +
+> > +     mutex_lock(&data->lock);
+> > +
+> > +     if (data->hpf_3db == hpf)
+> > +             goto unlock;
+> > +
+> > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > +     if (ret < 0)
+> > +             goto set_opmode_unlock;
+> > +
+> > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
+> > +                              ADXL355_FILTER_HPF_MSK,
+> > +                              FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
+> > +     if (!ret)
+> > +             data->hpf_3db = hpf;
+> > +
+> > +set_opmode_unlock:
+> > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+>
+> We can't do this as it might potentially eat an error that meant the regmap
+> update didn't occur.  To avoid that a little dance is needed using a second
+> return value and we only set ret = ret2 if ret == 0
+>
+> Alternatively we just have a separate error handling path which doesn't set
+> ret for the adxl355_set_op_mode(). I'll probably go with that as it's more
+> code but easier to read.
+>
+>
+>
+> > +unlock:
+> > +     mutex_unlock(&data->lock);
+> > +     return ret;
+> > +}
+> > +
+>
+> ...
+>
+> > +static int adxl355_write_raw(struct iio_dev *indio_dev,
+> > +                          struct iio_chan_spec const *chan,
+> > +                          int val, int val2, long mask)
+> > +{
+> > +     struct adxl355_data *data = iio_priv(indio_dev);
+> > +     int odr_idx, hpf_idx, calibbias;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > +             odr_idx = adxl355_find_match(adxl355_odr_table,
+> > +                                          ARRAY_SIZE(adxl355_odr_table),
+> > +                                          val, val2);
+> > +             if (odr_idx < 0)
+> > +                     return odr_idx;
+> > +
+> > +             return adxl355_set_odr(data, odr_idx);
+> > +     case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> > +             hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
+> > +                                     ARRAY_SIZE(data->adxl355_hpf_3db_table),
+>
+> Mixing different indentation styles isn't very nice for readability.
+> I'll tweak this whilst applying.
+>
+> > +                                          val, val2);
+> > +             if (hpf_idx < 0)
+> > +                     return hpf_idx;
+> > +
+> > +             return adxl355_set_hpf_3db(data, hpf_idx);
+> > +     case IIO_CHAN_INFO_CALIBBIAS:
+> > +             calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
+> > +
+> > +             return adxl355_set_calibbias(data, chan->address, calibbias);
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> ...
 
-The issue was bisected to:
-
-commit 669de8bda87b92ab9a2fc663b3f5743c2ad1ae9f
-Author: Bart Van Assche <bvanassche@acm.org>
-Date:   Thu Feb 14 23:00:54 2019 +0000
-
-    kernel/workqueue: Use dynamic lockdep keys for workqueues
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17aa2665300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=146a2665300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=106a2665300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1bd003b0dbaa786227e6@syzkaller.appspotmail.com
-Fixes: 669de8bda87b ("kernel/workqueue: Use dynamic lockdep keys for workqueues")
-
-==================================================================
-BUG: KASAN: use-after-free in memcpy include/linux/fortify-string.h:191 [inline]
-BUG: KASAN: use-after-free in ext4_write_inline_data+0x30d/0x3e0 fs/ext4/inline.c:245
-Write of size 70 at addr ffff8880359ec4ef by task syz-executor244/8446
-
-CPU: 1 PID: 8446 Comm: syz-executor244 Not tainted 5.14.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- check_region_inline mm/kasan/generic.c:183 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
- memcpy+0x39/0x60 mm/kasan/shadow.c:66
- memcpy include/linux/fortify-string.h:191 [inline]
- ext4_write_inline_data+0x30d/0x3e0 fs/ext4/inline.c:245
- ext4_write_inline_data_end+0x24c/0x6b0 fs/ext4/inline.c:754
- ext4_write_end+0x22b/0xf60 fs/ext4/inode.c:1290
- ext4_da_write_end+0x440/0xb50 fs/ext4/inode.c:3079
- generic_perform_write+0x2bd/0x500 mm/filemap.c:3667
- ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:269
- ext4_file_write_iter+0x423/0x14e0 fs/ext4/file.c:680
- call_write_iter include/linux/fs.h:2114 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x75a/0xa40 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44ac89
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8a10a6f2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004ce4e0 RCX: 000000000044ac89
-RDX: 0000000000000082 RSI: 0000000020000180 RDI: 0000000000000008
-RBP: 000000000049de98 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
-R13: 024645fc87234f45 R14: 26e1d8b70aefbc5b R15: 00000000004ce4e8
-
-The buggy address belongs to the page:
-page:ffffea0000d67b00 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x359ec
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000000 ffffea0000497f88 ffffea0000614208 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x400dc0(GFP_KERNEL_ACCOUNT|__GFP_ZERO), pid 8369, ts 45323892408, free_ts 45393497770
- prep_new_page mm/page_alloc.c:2436 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4169
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5391
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- __pte_alloc_one include/asm-generic/pgalloc.h:63 [inline]
- pte_alloc_one+0x16/0x230 arch/x86/mm/pgtable.c:33
- do_fault_around mm/memory.c:4145 [inline]
- do_read_fault mm/memory.c:4166 [inline]
- do_fault mm/memory.c:4300 [inline]
- handle_pte_fault mm/memory.c:4558 [inline]
- __handle_mm_fault+0x49de/0x5320 mm/memory.c:4693
- handle_mm_fault+0x1c8/0x790 mm/memory.c:4791
- do_user_addr_fault+0x48b/0x11c0 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1346 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1397
- free_unref_page_prepare mm/page_alloc.c:3332 [inline]
- free_unref_page_list+0x1a1/0x1050 mm/page_alloc.c:3448
- release_pages+0x824/0x20b0 mm/swap.c:972
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu mm/mmu_gather.c:249 [inline]
- tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
- exit_mmap+0x1ea/0x620 mm/mmap.c:3203
- __mmput+0x122/0x470 kernel/fork.c:1101
- mmput+0x58/0x60 kernel/fork.c:1122
- exit_mm kernel/exit.c:501 [inline]
- do_exit+0xae2/0x2a60 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff8880359ec380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880359ec400: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8880359ec480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                          ^
- ffff8880359ec500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880359ec580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+Thanks and Regards
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Yours Truly,
+
+Puranjay Mohan
