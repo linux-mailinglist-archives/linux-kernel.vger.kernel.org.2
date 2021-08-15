@@ -2,83 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395983EC8A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 12:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2223EC8A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 12:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237882AbhHOKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 06:37:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237633AbhHOKhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 06:37:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92DF160232;
-        Sun, 15 Aug 2021 10:36:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629023813;
-        bh=rPiIwRm+CKYXp9gDBxDxt2hBbr7OjSe6cRjprH/7pm0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=reyiEFHb2J6TMiFRcNBH7pIrgi3sJxRocTjHBrObZv8g9zv2Iue3KP9n2mVak1j9A
-         3g/L3+eqPUU5T8nk731A5Qw+i7wFyTaW52FoaQS6FudNt7VUDAsZ/SAGyc8d7g2XL/
-         sqMXvJU/t/xi01jULpzggXrRGb9DwhbaBaIlMKLwzS97xI88oMlluprr1IByk4SUi4
-         JQ95HbqFjtVQu14n2l03J3/6f6ag69BSCDvHsylwEsmWA6S5jcMq8gYN0pc2tn713X
-         sINA0zUrTIrfGqWpZrX6Ar0SKEeL7iMRdLWQsIl5p0y1F0ijh9BvV+RTpUSb7QawbW
-         d4MyQM7xD4Rag==
-Received: by pali.im (Postfix)
-        id 555F298C; Sun, 15 Aug 2021 12:36:53 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] PCI: aardvark: Enable MSI-X support
-Date:   Sun, 15 Aug 2021 12:36:24 +0200
-Message-Id: <20210815103624.19528-4-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210815103624.19528-1-pali@kernel.org>
-References: <20210815103624.19528-1-pali@kernel.org>
+        id S237612AbhHOKt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 06:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhHOKtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 06:49:50 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAB0C061764;
+        Sun, 15 Aug 2021 03:49:20 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id f10so6610751wml.2;
+        Sun, 15 Aug 2021 03:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1CxQWhhARjoVMY5/tTuJPwWDah4z0FveG0g5iNjB8ZQ=;
+        b=bG5audem24BHB6wJddbcB8i4yYN5vp0jxn5DudeSNMiK0ig+jWQH/8ARzDeHY5kpC4
+         //YqoAzOo3PE6+1z6+CeH8s312iTsTYPP1xlMmCBo3qRhbKW3gb4ER1ilw6keoj8oGpS
+         GobRke+RbE4lqV5zuiYNhZ1hgVTO1z0dLzFeV5QM/h7XJlXlD+S8w/PcJdBiQk/M+c1V
+         fyUxSYd896YV3XZybODobUN4c0G5SFIvK3UOLMFmG6nNPhjrWo+uyB617FCasbwXQ1T/
+         0/44lCiq0Mk4jhElupRouXgBRH4YsxP2RCxbPy61qzzygIcW9a919jGVXfuI/gkD0lNG
+         q5Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1CxQWhhARjoVMY5/tTuJPwWDah4z0FveG0g5iNjB8ZQ=;
+        b=BCv5pkSrYdxR/yiU+o5PfhRt6XiJyzCohnpjmEqEXooEwwvtEme+x2kTueFpAodAgO
+         yTBk7gWV0MO210C3gCXafZ3TM++Diolo+B9gVFYvL92bdpT/gjgfDCpcjNEuN9zSiiS/
+         irM0qYrjUkIiCtWV/lzzZsWwGRaktGQkYq6SoD+Dr7HvQOUGgxDKzRp8NCIUZNKw26U6
+         RErAhd6Cq8t0KCCTcqS5HCbIHKxD3JI0iQTz8ENJnOEqaC42ElCOOuUBPwv/9QoU7MKc
+         A8fA9oQHjt4qqJOeJdHzdVIX54kUIPNhXVHtUzLQt6TdRPs3Jg7jM8eIFJUXqJu09D9E
+         LHRw==
+X-Gm-Message-State: AOAM533rb8a75h/NQtZ/UTr8hXcB2jVsiMxDm1fyIKp7PQhejJPUujO1
+        znDIRQkv75SY4J+rIBbfTlQ=
+X-Google-Smtp-Source: ABdhPJytWviH22yDk6aTFHkCZwAClH3nHUCl1exKXbol4mRzaTyX4je3koyDhCaPySpZ3QgzgSlIeg==
+X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr10801270wmk.5.1629024559014;
+        Sun, 15 Aug 2021 03:49:19 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.133.97])
+        by smtp.gmail.com with ESMTPSA id x18sm7677487wrw.19.2021.08.15.03.49.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 03:49:18 -0700 (PDT)
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1628871893.git.asml.silence@gmail.com>
+ <YRbBYCn29B+kgZcy@localhost> <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
+ <YRiKg7tV+8oMtXtg@localhost>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
+ table
+Message-ID: <c6c0a1ee-2417-6e9d-4206-77f9498a4401@gmail.com>
+Date:   Sun, 15 Aug 2021 11:48:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YRiKg7tV+8oMtXtg@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to PCI 3.0 specification, sending both MSI and MSI-X interrupts
-is done by DWORD memory write operation to doorbell message address. The
-write operation for MSI has zero upper 16 bits and the MSI interrupt number
-in the lower 16 bits. The write operation for MSI-X contains a 32-bit value
-from MSI-X table.
+On 8/15/21 4:31 AM, Josh Triplett wrote:
+> On Sat, Aug 14, 2021 at 01:50:24PM +0100, Pavel Begunkov wrote:
+>> On 8/13/21 8:00 PM, Josh Triplett wrote:
+>>> Rather than using sqe->file_index - 1, which feels like an error-prone
+>>> interface, I think it makes sense to use a dedicated flag for this, like
+>>> IOSQE_OPEN_FIXED. That flag could work for any open-like operation,
+>>> including open, accept, and in the future many other operations such as
+>>> memfd_create. (Imagine using a single ring submission to open a memfd,
+>>> write a buffer into it, seal it, send it over a UNIX socket, and then
+>>> close it.)
+>>>
+>>> The only downside is that you'll need to reject that flag in all
+>>> non-open operations. One way to unify that code might be to add a flag
+>>> in io_op_def for open-like operations, and then check in common code for
+>>> the case of non-open-like operations passing IOSQE_OPEN_FIXED.
+>>
+>> io_uring is really thin, and so I absolutely don't want any extra
+>> overhead in the generic path, IOW anything affecting
+>> reads/writes/sends/recvs.
+> 
+> There are already several checks for valid flags in io_init_req. For
+> instance:
 
-As driver supports and assigns only interrupt numbers from range 0..31,
-enable also MSI-X support.
+Yes, it's horrible and I don't want to make it any worse.
 
-Testing proved that kernel can correctly receive MSI-X interrupts from PCIe
-cards which supports both MSI and MSI-X interrupts.
+>         if ((sqe_flags & IOSQE_BUFFER_SELECT) &&
+>             !io_op_defs[req->opcode].buffer_select)
+>                 return -EOPNOTSUPP;
+> It'd be trivial to make io_op_defs have a "valid flags" byte, and one
+> bitwise op tells you if any invalid flags were passed. *Zero* additional
+> overhead for other operations.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
----
- drivers/pci/controller/pci-aardvark.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Good point
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 96580e1e4539..279b2884c545 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -1161,7 +1161,7 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
- 
- 	msi_di = &pcie->msi_domain_info;
- 	msi_di->flags = MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
--		MSI_FLAG_MULTI_PCI_MSI;
-+			MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX;
- 	msi_di->chip = msi_ic;
- 
- 	pcie->msi_inner_domain =
+> Alternatively, since there are so few operations that open a file
+> descriptor, you could just add a separate opcode for those few
+> operations. That still seems preferable to overloading a 16-bit index
+> field for this.
+
+I don't think so
+
+> With this new mechanism, I think we're going to want to support more
+> than 65535 fixed-file entries. I can easily imagine wanting to handle
+> hundreds of thousands of files or sockets this way.
+
+May be. What I'm curious about is that the feature doesn't really
+change anything in this regard, but seems I haven't heard people
+asking for larger tables.
+
+>> The other reason is that there are only 2 bits left in sqe->flags,
+>> and we may use them for something better, considering that it's
+>> only open/accept and not much as this.
+> 
+> pipe, dup3, socket, socketpair, pidfds (via either pidfd_open or a
+> ring-based spawn mechanism), epoll_create, inotify, fanotify, signalfd,
+> timerfd, eventfd, memfd_create, userfaultfd, open_tree, fsopen, fsmount,
+> memfd_secret.
+
+We could argue for many of those whether they should be in io_uring,
+and whether there are many benefits having them async and so. It would
+have another story if all the ecosystem was io_uring centric, but
+that's speculations.
+
+> Of those, I personally would *love* to have at least pipe, socket,
+> pidfd, memfd_create, and fsopen/fsmount/open_tree, plus some manner of
+> dup-like operation for moving things between the fixed-file table and
+> file descriptors.
+> 
+> I think this is valuable and versatile enough to merit a flag. It would
+> also be entirely reasonable to create separate operations for these. But
+> either way, I don't think this should just be determined by whether a
+> 16-bit index is non-zero.
+> 
+>> I agree that it feels error-prone, but at least it can be wrapped
+>> nicely enough in liburing, e.g.
+>>
+>> void io_uring_prep_openat_direct(struct io_uring_sqe *sqe, int dfd,
+>> 				 const char *path, int flags,
+>> 				 mode_t mode, int slot_idx);
+> 
+> That wrapper wouldn't be able to handle more than a 16-bit slot index
+> though.
+
+It would. Note, the index is "int" there, so if doesn't fit
+into u16, we can fail it. And do conversion if required.
+
+>>> Also, rather than using a 16-bit index for the fixed file table and
+>>> potentially requiring expansion into a different field in the future,
+>>> what about overlapping it with the nofile field in the open and accept
+>>> requests? If they're not opening a normal file descriptor, they don't
+>>> need nofile. And in the original sqe, you can then overlap it with a
+>>> 32-bit field like splice_fd_in.
+>>
+>> There is no nofile in SQEs, though
+>>
+>> req->open.nofile = rlimit(RLIMIT_NOFILE);
+> 
+> nofile isn't needed for opening into the fixed-file table, so it could
+> be omitted in that case, and another field unioned with it.
+
+There is no problem to place it internally. Moreover, it's at the
+moment uniformly placed inside io_kiocb, but with nofile we'd need
+to find the place on per-op basis.
+
+Not like any matters, it's just bike shedding.
+
+> allow passing a 32-bit fixed-file index into open and accept without
+> growing the size of their structures. I think, with this new capability,
+> we're going to want a large number of fixed files available.
+> 
+> In the SQE, you could overlap it with the splice_fd_in field, which
+> isn't needed by any calls other than splice.
+
+But it doesn't mean it won't be used, as happened with pretty every
+other field in SQE. So, it rather depends on what packing is wanted.
+And reusing almost never used ->buf_index (and potentially ->ioprio),
+sounds reasonable.
+
 -- 
-2.20.1
-
+Pavel Begunkov
