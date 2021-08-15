@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4C03EC82B
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECE33EC82C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237053AbhHOIia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 04:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236425AbhHOIi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 04:38:29 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8FDC061764;
-        Sun, 15 Aug 2021 01:37:59 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id BD718C642D; Sun, 15 Aug 2021 09:37:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1629016675; bh=WfiDsDMU3zWLAUc7/J7cMoyoqPlpogGZjRE4h+UE3HQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MXO9+4JZg2sqWDDeTWo2bGFeawLXLi2TiMjmxhi6S2bz9bMeHWve+CgCWf748qWLZ
-         rLOOcUS6Xf3Uil1B87WhNN8yhj0ud/MAzV/ldPWWFZB5bfWcMkPgpMu+VCf0oLFSaT
-         tWCPWPT26a0XCROMPNPUn11c8Foiffme8bYpWBYi4cVpPT0Xzywg6WEPjzsPq0lfNN
-         mFDu66MUZ42ROG2P35eM0KHH5LdQmrqbcmMl54r2V2q5je+o8LBDuBjKYazp/jzy1P
-         xMo/A1UmQxuS30y6cR/MveIY8t3h3DPvMNbhsCCI5u5JyHy9oBZFWPUp6eosi/VyPG
-         jGd7UcAgI0ejg==
-Date:   Sun, 15 Aug 2021 09:37:55 +0100
-From:   Sean Young <sean@mess.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
-Message-ID: <20210815083755.GA1827@gofer.mess.org>
-References: <20210730213829.2909-1-paskripkin@gmail.com>
+        id S236837AbhHOImz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 04:42:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54986 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236425AbhHOImy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 04:42:54 -0400
+Received: from zn.tnic (p200300ec2f2631001e9549156c3f2463.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:3100:1e95:4915:6c3f:2463])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 02FF01EC0505;
+        Sun, 15 Aug 2021 10:42:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629016940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rUM4s7qJV2/J3gyH7O3mBn+MHJ5cWjAjy/+e2C+9wvw=;
+        b=FNx7z7/3a5HjdpAbtaLkwzv3lRjTEtcmhEu79e3N6fPKKukPPzwAatIV1UtstaiyEV874I
+        sw/eRzlHoJ4LapjpH8uyOYiizPdBgJCod3/ZxJsiG+luyH6m17GLkQ5fXAkuyIbb9FkHV2
+        kx/6XQbREsvVeOrXrakmWQwS1fKVuNU=
+Date:   Sun, 15 Aug 2021 10:42:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
+ 064855a69003c24bd6b473b367d364e418c57625
+Message-ID: <YRjTkkpDjaWxEpjb@zn.tnic>
+References: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210730213829.2909-1-paskripkin@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
-> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
-> mutex. The problem was in wrong mutex_init() location.
-> 
-> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
-> dvb_usbv2_init() has this order of calls:
-> 
-> 	dvb_usbv2_init()
-> 	  dvb_usbv2_adapter_init()
-> 	    dvb_usbv2_adapter_frontend_init()
-> 	      props->frontend_attach()
-> 
-> 	  props->init()
-> 
-> Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
-> internally we need to initialize state->msg_lock in it to make lockdep
-> happy.
+Hi,
 
-What about the other frontends like mxl111sf_frontend_attach_dvbt? They
-no longer initialize the mutex.
-
-Thanks
-
-Sean
-
+On Sun, Aug 15, 2021 at 04:36:40PM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+> branch HEAD: 064855a69003c24bd6b473b367d364e418c57625  x86/resctrl: Fix default monitoring groups reporting
 > 
-> Reported-and-tested-by: syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-> Fixes: 8572211842af ("[media] mxl111sf: convert to new DVB USB")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  drivers/media/usb/dvb-usb-v2/mxl111sf.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> possible Warning in current branch:
 > 
-> diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf.c b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-> index 7865fa0a8295..2e5663ffa7ce 100644
-> --- a/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-> +++ b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-> @@ -931,8 +931,6 @@ static int mxl111sf_init(struct dvb_usb_device *d)
->  		  .len = sizeof(eeprom), .buf = eeprom },
->  	};
->  
-> -	mutex_init(&state->msg_lock);
-> -
->  	ret = get_chip_info(state);
->  	if (mxl_fail(ret))
->  		pr_err("failed to get chip info during probe");
-> @@ -979,8 +977,12 @@ static int mxl111sf_frontend_attach_mh(struct dvb_usb_adapter *adap)
->  static int mxl111sf_frontend_attach_atsc_mh(struct dvb_usb_adapter *adap)
->  {
->  	int ret;
-> +	struct mxl111sf_state *state = d_to_priv(adap_to_d(adap));
-> +
->  	pr_debug("%s\n", __func__);
->  
-> +	mutex_init(&state->msg_lock);
-> +
->  	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
->  	if (ret < 0)
->  		return ret;
-> -- 
-> 2.32.0
+> arch/x86/kernel/cpu/resctrl/monitor.c:310 __mon_event_count() error: uninitialized symbol 'm'.
+> arch/x86/kernel/cpu/resctrl/monitor.c:315 __mon_event_count() error: potentially dereferencing uninitialized 'm'.
+> 
+> Warning ids grouped by kconfigs:
+> 
+> gcc_recent_errors
+> `-- i386-randconfig-m021-20210812
+>     |-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:potentially-dereferencing-uninitialized-m-.
+>     `-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:uninitialized-symbol-m-.
+
+AFAIR, I had already asked you guys to make those reports more useful
+as, for example, adding a link to that randconfig above or even
+attaching it so that a person - not a machine - reading it, can
+*actually* act upon it.
+
+But that hasn't happened.
+
+Until it happens, I'm going to ignore all those reports from you.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
