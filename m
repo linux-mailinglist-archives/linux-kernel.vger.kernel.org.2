@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460933EC6A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 03:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7913F3EC6A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 03:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbhHOB1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 21:27:00 -0400
-Received: from mout.gmx.net ([212.227.17.21]:34789 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229453AbhHOB06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 21:26:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628990774;
-        bh=+ED+s6+aMS+LaOlqxVwFk7EbYzGiZJ9DpvcBn5G06lw=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=MeeQ0rAo1ZfDhKN2e4qoP4vx70NLkinZMf3XBiRf+4aWTyci+nTQeqsCZdBtNtbn/
-         ZeU7PbyTeJfrSZUZr2a9uT2Xa6NjN3F7bnJnkTKEj1PGY3QmwU6QN9O1LU4qy7v9zD
-         mRcRyMNHgOigqfmrxgz6mw3ZqSJab8pR6vl+hF8E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.48.238]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MG9g4-1mILco1ISq-00Gb0t; Sun, 15
- Aug 2021 03:26:14 +0200
-Message-ID: <b761c7a33c563a8f374b707f421ddfd6460c9d19.camel@gmx.de>
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Clark Williams <williams@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-Date:   Sun, 15 Aug 2021 03:26:13 +0200
-In-Reply-To: <94d74c8a-1e10-2500-468a-11c0ae7e2417@suse.cz>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
-         <20210812151803.52f84aaf@theseus.lan>
-         <8c012c35852e98af99a6b6234a3f57ac27cd980a.camel@gmx.de>
-         <522000b97adcfbc581e7e5ed1afc94519b1388b8.camel@gmx.de>
-         <94d74c8a-1e10-2500-468a-11c0ae7e2417@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S234702AbhHOBeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 21:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhHOBeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 21:34:07 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26816C061764;
+        Sat, 14 Aug 2021 18:33:38 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso7803248pjh.5;
+        Sat, 14 Aug 2021 18:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1EeySskwO3yUJbu0dTi3++bDv7n7jGo4CAMzCEMyuPQ=;
+        b=Ib3p1DQ+i0JKU3HeUgbJ3rwbNQARmLx2bKw1z9Iro4hgqYeC6u8ixe0CPfTvMdtJGB
+         eWiUB+5j+ZfkvkB/h11WwvwQYymTiDnX1cnl1J0mD7kmqEj6QCZMWwqPxMxIKa9ytHTu
+         lIcVi2sb42uRgDAGKg74av68Sby9A4rfhUweLf8lamU0yNxGEgMui3a9BeR8sZs1JnQT
+         +itwTiOB0ScHTbJlQPc7A/TTjOxkxInxmJ3R7HzBasw/J+Tn3CbIQrTboAa5oWsgYq41
+         exRt4Dl2ewN9Oc806g218HH6ySwXRXx5eAv1liJyYcLr1C8nV7bKABFs0bM7/TxIEDdD
+         J8cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1EeySskwO3yUJbu0dTi3++bDv7n7jGo4CAMzCEMyuPQ=;
+        b=k+7CsevkzAvGE0CMLwDjhBetxc3sioc1d9lDzDdMFfVWyYJo8cCWtE440OEQDywFPF
+         KDW9apRdkC5nxu2wU2TQ2K2xAHUqJ2tXav2IDPMe+CbT3xye7yP2oIXpiDwWeKpg0H/J
+         N4IU2T0/8WTobsNxznC2lP0KCx2ic8BxemiEdQZv2SU51oB+U2G640rJ2c8kJP5tnSN7
+         D/vBPMTHcQsINvBYZ0k/SgXW5C1WtBA8GhywsbyFyJWkJ4FtL9msDm3NkBdpMrhukdx2
+         /MWWZjgipYGTOFkmljBT1PnFPoS2hi5ow3087xxS1ot4D9H8nT/ONCY+J1tIQZ5xddPA
+         rMdw==
+X-Gm-Message-State: AOAM532sUjlihF1sGfS+gkNLPAS5zIJfnx0OVXj1g5bFPbnuPW50sc+y
+        kcrrgeNJ76vMFD5Axd3aq0s=
+X-Google-Smtp-Source: ABdhPJydX6mMbMSdFL3vauiu2ZzK80Wlyoa/s9B4tPmcTFsLqbAgOZY36NRTTVtZ1ap+YWiGa7QgOw==
+X-Received: by 2002:a17:90a:f696:: with SMTP id cl22mr9366361pjb.23.1628991217707;
+        Sat, 14 Aug 2021 18:33:37 -0700 (PDT)
+Received: from [192.168.3.4] (softbank219203027033.bbtec.net. [219.203.27.33])
+        by smtp.gmail.com with ESMTPSA id e12sm6533717pfc.214.2021.08.14.18.33.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Aug 2021 18:33:37 -0700 (PDT)
+Subject: Re: [PATCH v2] media: pt3: Switch to using functions pcim_* and
+ devm_*
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Evgeny Novikov <novikov@ispras.ru>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ldv-project@linuxtesting.org
+References: <20210814155742.11392-1-novikov@ispras.ru>
+ <CAHp75Vdgt=HAK6Cd886AQ+BK-HAJjq0aqf_gkdcpefW5UMBnXg@mail.gmail.com>
+From:   Akihiro TSUKADA <tskd08@gmail.com>
+Message-ID: <ee21588e-67f7-73bf-b533-f1eb7ad2c265@gmail.com>
+Date:   Sun, 15 Aug 2021 10:33:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FTuY8CQuB0praANkNxv5OfMO+Jvnx8F4CVZIenLDgwIE2VXn1+/
- TfNgmHLUMKtkr9dtMNCJZhxu6cIir0MCi/+/ygJg+BKwz8ELFTiuGfWKlbiCOTNkkkSA7bh
- 4AAbTukHf8Q7Msmn2Io7Cm1gnyoVQlizburMWeAybc/hJt/veRNuIuoa88Xbn7UbczNZ08W
- HcBV8LzAy2QMtlIcBaN5w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5q7snrvA6LI=:6zO+wvz00meFrH/aRD9GjM
- Rrv2/tLM/w3M+W4e8a0Hhu9Erq+n0oEz+dHW8vRyNCz9oXOkiw6U6Xrb4Y4Du4eWLXM6s++tv
- uF1m8M0fUwrjDgiwW9D+ECXQCcHb14wR5S/qEWv/ReD4Y2RUD5UWKrRFHPrVpdO2GQXdCYi8z
- WfIAIOothI9jiGSvwX4cdPq5Gda6Drkbd69PXmsM4EpAI6FYBbMZZImmpb3PxkjYiks+9HLkb
- Gynw1TV14+QR7/Puo9afEuDS6e/kVqcTNhCfw6jmvYrprmn2rgH8fn0FGGF3DZ9oPAWvnOSS+
- Fzzfr3hsOxX6R9FBuqXEAo94M4+fMe1Pw8LpZ6sSZHAo3ZL/MwmZ69UcXvomVjbdeU4BCdWLB
- jFVSTl4YXJEJl0ws7PLNw3PrlwrYU81mFsM8IYfdqX3mjO6SGInTp+uvXjVzVqnDF3SAwRPzD
- fqW6YCh1DL90ge15tRNQmd249bktYJkwBh9NF2SEjfORelMKUkkkp0lMXEKW8mnbZNClPM4Y5
- 1g4UEPDYe7DgcPnPGIPREr6SwJYAYJSYeU2ee0Tg2MvPtnJ+IM0QSUzZdYGbVteladbQ6jR2R
- K574/JSxRhXkNLLYEnIKCZEJc0aOJuYEyzoa2qNLvvWbs6f4gBm3m9gsmiYRdRfcA6bp+8hqa
- 0e14ZrodVFJzbTkukqVbB6YkG2NVu8UYKAQqQefrx4XO7lA6/86zYT3GWfbh10wi8sRDG6T8x
- oGUXmSTd92wz7Ca7wLMdvJSQwcQCKHpwSQ7qYfY+OHu/eQfTc0dAFIncZBCZCiHZHxaj1Pw9s
- 5rm+Pw3N/OgePetxM0Bb1/51oEdjQQL8zCG5ru/E2m3h/cZqgF/Jf0JUes0fgtsx1VfliCXAJ
- lAdiKbpMHWqK7w8BVKZNI5pUfWpYr44rRiB9Yw/QyCGQ/3d3K+fAUSYBA1g7kzi4jkKzK+6mz
- VliaIrVSB+b+iX0HhSwf/UITIWSxwGquNUWBq2wlaErT5DvHw+sCn2LfaVQU2ykbN+WTCayPG
- Fo8ogJCoNYsmZhQsqf3KzLU6H/Uj8RCav8LUjg1W1A4UyQ34qTc+Oz61QSjIwrd8wUunMWavR
- yNh3kTWBbesbwn7B0YC2Kbh0jCllUZ4kIdd
+In-Reply-To: <CAHp75Vdgt=HAK6Cd886AQ+BK-HAJjq0aqf_gkdcpefW5UMBnXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-14 at 20:28 +0200, Vlastimil Babka wrote:
->
-> Why didn't you see it in earlier testing though? What's different now.
+I have the device,
+but currently I have some hardware problems in my testing environment.
+I will test it later when I have a time and fix those problems.
 
-The provided debug options make the difference.  Without that pile, an
-otherwise identical config will happily slog away for hours, add them,
-it's a matter of minutes.
-
-	-Mike
-
+regards,
+Akihiro Tsukada
