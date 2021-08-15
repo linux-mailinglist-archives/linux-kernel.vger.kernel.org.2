@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C77E3EC705
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4AD3EC70C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbhHODmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:42:54 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49187 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233848AbhHODmv (ORCPT
+        id S235891AbhHODxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:53:30 -0400
+Received: from mail.parknet.co.jp ([210.171.160.6]:60986 "EHLO
+        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233848AbhHODx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:42:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 8415C320046E;
-        Sat, 14 Aug 2021 23:42:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 14 Aug 2021 23:42:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        joshtriplett.org; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=fm1; bh=fsc
-        QQUiCrfJu2B/FroGWlGgv8rX7vCHNTDmiXT/+3qg=; b=HPv8LWAWIBoYE5/gick
-        zpULfhUf6sx7a1h7vcfHUgp1AgSThKYiQzOu30lYEEcOzBfdHr0fnSSJO1eI+ShK
-        IOY2S8GA5uWCjzzN6Fm3TXcIVOaY/XsKXk0MpxWbJQr+vKCgbnop28IU0dye3V1Q
-        BdB+TfzzOCI8MgQv/P/zA5OLC/N0isk8eWObyLRW23Wzl1067q1efxRMLYQ3fsKi
-        VLrzYLOyDvghyfn/ql0Q5IsUbsjdoUUzSLu1rOWeFCAcNQ/QAQEVa1gtrMvcouWK
-        aOLCXSr/ktBmntQexAZ/ABZT839MvkaAL5aodmmVrXaKKhixhBC4PYBfc8b99ob1
-        eJA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fscQQU
-        iCrfJu2B/FroGWlGgv8rX7vCHNTDmiXT/+3qg=; b=d+z6GWPiqYOBUwIpYT1EfA
-        RH4GJXsLkVCjT5UzWtYBuB5mjFBddQG51Emp7tRed027+Co8+84j3eOfnByCrh4k
-        opaagkyrbb99WWcfmRb9xHXIkp9mV08voXfJsXDF6uT3p5u6irKQ7QK8x1rXSxqP
-        Eihu0qU5Ja/NG09ZeFMxGosz781ChYQwSQ+Mug9xajxbnRCb9v+ohjujj1prlVc2
-        pAotL1nY7A6DfI4p/oal8QBGV4XsSHxiZWFmUgZCkg62yxBcTQeZeUVZAeCBClQZ
-        sFV/DBrpv31EptWIDhXr51Fb7HffAD1mxR2sEGFU33cJOIJMfwU8OevTE2fEYYig
-        ==
-X-ME-Sender: <xms:G40YYUF4FvkiJFFeg_I5hrmGYAHz4QmNNZm-7Qipk8gZ46H7UtpsyA>
-    <xme:G40YYdW1fcC-33jHu3-S1lRhgPJlRdgCSHPIkVL_PnB4cxtNEVDeXLi1ZhlYdjGu3
-    4jWdvnUU9pZgbkkPgE>
-X-ME-Received: <xmr:G40YYeIhoDRCkO_EcoFaoZp9Xgq5sqhntVKOhCH5IzWNAknxv2YXwDJQFh0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeekgdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheplfhoshhhucfv
-    rhhiphhlvghtthcuoehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhgqeenucggtf
-    frrghtthgvrhhnpeegtdfgfeeghfevgeelgfefieegudeuheekkedtueeutefgheffveeg
-    ueeiteehteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhg
-X-ME-Proxy: <xmx:G40YYWHl2sPJlA_guR2wf2xBF-0xv6S14MAo5N_HJdPAP1AzPD_BTQ>
-    <xmx:G40YYaWU-N3gGS-BJ4x3RJhuyca4bRn9avBmB12pLKVD6dqRo_TNuw>
-    <xmx:G40YYZMkZncHJS7lVrDrfb4U7GiQdQuLUUUlp0OSP3sAvtvWxLGU4Q>
-    <xmx:HY0YYcJvhvTrtcO6Vz0dxTK721wJE0ScOWeoOWAMs1HKKVk1mSYnIg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 14 Aug 2021 23:42:18 -0400 (EDT)
-Date:   Sat, 14 Aug 2021 20:42:17 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
- table
-Message-ID: <YRiNGTL2Dp/7vNzt@localhost>
-References: <cover.1628871893.git.asml.silence@gmail.com>
- <YRbBYCn29B+kgZcy@localhost>
- <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
- <5cf40313-d151-9d10-3ebd-967eb2f53b1f@kernel.dk>
+        Sat, 14 Aug 2021 23:53:29 -0400
+X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Sat, 14 Aug 2021 23:53:27 EDT
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 8176115F93A;
+        Sun, 15 Aug 2021 12:43:01 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17F3gtqK259876
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sun, 15 Aug 2021 12:42:56 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17F3gtTX1634462
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sun, 15 Aug 2021 12:42:55 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 17F3glQI1634454;
+        Sun, 15 Aug 2021 12:42:47 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+References: <20210808162453.1653-1-pali@kernel.org>
+        <20210808162453.1653-2-pali@kernel.org>
+Date:   Sun, 15 Aug 2021 12:42:47 +0900
+In-Reply-To: <20210808162453.1653-2-pali@kernel.org> ("Pali
+ =?iso-8859-1?Q?Roh=E1r=22's?= message
+        of "Sun, 8 Aug 2021 18:24:34 +0200")
+Message-ID: <87h7frtlu0.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5cf40313-d151-9d10-3ebd-967eb2f53b1f@kernel.dk>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 05:03:44PM -0600, Jens Axboe wrote:
-> What's the plan in terms of limiting the amount of direct descriptors
-> (for lack of a better word)? That seems like an important aspect that
-> should get sorted out upfront.
-[...]
-> Maybe we have a way to size the direct table, which will consume entries
-> from the same pool that the regular file table does? That would then
-> work both ways, and could potentially just be done dynamically similarly
-> to how we expand the regular file table when we exceed its current size.
+Pali Rohár <pali@kernel.org> writes:
 
-I think we'll want a way to size the direct table regardless, so that
-it's pre-allocated and doesn't need to be resized when an index is used.
-Then, we could do one of two equally easy things, depending on what
-policy we want to set:
+> Currently iocharset=utf8 mount option is broken and error is printed to
+> dmesg when it is used. To use UTF-8 as iocharset, it is required to use
+> utf8=1 mount option.
+>
+> Fix iocharset=utf8 mount option to use be equivalent to the utf8=1 mount
+> option and remove printing error from dmesg.
 
-- Deduct the full size of the fixed-file table from the allowed number
-  of files the process can have open. So, if RLIMIT_NOFILE is 1048576,
-  and you pre-allocate 1000000 entries in the fixed-file table, you can
-  have no more than 48576 file descriptors open. Stricter, but
-  potentially problematic: a program *might* expect that it can
-  dup2(some_fd, nofile - 1) successfully.
+This change is not equivalent to utf8=1. In the case of utf8=1, vfat
+uses iocharset's conversion table and it can handle more than ascii.
 
-- Use RLIMIT_NOFILE as the maximum size of the fixed-file table. There's
-  precedent for this: we already use RLIMIT_NOFILE as the maximum number
-  of file descriptors you can have in flight over UNIX sockets.
+So this patch is incompatible changes, and handles less chars than
+utf8=1. So I think this is clean though, but this would be regression
+for user of utf8=1.
 
-I personally would favor the latter; it seems simple and
-straightforward.
+Thanks.
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
