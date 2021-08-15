@@ -2,151 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6BF3EC74D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 06:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AA73EC756
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 06:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhHOE2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 00:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhHOE2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 00:28:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F002FC061764
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 21:28:00 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id w20so27763206lfu.7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 21:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RPDBJvgcmmwVnSdoq4L47G3x6kVI+kyfM8/GYNK4Bcs=;
-        b=bTM1tNUD1EuPz3dUdONRbIv3RzlDX2ySUFkg/DLP3j84/ro+IU6a6xtTplHuwysE6L
-         2/bQfS5AV0mlvMROwboKkyVUN/OrjhjN0KDYQcs4XOsRXjklEraBuSjg13AmwUyZch1B
-         33x4eMzLGV86J4vksQbCCanecEHPfgu2uYYc4b5dgs6Q+n67WwOmvGCdujZu/RgLPpGE
-         GI9NaPxKL9WsXgLJsE7aiA5J4TtUjM1TnepWzbOORxP4zp5GlGaJGKMAmpnnGb5kGnGW
-         ZfpXrjUVYndqQSzKPKNs+AccPFDa4pxeHE/6ZWBqfmqHB0G3lKW667tH6yuajP4P2Kb6
-         Wyig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RPDBJvgcmmwVnSdoq4L47G3x6kVI+kyfM8/GYNK4Bcs=;
-        b=NSDSjJYWcQYlV8besjx7e9aCo15QjHLA45JWXVJG7/Cco8X4PFe2ZGagSNtGsF5HdM
-         M+RXCR69K3QfMwa8P045rFWUMDoKpYFp/mGeLNxL/WfxLisDDGrGeBUZjTT0eBlcPpGw
-         jIvDk2w/miqkhn6o4613Xqn5v8g9oZaOZweRMzZytSPddrn6WLMjEphE3HAk5z3JsuYb
-         IGxL2+itNTEdwR6EepwNwO1ZVtT7C+LCVgzYuf9rOm+9tSNc2zGhqBSOlq9NnIqI6lg2
-         Ih8OuhZou9/TpqeN5CK/kFMXnL+V/oSURXAWNDbTpuliYb4ZoDXNWNczUHx0DyMwnmRz
-         wl0A==
-X-Gm-Message-State: AOAM5325Sqt0+pokbM/QedNYE0VNV/cv1kvVA3c/hFzOM1lblV4XJ+4z
-        8DanNrQTsDXOPMSQu/Y5htNKnNKQ5SNdkkJrSU4=
-X-Google-Smtp-Source: ABdhPJz9cJGpVMQ9H0bVorEUzVp8GKhhmDRp+GkNCCPcJGONuWdEl+I3cf6j9flQIkhKF/RUg3N47LX+hEfs4Kxz4zw=
-X-Received: by 2002:a05:6512:c08:: with SMTP id z8mr7086740lfu.533.1629001678062;
- Sat, 14 Aug 2021 21:27:58 -0700 (PDT)
+        id S231238AbhHOEpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 00:45:45 -0400
+Received: from mail-eopbgr1320053.outbound.protection.outlook.com ([40.107.132.53]:28016
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229452AbhHOEpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 00:45:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BfkfdIW/7+8xFJ6iELmChb4nwHj918iTj99xcViQfNwD8LvpoGc3W+ZzGyAifwfpN1zaG4HXJ5kFdaY/5LQGwtYloYXO5FGoiSZ0h3h4Jenzw27NmIjoHAi36DKhZy12fp2WFIoDYd2GJmgmEfGpyrko7zBvn4dsX6vGUPzLGqlEcOskc3DRx9YPBGnLciMa76aCQB4S/3ZDnBCS6IdcFSq/Lu9cpdrZwy3xCZ/DfjCHdYUwY2x/d3v+Y5QFVGRVBikE1VeCVbUeZTAZzU91YFyIV99l6mzDEzzl1tRYNY7Sntu0nCLClS8WrF/D4rnncPeY7/4c9fgZhYw8lZGRcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ljnxoypPyQVhJF92Xt2AuBi6qV2QFIMkzuy8i0fwlpM=;
+ b=Sp9bFRGaCXu4Xqilxx81fBBuqdcTknFZSbJshMXQwsGYzpLeVeRvbx1psBdn42Wk7cH+X3dP+sAyKP+gZsVzs65NlnlyxhTGArIgv8VbOmD870HXUSpjlYRm/sNu/0A9+ulJRj+NuP+ASob1PiOUFtFaBoX+7hMOF/EWvyewuKbda3oxDjs+PFnADkZdIhrGxMdyKGnvDn03coyHUcUGNmHUA/bx0BozV9y5NifbBQpwrv8MvNrYu/f3ZB9ZlZVvmpy2Spx+oQcO3Y4JsR2htGy1XHePHWyoVJQcsowSvOvw+OTKPiOui0qBYSRJ0NB4KJc/kOyKgCTpRHTE+49dJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ljnxoypPyQVhJF92Xt2AuBi6qV2QFIMkzuy8i0fwlpM=;
+ b=ZP6z/wknfIiHyJx5FMqVDUzVWeVCFxfoSQ76zueiROPV8AUWAC2hbQxozKdrw6X9nLMjYt+8IJAJnq3vgAz6Me/MQjYX0ccNfJfw4i/MLWFNaAjr00ofOAuzo7pvhItjBxDdsMzmu2CuSo5qHUhdG3cDjezvIbizynuCsps3Uug=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oppo.com;
+Received: from HK0PR02MB3154.apcprd02.prod.outlook.com (2603:1096:203:6b::15)
+ by HK0PR02MB3492.apcprd02.prod.outlook.com (2603:1096:203:7e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Sun, 15 Aug
+ 2021 04:45:05 +0000
+Received: from HK0PR02MB3154.apcprd02.prod.outlook.com
+ ([fe80::3594:f84c:ac41:bd48]) by HK0PR02MB3154.apcprd02.prod.outlook.com
+ ([fe80::3594:f84c:ac41:bd48%5]) with mapi id 15.20.4415.022; Sun, 15 Aug 2021
+ 04:45:05 +0000
+From:   liuhailong <liuhailong@oppo.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        liuhailong@oppo.com
+Subject: Re: [PATCH] mm: add kernel_misc_reclaimable in show_free_areas
+Date:   Sun, 15 Aug 2021 12:44:58 +0800
+Message-Id: <20210815044458.5803-1-liuhailong@oppo.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210813131320.b9474cb095cf815df1de337b@linux-foundation.org>
+References: <20210813131320.b9474cb095cf815df1de337b@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0401CA0021.apcprd04.prod.outlook.com
+ (2603:1096:202:2::31) To HK0PR02MB3154.apcprd02.prod.outlook.com
+ (2603:1096:203:6b::15)
 MIME-Version: 1.0
-References: <20210803225542.3487172-1-daeho43@gmail.com> <2a79c1c5-366b-92d9-4025-dbda660b1178@kernel.org>
- <YRWKKQe0bcgjKIIA@google.com> <b1a7b8a6-89dc-9076-2388-ced59aa8c47c@kernel.org>
- <YRbARsMfs2O2fz2s@google.com> <b76b5b09-d806-992b-3256-fe7ebfc4a2df@kernel.org>
-In-Reply-To: <b76b5b09-d806-992b-3256-fe7ebfc4a2df@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Sat, 14 Aug 2021 21:27:47 -0700
-Message-ID: <CACOAw_zTAFfQGqRVRADq_dyO-Rf++Sn+uhwJZ+4MHv4rPwozCw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce periodic iostat io latency traces
-To:     Chao Yu <chao@kernel.org>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from PE80250894.adc.com (58.252.5.72) by HK2PR0401CA0021.apcprd04.prod.outlook.com (2603:1096:202:2::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Sun, 15 Aug 2021 04:45:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78c7afba-177a-4e92-76bc-08d95fa77339
+X-MS-TrafficTypeDiagnostic: HK0PR02MB3492:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR02MB3492B4C08AC835251898DABBAFFC9@HK0PR02MB3492.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XCZh305QNcV9272TXVYftuPjACZl+eM4sYuySsWdkstSAQssBkQKkRc5lbpephUAD2STuo8flqrXjySy9MvE/mRszHU+OCD2IUl4GJO1Ob4+ORcp9GKHwMoRFt3IIkqVmPM+OIKGS0JfYSnCgCH1/Y6rPP7XofdmxNqn/QRQOA1r9xsDGuAqn8sH/25LtoPJLg534gCFXN0TwNCmaRTTrSP2+i1Vw+c9DVWQlGEwroXzsoeeezn7z/ypcfiCCsbX3CGaCRoZAdKXnuh9GdAGo+yVZdAVNP/pum0CTdifTkn2YPYXVtPGGXj5J5HK2wSQMx/CSL3FCg1WsvcJeOZgXPb+Hwx1pB3MNI13AQaLveBQOaNkinJtGXcIP0isB1dDlt8CxEcNfHg5BawuOPyTTXwwfub596wLx+AaUqlIX+Vbz6pETX7hXDgyg3PmdaTovJOnXBPgRtSsctgyOvyQklvIpCVZG1QhL1LkxEOp4mT8m/OYm8w1LgaAtOR+Aa6iLFI9KG5T12x0OnALICVs0Ko2pDeY8ZYMPkekZxNJNrtB/wnEISD5D1udOGIFBZHqo4i2xQE2ItwgKpJYyG2+XaQw5f/Fg9Bg9qi1sGcxaCq2mk5m1ltat/XFuwc3QUTM1jAuH84IFHI1nJhCnmOf7MwDDl0ezLjbMA9S6mXxwq63bQlxjSM9BD42zJF7eoKgAS87kzWtvzIhVn0ZDJTLtgVBtTAxMddu+DEamggnZ1U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR02MB3154.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(38100700002)(38350700002)(4744005)(6666004)(1076003)(86362001)(66556008)(316002)(52116002)(6486002)(4326008)(2906002)(478600001)(26005)(6512007)(5660300002)(956004)(6916009)(8676002)(8936002)(66946007)(36756003)(6506007)(53546011)(2616005)(107886003)(66476007)(186003)(11606007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mhx49W17hgnlItQl+sU0wGh2l07IoAWzdMIKKs4sSSerKbBbQIXD9gR8rbBE?=
+ =?us-ascii?Q?9BnUWGINpYzlLL41InzuTvFyhlU09srnX8wmO7yFM92vbwpy1BARaONIH1lK?=
+ =?us-ascii?Q?xrvrUIo02fTCULvgKZ9az3hst44BGlQa8QpOJ/rN4s4fRlidNWdOxrGcPW+h?=
+ =?us-ascii?Q?NuJNTsVilpzJvkVeXECGQ1EQdcIN0XD5qjbbLeS/bErXSIzswplwctlUehzz?=
+ =?us-ascii?Q?Vs2eVeUANRbbVyYCuY3sgsksMaZuhXL7myCM07ivW8e423sXETyRRp+STBU4?=
+ =?us-ascii?Q?1H+vMAHoGIhwIP6tzRwCSCDy5w0z/3FIgKr7RVGaCqW40pB4SLO0F5roDJZR?=
+ =?us-ascii?Q?LqMfNNv9TSBoIO25NaDorVQXa0sz20UDjix2iK2uj9wWdLgE9r1rWF4DAcNu?=
+ =?us-ascii?Q?zzQ31+KS+23c6O5VPKMuTlD1ZZyNXtSRp8wXQBysGe01IiHM/svQD7zqgDxO?=
+ =?us-ascii?Q?DA33O9B4szW5nkoBLKYSCFcUbp7wfNN8j9NJNq8RbiieY9istTz0HyfbHPPO?=
+ =?us-ascii?Q?108p7eKrf8oHEbQYQJoPkxRIYexWsGAGGGE2pEddjCLo8UFKqT/tjxVGjdqQ?=
+ =?us-ascii?Q?TVvRLCuncmrOuRnMKw0AtYQS36xfmfJ9Rw8nGP5N2YIdJF/mYpaQwvGQCrvM?=
+ =?us-ascii?Q?ZN7DXfpfFjgiyr+SpYzrA5CRHdfyxDNPqKYze8FDPsR0Iv4KNJYiLnp1OY43?=
+ =?us-ascii?Q?NOez3G7WBtfPh9sh8ZnV+mxnej6hu/poXUzIr5+erm7meDp5P1PfzQ6Lvhdt?=
+ =?us-ascii?Q?wTXwBeJyxARjnVUwXFx35yODz2gtucndtCcgMURfYhN57+/eMV9EWtzLriGB?=
+ =?us-ascii?Q?rA9lAGOE1oybvag/QcdJ3LkR2OSEzoeeir0/YKjoKrCV5/Pk2Fxe2iRDmiAv?=
+ =?us-ascii?Q?4JmVsrznOWx+yFb4+VOlfCWpppHDgVw6CcODod/nmnAX21SjOozxk7gYMowT?=
+ =?us-ascii?Q?fdp9mIDCsuHxsB4IyFWM+io8FGErtXzenaayFWl1xbmrky9kLORcELsrdDdn?=
+ =?us-ascii?Q?U6uVx4WJzF1HF5Hqa3cjr6TznKBwqqJe6QY5nvU1m4Qs47vt/zusJh9tHP41?=
+ =?us-ascii?Q?pKWoCNcGCQGKxW88urCe33oC0IDDsTGyrjLZiwbqMRcIG+NKvuRTcfVMVtLe?=
+ =?us-ascii?Q?9JMiQV6vJsrZ1YXuys2TiOWhGc1tAXIyrQN+qeNnqxf/04u+8ItZY6KCK5M7?=
+ =?us-ascii?Q?Cv7UZ6XzJquoBeBLIxCzP+CwGRDDpJ6cAeP5v3ZlFQ7aX5CKelQj6LLtLNKN?=
+ =?us-ascii?Q?nHn0bGUObtLmzN8RKCb/sSiPISUMQOZpavZJdEW3ERocgnLpECtUJ15Oltnm?=
+ =?us-ascii?Q?Ua9pok39djzDr43I/7cfz+9n?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78c7afba-177a-4e92-76bc-08d95fa77339
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR02MB3154.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2021 04:45:05.1616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U+LKLUjZ3bXEWUFUWerxhq0J7BnSJTMFvZZ/WKN1PZwWg6mCMg3Zp+HcYolAXLCNnES2BqK3bgJRvL+OOm3CbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR02MB3492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually, I was working on it, after Chao pointed it out. :)
-Merging them into F2FS_IOST and separating it from other files looks better.
+On 8/14/2021 4:13 AM, Andrew Morton wrote:
+> On Fri, 13 Aug 2021 18:47:25 +0800 liuhailong <liuhailong@oppo.com> wrote:
+>
+>> print NR_KERNEL_MISC_RECLAIMABLE stat from show_free_areas
+>> to check whether shrinker work correctly and current mem usage.
+>
+> What inspired this change?  Are you observing problems with
+> misc_reclaimable memory accumulation?
 
-On Fri, Aug 13, 2021 at 7:06 PM Chao Yu <chao@kernel.org> wrote:
->
-> On 2021/8/14 2:56, Jaegeuk Kim wrote:
-> > On 08/13, Chao Yu wrote:
-> >> On 2021/8/13 4:52, Jaegeuk Kim wrote:
-> >>> On 08/11, Chao Yu wrote:
-> >>>> Hi Daeho,
-> >>>>
-> >>>> On 2021/8/4 6:55, Daeho Jeong wrote:
-> >>>>> From: Daeho Jeong <daehojeong@google.com>
-> >>>>>
-> >>>>> Whenever we notice some sluggish issues on our machines, we are always
-> >>>>> curious about how well all types of I/O in the f2fs filesystem are
-> >>>>> handled. But, it's hard to get this kind of real data. First of all,
-> >>>>> we need to reproduce the issue while turning on the profiling tool like
-> >>>>> blktrace, but the issue doesn't happen again easily. Second, with the
-> >>>>> intervention of any tools, the overall timing of the issue will be
-> >>>>> slightly changed and it sometimes makes us hard to figure it out.
-> >>>>>
-> >>>>> So, I added F2FS_IOSTAT_IO_LATENCY config option to support printing out
-> >>>>> IO latency statistics tracepoint events which are minimal things to
-> >>>>> understand filesystem's I/O related behaviors. With "iostat_enable" sysfs
-> >>>>> node on, we can get this statistics info in a periodic way and it
-> >>>>> would cause the least overhead.
-> >>>>>
-> >>>>> [samples]
-> >>>>>     f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
-> >>>>> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> >>>>> rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
-> >>>>> wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
-> >>>>> wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
-> >>>>> wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> >>>>>
-> >>>>>     f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
-> >>>>> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> >>>>> rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
-> >>>>> wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
-> >>>>> wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
-> >>>>> wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> >>>>>
-> >>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> >>>>>
-> >>>>> ---
-> >>>>> v2: clean up with wrappers and fix a build breakage reported by
-> >>>>>        kernel test robot <lkp@intel.com>
-> >>>>> ---
-> >>>>>     fs/f2fs/Kconfig             |   9 +++
-> >>>>
-> >>>> I try to apply this patch in my local dev branch, but it failed due to
-> >>>> conflicting with below commit, it needs to rebase this patch to last dev
-> >>>> branch.
-> >>>
-> >>> I applied this in dev branch. Could you please check?
-> >>
-> >> Yeah, I see.
-> >>
-> >>>>> +config F2FS_IOSTAT_IO_LATENCY
-> >>>>> + bool "F2FS IO statistics IO latency information"
-> >>>>> + depends on F2FS_FS
-> >>>>> + default n
-> >>>>> + help
-> >>>>> +   Support printing out periodic IO latency statistics tracepoint
-> >>>>> +   events. With this, you have to turn on "iostat_enable" sysfs
-> >>>>> +   node to print this out.
-> >>>>
-> >>>> This functionality looks independent, how about introuducing iostat.h
-> >>>> and iostat.c (not sure, maybe trace.[hc])to include newly added structure
-> >>>> and functions for dispersive codes cleanup.
-> >>
-> >> Thoughts? this also can avoid using CONFIG_F2FS_IOSTAT_IO_LATENCY in many places.
-> >
-> > It seems there's somewhat dependency with iostat which is done by default.
-> > How about adding this by default as well in the existing iostat, and then
-> > covering all together by F2FS_IOSTAT?
->
-> Agreed.
->
-> Any thoughts about using separated files to maintain these independent functionality
-> codes? like we did in trace.[hc] previously.
->
-> Thanks,
->
-> >
-> >>
-> >> Thanks,
+1. although we can get usage from /proc/meminfo, but sometimes we only get kernel msg, so we need this to check memusage
+2. some drivers use it, like dma heap page pool or gpu driver mem pool, so it also help us to find whether shrinker work correctly on lowmem condition
+3. i thought it's resonable for show_free_areas to print misc_recliamiable
