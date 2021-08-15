@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC6F3EC6FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9103EC6FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhHODfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:35:03 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:49815 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbhHODet (ORCPT
+        id S235321AbhHODhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:37:42 -0400
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:59859 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234662AbhHODhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:34:49 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by mwinf5d21 with ME
-        id hfZ7250050zjR6y03faHyr; Sun, 15 Aug 2021 05:34:19 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 15 Aug 2021 05:34:19 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v5 7/7] can: etas_es58x: clean-up documentation of struct es58x_fd_tx_conf_msg
-Date:   Sun, 15 Aug 2021 12:32:48 +0900
-Message-Id: <20210815033248.98111-8-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+        Sat, 14 Aug 2021 23:37:41 -0400
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 7A085150947;
+        Sat, 14 Aug 2021 23:37:12 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=+Bh+pmAIc7qJu01G4M/9wseFv9UnkmsoNLSMWi
+        QyuC8=; b=LBITQQa3wa6qnf7xiNv727MtOv3rnTY/iD9r8QK7RaGGCjgbYSQ/3V
+        46W/AkPxu9xDWstTzkmTf0xzCd8tGfHxkb4BbXdJDF9ImFz/3weCBPvBWzXaY94G
+        Mny5gd4w0r+Lxfnk8AduAwCfsdsVat1FWdbfcDxNoA0aBOXSOAF4Q=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 651CE150945;
+        Sat, 14 Aug 2021 23:37:12 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=+Bh+pmAIc7qJu01G4M/9wseFv9UnkmsoNLSMWiQyuC8=; b=OW0wUQ6rSHffsv6kEkvs7ASOUoPzCBdGeSJrkDxlFWxKekJxeq80L5P5ysSBJ8P1bdJOx0dpZU/caYSs7Rjww6k2oI7GBiVLNdIRBQ6p6Tg7eykyDTQkwWoagilEHMpKrSWaBAbFtzum/2Y2Ez1Upr2dMmRwHjb+ir637UFe8AE=
+Received: from yoda.home (unknown [96.21.170.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 49CE2150944;
+        Sat, 14 Aug 2021 23:37:09 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 9FAD92DA0098;
+        Sat, 14 Aug 2021 23:37:07 -0400 (EDT)
+Date:   Sat, 14 Aug 2021 23:37:07 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] kbuild: Fix 'no symbols' warning when
+ CONFIG_TRIM_UNUSD_KSYMS=y
+In-Reply-To: <20210814234102.2315551-1-masahiroy@kernel.org>
+Message-ID: <r3rr2q2-1o70-o012-4ns1-or1qrs665753@syhkavp.arg>
+References: <20210814234102.2315551-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 11E7D40E-FD7A-11EB-9ADE-D5C30F5B5667-78420484!pb-smtp20.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation of struct es58x_fd_tx_conf_msg explains in details
-the different TDC parameters. However, those description are redundant
-with the documentation of struct can_tdc.
+On Sun, 15 Aug 2021, Masahiro Yamada wrote:
 
-Remove most of the description.
+> When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
+> 
+>   nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
+> 
+> $NM (both GNU nm and llvm-nm) warns when no symbol is found in the
+> object. Suppress the stderr.
+> 
+> Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/gen_ksymdeps.sh | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
+> index 1324986e1362..5493124e8ee6 100755
+> --- a/scripts/gen_ksymdeps.sh
+> +++ b/scripts/gen_ksymdeps.sh
+> @@ -4,7 +4,10 @@
+>  set -e
+>  
+>  # List of exported symbols
+> -ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
+> +#
+> +# If the object has no symbol, $NM warns 'no symbols'.
+> +# Suppress the stdout.
+> +ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
 
-Also, fixes a typo in the reference to the datasheet (E701 -> E70).
+You mean stderr.
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/usb/etas_es58x/es58x_fd.h | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-index ee18a87e40c0..a191891b8777 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-+++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-@@ -96,23 +96,14 @@ struct es58x_fd_bittiming {
-  * @ctrlmode: type enum es58x_fd_ctrlmode.
-  * @canfd_enabled: boolean (0: Classical CAN, 1: CAN and/or CANFD).
-  * @data_bittiming: Bittiming for flexible data-rate transmission.
-- * @tdc_enabled: Transmitter Delay Compensation switch (0: disabled,
-- *	1: enabled). On very high bitrates, the delay between when the
-- *	bit is sent and received on the CANTX and CANRX pins of the
-- *	transceiver start to be significant enough for errors to occur
-- *	and thus need to be compensated.
-- * @tdco: Transmitter Delay Compensation Offset. Offset value, in time
-- *	quanta, defining the delay between the start of the bit
-- *	reception on the CANRX pin of the transceiver and the SSP
-- *	(Secondary Sample Point). Valid values: 0 to 127.
-- * @tdcf: Transmitter Delay Compensation Filter window. Defines the
-- *	minimum value for the SSP position, in time quanta. The
-- *	feature is enabled when TDCF is configured to a value greater
-- *	than TDCO. Valid values: 0 to 127.
-+ * @tdc_enabled: Transmitter Delay Compensation switch (0: TDC is
-+ *	disabled, 1: TDC is enabled).
-+ * @tdco: Transmitter Delay Compensation Offset.
-+ * @tdcf: Transmitter Delay Compensation Filter window.
-  *
-- * Please refer to the microcontroller datasheet: "SAM
-- * E701/S70/V70/V71 Family" section 49 "Controller Area Network
-- * (MCAN)" for additional information.
-+ * Please refer to the microcontroller datasheet: "SAM E70/S70/V70/V71
-+ * Family" section 49 "Controller Area Network (MCAN)" for additional
-+ * information.
-  */
- struct es58x_fd_tx_conf_msg {
- 	struct es58x_fd_bittiming nominal_bittiming;
--- 
-2.31.1
+Nicolas
+
 
