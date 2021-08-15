@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4AD3EC70C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282883EC709
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235891AbhHODxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:53:30 -0400
-Received: from mail.parknet.co.jp ([210.171.160.6]:60986 "EHLO
-        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbhHODx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:53:29 -0400
-X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Sat, 14 Aug 2021 23:53:27 EDT
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id 8176115F93A;
-        Sun, 15 Aug 2021 12:43:01 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17F3gtqK259876
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sun, 15 Aug 2021 12:42:56 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17F3gtTX1634462
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sun, 15 Aug 2021 12:42:55 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 17F3glQI1634454;
-        Sun, 15 Aug 2021 12:42:47 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
-References: <20210808162453.1653-1-pali@kernel.org>
-        <20210808162453.1653-2-pali@kernel.org>
-Date:   Sun, 15 Aug 2021 12:42:47 +0900
-In-Reply-To: <20210808162453.1653-2-pali@kernel.org> ("Pali
- =?iso-8859-1?Q?Roh=E1r=22's?= message
-        of "Sun, 8 Aug 2021 18:24:34 +0200")
-Message-ID: <87h7frtlu0.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        id S235414AbhHODuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:50:24 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39421 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233848AbhHODuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 23:50:23 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GnNbN0DtRz9sT6;
+        Sun, 15 Aug 2021 13:49:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1628999392;
+        bh=oksZwUuazJvyP/mu5YVIEDEnHdB0QX1GEAxzy9oOoGw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=cW3zYHgZtt0iJ99/blGwvB5OhuCh9dutsTRQ8lskJyJ52uy8dvnIyedD4mt3Zhmky
+         E9ZteJ17gTt+F0m1KRUWAs7Kw8tUMmlWlEIr/WKT0dNcDDZmSY7Uu7Br4MVm/hb1Gk
+         Dz9s61tiVVeGeyOoZSW5MxBI7DVbKUKRQ1EWoRGGdQ40pyw/Z6xmZ3EKNbwKLWJ5a+
+         qYIIRIwEe0TeQVaBCaiz8rjbi9+dvD6HXSdAl3l0CLLRgNV5CIGu445K5Y036EEZNo
+         cvmReB7AxleDZePojBwV/pYS+lT6kXmRQ+qqebpo4YbbP3nGxHl4RHyAYK+ANCraFB
+         0UcW4tbWKwLTg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
+ WARN_ON/__WARN_FLAGS() with asm goto
+In-Reply-To: <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
+ <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+Date:   Sun, 15 Aug 2021 13:49:50 +1000
+Message-ID: <87wnonl63l.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pali Rohár <pali@kernel.org> writes:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index 24725e50c7b4..34745f239208 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -926,7 +926,7 @@ static void check_section(const char *modname, struct elf_info *elf,
+>  		".kprobes.text", ".cpuidle.text", ".noinstr.text"
+>  #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
+>  		".fixup", ".entry.text", ".exception.text", ".text.*", \
+> -		".coldtext"
+> +		".coldtext .softirqentry.text"
 
-> Currently iocharset=utf8 mount option is broken and error is printed to
-> dmesg when it is used. To use UTF-8 as iocharset, it is required to use
-> utf8=1 mount option.
->
-> Fix iocharset=utf8 mount option to use be equivalent to the utf8=1 mount
-> option and remove printing error from dmesg.
+This wasn't working, I updated it to:
 
-This change is not equivalent to utf8=1. In the case of utf8=1, vfat
-uses iocharset's conversion table and it can handle more than ascii.
+               ".coldtext", ".softirqentry.text"
 
-So this patch is incompatible changes, and handles less chars than
-utf8=1. So I think this is clean though, but this would be regression
-for user of utf8=1.
+Which works.
 
-Thanks.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+cheers
