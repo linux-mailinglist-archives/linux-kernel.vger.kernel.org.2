@@ -2,111 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106943ECA75
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 19:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEAA3ECA7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 19:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhHORhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 13:37:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35436 "EHLO mail.kernel.org"
+        id S229704AbhHORnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 13:43:24 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57577 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhHORhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 13:37:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F0B61164;
-        Sun, 15 Aug 2021 17:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629049022;
-        bh=Bsh6jyyvlHrWDtL3ExcVzRpHaJ4Uvz8QySUMNoiSi90=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/wUODBs2O3QEJG1mAaE/Kfs+Kes7SdCy65kIZykiRdZrPpLqdupXCAqxp2QzxSEX
-         NTJrv+rfI3Zp5EOI4k+rNb9IfMEpoVPr+5X/eE20RHv+0nSmVtwxt5wVEnWxq7G62k
-         MNEBSN42iRHruq3RzmC4E/2TXAKVwNuajsDL0gPAe9QHPUMAPOnUTZV4Bp/sYoWb28
-         Q0H8wmpgB2B1AgEVagFKQrq7sQlW4NlH/zCAmDBFGX81XGFCH9t4RyhlBVNu0Zbo0v
-         TkZJ5IsFb1cAPAL3MK477x8A7ZE+a49WlIHzZA6+bNym01BX6q0SAW6E3LvD4gxbWZ
-         l/hVV7coxbY/Q==
-Received: by pali.im (Postfix)
-        id E79BF98C; Sun, 15 Aug 2021 19:36:59 +0200 (CEST)
-Date:   Sun, 15 Aug 2021 19:36:59 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] PCI: aardvark: Fix masking MSI interrupts
-Message-ID: <20210815173659.2mjug3jffp6a4ybg@pali>
-References: <20210815103624.19528-1-pali@kernel.org>
- <20210815103624.19528-3-pali@kernel.org>
- <87zgtizly3.wl-maz@kernel.org>
+        id S229447AbhHORnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 13:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629049343;
+        bh=6AoH7oZM1JjIXr4zjh57kW/A2WvS24w8B79q66WMeGg=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=NquAJy1fIDyTBftP9G5DP8bBtwNtb/8YcV+sQyBeUmpMVMgkubLlADRJ/ghxzizTA
+         do61Z5K33kHDYC3WMXB+7Gch3hldQgm8/MDsQ0t9aq/KDzLULuKD5nJu04+W4zRLGL
+         foixHv1kR1dqEsBgU7diV2kpQpNe2pZYUJ9Cj1d0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1N1wlv-1nCYSt3hxB-012HpN; Sun, 15 Aug 2021 19:42:23 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Len Baker <len.baker@gmx.com>, Joe Perches <joe@perches.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] drivers/iio: Remove all strcpy() uses
+Date:   Sun, 15 Aug 2021 19:42:04 +0200
+Message-Id: <20210815174204.126593-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zgtizly3.wl-maz@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6ihbIysr7KBRuZcDvcUmXQJ6flnrpBiKvZBXqpJUrNTQwLUvI7H
+ YfGUHa+lA4T6ve7RST0S0O6Hbvu1BjKcp0OcevpVd9aPqaEdyR9W3aw9OlD0u2Mh4pdeh1Q
+ SNpx/cV6WtX/99B1FRLQbJcAVjW/ABrsIyY9BEACdvf8NCBwhmQkasjOu9s0GTVcEvrmxfp
+ WT/7fU42gWNfs1i3dvrhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lFDMZyzasTs=:JVu8vw5VRgml2djeJgDtOX
+ LyPZ2vJzsiu1QvJ2H0cOkSulhlotO703WBrxwyP9QKguHLfYBVQBrT1PiUTsGsLcNZLabYxQh
+ IUc/oIj1Uvs//0XIh3ZsWox+r1nlAB7sRAiB/zgySvrg3zUs0Y+EK8nWpHtsb8rINLdVyx98Z
+ 35bwnWJFMDcPf3lJOpO/lJMQcAvQ6ndLx0o+3feqnuyWgyPAS+amVYxfkEhTTtgx4iqKDMVB5
+ c5NyU+u4x4EOcV+HcVT83BWnrBq+4GHctvd1idF6PpBo/iTYTOrq9q6w5IxhCyzdPJPNnJb6d
+ OA45J/CMIVJeQqUBKCF8n6wo9kSblSFdvko6xntALQFLX6RRQwZQORsKqr1rFoXZUy6F3hVas
+ aAvC3lSQrXmwu2tOSKEF9dB4EUJYwFUnHZLnoOLiwIBS8weh2uVLdsOWNS4bNnkp2RveIRa6q
+ GT/qs5Ttq9CMyRclTr4NgQBAxa5LWIeu1QEdBbi0ZrZ8yDNzoO5p4oYKSU08EhhkBTllpnMgl
+ 3Tr9+W1JEkknhwyaGQG86KrSac+SfVoSVIduXJxfwWZWDSXgaDoSqdJTsZxfagPQBAtn4/NoC
+ XK5r7OI5Y03CpHvBn89s2FwE4NRBu49oaESNWNa+wJRoXRC72zUlTqqOKZy+x7XterUCOecmQ
+ Hzb2yMtD7mm5WMluwk6SBZlTSFdkdEDKNnAmZOELwgZWTSMuuwuIwhAD3jsDGGgQu6waGGjZ7
+ 8R1JeO0ROEu4maUAe9Satdtxn8vK7+vBtXvzR7CvvM/6QbWZr7eoryZZ24U03ATKKed+2gqu1
+ jRldDzjVjYsIU6b8KpbLJYxoVkHHrS0eg/W3iDNrXA7+t9DN9w5M/ExT+kQ1gNdArageTylh5
+ hPz5MbDDZLB8IEyVO++fyFcG3WQDDGaqZPwMiYuSKHQCHXf1wqyVIeV3XnzGxeCT2poXprJJG
+ N6s2HFWABwedVQVG5yhBXs1p1nFWxiLDZMLaAAhRPGom6o3x6Lv34yP7U4O65RNIZJHSMo2pu
+ J1TyU4wL99Fy5Y9aKTiYWKjTG3rymxZg+uMPu77K02Mz2n10h7gnAom/cfsHvOJ6jXOGDpn2S
+ S8njPJfS9MGYCzgmZ6HoBKvwXilQ473LfPZXzb+n1ZdAXZ0VfBftK4IuQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 15 August 2021 17:56:04 Marc Zyngier wrote:
-> On Sun, 15 Aug 2021 11:36:23 +0100,
-> Pali Rohár <pali@kernel.org> wrote:
-> > 
-> > Masking of individual MSI interrupts is done via PCIE_MSI_MASK_REG
-> > register. At the driver probe time mask all MSI interrupts and then let
-> > kernel IRQ chip code to unmask particular MSI interrupt when needed.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
-> > ---
-> >  drivers/pci/controller/pci-aardvark.c | 44 ++++++++++++++++++++++++---
-> >  1 file changed, 40 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > index bacfccee44fe..96580e1e4539 100644
-> > --- a/drivers/pci/controller/pci-aardvark.c
-> > +++ b/drivers/pci/controller/pci-aardvark.c
-> > @@ -480,12 +480,10 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
-> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_REG);
-> >  	advk_writel(pcie, PCIE_IRQ_ALL_MASK, HOST_CTRL_INT_STATUS_REG);
-> >  
-> > -	/* Disable All ISR0/1 Sources */
-> > +	/* Disable All ISR0/1 and MSI Sources */
-> >  	advk_writel(pcie, PCIE_ISR0_ALL_MASK, PCIE_ISR0_MASK_REG);
-> >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_MASK_REG);
-> > -
-> > -	/* Unmask all MSIs */
-> > -	advk_writel(pcie, ~(u32)PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
-> > +	advk_writel(pcie, PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
-> >  
-> >  	/* Unmask summary MSI interrupt */
-> >  	reg = advk_readl(pcie, PCIE_ISR0_MASK_REG);
-> > @@ -1026,6 +1024,40 @@ static int advk_msi_set_affinity(struct irq_data *irq_data,
-> >  	return -EINVAL;
-> >  }
-> >  
-> > +static void advk_msi_irq_mask(struct irq_data *d)
-> > +{
-> > +	struct advk_pcie *pcie = d->domain->host_data;
-> > +	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-> > +	u32 mask;
-> > +
-> > +	mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
-> > +	mask |= BIT(hwirq);
-> > +	advk_writel(pcie, mask, PCIE_MSI_MASK_REG);
-> 
-> This isn't atomic, and will results in corruption when two MSIs are
-> masked/unmasked concurrently.
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. So, remove all the uses and add
+devm_kstrdup() or devm_kasprintf() instead.
 
-Does it mean that also current implementation of masking legacy
-interrupt is incorrect?
+Also, modify the "for" loop conditions to clarify the access to the
+st->orientation.rotation buffer.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?h=v5.13#n874
+This patch is an effort to clean up the proliferation of str*()
+functions in the kernel and a previous step in the path to remove
+the strcpy function from the kernel entirely [1].
 
-> 
-> 	M.
-> 
-> -- 
-> Without deviation from the norm, progress is not possible.
+[1] https://github.com/KSPP/linux/issues/88
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+The previous versions can be found in:
+
+v1
+https://lore.kernel.org/linux-hardening/20210801171157.17858-1-len.baker@g=
+mx.com/
+
+v2
+https://lore.kernel.org/linux-hardening/20210807152225.9403-1-len.baker@gm=
+x.com/
+
+v3
+https://lore.kernel.org/linux-hardening/20210814090618.8920-1-len.baker@gm=
+x.com/
+
+v4
+https://lore.kernel.org/linux-hardening/20210814135509.4500-1-len.baker@gm=
+x.com/
+
+Changelog v1 -> v2
+- Modify the commit changelog to inform that the motivation of this
+  patch is to remove the strcpy() function from the kernel entirely
+  (Jonathan Cameron).
+
+Changelog v2 -> v3
+- Rewrite the code using devm_kstrdup() and devm_kasprintf() functions
+  (Andy Shevchenko).
+- Rebase against v5.14-rc5.
+
+Changelog v3 -> v4
+- Reorder the variables (Andy Shevchenko).
+- Get the device in the definition block (Andy Shevchenko).
+- Reword the comment (Andy Shevchenko).
+- Change the conditions in the "if" statement to clarify the "0" check
+  (Andy Shevchenko).
+
+Changelog v4 -> v5
+- Use the strcmp() function to clarify the "0" check (Joe Perches).
+- Modify the "for" loop conditions to clarify the access to the
+  st->orientation.rotation buffer (Joe Perches).
+
+ drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c | 36 +++++++++++++---------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/iio/imu/=
+inv_mpu6050/inv_mpu_magn.c
+index f282e9cc34c5..6aee6c989485 100644
+=2D-- a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
++++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
+@@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu6050_sta=
+te *st, int fifo_rate)
+  */
+ int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
+ {
++	struct device *dev =3D regmap_get_device(st->map);
+ 	const char *orient;
+ 	char *str;
+ 	int i;
+@@ -279,22 +280,27 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050_state=
+ *st)
+ 		st->magn_orient.rotation[4] =3D st->orientation.rotation[1];
+ 		st->magn_orient.rotation[5] =3D st->orientation.rotation[2];
+ 		/* z <- -z */
+-		for (i =3D 0; i < 3; ++i) {
+-			orient =3D st->orientation.rotation[6 + i];
+-			/* use length + 2 for adding minus sign if needed */
+-			str =3D devm_kzalloc(regmap_get_device(st->map),
+-					   strlen(orient) + 2, GFP_KERNEL);
+-			if (str =3D=3D NULL)
++		for (i =3D 6; i < 9; ++i) {
++			orient =3D st->orientation.rotation[i];
++
++			/*
++			 * The value is negated according to one of the following
++			 * rules:
++			 *
++			 * 1) Drop leading minus.
++			 * 2) Leave 0 as is.
++			 * 3) Add leading minus.
++			 */
++			if (orient[0] =3D=3D '-')
++				str =3D devm_kstrdup(dev, orient + 1, GFP_KERNEL);
++			else if (!strcmp(orient, "0"))
++				str =3D devm_kstrdup(dev, orient, GFP_KERNEL);
++			else
++				str =3D devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
++			if (!str)
+ 				return -ENOMEM;
+-			if (strcmp(orient, "0") =3D=3D 0) {
+-				strcpy(str, orient);
+-			} else if (orient[0] =3D=3D '-') {
+-				strcpy(str, &orient[1]);
+-			} else {
+-				str[0] =3D '-';
+-				strcpy(&str[1], orient);
+-			}
+-			st->magn_orient.rotation[6 + i] =3D str;
++
++			st->magn_orient.rotation[i] =3D str;
+ 		}
+ 		break;
+ 	default:
+=2D-
+2.25.1
+
