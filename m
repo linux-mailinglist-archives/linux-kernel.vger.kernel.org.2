@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC243ECBB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 01:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAF83ECBB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 01:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhHOXAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 19:00:52 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57785 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229814AbhHOXAv (ORCPT
+        id S231569AbhHOXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 19:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhHOXFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 19:00:51 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 3101432008FE;
-        Sun, 15 Aug 2021 19:00:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 15 Aug 2021 19:00:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8iTDKu
-        Ff6sIK5qkD+04LYSEIHov0bH0Yf7Smj73cGDo=; b=urQujKKqso9YornYGdsq6C
-        hMcJS95tNpEOqYksQuKfLkauJNN0k4432D+hApYbs8asGc8OV9hAK+VdiLUdH0tF
-        dmu0lFoEwSn46YZjifE1qRvsAvZw/EO3LlDlWpp9/0PdW+6aKsldR+1i3gh5uxxH
-        shs6F6TBvLsUqQDI06CzqjF9RE/S0NLnFyCh5xcmO1TjAAMVB3Mk92fDA2B+cS52
-        nnZVXNFSbIWIcyn8uR12OqiqAl+DHq+3bh7OzKcA5P1d3cR8cLKzK8qn8XU7yjSI
-        NEZpzuZeDR7oITh3o61CgxBVbYXVt9hJun+buPvoy3xir0q0ziviZ/tDgY3GWj0A
-        ==
-X-ME-Sender: <xms:g5wZYdKZN8AJCclERsW4_6JTg7vITB5VvmENytFdNsudWNC4P6cgcg>
-    <xme:g5wZYZJGbf0kim1j4COjwACv4GZaN0mJuNUybWWAO5nY0YyawSdSHZzPqG5z5iG4l
-    VzONj4Qp1Kkks2B9l8>
-X-ME-Received: <xmr:g5wZYVuQ5raiC1w4-fe0Q1pbs7mgXRIoHfdju-f6GehLaiP7KXCGiiiRQ07ZnLtUkdAL7A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledtgdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffuvffkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgvucfl
-    ohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgf
-    effedufffhgfeuheegffffgeegveeifeeutefhieejffetudfgueevteehtdetnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljh
-    honhgvshdruggvvh
-X-ME-Proxy: <xmx:g5wZYeakpEiLJpVzpe8t5yXJj627QSJvL7QiCgaY2kZqvX8fHAUWoA>
-    <xmx:g5wZYUaejI6VhoLYNkrP9E-DQUDnhSlrrJoM-wdh0lwiNUrAfAztTg>
-    <xmx:g5wZYSDkgCXv5KvGdYzU_ESSW-TeMa76lrRx_iztegpZGv_EhxNwPA>
-    <xmx:g5wZYfwmOWoxWnC2bwsgsQbnAoRhVYJJPUWAcsPhkX4OjRELlOp9HQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 15 Aug 2021 19:00:15 -0400 (EDT)
-Date:   Mon, 16 Aug 2021 11:00:01 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH v3 0/1] asus-wmi: add platform_profile support
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, hadess@hadess.net,
-        platform-driver-x86@vger.kernel.org
-Message-Id: <18LWXQ.AIB2DGCZUVMW@ljones.dev>
-In-Reply-To: <a918bfe0-03c4-e7d3-8a99-efb1d11333e4@redhat.com>
-References: <20210814043103.2535842-1-luke@ljones.dev>
-        <THKTXQ.ELSNF0TA7RAV1@ljones.dev>
-        <a918bfe0-03c4-e7d3-8a99-efb1d11333e4@redhat.com>
-X-Mailer: geary/40.0
+        Sun, 15 Aug 2021 19:05:53 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3797CC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 16:05:22 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id z9so21007606wrh.10
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 16:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0vhrXmaCnBUAq1bek/phc8PfY46b3QRQs/x7Py8PZQ=;
+        b=NXu8lmZVg19azqMz/JWhrBh01Nf/pLLpZ4EX5RrESK5+0NyAQ5eiQ7n3CY1/htGu7Q
+         EcRmMFAMbR1LLStSbqRPOdfMXHbRdUxFb3koFaX0zKo9WYGCwmr1UN4BiStkWmo5L4Zb
+         439T0DIGiaDEojISOGooRabuLZ/nbSOSkRMK1g4N8Kn7VYaWhcXkswKrqXqDc1lanBt3
+         c09x5Us6oE9j6DAsnLpuqytY2lTcw8QPBHos2sZn8fOUu+xbiM3jZ5zzXMPR4sBRjo0P
+         1FioM76aoNXvQSyCXpCibN3ehuKfUvUFmhbFJLfwxHKVByueiY8lw0bcuM74l6g0ks8u
+         mvTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T0vhrXmaCnBUAq1bek/phc8PfY46b3QRQs/x7Py8PZQ=;
+        b=edgLLeCBb84WYD7DpzZXsuCssnj8Lw1N1SeyN7rS+eRkR6b5HyjZv9Oh/+mCAyNPkG
+         ML65lEAa8EXGusTby1WS2+yCvgstcGInNGpmP4GzIMlA8DQ8YJR+4T8I46l6ZgQ334kz
+         opL9psEyUz091CSvXPqfH0wTdHBf1meXmezaPrXumxoLl/kC0TJtDBIN7RPkMCJuTOEk
+         rI8iJcBujlW5i7lWk17PgmV6+eTn4g+VT0CJim4K6yfXvOw3lfllpKSPklyxsmiyiq7Z
+         28x7ybWpbqwAQqQV8zSEP1ufeVmBlVQD6UtnADYsbU1CIU6vJbJe1XHmKc7CVT5DKFnN
+         hoVA==
+X-Gm-Message-State: AOAM5336ob4mYbo6HuPNriyY320Tdo1gy44wJ2FSWRbFrpCMC5Nh4f+3
+        CMfHbfXsrZdEJxKcFSEpnpym1cbTkZf4uZIgtQQ=
+X-Google-Smtp-Source: ABdhPJxwWul77eZdHHvx6oi6bMz+Y4HPZxttbRu7mUGhTdVXHRMQ5s2ff5chvDrRR9kkeBI9UOOiMA==
+X-Received: by 2002:adf:f285:: with SMTP id k5mr15177636wro.117.1629068720214;
+        Sun, 15 Aug 2021 16:05:20 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id e11sm9545734wrm.80.2021.08.15.16.05.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Aug 2021 16:05:19 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
+        martin@kaiser.cx, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: r8188eu: remove unused variable and DBG_88E in hal/rtl8188e_cmd.c
+Date:   Mon, 16 Aug 2021 00:05:18 +0100
+Message-Id: <20210815230518.91656-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove set but unused variable init_rate from rtl8188e_Add_RateATid
+function in hal/rtl8188e_cmd.c, as it fixes a kernel test robot warning.
+Removing the call to get_highest_rate_idx has no side effects here so is
+safe.
 
+Also remove the DBG_88E macro call in this function, as it is not
+particularly clear in my opinion. Additionally, rename variable
+shortGIrate to short_gi_rate to conform to kernel camel case rules,
+and improve general spacing around operators, some of which triggers
+checkpatch 'CHECK' messages. These are not related to the test robot
+warning.
 
-On Sun, Aug 15 2021 at 15:48:49 +0200, Hans de Goede 
-<hdegoede@redhat.com> wrote:
-> Hi,
-> 
-> On 8/14/21 9:51 AM, Luke Jones wrote:
->> 
->> 
->>  On Sat, Aug 14 2021 at 16:31:02 +1200, Luke D. Jones 
->> <luke@ljones.dev> wrote:
->>>  Changelog:
->>>  - V2
->>>    + Correctly unregister from platform_profile if
->>>      throttle_thermal_policy fails
->>>    + Do platform_profile_notify() in both 
->>> throttle_thermal_policy_store()
->>>      and in throttle_thermal_policy_switch_next()
->>>    + Remove unnecessary prep for possible fan-boost modes as this
->>>      doesn't match expected platform_profile behaviour
->>>  - V3
->>>    + Add missing declaration for err in
->>>      throttle_thermal_policy_switch_next
->>> 
->>>  Luke D. Jones (1):
->>>    asus-wmi: Add support for platform_profile
->>> 
->>>   drivers/platform/x86/asus-wmi.c | 139 
->>> +++++++++++++++++++++++++++++++-
->>>   1 file changed, 135 insertions(+), 4 deletions(-)
->>> 
->>>  --
->>>  2.31.1
->> 
->>  Hi,
->> 
->>  I teested the patch again and it appears that the 
->> platform_profile_notify() in both throttle_thermal_policy_store() 
->> and throttle_thermal_policy_switch_next() updates the 
->> /sys/firmware/acpi/platform_profile sysfs path fine, but userspace 
->> isn't updated?
->> 
->>  The way I'm checking is:
->>  1. echo 1 |sudo tee 
->> /sys/devices/platform/asus-nb-wmi/throttle_thermal_policy
->>  2. cat -p /sys/firmware/acpi/platform_profile
->>    - performance (updated correctly by platform_profile_notify)
->>  3. Check gnome-settings, not updated.
->> 
->>  Doing `echo "performance" |sudo tee 
->> /sys/firmware/acpi/platform_profile` updates both 
->> throttle_thermal_policy and userspace as expected. I'm wondering if 
->> I've missed something?
-> 
-> If you add a printk where you call platform_profile_notify() and you 
-> see that
-> happening, then you are likely seeing a userspace bug. Possibly your
-> power-profile-daemon is simply a bit old and therefor does not support
-> the combination of profiles which asus-wmi offers, IIRC it falls back 
-> to
-> using intel-pstate in that case.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
-It's possible that it's a userspace bug then. The power-profile-daemon 
-I'm using is fresh from git (0.9+). To be clear updating via 
-/sys/firmware/acpi/platform_profile works perfectly fine and 
-power-profile-daemon updates etc. But if I do platform_profile_notify() 
-then it doesn't seem to be updated. Nevertheless I will finalise the 
-patch as it is and submit for merging and we can go from there.
-
-> 
-> You could try building the latest power-profile-daemon from git and 
-> run
-> it in verbose mode. If it sees the changes and the control-panel 
-> applet is
-> still not updating then I would not worry about that. The userspace 
-> code
-> is still somewhat new and I'm not sure which version your distro is
-> running and how well it is keeping up with gnome-updates.
-> 
-> Regards,
-> 
-> Hans
-> 
-
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+index 6cbda9ab6e3f..8d03b24dc5af 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+@@ -155,33 +155,25 @@ void rtl8188e_Add_RateATid(struct adapter *pAdapter, u32 bitmap, u8 arg, u8 rssi
+ {
+ 	struct hal_data_8188e *haldata = GET_HAL_DATA(pAdapter);
+ 
+-	u8 macid, init_rate, raid, shortGIrate = false;
++	u8 macid, raid, short_gi_rate = false;
+ 
+-	macid = arg&0x1f;
++	macid = arg & 0x1f;
+ 
+-	raid = (bitmap>>28) & 0x0f;
++	raid = (bitmap >> 28) & 0x0f;
+ 	bitmap &= 0x0fffffff;
+ 
+ 	if (rssi_level != DM_RATR_STA_INIT)
+ 		bitmap = ODM_Get_Rate_Bitmap(&haldata->odmpriv, macid, bitmap, rssi_level);
+ 
+-	bitmap |= ((raid<<28)&0xf0000000);
++	bitmap |= ((raid << 28) & 0xf0000000);
+ 
+-	init_rate = get_highest_rate_idx(bitmap&0x0fffffff)&0x3f;
++	short_gi_rate = (arg & BIT(5)) ? true : false;
+ 
+-	shortGIrate = (arg&BIT(5)) ? true : false;
+-
+-	if (shortGIrate)
+-		init_rate |= BIT(6);
+-
+-	raid = (bitmap>>28) & 0x0f;
++	raid = (bitmap >> 28) & 0x0f;
+ 
+ 	bitmap &= 0x0fffffff;
+ 
+-	DBG_88E("%s=> mac_id:%d, raid:%d, ra_bitmap=0x%x, shortGIrate=0x%02x\n",
+-		__func__, macid, raid, bitmap, shortGIrate);
+-
+-	ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv, macid, raid, bitmap, shortGIrate);
++	ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv, macid, raid, bitmap, short_gi_rate);
+ }
+ 
+ void rtl8188e_set_FwPwrMode_cmd(struct adapter *adapt, u8 Mode)
+-- 
+2.31.1
 
