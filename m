@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECE33EC82C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114E33EC82F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236837AbhHOImz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 04:42:55 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54986 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236425AbhHOImy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 04:42:54 -0400
-Received: from zn.tnic (p200300ec2f2631001e9549156c3f2463.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:3100:1e95:4915:6c3f:2463])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 02FF01EC0505;
-        Sun, 15 Aug 2021 10:42:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629016940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rUM4s7qJV2/J3gyH7O3mBn+MHJ5cWjAjy/+e2C+9wvw=;
-        b=FNx7z7/3a5HjdpAbtaLkwzv3lRjTEtcmhEu79e3N6fPKKukPPzwAatIV1UtstaiyEV874I
-        sw/eRzlHoJ4LapjpH8uyOYiizPdBgJCod3/ZxJsiG+luyH6m17GLkQ5fXAkuyIbb9FkHV2
-        kx/6XQbREsvVeOrXrakmWQwS1fKVuNU=
-Date:   Sun, 15 Aug 2021 10:42:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
- 064855a69003c24bd6b473b367d364e418c57625
-Message-ID: <YRjTkkpDjaWxEpjb@zn.tnic>
-References: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
+        id S236971AbhHOIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 04:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236425AbhHOIuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 04:50:02 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400D2C061764;
+        Sun, 15 Aug 2021 01:49:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x27so28371798lfu.5;
+        Sun, 15 Aug 2021 01:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N9F061E103kzIB2bNqHdTfx672Vo2UjZty49a/4DJ+w=;
+        b=OhHaAV9O+FHFRjcYeAaP+svuQawi9NmDbJrnB42D893+TC3jfIhEhsGp3LypOIj25N
+         6qFOa+ganVg9wUolLUURshmKPMhuxozf/7QgdxXd8LbO/9ti8HxodkC9XJBDisOcObm5
+         B7z82DZ6Ol4/m9O/Ipj/1WB9rvJbtwyn5yXIZ6dLbaGt7yYIa8B0ybkgmYFmi3jWX3j4
+         7ybKvPsbftc7JABSrCwlv9G3J4qEW5hv0Tw5+rhar8uL4Zii9gTR8l5C/udxnzr2+g/4
+         +DPa08VkTSL7yQRDay5++uPxTfmBlSm5od23vT1uEFv8RkAZDB796fNa9T+Y9YiU5zLL
+         rJWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N9F061E103kzIB2bNqHdTfx672Vo2UjZty49a/4DJ+w=;
+        b=Nd5/P1Kk6RbLMxwFciWjCPS97s5emKuhbk6xQnncG6N12erSmE3yGX2jgmw2c3Hu16
+         9reiKg0kVSESA2XAiXEuC23iLiCJX+/yGlDdX/U892GPr7R1Bh9iXepPoms971KrHSMg
+         xnthgfcE42GehsU0Y7IOTwJJKnzRFDpOWWrhu6dn8Y6R6eQnfu+/RLqeaTur3PjjmY+E
+         5z0TMyHHe0aHrO2ClAScAVgrrVZmV/SJqHJNmMk7UpG2nXv3+j9CDOD7pdGq5sEAhPYt
+         BILxKJlMFm9dPSwnv4j46OyLkIYXZD8z4gfg49dozSd3gNx/QMMcuQYJZA2hV0x9dFba
+         1oDw==
+X-Gm-Message-State: AOAM532t/RjyqxUwsxO4MhoRZZzHPbdO2L6y5iCb2C/qDMXZW4jGUI7R
+        YQKzbj0B0dnal6ly368a67Q=
+X-Google-Smtp-Source: ABdhPJzQPUhgvswLIbgJZSq9C56IDi0X9Jz/n4DB4TI3eYFRJyA6ROtj4DrLmzqTg7TidjWcb6VMGQ==
+X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr7623433lfn.578.1629017370317;
+        Sun, 15 Aug 2021 01:49:30 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.79])
+        by smtp.gmail.com with ESMTPSA id x26sm618967lfu.206.2021.08.15.01.49.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 01:49:29 -0700 (PDT)
+Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
+To:     Sean Young <sean@mess.org>
+Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
+References: <20210730213829.2909-1-paskripkin@gmail.com>
+ <20210815083755.GA1827@gofer.mess.org>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
+Date:   Sun, 15 Aug 2021 11:49:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
+In-Reply-To: <20210815083755.GA1827@gofer.mess.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Aug 15, 2021 at 04:36:40PM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-> branch HEAD: 064855a69003c24bd6b473b367d364e418c57625  x86/resctrl: Fix default monitoring groups reporting
+On 8/15/21 11:37 AM, Sean Young wrote:
+> On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
+>> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
+>> mutex. The problem was in wrong mutex_init() location.
+>> 
+>> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
+>> dvb_usbv2_init() has this order of calls:
+>> 
+>> 	dvb_usbv2_init()
+>> 	  dvb_usbv2_adapter_init()
+>> 	    dvb_usbv2_adapter_frontend_init()
+>> 	      props->frontend_attach()
+>> 
+>> 	  props->init()
+>> 
+>> Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
+>> internally we need to initialize state->msg_lock in it to make lockdep
+>> happy.
 > 
-> possible Warning in current branch:
+> What about the other frontends like mxl111sf_frontend_attach_dvbt? They
+> no longer initialize the mutex.
 > 
-> arch/x86/kernel/cpu/resctrl/monitor.c:310 __mon_event_count() error: uninitialized symbol 'm'.
-> arch/x86/kernel/cpu/resctrl/monitor.c:315 __mon_event_count() error: potentially dereferencing uninitialized 'm'.
-> 
-> Warning ids grouped by kconfigs:
-> 
-> gcc_recent_errors
-> `-- i386-randconfig-m021-20210812
->     |-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:potentially-dereferencing-uninitialized-m-.
->     `-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:uninitialized-symbol-m-.
+Good point. I see, that all other frontends also call 
+mxl111sf_ctrl_msg() inside ->frontend_attach() call.
 
-AFAIR, I had already asked you guys to make those reports more useful
-as, for example, adding a link to that randconfig above or even
-attaching it so that a person - not a machine - reading it, can
-*actually* act upon it.
+I think, that fixing dvb-usb core is not good idea, so, I will add 
+mutex_init() call inside all frontends, which use mxl111sf_init().
 
-But that hasn't happened.
+What do you think about it?
 
-Until it happens, I'm going to ignore all those reports from you.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With regards,
+Pavel Skripkin
