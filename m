@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1C03ECB75
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3606D3ECB78
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhHOVfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
+        id S231241AbhHOVgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233207AbhHOVfK (ORCPT
+        with ESMTP id S230077AbhHOVgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:35:10 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4B2C06124A;
-        Sun, 15 Aug 2021 14:33:57 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id t68so17125837qkf.8;
-        Sun, 15 Aug 2021 14:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=paVSC5jFhWBtvyWQP2dPKvlBYJAW6pw4Z4wd3QzT2mk=;
-        b=ZY+OddLCosEBVnS1NclkUB7itP5bkV4QGWa9fMies0b0DUNHnF9BDBDfMlCUS4vT2+
-         lbHGw42JCzu9dRorcc0lcjjjrlzdDPVtMbYE3OZx0wGRNHo+5gW5kZYrP+IqXosn8nzo
-         nPFSCb/QHuIWoWYX60gfSiGXIJ6LptmpVfWHDmINaTaRKpDUqvXIjY2557R0iHymmpdj
-         7Q/CiIIt80FkjpWPmtUxsbY3J7cn0o/qnfdJzsXi2NbN+rrEorUJu8WBe8pvG0h2eb3n
-         m9K0nIa7XA7TwyyMXOGiEIJKUAKtzPsU4QCV0GfNFqJl3MfZRz0rHzuYr9vXUaPHVN37
-         3o4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=paVSC5jFhWBtvyWQP2dPKvlBYJAW6pw4Z4wd3QzT2mk=;
-        b=Me4rGX71Gyhr2alhSQ3ku/LNNB7wx9GXq2kMMy+Cpnf2DFVUUQu/sXuk0e/K41urcI
-         e2KDFOG7XUNwTnJq6dejP9x/CuXnZYAOTIQBOXXFIaklaKzhMjSGrAzFY4qj0sZdxhew
-         DXHeYzPvlkuFuV5pAab5Oghfv0/YoDLfKzn9Lf/nSpsDevhlDLu3ya2F0e4dpkfsohTO
-         cORcW2uGBhVH9FpG6ojjSmcwzy2QupfWUsUL0nOAbG1oBilga7uLk9prS+zzZoccLWBq
-         PB15PMh59DDJiQpBmTsx53joyfAt3Wnq33AkwZPxM5NpDMeXYd51L5z1o2xrObdjSH1U
-         mFPA==
-X-Gm-Message-State: AOAM530BFPbGRm+7/VYHMnz+triCoSz8W0f3Ao02ph2jYGIXT8JiEqqE
-        MFLm/e8aaQ/HSK8ggFTUzLo=
-X-Google-Smtp-Source: ABdhPJwq/UWom4p95vS41sMqqWmTEZIE4onXSsswaWS2YsM+IYxsHaavsS1sEunNLkNA4qYCFYBGlQ==
-X-Received: by 2002:a37:8e44:: with SMTP id q65mr12972514qkd.372.1629063237157;
-        Sun, 15 Aug 2021 14:33:57 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id u19sm3870988qtx.48.2021.08.15.14.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Aug 2021 14:33:56 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v6 5/5] iio: adc: ad7949: use devm managed functions
-Date:   Sun, 15 Aug 2021 17:33:09 -0400
-Message-Id: <20210815213309.2847711-6-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.32.0.452.g940fe202adcb
-In-Reply-To: <20210815213309.2847711-1-liambeguin@gmail.com>
-References: <20210815213309.2847711-1-liambeguin@gmail.com>
+        Sun, 15 Aug 2021 17:36:23 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3642FC061764;
+        Sun, 15 Aug 2021 14:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=lf6ZqlaldTQ8/H5hBqLtGjFsnJoVtCAQJrwngOOoJ8g=; b=zO2ttehAHQMPGuZYqeXF1ccyc
+        QY+ggWdtm2O9v6KjOvr24YtEGBs1xzDOsADsS7j/VnZ/Lk1mOCP4m686+OkJXJUpEXMkdIFoa+hgb
+        6vrjgtmyki5S96XET3rmuIx0DIjKWqpPfrpukY0GmD2+UufX33Wv0xFzjBFtFRjRTPXWFYiOD/QaH
+        P9XC067p0fa5Ml9DCIsde7CK6N+TE1G6+VQNvn5mP27rSfNWrgB0rxZRxwLvOCBW3KqOah4FRl318
+        CU1CUei38d5PVYhNIlK1ViE3o65JjOELuU821ob2fs7oJpB4CPWslnY/drRvZcl3svZ5v9RZ86gTc
+        /51odPzyw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47336)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mFNnA-0006ot-62; Sun, 15 Aug 2021 22:35:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mFNn7-0007Ji-Lk; Sun, 15 Aug 2021 22:35:37 +0100
+Date:   Sun, 15 Aug 2021 22:35:37 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Colin Foster <colin.foster@in-advantage.com>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 net-next 09/10] net: dsa: ocelot: felix: add
+ support for VSC75XX control over SPI
+Message-ID: <20210815213537.GC22278@shell.armlinux.org.uk>
+References: <20210814025003.2449143-1-colin.foster@in-advantage.com>
+ <20210814025003.2449143-10-colin.foster@in-advantage.com>
+ <20210814114329.mycpcfwoqpqxzsyl@skbuf>
+ <20210814120211.v2qjqgi6l3slnkq2@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210814120211.v2qjqgi6l3slnkq2@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+On Sat, Aug 14, 2021 at 03:02:11PM +0300, Vladimir Oltean wrote:
+> In fact I do notice now that as long as you don't use any of the
+> optional phylink_mii_c22_pcs_* helpers in your PCS driver, then
+> struct phylink_pcs has pretty much zero dependency on struct mdio_device,
+> which means that I'm wrong and it should be completely within reach to
+> write a dedicated PCS driver for this hardware.
 
-Switch to devm_iio_device_register to finalize devm migration.
-This removes the use for iio_device_unregister() and since
-mutex_destroy() is not necessary here, remove it altogether.
+Yes, this was one of the design goals when I created phylink_pcs, as I
+have exactly this situation with my hardware - PCS that do not have a
+MDIO interface and do not conform to MDIO register layouts. So, I
+explicitly ensured that phylink_pcs, just like the rest of phylink,
+is not tied to any particular model of how hardware should look like.
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- drivers/iio/adc/ad7949.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+Glad to see that this design decision is coming in handy for other
+people now. :)
 
-diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-index 5168d687687d..5b8858719b53 100644
---- a/drivers/iio/adc/ad7949.c
-+++ b/drivers/iio/adc/ad7949.c
-@@ -405,34 +405,16 @@ static int ad7949_spi_probe(struct spi_device *spi)
- 	ret = ad7949_spi_init(ad7949_adc);
- 	if (ret) {
- 		dev_err(dev, "enable to init this device: %d\n", ret);
--		goto err;
-+		return ret;
- 	}
- 
--	ret = iio_device_register(indio_dev);
--	if (ret) {
-+	ret = devm_iio_device_register(dev, indio_dev);
-+	if (ret)
- 		dev_err(dev, "fail to register iio device: %d\n", ret);
--		goto err;
--	}
--
--	return 0;
--
--err:
--	mutex_destroy(&ad7949_adc->lock);
- 
- 	return ret;
- }
- 
--static int ad7949_spi_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ad7949_adc_chip *ad7949_adc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	mutex_destroy(&ad7949_adc->lock);
--
--	return 0;
--}
--
- static const struct of_device_id ad7949_spi_of_id[] = {
- 	{ .compatible = "adi,ad7949" },
- 	{ .compatible = "adi,ad7682" },
-@@ -455,7 +437,6 @@ static struct spi_driver ad7949_spi_driver = {
- 		.of_match_table	= ad7949_spi_of_id,
- 	},
- 	.probe	  = ad7949_spi_probe,
--	.remove   = ad7949_spi_remove,
- 	.id_table = ad7949_spi_id,
- };
- module_spi_driver(ad7949_spi_driver);
 -- 
-2.32.0.452.g940fe202adcb
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
