@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114E33EC82F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2DB3EC839
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236971AbhHOIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 04:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236425AbhHOIuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 04:50:02 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400D2C061764;
-        Sun, 15 Aug 2021 01:49:32 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id x27so28371798lfu.5;
-        Sun, 15 Aug 2021 01:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N9F061E103kzIB2bNqHdTfx672Vo2UjZty49a/4DJ+w=;
-        b=OhHaAV9O+FHFRjcYeAaP+svuQawi9NmDbJrnB42D893+TC3jfIhEhsGp3LypOIj25N
-         6qFOa+ganVg9wUolLUURshmKPMhuxozf/7QgdxXd8LbO/9ti8HxodkC9XJBDisOcObm5
-         B7z82DZ6Ol4/m9O/Ipj/1WB9rvJbtwyn5yXIZ6dLbaGt7yYIa8B0ybkgmYFmi3jWX3j4
-         7ybKvPsbftc7JABSrCwlv9G3J4qEW5hv0Tw5+rhar8uL4Zii9gTR8l5C/udxnzr2+g/4
-         +DPa08VkTSL7yQRDay5++uPxTfmBlSm5od23vT1uEFv8RkAZDB796fNa9T+Y9YiU5zLL
-         rJWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N9F061E103kzIB2bNqHdTfx672Vo2UjZty49a/4DJ+w=;
-        b=Nd5/P1Kk6RbLMxwFciWjCPS97s5emKuhbk6xQnncG6N12erSmE3yGX2jgmw2c3Hu16
-         9reiKg0kVSESA2XAiXEuC23iLiCJX+/yGlDdX/U892GPr7R1Bh9iXepPoms971KrHSMg
-         xnthgfcE42GehsU0Y7IOTwJJKnzRFDpOWWrhu6dn8Y6R6eQnfu+/RLqeaTur3PjjmY+E
-         5z0TMyHHe0aHrO2ClAScAVgrrVZmV/SJqHJNmMk7UpG2nXv3+j9CDOD7pdGq5sEAhPYt
-         BILxKJlMFm9dPSwnv4j46OyLkIYXZD8z4gfg49dozSd3gNx/QMMcuQYJZA2hV0x9dFba
-         1oDw==
-X-Gm-Message-State: AOAM532t/RjyqxUwsxO4MhoRZZzHPbdO2L6y5iCb2C/qDMXZW4jGUI7R
-        YQKzbj0B0dnal6ly368a67Q=
-X-Google-Smtp-Source: ABdhPJzQPUhgvswLIbgJZSq9C56IDi0X9Jz/n4DB4TI3eYFRJyA6ROtj4DrLmzqTg7TidjWcb6VMGQ==
-X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr7623433lfn.578.1629017370317;
-        Sun, 15 Aug 2021 01:49:30 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.79])
-        by smtp.gmail.com with ESMTPSA id x26sm618967lfu.206.2021.08.15.01.49.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 01:49:29 -0700 (PDT)
-Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
-To:     Sean Young <sean@mess.org>
-Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-References: <20210730213829.2909-1-paskripkin@gmail.com>
- <20210815083755.GA1827@gofer.mess.org>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
-Date:   Sun, 15 Aug 2021 11:49:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236895AbhHOJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 05:02:26 -0400
+Received: from mout.gmx.net ([212.227.15.19]:41377 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231194AbhHOJC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 05:02:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629018102;
+        bh=/emkVCszJef95728u2oytXmySDOEjKWvQTyP7NMKSvQ=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=A1HKfXLEFCGh7ZcsagzBgSa14D6nemb3CjI/HeVR+I3AJepmzBQlF6y2daikxD0FX
+         EUaHQg8XWerklWBE3IT4XpmAkBC7jbK/DDEK+FFCkhwjfw8nZPptHir4pyhSif7cw4
+         6B0dYxhjra9kPCk2XOwlc6ehzZztsaK6nTCj+yL4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.48.238]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3DO3-1mEN4t2VyP-003by3; Sun, 15
+ Aug 2021 11:01:42 +0200
+Message-ID: <b19fb3316eac7cef314ad16da949d5a4b19d8204.camel@gmx.de>
+Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Clark Williams <williams@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>
+Date:   Sun, 15 Aug 2021 11:01:41 +0200
+In-Reply-To: <0044f090d3919eef03048527f1baa34aec5198a8.camel@gmx.de>
+References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
+         <20210812151803.52f84aaf@theseus.lan>
+         <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
+         <20210812162448.26274298@theseus.lan>
+         <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
+         <20210812164440.0426d8b7@theseus.lan>
+         <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
+         <0044f090d3919eef03048527f1baa34aec5198a8.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-In-Reply-To: <20210815083755.GA1827@gofer.mess.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5Gi6hLhFM+53u78DAjGML3rJyP6bw1204G0xdyKQPl1Tlznom+c
+ WM9hVdpwKSdQWgtrY7d014I+Kt/YkL+G5xYyr81zwJOKo5NRMzzGN9z3fFEw9gVC0EpLEFs
+ fWDdVuIk/qM9Y4yG4oWo2bfWM0LC0EdemLRv2dEN84vMCQp9RGkmdCBfan313p51YZWrlR/
+ FvxZANRoW2u8TmF21Yh7w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mxUW6sOpuGs=:dBQPLZOqlp8sBr2eWgG5bg
+ v2yYwAHZgDeoTMuBaxfiL/IxvGH4K9e3berqJy9Epv7t1daKTw3SQ9Dmh6RX4oE5UlVmqMkZ7
+ dbkcT07wKIoNj2WuS+GF43XwcOCkR9V2ziUVCKoySJ2r+oBXOBew/snU//y2bc99YUHQeEezY
+ 632632KHdqvhq/P4F9HSpEruK0WEo5KhePU0xdm/PrxliSZxhwBk8HaHanoTHDOgn75Rbhhyv
+ NN++1T8423ZwfJlBXtJyBz9yN16WzZ/Wz2ac5wDyr+DxgFsIzSN0l4HCjczEl50r88jRnhaBp
+ u+Q2LkC6bh0JsaDSwTVEVC5T6VpJQee5Dw/Uo0hd51UWE1+pufplBMsdEUFcSTMUjMpYGqFys
+ 1bQ8HWA0URjkSH3qCXiM26YbWCoRMWR4/w8PMEzbp6912BatDY4e+BKAci93qIl691l26wkIQ
+ dpAyH3Z0KTPuD042XcWdUSITMriVCMM9ppicswFfV8KwP+/ZM5lQSDwMCo2OrGgNmWfaaYMye
+ vZzEFZYJ6kfn6jrJXHPr/jpjEpcWFXT3M0wvhJ3WBR6duRlLahSx1o8Yxe4TqV8QBi6bC4hnU
+ Jn2j7denK5Z27tDXJwPomWeNGKqNhufj+TmND52LAfbYyVtKZjqKCJCW67uymGXm8MIIE5UCw
+ kHsZ2JmdLC4WJ8JUpsUCNAimWDZx+dQKhA0FOF8fw4uosLaCZ6YSJDNe9pA3K0ALZ0cQCueu6
+ gydNSQ+XTLZpuLeki2blS9X2gr5GX2Vj9smo3U6/Wl8urZGG/GCJOtbVi3za+7Rspk1hN8ghf
+ moOdfUHVLcfg/a0zSd3I8fFABrClrtKQy2ocCk04a6dnnSwAonJDrLrzb8ZUONXP6z/RAlKwk
+ oJlmG/9toaxJjrI4rWYpH+Q8byH+KsQfSJ/97zhZlJjWf4RaRqU/LDD0LbhPO5xGL8f2ogHsg
+ LdQTJP2Ww5RPM6/ZdaF5HoTYHsHiF4SKGKJESK1vP2Ze5mxKZAF4yWVZZxkSzACVq3uMdz1on
+ TnwOx1Ay0PsjXS7pob6R+Vd4be0smiwHKNJ9iMT3M1lvX86t6XEj4TcAahNHYZLHGYeof6/Pv
+ 9zXfX9hgk8Gl/a9eu6mQoM0hps2WA2O30mK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/21 11:37 AM, Sean Young wrote:
-> On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
->> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
->> mutex. The problem was in wrong mutex_init() location.
->> 
->> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
->> dvb_usbv2_init() has this order of calls:
->> 
->> 	dvb_usbv2_init()
->> 	  dvb_usbv2_adapter_init()
->> 	    dvb_usbv2_adapter_frontend_init()
->> 	      props->frontend_attach()
->> 
->> 	  props->init()
->> 
->> Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
->> internally we need to initialize state->msg_lock in it to make lockdep
->> happy.
-> 
-> What about the other frontends like mxl111sf_frontend_attach_dvbt? They
-> no longer initialize the mutex.
-> 
-Good point. I see, that all other frontends also call 
-mxl111sf_ctrl_msg() inside ->frontend_attach() call.
+On Sun, 2021-08-15 at 05:13 +0200, Mike Galbraith wrote:
+> >
+> > So hopefully the below diff with uninspired naming should help?
+>
+> I bet a nickle it does...
 
-I think, that fixing dvb-usb core is not good idea, so, I will add 
-mutex_init() call inside all frontends, which use mxl111sf_init().
+And it did.
 
-What do you think about it?
+	-Mike
 
-
-With regards,
-Pavel Skripkin
