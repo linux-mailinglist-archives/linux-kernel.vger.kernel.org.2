@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04983ECB1B
+	by mail.lfdr.de (Postfix) with ESMTP id 38B683ECB1A
 	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhHOV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhHOV2K (ORCPT
+        id S231304AbhHOV2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:28:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47702 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhHOV2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:28:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1A8C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 14:27:39 -0700 (PDT)
-Message-ID: <20210815203225.710392609@linutronix.de>
+        Sun, 15 Aug 2021 17:28:09 -0400
+Message-ID: <20210815211301.969975279@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629062856;
+        s=2020; t=1629062857;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vD4/PQj+G8MztL0GEKu4K66CaJTr8ubrxHafz0eVy2Y=;
-        b=2+aZY2M5dF+QScA735HnBetHOcaICN89nIyWB51/XYjhxZzuccUNgLlXbcjciszEfp3r80
-        /4j5DSK7JJ4VXbogdrY2mTta9jXttkg/J+qoNrMCJqRa846jCAogUcdkyckW3G6QuNZcFg
-        DoUX7MjN3DbcadIXP2vOVOKZiDXc1vOzgDwTwQn/tkJ4uYiqFXxcxRd+YMVwlQKFjVM1jt
-        uKyyRThtuyblfw/tKsKv34jblOW6kZHuiMcD8w7bjII+KBzRC+KkodBDN2EsDiuw1bu3eu
-        OtdX3zE6HUzwTVsbLe9GQIShmT3nJeHRwfJX9Glfz5mmowxDdoV7C9vhyHv1pw==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=muqbAf6+h4Yo4XQnVA5bLyL63gW9bG50eCqrGH07VTA=;
+        b=s2hO8TYfhEIf//gkdfcBMLNfcPycUCU70jtrGsyT5k61sBIoG4AHYNm0GEwwVEJ+iiztFC
+        ch97f7lC+L2bwBHR6rxNOiwG33hDNWe/nr027UHGC31bLq65Cw+aVPK3lsT2mchG3qVWSc
+        YfKQTPheZb9uBSeX5Fh1jINNQKWyQPqGX8rH8vVyV2Halr/yapmCrAvT6nM/i2X2TYPQUS
+        fxk7tEsipdrT7TCSmxqIWpObPe10zO1IRUUMV/pCgItEF3He7hSaqLaneChMR7auvVDTh4
+        Wl18iYIY6rg+kpvk2XtlQBzA5Ch0Cx8PAdf/SEi5szwWU8TnnyCUEXx2pqMcoA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629062856;
+        s=2020e; t=1629062857;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vD4/PQj+G8MztL0GEKu4K66CaJTr8ubrxHafz0eVy2Y=;
-        b=gNv4nDuciaTFpD6PS0MuGlIurjQ5AymxxUejrALlKUdpGC54E9HKa59TtT82sXWRon4wgM
-        /it/tObjFzUQ7XAQ==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=muqbAf6+h4Yo4XQnVA5bLyL63gW9bG50eCqrGH07VTA=;
+        b=NJXWX/mn5W0iYF6Lc9ktTEyBEcYG6s6P5eLNvWdq/tmSiRDNY05CaS5BwOtoLqU9hVKYlX
+        UFl8agHwEXRB4YBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,101 +45,97 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V5 00/72] locking, sched: The PREEMPT-RT locking infrastructure
+Subject: [patch V5 01/72] locking/local_lock: Add missing owner initialization
+References: <20210815203225.710392609@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Sun, 15 Aug 2021 23:27:35 +0200 (CEST)
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+Date:   Sun, 15 Aug 2021 23:27:37 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rm9sa3MsCgp0aGUgZm9sbG93aW5nIHNlcmllcyBpcyBhbiB1cGRhdGUgdG8gVjQgd2hpY2ggY2Fu
-IGJlIGZvdW5kIGhlcmU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA4MTExMjAz
-NDguODU1ODIzNjk0QGxpbnV0cm9uaXguZGUKCkl0IGNvbnRhaW5zIHRoZSBidWxrIG9mIHRoZSBQ
-UkVFTVBULVJUIGxvY2tpbmcgaW5mcmFzdHJ1Y3R1cmUuIEluClBSRUVNUFQtUlQgZW5hYmxlZCBr
-ZXJuZWxzIHRoZSBmb2xsb3dpbmcgbG9ja2luZyBwcmltaXRpdmVzIGFyZSBzdWJzdGl0dXRlZApi
-eSBSVC1NdXRleCBiYXNlZCB2YXJpYW50czoKCiAgbXV0ZXgsIHd3X211dGV4LCByd19zZW1hcGhv
-cmUsIHNwaW5sb2NrLCByd2xvY2sKCnNlbWFwaG9yZXMgYXJlIG5vdCBzdWJzdGl0dXRlZCBiZWNh
-dXNlIHRoZXkgZG8gbm90IHByb3ZpZGUgc3RyaWN0IG93bmVyCnNlbWFudGljcy4KCk9mIGNvdXJz
-ZSByYXdfc3BpbmxvY2tzIGFyZSBub3QgdG91Y2hlZCBlaXRoZXIgYXMgdGhleSBwcm90ZWN0IGxv
-dyBsZXZlbApvcGVyYXRpb25zIGluIHRoZSBzY2hlZHVsZXIsIHRpbWVycyBhbmQgaGFyZHdhcmUg
-YWNjZXNzLgoKVGhlIG1vc3QgaW50ZXJlc3RpbmcgcGFydHMgb2YgdGhlIHNlcmllcyB3aGljaCBu
-ZWVkIGEgbG90IG9mIGV5ZWJhbGxzCmFyZToKCiAgLSB0aGUgc2NoZWR1bGVyIGJpdHMgd2hpY2gg
-cHJvdmlkZSB0aGUgaW5mcmFzdHJ1Y3R1cmUgZm9yIHNwaW5sb2NrIGFuZAogICAgcndsb2NrIHN1
-YnN0aXR1dGlvbiB0byBlbnN1cmUgdGhhdCB0aGUgdGFzayBzdGF0ZSBpcyBwcmVzZXJ2ZWQgd2hl
-bgogICAgYmxvY2tpbmcgb24gc3VjaCBhIGxvY2sgYW5kIGEgcmVndWxhciB3YWtldXAgaXMgaGFu
-ZGxlZCBjb3JyZWN0bHkgYW5kCiAgICBub3QgbG9zdAoKICAtIHRoZSBydG11dGV4IGNvcmUgaW1w
-bGVtZW50YXRpb24gdG8gaGFuZGxlIGxvY2sgY29udGVudGlvbiBvbiBzcGlubG9ja3MKICAgIGFu
-ZCByd2xvY2tzIGNvcnJlY3RseSB2cy4gdGhlIHRhc2sgc3RhdGUKCiAgLSB0aGUgcndfc2VtYXBo
-b3JlL3J3bG9jayBzdWJzdGl0dXRpb25zIHdoaWNoIHV0aWxpemUgdGhlIHNhbWUKICAgIGltcGxl
-bWVudGF0aW9uIHZzLiB0aGUgcmVhZGVyL3dyaXRlciBoYW5kbGluZwoKICAtIFRoZSBuZXcgcnRt
-dXRleCBiYXNlZCB3d19tdXRleCBpbXBsZW1lbnRhdGlvbi4KCiAgLSB0aGUgUEkgZnV0ZXggcmVs
-YXRlZCBiaXRzIHRvIGhhbmRsZSB0aGUgaW50ZXJhY3Rpb24gYmV0d2VlbiBibG9ja2luZwogICAg
-b24gdGhlIHVuZGVybHlpbmcgcnRtdXRleCBhbmQgY29udGVudGlvbiBvbiB0aGUgaGFzaCBidWNr
-ZXQgbG9jayB3aGljaAogICAgaXMgY29udmVydGVkIHRvIGEgJ3NsZWVwaW5nIHNwaW5sb2NrJy4K
-ClRoZSByZXN0IHN1cmVseSBuZWVkcyBhIHRob3JvdWdoIHJldmlldyBhcyB3ZWxsLCBidXQgdGhv
-c2UgcGFydHMgYXJlIHByZXR0eQpzdHJhaWdodCBmb3J3YXJkOiBxdWl0ZSBzb21lIGNvZGUgcmVz
-dHJ1Y3R1cmluZyBhbmQgdGhlIGFjdHVhbCB3cmFwcGVyCmZ1bmN0aW9ucyB0byByZXBsYWNlIHRo
-ZSBleGlzdGluZyAhUlQgaW1wbGVtZW50YXRpb25zLgoKVGhlIHNlcmllcyBzdXJ2aXZlZCBpbnRl
-cm5hbCB0ZXN0aW5nIGluIFJUIGtlcm5lbHMgYW5kIGlzIHBhcnQgb2YgdGhlIHVwY29taW5nCnY1
-LjE0LXJjNi1ydDkgcmVsZWFzZS4KCkZvciAhUlQga2VybmVscyB0aGVyZSBpcyBubyBmdW5jdGlv
-bmFsIGNoYW5nZS4KClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6CgogIGdp
-dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2RldmVsLmdp
-dCBydG11dGV4CgpDaGFuZ2VzIHZzLiBWNAoKICAtIEEgZmV3IGxvY2tkZXAgd2FpdF90eXBlIGZp
-eGVzIGluIHN0YXRpYyBhbmQgcnVudGltZSBpbml0aWFsaXplcnMuCiAgICBTZWJhc3RpYW4gbm90
-aWNlZCB3aGlsZSB3b3JraW5nIG9uIGdldHRpbmcgdGhlIGxvY2tkZXAgc2VsZnRlc3RzCiAgICBy
-ZWVuYWJsZWQgb24gUlQuCgogIC0gTWlzc2luZyBtaWdodF9zbGVlcCgpIGludm9jYXRpb25zIGlu
-IFJUIHNwaW4vcndsb2NrcyAoU2ViYXN0aWFuKQoKICAtIEFkZCBleHBsaWNpdCBvd25lciBpbml0
-IGZvciBsb2NhbCBsb2NrcyB3aGVuIGxvY2tkZXAgaXMgZW5hYmxlZCBpbnN0ZWFkCiAgICBvZiBy
-ZWx5aW5nIG9uIHplcm8gaW5pdGlhbGl6ZWQgbWVtb3J5LgoKICAtIEFkZCB0aGUgUlQgdmFyaWFu
-dHMgZm9yIGxvY2FsIGxvY2tzLCB3aGljaCBpcyB0aGUgbGFzdCBsb2NrIHR5cGUKICAgIGdldHRp
-bmcgc3BlY2lhbCB0cmVhdG1lbnQgb24gUlQuCgpUaGUgbG9ja2RlcCBzZWxmdGVzdCBjaGFuZ2Vz
-IGFyZSBub3QgeWV0IHJlYWR5IGFuZCB3aWxsIGJlIHBvc3RlZCBpbiBhCnNlcGFyYXRlIHN1Ym1p
-c3Npb24uCgoKVGhhbmtzLAoKCXRnbHgKLS0tCiBiL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9hdG9t
-aXNwL3BjaS9hdG9taXNwX2lvY3RsLmMgfCAgICA0IAogYi9pbmNsdWRlL2xpbnV4L2RlYnVnX2xv
-Y2tzLmggICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGIvaW5jbHVkZS9saW51eC9sb2Nh
-bF9sb2NrX2ludGVybmFsLmggICAgICAgICAgICAgICB8ICAgOTAgKwogYi9pbmNsdWRlL2xpbnV4
-L211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5MiArCiBiL2luY2x1ZGUv
-bGludXgvcHJlZW1wdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA0IAogYi9pbmNs
-dWRlL2xpbnV4L3JidHJlZS5oICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzMCAKIGIv
-aW5jbHVkZS9saW51eC9yYnRyZWVfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMzQg
-CiBiL2luY2x1ZGUvbGludXgvcnRtdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-IDYzIC0KIGIvaW5jbHVkZS9saW51eC9yd2Jhc2VfcnQuaCAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMzggCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3J0LmggICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgMTQwICsrCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3R5cGVzLmggICAgICAgICAg
-ICAgICAgICAgICAgfCAgIDUzIAogYi9pbmNsdWRlL2xpbnV4L3J3c2VtLmggICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICA3OCArCiBiL2luY2x1ZGUvbGludXgvc2NoZWQuaCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMTE5ICstCiBiL2luY2x1ZGUvbGludXgvc2NoZWQvd2Fr
-ZV9xLmggICAgICAgICAgICAgICAgICAgICAgfCAgICA4IAogYi9pbmNsdWRlL2xpbnV4L3NwaW5s
-b2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNSAKIGIvaW5jbHVkZS9saW51eC9z
-cGlubG9ja19hcGlfc21wLmggICAgICAgICAgICAgICAgICB8ICAgIDMgCiBiL2luY2x1ZGUvbGlu
-dXgvc3BpbmxvY2tfcnQuaCAgICAgICAgICAgICAgICAgICAgICAgfCAgMTU5ICsrCiBiL2luY2x1
-ZGUvbGludXgvc3BpbmxvY2tfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgfCAgIDg5IC0KIGIv
-aW5jbHVkZS9saW51eC9zcGlubG9ja190eXBlc19yYXcuaCAgICAgICAgICAgICAgICB8ICAgNzMg
-KwogYi9pbmNsdWRlL2xpbnV4L3d3X211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-ICA1MCAKIGIva2VybmVsL0tjb25maWcubG9ja3MgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgIDIgCiBiL2tlcm5lbC9mdXRleC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgNTU2ICsrKysrKy0tLQogYi9rZXJuZWwvbG9ja2luZy9NYWtlZmlsZSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGIva2VybmVsL2xvY2tpbmcvbXV0ZXgtZGVidWcu
-YyAgICAgICAgICAgICAgICAgICAgICB8ICAgIDUgCiBiL2tlcm5lbC9sb2NraW5nL211dGV4LmMg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNDMxIC0tLS0tLS0KIGIva2VybmVsL2xvY2tp
-bmcvbXV0ZXguaCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNDggCiBiL2tlcm5lbC9s
-b2NraW5nL3J0bXV0ZXguYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMTM0ICsrKysrKysr
-Ky0tLS0tLS0tLS0tCiBiL2tlcm5lbC9sb2NraW5nL3J0bXV0ZXhfYXBpLmMgICAgICAgICAgICAg
-ICAgICAgICAgfCAgNTkwICsrKysrKysrKysKIGIva2VybmVsL2xvY2tpbmcvcnRtdXRleF9jb21t
-b24uaCAgICAgICAgICAgICAgICAgICB8ICAxMjIgKy0KIGIva2VybmVsL2xvY2tpbmcvcndiYXNl
-X3J0LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNjMgKysrKwogYi9rZXJuZWwvbG9ja2lu
-Zy9yd3NlbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwOSArCiBiL2tlcm5lbC9s
-b2NraW5nL3NwaW5sb2NrLmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA3IAogYi9rZXJu
-ZWwvbG9ja2luZy9zcGlubG9ja19kZWJ1Zy5jICAgICAgICAgICAgICAgICAgIHwgICAgNSAKIGIv
-a2VybmVsL2xvY2tpbmcvc3BpbmxvY2tfcnQuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyNjMg
-KysrKwogYi9rZXJuZWwvbG9ja2luZy93d19tdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDU2OSArKysrKysrKysrCiBiL2tlcm5lbC9sb2NraW5nL3d3X3J0X211dGV4LmMgICAgICAg
-ICAgICAgICAgICAgICAgfCAgIDc2ICsKIGIva2VybmVsL3JjdS90cmVlX3BsdWdpbi5oICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgIDYgCiBiL2tlcm5lbC9zY2hlZC9jb3JlLmMgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTA5ICsKIGIvbGliL0tjb25maWcuZGVidWcgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTEgCiBiL2xpYi90ZXN0X2xvY2t1cC5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA4IAoga2VybmVsL2xvY2tpbmcv
-bXV0ZXgtZGVidWcuaCAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyOSAKIDQxIGZpbGVzIGNo
-YW5nZWQsIDM5NDAgaW5zZXJ0aW9ucygrKSwgMTU1MSBkZWxldGlvbnMoLSkKCgo=
+If CONFIG_DEBUG_LOCK_ALLOC is enabled then local_lock_t has a 'owner'
+member which is checked for consistency, but nothing initialized it to
+zero explicitly.
+
+The static initializer does so implicit, and the run time allocated per CPU
+storage is usually zero initialized as well, but relying on that is not
+really good practice.
+
+Fixes: 91710728d172 ("locking: Introduce local_lock()")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V5: New patch
+---
+ include/linux/local_lock_internal.h |   42 +++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
+
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -14,29 +14,14 @@ typedef struct {
+ } local_lock_t;
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+-# define LL_DEP_MAP_INIT(lockname)			\
++# define LOCAL_LOCK_DEBUG_INIT(lockname)		\
+ 	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_CONFIG,	\
+-		.lock_type = LD_LOCK_PERCPU,			\
+-	}
+-#else
+-# define LL_DEP_MAP_INIT(lockname)
+-#endif
++		.lock_type = LD_LOCK_PERCPU,		\
++	},						\
++	.owner = NULL,
+ 
+-#define INIT_LOCAL_LOCK(lockname)	{ LL_DEP_MAP_INIT(lockname) }
+-
+-#define __local_lock_init(lock)					\
+-do {								\
+-	static struct lock_class_key __key;			\
+-								\
+-	debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
+-	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key, 0, \
+-			      LD_WAIT_CONFIG, LD_WAIT_INV,	\
+-			      LD_LOCK_PERCPU);			\
+-} while (0)
+-
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+ static inline void local_lock_acquire(local_lock_t *l)
+ {
+ 	lock_map_acquire(&l->dep_map);
+@@ -51,11 +36,30 @@ static inline void local_lock_release(lo
+ 	lock_map_release(&l->dep_map);
+ }
+ 
++static inline void local_lock_debug_init(local_lock_t *l)
++{
++	l->owner = NULL;
++}
+ #else /* CONFIG_DEBUG_LOCK_ALLOC */
++# define LOCAL_LOCK_DEBUG_INIT(lockname)
+ static inline void local_lock_acquire(local_lock_t *l) { }
+ static inline void local_lock_release(local_lock_t *l) { }
++static inline void local_lock_debug_init(local_lock_t *l) { }
+ #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ 
++#define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
++
++#define __local_lock_init(lock)					\
++do {								\
++	static struct lock_class_key __key;			\
++								\
++	debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
++	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key,  \
++			      0, LD_WAIT_CONFIG, LD_WAIT_INV,	\
++			      LD_LOCK_PERCPU);			\
++	local_lock_debug_init(lock);				\
++} while (0)
++
+ #define __local_lock(lock)					\
+ 	do {							\
+ 		preempt_disable();				\
+
