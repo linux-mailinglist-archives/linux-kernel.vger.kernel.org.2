@@ -2,181 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CED43ECA42
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 18:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04793ECA40
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 18:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhHOQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 12:37:50 -0400
-Received: from mout.gmx.net ([212.227.17.22]:59785 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229453AbhHOQhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 12:37:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629045411;
-        bh=33kYRLOtW9jYqgjRtKdFlGSwripM/pPkFNQVoOiCuVw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=cpD60BXIDeyWHqbR2EUVnqdEC5E4JWNpusyJoPYw3u0z88b2Yx4n/k48Pax3rDpJJ
-         BmC0IaLyf+Ll1VJSr+lQZ0Y3zLE5FMStFUsCDTfm4E6KcLvzaTwSL/+kScy2bMduF1
-         Yuuko5SdeceiBAxOmr7pPmyf1gokwb9Zr5o2+ksQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1nD5Zo0iPj-012syZ; Sun, 15
- Aug 2021 18:36:51 +0200
-Date:   Sun, 15 Aug 2021 18:36:39 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Len Baker <len.baker@gmx.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] drivers/iio: Remove all strcpy() uses
-Message-ID: <20210815163639.GA97260@titan>
-References: <20210814135509.4500-1-len.baker@gmx.com>
- <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
- <c08cfa8b6bbf07e1860d7dc93739e71ff5f4c0c4.camel@perches.com>
+        id S230501AbhHOQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 12:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhHOQhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 12:37:18 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E4EC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 09:36:47 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mFJ7p-0000Nz-8G; Sun, 15 Aug 2021 18:36:41 +0200
+Date:   Sun, 15 Aug 2021 18:36:41 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: remove kernel version depended code
+ paths
+Message-ID: <20210815163641.i7sysnhpaoldbzg3@viti.kaiser.cx>
+References: <20210815102406.3707-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <c08cfa8b6bbf07e1860d7dc93739e71ff5f4c0c4.camel@perches.com>
-X-Provags-ID: V03:K1:DcMTbj03GA0QdqLKEsq08fXzV2XvGRYhdLwszDDw9BQGD+AnmAl
- 9ebk50hy+bmvKaSpB6vDrqHeO0T2kCq06+aFs8POFLmH5fHHY56lvVX3hEiS0qNrul6h2TS
- 8ZwZTbnQGPYBAeDVGqNc6OMwRJT3dLvo0R/XvZ3l5/PX4ChFUT1gBidhy2KLWCpbM5VsSXi
- fc34moaA4MbFXTd6sayEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Xe/BmReg/10=:bx33yTBccTJ3yiKxhnaYwH
- 0Tp/vGF9QFn/DAc2Q4nH7uj1Bx7lLMkW+SzEAPg87sKE7LETeaRtlVvqmQDCuJb9kwUyHOeP2
- eWzWLyvhoaV2SXhuNYEx3MbwlZbK0kLvNWAXcbrT9ke/m3bwkkJ872bbCUCaqoDdLa2wHwuyf
- z8WTT9Xr+lY7UU8rBvq4BxX9HLhs3AsuXywngViy1g2KXOt7fMPbDyGS8KSsnw6K6aSVwWtxo
- f2OrWzWky9+68zhIxiTPAQj7usgOJKEIOM15MbOaPxh80tdvmXyCX2p4SYkqZXecF/ZbevQ+4
- J9xOr0pZpskjcVsNC+n1vCTgpSxKjmK/QX71/k/t9sZ88b0SAQVD7TpD6UXxuNu469cTE76qj
- qsHL+cGL1jKerXBTcslHXbHt17NoawIiQ7fVg4zFDTgnq2ud42xgaQuc/smO/0NflOl0JrR7T
- 3pWUHJJUNHoxRuwqlJho50zvPztjwizWkvrD6RQJd9hHDTZQmUE6xSvXZYg1HgqNnl3pzgZ0u
- OPe3yEFGxJvM4ApThcz+5bm+RX2pgsOiSl/un6j2jzvtYO45y1RpRO1RwUIzgrs9pQqkBd60v
- eB71JFQjhNCKtSCCbJUwp5kyiZ+n/M0HCiwagsCzv/TWDSIm7IoeI/aMhFex9sZHSbCJHv5lz
- KpCvVJmXEw7ttW/hwOZUHb/a1sigt6yPWPdj/VEgE05Awy80wxLMjbo5VExXUjvge64eRFkJt
- 1Q3exp5RyL8pm1FZrOfGsNMQW8TtbMnXO84PrB/2kIbUANEyWvh3kE0tSn8MBZrCjUrPdEoAS
- K90F0RJtJAY5JyV3pARBS09x9q1iHydqqS2zvrrg4lcKPy/iMSakRaHxr+cmSG7YaYoM4yezb
- eGACdOcBcFF3ZDN6ZvEmg4BXtkoaZCa1YmhdGxuAINYGGAuM+a/CXxlr2U9ALYA/cqcnEv0WC
- tksuMILhXaXn3Ow0XWzMe0CxXkuLQQlIseTwXEZ/4sxJQPB7vcABi7aNzAfd+R72Py7Suu/l2
- SvXiLzX8mQIgJ12gdSrfAj3NwURFD88iTnscqcl3IOBb0+Wj5nM2DQeqk0Ecayjqxw8gMOSIT
- pMCz+2+WZCEN6DbQzmWrj4jvKOXGjW5WfZiV9ZvoO0QSg6VjZo1LRDxQg==
+In-Reply-To: <20210815102406.3707-1-straube.linux@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-On Sun, Aug 15, 2021 at 08:06:45AM -0700, Joe Perches wrote:
-> On Sat, 2021-08-14 at 22:36 +0300, Andy Shevchenko wrote:
-> > On Sat, Aug 14, 2021 at 4:55 PM Len Baker <len.baker@gmx.com> wrote:
-> > >
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leadi=
-ng
-> > > to all kinds of misbehaviors. So, remove all the uses and add
-> > > devm_kstrdup() or devm_kasprintf() instead.
-> > >
-> > > This patch is an effort to clean up the proliferation of str*()
-> > > functions in the kernel and a previous step in the path to remove
-> > > the strcpy function from the kernel entirely [1].
-> > >
-> > > [1] https://github.com/KSPP/linux/issues/88
-> >
-> > Thank you very much for doing this!
-> > Now I like the result,
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> []
-> > > diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/ii=
-o/imu/inv_mpu6050/inv_mpu_magn.c
-> []
-> > > @@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu60=
-50_state *st, int fifo_rate)
-> > > =A0=A0*/
-> > > =A0int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
-> > > =A0{
-> > > +       struct device *dev =3D regmap_get_device(st->map);
-> > > =A0=A0=A0=A0=A0=A0=A0=A0const char *orient;
-> > > =A0=A0=A0=A0=A0=A0=A0=A0char *str;
-> > > =A0=A0=A0=A0=A0=A0=A0=A0int i;
-> > > @@ -281,19 +282,24 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050=
-_state *st)
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0/* z <- -z */
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0for (i =3D 0; i < 3;=
- ++i) {
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0orient =3D st->orientation.rotation[6 + i];
-> > > -                       /* use length + 2 for adding minus sign if n=
-eeded */
-> > > -                       str =3D devm_kzalloc(regmap_get_device(st->m=
-ap),
-> > > -                                          strlen(orient) + 2, GFP_K=
-ERNEL);
-> > > -                       if (str =3D=3D NULL)
-> > > +
-> > > +                       /*
-> > > +                        * The value is negated according to one of =
-the following
-> > > +                        * rules:
-> > > +                        *
-> > > +                        * 1) Drop leading minus.
-> > > +                        * 2) Leave 0 as is.
-> > > +                        * 3) Add leading minus.
-> > > +                        */
-> > > +                       if (orient[0] =3D=3D '-')
-> > > +                               str =3D devm_kstrdup(dev, orient + 1=
-, GFP_KERNEL);
-> > > +                       else if (orient[0] =3D=3D '0' && orient[1] =
-=3D=3D '\0')
->
-> bikeshed:
->
-> I think this change is less intelligible than the original strcmp.
+> Remove kernel version depended code paths from the driver.
+> Reported by checkpatch.
 
-So, if I understand correctly you suggest to change the above line for:
-                              else if (strcmp(orient, "0") =3D=3D 0)
+> WARNING: LINUX_VERSION_CODE should be avoided, code should be for the version to which it is merged
 
-And yes, this line will be more readable ;)
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_mlme.c      |  4 ----
+>  drivers/staging/r8188eu/os_dep/os_intfs.c    | 24 +-------------------
+>  drivers/staging/r8188eu/os_dep/rtw_android.c |  9 --------
+>  drivers/staging/r8188eu/os_dep/xmit_linux.c  |  5 ----
+>  4 files changed, 1 insertion(+), 41 deletions(-)
 
->
-> And separately, perhaps for loop would be more readable as
->
-> 	for (i =3D 6; i < 9; i++)
->
-> converting the 6 + i uses to just i.
+> diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+> index 9189f5c845f3..d5ef5783f4ad 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mlme.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+> @@ -1499,11 +1499,7 @@ void rtw_dynamic_check_timer_handlder(struct adapter *adapter)
 
-Ok, no problem. If there are no objections I will send a new version with
-these 2 changes.
+>  	rcu_read_lock();
 
-Regards,
-Len
+> -#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
+>  	if (rcu_dereference(adapter->pnetdev->rx_handler_data) &&
+> -#else
+> -	if (rcu_dereference(adapter->pnetdev->br_port) &&
+> -#endif
+>  	    (check_fwstate(pmlmepriv, WIFI_STATION_STATE|WIFI_ADHOC_STATE) == true)) {
+>  		/*  expire NAT2.5 entry */
+>  		nat25_db_expire(adapter);
+> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> index cc7e54170948..f4bf4732578a 100644
+> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
+> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+> @@ -637,19 +637,7 @@ static unsigned int rtw_classify8021d(struct sk_buff *skb)
+>  	return dscp >> 5;
+>  }
 
->
-> > > +                               str =3D devm_kstrdup(dev, orient, GF=
-P_KERNEL);
-> > > +                       else
-> > > +                               str =3D devm_kasprintf(dev, GFP_KERN=
-EL, "-%s", orient);
-> > > +                       if (!str)
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0return -ENOMEM;
-> > > -                       if (strcmp(orient, "0") =3D=3D 0) {
-> > > -                               strcpy(str, orient);
-> > > -                       } else if (orient[0] =3D=3D '-') {
-> > > -                               strcpy(str, &orient[1]);
-> > > -                       } else {
-> > > -                               str[0] =3D '-';
-> > > -                               strcpy(&str[1], orient);
-> > > -                       }
-> > > +
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0st->magn_orient.rotation[6 + i] =3D str;
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0}
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0break;
->
->
+> -static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
+> -#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 2, 0))
+> -			    ,struct net_device *sb_dev
+> -#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0))
+> -			    ,struct net_device *sb_dev
+> -                            ,select_queue_fallback_t fallback
+> -#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0))
+> -			    ,void *unused
+> -                            ,select_queue_fallback_t fallback
+> -#elif (LINUX_VERSION_CODE == KERNEL_VERSION(3, 13, 0))
+> -			    , void *accel
+> -#endif
+> -)
+> +static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb, struct net_device *sb_dev)
+>  {
+>  	struct adapter	*padapter = rtw_netdev_priv(dev);
+>  	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+> @@ -706,15 +694,9 @@ int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
+>  	return 0;
+>  }
+
+> -#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,39)
+>  static const struct device_type wlan_type = {
+>  	.name = "wlan",
+>  };
+> -#else
+> -static struct device_type wlan_type = {
+> -	.name = "wlan",
+> -};
+> -#endif
+
+>  struct net_device *rtw_init_netdev(struct adapter *old_padapter)
+>  {
+> @@ -992,11 +974,7 @@ void netdev_br_init(struct net_device *netdev)
+
+>  	rcu_read_lock();
+
+> -#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
+>  	if (rcu_dereference(adapter->pnetdev->rx_handler_data)) {
+> -#else
+> -	if (rcu_dereference(adapter->pnetdev->br_port)) {
+> -#endif
+>  		struct net_device *br_netdev;
+>  		struct net *devnet = NULL;
+
+> diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
+> index d666feb87a7a..bdd381606ba6 100644
+> --- a/drivers/staging/r8188eu/os_dep/rtw_android.c
+> +++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
+> @@ -63,13 +63,8 @@ int rtw_android_cmdstr_to_num(char *cmdstr)
+>  {
+>  	int cmd_num;
+>  	for (cmd_num=0; cmd_num < ANDROID_WIFI_CMD_MAX; cmd_num++)
+> -#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0))
+>  		if (!strncasecmp(cmdstr, android_wifi_cmd_str[cmd_num],
+>  		    strlen(android_wifi_cmd_str[cmd_num])))
+> -#else
+> -		if (0 == strnicmp(cmdstr, android_wifi_cmd_str[cmd_num],
+> -		   strlen(android_wifi_cmd_str[cmd_num])))
+> -#endif
+>  			break;
+>  	return cmd_num;
+>  }
+> @@ -162,11 +157,7 @@ int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
+>  		ret = -ENOMEM;
+>  		goto exit;
+>  	}
+> -#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0))
+>  	if (!access_ok(priv_cmd.buf, priv_cmd.total_len)) {
+> -#else
+> -	if (!access_ok(VERIFY_READ, priv_cmd.buf, priv_cmd.total_len)) {
+> -#endif
+>  		DBG_88E("%s: failed to access memory\n", __func__);
+>  		ret = -EFAULT;
+>  		goto exit;
+> diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> index 3a1b9d8988f2..4f1ce346b3a5 100644
+> --- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> @@ -108,7 +108,6 @@ void rtw_os_xmit_resource_free(struct adapter *padapter,
+
+>  void rtw_os_pkt_complete(struct adapter *padapter, struct sk_buff *pkt)
+>  {
+> -#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
+>  	u16	queue;
+>  	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+
+> @@ -121,10 +120,6 @@ void rtw_os_pkt_complete(struct adapter *padapter, struct sk_buff *pkt)
+>  		if (__netif_subqueue_stopped(padapter->pnetdev, queue))
+>  			netif_wake_subqueue(padapter->pnetdev, queue);
+>  	}
+> -#else
+> -	if (netif_queue_stopped(padapter->pnetdev))
+> -		netif_wake_queue(padapter->pnetdev);
+> -#endif
+
+>  	dev_kfree_skb_any(pkt);
+>  }
+> -- 
+> 2.32.0
+
+Hi Michael,
+
+looks good to me.
+
+Acked-by: Martin Kaiser <martin@kaiser.cx>
