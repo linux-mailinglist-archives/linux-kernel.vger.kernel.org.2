@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150C23EC7B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925403EC7B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhHOG0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 02:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42544 "EHLO mail.kernel.org"
+        id S234662AbhHOG3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 02:29:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231238AbhHOG0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 02:26:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA716103A;
-        Sun, 15 Aug 2021 06:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629008754;
-        bh=8WgvM8M26oXRN4vw+Mt7hS5lSyYMjCSVo0s4LtoabEM=;
+        id S231238AbhHOG3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 02:29:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCB186103D;
+        Sun, 15 Aug 2021 06:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629008944;
+        bh=5piigzE2Zjp/3ag1ZUnrg1kpYXWABsKOC0eZ9QCaI4E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pq5hMcRQjpEiOkegtUosI+prQg3jdqGJ3o+6wh3SJ7FOvtWgbGrGnUGMLjkWMlV7d
-         7UbYtLGv5+PCeOXE8od97iS9Hw5BNkVPimXmtmPnAD7IZXEtbZaay0eBigfeFInE5w
-         yRKWYFcBZZ+3qP6KZMdAWR8QO47lcAZd+iRWytUI=
-Date:   Sun, 15 Aug 2021 08:25:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     daniel watson <ozzloy@challenge-bot.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging:iio:ade7854 surround complex defines in
- parentheses
-Message-ID: <YRizb/FGfYpGbpJy@kroah.com>
-References: <20210815023115.13016-1-ozzloy@challenge-bot.com>
+        b=aKPapCFfWjenDKFSlMvbWmQYnPJ/XNu6Uiegphet6c7gJhCdoOf6m9DaNXguSJCe+
+         OH3aAix4Wow5To7SKmJ3d4g6hZtroLK6+CwurF9ZKkPocx22UfeGR0uoRJDlmgSav7
+         W7XeeAOE7xWPxWsWqHedLR6s+7EW+zjZvMlbA5p+ge0wNZA+hf3d9mbvyCXEfJIK6L
+         4Iag7dh7akrQvIrl3cveocgRAMyJkRo0/M6XPt5Q4TU3e2qJtGJmE+/544FiewWBRh
+         BzpItjADi9qe8Sp6Bed6WoZ6UWGwrGunpGgyT2IsYBADugcxX7n42aGf5xOhX5cUmH
+         Cob39GcxlZHzg==
+Date:   Sun, 15 Aug 2021 09:28:57 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 050/138] mm/workingset: Convert workingset_activation
+ to take a folio
+Message-ID: <YRi0Ke2UX9eMqEKx@kernel.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-51-willy@infradead.org>
+ <YPfuPTtlhGXBjhCL@kernel.org>
+ <YRdBGCATQHPXrmTD@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210815023115.13016-1-ozzloy@challenge-bot.com>
+In-Reply-To: <YRdBGCATQHPXrmTD@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 07:31:15PM -0700, daniel watson wrote:
-> Error found by checkpatch.pl
-
-What error?
-
+On Sat, Aug 14, 2021 at 05:05:44AM +0100, Matthew Wilcox wrote:
+> On Wed, Jul 21, 2021 at 12:51:57PM +0300, Mike Rapoport wrote:
+> > >  /*
+> > > - * page_memcg_rcu - locklessly get the memory cgroup associated with a page
+> > > - * @page: a pointer to the page struct
+> > > + * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+> > > + * @folio: Pointer to the folio.
+> > >   *
+> > > - * Returns a pointer to the memory cgroup associated with the page,
+> > > - * or NULL. This function assumes that the page is known to have a
+> > > + * Returns a pointer to the memory cgroup associated with the folio,
+> > > + * or NULL. This function assumes that the folio is known to have a
+> > >   * proper memory cgroup pointer. It's not safe to call this function
+> > > - * against some type of pages, e.g. slab pages or ex-slab pages.
+> > > + * against some type of folios, e.g. slab folios or ex-slab folios.
+> > 
+> > Maybe
+> > 
+> > - * Returns a pointer to the memory cgroup associated with the page,
+> > - * or NULL. This function assumes that the page is known to have a
+> > + * This function assumes that the folio is known to have a
+> >   * proper memory cgroup pointer. It's not safe to call this function
+> > - * against some type of pages, e.g. slab pages or ex-slab pages.
+> > + * against some type of folios, e.g. slab folios or ex-slab folios.
+> > + *
+> > + * Return: a pointer to the memory cgroup associated with the folio,
+> > + * or NULL.
 > 
-> Signed-off-by: daniel watson <ozzloy@challenge-bot.com>
-
-Capitalize your name?
-
-> ---
->  drivers/staging/iio/meter/ade7854.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> I substantially included this change a few days ago and forgot to reply
+> to this email; sorry.  It now reads:
 > 
-> diff --git a/drivers/staging/iio/meter/ade7854.h b/drivers/staging/iio/meter/ade7854.h
-> index a51e6e3183d38..afb13e21002e1 100644
-> --- a/drivers/staging/iio/meter/ade7854.h
-> +++ b/drivers/staging/iio/meter/ade7854.h
-> @@ -139,9 +139,9 @@
->  #define ADE7854_MAX_RX    7
->  #define ADE7854_STARTUP_DELAY 1000
->  
-> -#define ADE7854_SPI_SLOW	(u32)(300 * 1000)
-> -#define ADE7854_SPI_BURST	(u32)(1000 * 1000)
-> -#define ADE7854_SPI_FAST	(u32)(2000 * 1000)
-> +#define ADE7854_SPI_SLOW	((u32)(300 * 1000))
-> +#define ADE7854_SPI_BURST	((u32)(1000 * 1000))
-> +#define ADE7854_SPI_FAST	((u32)(2000 * 1000))
+> /**
+>  * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+>  * @folio: Pointer to the folio.
+>  *
+>  * This function assumes that the folio is known to have a
+>  * proper memory cgroup pointer. It's not safe to call this function
+>  * against some type of folios, e.g. slab folios or ex-slab folios.
+>  *
+>  * Return: A pointer to the memory cgroup associated with the folio,
+>  * or NULL.
+>  */
 
-This is not a real change that is needed, just look at the code to
-verify that.
+I like it.
 
-thanks,
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
