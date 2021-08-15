@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D772D3EC7AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150C23EC7B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhHOGXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 02:23:48 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:38880 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233848AbhHOGXr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 02:23:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uj0i6nw_1629008594;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uj0i6nw_1629008594)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 15 Aug 2021 14:23:14 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     apopple@nvidia.com, shy828301@gmail.com, willy@infradead.org,
-        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] mm: migrate: Change to use bool type for 'page_was_mapped'
-Date:   Sun, 15 Aug 2021 14:23:06 +0800
-Message-Id: <29cea6d7624cf06fb0022314cac4c69cd43c0d66.1629008158.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1629008158.git.baolin.wang@linux.alibaba.com>
-References: <cover.1629008158.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1629008158.git.baolin.wang@linux.alibaba.com>
-References: <cover.1629008158.git.baolin.wang@linux.alibaba.com>
+        id S235190AbhHOG0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 02:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231238AbhHOG0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 02:26:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA716103A;
+        Sun, 15 Aug 2021 06:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629008754;
+        bh=8WgvM8M26oXRN4vw+Mt7hS5lSyYMjCSVo0s4LtoabEM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pq5hMcRQjpEiOkegtUosI+prQg3jdqGJ3o+6wh3SJ7FOvtWgbGrGnUGMLjkWMlV7d
+         7UbYtLGv5+PCeOXE8od97iS9Hw5BNkVPimXmtmPnAD7IZXEtbZaay0eBigfeFInE5w
+         yRKWYFcBZZ+3qP6KZMdAWR8QO47lcAZd+iRWytUI=
+Date:   Sun, 15 Aug 2021 08:25:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     daniel watson <ozzloy@challenge-bot.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging:iio:ade7854 surround complex defines in
+ parentheses
+Message-ID: <YRizb/FGfYpGbpJy@kroah.com>
+References: <20210815023115.13016-1-ozzloy@challenge-bot.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210815023115.13016-1-ozzloy@challenge-bot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change to use bool type for 'page_was_mapped' variable making it
-more readable.
+On Sat, Aug 14, 2021 at 07:31:15PM -0700, daniel watson wrote:
+> Error found by checkpatch.pl
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
----
- mm/migrate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What error?
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 433c083..82ae6da 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -957,7 +957,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- 				int force, enum migrate_mode mode)
- {
- 	int rc = -EAGAIN;
--	int page_was_mapped = 0;
-+	bool page_was_mapped = false;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__PageMovable(page);
- 
-@@ -1060,7 +1060,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- 		VM_BUG_ON_PAGE(PageAnon(page) && !PageKsm(page) && !anon_vma,
- 				page);
- 		try_to_migrate(page, 0);
--		page_was_mapped = 1;
-+		page_was_mapped = true;
- 	}
- 
- 	if (!page_mapped(page))
--- 
-1.8.3.1
+> 
+> Signed-off-by: daniel watson <ozzloy@challenge-bot.com>
 
+Capitalize your name?
+
+> ---
+>  drivers/staging/iio/meter/ade7854.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/meter/ade7854.h b/drivers/staging/iio/meter/ade7854.h
+> index a51e6e3183d38..afb13e21002e1 100644
+> --- a/drivers/staging/iio/meter/ade7854.h
+> +++ b/drivers/staging/iio/meter/ade7854.h
+> @@ -139,9 +139,9 @@
+>  #define ADE7854_MAX_RX    7
+>  #define ADE7854_STARTUP_DELAY 1000
+>  
+> -#define ADE7854_SPI_SLOW	(u32)(300 * 1000)
+> -#define ADE7854_SPI_BURST	(u32)(1000 * 1000)
+> -#define ADE7854_SPI_FAST	(u32)(2000 * 1000)
+> +#define ADE7854_SPI_SLOW	((u32)(300 * 1000))
+> +#define ADE7854_SPI_BURST	((u32)(1000 * 1000))
+> +#define ADE7854_SPI_FAST	((u32)(2000 * 1000))
+
+This is not a real change that is needed, just look at the code to
+verify that.
+
+thanks,
+
+greg k-h
