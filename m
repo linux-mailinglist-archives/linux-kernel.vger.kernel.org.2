@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190D13ECB43
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8A83ECB26
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhHOVbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:31:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47840 "EHLO
+        id S232210AbhHOV3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:29:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47866 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhHOV2W (ORCPT
+        with ESMTP id S231569AbhHOV2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:28:22 -0400
-Message-ID: <20210815211302.491442626@linutronix.de>
+        Sun, 15 Aug 2021 17:28:24 -0400
+Message-ID: <20210815211302.552218335@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629062871;
+        s=2020; t=1629062873;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=y2H9tHk2TsLPbEApgAG3HM6pFkiAV8t9phD5EzH6qEM=;
-        b=s1Y0Yi0O9S5iMRuDUOxDIr5suqfa3Up/dttNtgkB2b4jnSOjP7A7MCPei2ppI12hXZZIrm
-        LhZiisTVwnorPi5FxwMH/c3xZD8testIi94nSOOlOZH/MchIlhSMn2I+wLpjm+u4y6PDZ0
-        9rREL6kh7TNGIw5UNLGG9gun35kSSDGJyremo1FuyoiC2Vb0BgfE/xdP/Ux2+gvNJNcaf7
-        /k3BwwxeotgHq5tYjN0RP4jT0Z6K9sDSL8Se61yEBet2FCsNd32MKFLoRu53fr6pEcIq+L
-        6I3Yj5vPUPORzIeYe7M8C7eoT4NaGQ5fI7UdC47lVXkqvdlQvgnz3HXijkFGPg==
+        bh=ZNgeNJUoyTohxPSayLDxma3rY3D4aSWGp/YVkJ6xoCg=;
+        b=JpNlSSNklTTn0ZUWdo6V+zb0muaxoVMfEoQRT95BEiJaIh+nnDYS0NOtyn282D2qWUtSo4
+        V43dWzyjxpE3l5EIUc0njDjwoOCnqwHCSQYcAcMExIWlj36MYQzlWQO4Rt/Gd6sAhYI/Mp
+        UIutt0GpXFOTMGJpNQYWMXeMhNPmOiI5lK1GQQg8Kq5vApeAnMqS6hC1bKdCtjNFi9zp2h
+        RyvN1IlGDx1uF5UChtu87h07FOgKrwhUJqEjy9/FJLbexMSdCoQVZlCIAmR/NT1X5A3uje
+        xTzca5l68rXYUcqqcZsdbX0z8LotPpAB7U5eP54pEQITwMdSkS9EKppXtr07bw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629062871;
+        s=2020e; t=1629062873;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=y2H9tHk2TsLPbEApgAG3HM6pFkiAV8t9phD5EzH6qEM=;
-        b=TADgP379a5Zsv/fX5S65vnqrQJdlQqG+csK+xNa6O0mhzCOudrwf0MKhYTTUawkb1m0WQw
-        zIhX3xhGvDPQDkCA==
+        bh=ZNgeNJUoyTohxPSayLDxma3rY3D4aSWGp/YVkJ6xoCg=;
+        b=xeUvASx5te7aQb3ax46IWW5h44z0IWBKGxXEabQtb0GzaP5uANikyqKe1a8zDgBipEkXB4
+        stE+4EA6M07SodBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,42 +45,44 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V5 10/72] media/atomisp: Use lockdep instead of *mutex_is_locked()
+Subject: [patch V5 11/72] rtmutex: Remove rt_mutex_is_locked()
 References: <20210815203225.710392609@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Sun, 15 Aug 2021 23:27:51 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 23:27:52 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-Subject: [patch V5 10/72] media/atomisp: Use lockdep instead of *mutex_is_locked()
+No more users.
 
-The only user of rt_mutex_is_locked() is an anti-pattern, remove it.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210714100719.GA11408@worktop.programming.kicks-ass.net
 ---
+ include/linux/rtmutex.h |   11 -----------
+ 1 file changed, 11 deletions(-)
 
----
- drivers/staging/media/atomisp/pci/atomisp_ioctl.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -1904,8 +1904,8 @@ int __atomisp_streamoff(struct file *fil
- 	dev_dbg(isp->dev, "Stop stream on pad %d for asd%d\n",
- 		atomisp_subdev_source_pad(vdev), asd->index);
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -72,17 +72,6 @@ do { \
+ #define DEFINE_RT_MUTEX(mutexname) \
+ 	struct rt_mutex mutexname = __RT_MUTEX_INITIALIZER(mutexname)
  
--	BUG_ON(!rt_mutex_is_locked(&isp->mutex));
--	BUG_ON(!mutex_is_locked(&isp->streamoff_mutex));
-+	lockdep_assert_held(&isp->mutex);
-+	lockdep_assert_held(&isp->streamoff_mutex);
+-/**
+- * rt_mutex_is_locked - is the mutex locked
+- * @lock: the mutex to be queried
+- *
+- * Returns 1 if the mutex is locked, 0 if unlocked.
+- */
+-static inline int rt_mutex_is_locked(struct rt_mutex *lock)
+-{
+-	return lock->owner != NULL;
+-}
+-
+ extern void __rt_mutex_init(struct rt_mutex *lock, const char *name, struct lock_class_key *key);
  
- 	if (type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		dev_dbg(isp->dev, "unsupported v4l2 buf type\n");
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
 
