@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9103EC6FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E4B3EC700
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhHODhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:37:42 -0400
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:59859 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234662AbhHODhl (ORCPT
+        id S235808AbhHODio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:38:44 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:41879 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233848AbhHODim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:37:41 -0400
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 7A085150947;
-        Sat, 14 Aug 2021 23:37:12 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=+Bh+pmAIc7qJu01G4M/9wseFv9UnkmsoNLSMWi
-        QyuC8=; b=LBITQQa3wa6qnf7xiNv727MtOv3rnTY/iD9r8QK7RaGGCjgbYSQ/3V
-        46W/AkPxu9xDWstTzkmTf0xzCd8tGfHxkb4BbXdJDF9ImFz/3weCBPvBWzXaY94G
-        Mny5gd4w0r+Lxfnk8AduAwCfsdsVat1FWdbfcDxNoA0aBOXSOAF4Q=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 651CE150945;
-        Sat, 14 Aug 2021 23:37:12 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=+Bh+pmAIc7qJu01G4M/9wseFv9UnkmsoNLSMWiQyuC8=; b=OW0wUQ6rSHffsv6kEkvs7ASOUoPzCBdGeSJrkDxlFWxKekJxeq80L5P5ysSBJ8P1bdJOx0dpZU/caYSs7Rjww6k2oI7GBiVLNdIRBQ6p6Tg7eykyDTQkwWoagilEHMpKrSWaBAbFtzum/2Y2Ez1Upr2dMmRwHjb+ir637UFe8AE=
-Received: from yoda.home (unknown [96.21.170.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 49CE2150944;
-        Sat, 14 Aug 2021 23:37:09 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 9FAD92DA0098;
-        Sat, 14 Aug 2021 23:37:07 -0400 (EDT)
-Date:   Sat, 14 Aug 2021 23:37:07 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] kbuild: Fix 'no symbols' warning when
- CONFIG_TRIM_UNUSD_KSYMS=y
-In-Reply-To: <20210814234102.2315551-1-masahiroy@kernel.org>
-Message-ID: <r3rr2q2-1o70-o012-4ns1-or1qrs665753@syhkavp.arg>
-References: <20210814234102.2315551-1-masahiroy@kernel.org>
+        Sat, 14 Aug 2021 23:38:42 -0400
+Received: by mail-lj1-f171.google.com with SMTP id h9so21850099ljq.8;
+        Sat, 14 Aug 2021 20:38:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OcuDfg9eRzXnneI6MaY2x1oxJrEEIkpSAcdBbgk2tSY=;
+        b=qs/R5JUgNf/cW5nfGxtjuxQKrCroMShkOv8KTP+yDD5L/jjy8H7ZVw2M9XIcz1fyv1
+         OKrW3tZUi73yawDUrCUWXSZ5zsD9Re1a+adE+RWgnmtOPsOVsNxiiu2wEOP2RHpnHTGQ
+         jz2sAKO+Uc89Hr4zzPPK2ZvUttXTizYOmGlm9s45xySBL9oVumWnaCyzBADvfeLUfoNw
+         Z+5h3JFzidRSd9oPY4RZy5IRssl2AfZPzSsi/hLG75+BKoKBk7fh/YqLEapMHbGQm4JO
+         iRhdvKrpcCj8ni64UdUn42fEbGndBKTGttRLFi0ppF+c2lezEDRcQOrxV35GeTmaLNpt
+         l5cA==
+X-Gm-Message-State: AOAM531yXN1egb5Q7HPs3DARkHZWG5OU/Ngp6dhHtbeJBOJQ7kxNyX/I
+        UWziW5jC6PEeVP+vg3h11OTbb65Z41WisXftRYU=
+X-Google-Smtp-Source: ABdhPJyif2ZkJLuuFm70vHJAj82zpUbjVTbhQiuYDK/+RB7TpkMZu/R60v/795ppO7PQpfNqMhAhA3411UpEUroRGsY=
+X-Received: by 2002:a2e:a4ba:: with SMTP id g26mr1317635ljm.254.1628998692179;
+ Sat, 14 Aug 2021 20:38:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 11E7D40E-FD7A-11EB-9ADE-D5C30F5B5667-78420484!pb-smtp20.pobox.com
+References: <20210814091750.73931-1-mailhol.vincent@wanadoo.fr>
+ <20210814091750.73931-6-mailhol.vincent@wanadoo.fr> <20210814111243.biquurwkyzmhmsad@pengutronix.de>
+In-Reply-To: <20210814111243.biquurwkyzmhmsad@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sun, 15 Aug 2021 12:38:00 +0900
+Message-ID: <CAMZ6RqK9pBP3VH7s78G90KXWe6nnm_bs+xbT+v-N3uBS3VSW6g@mail.gmail.com>
+Subject: Re: [PATCH v4 5/7] can: netlink: add interface for CAN-FD Transmitter
+ Delay Compensation (TDC)
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Aug 2021, Masahiro Yamada wrote:
+On Sat. 14 Aug 2021 at 20:12, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 14.08.2021 18:17:48, Vincent Mailhol wrote:
+> [...]
+>
+> >  static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+> >                         struct nlattr *data[],
+> >                         struct netlink_ext_ack *extack)
+> >  {
+> >       struct can_priv *priv = netdev_priv(dev);
+> > +     u32 tdc_mask = 0;
+> >       int err;
+> >
+> >       /* We need synchronization with dev->stop() */
+> > @@ -107,6 +179,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+> >               struct can_ctrlmode *cm;
+> >               u32 ctrlstatic;
+> >               u32 maskedflags;
+> > +             u32 tdc_flags;
+> >
+> >               /* Do not allow changing controller mode while running */
+> >               if (dev->flags & IFF_UP)
+> > @@ -138,7 +211,18 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+> >                       dev->mtu = CAN_MTU;
+> >                       memset(&priv->data_bittiming, 0,
+> >                              sizeof(priv->data_bittiming));
+> > +                     memset(&priv->tdc, 0, sizeof(priv->tdc));
+> > +                     priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
+> >               }
+> > +
+> > +             tdc_flags = cm->flags & CAN_CTRLMODE_TDC_MASK;
+> > +             /* CAN_CTRLMODE_TDC_{AUTO,MANUAL} are mutually exclusive */
+> > +             if (tdc_flags == CAN_CTRLMODE_TDC_MASK)
+> > +                     return -EOPNOTSUPP;
+> > +             /* If one of CAN_CTRLMODE_TDC_* is set then TDC must be set */
+> > +             if (tdc_flags && !data[IFLA_CAN_TDC])
+> > +                     return -EOPNOTSUPP;
+>
+> These don't need information form the can_priv, right? So these checks
+> can be moved to can_validate()?
 
-> When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this:
-> 
->   nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
-> 
-> $NM (both GNU nm and llvm-nm) warns when no symbol is found in the
-> object. Suppress the stderr.
-> 
-> Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/gen_ksymdeps.sh | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
-> index 1324986e1362..5493124e8ee6 100755
-> --- a/scripts/gen_ksymdeps.sh
-> +++ b/scripts/gen_ksymdeps.sh
-> @@ -4,7 +4,10 @@
->  set -e
->  
->  # List of exported symbols
-> -ksyms=$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
-> +#
-> +# If the object has no symbol, $NM warns 'no symbols'.
-> +# Suppress the stdout.
-> +ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
-
-You mean stderr.
+ACK. Actually, this comment applies not only to can_changelink()
+but also to can_tdc_changelink().  I just sent a v5 where I made
+sure to move all the checks that do not rely on can_priv to
+can_validate().
 
 
-Nicolas
-
-
+Yours sincerely,
+Vincent
