@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187903EC7BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABB83EC7BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhHOGvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 02:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhHOGve (ORCPT
+        id S236087AbhHOGv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 02:51:59 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:57920 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235870AbhHOGvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 02:51:34 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A755C061764;
-        Sat, 14 Aug 2021 23:51:00 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso22359152pjy.5;
-        Sat, 14 Aug 2021 23:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=thuEpYTiM1U8+AJeygFq4zHWuS3MrIl/T2LAUyDKeNU=;
-        b=ntrECijhAqGRrpX3Fcl4l+lIJ5Ki4Fiui9VcuQzNsyVmTBN0/gjDLi+vFVi0uk0RpY
-         xoHumKDDfghQc7Q44HK0rfpSEc2aWuQKHqLzglVRdRlc/xVhVIGEClCb9uAp6S6okTqZ
-         zVL3cn6hQ3piPtbbgDZTUbpJH3JE8f1cKsW8KmwNQ1k3sXvjAm5CWNRzaaKAwsLRRYlS
-         /onB59oNP2cTLgTe9gFkXfLnoojTgVhd5Tm48WrDsJiZaTWeU8OnDXs9gAxNAYmPEGfx
-         vHnzs++W3vK+1xcRFmahyamuQG1m/yzvxOQMU5LAlGSCndQuWOONYPIeTxKjTQcoeGjV
-         yj8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=thuEpYTiM1U8+AJeygFq4zHWuS3MrIl/T2LAUyDKeNU=;
-        b=CGmZYie97zV6PP/3Rdg3uTIqyBBBx1+JHlue1U3GItLahFXeiZS/GvOcayuCGRr5fR
-         IZ4bZFjdT4jh0SYB+RZfpZ4cpSqMZNQigApKuT56wMP5OgskoAcOyW1Ghw29GRUAA+bs
-         M3F4CFSgNHFUZPKLCziTOheaD7xwpOnTeMCfgv2j9SwoJIHJovMhDcUHc7hGqH2rgFhY
-         Mzp4bHxX9w4bm5223q745/J+J0DewyNE+KIn/oQHKTTi/zQqZq8DAUF4yEE6n8Lm+6Je
-         fYmFSj5irnuctCN3RtA2PcHUjRf4EpQqvvar2vHuRYVxOgMzLYXYjvLs7kKWvN3QUGe/
-         pd3A==
-X-Gm-Message-State: AOAM530UMbpqAdBwDdDCWq3J2oPYIGJqgV8CyZJcaCSW+X7qjBm/JnVS
-        YsAMw4I1CSs/dtOA7cqm2Bk=
-X-Google-Smtp-Source: ABdhPJywcfvIEYb4s9hDgsPcDVKaYP8GH7oz2zwz17dv0SixUG/FTzyOHxoMN8GbdjMMYlIoyb5hwA==
-X-Received: by 2002:a17:90a:c085:: with SMTP id o5mr10560376pjs.113.1629010259867;
-        Sat, 14 Aug 2021 23:50:59 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.196])
-        by smtp.gmail.com with ESMTPSA id pj14sm5943221pjb.35.2021.08.14.23.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Aug 2021 23:50:59 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] samples: bpf: offwaketime: define MAX_ENTRIES instead of a magic number
-Date:   Sun, 15 Aug 2021 12:20:13 +0530
-Message-Id: <20210815065013.15411-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 15 Aug 2021 02:51:54 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4GnScm1Dk2z1qwGb;
+        Sun, 15 Aug 2021 08:51:20 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4GnScl6phrz1qqkg;
+        Sun, 15 Aug 2021 08:51:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id hHSQV9_8Ah4W; Sun, 15 Aug 2021 08:51:18 +0200 (CEST)
+X-Auth-Info: GWNgGf1u5wZ3SJAJGg4o0/Ef+Whqz2y6LrK66NNI+d1HWkCmWlUNECf3gZjZXuRE
+Received: from tiger.home (ppp-46-244-191-201.dynamic.mnet-online.de [46.244.191.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sun, 15 Aug 2021 08:51:18 +0200 (CEST)
+Received: by tiger.home (Postfix, from userid 1000)
+        id 286DA5153E; Sun, 15 Aug 2021 08:51:18 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] riscv: __asm_copy_to-from_user: Improve using word
+ copy if size < 9*SZREG
+References: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
+        <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
+X-Yow:  ..Am I in a SOAP OPERA??
+Date:   Sun, 15 Aug 2021 08:51:18 +0200
+In-Reply-To: <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com> (Akira
+        Tsukamoto's message of "Fri, 30 Jul 2021 22:52:44 +0900")
+Message-ID: <87bl5z42vt.fsf@linux-m68k.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define MAX_ENTRIES instead of using 10000 as a magic number in various
-places.
+On Jul 30 2021, Akira Tsukamoto wrote:
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- samples/bpf/offwaketime_kern.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+>  .Lword_copy:
+> -        /*
+> -	 * Both src and dst are aligned, unrolled word copy
+> +	/*
+> +	 * Both src and dst are aligned
+> +	 * None unrolled word copy with every 1*SZREG iteration
+> +	 *
+> +	 * a0 - start of aligned dst
+> +	 * a1 - start of aligned src
+> +	 * t0 - end of aligned dst
+> +	 */
+> +	bgeu	a0, t0, .Lbyte_copy_tail /* check if end of copy */
+> +	addi	t0, t0, -(SZREG) /* not to over run */
+> +1:
+> +	REG_L	a5, 0(a1)
+> +	addi	a1, a1, SZREG
+> +	REG_S	a5, 0(a0)
+> +	addi	a0, a0, SZREG
+> +	bltu	a0, t0, 1b
 
-diff --git a/samples/bpf/offwaketime_kern.c b/samples/bpf/offwaketime_kern.c
-index 14b792915a9c..4866afd054da 100644
---- a/samples/bpf/offwaketime_kern.c
-+++ b/samples/bpf/offwaketime_kern.c
-@@ -20,6 +20,7 @@
- 	})
- 
- #define MINBLOCK_US	1
-+#define MAX_ENTRIES	10000
- 
- struct key_t {
- 	char waker[TASK_COMM_LEN];
-@@ -32,14 +33,14 @@ struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, struct key_t);
- 	__type(value, u64);
--	__uint(max_entries, 10000);
-+	__uint(max_entries, MAX_ENTRIES);
- } counts SEC(".maps");
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, u32);
- 	__type(value, u64);
--	__uint(max_entries, 10000);
-+	__uint(max_entries, MAX_ENTRIES);
- } start SEC(".maps");
- 
- struct wokeby_t {
-@@ -51,14 +52,14 @@ struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, u32);
- 	__type(value, struct wokeby_t);
--	__uint(max_entries, 10000);
-+	__uint(max_entries, MAX_ENTRIES);
- } wokeby SEC(".maps");
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
- 	__uint(key_size, sizeof(u32));
- 	__uint(value_size, PERF_MAX_STACK_DEPTH * sizeof(u64));
--	__uint(max_entries, 10000);
-+	__uint(max_entries, MAX_ENTRIES);
- } stackmap SEC(".maps");
- 
- #define STACKID_FLAGS (0 | BPF_F_FAST_STACK_CMP)
+This is missing fixups.
+
+Andreas.
+
 -- 
-2.17.1
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
