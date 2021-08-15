@@ -2,126 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5163F3ECBAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 00:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC243ECBB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 01:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhHOW2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 18:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhHOW22 (ORCPT
+        id S231284AbhHOXAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 19:00:52 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57785 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhHOXAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 18:28:28 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336BAC061764;
-        Sun, 15 Aug 2021 15:27:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GnsPQ386Wz9sW5;
-        Mon, 16 Aug 2021 08:27:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629066474;
-        bh=GL0WkzuJBwb4nB1CUPHXfzKvAmz2FBpioUMDj69Vrw4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ArJ+wmRgQnsVs5WSYPO/H0OL9uRI0h9Z8orQJeRdsW8gmqBjc6mHhrEMfF1gxQ7eu
-         AOnSvyUTh7DHM3RrIMHeIBlA/MNnLkFsCv9cNmZNEMh1ZDth9bSyXVdExLzZpiff9o
-         IwrC1ml6V5JTGlC3LP0K4V+VGTe/tRRdy3fSQBBl6+R9NaWwt7ZIV6HjwDK1n8Uk/i
-         bIGcuLZ+62126ex10ASRgwcqERZFs3UETRs/1K1cob1wx+k77Hi461HeecMmdKCgdu
-         YqZXqfIiqCrzp2WmnROC+qXiiJaPcspjY0cdxlCHxT6WBkT2hO3T1f+rmqf9fvHdov
-         LfFvpy76xGHEA==
-Date:   Mon, 16 Aug 2021 08:27:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the powerpc tree with Linus' tree
-Message-ID: <20210816082752.415ae787@canb.auug.org.au>
+        Sun, 15 Aug 2021 19:00:51 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 3101432008FE;
+        Sun, 15 Aug 2021 19:00:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sun, 15 Aug 2021 19:00:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8iTDKu
+        Ff6sIK5qkD+04LYSEIHov0bH0Yf7Smj73cGDo=; b=urQujKKqso9YornYGdsq6C
+        hMcJS95tNpEOqYksQuKfLkauJNN0k4432D+hApYbs8asGc8OV9hAK+VdiLUdH0tF
+        dmu0lFoEwSn46YZjifE1qRvsAvZw/EO3LlDlWpp9/0PdW+6aKsldR+1i3gh5uxxH
+        shs6F6TBvLsUqQDI06CzqjF9RE/S0NLnFyCh5xcmO1TjAAMVB3Mk92fDA2B+cS52
+        nnZVXNFSbIWIcyn8uR12OqiqAl+DHq+3bh7OzKcA5P1d3cR8cLKzK8qn8XU7yjSI
+        NEZpzuZeDR7oITh3o61CgxBVbYXVt9hJun+buPvoy3xir0q0ziviZ/tDgY3GWj0A
+        ==
+X-ME-Sender: <xms:g5wZYdKZN8AJCclERsW4_6JTg7vITB5VvmENytFdNsudWNC4P6cgcg>
+    <xme:g5wZYZJGbf0kim1j4COjwACv4GZaN0mJuNUybWWAO5nY0YyawSdSHZzPqG5z5iG4l
+    VzONj4Qp1Kkks2B9l8>
+X-ME-Received: <xmr:g5wZYVuQ5raiC1w4-fe0Q1pbs7mgXRIoHfdju-f6GehLaiP7KXCGiiiRQ07ZnLtUkdAL7A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledtgdduiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffuvffkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgvucfl
+    ohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgf
+    effedufffhgfeuheegffffgeegveeifeeutefhieejffetudfgueevteehtdetnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljh
+    honhgvshdruggvvh
+X-ME-Proxy: <xmx:g5wZYeakpEiLJpVzpe8t5yXJj627QSJvL7QiCgaY2kZqvX8fHAUWoA>
+    <xmx:g5wZYUaejI6VhoLYNkrP9E-DQUDnhSlrrJoM-wdh0lwiNUrAfAztTg>
+    <xmx:g5wZYSDkgCXv5KvGdYzU_ESSW-TeMa76lrRx_iztegpZGv_EhxNwPA>
+    <xmx:g5wZYfwmOWoxWnC2bwsgsQbnAoRhVYJJPUWAcsPhkX4OjRELlOp9HQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 15 Aug 2021 19:00:15 -0400 (EDT)
+Date:   Mon, 16 Aug 2021 11:00:01 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v3 0/1] asus-wmi: add platform_profile support
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org
+Message-Id: <18LWXQ.AIB2DGCZUVMW@ljones.dev>
+In-Reply-To: <a918bfe0-03c4-e7d3-8a99-efb1d11333e4@redhat.com>
+References: <20210814043103.2535842-1-luke@ljones.dev>
+        <THKTXQ.ELSNF0TA7RAV1@ljones.dev>
+        <a918bfe0-03c4-e7d3-8a99-efb1d11333e4@redhat.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8YGGvlsd/AQ7543ZTVBmOiu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8YGGvlsd/AQ7543ZTVBmOiu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the powerpc tree got a conflict in:
+On Sun, Aug 15 2021 at 15:48:49 +0200, Hans de Goede 
+<hdegoede@redhat.com> wrote:
+> Hi,
+> 
+> On 8/14/21 9:51 AM, Luke Jones wrote:
+>> 
+>> 
+>>  On Sat, Aug 14 2021 at 16:31:02 +1200, Luke D. Jones 
+>> <luke@ljones.dev> wrote:
+>>>  Changelog:
+>>>  - V2
+>>>    + Correctly unregister from platform_profile if
+>>>      throttle_thermal_policy fails
+>>>    + Do platform_profile_notify() in both 
+>>> throttle_thermal_policy_store()
+>>>      and in throttle_thermal_policy_switch_next()
+>>>    + Remove unnecessary prep for possible fan-boost modes as this
+>>>      doesn't match expected platform_profile behaviour
+>>>  - V3
+>>>    + Add missing declaration for err in
+>>>      throttle_thermal_policy_switch_next
+>>> 
+>>>  Luke D. Jones (1):
+>>>    asus-wmi: Add support for platform_profile
+>>> 
+>>>   drivers/platform/x86/asus-wmi.c | 139 
+>>> +++++++++++++++++++++++++++++++-
+>>>   1 file changed, 135 insertions(+), 4 deletions(-)
+>>> 
+>>>  --
+>>>  2.31.1
+>> 
+>>  Hi,
+>> 
+>>  I teested the patch again and it appears that the 
+>> platform_profile_notify() in both throttle_thermal_policy_store() 
+>> and throttle_thermal_policy_switch_next() updates the 
+>> /sys/firmware/acpi/platform_profile sysfs path fine, but userspace 
+>> isn't updated?
+>> 
+>>  The way I'm checking is:
+>>  1. echo 1 |sudo tee 
+>> /sys/devices/platform/asus-nb-wmi/throttle_thermal_policy
+>>  2. cat -p /sys/firmware/acpi/platform_profile
+>>    - performance (updated correctly by platform_profile_notify)
+>>  3. Check gnome-settings, not updated.
+>> 
+>>  Doing `echo "performance" |sudo tee 
+>> /sys/firmware/acpi/platform_profile` updates both 
+>> throttle_thermal_policy and userspace as expected. I'm wondering if 
+>> I've missed something?
+> 
+> If you add a printk where you call platform_profile_notify() and you 
+> see that
+> happening, then you are likely seeing a userspace bug. Possibly your
+> power-profile-daemon is simply a bit old and therefor does not support
+> the combination of profiles which asus-wmi offers, IIRC it falls back 
+> to
+> using intel-pstate in that case.
 
-  arch/powerpc/sysdev/xive/common.c
+It's possible that it's a userspace bug then. The power-profile-daemon 
+I'm using is fresh from git (0.9+). To be clear updating via 
+/sys/firmware/acpi/platform_profile works perfectly fine and 
+power-profile-daemon updates etc. But if I do platform_profile_notify() 
+then it doesn't seem to be updated. Nevertheless I will finalise the 
+patch as it is and submit for merging and we can go from there.
 
-between commit:
+> 
+> You could try building the latest power-profile-daemon from git and 
+> run
+> it in verbose mode. If it sees the changes and the control-panel 
+> applet is
+> still not updating then I would not worry about that. The userspace 
+> code
+> is still somewhat new and I'm not sure which version your distro is
+> running and how well it is keeping up with gnome-updates.
+> 
+> Regards,
+> 
+> Hans
+> 
 
-  cbc06f051c52 ("powerpc/xive: Do not skip CPU-less nodes when creating the=
- IPIs")
 
-from Linus' tree and commit:
-
-  17df41fec5b8 ("powerpc: use IRQF_NO_DEBUG for IPIs")
-
-from the powerpc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/sysdev/xive/common.c
-index 943fd30095af,458645c7a72b..000000000000
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@@ -1170,22 -1166,6 +1157,22 @@@ out
-  	return ret;
-  }
- =20
- +static int __init xive_request_ipi(unsigned int cpu)
- +{
- +	struct xive_ipi_desc *xid =3D &xive_ipis[early_cpu_to_node(cpu)];
- +	int ret;
- +
- +	if (atomic_inc_return(&xid->started) > 1)
- +		return 0;
- +
- +	ret =3D request_irq(xid->irq, xive_muxed_ipi_action,
-- 			  IRQF_PERCPU | IRQF_NO_THREAD,
-++			  IRQF_NO_DEBUG | IRQF_PERCPU | IRQF_NO_THREAD,
- +			  xid->name, NULL);
- +
- +	WARN(ret < 0, "Failed to request IPI %d: %d\n", xid->irq, ret);
- +	return ret;
- +}
- +
-  static int xive_setup_cpu_ipi(unsigned int cpu)
-  {
-  	unsigned int xive_ipi_irq =3D xive_ipi_cpu_to_irq(cpu);
-
---Sig_/8YGGvlsd/AQ7543ZTVBmOiu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEZlOgACgkQAVBC80lX
-0GzhFQf+PCiOx9n8QJgOMbL2b8dYOSvDlS7Q7e4n1g+ea3B9MdCbAUYVDP/XH7vQ
-o0CD5hdNKcXiVOIKMVHmYB5pwTPFIjtDkxeECtUEKBseKVNJZM0NdwUgiPsR1JOu
-yfNdQO6B8FFLIKjsA4b86cElyWEiSermEDm24hZLJ0NqFwSe/M4guMDxelRjHwKe
-I+Z1D8rYJfpYRGan/QLOhe8fifnhGGwqq49noyidb53U3DKY6aoqEdP2lXbDPodT
-GYrp2jIQTSrd3v7qUTNo9Rgrg1M/KDqDcl0bKbEqJ8e4LK0JuQ11eROcjuqtRHaL
-w4b4hroL0r8GQxFss945ochaxSrv7A==
-=ALq1
------END PGP SIGNATURE-----
-
---Sig_/8YGGvlsd/AQ7543ZTVBmOiu--
