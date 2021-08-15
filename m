@@ -2,91 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C180E3ECAEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8FF3ECAF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhHOUYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 16:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhHOUYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 16:24:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E35EC061764;
-        Sun, 15 Aug 2021 13:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3hjLDBVIUuEhPE/QTKjTt6SD+T+B8p+I9/1rjQ1tlWw=; b=JDrV3hdxAMiAk9A1PYJebdSnnM
-        RiAvvc8JofuBVJKF4j5mLzGMSH7jK+Q8rUXkcvhNlmzDfNZUc3o7TGtRIuBR15uXxXt9NwmgT+zLi
-        FJ3YKjYHI/9NEbpLtnqWN4DcDB+2xWe9v0l6MeBYJVzmVr/rCsD8R3WXChBNVxFvmLWizNo9E3AG8
-        BmvcphhW7VruAqXA9FgoD/mE+M1zFIEbQxTBGcxtXYeE33MrS4bjYZTJPUNR8KrEmO+28/u7Bex8k
-        xu8RymFIgm77ppFY4cpmmwjqA2QtqjTBfOnQwaGJpBWvuFqcgFDB3EOnzt/EERoXRWa1xfujDRVqB
-        O0beq22w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFMfl-000c6H-SK; Sun, 15 Aug 2021 20:24:07 +0000
-Date:   Sun, 15 Aug 2021 21:23:57 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 078/138] mm/filemap: Add
- folio_mkwrite_check_truncate()
-Message-ID: <YRl33SHZYkonh+ED@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-79-willy@infradead.org>
- <658f52db-47a1-606d-f19a-a666f5817ad9@suse.cz>
+        id S230442AbhHOUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 16:31:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhHOUbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 16:31:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD48B61283;
+        Sun, 15 Aug 2021 20:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629059448;
+        bh=U1Bn0jmeesQXigOAHRvgl+2uQxdlxWt1EJV19mZQ+40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qnTsmiqxlyuSwVivBlYYOWzQzhqJfqT+LdjFxdjHFIvXIzfsIoVgL6yNfx2sQLs4Y
+         aCFLYE4a0bkPWfkaPfmyo/A2eZDQU2ONo/YtBuMJosFHHLWReC/DzGxV42G14tdfYn
+         FNjbX4dXh3BJxu7omeVlXeo4aduQkHljM/xLn3bWUMtV5tfZpdv3tjl/E6ljr1NYvK
+         5HcoNqhCGOMt/7Ot3yw1vn7do5ZAR2/z6y/JpRYoo3Fcc0LEgOV7I0UtTQr/oICPRe
+         eIs+mtopTv5ayb4GPobJxEqfYNn5rIdkjo7wPmolyCnCsuiKo1FIm39ihOHNmVCTfa
+         sCWU/sPUf5TbA==
+Received: by pali.im (Postfix)
+        id 61E4898C; Sun, 15 Aug 2021 22:30:45 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 22:30:45 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     robh@kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
+ space
+Message-ID: <20210815203045.hiir4aqm6btrqfy5@pali>
+References: <20210624215546.4015-1-pali@kernel.org>
+ <20210624215546.4015-3-pali@kernel.org>
+ <87pmv919bq.fsf@BL-laptop>
+ <20210723141204.waiipazikhzzloj7@pali>
+ <20210723155247.GB4103@lpieralisi>
+ <20210723164512.vo3scpzoodff2j33@pali>
+ <20210807113536.24ik7m7uonebwox2@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <658f52db-47a1-606d-f19a-a666f5817ad9@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210807113536.24ik7m7uonebwox2@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 07:08:33PM +0200, Vlastimil Babka wrote:
-> > +/**
-> > + * folio_mkwrite_check_truncate - check if folio was truncated
-> > + * @folio: the folio to check
-> > + * @inode: the inode to check the folio against
-> > + *
-> > + * Return: the number of bytes in the folio up to EOF,
-> > + * or -EFAULT if the folio was truncated.
-> > + */
-> > +static inline ssize_t folio_mkwrite_check_truncate(struct folio *folio,
-> > +					      struct inode *inode)
-> > +{
-> > +	loff_t size = i_size_read(inode);
-> > +	pgoff_t index = size >> PAGE_SHIFT;
-> > +	size_t offset = offset_in_folio(folio, size);
-> > +
-> > +	if (!folio->mapping)
+On Saturday 07 August 2021 13:35:36 Pali Rohár wrote:
+> On Friday 23 July 2021 18:45:12 Pali Rohár wrote:
+> > On Friday 23 July 2021 16:52:47 Lorenzo Pieralisi wrote:
+> > > On Fri, Jul 23, 2021 at 04:12:04PM +0200, Pali Rohár wrote:
+> > > > On Friday 23 July 2021 14:52:25 Gregory CLEMENT wrote:
+> > > > > Hello Pali,
+> > > > > 
+> > > > > > Current PCIe MEM space of size 16 MB is not enough for some combination
+> > > > > > of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
+> > > > > > Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
+> > > > > > so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
+> > > > > > allocate more PCIe BARs for more PCIe cards.
+> > > > > >
+> > > > > > Without this change some combination of PCIe cards cannot be used and
+> > > > > > kernel show error messages in dmesg during initialization:
+> > > > > >
+> > > > > >     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
+> > > > > >     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
+> > > > > >     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
+> > > > > >     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
+> > > > > >     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
+> > > > > >     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
+> > > > > >     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
+> > > > > >     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
+> > > > > >     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
+> > > > > >     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
+> > > > > >     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+> > > > > >
+> > > > > > Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
+> > > > > > kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
+> > > > > > crashes during loading of kernel DTB file. This bug is present only in
+> > > > > > U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
+> > > > > > affected by this bug. Bug is fixed in U-Boot version 2021.07.
+> > > > > >
+> > > > > > To not break booting new kernels on existing versions of U-Boot on Turris
+> > > > > > Mox, use first 16 MB range for IO and second range with rest of PCIe window
+> > > > > > for MEM.
+> > > > > 
+> > > > > Is there any depencey with the firs patch of this series ?
+> > > > > 
+> > > > > What happend if this patch is applied without the other ?
+> > > > 
+> > > > First patch is fixing reading and setting ranges configuration from DTS.
+> > > > Without first patch memory windows stays as they were in bootloader or
+> > > > in its default configuration. Which is that all 128 MB are transparently
+> > > > mapped to PCIe MEM space.
+> > > > 
+> > > > Therefore this second DTS patch does not fixes issue with IO space
+> > > > (kernel still crashes when accessing it). But allows to use all PCIe MEM
+> > > > space (due to bootloader / default configuration) and therefore allows
+> > > > to use more PCIe cards (which needs more PCIe MEM space).
+> > > 
+> > > So, the two patches are decoupled then ? We are not taking dts changes
+> > > through the PCI tree.
+> > 
+> > Well, both patches are required to fix setup and use of PCIe ranges on
+> > A3720 platforms. But I would say they are independent and you can apply
+> > them in any order. So Gregory, feel free to take DTS change in your tree
+> > and Lorenzo can review other patch.
 > 
-> The check in the page_ version is
-> if (page->mapping != inode->i_mapping)
+> Lorenzo, so will you take driver change via PCI tree?
 > 
-> Why is the one above sufficient?
+> And Gregory, DTS change via DTS tree?
 
-Oh, good question!
+PING?
 
-We know that at some point this page belonged to this file.  The caller
-has a reference on it (and at the time they acquired a refcount on the
-page, the page was part of the file).  The caller also has the page
-locked, but has not checked that the page is still part of the file.
-That's where we come in.
-
-The truncate path looks up the page, locks it, removes it from i_pages,
-unmaps it, sets the page->mapping to NULL, unlocks it and puts the page.
-
-Because the folio_mkwrite_check_truncate() caller holds a reference on
-the page, the truncate path will not free the page.  So there are only
-two possibilities for the value of page->mapping; either it's the same
-as inode->i_mapping, or it's NULL.
-
-Now, maybe this is a bit subtle.  For robustness, perhaps we should
-check that it's definitely still part of this file instead of checking
-whether it is currently part of no file.  Perhaps at some point in the
-future, we might get the reference to the page without checking that
-it's still part of this file.  Opinions?
+> > I sent these two patches in one series as they are fixing one common
+> > issue. It is common that for fixing one common issue it is required to
+> > touch more subsystems / trees.
+> > 
+> > > Besides: these dts patches are a nightmare for backward compatibility,
+> > > hopefully Rob can shed some light on whether what you are doing here
+> > > is advisable and how to sync the changes with kernel changes.
+> > 
+> > As written in comment for armada-3720-turris-mox.dts file, there are
+> > specific requirements what needs to be put into ranges section. And
+> > version of this file without applying this patch and also version of
+> > this file with applied patch matches these requirements.
+> > 
+> > So I would say that this DTS change is backward and also forward
+> > compatible.
+> > 
+> > But I agree that DTS changes are lot of time nightmare...
+> > 
+> > > Lorenzo
+> > > 
+> > > > > Could you test it to see if any regression occure ?
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > Grégory
+> > > > > 
+> > > > > >
+> > > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > > > > Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
+> > > > > > ---
+> > > > > >  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
+> > > > > >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
+> > > > > >  2 files changed, 26 insertions(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> > > > > > index 53e817c5f6f3..86b3025f174b 100644
+> > > > > > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> > > > > > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> > > > > > @@ -134,6 +134,23 @@
+> > > > > >  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
+> > > > > >  	status = "okay";
+> > > > > >  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
+> > > > > > +	/*
+> > > > > > +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
+> > > > > > +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
+> > > > > > +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
+> > > > > > +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
+> > > > > > +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
+> > > > > > +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
+> > > > > > +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
+> > > > > > +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
+> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
+> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
+> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
+> > > > > > +	 */
+> > > > > > +	#address-cells = <3>;
+> > > > > > +	#size-cells = <2>;
+> > > > > > +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
+> > > > > > +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
+> > > > > >  
+> > > > > >  	/* enabled by U-Boot if PCIe module is present */
+> > > > > >  	status = "disabled";
+> > > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > > > > > index 7a2df148c6a3..dac3007f2ac1 100644
+> > > > > > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > > > > > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > > > > > @@ -488,8 +488,15 @@
+> > > > > >  			#interrupt-cells = <1>;
+> > > > > >  			msi-parent = <&pcie0>;
+> > > > > >  			msi-controller;
+> > > > > > -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
+> > > > > > -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
+> > > > > > +			/*
+> > > > > > +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
+> > > > > > +			 * dedicated for PCIe and can be assigned to 8 windows
+> > > > > > +			 * with size a power of two. Use one 64 KiB window for
+> > > > > > +			 * IO at the end and the remaining seven windows
+> > > > > > +			 * (totaling 127 MiB) for MEM.
+> > > > > > +			 */
+> > > > > > +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
+> > > > > > +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+> > > > > >  			interrupt-map-mask = <0 0 0 7>;
+> > > > > >  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
+> > > > > >  					<0 0 0 2 &pcie_intc 1>,
+> > > > > > -- 
+> > > > > > 2.20.1
+> > > > > >
+> > > > > 
+> > > > > -- 
+> > > > > Gregory Clement, Bootlin
+> > > > > Embedded Linux and Kernel engineering
+> > > > > http://bootlin.com
