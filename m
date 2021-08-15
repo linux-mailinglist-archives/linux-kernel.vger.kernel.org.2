@@ -2,100 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C67A3EC828
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5493EC829
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhHOIc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 04:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236547AbhHOIcz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 04:32:55 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D27C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id w6so10311227plg.9
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=UHcKuv5O/mzdpWQ8UofB89FE5dbzLYR4/iV02jGFcSE=;
-        b=tjwJykmV95oRLTxd/WxhXOqC5QfUo6q9jxsPpnqXoPMyiENyY7O0n4Xh9tOLIpK2xS
-         8GlGXE675dAykuZVHBjoUkvuQXOjrS3fsLTdff+tewr903pRtA/qSzcpoqXVR0+wQDm/
-         wbJTvj0OuLiRYBGIwQlZUOc010miqSxsqkBQSPaPoUBoGq60zwou3PlQPiM1m9VORyYT
-         Bxq/1pC3hUcnWC7z61w3HZKo6v0ZSuMvZPN6YKk78lIgKuraKrIV7yY0Bylt0u9ClC92
-         +xxoTXXlQxVoXRMRtecrKVXiYzxyQCmvn8W621djcA6Teq6QQY7nCwgPZILuT0ANwKWm
-         cHug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UHcKuv5O/mzdpWQ8UofB89FE5dbzLYR4/iV02jGFcSE=;
-        b=IO8Cz227F37l5uoSY6ezcXcFDueO0GOxmh3bXN0k+F+zvf5lmKFiw659rWqX36Bx7p
-         tbRypPS40DHc7O1aZg6BS8N+o6gGciedcvDaH6FC4nk4gIPwPGgY92MRYbCQZ9VMfObA
-         xKVX1aLjbI/mt1ARCgSYRv1UfptPXBpTpqA0lySUpz4CJSnmrir5qh8bmfIBEnpGZSX3
-         GWRnG5TS1pMQ5V8DQe622rUSRNbG4m8OVmweFmEW4LcZoDqm43KbOTEO/XQY/wzFgOVN
-         PcPUdSvld/oNUlR7Ru5bUMgPdnB+vRASo6FZy9opReUchbDaRYLVW0iOt8VnOCZuW34y
-         m0dA==
-X-Gm-Message-State: AOAM532LbHq+1VSV47m5oxZwtOj7VipEXW0PG0vMfMoAUf5B7j+k0Ou4
-        pkF/XcWQVXY72oBlWPWcZwDo
-X-Google-Smtp-Source: ABdhPJzxXrxHbClgwJUtfcwgOQ6Fy/Rzy6VmQ0cxKiiw/99piS75VSnpeNRYDvdz+xN4qrF+urV30w==
-X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr11065068pjg.118.1629016344371;
-        Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
-Received: from localhost.localdomain ([123.231.122.209])
-        by smtp.gmail.com with ESMTPSA id q140sm7587812pfc.191.2021.08.15.01.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
-From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fix slab-out-of-bounds in betopff_init function
-Date:   Sun, 15 Aug 2021 14:01:55 +0530
-Message-Id: <20210815083155.10559-1-asha.16@itfac.mrt.ac.lk>
-X-Mailer: git-send-email 2.17.1
+        id S236843AbhHOIiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 04:38:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:64928 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236425AbhHOIiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 04:38:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10076"; a="202926363"
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="202926363"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2021 01:37:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="529701642"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Aug 2021 01:37:32 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mFBe7-000Pgu-V7; Sun, 15 Aug 2021 08:37:31 +0000
+Date:   Sun, 15 Aug 2021 16:36:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
+ 064855a69003c24bd6b473b367d364e418c57625
+Message-ID: <6118d218.4ZZRXYKZCzQSq1Km%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch resolves the bug 'KASAN: slab-out-of-bounds Write in betop_probe' reported by Syzbot.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 064855a69003c24bd6b473b367d364e418c57625  x86/resctrl: Fix default monitoring groups reporting
 
-Patch resolve the bug by checking hid_device's hid_input is non empty before it's been used.
+possible Warning in current branch:
 
-Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+arch/x86/kernel/cpu/resctrl/monitor.c:310 __mon_event_count() error: uninitialized symbol 'm'.
+arch/x86/kernel/cpu/resctrl/monitor.c:315 __mon_event_count() error: potentially dereferencing uninitialized 'm'.
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+`-- i386-randconfig-m021-20210812
+    |-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:potentially-dereferencing-uninitialized-m-.
+    `-- arch-x86-kernel-cpu-resctrl-monitor.c-__mon_event_count()-error:uninitialized-symbol-m-.
+
+elapsed time: 3699m
+
+configs tested: 236
+configs skipped: 69
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210814
+i386                 randconfig-c001-20210812
+i386                 randconfig-c001-20210813
+powerpc                     tqm8541_defconfig
+m68k                          amiga_defconfig
+mips                        bcm47xx_defconfig
+xtensa                           alldefconfig
+sh                              ul2_defconfig
+powerpc                 mpc8540_ads_defconfig
+ia64                                defconfig
+arm                       imx_v6_v7_defconfig
+mips                           rs90_defconfig
+parisc                generic-32bit_defconfig
+arm                     am200epdkit_defconfig
+openrisc                  or1klitex_defconfig
+m68k                        m5407c3_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arm                          ep93xx_defconfig
+arm                          iop32x_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                         bigsur_defconfig
+powerpc64                           defconfig
+powerpc                        cell_defconfig
+arm                     davinci_all_defconfig
+mips                        workpad_defconfig
+arm                       omap2plus_defconfig
+powerpc                     pq2fads_defconfig
+h8300                            alldefconfig
+mips                  cavium_octeon_defconfig
+nds32                               defconfig
+parisc                           alldefconfig
+arm                      tct_hammer_defconfig
+powerpc                      obs600_defconfig
+powerpc                      makalu_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                      walnut_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7619_defconfig
+arm                         orion5x_defconfig
+arm                         shannon_defconfig
+arm                        clps711x_defconfig
+powerpc                      ppc64e_defconfig
+xtensa                           allyesconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     rainier_defconfig
+sh                            shmin_defconfig
+h8300                               defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                        maltaup_defconfig
+mips                           ip22_defconfig
+sh                           se7721_defconfig
+sh                          rsk7269_defconfig
+ia64                          tiger_defconfig
+arm                             rpc_defconfig
+powerpc                      ppc40x_defconfig
+arm                          simpad_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                 mpc837x_mds_defconfig
+ia64                             alldefconfig
+sh                        edosk7705_defconfig
+sh                           se7750_defconfig
+powerpc                    socrates_defconfig
+riscv                             allnoconfig
+powerpc                     ksi8560_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                       maple_defconfig
+powerpc                         wii_defconfig
+h8300                            allyesconfig
+h8300                       h8s-sim_defconfig
+arm                       aspeed_g4_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                       lemote2f_defconfig
+mips                          rm200_defconfig
+arm                           stm32_defconfig
+powerpc                       ppc64_defconfig
+xtensa                  audio_kc705_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+arc                     haps_hs_smp_defconfig
+sh                           se7712_defconfig
+powerpc                   microwatt_defconfig
+sh                          urquell_defconfig
+mips                     decstation_defconfig
+arm                          exynos_defconfig
+sh                          r7780mp_defconfig
+arm                       cns3420vb_defconfig
+mips                          ath25_defconfig
+m68k                             allyesconfig
+powerpc                    amigaone_defconfig
+arm                         s5pv210_defconfig
+arm                           viper_defconfig
+sh                          lboxre2_defconfig
+powerpc                     redwood_defconfig
+mips                         tb0226_defconfig
+arm                      jornada720_defconfig
+mips                           ip27_defconfig
+m68k                       bvme6000_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                     asp8347_defconfig
+xtensa                          iss_defconfig
+powerpc                 canyonlands_defconfig
+microblaze                      mmu_defconfig
+arm                         nhk8815_defconfig
+powerpc                     powernv_defconfig
+arm                        magician_defconfig
+powerpc                       eiger_defconfig
+ia64                         bigsur_defconfig
+powerpc64                        alldefconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                         virt_defconfig
+arm                            mmp2_defconfig
+m68k                        mvme147_defconfig
+openrisc                 simple_smp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210814
+x86_64               randconfig-a006-20210814
+x86_64               randconfig-a003-20210814
+x86_64               randconfig-a001-20210814
+x86_64               randconfig-a005-20210814
+x86_64               randconfig-a002-20210814
+x86_64               randconfig-a006-20210812
+x86_64               randconfig-a004-20210812
+x86_64               randconfig-a003-20210812
+x86_64               randconfig-a005-20210812
+x86_64               randconfig-a002-20210812
+x86_64               randconfig-a001-20210812
+i386                 randconfig-a004-20210812
+i386                 randconfig-a003-20210812
+i386                 randconfig-a002-20210812
+i386                 randconfig-a001-20210812
+i386                 randconfig-a006-20210812
+i386                 randconfig-a005-20210812
+i386                 randconfig-a004-20210814
+i386                 randconfig-a002-20210814
+i386                 randconfig-a001-20210814
+i386                 randconfig-a003-20210814
+i386                 randconfig-a006-20210814
+i386                 randconfig-a005-20210814
+i386                 randconfig-a004-20210813
+i386                 randconfig-a003-20210813
+i386                 randconfig-a001-20210813
+i386                 randconfig-a002-20210813
+i386                 randconfig-a006-20210813
+i386                 randconfig-a005-20210813
+x86_64               randconfig-a011-20210813
+x86_64               randconfig-a013-20210813
+x86_64               randconfig-a012-20210813
+x86_64               randconfig-a016-20210813
+x86_64               randconfig-a015-20210813
+x86_64               randconfig-a014-20210813
+i386                 randconfig-a011-20210814
+i386                 randconfig-a015-20210814
+i386                 randconfig-a013-20210814
+i386                 randconfig-a014-20210814
+i386                 randconfig-a016-20210814
+i386                 randconfig-a012-20210814
+i386                 randconfig-a011-20210812
+i386                 randconfig-a015-20210812
+i386                 randconfig-a013-20210812
+i386                 randconfig-a014-20210812
+i386                 randconfig-a016-20210812
+i386                 randconfig-a012-20210812
+i386                 randconfig-a011-20210813
+i386                 randconfig-a015-20210813
+i386                 randconfig-a014-20210813
+i386                 randconfig-a013-20210813
+i386                 randconfig-a016-20210813
+i386                 randconfig-a012-20210813
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210812
+x86_64               randconfig-c001-20210813
+x86_64               randconfig-c001-20210814
+x86_64               randconfig-a006-20210813
+x86_64               randconfig-a004-20210813
+x86_64               randconfig-a003-20210813
+x86_64               randconfig-a002-20210813
+x86_64               randconfig-a005-20210813
+x86_64               randconfig-a001-20210813
+x86_64               randconfig-a011-20210812
+x86_64               randconfig-a013-20210812
+x86_64               randconfig-a012-20210812
+x86_64               randconfig-a016-20210812
+x86_64               randconfig-a015-20210812
+x86_64               randconfig-a014-20210812
+x86_64               randconfig-a013-20210814
+x86_64               randconfig-a011-20210814
+x86_64               randconfig-a016-20210814
+x86_64               randconfig-a012-20210814
+x86_64               randconfig-a014-20210814
+x86_64               randconfig-a015-20210814
+
 ---
- drivers/hid/hid-betopff.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/hid/hid-betopff.c b/drivers/hid/hid-betopff.c
-index 0790fbd3fc9a..6a1f894b0e97 100644
---- a/drivers/hid/hid-betopff.c
-+++ b/drivers/hid/hid-betopff.c
-@@ -56,19 +56,20 @@ static int betopff_init(struct hid_device *hid)
- {
- 	struct betopff_device *betopff;
- 	struct hid_report *report;
--	struct hid_input *hidinput =
--			list_first_entry(&hid->inputs, struct hid_input, list);
-+	struct hid_input *hidinput;
- 	struct list_head *report_list =
- 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
--	struct input_dev *dev = hidinput->input;
-+	struct input_dev *dev;
- 	int field_count = 0;
- 	int error;
- 	int i, j;
- 
--	if (list_empty(report_list)) {
-+	if (list_empty(&hid->inputs)) {
- 		hid_err(hid, "no output reports found\n");
- 		return -ENODEV;
- 	}
-+	hidinput = list_entry(hid->inputs.next, struct hid_input, list);
-+	dev = hidinput->input;
- 
- 	report = list_first_entry(report_list, struct hid_report, list);
- 	/*
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
