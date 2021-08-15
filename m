@@ -2,133 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E8A3EC8B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73CC3EC8B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237637AbhHOLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 07:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhHOLKv (ORCPT
+        id S237556AbhHOLXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 07:23:47 -0400
+Received: from mail.parknet.co.jp ([210.171.160.6]:32808 "EHLO
+        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhHOLXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 07:10:51 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226E7C061764;
-        Sun, 15 Aug 2021 04:10:22 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id nt11so22180101pjb.2;
-        Sun, 15 Aug 2021 04:10:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1hTo1UwRlyqp+pMdlXGYPhfq0rOnoJLrck7pYizHgPU=;
-        b=ki4MbLSO6ktJBBmJWeAW9iXHb99ZK/NlJzMuyhU1WHgiB1izAuZcFaDxzfK8e5I4GN
-         GNd6Ga0s6XH90h8kPCmLzUU1hnM+OEcwApME4miRVOxbrBhnYa4Phm5kgSW8z+yDtdBJ
-         hYos1WTb8FiECvf6YO6Ie9c3VDtniCE7hS0VR6AbuIsXJx/aeU8NOKMNkVoR9Qz38BCg
-         L42/kNp8yGfmgJwLWJ1n6XsD9Ccr6bDMoD/Qwua2omJgB+pJkyiJsC2qO2bAyKxPgh3S
-         N9ykDctPuAiy0lQ/wzrmJIxRPmkVOtIU0B54EJ0s3R2ShftkFCbK/TEbvxqaM99en7C/
-         Tvmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1hTo1UwRlyqp+pMdlXGYPhfq0rOnoJLrck7pYizHgPU=;
-        b=ZsJqVRkDQFisnC/Z5+FUGljpZ31HxTsSGhLYXTmKTsSGsPIocpgzUrTXzwz3Cgue0J
-         klFyFrc9oyjrk9KUvQ3iLYjD/qc8thOzpGVHgy81BfHw2xc9k0dNDznYqMdL5FNlmF4j
-         OGuPIb9T2+0ef9e/Um7EAkltERkBOoADWyKES1pq+Ctoqy07/zezwonHw1Cd/aqK7UEH
-         rN1dweq+tbhfxAgAdfQH/bPhmmmVo50Wa8EorZE/0N9xvg8vO8FjK5hHzd/BAPgGV+DW
-         oM4Jy+IRnm/To+Nx+KLL98fZxkyGmYfp+DhkQFkaZIBg7mlbmjqWYN4gNyPhnVygJOFc
-         CeWA==
-X-Gm-Message-State: AOAM532ihUlwUUnpzaU4hGtO/FaU4dPKbUPXHLFW1eiTr1dQVkzPu2mY
-        C6J9a6OH735Rbx9qDTrUWyyXuZV43yYMIx19EUw=
-X-Google-Smtp-Source: ABdhPJyX0puTwgDSKe17THJRks86nytntC1/Vm9fFgYZajAdikFyaOpXXy9Bg8UpfdHkE4M8OR1qUHu1CsaKoe3XyEw=
-X-Received: by 2002:a17:902:ced0:b029:12d:4ce1:ce3a with SMTP id
- d16-20020a170902ced0b029012d4ce1ce3amr9073769plg.0.1629025821388; Sun, 15 Aug
- 2021 04:10:21 -0700 (PDT)
+        Sun, 15 Aug 2021 07:23:44 -0400
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id D641815F93A;
+        Sun, 15 Aug 2021 20:23:09 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17FBN8lj265086
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sun, 15 Aug 2021 20:23:09 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-22) with ESMTPS id 17FBN8Jk1660981
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sun, 15 Aug 2021 20:23:08 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 17FBN6An1660978;
+        Sun, 15 Aug 2021 20:23:06 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+References: <20210808162453.1653-1-pali@kernel.org>
+        <20210808162453.1653-2-pali@kernel.org>
+        <87h7frtlu0.fsf@mail.parknet.co.jp>
+        <20210815094224.dswbjywnhvajvzjv@pali>
+Date:   Sun, 15 Aug 2021 20:23:06 +0900
+In-Reply-To: <20210815094224.dswbjywnhvajvzjv@pali> ("Pali
+ =?iso-8859-1?Q?Roh=E1r=22's?= message of
+        "Sun, 15 Aug 2021 11:42:24 +0200")
+Message-ID: <871r6vt0it.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-References: <20210814211713.180533-1-yury.norov@gmail.com> <20210814211713.180533-18-yury.norov@gmail.com>
-In-Reply-To: <20210814211713.180533-18-yury.norov@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 15 Aug 2021 14:09:45 +0300
-Message-ID: <CAHp75Vcjq-XmX-rikawj+wVwG+V+gXzZPishpanZ79-SGFb8rA@mail.gmail.com>
-Subject: Re: [PATCH 17/17] vsprintf: rework bitmap_list_string
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        "open list:VFIO DRIVER" <kvm@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 12:21 AM Yury Norov <yury.norov@gmail.com> wrote:
+To: Pali Rohár <pali@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org,  linux-ntfs-dev@lists.sourceforge.net,  linux-cifs@vger.kernel.org,  jfs-discussion@lists.sourceforge.net,  linux-kernel@vger.kernel.org,  Alexander Viro <viro@zeniv.linux.org.uk>,  Jan Kara <jack@suse.cz>,  "Theodore Y . Ts'o" <tytso@mit.edu>,  Luis de Bethencourt <luisbg@kernel.org>,  Salah Triki <salah.triki@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,  Dave Kleikamp <shaggy@kernel.org>,  Anton Altaparmakov <anton@tuxera.com>,  Pavel Machek <pavel@ucw.cz>,  Marek Behún <marek.behun@nic.cz>,  Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Gcc: nnimap+ibmpc.myhome.or.jp:Sent
+--text follows this line--
+To: Pali Rohár <pali@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org,  linux-ntfs-dev@lists.sourceforge.net,  linux-cifs@vger.kernel.org,  jfs-discussion@lists.sourceforge.net,  linux-kernel@vger.kernel.org,  Alexander Viro <viro@zeniv.linux.org.uk>,  Jan Kara <jack@suse.cz>,  "Theodore Y . Ts'o" <tytso@mit.edu>,  Luis de Bethencourt <luisbg@kernel.org>,  Salah Triki <salah.triki@gmail.com>,  Andrew Morton <akpm@linux-foundation.org>,  Dave Kleikamp <shaggy@kernel.org>,  Anton Altaparmakov <anton@tuxera.com>,  Pavel Machek <pavel@ucw.cz>,  Marek Behún <marek.behun@nic.cz>,  Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Gcc: nnimap+ibmpc.myhome.or.jp:Sent
+--text follows this line--
+Pali Rohár <pali@kernel.org> writes:
+
+>> This change is not equivalent to utf8=1. In the case of utf8=1, vfat
+>> uses iocharset's conversion table and it can handle more than ascii.
+>> 
+>> So this patch is incompatible changes, and handles less chars than
+>> utf8=1. So I think this is clean though, but this would be regression
+>> for user of utf8=1.
 >
-> bitmap_list_string() is very ineffective when printing bitmaps with long
-> ranges of set bits because it calls find_next_bit for each bit in the
-> bitmap.  We can do better by detecting ranges of set bits.
+> I do not think so... But please correct me, as this code around is mess.
 >
-> In my environment, before/after is 943008/31008 ns.
+> Without this change when utf8=1 is set then iocharset= encoding is used
+> for case-insensitivity implementation (toupper / tolower conversion).
+> For all other parts are use correct utf8* conversion functions.
+>
+> But you use touppper / tolower functions from iocharset= encoding on
+> stream of utf8 bytes then you either get identity or some unpredictable
+> garbage in utf8. So when comparing two (different) non-ASCII filenames
+> via this method you in most cases get that filenames are different.
+> Because converting their utf8 bytes via toupper / tolower functions from
+> iocharset= encoding results in two different byte sequences in most
+> cases. Even for two utf8 case-insensitive same strings.
+>
+> But you can play with it and I guess it is possible to find two
+> different utf8 strings which after toupper / tolower conversion from
+> some iocharset= encoding would lead to same byte sequence.
+>
+> This patch uses for utf8 tolower / touppser function simple 7-bit
+> tolower / toupper ascii function. And so for 7-bit ascii file names
+> there is no change.
+>
+> So this patch changes behavior when comparing non 7-bit ascii file
+> names, but only in cases when previously two different file names were
+> marked as same. As now they are marked correctly as different. So this
+> is changed behavior, but I guess it is bug fix which is needed.
+> If you want I can put this change into separate patch.
+>
+> Issue that two case-insensitive same files are marked as different is
+> not changed by this patch and therefore this issue stay here.
 
-I would add a couple of words, maybe in parentheses, to describe what
-your environment is.
+OK, sure. utf8 looks like broken than I was thinking (although user can
+use iocharset=ascii and utf8=1 for this). The code might be better to
+clean up a bit more though, looks like good basically.
 
-...
+One thing, please update FAT_DEFAULT_IOCHARSET help in Kconfig and
+Documentation/filesystems/vfat.rst (with new warning about iocharset=utf8).
 
-> +               buf = number(++buf, end, rtop - 1, default_dec_spec);
-
-++buf is a bit confusing here. Since you will rewrite the buf value
-anyway, I would write the parameter as buf + 1.
-
+Thanks.
 -- 
-With Best Regards,
-Andy Shevchenko
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
