@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0BD3ECB3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B583ECB38
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhHOVbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        id S233130AbhHOVay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbhHOV3G (ORCPT
+        with ESMTP id S232134AbhHOV3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 15 Aug 2021 17:29:06 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8109CC0612A7
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 14:28:30 -0700 (PDT)
-Message-ID: <20210815211303.882793524@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADC7C0612A8
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 14:28:31 -0700 (PDT)
+Message-ID: <20210815211303.938676930@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629062909;
+        s=2020; t=1629062910;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=vRYH3lXprNIkcIyNuvndwQFOMUpMUPQVnMjtHhMN11M=;
-        b=uJ7UEmGA+fUyFHO4RyILto+99utIyw4nmQxkvLaHOKyohww4ysKXgsLJEpuseMsVayG/FD
-        HlDn1cHetAbW7eu8zG18KDAoVtKwiBACOZ4eE7Cldr+OiX2S8H6E/FP21gtyWGJNs3ieMx
-        bVtwi5NKqsNWGbfVyYWweWX97LEMBBVYHHNRr3PiaIc4WDhWpoaH0tf49WmN/TQR4PmZMG
-        3iAnWbe7SdTZDfVHQ8hjwrVFAghhRcr6UNMFyTuYQeaY05ImglWL4iHJn+dJt3wz7avy4H
-        RpvBTVIEa+7xxKDaKby0+UVmMjTUczgm+QiDs5R/LHhNC5y2Wq9XfcsAAICsLA==
+        bh=lqolXdw1SKc4oNuWw3sFxwNczR7NC0sp2gE+CrKGG7I=;
+        b=bGemIjuf7echrTwxNzJEXoOdRBmSUU7TWeNOnX1AprKMMOp/r10t6LQAeQn7zWXjefhU6b
+        T6lbHO6UjsInbt49ZCEilj1csNjsyHu3R5oW76sNTFa74Pn9EXGdinIZD75uWSOoEBbTnx
+        FBWKur9eNUeU2YHrQIKhK9C4UgPqxNOAgDyNXrZYGsloMgqxYWs0Txxra8/IYE9PTBMPV7
+        gn+8JYF/Jcspl9gOGmUforumg242BS7amexlP/EnGoMgxQW2uzvud5IuO78PXv3ACHWrAE
+        LkTVXshTvkqMLB8A2T49DZ+MPfCTOh38SZh1IHthqvS1I0t9fzpjYbMCOVRfaQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629062909;
+        s=2020e; t=1629062910;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=vRYH3lXprNIkcIyNuvndwQFOMUpMUPQVnMjtHhMN11M=;
-        b=dyZ3w+t3+essG4Sx444L+6YQC6H0ixclvbrc5ty5wlFQD+fOb/vO0k5h3c5jBiNSmztIxh
-        uJZQxKEnWgN/srDg==
+        bh=lqolXdw1SKc4oNuWw3sFxwNczR7NC0sp2gE+CrKGG7I=;
+        b=3/PKdUiyTo6oBhwodHxlJLZ1jGhTOJfVItC+I+JaxhwVee4Sj5wJNAISYY51pjtx551lqa
+        KlVrJg6go46iknBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,471 +48,82 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V5 34/72] locking/rwlock: Provide RT variant
+Subject: [patch V5 35/72] locking/rtmutex: Squash !RT tasks to DEFAULT_PRIO
 References: <20210815203225.710392609@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Sun, 15 Aug 2021 23:28:28 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 23:28:30 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Ensure all !RT tasks have the same prio such that they end up in FIFO
+order and aren't split up according to nice level.
 
-Similar to rw_semaphores on RT the rwlock substitution is not writer fair
-because it's not feasible to have a writer inherit it's priority to
-multiple readers. Readers blocked on a writer follow the normal rules of
-priority inheritance. Like RT spinlocks RT rwlocks are state preserving
-across the slow lock operations (contended case).
+The reason why nice levels were taken into account so far is historical. In
+the early days of the rtmutex code it was done to give the PI boosting and
+deboosting a larger coverage.
 
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V5: Add missing might_sleep() and fix lockdep init (Sebastian)
+V4: Picked up as a new patch
 ---
- include/linux/rwlock_rt.h       |  140 ++++++++++++++++++++++++++++++++++++++++
- include/linux/rwlock_types.h    |   49 ++++++++++----
- include/linux/spinlock_rt.h     |    2 
- kernel/Kconfig.locks            |    2 
- kernel/locking/spinlock.c       |    7 ++
- kernel/locking/spinlock_debug.c |    5 +
- kernel/locking/spinlock_rt.c    |  131 +++++++++++++++++++++++++++++++++++++
- 7 files changed, 323 insertions(+), 13 deletions(-)
- create mode 100644 include/linux/rwlock_rt.h
 ---
---- /dev/null
-+++ b/include/linux/rwlock_rt.h
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#ifndef __LINUX_RWLOCK_RT_H
-+#define __LINUX_RWLOCK_RT_H
-+
-+#ifndef __LINUX_SPINLOCK_RT_H
-+#error Do not include directly. Use spinlock.h
-+#endif
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+extern void __rt_rwlock_init(rwlock_t *rwlock, const char *name,
-+			     struct lock_class_key *key);
-+#else
-+static inline void __rt_rwlock_init(rwlock_t *rwlock, char *name,
-+				    struct lock_class_key *key)
-+{
-+}
-+#endif
-+
-+#define rwlock_init(rwl)				\
-+do {							\
-+	static struct lock_class_key __key;		\
-+							\
-+	init_rwbase_rt(&(rwl)->rwbase);		\
-+	__rt_rwlock_init(rwl, #rwl, &__key);		\
-+} while (0)
-+
-+extern void rt_read_lock(rwlock_t *rwlock);
-+extern int rt_read_trylock(rwlock_t *rwlock);
-+extern void rt_read_unlock(rwlock_t *rwlock);
-+extern void rt_write_lock(rwlock_t *rwlock);
-+extern int rt_write_trylock(rwlock_t *rwlock);
-+extern void rt_write_unlock(rwlock_t *rwlock);
-+
-+static __always_inline void read_lock(rwlock_t *rwlock)
-+{
-+	rt_read_lock(rwlock);
-+}
-+
-+static __always_inline void read_lock_bh(rwlock_t *rwlock)
-+{
-+	local_bh_disable();
-+	rt_read_lock(rwlock);
-+}
-+
-+static __always_inline void read_lock_irq(rwlock_t *rwlock)
-+{
-+	rt_read_lock(rwlock);
-+}
-+
-+#define read_lock_irqsave(lock, flags)			\
-+	do {						\
-+		typecheck(unsigned long, flags);	\
-+		rt_read_lock(lock);			\
-+		flags = 0;				\
-+	} while (0)
-+
-+#define read_trylock(lock)	__cond_lock(lock, rt_read_trylock(lock))
-+
-+static __always_inline void read_unlock(rwlock_t *rwlock)
-+{
-+	rt_read_unlock(rwlock);
-+}
-+
-+static __always_inline void read_unlock_bh(rwlock_t *rwlock)
-+{
-+	rt_read_unlock(rwlock);
-+	local_bh_enable();
-+}
-+
-+static __always_inline void read_unlock_irq(rwlock_t *rwlock)
-+{
-+	rt_read_unlock(rwlock);
-+}
-+
-+static __always_inline void read_unlock_irqrestore(rwlock_t *rwlock,
-+						   unsigned long flags)
-+{
-+	rt_read_unlock(rwlock);
-+}
-+
-+static __always_inline void write_lock(rwlock_t *rwlock)
-+{
-+	rt_write_lock(rwlock);
-+}
-+
-+static __always_inline void write_lock_bh(rwlock_t *rwlock)
-+{
-+	local_bh_disable();
-+	rt_write_lock(rwlock);
-+}
-+
-+static __always_inline void write_lock_irq(rwlock_t *rwlock)
-+{
-+	rt_write_lock(rwlock);
-+}
-+
-+#define write_lock_irqsave(lock, flags)			\
-+	do {						\
-+		typecheck(unsigned long, flags);	\
-+		rt_write_lock(lock);			\
-+		flags = 0;				\
-+	} while (0)
-+
-+#define write_trylock(lock)	__cond_lock(lock, rt_write_trylock(lock))
-+
-+#define write_trylock_irqsave(lock, flags)		\
-+({							\
-+	int __locked;					\
-+							\
-+	typecheck(unsigned long, flags);		\
-+	flags = 0;					\
-+	__locked = write_trylock(lock);			\
-+	__locked;					\
-+})
-+
-+static __always_inline void write_unlock(rwlock_t *rwlock)
-+{
-+	rt_write_unlock(rwlock);
-+}
-+
-+static __always_inline void write_unlock_bh(rwlock_t *rwlock)
-+{
-+	rt_write_unlock(rwlock);
-+	local_bh_enable();
-+}
-+
-+static __always_inline void write_unlock_irq(rwlock_t *rwlock)
-+{
-+	rt_write_unlock(rwlock);
-+}
-+
-+static __always_inline void write_unlock_irqrestore(rwlock_t *rwlock,
-+						    unsigned long flags)
-+{
-+	rt_write_unlock(rwlock);
-+}
-+
-+#define rwlock_is_contended(lock)		(((void)(lock), 0))
-+
-+#endif
---- a/include/linux/rwlock_types.h
-+++ b/include/linux/rwlock_types.h
-@@ -5,9 +5,19 @@
- # error "Do not include directly, include spinlock_types.h"
+ kernel/locking/rtmutex.c |   25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
+
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -244,11 +244,28 @@ static __always_inline bool unlock_rt_mu
+ }
  #endif
  
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+# define RW_DEP_MAP_INIT(lockname)					\
-+	.dep_map = {							\
-+		.name = #lockname,					\
-+		.wait_type_inner = LD_WAIT_CONFIG,			\
-+	}
-+#else
-+# define RW_DEP_MAP_INIT(lockname)
-+#endif
++static __always_inline int __waiter_prio(struct task_struct *task)
++{
++	int prio = task->prio;
 +
-+#ifndef CONFIG_PREEMPT_RT
++	if (!rt_prio(prio))
++		return DEFAULT_PRIO;
++
++	return prio;
++}
++
++static __always_inline void
++waiter_update_prio(struct rt_mutex_waiter *waiter, struct task_struct *task)
++{
++	waiter->prio = __waiter_prio(task);
++	waiter->deadline = task->dl.deadline;
++}
++
  /*
-- * include/linux/rwlock_types.h - generic rwlock type definitions
-- *				  and initializers
-+ * generic rwlock type definitions and initializers
-  *
-  * portions Copyright 2005, Red Hat, Inc., Ingo Molnar
-  * Released under the General Public License (GPL).
-@@ -25,16 +35,6 @@ typedef struct {
- 
- #define RWLOCK_MAGIC		0xdeaf1eed
- 
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--# define RW_DEP_MAP_INIT(lockname)					\
--	.dep_map = {							\
--		.name = #lockname,					\
--		.wait_type_inner = LD_WAIT_CONFIG,			\
--	}
--#else
--# define RW_DEP_MAP_INIT(lockname)
--#endif
--
- #ifdef CONFIG_DEBUG_SPINLOCK
- #define __RW_LOCK_UNLOCKED(lockname)					\
- 	(rwlock_t)	{	.raw_lock = __ARCH_RW_LOCK_UNLOCKED,	\
-@@ -50,4 +50,29 @@ typedef struct {
- 
- #define DEFINE_RWLOCK(x)	rwlock_t x = __RW_LOCK_UNLOCKED(x)
- 
-+#else /* !CONFIG_PREEMPT_RT */
-+
-+#include <linux/rwbase_rt.h>
-+
-+typedef struct {
-+	struct rwbase_rt	rwbase;
-+	atomic_t		readers;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map	dep_map;
-+#endif
-+} rwlock_t;
-+
-+#define __RWLOCK_RT_INITIALIZER(name)					\
-+{									\
-+	.rwbase = __RWBASE_INITIALIZER(name),				\
-+	RW_DEP_MAP_INIT(name)						\
-+}
-+
-+#define __RW_LOCK_UNLOCKED(name) __RWLOCK_RT_INITIALIZER(name)
-+
-+#define DEFINE_RWLOCK(name)						\
-+	rwlock_t name = __RW_LOCK_UNLOCKED(name)
-+
-+#endif /* CONFIG_PREEMPT_RT */
-+
- #endif /* __LINUX_RWLOCK_TYPES_H */
---- a/include/linux/spinlock_rt.h
-+++ b/include/linux/spinlock_rt.h
-@@ -146,4 +146,6 @@ static inline int spin_is_locked(spinloc
- 
- #define assert_spin_locked(lock) BUG_ON(!spin_is_locked(lock))
- 
-+#include <linux/rwlock_rt.h>
-+
- #endif
---- a/kernel/Kconfig.locks
-+++ b/kernel/Kconfig.locks
-@@ -251,7 +251,7 @@ config ARCH_USE_QUEUED_RWLOCKS
- 
- config QUEUED_RWLOCKS
- 	def_bool y if ARCH_USE_QUEUED_RWLOCKS
--	depends on SMP
-+	depends on SMP && !PREEMPT_RT
- 
- config ARCH_HAS_MMIOWB
- 	bool
---- a/kernel/locking/spinlock.c
-+++ b/kernel/locking/spinlock.c
-@@ -124,8 +124,11 @@ void __lockfunc __raw_##op##_lock_bh(loc
-  *         __[spin|read|write]_lock_bh()
+  * Only use with rt_mutex_waiter_{less,equal}()
   */
- BUILD_LOCK_OPS(spin, raw_spinlock);
-+
-+#ifndef CONFIG_PREEMPT_RT
- BUILD_LOCK_OPS(read, rwlock);
- BUILD_LOCK_OPS(write, rwlock);
-+#endif
+ #define task_to_waiter(p)	\
+-	&(struct rt_mutex_waiter){ .prio = (p)->prio, .deadline = (p)->dl.deadline }
++	&(struct rt_mutex_waiter){ .prio = __waiter_prio(p), .deadline = (p)->dl.deadline }
  
- #endif
+ static __always_inline int rt_mutex_waiter_less(struct rt_mutex_waiter *left,
+ 						struct rt_mutex_waiter *right)
+@@ -698,8 +715,7 @@ static int __sched rt_mutex_adjust_prio_
+ 	 * serializes all pi_waiters access and rb_erase() does not care about
+ 	 * the values of the node being removed.
+ 	 */
+-	waiter->prio = task->prio;
+-	waiter->deadline = task->dl.deadline;
++	waiter_update_prio(waiter, task);
  
-@@ -209,6 +212,8 @@ void __lockfunc _raw_spin_unlock_bh(raw_
- EXPORT_SYMBOL(_raw_spin_unlock_bh);
- #endif
+ 	rt_mutex_enqueue(lock, waiter);
  
-+#ifndef CONFIG_PREEMPT_RT
-+
- #ifndef CONFIG_INLINE_READ_TRYLOCK
- int __lockfunc _raw_read_trylock(rwlock_t *lock)
- {
-@@ -353,6 +358,8 @@ void __lockfunc _raw_write_unlock_bh(rwl
- EXPORT_SYMBOL(_raw_write_unlock_bh);
- #endif
+@@ -969,8 +985,7 @@ static int __sched task_blocks_on_rt_mut
+ 	raw_spin_lock(&task->pi_lock);
+ 	waiter->task = task;
+ 	waiter->lock = lock;
+-	waiter->prio = task->prio;
+-	waiter->deadline = task->dl.deadline;
++	waiter_update_prio(waiter, task);
  
-+#endif /* !CONFIG_PREEMPT_RT */
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 
- void __lockfunc _raw_spin_lock_nested(raw_spinlock_t *lock, int subclass)
---- a/kernel/locking/spinlock_debug.c
-+++ b/kernel/locking/spinlock_debug.c
-@@ -31,6 +31,7 @@ void __raw_spin_lock_init(raw_spinlock_t
- 
- EXPORT_SYMBOL(__raw_spin_lock_init);
- 
-+#ifndef CONFIG_PREEMPT_RT
- void __rwlock_init(rwlock_t *lock, const char *name,
- 		   struct lock_class_key *key)
- {
-@@ -48,6 +49,7 @@ void __rwlock_init(rwlock_t *lock, const
- }
- 
- EXPORT_SYMBOL(__rwlock_init);
-+#endif
- 
- static void spin_dump(raw_spinlock_t *lock, const char *msg)
- {
-@@ -139,6 +141,7 @@ void do_raw_spin_unlock(raw_spinlock_t *
- 	arch_spin_unlock(&lock->raw_lock);
- }
- 
-+#ifndef CONFIG_PREEMPT_RT
- static void rwlock_bug(rwlock_t *lock, const char *msg)
- {
- 	if (!debug_locks_off())
-@@ -228,3 +231,5 @@ void do_raw_write_unlock(rwlock_t *lock)
- 	debug_write_unlock(lock);
- 	arch_write_unlock(&lock->raw_lock);
- }
-+
-+#endif /* !CONFIG_PREEMPT_RT */
---- a/kernel/locking/spinlock_rt.c
-+++ b/kernel/locking/spinlock_rt.c
-@@ -127,3 +127,134 @@ void __rt_spin_lock_init(spinlock_t *loc
- }
- EXPORT_SYMBOL(__rt_spin_lock_init);
- #endif
-+
-+/*
-+ * RT-specific reader/writer locks
-+ */
-+#define rwbase_set_and_save_current_state(state)	\
-+	current_save_and_set_rtlock_wait_state()
-+
-+#define rwbase_restore_current_state()			\
-+	current_restore_rtlock_saved_state()
-+
-+static __always_inline int
-+rwbase_rtmutex_lock_state(struct rt_mutex_base *rtm, unsigned int state)
-+{
-+	if (unlikely(!rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
-+		rtlock_slowlock(rtm);
-+	return 0;
-+}
-+
-+static __always_inline int
-+rwbase_rtmutex_slowlock_locked(struct rt_mutex_base *rtm, unsigned int state)
-+{
-+	rtlock_slowlock_locked(rtm);
-+	return 0;
-+}
-+
-+static __always_inline void rwbase_rtmutex_unlock(struct rt_mutex_base *rtm)
-+{
-+	if (likely(rt_mutex_cmpxchg_acquire(rtm, current, NULL)))
-+		return;
-+
-+	rt_mutex_slowunlock(rtm);
-+}
-+
-+static __always_inline int  rwbase_rtmutex_trylock(struct rt_mutex_base *rtm)
-+{
-+	if (likely(rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
-+		return 1;
-+
-+	return rt_mutex_slowtrylock(rtm);
-+}
-+
-+#define rwbase_signal_pending_state(state, current)	(0)
-+
-+#define rwbase_schedule()				\
-+	schedule_rtlock()
-+
-+#include "rwbase_rt.c"
-+/*
-+ * The common functions which get wrapped into the rwlock API.
-+ */
-+int __sched rt_read_trylock(rwlock_t *rwlock)
-+{
-+	int ret;
-+
-+	ret = rwbase_read_trylock(&rwlock->rwbase);
-+	if (ret) {
-+		rwlock_acquire_read(&rwlock->dep_map, 0, 1, _RET_IP_);
-+		rcu_read_lock();
-+		migrate_disable();
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(rt_read_trylock);
-+
-+int __sched rt_write_trylock(rwlock_t *rwlock)
-+{
-+	int ret;
-+
-+	ret = rwbase_write_trylock(&rwlock->rwbase);
-+	if (ret) {
-+		rwlock_acquire(&rwlock->dep_map, 0, 1, _RET_IP_);
-+		rcu_read_lock();
-+		migrate_disable();
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(rt_write_trylock);
-+
-+void __sched rt_read_lock(rwlock_t *rwlock)
-+{
-+	___might_sleep(__FILE__, __LINE__, 0);
-+	rwlock_acquire_read(&rwlock->dep_map, 0, 0, _RET_IP_);
-+	rwbase_read_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
-+	rcu_read_lock();
-+	migrate_disable();
-+}
-+EXPORT_SYMBOL(rt_read_lock);
-+
-+void __sched rt_write_lock(rwlock_t *rwlock)
-+{
-+	___might_sleep(__FILE__, __LINE__, 0);
-+	rwlock_acquire(&rwlock->dep_map, 0, 0, _RET_IP_);
-+	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
-+	rcu_read_lock();
-+	migrate_disable();
-+}
-+EXPORT_SYMBOL(rt_write_lock);
-+
-+void __sched rt_read_unlock(rwlock_t *rwlock)
-+{
-+	rwlock_release(&rwlock->dep_map, _RET_IP_);
-+	migrate_enable();
-+	rcu_read_unlock();
-+	rwbase_read_unlock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
-+}
-+EXPORT_SYMBOL(rt_read_unlock);
-+
-+void __sched rt_write_unlock(rwlock_t *rwlock)
-+{
-+	rwlock_release(&rwlock->dep_map, _RET_IP_);
-+	rcu_read_unlock();
-+	migrate_enable();
-+	rwbase_write_unlock(&rwlock->rwbase);
-+}
-+EXPORT_SYMBOL(rt_write_unlock);
-+
-+int __sched rt_rwlock_is_contended(rwlock_t *rwlock)
-+{
-+	return rw_base_is_contended(&rwlock->rwbase);
-+}
-+EXPORT_SYMBOL(rt_rwlock_is_contended);
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __rt_rwlock_init(rwlock_t *rwlock, const char *name,
-+		      struct lock_class_key *key)
-+{
-+	debug_check_no_locks_freed((void *)rwlock, sizeof(*rwlock));
-+	lockdep_init_map_wait(&rwlock->dep_map, name, key, 0, LD_WAIT_CONFIG);
-+}
-+EXPORT_SYMBOL(__rt_rwlock_init);
-+#endif
+ 	/* Get the top priority waiter on the lock */
+ 	if (rt_mutex_has_waiters(lock))
 
