@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E013E3EC822
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C67A3EC828
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 10:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236843AbhHOIUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 04:20:33 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42044 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236557AbhHOIUb (ORCPT
+        id S236733AbhHOIc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 04:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhHOIcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 04:20:31 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A554221FA9;
-        Sun, 15 Aug 2021 08:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629015601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4Tdriq/35b3uaxYvyvcC9d4/h3tCij4GOIS0JBGQ4oQ=;
-        b=D1KIxsqJ6qbIdzkykVSAcgzIrYDoTT0fqLK36SIIn77lSRa0qaODaB+9I4K3N3nbauYLYJ
-        s8W+5PEnRtKqRyg5tfv69s9OxmYXk/F76K7/XCMH5M0OqNFciwsy/NeICo64iu8eLICMFd
-        psrCPOqDPdhszDzYdMJ1FBOXEl0jOZk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629015601;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4Tdriq/35b3uaxYvyvcC9d4/h3tCij4GOIS0JBGQ4oQ=;
-        b=w3dpyfCEy4jp8EHrpOQDTfUozhXCrakfjReTCVvw3ZGWntNsPpsz8vZoJUDREXnxLUrEpA
-        Qr1l5fgjPdKXx+Aw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8DA2513668;
-        Sun, 15 Aug 2021 08:20:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id U0IxIjHOGGEsQQAAGKfGzw
-        (envelope-from <bp@suse.de>); Sun, 15 Aug 2021 08:20:01 +0000
-Date:   Sun, 15 Aug 2021 10:20:41 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] locking/urgent for v5.14-rc6
-Message-ID: <YRjOWSXeGTyNiZxv@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        Sun, 15 Aug 2021 04:32:55 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D27C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id w6so10311227plg.9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=UHcKuv5O/mzdpWQ8UofB89FE5dbzLYR4/iV02jGFcSE=;
+        b=tjwJykmV95oRLTxd/WxhXOqC5QfUo6q9jxsPpnqXoPMyiENyY7O0n4Xh9tOLIpK2xS
+         8GlGXE675dAykuZVHBjoUkvuQXOjrS3fsLTdff+tewr903pRtA/qSzcpoqXVR0+wQDm/
+         wbJTvj0OuLiRYBGIwQlZUOc010miqSxsqkBQSPaPoUBoGq60zwou3PlQPiM1m9VORyYT
+         Bxq/1pC3hUcnWC7z61w3HZKo6v0ZSuMvZPN6YKk78lIgKuraKrIV7yY0Bylt0u9ClC92
+         +xxoTXXlQxVoXRMRtecrKVXiYzxyQCmvn8W621djcA6Teq6QQY7nCwgPZILuT0ANwKWm
+         cHug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UHcKuv5O/mzdpWQ8UofB89FE5dbzLYR4/iV02jGFcSE=;
+        b=IO8Cz227F37l5uoSY6ezcXcFDueO0GOxmh3bXN0k+F+zvf5lmKFiw659rWqX36Bx7p
+         tbRypPS40DHc7O1aZg6BS8N+o6gGciedcvDaH6FC4nk4gIPwPGgY92MRYbCQZ9VMfObA
+         xKVX1aLjbI/mt1ARCgSYRv1UfptPXBpTpqA0lySUpz4CJSnmrir5qh8bmfIBEnpGZSX3
+         GWRnG5TS1pMQ5V8DQe622rUSRNbG4m8OVmweFmEW4LcZoDqm43KbOTEO/XQY/wzFgOVN
+         PcPUdSvld/oNUlR7Ru5bUMgPdnB+vRASo6FZy9opReUchbDaRYLVW0iOt8VnOCZuW34y
+         m0dA==
+X-Gm-Message-State: AOAM532LbHq+1VSV47m5oxZwtOj7VipEXW0PG0vMfMoAUf5B7j+k0Ou4
+        pkF/XcWQVXY72oBlWPWcZwDo
+X-Google-Smtp-Source: ABdhPJzxXrxHbClgwJUtfcwgOQ6Fy/Rzy6VmQ0cxKiiw/99piS75VSnpeNRYDvdz+xN4qrF+urV30w==
+X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr11065068pjg.118.1629016344371;
+        Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
+Received: from localhost.localdomain ([123.231.122.209])
+        by smtp.gmail.com with ESMTPSA id q140sm7587812pfc.191.2021.08.15.01.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Aug 2021 01:32:24 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fix slab-out-of-bounds in betopff_init function
+Date:   Sun, 15 Aug 2021 14:01:55 +0530
+Message-Id: <20210815083155.10559-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This patch resolves the bug 'KASAN: slab-out-of-bounds Write in betop_probe' reported by Syzbot.
 
-please pull a single locking/urgent fix for 5.14.
+Patch resolve the bug by checking hid_device's hid_input is non empty before it's been used.
 
-Thx.
-
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
 ---
+ drivers/hid/hid-betopff.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
-
-  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/locking_urgent_for_v5.14_rc6
-
-for you to fetch changes up to 07d25971b220e477eb019fcb520a9f2e3ac966af:
-
-  locking/rtmutex: Use the correct rtmutex debugging config option (2021-08-10 08:21:52 +0200)
-
-----------------------------------------------------------------
-- Fix a CONFIG symbol's spelling
-
-----------------------------------------------------------------
-Zhen Lei (1):
-      locking/rtmutex: Use the correct rtmutex debugging config option
-
- kernel/locking/rtmutex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
+diff --git a/drivers/hid/hid-betopff.c b/drivers/hid/hid-betopff.c
+index 0790fbd3fc9a..6a1f894b0e97 100644
+--- a/drivers/hid/hid-betopff.c
++++ b/drivers/hid/hid-betopff.c
+@@ -56,19 +56,20 @@ static int betopff_init(struct hid_device *hid)
+ {
+ 	struct betopff_device *betopff;
+ 	struct hid_report *report;
+-	struct hid_input *hidinput =
+-			list_first_entry(&hid->inputs, struct hid_input, list);
++	struct hid_input *hidinput;
+ 	struct list_head *report_list =
+ 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
+-	struct input_dev *dev = hidinput->input;
++	struct input_dev *dev;
+ 	int field_count = 0;
+ 	int error;
+ 	int i, j;
+ 
+-	if (list_empty(report_list)) {
++	if (list_empty(&hid->inputs)) {
+ 		hid_err(hid, "no output reports found\n");
+ 		return -ENODEV;
+ 	}
++	hidinput = list_entry(hid->inputs.next, struct hid_input, list);
++	dev = hidinput->input;
+ 
+ 	report = list_first_entry(report_list, struct hid_report, list);
+ 	/*
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
