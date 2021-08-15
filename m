@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624AD3EC9A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918673EC9AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238575AbhHOOna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 10:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
+        id S238624AbhHOOuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 10:50:08 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50668 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232465AbhHOOn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 10:43:29 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D9A760F21;
-        Sun, 15 Aug 2021 14:42:56 +0000 (UTC)
-Date:   Sun, 15 Aug 2021 15:45:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] drivers/iio: Remove all strcpy() uses
-Message-ID: <20210815154555.6770bc8d@jic23-huawei>
-In-Reply-To: <20210815081949.GA1664@titan>
-References: <20210814135509.4500-1-len.baker@gmx.com>
-        <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
-        <20210815081949.GA1664@titan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S232179AbhHOOt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 10:49:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6PILfRjAPIVbz7yptfJPF9IyZ40Hyv3qB6aT3DV5dp0=; b=ut2RCLnu27XQkRGthBymynOQQZ
+        Xd9ucWfi3PcTak22UjzYxGXAGt7U9J6iHthlTmr6SlbDZT39eIje4WbhY2ZEzJ6pkaJ2/pBNRKPK0
+        ON+VrolZU6G55MJ3K7AKMEb7xLbgA6AQJkfAFWdUI16lItFHaOmMy3hgObykL0iOW5t8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mFHRt-000FOs-IJ; Sun, 15 Aug 2021 16:49:17 +0200
+Date:   Sun, 15 Aug 2021 16:49:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, robert.marko@sartura.hr,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v3 1/3] net: mdio: Add the reset function for IPQ MDIO
+ driver
+Message-ID: <YRkpbb8e7EP1McjP@lunn.ch>
+References: <20210812100642.1800-1-luoj@codeaurora.org>
+ <20210812100642.1800-2-luoj@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812100642.1800-2-luoj@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Aug 2021 10:19:49 +0200
-Len Baker <len.baker@gmx.com> wrote:
-
-> Hi Andy,
+On Thu, Aug 12, 2021 at 06:06:40PM +0800, Luo Jie wrote:
+> 1. configure the MDIO clock source frequency.
+> 2. the LDO resource is needed to configure the ethernet LDO available
+> for CMN_PLL.
 > 
-> On Sat, Aug 14, 2021 at 10:36:18PM +0300, Andy Shevchenko wrote:
-> > On Sat, Aug 14, 2021 at 4:55 PM Len Baker <len.baker@gmx.com> wrote:  
-> > >
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leading
-> > > to all kinds of misbehaviors. So, remove all the uses and add
-> > > devm_kstrdup() or devm_kasprintf() instead.
-> > >
-> > > This patch is an effort to clean up the proliferation of str*()
-> > > functions in the kernel and a previous step in the path to remove
-> > > the strcpy function from the kernel entirely [1].
-> > >
-> > > [1] https://github.com/KSPP/linux/issues/88  
-> >
-> > Thank you very much for doing this!
-> > Now I like the result,
-Agreed and applied to the togreg branch of iio.git, pushed out as testing
-for 0-day to poke at it and see if we missed anything.
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
 
-Thanks,
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Jonathan
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com> 
- 
-> 
-> Thank you too Andy (and folks) for your help on this.
-> 
-> Regards,
-> Len
-
+    Andrew
