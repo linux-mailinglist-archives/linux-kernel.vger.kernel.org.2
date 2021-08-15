@@ -2,223 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605743EC9CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5BE3EC9D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhHOPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 11:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232412AbhHOPCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:02:12 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D337D6115A;
-        Sun, 15 Aug 2021 15:01:33 +0000 (UTC)
-Date:   Sun, 15 Aug 2021 16:04:32 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH] iio: accel: adxl355: Add triggered buffer support
-Message-ID: <20210815160432.7be30909@jic23-huawei>
-In-Reply-To: <20210813083455.252986-1-puranjay12@gmail.com>
-References: <20210813083455.252986-1-puranjay12@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S236447AbhHOPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 11:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhHOPGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 11:06:31 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702A9C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:06:01 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a20so18035683plm.0
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 08:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K6dRiWVfqPYEGM0XTEKXwwPFa8TOMfctM2bCbgQM+j8=;
+        b=awukKEq7lju7+gP8fp5KAmtuR1zsNlohkntw3H98WvFvJYUmm13lITxVn4boMQFLw2
+         PPez7WBS9vEMXXfMKmzeigCCFJWIzjde/O7sYLV2rli9iRICFRo31ZJgy3+ZyHZa/Hcl
+         JTSfr9BfZcGEKUNHTU+dLBA1G2NXgUB/6Y0a48HOduIsjTB26zDYNJiTMkN5QGv/eVaZ
+         P7czhCYnin2PV0Y4XEN7Y5EYvh5U3AgGooxgzbK5iYMtRh3M99ny07we2LVoSvZOZ4Fr
+         KNjUG2NmVt55ENYY5awmmk8+FaIhCanRWEnUSF+LdflMuLyvP1hcjdFtrWMH/yPH1D0o
+         Y3JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K6dRiWVfqPYEGM0XTEKXwwPFa8TOMfctM2bCbgQM+j8=;
+        b=n9du3DqQHRbb8yGqS8+89WInXm9mBqsvv8RktAbPhj1V6vLYs9c1I6ZsXf3kyIFx/n
+         sazzHwfLEBi3tr3iT2FNVIPFAyiUoSBnCvjhk8Yo6MFx+ECdx+iY+EM2KWxGEg60UEy5
+         Ybay2135HVyNtN2P+hJxVb7ITLK0jJntDrhFcb6RCtYabKNLRUJHae3m4kM6Zp4pklcM
+         tQBnR0Lz7iVOr00pf68xqoFhHDbWCLEsQ5M1sK2Nz6qeLkraPlwBmEJxNLZhmG2Z5kH3
+         XD2XX1nnpZgQGk1RBjTrSkfs8zdqWe0LS4KiisTlcLqaASo22cmNHnlSzQ01omoL21Gt
+         efOA==
+X-Gm-Message-State: AOAM5310ZPH8E1Ihp5nRexqQflc175Hs0K7Ex8G4kYOdSv9M7TiN6pt8
+        GoTDA+S2vSGTXrAEoHMfdWPwrA==
+X-Google-Smtp-Source: ABdhPJwf3R7s+OxNSZpue4Hs5WG2pxqKsERxrpJSOdO/N0NS6P3UeDpiQ15qtMcCtC8i3dxqo5aQhQ==
+X-Received: by 2002:a17:902:7611:b029:12b:e55e:6ee8 with SMTP id k17-20020a1709027611b029012be55e6ee8mr9816536pll.4.1629039960768;
+        Sun, 15 Aug 2021 08:06:00 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id nl9sm6796837pjb.33.2021.08.15.08.05.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 08:06:00 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] open/accept directly into io_uring fixed file
+ table
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1628871893.git.asml.silence@gmail.com>
+ <YRbBYCn29B+kgZcy@localhost> <bcb6f253-41d6-6e0f-5b4b-ea1e02a105bc@gmail.com>
+ <5cf40313-d151-9d10-3ebd-967eb2f53b1f@kernel.dk> <YRiNGTL2Dp/7vNzt@localhost>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a2bd1600-5649-c4be-d2a9-79c89bae774a@kernel.dk>
+Date:   Sun, 15 Aug 2021 09:05:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YRiNGTL2Dp/7vNzt@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 14:04:55 +0530
-Puranjay Mohan <puranjay12@gmail.com> wrote:
-
-> Provide a way for continuous data capture by setting up buffer support. The
-> data ready signal exposed at the DRDY pin of the ADXL355 is exploited as
-> a hardware interrupt which triggers to fill the buffer.
+On 8/14/21 9:42 PM, Josh Triplett wrote:
+> On Sat, Aug 14, 2021 at 05:03:44PM -0600, Jens Axboe wrote:
+>> What's the plan in terms of limiting the amount of direct descriptors
+>> (for lack of a better word)? That seems like an important aspect that
+>> should get sorted out upfront.
+> [...]
+>> Maybe we have a way to size the direct table, which will consume entries
+>> from the same pool that the regular file table does? That would then
+>> work both ways, and could potentially just be done dynamically similarly
+>> to how we expand the regular file table when we exceed its current size.
 > 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> I think we'll want a way to size the direct table regardless, so that
+> it's pre-allocated and doesn't need to be resized when an index is used.
 
-Hi.
+But how do you size it then? I can see this being used into the hundreds
+of thousands of fds easily, and right now the table is just an array
+(though split into segments, avoiding huge allocs).
 
-A few comments additions to add to what Andy has highlighted.
-Other than these details and those Andy highlighted, this looks good to me.
+> Then, we could do one of two equally easy things, depending on what
+> policy we want to set:
+> 
+> - Deduct the full size of the fixed-file table from the allowed number
+>   of files the process can have open. So, if RLIMIT_NOFILE is 1048576,
+>   and you pre-allocate 1000000 entries in the fixed-file table, you can
+>   have no more than 48576 file descriptors open. Stricter, but
+>   potentially problematic: a program *might* expect that it can
+>   dup2(some_fd, nofile - 1) successfully.
+> 
+> - Use RLIMIT_NOFILE as the maximum size of the fixed-file table. There's
+>   precedent for this: we already use RLIMIT_NOFILE as the maximum number
+>   of file descriptors you can have in flight over UNIX sockets.
+> 
+> I personally would favor the latter; it seems simple and
+> straightforward.
 
-...
+I strongly prefer the latter too, and hopefully that's palatable since
+the default limits are quite low anyway. And, as you say, it already is
+done for inflight fds as well.
 
-> @@ -157,6 +162,7 @@ static const struct adxl355_chan_info adxl355_chans[] = {
->  };
->  
->  struct adxl355_data {
-> +	int irq;
->  	struct regmap *regmap;
->  	struct device *dev;
->  	struct mutex lock; /* lock to protect op_mode */
-> @@ -165,7 +171,14 @@ struct adxl355_data {
->  	enum adxl355_hpf_3db hpf_3db;
->  	int calibbias[3];
->  	int adxl355_hpf_3db_table[7][2];
-> -	u8 transf_buf[3] ____cacheline_aligned;
-> +	struct iio_trigger      *dready_trig;
-
-As the rest of the structure doesn't have extra spaces
-for alignment of variable names, don't do it here either.
-
-> +	union {
-> +		u8 transf_buf[3];
-> +		struct {
-> +			u8 buf[14];
-> +			s64 ts;
-> +		} buffer;
-> +	} ____cacheline_aligned;
->  };
->  
->  static int adxl355_set_op_mode(struct adxl355_data *data,
-> @@ -186,6 +199,23 @@ static int adxl355_set_op_mode(struct adxl355_data *data,
->  	return ret;
->  }
->  
-
-
-...
-
-> +static const struct iio_trigger_ops adxl355_trigger_ops = {
-> +	.set_trigger_state = &adxl355_data_rdy_trigger_set_state,
-> +	.validate_device = &iio_trigger_validate_own_device,
-> +};
-> +
-> +static irqreturn_t adxl355_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf = p;
-> +	struct iio_dev *indio_dev = pf->indio_dev;
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&data->lock);
-> +
-> +	ret = regmap_bulk_read(data->regmap, ADXL355_XDATA3_REG,
-> +			       &data->buffer.buf[1],
-
-I would add some comments on the data layout here given you are
-writing the bottom 24bits of a 32 bit big endian variable and that
-may be non obvious.
-
-There is also an issue as a result of the union used for the buffer.
-It is (I think) possible that earlier read has put a non 0 value
-into transf_buf[0].  Now C doesn't guarantee that will be visible
-if accessed via buffer.buf[0], but it's certainly possible.
-As such you may get garbage in that top byte.  It's not a 'problem'
-from an ABI point of view, but it might well confused someone
-who is for example logging the data stream unprocessed.
-We have drivers where the hardware puts something in the bits
-that will get screened out using the type (often status info and
-similar) but we probably don't want it to be from an entirely different
-read or write.
-
-Perhaps just set buf[0] = 0 somewhere in this funciton with a comment
-on why.
-
-> +			       3);
-> +	if (ret)
-> +		goto out_unlock_notify;
-> +
-
-...
-
->  
-> +static int adxl355_probe_trigger(struct iio_dev *indio_dev)
-> +{
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	if (!data->irq) {
-> +		dev_info(data->dev, "no irq, using polling\n");
-> +		return 0;
-> +	}
-> +
-> +	data->dready_trig = devm_iio_trigger_alloc(data->dev, "%s-dev%d",
-> +						   indio_dev->name,
-> +						   indio_dev->id);
-> +	if (!data->dready_trig)
-> +		return -ENOMEM;
-> +
-> +	data->dready_trig->ops = &adxl355_trigger_ops;
-> +	iio_trigger_set_drvdata(data->dready_trig, indio_dev);
-> +
-> +	ret = devm_request_irq(data->dev, data->irq,
-> +			       &iio_trigger_generic_data_rdy_poll,
-> +			       IRQF_ONESHOT, "adxl355_irq", data->dready_trig);
-> +	if (ret < 0)
-if (ret)
-
-If you follow through what devm_request_irq calls, you will see
-devm_request_threaded_irq internally checks for errors with if (rc) so
-we should do the same here.  It would also be more consistent with the
-rest of your code in this function.
-
-> +		return dev_err_probe(data->dev, ret, "request irq %d failed\n",
-> +				     data->irq);
-> +
-> +	ret = devm_iio_trigger_register(data->dev, data->dready_trig);
-> +	if (ret) {
-> +		dev_err(data->dev, "iio trigger register failed\n");
-> +		return ret;
-> +	}
-> +
-> +	indio_dev->trig = iio_trigger_get(data->dready_trig);
-> +
-> +	return 0;
-> +}
-> +
->  int adxl355_core_probe(struct device *dev, struct regmap *regmap,
->  		       const char *name)
->  {
-> @@ -563,18 +692,37 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
->  	data->op_mode = ADXL355_STANDBY;
->  	mutex_init(&data->lock);
->  
-> +	/*
-> +	 * Would be good to move it to the generic version.
-> +	 */
-> +	ret = of_irq_get_byname(dev->of_node, "DRDY");
-> +	if (ret > 0)
-> +		data->irq = ret;
-> +
->  	indio_dev->name = name;
->  	indio_dev->info = &adxl355_info;
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->channels = adxl355_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
-> +	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
->  
->  	ret = adxl355_setup(data);
-> -	if (ret < 0) {
-> +	if (ret) {
-
-Nitpick. Ideally this would have been in an earlier patch, but it's trivial here so
-I'm not that bothered (so don't bother moving it).
-
->  		dev_err(dev, "ADXL355 setup failed\n");
->  		return ret;
->  	}
->  
-> +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-> +					      &iio_pollfunc_store_time,
-> +					      &adxl355_trigger_handler, NULL);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "iio triggered buffer setup failed\n");
-> +
-> +	ret = adxl355_probe_trigger(indio_dev);
-> +	if (ret)
-> +		return ret;
-> +
->  	return devm_iio_device_register(dev, indio_dev);
->  }
->  EXPORT_SYMBOL_GPL(adxl355_core_probe);
+-- 
+Jens Axboe
 
