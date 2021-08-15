@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CEF3EC8D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF273EC8D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 13:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhHOLsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 07:48:36 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40509 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhHOLsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 07:48:33 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GnbC45vt8z9sRR;
-        Sun, 15 Aug 2021 21:48:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629028082;
-        bh=5xqqbQCDACat5noKc7sVDfOUl/dox4THfYZBtmAqvnk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g0PucV3ZN78kcYeDe7VodKe/Wywjk9YSjZdJ48cGw/on8KUNO2TxAld5FDpM6Y0+p
-         kfeEPEVr64WDU7rqcwVVOIqN+qK92CsW5M/amCwF3SED1KcOHdpFvQTEmj6agsTxxO
-         OIA4yTVcQXqOJuU2EIhOx66G3vM/RnLjKjOmNmoZBa/poEdOSCI1u2bGE5HG5Qd5fN
-         8XojWG0Vs7y6PPhc/R5kfg1pMMWip1a75S6zSdDijU5ph3pjbkkO6x7YAJT7U80+JJ
-         L40/1hfGG/LxnrfOw1w3pFGFIr+qhSCKfbVE0iOtj+Qu32wdTMPXEBI8rIm9SD8uGG
-         hfTTOOZ+W77jw==
-Date:   Sun, 15 Aug 2021 21:47:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>
-Cc:     Stephan Mueller <smueller@chronox.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the crypto-current tree
-Message-ID: <20210815214758.058cc946@canb.auug.org.au>
+        id S237645AbhHOLwm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Aug 2021 07:52:42 -0400
+Received: from mail1.shanghaitech.edu.cn ([119.78.254.90]:4759 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229597AbhHOLwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 07:52:41 -0400
+Received: from [10.15.44.216] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 7712015506132;
+        Sun, 15 Aug 2021 19:51:51 +0800 (CST)
+Received: from DESKTOP-U066CHB.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.216) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Sun, 15 Aug 2021 19:51:53 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next v2] include/linux/mm.h: move nr_free_buffer_pages from swap.h to mm.h
+Date:   Sun, 15 Aug 2021 19:50:57 +0800
+Message-ID: <20210815115057.1511-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xrCP79R3VAtTUXDDa.sLRpw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xrCP79R3VAtTUXDDa.sLRpw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+nr_free_buffer_pages could be exposed through mm.h instead of swap.h.
+The advantage of this change is that it can reduce the obsolete includes.
+For example, net/ipv4/tcp.c wouldn't need swap.h any more since it has
+already included mm.h.
+Moreover, after preprocessing all the files that use nr_free_buffer_pages,
+it turns out that those files have already included mm.h.
+Thus, we can move nr_free_buffer_pages from swap.h to mm.h safely. This change
+will not affect the compilation of other files.
 
-Hi all,
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+---
+ include/linux/mm.h   | 1 +
+ include/linux/swap.h | 2 +-
+ net/ipv4/tcp.c       | 1 -
+ 3 files changed, 2 insertions(+), 2 deletions(-)
 
-In commit
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ce8fc0fd6..6ca7b7fba 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -871,6 +871,7 @@ void put_pages_list(struct list_head *pages);
+ void split_page(struct page *page, unsigned int order);
+ void folio_copy(struct folio *dst, struct folio *src);
+ 
++extern unsigned long nr_free_buffer_pages(void);
+ /*
+  * Compound pages have a destructor function.  Provide a
+  * prototype for that function and accessor functions.
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index cdf0957a8..22b17431a 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -341,7 +341,7 @@ void workingset_update_node(struct xa_node *node);
+ 
+ /* linux/mm/page_alloc.c */
+ extern unsigned long totalreserve_pages;
+-extern unsigned long nr_free_buffer_pages(void);
++
+ 
+ /* Definition of global_zone_page_state not available yet */
+ #define nr_free_pages() global_zone_page_state(NR_FREE_PAGES)
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index f931def63..dcdd8ebfb 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -260,7 +260,6 @@
+ #include <linux/random.h>
+ #include <linux/memblock.h>
+ #include <linux/highmem.h>
+-#include <linux/swap.h>
+ #include <linux/cache.h>
+ #include <linux/err.h>
+ #include <linux/time.h>
+-- 
+2.25.1
 
-  5261cdf457ce ("crypto: drbg - select SHA512")
 
-Fixes tag
-
-  Fixes: 9b7b94683a9b "crypto: DRBG - switch to HMAC SHA512 DRBG as default
-
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-
-Please do not break Fixes tags over more than one line.  Also, it is
-usual to surround the Subject with parentheses as well as quotes:
-
-Fixes: 9b7b94683a9b ("crypto: DRBG - switch to HMAC SHA512 DRBG as default =
-DRBG")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xrCP79R3VAtTUXDDa.sLRpw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEY/u4ACgkQAVBC80lX
-0Gx6GwgAgc7rsAZrh9qki4WRS6ITpDm/TfHRqju+WDzCfTDhCj6SWUq2spEE1faT
-Ekx4F6o3J/moo4cGCSGgF2gc+cB5NvVxnXZJpsUDz75mub5qk07fagiAGQDuukwf
-RZ7z/79G2aoYJzzuntclfh+gFbXmhh602UFEAef8Qweni/mBDi21nilA+4BOyTf5
-wTT2eG3se7b54NtJst49F4jr0zKMdWRNUU0eXbSP7w+QW99mMTCw56DedGJYjOsC
-Qv0qBC96S90LQNn+isO1sE7zslP16Cm2NHOmcK4m3P96Zjc48vegzqBASuQvb4sy
-j2N1VzlAW9nl6LCX8knu8WcqqBkLkw==
-=85It
------END PGP SIGNATURE-----
-
---Sig_/xrCP79R3VAtTUXDDa.sLRpw--
