@@ -2,176 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFE53ECA08
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF173ECA15
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238279AbhHOPo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 11:44:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        id S238351AbhHOPwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 11:52:14 -0400
+Received: from mga05.intel.com ([192.55.52.43]:12150 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhHOPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:44:29 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D964B61101;
-        Sun, 15 Aug 2021 15:43:56 +0000 (UTC)
-Date:   Sun, 15 Aug 2021 16:46:54 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Michael.Hennerich@analog.com, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de, Dragos.Bogdan@analog.com,
-        Darius.Berghe@analog.com, andy.shevchenko@gmail.com,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-Subject: Re: [PATCH v12 2/2] iio: accel: Add driver support for ADXL355
-Message-ID: <20210815164654.3c51a8e3@jic23-huawei>
-In-Reply-To: <20210811073027.124619-3-puranjay12@gmail.com>
-References: <20210811073027.124619-1-puranjay12@gmail.com>
-        <20210811073027.124619-3-puranjay12@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229603AbhHOPwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 11:52:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="301335535"
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="301335535"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2021 08:51:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,322,1620716400"; 
+   d="scan'208";a="675205951"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Aug 2021 08:51:41 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mFIQH-000Pv8-5T; Sun, 15 Aug 2021 15:51:41 +0000
+Date:   Sun, 15 Aug 2021 23:51:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.08.12a] BUILD REGRESSION
+ 3d4b7b3ca5de1d3669890684c3e60d3dad6ea468
+Message-ID: <611937e6.01Keyb5y+yRUMF4/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 13:00:27 +0530
-Puranjay Mohan <puranjay12@gmail.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.08.12a
+branch HEAD: 3d4b7b3ca5de1d3669890684c3e60d3dad6ea468  EXP cpu: Identify CPUs entering new multi_cpu_stop() states
 
-> ADXL355 is a 3-axis MEMS Accelerometer. It offers low noise density,
-> low 0g offset drift, low power with selectable measurement ranges.
-> It also features programmable high-pass and low-pass filters.
-> 
-> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
-> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Hi Puranjay,
+Error/Warning reports:
 
-I took one last look at this so I can apply it without looking again assuming
-the dt review is fine.  Noticed one issue with error handling, but I can tidy
-that up whilst applying assuming you aren't doing a v13 for some other reason.
-If you are please incorporate these changes as well.
+https://lore.kernel.org/lkml/202108140834.Q4T8R5pI-lkp@intel.com
+https://lore.kernel.org/lkml/202108152013.vPXwN8gj-lkp@intel.com
 
-Thanks,
+Error/Warning in current branch:
 
-Jonathan
+kernel/cpu.c:158:6: error: conflicting types for 'cpu_hp_check_delay'; have 'bool(const char *, const void *)' {aka '_Bool(const char *, const void *)'}
+kernel/cpu.c:159:6: error: conflicting types for 'cpu_hp_check_delay'; have 'bool(const char *, const void *)' {aka '_Bool(const char *, const void *)'}
+powerpc-linux-ld: cpu.c:(.text+0x1698): undefined reference to `__udivdi3'
 
+possible Error/Warning in current branch:
 
-...
+kernel/cpu.c:733:45: error: passing 'const char [19]' to parameter of type 'void *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+kernel/cpu.c:746:45: error: passing 'const char [19]' to parameter of type 'void *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+mips-linux-ld: cpu.c:(.text+0x17f0): undefined reference to `__udivdi3'
 
-> +
-> +static int adxl355_set_odr(struct adxl355_data *data,
-> +			   enum adxl355_odr odr)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&data->lock);
-> +
-> +	if (data->odr == odr)
-> +		goto out_unlock;
-> +
-> +	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
-> +	if (ret < 0)
-> +		goto out_unlock;
-> +
-> +	ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
-> +				 ADXL355_FILTER_ODR_MSK,
-> +				 FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
-> +	if (ret < 0)
-> +		goto out_unlock;
-> +
-> +	data->odr = odr;
-> +	adxl355_fill_3db_frequency_table(data);
-> +
-> +out_unlock:
-> +	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+Error/Warning ids grouped by kconfigs:
 
-As below, we should do this because it risks returning success when a failure
-actually occured.  Again, unless you are respinning for some other reason I'll
-add the logic whilst applying.
+gcc_recent_errors
+|-- alpha-allmodconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- alpha-allyesconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- alpha-randconfig-r021-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-allyesconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-buildonly-randconfig-r005-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-defconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-randconfig-p002-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-randconfig-r011-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-randconfig-r031-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-randconfig-r036-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- arc-randconfig-r043-20210812
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- ia64-randconfig-r032-20210814
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- ia64-randconfig-r036-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- mips-bmips_stb_defconfig
+|   `-- mips-linux-ld:cpu.c:(.text):undefined-reference-to-__udivdi3
+|-- mips-ip27_defconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- mips-randconfig-p002-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- openrisc-buildonly-randconfig-r001-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- openrisc-buildonly-randconfig-r004-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- powerpc-cell_defconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- powerpc-randconfig-r013-20210815
+|   `-- powerpc-linux-ld:cpu.c:(.text):undefined-reference-to-__udivdi3
+|-- riscv-nommu_k210_defconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- riscv-nommu_virt_defconfig
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- sparc-randconfig-c024-20210814
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- sparc-randconfig-p001-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+|-- sparc-randconfig-r025-20210815
+|   `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
+`-- sparc64-randconfig-r001-20210815
+    `-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay-have-bool(const-char-const-void-)-aka-_Bool(const-char-const-void-)
 
-> +	mutex_unlock(&data->lock);
-> +	return ret;
-> +}
-> +
-> +static int adxl355_set_hpf_3db(struct adxl355_data *data,
-> +			       enum adxl355_hpf_3db hpf)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&data->lock);
-> +
-> +	if (data->hpf_3db == hpf)
-> +		goto unlock;
-> +
-> +	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
-> +	if (ret < 0)
-> +		goto set_opmode_unlock;
-> +
-> +	ret = regmap_update_bits(data->regmap, ADXL355_FILTER_REG,
-> +				 ADXL355_FILTER_HPF_MSK,
-> +				 FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
-> +	if (!ret)
-> +		data->hpf_3db = hpf;
-> +
-> +set_opmode_unlock:
-> +	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+clang_recent_errors
+|-- arm64-randconfig-r034-20210815
+|   `-- kernel-cpu.c:error:passing-const-char-to-parameter-of-type-void-discards-qualifiers-Werror-Wincompatible-pointer-types-discards-qualifiers
+|-- hexagon-randconfig-r045-20210815
+|   `-- kernel-cpu.c:error:passing-const-char-to-parameter-of-type-void-discards-qualifiers-Werror-Wincompatible-pointer-types-discards-qualifiers
+`-- riscv-randconfig-r002-20210815
+    `-- kernel-cpu.c:error:passing-const-char-to-parameter-of-type-void-discards-qualifiers-Werror-Wincompatible-pointer-types-discards-qualifiers
 
-We can't do this as it might potentially eat an error that meant the regmap
-update didn't occur.  To avoid that a little dance is needed using a second
-return value and we only set ret = ret2 if ret == 0
+elapsed time: 2951m
 
-Alternatively we just have a separate error handling path which doesn't set
-ret for the adxl355_set_op_mode(). I'll probably go with that as it's more
-code but easier to read.
+configs tested: 193
+configs skipped: 3
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210812
+i386                 randconfig-c001-20210813
+i386                 randconfig-c001-20210814
+openrisc                  or1klitex_defconfig
+m68k                        m5407c3_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arm                          ep93xx_defconfig
+arm                          iop32x_defconfig
+h8300                       h8s-sim_defconfig
+riscv                    nommu_k210_defconfig
+arm                        clps711x_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                 mpc837x_rdb_defconfig
+m68k                          hp300_defconfig
+arm                         at91_dt_defconfig
+powerpc                      mgcoge_defconfig
+m68k                          sun3x_defconfig
+xtensa                          iss_defconfig
+arm                      jornada720_defconfig
+arm                     davinci_all_defconfig
+mips                        workpad_defconfig
+arm                       omap2plus_defconfig
+powerpc                     pq2fads_defconfig
+mips                  maltasmvp_eva_defconfig
+h8300                            alldefconfig
+mips                     cu1830-neo_defconfig
+sparc                            alldefconfig
+arm                          lpd270_defconfig
+arm                          simpad_defconfig
+m68k                        stmark2_defconfig
+sh                          lboxre2_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                      walnut_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7619_defconfig
+arm                         orion5x_defconfig
+sh                           se7750_defconfig
+powerpc                    socrates_defconfig
+riscv                             allnoconfig
+powerpc                     ksi8560_defconfig
+sh                               alldefconfig
+arm                         s3c6400_defconfig
+arm                             mxs_defconfig
+sparc                       sparc32_defconfig
+arm                        multi_v5_defconfig
+powerpc                      makalu_defconfig
+m68k                        m5307c3_defconfig
+mips                        qi_lb60_defconfig
+arm                        mvebu_v7_defconfig
+mips                        bcm63xx_defconfig
+powerpc                     mpc5200_defconfig
+mips                      fuloong2e_defconfig
+xtensa                       common_defconfig
+mips                       lemote2f_defconfig
+riscv                    nommu_virt_defconfig
+xtensa                  audio_kc705_defconfig
+powerpc                        cell_defconfig
+sh                        sh7785lcr_defconfig
+mips                           ip27_defconfig
+powerpc                      obs600_defconfig
+arm                           stm32_defconfig
+m68k                       bvme6000_defconfig
+arm                         axm55xx_defconfig
+powerpc                    amigaone_defconfig
+mips                  decstation_64_defconfig
+powerpc                 mpc837x_mds_defconfig
+sh                   sh7724_generic_defconfig
+sh                          sdk7780_defconfig
+powerpc                        warp_defconfig
+arm                         lpc18xx_defconfig
+arm                             rpc_defconfig
+arm                        cerfcube_defconfig
+sh                           sh2007_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210814
+i386                 randconfig-a002-20210814
+i386                 randconfig-a001-20210814
+i386                 randconfig-a003-20210814
+i386                 randconfig-a006-20210814
+i386                 randconfig-a005-20210814
+i386                 randconfig-a004-20210813
+i386                 randconfig-a003-20210813
+i386                 randconfig-a001-20210813
+i386                 randconfig-a002-20210813
+i386                 randconfig-a006-20210813
+i386                 randconfig-a005-20210813
+i386                 randconfig-a004-20210815
+i386                 randconfig-a001-20210815
+i386                 randconfig-a002-20210815
+i386                 randconfig-a003-20210815
+i386                 randconfig-a006-20210815
+i386                 randconfig-a005-20210815
+x86_64               randconfig-a011-20210813
+x86_64               randconfig-a013-20210813
+x86_64               randconfig-a012-20210813
+x86_64               randconfig-a016-20210813
+x86_64               randconfig-a015-20210813
+x86_64               randconfig-a014-20210813
+x86_64               randconfig-a013-20210815
+x86_64               randconfig-a011-20210815
+x86_64               randconfig-a016-20210815
+x86_64               randconfig-a012-20210815
+x86_64               randconfig-a014-20210815
+x86_64               randconfig-a015-20210815
+x86_64               randconfig-a004-20210814
+x86_64               randconfig-a006-20210814
+x86_64               randconfig-a003-20210814
+x86_64               randconfig-a001-20210814
+x86_64               randconfig-a005-20210814
+x86_64               randconfig-a002-20210814
+i386                 randconfig-a011-20210815
+i386                 randconfig-a015-20210815
+i386                 randconfig-a014-20210815
+i386                 randconfig-a013-20210815
+i386                 randconfig-a016-20210815
+i386                 randconfig-a012-20210815
+i386                 randconfig-a011-20210814
+i386                 randconfig-a015-20210814
+i386                 randconfig-a013-20210814
+i386                 randconfig-a014-20210814
+i386                 randconfig-a016-20210814
+i386                 randconfig-a012-20210814
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-c001-20210815
+x86_64               randconfig-c001-20210814
+x86_64               randconfig-c001-20210813
+x86_64               randconfig-a004-20210815
+x86_64               randconfig-a006-20210815
+x86_64               randconfig-a003-20210815
+x86_64               randconfig-a001-20210815
+x86_64               randconfig-a002-20210815
+x86_64               randconfig-a005-20210815
+x86_64               randconfig-a006-20210813
+x86_64               randconfig-a004-20210813
+x86_64               randconfig-a003-20210813
+x86_64               randconfig-a002-20210813
+x86_64               randconfig-a005-20210813
+x86_64               randconfig-a001-20210813
+x86_64               randconfig-a013-20210814
+x86_64               randconfig-a011-20210814
+x86_64               randconfig-a016-20210814
+x86_64               randconfig-a012-20210814
+x86_64               randconfig-a014-20210814
+x86_64               randconfig-a015-20210814
 
-> +unlock:
-> +	mutex_unlock(&data->lock);
-> +	return ret;
-> +}
-> +
-
-...
-
-> +static int adxl355_write_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int val, int val2, long mask)
-> +{
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int odr_idx, hpf_idx, calibbias;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		odr_idx = adxl355_find_match(adxl355_odr_table,
-> +					     ARRAY_SIZE(adxl355_odr_table),
-> +					     val, val2);
-> +		if (odr_idx < 0)
-> +			return odr_idx;
-> +
-> +		return adxl355_set_odr(data, odr_idx);
-> +	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
-> +		hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
-> +					ARRAY_SIZE(data->adxl355_hpf_3db_table),
-
-Mixing different indentation styles isn't very nice for readability. 
-I'll tweak this whilst applying.
-
-> +					     val, val2);
-> +		if (hpf_idx < 0)
-> +			return hpf_idx;
-> +
-> +		return adxl355_set_hpf_3db(data, hpf_idx);
-> +	case IIO_CHAN_INFO_CALIBBIAS:
-> +		calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
-> +
-> +		return adxl355_set_calibbias(data, chan->address, calibbias);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-...
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
