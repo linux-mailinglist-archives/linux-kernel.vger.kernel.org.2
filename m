@@ -2,182 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8329D3EC7A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707713EC7A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 08:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhHOGMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 02:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229633AbhHOGL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 02:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED35D6103A;
-        Sun, 15 Aug 2021 06:11:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629007889;
-        bh=+IX5+SWQLDPBDNMa10/JtaQDgNFjaGUxPCZVn7OWT5s=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=UhWGtgrv0I80no6wslohSzVx0fNAkNPYt+u+0uIWkAAfQzKI+qAmXvnjGgX3+A0Gu
-         cCsoXXiLY6HFhc1ZnXBYA9vatgnnEOlHwpbxQWbNbdNBz5MHAww2uw8bENtfXlnE0f
-         S34hkI7XefzeH7jEVAZIomrvbF0MJND55fyqUpxaFzEoBBcuSFaY8T46hAsQ7LD9Z0
-         PNhaBOYQ1mZag+BFCcjlkxZWBqkaOYGNQj8R7UuYt0RC+Xw7Wzo5F/v8HjDjmmAG4K
-         z/X3lkDAXCyzT4Ngtc7w+k8Uibv3Z3UQLhg+6PyJ36idv/lge2kxlK9Ddj9V3VhLgT
-         AmkFonmvRG3fA==
-References: <1628648608-15239-1-git-send-email-wcheng@codeaurora.org>
- <bcc8ff30-5c49-bddd-2f61-05da859b2647@synopsys.com>
- <3edf74ba-d167-0589-a7ab-827b57aa5d9c@codeaurora.org>
- <e07b7061-e9cf-3146-d115-56967298051e@synopsys.com>
- <c82ee8f3-a364-f96f-76ac-2b78c1dc0517@codeaurora.org>
- <f760fdcf-cd59-2c71-8c85-a4624620edeb@synopsys.com>
- <5be881a9-c79d-3f21-9e2e-173307fef734@codeaurora.org>
- <dc37617c-0fe4-47b3-cbd0-1d729ce6201a@synopsys.com>
- <00952bdc-acc2-f373-9286-6a8380e0b7d1@synopsys.com>
-User-agent: mu4e 1.6.2; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jackp@codeauora.org" <jackp@codeauora.org>
-Subject: Re: [RFC][PATCH] usb: dwc3: usb: dwc3: Force stop EP0 transfers
- during pullup disable
-Date:   Sun, 15 Aug 2021 09:06:00 +0300
-In-reply-to: <00952bdc-acc2-f373-9286-6a8380e0b7d1@synopsys.com>
-Message-ID: <875yw7jkz6.fsf@kernel.org>
+        id S233937AbhHOGMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 02:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhHOGM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 02:12:29 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CB3C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 23:12:00 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso27387200pjb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 23:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3fftJnEfxURxmLnjNiehf0RW0huZ6+SyHBdzxTuKx/o=;
+        b=KlA7Owpqb9wMdALMfkbP245eOzJFTm+0iGL2VPl3Wxz88HOSFRIDB2fPBAU63yl8XQ
+         MRcq7HRId8I60hE+m/yDu/nrCMgejvGdy3si6xT+KNGsPgP1RKFXAMqnZNPPal2Lc19n
+         T0Biwxep/8TPjTt/r4TcYZFg8eOZ1EzLMrtiZZz5hMZcxXn0vAIcf1OLY8XWVkfam5RW
+         d6Dq3QySxMfR0gzmS6OLJCWEdMXJedhsrUq5hkQzY4iWWzXELSXsZXBypuNtR4dyHqYH
+         tmqEQVcDd4wXJipyTAV3UO3O/4kK4oxYMNtWK/0I3Z0poRD7Lfe42kNQDv+173W+RVhB
+         pRGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3fftJnEfxURxmLnjNiehf0RW0huZ6+SyHBdzxTuKx/o=;
+        b=UgGLTyZtG3xTyXeoYiiWR5XTBHpP28DysDeJS+16F0QpUk2h1snzeXd/MHdUakCIal
+         ARF89bd7loqjlHGinbfLP1jMGC/9/RDoi+x3qCjXdUOdise+v/M3lVGGRv8zYu3jguci
+         JLz6O1we6AjZzD9po06uvGCPwJl2OeGHSSmV/mv57Ag52Zh1bDrmBzJGUoRg1vW5+RkZ
+         AkAfsmJGoHXIl91j0i2wo/X4gEYHjgcXi3IBYbSB63prdvQwea5ZKixG35KDnisblBz3
+         1mvlJcnCyb9GzW+/1Kf0DoHHtprdnChTraKqch+1T0k1S7q3d/2k9MgCAAIkppOQ7UO2
+         3pcA==
+X-Gm-Message-State: AOAM530IptPqfkNMaymMVDm7K/0Q5PztL4Y+bL/Nk8/KIm96lyzvLSCR
+        rzZdDqsTdY0nffOkLGrHJeG/MA==
+X-Google-Smtp-Source: ABdhPJzyvz7gCADthYV1BjySpsAiZPwYmlM4MhA+cOfI2OWRpSc3quL5Vlt3qKxLLb4neUPAPcW5gg==
+X-Received: by 2002:a05:6a00:b95:b0:3e0:f3f4:6214 with SMTP id g21-20020a056a000b9500b003e0f3f46214mr10084426pfj.5.1629007919961;
+        Sat, 14 Aug 2021 23:11:59 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id h24sm6012565pjv.3.2021.08.14.23.11.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 14 Aug 2021 23:11:57 -0700 (PDT)
+From:   yanghui <yanghui.def@bytedance.com>
+To:     akpm@linux-foundation.org, willy@infradead.org,
+        songmuchun@bytedance.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        yanghui <yanghui.def@bytedance.com>
+Subject: [PATCH v3] mm/mempolicy: fix a race between offset_il_node and mpol_rebind_task
+Date:   Sun, 15 Aug 2021 14:10:34 +0800
+Message-Id: <20210815061034.84309-1-yanghui.def@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Servers happened below panic:
+Kernel version:5.4.56
+BUG: unable to handle page fault for address: 0000000000002c48
+RIP: 0010:__next_zones_zonelist+0x1d/0x40
+[264003.977696] RAX: 0000000000002c40 RBX: 0000000000100dca RCX: 0000000000000014
+[264003.977872] Call Trace:
+[264003.977888]  __alloc_pages_nodemask+0x277/0x310
+[264003.977908]  alloc_page_interleave+0x13/0x70
+[264003.977926]  handle_mm_fault+0xf99/0x1390
+[264003.977951]  __do_page_fault+0x288/0x500
+[264003.977979]  ? schedule+0x39/0xa0
+[264003.977994]  do_page_fault+0x30/0x110
+[264003.978010]  page_fault+0x3e/0x50
 
-Hi,
+The reason of panic is that MAX_NUMNODES is passd in the third parameter
+in function __alloc_pages_nodemask(preferred_nid). So if to access
+zonelist->zoneref->zone_idx in __next_zones_zonelist the panic will happen.
 
-Thinh Nguyen <Thinh.Nguyen@synopsys.com> writes:
->>>>>>>>> If this occurs, then the entire pullup disable routine is skipped and
->>>>>>>>> proper cleanup and halting of the controller does not complete.
->>>>>>>>> Instead of returning an error (which is ignored from the UDC
->>>>>>>>> perspective), do what is mentioned in the comments and force the
->>>>>>>>> transaction to complete and put the ep0state back to the SETUP phase.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->>>>>>>>> ---
->>>>>>>>>  drivers/usb/dwc3/ep0.c    | 4 ++--
->>>>>>>>>  drivers/usb/dwc3/gadget.c | 6 +++++-
->>>>>>>>>  drivers/usb/dwc3/gadget.h | 3 +++
->>>>>>>>>  3 files changed, 10 insertions(+), 3 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
->>>>>>>>> index 6587394..abfc42b 100644
->>>>>>>>> --- a/drivers/usb/dwc3/ep0.c
->>>>>>>>> +++ b/drivers/usb/dwc3/ep0.c
->>>>>>>>> @@ -218,7 +218,7 @@ int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
->>>>>>>>>  	return ret;
->>>>>>>>>  }
->>>>>>>>>  
->>>>>>>>> -static void dwc3_ep0_stall_and_restart(struct dwc3 *dwc)
->>>>>>>>> +void dwc3_ep0_stall_and_restart(struct dwc3 *dwc)
->>>>>>>>>  {
->>>>>>>>>  	struct dwc3_ep		*dep;
->>>>>>>>>  
->>>>>>>>> @@ -1073,7 +1073,7 @@ void dwc3_ep0_send_delayed_status(struct dwc3 *dwc)
->>>>>>>>>  	__dwc3_ep0_do_control_status(dwc, dwc->eps[direction]);
->>>>>>>>>  }
->>>>>>>>>  
->>>>>>>>> -static void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep)
->>>>>>>>> +void dwc3_ep0_end_control_data(struct dwc3 *dwc, struct dwc3_ep *dep)
->>>>>>>>>  {
->>>>>>>>>  	struct dwc3_gadget_ep_cmd_params params;
->>>>>>>>>  	u32			cmd;
->>>>>>>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>>>>>>>> index 54c5a08..a0e2e4d 100644
->>>>>>>>> --- a/drivers/usb/dwc3/gadget.c
->>>>>>>>> +++ b/drivers/usb/dwc3/gadget.c
->>>>>>>>> @@ -2437,7 +2437,11 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
->>>>>>>>>  				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
->>>>>>>>>  		if (ret == 0) {
->>>>>>>>>  			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
->>>>>>>>> -			return -ETIMEDOUT;
->>>>>>>>> +			spin_lock_irqsave(&dwc->lock, flags);
->>>>>>>>> +			dwc3_ep0_end_control_data(dwc, dwc->eps[0]);
->>>>>>>>> +			dwc3_ep0_end_control_data(dwc, dwc->eps[1]);
->>>>>>>>
->>>>>>>> End transfer command takes time, need to wait for it to complete before
->>>>>>>> issuing Start transfer again. Also, why restart again when it's about to
->>>>>>>> be disconnected.
->>>>>>>
->>>>>>> I can try without restarting it again, and see if that works.  Instead
->>>>>>> of waiting for the command complete event, can we set the ForceRM bit,
->>>>>>> similar to what we do for dwc3_remove_requests()?
->>>>>>>
->>>>>>
->>>>>> ForceRM=1 means that the controller will ignore updating the TRBs
->>>>>> (including not clearing the HWO and remain transfer size). The driver
->>>>>> still needs to wait for the command to complete before issuing Start
->>>>>> Transfer command. Otherwise Start Transfer won't go through. If we know
->>>>>> that we're not going to issue Start Transfer any time soon, then we may
->>>>>> be able to get away with ignoring End Transfer command completion.
->>>>>>
->>>>>
->>>>> I see.  Currently, in the place that we do use
->>>>> dwc3_ep0_end_control_data(), its followed by
->>>>> dwc3_ep0_stall_and_restart() which would execute start transfer.  For
->>>>
->>>> That doesn't look right. You can try to see if it can recover from a
->>>> control write request. Often time we do control read and not write.
->>>> (i.e. try to End Transfer and immediately Start Transfer on the same
->>>> direction control endpoint).
->>>>
->>> OK, I can try, but just to clarify, I was referring to how it was being
->>> done in:
->>>
->>> static void dwc3_ep0_xfernotready(struct dwc3 *dwc,
->>> 		const struct dwc3_event_depevt *event)
->>> {
->>> ...
->>> 		if (dwc->ep0_expect_in != event->endpoint_number) {
->>> 			struct dwc3_ep	*dep = dwc->eps[dwc->ep0_expect_in];
->>>
->>> 			dev_err(dwc->dev, "unexpected direction for Data Phase\n");
->>> 			dwc3_ep0_end_control_data(dwc, dep);
->>> 			dwc3_ep0_stall_and_restart(dwc);
->>> 			return;
->>> 		}
->>>
->
-> Looking at this snippet again, it looks wrong. For control write
-> unexpected direction, if the driver hasn't setup and started the DATA
-> phase yet, then it's fine, but there is a problem if it did.
->
-> Since dwc3_ep0_end_control_data() doesn't issue End Transfer command to
-> ep0 due to the resource_index check, it doesn't follow the control
+In offset_il_node(), first_node() return nid from pol->v.nodes, after
+this other threads may changed pol->v.nodes before next_node().
+This race condition will let next_node return MAX_NUMNODES.So put
+pol->nodes in a local variable.
 
-IIRC resource_index is always non-zero, so the command should be
-triggered. If you have access to a Lecroy USB Trainer, could you script
-this very scenario for verification?
+The race condition is between offset_il_node and cpuset_change_task_nodemask:
+CPU0:                                     CPU1:
+alloc_pages_vma()
+  interleave_nid(pol,)
+    offset_il_node(pol,)
+      first_node(pol->v.nodes)            cpuset_change_task_nodemask
+                      //nodes==0xc          mpol_rebind_task
+                                              mpol_rebind_policy
+                                                mpol_rebind_nodemask(pol,nodes)
+                      //nodes==0x3
+      next_node(nid, pol->v.nodes)//return MAX_NUMNODES
 
-> transfer flow model in the programming guide. This may cause
-> dwc3_ep0_stall_and_restart() to overwrite the TRBs for the DATA phase
-> with SETUP stage. Also, if the ep0 is already started, the driver won't
-> issue Start Transfer command again.
+Signed-off-by: yanghui <yanghui.def@bytedance.com>
+---
+Changes in v2:
+	1.Fix WRITE_ONCE/READ_ONCE can't deal with more than sizeof(long) bits data. 
+Changes in v3:
+	1.Modify some wrong comments.
 
-> This issue is unlikely to occur unless we see a misbehave host for
-> control write request. Regardless, we need to fix this. I may need some
+ mm/mempolicy.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-right, it would be a misbehaving host, however databook called it out as
-something that _can_ happen. Moreover, I have vague memories of this
-being one of the test cases in Lecroy's USB Certification Suite.
-
-> time before I can create a patch and test it. If you or anyone is up to
-> take this on, it'd be highly appreciated.
-
-Before we go ahead writing a patch for this, I'd really like to see
-traces showing this failure and a minimal reproducer. The reproducer
-would probably have to be a script for Lecroy's USB Trainer.
-
-Keep in mind this entire ep0 stack used to pass USBCV on every -rc and
-major release (before I lost access to all my USB gear heh).
-
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index e32360e90274..54f6eaff18c5 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1965,17 +1965,26 @@ unsigned int mempolicy_slab_node(void)
+  */
+ static unsigned offset_il_node(struct mempolicy *pol, unsigned long n)
+ {
+-	unsigned nnodes = nodes_weight(pol->nodes);
+-	unsigned target;
++	nodemask_t nodemask = pol->nodes;
++	unsigned int target, nnodes;
+ 	int i;
+ 	int nid;
++	/*
++	 * The barrier will stabilize the nodemask in a register or on
++	 * the stack so that it will stop changing under the code.
++	 *
++	 * Between first_node() and next_node(), pol->nodes could be changed
++	 * by other threads. So we put pol->nodes in a local stack.
++	 */
++	barrier();
+ 
++	nnodes = nodes_weight(nodemask);
+ 	if (!nnodes)
+ 		return numa_node_id();
+ 	target = (unsigned int)n % nnodes;
+-	nid = first_node(pol->nodes);
++	nid = first_node(nodemask);
+ 	for (i = 0; i < target; i++)
+-		nid = next_node(nid, pol->nodes);
++		nid = next_node(nid, nodemask);
+ 	return nid;
+ }
+ 
 -- 
-balbi
+2.20.1
+
