@@ -2,519 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08883ECB0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04983ECB1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhHOU6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 16:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230352AbhHOU6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 16:58:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 210256137A;
-        Sun, 15 Aug 2021 20:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629061087;
-        bh=701hC0Pot4YsRAa+iaWLWdi0Rx4tcYoDLxbMcFJr9ic=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PRey80e3BTQy0ZrIppsVN7Ao0R8V+DQSAazXxXX3MGEB/YwHxtFnfxL+Jm839E0An
-         z0dU6Di16fBcOjqCwuzSWk8Rk52L52xuSNUrlwFBCB5pnDCNhgxtKjRLiTuc7tQrPL
-         PQMhNfVMJEo+dydFvDF0LNLuX2AYqaHvpYmcIq44wjQP+kUbrM1/4a9qJrciR+e68P
-         lZnEfsoaYUA+TcA0b7OnmcNDMUaEn40OUFdt5wIb95llM54LEinCqZufM+AbI690hT
-         1veVvaRIjrqHfheLW/KAmoiRrmrKZMQgnubmChS+7U3kUln/jVZX/40DmeO9uKaz4t
-         2dmprSNHXpEKA==
-Received: by mail-ej1-f54.google.com with SMTP id u3so28310763ejz.1;
-        Sun, 15 Aug 2021 13:58:07 -0700 (PDT)
-X-Gm-Message-State: AOAM533uNQPzuKhQDUevR8yAjCulTLmVijMeOuSj3wCoOZ6T8QDIB9er
-        xHjyNaIcTrjUz3nKwidysajWOSH+TLi4aRSZqQ==
-X-Google-Smtp-Source: ABdhPJyq0vLK2t57/+XHb6p+i8A1B5VURFVXP0sEPT4szm07T192iP3qXDM4CZMHXJckQx8yaDy/grJa1XkdlAtM64g=
-X-Received: by 2002:a17:906:fa92:: with SMTP id lt18mr12962504ejb.359.1629061085598;
- Sun, 15 Aug 2021 13:58:05 -0700 (PDT)
+        id S231425AbhHOV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhHOV2K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 17:28:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1A8C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 14:27:39 -0700 (PDT)
+Message-ID: <20210815203225.710392609@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629062856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vD4/PQj+G8MztL0GEKu4K66CaJTr8ubrxHafz0eVy2Y=;
+        b=2+aZY2M5dF+QScA735HnBetHOcaICN89nIyWB51/XYjhxZzuccUNgLlXbcjciszEfp3r80
+        /4j5DSK7JJ4VXbogdrY2mTta9jXttkg/J+qoNrMCJqRa846jCAogUcdkyckW3G6QuNZcFg
+        DoUX7MjN3DbcadIXP2vOVOKZiDXc1vOzgDwTwQn/tkJ4uYiqFXxcxRd+YMVwlQKFjVM1jt
+        uKyyRThtuyblfw/tKsKv34jblOW6kZHuiMcD8w7bjII+KBzRC+KkodBDN2EsDiuw1bu3eu
+        OtdX3zE6HUzwTVsbLe9GQIShmT3nJeHRwfJX9Glfz5mmowxDdoV7C9vhyHv1pw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629062856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vD4/PQj+G8MztL0GEKu4K66CaJTr8ubrxHafz0eVy2Y=;
+        b=gNv4nDuciaTFpD6PS0MuGlIurjQ5AymxxUejrALlKUdpGC54E9HKa59TtT82sXWRon4wgM
+        /it/tObjFzUQ7XAQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: [patch V5 00/72] locking, sched: The PREEMPT-RT locking infrastructure
 MIME-Version: 1.0
-References: <20210815042525.36878-1-alyssa@rosenzweig.io> <20210815042525.36878-3-alyssa@rosenzweig.io>
-In-Reply-To: <20210815042525.36878-3-alyssa@rosenzweig.io>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Sun, 15 Aug 2021 15:57:53 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJfhQr7fa4dD2cOQmo8bdj2fQ+2Hjrh_4Xie-zbr1g7KQ@mail.gmail.com>
-Message-ID: <CAL_JsqJfhQr7fa4dD2cOQmo8bdj2fQ+2Hjrh_4Xie-zbr1g7KQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] PCI: apple: Add driver for the Apple M1
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Cc:     PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Sun, 15 Aug 2021 23:27:35 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 11:34 PM Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
->
-> Add a driver for the PCIe controller found in Apple system-on-chips,
-> particularly the Apple M1. This driver exposes the internal bus used for
-> the USB type-A ports, Ethernet, Wi-Fi, and Bluetooth. This patch brings
-> up the USB type-A ports and Ethernet. Bringing up the radios requires
-> interfacing with the System Management Coprocessor via Apple's
-> mailboxes, so that's left to a future patch.
->
-> In this state, the driver consists of two major parts: hardware
-> initialization and MSI handling. The hardware initialization is derived
-> from Mark Kettenis's U-Boot patches which in turn is derived from
-> Corellium's patches for the hardware. The rest of the driver is derived
-> from Marc Zyngier's driver for the hardware.
->
-> Co-developed-by: Stan Skowronek <stan@corellium.com>
-> Signed-off-by: Stan Skowronek <stan@corellium.com>
-> Co-developed-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> ---
->  MAINTAINERS                         |   1 +
->  drivers/pci/controller/Kconfig      |  13 +
->  drivers/pci/controller/Makefile     |   1 +
->  drivers/pci/controller/pcie-apple.c | 466 ++++++++++++++++++++++++++++
->  4 files changed, 481 insertions(+)
->  create mode 100644 drivers/pci/controller/pcie-apple.c
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d7d2e1d1e2f2..f13f65a844f7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1274,6 +1274,7 @@ M:        Alyssa Rosenzweig <alyssa@rosenzweig.io>
->  L:     linux-pci@vger.kernel.org
->  S:     Maintained
->  F:     Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> +F:     drivers/pci/controller/pcie-apple.c
->
->  APPLE SMC DRIVER
->  M:     Henrik Rydberg <rydberg@bitmath.org>
-> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> index 326f7d13024f..881a6a81f3e2 100644
-> --- a/drivers/pci/controller/Kconfig
-> +++ b/drivers/pci/controller/Kconfig
-> @@ -312,6 +312,19 @@ config PCIE_HISI_ERR
->           Say Y here if you want error handling support
->           for the PCIe controller's errors on HiSilicon HIP SoCs
->
-> +config PCIE_APPLE
-> +       tristate "Apple PCIe controller"
-> +       depends on ARCH_APPLE || COMPILE_TEST
-> +       depends on OF
-> +       depends on PCI_MSI_IRQ_DOMAIN
-> +       depends on GPIOLIB
-> +       help
-> +         Say Y here if you want to enable PCIe controller support on Apple
-> +         system-on-chips, like the Apple M1. This is required for the USB
-> +         type-A ports, Ethernet, Wi-Fi, and Bluetooth.
-> +
-> +         If unsure, say Y if you have an Apple Silicon system.
-> +
->  source "drivers/pci/controller/dwc/Kconfig"
->  source "drivers/pci/controller/mobiveil/Kconfig"
->  source "drivers/pci/controller/cadence/Kconfig"
-> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
-> index aaf30b3dcc14..f9d40bad932c 100644
-> --- a/drivers/pci/controller/Makefile
-> +++ b/drivers/pci/controller/Makefile
-> @@ -37,6 +37,7 @@ obj-$(CONFIG_VMD) += vmd.o
->  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
->  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
->  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
-> +obj-$(CONFIG_PCIE_APPLE) += pcie-apple.o
->  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
->  obj-y                          += dwc/
->  obj-y                          += mobiveil/
-> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-> new file mode 100644
-> index 000000000000..08088e06460f
-> --- /dev/null
-> +++ b/drivers/pci/controller/pcie-apple.c
-> @@ -0,0 +1,466 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * PCIe host bridge driver for Apple system-on-chips.
-> + *
-> + * The HW is ECAM compliant, so once the controller is initialized, the driver
-> + * mostly only needs MSI handling. Initialization requires enabling power and
-> + * clocks, along with a number of register pokes.
-> + *
-> + * Copyright (C) 2021 Google LLC
-> + * Copyright (C) 2021 Corellium LLC
-> + * Copyright (C) 2021 Mark Kettenis <kettenis@openbsd.org>
-> + * Copyright (C) 2021 Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> + * Author: Marc Zyngier <maz@kernel.org>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/irqdomain.h>
-> +#include <linux/module.h>
-> +#include <linux/msi.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/pci-ecam.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/gpio/consumer.h>
-> +
-> +#define CORE_RC_PHYIF_CTL              0x00024
-> +#define   CORE_RC_PHYIF_CTL_RUN                BIT(0)
-> +#define CORE_RC_PHYIF_STAT             0x00028
-> +#define   CORE_RC_PHYIF_STAT_REFCLK    BIT(4)
-> +#define CORE_RC_CTL                    0x00050
-> +#define   CORE_RC_CTL_RUN              BIT(0)
-> +#define CORE_RC_STAT                   0x00058
-> +#define   CORE_RC_STAT_READY           BIT(0)
-> +#define CORE_FABRIC_STAT               0x04000
-> +#define   CORE_FABRIC_STAT_MASK                0x001F001F
-> +#define CORE_PHY_CTL                   0x80000
-> +#define   CORE_PHY_CTL_CLK0REQ         BIT(0)
-> +#define   CORE_PHY_CTL_CLK1REQ         BIT(1)
-> +#define   CORE_PHY_CTL_CLK0ACK         BIT(2)
-> +#define   CORE_PHY_CTL_CLK1ACK         BIT(3)
-> +#define   CORE_PHY_CTL_RESET           BIT(7)
-
-I was going to say these should be a phy driver perhaps, but they are
-unused. So for now, just drop them.
-
-> +#define CORE_LANE_CFG(port)            (0x84000 + 0x4000 * (port))
-> +#define   CORE_LANE_CFG_REFCLK0REQ     BIT(0)
-> +#define   CORE_LANE_CFG_REFCLK1                BIT(1)
-> +#define   CORE_LANE_CFG_REFCLK0ACK     BIT(2)
-> +#define   CORE_LANE_CFG_REFCLKEN       (BIT(9) | BIT(10))
-> +#define CORE_LANE_CTL(port)            (0x84004 + 0x4000 * (port))
-> +#define   CORE_LANE_CTL_CFGACC         BIT(15)
-> +
-> +#define PORT_LTSSMCTL                  0x00080
-> +#define   PORT_LTSSMCTL_START          BIT(0)
-> +#define PORT_INTSTAT                   0x00100
-> +#define   PORT_INT_TUNNEL_ERR          BIT(31)
-> +#define   PORT_INT_CPL_TIMEOUT         BIT(23)
-> +#define   PORT_INT_RID2SID_MAPERR      BIT(22)
-> +#define   PORT_INT_CPL_ABORT           BIT(21)
-> +#define   PORT_INT_MSI_BAD_DATA                BIT(19)
-> +#define   PORT_INT_MSI_ERR             BIT(18)
-> +#define   PORT_INT_REQADDR_GT32                BIT(17)
-> +#define   PORT_INT_AF_TIMEOUT          BIT(15)
-> +#define   PORT_INT_LINK_DOWN           BIT(14)
-> +#define   PORT_INT_LINK_UP             BIT(12)
-> +#define   PORT_INT_LINK_BWMGMT         BIT(11)
-> +#define   PORT_INT_AER_MASK            (15 << 4)
-> +#define   PORT_INT_PORT_ERR            BIT(4)
-> +#define   PORT_INT_INTx(i)             BIT(i)
-> +#define   PORT_INT_INTxALL             15
-> +#define PORT_INTMSK                    0x00104
-> +#define PORT_INTMSKSET                 0x00108
-> +#define PORT_INTMSKCLR                 0x0010c
-> +#define PORT_MSICFG                    0x00124
-> +#define   PORT_MSICFG_EN               BIT(0)
-> +#define   PORT_MSICFG_L2MSINUM_SHIFT   4
-> +#define PORT_MSIBASE                   0x00128
-> +#define   PORT_MSIBASE_1_SHIFT         16
-> +#define PORT_MSIADDR                   0x00168
-> +#define PORT_LINKSTS                   0x00208
-> +#define   PORT_LINKSTS_UP              BIT(0)
-> +#define   PORT_LINKSTS_BUSY            BIT(2)
-> +#define PORT_LINKCMDSTS                        0x00210
-> +#define PORT_OUTS_NPREQS               0x00284
-> +#define   PORT_OUTS_NPREQS_REQ         BIT(24)
-> +#define   PORT_OUTS_NPREQS_CPL         BIT(16)
-> +#define PORT_RXWR_FIFO                 0x00288
-> +#define   PORT_RXWR_FIFO_HDR           GENMASK(15, 10)
-> +#define   PORT_RXWR_FIFO_DATA          GENMASK(9, 0)
-> +#define PORT_RXRD_FIFO                 0x0028C
-> +#define   PORT_RXRD_FIFO_REQ           GENMASK(6, 0)
-> +#define PORT_OUTS_CPLS                 0x00290
-> +#define   PORT_OUTS_CPLS_SHRD          GENMASK(14, 8)
-> +#define   PORT_OUTS_CPLS_WAIT          GENMASK(6, 0)
-> +#define PORT_APPCLK                    0x00800
-> +#define   PORT_APPCLK_EN               BIT(0)
-> +#define   PORT_APPCLK_CGDIS            BIT(8)
-> +#define PORT_STATUS                    0x00804
-> +#define   PORT_STATUS_READY            BIT(0)
-> +#define PORT_REFCLK                    0x00810
-> +#define   PORT_REFCLK_EN               BIT(0)
-> +#define   PORT_REFCLK_CGDIS            BIT(8)
-> +#define PORT_PERST                     0x00814
-> +#define   PORT_PERST_OFF               BIT(0)
-> +#define PORT_RID2SID(i16)              (0x00828 + 4 * (i16))
-> +#define   PORT_RID2SID_VALID           BIT(31)
-> +#define   PORT_RID2SID_SID_SHIFT       16
-> +#define   PORT_RID2SID_BUS_SHIFT       8
-> +#define   PORT_RID2SID_DEV_SHIFT       3
-> +#define   PORT_RID2SID_FUNC_SHIFT      0
-> +#define PORT_OUTS_PREQS_HDR            0x00980
-> +#define   PORT_OUTS_PREQS_HDR_MASK     GENMASK(9, 0)
-> +#define PORT_OUTS_PREQS_DATA           0x00984
-> +#define   PORT_OUTS_PREQS_DATA_MASK    GENMASK(15, 0)
-> +#define PORT_TUNCTRL                   0x00988
-> +#define   PORT_TUNCTRL_PERST_ON                BIT(0)
-> +#define   PORT_TUNCTRL_PERST_ACK_REQ   BIT(1)
-> +#define PORT_TUNSTAT                   0x0098c
-> +#define   PORT_TUNSTAT_PERST_ON                BIT(0)
-> +#define   PORT_TUNSTAT_PERST_ACK_PEND  BIT(1)
-> +#define PORT_PREFMEM_ENABLE            0x00994
-> +
-> +/* The doorbell address is "well known" */
-> +#define DOORBELL_ADDR                  0xfffff000
-> +
-> +/* The hardware exposes 3 ports. Port 0 (WiFi and Bluetooth) is special, as it
-> + * is power-gated by SMC to facilitate rfkill.
-> + */
-> +enum apple_pcie_port {
-> +       APPLE_PCIE_PORT_RADIO    = 0,
-> +       APPLE_PCIE_PORT_USB      = 1,
-> +       APPLE_PCIE_PORT_ETHERNET = 2,
-> +       APPLE_PCIE_NUM_PORTS
-> +};
-> +
-> +struct apple_pcie {
-> +       u32                     msi_base;
-> +       u32                     nvecs;
-> +       struct mutex            lock;
-> +       struct device           *dev;
-> +       struct irq_domain       *domain;
-> +       unsigned long           *bitmap;
-> +       void __iomem            *rc;
-> +};
-> +
-> +static inline void rmwl(u32 clr, u32 set, void __iomem *addr)
-> +{
-> +       writel((readl(addr) & ~clr) | set, addr);
-> +}
-> +
-> +static void apple_msi_top_irq_mask(struct irq_data *d)
-> +{
-> +       pci_msi_mask_irq(d);
-> +       irq_chip_mask_parent(d);
-> +}
-> +
-> +static void apple_msi_top_irq_unmask(struct irq_data *d)
-> +{
-> +       pci_msi_unmask_irq(d);
-> +       irq_chip_unmask_parent(d);
-> +}
-> +
-> +static void apple_msi_top_irq_eoi(struct irq_data *d)
-> +{
-> +       irq_chip_eoi_parent(d);
-> +}
-> +
-> +static struct irq_chip apple_msi_top_chip = {
-> +       .name                   = "PCIe MSI",
-> +       .irq_mask               = apple_msi_top_irq_mask,
-> +       .irq_unmask             = apple_msi_top_irq_unmask,
-> +       .irq_eoi                = apple_msi_top_irq_eoi,
-> +       .irq_set_affinity       = irq_chip_set_affinity_parent,
-> +       .irq_set_type           = irq_chip_set_type_parent,
-> +};
-> +
-> +static void apple_msi_compose_msg(struct irq_data *data, struct msi_msg *msg)
-> +{
-> +       msg->address_hi = 0;
-> +       msg->address_lo = DOORBELL_ADDR;
-> +       msg->data = data->hwirq;
-> +}
-> +
-> +static struct irq_chip apple_msi_bottom_chip = {
-> +       .name                   = "MSI",
-> +       .irq_mask               = irq_chip_mask_parent,
-> +       .irq_unmask             = irq_chip_unmask_parent,
-> +       .irq_set_affinity       = irq_chip_set_affinity_parent,
-> +       .irq_eoi                = irq_chip_eoi_parent,
-> +       .irq_set_affinity       = irq_chip_set_affinity_parent,
-> +       .irq_set_type           = irq_chip_set_type_parent,
-> +       .irq_compose_msi_msg    = apple_msi_compose_msg,
-> +};
-> +
-> +static int apple_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
-> +                                 unsigned int nr_irqs, void *args)
-> +{
-> +       struct apple_pcie *pcie = domain->host_data;
-> +       struct irq_fwspec fwspec;
-> +       unsigned int i;
-> +       int ret, hwirq;
-> +
-> +       mutex_lock(&pcie->lock);
-> +
-> +       hwirq = bitmap_find_free_region(pcie->bitmap, pcie->nvecs,
-> +                                       order_base_2(nr_irqs));
-> +
-> +       mutex_unlock(&pcie->lock);
-> +
-> +       if (hwirq < 0)
-> +               return -ENOSPC;
-> +
-> +       fwspec.fwnode = domain->parent->fwnode;
-> +       fwspec.param_count = 3;
-> +       fwspec.param[0] = 0;
-> +       fwspec.param[1] = hwirq + pcie->msi_base;
-> +       fwspec.param[2] = IRQ_TYPE_EDGE_RISING;
-> +
-> +       ret = irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, &fwspec);
-> +       if (ret)
-> +               return ret;
-> +
-> +       for (i = 0; i < nr_irqs; i++) {
-> +               irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
-> +                                             &apple_msi_bottom_chip,
-> +                                             domain->host_data);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void apple_msi_domain_free(struct irq_domain *domain, unsigned int virq,
-> +                                 unsigned int nr_irqs)
-> +{
-> +       struct irq_data *d = irq_domain_get_irq_data(domain, virq);
-> +       struct apple_pcie *pcie = domain->host_data;
-> +
-> +       mutex_lock(&pcie->lock);
-> +
-> +       bitmap_release_region(pcie->bitmap, d->hwirq, order_base_2(nr_irqs));
-> +
-> +       mutex_unlock(&pcie->lock);
-> +}
-> +
-> +static const struct irq_domain_ops apple_msi_domain_ops = {
-> +       .alloc  = apple_msi_domain_alloc,
-> +       .free   = apple_msi_domain_free,
-> +};
-> +
-> +static struct msi_domain_info apple_msi_info = {
-> +       .flags  = (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
-> +                  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX),
-> +       .chip   = &apple_msi_top_chip,
-> +};
-> +
-> +static int apple_pcie_setup_refclk(void __iomem *rc,
-> +                                  void __iomem *port,
-> +                                  unsigned int idx)
-> +{
-> +       u32 stat;
-> +       int res;
-> +
-> +       res = readl_poll_timeout(rc + CORE_RC_PHYIF_STAT, stat,
-> +                                stat & CORE_RC_PHYIF_STAT_REFCLK, 100, 50000);
-> +       if (res < 0)
-> +               return res;
-> +
-> +       rmwl(0, CORE_LANE_CTL_CFGACC, rc + CORE_LANE_CTL(idx));
-> +       rmwl(0, CORE_LANE_CFG_REFCLK0REQ, rc + CORE_LANE_CFG(idx));
-> +
-> +       res = readl_poll_timeout(rc + CORE_LANE_CFG(idx), stat,
-> +                                stat & CORE_LANE_CFG_REFCLK0ACK, 100, 50000);
-> +       if (res < 0)
-> +               return res;
-> +
-> +       rmwl(0, CORE_LANE_CFG_REFCLK1, rc + CORE_LANE_CFG(idx));
-> +       res = readl_poll_timeout(rc + CORE_LANE_CFG(idx), stat,
-> +                                stat & CORE_LANE_CFG_REFCLK1, 100, 50000);
-> +
-> +       if (res < 0)
-> +               return res;
-> +
-> +       rmwl(CORE_LANE_CTL_CFGACC, 0, rc + CORE_LANE_CTL(idx));
-> +       udelay(1);
-> +       rmwl(0, CORE_LANE_CFG_REFCLKEN, rc + CORE_LANE_CFG(idx));
-> +
-> +       rmwl(0, PORT_REFCLK_EN, port + PORT_REFCLK);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apple_pcie_setup_port(struct apple_pcie *pcie, unsigned int i)
-> +{
-> +       struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
-
-Doesn't look like you ever use the fwnode, just get the DT node
-pointer. Unless this driver is going to use ACPI someday (and ACPI
-changes how PCI is done), there's no point in using fwnode.
-
-> +       void __iomem *port;
-> +       struct gpio_desc *reset;
-> +       uint32_t stat;
-> +       int ret;
-> +
-> +       port = devm_of_iomap(pcie->dev, to_of_node(fwnode), i + 3, NULL);
-
-It's preferred to use platform resource api and ioremap over DT functions.
-
-> +
-> +       if (IS_ERR(port))
-> +               return -ENODEV;
-> +
-> +       reset = devm_gpiod_get_index(pcie->dev, "reset", i, 0);
-> +       if (IS_ERR(reset))
-> +               return PTR_ERR(reset);
-> +
-> +       gpiod_direction_output(reset, 0);
-> +
-> +       rmwl(0, PORT_APPCLK_EN, port + PORT_APPCLK);
-> +
-> +       ret = apple_pcie_setup_refclk(pcie->rc, port, i);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       rmwl(0, PORT_PERST_OFF, port + PORT_PERST);
-> +       gpiod_set_value(reset, 1);
-> +
-> +       ret = readl_poll_timeout(port + PORT_STATUS, stat,
-> +                                stat & PORT_STATUS_READY, 100, 250000);
-> +       if (ret < 0) {
-> +               dev_err(pcie->dev, "port %u ready wait timeout\n", i);
-> +               return ret;
-> +       }
-> +
-> +       rmwl(PORT_REFCLK_CGDIS, 0, port + PORT_REFCLK);
-> +       rmwl(PORT_APPCLK_CGDIS, 0, port + PORT_APPCLK);
-> +
-> +       ret = readl_poll_timeout(port + PORT_LINKSTS, stat,
-> +                                !(stat & PORT_LINKSTS_BUSY), 100, 250000);
-> +       if (ret < 0) {
-> +               dev_err(pcie->dev, "port %u link not busy timeout\n", i);
-> +               return ret;
-> +       }
-> +
-> +       writel(0xfb512fff, port + PORT_INTMSKSET);
-> +
-> +       writel(PORT_INT_LINK_UP | PORT_INT_LINK_DOWN | PORT_INT_AF_TIMEOUT |
-> +              PORT_INT_REQADDR_GT32 | PORT_INT_MSI_ERR |
-> +              PORT_INT_MSI_BAD_DATA | PORT_INT_CPL_ABORT |
-> +              PORT_INT_CPL_TIMEOUT | (1 << 26), port + PORT_INTSTAT);
-> +
-> +       usleep_range(5000, 10000);
-> +
-> +       rmwl(0, PORT_LTSSMCTL_START, port + PORT_LTSSMCTL);
-> +
-> +       ret = readl_poll_timeout(port + PORT_LINKSTS, stat,
-> +                                stat & PORT_LINKSTS_UP, 100, 500000);
-> +       if (ret < 0) {
-> +               dev_err(pcie->dev, "port %u link up wait timeout\n", i);
-> +               return ret;
-> +       }
-> +
-> +       writel(DOORBELL_ADDR, port + PORT_MSIADDR);
-> +       writel(0, port + PORT_MSIBASE);
-> +       writel((5 << PORT_MSICFG_L2MSINUM_SHIFT) | PORT_MSICFG_EN,
-> +              port + PORT_MSICFG);
-> +
-> +       return 0;
-> +}
-> +
-> +static int apple_msi_init(struct apple_pcie *pcie)
-> +{
-> +       struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
-> +       struct device_node *parent_intc;
-> +       struct irq_domain *parent;
-> +       int ret, i;
-> +
-> +       pcie->rc = devm_of_iomap(pcie->dev, to_of_node(fwnode), 1, NULL);
-
-Use devm_platform_ioremap_resource instead.
-
-Rob
+Rm9sa3MsCgp0aGUgZm9sbG93aW5nIHNlcmllcyBpcyBhbiB1cGRhdGUgdG8gVjQgd2hpY2ggY2Fu
+IGJlIGZvdW5kIGhlcmU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA4MTExMjAz
+NDguODU1ODIzNjk0QGxpbnV0cm9uaXguZGUKCkl0IGNvbnRhaW5zIHRoZSBidWxrIG9mIHRoZSBQ
+UkVFTVBULVJUIGxvY2tpbmcgaW5mcmFzdHJ1Y3R1cmUuIEluClBSRUVNUFQtUlQgZW5hYmxlZCBr
+ZXJuZWxzIHRoZSBmb2xsb3dpbmcgbG9ja2luZyBwcmltaXRpdmVzIGFyZSBzdWJzdGl0dXRlZApi
+eSBSVC1NdXRleCBiYXNlZCB2YXJpYW50czoKCiAgbXV0ZXgsIHd3X211dGV4LCByd19zZW1hcGhv
+cmUsIHNwaW5sb2NrLCByd2xvY2sKCnNlbWFwaG9yZXMgYXJlIG5vdCBzdWJzdGl0dXRlZCBiZWNh
+dXNlIHRoZXkgZG8gbm90IHByb3ZpZGUgc3RyaWN0IG93bmVyCnNlbWFudGljcy4KCk9mIGNvdXJz
+ZSByYXdfc3BpbmxvY2tzIGFyZSBub3QgdG91Y2hlZCBlaXRoZXIgYXMgdGhleSBwcm90ZWN0IGxv
+dyBsZXZlbApvcGVyYXRpb25zIGluIHRoZSBzY2hlZHVsZXIsIHRpbWVycyBhbmQgaGFyZHdhcmUg
+YWNjZXNzLgoKVGhlIG1vc3QgaW50ZXJlc3RpbmcgcGFydHMgb2YgdGhlIHNlcmllcyB3aGljaCBu
+ZWVkIGEgbG90IG9mIGV5ZWJhbGxzCmFyZToKCiAgLSB0aGUgc2NoZWR1bGVyIGJpdHMgd2hpY2gg
+cHJvdmlkZSB0aGUgaW5mcmFzdHJ1Y3R1cmUgZm9yIHNwaW5sb2NrIGFuZAogICAgcndsb2NrIHN1
+YnN0aXR1dGlvbiB0byBlbnN1cmUgdGhhdCB0aGUgdGFzayBzdGF0ZSBpcyBwcmVzZXJ2ZWQgd2hl
+bgogICAgYmxvY2tpbmcgb24gc3VjaCBhIGxvY2sgYW5kIGEgcmVndWxhciB3YWtldXAgaXMgaGFu
+ZGxlZCBjb3JyZWN0bHkgYW5kCiAgICBub3QgbG9zdAoKICAtIHRoZSBydG11dGV4IGNvcmUgaW1w
+bGVtZW50YXRpb24gdG8gaGFuZGxlIGxvY2sgY29udGVudGlvbiBvbiBzcGlubG9ja3MKICAgIGFu
+ZCByd2xvY2tzIGNvcnJlY3RseSB2cy4gdGhlIHRhc2sgc3RhdGUKCiAgLSB0aGUgcndfc2VtYXBo
+b3JlL3J3bG9jayBzdWJzdGl0dXRpb25zIHdoaWNoIHV0aWxpemUgdGhlIHNhbWUKICAgIGltcGxl
+bWVudGF0aW9uIHZzLiB0aGUgcmVhZGVyL3dyaXRlciBoYW5kbGluZwoKICAtIFRoZSBuZXcgcnRt
+dXRleCBiYXNlZCB3d19tdXRleCBpbXBsZW1lbnRhdGlvbi4KCiAgLSB0aGUgUEkgZnV0ZXggcmVs
+YXRlZCBiaXRzIHRvIGhhbmRsZSB0aGUgaW50ZXJhY3Rpb24gYmV0d2VlbiBibG9ja2luZwogICAg
+b24gdGhlIHVuZGVybHlpbmcgcnRtdXRleCBhbmQgY29udGVudGlvbiBvbiB0aGUgaGFzaCBidWNr
+ZXQgbG9jayB3aGljaAogICAgaXMgY29udmVydGVkIHRvIGEgJ3NsZWVwaW5nIHNwaW5sb2NrJy4K
+ClRoZSByZXN0IHN1cmVseSBuZWVkcyBhIHRob3JvdWdoIHJldmlldyBhcyB3ZWxsLCBidXQgdGhv
+c2UgcGFydHMgYXJlIHByZXR0eQpzdHJhaWdodCBmb3J3YXJkOiBxdWl0ZSBzb21lIGNvZGUgcmVz
+dHJ1Y3R1cmluZyBhbmQgdGhlIGFjdHVhbCB3cmFwcGVyCmZ1bmN0aW9ucyB0byByZXBsYWNlIHRo
+ZSBleGlzdGluZyAhUlQgaW1wbGVtZW50YXRpb25zLgoKVGhlIHNlcmllcyBzdXJ2aXZlZCBpbnRl
+cm5hbCB0ZXN0aW5nIGluIFJUIGtlcm5lbHMgYW5kIGlzIHBhcnQgb2YgdGhlIHVwY29taW5nCnY1
+LjE0LXJjNi1ydDkgcmVsZWFzZS4KCkZvciAhUlQga2VybmVscyB0aGVyZSBpcyBubyBmdW5jdGlv
+bmFsIGNoYW5nZS4KClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6CgogIGdp
+dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2RldmVsLmdp
+dCBydG11dGV4CgpDaGFuZ2VzIHZzLiBWNAoKICAtIEEgZmV3IGxvY2tkZXAgd2FpdF90eXBlIGZp
+eGVzIGluIHN0YXRpYyBhbmQgcnVudGltZSBpbml0aWFsaXplcnMuCiAgICBTZWJhc3RpYW4gbm90
+aWNlZCB3aGlsZSB3b3JraW5nIG9uIGdldHRpbmcgdGhlIGxvY2tkZXAgc2VsZnRlc3RzCiAgICBy
+ZWVuYWJsZWQgb24gUlQuCgogIC0gTWlzc2luZyBtaWdodF9zbGVlcCgpIGludm9jYXRpb25zIGlu
+IFJUIHNwaW4vcndsb2NrcyAoU2ViYXN0aWFuKQoKICAtIEFkZCBleHBsaWNpdCBvd25lciBpbml0
+IGZvciBsb2NhbCBsb2NrcyB3aGVuIGxvY2tkZXAgaXMgZW5hYmxlZCBpbnN0ZWFkCiAgICBvZiBy
+ZWx5aW5nIG9uIHplcm8gaW5pdGlhbGl6ZWQgbWVtb3J5LgoKICAtIEFkZCB0aGUgUlQgdmFyaWFu
+dHMgZm9yIGxvY2FsIGxvY2tzLCB3aGljaCBpcyB0aGUgbGFzdCBsb2NrIHR5cGUKICAgIGdldHRp
+bmcgc3BlY2lhbCB0cmVhdG1lbnQgb24gUlQuCgpUaGUgbG9ja2RlcCBzZWxmdGVzdCBjaGFuZ2Vz
+IGFyZSBub3QgeWV0IHJlYWR5IGFuZCB3aWxsIGJlIHBvc3RlZCBpbiBhCnNlcGFyYXRlIHN1Ym1p
+c3Npb24uCgoKVGhhbmtzLAoKCXRnbHgKLS0tCiBiL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9hdG9t
+aXNwL3BjaS9hdG9taXNwX2lvY3RsLmMgfCAgICA0IAogYi9pbmNsdWRlL2xpbnV4L2RlYnVnX2xv
+Y2tzLmggICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGIvaW5jbHVkZS9saW51eC9sb2Nh
+bF9sb2NrX2ludGVybmFsLmggICAgICAgICAgICAgICB8ICAgOTAgKwogYi9pbmNsdWRlL2xpbnV4
+L211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5MiArCiBiL2luY2x1ZGUv
+bGludXgvcHJlZW1wdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA0IAogYi9pbmNs
+dWRlL2xpbnV4L3JidHJlZS5oICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzMCAKIGIv
+aW5jbHVkZS9saW51eC9yYnRyZWVfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMzQg
+CiBiL2luY2x1ZGUvbGludXgvcnRtdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDYzIC0KIGIvaW5jbHVkZS9saW51eC9yd2Jhc2VfcnQuaCAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgMzggCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3J0LmggICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMTQwICsrCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3R5cGVzLmggICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDUzIAogYi9pbmNsdWRlL2xpbnV4L3J3c2VtLmggICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICA3OCArCiBiL2luY2x1ZGUvbGludXgvc2NoZWQuaCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgMTE5ICstCiBiL2luY2x1ZGUvbGludXgvc2NoZWQvd2Fr
+ZV9xLmggICAgICAgICAgICAgICAgICAgICAgfCAgICA4IAogYi9pbmNsdWRlL2xpbnV4L3NwaW5s
+b2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNSAKIGIvaW5jbHVkZS9saW51eC9z
+cGlubG9ja19hcGlfc21wLmggICAgICAgICAgICAgICAgICB8ICAgIDMgCiBiL2luY2x1ZGUvbGlu
+dXgvc3BpbmxvY2tfcnQuaCAgICAgICAgICAgICAgICAgICAgICAgfCAgMTU5ICsrCiBiL2luY2x1
+ZGUvbGludXgvc3BpbmxvY2tfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgfCAgIDg5IC0KIGIv
+aW5jbHVkZS9saW51eC9zcGlubG9ja190eXBlc19yYXcuaCAgICAgICAgICAgICAgICB8ICAgNzMg
+KwogYi9pbmNsdWRlL2xpbnV4L3d3X211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICA1MCAKIGIva2VybmVsL0tjb25maWcubG9ja3MgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgIDIgCiBiL2tlcm5lbC9mdXRleC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgNTU2ICsrKysrKy0tLQogYi9rZXJuZWwvbG9ja2luZy9NYWtlZmlsZSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGIva2VybmVsL2xvY2tpbmcvbXV0ZXgtZGVidWcu
+YyAgICAgICAgICAgICAgICAgICAgICB8ICAgIDUgCiBiL2tlcm5lbC9sb2NraW5nL211dGV4LmMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNDMxIC0tLS0tLS0KIGIva2VybmVsL2xvY2tp
+bmcvbXV0ZXguaCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNDggCiBiL2tlcm5lbC9s
+b2NraW5nL3J0bXV0ZXguYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMTM0ICsrKysrKysr
+Ky0tLS0tLS0tLS0tCiBiL2tlcm5lbC9sb2NraW5nL3J0bXV0ZXhfYXBpLmMgICAgICAgICAgICAg
+ICAgICAgICAgfCAgNTkwICsrKysrKysrKysKIGIva2VybmVsL2xvY2tpbmcvcnRtdXRleF9jb21t
+b24uaCAgICAgICAgICAgICAgICAgICB8ICAxMjIgKy0KIGIva2VybmVsL2xvY2tpbmcvcndiYXNl
+X3J0LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNjMgKysrKwogYi9rZXJuZWwvbG9ja2lu
+Zy9yd3NlbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwOSArCiBiL2tlcm5lbC9s
+b2NraW5nL3NwaW5sb2NrLmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA3IAogYi9rZXJu
+ZWwvbG9ja2luZy9zcGlubG9ja19kZWJ1Zy5jICAgICAgICAgICAgICAgICAgIHwgICAgNSAKIGIv
+a2VybmVsL2xvY2tpbmcvc3BpbmxvY2tfcnQuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyNjMg
+KysrKwogYi9rZXJuZWwvbG9ja2luZy93d19tdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDU2OSArKysrKysrKysrCiBiL2tlcm5lbC9sb2NraW5nL3d3X3J0X211dGV4LmMgICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDc2ICsKIGIva2VybmVsL3JjdS90cmVlX3BsdWdpbi5oICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgIDYgCiBiL2tlcm5lbC9zY2hlZC9jb3JlLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTA5ICsKIGIvbGliL0tjb25maWcuZGVidWcgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTEgCiBiL2xpYi90ZXN0X2xvY2t1cC5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA4IAoga2VybmVsL2xvY2tpbmcv
+bXV0ZXgtZGVidWcuaCAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyOSAKIDQxIGZpbGVzIGNo
+YW5nZWQsIDM5NDAgaW5zZXJ0aW9ucygrKSwgMTU1MSBkZWxldGlvbnMoLSkKCgo=
