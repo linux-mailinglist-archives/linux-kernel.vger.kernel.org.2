@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2FA3EC6D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2DC3EC6D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 05:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234832AbhHODTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 23:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhHODTM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 23:19:12 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BECC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 20:18:43 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id k11so26384415ybf.6
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Aug 2021 20:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=M3h39XrOI3FJ6un0byHMUduS6niGgV73IZr3z/auRus=;
-        b=I9HCpAzIi3/0p/TeJe6il/j6YEGQ4N0xHlicqHh61nNtz2bdV+xf+Nsz3OHPJkPv5i
-         rjqo87392uLWAqiR3EaWNlp/oqjP92g7c1EyayQGevMWnEHPfyzHlTWynrp1ZzzoXMl6
-         ixeT7H1I4pdmOvM364RDTunoV1fHwjtGPdqlUX7TrR899umuWZMFBdsunejKHI+C5IDM
-         UuSJRwLmpF7Y9bBT+NkXUbBudGDYIWSRbVkdlovoXFbU8bmdOvsoyxn29U+7rpeEp1Gu
-         A1qWoycrhxrHQNm7TQ1AgrC3UMWBgYhXvHJuaBXTV4HBwA4sVgH/PhAsMid8dUe2ulQb
-         0DBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=M3h39XrOI3FJ6un0byHMUduS6niGgV73IZr3z/auRus=;
-        b=NS62vuSBMKy7cFoyqHGLReSzdjje7SpIcIJchwPosQAU78qO0eGgdjhZrwNdeIgzBx
-         LiWYsrUb4hHN4DAxkQ2VdWUvwG5DruQGQbOl8/8+vST16uiC82TLrUOgg+WV9LVAQnaI
-         1xqUBfJNMlgBs5Nw3TYe18TXm9P6jZDEqbMiALaO//HWUhVuJXbSqvdzNWgUrCXWRqiC
-         ibmnGFsbxnQZKpM+Hwl9mqi6Zuf0Ibsho42QncDXSp0E1jku1/vRuUhX49K278SK4Fm7
-         oy1uL73/dfq+my7DkJlptyDdaHEaWdHtqhbHY8KzKO0xbT4uISSCCmAndJWTWdpTJpkf
-         nztA==
-X-Gm-Message-State: AOAM532igc22GXOkH9tErwjKwAjA70M4pWrJ/OaN1qcY+nYI3sewtC8B
-        Dd0gn75cuS4S2C20y9nbRPvMlp5u+DeUHdxcL6nsPPJptK60Dg==
-X-Google-Smtp-Source: ABdhPJy6cULzYl1VNLPc1EQXNMgQEitJHUJhymGhBeBKPi2/GZsDp6PKBu9RtxxQ1AkBBygj5+bdMkUrZjocT0NIZ+Q=
-X-Received: by 2002:a25:19d7:: with SMTP id 206mr11657033ybz.240.1628997522341;
- Sat, 14 Aug 2021 20:18:42 -0700 (PDT)
+        id S235147AbhHODWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 23:22:04 -0400
+Received: from m12-18.163.com ([220.181.12.18]:35553 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234385AbhHODWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Aug 2021 23:22:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VqxE2
+        6W/p5gCQWidblx3vz+89p1P5HiPYzrdJ0nbxBE=; b=S80Oe940LIyxapOnaphhI
+        EZ1sIvz3l410AHZItzifJ83PQkslK0BrFRNsA+TGSjsqk7/00Yo57BLyTibwftg+
+        EXCkh5a/YYgRh17y8UMql1U3Bg97LyZ/9NpfdVE0c19Tj7/zQrwnEYeyuHmQIXu2
+        U4UPk3bvSJDnV2NrET2Z1E=
+Received: from ubuntu.localdomain (unknown [183.220.91.139])
+        by smtp14 (Coremail) with SMTP id EsCowADX3Qn1hxhh2Jihzw--.61169S2;
+        Sun, 15 Aug 2021 11:20:21 +0800 (CST)
+From:   Junhua Huang <junhuahuangdream@163.com>
+To:     dennis@kernel.org, tj@kernel.org, cl@linux.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Junhua Huang <huang.junhua@zte.com.cn>
+Subject: [PATCH] percpu: remove the unnecessary operation for bitmaps in finding suitable region
+Date:   Sat, 14 Aug 2021 20:20:18 -0700
+Message-Id: <20210815032018.192334-1-junhuahuangdream@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210814234102.2315551-1-masahiroy@kernel.org> <3afe5054-8129-fe42-b5a4-00bd091b1a0c@kernel.org>
-In-Reply-To: <3afe5054-8129-fe42-b5a4-00bd091b1a0c@kernel.org>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Sat, 14 Aug 2021 20:18:31 -0700
-Message-ID: <CAFP8O3JtOpb368h4PBbYnR4fsqRYkX_TKuCKrS-Csu=dMMNiKA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Fix 'no symbols' warning when CONFIG_TRIM_UNUSD_KSYMS=y
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowADX3Qn1hxhh2Jihzw--.61169S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7XFWDJw4UWry8uw4fZry7Wrg_yoW8Jr48pr
+        W5WFyDKr1DAw43u3WktwnrXr15uwn8tw4rCw45Gr9xZ3ZxC345WFW0gw4Yga4xCasxur1a
+        vw4DWFy7JayUXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j2WlkUUUUU=
+X-Originating-IP: [183.220.91.139]
+X-CM-SenderInfo: xmxqx3pdkxt05jguvtrp6rljoofrz/1tbipRbvZVUMf9Wd1wAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 6:15 PM Nathan Chancellor <nathan@kernel.org> wrote=
-:
->
-> On 8/14/2021 4:41 PM, Masahiro Yamada wrote:
-> > When CONFIG_TRIM_UNUSED_KSYMS is enabled, I see some warnings like this=
-:
-> >
-> >    nm: arch/x86/entry/vdso/vdso32/note.o: no symbols
-> >
-> > $NM (both GNU nm and llvm-nm) warns when no symbol is found in the
-> > object. Suppress the stderr.
-> >
-> > Fixes: bbda5ec671d3 ("kbuild: simplify dependency generation for CONFIG=
-_TRIM_UNUSED_KSYMS")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+From: Junhua Huang <huang.junhua@zte.com.cn>
 
-LGTM.
+We use pcpu_next_fit_region to find the next fit region for alloc. Once
+return, the region fit the request and then break the loop, or get the
+next start offset from pcpu_is_populated. So there is no necessary to
+add bits to bit_off. At the same time, bits will set 0 in 
+pcpu_next_fit_region each time, so I think it is unnecessary to 
+set bits zero in pcpu_for_each_fit_region loops.
 
-FWIW binutils>=3D2.37 `nm -q` can be used to suppress "no symbols"
-https://sourceware.org/bugzilla/show_bug.cgi?id=3D27408
+Signed-off-by: Junhua Huang <huang.junhua@zte.com.cn>
+---
+ mm/percpu.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-llvm-nm>=3D13.0.0 supports -q as well.
-
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> > ---
-> >
-> >   scripts/gen_ksymdeps.sh | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
-> > index 1324986e1362..5493124e8ee6 100755
-> > --- a/scripts/gen_ksymdeps.sh
-> > +++ b/scripts/gen_ksymdeps.sh
-> > @@ -4,7 +4,10 @@
-> >   set -e
-> >
-> >   # List of exported symbols
-> > -ksyms=3D$($NM $1 | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z=
-)
-> > +#
-> > +# If the object has no symbol, $NM warns 'no symbols'.
-> > +# Suppress the stdout.
-> > +ksyms=3D$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' =
-| tr A-Z a-z)
-> >
-> >   if [ -z "$ksyms" ]; then
-> >       exit 0
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/clang-built-linux/3afe5054-8129-fe42-b5a4-00bd091b1a0c%40kernel.org.
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 7f2e0151c4e2..ec7a5d10f6c9 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -489,7 +489,6 @@ static void pcpu_next_fit_region(struct pcpu_chunk *chunk, int alloc_bits,
+ 	for (pcpu_next_fit_region((chunk), (alloc_bits), (align), &(bit_off), \
+ 				  &(bits));				      \
+ 	     (bit_off) < pcpu_chunk_map_bits((chunk));			      \
+-	     (bit_off) += (bits),					      \
+ 	     pcpu_next_fit_region((chunk), (alloc_bits), (align), &(bit_off), \
+ 				  &(bits)))
+ 
+@@ -1126,7 +1125,6 @@ static int pcpu_find_block_fit(struct pcpu_chunk *chunk, int alloc_bits,
+ 			break;
+ 
+ 		bit_off = next_off;
+-		bits = 0;
+ 	}
+ 
+ 	if (bit_off == pcpu_chunk_map_bits(chunk))
+-- 
+2.25.1
 
 
-
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
