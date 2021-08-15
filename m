@@ -2,128 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1495C3EC9B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624AD3EC9A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 16:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbhHOOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 10:50:21 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:53748 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238541AbhHOOuJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 10:50:09 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Aug 2021 10:50:07 EDT
-Received: by one.firstfloor.org (Postfix, from userid 503)
-        id 5893D870CD; Sun, 15 Aug 2021 16:40:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1629038411;
-        bh=azAF6tdlRERJnJMOPZFhCDXRn1/H4qSvoDeGxPIaHP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=owe9lDdY0GP8p5E9fWfvA9cpuUbO9raxRl84mcHZVTSA31mTb5lplKJ4I3VJCLe+C
-         0L8UoU7Woysh70ydIVxTJMWtUJt1ySBfrlgzrIG9aB5JOQiND06fC0K1BCOGVMbVKv
-         onZ+YWxO+xItbtGTLaNtI/wSEq88tBL03wM5tCJ4=
-Date:   Sun, 15 Aug 2021 07:40:10 -0700
-From:   Andi Kleen <andi@firstfloor.org>
-To:     Claire Jensen <cjense@google.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, yao.jin@linux.intel.com,
-        song@kernel.org, andi@firstfloor.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        alexander.antonov@linux.intel.com, changbin.du@intel.com,
-        liuqi115@huawei.com, irogers@google.com, eranian@google.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        clairej735@gmail.com
-Subject: Re: [PATCH v2 1/1] perf stat: Add JSON output option.
-Message-ID: <20210815144007.3e7cwiecbre2nt6y@two.firstfloor.org>
-References: <20210813220754.2104922-1-cjense@google.com>
+        id S238575AbhHOOna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 10:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232465AbhHOOn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 10:43:29 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D9A760F21;
+        Sun, 15 Aug 2021 14:42:56 +0000 (UTC)
+Date:   Sun, 15 Aug 2021 15:45:55 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] drivers/iio: Remove all strcpy() uses
+Message-ID: <20210815154555.6770bc8d@jic23-huawei>
+In-Reply-To: <20210815081949.GA1664@titan>
+References: <20210814135509.4500-1-len.baker@gmx.com>
+        <CAHp75VdBuQTzCbz1CJciSA1+UOw0ZmJKAh8u2cbr5eDLSsRJEw@mail.gmail.com>
+        <20210815081949.GA1664@titan>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="33mn4et7ecvdwvtw"
-Content-Disposition: inline
-In-Reply-To: <20210813220754.2104922-1-cjense@google.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 15 Aug 2021 10:19:49 +0200
+Len Baker <len.baker@gmx.com> wrote:
 
---33mn4et7ecvdwvtw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-> CSV output example:
+> Hi Andy,
 > 
-> 1.20,msec,task-clock:u,1204272,100.00,0.697,CPUs utilized
-> 0,,context-switches:u,1204272,100.00,0.000,/sec
-> 0,,cpu-migrations:u,1204272,100.00,0.000,/sec
-> 70,,page-faults:u,1204272,100.00,58.126,K/sec
+> On Sat, Aug 14, 2021 at 10:36:18PM +0300, Andy Shevchenko wrote:
+> > On Sat, Aug 14, 2021 at 4:55 PM Len Baker <len.baker@gmx.com> wrote:  
+> > >
+> > > strcpy() performs no bounds checking on the destination buffer. This
+> > > could result in linear overflows beyond the end of the buffer, leading
+> > > to all kinds of misbehaviors. So, remove all the uses and add
+> > > devm_kstrdup() or devm_kasprintf() instead.
+> > >
+> > > This patch is an effort to clean up the proliferation of str*()
+> > > functions in the kernel and a previous step in the path to remove
+> > > the strcpy function from the kernel entirely [1].
+> > >
+> > > [1] https://github.com/KSPP/linux/issues/88  
+> >
+> > Thank you very much for doing this!
+> > Now I like the result,
+Agreed and applied to the togreg branch of iio.git, pushed out as testing
+for 0-day to poke at it and see if we missed anything.
 
-The difficult part of such changes to perf stat is that it has
-so many different output modes that all need to be tested.
-Unfortunately the unit tests in perf test are not really
-enough for it.
+Thanks,
 
-I have an older script (attached) that tests a lot of these outputs. It just
-exercises them, you still need to check the output manually
+Jonathan
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com> 
+ 
+> 
+> Thank you too Andy (and folks) for your help on this.
+> 
+> Regards,
+> Len
 
-Can you check that all these modes work correctly both
-with and without json?
-
--Andi
-
---33mn4et7ecvdwvtw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=STAT-REGR-TEST
-
-#!/bin/sh
-# test perf stat output combinations with --metric-only
-# output has to be manually verified
-
-[ ! -d obj-perf ] && cd ..
-
-set -x
-
-PERF=${PERF:-./obj-perf/perf}
-
-run() {
-	$PERF stat -a "$@" sleep 2
-}
-
-runprog() {
-	$PERF stat "$@" true
-}
-
-
-run
-run -x, 
-run --per-core
-run --per-socket
-run -e cycles,instructions
-run -dddd
-
-# topdown
-# instructions
-
-run -I 500
-run -I 500 --per-core 
-run -I 500 --per-socket 
-run -I 500 -e cycles,instructions
-run -I 500 -dddd
-
-run -I 500 -x, 
-run -I 500 --per-core -x, 
-run -I 500 --per-socket -x, 
-run -I 500 -e cycles,instructions -x, 
-run -I 500 -dddd -x, 
-
-runprog -r3
-runprog -r3 -x, 
-$PERF stat -r3 true
-$PERF stat -r3 -x,  true
-
-sleep 3 & 
-$PERF stat --per-thread -p $! sleep 1
-$PERF stat --per-thread -t $! sleep 1
-
-
---33mn4et7ecvdwvtw--
