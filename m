@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109F73ECB5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0584D3ECB5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 23:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhHOVdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 17:33:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48804 "EHLO
+        id S234200AbhHOVdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 17:33:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48676 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbhHOV3v (ORCPT
+        with ESMTP id S232750AbhHOV3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 17:29:51 -0400
-Message-ID: <20210815211305.750701219@linutronix.de>
+        Sun, 15 Aug 2021 17:29:53 -0400
+Message-ID: <20210815211305.804246275@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629062960;
+        s=2020; t=1629062962;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=B5Vm2Da7n2QoB8hkqNlFWh1fWwF2RXfOVJOTqlo2RYQ=;
-        b=styup/ul+PwRSHrHfsRJrWHGRkCC5V1h/QwUYr96MBMllFPFYgQUytM2KSAgKDVetFvg1N
-        vdWIMtqtXzBJuiJyLU2aAFJENYBouaTDS2kW+el8xMWmxTuy19F9uUO8LTCewmXTHenq3P
-        DNO4c+C73NRAF6MNSHD2PlB1g1tfGF7K2CHLPs39XvQe8Z7iQYx6D1a6oSdZ+GqK69pNwt
-        0HWSQpXe9jHZxCPT003JZk7hGq1peQiOzjOkXlZ5t5cyjBdZauMHnqFdMcl41ZVpqmHPgp
-        qLrWUJ1SkMVHAaZCanAFS3wG6QBw04fqKkYUzUAT9paBNbTC53UZIrxALTBRuQ==
+        bh=wk5BXs3QliWC0Aueq/uB6S39gsRmV857OufixmfHlos=;
+        b=iPZhgxGEoKV5Dq51OFseto6VMdWdjwE+uY8e1prak5toBE0/FAaTjkD8Eai88V2BJGTloa
+        LeTAOyAZ2IKsZiIsEddme+lftSAiVl4T1hWDGaYFvHK4SB8HH15Bg4y1cNni5QKtNX/G/K
+        dXdwyso8KsOsUBY3Kd0wUQbfZkbEXHfcLDAgSwXKNixwIAaM+A8GnfdX1xteoGpx2rxUZx
+        M821I5M6tR4mUcJbRFSyH1AhfYnPsXDQf0OYX0AFO2oVa9DcZYkzxY8WpU/aDxqrfI5cFB
+        E4mJdd9W3LZEiPbk6FZ9rjiF/4TJVTGdCk3FBGkhP3w+cflsSv+XPQ+fOWZagQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629062960;
+        s=2020e; t=1629062962;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=B5Vm2Da7n2QoB8hkqNlFWh1fWwF2RXfOVJOTqlo2RYQ=;
-        b=M/SeuSM/KvUKfye9yzihpJAcj16FS2FS6w46EsWxxD0Vlr1UwIBrefffSeCiYZTLzgR6xY
-        4RL6VvKeUW6RCxCA==
+        bh=wk5BXs3QliWC0Aueq/uB6S39gsRmV857OufixmfHlos=;
+        b=VUh4Y0rfUFlA9EcGXkafiC0OmwCqBbIMRXwQX6rMe7kojZyuzJx/hJuvjVVqzbrcwRmfB3
+        FlPKhzjBaGtxbOBg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,52 +45,40 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V5 67/72] rtmutex: Prevent lockdep false positive with PI futexes
+Subject: [patch V5 68/72] preempt: Adjust PREEMPT_LOCK_OFFSET for RT
 References: <20210815203225.710392609@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Sun, 15 Aug 2021 23:29:20 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 23:29:22 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-On PREEMPT_RT the futex hashbucket spinlock becomes 'sleeping' and rtmutex
-based. That causes a lockdep false positive because some of the futex
-functions invoke spin_unlock(&hb->lock) with the wait_lock of the rtmutex
-associated to the pi_futex held.  spin_unlock() in turn takes wait_lock of
-the rtmutex on which the spinlock is based which makes lockdep notice a
-lock recursion.
-
-Give the futex/rtmutex wait_lock a separate key.
+On PREEMPT_RT regular spinlocks and rwlocks are substituted with rtmutex
+based constructs. spin/rwlock held regions are preemptible on PREEMPT_RT,
+so PREEMPT_LOCK_OFFSET has to be 0 to make the various cond_resched_*lock()
+functions work correctly.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex_api.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ include/linux/preempt.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 ---
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -214,7 +214,19 @@ EXPORT_SYMBOL_GPL(__rt_mutex_init);
- void __sched rt_mutex_init_proxy_locked(struct rt_mutex_base *lock,
- 					struct task_struct *proxy_owner)
- {
-+	static struct lock_class_key pi_futex_key;
-+
- 	__rt_mutex_base_init(lock);
-+	/*
-+	 * On PREEMPT_RT the futex hashbucket spinlock becomes 'sleeping'
-+	 * and rtmutex based. That causes a lockdep false positive because
-+	 * some of the futex functions invoke spin_unlock(&hb->lock) with
-+	 * the wait_lock of the rtmutex associated to the pi_futex held.
-+	 * spin_unlock() in turn takes wait_lock of the rtmutex on which
-+	 * the spinlock is based which makes lockdep notice a lock
-+	 * recursion. Give the futex/rtmutex wait_lock a separate key.
-+	 */
-+	lockdep_set_class(&lock->wait_lock, &pi_futex_key);
- 	rt_mutex_set_owner(lock, proxy_owner);
- }
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -121,7 +121,11 @@
+ /*
+  * The preempt_count offset after spin_lock()
+  */
++#if !defined(CONFIG_PREEMPT_RT)
+ #define PREEMPT_LOCK_OFFSET	PREEMPT_DISABLE_OFFSET
++#else
++#define PREEMPT_LOCK_OFFSET	0
++#endif
  
+ /*
+  * The preempt_count offset needed for things like:
 
