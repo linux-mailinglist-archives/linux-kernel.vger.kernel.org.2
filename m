@@ -2,215 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8FF3ECAF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB0F3ECAF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhHOUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 16:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhHOUbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 16:31:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD48B61283;
-        Sun, 15 Aug 2021 20:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629059448;
-        bh=U1Bn0jmeesQXigOAHRvgl+2uQxdlxWt1EJV19mZQ+40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qnTsmiqxlyuSwVivBlYYOWzQzhqJfqT+LdjFxdjHFIvXIzfsIoVgL6yNfx2sQLs4Y
-         aCFLYE4a0bkPWfkaPfmyo/A2eZDQU2ONo/YtBuMJosFHHLWReC/DzGxV42G14tdfYn
-         FNjbX4dXh3BJxu7omeVlXeo4aduQkHljM/xLn3bWUMtV5tfZpdv3tjl/E6ljr1NYvK
-         5HcoNqhCGOMt/7Ot3yw1vn7do5ZAR2/z6y/JpRYoo3Fcc0LEgOV7I0UtTQr/oICPRe
-         eIs+mtopTv5ayb4GPobJxEqfYNn5rIdkjo7wPmolyCnCsuiKo1FIm39ihOHNmVCTfa
-         sCWU/sPUf5TbA==
-Received: by pali.im (Postfix)
-        id 61E4898C; Sun, 15 Aug 2021 22:30:45 +0200 (CEST)
-Date:   Sun, 15 Aug 2021 22:30:45 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     robh@kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
- space
-Message-ID: <20210815203045.hiir4aqm6btrqfy5@pali>
-References: <20210624215546.4015-1-pali@kernel.org>
- <20210624215546.4015-3-pali@kernel.org>
- <87pmv919bq.fsf@BL-laptop>
- <20210723141204.waiipazikhzzloj7@pali>
- <20210723155247.GB4103@lpieralisi>
- <20210723164512.vo3scpzoodff2j33@pali>
- <20210807113536.24ik7m7uonebwox2@pali>
+        id S230512AbhHOUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 16:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhHOUdE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 16:33:04 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D017EC061764;
+        Sun, 15 Aug 2021 13:32:33 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GnprD250wz9sT6;
+        Mon, 16 Aug 2021 06:32:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629059550;
+        bh=klHHQ9z9GKs3lX1MqIe6u7DuwKvRYcvA7swPOyG2u3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TpCl9Nx8G2SExc9Qp9MEF6XRZ83Gg2nvrKTjNHOaJWkUw6rozloTK+GivG/GLzr8g
+         AT8eEyj7ZocYZ/AnBDMW3UTy56Dff9fCEfhO1EV0KmIcfFIU/L0b2ePL2y3o4R6Vuk
+         DAEuyBC42zalBn+gPDTUcgA/lon0YGV5AN7/iBZMuy1v2hCdfVHaN+FaiJ9ZKEVoAR
+         7N+tiLJd9qRxFdq+3ZNpgxP8rS4XVN0t2KkvVGy6x5OG5mvy0ilcxhjiLqZC6A7UPR
+         cwjSGSWshHCy8BwnfKnXzjlF7Jvd5HDpPFo/WpvogvkryabJLGjNxDGqV5KC9UuYLw
+         HyifnjzpRqrOQ==
+Date:   Mon, 16 Aug 2021 06:32:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        "zajec5@gmail.com" <zajec5@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
+Subject: Re: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
+Message-ID: <20210816063225.22d992ff@canb.auug.org.au>
+In-Reply-To: <a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com>
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+        <20210716114635.14797-1-papadakospan@gmail.com>
+        <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+        <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com>
+        <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
+        <a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210807113536.24ik7m7uonebwox2@pali>
-User-Agent: NeoMutt/20180716
+Content-Type: multipart/signed; boundary="Sig_/K=b9Pf+l2P0E7k_xtah2jkH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 07 August 2021 13:35:36 Pali Rohár wrote:
-> On Friday 23 July 2021 18:45:12 Pali Rohár wrote:
-> > On Friday 23 July 2021 16:52:47 Lorenzo Pieralisi wrote:
-> > > On Fri, Jul 23, 2021 at 04:12:04PM +0200, Pali Rohár wrote:
-> > > > On Friday 23 July 2021 14:52:25 Gregory CLEMENT wrote:
-> > > > > Hello Pali,
-> > > > > 
-> > > > > > Current PCIe MEM space of size 16 MB is not enough for some combination
-> > > > > > of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-> > > > > > Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-> > > > > > so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-> > > > > > allocate more PCIe BARs for more PCIe cards.
-> > > > > >
-> > > > > > Without this change some combination of PCIe cards cannot be used and
-> > > > > > kernel show error messages in dmesg during initialization:
-> > > > > >
-> > > > > >     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
-> > > > > >     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > > > > >     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
-> > > > > >     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
-> > > > > >     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > > > > >     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
-> > > > > >     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
-> > > > > >     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
-> > > > > >     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
-> > > > > >     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
-> > > > > >     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
-> > > > > >
-> > > > > > Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-> > > > > > kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-> > > > > > crashes during loading of kernel DTB file. This bug is present only in
-> > > > > > U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-> > > > > > affected by this bug. Bug is fixed in U-Boot version 2021.07.
-> > > > > >
-> > > > > > To not break booting new kernels on existing versions of U-Boot on Turris
-> > > > > > Mox, use first 16 MB range for IO and second range with rest of PCIe window
-> > > > > > for MEM.
-> > > > > 
-> > > > > Is there any depencey with the firs patch of this series ?
-> > > > > 
-> > > > > What happend if this patch is applied without the other ?
-> > > > 
-> > > > First patch is fixing reading and setting ranges configuration from DTS.
-> > > > Without first patch memory windows stays as they were in bootloader or
-> > > > in its default configuration. Which is that all 128 MB are transparently
-> > > > mapped to PCIe MEM space.
-> > > > 
-> > > > Therefore this second DTS patch does not fixes issue with IO space
-> > > > (kernel still crashes when accessing it). But allows to use all PCIe MEM
-> > > > space (due to bootloader / default configuration) and therefore allows
-> > > > to use more PCIe cards (which needs more PCIe MEM space).
-> > > 
-> > > So, the two patches are decoupled then ? We are not taking dts changes
-> > > through the PCI tree.
-> > 
-> > Well, both patches are required to fix setup and use of PCIe ranges on
-> > A3720 platforms. But I would say they are independent and you can apply
-> > them in any order. So Gregory, feel free to take DTS change in your tree
-> > and Lorenzo can review other patch.
-> 
-> Lorenzo, so will you take driver change via PCI tree?
-> 
-> And Gregory, DTS change via DTS tree?
+--Sig_/K=b9Pf+l2P0E7k_xtah2jkH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-PING?
+Hi Konstantin,
 
-> > I sent these two patches in one series as they are fixing one common
-> > issue. It is common that for fixing one common issue it is required to
-> > touch more subsystems / trees.
-> > 
-> > > Besides: these dts patches are a nightmare for backward compatibility,
-> > > hopefully Rob can shed some light on whether what you are doing here
-> > > is advisable and how to sync the changes with kernel changes.
-> > 
-> > As written in comment for armada-3720-turris-mox.dts file, there are
-> > specific requirements what needs to be put into ranges section. And
-> > version of this file without applying this patch and also version of
-> > this file with applied patch matches these requirements.
-> > 
-> > So I would say that this DTS change is backward and also forward
-> > compatible.
-> > 
-> > But I agree that DTS changes are lot of time nightmare...
-> > 
-> > > Lorenzo
-> > > 
-> > > > > Could you test it to see if any regression occure ?
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > Grégory
-> > > > > 
-> > > > > >
-> > > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > > > Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-> > > > > > ---
-> > > > > >  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
-> > > > > >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
-> > > > > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > > index 53e817c5f6f3..86b3025f174b 100644
-> > > > > > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > > @@ -134,6 +134,23 @@
-> > > > > >  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
-> > > > > >  	status = "okay";
-> > > > > >  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> > > > > > +	/*
-> > > > > > +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
-> > > > > > +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
-> > > > > > +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
-> > > > > > +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
-> > > > > > +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
-> > > > > > +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
-> > > > > > +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
-> > > > > > +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
-> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
-> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
-> > > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
-> > > > > > +	 */
-> > > > > > +	#address-cells = <3>;
-> > > > > > +	#size-cells = <2>;
-> > > > > > +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
-> > > > > > +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
-> > > > > >  
-> > > > > >  	/* enabled by U-Boot if PCIe module is present */
-> > > > > >  	status = "disabled";
-> > > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > > index 7a2df148c6a3..dac3007f2ac1 100644
-> > > > > > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > > @@ -488,8 +488,15 @@
-> > > > > >  			#interrupt-cells = <1>;
-> > > > > >  			msi-parent = <&pcie0>;
-> > > > > >  			msi-controller;
-> > > > > > -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
-> > > > > > -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-> > > > > > +			/*
-> > > > > > +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-> > > > > > +			 * dedicated for PCIe and can be assigned to 8 windows
-> > > > > > +			 * with size a power of two. Use one 64 KiB window for
-> > > > > > +			 * IO at the end and the remaining seven windows
-> > > > > > +			 * (totaling 127 MiB) for MEM.
-> > > > > > +			 */
-> > > > > > +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-> > > > > > +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
-> > > > > >  			interrupt-map-mask = <0 0 0 7>;
-> > > > > >  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
-> > > > > >  					<0 0 0 2 &pcie_intc 1>,
-> > > > > > -- 
-> > > > > > 2.20.1
-> > > > > >
-> > > > > 
-> > > > > -- 
-> > > > > Gregory Clement, Bootlin
-> > > > > Embedded Linux and Kernel engineering
-> > > > > http://bootlin.com
+On Fri, 13 Aug 2021 16:11:10 +0000 Konstantin Komarov <almaz.alexandrovich@=
+paragon-software.com> wrote:
+>
+> > From: Linus Torvalds <torvalds@linux-foundation.org>
+> > Sent: Friday, July 30, 2021 8:24 PM
+> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; Step=
+hen Rothwell <sfr@canb.auug.org.au>
+> > Cc: Leonidas P. Papadakos <papadakospan@gmail.com>; zajec5@gmail.com; D=
+arrick J. Wong <djwong@kernel.org>; Greg Kroah-
+> > Hartman <gregkh@linuxfoundation.org>; Hans de Goede <hdegoede@redhat.co=
+m>; linux-fsdevel <linux-fsdevel@vger.kernel.org>;
+> > Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Al Viro <viro=
+@zeniv.linux.org.uk>; Matthew Wilcox <willy@infradead.org>
+> > Subject: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
+> >=20
+> > On Fri, Jul 30, 2021 at 8:55 AM Konstantin Komarov
+> > <almaz.alexandrovich@paragon-software.com> wrote: =20
+> > >
+> > > We've just sent the 27th patch series which fixes to the buildability=
+ against
+> > > current linux-next. And we'll need several days to prepare a proper p=
+ull request
+> > > before sending it to you. =20
+> >=20
+> > Well, I won't pull until the next merge window opens anyway (about a
+> > month away). But it would be good to have your tree in linux-next for
+> > at least a couple of weeks before that happens.
+> >=20
+> > Added Stephen to the participants list as a heads-up for him - letting
+> > him know where to fetch the git tree from will allow that to happen if
+> > you haven't done so already.
+> >  =20
+>=20
+> Thanks for this clarification, Linus!
+> Stephen, please find the tree here:
+> https://github.com/Paragon-Software-Group/linux-ntfs3.git
+> It is the fork from 5.14-rc5 tag with ntfs3 patches applied.
+> Also, the latest changes
+> - fix some generic/XYZ xfstests, which were discussed
+> with Theodore, Darrick and others
+> - updates the MAINTAINERS with mailing list (also added to CC here) and s=
+cm tree link.
+>=20
+> Please let me know if additional changes requred to get fetched into linu=
+x-next.
+
+Added from today.  It looks good, we will see how it goes when integrated/b=
+uilt.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/K=b9Pf+l2P0E7k_xtah2jkH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEZedkACgkQAVBC80lX
+0GxprAf/SBzaK8sX8zNMX6JSgph/ESO9fU4/kwPPZ8MrhayR7+1nI433dLmDb3xO
+MU3o+3/o4tkyoZkasyMzgJPRPeXP0xLlr7hA1rvQfwN9IZvgUiXiv8IDUVymZiGn
++xn8fedA3/XEpHcSpOarVVo7SAcEbPbY1M18dRTXX2ok84GjLR5aUQvsR3yYZOWI
+pb9m2u8xdWMz4Zxr3A5tvon56apfeX7fX9dLaI8k7/Wv1VKqZfVmW3YeVIxYkfsM
+fEJATxBXPeWeuF47MFWzW1zfSAyXCA7AvQE/gFtWogODLwpwMgcZhcdA5xOVIYfR
+VlNH7G0udZ+LJDvlf44Y3UVl/PWWrQ==
+=cB5h
+-----END PGP SIGNATURE-----
+
+--Sig_/K=b9Pf+l2P0E7k_xtah2jkH--
