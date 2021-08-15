@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51E13ECACE
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C180E3ECAEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 22:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhHOUMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 16:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
+        id S230280AbhHOUYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 16:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhHOUMy (ORCPT
+        with ESMTP id S229582AbhHOUYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 16:12:54 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2505C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 13:12:23 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id s21-20020a4ae5550000b02902667598672bso4396218oot.12
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 13:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9WwbG4U3bqWogAqR2gp/JUMDwti/BwzB9VqcBQ/UOd8=;
-        b=U2JX0EXpnoVxZGzeQ89KnyO2+PzTcVC3LaVCDkJCHli64EkGleym+/qUwoHvc21OWK
-         5MwGtvI77SVN/WDovvZFCuHyNlcbW1gBu0Fv8H09lheq4NQ2PHoZqB2Cnm19NLa0tkIi
-         4aV+BXpw3Z7tf01Xl7O0hMHoxasj6YPvvI1Iyt8wTIDX4GcjB5bTn7zsE31qmrr7KSO+
-         PSVMGQW6J+Qxb0VVQhbaWIp7+t12otK2ltsOkybtQJCpfo2oLMu+6CaXDm8eHbQ8NcNF
-         ZC/c7jo23DiW/GSsZURncDVpo8TtJrdrqW++Y5XwubL2YlRHjFkggsgDLiJue7xHZjhF
-         Xn6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9WwbG4U3bqWogAqR2gp/JUMDwti/BwzB9VqcBQ/UOd8=;
-        b=d5UKYWoC5uSHbrY27Gb8hp2RwOtxPyNk7moME/evZbUQLOYtzEn32/2BbT7lZadV8z
-         2/jEQVlC73sYDipTlDlPaFjfUDxg7lTliqLxUdaeV0raFnNu6ThGFfTiLTwPcSNsDTwC
-         y4gtHXs1TSxsfrcnruquhFaDjOAEfjGK6r4kMHamcYxibZOgLWwwjXa3Q8E16i3WkIWm
-         f8toXrX5gCdFOjjnvCiRgtfiZehlg/QPdcSsRmoFpUegL5xAB19pOkq5d3kDIwYAB2YW
-         AfRYZ1rhGyOI2BZ2qIVhQr6adZWTS/pVRHsBWST5N8/bUeixo8kVvqG+T2FzcrrDULOA
-         cIIQ==
-X-Gm-Message-State: AOAM533r3EJhBVt2kveVxkUrNMZMz3GWcH18OH8ROhRevOoVzeQDZGCK
-        fQFh5XdTpoWB4XnynLQTZ2IYZzaaM2Vbsuxw958=
-X-Google-Smtp-Source: ABdhPJxtZSTuk887cyytOqIenAm4r9hv9nkeEBeYTj7DV9airsaBtINaAzYyV92Lw49Q3BFBYp6aan7c2ZcmOYtDzdU=
-X-Received: by 2002:a4a:ba86:: with SMTP id d6mr652895oop.61.1629058342950;
- Sun, 15 Aug 2021 13:12:22 -0700 (PDT)
+        Sun, 15 Aug 2021 16:24:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E35EC061764;
+        Sun, 15 Aug 2021 13:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3hjLDBVIUuEhPE/QTKjTt6SD+T+B8p+I9/1rjQ1tlWw=; b=JDrV3hdxAMiAk9A1PYJebdSnnM
+        RiAvvc8JofuBVJKF4j5mLzGMSH7jK+Q8rUXkcvhNlmzDfNZUc3o7TGtRIuBR15uXxXt9NwmgT+zLi
+        FJ3YKjYHI/9NEbpLtnqWN4DcDB+2xWe9v0l6MeBYJVzmVr/rCsD8R3WXChBNVxFvmLWizNo9E3AG8
+        BmvcphhW7VruAqXA9FgoD/mE+M1zFIEbQxTBGcxtXYeE33MrS4bjYZTJPUNR8KrEmO+28/u7Bex8k
+        xu8RymFIgm77ppFY4cpmmwjqA2QtqjTBfOnQwaGJpBWvuFqcgFDB3EOnzt/EERoXRWa1xfujDRVqB
+        O0beq22w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFMfl-000c6H-SK; Sun, 15 Aug 2021 20:24:07 +0000
+Date:   Sun, 15 Aug 2021 21:23:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 078/138] mm/filemap: Add
+ folio_mkwrite_check_truncate()
+Message-ID: <YRl33SHZYkonh+ED@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-79-willy@infradead.org>
+ <658f52db-47a1-606d-f19a-a666f5817ad9@suse.cz>
 MIME-Version: 1.0
-Received: by 2002:a05:6808:f02:0:0:0:0 with HTTP; Sun, 15 Aug 2021 13:12:22
- -0700 (PDT)
-Reply-To: bdjmes4@gmail.com
-From:   James Broadbent <brbent.jm3@gmail.com>
-Date:   Sun, 15 Aug 2021 13:12:22 -0700
-Message-ID: <CAO+wF-VsKSGQWbrFb_iJiJ=7D4WH3TJb_MN4qukt54zyYfupNw@mail.gmail.com>
-Subject: Good Day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <658f52db-47a1-606d-f19a-a666f5817ad9@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Good Day, My name is James Broadbent, I have a genuine business to
-transact with you. Please get back to me  for more details please it's
-very
-important.
+On Thu, Aug 12, 2021 at 07:08:33PM +0200, Vlastimil Babka wrote:
+> > +/**
+> > + * folio_mkwrite_check_truncate - check if folio was truncated
+> > + * @folio: the folio to check
+> > + * @inode: the inode to check the folio against
+> > + *
+> > + * Return: the number of bytes in the folio up to EOF,
+> > + * or -EFAULT if the folio was truncated.
+> > + */
+> > +static inline ssize_t folio_mkwrite_check_truncate(struct folio *folio,
+> > +					      struct inode *inode)
+> > +{
+> > +	loff_t size = i_size_read(inode);
+> > +	pgoff_t index = size >> PAGE_SHIFT;
+> > +	size_t offset = offset_in_folio(folio, size);
+> > +
+> > +	if (!folio->mapping)
+> 
+> The check in the page_ version is
+> if (page->mapping != inode->i_mapping)
+> 
+> Why is the one above sufficient?
 
-Thanks,
-James Broadbent.
+Oh, good question!
+
+We know that at some point this page belonged to this file.  The caller
+has a reference on it (and at the time they acquired a refcount on the
+page, the page was part of the file).  The caller also has the page
+locked, but has not checked that the page is still part of the file.
+That's where we come in.
+
+The truncate path looks up the page, locks it, removes it from i_pages,
+unmaps it, sets the page->mapping to NULL, unlocks it and puts the page.
+
+Because the folio_mkwrite_check_truncate() caller holds a reference on
+the page, the truncate path will not free the page.  So there are only
+two possibilities for the value of page->mapping; either it's the same
+as inode->i_mapping, or it's NULL.
+
+Now, maybe this is a bit subtle.  For robustness, perhaps we should
+check that it's definitely still part of this file instead of checking
+whether it is currently part of no file.  Perhaps at some point in the
+future, we might get the reference to the page without checking that
+it's still part of this file.  Opinions?
