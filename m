@@ -2,82 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2DB3EC839
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CD03EC83C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhHOJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 05:02:26 -0400
-Received: from mout.gmx.net ([212.227.15.19]:41377 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhHOJC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 05:02:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629018102;
-        bh=/emkVCszJef95728u2oytXmySDOEjKWvQTyP7NMKSvQ=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=A1HKfXLEFCGh7ZcsagzBgSa14D6nemb3CjI/HeVR+I3AJepmzBQlF6y2daikxD0FX
-         EUaHQg8XWerklWBE3IT4XpmAkBC7jbK/DDEK+FFCkhwjfw8nZPptHir4pyhSif7cw4
-         6B0dYxhjra9kPCk2XOwlc6ehzZztsaK6nTCj+yL4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.48.238]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3DO3-1mEN4t2VyP-003by3; Sun, 15
- Aug 2021 11:01:42 +0200
-Message-ID: <b19fb3316eac7cef314ad16da949d5a4b19d8204.camel@gmx.de>
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Clark Williams <williams@redhat.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-Date:   Sun, 15 Aug 2021 11:01:41 +0200
-In-Reply-To: <0044f090d3919eef03048527f1baa34aec5198a8.camel@gmx.de>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
-         <20210812151803.52f84aaf@theseus.lan>
-         <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
-         <20210812162448.26274298@theseus.lan>
-         <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
-         <20210812164440.0426d8b7@theseus.lan>
-         <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
-         <0044f090d3919eef03048527f1baa34aec5198a8.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S236971AbhHOJGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 05:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhHOJGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 05:06:51 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A8EC061764;
+        Sun, 15 Aug 2021 02:06:21 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id f2so758739ljn.1;
+        Sun, 15 Aug 2021 02:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pzy7Bev12LeveIcKIogt+C21+5RUV0MqC2YzBhF4exY=;
+        b=P6uYhMO1bx8QQX88OIpGMqBjx3sclXp9YfunKOLr7Wq0Zy/+oGRbl7MKt88sDkVz3x
+         Ep5x6laeTNHjCOjrs2TF26dtord2U1RoU6SQ421d5jAgayclnVcUITdcjOBK40qLijv0
+         Q3TZrT2DIoOqip06slEnPwnRXacg1EGgt+OQKbmiy8Az3sZsD5zCa2dSAyKu9GIn6JqM
+         8z2iA9cw7JqNda6/qsEqj7JHo62R381nn+BllWvNeP7wefsI+vYV8bb2zIQSYuRt/CAv
+         ZDW5XwFYGsmL8KBJywEdTMBSVkGNBO95NJCIwI42qRxrISZaGJqRuN8ZEmxlALQaKbks
+         FL9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pzy7Bev12LeveIcKIogt+C21+5RUV0MqC2YzBhF4exY=;
+        b=MmI+SaUBtsAC5XUllrWlc/tKLcjuS/97FGI1dWE5+h+d7AU998fdV+wFf0OhGqelNG
+         9SOVeCzqULRbwB8q27CKfqd5nUo4DYEsWKnLm+RQ5t5PUPMYSBrweoHalEYiaX2Idgeu
+         1Fc5nD1aUBjKzxe2h+04vIk14oSAQBeLEMP+2XLhDUaBg98np9EZNW/mgDB1esDPvtja
+         k0hvSMV7ei1OFs6ozMtOjXsY4LxF1STANcp1n33S9Zp8O+a47jjB0eM4bzi0CWisuLLe
+         gnHXjBXezd/HywxMOpJCFM/62KfW0+aamgxEj9GH1RWpUf7LHl+Hne53tofYbnH4mqfP
+         JNng==
+X-Gm-Message-State: AOAM53101eyOex8IaK9yf+mzE6KLxSBi8iNhpEFzy50HhfqCnJSRwT66
+        rosVOsv6dETtAtt+SEiJ/ps=
+X-Google-Smtp-Source: ABdhPJz4q+pGxo8Hyt9MoQbcofal8aZiHOdu8bTwFQu/BZNlEg3A5gqqatzoYdGKUmgR4U2u/8nBGA==
+X-Received: by 2002:a05:651c:481:: with SMTP id s1mr7931307ljc.446.1629018379345;
+        Sun, 15 Aug 2021 02:06:19 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.79])
+        by smtp.gmail.com with ESMTPSA id c12sm624462lfh.248.2021.08.15.02.06.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 02:06:19 -0700 (PDT)
+Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Sean Young <sean@mess.org>
+Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
+References: <20210730213829.2909-1-paskripkin@gmail.com>
+ <20210815083755.GA1827@gofer.mess.org>
+ <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
+Message-ID: <80648833-5f5a-0811-a281-0dba87938d3c@gmail.com>
+Date:   Sun, 15 Aug 2021 12:06:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5Gi6hLhFM+53u78DAjGML3rJyP6bw1204G0xdyKQPl1Tlznom+c
- WM9hVdpwKSdQWgtrY7d014I+Kt/YkL+G5xYyr81zwJOKo5NRMzzGN9z3fFEw9gVC0EpLEFs
- fWDdVuIk/qM9Y4yG4oWo2bfWM0LC0EdemLRv2dEN84vMCQp9RGkmdCBfan313p51YZWrlR/
- FvxZANRoW2u8TmF21Yh7w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mxUW6sOpuGs=:dBQPLZOqlp8sBr2eWgG5bg
- v2yYwAHZgDeoTMuBaxfiL/IxvGH4K9e3berqJy9Epv7t1daKTw3SQ9Dmh6RX4oE5UlVmqMkZ7
- dbkcT07wKIoNj2WuS+GF43XwcOCkR9V2ziUVCKoySJ2r+oBXOBew/snU//y2bc99YUHQeEezY
- 632632KHdqvhq/P4F9HSpEruK0WEo5KhePU0xdm/PrxliSZxhwBk8HaHanoTHDOgn75Rbhhyv
- NN++1T8423ZwfJlBXtJyBz9yN16WzZ/Wz2ac5wDyr+DxgFsIzSN0l4HCjczEl50r88jRnhaBp
- u+Q2LkC6bh0JsaDSwTVEVC5T6VpJQee5Dw/Uo0hd51UWE1+pufplBMsdEUFcSTMUjMpYGqFys
- 1bQ8HWA0URjkSH3qCXiM26YbWCoRMWR4/w8PMEzbp6912BatDY4e+BKAci93qIl691l26wkIQ
- dpAyH3Z0KTPuD042XcWdUSITMriVCMM9ppicswFfV8KwP+/ZM5lQSDwMCo2OrGgNmWfaaYMye
- vZzEFZYJ6kfn6jrJXHPr/jpjEpcWFXT3M0wvhJ3WBR6duRlLahSx1o8Yxe4TqV8QBi6bC4hnU
- Jn2j7denK5Z27tDXJwPomWeNGKqNhufj+TmND52LAfbYyVtKZjqKCJCW67uymGXm8MIIE5UCw
- kHsZ2JmdLC4WJ8JUpsUCNAimWDZx+dQKhA0FOF8fw4uosLaCZ6YSJDNe9pA3K0ALZ0cQCueu6
- gydNSQ+XTLZpuLeki2blS9X2gr5GX2Vj9smo3U6/Wl8urZGG/GCJOtbVi3za+7Rspk1hN8ghf
- moOdfUHVLcfg/a0zSd3I8fFABrClrtKQy2ocCk04a6dnnSwAonJDrLrzb8ZUONXP6z/RAlKwk
- oJlmG/9toaxJjrI4rWYpH+Q8byH+KsQfSJ/97zhZlJjWf4RaRqU/LDD0LbhPO5xGL8f2ogHsg
- LdQTJP2Ww5RPM6/ZdaF5HoTYHsHiF4SKGKJESK1vP2Ze5mxKZAF4yWVZZxkSzACVq3uMdz1on
- TnwOx1Ay0PsjXS7pob6R+Vd4be0smiwHKNJ9iMT3M1lvX86t6XEj4TcAahNHYZLHGYeof6/Pv
- 9zXfX9hgk8Gl/a9eu6mQoM0hps2WA2O30mK
+In-Reply-To: <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-08-15 at 05:13 +0200, Mike Galbraith wrote:
-> >
-> > So hopefully the below diff with uninspired naming should help?
->
-> I bet a nickle it does...
+On 8/15/21 11:49 AM, Pavel Skripkin wrote:
+> On 8/15/21 11:37 AM, Sean Young wrote:
+>> On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
+>>> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
+>>> mutex. The problem was in wrong mutex_init() location.
+>>> 
+>>> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
+>>> dvb_usbv2_init() has this order of calls:
+>>> 
+>>> 	dvb_usbv2_init()
+>>> 	  dvb_usbv2_adapter_init()
+>>> 	    dvb_usbv2_adapter_frontend_init()
+>>> 	      props->frontend_attach()
+>>> 
+>>> 	  props->init()
+>>> 
+>>> Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
+>>> internally we need to initialize state->msg_lock in it to make lockdep
+>>> happy.
+>> 
+>> What about the other frontends like mxl111sf_frontend_attach_dvbt? They
+>> no longer initialize the mutex.
+>> 
+> Good point. I see, that all other frontends also call
+> mxl111sf_ctrl_msg() inside ->frontend_attach() call.
+> 
+> I think, that fixing dvb-usb core is not good idea, so, I will add
+> mutex_init() call inside all frontends, which use mxl111sf_init().
+> 
+> What do you think about it?
+> 
+> 
 
-And it did.
 
-	-Mike
+Something like this should work. Helper is just to not copy-paste code 
+parts. Build tested against v5.14-rc5
 
+
+diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf.c 
+b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
+index 7865fa0a8295..db1ad3815cd5 100644
+--- a/drivers/media/usb/dvb-usb-v2/mxl111sf.c
++++ b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
+@@ -49,6 +49,13 @@ MODULE_PARM_DESC(rfswitch, "force rf switch position 
+(0=auto, 1=ext, 2=int).");
+
+  DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+
++static inline void mxl111sf_init_msg_mutex(struct dvb_usb_adapter *adap)
++{
++	struct mxl111sf_state *state = d_to_priv(adap_to_d(adap));
++
++	mutex_init(&state->msg_lock);
++}
++
+  int mxl111sf_ctrl_msg(struct mxl111sf_state *state,
+  		      u8 cmd, u8 *wbuf, int wlen, u8 *rbuf, int rlen)
+  {
+@@ -931,8 +938,6 @@ static int mxl111sf_init(struct dvb_usb_device *d)
+  		  .len = sizeof(eeprom), .buf = eeprom },
+  	};
+
+-	mutex_init(&state->msg_lock);
+-
+  	ret = get_chip_info(state);
+  	if (mxl_fail(ret))
+  		pr_err("failed to get chip info during probe");
+@@ -963,16 +968,19 @@ static int mxl111sf_init(struct dvb_usb_device *d)
+
+  static int mxl111sf_frontend_attach_dvbt(struct dvb_usb_adapter *adap)
+  {
++	mxl111sf_init_msg_mutex(adap);
+  	return mxl111sf_attach_demod(adap, 0);
+  }
+
+  static int mxl111sf_frontend_attach_atsc(struct dvb_usb_adapter *adap)
+  {
++	mxl111sf_init_msg_mutex(adap);
+  	return mxl111sf_lgdt3305_frontend_attach(adap, 0);
+  }
+
+  static int mxl111sf_frontend_attach_mh(struct dvb_usb_adapter *adap)
+  {
++	mxl111sf_init_msg_mutex(adap);
+  	return mxl111sf_lg2160_frontend_attach(adap, 0);
+  }
+
+@@ -981,6 +989,7 @@ static int mxl111sf_frontend_attach_atsc_mh(struct 
+dvb_usb_adapter *adap)
+  	int ret;
+  	pr_debug("%s\n", __func__);
+
++	mxl111sf_init_msg_mutex(adap);
+  	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
+  	if (ret < 0)
+  		return ret;
+@@ -1001,6 +1010,7 @@ static int mxl111sf_frontend_attach_mercury(struct 
+dvb_usb_adapter *adap)
+  	int ret;
+  	pr_debug("%s\n", __func__);
+
++	mxl111sf_init_msg_mutex(adap);
+  	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
+  	if (ret < 0)
+  		return ret;
+@@ -1021,6 +1031,7 @@ static int 
+mxl111sf_frontend_attach_mercury_mh(struct dvb_usb_adapter *adap)
+  	int ret;
+  	pr_debug("%s\n", __func__);
+
++	mxl111sf_init_msg_mutex(adap);
+  	ret = mxl111sf_attach_demod(adap, 0);
+  	if (ret < 0)
+  		return ret;
+
+
+
+With regards,
+Pavel Skripkin
