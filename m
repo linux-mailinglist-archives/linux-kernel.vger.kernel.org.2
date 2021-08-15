@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5753EC85D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0833EC86B
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 11:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236862AbhHOJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 05:37:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47464 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbhHOJhC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 05:37:02 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CB3D021F81;
-        Sun, 15 Aug 2021 09:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629020191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Ibukn/K3owQg3BwObGXrD7WX0HnC+FfEGrDOQYj+I0=;
-        b=cMXji56ir5Ie0k7YUF8Gpx6wbA8F/kZvhcfaMVEBde6ZrvzV92MBFqeSz4lmCfOSnp3lyH
-        hPqXfyKy6NQJsYXoODAXvZkMckVKveHpMa3kQTsTwatvJsUqFu3SqIPzIYPWFPhXn5sM3q
-        kY2e6rPfY+PVOdCGpSZanV7+DyDd79o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629020191;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Ibukn/K3owQg3BwObGXrD7WX0HnC+FfEGrDOQYj+I0=;
-        b=K4N5TtdSnQy3SkG3a2nvFLW/JXrrJq3uHQZAb7bVeAclOj+iHLmJJvh8X7x/rHLOShBrz5
-        NiwGS6Pl67XwVKCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6ECB513A1C;
-        Sun, 15 Aug 2021 09:36:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +/7aFx/gGGEDRQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Sun, 15 Aug 2021 09:36:31 +0000
-Subject: Re: [ANNOUNCE] v5.14-rc5-rt8
-To:     Mike Galbraith <efault@gmx.de>,
-        Clark Williams <williams@redhat.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>
-References: <20210810163731.2qvfuhenolq2gdlv@linutronix.de>
- <20210812151803.52f84aaf@theseus.lan>
- <5f0c793d-5084-4607-8475-209fa7310ba2@suse.cz>
- <20210812162448.26274298@theseus.lan>
- <bb98b54c-6d88-2a56-4998-51a304c19e8c@suse.cz>
- <20210812164440.0426d8b7@theseus.lan>
- <96ceab8e-4bf9-147a-e931-848676003c3f@suse.cz>
- <5dbf6cf9e82ef15ce0febf070608da2d5b128763.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <c92fc2cb-03cd-d6a2-fb4a-7bc33e94e391@suse.cz>
-Date:   Sun, 15 Aug 2021 11:35:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237279AbhHOJm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 05:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233413AbhHOJm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Aug 2021 05:42:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0F860295;
+        Sun, 15 Aug 2021 09:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629020547;
+        bh=GSfHvZE/Q+UBpMvO/QW4NWjmTbLIJVvGzR58O4IoWVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HhBuMmVMJ3oXH0dzUi0Fuy5CdwP6wfFidET79td5sbgoRkXMXjjTToVpC+PsCW8x9
+         Yr6MfwdVkHjQozyWXN1s2T5M89VkdTfrVoKEMKFEmiR0PWHNhlY29Lv58QqLWd5tE8
+         QZC/iZctxtu5UVFMQ39lb2ttM0+NOsGxEqPWCIh91pdzLrXUXvDux9ShB6C+0SvXwd
+         mBIuhtvlw7EF/9AxhSmVA0QA3mtM+3oR8sAWW9XGiIQ3mZ0vEd9tgTIVcV0Yqn4w4c
+         gQXFz7pXE/ZcrMV5c+/QfD7KzDhJGAtMw55xytvJf4QBX3Ar7vUKlLCRfSe75hvz60
+         U32qpiamU50zA==
+Received: by pali.im (Postfix)
+        id C887C98C; Sun, 15 Aug 2021 11:42:24 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 11:42:24 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+Message-ID: <20210815094224.dswbjywnhvajvzjv@pali>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-2-pali@kernel.org>
+ <87h7frtlu0.fsf@mail.parknet.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <5dbf6cf9e82ef15ce0febf070608da2d5b128763.camel@gmx.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h7frtlu0.fsf@mail.parknet.co.jp>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/21 6:17 AM, Mike Galbraith wrote:
-> On Sat, 2021-08-14 at 21:08 +0200, Vlastimil Babka wrote:
->>
->> Aha! That's helpful. Hopefully it's just a small issue where we
->> opportunistically test flags on a page that's protected by the local
->> lock we didn't take yet, and I didn't realize there's the VM_BUG_ON
->> which can trigger if our page went away (which we would have realized
->> after taking the lock).
+On Sunday 15 August 2021 12:42:47 OGAWA Hirofumi wrote:
+> Pali Rohár <pali@kernel.org> writes:
 > 
-> Speaking of optimistic peeking perhaps going badly, why is the below
-> not true?  There's protection against ->partial going disappearing
-> during a preemption... but can't it just as easily appear, so where is
-> that protection?
+> > Currently iocharset=utf8 mount option is broken and error is printed to
+> > dmesg when it is used. To use UTF-8 as iocharset, it is required to use
+> > utf8=1 mount option.
+> >
+> > Fix iocharset=utf8 mount option to use be equivalent to the utf8=1 mount
+> > option and remove printing error from dmesg.
+> 
+> This change is not equivalent to utf8=1. In the case of utf8=1, vfat
+> uses iocharset's conversion table and it can handle more than ascii.
+> 
+> So this patch is incompatible changes, and handles less chars than
+> utf8=1. So I think this is clean though, but this would be regression
+> for user of utf8=1.
 
-If it appears, it appears, we don't care, we just leave it there and
-won't use it.
+I do not think so... But please correct me, as this code around is mess.
 
-> If the other side of that window is safe, it could use a comment so
-> dummies reading this code don't end up asking mm folks why the heck
-> they don't just take the darn lock and be done with it instead of tap
-> dancing all around thething :)
+Without this change when utf8=1 is set then iocharset= encoding is used
+for case-insensitivity implementation (toupper / tolower conversion).
+For all other parts are use correct utf8* conversion functions.
 
-Well, with your patch, ->partial might appear just after the unlock, so
-does that really change anything?
-The point is to avoid the taking the lock if it's almost certain there
-will be nothing to gain.
+But you use touppper / tolower functions from iocharset= encoding on
+stream of utf8 bytes then you either get identity or some unpredictable
+garbage in utf8. So when comparing two (different) non-ASCII filenames
+via this method you in most cases get that filenames are different.
+Because converting their utf8 bytes via toupper / tolower functions from
+iocharset= encoding results in two different byte sequences in most
+cases. Even for two utf8 case-insensitive same strings.
 
-c->partial appearing is easy to just ignore. c->page appearing, while we
-got our own page, is worse as there can be only one c->page. But it's
-unavoidable, we can't just keep holding the local lock while going to
-the page allocator etc. That's why under retry_load_page: we have to
-deactivate a c->page that appeared under us...
+But you can play with it and I guess it is possible to find two
+different utf8 strings which after toupper / tolower conversion from
+some iocharset= encoding would lead to same byte sequence.
 
-> ---
->  mm/slub.c |   14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2937,17 +2937,16 @@ static void *___slab_alloc(struct kmem_c
-> 
->  new_slab:
-> 
-> +	/*
-> +	 * To avoid false negative race with put_cpu_partial() during a
-> +	 * preemption, we must call slub_percpu_partial() under lock.
-> +	 */
-> +	local_lock_irqsave(&s->cpu_slab->lock, flags);
->  	if (slub_percpu_partial(c)) {
-> -		local_lock_irqsave(&s->cpu_slab->lock, flags);
->  		if (unlikely(c->page)) {
->  			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
->  			goto reread_page;
->  		}
-> -		if (unlikely(!slub_percpu_partial(c))) {
-> -			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
-> -			/* we were preempted and partial list got empty */
-> -			goto new_objects;
-> -		}
-> 
->  		page = c->page = slub_percpu_partial(c);
->  		slub_set_percpu_partial(c, page);
-> @@ -2955,8 +2954,7 @@ static void *___slab_alloc(struct kmem_c
->  		stat(s, CPU_PARTIAL_ALLOC);
->  		goto redo;
->  	}
-> -
-> -new_objects:
-> +	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
-> 
->  	freelist = get_partial(s, gfpflags, node, &page);
->  	if (freelist)
-> 
-> 
+This patch uses for utf8 tolower / touppser function simple 7-bit
+tolower / toupper ascii function. And so for 7-bit ascii file names
+there is no change.
 
+So this patch changes behavior when comparing non 7-bit ascii file
+names, but only in cases when previously two different file names were
+marked as same. As now they are marked correctly as different. So this
+is changed behavior, but I guess it is bug fix which is needed.
+If you want I can put this change into separate patch.
+
+Issue that two case-insensitive same files are marked as different is
+not changed by this patch and therefore this issue stay here.
+
+> Thanks.
+> -- 
+> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
