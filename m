@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F2D3EC63A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 02:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763313EC63C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 02:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhHOAPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Aug 2021 20:15:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27557 "EHLO
+        id S235172AbhHOAP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Aug 2021 20:15:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20739 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235368AbhHOAPY (ORCPT
+        by vger.kernel.org with ESMTP id S234750AbhHOAP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Aug 2021 20:15:24 -0400
+        Sat, 14 Aug 2021 20:15:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628986494;
+        s=mimecast20190719; t=1628986497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iEhGG0hnD1JDiId4QQ1JcUjDqHGQb063cTr4+JPyYkw=;
-        b=V3rSIq7/T3BUYh3sO+oJYg+oORDvvxScsR915SwMYdxQmASxPMx41e2a4/PkThsX5ep9SE
-        5A0LgQBWz8EYKrEsUs8J8Y9A7TEN598EtqzSTmpD8O5WwuDue6uB8+3AuXeVwfksxd5cVS
-        11XJWbbkR+ajbmwkbri4NoVpVm64rSQ=
+        bh=ldlsga8V9dOzPgtPoG7CPrhnt51NwBQ9YbIGxIArL70=;
+        b=OBufecCFrIMRTsXt3qwSroQpPKfgfbpTEAZda/J+vNBJjlYzJnIEOr9RqhdfHWRXFnrCXN
+        EXoNUQMr56Cz8MQrhlCEONXd9ol+O9apE2muXY7cxobKcpyzVPD/npQlj/ecB7CFa2nWAb
+        HjhjWtDqfOnoPCesgt75mzEU5vbJTXg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-Kn7aLsCnPGOB51pYeTnCAQ-1; Sat, 14 Aug 2021 20:14:51 -0400
-X-MC-Unique: Kn7aLsCnPGOB51pYeTnCAQ-1
+ us-mta-298--WMkZ6z4NN-xbRJoIkVcZg-1; Sat, 14 Aug 2021 20:14:56 -0400
+X-MC-Unique: -WMkZ6z4NN-xbRJoIkVcZg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9498B801AC0;
-        Sun, 15 Aug 2021 00:14:49 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 163CD1082921;
+        Sun, 15 Aug 2021 00:14:55 +0000 (UTC)
 Received: from gshan.redhat.com (vpn2-54-103.bne.redhat.com [10.64.54.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FD7210016FF;
-        Sun, 15 Aug 2021 00:14:44 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 34D1010074E1;
+        Sun, 15 Aug 2021 00:14:49 +0000 (UTC)
 From:   Gavin Shan <gshan@redhat.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-kernel@vger.kernel.org, james.morse@arm.com,
         mark.rutland@arm.com, Jonathan.Cameron@huawei.com, will@kernel.org,
         maz@kernel.org, pbonzini@redhat.com
-Subject: [PATCH v4 07/21] KVM: arm64: Support SDEI_EVENT_UNREGISTER hypercall
-Date:   Sun, 15 Aug 2021 08:13:38 +0800
-Message-Id: <20210815001352.81927-8-gshan@redhat.com>
+Subject: [PATCH v4 08/21] KVM: arm64: Support SDEI_EVENT_STATUS hypercall
+Date:   Sun, 15 Aug 2021 08:13:39 +0800
+Message-Id: <20210815001352.81927-9-gshan@redhat.com>
 In-Reply-To: <20210815001352.81927-1-gshan@redhat.com>
 References: <20210815001352.81927-1-gshan@redhat.com>
 MIME-Version: 1.0
@@ -52,26 +52,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This supports SDEI_EVENT_UNREGISTER hypercall. It's used by the
-guest to unregister SDEI event. The SDEI event won't be raised to
-the guest or specific vCPU after it's unregistered successfully.
-It's notable the SDEI event is disabled automatically on the guest
-or specific vCPU once it's unregistered successfully.
+This supports SDEI_EVENT_STATUS hypercall. It's used by the guest
+to retrieve a bitmap to indicate the SDEI event states, including
+registration, enablement and delivery state.
 
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- arch/arm64/kvm/sdei.c | 61 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ arch/arm64/kvm/sdei.c | 50 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
 diff --git a/arch/arm64/kvm/sdei.c b/arch/arm64/kvm/sdei.c
-index b4162efda470..a3ba69dc91cb 100644
+index a3ba69dc91cb..b95b8c4455e1 100644
 --- a/arch/arm64/kvm/sdei.c
 +++ b/arch/arm64/kvm/sdei.c
-@@ -308,6 +308,65 @@ static unsigned long kvm_sdei_hypercall_context(struct kvm_vcpu *vcpu)
+@@ -367,6 +367,54 @@ static unsigned long kvm_sdei_hypercall_unregister(struct kvm_vcpu *vcpu)
  	return ret;
  }
  
-+static unsigned long kvm_sdei_hypercall_unregister(struct kvm_vcpu *vcpu)
++static unsigned long kvm_sdei_hypercall_status(struct kvm_vcpu *vcpu)
 +{
 +	struct kvm *kvm = vcpu->kvm;
 +	struct kvm_sdei_kvm *ksdei = kvm->arch.sdei;
@@ -93,36 +91,25 @@ index b4162efda470..a3ba69dc91cb 100644
 +		goto out;
 +	}
 +
-+	/* Check if the KVM event exists */
++	/*
++	 * Check if the KVM event exists. None of the flags
++	 * will be set if it doesn't exist.
++	 */
 +	spin_lock(&ksdei->lock);
 +	kske = kvm_sdei_find_kvm_event(kvm, event_num);
 +	if (!kske) {
-+		ret = SDEI_INVALID_PARAMETERS;
++		ret = 0;
 +		goto unlock;
 +	}
 +
-+	/* Check if there is pending events */
-+	if (kske->state.refcount) {
-+		ret = SDEI_PENDING;
-+		goto unlock;
-+	}
-+
-+	/* Check if it has been registered */
-+	kse = kske->kse;
 +	index = (kse->state.type == SDEI_EVENT_TYPE_PRIVATE) ?
 +		vcpu->vcpu_idx : 0;
-+	if (!kvm_sdei_is_registered(kske, index)) {
-+		ret = SDEI_DENIED;
-+		goto unlock;
-+	}
-+
-+	/* The event is disabled when it's unregistered */
-+	kvm_sdei_clear_enabled(kske, index);
-+	kvm_sdei_clear_registered(kske, index);
-+	if (kvm_sdei_empty_registered(kske)) {
-+		list_del(&kske->link);
-+		kfree(kske);
-+	}
++	if (kvm_sdei_is_registered(kske, index))
++		ret |= (1UL << SDEI_EVENT_STATUS_REGISTERED);
++	if (kvm_sdei_is_enabled(kske, index))
++		ret |= (1UL << SDEI_EVENT_STATUS_ENABLED);
++	if (kske->state.refcount)
++		ret |= (1UL << SDEI_EVENT_STATUS_RUNNING);
 +
 +unlock:
 +	spin_unlock(&ksdei->lock);
@@ -133,15 +120,15 @@ index b4162efda470..a3ba69dc91cb 100644
  int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
  {
  	u32 func = smccc_get_function(vcpu);
-@@ -333,6 +392,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
- 	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE:
- 	case SDEI_1_0_FN_SDEI_EVENT_COMPLETE_AND_RESUME:
- 	case SDEI_1_0_FN_SDEI_EVENT_UNREGISTER:
-+		ret = kvm_sdei_hypercall_unregister(vcpu);
-+		break;
+@@ -395,6 +443,8 @@ int kvm_sdei_hypercall(struct kvm_vcpu *vcpu)
+ 		ret = kvm_sdei_hypercall_unregister(vcpu);
+ 		break;
  	case SDEI_1_0_FN_SDEI_EVENT_STATUS:
++		ret = kvm_sdei_hypercall_status(vcpu);
++		break;
  	case SDEI_1_0_FN_SDEI_EVENT_GET_INFO:
  	case SDEI_1_0_FN_SDEI_EVENT_ROUTING_SET:
+ 	case SDEI_1_0_FN_SDEI_PE_MASK:
 -- 
 2.23.0
 
