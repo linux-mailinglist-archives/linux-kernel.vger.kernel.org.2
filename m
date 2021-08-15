@@ -2,184 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F7D3EC9E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381973EC9F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Aug 2021 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238124AbhHOPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 11:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhHOPV7 (ORCPT
+        id S238040AbhHOPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 11:25:37 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:39620 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhHOPZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:21:59 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02C0C061764;
-        Sun, 15 Aug 2021 08:21:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so10162032pjb.3;
-        Sun, 15 Aug 2021 08:21:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lqJuD6ruM5b7S82+pL+Pgu4dT3Aqj2AS9hae1tFkdRo=;
-        b=UDo6cP9FMCJZ7xCJSIXhjRcP0ErAenE3P03nucshW6LzGwza1JB05cdoyvyJEbpJya
-         8aLc4Djx0DAWFPSijwKCksggpzGOsA8NJq7xgbAAE0ffHXqq0QXSiy6tfbcSn5jEQof6
-         2ma3PA51qPRAxAYmuW2j7KtkKsDVNuEpegmAaBxh1f/jI4N5cAWqPcx4oFXN2pO1Ashc
-         87gLBUkKiBVoGeCUHLrBIQIIXvlCZHYUAOsOdCOfo4PAkq83QiSfgI8TAI23zhfr8YUr
-         vMCV/udIh/MHgkHngzhYrcPnpUZMQSk6GK/ENzO0mZC8nGBR7d73iCxBtmg3WUTr+cQr
-         /F0g==
+        Sun, 15 Aug 2021 11:25:36 -0400
+Received: by mail-ot1-f48.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so1057537otf.6;
+        Sun, 15 Aug 2021 08:25:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lqJuD6ruM5b7S82+pL+Pgu4dT3Aqj2AS9hae1tFkdRo=;
-        b=ZVdCSxt5oTv6CnY39LlyLRn847IwRlpBN5V0/Bq5k/X8IoaLwPgwqCkfeuU1sJh4n7
-         gWRcKDAwDDSNxZIrKXCf+TGZGvyDEM1KrVvThAK1uP/q8txmxR3l5gduHLLPlqPPTqk+
-         CxmGo6iyQinvrONetSSbt9IyI88waMKbQxY9gyRiN7gU+behL3EYcd79CqBEh/XMqNYI
-         4zGH8CJ0bmmNbV7a7wQSPtW7/Q5wlKpNVFYPFGAZ322UN0o5l94v20AHwvCUaoHOPGt9
-         THWwsTYvsEncli1xKl7+grfXEvtzqG0tzyPTDLU0pMc4N3kKmx+5jJFau8UaFxj26FJg
-         M/nA==
-X-Gm-Message-State: AOAM532Gsw0iF7YuEWzOrcrK4Trtn/ga8ERe7NJRWZJX+4AJXbjfSaAf
-        uzYA9Mw0O9MJkABbTZshFu0=
-X-Google-Smtp-Source: ABdhPJxpcs+C9yGRhB/oJwUav2sPEXUGNBEjk6Xqpn3/4lgsrB3QPLQ97I5YOwA+8w9+RuIKBCv5Rw==
-X-Received: by 2002:a63:770f:: with SMTP id s15mr11711033pgc.137.1629040889118;
-        Sun, 15 Aug 2021 08:21:29 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id nn18sm6289319pjb.21.2021.08.15.08.21.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 08:21:28 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-Subject: Re: [PATCH V3 04/13] HV: Mark vmbus ring buffer visible to host in
- Isolation VM
-To:     Michael Kelley <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "tj@kernel.org" <tj@kernel.org>
-Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-5-ltykernel@gmail.com>
- <MWHPR21MB1593CCBBBB83E721F8FDACD3D7F99@MWHPR21MB1593.namprd21.prod.outlook.com>
-Message-ID: <43d4cb59-5ddd-516d-1f5c-4a1a799a9f2d@gmail.com>
-Date:   Sun, 15 Aug 2021 23:21:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ekgt3OAtYmB5Rrl1lZKK9+oa72a0Us/2FQEAMO/EQak=;
+        b=nx7ht6GXvngZvY5EaLytK+E3shHTaI+pvIm5G0uk/RrQupL7M0RPgUvNudJHzWh/KZ
+         +olF3xnvqRQvCbLjn4kC7dWnd+ih4Ml7i0huglwEPr6QCLVBfi/CPbhggoR5PbkRJVxF
+         yMgq0Hkkm2e0Zzv2dip0+u3qfZ/oX+9gBr/FXdiPBnUx885C4inAhmsEEDUduKulHzPm
+         1Omsbklx1enhMz7RF4IooaQo4TLvBZLVQtm4n7A88TEz1Mu69NIS1tdrM7yJxy1IrY7N
+         DSNd5gDL0hmxXL+9/hDoyLWRpnQatktnTFfqe1iVwUpEUpH/qZBsIbzfBMl9MvC4HJYd
+         mFDA==
+X-Gm-Message-State: AOAM531/RuDEGi5cf6NnPjrfTmsWIDHyLlMWzsccaBQNEZH+a79s+Znj
+        PLL8uUCAls+BDhl7t7rggw==
+X-Google-Smtp-Source: ABdhPJzjr4gT4FE0xwAVG4uG4LG0+RSUbEqBTWj+LfaNdV32tQZ0vqtZTO/Ia6yG79/x3EO0MD/S6w==
+X-Received: by 2002:a9d:6306:: with SMTP id q6mr9594009otk.290.1629041105852;
+        Sun, 15 Aug 2021 08:25:05 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p8sm1717971otk.22.2021.08.15.08.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Aug 2021 08:25:05 -0700 (PDT)
+Received: (nullmailer pid 3767739 invoked by uid 1000);
+        Sun, 15 Aug 2021 15:25:03 -0000
+Date:   Sun, 15 Aug 2021 10:25:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/9] Add generic support for kdump DT properties
+Message-ID: <YRkxzx/1XM3r64Ee@robh.at.kernel.org>
+References: <cover.1628670468.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB1593CCBBBB83E721F8FDACD3D7F99@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1628670468.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 11, 2021 at 10:50:58AM +0200, Geert Uytterhoeven wrote:
+> 	Hi all,
+> 
+> This patch series adds generic support for parsing DT properties related
+> to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
+> the "/chosen" node), makes use of it on arm32, and performs a few
+> cleanups.  It is an evolution of the combination of [1] and [2].
 
-
-On 8/13/2021 6:20 AM, Michael Kelley wrote:
->> @@ -474,6 +482,13 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
->>   	if (ret)
->>   		return ret;
->>
->> +	ret = set_memory_decrypted((unsigned long)kbuffer,
->> +				   HVPFN_UP(size));
->> +	if (ret) {
->> +		pr_warn("Failed to set host visibility.\n");
-> Enhance this message a bit.  "Failed to set host visibility for new GPADL\n"
-> and also output the value of ret.
-
-OK. This looks better. Thanks.
+The DT bits look fine to me. How do you expect this to be merged? I'm 
+happy to take it if arch maintainers can ack it.
 
 > 
->> @@ -539,6 +554,10 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
->>   	/* At this point, we received the gpadl created msg */
->>   	*gpadl_handle = gpadlmsg->gpadl;
->>
->> +	channel->gpadl_array[index].size = size;
->> +	channel->gpadl_array[index].buffer = kbuffer;
->> +	channel->gpadl_array[index].gpadlhandle = *gpadl_handle;
->> +
-> I can see the merits of transparently stashing the memory address and size
-> that will be needed by vmbus_teardown_gpadl(), so that the callers of
-> __vmbus_establish_gpadl() don't have to worry about it.  But doing the
-> stashing transparently is somewhat messy.
-> 
-> Given that the callers are already have memory allocated to save the
-> GPADL handle, a little refactoring would make for a much cleaner solution.
-> Instead of having memory allocated for the 32-bit GPADL handle, callers
-> should allocate the slightly larger struct vmbus_gpadl that you've
-> defined below.  The calling interfaces can be updated to take a pointer
-> to this structure instead of a pointer to the 32-bit GPADL handle, and
-> you can save the memory address and size right along with the GPADL
-> handle.  This approach touches a few more files, but I think there are
-> only two callers outside of the channel management code -- netvsc
-> and hv_uio -- so it's not a big change.
+> The series consists of 6 parts:
+>   1. Patch 1 prepares architecture-specific code (needed for MIPS only)
+>      to avoid duplicating elf core header reservation later.
+>   2. Patch 2 prepares the visibility of variables used to hold
+>      information retrieved from the DT properties.
+>   3. Patches 3-5 add support to the FDT core for handling the
+>      properties.
+>      This can co-exist safely with architecture-specific handling, until
+>      the latter has been removed.
 
-Yes, this is a good suggestion and Will update in the next version.
+Looks like patch 5 doesn't have any dependencies with the series?
 
-> 
->> @@ -859,6 +886,19 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, u32 gpadl_handle)
->>   	spin_unlock_irqrestore(&vmbus_connection.channelmsg_lock, flags);
->>
->>   	kfree(info);
->> +
->> +	/* Find gpadl buffer virtual address and size. */
->> +	for (i = 0; i < VMBUS_GPADL_RANGE_COUNT; i++)
->> +		if (channel->gpadl_array[i].gpadlhandle == gpadl_handle)
->> +			break;
->> +
->> +	if (set_memory_encrypted((unsigned long)channel->gpadl_array[i].buffer,
->> +			HVPFN_UP(channel->gpadl_array[i].size)))
->> +		pr_warn("Fail to set mem host visibility.\n");
-> Enhance this message a bit: "Failed to set host visibility in GPADL teardown\n".
-> Also output the returned error code to help in debugging any occurrences of
-> a failure
-Yes, agree. Will update.
+>   4. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
+>      riscv.
 
-Thanks.
+I thought this should be applied for 5.14?
+
+>   5. Patches 7-8 convert arm64 to use the generic handling instead of
+>      its own implementation.
+>   6. Patch 9 adds support for kdump properties to arm32.
+>      The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add
+>      DT properties to crash dump kernel's DTB"[3], which is still valid.
+
+This one can be applied on its own, right?
+
+Rob
