@@ -2,271 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804B3ED008
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B5A3ED00A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhHPIMU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 04:12:20 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:58083 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhHPIMS (ORCPT
+        id S234857AbhHPIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234824AbhHPIMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:12:18 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 8EFE0100004;
-        Mon, 16 Aug 2021 08:11:44 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 10:11:43 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G
- parts
-Message-ID: <20210816101143.2a64d7b9@xps13>
-In-Reply-To: <20210811084924.52293-1-daniel@0x0f.com>
-References: <20210811084924.52293-1-daniel@0x0f.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 16 Aug 2021 04:12:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC64FC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:12:14 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFXj8-0003Xd-29; Mon, 16 Aug 2021 10:12:10 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3FA99668018;
+        Mon, 16 Aug 2021 08:12:07 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 10:12:05 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
+ Transmitter Delay Compensation (TDC)
+Message-ID: <20210816081205.7rjdskaui35f3jml@pengutronix.de>
+References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
+ <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hiskfds7hw52oih6"
+Content-Disposition: inline
+In-Reply-To: <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-Daniel Palmer <daniel@0x0f.com> wrote on Wed, 11 Aug 2021 17:49:24
-+0900:
+--hiskfds7hw52oih6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Add support for the various Foresee FS35ND0*G parts manufactured by Longsys.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> 
-> Link: https://datasheet.lcsc.com/szlcsc/2008121142_FORESEE-FS35ND01G-S1Y2QWFI000_C719495.pdf
-> ---
->  Changes since v2:
->  - Originally I only had the 1Gbit version of this chip, now I have the 2Gbit and 4Gbit
->    variations so I've added support for those too. There is no datasheet for the bigger
->    chips but they are documented in a flashing tool from an SoC vendor so I took the parameters
->    from there.
->  - Previous versions of this patch only had single io read cache variants. My SPI flash driver
->    now supports dual and quad io for reading so I added and tested those modes too.
->    My driver/hardware only supports single io for writing so those are still left out.
->  - Implemented proper logic for checking the ECC status.
->  - Combined with the previous patch for 1-filling the OOB in the page buffer before writing
->    I have been using this for a few months now without anything getting broken.
->  
->  drivers/mtd/nand/spi/Makefile  |   2 +-
->  drivers/mtd/nand/spi/core.c    |   1 +
->  drivers/mtd/nand/spi/longsys.c | 134 +++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h    |   1 +
->  4 files changed, 137 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/nand/spi/longsys.c
-> 
-> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-> index 9662b9c1d5a9..1d6819022e43 100644
-> --- a/drivers/mtd/nand/spi/Makefile
-> +++ b/drivers/mtd/nand/spi/Makefile
-> @@ -1,3 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
-> +spinand-objs := core.o gigadevice.o longsys.o macronix.o micron.o paragon.o toshiba.o winbond.o
->  obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 446ba8d43fbc..48f635d5c1ff 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -895,6 +895,7 @@ static const struct nand_ops spinand_ops = {
->  
->  static const struct spinand_manufacturer *spinand_manufacturers[] = {
->  	&gigadevice_spinand_manufacturer,
-> +	&longsys_spinand_manufacturer,
->  	&macronix_spinand_manufacturer,
->  	&micron_spinand_manufacturer,
->  	&paragon_spinand_manufacturer,
-> diff --git a/drivers/mtd/nand/spi/longsys.c b/drivers/mtd/nand/spi/longsys.c
-> new file mode 100644
-> index 000000000000..ee38f8728262
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/longsys.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020 Daniel Palmer <daniel@thingy.jp>
-> + *
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/spinand.h>
-> +
-> +#define SPINAND_MFR_LONGSYS			0xCD
-> +#define FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS	(0 << 4)
-> +#define FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS	(1 << 4)
-> +#define FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE	(2 << 4)
-> +
-> +static SPINAND_OP_VARIANTS(read_cache_variants,
-> +		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(write_cache_variants,
-> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(update_cache_variants,
-> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> +
-> +static int fs35nd01g_s1y2_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +					struct mtd_oob_region *region)
-> +{
-> +	if (section > 3)
-> +		return -ERANGE;
-> +
-> +	/* ECC is not user accessible */
-> +	region->offset = 0;
-> +	region->length = 0;
+On 14.08.2021 19:17:28, Vincent Mailhol wrote:
+> At high bit rates, the propagation delay from the TX pin to the RX pin
+> of the transceiver causes measurement errors: the sample point on the
+> RX pin might occur on the previous bit.
+>=20
+> This issue is addressed in ISO 11898-1 section 11.3.3 "Transmitter
+> delay compensation" (TDC).
+>=20
+> This patch brings command line support to nine TDC parameters which
+> were recently added to the kernel's CAN netlink interface in order to
+> implement TDC:
+>   - IFLA_CAN_TDC_TDCV_MIN: Transmitter Delay Compensation Value
+>     minimum value
+>   - IFLA_CAN_TDC_TDCV_MAX: Transmitter Delay Compensation Value
+>     maximum value
+>   - IFLA_CAN_TDC_TDCO_MIN: Transmitter Delay Compensation Offset
+>     minimum value
+>   - IFLA_CAN_TDC_TDCO_MAX: Transmitter Delay Compensation Offset
+>     maximum value
+>   - IFLA_CAN_TDC_TDCF_MIN: Transmitter Delay Compensation Filter
+>     window minimum value
+>   - IFLA_CAN_TDC_TDCF_MAX: Transmitter Delay Compensation Filter
+>     window maximum value
+>   - IFLA_CAN_TDC_TDCV: Transmitter Delay Compensation Value
+>   - IFLA_CAN_TDC_TDCO: Transmitter Delay Compensation Offset
+>   - IFLA_CAN_TDC_TDCF: Transmitter Delay Compensation Filter window
+>=20
+> All those new parameters are nested together into the attribute
+> IFLA_CAN_TDC.
+>=20
+> A tdc-mode parameter allow to specify how to operate. Valid options
+> are:
+>=20
+>   * auto: the transmitter automatically measures TDCV. As such, TDCV
+>     values can not be manually provided. In this mode, the user must
+>     specify TDCO and may also specify TDCF if supported.
+>=20
+>   * manual: Use the TDCV value provided by the user are used. In this
+                           ^^^^^                      ^^^
+                           singular                   plural
+>     mode, the user must specify both TDCV and TDCO and may also
+>     specify TDCF if supported.
+>=20
 
-Can't you just return -ERANGE directly? (maybe not).
-If you can't then just return -ERANGE on if (section), no need for two
-additional calls.
+Marc
 
-> +
-> +	return 0;
-> +}
-> +
-> +static int fs35nd01g_s1y2_ooblayout_free(struct mtd_info *mtd, int section,
-> +				    struct mtd_oob_region *region)
-> +{
-> +	if (section > 3)
-> +		return -ERANGE;
-> +
-> +	/*
-> +	 * No ECC data is stored in the accessible OOB so the full 16 bytes
-> +	 * of each spare region is available to the user. Apparently also
-> +	 * covered by the internal ECC.
-> +	 */
-> +	if (section) {
-> +		region->offset = 16 * section;
-> +		region->length = 16;
-> +	} else {
-> +		/* First byte in spare0 area is used for bad block marker */
-> +		region->offset = 1;
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-So far we reserved two bytes for BBM while we know for now we only use
-one.
+--hiskfds7hw52oih6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +		region->length = 15;
-> +	}
+-----BEGIN PGP SIGNATURE-----
 
-You can just return
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaHdMACgkQqclaivrt
+76kK2gf7ByQgT+oT/maYnG88lnvjMyyv+jPt7G6VOHxu8uc0KpNqzJbUstcfnFVg
+SXcJclJHbFeUj1PFtebuGRARQRTbCiYYC0YF9GcYdQoU7tFmeHEH0kiktmlKdiVu
+JbzcaEwnmmDBMFC8h6Cg1sOnnGpBcluLed1WEoqs/UmqYbY9U9owhzOV7NSbukQq
+TzlbpKPkXsAUZW2q2NBYvbljDubSC+Cb88C0Qxwa25ulQYkDmHnIqsq8HNSEYfsS
+hFVLndgSmtfobUKbDogLlqYN9vYN4bFl7nFeqcaH4ShlC01YefxjnEjBhJYRpXt5
+8wpUiZ5+Jjxr7U3MpsgsQAbLQJClPA==
+=+mR+
+-----END PGP SIGNATURE-----
 
-	if (section)
-		return -ERANGE;
-
-	offset = 2;
-	length = (4 * 16) - offset;
-
-	return 0;
-
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct mtd_ooblayout_ops fs35nd01g_s1y2_ooblayout = {
-> +	.ecc = fs35nd01g_s1y2_ooblayout_ecc,
-> +	.free = fs35nd01g_s1y2_ooblayout_free,
-> +};
-> +
-> +static int fs35nd01g_s1y2_ecc_get_status(struct spinand_device *spinand,
-> +					u8 status)
-> +{
-> +	switch (status & STATUS_ECC_MASK) {
-> +	case FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS:
-> +		return 3;
-> +	/*
-> +	 * The datasheet says *successful* with 4 bits flipped.
-> +	 * nandbiterrs always complains that the read reported
-> +	 * successful but the data is incorrect.
-> +	 */
-> +	case FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS:
-> +		return 4;
-
-This is a real issue. Can you use the nandflipbits tool from the
-mtd-utils package (you should take a recent version of the package) and
-try to observe what happens when you insert a 4th bitflip in a section?
-
-I generally believe the tool more than the datasheet :)
-
-> +	case FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE:
-> +		return -EBADMSG;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static const struct spinand_info longsys_spinand_table[] = {
-> +	SPINAND_INFO("FS35ND01G-S1Y2",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEA, 0x11),
-> +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-> +		     SPINAND_HAS_QE_BIT,
-> +		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-> +				     fs35nd01g_s1y2_ecc_get_status)),
-> +	SPINAND_INFO("FS35ND02G-S3Y2",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEB, 0x11),
-> +		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-> +		     SPINAND_HAS_QE_BIT,
-> +		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-> +				     fs35nd01g_s1y2_ecc_get_status)),
-> +	SPINAND_INFO("FS35ND04G-S2Y2",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEC, 0x11),
-> +		     NAND_MEMORG(1, 2048, 64, 64, 4096, 40, 1, 1, 1),
-> +		     NAND_ECCREQ(4, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-> +		     SPINAND_HAS_QE_BIT,
-> +		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
-> +				     fs35nd01g_s1y2_ecc_get_status)),
-> +};
-> +
-> +static const struct spinand_manufacturer_ops longsys_spinand_manuf_ops = {
-> +};
-> +
-> +const struct spinand_manufacturer longsys_spinand_manufacturer = {
-> +	.id = SPINAND_MFR_LONGSYS,
-> +	.name = "Longsys",
-> +	.chips = longsys_spinand_table,
-> +	.nchips = ARRAY_SIZE(longsys_spinand_table),
-> +	.ops = &longsys_spinand_manuf_ops,
-> +};
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 6988956b8492..f6c38528bb03 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -261,6 +261,7 @@ struct spinand_manufacturer {
->  
->  /* SPI NAND manufacturers */
->  extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
-> +extern const struct spinand_manufacturer longsys_spinand_manufacturer;
->  extern const struct spinand_manufacturer macronix_spinand_manufacturer;
->  extern const struct spinand_manufacturer micron_spinand_manufacturer;
->  extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-
-Otherwise LGTM.
-
-Thanks,
-Miquèl
+--hiskfds7hw52oih6--
