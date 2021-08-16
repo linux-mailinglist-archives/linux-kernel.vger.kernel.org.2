@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED00E3ED751
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C80E3ED5A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbhHPNbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:31:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
+        id S236974AbhHPNNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240656AbhHPNT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:19:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77941632CD;
-        Mon, 16 Aug 2021 13:15:16 +0000 (UTC)
+        id S237199AbhHPNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F2661163;
+        Mon, 16 Aug 2021 13:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119717;
-        bh=u3aC0WlkHwHUxv5QOQjX/DflPSIcjW/7B8GDa3abAqQ=;
+        s=korg; t=1629119284;
+        bh=Rxqm1YAwNPqM3lUQa+7ZC894ANw1ofrWEJYCyh8AmFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y61BdJKfPQ1S5RlvTZ61CXiA6LblxUxSn5YcO2DrnesJk3Iq4Evyfis6JzHTx8hN1
-         KHhdbdjnIm5OvwkApyw1mGkaGU9Egbbj0AtMp6YtXUpm5RE5fbfREM2bDq+KfcArNw
-         4EBFTLAph8NfHoeuB79YyaQzCWuIfU4hjyzCGY7I=
+        b=NFsAp3Od8qe8Gnwnlds8MHDYHtsUPPmVwoZZv/NSb2j1RaWpAz6+iTfyyirJWQJej
+         vNZKUMMZBGQsb/0sQ5gp4n9ztN5I3h/CiUywL6y2+XUPPBy2rU6weWzO3NF9qygYRU
+         yqvrKgkLKpWk8C1EuCVsMyvEMzaaOacHetNRE7E4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
+        Yuchung Cheng <ycheng@google.com>, Kevin Yang <yyd@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 102/151] net: dsa: lantiq: fix broken backpressure in .port_fdb_dump
+Subject: [PATCH 5.10 62/96] tcp_bbr: fix u32 wrap bug in round logic if bbr_init() called after 2B packets
 Date:   Mon, 16 Aug 2021 15:02:12 +0200
-Message-Id: <20210816125447.442562570@linuxfoundation.org>
+Message-Id: <20210816125437.015681798@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Neal Cardwell <ncardwell@google.com>
 
-[ Upstream commit 871a73a1c8f55da0a3db234e9dd816ea4fd546f2 ]
+[ Upstream commit 6de035fec045f8ae5ee5f3a02373a18b939e91fb ]
 
-rtnl_fdb_dump() has logic to split a dump of PF_BRIDGE neighbors into
-multiple netlink skbs if the buffer provided by user space is too small
-(one buffer will typically handle a few hundred FDB entries).
+Currently if BBR congestion control is initialized after more than 2B
+packets have been delivered, depending on the phase of the
+tp->delivered counter the tracking of BBR round trips can get stuck.
 
-When the current buffer becomes full, nlmsg_put() in
-dsa_slave_port_fdb_do_dump() returns -EMSGSIZE and DSA saves the index
-of the last dumped FDB entry, returns to rtnl_fdb_dump() up to that
-point, and then the dump resumes on the same port with a new skb, and
-FDB entries up to the saved index are simply skipped.
+The bug arises because if tp->delivered is between 2^31 and 2^32 at
+the time the BBR congestion control module is initialized, then the
+initialization of bbr->next_rtt_delivered to 0 will cause the logic to
+believe that the end of the round trip is still billions of packets in
+the future. More specifically, the following check will fail
+repeatedly:
 
-Since dsa_slave_port_fdb_do_dump() is pointed to by the "cb" passed to
-drivers, then drivers must check for the -EMSGSIZE error code returned
-by it. Otherwise, when a netlink skb becomes full, DSA will no longer
-save newly dumped FDB entries to it, but the driver will continue
-dumping. So FDB entries will be missing from the dump.
+  !before(rs->prior_delivered, bbr->next_rtt_delivered)
 
-Fix the broken backpressure by propagating the "cb" return code and
-allow rtnl_fdb_dump() to restart the FDB dump with a new skb.
+and thus the connection will take up to 2B packets delivered before
+that check will pass and the connection will set:
 
-Fixes: 58c59ef9e930 ("net: dsa: lantiq: Add Forwarding Database access")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  bbr->round_start = 1;
+
+This could cause many mechanisms in BBR to fail to trigger, for
+example bbr_check_full_bw_reached() would likely never exit STARTUP.
+
+This bug is 5 years old and has not been observed, and as a practical
+matter this would likely rarely trigger, since it would require
+transferring at least 2B packets, or likely more than 3 terabytes of
+data, before switching congestion control algorithms to BBR.
+
+This patch is a stable candidate for kernels as far back as v4.9,
+when tcp_bbr.c was added.
+
+Fixes: 0f8782ea1497 ("tcp_bbr: add BBR congestion control")
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Reviewed-by: Yuchung Cheng <ycheng@google.com>
+Reviewed-by: Kevin Yang <yyd@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210811024056.235161-1-ncardwell@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/lantiq_gswip.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ net/ipv4/tcp_bbr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index 314ae78bbdd6..e78026ef6d8c 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -1404,11 +1404,17 @@ static int gswip_port_fdb_dump(struct dsa_switch *ds, int port,
- 		addr[1] = mac_bridge.key[2] & 0xff;
- 		addr[0] = (mac_bridge.key[2] >> 8) & 0xff;
- 		if (mac_bridge.val[1] & GSWIP_TABLE_MAC_BRIDGE_STATIC) {
--			if (mac_bridge.val[0] & BIT(port))
--				cb(addr, 0, true, data);
-+			if (mac_bridge.val[0] & BIT(port)) {
-+				err = cb(addr, 0, true, data);
-+				if (err)
-+					return err;
-+			}
- 		} else {
--			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port)
--				cb(addr, 0, false, data);
-+			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port) {
-+				err = cb(addr, 0, false, data);
-+				if (err)
-+					return err;
-+			}
- 		}
- 	}
- 	return 0;
+diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
+index 6ea3dc2e4219..6274462b86b4 100644
+--- a/net/ipv4/tcp_bbr.c
++++ b/net/ipv4/tcp_bbr.c
+@@ -1041,7 +1041,7 @@ static void bbr_init(struct sock *sk)
+ 	bbr->prior_cwnd = 0;
+ 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
+ 	bbr->rtt_cnt = 0;
+-	bbr->next_rtt_delivered = 0;
++	bbr->next_rtt_delivered = tp->delivered;
+ 	bbr->prev_ca_state = TCP_CA_Open;
+ 	bbr->packet_conservation = 0;
+ 
 -- 
 2.30.2
 
