@@ -2,156 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170973ED39C
+	by mail.lfdr.de (Postfix) with ESMTP id 65D543ED39D
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhHPMCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S235831AbhHPMCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbhHPMC3 (ORCPT
+        with ESMTP id S235798AbhHPMCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:02:29 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E924FC061764;
-        Mon, 16 Aug 2021 05:01:57 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id y7so26826460ljp.3;
-        Mon, 16 Aug 2021 05:01:57 -0700 (PDT)
+        Mon, 16 Aug 2021 08:02:41 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7546DC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:02:09 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id n6so26734000ljp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:02:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=r9qun9RBfDRUM5T4sfZ2VeCEDVk102Kw4ULHeddtzpM=;
-        b=sNCk2U79PhKTpz1SMogAaQAC2vqp0InA8igcTnnuPut7N3g/rWMM8yieUDw4nKHqeF
-         LeAnzH90rNv8P1AKfWTOTBAOTFkWmGufH2ynZbCbhRl2M1SKdfvk1ZW2zoH/KRkkdzLF
-         AfxDwiFlwJ1XPzOTLwJ44k9PD3HAD4gSYaUzmPbihSV30jvu7J/EvZthmoAezoiyD8gA
-         x31TjvNxv18VGnDu3aM9WDa6Ku+OBlGZ5jFx4spYE9tx2rGm4bz4lbEm1dl3fI59Hkcr
-         oenXEpYX6sISq5zWzzNbsPcl/W1NG8ASrf/yTjt4Wo9ZUMi8vjpQ4D9aTyRhLTSQTcWA
-         gSMg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r6r8va6Dg2Si6p1qLWqzldiHMFwpXfRX5u3lnqvgf50=;
+        b=jdBYVl6FVZiGHHJ07dR6L+gaooQEvB6aUPT7DdTl2sxzZB72QvIm8RjFuksMDCsvxs
+         QACEMWzp/Q3iBoOjiKNZgcOebLotXfTDiRG/6VU7bW+9PQAEVQbbM8sfV9+AeK8NCbwB
+         dOqsowtWGiOYzzik+kGvYfcRt/uHZPFJLL5DHMbAXigBGPSv+cDn20pKDwtJucPdL07E
+         aYBSAPv3PU0ANahj14MJS6sUfUfrTJYD7yuklIwmLKbTFEUsIPqOhyA6x+wk33Ix/KAs
+         zf6OvGO8cFF6p7JbPnyC+e2+p1WgCyFyO+5nuoUWR6d7Jq89QOQbkWDOwNhTt6xOB3LZ
+         /2pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=r9qun9RBfDRUM5T4sfZ2VeCEDVk102Kw4ULHeddtzpM=;
-        b=Mj+jFldPVit4DLKT7aZS4njkKZ5VzBy5rAiv33JSQhkUYRhzEoOXgSxQ4UyIAQfCDV
-         g2wQpIfux9+c3BlwLW0JImt5oVQukkFBTjrVe7kJL6rld6KMYrj7f5jLYbr38L+q+4eR
-         Yud9KCXHaizHaUK0GZBIfJiLsk/ot5rdxw4xjBRnmISDyNkcuJgQyu2V4vO30umUjcPa
-         AjB1Yugla6NXUX4YFy1Y97+V9hHNdCRz0agWbz/s3Hg2Zk1r+dTh0nJVtQFC4ecBCVL1
-         AA6d5yRsYcyGY+aGOiRfhVzEEByNJocZt8OdZ9ut2lByKEQqFxK8j3s9dFB9nf7M429y
-         n5Yg==
-X-Gm-Message-State: AOAM532Wgp0VMnq2dYm6L/rPvQ1MyQbt0ig6vAoy0JQOMTxzlL3Nbf3O
-        tJZh1LYbwLAHYd07Q+MA1dI=
-X-Google-Smtp-Source: ABdhPJxuYhEPGRg17h72OgDLrTQHor7wWefUEVKkFHjFduPkrGcO9uLTm2NRnsnQPoF3U3HDOEQ2Fw==
-X-Received: by 2002:a2e:a806:: with SMTP id l6mr12775879ljq.91.1629115315306;
-        Mon, 16 Aug 2021 05:01:55 -0700 (PDT)
-Received: from localhost.localdomain ([46.61.204.59])
-        by smtp.gmail.com with ESMTPSA id p3sm928679lfa.228.2021.08.16.05.01.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 05:01:54 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in __v9fs_get_acl
-To:     syzbot <syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com>,
-        a@unstable.cc, asmadeus@codewreck.org,
-        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
-        ericvh@gmail.com, linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        lucien.xin@gmail.com, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
-References: <000000000000789bcd05c9aa3d5d@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <d40528c5-aa3c-45ff-ed99-e741b63f6351@gmail.com>
-Date:   Mon, 16 Aug 2021 15:01:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=r6r8va6Dg2Si6p1qLWqzldiHMFwpXfRX5u3lnqvgf50=;
+        b=Q3CcoQDkEVvulkUdEaqPMiR1Egw+t8RM9WZDE3gclyXNECuZwpwPGZ86En3Ptvbsfp
+         IVAeeXsmGIHC9UMaY2s/7lWPVkTSnlAQyWXIeIn7HWqrjRiYhJefLarg+06f9UVH7Uc+
+         Jfx1n+QXEUfrTxUUBHOt9R/OBY8csFD7oaG54Hvd536Hd7YacwpdJtsNHVh7zXJ6EEdb
+         5bjT+Uanyh45QtBUxyLoEMyA5LuTIfyOpnoNNp28ZvENtenp1pnydojGvooASY/upqYx
+         6TMON+AN7dYiYy3xNU61tK4/bMZVIUWPkoUvXaQCjXFiihWc4cuoNIAK79qrr0eL5NZR
+         Zs5A==
+X-Gm-Message-State: AOAM533qW6M35kWZhcDjJ4/15arMMnXEl1AbvoqH1lSpPx6gTP6TuBNr
+        EhTNJFNvgWrzRqjNILWcChE=
+X-Google-Smtp-Source: ABdhPJwuu5CRQ+ULVJ3im3r0i6BORE41/c2yLBzmo1gk45h3Bk3q0m02bP4lyLSStgA+Aeyo4cDcTA==
+X-Received: by 2002:a2e:b80f:: with SMTP id u15mr9208488ljo.232.1629115326402;
+        Mon, 16 Aug 2021 05:02:06 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id c10sm1144333ljr.134.2021.08.16.05.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 05:02:05 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/ntfs3: Add ifndef + define to all header files
+Date:   Mon, 16 Aug 2021 15:01:56 +0300
+Message-Id: <20210816120156.186193-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <000000000000789bcd05c9aa3d5d@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 12:58 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    761c6d7ec820 Merge tag 'arc-5.14-rc6' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11d87ca1300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
-> dashboard link: https://syzkaller.appspot.com/bug?extid=56fdf7f6291d819b9b19
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ca6029300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bf42a1300000
-> 
-> The issue was bisected to:
-> 
-> commit 0ac1077e3a549bf8d35971613e2be05bdbb41a00
-> Author: Xin Long <lucien.xin@gmail.com>
-> Date:   Tue Oct 16 07:52:02 2018 +0000
-> 
->      sctp: get pr_assoc and pr_stream all status with SCTP_PR_SCTP_ALL instead
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f311fa300000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f311fa300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11f311fa300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com
-> Fixes: 0ac1077e3a54 ("sctp: get pr_assoc and pr_stream all status with SCTP_PR_SCTP_ALL instead")
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 8426 at mm/page_alloc.c:5366 __alloc_pages+0x588/0x5f0 mm/page_alloc.c:5413
-> Modules linked in:
-> CPU: 1 PID: 8426 Comm: syz-executor477 Not tainted 5.14.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:__alloc_pages+0x588/0x5f0 mm/page_alloc.c:5413
-> Code: 00 48 ba 00 00 00 00 00 fc ff df e9 5e fd ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 6d fd ff ff e8 bd 62 0a 00 e9 63 fd ff ff <0f> 0b 45 31 e4 e9 7a fd ff ff 48 8d 4c 24 50 80 e1 07 80 c1 03 38
-> RSP: 0018:ffffc90000fff9a0 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 0000000000000000
-> RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90000fffa28
-> RBP: ffffc90000fffaa8 R08: dffffc0000000000 R09: ffffc90000fffa00
-> R10: fffff520001fff45 R11: 0000000000000000 R12: 0000000000040d40
-> R13: ffffc90000fffa00 R14: 1ffff920001fff3c R15: 1ffff920001fff38
-> FS:  000000000148e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fa1e9a97740 CR3: 000000003406e000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   kmalloc_order+0x41/0x170 mm/slab_common.c:955
->   kmalloc_order_trace+0x15/0x70 mm/slab_common.c:971
->   kmalloc_large include/linux/slab.h:520 [inline]
->   __kmalloc+0x292/0x390 mm/slub.c:4101
->   kmalloc include/linux/slab.h:596 [inline]
->   kzalloc include/linux/slab.h:721 [inline]
->   __v9fs_get_acl+0x40/0x110 fs/9p/acl.c:36
->   v9fs_get_acl+0xa5/0x290 fs/9p/acl.c:71
+Add guards so that compiler will only include header files once.
 
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+I do not mind if this get's merged to V28/V29 without commit.
+---
+ fs/ntfs3/debug.h   | 5 +++++
+ fs/ntfs3/ntfs.h    | 3 +++
+ fs/ntfs3/ntfs_fs.h | 5 +++++
+ 3 files changed, 13 insertions(+)
 
-Looks like syzbot tries to mount malicious image. Easy fix just for 
-thoughts:
+diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+index dfaa4c79dc6d..465466631d38 100644
+--- a/fs/ntfs3/debug.h
++++ b/fs/ntfs3/debug.h
+@@ -7,6 +7,9 @@
+  */
+ 
+ // clang-format off
++#ifndef _LINUX_NTFS3_DEBUG_H
++#define _LINUX_NTFS3_DEBUG_H
++
+ #ifndef Add2Ptr
+ #define Add2Ptr(P, I)		((void *)((u8 *)(P) + (I)))
+ #define PtrOffset(B, O)		((size_t)((size_t)(O) - (size_t)(B)))
+@@ -61,4 +64,6 @@ void ntfs_inode_printk(struct inode *inode, const char *fmt, ...)
+ #define ntfs_free(p)		kfree(p)
+ #define ntfs_vfree(p)		kvfree(p)
+ #define ntfs_memdup(src, len)	kmemdup(src, len, GFP_NOFS)
++
++#endif /* _LINUX_NTFS3_DEBUG_H */
+ // clang-format on
+diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+index 40398e6c39c9..16da514af124 100644
+--- a/fs/ntfs3/ntfs.h
++++ b/fs/ntfs3/ntfs.h
+@@ -7,6 +7,8 @@
+  */
+ 
+ // clang-format off
++#ifndef _LINUX_NTFS3_NTFS_H
++#define _LINUX_NTFS3_NTFS_H
+ 
+ /* TODO:
+  * - Check 4K mft record and 512 bytes cluster
+@@ -1235,4 +1237,5 @@ struct SID {
+ };
+ static_assert(offsetof(struct SID, SubAuthority) == 8);
+ 
++#endif /* _LINUX_NTFS3_NTFS_H */
+ // clang-format on
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index 0c3ac89c3115..80e1dea2579a 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -6,6 +6,9 @@
+  */
+ 
+ // clang-format off
++#ifndef _LINUX_NTFS3_NTFS_FS_H
++#define _LINUX_NTFS3_NTFS_FS_H
++
+ #define MINUS_ONE_T			((size_t)(-1))
+ /* Biggest MFT / smallest cluster */
+ #define MAXIMUM_BYTES_PER_MFT		4096
+@@ -1090,3 +1093,5 @@ static inline void le64_sub_cpu(__le64 *var, u64 val)
+ {
+ 	*var = cpu_to_le64(le64_to_cpu(*var) - val);
+ }
++
++#endif /* _LINUX_NTFS3_NTFS_FS_H */
+-- 
+2.30.2
 
-diff --git a/fs/9p/acl.c b/fs/9p/acl.c
-index bb1b286c49ae..242a3bc7aaee 100644
---- a/fs/9p/acl.c
-+++ b/fs/9p/acl.c
-@@ -33,7 +33,7 @@ static struct posix_acl *__v9fs_get_acl(struct p9_fid 
-*fid, char *name)
-
-  	size = v9fs_fid_xattr_get(fid, name, NULL, 0);
-  	if (size > 0) {
--		value = kzalloc(size, GFP_NOFS);
-+		value = kzalloc(size, GFP_NOFS | __GFP_NOWARN);
-  		if (!value)
-  			return ERR_PTR(-ENOMEM);
-  		size = v9fs_fid_xattr_get(fid, name, value, size);
-
-
-
-
-With regards,
-Pavel Skripkin
