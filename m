@@ -2,164 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087243ED29A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030213ED273
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236446AbhHPKzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:55:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236243AbhHPKzI (ORCPT
+        id S236274AbhHPKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236262AbhHPKwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:55:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629111276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QJsyXOdlJYM2//fxWzSx0kKAbedvDwh5E29u/1ymh/M=;
-        b=fxky3+0ozPgxKMUifgtfBMDqm3lEp67nmAWj1KzlHsGw+Qyh9tid/I+HGbqbiczZmUfmZW
-        ir3QsbkbtavcujMHMDUHPdn04j9hSjamhZ0IFU0xRhrTIxSL9Mf3c/ZW4ZfSNsgphYjeJc
-        /LVsu6NvmDOUVkj/KvZWlhBI+dSKPS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-FoVhOtuPONm3-7VkgzKR7g-1; Mon, 16 Aug 2021 06:54:35 -0400
-X-MC-Unique: FoVhOtuPONm3-7VkgzKR7g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97946192D789;
-        Mon, 16 Aug 2021 10:54:33 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.64.242.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59C185FC25;
-        Mon, 16 Aug 2021 10:54:30 +0000 (UTC)
-From:   Kate Hsuan <hpa@redhat.com>
-To:     Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
-Cc:     platform-driver-x86@vger.kernel.org, Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v2 15/20] platform/x86: intel-hid: Move to intel sub-directory
+        Mon, 16 Aug 2021 06:52:08 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1C9C0612A3;
+        Mon, 16 Aug 2021 03:51:22 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so26922525pjb.0;
+        Mon, 16 Aug 2021 03:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9WMFUZKDxMfxw44rjP6HLGPmcDMjc9RuKsGPbEWZGyw=;
+        b=UYvfREnOKpTSNXzvJsw3rSEUTwd2nSeqxk9Ml+iR0byJuf/dtLx2+J7omAadkglGr9
+         Tco7kiolV+XZfj0pAAyvoWsXaAM47ev7lQfsq+LZzVzmtIh1j/Zpt2AVBF584CJVZbaM
+         cnqaahavhCO2Bkbms+TMn9KKWb41Dj3cfhaA/vnB6SIGMnCTntgnK0iy2MEWX8dOvlJa
+         7840wvqBn8Yk8LvHgTSLq1BWt45tykhbLEr0XBPYXy8CaUWh315UYn7NMRLjatKn4DTq
+         1rFjnTP5FK5zUYQLhhPoWWo4ze4fx+d+O11VP5FUpbpYKcW5pMygyP7CtzXVttyp7bgL
+         mdsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9WMFUZKDxMfxw44rjP6HLGPmcDMjc9RuKsGPbEWZGyw=;
+        b=X1Z8cWhz3N+zjnzxQxdsVZrUaFRNs9bO4rUuEen7O/jeIJfdFB7N06fK4fR8qahlzP
+         cUfTjBYN4RsC4GKcsc0CqMWjWxM9mnhqgKb1qYwKm9MGHJsP2JmoL3JOS7lZWMqbDHKm
+         0ylniKiDrMEZZJ1lNSCvPHisX5Ksv60bvB2pRLVFCZo1f88a9bXI3sqOl6m+NUhBrWZ1
+         6QoLkvGamUxiFoZa/5beVKoG0O20O0ZDUcHUbavZ0e8z8wnjPsVuwVirJoz6+EEIGKJl
+         YbhFKqNkEH6XCqqtfUCCZj2cf6vvIsMCsVQS8gDONe+cSG8c0/LbGJmatjOyEFVAMWJj
+         Ilrg==
+X-Gm-Message-State: AOAM533m8iF1nJuDJTXcNzaqHMKHJhz2D7kkdQTuwAyyLTub1ZeQfXwX
+        Xl6ghK5jNAjMOiigTCgMClE=
+X-Google-Smtp-Source: ABdhPJxh9IxiulwybsKd7daCC5p/EXFlTi2+ojIXPXkMgDm59ZmdhFNetpiXBVISWMOClTuy3t9TaA==
+X-Received: by 2002:a17:90b:438e:: with SMTP id in14mr16714417pjb.66.1629111082059;
+        Mon, 16 Aug 2021 03:51:22 -0700 (PDT)
+Received: from IRVINGLIU-MB0.tencent.com ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id j13sm12685256pgp.29.2021.08.16.03.51.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Aug 2021 03:51:21 -0700 (PDT)
+From:   Xu Liu <liuxu623@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xu Liu <liuxu623@gmail.com>
+Subject: [PATCH] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
 Date:   Mon, 16 Aug 2021 18:51:14 +0800
-Message-Id: <20210816105119.704302-16-hpa@redhat.com>
-In-Reply-To: <20210816105119.704302-1-hpa@redhat.com>
-References: <20210816105119.704302-1-hpa@redhat.com>
+Message-Id: <20210816105114.34781-1-liuxu623@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move intel-hid to intel sub-directory to improve
-readability. Also, add CFLAGS to tweak the including path
-of dual_accel_detect.
+We'd like to be able to identify netns from sockops hooks
+to accelerate local process communication form different netns.
 
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Xu Liu <liuxu623@gmail.com>
 ---
- drivers/platform/x86/Kconfig                      | 13 -------------
- drivers/platform/x86/Makefile                     |  1 -
- drivers/platform/x86/intel/Kconfig                | 13 +++++++++++++
- drivers/platform/x86/intel/Makefile               |  5 ++++-
- drivers/platform/x86/{intel-hid.c => intel/hid.c} |  0
- 5 files changed, 17 insertions(+), 15 deletions(-)
- rename drivers/platform/x86/{intel-hid.c => intel/hid.c} (100%)
+ net/core/filter.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index ac4ec4e2534a..84865e1cf043 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -667,19 +667,6 @@ config THINKPAD_LMI
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d70187ce851b..34938a537931 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4664,6 +4664,18 @@ static const struct bpf_func_proto bpf_get_netns_cookie_sock_addr_proto = {
+ 	.arg1_type	= ARG_PTR_TO_CTX_OR_NULL,
+ };
  
- source "drivers/platform/x86/intel/Kconfig"
- 
--config INTEL_HID_EVENT
--	tristate "INTEL HID Event"
--	depends on ACPI
--	depends on INPUT
--	depends on I2C
--	select INPUT_SPARSEKMAP
--	help
--	  This driver provides support for the Intel HID Event hotkey interface.
--	  Some laptops require this driver for hotkey support.
--
--	  To compile this driver as a module, choose M here: the module will
--	  be called intel_hid.
--
- config INTEL_INT0002_VGPIO
- 	tristate "Intel ACPI INT0002 Virtual GPIO driver"
- 	depends on GPIOLIB && ACPI && PM_SLEEP
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index b5327b6f774a..734a6c266025 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -71,7 +71,6 @@ obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
- # Intel
- obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)		+= intel/
- 
--obj-$(CONFIG_INTEL_HID_EVENT)		+= intel-hid.o
- obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
- obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
-diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-index 443554133f20..4ca7bec080e7 100644
---- a/drivers/platform/x86/intel/Kconfig
-+++ b/drivers/platform/x86/intel/Kconfig
-@@ -21,6 +21,19 @@ source "drivers/platform/x86/intel/int3472/Kconfig"
- source "drivers/platform/x86/intel/pmt/Kconfig"
- source "drivers/platform/x86/intel/atomisp2/Kconfig"
- 
-+config INTEL_HID_EVENT
-+	tristate "INTEL HID Event"
-+	depends on ACPI
-+	depends on INPUT
-+	depends on I2C
-+	select INPUT_SPARSEKMAP
-+	help
-+	  This driver provides support for the Intel HID Event hotkey interface.
-+	  Some laptops require this driver for hotkey support.
++BPF_CALL_1(bpf_get_netns_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
++{
++	return __bpf_get_netns_cookie(ctx ? ctx->sk : NULL);
++}
 +
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called intel_hid.
++static const struct bpf_func_proto bpf_get_netns_cookie_sock_ops_proto = {
++	.func		= bpf_get_netns_cookie_sock_ops,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX_OR_NULL,
++};
 +
- config INTEL_BXTWC_PMIC_TMU
- 	tristate "Intel BXT Whiskey Cove TMU Driver"
- 	depends on REGMAP
-diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index fd2d274f294f..e47e6ac4b5eb 100644
---- a/drivers/platform/x86/intel/Makefile
-+++ b/drivers/platform/x86/intel/Makefile
-@@ -9,6 +9,9 @@ obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
- obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt/
- obj-$(CONFIG_INTEL_ATOMISP2_LED)	+= atomisp2/
- obj-$(CONFIG_INTEL_ATOMISP2_PM)		+= atomisp2/
-+CFLAGS_hid.o			:= -I./drivers/platform/x86
-+intel-hid-y				:= hid.o
-+obj-$(CONFIG_INTEL_HID_EVENT)		+= intel-hid.o
- 
- # Intel PMIC / PMC / P-Unit devices
- intel_bxtwc_tmu-y 					:= bxtwc_tmu.o
-@@ -39,4 +42,4 @@ intel_turbo_max_3-y						:= turbo_max_3.o
- obj-$(CONFIG_INTEL_TURBO_MAX_3)			+= intel_turbo_max_3.o
- intel-uncore-frequency-y					:= uncore-frequency.o
- obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
--obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= speed_select_if/
-\ No newline at end of file
-+obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= speed_select_if/
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel/hid.c
-similarity index 100%
-rename from drivers/platform/x86/intel-hid.c
-rename to drivers/platform/x86/intel/hid.c
+ BPF_CALL_1(bpf_get_socket_uid, struct sk_buff *, skb)
+ {
+ 	struct sock *sk = sk_to_full_sk(skb->sk);
+@@ -7445,6 +7457,8 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_proto;
++	case BPF_FUNC_get_netns_cookie:
++		return &bpf_get_netns_cookie_sock_ops_proto;
+ #ifdef CONFIG_INET
+ 	case BPF_FUNC_load_hdr_opt:
+ 		return &bpf_sock_ops_load_hdr_opt_proto;
 -- 
-2.31.1
+2.28.0
 
