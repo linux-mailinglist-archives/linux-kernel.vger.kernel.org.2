@@ -2,206 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215AE3ECDCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4743ECDD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhHPExf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 00:53:35 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:20338 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229523AbhHPEx2 (ORCPT
+        id S232381AbhHPE6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 00:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhHPE6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 00:53:28 -0400
-X-UUID: 761e5aff771e4c4f9bb27e141a8ed292-20210816
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=aPfveejJG/uf1hsSa7IBENHohu6hzoRJjQmF5egFfyE=;
-        b=GE3ULi/IqwcyAEwUjNBMIDxVLeYApW0Efaoo9logHXZIrllDmdYM7Hq4ljAIsPFSYRB0XPO6bIK5S6SnkFzvDBR3ipwFiqT4pCHcAE+bI2YsIXwRVZ+J8tUDLm6WKf8V5GB9LZhFCczdLvhQQtk2YmUxjR9fBxVZbIFQqngFD4I=;
-X-UUID: 761e5aff771e4c4f9bb27e141a8ed292-20210816
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <houlong.wei@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1461357266; Mon, 16 Aug 2021 12:52:51 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 16 Aug
- 2021 12:52:46 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 16 Aug 2021 12:52:45 +0800
-Message-ID: <9f23beea197495d017a548ef483584714a3673f9.camel@mediatek.com>
-Subject: Re: [PATCH v6 7/9] media: mtk-mdp: use mdp-rdma0 alias to point to
- MDP master
-From:   houlong wei <houlong.wei@mediatek.com>
-To:     Eizan Miyamoto <eizan@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "wenst@chromium.org" <wenst@chromium.org>,
-        "Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?=" <Yong.Wu@mediatek.com>,
-        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?=" 
-        <Andrew-CT.Chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?=" 
-        <Minghsiu.Tsai@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
-Date:   Mon, 16 Aug 2021 12:52:46 +0800
-In-Reply-To: <bf98c5ee749bca755bd46832f858536dbf51a2a4.camel@mediatek.com>
-References: <20210802121215.703023-1-eizan@chromium.org>
-         <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
-         <bf98c5ee749bca755bd46832f858536dbf51a2a4.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 16 Aug 2021 00:58:39 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22F7C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 21:58:07 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id h9so25297373ljq.8
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 21:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F3ci8xzzdUrpPIiq1Ir0UCDGt3mF7dpgZBUrrIrEc58=;
+        b=fmS3zgiHcT9kVFKGf1pkqbKy5NkBa6R/se6ansS5fVyFufXWQH60dYTfJCIeVkMgPn
+         ZttIsCuPCO+hSPmHPKOUhiSnAs782rZfATyXbgPv7nUfB4uw8+5bXQ1IPxNzBbP/ufSs
+         ii0T5beAF8vunCzPSunwsYe30oed6Rh6CuUFJ8obWFlEgfFAKIuJ3+v5dGGDzTFvg+3G
+         Zs0JV6qEPlCeIR5Vf8VFnUlexh0yS8RlX4TQ7AqYnPAgCih8IVvfM3HljKcO4pWA9O+4
+         nTobO7mOaP2KvsH5RtH/KPVD6LqSeXxoVSOg8DkAao5v7SDJQDgpbeUcIJt5eC6N2Xx7
+         6D7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F3ci8xzzdUrpPIiq1Ir0UCDGt3mF7dpgZBUrrIrEc58=;
+        b=hc2FUKbr6fU94vtpEy1N8mgbXXDWY5aioZiL2o65roI088kzFU+K3baLzfPqi+hatw
+         YTUBUvfwhDvxFvmHLLhfgSEOHYMsFP0Q0edPuXbygh1/+t2nayKsu74KV3cWksVwYrpZ
+         xWmlaOH3kVRLB7Q2zdKw3La0b87vlbxh0sWm2T5ApLwdDtGKM1grWaLoMXPByQ1mRaoY
+         ZrgeldZfQP1KRcyCM08cPxVAKB3QPI+cGHF7Qf6J9/9yFZzZ+V7VASYcxeE9lScC4RA0
+         tIClBwtLjvnHLVOjeg+iHYJ7kXUyxQliVVR+9f7DCXH/8jTBxQDYvUJ3l1KH+JcpXV9r
+         J60w==
+X-Gm-Message-State: AOAM5312YGCu1Ga+mejIvTryzIpMxZmAUsxjl1TqlnQCqUfqsZ9JaLeC
+        KvgS8U+sIGlq8xeYF/XuLB8sR9lX8iz3drv0+II=
+X-Google-Smtp-Source: ABdhPJzEwgeAaXb+dg0LqpBrOomQG4rkZ0Xm6wUS4xfT8kIb2kQV0rUS2FWOEYLO/jMLLQZF3uYV/LcwolBVpMWFWtE=
+X-Received: by 2002:a2e:92c8:: with SMTP id k8mr10962005ljh.136.1629089886330;
+ Sun, 15 Aug 2021 21:58:06 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 35E70F7DC1EA9E7AEE3404716D5151E4F049E8C73B3DAC8435CA59D5C6B44D412000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210809185449.2565768-1-daeho43@gmail.com> <425daf77-8020-26ce-dc9f-019d9a881b78@kernel.org>
+ <CACOAw_xTh_HZizaVzDNjnVswu_OQwOjzEWRNxouGtM9E5qj6Pg@mail.gmail.com> <071534dd-cf10-38d3-b83b-c833f9c0a70a@kernel.org>
+In-Reply-To: <071534dd-cf10-38d3-b83b-c833f9c0a70a@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Sun, 15 Aug 2021 21:57:55 -0700
+Message-ID: <CACOAw_ye4y-njHbewXsvVr3gTT4URsw7VH4HM_D_g=zntwjtdA@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce blk_alloc_mode mount option
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA4LTE2IGF0IDExOjAwICswODAwLCBob3Vsb25nIHdlaSB3cm90ZToNCj4g
-T24gTW9uLCAyMDIxLTA4LTAyIGF0IDIwOjEyICswODAwLCBFaXphbiBNaXlhbW90byB3cm90ZToN
-Cj4gPiAuLi4gSW5zdGVhZCBvZiBkZXBlbmRpbmcgb24gdGhlIHByZXNlbmNlIG9mIGEgbWVkaWF0
-ZWssdnB1IHByb3BlcnR5DQo+ID4gaW4NCj4gPiB0aGUgZGV2aWNlIG5vZGUuDQo+ID4gDQo+ID4g
-VGhhdCBwcm9wZXJ0eSB3YXMgb3JpZ2luYWxseSBhZGRlZCB0byBsaW5rIHRvIHRoZSB2cHUgbm9k
-ZSBzbyB0aGF0DQo+ID4gdGhlDQo+ID4gbXRrX21kcF9jb3JlIGRyaXZlciBjb3VsZCBwYXNzIHRo
-ZSByaWdodCBkZXZpY2UgdG8NCj4gPiB2cHVfd2R0X3JlZ19oYW5kbGVyKCkuIEhvd2V2ZXIgaW4g
-YSBwcmV2aW91cyBwYXRjaCBpbiB0aGlzIHNlcmllcywNCj4gPiB0aGUgZHJpdmVyIGhhcyBiZWVu
-IG1vZGlmaWVkIHRvIHNlYXJjaCB0aGUgZGV2aWNlIHRyZWUgZm9yIHRoYXQNCj4gPiBub2RlDQo+
-ID4gaW5zdGVhZC4NCj4gPiANCj4gPiBUaGF0IHByb3BlcnR5IHdhcyBhbHNvIHVzZWQgdG8gaW5k
-aWNhdGUgdGhlIHByaW1hcnkgTURQIGRldmljZSwgc28NCj4gPiB0aGF0DQo+ID4gaXQgY2FuIGJl
-IHBhc3NlZCB0byB0aGUgVjRMMiBzdWJzeXN0ZW0gYXMgd2VsbCBhcyByZWdpc3RlciBpdCB0byBi
-ZQ0KPiA+IHVzZWQgd2hlbiBzZXR0aW5nIHVwIHF1ZXVlcyBpbiB0aGUgb3BlbigpIGNhbGxiYWNr
-IGZvciB0aGUNCj4gPiBmaWxlc3lzdGVtDQo+ID4gZGV2aWNlIG5vZGUgdGhhdCBpcyBjcmVhdGVk
-LiBJbiB0aGlzIGNhc2UsIGFzc3VtaW5nIHRoYXQgdGhlDQo+ID4gcHJpbWFyeQ0KPiA+IE1EUCBk
-ZXZpY2UgaXMgdGhlIG9uZSB3aXRoIGEgc3BlY2lmaWMgYWxpYXMgc2VlbXMgdXNlYWJsZSBiZWNh
-dXNlDQo+ID4gdGhlDQo+ID4gYWx0ZXJuYXRpdmUgaXMgdG8gYWRkIGEgcHJvcGVydHkgdG8gdGhl
-IGRldmljZSB0cmVlIHdoaWNoIGRvZXNuJ3QNCj4gPiBhY3R1YWxseSByZXByZXNlbnQgYW55IGZh
-Y2V0IG9mIGhhcmR3YXJlIChpLmUuLCB0aGlzIGJlaW5nIHRoZQ0KPiA+IHByaW1hcnkNCj4gPiBN
-RFAgZGV2aWNlIGlzIGEgc29mdHdhcmUgZGVjaXNpb24pLiBJbiBvdGhlciB3b3JkcywgdGhpcyBz
-b2x1dGlvbg0KPiA+IGlzDQo+ID4gZXF1YWxseSBhcyBhcmJpdHJhcnksIGJ1dCBhdCBsZWFzdCBp
-dCBkb2Vzbid0IGFkZCBhIHByb3BlcnR5IHRvIGENCj4gPiBkZXZpY2Ugbm9kZSB3aGVyZSBzYWlk
-IHByb3BlcnR5IGlzIHVucmVsYXRlZCB0byB0aGUgaGFyZHdhcmUNCj4gPiBwcmVzZW50Lg0KPiA+
-IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEVpemFuIE1peWFtb3RvIDxlaXphbkBjaHJvbWl1bS5vcmc+
-DQo+ID4gLS0tDQo+ID4gDQo+ID4gKG5vIGNoYW5nZXMgc2luY2UgdjEpDQo+ID4gDQo+ID4gIGRy
-aXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvbXAuYyB8IDU2ICsrKysrKysr
-KysrKystLQ0KPiA+IC0tLS0NCj4gPiAgZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210
-a19tZHBfY29yZS5jIHwgMzYgKysrKysrKystLS0tDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgNjQg
-aW5zZXJ0aW9ucygrKSwgMjggZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvbXAuYw0KPiA+IGIvZHJpdmVy
-cy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5jDQo+ID4gaW5kZXggODVlZjI3
-NDg0MWEzLi45NTI3NjQ5ZGU5OGUgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tZWRpYS9wbGF0
-Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5jDQo+ID4gKysrIGIvZHJpdmVycy9tZWRpYS9wbGF0
-Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5jDQo+ID4gQEAgLTE1MSwyOSArMTUxLDUwIEBAIHZv
-aWQgbXRrX21kcF9jb21wX2Nsb2NrX29mZihzdHJ1Y3QNCj4gPiBtdGtfbWRwX2NvbXANCj4gPiAq
-Y29tcCkNCj4gPiAgCQltdGtfc21pX2xhcmJfcHV0KGNvbXAtPmxhcmJfZGV2KTsNCj4gPiAgfQ0K
-PiA+ICANCj4gPiAtc3RhdGljIGludCBtdGtfbWRwX2NvbXBfYmluZChzdHJ1Y3QgZGV2aWNlICpk
-ZXYsIHN0cnVjdCBkZXZpY2UNCj4gPiAqbWFzdGVyLCB2b2lkICpkYXRhKQ0KPiA+ICsvKg0KPiA+
-ICsgKiBUaGUgTURQIG1hc3RlciBkZXZpY2Ugbm9kZSBpcyBpZGVudGlmaWVkIGJ5IHRoZSBkZXZp
-Y2UgdHJlZQ0KPiA+IGFsaWFzDQo+ID4gKyAqICJtZHAtcmRtYTAiLg0KPiA+ICsgKi8NCj4gPiAr
-c3RhdGljIGJvb2wgaXNfbWRwX21hc3RlcihzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gK3sNCj4g
-PiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqYWxpYXNlcywgKm1kcF9yZG1hMF9ub2RlOw0KPiA+ICsJ
-Y29uc3QgY2hhciAqbWRwX3JkbWEwX3BhdGg7DQo+ID4gKw0KPiA+ICsJaWYgKCFkZXYtPm9mX25v
-ZGUpDQo+ID4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+ICsNCj4gPiArCWFsaWFzZXMgPSBvZl9maW5k
-X25vZGVfYnlfcGF0aCgiL2FsaWFzZXMiKTsNCj4gPiArCWlmICghYWxpYXNlcykgew0KPiA+ICsJ
-CWRldl9lcnIoZGV2LCAibm8gYWxpYXNlcyBmb3VuZCBmb3IgbWRwLXJkbWEwIik7DQo+ID4gKwkJ
-cmV0dXJuIGZhbHNlOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCW1kcF9yZG1hMF9wYXRoID0gb2Zf
-Z2V0X3Byb3BlcnR5KGFsaWFzZXMsICJtZHAtcmRtYTAiLCBOVUxMKTsNCj4gPiArCWlmICghbWRw
-X3JkbWEwX3BhdGgpIHsNCj4gPiArCQlkZXZfZXJyKGRldiwgImdldCBtZHAtcmRtYTAgcHJvcGVy
-dHkgb2YgL2FsaWFzZXMNCj4gPiBmYWlsZWQiKTsNCj4gPiArCQlyZXR1cm4gZmFsc2U7DQo+ID4g
-Kwl9DQo+ID4gKw0KPiA+ICsJbWRwX3JkbWEwX25vZGUgPSBvZl9maW5kX25vZGVfYnlfcGF0aCht
-ZHBfcmRtYTBfcGF0aCk7DQo+ID4gKwlpZiAoIW1kcF9yZG1hMF9ub2RlKSB7DQo+ID4gKwkJZGV2
-X2VycihkZXYsICJwYXRoIHJlc29sdXRpb24gZmFpbGVkIGZvciAlcyIsDQo+ID4gbWRwX3JkbWEw
-X3BhdGgpOw0KPiA+ICsJCXJldHVybiBmYWxzZTsNCj4gPiArCX0NCj4gPiArDQo+IA0KPiBIaSBF
-aXphbiwNCj4gDQo+ICJtZHAtcmRtYTAiIG1heSBiZSBub3QgdGhlIG9ubHkgb25lIG1hc3RlciBk
-ZXZpY2Ugbm9kZS4gSW4gZmFjdCwNCj4gdGhlcmUNCj4gYXJlIDIgIm1kcC1yZG1hIiBpbiBtdDgx
-NzMuIFlvdSBjYW4gc2VlICJtZHBfcmRtYTEiIHZpYSBiZWxvdyBsaW5rLg0KPiANCj4gDQpodHRw
-czovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zdGFibGUvbGludXgu
-Z2l0L3RyZWUvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxNzMuZHRzaT9oPXY1LjEz
-LjExI24xMDE2DQo+IElmIHdlIGFkZCAibWVkaWF0ZWssbXQ4MTczLW1kcCIgdG8gIm1kcF9yZG1h
-MSIgbGlrZSBiZWxvdywgd2Ugd2lsbA0KPiBoYXZlDQo+IG9uZSBtb3JlIFY0TDIgdmlkZW8gZGV2
-aWUgbm9kZS4NCj4gDQo+IAkJbWRwX3JkbWExOiByZG1hQDE0MDAyMDAwIHsNCj4gCQkJY29tcGF0
-aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtbWRwLXJkbWEiLA0KPiAJCQkJICAgICAibWVkaWF0ZWss
-bXQ4MTczLW1kcCI7DQo+IAkJCS4uLg0KPiAJCX0NCj4gDQo+IFdlIHNob3VsZCBjb25zaWRlciB0
-aGUgY2FzZSB0aGF0IHRoZXJlIGFyZSBtb3JlIHRoYW4gb25lICJNRFBfUkRNQSINCj4gY29tcG9u
-ZW50cy4gDQo+IA0KPiBSZWdhcmRzLA0KPiBIb3Vsb25nDQo+IA0KPiA+ICsJcmV0dXJuIGRldi0+
-b2Zfbm9kZSA9PSBtZHBfcmRtYTBfbm9kZTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGlu
-dCBtdGtfbWRwX2NvbXBfYmluZChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2UNCj4g
-PiAqbWFzdGVyLA0KPiA+ICsJCQl2b2lkICpkYXRhKQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgbXRr
-X21kcF9jb21wICpjb21wID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gIAlzdHJ1Y3QgbXRr
-X21kcF9kZXYgKm1kcCA9IGRhdGE7DQo+ID4gLQlzdHJ1Y3QgZGV2aWNlX25vZGUgKnZwdV9ub2Rl
-Ow0KPiA+ICANCj4gPiAgCW10a19tZHBfcmVnaXN0ZXJfY29tcG9uZW50KG1kcCwgY29tcCk7DQo+
-ID4gIA0KPiA+IC0JLyoNCj4gPiAtCSAqIElmIHRoaXMgY29tcG9uZW50IGhhcyBhICJtZWRpYXRl
-ay12cHUiIHByb3BlcnR5LCBpdCBpcw0KPiA+IHJlc3BvbnNpYmxlIGZvcg0KPiA+IC0JICogbm90
-aWZ5aW5nIHRoZSBtZHAgbWFzdGVyIGRyaXZlciBhYm91dCBpdCBzbyBpdCBjYW4gYmUNCj4gPiBm
-dXJ0aGVyIGluaXRpYWxpemVkDQo+ID4gLQkgKiBsYXRlci4NCj4gPiAtCSAqLw0KPiA+IC0JdnB1
-X25vZGUgPSBvZl9wYXJzZV9waGFuZGxlKGRldi0+b2Zfbm9kZSwgIm1lZGlhdGVrLHZwdSIsIDAp
-Ow0KPiA+IC0JaWYgKHZwdV9ub2RlKSB7DQo+ID4gKwlpZiAoaXNfbWRwX21hc3RlcihkZXYpKSB7
-DQo+ID4gIAkJaW50IHJldDsNCj4gPiAgDQo+ID4gLQkJbWRwLT52cHVfZGV2ID0gb2ZfZmluZF9k
-ZXZpY2VfYnlfbm9kZSh2cHVfbm9kZSk7DQo+ID4gLQkJaWYgKFdBUk5fT04oIW1kcC0+dnB1X2Rl
-dikpIHsNCj4gPiAtCQkJZGV2X2VycihkZXYsICJ2cHUgcGRldiBmYWlsZWRcbiIpOw0KPiA+IC0J
-CQlvZl9ub2RlX3B1dCh2cHVfbm9kZSk7DQo+ID4gLQkJfQ0KPiA+IC0NCj4gPiAgCQlyZXQgPSB2
-NGwyX2RldmljZV9yZWdpc3RlcihkZXYsICZtZHAtPnY0bDJfZGV2KTsNCj4gPiAgCQlpZiAocmV0
-KSB7DQo+ID4gIAkJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIHJlZ2lzdGVyIHY0bDINCj4gPiBk
-ZXZpY2VcbiIpOw0KPiA+IEBAIC0xODcsOSArMjA4LDggQEAgc3RhdGljIGludCBtdGtfbWRwX2Nv
-bXBfYmluZChzdHJ1Y3QgZGV2aWNlDQo+ID4gKmRldiwNCj4gPiBzdHJ1Y3QgZGV2aWNlICptYXN0
-ZXIsIHZvaWQgKmRhDQo+ID4gIAkJfQ0KPiA+ICANCj4gPiAgCQkvKg0KPiA+IC0JCSAqIHByZXNl
-bmNlIG9mIHRoZSAibWVkaWF0ZWssdnB1IiBwcm9wZXJ0eSBpbiBhIGRldmljZQ0KPiA+IG5vZGUN
-Cj4gPiAtCQkgKiBpbmRpY2F0ZXMgdGhhdCBpdCBpcyB0aGUgcHJpbWFyeSBNRFAgcmRtYSBkZXZp
-Y2UgYW5kDQo+ID4gTURQIERNQQ0KPiA+IC0JCSAqIG9wcyBzaG91bGQgYmUgaGFuZGxlZCBieSBp
-dHMgRE1BIGNhbGxiYWNrcy4NCj4gPiArCQkgKiBNRFAgRE1BIG9wcyB3aWxsIGJlIGhhbmRsZWQg
-YnkgdGhlIERNQSBjYWxsYmFja3MNCj4gPiBhc3NvY2lhdGVkIHdpdGggdGhpcw0KPiA+ICsJCSAq
-IGRldmljZTsNCj4gPiAgCQkgKi8NCj4gPiAgCQltZHAtPnJkbWFfZGV2ID0gZGV2Ow0KPiA+ICAJ
-fQ0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21k
-cF9jb3JlLmMNCj4gPiBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2Nv
-cmUuYw0KPiA+IGluZGV4IDUwZWFmY2M5OTkzZC4uNmE3NzU0NjMzOTljIDEwMDY0NA0KPiA+IC0t
-LSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvcmUuYw0KPiA+ICsr
-KyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvcmUuYw0KPiA+IEBA
-IC0xNTAsOCArMTUwLDkgQEAgc3RhdGljIHZvaWQgcmVsZWFzZV9vZihzdHJ1Y3QgZGV2aWNlICpk
-ZXYsIHZvaWQNCj4gPiAqZGF0YSkNCj4gPiAgDQo+ID4gIHN0YXRpYyBpbnQgbXRrX21kcF9tYXN0
-ZXJfYmluZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gIHsNCj4gPiAtCWludCBzdGF0dXM7DQo+
-ID4gIAlzdHJ1Y3QgbXRrX21kcF9kZXYgKm1kcCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+
-ICsJc3RydWN0IGRldmljZV9ub2RlICp2cHVfbm9kZTsNCj4gPiArCWludCBzdGF0dXM7DQo+ID4g
-IA0KPiA+ICAJc3RhdHVzID0gY29tcG9uZW50X2JpbmRfYWxsKGRldiwgbWRwKTsNCj4gPiAgCWlm
-IChzdGF0dXMpIHsNCj4gPiBAQCAtMTU5LDE1ICsxNjAsMzAgQEAgc3RhdGljIGludCBtdGtfbWRw
-X21hc3Rlcl9iaW5kKHN0cnVjdCBkZXZpY2UNCj4gPiAqZGV2KQ0KPiA+ICAJCWdvdG8gZXJyX2Nv
-bXBvbmVudF9iaW5kX2FsbDsNCj4gPiAgCX0NCj4gPiAgDQo+ID4gLQlpZiAobWRwLT52cHVfZGV2
-KSB7DQo+ID4gLQkJaW50IHJldCA9IHZwdV93ZHRfcmVnX2hhbmRsZXIobWRwLT52cHVfZGV2LA0K
-PiA+IG10a19tZHBfcmVzZXRfaGFuZGxlciwgbWRwLA0KPiA+IC0JCQkJCSAgVlBVX1JTVF9NRFAp
-Ow0KPiA+IC0JCWlmIChyZXQpIHsNCj4gPiAtCQkJZGV2X2VycihkZXYsICJGYWlsZWQgdG8gcmVn
-aXN0ZXIgcmVzZXQNCj4gPiBoYW5kbGVyXG4iKTsNCj4gPiAtCQkJZ290byBlcnJfd2R0X3JlZzsN
-Cj4gPiAtCQl9DQo+ID4gLQl9IGVsc2Ugew0KPiA+IC0JCWRldl9lcnIoZGV2LCAibm8gdnB1X2Rl
-diBmb3VuZFxuIik7DQo+ID4gKwlpZiAobWRwLT5yZG1hX2RldiA9PSBOVUxMKSB7DQo+ID4gKwkJ
-ZGV2X2VycihkZXYsICJQcmltYXJ5IE1EUCBkZXZpY2Ugbm90IGZvdW5kIik7DQo+ID4gKwkJc3Rh
-dHVzID0gLUVOT0RFVjsNCj4gPiArCQlnb3RvIGVycl9jb21wb25lbnRfYmluZF9hbGw7DQo+ID4g
-Kwl9DQo+ID4gKw0KPiA+ICsJdnB1X25vZGUgPSBvZl9maW5kX25vZGVfYnlfbmFtZShOVUxMLCAi
-dnB1Iik7DQo+ID4gKwlpZiAoIXZwdV9ub2RlKSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJ1bmFi
-bGUgdG8gZmluZCB2cHUgbm9kZSIpOw0KPiA+ICsJCXN0YXR1cyA9IC1FTk9ERVY7DQo+ID4gKwkJ
-Z290byBlcnJfd2R0X3JlZzsNCj4gPiArCX0NCg0KSGkgRWl6YW4sDQoNCklzIHlvdXIgcmVtb3Zp
-bmcgIm1lZGlhdGVrLHZwdSIgbmVjZXNzYXJ5IGZvciB0aGlzIHNlcmllcyAiUmVmYWN0b3IgTVRL
-DQpNRFAgZHJpdmVyIGludG8gY29yZS9jb21wb25lbnRzIiA/DQoNCkluIHNvbWUgTWVkaWFUZWsg
-cHJvamVjdHMgKG5vdCB1cHN0cmVhbSB5ZXQpLCB0aGUgZGV2aWNlLXRyZWUgbm9kZSBuYW1lDQoi
-dnB1IiBtYXkgYmUgY2hhbmdlZCB0byBzb21ldGhpbmcgbGlrZSAidnB1MCIsICJ2cHUxIiBvciBv
-dGhlciBuYW1lLA0Kd2hpY2ggZGVwZW5kcyBvbiB0aGUgaW1wbGVtZW50YXRpb24gb2YgIm10ay12
-cHUiIGRyaXZlci4gV2UgY2FuIHNwZWNpZnkNCnRoZSBkaWZmZXJlbnQgcGhhbmRsZSB0byAibWVk
-aWF0ZWssdnB1IiBpbiAuZHRzaSBmaWxlLiBJZiB3ZSB1c2UNCm9mX2ZpbmRfbm9kZV9ieV9uYW1l
-KCkgdG8gZ2V0IHRoZSB2cHVfbm9kZSwgd2UgaGF2ZSB0byBtb2RpZnkgdGhlIG5hbWUNCnN0cmlu
-ZyBpbiBkaWZmZXJlbnQgcHJvamVjdC4NCklmIHRoZSBhbnN3ZXIgb2YgbXkgcHJldmlvdXMgcXVl
-c3Rpb25zIGlzICJObyIsIEkgcHJlZmVyIHRvIHNsb3cgZG93bg0KdGhlIG1vZGlmaWNhdGlvbiBv
-ZiByZW1vdmluZyAibWVkaWF0ZWssdnB1Ii4NCg0KU29ycnkgZm9yIGxhdGUgcmVwbHkuDQoNClJl
-Z2FyZHMsDQpIb3Vsb25nDQoNCj4gPiArDQo+ID4gKwltZHAtPnZwdV9kZXYgPSBvZl9maW5kX2Rl
-dmljZV9ieV9ub2RlKHZwdV9ub2RlKTsNCj4gPiArCWlmICghbWRwLT52cHVfZGV2KSB7DQo+ID4g
-KwkJZGV2X2VycihkZXYsICJ1bmFibGUgdG8gZmluZCB2cHUgZGV2aWNlIik7DQo+ID4gKwkJc3Rh
-dHVzID0gLUVOT0RFVjsNCj4gPiArCQlnb3RvIGVycl93ZHRfcmVnOw0KPiA+ICsJfQ0KPiA+ICsN
-Cj4gPiArCXN0YXR1cyA9IHZwdV93ZHRfcmVnX2hhbmRsZXIobWRwLT52cHVfZGV2LA0KPiA+IG10
-a19tZHBfcmVzZXRfaGFuZGxlciwgbWRwLCBWUFVfUlNUX01EUCk7DQo+ID4gKwlpZiAoc3RhdHVz
-KSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJGYWlsZWQgdG8gcmVnaXN0ZXIgcmVzZXQgaGFuZGxl
-clxuIik7DQo+ID4gKwkJZ290byBlcnJfd2R0X3JlZzsNCj4gPiAgCX0NCj4gPiAgDQo+ID4gIAlz
-dGF0dXMgPSBtdGtfbWRwX3JlZ2lzdGVyX20ybV9kZXZpY2UobWRwKTsNCj4gPiAtLSANCj4gPiAy
-LjMyLjAuNTU0LmdlMWIzMjcwNmQ4LWdvb2cNCj4gPiANCj4gDQo+IA0K
+On Wed, Aug 11, 2021 at 5:41 AM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2021/8/11 13:41, Daeho Jeong wrote:
+> > On Tue, Aug 10, 2021 at 6:58 PM Chao Yu <chao@kernel.org> wrote:
+> >>
+> >> On 2021/8/10 2:54, Daeho Jeong wrote:
+> >>> From: Daeho Jeong <daehojeong@google.com>
+> >>>
+> >>> Added a mount option to control block allocation mode for filesystem
+> >>> developer to simulate filesystem fragmentation and after-GC situation
+> >>> for experimental reasons to understand the filesystem behaviors well
+> >>
+> >> At a glance, I think this functionality can be used to initialize filesystem
+> >> status as fragmented one, which is commonly used in the first step of aging
+> >> test, in order to make filesystem fragmented, aging program needs to fill
+> >> file or block sequentially and remove them at fixed interval, that takes a
+> >> lot of time. IMO, it will be great to support this by filesystem naturally
+> >> to save time of aging filessytem, rather just for experimental reasons to
+> >> understand filesystem behavior.
+> >>
+> >
+> > Yes, that's what I meant~ :)
+> >
+> >> Maybe we can add a new mode for filesystem allocation mode except adaptive
+> >> and lfs mode, maybe "fragment" mode... :P
+> >>
+> >
+> > Sounds good~ Could you suggest the names for both blk_random and seg_random.
+> > We need seg_random mode,too, in order to simulate after-GC condition.
+>
+> mode=fragment:block and mode=fragment:segment?
+>
+> >
+> >>> under the severe condition. This supports "normal", "seg_random" and
+> >>> "blk_random:<num>" options.
+> >>>
+> >>> "normal" (default): f2fs allocates blocks in the normal way.
+> >>> "seg_random": f2fs allocates a new segment in ramdom position.
+> >>>                 With this, we can simulate the after-GC condition.
+> >>> "blk_random:<num>": We can make f2fs allocate only 1..<num> blocks
+> >>>                       in a row and forcibly change the segment randomly.
+> >>>                       With this, the newly allocated blocks will be scatter
+> >>>                       throughout the whole partition and we can simulate
+> >>>                       filesystem fragmentation condition.
+> >>>
+> >>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> >>>
+> >>> ---
+> >>> v2: changed the <num> initialization way.
+> >>> ---
+> >>>    Documentation/filesystems/f2fs.rst | 16 ++++++++++
+> >>>    fs/f2fs/f2fs.h                     | 20 +++++++++++++
+> >>>    fs/f2fs/gc.c                       |  5 +++-
+> >>>    fs/f2fs/segment.c                  | 12 ++++++++
+> >>>    fs/f2fs/super.c                    | 47 ++++++++++++++++++++++++++++++
+> >>>    5 files changed, 99 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> >>> index ff9e7cc97c65..a0ca963fda20 100644
+> >>> --- a/Documentation/filesystems/f2fs.rst
+> >>> +++ b/Documentation/filesystems/f2fs.rst
+> >>> @@ -312,6 +312,22 @@ inlinecrypt               When possible, encrypt/decrypt the contents of encrypted
+> >>>                         Documentation/block/inline-encryption.rst.
+> >>>    atgc                         Enable age-threshold garbage collection, it provides high
+> >>>                         effectiveness and efficiency on background GC.
+> >>> +blk_alloc_mode=%s     Control block allocation mode. This is a developer option
+> >>> +                      for experiments to simulate filesystem fragmentation and
+> >>> +                      after-GC situation. The developers use this mode to understand
+> >>> +                      filesystem fragmentation and after-GC condition well, and
+> >>> +                      eventually get the insight to handle them better.
+> >>> +                      This supports "normal", "seg_random" and "blk_random:<num>" modes.
+> >>> +                      In "normal" mode (default), f2fs allocates blocks in the normal way.
+> >>> +                      In "seg_random", f2fs allocates a new segment in ramdom position.
+> >>> +                      With this, we can simulate the after-GC condition.
+> >>> +                      In "blk_random:<num>", we can make f2fs allocate only 1..<num>
+> >>> +                      blocks in a row and forcibly change the segment randomly.
+> >>> +                      You can set the <num> within 1 .. 512 number.
+> >>> +                      With this, the newly allocated blocks will be scatter throughout
+> >>> +                      the whole partition and we can simulate filesystem fragmentation
+> >>> +                      condition. Please, use this option for your experiments and we
+> >>> +                      strongly recommand a filesystem format after using this option.
+> >>>    ======================== ============================================================
+> >>>
+> >>>    Debugfs Entries
+> >>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> >>> index fccee18ab776..aed09e8c0fce 100644
+> >>> --- a/fs/f2fs/f2fs.h
+> >>> +++ b/fs/f2fs/f2fs.h
+> >>> @@ -155,6 +155,9 @@ struct f2fs_mount_info {
+> >>>        int compress_mode;                      /* compression mode */
+> >>>        unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
+> >>>        unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
+> >>> +
+> >>> +     int blk_alloc_mode;             /* block allocation mode */
+> >>> +     int blk_alloc_random_max;       /* the maximum chunk size for block random allocation mode */
+> >>>    };
+> >>>
+> >>>    #define F2FS_FEATURE_ENCRYPT                0x0001
+> >>> @@ -1740,6 +1743,8 @@ struct f2fs_sb_info {
+> >>>
+> >>>        unsigned long seq_file_ra_mul;          /* multiplier for ra_pages of seq. files in fadvise */
+> >>>
+> >>> +     int blk_alloc_remained;                 /* remained block count for this block allocation period */
+> >>> +
+> >>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
+> >>>        struct kmem_cache *page_array_slab;     /* page array entry */
+> >>>        unsigned int page_array_slab_size;      /* default page array slab size */
+> >>> @@ -3619,6 +3624,21 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+> >>>    unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
+> >>>                        unsigned int segno);
+> >>>
+> >>> +#define MIN_BLK_ALLOC_RANDOM 1
+> >>> +#define MAX_BLK_ALLOC_RANDOM 512
+> >>> +
+> >>> +enum {
+> >>> +     BLK_ALLOC_MODE_NORMAL,          /* normal block allocation mode */
+> >>> +     BLK_ALLOC_MODE_SEG_RANDOM,      /* make segment allocation random */
+> >>> +     BLK_ALLOC_MODE_BLK_RANDOM,      /* make block allocation random */
+> >>> +};
+> >>> +
+> >>> +static inline bool f2fs_need_seg_random(struct f2fs_sb_info *sbi)
+> >>> +{
+> >>> +     return F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM ||
+> >>> +             F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM;
+> >>> +}
+> >>> +
+> >>>    /*
+> >>>     * checkpoint.c
+> >>>     */
+> >>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> >>> index 9dce44619069..571b50322e6e 100644
+> >>> --- a/fs/f2fs/gc.c
+> >>> +++ b/fs/f2fs/gc.c
+> >>> @@ -14,6 +14,7 @@
+> >>>    #include <linux/delay.h>
+> >>>    #include <linux/freezer.h>
+> >>>    #include <linux/sched/signal.h>
+> >>> +#include <linux/random.h>
+> >>>
+> >>>    #include "f2fs.h"
+> >>>    #include "node.h"
+> >>> @@ -256,7 +257,9 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
+> >>>                p->max_search = sbi->max_victim_search;
+> >>>
+> >>>        /* let's select beginning hot/small space first in no_heap mode*/
+> >>> -     if (test_opt(sbi, NOHEAP) &&
+> >>> +     if (f2fs_need_seg_random(sbi))
+> >>> +             p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
+> >>> +     else if (test_opt(sbi, NOHEAP) &&
+> >>>                (type == CURSEG_HOT_DATA || IS_NODESEG(type)))
+> >>>                p->offset = 0;
+> >>>        else
+> >>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> >>> index f9b7fb785e1d..6dff2d36ad6b 100644
+> >>> --- a/fs/f2fs/segment.c
+> >>> +++ b/fs/f2fs/segment.c
+> >>> @@ -15,6 +15,7 @@
+> >>>    #include <linux/timer.h>
+> >>>    #include <linux/freezer.h>
+> >>>    #include <linux/sched/signal.h>
+> >>> +#include <linux/random.h>
+> >>>
+> >>>    #include "f2fs.h"
+> >>>    #include "segment.h"
+> >>> @@ -2587,6 +2588,8 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+> >>>        unsigned short seg_type = curseg->seg_type;
+> >>>
+> >>>        sanity_check_seg_type(sbi, seg_type);
+> >>> +     if (f2fs_need_seg_random(sbi))
+> >>> +             return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
+> >>>
+> >>>        /* if segs_per_sec is large than 1, we need to keep original policy. */
+> >>>        if (__is_large_section(sbi))
+> >>> @@ -3150,6 +3153,15 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
+> >>>    static bool __has_curseg_space(struct f2fs_sb_info *sbi,
+> >>>                                        struct curseg_info *curseg)
+> >>>    {
+> >>> +     /* To allocate block chunks in different sizes, use random number */
+> >>> +     if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM) {
+> >>> +             if (--sbi->blk_alloc_remained < 0) {
+> >>> +                     sbi->blk_alloc_remained = prandom_u32() %
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_random_max;
+> >>> +                     return false;
+> >>> +             }
+> >>> +     }
+> >>
+> >> Why not adjusting __refresh_next_blkoff(), so we can control granularity of
+> >> allocation interval, e.g.
+> >>
+> >>          if (seg->alloc_type == SSR)
+> >>                  seg->next_blkoff =
+> >>                          __next_free_blkoff(sbi, seg->segno,
+> >>                                                  seg->next_blkoff + 1);
+> >>          else if (seg->alloc_type == LFS)
+> >>                  seg->next_blkoff++;
+> >>          else
+> >>                  seg->next_blkoff += sbi->fragment_granularity;
+> >>
+> >> Thanks,
+> >>
+> >
+> > I am not sure this is safe, is this?
+>
+> I didn't look into the details, but what I mean here is we can control
+> log header pointer directly to fragment filesystem as we expect.
+>
+> > Plus, I wanted to allocate the blocks in a chunk sized between
+> > <1..num>. This is a little bit different from what I meant.
+>
+> Ah, I see, maybe we can maintain an extra config cur_chunk_size for each
+> log header to control chunksize in fragmenting flow.
+>
+> __refresh_next_blkoff()
+>
+>         seg->next_blkoff++;
+>         seg->cur_chunk_size++;
+>         if (seg->cur_chunk_size == sbi->fragment_chunk_size) {
+>                 seg->cur_chunk_size = 0;
+>                 seg->next_blkoff += sbi->fragment_hole_size;
+>         }
+>
+> .fragment_chunk_size + .fragment_hole_size should be 1 << n (1 <= n <= 9), e.g.:
+>
+> a) data(4k) | hole(4k) | data | hole | ...
+> .fragment_chunk_size = 1
+> .fragment_hole_size = 1
+>
+> b) data(12k) | hole(4k) | data | hole | ...
+> .fragment_chunk_size = 3
+> .fragment_hole_size = 1
+>
+> c) data(4k) | hole (12k) |data | hole | ...
+> .fragment_chunk_size = 1
+> .fragment_hole_size = 3
+>
+> And we can control .fragment_chunk_size and .fragment_hole_size via sysfs?
+>
+> Thoughts?
 
+This way, we might have some trouble when we are running out of disk space.
+Under low free disk space, we might not be able to allocate the space this way.
+That is the reason I went my first way.
+
+Do you have other thoughts for this? Otherwise, I think my first
+approach would work.
+Giving a way to make the filesystem fragmented is also good, but I
+think just simulating the performance drop after fragmentation might
+be useful for most cases.
+
+>
+> Thanks,
+>
+> >
+> >
+> >>> +
+> >>>        return curseg->next_blkoff < f2fs_usable_blks_in_seg(sbi,
+> >>>                                                        curseg->segno);
+> >>>    }
+> >>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> >>> index 9ead6d2e703b..ef14f3e8b29a 100644
+> >>> --- a/fs/f2fs/super.c
+> >>> +++ b/fs/f2fs/super.c
+> >>> @@ -155,6 +155,7 @@ enum {
+> >>>        Opt_atgc,
+> >>>        Opt_gc_merge,
+> >>>        Opt_nogc_merge,
+> >>> +     Opt_blk_alloc_mode,
+> >>>        Opt_err,
+> >>>    };
+> >>>
+> >>> @@ -231,6 +232,7 @@ static match_table_t f2fs_tokens = {
+> >>>        {Opt_atgc, "atgc"},
+> >>>        {Opt_gc_merge, "gc_merge"},
+> >>>        {Opt_nogc_merge, "nogc_merge"},
+> >>> +     {Opt_blk_alloc_mode, "blk_alloc_mode=%s"},
+> >>>        {Opt_err, NULL},
+> >>>    };
+> >>>
+> >>> @@ -1173,6 +1175,40 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+> >>>                case Opt_nogc_merge:
+> >>>                        clear_opt(sbi, GC_MERGE);
+> >>>                        break;
+> >>> +             case Opt_blk_alloc_mode:
+> >>> +                     name = match_strdup(&args[0]);
+> >>> +                     if (!name)
+> >>> +                             return -ENOMEM;
+> >>> +                     if (!strcmp(name, "normal")) {
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
+> >>> +                                     BLK_ALLOC_MODE_NORMAL;
+> >>> +                     } else if (!strcmp(name, "seg_random")) {
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
+> >>> +                                     BLK_ALLOC_MODE_SEG_RANDOM;
+> >>> +                     } else if (!strncmp(name, "blk_random:", 11)) {
+> >>> +                             const char *num = name + 11;
+> >>> +                             long size;
+> >>> +
+> >>> +                             ret = kstrtol(num, 10, &size);
+> >>> +                             if (ret) {
+> >>> +                                     kfree(name);
+> >>> +                                     return ret;
+> >>> +                             }
+> >>> +                             if (size < MIN_BLK_ALLOC_RANDOM)
+> >>> +                                     size = MIN_BLK_ALLOC_RANDOM;
+> >>> +                             else if (size > MAX_BLK_ALLOC_RANDOM)
+> >>> +                                     size = MAX_BLK_ALLOC_RANDOM;
+> >>> +
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
+> >>> +                                     BLK_ALLOC_MODE_BLK_RANDOM;
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_random_max = size;
+> >>> +                             sbi->blk_alloc_remained = size;
+> >>> +                     } else {
+> >>> +                             kfree(name);
+> >>> +                             return -EINVAL;
+> >>> +                     }
+> >>> +                     kfree(name);
+> >>> +                     break;
+> >>>                default:
+> >>>                        f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
+> >>>                                 p);
+> >>> @@ -1919,6 +1955,14 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+> >>>        else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_NOBARRIER)
+> >>>                seq_printf(seq, ",fsync_mode=%s", "nobarrier");
+> >>>
+> >>> +     if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_NORMAL)
+> >>> +             seq_printf(seq, ",blk_alloc_mode=%s", "normal");
+> >>> +     else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM)
+> >>> +             seq_printf(seq, ",blk_alloc_mode=%s", "seg_random");
+> >>> +     else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM)
+> >>> +             seq_printf(seq, ",blk_alloc_mode=%s:%d", "blk_random",
+> >>> +                             F2FS_OPTION(sbi).blk_alloc_random_max);
+> >>> +
+> >>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
+> >>>        f2fs_show_compress_options(seq, sbi->sb);
+> >>>    #endif
+> >>> @@ -1947,6 +1991,9 @@ static void default_options(struct f2fs_sb_info *sbi)
+> >>>        F2FS_OPTION(sbi).compress_ext_cnt = 0;
+> >>>        F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
+> >>>        F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
+> >>> +     F2FS_OPTION(sbi).blk_alloc_mode = BLK_ALLOC_MODE_NORMAL;
+> >>> +     F2FS_OPTION(sbi).blk_alloc_random_max = MAX_BLK_ALLOC_RANDOM;
+> >>> +     sbi->blk_alloc_remained = MAX_BLK_ALLOC_RANDOM;
+> >>>
+> >>>        sbi->sb->s_flags &= ~SB_INLINECRYPT;
+> >>>
+> >>>
