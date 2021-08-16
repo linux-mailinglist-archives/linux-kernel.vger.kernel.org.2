@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307143ED57B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18913ED646
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237763AbhHPNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:11:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58784 "EHLO mail.kernel.org"
+        id S240490AbhHPNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237177AbhHPNHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:07:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 093136115A;
-        Mon, 16 Aug 2021 13:06:37 +0000 (UTC)
+        id S238494AbhHPNHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:07:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD18632A3;
+        Mon, 16 Aug 2021 13:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119198;
-        bh=PmLQkYivfrmVLCyY2Lp0dOcMm/pXXRkmz8Q/TzXpCeM=;
+        s=korg; t=1629119204;
+        bh=kLixaho+6umOEDEOlgnhv2B5hVXnPOQFCHz/gE/SWqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rr1s1FK0gLBpchwwS2oHwxs0uGlJNk5SjFcsjo7YK7HYdJ6TvKOIK6/6P1c/KbO0S
-         S2F8Mqsk/vUP5M1uqIW0S8ZGxUMSP6L/EOeW4BsQtjFDvllcj3QUmA5qyBuJm6xoGN
-         F3QZ/+Pt854Ka2nv6r3ERm8M45IU75uWRbWKuteE=
+        b=mSHebBbyv+O2xcEczKaayhnyV3Jo6bx6RPb++pnzyy5MDa4wk70x8xJ1xgoGW72Wp
+         HyZi8QjOzdLtZ4mF5et3rVeif4KwmJheMdhH65yICDO5JJIKHj8IWMCDEjUu5f2Gxe
+         zsIGJyX4/j9hC0It3VejGF+OIYh/T6FreuWCgTtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Lesiak <chris.lesiak@licor.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Stable@vger.kernel.org,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 03/96] iio: humidity: hdc100x: Add margin to the conversion time
-Date:   Mon, 16 Aug 2021 15:01:13 +0200
-Message-Id: <20210816125435.056093404@linuxfoundation.org>
+Subject: [PATCH 5.10 04/96] iio: adc: Fix incorrect exit of for-loop
+Date:   Mon, 16 Aug 2021 15:01:14 +0200
+Message-Id: <20210816125435.087389881@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
 References: <20210816125434.948010115@linuxfoundation.org>
@@ -41,59 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Lesiak <chris.lesiak@licor.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 84edec86f449adea9ee0b4912a79ab8d9d65abb7 upstream.
+commit 5afc1540f13804a31bb704b763308e17688369c5 upstream.
 
-The datasheets have the following note for the conversion time
-specification: "This parameter is specified by design and/or
-characterization and it is not tested in production."
+Currently the for-loop that scans for the optimial adc_period iterates
+through all the possible adc_period levels because the exit logic in
+the loop is inverted. I believe the comparison should be swapped and
+the continue replaced with a break to exit the loop at the correct
+point.
 
-Parts have been seen that require more time to do 14-bit conversions for
-the relative humidity channel.  The result is ENXIO due to the address
-phase of a transfer not getting an ACK.
-
-Delay an additional 1 ms per conversion to allow for additional margin.
-
-Fixes: 4839367d99e3 ("iio: humidity: add HDC100x support")
-Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Link: https://lore.kernel.org/r/20210614141820.2034827-1-chris.lesiak@licor.com
-Cc: <Stable@vger.kernel.org>
+Addresses-Coverity: ("Continue has no effect")
+Fixes: e08e19c331fb ("iio:adc: add iio driver for Palmas (twl6035/7) gpadc")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210730071651.17394-1-colin.king@canonical.com
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/humidity/hdc100x.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/iio/adc/palmas_gpadc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/humidity/hdc100x.c
-+++ b/drivers/iio/humidity/hdc100x.c
-@@ -25,6 +25,8 @@
- #include <linux/iio/trigger_consumer.h>
- #include <linux/iio/triggered_buffer.h>
+--- a/drivers/iio/adc/palmas_gpadc.c
++++ b/drivers/iio/adc/palmas_gpadc.c
+@@ -654,8 +654,8 @@ static int palmas_adc_wakeup_configure(s
  
-+#include <linux/time.h>
-+
- #define HDC100X_REG_TEMP			0x00
- #define HDC100X_REG_HUMIDITY			0x01
- 
-@@ -166,7 +168,7 @@ static int hdc100x_get_measurement(struc
- 				   struct iio_chan_spec const *chan)
- {
- 	struct i2c_client *client = data->client;
--	int delay = data->adc_int_us[chan->address];
-+	int delay = data->adc_int_us[chan->address] + 1*USEC_PER_MSEC;
- 	int ret;
- 	__be16 val;
- 
-@@ -316,7 +318,7 @@ static irqreturn_t hdc100x_trigger_handl
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct hdc100x_data *data = iio_priv(indio_dev);
- 	struct i2c_client *client = data->client;
--	int delay = data->adc_int_us[0] + data->adc_int_us[1];
-+	int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2*USEC_PER_MSEC;
- 	int ret;
- 
- 	/* dual read starts at temp register */
+ 	adc_period = adc->auto_conversion_period;
+ 	for (i = 0; i < 16; ++i) {
+-		if (((1000 * (1 << i)) / 32) < adc_period)
+-			continue;
++		if (((1000 * (1 << i)) / 32) >= adc_period)
++			break;
+ 	}
+ 	if (i > 0)
+ 		i--;
 
 
