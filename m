@@ -2,117 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22ADE3ED884
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D663ED8A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhHPOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:03:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:51008 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhHPODX (ORCPT
+        id S231445AbhHPOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:05:56 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:35496 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhHPOFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:03:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 637BF382651;
-        Mon, 16 Aug 2021 10:02:51 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bNylGs34V7ob; Mon, 16 Aug 2021 10:02:51 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id F3877382650;
-        Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F3877382650
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1629122571;
-        bh=ejQJikqjD1O5aRG34kThZj9GE5/6cz818qSzrHRyM8I=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=e5yp/2y2flWtjQ5dfEkrTAJYlp3Y7olGMYSPnJdpvRnpX1w27hG+9c1XsT980HBcS
-         dhffavbQe+b0LCVTkIyyAkBiE1B+oBvzZUd/BpEeNt+4iwxrSdFfwjtBCrdmmxAPgj
-         S6QHQTNjQO2Rx2UFKr/c9pSlWJYZPzJAzaM1GdHRAWGuvkwgVl9rffy8GT/UmVaixV
-         TZrTjQvh9kfGzkru/7Qu0SBKC2kQ/6Vk/cCWqnX9sL8DnFCDpnyMU/dVl11y1tVZwi
-         GUz0pnqKW4SnQk0wzL5aUH9xCYLUMSuiViTMX8SYtmwL17UVt2ijV8H+NRoUrPVi3u
-         X8OiFWv2cgMvQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JlLKERSo0MOA; Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E3E3738264F;
-        Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
-Date:   Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     zhaoxiao <zhaoxiao@uniontech.com>, rostedt <rostedt@goodmis.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <2005434147.15227.1629122570891.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210816052430.16539-1-zhaoxiao@uniontech.com>
-References: <20210816052430.16539-1-zhaoxiao@uniontech.com>
-Subject: Re: [PATCH] tracepoint: Fix the comment style
+        Mon, 16 Aug 2021 10:05:54 -0400
+Received: by mail-oi1-f180.google.com with SMTP id r26so846597oij.2;
+        Mon, 16 Aug 2021 07:05:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iRKDceU3mYZYX25ILhTGVfCF7ZiGQ+F4qa4yz3TodTY=;
+        b=h1IZyY9J/x0hGY9XoqXMt0umxGozmjm6S9aJZiPMDhvOcqreu+XR5uZwzz+gfZDMur
+         8h/9uIPKtsHkkUhhJjzYAW7aMUHiaJMLVzNhWBjFVQn1M1eQP/kY5amd3HYo8nfuttcK
+         y3WjG3uavbeYqNVbGkni+JXVGl7AFxqp9amWHjjGd9RDHHS9Amun/6K1/NPMhun2ucVN
+         eRdurYIskcN1uLHqEYfAXbHR4YqQuo0orCte3wru/StIM1WNGw2zQln9BYLpIFyWv0ik
+         sGru3nFXa/ZOeMVBKhDKNfmh/RrDfcIUfkBJ8NNO90oBSx5HfF6pyEcl/8X6mqvArFGy
+         siCg==
+X-Gm-Message-State: AOAM5331y24jeYmjKS0gSxzAYA219m8ksVu4Gh37M+qhmKyZOzu8ubwN
+        W1uKBqOxDp9vvkrzlo/DoXW/wLHzQmjjnHlmOi8=
+X-Google-Smtp-Source: ABdhPJzOdg3EzWB1728dV5c78AxtjaL0FOKppTxbZlVBy1uVvoUG+e3bXhxL9cLwgjZnAzYITWjRnwYsZLREFWQZJLM=
+X-Received: by 2002:a05:6808:220c:: with SMTP id bd12mr12187934oib.157.1629122722961;
+ Mon, 16 Aug 2021 07:05:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: tracepoint: Fix the comment style
-Thread-Index: nOonbYm9y07I5uROTWjvFI3b10hu6Q==
+References: <20210813161842.222414-1-mario.limonciello@amd.com>
+In-Reply-To: <20210813161842.222414-1-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Aug 2021 16:04:57 +0200
+Message-ID: <CAJZ5v0jynpMMnMBQuyJPYfSG-6JSe5=a6wW0UtUnpGuh68CqkA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/acpi: Don't add CPUs that are not online capable
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Ray Huang <Ray.Huang@amd.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 16, 2021, at 1:24 AM, zhaoxiao zhaoxiao@uniontech.com wrote:
-
-> Fix function name in tracepoint.c kernel-doc comment
-> to remove a warning found by clang_w1.
-> 
-> kernel/tracepoint.c:589: warning: expecting prototype for
-> register_tracepoint_notifier(). Prototype was for
-> register_tracepoint_module_notifier() instead
-> kernel/tracepoint.c:613: warning: expecting prototype for
-> unregister_tracepoint_notifier(). Prototype was for
-> unregister_tracepoint_module_notifier() instead
-
-Thanks!
-
-Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-> 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+On Fri, Aug 13, 2021 at 6:19 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> A number of systems are showing "hotplug capable" CPUs when they
+> are not really hotpluggable.  This is because the MADT has extra
+> CPU entries to support different CPUs that may be inserted into
+> the socket with different numbers of cores.
+>
+> Starting with ACPI 6.3 the spec has an Online Capable bit in the
+> MADT used to determine whether or not a CPU is hotplug capable
+> when the enabled bit is not set.
+>
+> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/05_ACPI_Software_Programming_Model/ACPI_Software_Programming_Model.html?#local-apic-flags
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > ---
-> kernel/tracepoint.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index efd14c79fab4..64ea283f2f86 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -577,7 +577,7 @@ bool trace_module_has_bad_taint(struct module *mod)
-> static BLOCKING_NOTIFIER_HEAD(tracepoint_notify_list);
-> 
-> /**
-> - * register_tracepoint_notifier - register tracepoint coming/going notifier
-> + * register_tracepoint_module_notifier - register tracepoint coming/going
-> notifier
->  * @nb: notifier block
->  *
->  * Notifiers registered with this function are called on module
-> @@ -603,7 +603,7 @@ int register_tracepoint_module_notifier(struct
-> notifier_block *nb)
-> EXPORT_SYMBOL_GPL(register_tracepoint_module_notifier);
-> 
-> /**
-> - * unregister_tracepoint_notifier - unregister tracepoint coming/going notifier
-> + * unregister_tracepoint_module_notifier - unregister tracepoint coming/going
-> notifier
->  * @nb: notifier block
->  *
->  * The notifier block callback should expect a "struct tp_module" data
-> --
-> 2.20.1
+>  arch/x86/kernel/acpi/boot.c | 10 ++++++++++
+>  include/acpi/actbl2.h       |  1 +
+>  2 files changed, 11 insertions(+)
+>
+> Changes from v1->v2:
+>  * Check the revision field in MADT to determine if it matches the
+>    bump from ACPI 6.3 as suggested by Hanjun Guo
+>  * Update description
+>
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index e55e0c1fad8c..bfa69a5c9c0b 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -53,6 +53,8 @@ int acpi_ioapic;
+>  int acpi_strict;
+>  int acpi_disable_cmcff;
+>
+> +bool acpi_support_online_capable;
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Missing static?
+
+> +
+>  /* ACPI SCI override configuration */
+>  u8 acpi_sci_flags __initdata;
+>  u32 acpi_sci_override_gsi __initdata = INVALID_ACPI_IRQ;
+> @@ -138,6 +140,8 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
+>
+>                 pr_debug("Local APIC address 0x%08x\n", madt->address);
+>         }
+> +       if (madt->header.revision >= 5)
+> +               acpi_support_online_capable = true;
+>
+>         default_acpi_madt_oem_check(madt->header.oem_id,
+>                                     madt->header.oem_table_id);
+> @@ -239,6 +243,12 @@ acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned long end)
+>         if (processor->id == 0xff)
+>                 return 0;
+>
+> +       /* don't register processors that can not be onlined */
+> +       if (acpi_support_online_capable &&
+> +           !(processor->lapic_flags & ACPI_MADT_ENABLED) &&
+> +           !(processor->lapic_flags & ACPI_MADT_ONLINE_CAPABLE))
+> +               return 0;
+> +
+>         /*
+>          * We need to register disabled CPU as well to permit
+>          * counting disabled CPUs. This allows us to size
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 2069ac38a4e2..fae45e383987 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+
+The one below is an ACPICA change and I'd prefer it to be integrated
+via the upstream ACPICA.
+
+Could you prepare an ACPICA pull request for just the bit below and
+send it via GitHub?
+
+> @@ -808,6 +808,7 @@ struct acpi_madt_multiproc_wakeup_mailbox {
+>  /* MADT Local APIC flags */
+>
+>  #define ACPI_MADT_ENABLED           (1)        /* 00: Processor is usable if set */
+> +#define ACPI_MADT_ONLINE_CAPABLE    (2)        /* 01: System HW supports enabling processor at runtime */
+>
+>  /* MADT MPS INTI flags (inti_flags) */
+>
+> --
