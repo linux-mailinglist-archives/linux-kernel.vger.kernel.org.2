@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD363ED0D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681F83ED0CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbhHPJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:07:01 -0400
-Received: from smtpout2.vodafonemail.de ([145.253.239.133]:39778 "EHLO
-        smtpout2.vodafonemail.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235284AbhHPJG0 (ORCPT
+        id S234951AbhHPJFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233053AbhHPJFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:06:26 -0400
-Received: from smtp.vodafone.de (smtpa08.fra-mediabeam.com [10.2.0.39])
-        by smtpout2.vodafonemail.de (Postfix) with ESMTP id 0876C125C9C;
-        Mon, 16 Aug 2021 11:04:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
-        s=vfde-smtpout-mb-15sep; t=1629104652;
-        bh=chbgSvyqMrs/RDUVSKxoE0r4FFnnKpAGJRedrJBuPsc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=S3c5pipw6JNaSo1hvzEImvC0BAwfwWtInpC7XKjHCLjPMuSXSbmpLzS/R8o8/Th3W
-         mX6IEUm/EEhgdQ/ttL7ug3kyf7wK1hL5yE/9WQiWRmy8hnEvMqWAPswqfgH6caZjjX
-         kXaTm3FajkG0YOja/irfCR2M8eEWXYns7W74xAsc=
-Received: from arcor.de (p5b28106c.dip0.t-ipconnect.de [91.40.16.108])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp.vodafone.de (Postfix) with ESMTPSA id 67B1D1401B3;
-        Mon, 16 Aug 2021 09:04:11 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 11:04:00 +0200
-From:   Reinhard Speyerer <rspmn@arcor.de>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [V2,1/1]USB: serial: option: add Foxconn T77W175
- composition 0x901d
-Message-ID: <YRoqAJmGBpV/OuZL@arcor.de>
-References: <20210816035404.4210-1-slark_xiao@163.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816035404.4210-1-slark_xiao@163.com>
-X-purgate-type: clean
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-purgate-size: 3612
-X-purgate-ID: 155817::1629104651-00007455-FE839557/0/0
+        Mon, 16 Aug 2021 05:05:32 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C4EC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:01 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id q6so10982923wrv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=mMaesSXI/1ebDXpZxtJ9KM9Ruw6o7aKYtfvKIOk0/pg=;
+        b=XbxJRgeIK1EnHAxTA0KXtizH38cpXbRQZwPqr/qe4xGSzahCbKRoW1ev6TTS91EaGN
+         32Bx7vxDQaFuwDG2sPHP/Te5Iy36Kju8obuCiOrrogPQ42JqhWf5tA0xumk9K4KvPnof
+         hOjBP7iHJ+hYdvhVJvjebfKRpisLGSehXzxvK8uLcBW5kTvFFDl56gVSh91TU31Derro
+         xA1kjRLhro84EKFTj7DcFDFlQgE5DB7XK0sh0cHym+XnFQYVRrClMyE7zY2bfKOPDZeY
+         fRkzIIfJOXpkIwn5GekPua5kQIsuA1kqE80fBhmMb4UgONBDhsj90x8eeVyWHtkOmHwJ
+         h6/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mMaesSXI/1ebDXpZxtJ9KM9Ruw6o7aKYtfvKIOk0/pg=;
+        b=EXbCrXsx7EnmlB2zp4Taj+dZVgWOiotfYpE0bqG0dVdamyft/eAegqjmVWBkYSvpwb
+         8+yG08hgJCmcr9S0kKUmywxj8tSYxLtXA+Sb+c/VQU4TP9UcJJiCvH5fecNUp4gA5wzw
+         pmXeanwqkRmx3H5ntSalwdgafD5ezjq6oM8d5+fi6EOH+y7JRIQaXPSUoUz8uVjAj/K/
+         V1SBjMC6Gp92LOt6Yjc7tzE1mREv9dYXNFfuPDcoz0fDXvr0ef32GQARpGcxB3HGZibG
+         3uDO9esaT5BCcZoap1+i2IkZNKtHD2ARh6Uj8ba1C8wd3IqBZKFeD7Y26cknZI54NHlt
+         BSWg==
+X-Gm-Message-State: AOAM531FANcd9+TtS23X9UG546eJXhF/PkZSPdraqBc6d6j6bwpBskmW
+        0yE5B7iAb5KzUmHrPEsXxy1fAQ==
+X-Google-Smtp-Source: ABdhPJwbZOXGLGuWCEeUa31iyyVOThWJ8ZKO/RjWuqmTI89nAoGHQrLzkB9L8b5Ws/U6urBbrXbXQw==
+X-Received: by 2002:a5d:658e:: with SMTP id q14mr17226897wru.142.1629104699511;
+        Mon, 16 Aug 2021 02:04:59 -0700 (PDT)
+Received: from localhost.localdomain (81.227.26.93.rev.sfr.net. [93.26.227.81])
+        by smtp.gmail.com with ESMTPSA id l12sm9381761wms.24.2021.08.16.02.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 02:04:59 -0700 (PDT)
+From:   Roger Knecht <roger@norberthealth.com>
+To:     Jiri Kosina <trivial@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Roger Knecht <roger@norberthealth.com>
+Subject: [PATCH] Trivial comment fix for the CRC ITU-T polynom
+Date:   Mon, 16 Aug 2021 11:04:31 +0200
+Message-Id: <20210816090431.6540-1-roger@norberthealth.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:54:04AM +0800, Slark Xiao wrote:
-> Foxconn SDX55 T77W175 device is working in PCIe mode normally.
-> You can find the PCIe support in drivers/bus/mhi/pci_generic.c file.
-> But in some scenario, we need to capture the memory dump once it crashed.
-> So a diag port under USB driver is needed.
-> 
-> Only interface 0 is used:
-> jbd@jbd-ThinkPad-P1-Gen-4:~$ lsusb | grep 05c6
-> Bus 003 Device 010: ID 05c6:901d Qualcomm, Inc. Generic Mobile Broadband Adapter
-> jbd@jbd-ThinkPad-P1-Gen-4:~$ lsusb -t | grep "Dev 10"
->     |__ Port 7: Dev 10, If 0, Class=Vendor Specific Class, Driver=option, 480M
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
-> ---
->  drivers/usb/serial/option.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 039450069ca4..c275f489c1cc 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -2068,6 +2068,7 @@ static const struct usb_device_id option_ids[] = {
->  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
->  	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
->  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-> +	{ USB_DEVICE(QUALCOMM_VENDOR_ID, 0x901d) },				/* Foxconn T77W175 PCIE+USB mode*/
->  	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
->  	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
->  	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
-> -- 
-> 2.25.1
-> 
-> 
+According to the CRC ITU-T V.41 spec the polynom is x^16 + x^12 + x^5 + 1.
+Source: https://www.itu.int/rec/T-REC-V.41-198811-I/en
 
-Hi Slark,
+Signed-off-by: Roger Knecht <roger@norberthealth.com>
+---
+ include/linux/crc-itu-t.h | 2 +-
+ lib/crc-itu-t.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-since this entry uses the Qualcomm USB VID it would be a good idea to make
-the option driver only bind to the DIAG interface in case other UE vendors
-have the ADB interface provided by this composition enabled:
+diff --git a/include/linux/crc-itu-t.h b/include/linux/crc-itu-t.h
+index a4367051e192..2f991a427ade 100644
+--- a/include/linux/crc-itu-t.h
++++ b/include/linux/crc-itu-t.h
+@@ -4,7 +4,7 @@
+  *
+  * Implements the standard CRC ITU-T V.41:
+  *   Width 16
+- *   Poly  0x1021 (x^16 + x^12 + x^15 + 1)
++ *   Poly  0x1021 (x^16 + x^12 + x^5 + 1)
+  *   Init  0
+  */
+ 
+diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
+index 1974b355c148..56e6e0d63d1e 100644
+--- a/lib/crc-itu-t.c
++++ b/lib/crc-itu-t.c
+@@ -7,7 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/crc-itu-t.h>
+ 
+-/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
++/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
+ const u16 crc_itu_t_table[256] = {
+ 	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
+ 	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
+-- 
+2.17.1
 
-$ sed 30q 901D
-#!/bin/sh
-#
-# Copyright (c) 2014,2017-2018, The Linux Foundation. All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of The Linux Foundation nor the names of its
-#       contributors may be used to endorse or promote products derived from
-#       this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE DISCLAIMED.  IN NO
-# EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# DESCRIPTION: DIAG + ADB
-
-echo "Switching to composition number 0x901D"  > /dev/kmsg
-
-
-[Ideally these compositions would also be available via kernel.org and/or
- codeaura.org but so far I have been unable to find them there.]
-
-Regards,
-Reinhard
