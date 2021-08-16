@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E167E3ED208
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C02A3ED206
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhHPKfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:35:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64370 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235629AbhHPKfF (ORCPT
+        id S232764AbhHPKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:34:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230064AbhHPKeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:35:05 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GAWqTO088486;
-        Mon, 16 Aug 2021 06:33:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=5av6NHoF+9D8KsZzLIfgybg2fcuVJ3/w9uvWlIZ0S8E=;
- b=XSiURWvhMUM8bUl7ohQj/FuEneCHvAhrCp1nzc2YA9I+Y4Evl5eiOlifEEGAGtgIJ/Nk
- D/3yFRlyNIkfcXbWnV24eofq/qJH7O8c/uHruBOX7BeHGvgL3AQC6q9NGQJR2hGLGuau
- ad0cGLYu+Hg1xmf6wxwYGxtEdp+3oMUTHd4+GpUwIeDwDPQFTzVSniQgvL6A5pTFlfu+
- 2+4HdYXbH6j9KBHnckVlARx1SdJ+q+qdmVJw6SBoJa7NN4XAZY7fPJYfPZ1dR0XMlvqt
- bRR+A9D7oNutrrcsGVauWndn2vM0kQXTxz9ap7anskp6JHD6ol7ph1ZHGbk95QXNUsUm Pw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aetwauads-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Aug 2021 06:33:56 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17GABxX5025816;
-        Mon, 16 Aug 2021 10:33:55 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ae5f8b1v5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Aug 2021 10:33:54 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17GAXpDG56820028
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Aug 2021 10:33:51 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73CC4A407B;
-        Mon, 16 Aug 2021 10:33:51 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE56EA4065;
-        Mon, 16 Aug 2021 10:33:47 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 16 Aug 2021 10:33:47 +0000 (GMT)
-Date:   Mon, 16 Aug 2021 16:03:47 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for
- non-online nodes
-Message-ID: <20210816103347.GC21942@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
- <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
- <875yxu85wi.mognet@arm.com>
- <20210712124856.GA3836887@linux.vnet.ibm.com>
- <87zguqmay9.mognet@arm.com>
- <20210723143914.GI3836887@linux.vnet.ibm.com>
- <87h7g09bgg.mognet@arm.com>
- <20210809065235.GH4072958@linux.vnet.ibm.com>
- <875yweaig9.mognet@arm.com>
- <20210810114727.GB21942@linux.vnet.ibm.com>
+        Mon, 16 Aug 2021 06:34:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629110050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o56kFl5Q5JRPj00nvRvdyzY+Pmj2K5yYLBsvpdrfXvw=;
+        b=H6UJRbi9U4ZRRhsYtr0Y6DaSflieOZwWoVlGP3VCXTc2vMWSZg7/t3lSW5AYIP4fFsqXow
+        ORXzLvh6H62IKTu4kWNlvyoPAWCVTS2QOHeQg+HfMFpoDJf2UFfZzwvkKm0L/mCKuujMbB
+        cNQ6VtUEjSEltfo9NQzvOt6JJTrlpvQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-GE0e0L6IMGKKMN6ghBp91Q-1; Mon, 16 Aug 2021 06:34:09 -0400
+X-MC-Unique: GE0e0L6IMGKKMN6ghBp91Q-1
+Received: by mail-ej1-f71.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso4514702ejb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:34:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o56kFl5Q5JRPj00nvRvdyzY+Pmj2K5yYLBsvpdrfXvw=;
+        b=r7RGvvPaHiDK8fwZrF1BDDoi5U1CFqBLdwzm0RJ4+FfHULI7uW8QLT+1mOffn6ZeSX
+         XB44pMy5vO64bkpvZrt2QUU59jAEx8ina0JHhYWIEMIy2V3uiEzIUqY3UzXbI7apYcJt
+         pwTi0OX7DC7Wk0PocD3C7wbpE45Jq5Uh9GRgPYDMR1LMeOYdMYQboKesQk9WWsJNz8bi
+         reTqpsESiOvoCGpmy9/kUbYyUFRbsVGFXR2PxBsWJGoyq2WXkEXoBklh+a1pbZ/m/xFK
+         1dZAj/Y8XlZpXW8lUAaS5ZR/bw8wXUQTQ457oWRU6Sxz+x2WFmIAso6d/BlWWharSxCP
+         kZrQ==
+X-Gm-Message-State: AOAM5325cMNe29Kqf8Tnx6YuJxgxVqbEE6SBKAXrbtFjHM/tGw6Q5HQu
+        OD6L3AH8xI0WQP/JGllm4Vof8XcuzHXGGxj+uAChyaU4iMEh31oGeARWy4NR2Ebg6P21jEI52do
+        s/Z2OvgqyBFvkOfg8/zxN5qtBcgpYFxM26xoyPkZDUAOfHzSvi+ZU/YA6neeVD/QZNHb30ubbrr
+        FW
+X-Received: by 2002:a17:906:4c8c:: with SMTP id q12mr15471556eju.254.1629110047847;
+        Mon, 16 Aug 2021 03:34:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6IwEDCl7PI2ndYdWGeb/zTJgMPtufIMxffeaVGBWYu8pAxTCTS/9YLBFhzdYlw1He9oe73A==
+X-Received: by 2002:a17:906:4c8c:: with SMTP id q12mr15471541eju.254.1629110047668;
+        Mon, 16 Aug 2021 03:34:07 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id r16sm4621263edt.15.2021.08.16.03.34.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 03:34:07 -0700 (PDT)
+Subject: Re: Dell laptop function keys stopped working between 5.10.46 and
+ 5.13.9
+To:     Paul Menzel <pmenzel@molgen.mpg.de>, Dell.Client.Kernel@dell.com,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b8ff8f68-4d5a-7ec6-4c4f-9f5be6e70ab5@molgen.mpg.de>
+ <1d4ce7d6-3213-45af-0467-7548f69b7d9e@molgen.mpg.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7857ead5-6ccf-3290-9e86-4f16d2bf360f@redhat.com>
+Date:   Mon, 16 Aug 2021 12:34:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20210810114727.GB21942@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lc-xZ-bSsq-whyxuvFTxQWN5R-J4ehy4
-X-Proofpoint-ORIG-GUID: lc-xZ-bSsq-whyxuvFTxQWN5R-J4ehy4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-16_03:2021-08-16,2021-08-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 clxscore=1015 mlxscore=0 impostorscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108160065
+In-Reply-To: <1d4ce7d6-3213-45af-0467-7548f69b7d9e@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 8/16/21 12:22 PM, Paul Menzel wrote:
+> [attach Linux 5.13.9 messages (output of `dmesg`)]
+
+Does "lsmod" output include any Dell modules like dell-laptop or
+dell-wmi ?
+
+How about on the 5.10 kernel?  It looks like the 5.13 kernel simply
+does not have these modules enabled / loaded.
+
+Regards,
+
+Hans
+
+
 > 
-> Your version is much much better than mine.
-> And I have verified that it works as expected.
-> 
-> 
+> Am 16.08.21 um 11:48 schrieb Paul Menzel:
+>> Dear Linux folks,
+>>
+>>
+>> On a Dell Latitude E7250, updating Linux from 5.10.46 to 5.13.9 (Debian sid/unstable) the two function keys to (un-)mute the microphone, and enable/disable Wifi stopped working. The other function keys continue to work. The `evtest` output did not change.
+>>
+>>      Linux version 5.10.0-8-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #1 SMP Debian 5.10.46-4 (2021-08-03)
+>>
+>>      Event: time 1629104514.184947, type 4 (EV_MSC), code 4 (MSC_SCAN), value 88
+>>      Event: time 1629104514.184947, type 1 (EV_KEY), code 240 (KEY_UNKNOWN), value 2
+>>
+>>      Linux version 5.13.0-trunk-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #1 SMP Debian 5.13.9-1~exp2 (2021-08-10)
+>>
+>>      Event: time 1629103829.341409, type 4 (EV_MSC), code 4 (MSC_SCAN), value 88
+>>      Event: time 1629103829.341409, type 1 (EV_KEY), code 240 (KEY_UNKNOWN), value 2
+>>
+>> The output of `acpi_listen` also did not change.
+>>
+>>      $ acpi_listen
+>>       9DBB5994-A997- 000000d0 00000000
+>>
+>> Are you aware of such reports?
+>>
+>>
+>> Kind regards,
+>>
+>> Paul
 
-Hey Peter/Valentin
-
-Are we waiting for any more feedback/testing for this?
-
-
--- 
-Thanks and Regards
-Srikar Dronamraju
