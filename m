@@ -2,192 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E7A3ED1CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E843ED1D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhHPKRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:17:49 -0400
-Received: from mail-dm6nam10on2043.outbound.protection.outlook.com ([40.107.93.43]:43200
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230250AbhHPKRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:17:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IxiMWRAX7lE8ZNsn427H5bfAfwSrVYEfcT8kY4Yqsqi/rg/14imVd0yRiVdb7kvjTDiAms0+kMwqAM6B+n4iYlitBJVV/HnLGr8F4UBjKufvsQvGSpQMISh4Bx3mmJmwvSaMIb4ldd/UCv7X6yQZvUK/j7awrL1ET1lBLUv1qSafeuBX5n2sYmaWloHJmgRf4S9Xxg5VYOF47ITnvlVQLWcI8QGOJJZCWYB4r8dzniwXzH2AWUdxBH3sUlFy9+Gdm6xNF3RSa9zwUGhMVgqM8D+UbrZpyesjD5p42Yl0ZBu5gjUnhOGmiSBmbhqZ/CbYCJ4ySiwhtQNsoCC9bTEtaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PXEBcwLpf7AdK9XcvKlAl+Ehs0UK96h11hVkC+RRWjk=;
- b=kML67Fkqd2MDHEkfllBAYE2zRPZnsfAK6vxB+k8RLtVx8HetmGXft8xblXaJ4xDh7JyqwF2Hi4gMIHSrFLIMM6XZRsvEpXfu3jUTkFzl5FoTps+711o8Lw56Kn1/1RVKY+ynDIRzaOkZ3F61Ro8uhkSd6EQfAAVZ8zuDrMTYmdRHo03ArDCWIXWcAriBPo4ZHgVnbwlS0CubjQQbvLbeEx7sLjWanxr1ZlvXwU/29RVM2b2oMNlgFyZj2gASpy0cGQYLG4Q6hkASZgZu18zItgISaIVe+zpIgTQB+nk9SEiM84yEC2XgiCcpg6mgzqLLkh+MtR607+eNfbDRiCtNaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PXEBcwLpf7AdK9XcvKlAl+Ehs0UK96h11hVkC+RRWjk=;
- b=j/M5DxgCGVpqGzaq5083xpbWqd8CrZfXThFNm5J9opkGE0rXkn0UN4KohvnxdHmSDXZCu0YaYMJFu4EhJ8/AwOcYRRFHkLfbDBDPk+Y5Ja7WEOsmTlrLR+DRR9Dcml0QGMbBVg96A6zhDa2Dd0KxvlXD0JDAvtOk/TNJzsenaSk=
-Authentication-Results: hisilicon.com; dkim=none (message not signed)
- header.d=none;hisilicon.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4535.namprd12.prod.outlook.com (2603:10b6:208:267::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Mon, 16 Aug
- 2021 10:17:03 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
- 10:17:03 +0000
-Subject: Re: [PATCH v2 0/5] dma-fence: Deadline awareness
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Luben Tuikov <luben.tuikov@amd.com>,
-        Steven Price <steven.price@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-References: <20210807183804.459850-1-robdclark@gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <9a7bdcb5-4f6f-539b-060e-d69ec15da874@amd.com>
-Date:   Mon, 16 Aug 2021 12:16:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210807183804.459850-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: PR0P264CA0268.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1::16) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S235650AbhHPKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:21:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:42424 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229739AbhHPKUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:20:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 881666D;
+        Mon, 16 Aug 2021 03:20:03 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96D4F3F40C;
+        Mon, 16 Aug 2021 03:20:02 -0700 (PDT)
+Subject: Re: [PATCH v6] arm pl011 serial: support multi-irq request
+To:     Bing Fan <hptsfb@gmail.com>, gregkh@linuxfoundation.org,
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1628825490-18937-1-git-send-email-hptsfb@gmail.com>
+ <1d691b6b-dbc4-36b0-2e2a-beb95c4c9cb6@arm.com>
+ <5b68f69c-f9cd-b0a4-45dd-d6db6d09fd65@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0366a4e9-cc8a-499e-4b8a-bbd6fa088591@arm.com>
+Date:   Mon, 16 Aug 2021 11:19:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:7d83:fd8:eb16:8605] (2a02:908:1252:fb60:7d83:fd8:eb16:8605) by PR0P264CA0268.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend Transport; Mon, 16 Aug 2021 10:16:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 491ff605-d02c-491a-78a9-08d9609efd91
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4535:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4535F89108ADFCB9D7A13AAC83FD9@MN2PR12MB4535.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X/mVBiHA8kBV7ZDw8obLGQvZI6KKlf7P0LIyCSeeYw7Efr1Y3i9e3ldfNcorreWhfgHIfAuzAKTXffvcHDbdz/4H0KChnrZVE9TanEcz/zD2iYf3Q1JWKj4GGIcxh9vqkfLhk1n45sagKysfvuOvYronQTnlCf2khWz7x3R30X3AU3GGe/7dbxGHsqD1H/jwZcQgvIw2cvyIsRF7Esr5fd38OJ87ngCUn7IfDb/s5Isb9q+7oLF0Yr+PM5SObRz1Yw6VTG5AxjRxH9GHzf4OOCleDTxtXkbGzNf8obhUnqqDOZUmi4CXDq/PNk0QQlQUcN3ZcfbqLych7YE5cxdmToXp4+oeKSGw9qopJuV2IjRQ/qz5ra4CsyXu0i6GvPHaUdNd0138o3y0kN4eOB15ZfXOgYXnWhFvVajk1svr2BcLdOtOMZ/g4lWtgFfcMcjigBmJ5qSoMPhQDxTZiAmobyovnDW8BeQuaLXW+G4Yo7LlS5yR2A7yI2vACYCvZOisdjDEMWXJUXuYkU7kbFevZLttzXYc6VN1nXeaXd6N5s2oNVKgGaaECKBIw/ZTLcWHNple1+/eQRjitJ4+tbmiJeXmbPa1yRmi0j13990LLq5rYy4gqTQpt/QtrjKCKKMseH4dNKV0u3o9dQYlD933Bvdazidlo3ZLSvwE9PSyNH9jBOZbxoHVT4MSPYkxYODoVcbz6uTa+qDSjIX7cZIJ0G3W5HiGR9Ky+SpMTLhKK2eqv5XSyug75vLH8BI3Y+nI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(366004)(136003)(376002)(86362001)(54906003)(2906002)(31686004)(6486002)(966005)(5660300002)(66556008)(66476007)(2616005)(66946007)(31696002)(316002)(478600001)(36756003)(186003)(8936002)(6666004)(38100700002)(4326008)(7416002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aW9CR0hBN2hQRTVpL0tIenVyMFhDL0VqUE9DMExTbjNqYmpEVmxGR051TUUz?=
- =?utf-8?B?c1lEcnl4K21SemQxMTNnU3lJMEJwZlpoSXB3NDNTSFlnbEpiZ1B1SWhnM3Fk?=
- =?utf-8?B?TGdqZm5xYnRQdDBPcEpGZ2dHWjVWRHpNVUJ2VWdEeEttYmNUOUtCRlNVMVFB?=
- =?utf-8?B?YU94U3lMS0UvR0Qwc1JTUG4vR3p0bWpPZVN0b1c0dENRTG84SzIyaGd4UFR5?=
- =?utf-8?B?aWhKQVdBWlp3b01nT0xjK2ozNUR3R0YzaUo3QjhIVnp1ejRoWEdaN2M3bEpk?=
- =?utf-8?B?bktuN2F1R1gxdnc0Q1I4YzFhVmtWOUdtNTdzQ3lvMWVwSURmMDRYSWxFbzRN?=
- =?utf-8?B?SnQ1Tm1meVBldVVaVUlsVHc0UjhEQTlDS2JQNE5aUEtaZGVWdFIzZ1RDMjRj?=
- =?utf-8?B?RDBROWp0WDc2WXFTUXFyaTFZZlVWU1pCR0tVSzhKUXBqY3RkOS9YZ25EL2ta?=
- =?utf-8?B?NUh1ZEpZbDZmay8xaVgwbU9jZ3Qyc2NzRHVTK0UyUXBOd3YwbjZuclZaelZt?=
- =?utf-8?B?TG5KR3JBa2tqZTJxeVBJN29tb29KY2xiblpURm9OTmc3dmwwbDdnVlc3cTdu?=
- =?utf-8?B?WkFZV0ZMWTB1eUQ1bDJOSWppZnl6V0lNYitDVHd2cG1TT2gxNEFHRTZiMkRN?=
- =?utf-8?B?ekNMT2t2eEpNRlpHZnBWcUZTMHdjeGx0dnU4MjNTVU5KR0dRTjhmNVV2WGZU?=
- =?utf-8?B?M0grdUZSejY0VitiOEplT2JJWTRaajJYcGVmUjZCS1A2c3RLbnB6SURYNjcz?=
- =?utf-8?B?REhVbFJNMkJqU3ZkRnFDV2IrWDNSV2lrd3luaW96bEhJaTZSNzF3dlA4NWZj?=
- =?utf-8?B?azdua2picmZhVkFOZXdES1pFSVBYMDRkY083ei9JRjdIdXQwN3NTMThyVU5E?=
- =?utf-8?B?bTBTRUxDcXdxRHFoeWd4b2MzSkpXNVBHbmFRWmhTZ1JZU2lqWThlcjJCakhv?=
- =?utf-8?B?bm9IWmMrME9FSE1xb291TDVGYmFkcnhvcWhnMTV3WURvbmtZTytuUHloS3Z4?=
- =?utf-8?B?Q0tEd04wdmVueWtNYTVBd1Zac08vMkNzaUdoSjNUTXNhTWE5dm1rbXBYUXdP?=
- =?utf-8?B?d1pIMTNNNnJOYzlrRm8xWjhiWU4yL0x5d0JCMTZiUjBTcDFZWUlySVIvU3ds?=
- =?utf-8?B?N1MvVzVmUmFBZ0dWZWdQUC94RkRTZjNaaEhCMmg2Ukk2UjFkL1FKTXd3akZK?=
- =?utf-8?B?ZzVSemkxQUJuaHpFNzVpTWlza2hnZDdBYXhIZnlIMUluSEpQTlVpTnZXV3li?=
- =?utf-8?B?a0tLZTMyNTBDOTVWMWVOMDJkaHZqY2lhRTlFSlZobllQYjdWN0Z3c1kxa0RG?=
- =?utf-8?B?Si95QVBMR21TSXZidnozMlZWNVVkY0N6cVVURE5CNnBnS2d6aUZqdjR4Q1Bi?=
- =?utf-8?B?eFlmMkFXN21XdG1vQ1dvdXg0UEZCQjUyZVFFTHZOWEU4NzA3WVB4bHp1QTNv?=
- =?utf-8?B?Rnh3Yjl1OVNXbGZJYU1uVmR4ZDQrZVZrZysxVEtVZUN5ZW94cFNtWk5QWXRC?=
- =?utf-8?B?alI2VjU1RWF4S1oyV2RvQWNVMllGaTFLZms2enk5RmVSVWxsY2tnem1RdVVD?=
- =?utf-8?B?amk1TmlUWXR5Y3plbHlYWTZlYmZ6TjRudWNFQ3g2dnJ1cGVuRFR0N3J4Z3l2?=
- =?utf-8?B?aDdwd0ZJZmZqS1FqNTgxZjdsUDJPUGFVTytXYmtLZHp3SnFFVnQzVWxSVzNU?=
- =?utf-8?B?UG1KcjFpSlhBMWpjSnorUmlUWUdmYXhiRk11WkJ0cjVNZnB4TGRlOS9CNFFC?=
- =?utf-8?B?MENQUlgvZGNEQiswaS9Wb3ozU3JsRFRDdkpISHlzYUEyS1BEaUVNNHJ3bDda?=
- =?utf-8?B?ZlpLaGN4OFRFUFZpVTVURy9uNnZSNVhxeXNxWG9VQTBneHdKNjNJYUJKRUNT?=
- =?utf-8?Q?eU/UJDR7KJuqs?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 491ff605-d02c-491a-78a9-08d9609efd91
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 10:17:03.1110
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tVkrkTOemsZ/SC2oZhzPDIui9FKVAA7HpVVtKe7KvEOupLL08/pKHkGzkY7HK2Dm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4535
+In-Reply-To: <5b68f69c-f9cd-b0a4-45dd-d6db6d09fd65@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The general approach seems to make sense now I think.
+On 2021-08-16 08:42, Bing Fan wrote:
+> 
+> At present, i think a focus of our discussion is whether this patch is 
+> necessary.
+> 
+> As for the other points you mentioned, I think they can be used as code 
+> review comments.
+> 
+> 
+> Yes, as you described below, most dts files have only one interrupt, but 
+> not all platforms are like this.
+> 
+> The scene I'm encountering now is the latter: the interrupt lines of the 
+> uart is connected to the gic separately
+> 
+> so the dts should be define like this:
+> 
+>                 duart1: serial@5E139000 {
+>                          compatible = "arm,pl011", "arm,primecell";
+>                          reg = <0x00 0x5E139000 0x0 0x1000>;
+>                          interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>,
+>                                  <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>,
+>                                  <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>,
+>                                  <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>;
+>                          clocks = <&sysclk>;
+>                          clock-names = "apb_pclk";
+>                  };
 
-One minor thing which I'm missing is adding support for this to the 
-dma_fence_array and dma_fence_chain containers.
+Apologies for being unclear - the point I was implying is that of course 
+you can do that in practice, but if you run that DTS through `make 
+dtbs_check` it will fail. The binding needs extending to make it valid 
+to specify more than one interrupt, and that's a separate patch and 
+discussion in itself (simply increasing "maxitems" for the "interrupts" 
+property is not enough to be robust).
 
-Regards,
-Christian.
+Robin.
 
-Am 07.08.21 um 20:37 schrieb Rob Clark:
-> From: Rob Clark <robdclark@chromium.org>
->
-> Based on discussion from a previous series[1] to add a "boost" mechanism
-> when, for example, vblank deadlines are missed.  Instead of a boost
-> callback, this approach adds a way to set a deadline on the fence, by
-> which the waiter would like to see the fence signalled.
->
-> I've not yet had a chance to re-work the drm/msm part of this, but
-> wanted to send this out as an RFC in case I don't have a chance to
-> finish the drm/msm part this week.
->
-> Original description:
->
-> In some cases, like double-buffered rendering, missing vblanks can
-> trick the GPU into running at a lower frequence, when really we
-> want to be running at a higher frequency to not miss the vblanks
-> in the first place.
->
-> This is partially inspired by a trick i915 does, but implemented
-> via dma-fence for a couple of reasons:
->
-> 1) To continue to be able to use the atomic helpers
-> 2) To support cases where display and gpu are different drivers
->
-> [1] https://patchwork.freedesktop.org/series/90331/
->
-> v1: https://patchwork.freedesktop.org/series/93035/
-> v2: Move filtering out of later deadlines to fence implementation
->      to avoid increasing the size of dma_fence
->
-> Rob Clark (5):
->    dma-fence: Add deadline awareness
->    drm/vblank: Add helper to get next vblank time
->    drm/atomic-helper: Set fence deadline for vblank
->    drm/scheduler: Add fence deadline support
->    drm/msm: Add deadline based boost support
->
->   drivers/dma-buf/dma-fence.c             | 20 +++++++
->   drivers/gpu/drm/drm_atomic_helper.c     | 36 ++++++++++++
->   drivers/gpu/drm/drm_vblank.c            | 31 ++++++++++
->   drivers/gpu/drm/msm/msm_fence.c         | 76 +++++++++++++++++++++++++
->   drivers/gpu/drm/msm/msm_fence.h         | 20 +++++++
->   drivers/gpu/drm/msm/msm_gpu.h           |  1 +
->   drivers/gpu/drm/msm/msm_gpu_devfreq.c   | 20 +++++++
->   drivers/gpu/drm/scheduler/sched_fence.c | 25 ++++++++
->   drivers/gpu/drm/scheduler/sched_main.c  |  3 +
->   include/drm/drm_vblank.h                |  1 +
->   include/drm/gpu_scheduler.h             |  6 ++
->   include/linux/dma-fence.h               | 16 ++++++
->   12 files changed, 255 insertions(+)
->
-
+> The current tty-master code cannot meet this scenario, so I submitted 
+> this patch.
+> 
+> 
+> 
+> 
+> 
+> 在 2021/8/13 下午10:37, Robin Murphy 写道:
+>> [ +Russell as the listed PL011 maintainer ]
+>>
+>> On 2021-08-13 04:31, Bing Fan wrote:
+>>> From: Bing Fan <tombinfan@tencent.com>
+>>>
+>>> In order to make pl011 work better, multiple interrupts are
+>>> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+>>> at the same time, pl011 to GIC does not merge the interrupt
+>>> lines(each serial-interrupt corresponding to different GIC hardware
+>>> interrupt), so need to enable and request multiple gic interrupt
+>>> numbers in the driver.
+>>>
+>>> Signed-off-by: Bing Fan <tombinfan@tencent.com>
+>>> ---
+>>>   drivers/tty/serial/amba-pl011.c | 39 +++++++++++++++++++++++++++++++--
+>>>   1 file changed, 37 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/tty/serial/amba-pl011.c 
+>>> b/drivers/tty/serial/amba-pl011.c
+>>> index e14f3378b8a0..eaac3431459c 100644
+>>> --- a/drivers/tty/serial/amba-pl011.c
+>>> +++ b/drivers/tty/serial/amba-pl011.c
+>>> @@ -1701,6 +1701,41 @@ static void pl011_write_lcr_h(struct 
+>>> uart_amba_port *uap, unsigned int lcr_h)
+>>>       }
+>>>   }
+>>>   +static void pl011_release_multi_irqs(struct uart_amba_port *uap, 
+>>> unsigned int max_cnt)
+>>> +{
+>>> +    struct amba_device *amba_dev = container_of(uap->port.dev, 
+>>> struct amba_device, dev);
+>>> +    int i;
+>>> +
+>>> +    for (i = 0; i < max_cnt; i++)
+>>> +        if (amba_dev->irq[i])
+>>> +            free_irq(amba_dev->irq[i], uap);
+>>
+>> When you request the IRQs you break at the first zero, so this could 
+>> potentially try to free IRQs that you haven't requested, if there 
+>> happen to be any nonzero values beyond that. Maybe that can never 
+>> happen, but there seems little need for deliberate inconsistency here.
+>>
+>>> +}
+>>> +
+>>> +static int pl011_allocate_multi_irqs(struct uart_amba_port *uap)
+>>> +{
+>>> +    int ret = 0;
+>>> +    int i;
+>>> +    unsigned int virq;
+>>> +    struct amba_device *amba_dev = container_of(uap->port.dev, 
+>>> struct amba_device, dev);
+>>> +
+>>> +    pl011_write(uap->im, uap, REG_IMSC);
+>>> +
+>>> +    for (i = 0; i < AMBA_NR_IRQS; i++) {
+>>
+>> It's not clear where these extra IRQs are expected to come from given 
+>> that the DT binding explicitly defines only one :/
+>>
+>>> +        virq = amba_dev->irq[i];
+>>> +        if (virq == 0)
+>>> +            break;
+>>> +
+>>> +        ret = request_irq(virq, pl011_int, IRQF_SHARED, 
+>>> dev_name(&amba_dev->dev), uap);
+>>
+>> Note that using dev_name() here technically breaks user ABI - scripts 
+>> looking in /proc for an irq named "uart-pl011" will no longer find it.
+>>
+>> Furthermore, the "dev" cookie passed to request_irq is supposed to be 
+>> globally unique, which "uap" isn't once you start registering it 
+>> multiple times. If firmware did describe all the individual PL011 IRQ 
+>> outputs on a system where they are muxed to the same physical IRQ 
+>> anyway, you'd end up registering ambiguous IRQ actions here. Of course 
+>> in practice you might still get away with that, but it is technically 
+>> wrong.
+>>
+>> Robin.
+>>
+>>> +        if (ret) {
+>>> +            dev_err(uap->port.dev, "request %u interrupt failed\n", 
+>>> virq);
+>>> +            pl011_release_multi_irqs(uap, i - 1);
+>>> +            break;
+>>> +        }
+>>> +    }
+>>> +
+>>> +    return ret;
+>>> +}
+>>> +
+>>>   static int pl011_allocate_irq(struct uart_amba_port *uap)
+>>>   {
+>>>       pl011_write(uap->im, uap, REG_IMSC);
+>>> @@ -1753,7 +1788,7 @@ static int pl011_startup(struct uart_port *port)
+>>>       if (retval)
+>>>           goto clk_dis;
+>>>   -    retval = pl011_allocate_irq(uap);
+>>> +    retval = pl011_allocate_multi_irqs(uap);
+>>>       if (retval)
+>>>           goto clk_dis;
+>>>   @@ -1864,7 +1899,7 @@ static void pl011_shutdown(struct uart_port 
+>>> *port)
+>>>         pl011_dma_shutdown(uap);
+>>>   -    free_irq(uap->port.irq, uap);
+>>> +    pl011_release_multi_irqs(uap, AMBA_NR_IRQS);
+>>>         pl011_disable_uart(uap);
+>>>
