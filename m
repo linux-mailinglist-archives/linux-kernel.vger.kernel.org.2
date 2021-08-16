@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FD43ED5C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3293ED515
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240027AbhHPNOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:14:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35442 "EHLO mail.kernel.org"
+        id S237393AbhHPNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:07:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239741AbhHPNKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:10:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3683D610A1;
-        Mon, 16 Aug 2021 13:09:39 +0000 (UTC)
+        id S237296AbhHPNF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB349632A1;
+        Mon, 16 Aug 2021 13:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119379;
-        bh=SFcTBz3aNOlTcYKH9Ur2cgDMseCcgGyFnakYurojhk4=;
+        s=korg; t=1629119126;
+        bh=FDg5Qp97DcM3GBnOUW7ZpYvkb/9W+O10kUUT9iVH9vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Glat64TlOO5FLoMpTEkezpeubV9tsmOdTT/imHwvbZonkKciz+imsZPCKaa/cki3I
-         0lYMWMfM0pUkjt6VHtLvoBsMkGPHlVbOiOr3ogOAAMgUOg+goGbYB8471uq7zKlA01
-         CUpIKZUzQ4Qkozkp7S3QNZE6ySvTSVvh6aRu4gT4=
+        b=NNSlJb7lSOm0y2U89bFMEk0609qsbz5xVHEe33yfBUCQ6wngL4HCi+r8TFzPXo6oB
+         XPPyHBG9vfCJvzXNXa+PXXX2BfOspkQZhNgNrSSJR7jDyrArvyviLbgPec2Chq182i
+         5185OmgrZtcMY2iqiJgIii2h8edXeXJliBs7x7FI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 73/96] genirq: Provide IRQCHIP_AFFINITY_PRE_STARTUP
+        stable@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.4 51/62] PCI/MSI: Enforce that MSI-X table entry is masked for update
 Date:   Mon, 16 Aug 2021 15:02:23 +0200
-Message-Id: <20210816125437.397325162@linuxfoundation.org>
+Message-Id: <20210816125429.967653632@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +43,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 826da771291fc25a428e871f9e7fb465e390f852 upstream.
+commit da181dc974ad667579baece33c2c8d2d1e4558d5 upstream.
 
-X86 IO/APIC and MSI interrupts (when used without interrupts remapping)
-require that the affinity setup on startup is done before the interrupt is
-enabled for the first time as the non-remapped operation mode cannot safely
-migrate enabled interrupts from arbitrary contexts. Provide a new irq chip
-flag which allows affected hardware to request this.
+The specification (PCIe r5.0, sec 6.1.4.5) states:
 
-This has to be opt-in because there have been reports in the past that some
-interrupt chips cannot handle affinity setting before startup.
+    For MSI-X, a function is permitted to cache Address and Data values
+    from unmasked MSI-X Table entries. However, anytime software unmasks a
+    currently masked MSI-X Table entry either by clearing its Mask bit or
+    by clearing the Function Mask bit, the function must update any Address
+    or Data values that it cached from that entry. If software changes the
+    Address or Data value of an entry while the entry is unmasked, the
+    result is undefined.
 
-Fixes: 18404756765c ("genirq: Expose default irq affinity mask (take 3)")
+The Linux kernel's MSI-X support never enforced that the entry is masked
+before the entry is modified hence the Fixes tag refers to a commit in:
+      git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+
+Enforce the entry to be masked across the update.
+
+There is no point in enforcing this to be handled at all possible call
+sites as this is just pointless code duplication and the common update
+function is the obvious place to enforce this.
+
+Fixes: f036d4ea5fa7 ("[PATCH] ia32 Message Signalled Interrupt support")
+Reported-by: Kevin Tian <kevin.tian@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Marc Zyngier <maz@kernel.org>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.779791738@linutronix.de
+Link: https://lore.kernel.org/r/20210729222542.462096385@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/irq.h |    2 ++
- kernel/irq/chip.c   |    5 ++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/pci/msi.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -567,6 +567,7 @@ struct irq_chip {
-  * IRQCHIP_SUPPORTS_NMI:              Chip can deliver NMIs, only for root irqchips
-  * IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND:  Invokes __enable_irq()/__disable_irq() for wake irqs
-  *                                    in the suspend path if they are in disabled state
-+ * IRQCHIP_AFFINITY_PRE_STARTUP:      Default affinity update before startup
-  */
- enum {
- 	IRQCHIP_SET_TYPE_MASKED			= (1 <<  0),
-@@ -579,6 +580,7 @@ enum {
- 	IRQCHIP_SUPPORTS_LEVEL_MSI		= (1 <<  7),
- 	IRQCHIP_SUPPORTS_NMI			= (1 <<  8),
- 	IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND	= (1 <<  9),
-+	IRQCHIP_AFFINITY_PRE_STARTUP		= (1 << 10),
- };
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -316,13 +316,28 @@ void __pci_write_msi_msg(struct msi_desc
+ 		/* Don't touch the hardware now */
+ 	} else if (entry->msi_attrib.is_msix) {
+ 		void __iomem *base = pci_msix_desc_addr(entry);
++		bool unmasked = !(entry->masked & PCI_MSIX_ENTRY_CTRL_MASKBIT);
  
- #include <linux/irqdesc.h>
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -265,8 +265,11 @@ int irq_startup(struct irq_desc *desc, b
+ 		if (!base)
+ 			goto skip;
+ 
++		/*
++		 * The specification mandates that the entry is masked
++		 * when the message is modified:
++		 *
++		 * "If software changes the Address or Data value of an
++		 * entry while the entry is unmasked, the result is
++		 * undefined."
++		 */
++		if (unmasked)
++			__pci_msix_desc_mask_irq(entry, PCI_MSIX_ENTRY_CTRL_MASKBIT);
++
+ 		writel(msg->address_lo, base + PCI_MSIX_ENTRY_LOWER_ADDR);
+ 		writel(msg->address_hi, base + PCI_MSIX_ENTRY_UPPER_ADDR);
+ 		writel(msg->data, base + PCI_MSIX_ENTRY_DATA);
++
++		if (unmasked)
++			__pci_msix_desc_mask_irq(entry, 0);
  	} else {
- 		switch (__irq_startup_managed(desc, aff, force)) {
- 		case IRQ_STARTUP_NORMAL:
-+			if (d->chip->flags & IRQCHIP_AFFINITY_PRE_STARTUP)
-+				irq_setup_affinity(desc);
- 			ret = __irq_startup(desc);
--			irq_setup_affinity(desc);
-+			if (!(d->chip->flags & IRQCHIP_AFFINITY_PRE_STARTUP))
-+				irq_setup_affinity(desc);
- 			break;
- 		case IRQ_STARTUP_MANAGED:
- 			irq_do_set_affinity(d, aff, false);
+ 		int pos = dev->msi_cap;
+ 		u16 msgctl;
 
 
