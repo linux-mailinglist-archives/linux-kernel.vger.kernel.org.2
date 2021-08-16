@@ -2,176 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1FA3ED363
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DCD3ED35B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhHPLtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236575AbhHPLtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236566AbhHPLtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Aug 2021 07:49:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326DEC0617AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:48:54 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFb6j-0004bt-L5; Mon, 16 Aug 2021 13:48:45 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFb6i-0004Zb-SF; Mon, 16 Aug 2021 13:48:44 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: [PATCH v1 3/3] can: dev: provide optional GPIO based termination support
-Date:   Mon, 16 Aug 2021 13:48:40 +0200
-Message-Id: <20210816114840.17502-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210816114840.17502-1-o.rempel@pengutronix.de>
-References: <20210816114840.17502-1-o.rempel@pengutronix.de>
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:42855 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236598AbhHPLtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 07:49:19 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E8DF361E5FE02;
+        Mon, 16 Aug 2021 13:48:45 +0200 (CEST)
+Subject: Re: Dell laptop function keys stopped working between 5.10.46 and
+ 5.13.9
+To:     Hans de Goede <hdegoede@redhat.com>, Dell.Client.Kernel@dell.com,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b8ff8f68-4d5a-7ec6-4c4f-9f5be6e70ab5@molgen.mpg.de>
+ <1d4ce7d6-3213-45af-0467-7548f69b7d9e@molgen.mpg.de>
+ <7857ead5-6ccf-3290-9e86-4f16d2bf360f@redhat.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <77ac6d35-9c9a-bab9-5203-47c814ec5fb8@molgen.mpg.de>
+Date:   Mon, 16 Aug 2021 13:48:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <7857ead5-6ccf-3290-9e86-4f16d2bf360f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For CAN buses to work, a termination resistor has to be present at both
-ends of the bus. This resistor is usually 120 Ohms, other values may be
-required for special bus topologies.
+Dear Hans,
 
-This patch adds support for a generic GPIO based CAN termination. The
-resistor value has to be specified via device tree, and it can only be
-attached to or detached from the bus. By default the termination is not
-active.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/can/dev/dev.c | 54 +++++++++++++++++++++++++++++++++++++++
- include/linux/can/dev.h   |  7 +++++
- 2 files changed, 61 insertions(+)
+Am 16.08.21 um 12:34 schrieb Hans de Goede:
+> Hi,
+> 
+> On 8/16/21 12:22 PM, Paul Menzel wrote:
+>> [attach Linux 5.13.9 messages (output of `dmesg`)]
+> 
+> Does "lsmod" output include any Dell modules like dell-laptop or
+> dell-wmi ?
+> 
+> How about on the 5.10 kernel?  It looks like the 5.13 kernel simply
+> does not have these modules enabled / loaded.
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 311d8564d611..b4a6c7a6fc18 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -15,6 +15,7 @@
- #include <linux/can/dev.h>
- #include <linux/can/skb.h>
- #include <linux/can/led.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of.h>
- 
- #define MOD_DESC "CAN device driver interface"
-@@ -400,10 +401,57 @@ void close_candev(struct net_device *dev)
- }
- EXPORT_SYMBOL_GPL(close_candev);
- 
-+static int can_set_termination(struct net_device *ndev, u16 term)
-+{
-+	struct can_priv *priv = netdev_priv(ndev);
-+	int set;
-+
-+	if (term == priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED])
-+		set = 1;
-+	else
-+		set = 0;
-+
-+	gpiod_set_value(priv->termination_gpio, set);
-+
-+	return 0;
-+}
-+
-+static int can_get_termination(struct net_device *ndev)
-+{
-+	struct can_priv *priv = netdev_priv(ndev);
-+	struct device *dev = ndev->dev.parent;
-+	struct gpio_desc *gpio;
-+	u16 term;
-+	int ret;
-+
-+	/* Disabling termination by default is the safe choice: Else if many
-+	 * bus participants enable it, no communication is possible at all.
-+	 */
-+	gpio = devm_gpiod_get_optional(dev, "termination", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpio))
-+		return dev_err_probe(dev, PTR_ERR(gpio),
-+				     "Cannot get termination-gpios\n");
-+
-+	ret = device_property_read_u16(dev, "termination-ohms", &term);
-+	if (ret)
-+		return ret;
-+
-+	priv->termination_const_cnt = ARRAY_SIZE(priv->termination_gpio_ohms);
-+	priv->termination_const = priv->termination_gpio_ohms;
-+	priv->termination_gpio = gpio;
-+	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_DISABLED] =
-+		CAN_TERMINATION_DISABLED;
-+	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED] = term;
-+	priv->do_set_termination = can_set_termination;
-+
-+	return 0;
-+}
-+
- /* Register the CAN network device */
- int register_candev(struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-+	int err;
- 
- 	/* Ensure termination_const, termination_const_cnt and
- 	 * do_set_termination consistency. All must be either set or
-@@ -419,6 +467,12 @@ int register_candev(struct net_device *dev)
- 	if (!priv->data_bitrate_const != !priv->data_bitrate_const_cnt)
- 		return -EINVAL;
- 
-+	if (!priv->termination_const) {
-+		err = can_get_termination(dev);
-+		if (err)
-+			return err;
-+	}
-+
- 	dev->rtnl_link_ops = &can_link_ops;
- 	netif_carrier_off(dev);
- 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 27b275e463da..82bdc5b09a3a 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -32,6 +32,11 @@ enum can_mode {
- 	CAN_MODE_SLEEP
- };
- 
-+enum can_termination_gpio {
-+	CAN_TERMINATION_GPIO_DISABLED = 0,
-+	CAN_TERMINATION_GPIO_ENABLED,
-+};
-+
- /*
-  * CAN common private data
-  */
-@@ -55,6 +60,8 @@ struct can_priv {
- 	unsigned int termination_const_cnt;
- 	const u16 *termination_const;
- 	u16 termination;
-+	struct gpio_desc *termination_gpio;
-+	u16 termination_gpio_ohms[2];
- 
- 	enum can_state state;
- 
--- 
-2.30.2
+Indeed. Good find. The Kconfig option was renamed, and Debian does not 
+select it yet, so I submitted a report [1].
 
+
+
+Kind regards,
+
+Paul
+
+
+[1]: https://bugs.debian.org/992251
