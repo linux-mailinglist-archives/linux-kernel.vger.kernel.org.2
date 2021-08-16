@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EE23ED6EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6140D3ED47C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241193AbhHPNZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240280AbhHPNPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:15:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D9D632E2;
-        Mon, 16 Aug 2021 13:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119531;
-        bh=3RId6V6zYYDi/pccIHEi8K4ryD1TjyY/slvsIX9t4is=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rh8dpDAjV7tXeOUZTGEzLmxNxJPEj0T0hvzruuAvAR9x8xez/M55Pm5T1gNYZ9kXY
-         wywBcUtgYo6bqt+RXCCS7uyuWivTW5OXORLV9G60RlKQ+v3Z6yd067vEcxoV/IoQYi
-         npdKhOxNe512T/gCDf+5xRYn1bkbIE6ct1cu6X+I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kensicki <krzysztof.kensicki@intel.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.13 029/151] libnvdimm/region: Fix label activation vs errors
+        id S235163AbhHPNBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:01:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47294 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhHPNBc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:01:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3E52C21E63;
+        Mon, 16 Aug 2021 13:01:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629118860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=LZcYvKP3fKqG888iDvO787z29Bj4h7z0rCj5MqEN0PM=;
+        b=ZTTl0fwVMcAh64e7OtLNbWXTeobIUZwsld1IwntIyI8cDZSVbJDsCvpujROIWgSRYjvsXz
+        YPca4KlEZaR0ICYNnavvj6MM9XUMsEpVqWtvb5arG38vALgwA2vJkhRhoo8eLIK3wbwBs0
+        swyU/v/guVSjLr0ufWQah7uNOnUgLJY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629118860;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=LZcYvKP3fKqG888iDvO787z29Bj4h7z0rCj5MqEN0PM=;
+        b=E89pGcW1kdz3K7Ho9CATKs+IG89+Cm3RPWZxy46jaIgC25VUL99+hV32FTz1NNkiMSkZH+
+        xJ7o5axl5XjM/nDw==
+Received: from lion.mk-sys.cz (unknown [10.100.200.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 0127FA3B88;
+        Mon, 16 Aug 2021 13:01:00 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id DBB766082D; Mon, 16 Aug 2021 15:00:59 +0200 (CEST)
 Date:   Mon, 16 Aug 2021 15:00:59 +0200
-Message-Id: <20210816125445.036282214@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
-User-Agent: quilt/0.66
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [REGRESSION][BISECTED] flood of "hid-generic ... control queue full"
+ since v5.14-rc1
+Message-ID: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dfcrugjtzogdosw5"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
 
-commit d9cee9f85b22fab88d2b76d2e92b18e3d0e6aa8c upstream.
+--dfcrugjtzogdosw5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There are a few scenarios where init_active_labels() can return without
-registering deactivate_labels() to run when the region is disabled. In
-particular label error injection creates scenarios where a DIMM is
-disabled, but labels on other DIMMs in the region become activated.
+Hello,
 
-Arrange for init_active_labels() to always register deactivate_labels().
+starting with v5.14-rc1, my kernel log gets flooded with messages
 
-Reported-by: Krzysztof Kensicki <krzysztof.kensicki@intel.com>
-Cc: <stable@vger.kernel.org>
-Fixes: bf9bccc14c05 ("libnvdimm: pmem label sets and namespace instantiation.")
-Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
-Link: https://lore.kernel.org/r/162766356450.3223041.1183118139023841447.stgit@dwillia2-desk3.amr.corp.intel.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/nvdimm/namespace_devs.c |   17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+  hid-generic 0003:051D:0002.0002: control queue full
 
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -2527,7 +2527,7 @@ static void deactivate_labels(void *regi
- 
- static int init_active_labels(struct nd_region *nd_region)
- {
--	int i;
-+	int i, rc = 0;
- 
- 	for (i = 0; i < nd_region->ndr_mappings; i++) {
- 		struct nd_mapping *nd_mapping = &nd_region->mapping[i];
-@@ -2546,13 +2546,14 @@ static int init_active_labels(struct nd_
- 			else if (test_bit(NDD_LABELING, &nvdimm->flags))
- 				/* fail, labels needed to disambiguate dpa */;
- 			else
--				return 0;
-+				continue;
- 
- 			dev_err(&nd_region->dev, "%s: is %s, failing probe\n",
- 					dev_name(&nd_mapping->nvdimm->dev),
- 					test_bit(NDD_LOCKED, &nvdimm->flags)
- 					? "locked" : "disabled");
--			return -ENXIO;
-+			rc = -ENXIO;
-+			goto out;
- 		}
- 		nd_mapping->ndd = ndd;
- 		atomic_inc(&nvdimm->busy);
-@@ -2586,13 +2587,17 @@ static int init_active_labels(struct nd_
- 			break;
- 	}
- 
--	if (i < nd_region->ndr_mappings) {
-+	if (i < nd_region->ndr_mappings)
-+		rc = -ENOMEM;
-+
-+out:
-+	if (rc) {
- 		deactivate_labels(nd_region);
--		return -ENOMEM;
-+		return rc;
- 	}
- 
- 	return devm_add_action_or_reset(&nd_region->dev, deactivate_labels,
--			nd_region);
-+					nd_region);
- }
- 
- int nd_region_register_namespaces(struct nd_region *nd_region, int *err)
+at rate of ~33 per second. Device 051d:0002 is an APC UPS (BR-650 VA).
+I bisected the issue to commit
 
+  7652dd2c5cb7 ("USB: core: Check buffer length matches wLength for control transfers")
 
+Reverting this commit on top of v5.14-rc6 resolves the issue. I suspect
+the problem is some missing cleanup when usb_submit_urb() bails out on
+the newly added check but I'm not familiar enough with the code to see
+what is missing or if the problem is on USB or HID side.
+
+Michal
+
+--dfcrugjtzogdosw5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmEaYYUACgkQ538sG/LR
+dpX7dwf+LxmPuDJNPaEYvkYFNTmEZFTaTJQTu2gPVihcZfOY2rwsgukq1pmpoKS3
+y18U9cvJ8dWwpGLhSbgDUYcBW9sntNWFEiF1Chqp9KMlh96GecESESnNG1gFdTba
+iEeatloqTTMO4BOqoQiEoipff7zM62uSlizVB2M6dY/I+BZ4FfY6+b/zYoMiWm4J
+rGuxhV9JnkY72ksHj16CsIHbAMo8rJhm1nTf3UKogak/wLw/tYJYFiufO9O478pk
+fx1tC0WS4rGt/2+33uW2JU6c3yuLmW/Jv/JgcKuOnrg1u0wfK1QxkiUBjuhAfxym
+1ByJ1INJOKNgC4ff3+1jOstnHMMtug==
+=hxJS
+-----END PGP SIGNATURE-----
+
+--dfcrugjtzogdosw5--
