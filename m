@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06123EDF76
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB59B3EDF79
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhHPVqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S233562AbhHPVrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhHPVqx (ORCPT
+        with ESMTP id S229987AbhHPVrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:46:53 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46436C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:46:21 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id b7so15861112iob.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5MQaecMruMo90D+KAt7ofTuU0ZRK6FZBpAa7KmNoEuE=;
-        b=BwZyjwUDzVNN1nePIhaSHaIy6fkGy8qZIefmUKq7c3URK6ED0dVpkUuJe3mE1kTeDE
-         Ocwhh1VNn03xPFmqlYI+xe+7HjgL1TZLWTrf1JuU+vSUZrCGp2r1fXhoH8IMEnX6Mv/2
-         pQGCdi3xIz735nPLv18zQqZWgQMNkRxVjmatU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5MQaecMruMo90D+KAt7ofTuU0ZRK6FZBpAa7KmNoEuE=;
-        b=MHQuWlQ1Oc4I40rdGuR9LxWZLb9f17+eCDKQSoHQHUJL4xuZ886aOEz/4Bc+tAUscs
-         QkUkUzxFbjJp90cecjxjPyj3oAjM+TFCDDtH5V5BiOEhVvF+G15BahHeHW71q0vJeHzo
-         i6Kc80bWK7fiAqrbak7qUoFuFp6Ehj7l40/fStpQ32XLJnbN6V5i7+l50uhA0uCiyMeE
-         NH83Uvm58m16hSieKnJs6R6ydKcw1E7w/C/KkaYJ1Qf4NKPxRuBNY4zou6L/O/mmq+rV
-         hY9rD6RO5ED9Dvf/9yYdJHE/c8Mp5ydJtPb/XzxwnjpRUaJlJknxFeOc6Oj3a6K8IypS
-         geSA==
-X-Gm-Message-State: AOAM533l7BBYzf1nCTLU/9cgs0aY0lu2RLrsGI7tKByV2oNO8i/fmUAF
-        p2sRbv/fBFmJp6bbAj8akwQQ4zavS0Qdig==
-X-Google-Smtp-Source: ABdhPJx4pcNkmOkzcPEqoP2gOwX+j428xRv2oHFL8QPv85MKbaYXCFXe5PMGIeVIiTQ/+d8trnzdQg==
-X-Received: by 2002:a02:2348:: with SMTP id u69mr642280jau.141.1629150380272;
-        Mon, 16 Aug 2021 14:46:20 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id j9sm65532iow.31.2021.08.16.14.46.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 14:46:19 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id u7so20054370ilk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:46:19 -0700 (PDT)
-X-Received: by 2002:a92:cf4a:: with SMTP id c10mr46909ilr.269.1629150378895;
- Mon, 16 Aug 2021 14:46:18 -0700 (PDT)
+        Mon, 16 Aug 2021 17:47:09 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA3BC061764;
+        Mon, 16 Aug 2021 14:46:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpSR836n5z9sSn;
+        Tue, 17 Aug 2021 07:46:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629150389;
+        bh=GxpXS88kee0Bjl7oexujGeBRvw49mQS6pJyQtpRKOWo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TEzlL37j7WtbICcA/OrDmrF4LrGuhnZMv8NZ8AP/SFR+P7HYbz2a60lLkZ01IAf/K
+         +9CvnSmXmntupWN84yoCJ9iK/QK39WjdQoeCWZS6HL3/XkK++W0UMHpeB869c2vlcr
+         EU/4FrwjRdJrcwNvu1lZgkTUgNFKVcFUXw6CMF/RocGyebUaVYyNjB6yezzMUq6tuN
+         2d0XYDbGHBWTT5Ui+40WJNe+7Kca6CFQE64OdVbypGSBn+kj1uHuUNGC316b55+Zos
+         GxpFtTpRlzfzCA6Pznaxs2Bt2rDKsyZ8M0SQwKtW4I/LFw4k9+gXGMUlL5fqScqtFc
+         AVQfhDqx+ZgRA==
+Date:   Tue, 17 Aug 2021 07:46:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the staging tree
+Message-ID: <20210817074627.2a1ef298@canb.auug.org.au>
+In-Reply-To: <YRp/2kRzujLsV8sm@kroah.com>
+References: <20210816135216.46e50364@canb.auug.org.au>
+        <YRp/2kRzujLsV8sm@kroah.com>
 MIME-Version: 1.0
-References: <20210811224141.1110495-1-swboyd@chromium.org> <CAD=FV=XKrSfinnZjPPstY0jDX4cP7adAKtCcKFOo5q2=DH+d7w@mail.gmail.com>
-In-Reply-To: <CAD=FV=XKrSfinnZjPPstY0jDX4cP7adAKtCcKFOo5q2=DH+d7w@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 16 Aug 2021 14:46:07 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WAso9gLe3+nG6N2cnOwTqQb7CDvHa1EzvF7mVhchqruw@mail.gmail.com>
-Message-ID: <CAD=FV=WAso9gLe3+nG6N2cnOwTqQb7CDvHa1EzvF7mVhchqruw@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7180-trogdor: Fix lpass dai link
- for HDMI
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/GfpmKEhu/CQD3=ZU=yqVb.P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn,
+--Sig_/GfpmKEhu/CQD3=ZU=yqVb.P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 11, 2021 at 3:45 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, Aug 11, 2021 at 3:41 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > This should be the dai for display port. Without this set properly we
-> > fail to get audio routed through external displays on trogdor. It looks
-> > like we picked up v4[1] of this patch when there was a v7[2]. The v7
-> > patch still had the wrong sound-dai but at least we can fix all this up
-> > and audio works.
-> >
-> > Cc: Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>
-> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Fixes: b22d313e1772 ("arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI")
-> > Link: https://lore.kernel.org/r/20210721080549.28822-3-srivasam@qti.qualcomm.com [1]
-> > Link: https://lore.kernel.org/r/20210726120910.20335-3-srivasam@codeaurora.org [2]
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> >
-> > Changes from v1:
-> >  - Drop sound-dai-cells
-> >  - Replace hdmi-primary with hdmi
-> >
-> >  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> I'm no audio expert, but this matches v7 except for the bugfix setting
-> the ID for the `sound-dai` to be LPASS_DP_RX instead of 2, which
-> matches downstream.
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Hi Greg,
 
-Since this is a "Fix" and it's my understanding that Fixes can be
-landed / pull requests sent for them anytime (regardless of the fact
-that it's currently -rc6) maybe it could still land without waiting
-for the merge window to start and end?
+On Mon, 16 Aug 2021 17:10:18 +0200 Greg KH <greg@kroah.com> wrote:
+>
+> On Mon, Aug 16, 2021 at 01:52:16PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the staging tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > drivers/staging/r8188eu/core/rtw_br_ext.c:8:10: fatal error: ../include=
+/net/ipx.h: No such file or directory
+> >     8 | #include "../include/net/ipx.h"
+> >       |          ^~~~~~~~~~~~~~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   6c9b40844751 ("net: Remove net/ipx.h and uapi/linux/ipx.h header file=
+s")
+> >=20
+> > from the net-next tree.
+> >=20
+> > I have reverted that commit for today. =20
+>=20
+> Should now be fixed up in my tree so that you do not need to drop that
+> networking patch anymore.
 
--Doug
+Excellent, thanks.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GfpmKEhu/CQD3=ZU=yqVb.P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEa3LMACgkQAVBC80lX
+0GyczAgAkbxGMmJu1J33dlvwwsKriGporDtMrdu2379pYDx0xy9xEpTTRQ9o/Xla
+zXfC8zBn0BJ0pOEuZHKSlCDWYykEy86Lo8Wh1fkgsRN2zn5YnKhdstIKHF30gESO
+FHIWlHy3HeiqMiiM5UIWujuWfG8AN4/YOmsQzCkJDWyiQE6Mos6r77FvAYc9l8/i
+7NXwjFK5RxVB0Ebh4u2XWlpEl7qoETXXNpSYrIfZQRsY48sWLVNO/nV1BwNir7rL
+AV3kqZJH+jOM0RS6dqxumudrLUHaeNy0OXOfMws/CZPSS+3ez8g/126pBMR3coyd
+K/MhsSmeIXPpQ8+rj9xr2LnvvpPzVg==
+=hAGH
+-----END PGP SIGNATURE-----
+
+--Sig_/GfpmKEhu/CQD3=ZU=yqVb.P--
