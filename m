@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D753ECCF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5AB3ECCF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhHPDDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 23:03:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17021 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhHPDDI (ORCPT
+        id S232424AbhHPDD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 23:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhHPDDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 23:03:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GnzQ55XGCzb2JZ;
-        Mon, 16 Aug 2021 10:58:53 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 11:02:35 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 16 Aug 2021 11:02:34 +0800
-Subject: Re: [PATCH 5.4 00/27] 5.4.141-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210813150523.364549385@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <87a6f733-4f85-7809-ca3c-2c242cec50e7@huawei.com>
-Date:   Mon, 16 Aug 2021 11:02:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sun, 15 Aug 2021 23:03:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6AEC061764;
+        Sun, 15 Aug 2021 20:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sgTeGggd6fSczx52WtMtKzxx473Mj1eHW70jX24joX8=; b=h8xL57ZMQftS7cRG+UsZycv7aT
+        ircyrqajjyn4sB/0lFCcuF6C0VFrsbnwoctiiyrIgZbiio4nFnhDY15xgjIZxwE7pAUAyPNCfEoQk
+        EbWtajs63ibGia+h+hTB1+TjzwO68arEatNVoloEC0eOI3xc2hkRYGdXASTPIHiT8NFeBJEc405Th
+        4e0DSljoUFCUK9xlACucn50K0CA35cUQ9gdNqO01ShRcuKG80GDzHCKCgXhRTjpuV6vgzQKYyh6Tw
+        CHDMdkzP52QHfmYbB8PQWXxjwwcHsWw5W3ghZiggaw3JlUou1Dj+KCiWiFjkEAoatnaCTmIPeI0WK
+        b/P6Qsdw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFStp-000tom-LL; Mon, 16 Aug 2021 03:03:00 +0000
+Date:   Mon, 16 Aug 2021 04:02:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 088/138] mm/filemap: Add filemap_get_folio
+Message-ID: <YRnVXaZDNuBnyLA4@casper.infradead.org>
+References: <20210715033704.692967-89-willy@infradead.org>
+ <20210715033704.692967-1-willy@infradead.org>
+ <1815135.1628633133@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210813150523.364549385@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1815135.1628633133@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/8/13 23:06, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.141 release.
-> There are 27 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Aug 10, 2021 at 11:05:33PM +0100, David Howells wrote:
+> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 > 
-> Responses should be made by Sun, 15 Aug 2021 15:05:12 +0000.
-> Anything received after that time might be too late.
+> > filemap_get_folio() is a replacement for find_get_page().
+> > Turn pagecache_get_page() into a wrapper around __filemap_get_folio().
+> > Remove find_lock_head() as this use case is now covered by
+> > filemap_get_folio().
+> > 
+> > Reduces overall kernel size by 209 bytes.  __filemap_get_folio() is
+> > 316 bytes shorter than pagecache_get_page() was, but the new
+> > pagecache_get_page() is 99 bytes
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.141-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> longer, one presumes.
 
-Tested on arm64 and x86 for 5.4.141-rc1,
+In total -- the old pagecache_get_page() turns into
+__filemap_get_folio(), but the wrapper is 99 bytes in size.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.141-rc1
-Commit: df6ce9b59c705e13e7fdf19dbba5a715b993b712
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Added the word "wrapper" to make this clearer.
