@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744C53ED645
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7238A3ED4A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240367AbhHPNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
+        id S236670AbhHPNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238490AbhHPNHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:07:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A7A632B7;
-        Mon, 16 Aug 2021 13:06:40 +0000 (UTC)
+        id S236568AbhHPNEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:04:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9EDB63295;
+        Mon, 16 Aug 2021 13:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119201;
-        bh=zXjqu6Iu+1ODKeUqf+Fe+F8c12rTj85RP4jfPMsDMhw=;
+        s=korg; t=1629119019;
+        bh=I49YPbMKDoKq8G9aSuB7Z3EgiiE2uFXm7U1J2f8vXOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ENljFsN5Er5bxTjb3Jtjvl9AE4ubzfhYh9OehnNuAzbGBJAT5cs/wpYA4kkT3NyvS
-         7fI86rMdqP2Otl++bUwMHaglJoVs+RkCJZdVngKKe5V4ymOWbfOB01vZ9QvjdjWf30
-         s69HQo7PX/8OtfYkqWO81CwfdK0w3mX+XQnXQzX4=
+        b=1PUQ7uDGPr2SefNwr2zO9Z+jnp/u9cnErsL/6CBKVrT/lbH3pVsP0PzS0l0tND7l3
+         xYGY4519nU9TVFDxMD7QRD8fC+IDwz5tHlARjzBJD5FQWwOVcS4kKcOVANHYA+yY/2
+         94nIPkqjLQEA8ZngT1DdHQ7qOAK8hxrJJMdyzlnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/96] ASoC: cs42l42: Remove duplicate control for WNF filter frequency
-Date:   Mon, 16 Aug 2021 15:01:40 +0200
-Message-Id: <20210816125435.955875612@linuxfoundation.org>
+        Krzysztof Kensicki <krzysztof.kensicki@intel.com>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH 5.4 09/62] libnvdimm/region: Fix label activation vs errors
+Date:   Mon, 16 Aug 2021 15:01:41 +0200
+Message-Id: <20210816125428.516531926@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Dan Williams <dan.j.williams@intel.com>
 
-[ Upstream commit 8b353bbeae20e2214c9d9d88bcb2fda4ba145d83 ]
+commit d9cee9f85b22fab88d2b76d2e92b18e3d0e6aa8c upstream.
 
-The driver was defining two ALSA controls that both change the same
-register field for the wind noise filter corner frequency. The filter
-response has two corners, at different frequencies, and the duplicate
-controls most likely were an attempt to be able to set the value using
-either of the frequencies.
+There are a few scenarios where init_active_labels() can return without
+registering deactivate_labels() to run when the region is disabled. In
+particular label error injection creates scenarios where a DIMM is
+disabled, but labels on other DIMMs in the region become activated.
 
-However, having two controls changing the same field can be problematic
-and it is unnecessary. Both frequencies are related to each other so
-setting one implies exactly what the other would be.
+Arrange for init_active_labels() to always register deactivate_labels().
 
-Removing a control affects user-side code, but there is currently no
-known use of the removed control so it would be best to remove it now
-before it becomes a problem.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Link: https://lore.kernel.org/r/20210803160834.9005-2-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Krzysztof Kensicki <krzysztof.kensicki@intel.com>
+Cc: <stable@vger.kernel.org>
+Fixes: bf9bccc14c05 ("libnvdimm: pmem label sets and namespace instantiation.")
+Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+Link: https://lore.kernel.org/r/162766356450.3223041.1183118139023841447.stgit@dwillia2-desk3.amr.corp.intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/cs42l42.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/nvdimm/namespace_devs.c |   17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 298354d4ab8d..ab6f89032ea0 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -423,15 +423,6 @@ static SOC_ENUM_SINGLE_DECL(cs42l42_wnf3_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
- 			    CS42L42_ADC_WNF_CF_SHIFT,
- 			    cs42l42_wnf3_freq_text);
+--- a/drivers/nvdimm/namespace_devs.c
++++ b/drivers/nvdimm/namespace_devs.c
+@@ -2486,7 +2486,7 @@ static void deactivate_labels(void *regi
  
--static const char * const cs42l42_wnf05_freq_text[] = {
--	"280Hz", "315Hz", "350Hz", "385Hz",
--	"420Hz", "455Hz", "490Hz", "525Hz"
--};
--
--static SOC_ENUM_SINGLE_DECL(cs42l42_wnf05_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
--			    CS42L42_ADC_WNF_CF_SHIFT,
--			    cs42l42_wnf05_freq_text);
--
- static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	/* ADC Volume and Filter Controls */
- 	SOC_SINGLE("ADC Notch Switch", CS42L42_ADC_CTL,
-@@ -449,7 +440,6 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_ADC_HPF_EN_SHIFT, true, false),
- 	SOC_ENUM("HPF Corner Freq", cs42l42_hpf_freq_enum),
- 	SOC_ENUM("WNF 3dB Freq", cs42l42_wnf3_freq_enum),
--	SOC_ENUM("WNF 05dB Freq", cs42l42_wnf05_freq_enum),
+ static int init_active_labels(struct nd_region *nd_region)
+ {
+-	int i;
++	int i, rc = 0;
  
- 	/* DAC Volume and Filter Controls */
- 	SOC_SINGLE("DACA Invert Switch", CS42L42_DAC_CTL1,
--- 
-2.30.2
-
+ 	for (i = 0; i < nd_region->ndr_mappings; i++) {
+ 		struct nd_mapping *nd_mapping = &nd_region->mapping[i];
+@@ -2505,13 +2505,14 @@ static int init_active_labels(struct nd_
+ 			else if (test_bit(NDD_ALIASING, &nvdimm->flags))
+ 				/* fail, labels needed to disambiguate dpa */;
+ 			else
+-				return 0;
++				continue;
+ 
+ 			dev_err(&nd_region->dev, "%s: is %s, failing probe\n",
+ 					dev_name(&nd_mapping->nvdimm->dev),
+ 					test_bit(NDD_LOCKED, &nvdimm->flags)
+ 					? "locked" : "disabled");
+-			return -ENXIO;
++			rc = -ENXIO;
++			goto out;
+ 		}
+ 		nd_mapping->ndd = ndd;
+ 		atomic_inc(&nvdimm->busy);
+@@ -2545,13 +2546,17 @@ static int init_active_labels(struct nd_
+ 			break;
+ 	}
+ 
+-	if (i < nd_region->ndr_mappings) {
++	if (i < nd_region->ndr_mappings)
++		rc = -ENOMEM;
++
++out:
++	if (rc) {
+ 		deactivate_labels(nd_region);
+-		return -ENOMEM;
++		return rc;
+ 	}
+ 
+ 	return devm_add_action_or_reset(&nd_region->dev, deactivate_labels,
+-			nd_region);
++					nd_region);
+ }
+ 
+ int nd_region_register_namespaces(struct nd_region *nd_region, int *err)
 
 
