@@ -2,151 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6E43EDDB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E233EDDBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhHPTO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33206 "EHLO
+        id S230454AbhHPTPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:15:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35938 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229790AbhHPTOz (ORCPT
+        by vger.kernel.org with ESMTP id S229699AbhHPTPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:14:55 -0400
+        Mon, 16 Aug 2021 15:15:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629141263;
+        s=mimecast20190719; t=1629141306;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lWy3l2+IfO7xO6oKpqVQHj7y0vYczHZZ4SIluKLQLb8=;
-        b=YJyhDttYZdTjcGRCCm6w9yFTHcwG8r/HoEac9mMvlxx7UtCgjfeKes8aFtyh1ixUN5fn5Z
-        JdcjMdiAEd7K1ifY5QuMV1Oi5JZponCffUDVcGiXgmHc9I9e8TeiBWt0w/iIAW13Yz15y8
-        7YbDF7xQJXld5QsPZ2UluZg8bykBwYg=
+        bh=0fYCxlBvMGA/LBXj8tHruKymgQRzsd2D5alI8z9FqnE=;
+        b=W03TUqmErJaoGmxbngFDMYhQxaSrz4GSYayJ5D0QdkvMzNyE6k6T/0ZhflWorBrreF/b+w
+        PClKBq3CDZ+AXkTF9ylCuxLvWqx0aSsuhEl2w4E/cpxYU8nLwel7ah+lNe3leP2eMX4bAd
+        MknZdVP7D+8mtrc4M0PmCL9lj2GQKl4=
 Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
  [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-PWkqwUtVNDOJu6Lhv76KTw-1; Mon, 16 Aug 2021 15:14:22 -0400
-X-MC-Unique: PWkqwUtVNDOJu6Lhv76KTw-1
-Received: by mail-wm1-f72.google.com with SMTP id g70-20020a1c20490000b02902e6753bf473so103130wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:14:21 -0700 (PDT)
+ us-mta-15-7k5JgZvrMHuzthFY8RnuCA-1; Mon, 16 Aug 2021 15:15:05 -0400
+X-MC-Unique: 7k5JgZvrMHuzthFY8RnuCA-1
+Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so74037wmj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:15:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lWy3l2+IfO7xO6oKpqVQHj7y0vYczHZZ4SIluKLQLb8=;
-        b=rkOG0qs7BcEqishE6DM4whIr9GLjGPkq/Wa3zrGku/pEbNj3O2Vh5s4vluM5aVCj9W
-         4F2GobROC6WLgkzpGf7nT9RB0sf5/qOzaygvRmqkcAfSvrW8asGUutH8BK2xyvSsGmLW
-         zC7T9vAjkcvLFmVZ8XhM1U7n54wf5sOl6SNbQfYVL+LFnzB+JliYD8Dh40fKhuhf5+nV
-         8e4rmANX146DhTz+X/8dr4F8GFRMwiXx79bsYnAf9IUaLHw6wuO5wk/RpGYe8IioT8r0
-         zS9bruSHwWU8bYiEwccpPxuqZ7X+un+gDHQe7X5GAIkkjYw7rAuZ09ugPQYEomUKG9jR
-         j2Wg==
-X-Gm-Message-State: AOAM532HJ1K/3VWgCaeSWzB+6PDhaHD4CfW0Q37tDQj1+i40KuJwjGp7
-        Ajd5sBZLDDvGmSBOoli5Fo7R1R8FlcCn38DE3sEBGT06x3JKdGZVFggfZWMcNHeG3fa0utvfYqJ
-        Tj3+0DJ+1FAUbvMexiC9x0IF61xyaNS3b6NEkpFcR
-X-Received: by 2002:a5d:674b:: with SMTP id l11mr18978891wrw.357.1629141260958;
-        Mon, 16 Aug 2021 12:14:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3e2hMfKU0iq3mIOu2m32crL3qBkqbuiWv8L806qkeQbGdArMICY3wU0R/Jc0O1nkrsAQGzAuFreIkqVtHZaU=
-X-Received: by 2002:a5d:674b:: with SMTP id l11mr18978869wrw.357.1629141260774;
- Mon, 16 Aug 2021 12:14:20 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0fYCxlBvMGA/LBXj8tHruKymgQRzsd2D5alI8z9FqnE=;
+        b=jLb+hj9+ssH6cSjXec9jsohxu/APkjB7snoqXVeazdOOPGfXcYWpk2de18Zt2NAqVi
+         YBWdqMbTgRQIjrE4+NLq6/FH426aW4BOQ5nGh73pj0KjH3uh0RA3WG+6h+5pt7zUIws5
+         QC+3juehp1dfBE9gaXX4+nmHQyIELXyulQfE8/JhlRJcLT9Gf7aHcTDXVH4xoYJjJV82
+         F0bcJGrX4XpQn8zZQtcKvJe8KZm3Xquqb6GWwGPUNCbC/SpFgpKcJj8Y+2YD5DJNWK2f
+         crQ+kq6lVDeZrcQR3Brd2MefzLwF+yjoRUH+QXIIKvRVzXCy0OP5FbTrQpWWFowu7auZ
+         hh2A==
+X-Gm-Message-State: AOAM532reOOhXxEpsHzHEC4UN9oChJqWlJPpusXi+ejsjWguk1FRycJt
+        ZCMgVjtvXGiCDsDxavuFnOJ59I2G8oC4EKu00YUFDXXS1XdIaFTGBzaIRxffRBe4c4J5J7pwG7O
+        4N0/oPYhQb68cUG2V7AQUGrLz03XMm2ZX4ZPhLxRn0NEYPLTppXtT0jgqb48aLVfosHH0+AlM
+X-Received: by 2002:a5d:4bd1:: with SMTP id l17mr19029wrt.5.1629141304597;
+        Mon, 16 Aug 2021 12:15:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGMAV4ypYcEuNTTFWxKeTz0UQWx3vLgwHnm1667BgV+Huo+EPminRnsv0YDIDvBsvfww0XYw==
+X-Received: by 2002:a5d:4bd1:: with SMTP id l17mr19006wrt.5.1629141304380;
+        Mon, 16 Aug 2021 12:15:04 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
+        by smtp.gmail.com with ESMTPSA id w14sm87376wrt.23.2021.08.16.12.15.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 12:15:03 -0700 (PDT)
+To:     Yang Shi <shy828301@gmail.com>, naoya.horiguchi@nec.com,
+        osalvador@suse.de, tdmackey@twitter.com, akpm@linux-foundation.org,
+        corbet@lwn.net
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210816180909.3603-1-shy828301@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
+ non-LRU page
+Message-ID: <08a5ad43-7922-8cf8-31ed-4f6e0c346516@redhat.com>
+Date:   Mon, 16 Aug 2021 21:15:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210803191818.993968-1-agruenba@redhat.com> <CAHk-=wj+_Y7NQ-NhhE0jk52c9ZB0VJbO1AjtMJFB8wP=PO+bdw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj+_Y7NQ-NhhE0jk52c9ZB0VJbO1AjtMJFB8wP=PO+bdw@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 16 Aug 2021 21:14:09 +0200
-Message-ID: <CAHc6FU6H5q20qiQ5FX1726i0FJHyh=Y46huWkCBZTR3sk+3Dhg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/12] gfs2: Fix mmap + page fault deadlocks
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210816180909.3603-1-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 9:45 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Tue, Aug 3, 2021 at 12:18 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> > With this patch queue, fstest generic/208 (aio-dio-invalidate-failure.c)
-> > endlessly spins in gfs2_file_direct_write.  It looks as if there's a bug
-> > in get_user_pages_fast when called with FOLL_FAST_ONLY:
-> >
-> >  (1) The test case performs an aio write into a 32 MB buffer.
-> >
-> >  (2) The buffer is initially not in memory, so when iomap_dio_rw() ->
-> >      ... -> bio_iov_iter_get_pages() is called with the iter->noio flag
-> >      set, we get to get_user_pages_fast() with FOLL_FAST_ONLY set.
-> >      get_user_pages_fast() returns 0, which causes
-> >      bio_iov_iter_get_pages to return -EFAULT.
-> >
-> >  (3) Then gfs2_file_direct_write faults in the entire buffer with
-> >      fault_in_iov_iter_readable(), which succeeds.
-> >
-> >  (4) With the buffer in memory, we retry the iomap_dio_rw() ->
-> >      ... -> bio_iov_iter_get_pages() -> ... -> get_user_pages_fast().
-> >      This should succeed now, but get_user_pages_fast() still returns 0.
->
-> Hmm. Have you tried to figure out why that "still returns 0" happens?
+On 16.08.21 20:09, Yang Shi wrote:
+> In the current implementation of soft offline, if non-LRU page is met,
+> all the slab caches will be dropped to free the page then offline.  But
+> if the page is not slab page all the effort is wasted in vain.  Even
+> though it is a slab page, it is not guaranteed the page could be freed
+> at all.
 
-The call stack is:
+... but there is a chance it could be and the current behavior is 
+actually helpful in some setups.
 
-gup_pte_range
-gup_pmd_range
-gup_pud_range
-gup_p4d_range
-gup_pgd_range
-lockless_pages_from_mm
-internal_get_user_pages_fast
-get_user_pages_fast
-iov_iter_get_pages
-__bio_iov_iter_get_pages
-bio_iov_iter_get_pages
-iomap_dio_bio_actor
-iomap_dio_actor
-iomap_apply
-iomap_dio_rw
-gfs2_file_direct_write
+[...]
 
-In gup_pte_range, pte_special(pte) is true and so we return 0.
+> The lockup made the machine is quite unusable.  And it also made the
+> most workingset gone, the reclaimabled slab caches were reduced from 12G
+> to 300MB, the page caches were decreased from 17G to 4G.
+> 
+> But the most disappointing thing is all the effort doesn't make the page
+> offline, it just returns:
+> 
+> soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 ()
+> 
 
-> One option - for debugging only - would be to introduce a new flag to
-> get_user_pages_fast() that says "print out reason if failed" and make
-> the retry (but not the original one) have that flag set.
->
-> There are a couple of things of note when it comes to "get_user_pages_fast()":
->
->  (a) some architectures don't even enable it
->
->  (b) it can be very picky about the page table contents, and wants the
-> accessed bit to already be set (or the dirty bit, in the case of a
-> write).
->
-> but (a) shouldn't be an issue on any common platform and (b) shouldn't
-> be an issue with  fault_in_iov_iter_readable() that actually does a
-> __get_user() so it will access through the page tables.
->
-> (It might be more of an issue with fault_in_iov_iter_writable() due to
-> walking the page tables by hand - if we don't do the proper
-> access/dirty setting, I could see get_user_pages_fast() failing).
->
-> Anyway, for reason (a) I do think that eventually we should probably
-> introduce FOLL_NOFAULT, and allow the full "slow" page table walk -
-> just not calling down to handle_mm_fault() if it fails.
->
-> But (a) should be a non-issue in your test environment, and so it
-> would be interesting to hear what it is that fails. Because scanning
-> through the patches, they all _look_ fine to me (apart from the one
-> comment about return values, which is more about being consistent with
-> copy_to/from_user() and making the code simpler - not about
-> correctness)
->
->                        Linus
->
+In your example, yes. I had a look at the introducing commit: 
+facb6011f399 ("HWPOISON: Add soft page offline support")
 
+"
+     When the page is not free or LRU we try to free pages
+     from slab and other caches. The slab freeing is currently
+     quite dumb and does not try to focus on the specific slab
+     cache which might own the page. This could be potentially
+     improved later.
+"
+
+I wonder, if instead of removing it altogether, we could actually 
+improve it as envisioned.
+
+To be precise, for alloc_contig_range() it would also make sense to be 
+able to shrink only in a specific physical memory range; this here seems 
+to be a similar thing. (actually, alloc_contig_range(), actual memory 
+offlining and hw poisoning/soft-offlining have a lot in common)
+
+Unfortunately, the last time I took a brief look at teaching shrinkers 
+to be range-aware, it turned out to be a lot of work ... so maybe this 
+is really a long term goal to be mitigated in the meantime by disabling 
+it, if it turns out to be more of a problem than actually help.
+
+-- 
 Thanks,
-Andreas
+
+David / dhildenb
 
