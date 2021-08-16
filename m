@@ -2,153 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7533EDFED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295673EDFF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhHPW0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbhHPW0E (ORCPT
+        id S233697AbhHPWbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 18:31:16 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:33038 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232471AbhHPWbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:26:04 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93153C061764;
-        Mon, 16 Aug 2021 15:25:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id k8so6732572wrn.3;
-        Mon, 16 Aug 2021 15:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3pjhlUQ9zfXp80LAsXsFddhwkDCjIr1Qa6F73Rea0zo=;
-        b=R2kIByJ61EjHKTZg4V2rq3Z7W17o8o4uPxU/T0mj4fztjC60Yn60rkDWcP6k5wuKSe
-         pOMwhNxGPeTTcHosG5mvzlvzBfVfTIHyPXfDsxEXaHQVkpwMLcYGdU7mN6+B5fozfxKM
-         OTH8GlaS/Js2USbMgOBx7JPthoW4h6Jg5KbFr/zqgfT3gJo3klvwqM672rjTni4+6MPQ
-         Dt45zNlkb5nWvdI7+NUwHYNQ+Vn9N9Qm02MZMN9j0YvET7t1EAtJYpGhxwPGK6d8b3SM
-         uWIAl+1ZGvF9C4dlLBhDCS2JJiNaIhs9c+wVXkzk4Y2vrItPDVH8Ei36QF0oe7kdEHlS
-         j7PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3pjhlUQ9zfXp80LAsXsFddhwkDCjIr1Qa6F73Rea0zo=;
-        b=lfFvWsXIZVZhtB3piu8Fkmt6WJfBO1h8zerBD/V5BQqFHpKSI0k1PoZUhpEZKsbD9l
-         TTDlc+3h3AVRbtubub34Inrqhu7ZGb9MA8zqlYv0Sff15vJzijniTp6/6pgakztc1SX0
-         q5FHUVSrsfGKklv+UDeAmsyT6ePyp+Na1E5p8g2ywmTwsL5a0WTjVxw+8lFqhG9WvWnE
-         hu7xPkbb9YxPyz/Gm30cdpZ0Wu8wqDZw/2t5m/diusajgTKSGTQW1GpYZ7qqwiazzL6y
-         g5/KL9vw+BpaBv7iL/ZUKgCXkTy8n8+ZzH0sqTJo8KIpM3oBhmX/hzT7hydY9WJlW9id
-         Q+ww==
-X-Gm-Message-State: AOAM532SasTeAstOFS3Ws0R6ONYsEVHe7AVYkm2XMezxQlOU45M+nOpe
-        1O9C+77ncfvhNa+m6ezpFbEv5NsNBQEbDdXw3JQ=
-X-Google-Smtp-Source: ABdhPJyNem4NbmX4zNKpNipu1Xbu257Pj4hM0/aydLtGI6NNqHWvdhzNERN5io39lCQQLYxin7sgkoaB45AFy8ihnhE=
-X-Received: by 2002:adf:dd11:: with SMTP id a17mr312204wrm.132.1629152731183;
- Mon, 16 Aug 2021 15:25:31 -0700 (PDT)
+        Mon, 16 Aug 2021 18:31:14 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id C0FDB92009C; Tue, 17 Aug 2021 00:30:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id BBCE492009B;
+        Tue, 17 Aug 2021 00:30:39 +0200 (CEST)
+Date:   Tue, 17 Aug 2021 00:30:39 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Nikolai Zhubr <zhubr.2@gmail.com>
+cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] x86: PIRQ/ELCR-related fixes and updates
+In-Reply-To: <611993B1.4070302@gmail.com>
+Message-ID: <alpine.DEB.2.21.2108160027350.45958@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2107171813230.9461@angie.orcam.me.uk> <611993B1.4070302@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210807183804.459850-1-robdclark@gmail.com> <9a7bdcb5-4f6f-539b-060e-d69ec15da874@amd.com>
-In-Reply-To: <9a7bdcb5-4f6f-539b-060e-d69ec15da874@amd.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 16 Aug 2021 15:29:49 -0700
-Message-ID: <CAF6AEGuwmLXW0xiFGGLie6qiL_ryE47pTiNYxmwwyshrb7eDpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] dma-fence: Deadline awareness
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Luben Tuikov <luben.tuikov@amd.com>,
-        Steven Price <steven.price@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_fence_array looks simple enough, just propagate the deadline to
-all children.
+Hi Nikolai,
 
-I guess dma_fence_chain is similar (ie. fence is signalled when all
-children are signalled), the difference being simply that children are
-added dynamically?
+> >   Nikolai: for your system only 1/6 and 2/6 are required, though you are
+> > free to experiment with all the patches.  Mind that 3/6 mechanically
+> > depends on the earlier change for the SIO PIRQ router referred above.  In
+> > any case please use the debug patch for PCI code as well as the earlier
+> > patches for your other system and send the resulting bootstrap log for
+> > confirmation.
+> 
+> Here is a new log with 1/6 and 2/6 applied:
+> 
+> https://pastebin.com/0MgXAGtG
+> 
+> It looks like something went a bit unexpected ("runtime IRQ mapping not
+> provided by arch").
 
-BR,
--R
+ Offhand it looks like your system does not supply a PIRQ table, not at 
+least at the usual locations we look through.  The presence of the table 
+is reported like:
 
-On Mon, Aug 16, 2021 at 3:17 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> The general approach seems to make sense now I think.
->
-> One minor thing which I'm missing is adding support for this to the
-> dma_fence_array and dma_fence_chain containers.
->
-> Regards,
-> Christian.
->
-> Am 07.08.21 um 20:37 schrieb Rob Clark:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Based on discussion from a previous series[1] to add a "boost" mechanis=
-m
-> > when, for example, vblank deadlines are missed.  Instead of a boost
-> > callback, this approach adds a way to set a deadline on the fence, by
-> > which the waiter would like to see the fence signalled.
-> >
-> > I've not yet had a chance to re-work the drm/msm part of this, but
-> > wanted to send this out as an RFC in case I don't have a chance to
-> > finish the drm/msm part this week.
-> >
-> > Original description:
-> >
-> > In some cases, like double-buffered rendering, missing vblanks can
-> > trick the GPU into running at a lower frequence, when really we
-> > want to be running at a higher frequency to not miss the vblanks
-> > in the first place.
-> >
-> > This is partially inspired by a trick i915 does, but implemented
-> > via dma-fence for a couple of reasons:
-> >
-> > 1) To continue to be able to use the atomic helpers
-> > 2) To support cases where display and gpu are different drivers
-> >
-> > [1] https://patchwork.freedesktop.org/series/90331/
-> >
-> > v1: https://patchwork.freedesktop.org/series/93035/
-> > v2: Move filtering out of later deadlines to fence implementation
-> >      to avoid increasing the size of dma_fence
-> >
-> > Rob Clark (5):
-> >    dma-fence: Add deadline awareness
-> >    drm/vblank: Add helper to get next vblank time
-> >    drm/atomic-helper: Set fence deadline for vblank
-> >    drm/scheduler: Add fence deadline support
-> >    drm/msm: Add deadline based boost support
-> >
-> >   drivers/dma-buf/dma-fence.c             | 20 +++++++
-> >   drivers/gpu/drm/drm_atomic_helper.c     | 36 ++++++++++++
-> >   drivers/gpu/drm/drm_vblank.c            | 31 ++++++++++
-> >   drivers/gpu/drm/msm/msm_fence.c         | 76 ++++++++++++++++++++++++=
-+
-> >   drivers/gpu/drm/msm/msm_fence.h         | 20 +++++++
-> >   drivers/gpu/drm/msm/msm_gpu.h           |  1 +
-> >   drivers/gpu/drm/msm/msm_gpu_devfreq.c   | 20 +++++++
-> >   drivers/gpu/drm/scheduler/sched_fence.c | 25 ++++++++
-> >   drivers/gpu/drm/scheduler/sched_main.c  |  3 +
-> >   include/drm/drm_vblank.h                |  1 +
-> >   include/drm/gpu_scheduler.h             |  6 ++
-> >   include/linux/dma-fence.h               | 16 ++++++
-> >   12 files changed, 255 insertions(+)
-> >
->
+PCI: IRQ init
+PCI: Interrupt Routing Table found at 0xfde10
+[...]
+PCI: IRQ fixup
+
+while your system says:
+
+PCI: IRQ init
+PCI: IRQ fixup
+
+If you have a look through /dev/mem and see if there's a "$PIR" signature 
+somewhere (though not a Linux kernel area of course), then we may know for 
+sure.
+
+ I'm a little busy at the moment with other stuff and may not be able to 
+look into it properly right now.  There may be no solution, not at least 
+an easy one.  A DMI quirk is not possible, because:
+
+DMI not present or invalid.
+
+There is a PCI BIOS:
+
+PCI: PCI BIOS revision 2.10 entry at 0xf6f41, last bus=0
+
+however, so CONFIG_PCI_BIOS just might work.  Please try that too, by 
+choosing CONFIG_PCI_GOANY or CONFIG_PCI_GOBIOS (it may break things 
+horribly though I imagine).
+
+  Maciej
