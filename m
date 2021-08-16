@@ -2,146 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D5F3ED78A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBA33ED854
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241669AbhHPNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:34:21 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33667 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241544AbhHPN3t (ORCPT
+        id S231952AbhHPOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231672AbhHPOAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:29:49 -0400
-Received: by mail-il1-f198.google.com with SMTP id i15-20020a92540f0000b0290222feb23cf5so9749733ilb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:29:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SPj4+myJ8JzhjGfXTTH/Z+OtZy43EqV2wJdhxiY1nKw=;
-        b=SXXneu74FJdN9+ute4Oe84CwBLVTLHmzO3H+9P/FJjg1zhK74kqVmge01OO4+EL0Xr
-         AsQoogX3OkGXOdbG79e8IDvkos3GwoZVNurgqVitH8X0wRjVU0vNv8Td7jgUKlZr8u50
-         LdDe6/oSnWyFXhOri5Aa+6Cd5k1a2hL5nbVXH10N1+5h5MktBMVKMhUDi1NVycD9hhxB
-         7f9ozB/td4A1L5MWbh6xx2N3ygn2f8OH7DgzLEe3XUSqKtasa1GR1f+Xj023gdoFHeeO
-         xdfDzuHxEkLCEs+8oHWLVFvYvsz1eiR62LSQGGS9PgeymP9MRRAhzca/Z1RmyBoogqR5
-         nL6w==
-X-Gm-Message-State: AOAM530/OzIN2P57bqmyKm7Vi668q0Hs/kqN7oC04l+Tp6HruvHz4K1V
-        LCuq/X+0GiOxRtat5MMm10uUWCnThDpIM/c22E7BOYKSUSli
-X-Google-Smtp-Source: ABdhPJzdFf1fUonPWgBMICFHQ9n+A3WIhVwouHe1nI1iOJn6/OQWrzU3ZXPFaBWCxwkT67w9KcFotwb20V+bX6r8Rpt1g/Z81EAI
+        Mon, 16 Aug 2021 10:00:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930DFC0617AD
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6q1+UdtYiO8s6rj0/c/nQ3ECy5RSEzhQllvM+6vQdJ8=; b=cQ2mlhP60SgjrOH7VyYtCbZ6xq
+        BElSBir7HnhCbahWGm9ukBCQ1FrwUhWmD3PhURPAtDmJZYoNuANE+GX3rfZQoZ2sNi6yBjV2gBwIH
+        86aCmG4mhqhk9y/NXlAf9QjNMYjhzUrBWu5dnINkMZUkRlQ+EwbfMRsBvviiZAAiBXY4R3GGqmX1q
+        BVhZs0/rkDTmxDgn34gPwIs7NG5YAxxN/CZ4v5yNcRpYMEPDIuM5KDgQxrkIKav0+K1H/DCSoEcU8
+        1skTS2TpbEuLWokUS0rWhiM/SAixCyjNIhe31z/Lm2o4HRrN/vR7Ha4uFeEapzRwt0198hV7Ka/Nk
+        +f1oEBYw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFciu-001PhE-KG; Mon, 16 Aug 2021 13:32:41 +0000
+Date:   Mon, 16 Aug 2021 14:32:16 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Message-ID: <YRpo4EAJSkY7hI7Q@casper.infradead.org>
+References: <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
+ <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
+ <YOubKmDwxMIvdAed@casper.infradead.org>
+ <a94973ab83ce48bd85c91397f82d7915@huawei.com>
+ <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
+ <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
+ <YRpVHnr55LpQQvTb@casper.infradead.org>
+ <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+ <YRpeHnP7QDNJRA8Y@casper.infradead.org>
+ <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a4f:: with SMTP id u15mr11985302ilv.251.1629120557493;
- Mon, 16 Aug 2021 06:29:17 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 06:29:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020339705c9ad30ee@google.com>
-Subject: [syzbot] general protection fault in __io_queue_sqe
-From:   syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Aug 16, 2021 at 03:24:38PM +0200, David Hildenbrand wrote:
+> On 16.08.21 14:46, Matthew Wilcox wrote:
+> > On Mon, Aug 16, 2021 at 02:20:43PM +0200, David Hildenbrand wrote:
+> > > On 16.08.21 14:07, Matthew Wilcox wrote:
+> > > > On Mon, Aug 16, 2021 at 10:02:22AM +0200, David Hildenbrand wrote:
+> > > > > > Mappings within this address range behave as if they were shared
+> > > > > > between threads, so a write to a MAP_PRIVATE mapping will create a
+> > > > > > page which is shared between all the sharers. The first process that
+> > > > > > declares an address range mshare'd can continue to map objects in the
+> > > > > > shared area. All other processes that want mshare'd access to this
+> > > > > > memory area can do so by calling mshare(). After this call, the
+> > > > > > address range given by mshare becomes a shared range in its address
+> > > > > > space. Anonymous mappings will be shared and not COWed.
+> > > > > 
+> > > > > Did I understand correctly that you want to share actual page tables between
+> > > > > processes and consequently different MMs? That sounds like a very bad idea.
+> > > > 
+> > > > That is the entire point.  Consider a machine with 10,000 instances
+> > > > of an application running (process model, not thread model).  If each
+> > > > application wants to map 1TB of RAM using 2MB pages, that's 4MB of page
+> > > > tables per process or 40GB of RAM for the whole machine.
+> > > 
+> > > What speaks against 1 GB pages then?
+> > 
+> > Until recently, the CPUs only having 4 1GB TLB entries.  I'm sure we
+> > still have customers using that generation of CPUs.  2MB pages perform
+> > better than 1GB pages on the previous generation of hardware, and I
+> > haven't seen numbers for the next generation yet.
+> 
+> I read that somewhere else before, yet we have heavy 1 GiB page users,
+> especially in the context of VMs and DPDK.
 
-syzbot found the following issue on:
+I wonder if those users actually benchmarked.  Or whether the memory
+savings worked out so well for them that the loss of TLB performance
+didn't matter.
 
-HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15474781300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> So, it only works for hugetlbfs in case uffd is not in place (-> no
+> per-process data in the page table) and we have an actual shared mappings.
+> When unsharing, we zap the PUD entry, which will result in allocating a
+> per-process page table on next fault.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I think uffd was a huge mistake.  It should have been a filesystem
+instead of a hack on the side of anonymous memory.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com
+> I will rephrase my previous statement "hugetlbfs just doesn't raise these
+> problems because we are special casing it all over the place already". For
+> example, not allowing to swap such pages. Disallowing MADV_DONTNEED. Special
+> hugetlbfs locking.
 
-general protection fault, probably for non-canonical address 0xdffffc000000000b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000058-0x000000000000005f]
-CPU: 0 PID: 6232 Comm: syz-executor.1 Not tainted 5.14.0-rc5-next-20210816-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
-RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
-RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
-RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
-Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
-RSP: 0018:ffffc9000a9ffd48 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 1ffff9200153ffb0 RCX: ffffc9000ba6a000
-RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
-RBP: ffff888037d15dc0 R08: 0000000000000001 R09: ffff888037d15e1f
-R10: ffffed1006fa2bc3 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888037d15e30 R15: ffff888037d15e30
-FS:  00007fb490054700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000388c5000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_req_task_submit+0xaa/0x120 fs/io_uring.c:2139
- tctx_task_work+0x106/0x540 fs/io_uring.c:2063
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- handle_signal_work kernel/entry/common.c:146 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb490054188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000081 RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 00000000000045f5 RDI: 0000000000000003
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffe3ce9ca1f R14: 00007fb490054300 R15: 0000000000022000
-Modules linked in:
----[ end trace 221813d58846ad59 ]---
-RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
-RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
-RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
-RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
-Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
-RSP: 0018:ffffc9000a9ffd48 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 1ffff9200153ffb0 RCX: ffffc9000ba6a000
-RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
-RBP: ffff888037d15dc0 R08: 0000000000000001 R09: ffff888037d15e1f
-R10: ffffed1006fa2bc3 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888037d15e30 R15: ffff888037d15e30
-FS:  00007fb490054700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b3213a000 CR3: 00000000388c5000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	89 fa                	mov    %edi,%edx
-   2:	48 c1 ea 03          	shr    $0x3,%rdx
-   6:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   a:	0f 85 07 0c 00 00    	jne    0xc17
-  10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  17:	fc ff df 
-  1a:	4c 8b 65 70          	mov    0x70(%rbp),%r12
-  1e:	49 8d 7c 24 58       	lea    0x58(%r12),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-  2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	74 08                	je     0x3a
-  32:	3c 03                	cmp    $0x3,%al
-  34:	0f 8e 3e 0b 00 00    	jle    0xb78
-  3a:	45 8b 74 24 58       	mov    0x58(%r12),%r14d
-  3f:	31                   	.byte 0x31
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Sure, that's why I want to drag this feature out of "oh this is a
+hugetlb special case" and into "this is something Linux supports".
