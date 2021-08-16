@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EE23EDD58
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3603EDD5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhHPSxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:53:18 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45742 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229722AbhHPSxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:53:17 -0400
-Received: from zn.tnic (p200300ec2f08b5001959acf655f190dc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:1959:acf6:55f1:90dc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 788041EC0541;
-        Mon, 16 Aug 2021 20:52:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629139960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJIwnKQ9osN83iCsLj2NaLLL1AgWy4Zh2ipZsHW1x4o=;
-        b=q5LhCH6WAzsiNPANO7URaJP0E5ZSG0Xl/x01TWnzdwmNdrqhMGxLC4zQrbuKVeYAvvZgvc
-        uyeMjls24lCTr8QGYbsQPGfFW3oXNspQksYABhhlnS4yLKCKOfIkilY098LhPtsJkS4pN/
-        XTwiVfa7aTOSItIwqjT00QIO6hQaY/k=
-Date:   Mon, 16 Aug 2021 20:53:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 08/26] x86/fpu/xstate: Introduce helpers to manage the
- XSTATE buffer dynamically
-Message-ID: <YRq0DKXra9zDwYOE@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-9-chang.seok.bae@intel.com>
- <YRV6M1I/GMXwuJqW@zn.tnic>
- <4FD76EDB-A5E6-4F32-8C6C-B47D7456C206@intel.com>
+        id S230496AbhHPSyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhHPSyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:54:37 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F593C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t128so28161653oig.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YoY9bHgtBFBdh+LL5q9r5ScpCfKdiLG+MRqaif3YEI8=;
+        b=naoSBJkgtcuj5qgJOEZkSZimaplLVdgNyuZkSUQOT4oTguOAkX6UV9uhieY+czuvyC
+         yKl+WA0CV9mqasUFr9PIYgiR087D0pB2DSlo7BJlIJOIeH8jZe90iieO/YLidSIvyGcF
+         y120bsGWC2BVTQ4HihQP1T9IDivfmdAump1sI1BksIJxwB5U864hAmI+CYPqoUxVmf9b
+         rtYUU/gjJHllsB4yhuL/fsFmr4fSG2UYhzvG3SxadqL7yAr1+lzHaT65vfY+b4nAv6pE
+         riWxWjM/lMBOuoaoLzdmW2IFQuhDZ6aS10JodX0K8HOixim9MKDvwfe3gqNhyZrNomrY
+         F2nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YoY9bHgtBFBdh+LL5q9r5ScpCfKdiLG+MRqaif3YEI8=;
+        b=OieHEt56K0g1me98t7TZ9wi9oWpUfWouU4f17O1IiCfjjP39X8Kw6N4kOWws1kls/K
+         +3pdiulJiQslOuNQnWIQxVCLZi5zESRA3+2SCsdIdn67Z71mUrF73v//js2LAQ0HpGs3
+         UOHlOq80O/1j+2WJq1iLNik29xwWWTflNgSB5FaTLihItD6B24VkcYvCVoGEERdiBN40
+         gaz93ODKLwJgOOMtnoIG1KHhU91HyK+RiAJs00lnqIebWrzY/i3ma9kDvvfF4Qdh9phN
+         CzKXE0UH0TfEBFUOQXBgBDytoL5q5/EouN/qDbr91tqhsLeLuPW+RnwAkFqeWf0ItpSP
+         MihA==
+X-Gm-Message-State: AOAM5310UYFOWSCB0VMF0Hukb6bvO+qbFUwho/3piZc3xw6x96c591mo
+        M3BKAP0HrcOJjSgD9OW9RGwFGV1+vWgaePT20ho=
+X-Google-Smtp-Source: ABdhPJyjsT23z+JKUtzE0jLgdLWJv7SfrxzzaZKXzkFJJLzPFGv15wqNC71FHrLBwBKGtq3duPeYyc8o86vTH0Psaxc=
+X-Received: by 2002:a05:6808:1390:: with SMTP id c16mr128831oiw.123.1629140045025;
+ Mon, 16 Aug 2021 11:54:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4FD76EDB-A5E6-4F32-8C6C-B47D7456C206@intel.com>
+References: <20210815192959.90142-1-nathan@kernel.org> <d2e9b2a0-49b9-42fe-47fc-66a44bef3b01@amd.com>
+In-Reply-To: <d2e9b2a0-49b9-42fe-47fc-66a44bef3b01@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Aug 2021 14:53:53 -0400
+Message-ID: <CADnq5_N0o_6vCqE0tYq=yqtPWvOzZikLoVF1f4U9DJcb2bCgCA@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Add break to switch statement in radeonfb_create_pinned_object()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 06:33:37PM +0000, Bae, Chang Seok wrote:
-> Without DISABLE_XSAVES or something under ifdef CONFIG_X86_XX in
-> $arch/x86/include/asm/disable-features.h, I don’t see the difference with this
-> macro. Am I missing anything here? Or, boot_cpu_has() is going to be
-> deprecated everywhere?
+Applied.  Thanks!
 
-There's:
+Alex
 
-cpu_has
-this_cpu_has
-cpu_feature_enabled
-boot_cpu_has
-static_cpu_has
-
-All code where it doesn't matter which CPU, should use
-cpu_feature_enabled() and simplicity will ensue in these here lands.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+On Mon, Aug 16, 2021 at 3:23 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 15.08.21 um 21:29 schrieb Nathan Chancellor:
+> > Clang + -Wimplicit-fallthrough warns:
+> >
+> > drivers/gpu/drm/radeon/radeon_fb.c:170:2: warning: unannotated
+> > fall-through between switch labels [-Wimplicit-fallthrough]
+> >          default:
+> >          ^
+> > drivers/gpu/drm/radeon/radeon_fb.c:170:2: note: insert 'break;' to avoi=
+d
+> > fall-through
+> >          default:
+> >          ^
+> >          break;
+> > 1 warning generated.
+> >
+> > Clang's version of this warning is a little bit more pedantic than
+> > GCC's. Add the missing break to satisfy it to match what has been done
+> > all over the kernel tree.
+> >
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_fb.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_fb.c b/drivers/gpu/drm/radeo=
+n/radeon_fb.c
+> > index 0b206b052972..c8b545181497 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_fb.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_fb.c
+> > @@ -167,6 +167,7 @@ static int radeonfb_create_pinned_object(struct rad=
+eon_fbdev *rfbdev,
+> >               break;
+> >       case 2:
+> >               tiling_flags |=3D RADEON_TILING_SWAP_16BIT;
+> > +             break;
+> >       default:
+> >               break;
+> >       }
+> >
+> > base-commit: ba31f97d43be41ca99ab72a6131d7c226306865f
+>
