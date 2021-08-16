@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E933EE078
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 01:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CD53EE07C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 01:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhHPXbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 19:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S232777AbhHPXgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 19:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbhHPXbs (ORCPT
+        with ESMTP id S232678AbhHPXgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 19:31:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C89C061764;
-        Mon, 16 Aug 2021 16:31:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpVlv3BLjz9sSs;
-        Tue, 17 Aug 2021 09:31:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629156671;
-        bh=YNKagkj0w/Z++HsJavgR0XFe1f9k+nbxF7Wm/gC5leI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qwaFCj6LZXVowpxBWVQ6QRGhHhCHd4Wt30bJZHKDZ+RhKkKQyGLt/7gvrG4U4a1+r
-         2ePq4Ju/IxqIiOZxpye2m7gctbE1pGDLSPPo1ouxcL9OOEQR23sH01tX/YIHwWEZ3a
-         7ruxfa55NS67Lfq/uwqFjrXqKz2eD4eePW3FS6xVEXjN5YjPAIgZDCwAkvwGf3Mz/p
-         0CInUHoMocvgilAT7W0VDiq/AoyXKoQ+f8XxIEQSt9JrzVaZy3zlt8tQuvdIiOSYzt
-         xHPBYNoi+SwSwg5ATMflaK7aBbFi50r8LiPy6VLxwrh64BIS58HRBXC/puRkU3t1EQ
-         /6OHqwgUtaMxQ==
-Date:   Tue, 17 Aug 2021 09:31:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        linux-kbuild@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH] Makefile: remove stale cc-option checks
-Message-ID: <20210817093106.71315de3@canb.auug.org.au>
-In-Reply-To: <CAKwvOdkckey1=VUHApTcJYufyhdRJ=jb4qYs52f59g6ha7qphw@mail.gmail.com>
-References: <20210810204240.4008685-1-ndesaulniers@google.com>
-        <CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com>
-        <CAKwvOdkckey1=VUHApTcJYufyhdRJ=jb4qYs52f59g6ha7qphw@mail.gmail.com>
+        Mon, 16 Aug 2021 19:36:41 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330CDC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 16:36:09 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id y6so13115527lje.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 16:36:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fCbJk159OmyFs2BOwXv6EYcMlLEdtAwxcbo1kGetDyw=;
+        b=ENGDL9TqFwLlJjW/yvg6xIwEOusjlLEWOJzXoHvkGjBJ8cTf6WeCdRqpxvVtiRs8Lb
+         Vf0mAZdR5TaVVSdGKdl9EvmfhLH5iS5zxK02Qio2axrHbOgTQsNBOi4OF5oM14lky2RD
+         62iQQZiT0sUY8T4Qmn2lEoidUL25wJ877S2xuf+TL1T60GrW/hT9IltRKhF0pw/ZYXAy
+         /okbFF3kFtfxG4SMeiv9rogFBlOVSez9GbLitbUUeDeARfe6U+vWOyUCfrDf9Mxfd8ep
+         bgCVhpzbgRMVCtdJJrM/er46IPhL/3w5MuvB56g2ML91cXD3CZJ5nw+P7hxAHxuJ0xgt
+         XHZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fCbJk159OmyFs2BOwXv6EYcMlLEdtAwxcbo1kGetDyw=;
+        b=MdllZ9HQzRRbLza2X2mknKLmjAorwmfCHk194M/BN9bH/sKEpDPxOCpi4/LBa2Eu+6
+         DluONVD1ZoOpdkSqhcevl0GN6jbe3TeiQHgbT7LVoC3gzWm2yPffhGEIpctW9CBethTW
+         JH59Aw16wJo3ZH9rr71qCsAh7yOFFAwTtgHc8RPQu2JSbizv1TWm9LsfS/qQi0bfaypT
+         G7J1o5+xxoghGz27RF3DxXK4FdxYsgMdKsCg9rcqyvkk9/1/3/ewMOCRo/Rrjqr19reB
+         6BgKd6rzlQ0RnErVS1Ojxqu0SlnFiXFwHqCmgGXKzTZPVNGdAP7zcGof4d35cyXxIpMv
+         pNQQ==
+X-Gm-Message-State: AOAM531b5xA71T4ewgkZ5yfqZU41iy4a8Bs20aWrTeo51fdHVJu1/k3l
+        Gf2qR7gi0h9XhLz5T/q08Vc=
+X-Google-Smtp-Source: ABdhPJwnA+J9ycFEUTKXpKebD5V9s+E1ACP7bzJvPBoupDD5fjaXYaPOf5ZuV8gwQnmSiXoPpGyLWg==
+X-Received: by 2002:a05:651c:3d9:: with SMTP id f25mr562965ljp.334.1629156967491;
+        Mon, 16 Aug 2021 16:36:07 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id e7sm45939ljq.9.2021.08.16.16.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 16:36:07 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 02:36:05 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] fs/ntfs3: Remove unused variable cnt in
+ ntfs_security_init()
+Message-ID: <20210816233605.w2csfyhmebicw6k7@kari-VirtualBox>
+References: <20210816193041.1164125-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/toHh=u=Y5SRXotU7RVYPv46";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816193041.1164125-1-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/toHh=u=Y5SRXotU7RVYPv46
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 16, 2021 at 12:30:41PM -0700, Nathan Chancellor wrote:
+> Clang warns:
+> 
+> fs/ntfs3/fsntfs.c:1874:9: warning: variable 'cnt' set but not used
+> [-Wunused-but-set-variable]
+>         size_t cnt, off;
+>                ^
+> 1 warning generated.
+> 
+> It is indeed unused so remove it.
+> 
+> Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Hi all,
+Looks like it was used for debugging or way before index_find_raw()
+needed hint or something. So this should be ok.
 
-On Mon, 16 Aug 2021 11:37:23 -0700 Nick Desaulniers <ndesaulniers@google.co=
-m> wrote:
->
-> Thanks for the report. Andrew has dropped the patch from mm-next.
-> Looks like it's too soon to remove build configuration tests for
-> -mfentry.
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
 
-I have removed that patch from linux-next today as well.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/toHh=u=Y5SRXotU7RVYPv46
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEa9ToACgkQAVBC80lX
-0Gz05AgAjSG4Pl77aQUWuGOgD5vrAWBc0gyQxvGKP9TvCVvqg3/6IuAVsDLAdt2o
-ONLNxA2MFYJofy7nCniBnh8g46GqKvFKYLhwg8U+/5IU2Vn8NX47d5TKzgyxFWVh
-/LJkkh5+tUewDJUsNWVxpS6wPbGwkjaBSaKbZlO3ITvaW3yC8Aqm2xPOC1JBn1at
-yQ4eEkhgVGH8g7RWZQXAY87XTYTDZV5LaTagpfpHyHKKmnrImKmeF7ywVJQsl+d/
-U4+lLyhDkXHAicjzJKHf/GQAcnnNfjO7IR1PQ3aIpJLmuZHsW0JWp+wiJUFpC5D0
-78VWXdohr5V59k49ztdUqKeT4S7jVw==
-=d2l8
------END PGP SIGNATURE-----
-
---Sig_/toHh=u=Y5SRXotU7RVYPv46--
+> ---
+>  fs/ntfs3/fsntfs.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> index 92140050fb6c..c6599c514acf 100644
+> --- a/fs/ntfs3/fsntfs.c
+> +++ b/fs/ntfs3/fsntfs.c
+> @@ -1871,7 +1871,7 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
+>  	struct ATTRIB *attr;
+>  	struct ATTR_LIST_ENTRY *le;
+>  	u64 sds_size;
+> -	size_t cnt, off;
+> +	size_t off;
+>  	struct NTFS_DE *ne;
+>  	struct NTFS_DE_SII *sii_e;
+>  	struct ntfs_fnd *fnd_sii = NULL;
+> @@ -1946,7 +1946,6 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
+>  	sbi->security.next_off =
+>  		Quad2Align(sds_size - SecurityDescriptorsBlockSize);
+>  
+> -	cnt = 0;
+>  	off = 0;
+>  	ne = NULL;
+>  
+> @@ -1964,8 +1963,6 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
+>  		next_id = le32_to_cpu(sii_e->sec_id) + 1;
+>  		if (next_id >= sbi->security.next_id)
+>  			sbi->security.next_id = next_id;
+> -
+> -		cnt += 1;
+>  	}
+>  
+>  	sbi->security.ni = ni;
+> 
+> base-commit: 96b18047a7172037ff4206720f4e889670030b41
+> -- 
+> 2.33.0.rc2
+> 
+> 
