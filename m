@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F3D3EDCCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6AD3EDCD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhHPSGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        id S230122AbhHPSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhHPSGQ (ORCPT
+        with ESMTP id S229766AbhHPSHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:06:16 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15413C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:05:45 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id gt38so12185694ejc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:05:45 -0700 (PDT)
+        Mon, 16 Aug 2021 14:07:40 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C895AC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:07:08 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id w17so34458972ybl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r7OUDigLFUsZqHC4kvxYuv61rT87pgpSVgATSRhFwRI=;
-        b=rI1w81YGiE0DQSS5K5gm3Ai7rloEIsbXbu8cHjHzj9UQeO6/1aPf6LtX0Z76xPygAu
-         jN5n8+jMneN6WaTMAW/mfwiTRwNd+OxoGczB4MDBsAve8Vyy03JqXG98mvKRC0Wy0ZJq
-         ZtT0uX3KgcmhjAkfh5bAdsnV6AdMw9iFBTOQY9QhHmZeGfBRLUQlYgeoDnSAT+ZeeAdT
-         /HvP3aN2rY1Ly3/nnEu/fPTQ2xa8zIRbQ1qZzTjAKbPKLj1fvBb0Yl4y3ThHi4a5jPUy
-         2JSc4hM3yIP1Bzc+gM3xwy+I2o+tmE6I6njOiDZLuWlNIFsZHr62BHgxddf2qgO7KIXN
-         Y1BA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=33dTcPj9L2G+RiKdxFTGDEqQpLqBfKgRb9SoQPYPLpo=;
+        b=VSWUay3SY15/4NGBWoTChPwDd8ujDO9Higioy3JypbcqKCd0muev0p6XdXyxEwUZVn
+         uKgSYwgM98pbBN/5NVqZHMNTXDUsa7Om5jGYlpjssksxGrct/ihvltgP/uL0wRiXihQh
+         utTideL2Ooc5wfnb9Fv6fzQAYvwAJBGaiZavVhZBU1xWmkFShJhyVxaIfm2JAvt6sdsJ
+         q7IQoqe2TSV/f5zZRF3lDoOAcsNIFkxaBNce0kP1iZDah/5TxMk1N1Ejzb65voAamF47
+         +jYW6wz2jrCtI+fAwY5Yvec9iKYgFyUwT1Q1wNUuJiWZG2zzLkn2lL88MfYUykOmPpC9
+         JJTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r7OUDigLFUsZqHC4kvxYuv61rT87pgpSVgATSRhFwRI=;
-        b=RTvJ3g1P/j5YoYsZ3GJA9fSzcgrS05KlwuZQDKw4KNtTnCGqXf2qyM+j/7/859FRd9
-         15+QMI4nVEB/p3bCOMWwvN+CQPj4PIrOm/P2M1Gvz0b9gkioIngJrvzLPi+H5at7KQpT
-         t+nIfFvYOEqZcrFk2hj6LTVGgdhZNVEGPLFJw5xecj5ZbwN7WJrj8zr++ltaBz3e8y3d
-         4bltyoSKOCninvfINJ1OWKF0S4kMEOVW4CrJep7TPQbTkjbxDG+UPDu1fktPsktHh6U/
-         z+M8SNU8OZ3RDW6RFMlQdBy/5mdNAKZ5lG7wqytr/azX6TUZAUON5yEU2tO/E06zoRgx
-         iSaQ==
-X-Gm-Message-State: AOAM530ytm3+Y6BvOnKK82o+OINMmSZrwR7wuT3GBXC7jsvsc1O8QX5K
-        g4AeQit29JX9Hu8pCJQretc=
-X-Google-Smtp-Source: ABdhPJxuT6rKxUMB0xSzgIuSVzpBSVZLN4B0H1uvAGV28E8nDl4QGisAqK1NVOjn/MYgbmKkuwMmkA==
-X-Received: by 2002:a17:906:5a98:: with SMTP id l24mr16742622ejq.540.1629137143636;
-        Mon, 16 Aug 2021 11:05:43 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id c21sm3947402ejz.69.2021.08.16.11.05.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 11:05:43 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2 3/3] staging: r8188eu: Remove no more used variable and function
-Date:   Mon, 16 Aug 2021 20:05:40 +0200
-Message-Id: <20210816180540.29734-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=33dTcPj9L2G+RiKdxFTGDEqQpLqBfKgRb9SoQPYPLpo=;
+        b=b5osGaLGAbVX+StT/xyt46V04fqV0FNzxr/i/aCbHPXEAx+sQM3LohMLGku6sVvoEb
+         gWWrNeBSzRguSetXATmj6i/YqvBElKtYotqIMxsgVRfxenHGewZQmzHf90RGBjjxDh3z
+         1XcIzZSvqJO1rnphyWx/ExfcroeXfHZsZr85x/5EtEpUNjPEF/GACwSD9IZ1IRD6dhwj
+         6VuBAIhEX34ZduBJ2iLdxFJS7X6/2sulHNLEW03Wdfjmem3/tvrWzkVL0gNihUW09b+4
+         JDqv9SoowTcpLeIuIAAl3Mm4VVYBy8uNRulfGQWycSzl4T6h8YTgNlh8j5xU6gUSkjZy
+         HXxw==
+X-Gm-Message-State: AOAM5333/A7wji+T3YC+Yxa9rTT7c0aUSvfMmtVf/MVhKxjEkSWt4AL/
+        j455gpayFx4R/Jds8dsQLKPeCZmSRqrN09AEBpdjfw==
+X-Google-Smtp-Source: ABdhPJyVkuwrdgobTNu4kxdPgWfK7qHvFVtdQhFN9x12wS3JBVRcN+l90XrQT/bDKLNpqJbOomcXymVHho5i6gjKmOE=
+X-Received: by 2002:a25:c4:: with SMTP id 187mr24437571yba.498.1629137227399;
+ Mon, 16 Aug 2021 11:07:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210812214614.1797845-1-samitolvanen@google.com> <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 16 Aug 2021 11:06:56 -0700
+Message-ID: <CABCJKucbKVFvOmo6AsJBQfxL0zO3N9R2ydoCvZKpTwPSbOvbkA@mail.gmail.com>
+Subject: Re: [PATCH v3] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the 'sender' pointer to integer. Remove
-__nat25_db_network_lookup_and_replace(). Following the deletion of the
-code related to the NAT25_LOOKUP method, they are no more needed.
+On Sat, Aug 14, 2021 at 4:27 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Aug 13, 2021 at 6:46 AM 'Sami Tolvanen' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > With CONFIG_LTO_CLANG, we currently link modules into native
+> > code just before modpost, which means with TRIM_UNUSED_KSYMS
+> > enabled, we still look at the LLVM bitcode in the .o files when
+> > generating the list of used symbols. As the bitcode doesn't
+> > yet have calls to compiler intrinsics and llvm-nm doesn't see
+> > function references that only exist in function-level inline
+> > assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+> > work with LTO.
+> >
+> > This change moves module LTO linking to happen earlier, and
+> > thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+> > entirely, allowing us to also drop the whitelist from
+> > gen_autoksyms.sh.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+> > Tested-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> > Changes in v3:
+> > - Added missing FORCE.
+>
+>
+>
+> All the modules are recompiled every time.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Oops, .lto.o is missing from targets still, which breaks if_changed.
+Fixed in v4. Thanks for testing!
 
-v2: Rebased against latest version of Greg K-H's tree.
-
- drivers/staging/r8188eu/core/rtw_br_ext.c | 52 +----------------------
- 1 file changed, 1 insertion(+), 51 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index 0402f48319c4..ee52f28a1e56 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -295,56 +295,6 @@ static void __network_hash_unlink(struct nat25_network_db_entry *ent)
- 	ent->pprev_hash = NULL;
- }
- 
--static int __nat25_db_network_lookup_and_replace(struct adapter *priv,
--				struct sk_buff *skb, unsigned char *networkAddr)
--{
--	struct nat25_network_db_entry *db;
--
--	spin_lock_bh(&priv->br_ext_lock);
--
--	db = priv->nethash[__nat25_network_hash(networkAddr)];
--	while (db) {
--		if (!memcmp(db->networkAddr, networkAddr, MAX_NETWORK_ADDR_LEN)) {
--			if (!__nat25_has_expired(priv, db)) {
--				/*  replace the destination mac address */
--				memcpy(skb->data, db->macAddr, ETH_ALEN);
--				atomic_inc(&db->use_count);
--
--				DEBUG_INFO("NAT25: Lookup M:%02x%02x%02x%02x%02x%02x N:%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
--							"%02x%02x%02x%02x%02x%02x\n",
--					db->macAddr[0],
--					db->macAddr[1],
--					db->macAddr[2],
--					db->macAddr[3],
--					db->macAddr[4],
--					db->macAddr[5],
--					db->networkAddr[0],
--					db->networkAddr[1],
--					db->networkAddr[2],
--					db->networkAddr[3],
--					db->networkAddr[4],
--					db->networkAddr[5],
--					db->networkAddr[6],
--					db->networkAddr[7],
--					db->networkAddr[8],
--					db->networkAddr[9],
--					db->networkAddr[10],
--					db->networkAddr[11],
--					db->networkAddr[12],
--					db->networkAddr[13],
--					db->networkAddr[14],
--					db->networkAddr[15],
--					db->networkAddr[16]);
--			}
--			spin_unlock_bh(&priv->br_ext_lock);
--			return 1;
--		}
--		db = db->next_hash;
--	}
--	spin_unlock_bh(&priv->br_ext_lock);
--	return 0;
--}
--
- static void __nat25_db_network_insert(struct adapter *priv,
- 				unsigned char *macAddr, unsigned char *networkAddr)
- {
-@@ -493,7 +443,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 		/*---------------------------------------------------*/
- 		struct arphdr *arp = (struct arphdr *)(skb->data + ETH_HLEN);
- 		unsigned char *arp_ptr = (unsigned char *)(arp + 1);
--		unsigned int *sender, *target;
-+		unsigned int *sender;
- 
- 		if (arp->ar_pro != __constant_htons(ETH_P_IP)) {
- 			DEBUG_WARN("NAT25: arp protocol unknown (%4x)!\n", be16_to_cpu(arp->ar_pro));
--- 
-2.32.0
-
+Sami
