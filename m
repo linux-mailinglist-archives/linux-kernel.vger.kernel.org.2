@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18723ECE75
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A1D3ECE78
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhHPGKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:10:55 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:34924 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhHPGKu (ORCPT
+        id S233370AbhHPGLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233291AbhHPGLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:10:50 -0400
-X-AuditID: 0a580155-983ff7000002fcd1-2a-611a01488ceb
-Received: from mail.kingsoft.com (bogon [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 1C.C7.64721.8410A116; Mon, 16 Aug 2021 14:10:16 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 16 Aug
- 2021 14:10:16 +0800
-Date:   Mon, 16 Aug 2021 14:10:15 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-CC:     <yaoaili126@gmail.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: KVM: x86: expose HINTS_REALTIME ablility to qemu
-Message-ID: <20210816141015.31e329e3@alex-virtual-machine>
-In-Reply-To: <20210813175420.62ab2ac2@alex-virtual-machine>
-References: <20210813175420.62ab2ac2@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Mon, 16 Aug 2021 02:11:05 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3742FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 23:10:34 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id y34so32199253lfa.8
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 23:10:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZIA1/692VBv2p6oFgSgryVc2gxTHeAovVGogmAyKfIc=;
+        b=D72ANqNKHfUVGUjt4dGJqbs5zUodFvXPlhCFgxNKSYQ+hXq1g9iCytZ/VomBsu6uTx
+         lhNIazv/Udq00L/SdtMXM8xT71Q5VYo/JlDOY3Vd0+rudrc+AM7zadq1YiFRMwFKbQyg
+         ZYpFB26u8d1UXIihVOKeSh21Pt5m+ThWI6TLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZIA1/692VBv2p6oFgSgryVc2gxTHeAovVGogmAyKfIc=;
+        b=AkI3XwBGlitmWjlNXTKUNlAQm9VRDuP9riNftTSgE+aISNhnKDPwuzc3abJJ8D5qnv
+         jhNwwSwmqNmw1rjBgnGAb3KcMtP1MKVCFXvhRK9Uca3AU217vdxbhUjMJTi9hC2kIKMv
+         +ilAIt3iwzMKwKXpCga3u07vIieN/0ixtZHDBknKnyvP1LcWyiOSKUf29Iy8MvrMZMDh
+         3ePS0b19n4G4b4V+/QjxB3GgvhimVsE8PrUoh73MPOQrcplZh1XdOdq1haQxWNbe/OZF
+         djRtMcRMiQiXgvqYkcmYwioH0svomb49HLYAt2Fnbv6pA66gLtba3/768gdGkU6hjhR8
+         1cxw==
+X-Gm-Message-State: AOAM531WTtbyhEjHgwi66fl9KkTVOh8PQ/4DvgvVfSfDNwhGRdiKFLbm
+        W+OWH4zx/+CO/nVXK486SUJGOBA+N9qzmI1ZWJVV/w==
+X-Google-Smtp-Source: ABdhPJzL8RjYaN0Sc1fcCpLDR9FiunPsd8uQLbFv3KiwtAMW+zcy+iGqjGSk2EMG6PngQB7RQdv++oYkdI7XcR81ioM=
+X-Received: by 2002:ac2:490b:: with SMTP id n11mr10612445lfi.656.1629094232622;
+ Sun, 15 Aug 2021 23:10:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSbjmail3.kingsoft.cn (10.88.1.78) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCFcHor+vBKJVo0P1P1eLzhn9sFtM2ilts
-        nX6FzaJz9gZ2izlTCy0u75rDZnHpwAImi/3b/rFaHD1/i8li86apzBaTWi8zW+y684TF4seG
-        x6wWz1qvsjjweTw5OI/J43trH4vHzll32T0WbCr12LSqk83j3blz7B7v911l82iceo3N4/Mm
-        OY8TLV9YA7iiuGxSUnMyy1KL9O0SuDJeNW9iK9jMVvHg1DaWBsb/LF2MnBwSAiYS33+vZ+xi
-        5OIQEpjMJHHxRg8LhPOaUWLp7sdsIFUsAqoSm+c1gdlsQPaue7NYQWwRgbNMEnv+M4M0MAu0
-        M0o83rqFHSQhLGArseHPQWYQm1fASmLnjLNgDZwC1hKzly4FiwsBxedvuwB2Br+AmETvlf9M
-        XYwcQCfZSzxerwjRKihxcuYTsBJmAR2JE6uOMUPY8hLb386BGqMocXjJL3aIb5QkjnTPYIOw
-        YyWurb/OOIFReBaSUbOQjJqFZNQCRuZVjCzFuelGmxgh8Re6g3FG00e9Q4xMHIyHGCU4mJVE
-        eIuFxRKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ82q7CSUKCaQnlqRmp6YWpBbBZJk4OKUamBSi
-        VwnfFNqt0rC8V0v9dE9hUn1s6dNA98yJDY1MS/ft/a+wwleFlUHvXcCVvqiwNz27755mmBfl
-        XTbx+ZrfqqduFE4rsHv173CZb5GsjZn6kdt7W19P+FXxzjjo8MG7lvfXaMydqX5i6wNJwZv1
-        nBdaD3s438icZuWuXfmac86fJ2tP3J4yc5VfbCin6hulex0F3iIy01dMSF2a/oD//j/jKpmy
-        hZKnOgT6ghWquj+zFPgs9flZLP5DwZ5zY+WFZy+v38jY5Vj84fyuvjsVid1RWz+W8s3L3lHu
-        XVlf3LxZQ/qa6OyTKdw/JUwWqK/5OUtdsV2sf5XNbg8z9oS3Zw6xiMxb2ffYy3Grr7CXgxJL
-        cUaioRZzUXEiAPrdudMuAwAA
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
+ <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com> <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+In-Reply-To: <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 16 Aug 2021 14:10:21 +0800
+Message-ID: <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "zhiyong.tao" <zhiyong.tao@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 17:54:20 +0800
-Aili Yao <yaoaili@kingsoft.com> wrote:
+On Thu, Aug 5, 2021 at 7:02 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 11:43 AM Chen-Yu Tsai <wenst@chromium.org> wrote:
+> > On Thu, Jul 29, 2021 at 4:23 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> > > The rsel actual bias resistance of each setting is different in
+> > > different IC. we think that the define "MTK_PULL_SET_RSEL_000" is more
+> > > common for all different IC.
+> >
+> > I see. I personally prefer having things clearly described. I can
+> > understand this might be an extra burden to support different chips
+> > with different parameters, though this should be fairly straightforward
+> > with lookup tables tied to the compatible strings.
+> >
+> > Let's see if Rob and Linus have anything to add.
+>
+> Not much. We have "soft pushed" for this to be described as generic
+> as possible, using SI units (ohms). But we also allow vendor-specific
+> numbers in this attribute. Especially when reverse engineering SoCs
+> that the contributor don't really have specs on (example M1 Mac).
+>
+> The intent with the SI units is especially for people like you folks working
+> with Chromium to be able to use different SoCs and not feel lost
+> to a forest of different ways of doing things and associated
+> mistakes because vendors have hopelessly idiomatic pin configs.
 
-> When I do a test that try to enable hint-dedicated for one VM, but qemu
-> says "warning: host doesn't support requested feature:
-> CPUID.40000001H:EDX.kvm-hint-dedicated [bit 0]".
-> 
-> It seems the kernel hasn't expose this ability even when supporting it;
-> So expose it.
+I'll take that as "use SI units whenever possible and reasonable".
 
-Sorry, I check it again:
-Ihe issue I met is because of my qemu's mis-backport,
+Thanks.
 
-In qemu, kvm_arch_get_supported_cpuid() will set the feature bit:
-    if (function == KVM_CPUID_FEATURES && reg == R_EDX) {
-        ret |= KVM_HINTS_DEDICATED;
-        found = 1;
-    }
-But I have mis-ported the KVM_HINTS_DEDICATED and KVM_HINTS_REALTIME macro; And it lead to
-the error I met;
-
-And it's right that kernel don't expose this ability!
-
-Sorry again!
-
+ChenYu
