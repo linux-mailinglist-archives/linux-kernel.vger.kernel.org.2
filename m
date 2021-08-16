@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668993EDDFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277E43EDDFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhHPTkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41138 "EHLO mail.kernel.org"
+        id S230433AbhHPTpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhHPTkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:40:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D37060F55
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 19:40:20 +0000 (UTC)
+        id S229587AbhHPTpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:45:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54AF560EE5;
+        Mon, 16 Aug 2021 19:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629142820;
-        bh=0NGchtMPqXcGzx6gjhgUu5kP909HOdwGq6mHakCZGwc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PNgp5i1ZmTHXE84/dACTXBnZfelmk/5B0bB2QynpkqE3XleOGZjJiMRroy4GLv9Mr
-         m5oCH5UVNMnpPL8RsV6R0zOYQSISSWlYOK6KIicnnkGOPZq5Z/yeQV2MBBGZZpZFm8
-         ylJ+kPVxVPad3Xk+XT2ZaS76thIkTyOKoUQhjvbyS9ZamVQ8CjqFkdY1aVNv4Pvzwf
-         HfnNcaDnMDKokNdezBiT4Yup3MRkaGd2uvz+akT+i/O18MHfcZ7CUCM7vxV+Z7RZD5
-         19NBtR8U0l1zhigcXR2tV4NejYYb+/uqgx39MUp5jW9MNoVNo3OgCtaa+AOwje9aeX
-         ZYZG3ZhheI+iQ==
-Received: by mail-ed1-f47.google.com with SMTP id q3so24027242edt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:40:20 -0700 (PDT)
-X-Gm-Message-State: AOAM531haTWKRcwytXcavQqYB5kR6DGu1vRUu0IJSxrpLUbQqUaRYGpu
-        s3YO6YZgFJwLT+cS9ngzsJbGv8mmAgWe7MGp6g==
-X-Google-Smtp-Source: ABdhPJyCHRTGwHhoWZVCC+L/ijlQKyXy+VyzVmiuJ6Onoccah+VfC+GD5IBBssfJrxh921yFciVB2LUPAtWxyYPXGrQ=
-X-Received: by 2002:a50:9b52:: with SMTP id a18mr218882edj.165.1629142819250;
- Mon, 16 Aug 2021 12:40:19 -0700 (PDT)
+        s=k20201202; t=1629143104;
+        bh=3vUrvHO/jx7yMiBOS4Ce94K+3n61pUF9j/jGzg2zV9I=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VGOxvHxh1BCCnbf10ZKR6ppPnPP765JjvB4BCCBoKklLLLuZa3JvHqCkjV5C0mfbz
+         0TLHlEK9WW+FCeV/V9otKetcGSk4DbaunraYixObvbL92zaNQalSVjHsUSup7acKwc
+         3+z43KH44NP+WMgic/J3eF6BUPxXW2HQGh9gE83xkkdtXAaHhjD5suq5r0M6HKvL+f
+         Y6sH5LLpPBNZJw130ooco3Ma3yVmGKegEtbOc5i3LinMUZyQ4bUfjt7EIyikrTkxWg
+         qVNT/y/p7/0rmID/2u5nO10Nn42FPaZwtHsVEVtPvtmuJWxhXb7eBx7slrLwcDd1+y
+         4sgwUgRK+UyJA==
+Subject: Re: [PATCH v2 01/19] ARC: mm: use SCRATCH_DATA0 register for caching
+ pgdir in ARCv2 only
+To:     Mike Rapoport <rppt@kernel.org>, Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210812233753.104217-1-vgupta@kernel.org>
+ <20210812233753.104217-2-vgupta@kernel.org> <YRjd5N012YInbZqX@kernel.org>
+From:   Vineet Gupta <vgupta@kernel.org>
+Message-ID: <e524546f-92e3-38b9-c72f-ac8ac0c013c9@kernel.org>
+Date:   Mon, 16 Aug 2021 12:45:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210816132618.11707-1-will@kernel.org>
-In-Reply-To: <20210816132618.11707-1-will@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 16 Aug 2021 14:40:08 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKCxMPOZ-O6wpLbv7Fi2cuuo8mGZBjsA3Mhw0kcpBvK5w@mail.gmail.com>
-Message-ID: <CAL_JsqKCxMPOZ-O6wpLbv7Fi2cuuo8mGZBjsA3Mhw0kcpBvK5w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Don't fail device probing due to of_dma_set_restricted_buffer()
-To:     Will Deacon <will@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRjd5N012YInbZqX@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 8:26 AM Will Deacon <will@kernel.org> wrote:
+On 8/15/21 2:27 AM, Mike Rapoport wrote:
+> On Thu, Aug 12, 2021 at 04:37:35PM -0700, Vineet Gupta wrote:
+>> MMU SCRATCH_DATA0 register is intended to cache task pgd. However in
+>> ARC700 SMP port, it has to be repurposed for reentrant interrupt
+>> handling, while UP port doesn't. We  currently ahandle boe usecases
+> 					       ^ handle both
 >
-> Hi all,
->
-> This is v2 of the patch I previously posted here:
->
->   https://lore.kernel.org/r/20210805094736.902-1-will@kernel.org
->
-> Changes since v1 are:
->
->   * Move of_dma_set_restricted_buffer() into of/device.c (Rob)
->   * Use IS_ENABLED() instead of 'static inline' stub (Rob)
->
-> This applies on Konrad's devel/for-linus-5.15 branch in swiotlb.git
->
-> Cheers,
->
-> Will
->
-> Cc: Claire Chang <tientzu@chromium.org>
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Robin Murphy <robin.murphy@arm.com>
->
-> --->8
->
-> Will Deacon (2):
->   of: Move of_dma_set_restricted_buffer() into device.c
->   of: restricted dma: Don't fail device probe on rmem init failure
->
->  drivers/of/address.c    | 33 ---------------------------------
->  drivers/of/device.c     | 39 ++++++++++++++++++++++++++++++++++++++-
->  drivers/of/of_private.h |  7 -------
->  3 files changed, 38 insertions(+), 41 deletions(-)
+> maybe ':set spell' for changelog editing? ;-)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Seriously, about time I stopped fat-fingering
