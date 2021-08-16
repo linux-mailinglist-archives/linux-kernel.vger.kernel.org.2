@@ -2,136 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF92A3EDE55
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84FA3EDE57
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhHPT6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:58:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhHPT6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F13460EE0;
-        Mon, 16 Aug 2021 19:58:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629143899;
-        bh=5wImwEA4LceS/v2yccDrveV86vmFgqlIhTO0p5YqI+E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=tK44WrZy7HVD/dqDLplgG2kQIELyUNEAWk9lUdHHIDsaDrdicE6j9gFEJDpAV7fmh
-         5cpPDy+rdGrr8p8Ggyf1w2MUT8uQAxXATrnpimS9Pn4HdZ1zweol2drl0LXv496vPO
-         uZm7l1D1tIOq4dIHyDejJvuaggpLzE4EDgDmqzVwPRDlPvP95+15z3c1rTyRZORol8
-         ztPgUxAAen30b09rjiN0UrHuAdZPdRSO24FcmRmELamdgDR4u6Vr7T890B2miDC2Zp
-         V/9jhJalVX10mFzbAKZ2f2hJ3ibfR4SUzu8Bea3khc8oigbV7lagOjb9Xz6XMVm6Ic
-         W5K757zWktooA==
-Subject: Re: [PATCH v2 00/19] ARC mm updates: support 3/4 levels and
- asm-generic/pgalloc
-To:     Mike Rapoport <rppt@kernel.org>, Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210812233753.104217-1-vgupta@kernel.org>
- <YRjd01Tr3IuEE7wj@kernel.org>
-From:   Vineet Gupta <vgupta@kernel.org>
-Message-ID: <e5b331ac-af88-b5b6-37d8-337ab8d75a8e@kernel.org>
-Date:   Mon, 16 Aug 2021 12:58:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231544AbhHPT7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhHPT7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:59:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A9BC061764;
+        Mon, 16 Aug 2021 12:58:29 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id c17so16615218plz.2;
+        Mon, 16 Aug 2021 12:58:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
+        b=Ue/nsPauk7U6/n3kytH2QA63vMZ7hMlJ6o+jRyIO+TXAAn5Cfyd6nWdtYBbtA3J3Pt
+         gGMXmjbTyBKeY9AzbTy4YzVaR9PQETDQGPWorPB6gHG3IG9zujI1tzKVBlFZwGelsnav
+         of61ongXjhXr7f7H1Qk+p/jqWXgGnwRs59kpdQ1gV4Lix0lkWdjtCJF3URLF/Dr/Ps6G
+         p7OJhTRksVzsrtxSpnUwzBOukJnVsGWpiPYN5iUBKKQ4ybPZDYEgoadJ1wEGvaxoTxti
+         o++Om859MCxZz4jSnVxGTcYmItEURXy2BxxQxigQyKeVOVeSVOwfIbKMLVHssa/9d6wu
+         4UyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
+        b=r8K2yrGbba9jWqlJVXJKVI2KOtFRYUeAVb4ShzwK6tUDSOPmfss1h8BqjMCseyVFbo
+         enr/sNUcfZ8EGx4qNy80H2eFEBSqC3uG8NT3u8EbOPVFC4N7x0nYPlsRoeadewi0gcrM
+         MMrmZoWJsyJK+f7lR+cxSeCE9yPyUGDEMoRgSxOg13dk9ruX8gJ1YOH76zRboJKYXOMm
+         X+OnInqMdhgYccT3DcvQNVh9CrAIGtakvfw8WqPRJ1DzHZ0UnP15tOg3EpoXq0ndB7SR
+         AXaQ9jiA3dHEzsXh+D8GD8jCVpf7RUCKcRbFnXU1e0Cr/7o/SqkOR9INfcj1kXahlSer
+         KliA==
+X-Gm-Message-State: AOAM533v82dOgXn0NMT/UifnnHRMVxRA5gwboJkupuiHn3Xl8wg9qlb6
+        1cEoXtldH5O2swxS0cLQoLc=
+X-Google-Smtp-Source: ABdhPJy5BO8UPitxBJFGj9SnL787Ml47xibIqz1zp+gWTNa1A1DD/jzJ8/nvqsnSQnuQlY7WyZGZxQ==
+X-Received: by 2002:a17:90a:116:: with SMTP id b22mr239613pjb.97.1629143908577;
+        Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
+Received: from localhost ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id l11sm119501pjg.22.2021.08.16.12.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 01:28:24 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Jawoslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
+Message-ID: <20210816195824.ulvnb2kfas4rtpjt@xps.yggdrasil>
+References: <cover.1628971397.git.aakashhemadri123@gmail.com>
+ <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+ <20210816183906.GC4253@sirena.org.uk>
+ <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
+ <20210816194934.GD4253@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <YRjd01Tr3IuEE7wj@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816194934.GD4253@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/21 2:26 AM, Mike Rapoport wrote:
-> On Thu, Aug 12, 2021 at 04:37:34PM -0700, Vineet Gupta wrote:
->> Hi,
->>
->> Big pile of ARC mm changes to prepare for 3 or 4 levels of paging (from
->> current 2) needed for new hardware page walked MMUv6 (in aRCv3 ISA based
->> cores).
->>
->> Most of these changes are incremental cleanups to make way for 14/18 and
->> 15/18 which actually imeplement the new levels (in existing ARCv2 port)
->> and worth a critical eye.
->>
->> CC'ing some of you guys dealing with page tables for a while :-)
->> to spot any obvious gotchas.
-> There are a couple of small nits here and there, but overall
+On 21/08/16 08:49PM, Mark Brown wrote:
+> Since I applied the patches please send an incremental fix on top of
+> what's been applied rather than a v2.
 
-I've fixed the last remaining things locally and won't repost, unless 
-you want me to.
+Will do Mark!
 
->
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-
-Thx for spending time to review this Mike. Much appreciated.
-
-
--Vineet
-
->
->> Thx,
->> -Vineet
->>
->> Changes since v1 [1]
->>   - Switched ARC to asm-generic/pgalloc.h  (so struct page based pgtable_t)      [Mike Rapoport]
->>   - Dropped {pud,pmd}_alloc_one/{pud,pmd}_free provided by asm-generic/pgalloc.h [Mike Rapoport]
->>   - Negative diffstat now due to above
->>   - Added BUILD_BUG_ON() to arch/arc/mm/init.c for sanity of table sizes
->>   - Consolidated 2 patches related to ARC_USE_SCRATCH_REG			   [Mike Rapoport]
->>   - Reworked how mmu is re-enabled in entry code                                 [Jose Abreu]
->>
->> [1] http://lists.infradead.org/pipermail/linux-snps-arc/2021-August/005326.html
->>
->> Vineet Gupta (19):
->>    ARC: mm: use SCRATCH_DATA0 register for caching pgdir in ARCv2 only
->>    ARC: mm: remove tlb paranoid code
->>    ARC: mm: move mmu/cache externs out to setup.h
->>    ARC: mm: Fixes to allow STRICT_MM_TYPECHECKS
->>    ARC: mm: Enable STRICT_MM_TYPECHECKS
->>    ARC: ioremap: use more commonly used PAGE_KERNEL based uncached flag
->>    ARC: mm: pmd_populate* to use the canonical set_pmd (and drop pmd_set)
->>    ARC: mm: switch pgtable_t back to struct page *
->>    ARC: mm: switch to asm-generic/pgalloc.h
->>    ARC: mm: non-functional code cleanup ahead of 3 levels
->>    ARC: mm: move MMU specific bits out of ASID allocator
->>    ARC: mm: move MMU specific bits out of entry code ...
->>    ARC: mm: disintegrate mmu.h (arcv2 bits out)
->>    ARC: mm: disintegrate pgtable.h into levels and flags
->>    ARC: mm: hack to allow 2 level build with 4 level code
->>    ARC: mm: support 3 levels of page tables
->>    ARC: mm: support 4 levels of page tables
->>    ARC: mm: vmalloc sync from kernel to user table to update PMD ...
->>    ARC: mm: introduce _PAGE_TABLE to explicitly link pgd,pud,pmd entries
->>
->>   arch/arc/Kconfig                          |   7 +-
->>   arch/arc/include/asm/cache.h              |   4 -
->>   arch/arc/include/asm/entry-compact.h      |   8 -
->>   arch/arc/include/asm/mmu-arcv2.h          | 103 +++++++
->>   arch/arc/include/asm/mmu.h                |  73 +----
->>   arch/arc/include/asm/mmu_context.h        |  28 +-
->>   arch/arc/include/asm/page.h               |  74 +++--
->>   arch/arc/include/asm/pgalloc.h            |  81 ++----
->>   arch/arc/include/asm/pgtable-bits-arcv2.h | 151 +++++++++++
->>   arch/arc/include/asm/pgtable-levels.h     | 179 ++++++++++++
->>   arch/arc/include/asm/pgtable.h            | 315 +---------------------
->>   arch/arc/include/asm/processor.h          |   2 +-
->>   arch/arc/include/asm/setup.h              |  12 +-
->>   arch/arc/kernel/entry-arcv2.S             |   1 +
->>   arch/arc/kernel/entry.S                   |   7 +-
->>   arch/arc/mm/fault.c                       |  20 +-
->>   arch/arc/mm/init.c                        |   5 +
->>   arch/arc/mm/ioremap.c                     |   3 +-
->>   arch/arc/mm/tlb.c                         |  68 +----
->>   arch/arc/mm/tlbex.S                       |  78 ++----
->>   20 files changed, 591 insertions(+), 628 deletions(-)
->>   create mode 100644 arch/arc/include/asm/mmu-arcv2.h
->>   create mode 100644 arch/arc/include/asm/pgtable-bits-arcv2.h
->>   create mode 100644 arch/arc/include/asm/pgtable-levels.h
->>
->> -- 
->> 2.25.1
->>
-
+Thank,
+Aakash Hemadri
