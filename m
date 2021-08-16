@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2114C3ECD84
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0793ECD88
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhHPEPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 00:15:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhHPEPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 00:15:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 453AC619E1;
-        Mon, 16 Aug 2021 04:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629087319;
-        bh=joQfJDa6jYkYAOeq+GjOycG0LtXj3Zk0aKsaKrbhQjI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=aYM6pmMGFwnhaeeZHuZab3dkBpAqqk05BR8yssOf7e/gdEF9N0E428nBFHcxUYMxl
-         mIkbi6uDrEvQsoxCDzVJ060AGgwwVSwZebSXQ3O2Syxr92vpvZ9AtnRfjPQWRB5TF1
-         vCxZRqZGnMFO/e9PIiqMXA+Iw4QNJMDaUM8aw+B/A59gKY1B+0T53vPl2CuFlw2so8
-         kVjC/DQ7e4LDB7N1attrogGPLZ2qP2tRqOOhXy259Rak5XiCtvYc2caFzRjzmmvaTw
-         2V+5g7dgUlbx6MzGgm9Jemfp7q/nZ8Olwuc198+bCVypLAEUKXDlR43tAdou5P8law
-         fp3eMr8GS0wdg==
-Subject: Re: [PATCH 1/2] f2fs: add sysfs nodes to get discard information
-To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <ACIArwDxD7lffBbq-DPSbarm.3.1629081754403.Hmail.frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <af34f9cd-8972-583b-bae2-f11fe9058e63@kernel.org>
-Date:   Mon, 16 Aug 2021 12:15:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229957AbhHPER0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 00:17:26 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:39480 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhHPERZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 00:17:25 -0400
+Received: by mail-pj1-f53.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so30343511pjn.4;
+        Sun, 15 Aug 2021 21:16:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VGQ6B94EGHj3H0WVGab38MvJV4C1IW98Ade2+yP4yzc=;
+        b=PSVtZALkFwOJGJ8udoFHQbP2WdGcj7XSnJ6t8cKKBrkP2rlDnmwDIP7AnHuTdUNXrX
+         vUFECheWoCh+5UfKxpvMS9Dx23wVDeX8C8eNg42EOuA05RtAj32sXQN0aCWJc6wbQP7B
+         yGjmp1BjKctM/8vlpryKuFKQ6G7W8n9YRACyX8jdm4rtuijLf4XEkZOI3RF8e3rny5sV
+         SLrx3TMeyDAdwBx1j2bZ9T+ZZcdXg1JYA/jnQ+sGcXEVMRY8WCzdpfqqosYM73ek87ao
+         06LuT0l7EnkTr0V4fWhaa715F9a++mzXPWfRXWCU1YgHubYDObsHflG74TOspsMRTs+E
+         7RGQ==
+X-Gm-Message-State: AOAM533fBPUgDftsDx4V7M2B6NrK9juL+Rsl6XQpkb/+mY2/vnHaRwoG
+        09B9qt933DRwPQlOJAqkkXs=
+X-Google-Smtp-Source: ABdhPJxnBLahpzCRRiIlIwdrSPnemb10fYGm83yYh2erypPGIj9DtbMV8M9OYocf2o2upR65MApJKA==
+X-Received: by 2002:a05:6a00:1884:b029:3bb:640f:4cfc with SMTP id x4-20020a056a001884b02903bb640f4cfcmr14420387pfh.61.1629087413831;
+        Sun, 15 Aug 2021 21:16:53 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:fa8f:c6de:b478:78fe? ([2601:647:4000:d7:fa8f:c6de:b478:78fe])
+        by smtp.gmail.com with ESMTPSA id d15sm2808358pfd.115.2021.08.15.21.16.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 21:16:53 -0700 (PDT)
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     "yukuai (C)" <yukuai3@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+ <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
+ <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+ <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+ <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
+ <a63fbd36-5a43-e412-c0a2-a06730945a13@huawei.com>
+ <b4603b71-4306-4542-e4fb-bf30133f89a8@acm.org>
+ <010fcd39-c819-8e0e-c188-62b1947603bf@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a47ba8e9-520e-19b5-dd8f-7929f624bbbd@acm.org>
+Date:   Sun, 15 Aug 2021 21:16:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <ACIArwDxD7lffBbq-DPSbarm.3.1629081754403.Hmail.frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <010fcd39-c819-8e0e-c188-62b1947603bf@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/16 10:42, 李扬韬 wrote:
->>> I've added new sysfs nodes to show discard stat since mount, which
->>> will help us analyze whether the performance problem is related to
->>> discard.
->>>
->>> issued_discard  - Shows the number of issued discard
->>> queued_discard  - Shows the number of cached discard cmd count
->>> discard_cmd_cnt - Shows the number of cached discard cmd count
->>> undiscard_blks  - Shows the number of undiscard blocks
->>
->> We have exported them in debugfs, can you use that?
->>
->> Thanks,
-> 
-> But now Android is forbidden to open debugfs, and in fact we have not
-> opened this configuration for a long time.
+On 8/14/21 2:43 AM, yukuai (C) wrote:
+> test result:
+> | test round | with this patch | without this patch |
+> | ---------- | --------------- | ------------------ |
+> | 1          | 4310k           | 4265k              |
+> | 2          | 4295k           | 4327k              |
+> | 3          | 4217k           | 4213k              |
+> | 4          | 4355k           | 4236k              |
+> | 5          | 4315k           | 4337k              |
+> | average    | 4294k           | 4275k              |
 
-Weren't them be used for debug purpose? can you please explain more about
-your use case?
+Hi Kuai,
 
-Thanks,
+Thank you for having taken the time to rerun the IOPS measurements with
+kernel debugging disabled. According to my calculations the standard
+deviation (50K) is larger than the difference between the averages
+(19K). Unfortunately that makes it hard to draw any conclusion ...
 
-> 
-> Thx,
-> Yangtao
-> 
-> 
-> 
+Bart.
