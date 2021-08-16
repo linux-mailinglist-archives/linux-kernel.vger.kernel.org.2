@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC3A3ED8D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111BF3ED8D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhHPOTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        id S230094AbhHPOVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbhHPOTx (ORCPT
+        with ESMTP id S230107AbhHPOVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:19:53 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FFDC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 07:19:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x10so17573998wrt.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 07:19:21 -0700 (PDT)
+        Mon, 16 Aug 2021 10:21:14 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D117EC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 07:20:42 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id f15so14726871ilk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 07:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=AKhG9J3ahU8JkCpxk+g+Q/1FWyyETrK/NptsIpsKfbc=;
-        b=KGIkb0rXwfACZDeriTgTrMb+v/OdOVaOKQUwEBhF0Uuoi0Ps0ivcKP1OEZoD9CnRwc
-         G003xTXm+nbqosZS3mibwmloTwRofCHtAO9ws5JR0Qvba4AMjOWNnlZryxVvzx+YSKia
-         DiBh3PNQla7b2ixPyfiMBwHYHe/fyldqSPVvvj3OmsodZSQIQqlfI68H0Giprga1esxM
-         koahSCMyr9HAXYvhoUlXNqQ72NVIib497ZsKb2bac/SCNJfEuvG7SW8rzT+gLadnYBSJ
-         GBT4UsnLArNKPa1DbJGXXGo7KuPMgwE9AfOF/ZZyXM91oqaq0uDUUUyQqPogCnP+hFWD
-         G3RQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZdY43BmHwJ9DyNYh0fm/33Z4sEPUAt4Lp4aZlFW1GTk=;
+        b=eclCU0gxGJ3rxKvqWVcfExuXe7lG5b3uPcljlc9N5eaKWxp3O4DgzJa1xgfoiZp2Az
+         EAJWZwTWrirfCayp/2mXEsJ+vswEQSV6XiC9NmuG4LrAG+FcUKXftg9fCH9yBDKJWgl1
+         SMCUDHb7FViztLkSYQshvDE8Aikyx324o3E1w+pS9Vyh3DINjDIcElcfKyV2I9G6G4M/
+         HeshVGxdytNlFQbnopKzyhc9w6+FZ9p3/hEOVCm91bMcikEfog7syCAKG2M2JiyqvNsj
+         WaCSosue24Ry73Sa4Hu7WvirxhSOWw451pds+kbUL5EoNGeS5R+XR9OFbxBKokTUYkF/
+         YqLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AKhG9J3ahU8JkCpxk+g+Q/1FWyyETrK/NptsIpsKfbc=;
-        b=EAX3eqvgjBxPP7J1fy2o00P18CKYHZaaINyTqH6r2c+ApqLLMmj/Y4z1G+LriEuVIt
-         kfK95DMF0mC8yIuzsT9Wes3Y0DqiMxqTYKOPdPGx+hXDVmbwW01lj/w40c4zz3wdR4mY
-         OLS1f8p1axXX5+OxTNBNADu5Y0+HilSDtZqv1kRRXKZhQvwbWzrgcYh7SdiCE94u7qfd
-         bHsj993KzgbaWbM+Bk1zru2RMyWnWKBF4jTkqzkBVJiu7o5pDpYsxqkj1N4qhRngkLuH
-         QZuwT5HKI53X7QuNbPWgjJT4lj0Q3aWmZd/+IE2gSp1z9k6+59/P012IiWrfsiWqr1cv
-         9kgA==
-X-Gm-Message-State: AOAM530SErxUIwlJpr13V+7mGF4hnVG3GWBq2jd32Jydk1kYvhpP5acf
-        vJ/4NpBxHcqi7LPUIWdv63w1vQ==
-X-Google-Smtp-Source: ABdhPJxDgPdFw3+oQn2JzBNxZg02cW3DX14/kTpXSNEiZ16yphRkOLIwxCsbnypCdfYxlNGQwKchQg==
-X-Received: by 2002:adf:e4ce:: with SMTP id v14mr18665245wrm.21.1629123559951;
-        Mon, 16 Aug 2021 07:19:19 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id d7sm12260166wrs.39.2021.08.16.07.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 07:19:19 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 15:19:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
- software nodes
-Message-ID: <YRpz5UEDQbpewq5o@google.com>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
- <YRpihHP3kDz5nYV9@google.com>
- <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
- <YRppKOxp4Jya5iEI@google.com>
- <YRpva4gS1LfncPUj@smile.fi.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZdY43BmHwJ9DyNYh0fm/33Z4sEPUAt4Lp4aZlFW1GTk=;
+        b=lWffVJZ0yTYu3rvW96mpdQS38ap30amp5zKXVwJ2apX2xVjLek0dF60qCa9DMKQExD
+         Wd+Dfnmer/WDu6JzMl7f84X8QqvD+QmAee7xf+febCNghv+BWYk/td3NfL6O6nqB2X6B
+         XP0Th4ebhx9yAHK3aWcOwq8NxAwzgIy2ov/LqUre6ZbmbDHcnwE9nt92wH6Ww5ZB4Kx0
+         OnW/pCnlcLPuQDW4W2WbfhZ4SyfP1roWY543XY1QJgmEwwDSKtwhqG1c9u0BAUPJla/2
+         11yZl3CrPzf9fh+ayjQ+gaGosqfdCKMAxm7L9NgAckEp2cUZd/9yGO70Z29EJi20Z2oo
+         2k3w==
+X-Gm-Message-State: AOAM532Mw8sRaIDPeIyW3TXJKY44MosoVIXHvF7lAN8sUG0eQsvzfcFW
+        dj8+XH3fnqxqEmht13IILNWo9Tl5rGwDbYmp
+X-Google-Smtp-Source: ABdhPJyqIUq3/7V4EUpMofpmG76jXAnX2+YGuEtx4CO99U4aCIZdMUQE/GkjTd8ViUAifPPJu+RSiA==
+X-Received: by 2002:a05:6e02:2145:: with SMTP id d5mr858660ilv.23.1629123641680;
+        Mon, 16 Aug 2021 07:20:41 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id m26sm3210997ioj.54.2021.08.16.07.20.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 07:20:41 -0700 (PDT)
+Subject: Re: [PATCH net-next 4/6] net: ipa: ensure hardware has power in
+ ipa_start_xmit()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210812195035.2816276-1-elder@linaro.org>
+ <20210812195035.2816276-5-elder@linaro.org>
+ <20210813174655.1d13b524@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <3a9e82cc-c09e-62e8-4671-8f16d4f6a35b@linaro.org>
+ <20210816071543.39a44815@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <b6b1ca41-36de-bcb1-30ca-6e8d8bfcc5a9@linaro.org>
+Date:   Mon, 16 Aug 2021 09:20:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YRpva4gS1LfncPUj@smile.fi.intel.com>
+In-Reply-To: <20210816071543.39a44815@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021, Andy Shevchenko wrote:
-
-> On Mon, Aug 16, 2021 at 02:33:28PM +0100, Lee Jones wrote:
-> > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
-> > 
-> > > On Mon, Aug 16, 2021 at 4:11 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > On Mon, 26 Jul 2021, Andy Shevchenko wrote:
-> > > >
-> > > > > The driver can provide a software node group instead of
-> > > > > passing legacy platform data. This will allow to drop
-> > > > > the legacy platform data structures along with unifying
-> > > > > a child device driver to use same interface for all
-> > > > > property providers, i.e. Device Tree, ACPI, and board files.
-> > > > >
-> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > > ---
-> > > > >  drivers/mfd/intel_quark_i2c_gpio.c | 70 ++++++++++++++++--------------
-> > > > >  1 file changed, 37 insertions(+), 33 deletions(-)
-> > > >
-> > > > Doesn't seem to want to apply.
-> > > 
-> > > Would it be okay for you to pull the immutable tag?
-> > 
-> > What immutable tag?
+On 8/16/21 9:15 AM, Jakub Kicinski wrote:
+> On Fri, 13 Aug 2021 21:25:23 -0500 Alex Elder wrote:
+>>> This is racy, what if the pm work gets scheduled on another CPU and
+>>> calls wake right here (i.e. before you call netif_stop_queue())?
+>>> The queue may never get woken up?
+>>
+>> I haven't been seeing this happen but I think you may be right.
+>>
+>> I did think about this race, but I think I was relying on the
+>> PM work queue to somehow avoid the problem.  I need to think
+>> about this again after a good night's sleep.  I might need
+>> to add an atomic flag or something.
 > 
-> It's here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio-intel.git/tag/?h=intel-gpio-v5.15-1
+> Maybe add a spin lock?  Seems like the whole wake up path will be
+> expensive enough for a spin lock to be in the noise. You can always
+> add complexity later.
 
-My Ack can't be merged like that.
+Exactly what I just decided after trying to work out a
+clever way without using a spinlock...  I'll be sending
+out a fix today.  Thanks.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+					-Alex
+
