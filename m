@@ -2,64 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F6E3ED307
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B803ED309
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbhHPLXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
+        id S236096AbhHPL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHPLXc (ORCPT
+        with ESMTP id S231758AbhHPL1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:23:32 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4576DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:23:01 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id x5so5372943qtq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=kvyETQFCZXtBz7kqCRBs15bm8sELTR1yZLjxto0dTAuQpceAE0teE2J2mqncbYXYNJ
-         G//4W8f3GHb6PqVuLAZCgFHDaokb65zRdEYWDU9Dh+YFWxQkvILw/C0chVD8oB+tWKir
-         ZwtDHhm6kueXb0rZ95c4X0Q95icxg9LOgr0pHt872CPKf7lP0kxnkBBY64x4anb51o2b
-         /ikP7ogrJDoz5SJsQ+wXJcuIxHlobQGRcgL+m/mtWLGnW4D2Hkb9AoTcN8Ewg4vOoXn6
-         WKZHK7rbUNaiEqGg3QG5CrCJGlPQNVUwlIbxEHu5j4CmXonMdTUpPtOLHNFgUjlod3+S
-         FsJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=fzvqMb9rxNKUXIespyXDQxjHzuWpa+ljFjRjH6YKTsP71fRk+lTZoHQvIvuRAcFSaX
-         ALAF7tn0q62a25n5WmsncTvvCF2C6HWUSnbFamMxMBUxjwx1/+fd35NMOn/LHKs96YAA
-         TnOUUhaJiCGF0fl8erhPoLRM4woXyGmj+YyfKg46KC4qR4uR/UBBclZBdMkDxZ075exe
-         WMmhO7bptT0TEkh6l8CC/Dt8ocvSfWxziq2HVM1r30IGAmmn9yQW5gpnF9SiRQgd1pgV
-         em5dT9Io4sYxwedBX109z6yN+wENleaDx6hmym3V3Hhqk0N6WJykstN1o6dhHEEdd7tM
-         +J+w==
-X-Gm-Message-State: AOAM531v4Ts+DlQegsuTQ5Isotfy5DTJ0vVzDZlEJt8MtWlsRda9pqOO
-        MAcxey1zX7+UG2Gc2ceDGioCik9l8gh+jVoI8oQ=
-X-Google-Smtp-Source: ABdhPJy7Z7Fm+GC1ls1Sjd8Vw7aDl35tF3tCV14nXyub0rg7PzOc23hZgbatZHt79yovWaQGfUJcku6H1tjTTm4Ri8g=
-X-Received: by 2002:a05:622a:652:: with SMTP id a18mr13197575qtb.112.1629112980415;
- Mon, 16 Aug 2021 04:23:00 -0700 (PDT)
+        Mon, 16 Aug 2021 07:27:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F1FC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:27:09 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFaln-0002ZJ-DT; Mon, 16 Aug 2021 13:27:07 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 6F56E668232;
+        Mon, 16 Aug 2021 11:27:05 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 13:27:03 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/7] can: dev: add can_tdc_get_relative_tdco() helper
+ function
+Message-ID: <20210816112703.y6olntctn3oaavng@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-5-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Received: by 2002:a0c:f752:0:0:0:0:0 with HTTP; Mon, 16 Aug 2021 04:23:00
- -0700 (PDT)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <maddahabdwabbo52@gmail.com>
-Date:   Mon, 16 Aug 2021 12:23:00 +0100
-Message-ID: <CAGqN+qZyt4Ar9t147a+_rynrjzEJVhQS6teGLeVLYPw7Rq3bBQ@mail.gmail.com>
-Subject: DID YOU RECEIVE MY MAIL?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gawe3w234erlrps6"
+Content-Disposition: inline
+In-Reply-To: <20210815033248.98111-5-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+
+--gawe3w234erlrps6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 15.08.2021 12:32:45, Vincent Mailhol wrote:
+> struct can_tdc::tdco represents the absolute offset from TDCV. Some
+> controllers use instead an offset relative to the Sample Point (SP)
+> such that:
+> | SSP =3D TDCV + absolute TDCO
+> |     =3D TDCV + SP + relative TDCO
+>=20
+> Consequently:
+> | relative TDCO =3D absolute TDCO - SP
+>=20
+> The function can_tdc_get_relative_tdco() allow to retrieve this
+> relative TDCO value.
+>=20
+> CC: Stefan M=C3=A4tje <Stefan.Maetje@esd.eu>
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  include/linux/can/dev.h | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 0be982fd22fb..fa75e29182a3 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -93,6 +93,35 @@ static inline bool can_tdc_is_enabled(const struct can=
+_priv *priv)
+>  	return !!(priv->ctrlmode & CAN_CTRLMODE_TDC_MASK);
+>  }
+> =20
+> +/*
+> + * can_get_relative_tdco() - TDCO relative to the sample point
+> + *
+> + * struct can_tdc::tdco represents the absolute offset from TDCV. Some
+> + * controllers use instead an offset relative to the Sample Point (SP)
+> + * such that:
+> + *
+> + * SSP =3D TDCV + absolute TDCO
+> + *     =3D TDCV + SP + relative TDCO
+> + *
+> + * -+----------- one bit ----------+-- TX pin
+> + *  |<--- Sample Point --->|
+> + *
+> + *                         --+----------- one bit ----------+-- RX pin
+> + *  |<-------- TDCV -------->|
+> + *                           |<------------------------>| absolute TDCO
+> + *                           |<--- Sample Point --->|
+> + *                           |                      |<->| relative TDCO
+> + *  |<------------- Secondary Sample Point ------------>|
+> + */
+> +static inline s32 can_get_relative_tdco(const struct can_priv *priv)
+> +{
+> +	const struct can_bittiming *dbt =3D &priv->data_bittiming;
+> +	s32 sample_point_in_tc =3D  (CAN_SYNC_SEG + dbt->prop_seg +
+                                ^^
+
+Only one space. I'll fix the while applying.
+
+> +				   dbt->phase_seg1) * dbt->brp;
+> +
+> +	return (s32)priv->tdc.tdco - sample_point_in_tc;
+> +}
+> +
+>  /* helper to define static CAN controller features at device creation ti=
+me */
+>  static inline void can_set_static_ctrlmode(struct net_device *dev,
+>  					   u32 static_mode)
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--gawe3w234erlrps6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaS4UACgkQqclaivrt
+76lJJgf+JhTGf4sZoT1vegI0OZIUDYVko7WtcO2FmLg9HtQtENlwUseVVQq74w3O
+aTITmDEOiAqZoCe4L8nHI6nKS5vfCNsadjtkS/As34WDWikS3/pZIYsEse5/sWxL
+rg5QmXKl2iqqrWj5F6Lj8a/3mgnvxbE6LdgLsvmJHRWjOXnaZ9RAw+iXCWrV5zx1
+qFV5CwOle4QeMpIuSgxL4yLvc9YIfGTdKbaHD5JBzDM2hDGeNb/q4gPPKrH4kXF8
+Uts0tafEsosSpfObwlyzBWVuVDp79ph6T3WSc/k6n1eK+Eo6DSQDICuwN4dSlHMT
+GEAFHBzDqJoRwr6TV1QnVCTf6lbciQ==
+=cSs2
+-----END PGP SIGNATURE-----
+
+--gawe3w234erlrps6--
