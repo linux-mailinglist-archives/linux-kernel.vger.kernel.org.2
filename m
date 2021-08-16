@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C6A3ED1A6
+	by mail.lfdr.de (Postfix) with ESMTP id CBF843ED1A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhHPKKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
+        id S235629AbhHPKKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:10:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230397AbhHPKKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C234961BB4;
+        id S229741AbhHPKKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:10:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B1CED61BA9;
         Mon, 16 Aug 2021 10:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1629108605;
-        bh=mBbcz0wPV1iTeXv1YxWCnxHi1j3Mwjsc3MNJ89JThuk=;
+        bh=x7jsrHvrjjPLpjpYi6DdNrOCHbwoBUewPPbMYvYCnd0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=p7cnrKMrlnEQtx88JI/YXxF/tZifoEq4iMEkwZf0w4dlzWkZhDz6z+tKyc3rrtK9P
-         RnDzozl2jVrhNb+4VwSd2N/1FMmhFv+8O+SNexL5oZLlXdDylpoqyjFX74yK+DCRu8
-         7pofkq35nYecJydmcS8Q8gnfC8Sohpi1AjQtd0Au9QwnD0+7tkWpPMSkT/rZ6RHCxA
-         dd35pagS4+hma1SX8P7TWdMrfw02YX9PUwyUyuyIPUVjeTknqQsRqujwlYPXGRql1z
-         MY7U2xJvDD+sGmZmDEvD/v1fH5O7+MZKzhFPHHn6lvVZ248PhcLoO6T7H6M0Cy78T3
-         UDH16qKjP6Uww==
+        b=K3A3FFuNROwAxOIXfVWMe5Ay+xgX20j2lA8mbDvjeiAez7bvzJXY5TOOLew785pSU
+         LeXeb9xTcVVTE/I8nIAIFd4bTOnqdT6nVfWmnJpOZNR0RD9dNnRxVR0Gkud3dQYNR9
+         uGWqlbQ61vNbrP87o1E8EV+f4f0DKMMryc2yKUipQyAWKa2Ex6ojMcuS2bxaiBClpz
+         E788DZEZDHhJTjHrLtssqy1bkubL730QjzT1Ml3aRntdRfCpGVTGQJUOd9PELy4MYj
+         3o1lhgFkw8ayDX8TCApNg3tldoYpcX05YIVHcHetd5DnAY0Ye+laFh3qferpgCLlm2
+         ZvYHxibH+SJuA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B4F8960976;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AB543609CF;
         Mon, 16 Aug 2021 10:10:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] net: phy: marvell: Add WAKE_PHY support to WOL
- event
+Subject: Re: [PATCH net-next 1/1] net: pcs: xpcs: Add Pause Mode support for SGMII
+ and 2500BaseX
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162910860573.22499.3474408155534541859.git-patchwork-notify@kernel.org>
+Message-Id: <162910860569.22499.14682043682217951395.git-patchwork-notify@kernel.org>
 Date:   Mon, 16 Aug 2021 10:10:05 +0000
-References: <20210813084508.182333-1-yoong.siang.song@intel.com>
-In-Reply-To: <20210813084508.182333-1-yoong.siang.song@intel.com>
-To:     Song@ci.codeaurora.org, Yoong Siang <yoong.siang.song@intel.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+References: <20210813021129.1141216-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210813021129.1141216-1-vee.khee.wong@linux.intel.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        kuba@kernel.org, davem@davemloft.net, linux@armlinux.org.uk,
+        vladimir.oltean@nxp.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,17 +49,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 13 Aug 2021 16:45:08 +0800 you wrote:
-> Add Wake-on-PHY feature support by enabling the Link Up Event.
+On Fri, 13 Aug 2021 10:11:29 +0800 you wrote:
+> SGMII/2500BaseX supports Pause frame as defined in the IEEE802.3x
+> Flow Control standardization.
 > 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
->  drivers/net/phy/marvell.c | 39 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 36 insertions(+), 3 deletions(-)
+> Add this as a supported feature under the xpcs_sgmii_features struct.
+> 
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next,1/1] net: phy: marvell: Add WAKE_PHY support to WOL event
-    https://git.kernel.org/netdev/net-next/c/6164659ff7ac
+  - [net-next,1/1] net: pcs: xpcs: Add Pause Mode support for SGMII and 2500BaseX
+    https://git.kernel.org/netdev/net-next/c/849d2f83f52e
 
 You are awesome, thank you!
 --
