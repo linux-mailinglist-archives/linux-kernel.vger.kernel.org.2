@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C6F3ED159
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC9A3ED15F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhHPJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhHPJz1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:55:27 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F8AC061764;
-        Mon, 16 Aug 2021 02:54:56 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id h13so22756211wrp.1;
-        Mon, 16 Aug 2021 02:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lCtwN1/Tc6AEDBE9eRczuSHPTW+enb9LWBSg2kwIFhY=;
-        b=Mf3YQRamX9s+sXTFIdOG7jDUc/s+1ZxNKTI+YC5bJO8vvn5K2/tvU6nyX5ojwrlkyM
-         Aog6xm+y2goyW+kQx/0mbUEY3KQpYq6U6cQQ5KdIx+TFfTMo+vIVJjiymmpxGsfaQjU4
-         aKlCMt/MZpO89RXC5dGLA0vzjTpT6YqMLTv7jMMQWhhadYP0NzezdJqth9dkAsRIuiyq
-         DBwYoq7f40qMiCyAtEDHpFcyBzQ4m9LHCLfokBuh2Vn2zCLfxnyPtY6Drwbll88dahRX
-         rXEW+psxZTwt8OMEZeygYTg/M80hLUlpVndPrdboma49N+6DNIZbqSSKtX8A8yoYGkGB
-         0zmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lCtwN1/Tc6AEDBE9eRczuSHPTW+enb9LWBSg2kwIFhY=;
-        b=ssru+U7UDhr9HrIV//+OokrffGRGeGrf7EerOK5Te2kh3cEGWsntxtzuX6dR9s5eez
-         TFhKb5KVr9mU4wzU/tOrrKfY8Y7C5AQ0Tw6t5Z8PlvgNVE8irB0QLMHddzD3844jOkA8
-         urxzNr4tPHEnZHtHHRuVdpSVxfW7u+ZjFAEPlswHGPoKn2VT8b9p9weCXIDb9ALEgxcg
-         Yz/1jSzKOB3hRvK4FfdnzA5K8dgc7/7EQoeDGGZnTqYnN0a7lgu4spWxYgJN2GsNSnk8
-         Eih9OxIMShmEK6ZFmpPBfaM3l/Ub2en/JKrxZmMt7Hh4Zg17dzxDBSh588cXlAVWkHRb
-         kA3g==
-X-Gm-Message-State: AOAM532KAm/ancnsxt/lbHVuYTKThJ2NHDpMQPI7GramoEu91TegJrhg
-        tvLpc0joBTsCxfDon01uV68=
-X-Google-Smtp-Source: ABdhPJxEBkLsdoiB4/f/6VyMSZEXgGP+mDXXiwj3zbRY5rPxacUVx/03TGH5byc572g+lwuM0/loKA==
-X-Received: by 2002:adf:f8c8:: with SMTP id f8mr17928711wrq.204.1629107694713;
-        Mon, 16 Aug 2021 02:54:54 -0700 (PDT)
-Received: from localhost (pd9e51807.dip0.t-ipconnect.de. [217.229.24.7])
-        by smtp.gmail.com with ESMTPSA id k17sm10742242wmj.0.2021.08.16.02.54.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 02:54:53 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 11:54:52 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jawoslav Kysela <perex@perex.cz>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 2/2] ASoC: tegra30: i2s: Use of_device_get_match_data
-Message-ID: <YRo17IKkGYEBUCoe@orome.fritz.box>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <f4e632e0023d90c43b2b927e752585142a9d9c26.1628971397.git.aakashhemadri123@gmail.com>
+        id S235494AbhHPJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235336AbhHPJ5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 05:57:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C115461B80;
+        Mon, 16 Aug 2021 09:57:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629107831;
+        bh=Ayb7keNQqIl6kxOV4S50AHDEDaPDNz8NyoQkVGazeso=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t58Yn2UeXmWOB2wtL7wqLJfLyGH/OsS7N4yTo+ee9WMVhQ9pdFUiV6wlKEl//Ux0T
+         kjBxkY46Hv/mOYMVUzqctGvOSL9hTHJL+k+TVOosAIpJmA8A1WPbvoB+OhLeyTOdh/
+         q8FQWZR7FiozVjr+QOFR10Rh2uJ69P58eHw3W3XgflHhaIZX+HluQDJfJZrsrRv0Lf
+         aFCylpo58yKLOlqx/Yx8p3CXDA3YA+DhXUcRoiJ5Fm0y65X1+rG+xEc6TM/3oPGN9x
+         m2eAwunk2k/WBhzFP+YrZbSoMpofowUEekiJ/308uyZ/0lvFTP3Lx7Gx4/Qi8TRlWK
+         fPxudsQioxW9g==
+Received: by mail-oi1-f169.google.com with SMTP id bf25so17119398oib.10;
+        Mon, 16 Aug 2021 02:57:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530a7bxTLsPLVG1vCYuUTKNJcxB2Aj98APa3RhqgoHdR9Rii01ah
+        ZVG5P1Pw/1iLtH2xGwdmRY4mmzp2Y6+tnKkFHG8=
+X-Google-Smtp-Source: ABdhPJwq0DGmPu6bRrra7HzEjbViggI2OAmDJO6gVCk0Z/NISDNWSOmmYJTNkEcfdQp0Pjzm18kxS5vbxkYHxJfY9lI=
+X-Received: by 2002:aca:dd89:: with SMTP id u131mr11130913oig.47.1629107831145;
+ Mon, 16 Aug 2021 02:57:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="L8F5rI6YsatuZvBz"
-Content-Disposition: inline
-In-Reply-To: <f4e632e0023d90c43b2b927e752585142a9d9c26.1628971397.git.aakashhemadri123@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
+ <20210809190157.279332-4-dovmurik@linux.ibm.com> <YRZuIIVIzMfgjtEl@google.com>
+In-Reply-To: <YRZuIIVIzMfgjtEl@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 16 Aug 2021 11:56:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
+Message-ID: <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
+ computing secrets
+To:     Andrew Scull <ascull@google.com>
+Cc:     Dov Murik <dovmurik@linux.ibm.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
+        linux-security-module@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 13 Aug 2021 at 15:05, Andrew Scull <ascull@google.com> wrote:
+>
+> On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
+> > The new sev_secret module exposes the confidential computing (coco)
+> > secret area via securityfs interface.
+> >
+> > When the module is loaded (and securityfs is mounted, typically under
+> > /sys/kernel/security), a "coco/sev_secret" directory is created in
+> > securityfs.  In it, a file is created for each secret entry.  The name
+> > of each such file is the GUID of the secret entry, and its content is
+> > the secret data.
+> >
+> > This allows applications running in a confidential computing setting to
+> > read secrets provided by the guest owner via a secure secret injection
+> > mechanism (such as AMD SEV's LAUNCH_SECRET command).
+> >
+> > Removing (unlinking) files in the "coco/sev_secret" directory will zero
+> > out the secret in memory, and remove the filesystem entry.  If the
+> > module is removed and loaded again, that secret will not appear in the
+> > filesystem.
+>
+> We've also been looking into a similar secret mechanism recently in the
+> context of Android and protected KVM [1]. Our secrets would come from a
+> different source, likely described as a reserved-memory node in the DT,
+> but would need to be exposed to userspace in the same way as the SEV
+> secrets. Originally I tried using a character device, but this approach
+> with securityfs feels neater to me.
+>
 
---L8F5rI6YsatuZvBz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agreed. I particularly like how deleting the file wipes the secret from memory.
 
-On Sun, Aug 15, 2021 at 01:42:19AM +0530, Aakash Hemadri wrote:
-> Prefer `of_device_get_match_data` over `of_match_device`
->=20
-> Retrieve OF match data using `of_device_get_match_data`, this is cleaner
-> and better expresses intent.
->=20
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  sound/soc/tegra/tegra30_i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> We're also looking to pass secrets from the bootloader to Linux, outside
+> of any virtualization or confidential compute context (at least a far as
+> I have understood the meaning of the term). Again, this feels like it
+> would be exposed to userspace in the same way.
+>
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Indeed.
 
---L8F5rI6YsatuZvBz
-Content-Type: application/pgp-signature; name="signature.asc"
+> It would be good to be able to share the parts that would be common. I
+> expect that would mean the operations for a secret file and for a
+> directory of secrets at a minimum. But it might also influence the paths
+> in securityfs; I see, looking back, that the "coco" directory was added
+> since the RFC but would a generalized "secret" subsystem make sense? Or
+> would it be preferable for each case to define their own path?
+>
 
------BEGIN PGP SIGNATURE-----
+I think we should avoid 'secret', to be honest. Even if protected KVM
+is not riding the SEV/TDX wave, I think confidential computing is
+still an accurate description of its semantics.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEaNewACgkQ3SOs138+
-s6FvUg/+Le8sG7K2DpxH02WiNGwIgYIcgcVqtfbXAP9ATobiDSpjt+ts9oIyA4om
-Ztin1Ulmb0GMbDqKcL+A4JmCAmI64mNuF8xWoySoBwyAm/D3TgGYFEpPOcAK3WrR
-OTFs8L6MOmi9cq1gnMwXmskz6Hc3yfO+7Fw8o4h1cfPXk4AZVCo18N2wsCCCs6F6
-wy5mqQF83B/pTofjdKebUEc8wj+JNq4TIgzsGH5oU5Tf32OpEc1KvKfHvwJ4E1T3
-o/n9aNIFy4GrLPVzvKndo/COXm30IEKBjEypnoKEyadm4TwTK6O6jAYrMcJmhHOa
-TpblQXEl22hFWeBURaqW1g6IDvvdsR0tOcjWjDI39RTX3LoGcPkEezJd3RPrbkNC
-u1djqnemvCpLKiaXCeFqaogw/XG/vWwLt6VUergSs6Vstip5GFPtdXO6+dyUYlKK
-Via50ScSCl+G9hxJbJNxglZx4smMcaQdzHvt6VjuUJ3bqGvVkF4ab8Mzqq3SQfvQ
-ngcPoahwY2Zf8DldMFfEnMSQ5psj2ClZq0ve04JWsc5Y+nMizLhp0LSvWN7TDCuB
-VLTI+xxIQj80imx2ONq44YSx+3dbwf8P2mNaKhFS1viw75KwO4yMcf5z18VX2Nil
-fSvXqTmwemWy2GF8YhWDL7GN3MFpCLiwi7vQ1/8dgDT4VG6d5U8=
-=5EZb
------END PGP SIGNATURE-----
+> [1] -- https://lwn.net/Articles/836693/
+>
+> > +static int sev_secret_unlink(struct inode *dir, struct dentry *dentry)
+> > +{
+> > +     struct sev_secret *s = sev_secret_get();
+> > +     struct inode *inode = d_inode(dentry);
+> > +     struct secret_entry *e = (struct secret_entry *)inode->i_private;
+> > +     int i;
+> > +
+> > +     if (e) {
+> > +             /* Zero out the secret data */
+> > +             memzero_explicit(e->data, secret_entry_data_len(e));
+>
+> Would there be a benefit in flushing these zeros?
+>
 
---L8F5rI6YsatuZvBz--
+Do you mean cache clean+invalidate? Better to be precise here.
+
+
+> > +             e->guid = NULL_GUID;
+> > +     }
+> > +
+> > +     inode->i_private = NULL;
+> > +
+> > +     for (i = 0; i < SEV_SECRET_NUM_FILES; i++)
+> > +             if (s->fs_files[i] == dentry)
+> > +                     s->fs_files[i] = NULL;
+> > +
+> > +     /*
+> > +      * securityfs_remove tries to lock the directory's inode, but we reach
+> > +      * the unlink callback when it's already locked
+> > +      */
+> > +     inode_unlock(dir);
+> > +     securityfs_remove(dentry);
+> > +     inode_lock(dir);
+> > +
+> > +     return 0;
+> > +}
