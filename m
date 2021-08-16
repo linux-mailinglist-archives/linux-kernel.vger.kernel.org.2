@@ -2,86 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830A03EDCC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060163EDCCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhHPSCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:02:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhHPSCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:02:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC3160462;
-        Mon, 16 Aug 2021 18:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629136934;
-        bh=B2jyaNj79A42m28exuRget68ed7+1u8WgVhr2RwnPkY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=YozBxOdSA4wdQxQTcgrxfYHbJVGLAIgbuqAJW5BL25XSn5gcEXpkSTERuIKdJIv4w
-         EdRxQ2e59ucRTjQqaY05rKXCb1t18D9/dTpg5TNNisvhs5ci9Q39hi4FhuFMdt/kR8
-         CwLhCdaKRIZdkPC2oHPJ4lOzHT/NhIvtNXkOsHtFpoNHl+f5rCrOuHq8qW1v1Gc3QI
-         yIAz8+EVKnuRXWeAdwNkjg/8+6kjeKdfD9O4+qBtkCZ5zFbXwOwFAnuUYB+Wae9y5l
-         BV4B2Sw7PwvrkzsLSQYgHQAdAqplCWFHIJHPz6mwnl5mf+uhNYXv5AdjJ9QyCsF0NQ
-         KQ7QQmXDLhfSw==
-Date:   Mon, 16 Aug 2021 13:02:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jawoslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        id S230288AbhHPSF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhHPSF4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:05:56 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA9C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:05:24 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w19-20020ac87e930000b029025a2609eb04so9639600qtj.17
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WUhrLDawJHutBQtlsVgOUTtq1I0JwrxuJFZxAOpOQh0=;
+        b=SBIC7Krjh/VhBl5SaGxVCbuoUREHKzu6zDr3IjUFmXSUOuqfreRC/rZdLIE2r7E4VM
+         BCVJp7rNhmur0M/Uc43eucOdLG8igCTSSDGwc6aDsD3AE1WT0GJECDeh4n6ViR7Ik8To
+         GnBsBUPrp/MrQhIkshElrv4YCcYD1OjecIEsdS+hs9tk+5p2nGPznYmA2SvjL7d3/7Vs
+         OVrQ1GuilvU0fZ+7TXjbWg1GpdPqgyqXqk3BD8+cckMBxeph/XaMrGRKTvQRo+QdI9jX
+         61veqXqnlf+uRhA5mPYH1A0cM+TcDnou+aG1rPr6OEbr3NPC1nH7Ep5MJYzo7O1HGgJ0
+         AabQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WUhrLDawJHutBQtlsVgOUTtq1I0JwrxuJFZxAOpOQh0=;
+        b=ETPAr/s1K/PxqEv2AhMJ8s+ulLmSeyxIFVHHIOj/2g7bxH2E2ZmgMbt+IFl3s9IBRP
+         mnBxuAqgwDXmtmd67jlaIwZRm8oxhrLxj4g9SqCnk5xigkHzuFCJetAKwaaztAVTCEjY
+         hd8T6yNny9h3LyJblAHxduxHOHzpedCEcUTIxQZByyA987RTpn03RDkmmyllCQe8EOxL
+         ll49BaJjSqq6ZVJBftGA2C/BfnXiVNF9fIYHvCLza/zfYDiIAmHEqY/rcauUhvn0IJI7
+         1OvT3wOgLqjDyV2aCn1Ke4Z1K2ZBEvcj7kIXtkc+vJ2vRw49cOF+FDLFdlubSpPHJ9UR
+         BYnQ==
+X-Gm-Message-State: AOAM530giQglMjCsvrFLQB8NrMdG79upN6XvQ7/O0awGEeS3JlsZFYYQ
+        nuHv0YB4SH3ERMCV6+/lNCX97QEOZQgloyDpwWo=
+X-Google-Smtp-Source: ABdhPJxhKkwy4tIJBPi81JnMtRw9ItdUQCqEs3lJya95irvVe6M8or+msF0I1n8xF4YguHAVXtFyEmeRO47qpZRCe/w=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:5676:2fb8:7851:2301])
+ (user=samitolvanen job=sendgmr) by 2002:a05:6214:892:: with SMTP id
+ cz18mr17100881qvb.60.1629137122793; Mon, 16 Aug 2021 11:05:22 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 11:05:19 -0700
+Message-Id: <20210816180519.1021311-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH v4] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
         linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816180212.GA2933142@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
-> Prefer `of_device_get_match_data` over `of_match_device`
-> 
-> Retrieve OF match data using `of_device_get_match_data`, this is cleaner
-> and better expresses intent.
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  sound/soc/tegra/tegra30_ahub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-> index b3e1df693381..0ac109b32329 100644
-> --- a/sound/soc/tegra/tegra30_ahub.c
-> +++ b/sound/soc/tegra/tegra30_ahub.c
-> @@ -518,7 +518,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
->  	void __iomem *regs_apbif, *regs_ahub;
->  	int ret = 0;
->  
-> -	match = of_match_device(tegra30_ahub_of_match, &pdev->dev);
-> +	match = of_device_get_match_data(&pdev->dev);
+With CONFIG_LTO_CLANG, we currently link modules into native
+code just before modpost, which means with TRIM_UNUSED_KSYMS
+enabled, we still look at the LLVM bitcode in the .o files when
+generating the list of used symbols. As the bitcode doesn't
+yet have calls to compiler intrinsics and llvm-nm doesn't see
+function references that only exist in function-level inline
+assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+work with LTO.
 
-I think this is incorrect.
+This change moves module LTO linking to happen earlier, and
+thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+entirely, allowing us to also drop the whitelist from
+gen_autoksyms.sh.
 
-  const struct of_device_id *of_match_device(...)
-  const void *of_device_get_match_data(...)
+Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+Tested-by: Alexander Lobakin <alobakin@pm.me>
+---
+Changes in v4:
+- Added .lto.o to targets to actually fix the use of if_changed.
+- Replaced an unnecessary mod-prelink-ext with .lto.
 
-of_match_device() returns "struct of_device_id *", i.e., "match".
+Changes in v3:
+- Added missing FORCE.
 
-of_device_get_match_data() calls of_match_device() internally, then
-returns "match->data".
+Changes in v2:
+- Fixed a couple of typos.
+- Fixed objtool arguments for .lto.o to always include --module.
 
->  	if (!match)
->  		return -EINVAL;
->  	soc_data = match->data;
-> -- 
-> 2.32.0
-> 
+---
+ scripts/Makefile.build    | 28 +++++++++++++++++++++++++++-
+ scripts/Makefile.lib      |  7 +++++++
+ scripts/Makefile.modfinal | 21 ++-------------------
+ scripts/Makefile.modpost  | 22 +++-------------------
+ scripts/gen_autoksyms.sh  | 12 ------------
+ 5 files changed, 39 insertions(+), 51 deletions(-)
+
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 02197cb8e3a7..a6f43afd09bb 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -88,6 +88,10 @@ endif
+ 
+ targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+ 
++ifdef CONFIG_LTO_CLANG
++targets-for-modules += $(patsubst %.o, %.lto.o, $(filter %.o, $(obj-m)))
++endif
++
+ ifdef need-modorder
+ targets-for-modules += $(obj)/modules.order
+ endif
+@@ -271,12 +275,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
++ifdef CONFIG_LTO_CLANG
++# Module .o files may contain LLVM bitcode, compile them into native code
++# before ELF processing
++quiet_cmd_cc_lto_link_modules = LTO [M] $@
++cmd_cc_lto_link_modules =						\
++	$(LD) $(ld_flags) -r -o $@					\
++		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
++			echo -T $(@:.lto.o=.o.symversions))		\
++		--whole-archive $(filter-out FORCE,$^)
++
++ifdef CONFIG_STACK_VALIDATION
++# objtool was skipped for LLVM bitcode, run it now that we have compiled
++# modules into native code
++cmd_cc_lto_link_modules += ;						\
++	$(objtree)/tools/objtool/objtool $(objtool_args) --module	\
++		$(@:.ko=.lto.o)
++endif
++
++$(obj)/%.lto.o: $(obj)/%.o FORCE
++	$(call if_changed,cc_lto_link_modules)
++endif
++
+ cmd_mod = { \
+ 	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+ 	$(undefined_syms) echo; \
+ 	} > $@
+ 
+-$(obj)/%.mod: $(obj)/%.o FORCE
++$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
+ 	$(call if_changed,mod)
+ 
+ quiet_cmd_cc_lst_c = MKLST   $@
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 10950559b223..af1c920a585c 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+ 		 $(addprefix -I,$(DTC_INCLUDE))                          \
+ 		 -undef -D__DTS__
+ 
++ifeq ($(CONFIG_LTO_CLANG),y)
++# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
++# need to run LTO to compile them into native code (.lto.o) before further
++# processing.
++mod-prelink-ext := .lto
++endif
++
+ # Objtool arguments are also needed for modfinal with LTO, so we define
+ # then here to avoid duplication.
+ objtool_args =								\
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 5e9b8057fb24..ff805777431c 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -9,7 +9,7 @@ __modfinal:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for c_flags and objtool_args
++# for c_flags and mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ # find all modules listed in modules.order
+@@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
+ 
+ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+-# avoid a second slow LTO link
+-prelink-ext := .lto
+-
+-# ELF processing was skipped earlier because we didn't have native code,
+-# so let's now process the prelinked binary before we link the module.
+-
+-ifdef CONFIG_STACK_VALIDATION
+-cmd_ld_ko_o +=								\
+-	$(objtree)/tools/objtool/objtool $(objtool_args)		\
+-		$(@:.ko=$(prelink-ext).o);
+-
+-endif # CONFIG_STACK_VALIDATION
+-
+-endif # CONFIG_LTO_CLANG
+-
+ quiet_cmd_ld_ko_o = LD [M]  $@
+       cmd_ld_ko_o +=							\
+ 	$(LD) -r $(KBUILD_LDFLAGS)					\
+@@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+ 
+ 
+ # Re-generate module BTFs if either module's .ko or vmlinux changed
+-$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
++$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+ 	+$(call if_changed_except,ld_ko_o,vmlinux)
+ ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+ 	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index c383ba33d837..eef56d629799 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -41,7 +41,7 @@ __modpost:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for ld_flags
++# for mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ MODPOST = scripts/mod/modpost								\
+@@ -118,22 +118,6 @@ $(input-symdump):
+ 	@echo >&2 '         Modules may not have dependencies or modversions.'
+ 	@echo >&2 '         You may get many unresolved symbol warnings.'
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
+-# LTO to compile them into native code before running modpost
+-prelink-ext := .lto
+-
+-quiet_cmd_cc_lto_link_modules = LTO [M] $@
+-cmd_cc_lto_link_modules =						\
+-	$(LD) $(ld_flags) -r -o $@					\
+-		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+-			echo -T $(@:.lto.o=.o.symversions))		\
+-		--whole-archive $^
+-
+-%.lto.o: %.o
+-	$(call if_changed,cc_lto_link_modules)
+-endif
+-
+ modules := $(sort $(shell cat $(MODORDER)))
+ 
+ # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
+@@ -144,9 +128,9 @@ endif
+ # Read out modules.order to pass in modpost.
+ # Otherwise, allmodconfig would fail with "Argument list too long".
+ quiet_cmd_modpost = MODPOST $@
+-      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
++      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
+ 
+-$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
++$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
+ 	$(call if_changed,modpost)
+ 
+ targets += $(output-symdump)
+diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+index da320151e7c3..6ed0d225c8b1 100755
+--- a/scripts/gen_autoksyms.sh
++++ b/scripts/gen_autoksyms.sh
+@@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
+ 	needed_symbols="$needed_symbols module_layout"
+ fi
+ 
+-# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+-# when the .mod files are generated, which means they don't yet contain
+-# references to certain symbols that will be present in the final binaries.
+-if [ -n "$CONFIG_LTO_CLANG" ]; then
+-	# intrinsic functions
+-	needed_symbols="$needed_symbols memcpy memmove memset"
+-	# ftrace
+-	needed_symbols="$needed_symbols _mcount"
+-	# stack protector symbols
+-	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+-fi
+-
+ ksym_wl=
+ if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+ 	# Use 'eval' to expand the whitelist path and check if it is relative
+
+base-commit: a2824f19e6065a0d3735acd9fe7155b104e7edf5
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
+
