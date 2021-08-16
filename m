@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13013ED444
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66373ED44E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhHPMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
+        id S231589AbhHPMtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhHPMrw (ORCPT
+        with ESMTP id S229801AbhHPMtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:47:52 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1108C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k29so23417375wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
+        Mon, 16 Aug 2021 08:49:40 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8909AC061764;
+        Mon, 16 Aug 2021 05:49:08 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso27455064pjb.1;
+        Mon, 16 Aug 2021 05:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=UciGnzheksS2qLoDLETrk/e95MzTGXeXG51AsgxNO+k=;
-        b=iD22aRcEZwq4TaevFswvk4OthmpEFUC7ITUQ9Ol6vDK5/eWHqWht8L/R616ABlyCqy
-         y2Uh3QDw+P1dll33nho/xbdwG67gDWgdmJcwgApWfFnItYAf5ylujvoIFcuxW5tQIiEA
-         lLyCYKx9uHCodFNN6kORzWGtVA9wz1sdHOFlsun4DXKuhxFjhqQxo2Z79SAaCqUfd9fJ
-         akJjAXzwQ2fyguv8v17S+mzcNWYgtFqZj/KG6hRTsmqIFPJgPEmrIPjXTbOdH9qjhtPU
-         ITpT0uhjbRMpe7zhnUOAd2hxvGCb2hlRZ0RQatJaSnnleD/W6wYQFU4ZRZRdEV1f7L7f
-         F97w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fy2isYPKNPiV5shXC0pHBU+VcJN04Q1fGssTZF6jyrk=;
+        b=dbgyiLbUICxgXBHTpnPAt/qsKESjlH/GBJ5TU7nhRGV6hU3DTxWOTZYXjVLe6V0LOw
+         Dy5an50QuHgAsakguL9U4ZBtazFIOR++CnKTFqv4riOyEDkF9ulw4+gyQSQC2VKERLTL
+         pY7zB8ORh5dlqbAOIym3VEBlvcua2JM0gIUmuyxst6vgBfbDaQESHW6DNjybfifgsXf5
+         lDXOZD7hV6xVp4uZod0U+x4SRKyNDnumXP7YuRH3pPBF5WUYsw+oX8jD3xMRRdkUh3xq
+         wuXCGi1NAz8Q2egjbTe1ppJ4daHst0QJjkwiyLAKGPXSH+3Latwvcs25zzB7dzjdypEE
+         KELA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=UciGnzheksS2qLoDLETrk/e95MzTGXeXG51AsgxNO+k=;
-        b=OyCN5Nu7NQ+AAC9kkugA3w+hKqGNn02rnj7Y6hvtofUjh5Z4rxLbfr8KiPTCAFmjHK
-         5nOElY5htTbOio3QzNQ3HcFvNTnv9hjUJexuZSXSdkiIkhCFEpON/T1KPY6djc4c6lEg
-         ebbVB7nSWKcBmnq32zrCgRK1htG2hPtt/9m5KJ/4pofeE8YLoqauPZkwlrTAJ9LNgTwH
-         cUlhOab/XOgZQ0Xw2XGvVfk5DASs3U0SJOVBjJsVS5ZiykOPYhlS3qfB44PN59kq9jhi
-         Shz/wXYKSQJuy7EGHXVto7KZ2X92PlvSyRVOedvVSg9uHWkOzeBzJJOhmo9Sfr+lItmV
-         qI1A==
-X-Gm-Message-State: AOAM531sETqw0joTxcdsZQ2fH36FZOwVafhxUkwaC4Z6YBR3KRvbilMP
-        Lc8iAMhxlHJHIm54fWchAyyfbSjhvrY=
-X-Google-Smtp-Source: ABdhPJx74mNcW0G9z1JdJLJUjdM7uql3qXMDms0ym6TmRaR/WZqCVzU/Rghb8dPZfXDv1TnTJXAy/Q==
-X-Received: by 2002:adf:e9c3:: with SMTP id l3mr18612852wrn.300.1629118039512;
-        Mon, 16 Aug 2021 05:47:19 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:f9:c3d:bbad:9698? ([2a02:908:1252:fb60:f9:c3d:bbad:9698])
-        by smtp.gmail.com with ESMTPSA id s17sm10488566wmj.12.2021.08.16.05.47.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 05:47:19 -0700 (PDT)
-Subject: Re: [PATCH] drm: radeon: r600_dma: Replace cpu_to_le32() by
- lower_32_bits()
-To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        zhaoxiao <zhaoxiao@uniontech.com>, airlied@linux.ie
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        David1.Zhou@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210813085434.3890-1-zhaoxiao@uniontech.com>
- <54590a79-7047-cd6f-0f54-a005bdc69769@daenzer.net>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <4b1faa87-a4d8-57e2-80d0-817c5df8f643@gmail.com>
-Date:   Mon, 16 Aug 2021 14:47:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fy2isYPKNPiV5shXC0pHBU+VcJN04Q1fGssTZF6jyrk=;
+        b=B8BkGsQzmhDbELiYJO0GPW2Vy2o/eCmYHYGkRRI9VK+b1lz8alK4J3zBW3h9RAmxEF
+         zjvLmntlBpqLT6RmX/ez7GrkzfeodfBhl/JDTiWXit6fUppek0SCaVyU+AHb3QwVLUXP
+         7FmwkftYxnkOKQBsNj8HkXPiltEy7419qfyXkvUZgu79U8Rr5ALwf1Ss61+/6aySwRC0
+         3dBHfYKIaTqjklc5SjMKoPlkvlbbIQIJ2kR2j5a2Cj883jCxEdRAL7f8IQPzndV0Bsb9
+         8sh5jm3gFRTcZlbNqjJdOyAFWZIDq2BnTpAT2zIZEZaSm5lnz7wJTd19wsTHyxmAda+d
+         9o7g==
+X-Gm-Message-State: AOAM530vlzj9VyV2t+yoa4YW8mGbGp7L/rNqzuJ5tjplxLpwc8Ba8qUM
+        FfSNjvsRdWXsyv3tD7TO4mjSv+hqxARq+AH7Kag=
+X-Google-Smtp-Source: ABdhPJxw1y148kB9C6s1stB/oyZ5CgbZ7lwNMKRJajO3KET6bGTP3m7dnAH7DpztooEiwAxSMphInYVT5VYiQ08bv94=
+X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
+ cp6-20020a170902e786b029012d02a7365fmr13247410plb.21.1629118148043; Mon, 16
+ Aug 2021 05:49:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <54590a79-7047-cd6f-0f54-a005bdc69769@daenzer.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+ <20210815213309.2847711-4-liambeguin@gmail.com> <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
+ <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
+In-Reply-To: <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 16 Aug 2021 15:48:28 +0300
+Message-ID: <CAHp75VdC8GFmV-uOHPQpv5q=q0ZwSKFXW6gOL-hK6N4_qS1YJw@mail.gmail.com>
+Subject: Re: [PATCH v6 3/5] iio: adc: ad7949: add vref selection support
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Charles-Antoine Couret <charles-antoine.couret@essensium.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <Nuno.Sa@analog.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 3:39 PM Liam Beguin <liambeguin@gmail.com> wrote:
+> On Mon Aug 16, 2021 at 4:04 AM EDT, Andy Shevchenko wrote:
+> > On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
+> > wrote:
+
+...
+
+> > > +       tmp = 4096000;
+> > > +       ret = device_property_read_u32(dev, "adi,internal-ref-microvolt", &tmp);
+> >
+> > > +       if (ret < 0 && ret != -EINVAL) {
+>
+> Hi Andy,
+>
+> >
+> > What does this check (second part) is supposed to mean?
+> > The first part will make it mandatory, is it the goal?
+> >
+>
+> device_property_read_u32() will return -EINVAL if the property isn't
+> found in the devicetree.
+>
+> This checks for errors when the property is defined while keeping it
+> optional.
+
+Don't assign and don't check the error code of the API. As simply as that.
+
+> > > +               dev_err(dev, "invalid value for adi,internal-ref-microvolt\n");
+> > > +               return ret;
+> > > +       }
 
 
-Am 13.08.21 um 17:03 schrieb Michel Dänzer:
-> On 2021-08-13 10:54 a.m., zhaoxiao wrote:
->> This patch fixes the following sparse errors:
->> drivers/gpu/drm/radeon/r600_dma.c:247:30: warning: incorrect type in assignment (different base types)
->> drivers/gpu/drm/radeon/r600_dma.c:247:30:    expected unsigned int volatile [usertype]
->> drivers/gpu/drm/radeon/r600_dma.c:247:30:    got restricted __le32 [usertype]
->>
->> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
->> ---
->>   drivers/gpu/drm/radeon/r600_dma.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/radeon/r600_dma.c b/drivers/gpu/drm/radeon/r600_dma.c
->> index fb65e6fb5c4f..a2d0b1edcd22 100644
->> --- a/drivers/gpu/drm/radeon/r600_dma.c
->> +++ b/drivers/gpu/drm/radeon/r600_dma.c
->> @@ -244,7 +244,7 @@ int r600_dma_ring_test(struct radeon_device *rdev,
->>   	gpu_addr = rdev->wb.gpu_addr + index;
->>   
->>   	tmp = 0xCAFEDEAD;
->> -	rdev->wb.wb[index/4] = cpu_to_le32(tmp);
->> +	rdev->wb.wb[index/4] = lower_32_bits(tmp);
->>   
->>   	r = radeon_ring_lock(rdev, ring, 4);
->>   	if (r) {
->>
-> Seems better to mark rdev->wb.wb as little endian instead. It's read with le32_to_cpu (with some exceptions which look like bugs), which would result in 0xADEDFECA like this.
-
-Yeah, that patch doesn't look correct at all and most likely breaks ring 
-test on big endian systems.
-
-Christian.
+-- 
+With Best Regards,
+Andy Shevchenko
