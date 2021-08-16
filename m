@@ -2,72 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF1C3ED2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C483ED2E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbhHPLD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:03:26 -0400
-Received: from mail-lj1-f173.google.com ([209.85.208.173]:45591 "EHLO
-        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHPLDY (ORCPT
+        id S235906AbhHPLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhHPLIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:03:24 -0400
-Received: by mail-lj1-f173.google.com with SMTP id h11so26476077ljo.12;
-        Mon, 16 Aug 2021 04:02:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o8y1FwATQvjhneFiEErjVY4Ui2WuooaPfZa51BLYZO0=;
-        b=fJ93r24rYXLFdGc8Oa0gquTh+vXcN2lEs4wCgVTfEBPU2cwi64MtD2ETkm/wrqfBfw
-         2SAwmxmaVOWZ0xV71KpE8y+QFFcJb0a9WnhjXaN8MEfjLL6tjTHQB1KzGcuSylz9vyFC
-         jep1xKL2T/fIHKrrGkzZ7gpoQIBq11BBjjygQR+SPYoqTb0pcB9/UjhdEZZNHIDMDEAF
-         NIR9hJcopwjIdT4jCOriGnkWbzrm6OzlvQKz+X/9vXD6BawSVGof23Z8Xg7xHoPtZyYO
-         6jb/GjOfgLWkdTTi1JtnM8VzGKWzOO37/KpfI2zI0jtLNK9UCUs5Z28RXmjblpnljIC8
-         t/xg==
-X-Gm-Message-State: AOAM532UM9IyVS18dX4nZaA0P+5gqXEFFjJ/yw7y5p4NIo7tYzoFj6hD
-        Eep15JWT5qJh4Umjmvev044amCSK7zeCyXJbgLU=
-X-Google-Smtp-Source: ABdhPJzM/poLE/zfjersj0U6XsB/AEL7JxKTmuPToBDn3k3q9SCrLno88Yt28+z8jROfErqDhQnUWRz+Ru04i7GwAUQ=
-X-Received: by 2002:a05:651c:24a:: with SMTP id x10mr10981081ljn.60.1629111772132;
- Mon, 16 Aug 2021 04:02:52 -0700 (PDT)
+        Mon, 16 Aug 2021 07:08:45 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486EEC061764;
+        Mon, 16 Aug 2021 04:08:14 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id BB8571F42B20
+Received: by earth.universe (Postfix, from userid 1000)
+        id 340193C0C9B; Mon, 16 Aug 2021 13:08:10 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 13:08:10 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] power: supply: max17042: handle fails of reading
+ status register
+Message-ID: <20210816110810.sw2jkt2dqlo3iedr@earth.universe>
+References: <20210816082716.21193-1-krzysztof.kozlowski@canonical.com>
+ <820c80fa-c412-dd71-62a4-0ba1e1a97820@redhat.com>
 MIME-Version: 1.0
-References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
- <20210814101728.75334-5-mailhol.vincent@wanadoo.fr> <20210814111428.2jivv6rbj5piqrto@pengutronix.de>
-In-Reply-To: <20210814111428.2jivv6rbj5piqrto@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Mon, 16 Aug 2021 20:02:40 +0900
-Message-ID: <CAMZ6RqLvhqJeCOyQwLsww5rAassYoPA=YnTw-Qq-UyAfTBTyqA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
- Transmitter Delay Compensation (TDC)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        linux-can <linux-can@vger.kernel.org>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6vwwvktmiv53b3xj"
+Content-Disposition: inline
+In-Reply-To: <820c80fa-c412-dd71-62a4-0ba1e1a97820@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I originally sent the below answer on Saturday but omitted to CC
-the mailing list so only Marc received it.
-Resending it for the record.
 
-On Sat. 14 Aug 2021 at 20:14, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 14.08.2021 19:17:28, Vincent Mailhol wrote:
-> >  include/uapi/linux/can/netlink.h |  30 +++++++-
->
-> IIRC, changes of the uapi headers will be pull in regularly from the
-> mainline kernel.
+--6vwwvktmiv53b3xj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I see... This kind of makes sense. However, that would be less
-easier to test as people will have to update the uapi headers by
-hand.
+Hi,
 
-For now, I will just wait and I will send a new version without
-the uapi header once we agree on the kernel part.
+On Mon, Aug 16, 2021 at 10:42:01AM +0200, Hans de Goede wrote:
+> Hi,
+>=20
+> On 8/16/21 10:27 AM, Krzysztof Kozlowski wrote:
+> > Reading status register can fail in the interrupt handler.  In such
+> > case, the regmap_read() will not store anything useful under passed
+> > 'val' variable and random stack value will be used to determine type of
+> > interrupt.
+> >=20
+> > Handle the regmap_read() failure to avoid handling interrupt type and
+> > triggering changed power supply event based on random stack value.
+> >=20
+> > Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device=
+'s registers")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>=20
+> Thanks, the entire series looks good to me:
+>=20
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>=20
+> For the series.
 
+Thanks, series queued.
 
-Yours sincerely,
-Vincent
+-- Sebastian
+
+>=20
+> Regards,
+>=20
+> Hans
+>=20
+> > ---
+> >  drivers/power/supply/max17042_battery.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/su=
+pply/max17042_battery.c
+> > index ce2041b30a06..858ae97600d4 100644
+> > --- a/drivers/power/supply/max17042_battery.c
+> > +++ b/drivers/power/supply/max17042_battery.c
+> > @@ -869,8 +869,12 @@ static irqreturn_t max17042_thread_handler(int id,=
+ void *dev)
+> >  {
+> >  	struct max17042_chip *chip =3D dev;
+> >  	u32 val;
+> > +	int ret;
+> > +
+> > +	ret =3D regmap_read(chip->regmap, MAX17042_STATUS, &val);
+> > +	if (ret)
+> > +		return IRQ_HANDLED;
+> > =20
+> > -	regmap_read(chip->regmap, MAX17042_STATUS, &val);
+> >  	if ((val & STATUS_INTR_SOCMIN_BIT) ||
+> >  		(val & STATUS_INTR_SOCMAX_BIT)) {
+> >  		dev_info(&chip->client->dev, "SOC threshold INTR\n");
+> >=20
+>=20
+
+--6vwwvktmiv53b3xj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEaRxMACgkQ2O7X88g7
++poBKhAAk5pmj5Djl2zZVinaNrMQkERWS5zRujTOO105iG1WIdst9L1KbJUwVng7
+12lgHIeeQi+GeaW69Ytd7Rm7WhTZp/kE1R2qyfNOQKMs1x9eRZAcgK7slhspUPCb
+e/YNN41n3h90ulV34Zn87Ta4sTPoCUkz89XUs45qE00oK03y6ySXJnwT919BXSsr
+9Ix1bVDcWTz98limS+rB3YsSDUL5r9LJ1wuu8azTemdvGIXDppZ2QYiUzbOlrO1R
+JrLa/O3q/OgpWJUi2iu1gaXvOU9WR4V/slgUG9FOgpgfFN+bSgqtYe6NX+Yk2zDu
+E2XbPxSbH83ktRmw9TAC0DJYpkOgcA9g8Xl+4oc1YcPDUDqMVMqP/gZ0L5waxlK6
+ukA8dLox/+cGScT7ajDFh4g409XfQ4YHFukNTe+DRt04ovX1R13SIHhS59BkSzjT
+MFYgfesyJdYoLX6aDdQFl/KUg/G3/dJ8YxTsyOYW00ErDPu141HgEkKNTEmt2HoV
+85qN8RuoPCIv92lieAOJenjsQXmYHD3p/hRTBdLlqsraoqdWQXK2yYNdJB9RL4Vj
+5VM692MuWbsPoQ5MyMt/1+6xkCBoHKdHgHjghsViwvyWA28OnFBPCKidxCc26QK2
+sQa0+8+32ke4ITG50k5Uj506PGkpRehovfMCQ6vPQxJlQYtTx6s=
+=qDkR
+-----END PGP SIGNATURE-----
+
+--6vwwvktmiv53b3xj--
