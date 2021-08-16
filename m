@@ -2,268 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420213EDA02
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0027C3EDA04
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236593AbhHPPjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236587AbhHPPin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:38:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3E5861038;
-        Mon, 16 Aug 2021 15:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629128288;
-        bh=tHhyC6kAlf+oAco4D9JDHQJv3HljRpDzS0CTzK+YPdI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=SkKX/p5kSQjr5EHbb0Z08UbB6FaCryjmUSPm/8HQex7ZtlYE43QDVf64s0Kd7W4VR
-         qPk76HqiiDs5M6DolBVv10qW0I4lT1AQGZEqGdNq6I3XBqd/zYWtI/VfeVn6A5Ieb1
-         68V5xiJ2tNRr53o9O6uxlysEOMKsZIYKAubRxFxX7bo7SifbWLPDoKRTdEkgYK2aAS
-         7VH7RmkwEsAtL4BLaxbeW3FrzoaRGDBurTB9vCSdGW0z4tWs9VhWJ4Pc8cMkIi2sRF
-         gZIv+3exF68rGuj14CV98ZmzVS4nu5ieKjf+XHQnUpXo/t880gTHs810tR+fgf6DfP
-         GGmTLlrjFSZLw==
-Subject: Re: [PATCH 1/2] erofs: add support for the full decompressed length
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Lasse Collin <lasse.collin@tukaani.org>,
-        nl6720 <nl6720@gmail.com>
-References: <20210813052931.203280-1-hsiangkao@linux.alibaba.com>
- <20210813052931.203280-2-hsiangkao@linux.alibaba.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <f3437906-f983-65f9-8471-35f94b57d889@kernel.org>
-Date:   Mon, 16 Aug 2021 23:38:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236670AbhHPPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233348AbhHPPi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:38:57 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF1C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:38:23 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id bo19so27046283edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Zz0i158XnyKqiJFtiKT4TYdtbve1kSwEIiogz0ebpoI=;
+        b=JxwjN2iDUBGXxVXoqY/+xQUkSXCMijRzxtlhtizG5c12hoGUQzZtddjck5FXqPfjIT
+         pxXrkXYyVczl6qct/IPmvQYqPYZQdW9l4urX5hqE+DZk8R7Djy87nDpcnx0SM4I0gEii
+         mowizmb1hHSAf1NHdsRXQ9JixP63lNOIk2i4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Zz0i158XnyKqiJFtiKT4TYdtbve1kSwEIiogz0ebpoI=;
+        b=uNHMeFAq1ZR6u8j1joKNv4vQN2o5TVLO7Q7/zhE3wvLTOKSSGXTsaHpjyWG4uCr6JY
+         fzWsh8seZZhi5y2tybqQmap0UihbfhB4iO8Iy1Jg3nlf4kbf92MiGH9V7zudEwLv2jtp
+         T6vEiynZQjtSU5yNihzqbNDGwnQpFYDyERInsbYHNcTgv63AIho0GP6kf6NwoWd33x1r
+         Uawk4JM3zefHAqvhXyIqV4aTnGzPeTVC7a9dXD92tyKmdT5DQlGdsMIBjdMXP9i0NuC+
+         0yd7ENvitJAa/hAMw83vvy3MIBJvuOjbP0KjraWCNQyxuawfpFKh20asPOFOp23eqhpT
+         T7kg==
+X-Gm-Message-State: AOAM532uNTwAlMDAsrL8UGOhVxPN7dqYAbKikH2yfK9jkbQF3pa60NPy
+        hfyNSAh0MNbDZQf8pxwEG8Ku2w==
+X-Google-Smtp-Source: ABdhPJyDPOVbyYl5vIg+1nXNQXy12uOWye4psZro1XNL/+QDZbWjstraISzUJO4itysqHwRE9W4sMA==
+X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr4120350edd.151.1629128302348;
+        Mon, 16 Aug 2021 08:38:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id kz15sm3838111ejc.103.2021.08.16.08.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 08:38:21 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 17:38:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Steven Price <steven.price@arm.com>, Roy Sun <Roy.Sun@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v2 4/5] drm/scheduler: Add fence deadline support
+Message-ID: <YRqGazgGJ2NAIzg2@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>, David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Steven Price <steven.price@arm.com>, Roy Sun <Roy.Sun@amd.com>,
+        Lee Jones <lee.jones@linaro.org>, Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
+References: <20210807183804.459850-1-robdclark@gmail.com>
+ <20210807183804.459850-5-robdclark@gmail.com>
+ <e28020c5-3da3-c721-96df-9a115f105bf7@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210813052931.203280-2-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e28020c5-3da3-c721-96df-9a115f105bf7@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/13 13:29, Gao Xiang wrote:
-> Previously, there is no need to get the full decompressed length since
-> EROFS supports partial decompression. However for some other cases
-> such as fiemap, the full decompressed length is necessary for iomap to
-> make it work properly.
+On Mon, Aug 16, 2021 at 12:14:35PM +0200, Christian König wrote:
+> Am 07.08.21 um 20:37 schrieb Rob Clark:
+> > From: Rob Clark <robdclark@chromium.org>
+> > 
+> > As the finished fence is the one that is exposed to userspace, and
+> > therefore the one that other operations, like atomic update, would
+> > block on, we need to propagate the deadline from from the finished
+> > fence to the actual hw fence.
+> > 
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+
+I guess you're already letting the compositor run at a higher gpu priority
+so that your deadline'd drm_sched_job isn't stuck behind the app rendering
+the next frame?
+
+I'm not sure whether you wire that one up as part of the conversion to
+drm/sched. Without that I think we might need to ponder how we can do a
+prio-boost for these, e.g. within a scheduling class we pick the jobs with
+the nearest deadline first, before we pick others.
+-Daniel
+
+> > ---
+> >   drivers/gpu/drm/scheduler/sched_fence.c | 25 +++++++++++++++++++++++++
+> >   drivers/gpu/drm/scheduler/sched_main.c  |  3 +++
+> >   include/drm/gpu_scheduler.h             |  6 ++++++
+> >   3 files changed, 34 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+> > index 69de2c76731f..f389dca44185 100644
+> > --- a/drivers/gpu/drm/scheduler/sched_fence.c
+> > +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+> > @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
+> >   	dma_fence_put(&fence->scheduled);
+> >   }
+> > +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
+> > +						  ktime_t deadline)
+> > +{
+> > +	struct drm_sched_fence *fence = to_drm_sched_fence(f);
+> > +	unsigned long flags;
+> > +
+> > +	spin_lock_irqsave(&fence->lock, flags);
+> > +
+> > +	/* If we already have an earlier deadline, keep it: */
+> > +	if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
+> > +	    ktime_before(fence->deadline, deadline)) {
+> > +		spin_unlock_irqrestore(&fence->lock, flags);
+> > +		return;
+> > +	}
+> > +
+> > +	fence->deadline = deadline;
+> > +	set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
+> > +
+> > +	spin_unlock_irqrestore(&fence->lock, flags);
+> > +
+> > +	if (fence->parent)
+> > +		dma_fence_set_deadline(fence->parent, deadline);
+> > +}
+> > +
+> >   static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
+> >   	.get_driver_name = drm_sched_fence_get_driver_name,
+> >   	.get_timeline_name = drm_sched_fence_get_timeline_name,
+> > @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
+> >   	.get_driver_name = drm_sched_fence_get_driver_name,
+> >   	.get_timeline_name = drm_sched_fence_get_timeline_name,
+> >   	.release = drm_sched_fence_release_finished,
+> > +	.set_deadline = drm_sched_fence_set_deadline_finished,
+> >   };
+> >   struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> > diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+> > index a2a953693b45..3ab0900d3596 100644
+> > --- a/drivers/gpu/drm/scheduler/sched_main.c
+> > +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> > @@ -818,6 +818,9 @@ static int drm_sched_main(void *param)
+> >   		if (!IS_ERR_OR_NULL(fence)) {
+> >   			s_fence->parent = dma_fence_get(fence);
+> > +			if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > +				     &s_fence->finished.flags))
+> > +				dma_fence_set_deadline(fence, s_fence->deadline);
 > 
-> This patch adds a way to get the full decompressed length. Note that
-> it takes more metadata overhead and it'd be avoided if possible in the
-> performance sensitive scenario.
+> Maybe move this into a dma_sched_fence_set_parent() function.
 > 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->   fs/erofs/internal.h |  5 +++
->   fs/erofs/zmap.c     | 93 +++++++++++++++++++++++++++++++++++++++++----
->   2 files changed, 90 insertions(+), 8 deletions(-)
+> Apart from that looks good to me.
 > 
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 25b094085ca6..2a05b09e1c06 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -356,6 +356,11 @@ struct erofs_map_blocks {
->   
->   /* Flags used by erofs_map_blocks_flatmode() */
->   #define EROFS_GET_BLOCKS_RAW    0x0001
-> +/*
-> + * Used to get the exact decompressed length, e.g. fiemap (consider lookback
-> + * approach instead if possible since it's quite metadata expensive.)
-> + */
-> +#define EROFS_GET_BLOCKS_FIEMAP	0x0002
->   
->   /* zmap.c */
->   #ifdef CONFIG_EROFS_FS_ZIP
-> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-> index f68aea4baed7..12256ef12819 100644
-> --- a/fs/erofs/zmap.c
-> +++ b/fs/erofs/zmap.c
-> @@ -212,9 +212,32 @@ static unsigned int decode_compactedbits(unsigned int lobits,
->   	return lo;
->   }
->   
-> +static int get_compacted_la_distance(unsigned int lclusterbits,
-> +				     unsigned int encodebits,
-> +				     unsigned int vcnt, u8 *in, int i)
-> +{
-> +	const unsigned int lomask = (1 << lclusterbits) - 1;
-> +	unsigned int lo, d1 = 0;
-> +	u8 type;
-> +
-> +	for (; i < vcnt; ++i) {
-
-for (di = 0; i < vcnt; ++i, ++d1)
-
-> +		lo = decode_compactedbits(lclusterbits, lomask,
-> +					  in, encodebits * i, &type);
-> +
-> +		if (type != Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD)
-> +			return d1;
-
-[1]
-
-> +		++d1;
-> +	}
-> +
-> +	/* vcnt - 1 (Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) item */
-> +	if (!(lo & Z_EROFS_VLE_DI_D0_CBLKCNT))
-> +		d1 += lo - 1;
-> +	return d1;
-> +}
-> +
->   static int unpack_compacted_index(struct z_erofs_maprecorder *m,
->   				  unsigned int amortizedshift,
-> -				  unsigned int eofs)
-> +				  unsigned int eofs, bool lookahead)
->   {
->   	struct erofs_inode *const vi = EROFS_I(m->inode);
->   	const unsigned int lclusterbits = vi->z_logical_clusterbits;
-> @@ -243,6 +266,11 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
->   	m->type = type;
->   	if (type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
->   		m->clusterofs = 1 << lclusterbits;
-> +
-> +		/* figure out lookahead_distance: delta[1] if needed */
-> +		if (lookahead)
-> +			m->delta[1] = get_compacted_la_distance(lclusterbits,
-> +						encodebits, vcnt, in, i);
->   		if (lo & Z_EROFS_VLE_DI_D0_CBLKCNT) {
->   			if (!big_pcluster) {
->   				DBG_BUGON(1);
-> @@ -313,7 +341,7 @@ static int unpack_compacted_index(struct z_erofs_maprecorder *m,
->   }
->   
->   static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> -					    unsigned long lcn)
-> +					    unsigned long lcn, bool lookahead)
->   {
->   	struct inode *const inode = m->inode;
->   	struct erofs_inode *const vi = EROFS_I(inode);
-> @@ -364,11 +392,12 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
->   	err = z_erofs_reload_indexes(m, erofs_blknr(pos));
->   	if (err)
->   		return err;
-> -	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos));
-> +	return unpack_compacted_index(m, amortizedshift, erofs_blkoff(pos),
-> +				      lookahead);
->   }
->   
->   static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> -					  unsigned int lcn)
-> +					  unsigned int lcn, bool lookahead)
->   {
->   	const unsigned int datamode = EROFS_I(m->inode)->datalayout;
->   
-> @@ -376,7 +405,7 @@ static int z_erofs_load_cluster_from_disk(struct z_erofs_maprecorder *m,
->   		return legacy_load_cluster_from_disk(m, lcn);
->   
->   	if (datamode == EROFS_INODE_FLAT_COMPRESSION)
-> -		return compacted_load_cluster_from_disk(m, lcn);
-> +		return compacted_load_cluster_from_disk(m, lcn, lookahead);
->   
->   	return -EINVAL;
->   }
-> @@ -399,7 +428,7 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
->   
->   	/* load extent head logical cluster if needed */
->   	lcn -= lookback_distance;
-> -	err = z_erofs_load_cluster_from_disk(m, lcn);
-> +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
->   	if (err)
->   		return err;
->   
-> @@ -450,7 +479,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
->   	if (m->compressedlcs)
->   		goto out;
->   
-> -	err = z_erofs_load_cluster_from_disk(m, lcn);
-> +	err = z_erofs_load_cluster_from_disk(m, lcn, false);
->   	if (err)
->   		return err;
->   
-> @@ -498,6 +527,48 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
->   	return -EFSCORRUPTED;
->   }
->   
-> +static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
-> +{
-> +	struct inode *inode = m->inode;
-> +	struct erofs_inode *vi = EROFS_I(inode);
-> +	struct erofs_map_blocks *map = m->map;
-> +	unsigned int lclusterbits = vi->z_logical_clusterbits;
-> +	u64 lcn = m->lcn, headlcn = map->m_la >> lclusterbits;
-> +	int err;
-> +
-> +	do {
-> +		/* handle the last EOF pcluster (no next HEAD lcluster) */
-> +		if ((lcn << lclusterbits) >= inode->i_size) {
-> +			map->m_llen = inode->i_size - map->m_la;
-> +			return 0;
-> +		}
-> +
-> +		err = z_erofs_load_cluster_from_disk(m, lcn, true);
-> +		if (err)
-> +			return err;
-> +
-> +		if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD) {
-> +			if (!m->delta[1])
-> +				DBG_BUGON(m->clusterofs != 1 << lclusterbits);
-
-			DBG_BUGON(!m->delta[1] &&
-				m->clusterofs != 1 << lclusterbits);
-
-> +		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
-> +			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
-> +			/* go on until the next HEAD lcluster */
-> +			if (lcn != headlcn)
-> +				break;
-> +			m->delta[1] = 1;
-
-If I didn't miss anything, return value [1] of get_compacted_la_distance()
-won't be used anyway here? right?
-
-Thanks,
-
-> +		} else {
-> +			erofs_err(inode->i_sb, "unknown type %u @ lcn %llu of nid %llu",
-> +				  m->type, lcn, vi->nid);
-> +			DBG_BUGON(1);
-> +			return -EOPNOTSUPP;
-> +		}
-> +		lcn += m->delta[1];
-> +	} while (m->delta[1]);
-> +
-> +	map->m_llen = (lcn << lclusterbits) + m->clusterofs - map->m_la;
-> +	return 0;
-> +}
-> +
->   int z_erofs_map_blocks_iter(struct inode *inode,
->   			    struct erofs_map_blocks *map,
->   			    int flags)
-> @@ -531,7 +602,7 @@ int z_erofs_map_blocks_iter(struct inode *inode,
->   	initial_lcn = ofs >> lclusterbits;
->   	endoff = ofs & ((1 << lclusterbits) - 1);
->   
-> -	err = z_erofs_load_cluster_from_disk(&m, initial_lcn);
-> +	err = z_erofs_load_cluster_from_disk(&m, initial_lcn, false);
->   	if (err)
->   		goto unmap_out;
->   
-> @@ -581,6 +652,12 @@ int z_erofs_map_blocks_iter(struct inode *inode,
->   	err = z_erofs_get_extent_compressedlen(&m, initial_lcn);
->   	if (err)
->   		goto out;
-> +
-> +	if (flags & EROFS_GET_BLOCKS_FIEMAP) {
-> +		err = z_erofs_get_extent_decompressedlen(&m);
-> +		if (!err)
-> +			map->m_flags |= EROFS_MAP_FULL_MAPPED;
-> +	}
->   unmap_out:
->   	if (m.kaddr)
->   		kunmap_atomic(m.kaddr);
+> Regards,
+> Christian.
 > 
+> >   			r = dma_fence_add_callback(fence, &sched_job->cb,
+> >   						   drm_sched_job_done_cb);
+> >   			if (r == -ENOENT)
+> > diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> > index d18af49fd009..0f08ade614ae 100644
+> > --- a/include/drm/gpu_scheduler.h
+> > +++ b/include/drm/gpu_scheduler.h
+> > @@ -144,6 +144,12 @@ struct drm_sched_fence {
+> >            */
+> >   	struct dma_fence		finished;
+> > +	/**
+> > +	 * @deadline: deadline set on &drm_sched_fence.finished which
+> > +	 * potentially needs to be propagated to &drm_sched_fence.parent
+> > +	 */
+> > +	ktime_t				deadline;
+> > +
+> >           /**
+> >            * @parent: the fence returned by &drm_sched_backend_ops.run_job
+> >            * when scheduling the job on hardware. We signal the
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
