@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47FF3ED5DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B503ED5C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237792AbhHPNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:15:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58258 "EHLO mail.kernel.org"
+        id S240133AbhHPNOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239175AbhHPNJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B17963295;
-        Mon, 16 Aug 2021 13:08:58 +0000 (UTC)
+        id S239198AbhHPNJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38DA96329B;
+        Mon, 16 Aug 2021 13:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119339;
-        bh=eunlG11KxHgVjrAj/cRgOPvltDaU9STbSoCRUEWx4V8=;
+        s=korg; t=1629119341;
+        bh=fyMzIjWpbx0TKWGioPKH+faPOMcGOPmGOeVInRLeiSU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6/wMpbhntV23w2K/vvHvqdptqHAPQnm2oiDIGSrxsncA51Rb+ohRb5a3NRFc1mVp
-         7pYWn4f5Te0Ti64Qh+QYCfxHFvxRadKUDVSd67zF7eP47dN4LXaeu9Po/nqRbTEVEl
-         fUh6e+cpt9+rNOV1OOLz9rvRHiQuXnXgFpPgcN10=
+        b=o8ffvD4nVRILysrlv5kL1H4XD/2BSdYXzT3H8AAK9y3uiFVJCGJ2y0OGq6rEwYs8Z
+         M4URY0B0aQtptRbsE++dRyWK6vM3wKbwYI1g24wY5eqKuFf8XCdo48vIXPZXkOWG8p
+         hVHlB1kSIWoqrxsjP1uYRNUhEWrG24fcT26nGLro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 85/96] PCI/MSI: Use msi_mask_irq() in pci_msi_shutdown()
-Date:   Mon, 16 Aug 2021 15:02:35 +0200
-Message-Id: <20210816125437.827861398@linuxfoundation.org>
+Subject: [PATCH 5.10 86/96] PCI/MSI: Protect msi_desc::masked for multi-MSI
+Date:   Mon, 16 Aug 2021 15:02:36 +0200
+Message-Id: <20210816125437.859407594@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
 References: <20210816125434.948010115@linuxfoundation.org>
@@ -41,31 +41,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit d28d4ad2a1aef27458b3383725bb179beb8d015c upstream.
+commit 77e89afc25f30abd56e76a809ee2884d7c1b63ce upstream.
 
-No point in using the raw write function from shutdown. Preparatory change
-to introduce proper serialization for the msi_desc::masked cache.
+Multi-MSI uses a single MSI descriptor and there is a single mask register
+when the device supports per vector masking. To avoid reading back the mask
+register the value is cached in the MSI descriptor and updates are done by
+clearing and setting bits in the cache and writing it to the device.
 
+But nothing protects msi_desc::masked and the mask register from being
+modified concurrently on two different CPUs for two different Linux
+interrupts which belong to the same multi-MSI descriptor.
+
+Add a lock to struct device and protect any operation on the mask and the
+mask register with it.
+
+This makes the update of msi_desc::masked unconditional, but there is no
+place which requires a modification of the hardware register without
+updating the masked cache.
+
+msi_mask_irq() is now an empty wrapper which will be cleaned up in follow
+up changes.
+
+The problem goes way back to the initial support of multi-MSI, but picking
+the commit which introduced the mask cache is a valid cut off point
+(2.6.30).
+
+Fixes: f2440d9acbe8 ("PCI MSI: Refactor interrupt masking code")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Marc Zyngier <maz@kernel.org>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.674391354@linutronix.de
+Link: https://lore.kernel.org/r/20210729222542.726833414@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/msi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/core.c    |    1 +
+ drivers/pci/msi.c      |   19 ++++++++++---------
+ include/linux/device.h |    1 +
+ include/linux/msi.h    |    2 +-
+ 4 files changed, 13 insertions(+), 10 deletions(-)
 
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2452,6 +2452,7 @@ void device_initialize(struct device *de
+ 	device_pm_init(dev);
+ 	set_dev_node(dev, -1);
+ #ifdef CONFIG_GENERIC_MSI_IRQ
++	raw_spin_lock_init(&dev->msi_lock);
+ 	INIT_LIST_HEAD(&dev->msi_list);
+ #endif
+ 	INIT_LIST_HEAD(&dev->links.consumers);
 --- a/drivers/pci/msi.c
 +++ b/drivers/pci/msi.c
-@@ -961,7 +961,7 @@ static void pci_msi_shutdown(struct pci_
+@@ -171,24 +171,25 @@ static inline __attribute_const__ u32 ms
+  * reliably as devices without an INTx disable bit will then generate a
+  * level IRQ which will never be cleared.
+  */
+-u32 __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
++void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+ {
+-	u32 mask_bits = desc->masked;
++	raw_spinlock_t *lock = &desc->dev->msi_lock;
++	unsigned long flags;
  
- 	/* Return the device with MSI unmasked as initial states */
- 	mask = msi_mask(desc->msi_attrib.multi_cap);
--	__pci_msi_desc_mask_irq(desc, mask, 0);
-+	msi_mask_irq(desc, mask, 0);
+ 	if (pci_msi_ignore_mask || !desc->msi_attrib.maskbit)
+-		return 0;
++		return;
  
- 	/* Restore dev->irq to its default pin-assertion IRQ */
- 	dev->irq = desc->msi_attrib.default_irq;
+-	mask_bits &= ~mask;
+-	mask_bits |= flag;
++	raw_spin_lock_irqsave(lock, flags);
++	desc->masked &= ~mask;
++	desc->masked |= flag;
+ 	pci_write_config_dword(msi_desc_to_pci_dev(desc), desc->mask_pos,
+-			       mask_bits);
+-
+-	return mask_bits;
++			       desc->masked);
++	raw_spin_unlock_irqrestore(lock, flags);
+ }
+ 
+ static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+ {
+-	desc->masked = __pci_msi_desc_mask_irq(desc, mask, flag);
++	__pci_msi_desc_mask_irq(desc, mask, flag);
+ }
+ 
+ static void __iomem *pci_msix_desc_addr(struct msi_desc *desc)
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -497,6 +497,7 @@ struct device {
+ 	struct dev_pin_info	*pins;
+ #endif
+ #ifdef CONFIG_GENERIC_MSI_IRQ
++	raw_spinlock_t		msi_lock;
+ 	struct list_head	msi_list;
+ #endif
+ #ifdef CONFIG_DMA_OPS
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -194,7 +194,7 @@ void __pci_read_msi_msg(struct msi_desc
+ void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
+ 
+ u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag);
+-u32 __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
++void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
+ void pci_msi_mask_irq(struct irq_data *data);
+ void pci_msi_unmask_irq(struct irq_data *data);
+ 
 
 
