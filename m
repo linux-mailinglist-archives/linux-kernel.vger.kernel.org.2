@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB27F3ED47D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C6A3ED700
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235598AbhHPNCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhHPNCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:02:04 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A3C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:01:33 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id cq23so8962085edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f/GF146nQqp2PhpJ6ztsdUf2MFA6TI0c/YyPE5i3rWg=;
-        b=Kv1VN0BT3FxD3LkbsJLmMC26j4eip3NJXB+o/zrrjNYED2aEVccBpxVY6QJ7EJXIV0
-         YQ4sjPo/t9+DbH0EuomMUE+nTU8iptuN7/xXU+S2xmdo6ZfxHCp+eqPzNMBYWt0Xaa0Q
-         iDgWOaq9T6bKrQumJ+BcoUSQi4NsUFwk0JviFUA2XO6UNk1Kx0LH1A7OtL7hwL1ecGTl
-         Jv0OTrnblF82yJ3DvSOudENG2GxDPAigYbMIAP6RlJbq8q5shkmsNoT1y5j4tOg4JA3Z
-         I7qMuwY0dH1EEaXR3mGhNwJH5v9rVGlpP/ximSyMQxBPD6a7Co906xfxevORX79YHaPf
-         cgXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f/GF146nQqp2PhpJ6ztsdUf2MFA6TI0c/YyPE5i3rWg=;
-        b=kxMn0/uaMaUTNDQ6F0N6KP31TDb4AuGCHBYtsrB2EJmA8X5yv15OD9n988JLjg5NOz
-         wcrq59DzQBMN0xnC975ipeYkFKTmWYXZeatWiPiBdGrH2kF/63DkI0bcC1/my9C7jUOs
-         UNQ5XWaAWaDy2jFZkKnhrMbRqX/Om1hbb3UdAaDngXFA+k/cXwpi9PlOLsK6RYGOU8KF
-         F3atwJd+sY2aJAwtWSf9h/+YUYq7icDqJYXSfypi/wsPsUHnp0reIS0O7y/+9uMfw2+D
-         N+BIQxkLmSKYFVToKQtfpWhoBrFNn0pbQCrl80UK7YBgqzjXvWMgp6yhrhTbQLn3VOXJ
-         yUHQ==
-X-Gm-Message-State: AOAM530I3C1fjj7oz+b3zIuhn1XyVlDBABiSsQswNpuz7k0LlNOf8QCP
-        xMjmsmkWXBULaygs31a7WUk=
-X-Google-Smtp-Source: ABdhPJxof+bTIruXpbIJCpbwPvbI/t1rMO5oMHrf6faUO4UkAc6NNpP6eYZulvrURyJPodQq1gGquA==
-X-Received: by 2002:a05:6402:31bc:: with SMTP id dj28mr19977771edb.143.1629118891817;
-        Mon, 16 Aug 2021 06:01:31 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id f16sm4873904edw.79.2021.08.16.06.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 06:01:31 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org,
-        Michael Straube <straube.linux@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: Re: [PATCH v2 2/4] staging: r8188eu: convert rtw_is_cckrates_included() to bool
+        id S238686AbhHPNZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238297AbhHPNPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:15:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 606DC6113D;
+        Mon, 16 Aug 2021 13:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629119567;
+        bh=JhelQhtwuCqkEfrHns4q/vxEWd0Pk6rq+iGNKUCEvkc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=x+w6cuMeekUUz/7Z7Rd/KGVSHTabPCM+zOL/+mUuAInx5L2cGNrNBcSdv/z8qihiV
+         K1rVTkwj1YYxinVkkG+TXhaCOR4vMZ+oeYCF1n4tg227652IsGcpGqIi0e8W3c6C0I
+         8fctcgLJZgbfviR5qr5qVr3O6mNtwLdQKzYOZa/M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 059/151] platform/x86: pcengines-apuv2: Add missing terminating entries to gpio-lookup tables
 Date:   Mon, 16 Aug 2021 15:01:29 +0200
-Message-ID: <2093947.dRTFVrr4gv@localhost.localdomain>
-In-Reply-To: <20210816115430.28264-2-straube.linux@gmail.com>
-References: <20210816115430.28264-1-straube.linux@gmail.com> <20210816115430.28264-2-straube.linux@gmail.com>
+Message-Id: <20210816125446.008986140@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, August 16, 2021 1:54:28 PM CEST Michael Straube wrote:
-> Function rtw_is_cckrates_included() returns boolean values.
-> Change the return type to bool to reflect this.
-> 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
-> v1 -> v2
-> Rewritten to apply with v2 of patch 1/4.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+[ Upstream commit 9d7b132e62e41b7d49bf157aeaf9147c27492e0f ]
 
-Thanks,
+The gpiod_lookup_table.table passed to gpiod_add_lookup_table() must
+be terminated with an empty entry, add this.
 
-Fabio
+Note we have likely been getting away with this not being present because
+the GPIO lookup code first matches on the dev_id, causing most lookups to
+skip checking the table and the lookups which do check the table will
+find a matching entry before reaching the end. With that said, terminating
+these tables properly still is obviously the correct thing to do.
+
+Fixes: f8eb0235f659 ("x86: pcengines apuv2 gpio/leds/keys platform driver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210806115515.12184-1-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/platform/x86/pcengines-apuv2.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/platform/x86/pcengines-apuv2.c b/drivers/platform/x86/pcengines-apuv2.c
+index c37349f97bb8..d063d91db9bc 100644
+--- a/drivers/platform/x86/pcengines-apuv2.c
++++ b/drivers/platform/x86/pcengines-apuv2.c
+@@ -94,6 +94,7 @@ static struct gpiod_lookup_table gpios_led_table = {
+ 				NULL, 1, GPIO_ACTIVE_LOW),
+ 		GPIO_LOOKUP_IDX(AMD_FCH_GPIO_DRIVER_NAME, APU2_GPIO_LINE_LED3,
+ 				NULL, 2, GPIO_ACTIVE_LOW),
++		{} /* Terminating entry */
+ 	}
+ };
+ 
+@@ -123,6 +124,7 @@ static struct gpiod_lookup_table gpios_key_table = {
+ 	.table = {
+ 		GPIO_LOOKUP_IDX(AMD_FCH_GPIO_DRIVER_NAME, APU2_GPIO_LINE_MODESW,
+ 				NULL, 0, GPIO_ACTIVE_LOW),
++		{} /* Terminating entry */
+ 	}
+ };
+ 
+-- 
+2.30.2
 
 
 
