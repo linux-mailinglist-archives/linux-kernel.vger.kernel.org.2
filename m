@@ -2,287 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04303EDEA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45803EDEA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhHPUZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        id S231812AbhHPU15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhHPUZ3 (ORCPT
+        with ESMTP id S231203AbhHPU14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:25:29 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC60C0617AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:56 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso17858267ybb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:24:56 -0700 (PDT)
+        Mon, 16 Aug 2021 16:27:56 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D742C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:24 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id c11-20020ac87dcb0000b0290293566e00b1so9869745qte.15
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=ytVF9QeV+MabNTM9/rkDa+0RWrj8iBIydz2kXshJL00=;
-        b=MMCS/5/YGI5geXZq2J1jLLt4Rr2E/2TX5tjz8gOWO9lYX2SX4ehLEGWEL0BCaiMiTp
-         agNVxJJtqvBJqsZdRyUCH9xL+Rfm1Wgt2HIdnQxafkxtNdX5OzW9ELX1VQogolDw+fd0
-         gIvB+lLgEI2cjdp8b+rYJpZwJUCx5ae4gVuC7AQUUmj3vpCUb4UKnaPEV9Y2RNn25Owb
-         /AjWIrNM79gx2JDdilHM3oyRLrQYKhEvDvObLx/uOGTLnVaGjkG8A4nwex/jzuiCYmqm
-         MOgG0JVtklTKjKOR4POYs4nxNuSbn3hZdj5DCTNApYKrx9cHamlBTvElapbzcVROu+AX
-         +DRg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8uTPw/oT5qHAdMdt5boTQuI0c3E5jP6CvarW8rtmPjg=;
+        b=ka7J9qkV4y/h9IuCvvXFZOBPYhsL1OTJ5evHejxTC870hkP0sSwjikMlBAxoZJUE49
+         ur8HDxuQ3o5FGSf0GrF1cOj6cNZy19+4jAHXrzLrvu9o33oiwuHuzhMkolqhyRAl8mzy
+         4R/OES2Q2vOodJq+h6rOnjjsBagBkyBJWnmw2/ei7FqecneUL7OMWWmm6z9aDa2y8KXI
+         ZWjvPm/hq1l6/TEEym/9zpps4THglTnw+LhmQLoKzCnmhBJB0SIRRBKlHGV65cBywxwK
+         +yZkGY0vGvjRUlVRaQI9pQDhNgapW/njSMwtHuohaLP4o1mJv0x0gULymieX2lvjUDU4
+         uwJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=ytVF9QeV+MabNTM9/rkDa+0RWrj8iBIydz2kXshJL00=;
-        b=uEiNdbaampGGoeC1tkVQMok+zid7ZJkrhPogSWaL1Z4YHnrl9Cqktta9VMTbAZQBOS
-         dwu2CBdHSNKZ5O+MDazhArM+RewTghT6P5drGyt5OiCkmWLSjkJhk28JHZl5ftPJ0tuy
-         oYQWW/LbxdeuNPLdqxCA46SVdZI1lfydvogqm6v8r0OzHM1o5pl3NU22od5EUwQlF2g0
-         sw65/Gmk7C7Oh/4DJyFpuBzNQ9H2OXqGq+4wvT0M5totMEaHJhrk66tJV5ZkG3NUe3ZV
-         s09l9pWsOZno/h1QWu068P4VMy2kN5djE9XFGC7qR677YdQ1rhEf8wpZJxyq7un03/Ab
-         wCfg==
-X-Gm-Message-State: AOAM531QoY7a6N1GltRLNkQmbOnbGrRfVzVldyP8Cg5MmgWcC5abamNI
-        741SNRnoZmFgm0W3gJZrmmqbFTdglQ6C
-X-Google-Smtp-Source: ABdhPJxRDg4XjAziDvXPV2YsT0AuxLyzM1Sc65DpyYo3GcMdJfwDr7nsBXBqr2yHD0PnwXA4/ipBmaPK8jv6
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a25:2155:: with SMTP id
- h82mr255114ybh.177.1629145495627; Mon, 16 Aug 2021 13:24:55 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 16 Aug 2021 20:24:41 +0000
-In-Reply-To: <20210816202441.4098523-1-mizhang@google.com>
-Message-Id: <20210816202441.4098523-4-mizhang@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8uTPw/oT5qHAdMdt5boTQuI0c3E5jP6CvarW8rtmPjg=;
+        b=lVdnBF34vLq163ZNhXwpGnlyY1QYgqQFN33T6BmUFcVR+8d/zMPisj9YhrAUiF2soY
+         SOcqu4er51Xmzq1Gny1DO+UaDlM0/a+yAVzARtmVQyvMWsQODIdT5rayzlEJG2nEXnOH
+         xkqzmjL9JxGQWkHhr/3HxhAzAFKU52WHuPUBp3Dk06zIcKJDBoG2jWB8JcizmuWkkkyt
+         xThTme1q2gNmSdmEGYuALXiHmV7TG1PmOamC8YYhPtRaksR/cs29ctaCKh8+75HEwueF
+         YIH+3P6DAP+Igyeticfz8EndicbX8w1fs8kPgd7nVhsl12T12IdW9qM/oX/g6OUPA530
+         X41Q==
+X-Gm-Message-State: AOAM531eg9yWM+1ioMqxgxj/ADfhRWlzqISVDrSRzrupQK7BWoabBwUl
+        VKKiK+uwZ2gIANHVSLPJ33exSmXFqGzWv5PZIFs=
+X-Google-Smtp-Source: ABdhPJy318cku7YcZQZCfgmr29Nfm2hAabeAKbS0hM6fRTuc5Yr4eCyT3NH4aQF7WQH8T0fLPZdWJ6Nt+EEc0nfIB2k=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:478:6e44:5cf7:fcde])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:4b2:: with SMTP id
+ w18mr534035qvz.47.1629145643423; Mon, 16 Aug 2021 13:27:23 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 13:25:01 -0700
+Message-Id: <20210816202504.2228283-1-ndesaulniers@google.com>
 Mime-Version: 1.0
-References: <20210816202441.4098523-1-mizhang@google.com>
 X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH 3/3] KVM: SVM: move sev_unbind_asid and DF_FLUSH logic into psp
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alper Gun <alpergun@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Rienjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Mingwei Zhang <mizhang@google.com>
+Subject: [PATCH v2] Makefile: remove stale cc-option checks
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In KVM SEV code, sev_unbind_asid and sev_guest_df_flush needs to be
-serialized because DEACTIVATE command in PSP may clear the WBINVD indicator
-and cause DF_FLUSH to fail.
+cc-option, cc-option-yn, and cc-disable-warning all invoke the compiler
+during build time, and can slow down the build when these checks become
+stale for our supported compilers, whose minimally supported versions
+increases over time. See Documentation/process/changes.rst for the
+current supported minimal versions (GCC 4.9+, clang 10.0.1+). Compiler
+version support for these flags may be verified on godbolt.org.
 
-This is a PSP level detail that is not necessary to expose to KVM. So put
-both functions as well as the RWSEM into the sev-dev.c.
+The following flags are GCC only and supported since at least GCC 4.9.
+Remove cc-option and cc-disable-warning tests.
+* -fno-tree-loop-im
+* -Wno-maybe-uninitialized
+* -fno-reorder-blocks
+* -fno-ipa-cp-clone
+* -fno-partial-inlining
+* -femit-struct-debug-baseonly
+* -fno-inline-functions-called-once
+* -fconserve-stack
 
-Cc: Alper Gun <alpergun@google.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: David Rienjes <rientjes@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Vipin Sharma <vipinsh@google.com>
+The following flags are supported by all supported versions of GCC and
+Clang. Remove their cc-option, cc-option-yn, and cc-disable-warning tests.
+* -fno-delete-null-pointer-checks
+* -fno-var-tracking
+* -Wno-array-bounds
 
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
+The following configs are made dependent on GCC, since they use GCC
+specific flags.
+* READABLE_ASM
+* DEBUG_SECTION_MISMATCH
+
+-mfentry was not supported by s390-linux-gnu-gcc until gcc-9+, add a
+comment.
+
+--param=allow-store-data-races=0 was renamed to -fno-allow-store-data-races
+in the GCC 10 release; add a comment.
+
+-Wmaybe-uninitialized (GCC specific) was being added for CONFIG_GCOV,
+then again unconditionally; add it only once.
+
+Also, base RETPOLINE_CFLAGS and RETPOLINE_VDSO_CFLAGS on CONFIC_CC_IS_*
+then remove cc-option tests for Clang.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1436
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- arch/x86/kvm/svm/sev.c       | 35 +++--------------------------------
- drivers/crypto/ccp/sev-dev.c | 34 +++++++++++++++++++++++++++++++++-
- include/linux/psp-sev.h      | 19 ++++++++++++++++++-
- 3 files changed, 54 insertions(+), 34 deletions(-)
+Changes v1 -> v2:
+* rebase on linux-kbuild/for-next from linux-next/master; patch was
+  dropped from linux-mm:
+  https://lore.kernel.org/mm-commits/20210814215814.W_qqW%25akpm@linux-foundation.org/.
+* Pick up Miguel & Nathan's AB/RB tags.
+* Pick up reports from LKFT/KTR.
+* Note in commit message about -Wmaybe-uninitialized as per Masahiro.
+* Undo changes to to -mfentry due to LKFT report:
+  https://lore.kernel.org/lkml/CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com/.
+* Undo changes to --param=allow-store-data-races=0 &
+  -fno-allow-store-data-races due to KTR report:
+  https://lore.kernel.org/linux-mm/202108160729.Lx0IJzq3-lkp@intel.com/.
+* Add comments to Makefile about -mfentry, -fno-allow-store-data-races,
+  note in commit message.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 2a674acb22ce..ecf9da718d21 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -57,7 +57,6 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
- #endif /* CONFIG_KVM_AMD_SEV */
+ Makefile          | 50 +++++++++++++++++++++++++++++------------------
+ lib/Kconfig.debug |  2 ++
+ 2 files changed, 33 insertions(+), 19 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 891866af0787..ce5a297ecd7c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -669,9 +669,10 @@ endif # KBUILD_EXTMOD
+ # Defaults to vmlinux, but the arch makefile usually adds further targets
+ all: vmlinux
  
- static u8 sev_enc_bit;
--static DECLARE_RWSEM(sev_deactivate_lock);
- static DEFINE_MUTEX(sev_bitmap_lock);
- unsigned int max_sev_asid;
- static unsigned int min_sev_asid;
-@@ -84,20 +83,9 @@ static int sev_flush_asids(int min_asid, int max_asid)
- 	if (asid > max_asid)
- 		return -EBUSY;
+-CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
+-	$(call cc-option,-fno-tree-loop-im) \
+-	$(call cc-disable-warning,maybe-uninitialized,)
++CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage
++ifdef CONFIG_CC_IS_GCC
++CFLAGS_GCOV	+= -fno-tree-loop-im
++endif
+ export CFLAGS_GCOV
  
--	/*
--	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
--	 * so it must be guarded.
--	 */
--	down_write(&sev_deactivate_lock);
--
--	wbinvd_on_all_cpus();
- 	ret = sev_guest_df_flush(&error);
--
--	up_write(&sev_deactivate_lock);
--
- 	if (ret)
- 		pr_err("SEV: DF_FLUSH failed, ret=%d, error=%#x\n", ret, error);
--
- 	return ret;
- }
+ # The arch Makefiles can override CC_FLAGS_FTRACE. We may also append it later.
+@@ -679,12 +680,14 @@ ifdef CONFIG_FUNCTION_TRACER
+   CC_FLAGS_FTRACE := -pg
+ endif
  
-@@ -198,23 +186,6 @@ static void sev_asid_free(struct kvm_sev_info *sev)
- 	sev->misc_cg = NULL;
- }
+-RETPOLINE_CFLAGS_GCC := -mindirect-branch=thunk-extern -mindirect-branch-register
+-RETPOLINE_VDSO_CFLAGS_GCC := -mindirect-branch=thunk-inline -mindirect-branch-register
+-RETPOLINE_CFLAGS_CLANG := -mretpoline-external-thunk
+-RETPOLINE_VDSO_CFLAGS_CLANG := -mretpoline
+-RETPOLINE_CFLAGS := $(call cc-option,$(RETPOLINE_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_CFLAGS_CLANG)))
+-RETPOLINE_VDSO_CFLAGS := $(call cc-option,$(RETPOLINE_VDSO_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_VDSO_CFLAGS_CLANG)))
++ifdef CONFIG_CC_IS_GCC
++RETPOLINE_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
++RETPOLINE_VDSO_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
++endif
++ifdef CONFIG_CC_IS_CLANG
++RETPOLINE_CFLAGS	:= -mretpoline-external-thunk
++RETPOLINE_VDSO_CFLAGS	:= -mretpoline
++endif
+ export RETPOLINE_CFLAGS
+ export RETPOLINE_VDSO_CFLAGS
  
--static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
--{
--	struct sev_data_deactivate deactivate;
--
--	if (!handle)
--		return;
--
--	deactivate.handle = handle;
--
--	/* Guard DEACTIVATE against WBINVD/DF_FLUSH used in ASID recycling */
--	down_read(&sev_deactivate_lock);
--	sev_guest_deactivate(&deactivate, NULL);
--	up_read(&sev_deactivate_lock);
--
--	sev_guest_decommission(handle, NULL);
--}
--
- static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
- {
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-@@ -329,7 +300,7 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	/* return handle to userspace */
- 	params.handle = start.handle;
- 	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params))) {
--		sev_unbind_asid(kvm, start.handle);
-+		sev_guest_unbind_asid(start.handle);
- 		ret = -EFAULT;
- 		goto e_free_session;
- 	}
-@@ -1378,7 +1349,7 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	if (copy_to_user((void __user *)(uintptr_t)argp->data,
- 			 &params, sizeof(struct kvm_sev_receive_start))) {
- 		ret = -EFAULT;
--		sev_unbind_asid(kvm, start.handle);
-+		sev_guest_unbind_asid(start.handle);
- 		goto e_free_session;
- 	}
+@@ -737,7 +740,7 @@ include/config/auto.conf:
+ endif # may-sync-config
+ endif # need-config
  
-@@ -1789,7 +1760,7 @@ void sev_vm_destroy(struct kvm *kvm)
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
++KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
+ KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
+@@ -752,17 +755,19 @@ KBUILD_CFLAGS += -Os
+ endif
  
- 	mutex_unlock(&kvm->lock);
+ # Tell gcc to never replace conditional load with a non-conditional one
++ifdef CONFIG_CC_IS_GCC
++# gcc-10 renamed --param=allow-store-data-races=0 to
++# -fno-allow-store-data-races.
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
++endif
  
--	sev_unbind_asid(kvm, sev->handle);
-+	sev_guest_unbind_asid(sev->handle);
- 	sev_asid_free(sev);
- }
+ ifdef CONFIG_READABLE_ASM
+ # Disable optimizations that make assembler listings hard to read.
+ # reorder blocks reorders the control in the function
+ # ipa clone creates specialized cloned functions
+ # partial inlining inlines only parts of functions
+-KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
+-                 $(call cc-option,-fno-ipa-cp-clone,) \
+-                 $(call cc-option,-fno-partial-inlining)
++KBUILD_CFLAGS += -fno-reorder-blocks -fno-ipa-cp-clone -fno-partial-inlining
+ endif
  
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index ef58f007030e..7d53cd954f80 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -33,6 +33,7 @@
- #define SEV_FW_NAME_SIZE	64
+ ifneq ($(CONFIG_FRAME_WARN),0)
+@@ -854,8 +859,10 @@ DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
+ endif
  
- static DEFINE_MUTEX(sev_cmd_mutex);
-+static DECLARE_RWSEM(sev_deactivate_lock);
- static struct sev_misc_dev *misc_dev;
+ ifdef CONFIG_DEBUG_INFO_REDUCED
+-DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
+-		   $(call cc-option,-fno-var-tracking)
++DEBUG_CFLAGS	+= -fno-var-tracking
++ifdef CONFIG_CC_IS_GCC
++DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
++endif
+ endif
  
- static int psp_cmd_timeout = 100;
-@@ -932,10 +933,41 @@ EXPORT_SYMBOL_GPL(sev_guest_decommission);
+ ifdef CONFIG_DEBUG_INFO_COMPRESSED
+@@ -889,6 +896,7 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+   endif
+ endif
+ ifdef CONFIG_HAVE_FENTRY
++  # s390-linux-gnu-gcc did not support -mfentry until gcc-9.
+   ifeq ($(call cc-option-yn, -mfentry),y)
+     CC_FLAGS_FTRACE	+= -mfentry
+     CC_FLAGS_USING	+= -DCC_USING_FENTRY
+@@ -901,7 +909,7 @@ endif
  
- int sev_guest_df_flush(int *error)
- {
--	return sev_do_cmd(SEV_CMD_DF_FLUSH, NULL, error);
-+	int ret;
-+	/*
-+	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-+	 * so it must be guarded.
-+	 */
-+	down_write(&sev_deactivate_lock);
-+
-+	wbinvd_on_all_cpus();
-+
-+	ret = sev_do_cmd(SEV_CMD_DF_FLUSH, NULL, error);
-+
-+	up_write(&sev_deactivate_lock);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(sev_guest_df_flush);
+ # We trigger additional mismatches with less inlining
+ ifdef CONFIG_DEBUG_SECTION_MISMATCH
+-KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
++KBUILD_CFLAGS += -fno-inline-functions-called-once
+ endif
  
-+void sev_guest_unbind_asid(unsigned int handle)
-+{
-+	struct sev_data_deactivate deactivate;
-+
-+	if (!handle)
-+		return;
-+
-+	deactivate.handle = handle;
-+
-+	/* Guard DEACTIVATE against WBINVD/DF_FLUSH used in ASID recycling */
-+	down_read(&sev_deactivate_lock);
-+	sev_guest_deactivate(&deactivate, NULL);
-+	up_read(&sev_deactivate_lock);
-+
-+	sev_guest_decommission(handle, NULL);
-+}
-+EXPORT_SYMBOL_GPL(sev_guest_unbind_asid);
-+
- static void sev_exit(struct kref *ref)
- {
- 	misc_deregister(&misc_dev->misc);
-diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-index be50446ff3f1..09447bce9665 100644
---- a/include/linux/psp-sev.h
-+++ b/include/linux/psp-sev.h
-@@ -580,6 +580,20 @@ int sev_issue_cmd_external_user(struct file *filep, unsigned int id,
-  */
- int sev_guest_deactivate(struct sev_data_deactivate *data, int *error);
+ ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+@@ -980,14 +988,16 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
  
-+/**
-+ * sev_guest_unbind_asid - perform SEV DEACTIVATE command with lock held
-+ *
-+ * @handle: handle of the VM to deactivate
-+ *
-+ * Returns:
-+ * 0 if the sev successfully processed the command
-+ * -%ENODEV    if the sev device is not available
-+ * -%ENOTSUPP  if the sev does not support SEV
-+ * -%ETIMEDOUT if the sev command timed out
-+ * -%EIO       if the sev returned a non-zero return code
-+ */
-+int sev_guest_unbind_asid(unsigned int handle);
-+
- /**
-  * sev_guest_activate - perform SEV ACTIVATE command
-  *
-@@ -612,7 +626,7 @@ int sev_guest_activate(struct sev_data_activate *data, int *error);
- int sev_guest_bind_asid(int asid, unsigned int handle, int *error);
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
+-KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
++KBUILD_CFLAGS += -Wno-array-bounds
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
  
- /**
-- * sev_guest_df_flush - perform SEV DF_FLUSH command
-+ * sev_guest_df_flush - perform SEV DF_FLUSH command with lock held
-  *
-  * @sev_ret: sev command return code
-  *
-@@ -656,6 +670,9 @@ sev_guest_deactivate(struct sev_data_deactivate *data, int *error) { return -ENO
- static inline int
- sev_guest_decommission(unsigned int handle, int *error) { return -ENODEV; }
+ # Another good warning that we'll want to enable eventually
+ KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
  
-+static inline int
-+sev_guest_unbind_asid(unsigned int handle) { return -ENODEV; }
-+
- static inline int
- sev_guest_activate(struct sev_data_activate *data, int *error) { return -ENODEV; }
+ # Enabled with W=2, disabled by default as noisy
+-KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
++ifdef CONFIG_CC_IS_GCC
++KBUILD_CFLAGS += -Wno-maybe-uninitialized
++endif
  
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= -fno-strict-overflow
+@@ -996,7 +1006,9 @@ KBUILD_CFLAGS	+= -fno-strict-overflow
+ KBUILD_CFLAGS  += -fno-stack-check
+ 
+ # conserve stack if available
+-KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
++ifdef CONFIG_CC_IS_GCC
++KBUILD_CFLAGS   += -fconserve-stack
++endif
+ 
+ # Prohibit date/time macros, which would make the build non-deterministic
+ KBUILD_CFLAGS   += -Werror=date-time
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5ddd575159fb..7d3d29203a72 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -365,6 +365,7 @@ config STRIP_ASM_SYMS
+ config READABLE_ASM
+ 	bool "Generate readable assembler code"
+ 	depends on DEBUG_KERNEL
++	depends on CC_IS_GCC
+ 	help
+ 	  Disable some compiler optimizations that tend to generate human unreadable
+ 	  assembler output. This may make the kernel slightly slower, but it helps
+@@ -383,6 +384,7 @@ config HEADERS_INSTALL
+ 
+ config DEBUG_SECTION_MISMATCH
+ 	bool "Enable full Section mismatch analysis"
++	depends on CC_IS_GCC
+ 	help
+ 	  The section mismatch analysis checks if there are illegal
+ 	  references from one section to another section.
+
+base-commit: f12b034afeb3a977bbb1c6584dedc0f3dc666f14
 -- 
 2.33.0.rc1.237.g0d66db33f3-goog
 
