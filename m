@@ -2,73 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646DC3ED99B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735143ED9A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbhHPPMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:12:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236634AbhHPPMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:12:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0952260ED5;
-        Mon, 16 Aug 2021 15:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629126729;
-        bh=uMo8LGfOpe/Almoc8bvAMBEGmqtUS03nPV5PwNh4VaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NI4STxOvEvDLYkD7cp4EEsv7L1JSA2zVa86AjYMQEt7F0nAhYRfHwh0nuCLtpE4LR
-         vzJQdTCeVjixYe3wvkbhORrDwIAhUlEmbl1X4tzJv1tWG4+vTy4qnYkmzJgnUY/CKk
-         rTOiYmwPhqQhim0CZVdGtL0BXlsBonMY0aI38U76onGVUblLRHDXk4WL0/i2Ou2tB/
-         yAwZjbwNhzpgiWXDdOGqEtEImzkkNPvL5uCH3lmUP6HpI0GjmhHvZMs8nxeSNDI+R5
-         fvfIO4W375ehpFLSvnh/VKr2FWb1U48j8SbhyNysnYgb+HCe+YVr5PsrfdkOLQraFP
-         KGfhKiozb7CeA==
-Date:   Mon, 16 Aug 2021 08:12:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-Message-ID: <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <874kbuapod.wl-maz@kernel.org>
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
-        <871r71azjw.wl-maz@kernel.org>
-        <YROmOQ+4Kqukgd6z@orome.fritz.box>
-        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
-        <87o8a49idp.wl-maz@kernel.org>
-        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
-        <20210812121835.405d2e37@linux.microsoft.com>
-        <874kbuapod.wl-maz@kernel.org>
+        id S233529AbhHPPO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232574AbhHPPOz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:14:55 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F0AC0613C1;
+        Mon, 16 Aug 2021 08:14:24 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id t190so6044899qke.7;
+        Mon, 16 Aug 2021 08:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PCGu6LKv/RVKdtYv9khNj4fVhn3c3G222WeZkDQYghA=;
+        b=CISces9TDTtyNHUhb+Dzk9UPoZjkkFXWYex7qH35eoRxGkQVLgR/1DTqaRkfd78IuQ
+         xpRbqNcaPxnjmxKfMPsl97t8z5ktu5ohAzxkVsEyke1kmjRaLwCC4bQxurQJX+scFQUa
+         xMM6XOi+foF8nmOqGYxv8ZoWEyfaMniSFzs1s03DYzWXAE9vqHIG9g7YVvlYPGws3vpT
+         6yioiJMXf3ojQrLqCPUqabZWVIkq2LJxyYYkkWffzSbNWvvzzjkuw9rldmpJMEtICRWP
+         rXdcOrs16jzuzo4rGDTodQBL7ocHJ9hFU14MZNNq4073wGUxuvxL9GtbvYpe9T6cwVEV
+         Clgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PCGu6LKv/RVKdtYv9khNj4fVhn3c3G222WeZkDQYghA=;
+        b=Ihkm6RMAxIdD35JgUKbeJb+S5/XcAfVZN1uxcqRN94KNAyRKJl4EUGpHQNKfe8F4Mk
+         D5iYzzE5qzryqDO288fVsCdb0lBBhpfzqGxusDupYBwKkQfXlC/a3s3gu2XndagpfyBR
+         rbJSskndQ+c5Ym0JS3roe9jZn5GfbcqtZdnujxn/bWmL0k60uPQqhFL5tZ0nM/z49gim
+         7pCAJaC++HaZYvNe661FrbC9xGj7f2OB77xpkJuG+D/t1ZaHLhOwPamXGijdZi5hmQsD
+         pGbFDmOsZuw0YTbEq4F/Tnh0ytAj7bThh33WmXEJ29dfnAebBrgktu6+cGQlRhOKQmSZ
+         5lCQ==
+X-Gm-Message-State: AOAM5301guf6ysAatA1XuP47AY3XJZogeQer+hDYTMXSHq0C4QZFVUuw
+        83P40FZFPFG70AWKfmrZ7pI=
+X-Google-Smtp-Source: ABdhPJx10FRGjHSg4Ez0RVwMZX3QF/Boe88olE7QrDUkXZMVx1/+P4kFFuKCAIsHCE6XhGJENd4vpQ==
+X-Received: by 2002:a37:d4c:: with SMTP id 73mr16227882qkn.188.1629126863427;
+        Mon, 16 Aug 2021 08:14:23 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id y9sm4771547qtw.51.2021.08.16.08.14.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 08:14:23 -0700 (PDT)
+Subject: Re: of_node_put() usage is buggy all over drivers/of/base.c?!
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210814010139.kzryimmp4rizlznt@skbuf>
+ <9accd63a-961c-4dab-e167-9e2654917a94@gmail.com>
+ <20210816144622.tgslast6sbblclda@skbuf>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <4cad28e0-d6b4-800d-787b-936ffaca7be3@gmail.com>
+Date:   Mon, 16 Aug 2021 10:14:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210816144622.tgslast6sbblclda@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 12:05:38 +0100 Marc Zyngier wrote:
-> > A possible fix, which takes in account also the XDP headroom for
-> > stmmac_rx_buf1_len() only could be (only compile tested, I don't have
-> > the hardware now):  
+On 8/16/21 9:46 AM, Vladimir Oltean wrote:
+> Hi Frank,
 > 
-> However, this doesn't fix my issue. I still get all sort of
-> corruption. Probably stmmac_rx_buf2_len() also need adjusting (it has
-> a similar logic as its buf1 counterpart...)
+> On Mon, Aug 16, 2021 at 09:33:03AM -0500, Frank Rowand wrote:
+>> Hi Vladimir,
+>>
+>> On 8/13/21 8:01 PM, Vladimir Oltean wrote:
+>>> Hi,
+>>>
+>>> I was debugging an RCU stall which happened during the probing of a
+>>> driver. Activating lock debugging, I see:
+>>
+>> I took a quick look at sja1105_mdiobus_register() in v5.14-rc1 and v5.14-rc6.
+>>
+>> Looking at the following stack trace, I did not see any calls to
+>> of_find_compatible_node() in sja1105_mdiobus_register().  I am
+>> guessing that maybe there is an inlined function that calls
+>> of_find_compatible_node().  This would likely be either
+>> sja1105_mdiobus_base_tx_register() or sja1105_mdioux_base_t1_register().
 > 
-> Unless you can fix it very quickly, and given that we're towards the
-> end of the cycle, I'd be more comfortable if we reverted this patch.
+> Yes, it is sja1105_mdiobus_base_t1_register which is inlined.
+> 
+>>>
+>>> [  101.710694] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+>>> [  101.719119] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 1534, name: sh
+>>> [  101.726763] INFO: lockdep is turned off.
+>>> [  101.730674] irq event stamp: 0
+>>> [  101.733716] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+>>> [  101.739973] hardirqs last disabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+>>> [  101.748146] softirqs last  enabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+>>> [  101.756313] softirqs last disabled at (0): [<0000000000000000>] 0x0
+>>> [  101.762569] CPU: 4 PID: 1534 Comm: sh Not tainted 5.14.0-rc5+ #272
+>>> [  101.774558] Call trace:
+>>> [  101.794734]  __might_sleep+0x50/0x88
+>>> [  101.798297]  __mutex_lock+0x60/0x938
+>>> [  101.801863]  mutex_lock_nested+0x38/0x50
+>>> [  101.805775]  kernfs_remove+0x2c/0x50             <---- this takes mutex_lock(&kernfs_mutex);
+>>> [  101.809341]  sysfs_remove_dir+0x54/0x70
+>>
+>> The __kobject_del() occurs only if the refcount on the node
+>> becomes zero.  This should never be true when of_find_compatible_node()
+>> calls of_node_put() unless a "from" node is passed to of_find_compatible_node().
+> 
+> I figured that was the assumption, that the of_node_put would never
+> trigger a sysfs file / kobject deletion from there.
+> 
+>> In both sja1105_mdiobus_base_tx_register() and sja1105_mdioux_base_t1_register()
+>> a from node ("mdio") is passed to of_find_compatible_node() without first doing an
+>> of_node_get(mdio).  If you add the of_node_get() calls the problem should be fixed.
+> 
+> The answer seems simple enough, but stupid question, but why does
+> of_find_compatible_node call of_node_put on "from" in the first place?
 
-Any luck investigating this one? The rc6 announcement sounds like there
-may not be that many more rc releases for 5.14.
+Actually a good question.
+
+I do not know why of_find_compatible_node() calls of_node_put() instead of making
+the caller of of_find_compatible_node() responsible.  That pattern was created
+long before I was involved in devicetree and I have not gone back to read the
+review comments of when that code was created.
+
+-Frank
