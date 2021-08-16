@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D663ED8A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E893ED8B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhHPOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:05:56 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:35496 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhHPOFy (ORCPT
+        id S231566AbhHPOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:11:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229517AbhHPOLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:05:54 -0400
-Received: by mail-oi1-f180.google.com with SMTP id r26so846597oij.2;
-        Mon, 16 Aug 2021 07:05:23 -0700 (PDT)
+        Mon, 16 Aug 2021 10:11:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629123032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LtEw9oJqR1u9FpBUyNw8cDLhgtMuacfPHoXopx0aC28=;
+        b=F5kCBwf59QL+2byPDE759HtU+VNNSNW+DTiegDpzYDODT44AgaLvlrQUQYu9nfxCua5tXV
+        Hh4CpqEDzUjJgNZYwlFh6AskA2bQHNhO1i2PSUBuCE//ts9f4MbyKpL79/+iiE7qNyW06J
+        MQQA39v1N32sa3I6AsGP8cfu3g1lCmA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-e4rx7R_CMNKKblndqpHROQ-1; Mon, 16 Aug 2021 10:10:31 -0400
+X-MC-Unique: e4rx7R_CMNKKblndqpHROQ-1
+Received: by mail-wm1-f72.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so4175253wmj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 07:10:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iRKDceU3mYZYX25ILhTGVfCF7ZiGQ+F4qa4yz3TodTY=;
-        b=h1IZyY9J/x0hGY9XoqXMt0umxGozmjm6S9aJZiPMDhvOcqreu+XR5uZwzz+gfZDMur
-         8h/9uIPKtsHkkUhhJjzYAW7aMUHiaJMLVzNhWBjFVQn1M1eQP/kY5amd3HYo8nfuttcK
-         y3WjG3uavbeYqNVbGkni+JXVGl7AFxqp9amWHjjGd9RDHHS9Amun/6K1/NPMhun2ucVN
-         eRdurYIskcN1uLHqEYfAXbHR4YqQuo0orCte3wru/StIM1WNGw2zQln9BYLpIFyWv0ik
-         sGru3nFXa/ZOeMVBKhDKNfmh/RrDfcIUfkBJ8NNO90oBSx5HfF6pyEcl/8X6mqvArFGy
-         siCg==
-X-Gm-Message-State: AOAM5331y24jeYmjKS0gSxzAYA219m8ksVu4Gh37M+qhmKyZOzu8ubwN
-        W1uKBqOxDp9vvkrzlo/DoXW/wLHzQmjjnHlmOi8=
-X-Google-Smtp-Source: ABdhPJzOdg3EzWB1728dV5c78AxtjaL0FOKppTxbZlVBy1uVvoUG+e3bXhxL9cLwgjZnAzYITWjRnwYsZLREFWQZJLM=
-X-Received: by 2002:a05:6808:220c:: with SMTP id bd12mr12187934oib.157.1629122722961;
- Mon, 16 Aug 2021 07:05:22 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LtEw9oJqR1u9FpBUyNw8cDLhgtMuacfPHoXopx0aC28=;
+        b=iG0I4Acj6RBbw71xSYiqucnFG5RkH6Wa0/8qHLaACUE58ZvdSMUGumAcQqtpGZkiX9
+         dRds5StHb/LsrK5/EWC59e7OsmvinGXibSMBrmhHQ5lIElCETXB4CQ52YqrmcYRoMg2Q
+         l4ImnIoMndpzS0qS/99xNmaqW+gGCxzJaCFmEv/IcDLO2y07sTG8l8SgGKb1UuU2XMT+
+         HZ+810QNd7SxjL9fN5t/Tw8jkPryoF58eL8V3BHlVCKocdmAhfewewqJ0zDBXW6qFwMt
+         QzsqkqdmN/Hz9FoI2Ww1rh65r+StLOXyFgPe3kB1uDBqxs2fuC3jKZiRjFiGCtlfyxWE
+         ix8w==
+X-Gm-Message-State: AOAM530gKmHMUFVfovYYSKZ+ArKRWM0GxL1Hg+IqMmJvJKCaJow9iJZb
+        X0WQUvcHkwbXTPzYDgXunZ9schhF/OxaobL2+CWNqfLXwiWas9ebR1gtsBKGBdribtXPz5BMV+9
+        A0YhheAzXlB+ZNmqPyg0DvXLh
+X-Received: by 2002:adf:c549:: with SMTP id s9mr18927911wrf.344.1629123030234;
+        Mon, 16 Aug 2021 07:10:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwyh478LnIv/W9hNY+Cgrjtfa9Spn+4MIEAiJ4nAUbO5MjC2/AaMd/NhxgBSuBZoZyqMR0e+Q==
+X-Received: by 2002:adf:c549:: with SMTP id s9mr18927876wrf.344.1629123030004;
+        Mon, 16 Aug 2021 07:10:30 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
+        by smtp.gmail.com with ESMTPSA id 129sm10573715wmz.26.2021.08.16.07.10.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 07:10:29 -0700 (PDT)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+References: <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
+ <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
+ <YOubKmDwxMIvdAed@casper.infradead.org>
+ <a94973ab83ce48bd85c91397f82d7915@huawei.com>
+ <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
+ <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
+ <YRpVHnr55LpQQvTb@casper.infradead.org>
+ <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+ <YRpeHnP7QDNJRA8Y@casper.infradead.org>
+ <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
+ <YRpo4EAJSkY7hI7Q@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Message-ID: <40bad572-501d-e4cf-80e3-9a8daa98dc7e@redhat.com>
+Date:   Mon, 16 Aug 2021 16:10:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210813161842.222414-1-mario.limonciello@amd.com>
-In-Reply-To: <20210813161842.222414-1-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 16 Aug 2021 16:04:57 +0200
-Message-ID: <CAJZ5v0jynpMMnMBQuyJPYfSG-6JSe5=a6wW0UtUnpGuh68CqkA@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/acpi: Don't add CPUs that are not online capable
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Ray Huang <Ray.Huang@amd.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRpo4EAJSkY7hI7Q@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 6:19 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> A number of systems are showing "hotplug capable" CPUs when they
-> are not really hotpluggable.  This is because the MADT has extra
-> CPU entries to support different CPUs that may be inserted into
-> the socket with different numbers of cores.
->
-> Starting with ACPI 6.3 the spec has an Online Capable bit in the
-> MADT used to determine whether or not a CPU is hotplug capable
-> when the enabled bit is not set.
->
-> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/05_ACPI_Software_Programming_Model/ACPI_Software_Programming_Model.html?#local-apic-flags
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  arch/x86/kernel/acpi/boot.c | 10 ++++++++++
->  include/acpi/actbl2.h       |  1 +
->  2 files changed, 11 insertions(+)
->
-> Changes from v1->v2:
->  * Check the revision field in MADT to determine if it matches the
->    bump from ACPI 6.3 as suggested by Hanjun Guo
->  * Update description
->
-> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-> index e55e0c1fad8c..bfa69a5c9c0b 100644
-> --- a/arch/x86/kernel/acpi/boot.c
-> +++ b/arch/x86/kernel/acpi/boot.c
-> @@ -53,6 +53,8 @@ int acpi_ioapic;
->  int acpi_strict;
->  int acpi_disable_cmcff;
->
-> +bool acpi_support_online_capable;
+>>> Until recently, the CPUs only having 4 1GB TLB entries.  I'm sure we
+>>> still have customers using that generation of CPUs.  2MB pages perform
+>>> better than 1GB pages on the previous generation of hardware, and I
+>>> haven't seen numbers for the next generation yet.
+>>
+>> I read that somewhere else before, yet we have heavy 1 GiB page users,
+>> especially in the context of VMs and DPDK.
+> 
+> I wonder if those users actually benchmarked.  Or whether the memory
+> savings worked out so well for them that the loss of TLB performance
+> didn't matter.
 
-Missing static?
+These applications are extremely performance sensitive (i.e., RT 
+workloads), that's why I'm wondering. I recall that they are most 
+certainly using more than 4 GiB memory in real applications.
 
-> +
->  /* ACPI SCI override configuration */
->  u8 acpi_sci_flags __initdata;
->  u32 acpi_sci_override_gsi __initdata = INVALID_ACPI_IRQ;
-> @@ -138,6 +140,8 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
->
->                 pr_debug("Local APIC address 0x%08x\n", madt->address);
->         }
-> +       if (madt->header.revision >= 5)
-> +               acpi_support_online_capable = true;
->
->         default_acpi_madt_oem_check(madt->header.oem_id,
->                                     madt->header.oem_table_id);
-> @@ -239,6 +243,12 @@ acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned long end)
->         if (processor->id == 0xff)
->                 return 0;
->
-> +       /* don't register processors that can not be onlined */
-> +       if (acpi_support_online_capable &&
-> +           !(processor->lapic_flags & ACPI_MADT_ENABLED) &&
-> +           !(processor->lapic_flags & ACPI_MADT_ONLINE_CAPABLE))
-> +               return 0;
-> +
->         /*
->          * We need to register disabled CPU as well to permit
->          * counting disabled CPUs. This allows us to size
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 2069ac38a4e2..fae45e383987 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
+E.g., the doc [1] even has a note that "For 64-bit applications, it is 
+recommended to use 1 GB hugepages if the platform supports them."
 
-The one below is an ACPICA change and I'd prefer it to be integrated
-via the upstream ACPICA.
 
-Could you prepare an ACPICA pull request for just the bit below and
-send it via GitHub?
+[1] https://doc.dpdk.org/guides-16.04/linux_gsg/sys_reqs.html
 
-> @@ -808,6 +808,7 @@ struct acpi_madt_multiproc_wakeup_mailbox {
->  /* MADT Local APIC flags */
->
->  #define ACPI_MADT_ENABLED           (1)        /* 00: Processor is usable if set */
-> +#define ACPI_MADT_ONLINE_CAPABLE    (2)        /* 01: System HW supports enabling processor at runtime */
->
->  /* MADT MPS INTI flags (inti_flags) */
->
-> --
+> 
+>> So, it only works for hugetlbfs in case uffd is not in place (-> no
+>> per-process data in the page table) and we have an actual shared mappings.
+>> When unsharing, we zap the PUD entry, which will result in allocating a
+>> per-process page table on next fault.
+> 
+> I think uffd was a huge mistake.  It should have been a filesystem
+> instead of a hack on the side of anonymous memory.
+
+Yes it was. Especially, looking at all the special-casing, for example, 
+even in mm/pagewalk.c.
+
+> 
+>> I will rephrase my previous statement "hugetlbfs just doesn't raise these
+>> problems because we are special casing it all over the place already". For
+>> example, not allowing to swap such pages. Disallowing MADV_DONTNEED. Special
+>> hugetlbfs locking.
+> 
+> Sure, that's why I want to drag this feature out of "oh this is a
+> hugetlb special case" and into "this is something Linux supports".
+
+I would have understood the move to optimize SHMEM internally - similar 
+to how we seem to optimize hugetlbfs SHMEM right now internally. 
+(although sharing page tables for shmem can still be quite tricky)
+
+I did not follow why we have to play games with MAP_PRIVATE, and having 
+private anonymous pages shared between processes that don't COW, 
+introducing new syscalls etc.
+
+-- 
+Thanks,
+
+David / dhildenb
+
