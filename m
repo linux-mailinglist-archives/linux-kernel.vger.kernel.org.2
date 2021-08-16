@@ -2,138 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A533EDF71
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69CB3EDF68
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhHPVl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:41:58 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:57174 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbhHPVl4 (ORCPT
+        id S233618AbhHPVkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232034AbhHPVky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:41:56 -0400
-Received: by mail-il1-f198.google.com with SMTP id j14-20020a92c20e000000b00224641b3943so4637514ilo.23
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:41:24 -0700 (PDT)
+        Mon, 16 Aug 2021 17:40:54 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E31C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:40:22 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id bu14so7179620qvb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bkCxSCHWMZ7ifVAWn9uE3NNPnVIWsd+yoguxxgSyT/E=;
+        b=u9xM2180d8bEqgcdH0G2Xr+fDBmIT7hGm3KseFJJnnrFClI3gzRsnk0fHeUzP4sN3D
+         qwBxpkaoqzewGlVA8yzwRz9J0tu73Gkpg7YG/KGC66C8vD8FPHuzFLZ9qIiT4ZvGSoCA
+         JETZ+RieSp6YzUXkgW4pO9VzXo8OoZJkYVaswkSb5Tr8rK/HyoTiNjPvodajYYUBj828
+         ZYLfdWYgOsUcRrNOvb1w/H1cvWXyScg2uTnCFPr2ZunCmWBEzZd9sFxgYwS37BEqc3+d
+         vOzlbNJdXUNNFYe7D25YrYzcEsPYVN+oih0m+4A/6Rq/YrgF3WEW9zG/Kl3/Z1/SisO3
+         8wnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=FhLW1Y4gLrET7ksWx6p1KtCm+E7On21GQBX7bvtoqtQ=;
-        b=jJBrTEo0XC7J+vlIondxebReYCNFghXkO39RmXMsJphxnpq98/i05moxV7vMrans6h
-         ZtE8mD3dhzCOvvLq1T4BjlmSrm09UA/4iQsceJaXQbDZStyYzfqtWqByGBGbVTWCHglt
-         Fq8dYjFFulCGD46xVWsxuF6Vx3Uj4aqgw89ssf7G2qQHOi2gsXjgPJ3lt/injhy/b0Cj
-         XY9Vn0TaPZfPuabo3gZzHWN3stUBFGu2j3u14eMAnbZguh+tnzLb47gZigm72FB9Sd07
-         Gi4FlirLIumoF0ExHNV+2fr4gPlalUfSZwVQTf6y7wkG68hcCBuCecxJoif2MgAT19M0
-         R4+w==
-X-Gm-Message-State: AOAM531qIneTzT4aBAsiw3x31XsitTYXe9iyPmRLbn4dwmcQzsy/hj8S
-        ZUgEc7ewFVyrO3S9n8F5wFyh4HMHMIHE4drwv1Jo7Nr8RYxj
-X-Google-Smtp-Source: ABdhPJxafQrJLNi6FZ8Np826frnvibhkMT6mVUD2w4P0rhM8VdQBvsbEUfGzXU157cEV1LbH9sNsGaQaaJl2XkW7Nl64t7l4wMN2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bkCxSCHWMZ7ifVAWn9uE3NNPnVIWsd+yoguxxgSyT/E=;
+        b=A8y4P8o+4zY/9XNnrlekbeYctiFyaAQhDL5pkAMz1HWq9DXXesNTrT4zlxW+/n9039
+         oY7jGLTeRgyO6YzXKHTBqTsMZpdE0NrT2jNqo4NuA/82nUdrIQy6E/4Hls1A0FRd0aiy
+         dI6+hbnbb0rP1Tn9kJ315rsBcbtq7hNECxxlkrKSKidH46+o3g7F/xzAS0pOqo+m5fpL
+         pVfz7S+BwNtUEmnkvDHFt/B+gxmjo0wjWE5onrb42kxvLZ999zQzyocb833PIHTwZZs5
+         iZwuCVHDNw4hCMsgOB4ncCXzpcyz6700alvJuvFO08P0uMoz0NSsFGb+H+2SbEmmdDa/
+         qY0w==
+X-Gm-Message-State: AOAM53102/b02bmm8Xgm1XC8CVENyzno5h/+yrzR5DJYoKLbNXjm3HN+
+        XNGY8OpSGp82QRdvj2ydqLgNnw==
+X-Google-Smtp-Source: ABdhPJzLawvDQJ+cO7x4VrTkNWchJxTEALcGBSnmBvzEXpnYcZaDInUkbWdziD+TWA1j5iLVjj+OQg==
+X-Received: by 2002:a05:6214:500b:: with SMTP id jo11mr188804qvb.52.1629150021171;
+        Mon, 16 Aug 2021 14:40:21 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id k21sm69138qkh.110.2021.08.16.14.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 14:40:20 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 17:41:57 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Koutn?? <mkoutny@suse.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+Message-ID: <YRrbpRsvdDoom9iG@cmpxchg.org>
+References: <20210811031734.GA5193@xsang-OptiPlex-9020>
+ <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
+ <20210812031910.GA63920@shbuild999.sh.intel.com>
+ <20210816032855.GB72770@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:8707:: with SMTP id m7mr37831ild.177.1629150084461;
- Mon, 16 Aug 2021 14:41:24 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 14:41:24 -0700
-In-Reply-To: <00000000000020339705c9ad30ee@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011fc2505c9b41023@google.com>
-Subject: Re: [syzbot] general protection fault in __io_queue_sqe
-From:   syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210816032855.GB72770@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Aug 16, 2021 at 11:28:55AM +0800, Feng Tang wrote:
+> On Thu, Aug 12, 2021 at 11:19:10AM +0800, Feng Tang wrote:
+> > On Tue, Aug 10, 2021 at 07:59:53PM -1000, Linus Torvalds wrote:
+> [SNIP]
+> 
+> > And seems there is some cache false sharing when accessing mem_cgroup
+> > member: 'struct cgroup_subsys_state', from the offset (0x0 and 0x10 here)
+> > and the calling sites, the cache false sharing could happen between:
+> > 
+> >     cgroup_rstat_updated (read memcg->css.cgroup, offset 0x0)
+> > and 
+> >     get_mem_cgroup_from_mm
+> > 	css_tryget(&memcg->css) (read/write memcg->css.refcnt, offset 0x10)
+> > 
+> > (This could be wrong as many of the functions are inlined, and the
+> > exact calling site isn't shown)
 
-HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1784d5e9300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17479216300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147f0111300000
+Thanks for digging more into this.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com
+The offset 0x0 access is new in the page instantiation path with the
+bisected patch, so that part makes sense. The new sequence is this:
 
-general protection fault, probably for non-canonical address 0xdffffc000000000b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000058-0x000000000000005f]
-CPU: 0 PID: 6542 Comm: syz-executor423 Not tainted 5.14.0-rc5-next-20210816-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
-RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
-RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
-RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
-Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
-RSP: 0018:ffffc90002e4fd48 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 1ffff920005c9fb0 RCX: 0000000000000000
-RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
-RBP: ffff88807afc6280 R08: 0000000000000001 R09: ffff88807afc62df
-R10: ffffed100f5f8c5b R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff88807afc62f0 R15: ffff88807afc62f0
-FS:  000000000169a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200002c4 CR3: 0000000072b0d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_req_task_submit+0xaa/0x120 fs/io_uring.c:2139
- tctx_task_work+0x106/0x540 fs/io_uring.c:2063
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- handle_signal_work kernel/entry/common.c:146 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f169
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe2bd862a8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000200 RBX: 00000000004ad018 RCX: 000000000043f169
-RDX: 0000000000000000 RSI: 00000000000045f5 RDI: 0000000000000003
-RBP: 0000000000403150 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004031e0
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-Modules linked in:
----[ end trace bbf4e48f02e6cc2c ]---
-RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
-RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
-RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
-RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
-Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
-RSP: 0018:ffffc90002e4fd48 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 1ffff920005c9fb0 RCX: 0000000000000000
-RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
-RBP: ffff88807afc6280 R08: 0000000000000001 R09: ffff88807afc62df
-R10: ffffed100f5f8c5b R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff88807afc62f0 R15: ffff88807afc62f0
-FS:  000000000169a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200002c4 CR3: 0000000072b0d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	89 fa                	mov    %edi,%edx
-   2:	48 c1 ea 03          	shr    $0x3,%rdx
-   6:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   a:	0f 85 07 0c 00 00    	jne    0xc17
-  10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  17:	fc ff df 
-  1a:	4c 8b 65 70          	mov    0x70(%rbp),%r12
-  1e:	49 8d 7c 24 58       	lea    0x58(%r12),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-  2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	74 08                	je     0x3a
-  32:	3c 03                	cmp    $0x3,%al
-  34:	0f 8e 3e 0b 00 00    	jle    0xb78
-  3a:	45 8b 74 24 58       	mov    0x58(%r12),%r14d
-  3f:	31                   	.byte 0x31
+	shmem_add_to_page_cache()
+	  mem_cgroup_charge()
+	    get_mem_cgroup_from_mm()
+	      css_tryget()			# touches memcg->css.refcnt
+	  xas_store()
+	  __mod_lruvec_page_state()
+	    __mod_lruvec_state()
+	      __mod_memcg_lruvec_state()
+	        __mod_memcg_state()
+	          __this_cpu_add()
+	          cgroup_rstat_updated()	# touches memcg->css.cgroup
 
+whereas before, __mod_memcg_state() would just do stuff inside memcg.
+
+However, css.refcnt is a percpu-refcount. We should see a read-only
+lookup of the base pointer inside this cacheline, with the write
+occuring in percpu memory elsewhere. Even if it were in atomic/shared
+mode, which it shouldn't be for the root cgroup, the shared atomic_t
+is also located in an auxiliary allocation and shouldn't overlap with
+the cgroup pointer in any way.
+
+The css itself is embedded inside struct mem_cgroup, which does see
+modifications. But the closest of those is 3 cachelines down (struct
+page_counter memory), so that doesn't make sense, either.
+
+Does this theory require writes? Because I don't actually see any (hot
+ones, anyway) inside struct cgroup_subsys_state for this workload.
+
+> > And to verify this, we did a test by adding padding between
+> > memcg->css.cgroup and memcg->css.refcnt to push them into 2
+> > different cache lines, and the performance are partly restored:
+> > 
+> > dc26532aed0ab25c 2d146aa3aa842d7f5065802556b 73371bf27a8a8ea68df2fbf456b 
+> > ---------------- --------------------------- --------------------------- 
+> >   65523232 ±  4%     -40.8%   38817332 ±  5%     -19.6%   52701654 ±  3%  vm-scalability.throughput
+> >
+> > We are still checking more, and will update if there is new data. 
+> 
+> Seems this is the second case to hit 'adjacent cacheline prefetch",
+> the first time we saw it is also related with mem_cgroup
+> https://lore.kernel.org/lkml/20201125062445.GA51005@shbuild999.sh.intel.com/
+> 
+> In previous debug patch, the 'css.cgroup' and 'css.refcnt' is
+> separated to 2 cache lines, which are still adjacent (2N and 2N+1)
+> cachelines. And with more padding (add 128 bytes padding in between),
+> the performance is restored, and even better (test run 3 times):
+> 
+> dc26532aed0ab25c 2d146aa3aa842d7f5065802556b 2e34d6daf5fbab0fb286dcdb3bc 
+> ---------------- --------------------------- --------------------------- 
+>   65523232 ±  4%     -40.8%   38817332 ±  5%     +23.4%   80862243 ±  3%  vm-scalability.throughput
+> 
+> The debug patch is:
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -142,6 +142,8 @@ struct cgroup_subsys_state {
+>  	/* PI: the cgroup subsystem that this css is attached to */
+>  	struct cgroup_subsys *ss;
+>  
+> +	unsigned long pad[16];
+> +
+>  	/* reference count - access via css_[try]get() and css_put() */
+>  	struct percpu_ref refcnt;
+
+We aren't particularly space-constrained in this structure, so padding
+should generally be acceptable here.
