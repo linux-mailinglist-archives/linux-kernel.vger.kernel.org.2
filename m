@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445383ECF5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F412F3ECF69
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhHPHa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:30:28 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8422 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhHPHa1 (ORCPT
+        id S233885AbhHPHcH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 03:32:07 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:35503 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233906AbhHPHcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:30:27 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gp5L95YZnz881P;
-        Mon, 16 Aug 2021 15:25:53 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 15:29:52 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.242) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 15:29:52 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 4/4] iommu/arm-smmu-v3: Extract reusable function __arm_smmu_cmdq_skip_err()
-Date:   Mon, 16 Aug 2021 15:29:04 +0800
-Message-ID: <20210816072904.1897-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210816072904.1897-1-thunder.leizhen@huawei.com>
-References: <20210816072904.1897-1-thunder.leizhen@huawei.com>
+        Mon, 16 Aug 2021 03:32:00 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8CE7540002;
+        Mon, 16 Aug 2021 07:31:27 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 09:31:26 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Daniel Kestrel <kestrelseventyfour@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <20210816093126.442f74a1@xps13>
+In-Reply-To: <20210808072643.GA5084@ubuntu>
+References: <20210808072643.GA5084@ubuntu>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.242]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SMMU_GERROR.CMDQP_ERR is different to SMMU_GERRORN.CMDQP_ERR, it
-indicates that one or more errors have been encountered on a command queue
-control page interface. We need to traverse all ECMDQs in that control
-page to find all errors. For each ECMDQ error handling, it is much the
-same as the CMDQ error handling. This common processing part is extracted
-as a new function __arm_smmu_cmdq_skip_err().
+Hi Daniel,
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 2021
+09:26:43 +0200:
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 7814366778fda35..f3824c37f1832a2 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -359,7 +359,8 @@ static void arm_smmu_cmdq_build_sync_cmd(u64 *cmd, struct arm_smmu_device *smmu,
- 	arm_smmu_cmdq_build_cmd(cmd, &ent);
- }
- 
--static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-+static void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
-+				     struct arm_smmu_queue *q)
- {
- 	static const char * const cerror_str[] = {
- 		[CMDQ_ERR_CERROR_NONE_IDX]	= "No error",
-@@ -370,7 +371,6 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
- 
- 	int i;
- 	u64 cmd[CMDQ_ENT_DWORDS];
--	struct arm_smmu_queue *q = &smmu->cmdq.q;
- 	u32 cons = readl_relaxed(q->cons_reg);
- 	u32 idx = FIELD_GET(CMDQ_CONS_ERR, cons);
- 	struct arm_smmu_cmdq_ent cmd_sync = {
-@@ -417,6 +417,11 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
- 	queue_write(Q_ENT(q, cons), cmd, q->ent_dwords);
- }
- 
-+static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-+{
-+	__arm_smmu_cmdq_skip_err(smmu, &smmu->cmdq.q);
-+}
-+
- /*
-  * Command queue locking.
-  * This is a form of bastardised rwlock with the following major changes:
--- 
-2.26.0.106.g9fadedd
+> Some devices use Micron NAND chips, which use on-die ECC. The hardcoded
+> setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because the
+> software ECC on top of the hardware ECC produces errors for every read
+> and write access, not to mention that booting does not work, because
+> the boot loader uses the correct ECC when trying to load the kernel
+> and stops loading on severe ECC errors.
+> This patch requires the devices that currently work with the hard coded
+> setting to set the nand-ecc-mode property to soft in their device
+> tree.
+> 
 
+Please add a Fixes: and Cc: stable tags, you will also need to send to
+stable@vger.kernel.org a different version of the patch for the kernel
+5.4 IIUC.
+
+> Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
+> Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Home Hub 5A
+> ---
+>  drivers/mtd/nand/raw/xway_nand.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+> index 26751976e502..0a4b0aa7dd4c 100644
+> --- a/drivers/mtd/nand/raw/xway_nand.c
+> +++ b/drivers/mtd/nand/raw/xway_nand.c
+> @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
+>  
+>  static int xway_attach_chip(struct nand_chip *chip)
+>  {
+> -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> -
+>  	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+>  		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+
+You also need to only set the Hamming algorithm when engine_type is
+TYPE_SOFT.
+
+Thanks,
+Miquèl
