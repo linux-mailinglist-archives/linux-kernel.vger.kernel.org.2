@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106943EDB55
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823993EDBBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhHPQwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:52:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:34369 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhHPQwE (ORCPT
+        id S232504AbhHPQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:53:24 -0400
+Received: from server34.i7host.com.br ([186.227.200.26]:47090 "EHLO
+        server34.i7host.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230022AbhHPQxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:52:04 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 16 Aug 2021 09:51:32 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Aug 2021 09:51:30 -0700
-X-QCInternal: smtphost
-Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Aug 2021 22:20:54 +0530
-Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
-        id 85E1D51AA; Mon, 16 Aug 2021 22:20:53 +0530 (IST)
-From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org, robh+dt@kernel.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, cang@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Subject: [PATCH V1] arm64: dts: qcom: sc7180: Use maximum drive strength values for eMMC
-Date:   Mon, 16 Aug 2021 22:20:50 +0530
-Message-Id: <1629132650-26277-1-git-send-email-sbhanu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 16 Aug 2021 12:53:23 -0400
+X-Greylist: delayed 2006 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Aug 2021 12:53:22 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=smartgreen.net; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kaujpLkHTzp+AFdivFztPDuqgCjSQCzDQFwNHpFbg7I=; b=21mvHC26UMKImymtYAxT3h+X1G
+        koslLtyhg3MD6JMCzpdUGn5FUFwLX0axSqoR4QtPURo6KR4cqyyl/t/Vpa74qIslBB2Uxg1DI6bnc
+        QKaxNWzyJ/QpLl4lpmfy4auSR71V01Pj+0tfudIadBHxy/PlCJMFaLTyBLwmgExBQcz+OXVdayzvr
+        Ko5FDkeOaFbwOExEknGtswB5VOj+Qx/JZnJR4rij/N0JrLDvbStB/qbdD9yaqm8ZXE1lG8+vYBjTi
+        2CtVwHWN01aCGmvFA2oHoU/vo26b7kEaFiCW2OtSsfqAM6khw7GxsvL+U/Vjrbksv73V6MTn3sIxC
+        uzaIP1rQ==;
+Received: from [177.220.172.187] (port=34283 helo=localhost)
+        by server34.i7host.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <bruno.meneguele@smartgreen.net>)
+        id 1mFfqx-00GtZ0-OA; Mon, 16 Aug 2021 13:52:48 -0300
+From:   Bruno Meneguele <bruno.meneguele@smartgreen.net>
+To:     sre@kernel.org, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bruno Meneguele <bruno.meneguele@smartgreen.net>
+Subject: [PATCH v4 0/2] add Watchdog Timer delay support for BQ24735
+Date:   Mon, 16 Aug 2021 13:52:43 -0300
+Message-Id: <20210816165245.40416-1-bruno.meneguele@smartgreen.net>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server34.i7host.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - smartgreen.net
+X-Get-Message-Sender-Via: server34.i7host.com.br: authenticated_id: bruno.meneguele@smartgreen.net
+X-Authenticated-Sender: server34.i7host.com.br: bruno.meneguele@smartgreen.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current drive strength values are not sufficient on non discrete
-boards and this leads to CRC errors during switching to HS400 enhanced
-strobe mode.
+The IC BQ24735 has the ability to suspend the battery charging in case the
+system freezes for some reason: the IC observes consecutive writes for
+either CargeCurrent of ChargVoltage registers in a maximum period of time.
 
-Hardware simulation results on non discrete boards shows up that use the
-maximum drive strength values for data and command lines could helps
-in avoiding these CRC errors.
+This period of time can be configured by the user through the ChargeOption
+register in the bits 13 and 14, but it's only possible to change if the user
+sends the value directly accessing the I2C bus through userspace, because
+the kernel driver doesn't read or write to the Watchdog bits.
 
-So, update data and command line drive strength values to maximum.
+This patchset enables the user to configure the value through the
+device-tree option "ti,wdt-timeout".
 
-Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changelog:
+  v3 - add specific patch for the dt bidings change.
+     - patch 1/2 was already queued to the tree, so it's not present in this
+	   patchset anymore.
+  v2 - unfortunately I used a default gitconfig that was pointing to my
+  default user.email and email smtp. This new version corrects it.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 0f2b3c0..79d7aa6 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -1524,13 +1524,13 @@ ap_spi_fp: &spi10 {
- 		pinconf-cmd {
- 			pins = "sdc1_cmd";
- 			bias-pull-up;
--			drive-strength = <10>;
-+			drive-strength = <16>;
- 		};
- 
- 		pinconf-data {
- 			pins = "sdc1_data";
- 			bias-pull-up;
--			drive-strength = <10>;
-+			drive-strength = <16>;
- 		};
- 
- 		pinconf-rclk {
+Bruno Meneguele (2):
+  power: supply: bq24735: add watchdog timer delay support
+  dt-bindings: power: supply: bq24735: document the watchdog timer delay
+    feature
+
+ .../bindings/power/supply/bq24735.yaml        | 15 ++++++
+ drivers/power/supply/bq24735-charger.c        | 54 +++++++++++++++++++
+ include/linux/power/bq24735-charger.h         |  1 +
+ 3 files changed, 70 insertions(+)
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.31.1
 
