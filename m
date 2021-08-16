@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30BD3ED4EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705A53ED5C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237162AbhHPNG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
+        id S240082AbhHPNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237064AbhHPNFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF2C632A6;
-        Mon, 16 Aug 2021 13:04:50 +0000 (UTC)
+        id S239196AbhHPNJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C15CA610A0;
+        Mon, 16 Aug 2021 13:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119091;
-        bh=Q6i3T57RX6TV9PUrnLivdr2WkPChCIv41a7zXyC6zxI=;
+        s=korg; t=1629119344;
+        bh=VFON9shimxrFJ1AC6LrHN9ae06WTIKEndI5RHPtWl3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1SGLO4RAW8w7/62oC6wfi6uJQwYROlZYHCPDBY2I/vlhlIUEtHWkBZy5K4QrTvYU
-         znsG6NCnrw5In366RIY4bkwmEJYQ6mw6d+9xYdz8hEmL1460i1EZQ5nxP/jdMpxHjr
-         JGUXMBxlxfacXmfIJtX60ME1sPbpuKx6NgGuqxx8=
+        b=zdUusNIcSsM+roMlOsYR8R9bDiuj1VQgjzu4mNG9PXPlzq7hcuL7nqqpilQ/Rtebw
+         m2VHg/ASFvbMsR08PVRInyIldqzP3cfla24lS2yq/BqBo73RP9CSyY0NDSp9/fV855
+         YxYW6+UcGYr7YR3VisI0xqobbhse7C+wUPVc30FM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bixuan Cui <cuibixuan@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.4 47/62] genirq/msi: Ensure deactivation on teardown
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 69/96] efi/libstub: arm64: Force Image reallocation if BSS was not reserved
 Date:   Mon, 16 Aug 2021 15:02:19 +0200
-Message-Id: <20210816125429.820363920@linuxfoundation.org>
+Message-Id: <20210816125437.267104668@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit dbbc93576e03fbe24b365fab0e901eb442237a8a upstream.
+[ Upstream commit 5b94046efb4706b3429c9c8e7377bd8d1621d588 ]
 
-msi_domain_alloc_irqs() invokes irq_domain_activate_irq(), but
-msi_domain_free_irqs() does not enforce deactivation before tearing down
-the interrupts.
+Distro versions of GRUB replace the usual LoadImage/StartImage calls
+used to load the kernel image with some local code that fails to honor
+the allocation requirements described in the PE/COFF header, as it
+does not account for the image's BSS section at all: it fails to
+allocate space for it, and fails to zero initialize it.
 
-This happens when PCI/MSI interrupts are set up and never used before being
-torn down again, e.g. in error handling pathes. The only place which cleans
-that up is the error handling path in msi_domain_alloc_irqs().
+Since the EFI stub itself is allocated in the .init segment, which is
+in the middle of the image, its BSS section is not impacted by this,
+and the main consequence of this omission is that the BSS section may
+overlap with memory regions that are already used by the firmware.
 
-Move the cleanup from msi_domain_alloc_irqs() into msi_domain_free_irqs()
-to cure that.
+So let's warn about this condition, and force image reallocation to
+occur in this case, which works around the problem.
 
-Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated early")
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210518033117.78104-1-cuibixuan@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 82046702e288 ("efi/libstub/arm64: Replace 'preferred' offset with alignment check")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/irq/msi.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/libstub/arm64-stub.c | 49 ++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -477,11 +477,6 @@ skip_activate:
- 	return 0;
- 
- cleanup:
--	for_each_msi_vector(desc, i, dev) {
--		irq_data = irq_domain_get_irq_data(domain, i);
--		if (irqd_is_activated(irq_data))
--			irq_domain_deactivate_irq(irq_data);
--	}
- 	msi_domain_free_irqs(domain, dev);
- 	return ret;
+diff --git a/drivers/firmware/efi/libstub/arm64-stub.c b/drivers/firmware/efi/libstub/arm64-stub.c
+index 22ece1ad68a8..3dc54b9db054 100644
+--- a/drivers/firmware/efi/libstub/arm64-stub.c
++++ b/drivers/firmware/efi/libstub/arm64-stub.c
+@@ -34,6 +34,51 @@ efi_status_t check_platform_features(void)
+ 	return EFI_SUCCESS;
  }
-@@ -494,7 +489,15 @@ cleanup:
-  */
- void msi_domain_free_irqs(struct irq_domain *domain, struct device *dev)
- {
-+	struct irq_data *irq_data;
- 	struct msi_desc *desc;
-+	int i;
-+
-+	for_each_msi_vector(desc, i, dev) {
-+		irq_data = irq_domain_get_irq_data(domain, i);
-+		if (irqd_is_activated(irq_data))
-+			irq_domain_deactivate_irq(irq_data);
-+	}
  
- 	for_each_msi_entry(desc, dev) {
- 		/*
++/*
++ * Distro versions of GRUB may ignore the BSS allocation entirely (i.e., fail
++ * to provide space, and fail to zero it). Check for this condition by double
++ * checking that the first and the last byte of the image are covered by the
++ * same EFI memory map entry.
++ */
++static bool check_image_region(u64 base, u64 size)
++{
++	unsigned long map_size, desc_size, buff_size;
++	efi_memory_desc_t *memory_map;
++	struct efi_boot_memmap map;
++	efi_status_t status;
++	bool ret = false;
++	int map_offset;
++
++	map.map =	&memory_map;
++	map.map_size =	&map_size;
++	map.desc_size =	&desc_size;
++	map.desc_ver =	NULL;
++	map.key_ptr =	NULL;
++	map.buff_size =	&buff_size;
++
++	status = efi_get_memory_map(&map);
++	if (status != EFI_SUCCESS)
++		return false;
++
++	for (map_offset = 0; map_offset < map_size; map_offset += desc_size) {
++		efi_memory_desc_t *md = (void *)memory_map + map_offset;
++		u64 end = md->phys_addr + md->num_pages * EFI_PAGE_SIZE;
++
++		/*
++		 * Find the region that covers base, and return whether
++		 * it covers base+size bytes.
++		 */
++		if (base >= md->phys_addr && base < end) {
++			ret = (base + size) <= end;
++			break;
++		}
++	}
++
++	efi_bs_call(free_pool, memory_map);
++
++	return ret;
++}
++
+ /*
+  * Although relocatable kernels can fix up the misalignment with respect to
+  * MIN_KIMG_ALIGN, the resulting virtual text addresses are subtly out of
+@@ -92,7 +137,9 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 	}
+ 
+ 	if (status != EFI_SUCCESS) {
+-		if (IS_ALIGNED((u64)_text, min_kimg_align())) {
++		if (!check_image_region((u64)_text, kernel_memsize)) {
++			efi_err("FIRMWARE BUG: Image BSS overlaps adjacent EFI memory region\n");
++		} else if (IS_ALIGNED((u64)_text, min_kimg_align())) {
+ 			/*
+ 			 * Just execute from wherever we were loaded by the
+ 			 * UEFI PE/COFF loader if the alignment is suitable.
+-- 
+2.30.2
+
 
 
