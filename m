@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A5B3ECED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7825E3ECED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbhHPGvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:51:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36788 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233571AbhHPGvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:51:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629096660; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=gdILqRmVTD/TFVQVBfNPgHl11ZlKVgr1wHcPFQbbszM=;
- b=Ag7pMNo9NM4YEz/piukAZgstpiYn19UHawj4Se3F3q6DPcRHz7WnXE8Ptkj4I6sCoa/Cq41q
- 6c+tNgRzxUmmZwEfQmuLCPrznhPM8J3bfZkNAGbodZeEKcgNxffThPPaz7hLtLbCp9gTFacS
- NjAXusbjtjiLA/40kVcSckbCd48=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 611a0abef746c298d91898e3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 06:50:38
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2391BC43617; Mon, 16 Aug 2021 06:50:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69BFCC4360C;
-        Mon, 16 Aug 2021 06:50:37 +0000 (UTC)
+        id S233695AbhHPGvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:51:43 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41322 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233376AbhHPGvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 02:51:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7BBD71C0B77; Mon, 16 Aug 2021 08:51:10 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 08:51:10 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Colin King <colin.king@canonical.com>
+Cc:     linux-leds@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: flash: Remove redundant initialization of variable
+ ret
+Message-ID: <20210816065110.GA7500@duo.ucw.cz>
+References: <20210612132547.58727-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 16 Aug 2021 12:20:37 +0530
-From:   skakit@codeaurora.org
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH 1/2] pinctrl: qcom: spmi-gpio: correct parent irqspec
- translation
-In-Reply-To: <CACRpkdZteWY6X+prHeAF0rtPVbCk+X9=ZYgpjgAMH24LhOjhaQ@mail.gmail.com>
-References: <1628830531-14648-1-git-send-email-skakit@codeaurora.org>
- <1628830531-14648-2-git-send-email-skakit@codeaurora.org>
- <CACRpkdZteWY6X+prHeAF0rtPVbCk+X9=ZYgpjgAMH24LhOjhaQ@mail.gmail.com>
-Message-ID: <4af8171aefd6f0387438225666ec1ccc@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
+Content-Disposition: inline
+In-Reply-To: <20210612132547.58727-1-colin.king@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-On 2021-08-13 14:27, Linus Walleij wrote:
-> Hi Satya/David,
-> 
-> nice work on identifying this bug!
-> 
-> On Fri, Aug 13, 2021 at 6:56 AM satya priya <skakit@codeaurora.org> 
-> wrote:
->> 
->> From: David Collins <collinsd@codeaurora.org>
->> 
->> pmic_gpio_child_to_parent_hwirq() and
->> gpiochip_populate_parent_fwspec_fourcell() translate a pinctrl-
->> spmi-gpio irqspec to an SPMI controller irqspec.  When they do
->> this, they use a fixed SPMI slave ID of 0 and a fixed GPIO
->> peripheral offset of 0xC0 (corresponding to SPMI address 0xC000).
->> This translation results in an incorrect irqspec for secondary
->> PMICs that don't have a slave ID of 0 as well as for PMIC chips
->> which have GPIO peripherals located at a base address other than
->> 0xC000.
->> 
->> Correct this issue by passing the slave ID of the pinctrl-spmi-
->> gpio device's parent in the SPMI controller irqspec and by
->> calculating the peripheral ID base from the device tree 'reg'
->> property of the pinctrl-spmi-gpio device.
->> 
->> Signed-off-by: David Collins <collinsd@codeaurora.org>
->> Signed-off-by: satya priya <skakit@codeaurora.org>
-> 
-> Is this a regression or is it fine if I just apply it for v5.15?
-> I was thinking v5.15 since it isn't yet used in device trees.
-> 
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Without this fix, [2/2] Vol+ support is failing. If possible please 
-merge it on current branch.
+Hi!
 
-> Yours,
-> Linus Walleij
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> The variable ret is being initialized with a value that is never read,
+> it is being updated later on. The assignment is redundant and can be
+> removed.
+>=20
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+I did this instead; hopefully that's okay with everyone.
+
+Best regards,
+							Pavel
+
+commit 654933ae7d32f278eecd0bb0f175785574ac4775
+Author: Pavel Machek <pavel@ucw.cz>
+Date:   Mon Aug 16 08:47:08 2021 +0200
+
+    leds: flash: Remove redundant initialization of variable ret
+   =20
+    Adjust initialization not to trigger Coverity warnings.
+   =20
+    Reported-by: Colin Ian King <colin.king@canonical.com>
+    Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
+index 6eeb9effcf65..185e17055317 100644
+--- a/drivers/leds/led-class-flash.c
++++ b/drivers/leds/led-class-flash.c
+@@ -92,14 +92,12 @@ static ssize_t flash_strobe_store(struct device *dev,
+ 	struct led_classdev *led_cdev =3D dev_get_drvdata(dev);
+ 	struct led_classdev_flash *fled_cdev =3D lcdev_to_flcdev(led_cdev);
+ 	unsigned long state;
+-	ssize_t ret =3D -EINVAL;
++	ssize_t ret =3D -EBUSY;
+=20
+ 	mutex_lock(&led_cdev->led_access);
+=20
+-	if (led_sysfs_is_disabled(led_cdev)) {
+-		ret =3D -EBUSY;
++	if (led_sysfs_is_disabled(led_cdev))
+ 		goto unlock;
+-	}
+=20
+ 	ret =3D kstrtoul(buf, 10, &state);
+ 	if (ret)
+
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRoK3gAKCRAw5/Bqldv6
+8j8dAJ4ofrlkLRgyhMsj+wAlN16lq/bCRgCeN7K/b+N0KrTKckmebbrTfnoryCs=
+=RFL6
+-----END PGP SIGNATURE-----
+
+--PEIAKu/WMn1b1Hv9--
