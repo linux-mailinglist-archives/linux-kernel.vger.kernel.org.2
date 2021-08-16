@@ -2,165 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CD53ED62E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A1C3ED64E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhHPNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:18:22 -0400
-Received: from mail-co1nam11on2074.outbound.protection.outlook.com ([40.107.220.74]:20273
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236375AbhHPNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:07:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MJ9kfwhKQxv0n8ZhnNh63nTl7mMRvLBEs8ShUQRAyYtxROA8a02XhS20uxOLWRWVjW+wrD4FYo1NK2AjVmpWY4Zk1Q09CMYAPxO57hPR9q6CAXk3hR3KX3K4W2o386bY4tMqGhIHmQYFbp6k425kdfax/tAMDEY10IrYs6TH+6B+9S4tw9fp3sDP6Z7d7IKuF3EcpAHvW7VerZy5rAMYEwuHvtLWqNtC9KvFdDMsDMQua0jf+iE7NzNqcxqOx5MmKcAAtmNckMwg5R+Y2a9qqxYz4Ce436oj01BThT6SVFdyVCKeYT3qCpc751Ddq77rwzhV72yT9ZlyJ0oNn3J+jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7EkVHbMYlfepPIhJX/5PIS9VLdfUc80vBROZOhuNTgM=;
- b=i0JA6M4pF1oeturGT9pEi88anklV9W4Xh7LLnwHnwfYL5jGmGKPCW7vWmhSLiS0OpLe9+6iE8u0OFU5wQlvb46uFhFmeGCe/QyVAEkMao9K+r6G+3xHNXIZlxJNkekJiALvRkwJJeVd2XRI+Xu9F3vuRB/k0iO5sfk+c30fXZ/u45SZyQavkGPRbaHdVYdWurNymqylpVGkqca6AlrMLkmgc8JmRAIjvVzXeFznojak6TVTgz5UnApqwYI3oo53/n8ZhIn6aZr+OY9lNRWqLSmzJD7EPR/h5JJVKtojJgPBvM+R7/rRQInQKDHIvvnXqpmc2AAHwpOBSxJO44Zhqrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7EkVHbMYlfepPIhJX/5PIS9VLdfUc80vBROZOhuNTgM=;
- b=eZEEu/W7p1z1oBB9O5zoJfOs9BpWpsH8+zkoD69BeiBXM4U+Wus6uNT4xfqwpiEKaSkoslRiFpvmFaa6JxIUTMN3kw3jkonOkjseeUH90uwib6VxZtdH0p1AULd/anxpp0SJTKhlhiKp27k69fJSPhb1ulz3otk810FqqZVJMgbcDUrVAPASzbmeWaA1BBCCJHs615UbOvYfKqJsGETz3T5s9FkTGVEw/C955cRu3p/KT4+T0jBZP+m781HeJFWYv4uHJPW/eIf9506yhPzOsxdolijEyGDT3VN6Ny0SN6qRHjpU8ycbOdZUTkA3WT3XJAHGoUtPi/zzU/r37+H5cg==
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
- by CH2PR12MB4838.namprd12.prod.outlook.com (2603:10b6:610:1::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Mon, 16 Aug
- 2021 13:07:19 +0000
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::9473:20a9:50d1:4b1f]) by CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::9473:20a9:50d1:4b1f%6]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
- 13:07:19 +0000
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liming Sun <limings@nvidia.com>
-Subject: RE: [PATCH v1 4/6] gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper
- macro
-Thread-Topic: [PATCH v1 4/6] gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper
- macro
-Thread-Index: AQHXkpZCE/0aCAoDikSm2T2q6vVrhqt2GgkQ
-Date:   Mon, 16 Aug 2021 13:07:19 +0000
-Message-ID: <CH2PR12MB3895FCE1B0D7B075C99E86CDD7FD9@CH2PR12MB3895.namprd12.prod.outlook.com>
-References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
- <20210816115953.72533-5-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210816115953.72533-5-andriy.shevchenko@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8d7397c8-c780-4347-770c-08d960b6c72a
-x-ms-traffictypediagnostic: CH2PR12MB4838:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR12MB4838EFC65627CB200D2900C9D7FD9@CH2PR12MB4838.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:397;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jNQwciZZ9dKQZ9BBtFBhIjqiZydySVVFaRT4Dh4nuJcG67s3UPPtY9sOuXj7BuNGyOCw/Ks+5xI32FN86Hy4ZbCLw+wo7y5SGfOr0D2riTM6uFYDDczViSuqfv9TkShnHi3p7TJLqBPu7incPG7CcMLmOHgbmqlqfLjrfwpQrYFx7snuvhERgPL7NryJsPwQeJLcIdF7kvyYko1AVSCCbCuNo+tj72KBMimPtiEi9dt1II1h7+Rayzf66sEdClv+hsUmkyiyyIWUjboah4eWouiWUa8xb4tYMIL+2+fux7LY13r6wT672aWD7VEk0gBUZ5B3qSJQ9Uob4sRXsWQqD7/rdMFPh79tnuORYtW47cN9qsvHtAna3W5NjjI4qMl0jEsSYnfrI4JkROS8sWIcX3PLllLOxF0aGgEbFdyZ9cd3+HlyyT6emOZfOX/YkrWcgFunlWYb3kQNcZBuY/TP2pOibEeD7jqb3gjGNIWdu3zhoraKnyD+40yV/Jjy2F2swAgaNEuk4i+aGXViwnLxpMKMix44lIphh39gGmYTFjsfOHE1eQKbhMFI7f5GFDPFtLUlJRAQ/dd9VPeaAVr4OGXDZYaYlhSZgPRkbn1oV7+w7YI+UJ3QSHEOpsZw90W1i0Ryc8YCS7f754LA4V4ol/yhBlF1Ds8tJwiUt60xC6CIhRJ5Tw68B/6qSVlfmJPUrmTKgdWCxVGP7KLBQTd3bw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(376002)(136003)(53546011)(5660300002)(52536014)(6506007)(26005)(7416002)(186003)(55016002)(478600001)(38070700005)(7696005)(122000001)(64756008)(9686003)(66476007)(66946007)(66556008)(76116006)(316002)(110136005)(54906003)(66446008)(86362001)(4326008)(107886003)(83380400001)(2906002)(8676002)(8936002)(33656002)(38100700002)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m19R7QBUtBwMHz12ELPpmvf2X1iU2+cxDA1HDmhdTNV58ySJFaHbkCe1dpT+?=
- =?us-ascii?Q?/FvkVG5fp5Sao9fcT68xZ4fPlcDxUrYuDPhX7eS88c6NOvlyD3HDzIfaus+F?=
- =?us-ascii?Q?mCV3EwxmKFuRn4i5vaAvJLV/R6KtnhWdlDv15a5MMwXr2KuDwmyLpG54viee?=
- =?us-ascii?Q?EheGxkuHihouFbfiHwKmldhEOG1jzKkUGlJyzMYTskDazXtcghVaYt+KZdDi?=
- =?us-ascii?Q?xperdyt4fA8IZpSrfNZnzoWpW3Ht6VonKPjx2nCLXAJdkX4x4A8yl22uQFXH?=
- =?us-ascii?Q?EZxkD60wFNbcamNO1xMAmjZR4ECGIjA6SgJeOR1fu2yKioO5dPO7JGxC8cHR?=
- =?us-ascii?Q?/edaGdzr4p8B5efTd7uK5AOtuap0klKxRtBuMQCer/xQtJH427+O1IlCZrpE?=
- =?us-ascii?Q?J98+V1tKDreY1jlU0BlBAmW/TX11SyDk1/1N6q7E3eP0cEE06IYrM8bpCbsl?=
- =?us-ascii?Q?ZF1w1hRZZP495xB/KXMp1zOR5mqnzQAEOV1NMwEurOt6tiXipLbDT54SlHF8?=
- =?us-ascii?Q?1ZdpWnJPijVR6eH4lYgRyzCUuEUh6nXTCmggo4u2gvxGT2qo8wWIYEkhUCBe?=
- =?us-ascii?Q?QjIaxco4HziExnB6LYTq64Csx+q6M1qZ9eC6f+ZXuss6+Pt2YdLjmnXdn+Hv?=
- =?us-ascii?Q?Zki78SkAKwSEEvpU3N0FoHkWfv2et46NQ0g1WXXTrqBZSfrJ1okZeat3RSKs?=
- =?us-ascii?Q?my+VbQ6zzSwH60i3k02QH9AjGA3TMNlepA2F0rwFsrHESOb42dxjAgZW1rbq?=
- =?us-ascii?Q?FTrMdsd8vsDx3+QuIy0+r4Vqrzu2INrMtvWRtNgYFd5VLS5GzXXRXZeU/HjP?=
- =?us-ascii?Q?+Lr3LGVvye/RqlR3s3iJ7CzG2ubGE4rvQQxEye/5C++xC9Dx9UgXHhjzYuBS?=
- =?us-ascii?Q?eaPC/5Ocw/BydlqhpJGVORaehie3J1CWgQcZIiHmKOq2Iy/JaoJuuGCTcDl2?=
- =?us-ascii?Q?6edg9Fx2H09mY/Q+n7Y96L+pnjLvxkmmf/eE74oeny8fFjjwG8k3NYip+4Cw?=
- =?us-ascii?Q?ZT3FmDDBoQgp0rkrfqEwL79EtBchvqty0O+EOpCs32nhRun1hKvlJfaAoZIv?=
- =?us-ascii?Q?muynzjX8ZPvUWGsl0gTQ4nkJviLFLl/IYBcCki01b33/RMNAiYBfMCxMcFkJ?=
- =?us-ascii?Q?cYjBiHoHrv1y/80uFMkdfoVrYRyyI0ScUCIVcN3wEgibNSOMaiT91ngaQ8o1?=
- =?us-ascii?Q?2u5DQ/qgVcl9e+Zvpqi1Wn115uuInjuJudhRERF134oZNg+XhBtLO7IIVYeD?=
- =?us-ascii?Q?I6Xlxy5ZJQxTNDJViKZk/2YvLCAF1QI9zWJ9Ud3AZpm1cwnILG/LEB9mOOfd?=
- =?us-ascii?Q?HHkRXDqwGlW0Pnj4KnVbxH8m?=
-Content-Type: text/plain; charset="us-ascii"
+        id S240879AbhHPNUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239269AbhHPNLu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:11:50 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E99C035436;
+        Mon, 16 Aug 2021 06:07:54 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d9so14097558qty.12;
+        Mon, 16 Aug 2021 06:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:to:cc
+         :subject:from:references:in-reply-to;
+        bh=xfxVTufOpmHkg6GHY87ySGvsV3ZLRddJrxsikZzhp6g=;
+        b=gasm5GElvgx3RRzmWXq52VybAz4g5Vnh3CxewUsprhDCHopi7Zdpq3HtKXOGhfm53Z
+         39GL7URg+UP78AiVfyJRseh4Xp9OLOCs/fjmyGyCPYWpiSLbuvHfBxICjBc+1RoxmeYP
+         6v+4SEtpCP3czylhQt1O2J3B9BxYILD1klMRYjiI1d6FEorvaDhglAW9W0QoiCjbu0TG
+         66woKs62QnSuoK0TkgjXHb483+R3M2itoia4zHkP2XjWQlbmqHam/ZlrcOJXHbH0GksX
+         vm7onNcxeM6usPSHPClBRmcp1foJF87cpQx11Jyc8BWGYdZ1hldIGct7EauECGdWotq4
+         Aduw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:to:cc:subject:from:references:in-reply-to;
+        bh=xfxVTufOpmHkg6GHY87ySGvsV3ZLRddJrxsikZzhp6g=;
+        b=j02SpZFgdx5i5qyCRr4HlinrTT0hDGuajIOo1bOeaFbH71Wkd37fyMoqlTieV+7NVO
+         6pqmvMrb1WHTaJ8xntk9VF1rUG44B8CbcPnKWiak1J5506mHyecHJv9EnW2B7jKQ5xsR
+         W/N1smfj4ami/00MJUrvE6JYGr1/aIbLq2A+hWaptkyydZqaqT/W3JLmA7zGRaSbTpQi
+         5yuZwqP5KZUXjrKJiTgMecqXwzbkqjuMQYtYzz0I1+D9lAxXyUvQQN//3HtWdBcp2k/L
+         EsJImpJad821JQd+EIOJ6zSwBxL95PMv2EGEbA2/LpUz+GGjz0DGyHrKwhPmXyL8x+ts
+         vbYQ==
+X-Gm-Message-State: AOAM530XTUlbGlqlfIYrbQIzH7JCSIeGxlxG8GIxHvYSUS+mpZTSLb4i
+        zvoCkWXiwepXoNYx2RQqJU0=
+X-Google-Smtp-Source: ABdhPJyUMDRqAP6WB58hfo5+GxTozFXW06KqPhTG9PbuW4H4x7KT6X+j7e0So4OByLKuhr7iF4149A==
+X-Received: by 2002:ac8:5202:: with SMTP id r2mr5465739qtn.106.1629119273650;
+        Mon, 16 Aug 2021 06:07:53 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id bi3sm6027372qkb.133.2021.08.16.06.07.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 06:07:53 -0700 (PDT)
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d7397c8-c780-4347-770c-08d960b6c72a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2021 13:07:19.0289
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vq6+mrRiEYCoZkr8tzQbhO7LoTLU+81TFmuUDPB3UuSJhBOHa6CZbMNM3RScsnIW6kbTktsxc2b2MQmSYhdj2g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4838
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 16 Aug 2021 09:07:52 -0400
+Message-Id: <CDKYL1RFEMBA.2VURZKBX9F3S@shaak>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     "Lars-Peter Clausen" <lars@metafoo.de>,
+        "Michael Hennerich" <Michael.Hennerich@analog.com>,
+        "Jonathan Cameron" <jic23@kernel.org>,
+        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
+        =?utf-8?q?Nuno_S=C3=A1?= <Nuno.Sa@analog.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "linux-iio" <linux-iio@vger.kernel.org>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>
+Subject: Re: [PATCH v6 3/5] iio: adc: ad7949: add vref selection support
+From:   "Liam Beguin" <liambeguin@gmail.com>
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+ <20210815213309.2847711-4-liambeguin@gmail.com>
+ <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
+ <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
+ <CAHp75VdC8GFmV-uOHPQpv5q=q0ZwSKFXW6gOL-hK6N4_qS1YJw@mail.gmail.com>
+In-Reply-To: <CAHp75VdC8GFmV-uOHPQpv5q=q0ZwSKFXW6gOL-hK6N4_qS1YJw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Asmaa Mnebhi <asmaa@nvidia.com>
+On Mon Aug 16, 2021 at 8:48 AM EDT, Andy Shevchenko wrote:
+> On Mon, Aug 16, 2021 at 3:39 PM Liam Beguin <liambeguin@gmail.com>
+> wrote:
+> > On Mon Aug 16, 2021 at 4:04 AM EDT, Andy Shevchenko wrote:
+> > > On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
+> > > wrote:
+>
+> ...
+>
+> > > > +       tmp =3D 4096000;
+> > > > +       ret =3D device_property_read_u32(dev, "adi,internal-ref-mic=
+rovolt", &tmp);
+> > >
+> > > > +       if (ret < 0 && ret !=3D -EINVAL) {
+> >
+> > Hi Andy,
+> >
+> > >
+> > > What does this check (second part) is supposed to mean?
+> > > The first part will make it mandatory, is it the goal?
+> > >
+> >
+> > device_property_read_u32() will return -EINVAL if the property isn't
+> > found in the devicetree.
+> >
+> > This checks for errors when the property is defined while keeping it
+> > optional.
+>
+> Don't assign and don't check the error code of the API. As simply as
+> that.
 
------Original Message-----
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>=20
-Sent: Monday, August 16, 2021 8:00 AM
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>; David Thompson <da=
-vthompson@nvidia.com>; linux-kernel@vger.kernel.org; linux-gpio@vger.kernel=
-.org; netdev@vger.kernel.org; linux-acpi@vger.kernel.org
-Cc: Linus Walleij <linus.walleij@linaro.org>; Bartosz Golaszewski <bgolasze=
-wski@baylibre.com>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <=
-kuba@kernel.org>; Rafael J. Wysocki <rjw@rjwysocki.net>; Asmaa Mnebhi <asma=
-a@nvidia.com>; Liming Sun <limings@nvidia.com>
-Subject: [PATCH v1 4/6] gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper mac=
-ro
-Importance: High
+I'm not against getting rid of it, but I was asked to check for these
+errors in earlier revisions of the patch.
 
-Use DEFINE_RES_MEM_NAMED() to save a couple of lines of code, which makes t=
-he code a bit shorter and easier to read.
+Liam
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpio-mlxbf2.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpio/gpio-mlxbf2.c b/drivers/gpio/gpio-mlxbf2.c index =
-c193d1a9a5dd..3ed95e958c17 100644
---- a/drivers/gpio/gpio-mlxbf2.c
-+++ b/drivers/gpio/gpio-mlxbf2.c
-@@ -69,11 +69,8 @@ struct mlxbf2_gpio_param {
- 	struct mutex *lock;
- };
-=20
--static struct resource yu_arm_gpio_lock_res =3D {
--	.start =3D YU_ARM_GPIO_LOCK_ADDR,
--	.end   =3D YU_ARM_GPIO_LOCK_ADDR + YU_ARM_GPIO_LOCK_SIZE - 1,
--	.name  =3D "YU_ARM_GPIO_LOCK",
--};
-+static struct resource yu_arm_gpio_lock_res =3D
-+	DEFINE_RES_MEM_NAMED(YU_ARM_GPIO_LOCK_ADDR, YU_ARM_GPIO_LOCK_SIZE,=20
-+"YU_ARM_GPIO_LOCK");
-=20
- static DEFINE_MUTEX(yu_arm_gpio_lock_mutex);
-=20
---
-2.30.2
+>
+> > > > +               dev_err(dev, "invalid value for adi,internal-ref-mi=
+crovolt\n");
+> > > > +               return ret;
+> > > > +       }
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
