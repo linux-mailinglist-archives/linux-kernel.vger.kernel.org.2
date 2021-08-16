@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA3ECFD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204AF3ECFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhHPH6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:58:11 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:57824
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234572AbhHPH4k (ORCPT
+        id S234456AbhHPIBv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 04:01:51 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:30995 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233182AbhHPIBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:56:40 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9A4EB3F04E;
-        Mon, 16 Aug 2021 07:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629100554;
-        bh=W1ishUz8mHqehwd2h6l+5o4J0QmpazRWbS0Pi/fqFb4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=GiLnTMNy3wdzNYHXYh5Tmcp5wib5D4B8WNvXehZfm7TRXOlYuzY0MiiRXfSlybf3I
-         MoMcxZIsalRbbWp+bFmdY7YMPpFz4g4t7rWWdrgDymaDe+zCiCfK3zjlUGmSqKHVFB
-         XmTLY/v1F7r7f2fWWrWE5FyBOuXV/1NbO10kc+V3/xHDmtf7fLSHRCUG0YiQKMCHHL
-         TBs8Y2jJoYsogkqUPe6SomO8HOZRxBqJFAj5sI16rx5mts9pTXlsa/76oM/DC2RAYM
-         gWxlh1sBeLrlJjO1BYe5aWfvXelJdj5uoEGtNmwCm2hMX9g7KDg8/ZGx115m2gK2AI
-         LXt14C4g8cxug==
-Subject: Re: [PATCH] leds: flash: Remove redundant initialization of variable
- ret
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210612132547.58727-1-colin.king@canonical.com>
- <20210816065110.GA7500@duo.ucw.cz>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <1864790c-4547-9e19-e6ed-c9b342e0c6aa@canonical.com>
-Date:   Mon, 16 Aug 2021 08:55:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 16 Aug 2021 04:01:49 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 0DD6A240004;
+        Mon, 16 Aug 2021 08:01:14 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 10:01:14 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
+Message-ID: <20210816100114.384f01b9@xps13>
+In-Reply-To: <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
+References: <20210812113800.12466-1-novikov@ispras.ru>
+        <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210816065110.GA7500@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2021 07:51, Pavel Machek wrote:
-> Hi!
-> 
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The variable ret is being initialized with a value that is never read,
->> it is being updated later on. The assignment is redundant and can be
->> removed.
->>
->> Addresses-Coverity: ("Unused value")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> I did this instead; hopefully that's okay with everyone.
-> 
-> Best regards,
-> 							Pavel
+Hi Andy,
 
-Thanks, looks good to me.
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote on Thu, 12 Aug 2021
+15:13:10 +0300:
 
-Colin
+> On Thursday, August 12, 2021, Evgeny Novikov <novikov@ispras.ru> wrote:
+> 
+> > It seems that mxic_nfc_probe() missed invocation of
+> > mxic_nfc_clk_enable(). The patch fixed that. In addition, error handling
+> > was refined appropriately.  
+> 
+> 
+> NAK. Until you provide a deeper analysis, like how this works before your
+> change.
+> 
+> 
+> Please, don’t blindly generate patches, this can even your bot do, just
+> think about each change and preferable test on the real hardware.
+> 
+> The above is to all your lovely contributions.
+> 
+> 
+> >
+> > Found by Linux Driver Verification project (linuxtesting.org).
+> >
+> > Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+> > Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+> > Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+> > ---
+> >  drivers/mtd/nand/raw/mxic_nand.c | 16 ++++++++++++----
+> >  1 file changed, 12 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_
+> > nand.c
+> > index da1070993994..37e75bf60ee5 100644
+> > --- a/drivers/mtd/nand/raw/mxic_nand.c
+> > +++ b/drivers/mtd/nand/raw/mxic_nand.c
+> > @@ -509,9 +509,15 @@ static int mxic_nfc_probe(struct platform_device
+> > *pdev)
+> >         if (IS_ERR(nfc->send_dly_clk))
+> >                 return PTR_ERR(nfc->send_dly_clk);
+> >
+> > +       err = mxic_nfc_clk_enable(nfc);
+> > +       if (err)
+> > +               return err;
 
-> 
-> commit 654933ae7d32f278eecd0bb0f175785574ac4775
-> Author: Pavel Machek <pavel@ucw.cz>
-> Date:   Mon Aug 16 08:47:08 2021 +0200
-> 
->     leds: flash: Remove redundant initialization of variable ret
->     
->     Adjust initialization not to trigger Coverity warnings.
->     
->     Reported-by: Colin Ian King <colin.king@canonical.com>
->     Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> 
-> diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
-> index 6eeb9effcf65..185e17055317 100644
-> --- a/drivers/leds/led-class-flash.c
-> +++ b/drivers/leds/led-class-flash.c
-> @@ -92,14 +92,12 @@ static ssize_t flash_strobe_store(struct device *dev,
->  	struct led_classdev *led_cdev = dev_get_drvdata(dev);
->  	struct led_classdev_flash *fled_cdev = lcdev_to_flcdev(led_cdev);
->  	unsigned long state;
-> -	ssize_t ret = -EINVAL;
-> +	ssize_t ret = -EBUSY;
->  
->  	mutex_lock(&led_cdev->led_access);
->  
-> -	if (led_sysfs_is_disabled(led_cdev)) {
-> -		ret = -EBUSY;
-> +	if (led_sysfs_is_disabled(led_cdev))
->  		goto unlock;
-> -	}
->  
->  	ret = kstrtoul(buf, 10, &state);
->  	if (ret)
-> 
+As Andy said, this is not needed.
+
+> > +
+> >         nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+> > -       if (IS_ERR(nfc->regs))
+> > -               return PTR_ERR(nfc->regs);
+> > +       if (IS_ERR(nfc->regs)) {
+> > +               err = PTR_ERR(nfc->regs);
+> > +               goto fail;
+> > +       }
+> >
+> >         nand_chip = &nfc->chip;
+> >         mtd = nand_to_mtd(nand_chip);
+> > @@ -527,8 +533,10 @@ static int mxic_nfc_probe(struct platform_device
+> > *pdev)
+> >         nand_chip->controller = &nfc->controller;
+> >
+> >         irq = platform_get_irq(pdev, 0);
+> > -       if (irq < 0)
+> > -               return irq;
+> > +       if (irq < 0) {
+> > +               err = irq;
+> > +               goto fail;
+
+However some reworking is needed in the error path.
+
+That goto statement should be renamed and devm_request_irq() should not
+jump to it.
+
+> > +       }
+> >
+> >         mxic_nfc_hw_init(nfc);
+> >
+> > --
+> > 2.26.2
+> >
+> >  
 > 
 
+Thanks,
+Miquèl
