@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53AB3ED710
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3DB3ED545
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240405AbhHPN1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43334 "EHLO mail.kernel.org"
+        id S237634AbhHPNKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240389AbhHPNQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C34B632F7;
-        Mon, 16 Aug 2021 13:13:34 +0000 (UTC)
+        id S236858AbhHPNGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:06:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA164610E8;
+        Mon, 16 Aug 2021 13:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119614;
-        bh=6DREHOOcs4q40Rduk5jxkTdmmarVwnzy5pwluorPZ24=;
+        s=korg; t=1629119176;
+        bh=WbJqhSrA2ocgaRSNEopU1L/xoP4jtG1yFh5JF1j/a7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fg+URTxRH4j8SoPrz3oeBNtvRPkFoubkZnjWQvnYsHqkOwzx7VBjtFoJJom0hs48l
-         f88p2MJPpz3i0lNf1Mz1p4gLts6mo2UaqeunjvWJvI/7hUJ0feyFSI4l8uib4pCnGq
-         eIkg9WRdtvMEa1W7IanrIoEE01O39bjjt/wDfris=
+        b=Z1SUEoYmvPXj0pIn9geloQW7+a5aSljj9GsIeUEbQ6Gnoza+nFqL2V0B1yDz4Twrm
+         xwZ7ZjIUaifd3UHRSNWUWAKaXZaFc933Ir50W75596jWgPQXu3qxe8us6zHexUfWrm
+         tlJOQDtux29IUMNVF1xgCGtw6WrLM5L020VAURdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 061/151] drm/amd/pm: Fix a memory leak in an error handling path in vangogh_tables_init()
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 21/96] drm/amdgpu: dont enable baco on boco platforms in runpm
 Date:   Mon, 16 Aug 2021 15:01:31 +0200
-Message-Id: <20210816125446.070420518@linuxfoundation.org>
+Message-Id: <20210816125435.634469297@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 5126da7d99cf6396c929f3b577ba3aed1e74acd7 ]
+commit 202ead5a3c589b0594a75cb99f080174f6851fed upstream.
 
-'watermarks_table' must be freed instead 'clocks_table', because
-'clocks_table' is known to be NULL at this point and 'watermarks_table' is
-never freed if the last kzalloc fails.
+If the platform uses BOCO, don't use BACO in runtime suspend.
+We could end up executing the BACO path if the platform supports
+both.
 
-Fixes: c98ee89736b8 ("drm/amd/pm: add the fine grain tuning function for vangogh")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1669
+Reviewed-by: Evan Quan <evan.quan@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-index 77f532a49e37..bacef9120b8d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-@@ -242,7 +242,7 @@ static int vangogh_tables_init(struct smu_context *smu)
- 	return 0;
- 
- err3_out:
--	kfree(smu_table->clocks_table);
-+	kfree(smu_table->watermarks_table);
- err2_out:
- 	kfree(smu_table->gpu_metrics_table);
- err1_out:
--- 
-2.30.2
-
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1344,6 +1344,8 @@ static int amdgpu_pmops_runtime_suspend(
+ 			pci_set_power_state(pdev, PCI_D3cold);
+ 		}
+ 		drm_dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
++	} else if (amdgpu_device_supports_boco(drm_dev)) {
++		/* nothing to do */
+ 	} else if (amdgpu_device_supports_baco(drm_dev)) {
+ 		amdgpu_device_baco_enter(drm_dev);
+ 	}
 
 
