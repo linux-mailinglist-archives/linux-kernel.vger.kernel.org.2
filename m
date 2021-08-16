@@ -2,77 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07933EDDCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E3C3EDDD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhHPTWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhHPTWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:22:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1955360EFE;
-        Mon, 16 Aug 2021 19:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629141738;
-        bh=WbzqszoevFCXeG3wGBVLFxld3hWoRSrA585QZfNEMoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M9Bzxp0BsPlRl9Whu97NxfVi+iG9MCdVBqSCnFHYibDRX25LxxXPfZLmUzXIO9OhH
-         hF2zVvF0JeHO4nqwwM0cs7kQiMce5iBMRI6gcy893AQizxh8nzD1jUhJS29jQzdjfx
-         bgbwb0JRLU9gzNeyYKrUJrlWVas5C4V+BBXdp9Ck=
-Date:   Mon, 16 Aug 2021 21:22:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ben Hutchings <ben.hutchings@essensium.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 52/96] net: dsa: microchip: ksz8795: Fix VLAN
- filtering
-Message-ID: <YRq66I9IuYSZUoBo@kroah.com>
-References: <20210816125434.948010115@linuxfoundation.org>
- <20210816125436.688497376@linuxfoundation.org>
- <20210816132858.GC18930@cephalopod>
- <YRqR7NFWJmhFR9/d@kroah.com>
- <20210816174905.GD18930@cephalopod>
+        id S230415AbhHPTXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhHPTXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:23:38 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD096C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:23:06 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a93so34978976ybi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vFPwTBww7HCfgcrya8tDZnP7/RkqO96aoh1ArMM5DY4=;
+        b=vZ6ODT6K51FYe7v5j1ZJgTBaKdzBTUpxqFN4KAFDzaFqZcJzKDfjAT3i2rMh2HGSgJ
+         iv06p1rxGJElyiNNUKJjZQcS4YSPt65aq4BuuoFJ8wFOXX76OyPKDK4dllYXKjiHIK2t
+         uTnY+/frCK20rCUslEWC5xUe3cxqCCZSeJc/Z9P25kURFA2crXd9KJCjPq5HbChAKmp7
+         gx8eBw6qmNkXBeUwFdXacMIVsvsX136dGL5jOIRWMQmH2jwym2xoxLhDtRgP+TcTyiep
+         wlIwPqibVKE3eLWmauWhtEp7xORuNwrDFrVf6Y3rExuTKMTR/3u05+gGvF6lvk39jca2
+         3/nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vFPwTBww7HCfgcrya8tDZnP7/RkqO96aoh1ArMM5DY4=;
+        b=ItOqU+4Fp+CKLLsVSyUQkAbur71o9LNsxGHRH2klJTW2q9Uh8woRQJOior7vjDP303
+         ZjMcn+s5wSZT8KbV8llNuz7pp974bPkWq/pS5tiP8GJPCZZEytDryaayxKEn4tjwRpmE
+         oJq6hOS3dHTwMDzY4DjNM7uQELTDQaPL6LPXl0XC3y1GG505qeEgWZlyic1Af8E7OGpv
+         yGLnFQbUUjeAXHwf8CYDkui5U0d/if7bebXktr9T8Wx3jeSRoP/OdY59BFmBRjC7ekil
+         jvIQtSu0Ej0a2moSmWMgYLeyHOc+1LOa14qfRsICBR1u4Kiedz3qM9lmBfYGs8WWpty1
+         wTpQ==
+X-Gm-Message-State: AOAM532YhtYeyvIHJEazHLHxfHuR9JUBh6WsH5oN5cqqu0aej6SaDhq9
+        MCSoapJxH9Rg05hbDz9T53je7rIDwqW4/MA73Ghsdg==
+X-Google-Smtp-Source: ABdhPJxwXZrFe4LWrpZFpwgg7gLZvKHb3ZIrP9S0LtYkOZmaPsEtio72uZa7F9r34JcVRyMCEwKaL7zFY0sq8jjEgQs=
+X-Received: by 2002:a25:505:: with SMTP id 5mr23079960ybf.157.1629141786081;
+ Mon, 16 Aug 2021 12:23:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816174905.GD18930@cephalopod>
+References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 16 Aug 2021 21:22:55 +0200
+Message-ID: <CAMpxmJURiWN5dj_CQsEeE2zh1q-gvWK4HF6FXS2=ZK=yPUP_zw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] gpio: mlxbf2: Introduce proper interrupt handling
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     David Thompson <davthompson@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Asmaa Mnebhi <asmaa@nvidia.com>,
+        Liming Sun <limings@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 07:49:05PM +0200, Ben Hutchings wrote:
-> On Mon, Aug 16, 2021 at 06:27:24PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Aug 16, 2021 at 03:28:58PM +0200, Ben Hutchings wrote:
-> > > On Mon, Aug 16, 2021 at 03:02:02PM +0200, Greg Kroah-Hartman wrote:
-> > > > From: Ben Hutchings <ben.hutchings@mind.be>
-> > > > 
-> > > > [ Upstream commit 164844135a3f215d3018ee9d6875336beb942413 ]
-> > > 
-> > > This will probably work on its own, but it was tested as part of a
-> > > series of changes to VLAN handling in the driver.  Since I initially
-> > > developed and tested that on top of 5.10-stable, I would prefer to
-> > > send you the complete series to apply together.
-> > 
-> > What is the "complete series"?  We have 7 patches for this driver in
-> > this round of kernel rc reviews.
-> 
-> You have the full series queued up for 5.13, but only 2 of them for
-> 5.10.
-> 
-> > What specific git ids are you referring to?
-> 
-> The fixes missing from the 5.10 queue are:
-> 
-> ef3b02a1d79b691f9a354c4903cf1e6917e315f9
-> 8f4f58f88fe0d9bd591f21f53de7dbd42baeb3fa
-> af01754f9e3c553a2ee63b4693c79a3956e230ab
-> 9130c2d30c17846287b803a9803106318cbe5266
-> 
-> (I also have another fix just for 5.10 because the issue was fixed by
-> a refactoring in 5.11 that wouldn't be suitable for stable.)
+On Mon, Aug 16, 2021 at 2:00 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> This is just a WIP / TODO series based on the discussion [1].
+> I hope nVidia will finish it and fix the initial problem sooner than later.
+>
+> Bart, Linus, First 4 patches may be directly applied to the tree (they are
+> at least compile-tested, but I believe they won't change any functionality.
+>
+> Patch 5 is some stubs that should have been done in the driver.
+> Patch 6 is follow up removal of custom GPIO IRQ handling from
+> Mellanox GBE driver. Both of them are quite far from finishing,
+> but it's a start for nVidia to develop and test proper solution.
+>
+> In any case, I will probably sent end this week the ACPI IRQ abuse
+> part from the GBE driver (I won't touch OF path).
+>
+> ARs for nVidia:
+> 0) review this series;
+> 1) properly develop GPIO driver;
+> 2) replace custom code with correct one;
+> 3) send the work for review to GPIO and ACPI maintainers (basically list
+>    of this series).
+>
+> On my side I will help you if you have any questions regarding to GPIO
+> and ACPI.
+>
+> Andy Shevchenko (6):
+>   gpio: mlxbf2: Convert to device PM ops
+>   gpio: mlxbf2: Drop wrong use of ACPI_PTR()
+>   gpio: mlxbf2: Use devm_platform_ioremap_resource()
+>   gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper macro
+>   TODO: gpio: mlxbf2: Introduce IRQ support
+>   TODO: net: mellanox: mlxbf_gige: Replace non-standard interrupt
+>     handling
+>
+>  drivers/gpio/gpio-mlxbf2.c                    | 151 ++++++++++---
+>  .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
+>  2 files changed, 120 insertions(+), 243 deletions(-)
+>  delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+>
+> --
+> 2.30.2
+>
 
-Thanks, sorry, I was looking at 5.13.  All now queued up.
+Applied first four patches.
 
-greg k-h
+Bart
