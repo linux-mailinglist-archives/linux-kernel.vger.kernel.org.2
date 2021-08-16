@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC613ED34F
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF683ED350
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbhHPLsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S236427AbhHPLsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236345AbhHPLsQ (ORCPT
+        with ESMTP id S236346AbhHPLsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:48:16 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA1AC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:47:44 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id q10so23205925wro.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:47:44 -0700 (PDT)
+        Mon, 16 Aug 2021 07:48:17 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF451C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:47:45 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x12so23140304wrr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:47:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=knUEmnO1k4ZgYhZBogunOk1c+b4Pve9rwE5RpxjJFcE=;
-        b=vXdx6h0SCU+60D3hEFofqmhutL7U9O6b7k9gHtCj9naQAgsBqh68Oh71Vug7vp6u37
-         neMOOk2O0bCjcRvsDTmPzgRj6TGbLeJLUp2UacyO8O7y9RvnB9WzHxfgVEN0n8Bqcp/P
-         GLBAau/eUvF8NenapOgToTuKy/n2S9G7lzgrZhQdt+EQc4BxxJPnpfKGbTwDU+Tx8n6r
-         g7DbVC3utt6cvgaq1n/bvkpVDN4hiOh0OJRU+PG3xitCLf/cECmVV5Vk7/n88h1fdsua
-         bSzsnMUVpXabav6JlPzFJlooIyCi5qQZnXzUeQy3MFKhi6OGz20nVzXw58a6+b7mL5dY
-         W0vg==
+        bh=NgfWxpFAcx6Bo1F7gmbTO81OYebjpN4vWBapKz7vG0U=;
+        b=F6iDcTUD9L8dW6SvQxfTQ5caDCQEd8+MKFEQE/e8hqQ/uec9L0wToXe3KTYhcF3Ogu
+         Z663j54ELQ6l0l2vARdtOK0EQYVGIFdxkEEyl3ELkRAmHYsi/2DuUnGetuz5P0QiyIJY
+         3tPNG3/HTsgIJAP4qAhxbQ9RarDKcXugBmkINGnzL6534lvUQLBjWOEKOWGLAYnFyP/X
+         7u/pRD4TtRrcTFD+SBiScRxG+yxenaqZQgpmk+z68UaQe4kllolezVmzm9VUlKMsAvQ3
+         5/jBWsKuY3iY6XzTZeEH1lu2+tfUPjwrxjsXnAbup4732HrToGI5oUIfHrMJs5hHOA9Z
+         wEzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=knUEmnO1k4ZgYhZBogunOk1c+b4Pve9rwE5RpxjJFcE=;
-        b=Y7sSfpATzUTnA7S2qnBGg9ZTeppQXlfCHmvLX+6wgsCprwzHLcGP54LZUKLzwurA4Z
-         VM+f1fAe9dp7cX04an7ZqrfY28i+4i/3ZtLsJYKdIdYx+YeoL187bQbLZI6+Tlw6sGMX
-         EaH5r7WOu4q4PYs3uvch54I3kgGnKjrhSxW4q8EuFr8qveCk+QEAVRfgSkYR2DPJ1gIo
-         bonfa49TwWBb2bXIyfdVo7ur3gaClPAF0VUnILRcgEaZa2NUKV8ZAtEdkKeBBZ0nAf+1
-         K5GZqfBFRG/G1ZERBXK3LJN8dbfFYYLDHg5QnspMmM7DkqnxMQXtRB+HxZKg86P+ePWo
-         Uiaw==
-X-Gm-Message-State: AOAM531YfdxFlgklS9bcj4/lBxUF1dCGzJrzzVUCtanOzwoXxnyDM0lf
-        mIJYZTGb5GNCI0/nMoR/rSjehA==
-X-Google-Smtp-Source: ABdhPJzz7q1PCZh73Yoyo5WYrVJvwDk1zJ0RFi99UOOCtgYqbztVCCawUfRsrzUjqOB6YiKHbzIJ9A==
-X-Received: by 2002:adf:e30c:: with SMTP id b12mr17649654wrj.347.1629114462905;
-        Mon, 16 Aug 2021 04:47:42 -0700 (PDT)
+        bh=NgfWxpFAcx6Bo1F7gmbTO81OYebjpN4vWBapKz7vG0U=;
+        b=idXf5BBoSv0p3eGFMYU8tvWugOd3hJvXyVoOpfY9XSE9tNX95fx5HnpvYdGTvyEXaf
+         9LQxwP3W2NDHK21h78BrJx3JUSA7TdEnZxFs2moH5ZvuEzBq6DzZfXH7axj22F4hakde
+         7PWCsoqtwSJQxGEgdY9oCuuM9NxS6pDDjs07zfAAob6w8FFoAcg51IZJJoNBzAbUwqSw
+         RIO+IamPCYvYSoLlotnOrLqK7QW6CQ+KvF1x8Z8m2HVfulYNVoxEKQiqgiLvrjj0Vc04
+         YUbKWxFlx0OeFR0WgMuN6FHhE/SQqvWnyNaHsG4rVtPdL6qyGkKawINsgFblxrAZz07p
+         OXTA==
+X-Gm-Message-State: AOAM530r8fvl0/JoXoOrssthCVOrlRkvWzRYtUcKqUBAcKsJtqmLNz/v
+        LZ3z76Mv5eVgnjPoAqIwo9HY9A==
+X-Google-Smtp-Source: ABdhPJxq8f38EoMFyx8avcOLWZlHd45gaOTPYJu3P75rACWNuhrpb6MMOWEf4xzB12msPU7qmwHS4g==
+X-Received: by 2002:adf:e107:: with SMTP id t7mr18081214wrz.165.1629114464351;
+        Mon, 16 Aug 2021 04:47:44 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e34:ed2f:f020:e1b0:48c1:6199:9cb4])
-        by smtp.gmail.com with ESMTPSA id h9sm11360769wrv.84.2021.08.16.04.47.41
+        by smtp.gmail.com with ESMTPSA id h9sm11360769wrv.84.2021.08.16.04.47.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 04:47:42 -0700 (PDT)
+        Mon, 16 Aug 2021 04:47:43 -0700 (PDT)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     andriy.shevchenko@linux.intel.com, akpm@linux-foundation.org
 Cc:     jic23@kernel.org, linux-kernel@vger.kernel.org, ceggers@arri.de,
@@ -56,9 +56,9 @@ Cc:     jic23@kernel.org, linux-kernel@vger.kernel.org, ceggers@arri.de,
         rui.zhang@intel.com, linux@roeck-us.net, miquel.raynal@bootlin.com,
         mcoquelin.stm32@gmail.com, rafael@kernel.org,
         daniel.lezcano@linaro.org
-Subject: [PATCH v3 04/10] devfreq: Use HZ macros
-Date:   Mon, 16 Aug 2021 13:47:26 +0200
-Message-Id: <20210816114732.1834145-5-daniel.lezcano@linaro.org>
+Subject: [PATCH v3 05/10] iio/drivers/as73211: Use HZ macros
+Date:   Mon, 16 Aug 2021 13:47:27 +0200
+Message-Id: <20210816114732.1834145-6-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210816114732.1834145-1-daniel.lezcano@linaro.org>
 References: <20210816114732.1834145-1-daniel.lezcano@linaro.org>
@@ -71,39 +71,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 HZ unit conversion macros are available in units.h, use them and
 remove the duplicate definition.
 
-The new macro has an unsigned long type.
-
-All the code is dealing with unsigned long and the code using the
-macro is doing a coercitive cast to unsigned long.
-
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Reviewed-by: Christian Eggers <ceggers@arri.de>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/devfreq/devfreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/light/as73211.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index 28f3e0ba6cdd..85faa7a5c7d1 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -27,6 +27,7 @@
- #include <linux/hrtimer.h>
- #include <linux/of.h>
- #include <linux/pm_qos.h>
+diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
+index 7b32dfaee9b3..3ba2378df3dd 100644
+--- a/drivers/iio/light/as73211.c
++++ b/drivers/iio/light/as73211.c
+@@ -24,8 +24,7 @@
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/pm.h>
+-
+-#define HZ_PER_KHZ 1000
 +#include <linux/units.h>
- #include "governor.h"
  
- #define CREATE_TRACE_POINTS
-@@ -34,7 +35,6 @@
+ #define AS73211_DRV_NAME "as73211"
  
- #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name) ? true : false)
- #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ? true : false)
--#define HZ_PER_KHZ	1000
- 
- static struct class *devfreq_class;
- static struct dentry *devfreq_debugfs;
 -- 
 2.25.1
 
