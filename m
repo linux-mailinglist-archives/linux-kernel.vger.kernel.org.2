@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9673ED6A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421A53ED6E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238691AbhHPNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:22:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39184 "EHLO mail.kernel.org"
+        id S240825AbhHPNYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239767AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239773AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 09:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E17FE632C7;
-        Mon, 16 Aug 2021 13:11:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E0DE632CA;
+        Mon, 16 Aug 2021 13:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119490;
-        bh=MhFh18hnn3+43BzuK1lG7l+ByHupZngon+9H0Ze+jY0=;
+        s=korg; t=1629119493;
+        bh=wYjX1uIz9dY61FTl9zBi/I5MZ9p181xglzO3/KxQhHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZVmQPoP2pVbsJR1cMqIPUTYZfr2n3mepg//RIRpydmOlWGUYUBsvClKcDkee9eHez
-         fPIJt4IuYO/ZtWkN/5GZT9djnuSQpMUphlt+NfPaxouhZRXiaN66Hq2pcr+vWodgml
-         5Eh/0QOjASo2Cs2iDlq8KA7C/M5hSIZockFgl4lc=
+        b=ngDIc1jxoAHCS+nGeMiwuWyb3Cv0cdIkuAjPEqm9IOhOu1vZbV5yAORID+YRo3G+S
+         gttmr/WaJ+ZEb4QagH64laIFd6luZOq6NDQ/IgJXcHRHuDYtwV0huKfhQFAp/2aYHZ
+         DdTg5yPNGpLx/SUidELN+92BPUZQ1T+1E3TOWueM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Tipton <mdtipton@codeaurora.org>,
-        Georgi Djakov <djakov@kernel.org>,
+        stable@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 046/151] interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate
-Date:   Mon, 16 Aug 2021 15:01:16 +0200
-Message-Id: <20210816125445.588155407@linuxfoundation.org>
+Subject: [PATCH 5.13 047/151] selftests/sgx: Fix Q1 and Q2 calculation in sigstruct.c
+Date:   Mon, 16 Aug 2021 15:01:17 +0200
+Message-Id: <20210816125445.617826430@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
 References: <20210816125444.082226187@linuxfoundation.org>
@@ -40,73 +42,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Tipton <mdtipton@codeaurora.org>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit f84f5b6f72e68bbaeb850b58ac167e4a3a47532a ]
+[ Upstream commit 567c39047dbee341244fe3bf79fea24ee0897ff9 ]
 
-We're only adding BCMs to the commit list in aggregate(), but there are
-cases where pre_aggregate() is called without subsequently calling
-aggregate(). In particular, in icc_sync_state() when a node with initial
-BW has zero requests. Since BCMs aren't added to the commit list in
-these cases, we don't actually send the zero BW request to HW. So the
-resources remain on unnecessarily.
+Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the
+calculated length of Q1 and Q2 is less than 384 bytes, things will
+go wrong.
 
-Add BCMs to the commit list in pre_aggregate() instead, which is always
-called even when there are no requests.
+E.g. if Q2 is 383 bytes, then
 
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-Link: https://lore.kernel.org/r/20210721175432.2119-5-mdtipton@codeaurora.org
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
+1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
+2. The entire sigstruct->q2 is reversed, which results it being
+   256 * Q2, given that the last byte of sigstruct->q2 is added
+   to before the bytes given by calc_q1q2().
+
+Either change in key or measurement can trigger the bug. E.g. an
+unmeasured heap could cause a devastating change in Q1 or Q2.
+
+Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning
+to the caller.
+
+Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
+Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/qcom/icc-rpmh.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
-index f6fae64861ce..27cc5f03611c 100644
---- a/drivers/interconnect/qcom/icc-rpmh.c
-+++ b/drivers/interconnect/qcom/icc-rpmh.c
-@@ -20,13 +20,18 @@ void qcom_icc_pre_aggregate(struct icc_node *node)
- {
- 	size_t i;
- 	struct qcom_icc_node *qn;
-+	struct qcom_icc_provider *qp;
+diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
+index dee7a3d6c5a5..92bbc5a15c39 100644
+--- a/tools/testing/selftests/sgx/sigstruct.c
++++ b/tools/testing/selftests/sgx/sigstruct.c
+@@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
+ 	return true;
+ }
  
- 	qn = node->data;
-+	qp = to_qcom_provider(node->provider);
- 
- 	for (i = 0; i < QCOM_ICC_NUM_BUCKETS; i++) {
- 		qn->sum_avg[i] = 0;
- 		qn->max_peak[i] = 0;
- 	}
++static void reverse_bytes(void *data, int length)
++{
++	int i = 0;
++	int j = length - 1;
++	uint8_t temp;
++	uint8_t *ptr = data;
 +
-+	for (i = 0; i < qn->num_bcms; i++)
-+		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
- }
- EXPORT_SYMBOL_GPL(qcom_icc_pre_aggregate);
- 
-@@ -44,10 +49,8 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
++	while (i < j) {
++		temp = ptr[i];
++		ptr[i] = ptr[j];
++		ptr[j] = temp;
++		i++;
++		j--;
++	}
++}
++
+ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
+ 		      uint8_t *q2)
  {
- 	size_t i;
- 	struct qcom_icc_node *qn;
--	struct qcom_icc_provider *qp;
+ 	struct q1q2_ctx ctx;
++	int len;
  
- 	qn = node->data;
--	qp = to_qcom_provider(node->provider);
+ 	if (!alloc_q1q2_ctx(s, m, &ctx)) {
+ 		fprintf(stderr, "Not enough memory for Q1Q2 calculation\n");
+@@ -89,8 +106,10 @@ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
+ 		goto out;
+ 	}
  
- 	if (!tag)
- 		tag = QCOM_ICC_TAG_ALWAYS;
-@@ -67,9 +70,6 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
- 	*agg_avg += avg_bw;
- 	*agg_peak = max_t(u32, *agg_peak, peak_bw);
+-	BN_bn2bin(ctx.q1, q1);
+-	BN_bn2bin(ctx.q2, q2);
++	len = BN_bn2bin(ctx.q1, q1);
++	reverse_bytes(q1, len);
++	len = BN_bn2bin(ctx.q2, q2);
++	reverse_bytes(q2, len);
  
--	for (i = 0; i < qn->num_bcms; i++)
--		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
--
- 	return 0;
+ 	free_q1q2_ctx(&ctx);
+ 	return true;
+@@ -152,22 +171,6 @@ static RSA *gen_sign_key(void)
+ 	return key;
  }
- EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
+ 
+-static void reverse_bytes(void *data, int length)
+-{
+-	int i = 0;
+-	int j = length - 1;
+-	uint8_t temp;
+-	uint8_t *ptr = data;
+-
+-	while (i < j) {
+-		temp = ptr[i];
+-		ptr[i] = ptr[j];
+-		ptr[j] = temp;
+-		i++;
+-		j--;
+-	}
+-}
+-
+ enum mrtags {
+ 	MRECREATE = 0x0045544145524345,
+ 	MREADD = 0x0000000044444145,
+@@ -367,8 +370,6 @@ bool encl_measure(struct encl *encl)
+ 	/* BE -> LE */
+ 	reverse_bytes(sigstruct->signature, SGX_MODULUS_SIZE);
+ 	reverse_bytes(sigstruct->modulus, SGX_MODULUS_SIZE);
+-	reverse_bytes(sigstruct->q1, SGX_MODULUS_SIZE);
+-	reverse_bytes(sigstruct->q2, SGX_MODULUS_SIZE);
+ 
+ 	EVP_MD_CTX_destroy(ctx);
+ 	RSA_free(key);
 -- 
 2.30.2
 
