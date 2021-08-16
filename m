@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6347B3ED69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5438F3ED633
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239534AbhHPNWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:22:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
+        id S237362AbhHPNSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239808AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58505632CD;
-        Mon, 16 Aug 2021 13:11:37 +0000 (UTC)
+        id S236967AbhHPNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:07:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B88BE632A8;
+        Mon, 16 Aug 2021 13:06:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119497;
-        bh=RtQy+kpaH6nhz6lcFr4SyDCP5+ld9E5irSH2O1pX65Y=;
+        s=korg; t=1629119217;
+        bh=BhIA9zJ/exLmau+ZqDDNyypST8RT8hSrTga1VebG2Fo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UycebPd+mGoFtUxDv0Bmi1CMIIwAbxD9aWH2b41ek9HO/4tKrYpN6K7GezJePF6cs
-         4JY7JE/nox9GJzJ2nO4XmSVzKwAFJwrBU7vfX2fJyG6narvH/bv7msAzELXpTqD8Po
-         STVAn48rxnhtld6Vvzmqd9P92PZJTwFPqMnCNJ5w=
+        b=mYXgp5EKrJTzZU5lm4z1MFLjykdEFTHt2wLsRuyTSEEpMZBoUbJaChEUkJx0Suo8g
+         xwys0kl1f9MaiDxoDPP19yBv6c2zPyi81abrg/hVjkX2vVVEx64mze7YFQoN93eHXU
+         nO4rl3q+VJ80ONoVw2t1Dhd17gDjlVDCjFsWV2IA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 049/151] ASoC: SOF: Intel: hda-ipc: fix reply size checking
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 09/96] ASoC: intel: atom: Fix reference to PCM buffer address
 Date:   Mon, 16 Aug 2021 15:01:19 +0200
-Message-Id: <20210816125445.692131336@linuxfoundation.org>
+Message-Id: <20210816125435.239774557@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 973b393fdf073a4ebd8d82ef6edea99fedc74af9 ]
+commit 2e6b836312a477d647a7920b56810a5a25f6c856 upstream.
 
-Checking that two values don't have common bits makes no sense,
-strict equality is meant.
+PCM buffers might be allocated dynamically when the buffer
+preallocation failed or a larger buffer is requested, and it's not
+guaranteed that substream->dma_buffer points to the actually used
+buffer.  The address should be retrieved from runtime->dma_addr,
+instead of substream->dma_buffer (and shouldn't use virt_to_phys).
 
-Fixes: f3b433e4699f  ("ASoC: SOF: Implement Probe IPC API")
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802151749.15417-1-pierre-louis.bossart@linux.intel.com
+Also, remove the line overriding runtime->dma_area superfluously,
+which was already set up at the PCM buffer allocation.
+
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210728112353.6675-3-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/sof/intel/hda-ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index c91aa951df22..acfeca42604c 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -107,8 +107,8 @@ void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
- 	} else {
- 		/* reply correct size ? */
- 		if (reply.hdr.size != msg->reply_size &&
--			/* getter payload is never known upfront */
--			!(reply.hdr.cmd & SOF_IPC_GLB_PROBE)) {
-+		    /* getter payload is never known upfront */
-+		    ((reply.hdr.cmd & SOF_GLB_TYPE_MASK) != SOF_IPC_GLB_PROBE)) {
- 			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
- 				msg->reply_size, reply.hdr.size);
- 			ret = -EINVAL;
--- 
-2.30.2
-
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -127,7 +127,7 @@ static void sst_fill_alloc_params(struct
+ 	snd_pcm_uframes_t period_size;
+ 	ssize_t periodbytes;
+ 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+-	u32 buffer_addr = virt_to_phys(substream->dma_buffer.area);
++	u32 buffer_addr = substream->runtime->dma_addr;
+ 
+ 	channels = substream->runtime->channels;
+ 	period_size = substream->runtime->period_size;
+@@ -233,7 +233,6 @@ static int sst_platform_alloc_stream(str
+ 	/* set codec params and inform SST driver the same */
+ 	sst_fill_pcm_params(substream, &param);
+ 	sst_fill_alloc_params(substream, &alloc_params);
+-	substream->runtime->dma_area = substream->dma_buffer.area;
+ 	str_params.sparams = param;
+ 	str_params.aparams = alloc_params;
+ 	str_params.codec = SST_CODEC_TYPE_PCM;
 
 
