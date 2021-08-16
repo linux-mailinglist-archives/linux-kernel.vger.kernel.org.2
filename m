@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2259E3EDA4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E283E3EDA57
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbhHPP5V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 11:57:21 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:43791 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236811AbhHPP5U (ORCPT
+        id S233379AbhHPP7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233149AbhHPP7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:57:20 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 13C02CECC8;
-        Mon, 16 Aug 2021 17:56:47 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [syzbot] INFO: task hung in hci_req_sync
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <9365fdfa-3cee-f22e-c53d-6536a96d27ae@gmail.com>
-Date:   Mon, 16 Aug 2021 17:56:46 +0200
-Cc:     syzbot <syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <57BAFAA4-3C3D-40C8-9121-44EEF44509B8@holtmann.org>
-References: <000000000000c5482805c956a118@google.com>
- <9365fdfa-3cee-f22e-c53d-6536a96d27ae@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Mon, 16 Aug 2021 11:59:48 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201E9C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:17 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso2640588wmb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FE51E+z6rwW3vCT+HddSaJ7256vyRjZvLJv2NiM2qi0=;
+        b=Nk48hOOqlshjZSpO4U9E02aYdwG/pWMJ7nKwY7hf34vPX/s78Ok026mSndiSmx+iaW
+         01yp+itaciLVgIJODcmJ775k0JIcX+BjQXricCu1DPCHI8De0B4boZGrMquKFqueveYy
+         e3w6lc+wtEdPX7ePp/hPqpQ1PtcOHIiXnXb18W1CCIHZMKojfwP+sINGB6MCJlUQPk0t
+         lcnM8tl17E/B5h45LeKG+gN/6NE8MaZ5CbTi6Q3gYkqTw8aWtLTD2557H7mGq93ACt0b
+         h5ulTaFknQbUYQw+GGyvsXoMnWBgZhXxUKYdB9EBbwmZ9iav1TOKhIcs/YyDoK96G/1R
+         G0Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FE51E+z6rwW3vCT+HddSaJ7256vyRjZvLJv2NiM2qi0=;
+        b=KQyHN9qq9gEkflKwjwAlc0xJQ+P/n/xASgvnS7fP9EMGFBTp+fcTZKH4EPVkXFEjcd
+         QfE42Ojzoq5vTiuxGKAtF2R4gO3pcKol+BbkgKMHCjjiOrW9etB+xN+VL+LwoYIN/b7f
+         WGdGC6a9asngZMxzv/DiPehDEhmVISFaWW070L3mgC1ZXv5t4oGabwKgzULOix+7xk85
+         I4vH5HrujUMvWh51OZ23mUYxL98LB2ycPYMPq+Np9ViXsZfujFyKvmXXAW0btWY0puIW
+         k6M8Jz2RtF6/99lbclX07p7GWOoe09qYe94w74puECABMfPN9T4d8ItcU3e5l94oRtIa
+         TqPQ==
+X-Gm-Message-State: AOAM530Td+OZMAcgpg7hp8o9Cohmiua0FvfDu42e0CvBx6FM+Oag+ET0
+        XXLIajXgIgpsvyTIr1i8bZA=
+X-Google-Smtp-Source: ABdhPJzaCZ52Gm//nMvaCG4cnVeA8+BFNVP9R4nI02Yzvc5gEDCUEHOMUKy3vSeOdlze4Lc/VUX1vQ==
+X-Received: by 2002:a1c:7506:: with SMTP id o6mr16432297wmc.112.1629129555724;
+        Mon, 16 Aug 2021 08:59:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
+        by smtp.gmail.com with ESMTPSA id a77sm11589597wmd.31.2021.08.16.08.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 08:59:15 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 00/23] staging: r8188eu: clean up spacing style issues in core dir
+Date:   Mon, 16 Aug 2021 17:57:55 +0200
+Message-Id: <20210816155818.24005-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+This series cleans up coding style issues in the core directory
+reported by checkpatch --types SPACING.
 
->> syzbot found the following issue on:
->> HEAD commit:    c9194f32bfd9 Merge tag 'ext4_for_linus_stable' of git://gi..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1488f59e300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
->> dashboard link: https://syzkaller.appspot.com/bug?extid=be2baed593ea56c6a84c
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b5afc6300000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcd192300000
->> Bisection is inconclusive: the issue happens on the oldest tested release.
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17dce4fa300000
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=143ce4fa300000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=103ce4fa300000
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
->> INFO: task syz-executor446:8489 blocked for more than 143 seconds.
->>       Not tainted 5.14.0-rc4-syzkaller #0
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:syz-executor446 state:D stack:28712 pid: 8489 ppid:  8452 flags:0x00000000
->> Call Trace:
->>  context_switch kernel/sched/core.c:4683 [inline]
->>  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
->>  schedule+0xd3/0x270 kernel/sched/core.c:6019
->>  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6078
->>  __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
->>  __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
->>  hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
->>  hci_inquiry+0x6f4/0x9e0 net/bluetooth/hci_core.c:1357
->>  hci_sock_ioctl+0x1a7/0x910 net/bluetooth/hci_sock.c:1060
->>  sock_do_ioctl+0xcb/0x2d0 net/socket.c:1094
->>  sock_ioctl+0x477/0x6a0 net/socket.c:1221
->>  vfs_ioctl fs/ioctl.c:51 [inline]
->>  __do_sys_ioctl fs/ioctl.c:1069 [inline]
->>  __se_sys_ioctl fs/ioctl.c:1055 [inline]
->>  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
->>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x446449
->> RSP: 002b:00007f36ab8342e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->> RAX: ffffffffffffffda RBX: 00000000004cb400 RCX: 0000000000446449
->> RDX: 00000000200000c0 RSI: 00000000800448f0 RDI: 0000000000000004
->> RBP: 00000000004cb40c R08: 0000000000000000 R09: 0000000000000000
->> R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000003
->> R13: 0000000000000004 R14: 00007f36ab8346b8 R15: 00000000004cb408
->> INFO: task syz-executor446:8491 blocked for more than 143 seconds.
->>       Not tainted 5.14.0-rc4-syzkaller #0
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:syz-executor446 state:D stack:28176 pid: 8491 ppid:  8452 flags:0x00000004
->> Call Trace:
->>  context_switch kernel/sched/core.c:4683 [inline]
->>  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
->>  schedule+0xd3/0x270 kernel/sched/core.c:6019
->>  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6078
->>  __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
->>  __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
->>  hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
->>  hci_inquiry+0x6f4/0x9e0 net/bluetooth/hci_core.c:1357
->>  hci_sock_ioctl+0x1a7/0x910 net/bluetooth/hci_sock.c:1060
->>  sock_do_ioctl+0xcb/0x2d0 net/socket.c:1094
->>  sock_ioctl+0x477/0x6a0 net/socket.c:1221
->>  vfs_ioctl fs/ioctl.c:51 [inline]
->>  __do_sys_ioctl fs/ioctl.c:1069 [inline]
->>  __se_sys_ioctl fs/ioctl.c:1055 [inline]
->>  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
->>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x446449
->> RSP: 002b:00007f36ab8342e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->> RAX: ffffffffffffffda RBX: 00000000004cb400 RCX: 0000000000446449
->> RDX: 00000000200000c0 RSI: 00000000800448f0 RDI: 0000000000000004
->> RBP: 00000000004cb40c R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
->> R13: 0000000000000004 R14: 00007f36ab8346b8 R15: 00000000004cb408
->> Showing all locks held in the system:
->> 6 locks held by kworker/u4:0/8:
->> 1 lock held by khungtaskd/1635:
->>  #0: ffffffff8b97c180 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
->> 1 lock held by in:imklog/8352:
->>  #0: ffff888033e1d4f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
->> 1 lock held by syz-executor446/8486:
->>  #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
->> 1 lock held by syz-executor446/8489:
->>  #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
->> 1 lock held by syz-executor446/8491:
->>  #0: ffff8880349c4ff0 (&hdev->req_lock){+.+.}-{3:3}, at: hci_req_sync+0x33/0xd0 net/bluetooth/hci_request.c:276
-> 
-> Looks like too big timeout is passed from ioctl:
-> 
-> 
-> C repro:
-> 
->    *(uint16_t*)0x200000c0 = 0;
->    *(uint16_t*)0x200000c2 = 0;
->    memcpy((void*)0x200000c4, "\xf0\x08\xa7", 3);
->    *(uint8_t*)0x200000c7 = 0x81;	<- ir.length
->    *(uint8_t*)0x200000c8 = 0;
->    syscall(__NR_ioctl, r[0], 0x800448f0, 0x200000c0ul);
-> 
-> 
-> Then ir.length * msecs_to_jiffies(2000) timeout is passed to
-> hci_req_sync(). Task will stuck here
-> 
-> 	err = wait_event_interruptible_timeout(hdev->req_wait_q,
-> 			hdev->req_status != HCI_REQ_PEND, timeout);
-> 
-> for 258 seconds (I guess, it's because of test environment, but, maybe, we should add sanity check for timeout value)
+Michael Straube (23):
+  staging: r8188eu: add spaces around operators in core/rtw_ap.c
+  staging: r8188eu: rewrite subtraction in core/rtw_cmd.c
+  staging: r8188eu: remove unnecessary parentheses in core/rtw_cmd.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_cmd.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_efuse.c
+  staging: r8188eu: clean up spacing style issues in
+    core/rtw_ieee80211.c
+  staging: r8188eu: simplify multiplication in core/rtw_ioctl_set.c
+  staging: r8188eu: clean up spacing style issues in
+    core/rtw_ioctl_set.c
+  staging: r8188eu: add spaces around operators in core/rtw_iol.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_mlme.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_mlme_ext.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_mp.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_mp_ioctl.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_p2p.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_pwrctrl.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_recv.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_security.c
+  staging: r8188eu: add spaces around operators in core/rtw_wlan_util.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_xmit.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_debug.c
+  staging: r8188eu: add space around operator in core/rtw_sreset.c
+  staging: r8188eu: clean up spacing style issues in core/rtw_sta_mgt.c
+  staging: r8188eu: add spaces around operators in core/rtw_br_ext.c
 
-I agree. Feel free to send a patch.
+ drivers/staging/r8188eu/core/rtw_ap.c        |  88 +++----
+ drivers/staging/r8188eu/core/rtw_br_ext.c    | 104 ++++----
+ drivers/staging/r8188eu/core/rtw_cmd.c       |  22 +-
+ drivers/staging/r8188eu/core/rtw_debug.c     |  42 ++--
+ drivers/staging/r8188eu/core/rtw_efuse.c     |  96 ++++----
+ drivers/staging/r8188eu/core/rtw_ieee80211.c | 124 +++++-----
+ drivers/staging/r8188eu/core/rtw_ioctl_set.c |  20 +-
+ drivers/staging/r8188eu/core/rtw_iol.c       |  12 +-
+ drivers/staging/r8188eu/core/rtw_mlme.c      |  80 +++----
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c  | 236 +++++++++----------
+ drivers/staging/r8188eu/core/rtw_mp.c        |  10 +-
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c  |   6 +-
+ drivers/staging/r8188eu/core/rtw_p2p.c       |  46 ++--
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c   |  16 +-
+ drivers/staging/r8188eu/core/rtw_recv.c      | 112 ++++-----
+ drivers/staging/r8188eu/core/rtw_security.c  | 188 +++++++--------
+ drivers/staging/r8188eu/core/rtw_sreset.c    |   2 +-
+ drivers/staging/r8188eu/core/rtw_sta_mgt.c   |   6 +-
+ drivers/staging/r8188eu/core/rtw_wlan_util.c |  60 ++---
+ drivers/staging/r8188eu/core/rtw_xmit.c      | 122 +++++-----
+ 20 files changed, 696 insertions(+), 696 deletions(-)
 
-Regards
-
-Marcel
+-- 
+2.32.0
 
