@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87CE3ED46B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8898C3ED46C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhHPNAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        id S235016AbhHPNAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhHPNAC (ORCPT
+        with ESMTP id S231244AbhHPNAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:00:02 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDC8C061764;
-        Mon, 16 Aug 2021 05:59:31 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id js7so9185890qvb.4;
-        Mon, 16 Aug 2021 05:59:31 -0700 (PDT)
+        Mon, 16 Aug 2021 09:00:13 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6B1C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:59:41 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bt14so15802498ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:59:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=G+0eo8uBciZZ75lMpCYVoliToSNojQPxAZ9Nw5b+SJ8=;
-        b=orP6XdoARpEigMxUeWDxZuA9zCC+uW/v5mMLzo5b2heITGIGxlzoeu6hnKIlFujv7p
-         fHN6eYzQlulZa3nKCEh5So3+w1cPm+8Zq/8gxJ9JaaP5HZzq+J/s4MFgc6EFvgScZbi4
-         UdlU/BjQsrD/b0OvK8Wtel+ysj8nqqigPrMXIK8AbsJc2ttcqZShas3sxXPizfrCqRP1
-         uxQ/++qlPaI3NdTlTQ2zxNkI6+J5ZwnlFk+7JUTKawhRoxHQ6lx0gZ3rG64iQ+LAxOXk
-         K0E8mABcCXnoNWfvIohjWK8Ft0hzbxARQbqCc5vePZTuJjgFsUO1EgPjVci1yJC643p+
-         H79g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y5uIXz2XwcikVYRQRK52KMA+VCLoXzka5XfwEtISp/M=;
+        b=GJ3L2NH27/dAvkZV6A5+K504tWxrUGqV5s7zAnFXMZjVUO0FDrUnUf3LCxnRWFUd/n
+         DhB9xWZKlU6fcaF48eIFxUM5AKeBMug339+Wn7FmshdLI0S5iKsaj1tutyYrAutaBYTc
+         J7t74Ji7f/81u3DkVckf0J0EJU5zUjYVxakzO43BEzAE3sBmnyUk21WDnliEQVytacwo
+         +l6Ig8L6EwpO1709Zzigmwv7RQ8GcX1eYf1EzsdZY/RnbkzFFzCsS+dTxmTmTy32bFla
+         JsJDbUtlSRVOcXYdVY9AUZvTl84VQixATzugsa4QTJK/0K7hqoBazQxavwfDUCHuSrtC
+         v99A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=G+0eo8uBciZZ75lMpCYVoliToSNojQPxAZ9Nw5b+SJ8=;
-        b=bA5oT8X1Dx83esLx79v1jnxfmKzcR77XULOjkkyaLEoOC8n5oDA743ctl9qnabk9A9
-         /sYu9SDTpgzQkIi7knvBx83Lro/tJtXxT0j0cGTYZomysbbHE0ZyuOMU+NHlC/wT6fZS
-         7qHHvqiiBhbMa5UZCVa2pDrk5GnNPXec8mM+ABuCvMrVupzO37TeiuumTh6nzGWSnA/j
-         U5pnEQso7fIw5HN1tSaPtE9p852dDCL8qHO1TVYU2QGQxz+en+TXcmju7wgb+p472hF6
-         zAvl38E2sQn7i9YxwAAM81opH6D+UjPeiQGYswzo7wiLTAxZh7Vt0HGi8ZM7Dn+50LLz
-         IEZw==
-X-Gm-Message-State: AOAM530caH+fPBJrubiXWniNrsjiS1FsYMGSMU3bvKnKgZjZsS4SXDyZ
-        VLIPNs5yvkqrj05FYyoSw8g=
-X-Google-Smtp-Source: ABdhPJzDF4RfmwkRTqf/qKkfp3Xcae0sevuTgFNAlLFe/wFS9ENTHz1pyaI8ebi6O+q6BkHYfgIYJw==
-X-Received: by 2002:ad4:48d2:: with SMTP id v18mr15775745qvx.41.1629118770536;
-        Mon, 16 Aug 2021 05:59:30 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id n124sm6248823qkf.119.2021.08.16.05.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 05:59:29 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 16 Aug 2021 08:59:28 -0400
-Message-Id: <CDKYEMJOURHJ.2U1JRK17FRGD0@shaak>
-Cc:     "Lars-Peter Clausen" <lars@metafoo.de>,
-        "Michael Hennerich" <Michael.Hennerich@analog.com>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
-        =?utf-8?q?Nuno_S=C3=A1?= <Nuno.Sa@analog.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "linux-iio" <linux-iio@vger.kernel.org>,
-        "devicetree" <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>
-Subject: Re: [PATCH v6 0/5] AD7949 Fixes
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
-References: <20210815213309.2847711-1-liambeguin@gmail.com>
- <CAHp75VdOMg-7xX+KbdaDt5tduPhorujFwvpMPmdHKMVg=vj2Ew@mail.gmail.com>
-In-Reply-To: <CAHp75VdOMg-7xX+KbdaDt5tduPhorujFwvpMPmdHKMVg=vj2Ew@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y5uIXz2XwcikVYRQRK52KMA+VCLoXzka5XfwEtISp/M=;
+        b=bDhbJQaxGw4iKIme82/y/pI/3R7Iwfept5GYAfeGWIzXtmJOcun2naZ9NdW7CyCWV0
+         KxYUfwEEYkR7FDQMBbH6XpjUsNhrJP38cOFfqNMWa+Dffi4HAaz2L9puzTWp7FMOP4HJ
+         1zv6xa0eEnBzh59//ISE4ItMGEu19utOKSgltzChChHZIq30SOZNYbkhVYyP71CrclnM
+         Cdk9zG6HAE4wqMNSmzZTehHBKIk2UtFp0oYJsdPnyS+GQbOS7GZPF0o++AS6VfjlGNDF
+         RVz+C2Y+S29Hz+ullG2b7VLLm5vL+xmLPStpMrt5rJFH8nGn4velAVnEtClZDwicJHEE
+         vTXQ==
+X-Gm-Message-State: AOAM532DXdRaSLSrF3MHmRQcCGiaY0uifOe7nNHJ01nZRa2IS2xOmVKM
+        RvOGt8Caj9qZVPRzvBGFrhg=
+X-Google-Smtp-Source: ABdhPJyi4cfLr8DIlO5bhLbKfRk8kxFUUe5CZbOmV6p/pFSTv0v8Klbhj4Bylf3qfAPOJrGKUFqA6g==
+X-Received: by 2002:a17:906:6847:: with SMTP id a7mr7525988ejs.288.1629118779976;
+        Mon, 16 Aug 2021 05:59:39 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id l16sm3682542eje.67.2021.08.16.05.59.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 05:59:39 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org,
+        Michael Straube <straube.linux@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] staging: r8188eu: refactor rtw_is_cckrates_included()
+Date:   Mon, 16 Aug 2021 14:59:37 +0200
+Message-ID: <22319347.s0ZA6q4zN9@localhost.localdomain>
+In-Reply-To: <20210816115430.28264-1-straube.linux@gmail.com>
+References: <20210816115430.28264-1-straube.linux@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Aug 16, 2021 at 4:08 AM EDT, Andy Shevchenko wrote:
-> On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
-> wrote:
-> >
-> > While working on another series[1] I ran into issues where my SPI
-> > controller would fail to handle 14-bit and 16-bit SPI messages. This
-> > addresses that issue and adds support for selecting a different voltage
-> > reference source from the devicetree.
-> >
-> > v1 was base on a series[2] that seems to not have made it all the way,
-> > and was tested on an ad7689.
-> >
-> > v6 drops support for per channel vref selection.
-> > After switching the voltage reference, readings take a little while to
-> > stabilize, invalidating consecutive readings.
-> >
-> > This could've been addressed by adding more dummy cycles at the expense
-> > of speed, but discussing the issue with colleagues more involved in
-> > hardware design, it turns out these circuits are usually designed with =
-a
-> > single vref in mind.
-> >
-> > [1] https://patchwork.kernel.org/project/linux-iio/list/?series=3D51154=
-5
-> > [2] https://patchwork.kernel.org/project/linux-iio/list/?series=3D11697=
-1&state=3D%2A&archive=3Dboth
-> >
-> > Changes since v5:
-> > - rename defines: s/AD7949_CFG_BIT_/AD7949_CFG_MASK_/g
-> > - rename AD7949_MASK_TOTAL to match other defines
->
-> > - make vref selection global instead of per channel, and update
-> >   dt-bindings
+On Monday, August 16, 2021 1:54:27 PM CEST Michael Straube wrote:
+> Refactor function rtw_is_cckrates_included(). Improves readability
+> and slightly reduces object file size.
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+> v1 -> v2
+> Refactored to more compact code as suggested by Joe Perches.
+> 
+>  drivers/staging/r8188eu/core/rtw_ieee80211.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
 
-Hi Andy,
+Thanks for redoing the series as suggested by Joe Perches.
+This is a perfect case where conciseness and readability don't clash and 
+instead the former enhances the latter. 
 
->
-> Same as per v5: is it a hardware limitation?
-> It's unclear to me what happened here.
+Nice work, although you chose to not take Joe's suggestion about making a 
+helper inline function. That would have been perfect, but I think it is a 
+minor issue. So...
 
-I tried to provide more details in the last paragraph above.
+Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
-After switching the voltage reference, readings take a little while to
-stabilize invalidating consecutive readings.
+Regards,
 
-One option was to add more dummy cycles, but in addition to making
-things slower it was brought to my attention that this kind of circuit
-is usually designed with a single vref in mind.
+Fabio
 
-For those reasons and because I didn't have an explicit need for it, I
-decided to drop that part.
+P.S.: If I were you, I'd have provided a cover letter that would have helped 
+the readers to immediately understand the purpose of the entire series. I'm 
+not sure whether or not the above-mentioned cover is a strict requirement.
 
-Liam
+> diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> b/drivers/staging/r8188eu/core/rtw_ieee80211.c index 0c7231cefdda..
+964255a8c778 100644
+> --- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> +++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+> @@ -70,14 +70,13 @@ int rtw_get_bit_value_from_ieee_value(u8 val)
+> 
+>  uint	rtw_is_cckrates_included(u8 *rate)
+>  {
+> -	u32	i = 0;
+> +	u8 r;
+> 
+> -	while (rate[i] != 0) {
+> -		if  ((((rate[i]) & 0x7f) == 2) || (((rate[i]) & 0x7f) 
+== 4) ||
+> -		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) 
+== 22))
+> +	while ((r = *rate++ & 0x7f)) {
+> +		if (r == 2 || r == 4 || r == 11 || r == 22)
+>  			return true;
+> -		i++;
+>  	}
+> +
+>  	return false;
+>  }
 
->
-> > - reword commits 2/5, 3/5, and 4/5
-> > - move bits_per_word configuration to struct spi_device, and switch to
-> >   spi_{read,write}.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+
+
 
