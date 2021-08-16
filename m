@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C404A3ECD83
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2114C3ECD84
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhHPEPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 00:15:40 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:51292 "EHLO vps0.lunn.ch"
+        id S231738AbhHPEPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 00:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhHPEPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 00:15:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=TgYp5KlBgM6ihg6kSt0vs/POhvksb9iqkijafDTebMQ=; b=hneJA1oyFY4QN5sD+5+RwTgulP
-        sVqvKWdDiatyOWsPaikLvbGx51TuWsFAFCxRxH/+qupxgToaZD2wNVpZHAw2cSEwBSd6s3VN6vHFH
-        9bgTmsaTIKn7eAR+YCdppY8eWhEsnmgD/IHj0wp7gUPv8Yv87O0lC3qJj1ZqYsZQ3zpU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mFU1e-000KnF-UU; Mon, 16 Aug 2021 06:15:02 +0200
-Date:   Mon, 16 Aug 2021 06:15:02 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
- to WOL event
-Message-ID: <YRnmRp92j7Qpir7N@lunn.ch>
-References: <20210813084536.182381-1-yoong.siang.song@intel.com>
- <20210814172656.GA22278@shell.armlinux.org.uk>
- <YRgFxzIB3v8wS4tF@lunn.ch>
- <20210814194916.GB22278@shell.armlinux.org.uk>
- <PH0PR11MB4950652B4D07C189508767F1D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+        id S229485AbhHPEPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 00:15:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453AC619E1;
+        Mon, 16 Aug 2021 04:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629087319;
+        bh=joQfJDa6jYkYAOeq+GjOycG0LtXj3Zk0aKsaKrbhQjI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=aYM6pmMGFwnhaeeZHuZab3dkBpAqqk05BR8yssOf7e/gdEF9N0E428nBFHcxUYMxl
+         mIkbi6uDrEvQsoxCDzVJ060AGgwwVSwZebSXQ3O2Syxr92vpvZ9AtnRfjPQWRB5TF1
+         vCxZRqZGnMFO/e9PIiqMXA+Iw4QNJMDaUM8aw+B/A59gKY1B+0T53vPl2CuFlw2so8
+         kVjC/DQ7e4LDB7N1attrogGPLZ2qP2tRqOOhXy259Rak5XiCtvYc2caFzRjzmmvaTw
+         2V+5g7dgUlbx6MzGgm9Jemfp7q/nZ8Olwuc198+bCVypLAEUKXDlR43tAdou5P8law
+         fp3eMr8GS0wdg==
+Subject: Re: [PATCH 1/2] f2fs: add sysfs nodes to get discard information
+To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <ACIArwDxD7lffBbq-DPSbarm.3.1629081754403.Hmail.frank.li@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <af34f9cd-8972-583b-bae2-f11fe9058e63@kernel.org>
+Date:   Mon, 16 Aug 2021 12:15:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB4950652B4D07C189508767F1D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+In-Reply-To: <ACIArwDxD7lffBbq-DPSbarm.3.1629081754403.Hmail.frank.li@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:52:06AM +0000, Song, Yoong Siang wrote:
-> > > Agreed. If the interrupt register is being used, i think we need this
-> > > patchset to add proper interrupt support. Can you recommend a board
-> > > they can buy off the shelf with the interrupt wired up? Or maybe Intel
-> > > can find a hardware engineer to add a patch wire to link the interrupt
-> > > output to a SoC pin that can do interrupts.
-> > 
-> > The only board I'm aware of with the 88x3310 interrupt wired is the
-> > Macchiatobin double-shot. :)
-> > 
-> > I forget why I didn't implement interrupt support though - I probably need to
-> > revisit that. Sure enough, looking at the code I was tinkering with, adding
-> > interrupt support would certainly conflict with this patch.
+On 2021/8/16 10:42, 李扬韬 wrote:
+>>> I've added new sysfs nodes to show discard stat since mount, which
+>>> will help us analyze whether the performance problem is related to
+>>> discard.
+>>>
+>>> issued_discard  - Shows the number of issued discard
+>>> queued_discard  - Shows the number of cached discard cmd count
+>>> discard_cmd_cnt - Shows the number of cached discard cmd count
+>>> undiscard_blks  - Shows the number of undiscard blocks
+>>
+>> We have exported them in debugfs, can you use that?
+>>
+>> Thanks,
 > 
-> Hi Russell,
+> But now Android is forbidden to open debugfs, and in fact we have not
+> opened this configuration for a long time.
+
+Weren't them be used for debug purpose? can you please explain more about
+your use case?
+
+Thanks,
+
 > 
-> For EHL board, both WoL interrupt and link change interrupt are the same pin.
-> Based on your knowledge, is this common across other platforms?
-
-Other PHYs? Yes. WoL is just another interrupt, and any interrupt can
-wake the system, so longer as the interrupt controller can actually wake the system.
-
-> Can we take set wol function as one of the ways to control the
-> interrupts?
-
-WOl does not control the interrupt, it is an interrupt source. And you
-need to service it as an interrupt. So long as your PMC is also an
-interrupt controller, it should all work.
-
-	  Andrew
+> Thx,
+> Yangtao
+> 
+> 
+> 
