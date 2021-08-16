@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07743ECCD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95743ECCD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhHPCyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 22:54:16 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:13319 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHPCyN (ORCPT
+        id S232167AbhHPC77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 22:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhHPC7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 22:54:13 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GnzHz1Fr0z86gj;
-        Mon, 16 Aug 2021 10:53:35 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 10:53:40 +0800
-Received: from [10.67.100.236] (10.67.100.236) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 10:53:40 +0800
-Subject: Re: [PATCH -next 1/2] selftests: Fix vm_handle_exception undefined
- error
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>, <shuah@kernel.org>,
-        <bgardon@google.com>, <wangyanan55@huawei.com>,
-        <axelrasmussen@google.com>, <drjones@redhat.com>,
-        <seanjc@google.com>, <vkuznets@redhat.com>, <dwmw@amazon.co.uk>,
-        <joao.m.martins@oracle.com>, <yangyingliang@huawei.com>,
-        <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210709063741.355325-1-chenlifu@huawei.com>
- <f130f6ec-0c80-7a83-fad2-7d72d389b96b@linuxfoundation.org>
- <b6fca25d-f241-4de2-5a8e-cbcd34abc758@redhat.com>
-From:   chenlifu <chenlifu@huawei.com>
-Message-ID: <b8f2a211-b2e0-b8e0-4215-a428e4044f88@huawei.com>
-Date:   Mon, 16 Aug 2021 10:53:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Sun, 15 Aug 2021 22:59:53 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA6CC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 19:59:22 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d17so19157116plr.12
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 19:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JJmx8LsBVfoygzSD05ZwIHQxzCJmHnV38QWqOATHelQ=;
+        b=UVjsELPlAK1AHNHzU1tOH9RD3UEOCFs/XiDEkQu85qGgQhihCL+7Kps3O0thUqfL/e
+         GfiZ/sOyOJ+LVL7/YjWVL5z0LA90PO98DPklo9HOXVhQmM+KYLqWBUgsdC0DIGPg+7Gp
+         mMnYwGbGRGTS9BR5Dhey8TkCOg3NmlAaGliRA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JJmx8LsBVfoygzSD05ZwIHQxzCJmHnV38QWqOATHelQ=;
+        b=Zm/dyN0Va8PhAW4AIBybcy4itmMmDKUVKjgSgkvLEiQGa7rRQCWnTsbZF1ovZZXt6L
+         yuaQ9A1dUFqpt5xsTlKgyLnS5FjQ52Ksc5XYE8fUb+akdGBZi3T7mj4fq9xIM5NYNBX0
+         w4RD+rmZgZmAwohVtP37UVsMZp6On472ic9dpG59vdYIhdQjxkn/clBhwklQK9yPGrIN
+         sMhnGDhlgf5T3J2xDqAwL1bP6EupTQKROF9w+b0Lh7V66ghJZJb/bBYRuvlmCOJXs3js
+         /wOAuK9bIgk+rEmCMQtQ2nIzWgsfk2donuUSc8jt4WWFZhPdNWzx/D8VLJqgpC/sQjTy
+         Ktsw==
+X-Gm-Message-State: AOAM5323NItHN3hYVZ2GrLsFIXhxYJsctSU6Q7/zrLWOVizj+taEGczd
+        Z0rVIdyOOjy3aUnhoEoEFb4inA==
+X-Google-Smtp-Source: ABdhPJwUVs9a4JAM6gHL66U95qsAW2lmlophZEsPwfhMxRcipFC7Q/ovkUqDwjuu70xU9CEV2z6zzg==
+X-Received: by 2002:a62:5c6:0:b029:341:e0b1:a72c with SMTP id 189-20020a6205c60000b0290341e0b1a72cmr13967618pff.71.1629082762342;
+        Sun, 15 Aug 2021 19:59:22 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:17b8:f07a:2a52:317a])
+        by smtp.gmail.com with UTF8SMTPSA id 21sm9195739pfh.103.2021.08.15.19.59.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 19:59:21 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>
+Subject: [PATCH v5 0/7] Fixes for dma-iommu swiotlb bounce buffers
+Date:   Mon, 16 Aug 2021 11:57:48 +0900
+Message-Id: <20210816025755.2906695-1-stevensd@google.com>
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
 MIME-Version: 1.0
-In-Reply-To: <b6fca25d-f241-4de2-5a8e-cbcd34abc758@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.100.236]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks. Got it.
+From: David Stevens <stevensd@chromium.org>
 
-在 2021/8/14 7:26, Paolo Bonzini 写道:
-> On 13/08/21 19:01, Shuah Khan wrote:
->> On 7/9/21 12:37 AM, Chen Lifu wrote:
->>> Compile setftests on x86_64 occurs following error:
->>> make -C tools/testing/selftests
->>> ...
->>>
->>> x86_64/hyperv_features.c:618:2: warning: implicit declaration of 
->>> function ‘vm_handle_exception’ [-Wimplicit-function-declaration]
->>>    618 |  vm_handle_exception(vm, GP_VECTOR, guest_gp_handler);
->>> /usr/bin/ld: /tmp/cclOnpml.o: in function `main':
->>> tools/testing/selftests/kvm/x86_64/hyperv_features.c:618: undefined 
->>> reference to `vm_handle_exception'
->>> collect2: error: ld returned 1 exit status
->>>
->>> The reason is that commit b78f4a596692 ("KVM: selftests: Rename 
->>> vm_handle_exception")
->>> renamed "vm_handle_exception" function to 
->>> "vm_install_exception_handler" function.
->>>
->>> Fix it by replacing "vm_handle_exception" with 
->>> "vm_install_exception_handler"
->>> in corresponding selftests files.
->>>
->>> Signed-off-by: Chen Lifu <chenlifu@huawei.com>
->>> ---
->>>   tools/testing/selftests/kvm/x86_64/hyperv_features.c | 2 +-
->>>   tools/testing/selftests/kvm/x86_64/mmu_role_test.c   | 2 +-
->>>   2 files changed, 2 insertions(+), 2 deletions(-)
->>>
->>
->>
->> Please include kvm in the commit summary. I think it is not getting
->> the right attention because of the summary line.
-> 
-> The same patch was already committed:
-> 
->     commit f8f0edabcc09fafd695ed2adc0eb825104e35d5c
->     Author: Marc Zyngier <maz@kernel.org>
->     Date:   Thu Jul 1 08:19:28 2021 +0100
-> 
->     KVM: selftests: x86: Address missing vm_install_exception_handler 
-> conversions
->     Commit b78f4a59669 ("KVM: selftests: Rename vm_handle_exception")
->     raced with a couple of new x86 tests, missing two vm_handle_exception
->     to vm_install_exception_handler conversions.
->     Help the two broken tests to catch up with the new world.
->     Cc: Andrew Jones <drjones@redhat.com>
->     CC: Ricardo Koller <ricarkol@google.com>
->     Cc: Paolo Bonzini <pbonzini@redhat.com>
->     Signed-off-by: Marc Zyngier <maz@kernel.org>
->     Message-Id: <20210701071928.2971053-1-maz@kernel.org>
->     Reviewed-by: Andrew Jones <drjones@redhat.com>
->     Reviewed-by: Ricardo Koller <ricarkol@google.com>
->     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> For the other patch, returning 0 is going to cause issues elsewhere
-> in the tests.  Either the test is failed immediately, or all callers
-> must be examined carefully.
-> 
-> Paolo
-> 
-> .
+This patch set includes various fixes for dma-iommu's swiotlb bounce
+buffers for untrusted devices. There are four fixes for correctness
+issues, one for a performance issue, and one for general cleanup.
+
+The min_align_mask issue was found when running fio on an untrusted nvme
+device with bs=512. The other issues were found via code inspection, so
+I don't have any specific use cases where things were not working, nor
+any concrete performance numbers.
+
+v4 -> v5:
+ - Fix xen build error
+ - Move _swiotlb refactor into its own patch
+
+v3 -> v4:
+ - Fold _swiotlb functions into _page functions
+ - Add patch to align swiotlb buffer to iovad granule
+ - Combine if checks in iommu_dma_sync_sg_* functions
+
+v2 -> v3:
+ - Add new patch to address min_align_mask bug
+ - Set SKIP_CPU_SYNC flag after syncing in map/unmap
+ - Properly call arch_sync_dma_for_cpu in iommu_dma_sync_sg_for_cpu
+
+v1 -> v2:
+ - Split fixes into dedicated patches
+ - Less invasive changes to fix arch_sync when mapping
+ - Leave dev_is_untrusted check for strict iommu
+
+David Stevens (7):
+  dma-iommu: fix sync_sg with swiotlb
+  dma-iommu: fix arch_sync_dma for map
+  dma-iommu: skip extra sync during unmap w/swiotlb
+  dma-iommu: fold _swiotlb helpers into callers
+  dma-iommu: Check CONFIG_SWIOTLB more broadly
+  swiotlb: support aligned swiotlb buffers
+  dma-iommu: account for min_align_mask
+
+ drivers/iommu/dma-iommu.c | 193 +++++++++++++++++---------------------
+ drivers/xen/swiotlb-xen.c |   2 +-
+ include/linux/swiotlb.h   |   3 +-
+ kernel/dma/swiotlb.c      |  11 ++-
+ 4 files changed, 98 insertions(+), 111 deletions(-)
+
+-- 
+2.33.0.rc1.237.g0d66db33f3-goog
+
