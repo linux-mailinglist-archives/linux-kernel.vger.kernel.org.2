@@ -2,262 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EE53EDEAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3067E3EDEAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhHPU2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhHPU2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:28:16 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95EDC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:44 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id p4so35305504yba.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qNg/GX6UTjDIl7oF+x+/YFK4sn62S5tBOd2b2dnw+fU=;
-        b=I73TD2Rn9QBg0HjC4Fa44cxb5Ven2z8iOfr8WIYOVBia2dDdDG+g6UrGWOKMFnSlTh
-         awu5VL35rGcl2qrFupuW9Ow3p2JTGzksvYtUqKzZptAYmwChTtiIfEAQK4S4z+KP9jww
-         IxK9UV1IscIEp+fv+7xOUyKXWhgz9CgmZ9lXAq6B8mf9cRqYPKOkEUszq+MAxfH/jaDt
-         fechKWmv/3TrCJpknZfpApOKCmbd23Cy9C11iQeKDs90HnxXG/zLHlPezHY12i6ZGGts
-         QMU6fyDdIkllnJKpB+qimhQdwpdToXaUNcVwY86ztQRXAiqd5oN2JH3wPS+j8q8TnSCX
-         DoAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qNg/GX6UTjDIl7oF+x+/YFK4sn62S5tBOd2b2dnw+fU=;
-        b=Me1wus0PuhL1dtENm73Kn4Ll09jQDZxvf69JeU+XY2YW+aXRqqm8HfcSFjc++U0L9r
-         CnAqpF8E6IuvJukIuT0eo8codvTSIhhKOcI2ra9Gaet5hxxinY1ar3i6cLS5d9j+4tiN
-         U8iFPQCQ9v2p4fr5Q0UFcl77GsXwsV+DOhQxEe67Z9HNHbclxgd40ne6rUq/DFtm//U9
-         0odMFWqc1T93mulXxnxbOSofzGVhWjUma+SYr1zPa7l7YC0wPBcuvgEV3sdCvlYv8I8A
-         F43V49sbswbjnJW7pKc//wtcz1oaRK0oarAu70LaVZHMgZOyQ01H7W9cxC10Q5zMlpCn
-         Y9ig==
-X-Gm-Message-State: AOAM533WMEcHZQSHkj8oHKhxk6uVAxJY52ZiMVvHVWNyXZXDa/6TR/6K
-        TDttFehbkjpUOCkHiPEquMJw5fzBNPg5NIHGr5MnJg==
-X-Google-Smtp-Source: ABdhPJyU9dW7EAVtL+Is9ddxqf3flWsu+/7498Z2kNVUZKQXDTikMHXYcPEE0Oruta0vFH2KLZ88KpIwZPd2xKsrg/Y=
-X-Received: by 2002:a25:8445:: with SMTP id r5mr349687ybm.20.1629145663712;
- Mon, 16 Aug 2021 13:27:43 -0700 (PDT)
+        id S231618AbhHPUch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:32:37 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25459 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231203AbhHPUcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:32:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="279678247"
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="279678247"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 13:32:04 -0700
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="505074119"
+Received: from xzhu13-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.209.7.115])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 13:32:04 -0700
+Date:   Mon, 16 Aug 2021 13:32:04 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     "Kammela, Gayatri" <gayatri.kammela@intel.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "irenic.rajneesh@gmail.com" <irenic.rajneesh@gmail.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "vicamo.yang@canonical.com" <vicamo.yang@canonical.com>,
+        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        "Box, David E" <david.e.box@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Mashiah, Tamar" <tamar.mashiah@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rajatja@google.com" <rajatja@google.com>,
+        "Shyam-sundar.S-k@amd.com" <Shyam-sundar.S-k@amd.com>,
+        "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>,
+        "mlimonci@amd.com" <mlimonci@amd.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+Subject: Re: [PATCH v5 1/5] platform/x86/intel: intel_pmc_core: Move
+ intel_pmc_core* files to pmc subfolder
+Message-ID: <20210816203204.a35yvbuuhjxjbjcw@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <cover.1626459866.git.gayatri.kammela@intel.com>
+ <b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com>
+ <20210816173738.oxndqtq6uaql7sz7@ldmartin-desk2>
+ <MW3PR11MB45230D40F51FAB5C5A4E0FCBF2FD9@MW3PR11MB4523.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <7hsga8kb8z.fsf@baylibre.com> <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com>
- <87im0m277h.wl-maz@kernel.org> <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
- <87sfzpwq4f.wl-maz@kernel.org> <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
- <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
- <YQuZ2cKVE+3Os25Z@google.com> <YRpeVLf18Z+1R7WE@google.com>
-In-Reply-To: <YRpeVLf18Z+1R7WE@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 16 Aug 2021 13:27:07 -0700
-Message-ID: <CAGETcx-gSJD0Ra=U_55k3Anps11N_3Ev9gEQV6NaXOvqwP0J3g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
- a module
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB45230D40F51FAB5C5A4E0FCBF2FD9@MW3PR11MB4523.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 5:47 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Thu, 05 Aug 2021, Lee Jones wrote:
->
-> > On Wed, 04 Aug 2021, Saravana Kannan wrote:
-> >
-> > > On Wed, Aug 4, 2021 at 11:20 AM Saravana Kannan <saravanak@google.com=
-> wrote:
-> > > >
-> > > > On Wed, Aug 4, 2021 at 1:50 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, 04 Aug 2021 02:36:45 +0100,
-> > > > > Saravana Kannan <saravanak@google.com> wrote:
-> > > > >
-> > > > > Hi Saravana,
-> > > > >
-> > > > > Thanks for looking into this.
-> > > >
-> > > > You are welcome. I just don't want people to think fw_devlink is br=
-oken :)
-> > > >
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > > Saravana, could you please have a look from a fw_devlink pers=
-pective?
-> > > > > >
-> > > > > > Sigh... I spent several hours looking at this and wrote up an a=
-nalysis
-> > > > > > and then realized I might be looking at the wrong DT files.
-> > > > > >
-> > > > > > Marc, can you point me to the board file in upstream that corre=
-sponds
-> > > > > > to the platform in which you see this issue? I'm not asking for=
- [1],
-> > > > > > but the actual final .dts (not .dtsi) file that corresponds to =
-the
-> > > > > > platform/board/system.
-> > > > >
-> > > > > The platform I can reproduce this on is described in
-> > > > > arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts. It is an
-> > > > > intricate maze of inclusion, node merge and other DT subtleties. =
-I
-> > > > > suggest you look at the decompiled version to get a view of the
-> > > > > result.
-> > > >
-> > > > Thanks. After decompiling it, it looks something like (stripped a
-> > > > bunch of reg and address properties and added the labels back):
-> > > >
-> > > > eth_phy: mdio-multiplexer@4c000 {
-> > > >         compatible =3D "amlogic,g12a-mdio-mux";
-> > > >         clocks =3D <0x02 0x13 0x1e 0x02 0xb1>;
-> > > >         clock-names =3D "pclk\0clkin0\0clkin1";
-> > > >         mdio-parent-bus =3D <0x22>;
-> > > >
-> > > >         ext_mdio: mdio@0 {
-> > > >                 reg =3D <0x00>;
-> > > >
-> > > >                 ethernet-phy@0 {
-> > > >                         max-speed =3D <0x3e8>;
-> > > >                         interrupt-parent =3D <0x23>;
-> > > >                         interrupts =3D <0x1a 0x08>;
-> > > >                         phandle =3D <0x16>;
-> > > >                 };
-> > > >         };
-> > > >
-> > > >         int_mdio: mdio@1 {
-> > > >                 ...
-> > > >         }
-> > > > }
-> > > >
-> > > > And phandle 0x23 refers to the gpio_intc interrupt controller with =
-the
-> > > > modular driver.
-> > > >
-> > > > > > Based on your error messages, it's failing for mdio@0 which
-> > > > > > corresponds to ext_mdio. But none of the board dts files in ups=
-tream
-> > > > > > have a compatible property for "ext_mdio". Which means fw_devli=
-nk
-> > > > > > _should_ propagate the gpio_intc IRQ dependency all the way up =
-to
-> > > > > > eth_phy.
-> > > > > >
-> > > > > > Also, in the failing case, can you run:
-> > > > > > ls -ld supplier:*
-> > > > > >
-> > > > > > in the /sys/devices/....<something>/ folder that corresponds to=
- the
-> > > > > > "eth_phy: mdio-multiplexer@4c000" DT node and tell me what it s=
-hows?
-> > > > >
-> > > > > Here you go:
-> > > > >
-> > > > > root@tiger-roach:~# find /sys/devices/ -name 'supplier*'|grep -i =
-mdio | xargs ls -ld
-> > > > > lrwxrwxrwx 1 root root 0 Aug  4 09:47 /sys/devices/platform/soc/f=
-f600000.bus/ff64c000.mdio-multiplexer/supplier:platform:ff63c000.system-con=
-troller:clock-controller -> ../../../../virtual/devlink/platform:ff63c000.s=
-ystem-controller:clock-controller--platform:ff64c000.mdio-multiplexer
-> > > >
-> > > > As we discussed over chat, this was taken after the mdio-multiplexe=
-r
-> > > > driver "successfully" probes this device. This will cause
-> > > > SYNC_STATE_ONLY device links created by fw_devlink to be deleted
-> > > > (because they are useless after a device probes). So, this doesn't
-> > > > show the info I was hoping to demonstrate.
-> > > >
-> > > > In any case, one can see that fw_devlink properly created the devic=
-e
-> > > > link for the clocks dependency. So fw_devlink is parsing this node
-> > > > properly. But it doesn't create a similar probe order enforcing dev=
-ice
-> > > > link between the mdio-multiplexer and the gpio_intc because the
-> > > > dependency is only present in a grand child DT node (ethernet-phy@0
-> > > > under ext_mdio). So fw_devlink is working as intended.
-> > > >
-> > > > I spent several hours squinting at the code/DT yesterday. Here's wh=
-at
-> > > > is going on and causing the problem:
-> > > >
-> > > > The failing driver in this case is
-> > > > drivers/net/mdio/mdio-mux-meson-g12a.c. And the only DT node it's
-> > > > handling is what I pasted above in this email. In the failure case,
-> > > > the call flow is something like this:
-> > > >
-> > > > g12a_mdio_mux_probe()
-> > > > -> mdio_mux_init()
-> > > > -> of_mdiobus_register(ext_mdio DT node)
-> > > > -> of_mdiobus_register_phy(ext_mdio DT node)
-> > > > -> several calls deep fwnode_mdiobus_phy_device_register(ethernet_p=
-hy DT node)
-> > > > -> Tried to get the IRQ listed in ethernet_phy and fails with
-> > > > -EPROBE_DEFER because the IRQ driver isn't loaded yet.
-> > > >
-> > > > The error is propagated correctly all the way up to of_mdiobus_regi=
-ster(), but
-> > > > mdio_mux_init() ignores the -EPROBE_DEFER from of_mdiobus_register(=
-) and just
-> > > > continues on with the rest of the stuff and returns success as long=
- as
-> > > > one of the child nodes (in this case int_mdio) succeeds.
-> > > >
-> > > > Since the probe returns 0 without really succeeding, networking stu=
-ff
-> > > > just fails badly after this. So, IMO, the real problem is with
-> > > > mdio_mux_init() not propagating up the -EPROBE_DEFER. I gave Marc a
-> > > > quick hack (pasted at the end of this email) to test my theory and =
-he
-> > > > confirmed that it fixes the issue (a few deferred probes later, thi=
-ngs
-> > > > work properly).
-> > > >
-> > > > Andrew, I don't see any good reason for mdio_mux_init() not
-> > > > propagating the errors up correctly (at least for EPROBE_DEFER). I'=
-ll
-> > > > send a patch to fix this. Please let me know if there's a reason it
-> > > > has to stay as-is.
-> > >
-> > > I sent out the proper fix as a series:
-> > > https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google=
-.com/T/#t
-> > >
-> > > Marc, can you give it a shot please?
-> > >
-> > > -Saravana
-> >
-> > Superstar!  Thanks for taking the time to rectify this for all of us.
->
-> Just to clarify:
->
->   Are we waiting on a subsequent patch submission at this point?
+On Mon, Aug 16, 2021 at 12:23:21PM -0700, Kammela, Gayatri wrote:
+>> -----Original Message-----
+>> From: De Marchi, Lucas <lucas.demarchi@intel.com>
+>> Sent: Monday, August 16, 2021 10:38 AM
+>> To: Kammela, Gayatri <gayatri.kammela@intel.com>
+>> Cc: platform-driver-x86@vger.kernel.org; mgross@linux.intel.com;
+>> hdegoede@redhat.com; irenic.rajneesh@gmail.com;
+>> andriy.shevchenko@linux.intel.com; vicamo.yang@canonical.com;
+>> Pandruvada, Srinivas <srinivas.pandruvada@intel.com>; Box, David E
+>> <david.e.box@intel.com>; linux-kernel@vger.kernel.org; Mashiah, Tamar
+>> <tamar.mashiah@intel.com>; gregkh@linuxfoundation.org;
+>> rajatja@google.com; Shyam-sundar.S-k@amd.com;
+>> Alexander.Deucher@amd.com; mlimonci@amd.com; Andy Shevchenko
+>> <andy.shevchenko@gmail.com>
+>> Subject: Re: [PATCH v5 1/5] platform/x86/intel: intel_pmc_core: Move
+>> intel_pmc_core* files to pmc subfolder
+>>
+>> On Fri, Jul 16, 2021 at 11:38:33AM -0700, Gayatri Kammela wrote:
+>> >As part of collecting Intel x86 specific drivers in their own folder,
+>> >move intel_pmc_core* files to its own subfolder there.
+>> >
+>> >Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+>> >Cc: David Box <david.e.box@intel.com>
+>> >Cc: You-Sheng Yang <vicamo.yang@canonical.com>
+>> >Cc: Hans de Goede <hdegoede@redhat.com>
+>> >Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> >Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+>> >Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> >Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+>> >---
+>> > MAINTAINERS                                   |  2 +-
+>> > drivers/platform/x86/Kconfig                  | 21 ------------------
+>> > drivers/platform/x86/Makefile                 |  1 -
+>> > drivers/platform/x86/intel/Kconfig            |  1 +
+>> > drivers/platform/x86/intel/Makefile           |  1 +
+>> > drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
+>> > drivers/platform/x86/intel/pmc/Makefile       |  5 +++++
+>> > .../{intel_pmc_core.c => intel/pmc/core.c}    |  2 +-
+>> > .../{intel_pmc_core.h => intel/pmc/core.h}    |  0
+>> > .../pmc/pltdrv.c}                             |  0
+>> > 10 files changed, 31 insertions(+), 24 deletions(-)  create mode
+>> >100644 drivers/platform/x86/intel/pmc/Kconfig
+>> > create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+>> > rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c}
+>> >(99%)  rename drivers/platform/x86/{intel_pmc_core.h =>
+>> >intel/pmc/core.h} (100%)  rename
+>> >drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c}
+>> >(100%)
+>> >
+>> >diff --git a/MAINTAINERS b/MAINTAINERS
+>> >index 6c8be735cc91..c5d610885bf2 100644
+>> >--- a/MAINTAINERS
+>> >+++ b/MAINTAINERS
+>> >@@ -9477,7 +9477,7 @@ M:     David E Box <david.e.box@intel.com>
+>> > L:  platform-driver-x86@vger.kernel.org
+>> > S:  Maintained
+>> > F:  Documentation/ABI/testing/sysfs-platform-intel-pmc
+>> >-F:  drivers/platform/x86/intel_pmc_core*
+>> >+F:  drivers/platform/x86/intel/pmc/core*
+>> >
+>> > INTEL PMIC GPIO DRIVERS
+>> > M:  Andy Shevchenko <andy@kernel.org>
+>> >diff --git a/drivers/platform/x86/Kconfig
+>> >b/drivers/platform/x86/Kconfig index 7d385c3b2239..cae72922f448 100644
+>> >--- a/drivers/platform/x86/Kconfig
+>> >+++ b/drivers/platform/x86/Kconfig
+>> >@@ -1184,27 +1184,6 @@ config INTEL_MRFLD_PWRBTN
+>> >       To compile this driver as a module, choose M here: the module
+>> >       will be called intel_mrfld_pwrbtn.
+>> >
+>> >-config INTEL_PMC_CORE
+>> >-    tristate "Intel PMC Core driver"
+>> >-    depends on PCI
+>> >-    depends on ACPI
+>> >-    help
+>> >-      The Intel Platform Controller Hub for Intel Core SoCs provides
+>> access
+>> >-      to Power Management Controller registers via various interfaces.
+>> This
+>> >-      driver can utilize debugging capabilities and supported features as
+>> >-      exposed by the Power Management Controller. It also may perform
+>> some
+>> >-      tasks in the PMC in order to enable transition into the SLPS0 state.
+>> >-      It should be selected on all Intel platforms supported by the driver.
+>> >-
+>> >-      Supported features:
+>> >-            - SLP_S0_RESIDENCY counter
+>> >-            - PCH IP Power Gating status
+>> >-            - LTR Ignore / LTR Show
+>> >-            - MPHY/PLL gating status (Sunrisepoint PCH only)
+>> >-            - SLPS0 Debug registers (Cannonlake/Icelake PCH)
+>> >-            - Low Power Mode registers (Tigerlake and beyond)
+>> >-            - PMC quirks as needed to enable SLPS0/S0ix
+>> >-
+>> > config INTEL_PMT_CLASS
+>> >     tristate
+>> >     help
+>> >diff --git a/drivers/platform/x86/Makefile
+>> >b/drivers/platform/x86/Makefile index 7ee369aab10d..43d36f8c36f1
+>> 100644
+>> >--- a/drivers/platform/x86/Makefile
+>> >+++ b/drivers/platform/x86/Makefile
+>> >@@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)
+>>               += intel-uncore-frequency.o
+>> > obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)  += intel_bxtwc_tmu.o
+>> > obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN) += intel_chtdc_ti_pwrbtn.o
+>> > obj-$(CONFIG_INTEL_MRFLD_PWRBTN)    += intel_mrfld_pwrbtn.o
+>> >-obj-$(CONFIG_INTEL_PMC_CORE)                += intel_pmc_core.o
+>> intel_pmc_core_pltdrv.o
+>> > obj-$(CONFIG_INTEL_PMT_CLASS)               += intel_pmt_class.o
+>> > obj-$(CONFIG_INTEL_PMT_TELEMETRY)   += intel_pmt_telemetry.o
+>> > obj-$(CONFIG_INTEL_PMT_CRASHLOG)    += intel_pmt_crashlog.o
+>> >diff --git a/drivers/platform/x86/intel/Kconfig
+>> >b/drivers/platform/x86/intel/Kconfig
+>> >index f2eef337eb98..8ca021785f67 100644
+>> >--- a/drivers/platform/x86/intel/Kconfig
+>> >+++ b/drivers/platform/x86/intel/Kconfig
+>> >@@ -18,5 +18,6 @@ if X86_PLATFORM_DRIVERS_INTEL
+>> >
+>> > source "drivers/platform/x86/intel/int33fe/Kconfig"
+>> > source "drivers/platform/x86/intel/int3472/Kconfig"
+>> >+source "drivers/platform/x86/intel/pmc/Kconfig"
+>> >
+>> > endif # X86_PLATFORM_DRIVERS_INTEL
+>> >diff --git a/drivers/platform/x86/intel/Makefile
+>> >b/drivers/platform/x86/intel/Makefile
+>> >index 0653055942d5..49962f4dfdec 100644
+>> >--- a/drivers/platform/x86/intel/Makefile
+>> >+++ b/drivers/platform/x86/intel/Makefile
+>> >@@ -6,3 +6,4 @@
+>> >
+>> > obj-$(CONFIG_INTEL_CHT_INT33FE)             += int33fe/
+>> > obj-$(CONFIG_INTEL_SKL_INT3472)             += int3472/
+>> >+obj-$(CONFIG_INTEL_PMC_CORE)                += pmc/
+>> >diff --git a/drivers/platform/x86/intel/pmc/Kconfig
+>> >b/drivers/platform/x86/intel/pmc/Kconfig
+>> >new file mode 100644
+>> >index 000000000000..b4c955a35674
+>> >--- /dev/null
+>> >+++ b/drivers/platform/x86/intel/pmc/Kconfig
+>> >@@ -0,0 +1,22 @@
+>> >+# SPDX-License-Identifier: GPL-2.0-only
+>> >+
+>> >+config INTEL_PMC_CORE
+>> >+    tristate "Intel PMC Core driver"
+>> >+    depends on PCI
+>> >+    depends on ACPI
+>> >+    help
+>> >+      The Intel Platform Controller Hub for Intel Core SoCs provides
+>> access
+>> >+      to Power Management Controller registers via various interfaces.
+>> This
+>> >+      driver can utilize debugging capabilities and supported features as
+>> >+      exposed by the Power Management Controller. It also may perform
+>> some
+>> >+      tasks in the PMC in order to enable transition into the SLPS0 state.
+>> >+      It should be selected on all Intel platforms supported by the driver.
+>> >+
+>> >+      Supported features:
+>> >+            - SLP_S0_RESIDENCY counter
+>> >+            - PCH IP Power Gating status
+>> >+            - LTR Ignore / LTR Show
+>> >+            - MPHY/PLL gating status (Sunrisepoint PCH only)
+>> >+            - SLPS0 Debug registers (Cannonlake/Icelake PCH)
+>> >+            - Low Power Mode registers (Tigerlake and beyond)
+>> >+            - PMC quirks as needed to enable SLPS0/S0ix
+>> >diff --git a/drivers/platform/x86/intel/pmc/Makefile
+>> >b/drivers/platform/x86/intel/pmc/Makefile
+>> >new file mode 100644
+>> >index 000000000000..e0182e10a035
+>> >--- /dev/null
+>> >+++ b/drivers/platform/x86/intel/pmc/Makefile
+>> >@@ -0,0 +1,5 @@
+>> >+# SPDX-License-Identifier: GPL-2.0
+>> >+#
+>> >+
+>> >+obj-$(CONFIG_INTEL_PMC_CORE)        += core.o
+>> >+obj-$(CONFIG_INTEL_PMC_CORE)        += pltdrv.o
+>>
+>> is the module rename really intentional? If so, it needs to be renamed to
+>> something else as just calling it core may conflict with other equally badly
+>> named modules.
+>Hi Lucas! Yes, the module rename is intentional. Thanks for reporting the issue. This issue has been addressed in V6. I have just sent the V7 https://patchwork.kernel.org/project/platform-driver-x86/list/
 
-Not that I'm aware of. Andrew added a "Reviewed-by" to all 3 of my
-proper fix patches. I didn't think I needed to send any newer patches.
-Is there some reason you that I needed to?
-https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T=
-/#t
+ok, thanks! I guess I forgot the -c flag to b4, that correctly
+downloads v7:
 
--Saravana
+	b4 am -c b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com
+	...
+	New revision: [PATCH v7 0/5] Add Alder Lake PCH-S support to PMC core driver
 
-
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Lucas De Marchi
