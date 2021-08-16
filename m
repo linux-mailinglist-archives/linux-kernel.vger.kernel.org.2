@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCCE3EDA5F
+	by mail.lfdr.de (Postfix) with ESMTP id 899423EDA60
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237279AbhHPQAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
+        id S237062AbhHPQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237107AbhHPQAB (ORCPT
+        with ESMTP id S237170AbhHPQAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:00:01 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72EBC061796
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:29 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id k4so11879942wms.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:29 -0700 (PDT)
+        Mon, 16 Aug 2021 12:00:02 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDE7C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:31 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id q6so12841732wrv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lCfuu08NjMYhv5PuIppJ+v+CEj6fiVf/mdmZGX10GxA=;
-        b=luL/RkGgFNyn53BCcVkWJUVIBubk8oXNdZbrXhtrD7vq0K14kQHDqhM7OC37WwG2rf
-         jaNIDK0PcnO+A5Nrtp0xMORLGAqZAR/TPyaOJmaco8k5e41xOPMoaUpj4rZ6uO9dj3mg
-         689mquNpku0gQui+hs1+jdql0Hn+iF4/hfUGhE9dp2dhhWflnPQpDCscrzLjSJzGjrA3
-         umu35LwTK2suvs22bbMYXXPWUvFUC2+gDxeYgjc/DNKktPgZ4Sx1rmeLXLSolc22kgeP
-         STEdjlk10auQKwFva86KPzClg7AGmYHgBBNP43znrB0Lwt5izTCIhPNPfqjUU6NFxZ/7
-         IdbQ==
+        bh=wWZteSSOPkMjXyO6ylx1CA4k4vpQ3VxPRaNeIUGg9fg=;
+        b=PqNQUUrO5YBZQCL8GNYJgWfoq/7OWJSdp6lmito9YbxKNUf5E6cnPE++DqRDptBQPp
+         NkY86IjgFHsUgGa4ZLBIsgs9X6yLL/f+m1m4Q1AntrS0n/Fu6TQxpzcnrWqks6qDTRg0
+         qJkTYtHqnPzIXzxDwWFiC4XkQmDfF3gUSw4mfa8hULcDabNPWv5A9cNBLQPh9BTzaSVw
+         NZR8GmJRTCf4b9I3wq3FfSpPDXN8xr9aWQ6IIyKxL5IM2zeWlw+rAm0Pxc5HYoz6qJS9
+         X1Ivv978OjyQaPjh080O6vgCPkYJ3Yz81K9i8AzLWJOP1nKF0Q2vgCF4wr+txZy/6iMW
+         IUxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lCfuu08NjMYhv5PuIppJ+v+CEj6fiVf/mdmZGX10GxA=;
-        b=rfjwGZFvCYg68VdjM3hMLL2iz3H6oE83kYMhSwPnC1ah+l6SC4dVBLv2PWGEMAvp3T
-         52ycDr7t9bo8UfhUX4SpceKx0IuVm6NwVEK6uJTtmdvBIF7p+OTl5//PJXLWWEgrK+lQ
-         tOD6NmnXAt3di5QkjgaCfkfPk5S7NfHZ79CAISVwJSQhqI1+Xnef9gI9jVghdhTKUaiT
-         LdxYRqRiTUbBT8kJflZaBQ6jCsDosStA72+CoKH2GVCcILkACx2Y4dg739klNFwO7kDI
-         i2biryu6QsCK1MdhxBAtjpHFhvyezDUDR1zoM5Pn6MJFH3sixF/vSQdjbgWvXomxCh6K
-         UtBQ==
-X-Gm-Message-State: AOAM5330VyxTaKLqLQQu022GZni3/yieAjpIj8w8Mt7XA0i6MSMAv0Z8
-        yBgaxJ5Oaju//vULPGF27WkJbGCv0n0=
-X-Google-Smtp-Source: ABdhPJyXhLNCQAkwZ1nPyBu9fyyEmRu1N17Y2I/pX+roEcNrzmynjtU2LRygvlUfmOkOllJJws9snA==
-X-Received: by 2002:a1c:f00a:: with SMTP id a10mr15538572wmb.112.1629129568552;
-        Mon, 16 Aug 2021 08:59:28 -0700 (PDT)
+        bh=wWZteSSOPkMjXyO6ylx1CA4k4vpQ3VxPRaNeIUGg9fg=;
+        b=m0Wm8ubLo23PLrkIB7K7jS4+C4hEAZsmedupJ8K0KcouD7taU5+YlDJC2ojn0IvGV2
+         ePJ0L9SZeq7tyltnfR7bmTI2VzXrY2tMNQaCYVFD49rEPxNyS6vyPbCWJsGJq4eM5Cty
+         q/cIoAANwrCPGN47GyEcFvo4I72JvjNgwhjHQYiQCf1hnFtPZjCrGbvyCm/RTCeRG40U
+         dxGi9kj19GHdgd5X4P2N2hhpAXSkXBhj66IvYFtl9c/iVpZ2gO4jW6Tcf1OPmgci4kNs
+         vf4J/T+EJ0aDT944mO2KduyfFYY2uliFyy+GStDJn6vs3EL3/1Km6th9v9g1pEHFwvB5
+         BXPQ==
+X-Gm-Message-State: AOAM5300xEfJKZ9wEYDsgLn90Ig5oDdKz6tLJqXbpGplhFhceHa3JXOu
+        dpklWpRIr0RUwV2MWBnRXH8=
+X-Google-Smtp-Source: ABdhPJxpEl11LhdOIpYig83yrMVWXEyaQxZB8vBEmfHFJDn52WaM3Wsjw0NXboEmeqQkkOApcOg1Pw==
+X-Received: by 2002:adf:8287:: with SMTP id 7mr19307773wrc.360.1629129569800;
+        Mon, 16 Aug 2021 08:59:29 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
-        by smtp.gmail.com with ESMTPSA id a77sm11589597wmd.31.2021.08.16.08.59.27
+        by smtp.gmail.com with ESMTPSA id a77sm11589597wmd.31.2021.08.16.08.59.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 08:59:28 -0700 (PDT)
+        Mon, 16 Aug 2021 08:59:29 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 08/23] staging: r8188eu: clean up spacing style issues in core/rtw_ioctl_set.c
-Date:   Mon, 16 Aug 2021 17:58:03 +0200
-Message-Id: <20210816155818.24005-9-straube.linux@gmail.com>
+Subject: [PATCH 09/23] staging: r8188eu: add spaces around operators in core/rtw_iol.c
+Date:   Mon, 16 Aug 2021 17:58:04 +0200
+Message-Id: <20210816155818.24005-10-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816155818.24005-1-straube.linux@gmail.com>
 References: <20210816155818.24005-1-straube.linux@gmail.com>
@@ -66,89 +66,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up spacing style issues in core/rtw_ioctl_set.c reported by
+Add missing spaces around operators in core/rtw_iol.c reported by
 checkpatch.
-
-CHECK: spaces preferred around that ...
-WARNING: space prohibited before semicolon
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_ioctl_set.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/staging/r8188eu/core/rtw_iol.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-index bb6bc6508255..edfea5ad8259 100644
---- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-+++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-@@ -154,7 +154,7 @@ u8 rtw_set_802_11_bssid(struct adapter *padapter, u8 *bssid)
- 	else if (check_fwstate(pmlmepriv, _FW_UNDER_LINKING))
- 		goto release_mlme_lock;
+diff --git a/drivers/staging/r8188eu/core/rtw_iol.c b/drivers/staging/r8188eu/core/rtw_iol.c
+index 927b8c919fa7..5c1b19679cad 100644
+--- a/drivers/staging/r8188eu/core/rtw_iol.c
++++ b/drivers/staging/r8188eu/core/rtw_iol.c
+@@ -46,7 +46,7 @@ int rtw_IOL_append_cmds(struct xmit_frame *xmit_frame, u8 *IOL_cmds, u32 cmd_len
+ 	u32 ori_len;
  
--	if (check_fwstate(pmlmepriv, _FW_LINKED|WIFI_ADHOC_MASTER_STATE)) {
-+	if (check_fwstate(pmlmepriv, _FW_LINKED | WIFI_ADHOC_MASTER_STATE)) {
- 		if (!memcmp(&pmlmepriv->cur_network.network.MacAddress, bssid, ETH_ALEN)) {
- 			if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) == false)
- 				goto release_mlme_lock;/* it means driver is in WIFI_ADHOC_MASTER_STATE, we needn't create bss again. */
-@@ -228,7 +228,7 @@ u8 rtw_set_802_11_ssid(struct adapter *padapter, struct ndis_802_11_ssid *ssid)
- 		goto release_mlme_lock;
+ 	buf_offset = TXDESC_OFFSET;
+-	ori_len = buf_offset+pattrib->pktlen;
++	ori_len = buf_offset + pattrib->pktlen;
+ 
+ 	/* check if the io_buf can accommodate new cmds */
+ 	if (ori_len + cmd_len + 8 > MAX_XMITBUF_SZ) {
+@@ -128,7 +128,7 @@ int _rtw_IOL_append_WRF_cmd(struct xmit_frame *xmit_frame, u8 rf_path, u16 addr,
+ {
+ 	struct ioreg_cfg cmd = {8, IOREG_CMD_W_RF, 0x0, 0x0, 0x0};
+ 
+-	cmd.address = cpu_to_le16((rf_path<<8) | ((addr) & 0xFF));
++	cmd.address = cpu_to_le16((rf_path << 8) | ((addr) & 0xFF));
+ 	cmd.data = cpu_to_le32(value);
+ 
+ 	if (mask != 0x000FFFFF) {
+@@ -164,9 +164,9 @@ int rtw_IOL_append_END_cmd(struct xmit_frame *xmit_frame)
+ u8 rtw_IOL_cmd_boundary_handle(struct xmit_frame *pxmit_frame)
+ {
+ 	u8 is_cmd_bndy = false;
+-	if (((pxmit_frame->attrib.pktlen+32)%256) + 8 >= 256) {
++	if (((pxmit_frame->attrib.pktlen + 32) % 256) + 8 >= 256) {
+ 		rtw_IOL_append_END_cmd(pxmit_frame);
+-		pxmit_frame->attrib.pktlen = ((((pxmit_frame->attrib.pktlen+32)/256)+1)*256);
++		pxmit_frame->attrib.pktlen = ((((pxmit_frame->attrib.pktlen + 32) / 256) + 1) * 256);
+ 
+ 		pxmit_frame->attrib.last_txcmdsz = pxmit_frame->attrib.pktlen;
+ 		is_cmd_bndy = true;
+@@ -181,9 +181,9 @@ void rtw_IOL_cmd_buf_dump(struct adapter  *Adapter, int buf_len, u8 *pbuf)
+ 
+ 	pr_info("###### %s ######\n", __func__);
+ 	for (i = 0; i < buf_len; i++) {
+-		printk("%02x-", *(pbuf+i));
++		printk("%02x-", *(pbuf + i));
+ 
+-		if (j%32 == 0)
++		if (j % 32 == 0)
+ 			printk("\n");
+ 		j++;
  	}
- 
--	if (check_fwstate(pmlmepriv, _FW_LINKED|WIFI_ADHOC_MASTER_STATE)) {
-+	if (check_fwstate(pmlmepriv, _FW_LINKED | WIFI_ADHOC_MASTER_STATE)) {
- 		if ((pmlmepriv->assoc_ssid.SsidLength == ssid->SsidLength) &&
- 		    (!memcmp(&pmlmepriv->assoc_ssid.Ssid, ssid->Ssid, ssid->SsidLength))) {
- 			if (!check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
-@@ -389,7 +389,7 @@ u8 rtw_set_802_11_bssid_list_scan(struct adapter *padapter, struct ndis_802_11_s
- 		goto exit;
- 	}
- 
--	if ((check_fwstate(pmlmepriv, _FW_UNDER_SURVEY|_FW_UNDER_LINKING)) ||
-+	if ((check_fwstate(pmlmepriv, _FW_UNDER_SURVEY | _FW_UNDER_LINKING)) ||
- 	    (pmlmepriv->LinkDetectInfo.bBusyTraffic)) {
- 		/*  Scan or linking is in progress, do nothing. */
- 		res = true;
-@@ -623,8 +623,8 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
- 		struct ndis_802_11_wep *wep = &padapter->securitypriv.ndiswep;
- 
- 		wep->Length = len;
--		keyindex = key->KeyIndex&0x7fffffff;
--		wep->KeyIndex = keyindex ;
-+		keyindex = key->KeyIndex & 0x7fffffff;
-+		wep->KeyIndex = keyindex;
- 		wep->KeyLength = key->KeyLength;
- 
- 		memcpy(wep->KeyMaterial, key->KeyMaterial, key->KeyLength);
-@@ -654,7 +654,7 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
- 
- 		if (bgrouptkey)
- 			padapter->securitypriv.dot118021XGrpKeyid = (u8)key->KeyIndex;
--		if ((key->KeyIndex&0x3) == 0) {
-+		if ((key->KeyIndex & 0x3) == 0) {
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -796,9 +796,9 @@ u16 rtw_get_cur_max_rate(struct adapter *adapter)
- 		return 0;
- 
- 	if (pmlmeext->cur_wireless_mode & (WIRELESS_11_24N)) {
--		p = rtw_get_ie(&pcur_bss->IEs[12], _HT_CAPABILITY_IE_, &ht_ielen, pcur_bss->IELength-12);
-+		p = rtw_get_ie(&pcur_bss->IEs[12], _HT_CAPABILITY_IE_, &ht_ielen, pcur_bss->IELength - 12);
- 		if (p && ht_ielen > 0) {
--			pht_capie = (struct ieee80211_ht_cap *)(p+2);
-+			pht_capie = (struct ieee80211_ht_cap *)(p + 2);
- 
- 			memcpy(&mcs_rate, pht_capie->mcs.rx_mask, 2);
- 
-@@ -819,7 +819,7 @@ u16 rtw_get_cur_max_rate(struct adapter *adapter)
- 		}
- 	} else {
- 		while ((pcur_bss->SupportedRates[i] != 0) && (pcur_bss->SupportedRates[i] != 0xFF)) {
--			rate = pcur_bss->SupportedRates[i]&0x7F;
-+			rate = pcur_bss->SupportedRates[i] & 0x7F;
- 			if (rate > max_rate)
- 				max_rate = rate;
- 			i++;
 -- 
 2.32.0
 
