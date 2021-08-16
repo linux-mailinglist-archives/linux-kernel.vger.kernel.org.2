@@ -2,219 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B693ED5F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4C43ED484
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhHPNQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239171AbhHPNJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EB14604DC;
-        Mon, 16 Aug 2021 13:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119325;
-        bh=ZIM4WeSf3+3e5ZvGeL5gQGEK2JLwfUgyyagH/iCYyWw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mjnyEYC4BI+eTna27JBqO7Q+FfgQ/NRAHM38UMMruFRXV2Si2fC35vaNngDhaBYDP
-         gKBFbPndkrfbWL67k6IK3vBbqsL2kL8bVMQ8COggNzt3PCrHvOtxJ+k55r2I5+6Rmb
-         RIefNlGaTqHJAZol74BrjRAqqMqB6x+CKsnaD+ts=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.10 80/96] PCI/MSI: Mask all unused MSI-X entries
-Date:   Mon, 16 Aug 2021 15:02:30 +0200
-Message-Id: <20210816125437.656185732@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235882AbhHPNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235519AbhHPNDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:03:41 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB386C061764;
+        Mon, 16 Aug 2021 06:03:09 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id f5so23452107wrm.13;
+        Mon, 16 Aug 2021 06:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4ey74r9h5B4FsleU6ivv3WvBZFvF09kXQTJf5FkLGKg=;
+        b=kiowXfPOnvNLxiobCImqWlbPdEaYpfeeS7uTkrbVyfLPq2Ww2H2+rjHOU4oKlIBEH2
+         gMX7ddNGCAbi2fRmWxquoAxbIJwq/cewfhkyBpQ5e0tACbl1YU/oWO1v6E4kWZFLQxI2
+         jJbLXt3KRjTjjhgDCHGH/xL1ArHmtZAXvpKlkeiPDqdHd6rjjThMz9sGpDsZUuYrOCdg
+         rZZTI6Mm4ogmvEK1oi3Om9S4bK8WJGqt7wA5sFiGMPWvb91tQ8xRg4tHbPPpoFngBbfq
+         jva28tvoUANUIDGuQg1j2PB+5dFLRSi1BxgL0XvMozIh2KjWUJ+vH4J0nP/2eBRNznta
+         rkVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4ey74r9h5B4FsleU6ivv3WvBZFvF09kXQTJf5FkLGKg=;
+        b=gcq2Cjir1Z9q68JJaUQO9At7WTeUpqin7mw7Z/J3ctwN3EgNDVt2aHuwOKE3MxIFv2
+         dynWKmnF68yqdzKNW5oxGxKr5cpi2OP9Lyoh51XvlTFsy0PUh+bU0PKV32nnfH0zAfYe
+         LW8dBWc1VhHq5hH6gMWHGZc7sXTOsemoQ8cq3xDyuBMMigAUYcMfDk9Rpm2S1aRyzK+o
+         qFo3IWfTXyG6GLzBCi0HCexklKhkgQJcmhuu8iWjPMDOsk+fHE9MShEesEQ6TFR82ilO
+         EWB8FLSIGCYTvQT8jJI+H66jO7cFHsMwKjWM1GRLeVN7lHRcdopwMyeBdU4iplDi76aG
+         e7aA==
+X-Gm-Message-State: AOAM530Yxr5VV2R+ejR66zVjgtYTDggGqJurg91/FynLDSzk+ye0KzDz
+        AwqzAZY+GKzLMqmDrjN+P/w=
+X-Google-Smtp-Source: ABdhPJzFHwwFH6z6Bs4J55RWCb/F7PeZ8LNy8QhQCco09FhXUf52kwHWLCmhkL7pQSLENuUV93k4Gw==
+X-Received: by 2002:a5d:574d:: with SMTP id q13mr18764483wrw.425.1629118988423;
+        Mon, 16 Aug 2021 06:03:08 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.12])
+        by smtp.gmail.com with ESMTPSA id q75sm11125774wme.40.2021.08.16.06.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 06:03:01 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Tony Battersby <tonyb@cybernetics.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
+ <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
+ <87eeda7nqe.fsf@disp2133>
+ <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
+ <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
+ <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
+ <87y2bh4jg5.fsf@disp2133>
+ <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
+ <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
+ <87pmwmn5m0.fsf@disp2133>
+ <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
+ <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
+ <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
+ <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
+Message-ID: <b9f92bf3-77aa-8cdd-6db7-95c86e5a6946@gmail.com>
+Date:   Mon, 16 Aug 2021 14:02:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On 8/15/21 9:42 PM, Olivier Langlois wrote:
+[...]
+> When I have first encountered the issue, the very first thing that I
+> did try was to create a simple test program that would synthetize the
+> problem.
+> 
+> After few time consumming failed attempts, I just gave up the idea and
+> simply settle to my prod program that showcase systematically the
+> problem every time that I kill the process with a SEGV signal.
+> 
+> In a nutshell, all the program does is to issue read operations with
+> io_uring on a TCP socket on which there is a constant data stream.
+> 
+> Now that I have a better understanding of what is going on, I think
+> that one way that could reproduce the problem consistently could be
+> along those lines:
+> 
+> 1. Create a pipe
+> 2. fork a child
+> 3. Initiate a read operation on the pipe with io_uring from the child
+> 4. Let the parent kill its child with a core dump generating signal.
+> 5. Write something in the pipe from the parent so that the io_uring
+> read operation completes while the core dump is generated.
+> 
+> I guess that I'll end up doing that if I cannot fix the issue with my
+> current setup but here is what I have attempted so far:
+> 
+> 1. Call io_uring_files_cancel from do_coredump
+> 2. Same as #1 but also make sure that TIF_NOTIFY_SIGNAL is cleared on
+> returning from io_uring_files_cancel
+> 
+> Those attempts didn't work but lurking in the io_uring dev mailing list
+> is starting to pay off. I thought that I did reach the bottom of the
+> rabbit hole in my journey of understanding io_uring but the recent
+> patch set sent by Hao Xu
+> 
+> https://lore.kernel.org/io-uring/90fce498-968e-6812-7b6a-fdf8520ea8d9@kernel.dk/T/#t
+> 
+> made me realize that I still haven't assimilated all the small io_uring
+> nuances...
+> 
+> Here is my feedback. From my casual io_uring code reader point of view,
+> it is not 100% obvious what the difference is between
+> io_uring_files_cancel and io_uring_task_cancel
 
-commit 7d5ec3d3612396dc6d4b76366d20ab9fc06f399f upstream.
+As you mentioned, io_uring_task_cancel() cancels and waits for all
+requests submitted by current task, used in exec() and SQPOLL because
+of potential races.
 
-When MSI-X is enabled the ordering of calls is:
-
-  msix_map_region();
-  msix_setup_entries();
-  pci_msi_setup_msi_irqs();
-  msix_program_entries();
-
-This has a few interesting issues:
-
- 1) msix_setup_entries() allocates the MSI descriptors and initializes them
-    except for the msi_desc:masked member which is left zero initialized.
-
- 2) pci_msi_setup_msi_irqs() allocates the interrupt descriptors and sets
-    up the MSI interrupts which ends up in pci_write_msi_msg() unless the
-    interrupt chip provides its own irq_write_msi_msg() function.
-
- 3) msix_program_entries() does not do what the name suggests. It solely
-    updates the entries array (if not NULL) and initializes the masked
-    member for each MSI descriptor by reading the hardware state and then
-    masks the entry.
-
-Obviously this has some issues:
-
- 1) The uninitialized masked member of msi_desc prevents the enforcement
-    of masking the entry in pci_write_msi_msg() depending on the cached
-    masked bit. Aside of that half initialized data is a NONO in general
-
- 2) msix_program_entries() only ensures that the actually allocated entries
-    are masked. This is wrong as experimentation with crash testing and
-    crash kernel kexec has shown.
-
-    This limited testing unearthed that when the production kernel had more
-    entries in use and unmasked when it crashed and the crash kernel
-    allocated a smaller amount of entries, then a full scan of all entries
-    found unmasked entries which were in use in the production kernel.
-
-    This is obviously a device or emulation issue as the device reset
-    should mask all MSI-X table entries, but obviously that's just part
-    of the paper specification.
-
-Cure this by:
-
- 1) Masking all table entries in hardware
- 2) Initializing msi_desc::masked in msix_setup_entries()
- 3) Removing the mask dance in msix_program_entries()
- 4) Renaming msix_program_entries() to msix_update_entries() to
-    reflect the purpose of that function.
-
-As the masking of unused entries has never been done the Fixes tag refers
-to a commit in:
-   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-
-Fixes: f036d4ea5fa7 ("[PATCH] ia32 Message Signalled Interrupt support")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.403833459@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/pci/msi.c |   45 +++++++++++++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 18 deletions(-)
-
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -698,6 +698,7 @@ static int msix_setup_entries(struct pci
- {
- 	struct irq_affinity_desc *curmsk, *masks = NULL;
- 	struct msi_desc *entry;
-+	void __iomem *addr;
- 	int ret, i;
- 	int vec_count = pci_msix_vec_count(dev);
- 
-@@ -718,6 +719,7 @@ static int msix_setup_entries(struct pci
- 
- 		entry->msi_attrib.is_msix	= 1;
- 		entry->msi_attrib.is_64		= 1;
-+
- 		if (entries)
- 			entry->msi_attrib.entry_nr = entries[i].entry;
- 		else
-@@ -729,6 +731,10 @@ static int msix_setup_entries(struct pci
- 		entry->msi_attrib.default_irq	= dev->irq;
- 		entry->mask_base		= base;
- 
-+		addr = pci_msix_desc_addr(entry);
-+		if (addr)
-+			entry->masked = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-+
- 		list_add_tail(&entry->list, dev_to_msi_list(&dev->dev));
- 		if (masks)
- 			curmsk++;
-@@ -739,26 +745,25 @@ out:
- 	return ret;
- }
- 
--static void msix_program_entries(struct pci_dev *dev,
--				 struct msix_entry *entries)
-+static void msix_update_entries(struct pci_dev *dev, struct msix_entry *entries)
- {
- 	struct msi_desc *entry;
--	int i = 0;
--	void __iomem *desc_addr;
- 
- 	for_each_pci_msi_entry(entry, dev) {
--		if (entries)
--			entries[i++].vector = entry->irq;
-+		if (entries) {
-+			entries->vector = entry->irq;
-+			entries++;
-+		}
-+	}
-+}
- 
--		desc_addr = pci_msix_desc_addr(entry);
--		if (desc_addr)
--			entry->masked = readl(desc_addr +
--					      PCI_MSIX_ENTRY_VECTOR_CTRL);
--		else
--			entry->masked = 0;
-+static void msix_mask_all(void __iomem *base, int tsize)
-+{
-+	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
-+	int i;
- 
--		msix_mask_irq(entry, 1);
--	}
-+	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
-+		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
- }
- 
- /**
-@@ -775,9 +780,9 @@ static void msix_program_entries(struct
- static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
- 				int nvec, struct irq_affinity *affd)
- {
--	int ret;
--	u16 control;
- 	void __iomem *base;
-+	int ret, tsize;
-+	u16 control;
- 
- 	/*
- 	 * Some devices require MSI-X to be enabled before the MSI-X
-@@ -789,12 +794,16 @@ static int msix_capability_init(struct p
- 
- 	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
- 	/* Request & Map MSI-X table region */
--	base = msix_map_region(dev, msix_table_size(control));
-+	tsize = msix_table_size(control);
-+	base = msix_map_region(dev, tsize);
- 	if (!base) {
- 		ret = -ENOMEM;
- 		goto out_disable;
- 	}
- 
-+	/* Ensure that all table entries are masked. */
-+	msix_mask_all(base, tsize);
-+
- 	ret = msix_setup_entries(dev, base, entries, nvec, affd);
- 	if (ret)
- 		goto out_disable;
-@@ -808,7 +817,7 @@ static int msix_capability_init(struct p
- 	if (ret)
- 		goto out_free;
- 
--	msix_program_entries(dev, entries);
-+	msix_update_entries(dev, entries);
- 
- 	ret = populate_msi_sysfs(dev);
- 	if (ret)
+io_uring_task_cancel() cancels only selected ones and
 
 
+io_uring_files_cancel()
+cancels and waits only some specific requests that we absolutely have
+to, e.g. in 5.15 it'll be only requests referencing the ring itself.
+It's used on normal task exit.
+
+io_uring_task_cancel() cancels and waits all requests submitted by
+current task, used on exec() because of races.
+
+
+
+As you mentioned 
+
+> 
+> It seems like io_uring_files_cancel is cancelling polls only if they
+> have the REQ_F_INFLIGHT flag set.
+> 
+> I have no idea what an inflight request means and why someone would
+> want to call io_uring_files_cancel over io_uring_task_cancel.
+> 
+> I guess that if I was to meditate on the question for few hours, I
+> would at some point get some illumination strike me but I believe that
+> it could be a good idea to document in the code those concepts for
+> helping casual readers...
+> 
+> Bottomline, I now understand that io_uring_files_cancel does not cancel
+> all the requests. Therefore, without fully understanding what I am
+> doing, I am going to replace my call to io_uring_files_cancel from
+> do_coredump with io_uring_task_cancel and see if this finally fix the
+> issue for good.
+> 
+> What I am trying to do is to cancel pending io_uring requests to make
+> sure that TIF_NOTIFY_SIGNAL isn't set while core dump is generated.
+> 
+> Maybe another solution would simply be to modify __dump_emit to make it
+> resilient to TIF_NOTIFY_SIGNAL as Eric W. Biederman originally
+> suggested.
+> 
+> or maybe do both...
+> 
+> Not sure which approach is best. If someone has an opinion, I would be
+> curious to hear it.
+> 
+> Greetings,
+> 
+> 
+
+-- 
+Pavel Begunkov
