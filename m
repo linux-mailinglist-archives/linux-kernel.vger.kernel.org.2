@@ -2,155 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DCB3ED033
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0773ED042
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhHPI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:27:58 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:35662 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234645AbhHPI1z (ORCPT
+        id S234765AbhHPIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhHPIam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:27:55 -0400
-Received: by mail-io1-f70.google.com with SMTP id g14-20020a6be60e000000b005b62a0c2a41so1699345ioh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:27:24 -0700 (PDT)
+        Mon, 16 Aug 2021 04:30:42 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BF3C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:11 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id r19so21826675eds.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sguei1c/h61zjHr2lg83Dxlja5iaCKAVm3XBX1DjStw=;
+        b=dHn+G6xxvhjTJifDvs/b0ZOJ29t0Kr/9D85CGF/SuaJgqAHCDdnvGGLLBwZqwvB+ee
+         77CIv07LyQt2yaZQlx26MsSr/YTmh8XODzLSCWWi6+dkr1um5xqFH9S+te3+J1BKFxBh
+         FQ/4+BpZZRykTOSxKELdqn4Pgq4wUH7HmOO15Ru1fxg93xVqlvttTfT846uOnVx39ssK
+         bvXLKsK2rSLOKoS2JRSZDfNqL1HePDtzx5vgy0PoLtFD5illQIQf0utm2jSuxjemQYfG
+         qlwSnhcmV8ovtTjR+EIKrauz25czwdhf0dzpMmEc5lE+FdyqGskXhjVBk+CxvybuYGn+
+         eUHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=B4Azw9DgxcWUuTI+WSKquMKy4XJwMHAahNNLqORL3uo=;
-        b=WE3SihR/7X4X7mKQueVCD+oqdasEMz3Q69kJrz8c5vF1j9ZC1GoxETiCadQiXbDmsm
-         Ab6aa46FU4+BUH+3eQaXxqRweg3Nqwu4xcUAoMsj5gvlueXBphQMgASX3ThygunRfZ3g
-         UR378c6C/2I75zoL3xmPwQRKmj5dK4GRegjjO5QiZ3kdb6ILcui9Gta7k+LNlM7sqjns
-         f2D9jRHaaHYCKazP52k8RokIvkSpNchb5USrRsTCNEXKugOidSc3nXXC8lb5dXfJvKlr
-         bTCCneBeyf/TJPwBOd7IGKf8/s1PJ9sbQ3wrzt1VJmwS4Ft30sK6MKAwdwnwXPr+OMkK
-         MVwQ==
-X-Gm-Message-State: AOAM530AdGbT8gsoULwAF8j3ZnK8/a9MHGulOO/Neb9XEOcXT42/b4Qv
-        FPMEcaj5ztjc1hF4aGu6F05eC/algNrONF7unm1/dGouE6SO
-X-Google-Smtp-Source: ABdhPJxGArL9ny9FErxZolVHUW80t7uaMT472hVX/C0JkR8sxyEqOEdag6DTAxu4FTOiZ3/HwAplNkEeILqTny9xpIn3VsPLUWXn
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sguei1c/h61zjHr2lg83Dxlja5iaCKAVm3XBX1DjStw=;
+        b=Dv4jRlY/Kkoq3Cu6QKB440VY7+Lmjm2ETzjogxmLX8vdt/77fKCt8bp2HJrqv9LLR9
+         BT6yoEpFkC64BCBPdtlpt4irxiUYfh0Q0eKFLCi8Cbez6rXbZRcngA1XaSauHk4s0Sqt
+         TpuzVoNPrcsLondk9tOvFo6Mp2ZS1NfPTCAhwQuW2573cHcgQ0nXwPVfo3HZhcizZ8q5
+         HfsI/Zhvaam/TEKuAMaShPauujkbSou09xbWkN2Amtc0+SCuNquJ3667lrebQXRMvCOj
+         WuiE5Xj6I1T2ZnSaDAqVXXh33/YWnEUCuEdlGrkThSsVoOo4z7e9qiMdFfhhVWT3KjOy
+         kK/A==
+X-Gm-Message-State: AOAM533lvDPeSL1LOkMsQoneBgTNkLVc+h97NJSE51UE0q+WlDgil6G3
+        k3h6MZmwlGKt9BSRrMn2yyk7Yw==
+X-Google-Smtp-Source: ABdhPJz9vtplg3RDLAOkBIVgz2gWX8LPgMckWpmXk2GFQO0/L3k96Gex/nn/LNdDu6yCS1LNpVU3Kg==
+X-Received: by 2002:aa7:c585:: with SMTP id g5mr18704540edq.340.1629102610043;
+        Mon, 16 Aug 2021 01:30:10 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id q30sm4516878edi.84.2021.08.16.01.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 01:30:09 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     denis.ciocca@st.com, jic23@kernel.org,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v2 0/5] iio: st_sensors: convert probe functions to full devm
+Date:   Mon, 16 Aug 2021 11:28:31 +0300
+Message-Id: <20210816082836.67511-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:148f:: with SMTP id j15mr14559668jak.61.1629102444397;
- Mon, 16 Aug 2021 01:27:24 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 01:27:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000080486305c9a8f818@google.com>
-Subject: [syzbot] KFENCE: use-after-free in kvm_fastop_exception
-From:   syzbot <syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Changelog v1 - v2:
+* https://lore.kernel.org/linux-iio/20210726071404.14529-1-aardelean@deviqon.com/
+* added patch 'iio: st_sensors: disable regulators after device unregistration'
+  - splits the regulator disable fix in a separate patch
 
-syzbot found the following issue on:
+Alexandru Ardelean (5):
+  iio: st_sensors: disable regulators after device unregistration
+  iio: st_sensors: remove st_sensors_deallocate_trigger() function
+  iio: st_sensors: remove st_sensors_power_disable() function
+  iio: st_sensors: remove all driver remove functions
+  iio: st_sensors: remove reference to parent device object on
+    st_sensor_data
 
-HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15221f4e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b938780d5deeaaf938f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+ drivers/iio/accel/st_accel_core.c             | 32 +++--------
+ drivers/iio/accel/st_accel_i2c.c              | 23 +-------
+ drivers/iio/accel/st_accel_spi.c              | 23 +-------
+ .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++------
+ .../iio/common/st_sensors/st_sensors_i2c.c    |  1 -
+ .../iio/common/st_sensors/st_sensors_spi.c    |  1 -
+ .../common/st_sensors/st_sensors_trigger.c    | 53 +++++++------------
+ drivers/iio/gyro/st_gyro_core.c               | 27 ++--------
+ drivers/iio/gyro/st_gyro_i2c.c                | 23 +-------
+ drivers/iio/gyro/st_gyro_spi.c                | 23 +-------
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h       |  1 -
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c  | 17 +-----
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c   |  6 ---
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c   |  6 ---
+ drivers/iio/magnetometer/st_magn_core.c       | 29 ++--------
+ drivers/iio/magnetometer/st_magn_i2c.c        | 23 +-------
+ drivers/iio/magnetometer/st_magn_spi.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_core.c       | 27 ++--------
+ drivers/iio/pressure/st_pressure_i2c.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_spi.c        | 23 +-------
+ include/linux/iio/common/st_sensors.h         | 13 -----
+ 21 files changed, 60 insertions(+), 371 deletions(-)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+-- 
+2.31.1
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b938780d5deeaaf938f@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KFENCE: use-after-free read in kvm_fastop_exception+0xf6a/0x1058
-
-Use-after-free read at 0xffff88823bd2c020 (in kfence-#149):
- kvm_fastop_exception+0xf6a/0x1058
- d_lookup+0xd8/0x170 fs/dcache.c:2370
- lookup_dcache+0x1e/0x130 fs/namei.c:1520
- __lookup_hash+0x29/0x180 fs/namei.c:1543
- kern_path_locked+0x17e/0x320 fs/namei.c:2567
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-kfence-#149: 0xffff88823bd2c000-0xffff88823bd2cfff, size=4096, cache=names_cache
-
-allocated by task 22 on cpu 1 at 161.928971s:
- getname_kernel+0x4e/0x370 fs/namei.c:226
- kern_path_locked+0x71/0x320 fs/namei.c:2558
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-freed by task 22 on cpu 1 at 161.929182s:
- putname.part.0+0xe1/0x120 fs/namei.c:270
- putname include/linux/err.h:41 [inline]
- filename_parentat fs/namei.c:2547 [inline]
- kern_path_locked+0xc2/0x320 fs/namei.c:2558
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-rc5-next-20210816-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvm_fastop_exception+0xf6a/0x1058
-Code: d3 ed e9 f7 ae 6c f8 49 8d 0e 48 83 e1 f8 4c 8b 21 41 8d 0e 83 e1 07 c1 e1 03 49 d3 ec e9 4d bc 6c f8 49 8d 4d 00 48 83 e1 f8 <4c> 8b 21 41 8d 4d 00 83 e1 07 c1 e1 03 49 d3 ec e9 3d c6 6c f8 bd
-RSP: 0018:ffffc90000dcfae8 EFLAGS: 00010282
-RAX: 34317974746d7367 RBX: ffff88806efb4330 RCX: ffff88823bd2c020
-RDX: ffffed100ddf686d RSI: 0000000000000008 RDI: 0000000000000007
-RBP: 0000000000000008 R08: 0000000000000000 R09: ffff88806efb4360
-R10: ffffed100ddf686c R11: 0000000000000000 R12: ffff88823bd2c020
-R13: ffff88823bd2c020 R14: ffff88806efb4360 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823bd2c020 CR3: 000000004683b000 CR4: 00000000001506e0
-Call Trace:
- d_lookup+0xd8/0x170 fs/dcache.c:2370
- lookup_dcache+0x1e/0x130 fs/namei.c:1520
- __lookup_hash+0x29/0x180 fs/namei.c:1543
- kern_path_locked+0x17e/0x320 fs/namei.c:2567
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-==================================================================
-----------------
-Code disassembly (best guess):
-   0:	d3 ed                	shr    %cl,%ebp
-   2:	e9 f7 ae 6c f8       	jmpq   0xf86caefe
-   7:	49 8d 0e             	lea    (%r14),%rcx
-   a:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
-   e:	4c 8b 21             	mov    (%rcx),%r12
-  11:	41 8d 0e             	lea    (%r14),%ecx
-  14:	83 e1 07             	and    $0x7,%ecx
-  17:	c1 e1 03             	shl    $0x3,%ecx
-  1a:	49 d3 ec             	shr    %cl,%r12
-  1d:	e9 4d bc 6c f8       	jmpq   0xf86cbc6f
-  22:	49 8d 4d 00          	lea    0x0(%r13),%rcx
-  26:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
-  2a:	4c 8b 21             	mov    (%rcx),%r12 <-- trapping instruction
-  2d:	41 8d 4d 00          	lea    0x0(%r13),%ecx
-  31:	83 e1 07             	and    $0x7,%ecx
-  34:	c1 e1 03             	shl    $0x3,%ecx
-  37:	49 d3 ec             	shr    %cl,%r12
-  3a:	e9 3d c6 6c f8       	jmpq   0xf86cc67c
-  3f:	bd                   	.byte 0xbd
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
