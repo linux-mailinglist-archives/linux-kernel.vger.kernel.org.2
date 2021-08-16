@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA253ED427
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEE13ED425
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhHPMmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
+        id S235163AbhHPMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhHPMkG (ORCPT
+        with ESMTP id S231769AbhHPMkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 08:40:06 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29EAC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:39:14 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id k29so23380086wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:39:14 -0700 (PDT)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E653C061796;
+        Mon, 16 Aug 2021 05:39:32 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id n11so14005384qkk.1;
+        Mon, 16 Aug 2021 05:39:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rzZaQ6s2L8HTP/N+G7lyZXAfcU7PndFNzvU/KdGwi9Y=;
-        b=QlNlgUbNjG0m1HA8MWuitLFzXBkPqVYzU+AdZ45Rd3gQXpgaysrPo86WK3Ch/6sbjA
-         0Jup9IUiYxa7n3h3p5kWtOlZc50ulFWd4uMRk/T4adIIgemWs1nFyU0k0XvL9NBhs5dp
-         8lRqkR7wt65s6amS0/hvZtr2N6joSDuPXh1Zo8gPXdJ79VwEweICP3zbLQ9MuFSD0ERY
-         VQl89N0JdOugZbtKNiXniryTiHttwZr5XPWCIiQ/9wuVrZn48LHDIvl2XaCTBM7HkZZ6
-         E4gzvEbRQQlv6lnFL/3nx1X9SUCzHbLd7hFLz4N6uKVvZE3RJlQE7gHjsEgpv2NYBv+v
-         dQgw==
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=5AngW8YnH2bBvvJ2iUVtLSJUllib7jnVTIimPTcWaRY=;
+        b=KcBKXBC4VncaPthNtFvRbNGsY2mjuh8fT49RoRjs4sZlA0N35uGAXEguwPjyYgm+VL
+         LOk5qQyDY3k+GL9SvbS4/ZC5fyuwQTxwCiFOzu/Dgd/oqb+n4iRTy8LjJ3W2ux+dN4np
+         9xvSvDCBroDw1DSagCytU/W28HaJa+FbY8jbzif8ey+sNGOmV8PV/LOOFPP/IgjAWuiz
+         TEGY1OolnpW3N9KQscv5+yh+KxXKKOaExcnX9Xs09zxFuRc23Z4DDn19Fd/fzmanGHe3
+         Ajdv2nG2I9uAgiEFLsVuPqN52cxbsg3QsCVTkL3D98y5W3prFKYhGSj+GfOBQ0Ipll8s
+         7P+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rzZaQ6s2L8HTP/N+G7lyZXAfcU7PndFNzvU/KdGwi9Y=;
-        b=rKEVyjjRXgfG0DO7lYsL7Alc+1i6LX9nz4smJhnGs52MmtCXTPcKnyPFziEB2+weKU
-         ey4x4pUBpRbMJ37LQ89opow4MYBLgVEx51YG7ETxHLCjJr3JqgzIfVxhBhuOBmJLjwTr
-         SFAvnilmjGxH8oiSBK5K45ZQdlJ9G45gg3+qNFvdVFuHDjOjqmgkWmAIs6kMZuSHliFX
-         Fo2h/4d67RwjhFxCzW+2MwNnjQknuAntJwD5WL/5LO4NpotH9cuVU00ixwKB0PBiGfvh
-         LnFRDtIkxz90E3+PSb8HDiCDWbbu2KCh321m8DhfWxC/yErRAduUeGQFm/YrMXyQQCt5
-         m9/A==
-X-Gm-Message-State: AOAM530RMYVI4ubHOw8FfgMeYMhG6QQl4/W+auzOmq9Y/WTfsb2VuApS
-        JdbtEAwogzA4vG/ThNrwj5yLmQ==
-X-Google-Smtp-Source: ABdhPJweINsp2xPplWcV/+0/jpRqDBMONwmRcfnXbq5OUUxaouSweFzLLHnl0sy+OcrlhnZhe5uGpA==
-X-Received: by 2002:a5d:4143:: with SMTP id c3mr6512603wrq.29.1629117553329;
-        Mon, 16 Aug 2021 05:39:13 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id r129sm10460277wmr.7.2021.08.16.05.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 05:39:12 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 13:39:10 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v8 01/11] dt-bindings: mfd: axp20x: Add AXP305 compatible
- (plus optional IRQ)
-Message-ID: <YRpcboGSk+WyLLy8@google.com>
-References: <20210723153838.6785-1-andre.przywara@arm.com>
- <20210723153838.6785-2-andre.przywara@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210723153838.6785-2-andre.przywara@arm.com>
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=5AngW8YnH2bBvvJ2iUVtLSJUllib7jnVTIimPTcWaRY=;
+        b=a8wukj5ImwNRsFBJXrdLXyih6zrgZoKyvNO+DhJOUQOV+xp4HnhpHvzZNZwCcTN1qi
+         8YvuqBpX9lF6Jb2jb5YYRPh6TFDwnOg58dF0iBN6V8Ofr4YgyyCEzTzasq16IcKXIfMO
+         nu9BTB3yCdhSJwuCSgMej3hfIBz22YHzO01B4r2ZcvxhVRFrZr1P97Re6EbfnUOvRJfm
+         RQE9tjcox7YxuMEsHGka17zKnrHQTJ0HALzTOsWM68nalN95fTPn15uLAIgUj4XGPSn2
+         RlXAt6Sep9JhJh7dl7NIW/wG8fXcQaoQw1F24SKTQO8Chqs0R2EZXP8jsWfK5jqmuiud
+         4nqA==
+X-Gm-Message-State: AOAM531LpwEQ0ikn5MEqEQduL5INgEQ9QlVy1PstvqxcWalLyWx1D/Z+
+        1GMTDP/NlQXVXk9lAKgANI8=
+X-Google-Smtp-Source: ABdhPJxG9zATTGdIZbGWnZXkrXcXYG+ALQRYRS5Q7pNocY8rLsBZ2LDWIYAbFg5NrkFUSjxGwDnrbQ==
+X-Received: by 2002:a05:620a:f91:: with SMTP id b17mr15627824qkn.107.1629117571707;
+        Mon, 16 Aug 2021 05:39:31 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id l14sm4754286qtj.26.2021.08.16.05.39.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 05:39:31 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 16 Aug 2021 08:39:30 -0400
+Message-Id: <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
+Cc:     "Lars-Peter Clausen" <lars@metafoo.de>,
+        "Michael Hennerich" <Michael.Hennerich@analog.com>,
+        "Jonathan Cameron" <jic23@kernel.org>,
+        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
+        =?utf-8?q?Nuno_S=C3=A1?= <Nuno.Sa@analog.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "linux-iio" <linux-iio@vger.kernel.org>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>
+Subject: Re: [PATCH v6 3/5] iio: adc: ad7949: add vref selection support
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+ <20210815213309.2847711-4-liambeguin@gmail.com>
+ <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021, Andre Przywara wrote:
+On Mon Aug 16, 2021 at 4:04 AM EDT, Andy Shevchenko wrote:
+> On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
+> wrote:
+> >
+> > From: Liam Beguin <lvb@xiphos.com>
+> >
+> > Add support for selecting the voltage reference from the devicetree.
+> >
+> > This change is required to get valid readings with all three
+> > vref hardware configurations supported by the ADC.
+> >
+> > For instance if the ADC isn't provided with an external reference,
+> > the sample request must specify an internal voltage reference to get a
+> > valid reading.
+>
+> ...
+>
+> > +       /* Setup internal voltage reference */
+> > +       tmp =3D 4096000;
+> > +       ret =3D device_property_read_u32(dev, "adi,internal-ref-microvo=
+lt", &tmp);
+>
+> > +       if (ret < 0 && ret !=3D -EINVAL) {
 
-> The AXP305 PMIC used on many boards with the H616 SoC seems to be fully
-> compatible to the AXP805 PMIC, so add the proper chain of compatible
-> strings.
-> 
-> Also at least on one board (Orangepi Zero2) there is no interrupt line
-> connected to the CPU, so make the "interrupts" property optional.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Andy,
 
-Applied, thanks.
+>
+> What does this check (second part) is supposed to mean?
+> The first part will make it mandatory, is it the goal?
+>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+device_property_read_u32() will return -EINVAL if the property isn't
+found in the devicetree.
+
+This checks for errors when the property is defined while keeping it
+optional.
+
+Liam
+
+> > +               dev_err(dev, "invalid value for adi,internal-ref-microv=
+olt\n");
+> > +               return ret;
+> > +       }
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
