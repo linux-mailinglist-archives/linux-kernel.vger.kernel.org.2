@@ -2,206 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA0C3EDC4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95B43EDC54
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhHPRVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:21:06 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:54402 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhHPRVE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:21:04 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GHHWjC027582;
-        Mon, 16 Aug 2021 17:20:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=htlf8fgSsF8vrPzgN/wt+wMyAzm5ylBOLIPTw1R6HVY=;
- b=beA2aaeyjPB16aL2Y1/2Dw9Ml2OqO+NBl0GYdAimLdxUnVugwc320YMODY3IYU11ur8p
- boih1rT5r3F5W74cStW+z0+iIcvBmtrKvPU78B/7E7hIRTNwwOaRqWY9cP6qPD1fXYd7
- 7P0p9PiutSj+RxJoSTW46ktJZxvpT3Hlf1SAe42U+ENIx/mMSEPiEgpol1a0/4rq8fz8
- FuiNsZqBunXrqXaVonOAL4cD66+cF/d961Dbt8Du2mt6K7DXi5ZDULU0HxZAMAeomPu9
- Xs3QfWHxMQt353z8Qm4HMdfz/SpgoNPK8L8mekSZS26QNpf6Ny85n8HmpbbJDzpQLA1x MA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=htlf8fgSsF8vrPzgN/wt+wMyAzm5ylBOLIPTw1R6HVY=;
- b=nzGF185ZPUHmOoUV7l5fZl87vkyRubsIYNCwmxASx7a+uNFJoPXtqlEVMKGw91oLOw2z
- BWuOPRj1a00A1DFnECF4XDJdtUyDlyawTxGMwVS2qWJHwlXuWSsSFAZLwIbKLnz0L5ob
- BLQaWd5fARkPhuiREG/z/PtPaZowgS1q4NjIxS4dhTZOTaGp9JnmSEvnfC8fK9SiB90E
- tmznTqP+1GPpFZIY93UjQFcp/OOISSVEsCdJm1NV/hsqJbGLtb1ZwduZIGgo0YfY5bfV
- mxrTdr3qEhB4cjaIJPb1/cKJAKz3rZ44YxxjE7pZZfyFnRREmiwAKTgmQFI8c4PJCK3E uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3af3kxtm16-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Aug 2021 17:20:19 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17GHExv5077032;
-        Mon, 16 Aug 2021 17:20:18 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2046.outbound.protection.outlook.com [104.47.57.46])
-        by userp3020.oracle.com with ESMTP id 3aeqkshs7n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Aug 2021 17:20:18 +0000
+        id S232249AbhHPRXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:23:23 -0400
+Received: from mail-eopbgr130089.outbound.protection.outlook.com ([40.107.13.89]:6016
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229699AbhHPRXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:23:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qnnMGITjcW6Yno/3VYpLFTJvvr8DG9J7kQcKhJRGst8=;
+ b=FrH7XHzGh6R7GnhA/7HmhkFukrKXVKqAWNf4oMXKwvHGkWHkA2NwgMGA9KwMYCokoBh/zHQ0Qjs+sylsASJ4QKwg2D2iv2EEo5LuEsqv7wrcsqt51oy1SD3YravEh2uOphh8HSsBwQauC5wBuyiuX0IgwEXW1/dmgWznW8S44eM=
+Received: from AS8PR04CA0157.eurprd04.prod.outlook.com (2603:10a6:20b:331::12)
+ by AM6PR08MB4915.eurprd08.prod.outlook.com (2603:10a6:20b:d1::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Mon, 16 Aug
+ 2021 17:22:47 +0000
+Received: from AM5EUR03FT021.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:331:cafe::3e) by AS8PR04CA0157.outlook.office365.com
+ (2603:10a6:20b:331::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend
+ Transport; Mon, 16 Aug 2021 17:22:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM5EUR03FT021.mail.protection.outlook.com (10.152.16.105) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4415.16 via Frontend Transport; Mon, 16 Aug 2021 17:22:46 +0000
+Received: ("Tessian outbound f11f34576ce3:v103"); Mon, 16 Aug 2021 17:22:46 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 23abc8500c08bda8
+X-CR-MTA-TID: 64aa7808
+Received: from a7581e1029a6.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 21F68594-46D9-4D07-A4F2-8C4565214D47.1;
+        Mon, 16 Aug 2021 17:22:34 +0000
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id a7581e1029a6.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Mon, 16 Aug 2021 17:22:34 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RWGcv7jKWD+xON8gEQa4/D26TNO2e/T5Vh8bO0cyYvRvYVR8grm/eLyCOm9fm7jEU/jW4id8dpffhYTF3VDPFGBn4P0Iwjq0yWuQmeS5tPoink9FyzAespd6y39QcHFwvQAh+RzS6HVdMkvJGsn8kzeVgPD4wazJiLmr2kWVTe3Y8iU8qnA0jYG/WRVmcpJTz6ER/O7mRwMT6KG8HPMqUgEno6ZoUTZITObwHahnwYNPgsrhP+ipkTRCSPS6VAJmgEuB9rzrQO0woz4hVh9C9onbmPsw7nQ6cm2o5nj9KVjTdRdnxClldrtWCDZiDuOjoRfUwVdfHe3kt71yp2idBg==
+ b=YSS8zxz4IU01brGsa/hEksaRk7S3a/cPU1tuIsb1DNXqj1ix/lzcp1b72pB/ZS2kUb1peUKGxsnWdg7UfIIWS/rDXrMu6IGsHBn7IcIGTbYQxorSDYyauavnoNNu1z9v/ployHus+H7i78IKgk9awaaZLpJTbTWt3lLuyICbM7ndFyg8CTu2mFxQvyi/VQgLf0mUH3cdTc9T22Tuvi4KWPTg45dhqf3W5DBfU/5JjsCZLRUfaCnPbHASvl5pmzwCK+vEFUomy2I1mcx9ocqv6MXAL9kiUpf/a3hQcPwSMsQrIVJn4GUh4ul0LGZNPiEGb5TbHPiRT/iF3WZVseYDww==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=htlf8fgSsF8vrPzgN/wt+wMyAzm5ylBOLIPTw1R6HVY=;
- b=KleZtGH7rrjcn/gZYOHuLVfTBNy6o9z8Wk9eJAndZ029VPu0WH0iaXDVFWsfnAAQbHKVIlVawIfHYvU0loD+agexKoV5XKPYlpygLmPCEazydhsN19aJBFKqTjXfAqH/nzHNXRr/D3vI39IjkWf0JppYt8jfPWsn2FNxAhW2loSytV5HIYh6v1A1kdnPlkvcyP7xuyyFDiiHDsciiND3X/s5NKqH2L6E2OiYfVRbXarGm50qg+Tfjb0sZETMmfuiLQ6pQdR9wc1E3YCNIRMvOovj8r3MumLtmUmbOFQE6TtXoYiAK3wrATGTjO7+h0QoJ6bZAae8LOhVygIJ6h5TUA==
+ bh=qnnMGITjcW6Yno/3VYpLFTJvvr8DG9J7kQcKhJRGst8=;
+ b=B9khDrBgBZkLCXlwwP3imQABXAgfDRv/+JDGS32rfk7TWQuXdr3f9HVwq376WS9OdyCGh++u+fOcMSP5mpIn3j47cqmvw+qRiZ3/B2dVAFEvV1z+ehOEthbE+hb1InGQFakGhoeA/KAtdaYNmPc5MyCmU/haZS76HSG+9WtZ6ufUO1kAKuto+KXVfvVzu1Z5cENA8TYMLPA+eOV2c8VeueXvybOYgfS41lR4pDGcOlQcL2esxeBjgxX8Le0nGJIwno0oss9M4rWl2hnxLmmO6YIk27dWOGcJsAQ+ubKTHtGPVwg199ZukcXArdo/VfcnXg55N7F6Vx8zBHstRGpK2Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=htlf8fgSsF8vrPzgN/wt+wMyAzm5ylBOLIPTw1R6HVY=;
- b=JAND62GxIbaxOECHTc9KMsUlH5ano6RceCIKumd6LoxUSqaE6cf1S/yDTnIrEF1PqgJ1PqKw9oL0NeZtdnN0Qg8RXLnZ7LFRjM3jm18mzVRI+ijFgZ6/UytZQ5LQGWrHMPVafSlPXBB/tc7Kwj7r/pd0bpXVWmfxBW4uhvMcuEc=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4429.namprd10.prod.outlook.com (2603:10b6:a03:2d1::14)
- by BY5PR10MB3779.namprd10.prod.outlook.com (2603:10b6:a03:1b6::26) with
+ bh=qnnMGITjcW6Yno/3VYpLFTJvvr8DG9J7kQcKhJRGst8=;
+ b=FrH7XHzGh6R7GnhA/7HmhkFukrKXVKqAWNf4oMXKwvHGkWHkA2NwgMGA9KwMYCokoBh/zHQ0Qjs+sylsASJ4QKwg2D2iv2EEo5LuEsqv7wrcsqt51oy1SD3YravEh2uOphh8HSsBwQauC5wBuyiuX0IgwEXW1/dmgWznW8S44eM=
+Authentication-Results-Original: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=arm.com;
+Received: from PAXPR08MB7140.eurprd08.prod.outlook.com (2603:10a6:102:208::10)
+ by PAXPR08MB7247.eurprd08.prod.outlook.com (2603:10a6:102:212::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13; Mon, 16 Aug
- 2021 17:20:11 +0000
-Received: from SJ0PR10MB4429.namprd10.prod.outlook.com
- ([fe80::bc10:efd4:f1f4:31c7]) by SJ0PR10MB4429.namprd10.prod.outlook.com
- ([fe80::bc10:efd4:f1f4:31c7%5]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
- 17:20:11 +0000
-Subject: Re: [PATCH RESEND v6 1/9] pagemap: Introduce ->memory_failure()
-From:   Jane Chu <jane.chu@oracle.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com
-Cc:     djwong@kernel.org, dan.j.williams@intel.com, david@fromorbit.com,
-        hch@lst.de, agk@redhat.com, snitzer@redhat.com
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
- <20210730100158.3117319-2-ruansy.fnst@fujitsu.com>
- <1d286104-28f4-d442-efed-4344eb8fa5a1@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <de19af2a-e9e6-0d43-8b14-c13b9ec38a9d@oracle.com>
-Date:   Mon, 16 Aug 2021 10:20:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <1d286104-28f4-d442-efed-4344eb8fa5a1@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Mon, 16 Aug
+ 2021 17:22:32 +0000
+Received: from PAXPR08MB7140.eurprd08.prod.outlook.com
+ ([fe80::41e8:4ac2:ca38:997a]) by PAXPR08MB7140.eurprd08.prod.outlook.com
+ ([fe80::41e8:4ac2:ca38:997a%5]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
+ 17:22:32 +0000
+Date:   Mon, 16 Aug 2021 19:22:28 +0200
+From:   =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     gregkh@linuxfoundation.org, surenb@google.com, hridya@google.com,
+        john.reitan@arm.com, mark.underwood@arm.com,
+        gary.sweet@broadcom.com, stephen.mansfield@imgtec.com,
+        mbalci@quicinc.com, mkrom@qti.qualcomm.com,
+        kernel-team@android.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        nd@arm.com
+Subject: Re: [PATCH] tracing/gpu: Add gpu_mem_imported tracepoint
+Message-ID: <20210816172228.GA9015@e123356-lin.trondheim.arm.com>
+References: <20210726164135.1745059-1-kaleshsingh@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR11CA0191.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::16) To SJ0PR10MB4429.namprd10.prod.outlook.com
- (2603:10b6:a03:2d1::14)
+In-Reply-To: <20210726164135.1745059-1-kaleshsingh@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: LNXP265CA0026.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5c::14) To PAXPR08MB7140.eurprd08.prod.outlook.com
+ (2603:10a6:102:208::10)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.39.192.148] (138.3.201.20) by SA0PR11CA0191.namprd11.prod.outlook.com (2603:10b6:806:1bc::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16 via Frontend Transport; Mon, 16 Aug 2021 17:20:08 +0000
+Received: from e123356-lin.trondheim.arm.com (217.140.106.39) by LNXP265CA0026.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Mon, 16 Aug 2021 17:22:30 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84382469-5d6e-4cbc-2bfd-08d960da1a72
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3779:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3779F4F5595DAC9372E03371F3FD9@BY5PR10MB3779.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 83b2ea55-24f5-4a89-1c84-08d960da770e
+X-MS-TrafficTypeDiagnostic: PAXPR08MB7247:|AM6PR08MB4915:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR08MB4915CF17D58895D7655DD8FF90FD9@AM6PR08MB4915.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;OLM:2887;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FbSO7Dlex8jaGX0jopAshHdlVuS0hL+d6XGJIydmVIWicI8bQRcBfPYs2neWgJdWeirkrCLhAY/B0U5VjCwbIbKwJi7cm50dmetYrNe1oRFXbEPaxvD3uSlOcFPHUlZ8s2u4RFZUVWpXledxMVAmfZsMMsWTOErFW1DDTpYZH77AR0l9oMK1JuxnNXA3JhH9+l6nL0zOhvsLk+ofvz/6jHbqSSt2foqHLlwZIthYorYbJyUnhd0bojg8YlX8DURO5OUBt66fcvb9oltLGF+a4fZLpEnxfCNtu9gWz3gjUR8ts7Do5ON6mcJyaNPAssvzQ0U3TlAuaItlLjGkzeNRzC9fgka/HMyT3DWt73So1wwvWKoPhKGr/I5s7Cdgkvev9gdO1gXYDjSqSLp3NGr3TCdTy7oiprSNB9SUg5qX8bMSM6QlZKWenKjeV5QcRL/WU4jw5HP5N28lDD5Gsu13a2pRTGQSLusFz89rKVfWpThs1QFPAYz1lb+wY5nb+dtNiXYCtakhEnJLFp8T89xC8d8QZAucMvL/2WCgut1zlQo1jAhKeZhsfo6XOSox65Og+oyHm65IVEHziTonWpKd54x5CfLXQgSa/WWTknIGRLFDpNQBHctYEwp1R1GFgM2V2rSmpHjhhtNy7bePnXOg8FDEElR09rWO5JoNlOODM+G5lO/5kKkIjYMUPDMcdSFtIHw2Kba7gqGygx91JDszz/PEhkr1IynbI1y6ocvOjK4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4429.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(186003)(16576012)(7416002)(26005)(2616005)(2906002)(5660300002)(83380400001)(316002)(4326008)(956004)(66946007)(36916002)(38100700002)(8676002)(31696002)(6486002)(6666004)(508600001)(66556008)(66476007)(44832011)(53546011)(8936002)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: r2/r4ton2MhMuZDdxuvwViT2iKGvmZfj1jweXnyD1A+3Suqy9dmpbLa0D+AB06DRtAQJQJ5wHTA7mqAjOyznFeq555iorSxofO1pcZBsXkdDi7aMiIYVD8sYyT2UkTnuRaLjunD/U/qRCtm+cbRfe1cy+xTVxT3qna2yUGrCJQm+ODT42JCRIu/1TPbJdlZIQHKza7VUivxZAlxQcPnx5TvhF4kZbjTQT4X3y4Bf0blNtfkgBbefSAtSv+SpgXqv9u7nnCk5NukN4Yu+otI+/yXZMsbxKqSkkvNPldeKoaSHlB/Fh6LG460TbcYerNDl9/YIg1aGN0ZWtMjzR0rP+/R8CB+Ows4vhFRwct9JQoXJW69uOullBq++5YLrisuGqH41fCeEIJZhwebVoeN9s4FyUgHYcNTZBMPfD9yOkI68B1gleSI30vENySPYfHRKkktlw2m4R+i9jeQ343vtUoGiVNnt1pjHj9DaLkt8/GBiJLnt4CATn0fUBVyIeW2TTVgBWzfD1z0exriKJjwEVjilYj7F+m33Qqfrmx9L2XNRABrzNTnJYyqQzQMMA5jndMdHNiGT5IKspff/l3fX8THd1ikYyFvILbMhHlx3P5fN3ri7Et1+n+84Oa8/BiYubudr1FzYc7/sCNQSJP9Q/YUqPofeRFIOqwaAlFJEWJcMGu83AU/4HTZ0eAJqwdxyuuyVlQFBsxJVwoEIcpDqYy/cySwPZI2iOJDfRIeRrykwVWBBUO1CXg/79MSPEh7D8yTOaC7uOo4aURixyvCIWmkBR7ood5AnFHXKrMVKSnE=
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR08MB7140.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(366004)(396003)(346002)(376002)(83380400001)(478600001)(7416002)(33656002)(26005)(55016002)(316002)(5660300002)(186003)(956004)(86362001)(8936002)(66946007)(38100700002)(38350700002)(966005)(7696005)(52116002)(1076003)(8676002)(2906002)(66556008)(66476007)(54906003)(4326008)(6916009);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXZPMERKeXQ1SkRwVnBIMStzRlJGNU5EVXlRUGlDaDZ1QWtsbmhwVWNtT090?=
- =?utf-8?B?dUxiK0t3QzVTTWxsNUlUeWpHY0I5YVZHTERYaDgwdE1zSExPaGVhOGVYNlFi?=
- =?utf-8?B?MmptNUJuNDZtZkVMUHR3Wlk1bStQalMzOFhSbGNFWFdtZ2M5U2dXb3VjTFhX?=
- =?utf-8?B?WSs1aGRuNW4wY2FSUUJjeTVDYSt3YW5xTjlCaDdPRy9OWmNoVzdaayt3bFNR?=
- =?utf-8?B?cVNZUWhPeFVhS3FENVVCN0t4RzFUaUJmVE0vWFBUZi8vSVZFOGxaeStQY0pr?=
- =?utf-8?B?dHQzc2RZeXhzeFJaMEkxZnZUZnptRllOaDdtMmkxZ3M0Mm16ZUlJSm5PbHVj?=
- =?utf-8?B?RVFDam81aVNwMi90Y0hJREpXSlQ2b2JrYVNLTzBIZ3hPL1p2ZFJIVlhYM2dX?=
- =?utf-8?B?MmN2NHlybHAvT0FDU0dQbThKTGI3OEdyVDhtMWJoQW1sWXd1S1RhcUx4N2lE?=
- =?utf-8?B?SDNPQ1YxTFRwVkF3VlFBaU1FUysyS3k4a0txUU1QOWxNaERWbUlNNWNLcVVw?=
- =?utf-8?B?VmdtMzlFVnJIS3VlQTExbmgwQjlvNUhCc3Y0YXZIVjI3UzVqWlRkdVFHcGN6?=
- =?utf-8?B?NXgzbkRWYVJhMnlwSmFIUkk5VHlMaEU5Rkp6djdDTDFETjF4aTlONlljZ1Zo?=
- =?utf-8?B?UmFQWG9STjZEMXJYRkFmSjhFZmY0S3A3RExHaGNERFZ4ZWxZYmpPYUR0VmdD?=
- =?utf-8?B?NXQ5b3FLeXA2dkd1VWlyVlhQT3VKa0hLR2F3djBjMDZBeDgyVnNqblVaSDJV?=
- =?utf-8?B?UXVGamxTZmo5WEJHS1BrcjlzVWJUSy9YTGZpaXIzNkhMTlZ1cmZZcXFQM3Js?=
- =?utf-8?B?UW40YXNXd2RBeXMwTmdUOVQ3NjR0Vm9mVlZXUm1wdE5LMHFaTi9kdVR1VVNo?=
- =?utf-8?B?b2RTcm0wbnZLNFpRUnZub1Z0NmhVcTZSOE1rVzNDVjRuM2srSjNYVExPQ2xN?=
- =?utf-8?B?QW1zemJTQzJrbUNiOWdJQ0NnaEo5Tk5FNFUxaVpObGF3cUN4U3JGamttNkdQ?=
- =?utf-8?B?SnhoQUI5ai9HTDA1RE1XNkxGZmJBUG9DbkRKRTJRRjIvdGREazRNM3VmYUNl?=
- =?utf-8?B?dWJwSiszd3FLSlVybWd0d1YrbXVBeTBhL0lYcUowTUFpa25XNEU4Y1RTeUcw?=
- =?utf-8?B?WTE3a2loajMzZG9abVRqeVRVMTRMOFlqQWtiN0tBL01JdEVFU0Z6VHM2cktB?=
- =?utf-8?B?RXpEU01iV3RRVHJwdktRTVZtNHB2VGZaYnZIRjBEbmVzTk1KQXhLOCtyVWJ3?=
- =?utf-8?B?R3M1MFp3VWdDQ3B3OE5zRWsxaEZ0cExzcFhqRHFxVWtQbWtNeXJwQzJ4M2hj?=
- =?utf-8?B?d2NVRW5pamdBZ1AxU1JjTWxOc0pkM21YRVFuaTBnNnlwa2RrZ1QyNE9UMVlW?=
- =?utf-8?B?eGZHYjVQNzh4bEhvSE1XY3MzaWNUQzJxZVI1VHh6aGl2ZGtFOVBpTDJhZUJw?=
- =?utf-8?B?ajhaeFJHYzV3QUFZL2lUSTZ1aUt6cnFDZk1nak8veVpEUDlFeDEyNTBKR0ww?=
- =?utf-8?B?NHVVcnpGM2ZBenVxYjNaOWNhUDFZZWZPR0pvUk1CM2dsYkI3UHlNRDQ0dDRN?=
- =?utf-8?B?L1AvVVhvSUR3R3VnK3VUSHdPaUpVeUErRjZjQmZRSWp1MWM1UCsxQTNESWxJ?=
- =?utf-8?B?Mk1YTUJaM3psREFtcXpNOExhd1BrbDNCNnc3THFLdTNCVnVrR1dUbFdNVmNu?=
- =?utf-8?B?TU5UVlcrSmIxU28xYjI1aG5DSlQ4MWFneXBZMTRoVEJBWHdGVkdIcUNpZDZT?=
- =?utf-8?Q?DVHj7EZ7F/1HZDGWSN53NMLoy2pU0Cql7Ie/2WA?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84382469-5d6e-4cbc-2bfd-08d960da1a72
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4429.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 17:20:11.3906
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ajVJbXlwMnpGVU9HZzFJemtnTGtjTXZBcysvSHhUVnk5Mk4wUVJaVmt5TkZJ?=
+ =?utf-8?B?YWE5MWFQbEV3aXBudTc0b0IvalNIUmUyUUp6S2E0VEJOblFCRnJraE5PSVlS?=
+ =?utf-8?B?RmVOSGtPTVZhNWNzWmxFTVRiOUQvN0laUFlJUEhIaWk1YWFUV0FtRXlTZFh6?=
+ =?utf-8?B?c2VDQURsc3lpT0M4T1JJSEpoakRMZTR3OE40SEhCRkVqUTdmY0tIYmVtUnQ5?=
+ =?utf-8?B?ZGtOdUtyU1RxS3Q2Z2xaNGw4ejhqMTFMdURXb1gzN1lscGhxS21JRlpyUnJY?=
+ =?utf-8?B?LzM3Y0hyN05FdXROejhTRktWaGRZYjdSdlRDQTRhZkQ2bHk5b1NTTUt0Wk56?=
+ =?utf-8?B?OFk4cFVsMVBRN2VpeUg4amhuZFVzb0duOW9JWnB5MEM5TFFDQlcwcWhQK2JL?=
+ =?utf-8?B?R2lMdWhXOHFwZis1YlV4SW9pelZ0R0dHRjlJOURWS1MzcGVHY2ovcFEwSE9Y?=
+ =?utf-8?B?dHJWWFpTeG9tc25sRFpsNGRTbmVqQnVlNk1QMUhQUVpJRk13SEs5SVRsSTE5?=
+ =?utf-8?B?UzNQNjVqVW9BTUxCU0J2TUd3UmZ2V3E2eHo1WmtjOVg4V0hMZmJjcFk0dUtu?=
+ =?utf-8?B?MGR3bTZENVJObkY2UzBhM1QzV2tOQmh4a3FRNGs2NVRzSWMrNHVvY1NxRzls?=
+ =?utf-8?B?WFJvSDVtOEJKaldTM2VxdlNRY044aGkyaHdHYUR3MGNXOUdSZ284Z3RSQ0hI?=
+ =?utf-8?B?SjMyRU5HOG9VYVVxajBrSytsMWFiVERHVG83QW93RjhBM3VOMzMyRXJZZkhP?=
+ =?utf-8?B?V3lmWENMamNiVUxFTEZhNlRCUWZUTWF3MzhVR2ZJcU5rb2lhZHRVVlU2Qis2?=
+ =?utf-8?B?ZlMwWVIycHUwbEVxOWF0WHBXRW5ZRHhLRzVuaW0xOWx2OTU3Y1FwdDJkWDJ3?=
+ =?utf-8?B?UUdjWFdzbm9RTjdEcGZEVlkwL1BpQ1pMdTkvR0xxVEhJWGYrUllVWVlXckhM?=
+ =?utf-8?B?K1NUWTEzaVFjNHBNTmRxb1Ywckt0d1dTVzZoV2ZPZE9FdWZNWEZtUzlqRDky?=
+ =?utf-8?B?ZDVpWVhwMUh6RXBHeTltZitwRFVKOWt6anpKalExK0UyOW0xNjljc2d1am5G?=
+ =?utf-8?B?SDkwRHdWUmxjbVQ4Tzh6R1NFeVNvVGFvdDdnYU5HRXdhMUdEOUpEbHc2bFNI?=
+ =?utf-8?B?TGpERGNGNU9hRjF5blVaN25pNFZmYXJnSHNVN3QxTFNCNlRaMllOY0FvT0NO?=
+ =?utf-8?B?eFVIVWNYMWQ4YU9nYU05dEE5dzNwMHl1M1BjcFBwd2YyRlo2dzNZKzF5Mkt5?=
+ =?utf-8?B?Mk5YM1NkTjRROE9kcmtSdVFvakxGVThJM0xHOTlIajhMTjJRNU4rczVERzFH?=
+ =?utf-8?B?RFU2TjR2bUxQZHdJS3FVZ3haRDVDOUloSEJnZFRpQUNKcTRYeVJsVjAxNWUr?=
+ =?utf-8?B?ZFB0OXVuT2xWVW1GNnJnbDMvbTBMeWdGbTZJVUFuOUFIWk1iT0xGRmZIaElN?=
+ =?utf-8?B?eWRHZk1mSzJZNXh5M3p1Q01pZTliOHh0VkJDNXAzdE45S2F4aVlMbVBzLzNO?=
+ =?utf-8?B?ZHZmdTk5dDRjbHc2bEJaeUtmbVJ4RkkwenlIT0h0RDdwOXI5UktGbW52MUpR?=
+ =?utf-8?B?T2hHVXFsS1lmRCtVR05qaDY3QmxRTFFtYTBHSHpDd1JxRG4vbjNvQ2dORC8z?=
+ =?utf-8?B?dTY0eHlyQnkrTjYwTktTeCtCeDdpQ3A4cjBScGY1dk5RSjAxZ1dOenE1MVd5?=
+ =?utf-8?B?T3pETGl4MVVDQ0QyMnJ4UVZyRFErYWFjUThjN3hmUXlXVFVpeHNUYmxwN1p5?=
+ =?utf-8?Q?Ne4xk16Eo1hamp7QJtKRLu11kQyYKClf89MkcOp?=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB7247
+Original-Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT021.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 7bfa94c4-cd18-4743-15df-08d960da6e28
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: svYBSevoXgDBW88yt4Tq75eW0m/E0oMDg8wF3DT3GjvwOKaHFuAQn6sJwHn65GfoQr8M9EsnCPKVxabvqzVMKiFjF0otuENDy3OBRK2JbSo6YX1c0DtUs6UldXyNioB7hZQnd98I82Ylol8+BN+B1Li9GfIagwOS60kO5G8x5GnP4KRG1/1noX5tTxgz+rHJzaMaRTDGX1m4G4yqNK26v3ZYZnSmg4U2VR0tTAmDdcZyB0EPxAuv1uvMA6HlH1gIvqCk5Aaiy3Sk2klU7EfH+T0uy7mr3jffw3o8CsRsDfWHLmUXu8zjisz/a4xi7h5HZCTnpAHTmOVCUWFcIuKlF1CDM8OlAczgl8fL0RNKvKcvPv4exK79E2AUF+nDEbMqHLT7fpIbidhvAy9wtfEGfix438RY8ZbAYoRpJFPLiCGd5/+l9vZvS3btgPtiTm+0BhSaxR/+jHeRVi9qeYYrR/AhBMqFI1ezUCi+ugPOsMMraRVD0Wma3L75+sv11cWDb6K23r3KohFeaLLmFB4m8EPJY1S6szNXFzlvsugwOnOmPRKX6oNM0gqc7/kNJOF6FfzDBiP/teFS2S8sOUn0hgDbFuAhWUrMyfebyGzwRln0kzAO5nUdjxsiq0CLLmK/uxKD2dhyY2DTUuyvT7C1qDjs++yzoZsbac4ZYrwmqt+oVh7PRmfKfzQJOjEI2LGsfwJaV0jhGtnGc8roe3L/vZantCtltSC7AZH4Kv2DYbnT8coKu2ioYZ3bCrtTRxf6ZAu0huaBr0yhdwO4k/rKbXZCbhPo2viEDi+C5szyB0Y=
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39850400004)(36840700001)(46966006)(8676002)(54906003)(33656002)(86362001)(186003)(956004)(336012)(82310400003)(7696005)(26005)(55016002)(8936002)(966005)(316002)(478600001)(82740400003)(4326008)(70586007)(70206006)(47076005)(2906002)(6862004)(5660300002)(83380400001)(36860700001)(356005)(81166007)(1076003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 17:22:46.5616
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6BsjxFr0Veui/QrnMQRofwytg9X6H/yMcCOAPkh5GT3Z22dnnQdb1p+XUy3Qsov9C++CXVopUUmGQvwCYDbhhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3779
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10078 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108160110
-X-Proofpoint-GUID: xeswe8pJorPdvPGXcJacbHFRIl1yadvs
-X-Proofpoint-ORIG-GUID: xeswe8pJorPdvPGXcJacbHFRIl1yadvs
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83b2ea55-24f5-4a89-1c84-08d960da770e
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT021.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4915
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, ShiYang,
-
-So I applied the v6 patch series to my 5.14-rc3 as it's what you 
-indicated is what v6 was based at, and injected a hardware poison.
-
-I'm seeing the same problem that was reported a while ago after the
-poison was consumed - in the SIGBUS payload, the si_addr is missing:
-
-** SIGBUS(7): canjmp=1, whichstep=0, **
-** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
-
-The si_addr ought to be 0x7f6568000000 - the vaddr of the first page
-in this case.
-
-Something is not right...
-
-thanks,
--jane
-
-
-On 8/5/2021 6:17 PM, Jane Chu wrote:
-> The filesystem part of the pmem failure handling is at minimum built
-> on PAGE_SIZE granularity - an inheritance from general memory_failure 
-> handling.  However, with Intel's DCPMEM technology, the error blast
-> radius is no more than 256bytes, and might get smaller with future
-> hardware generation, also advanced atomic 64B write to clear the poison.
-> But I don't see any of that could be incorporated in, given that the
-> filesystem is notified a corruption with pfn, rather than an exact
-> address.
+On Mon, Jul 26, 2021 at 04:41:31PM +0000, Kalesh Singh wrote:
+> The existing gpu_mem_total tracepoint allows GPU drivers a unifrom way
+> to report the per-process and system-wide GPU memory usage. This
+> tracepoint reports a single total of the GPU private allocations and the
+> imported memory. [1]
 > 
-> So I guess this question is also for Dan: how to avoid unnecessarily
-> repairing a PMD range for a 256B corrupt range going forward?
+> To allow distinguishing GPU private vs imported memory, add
+> gpu_mem_imported tracepoint.
+>
+> GPU drivers can use this tracepoint to report the per-process and global
+> GPU-imported memory in a uniform way.
+
+Right, as imported dma-buf memory is usually shared between two or more
+processes it will be hard to reconcile system memory usage with process
+private GPU memory and imported dma-buf memory in a single total sum. It
+will be good to improve this and having a separate imported GPU memory
+size is good.
+
+> For backward compatility with already existing implementations of
+> gpu_mem_total by various Android GPU drivers, this is proposed as a new
+> tracepoint rather than additional args to gpu_mem_total.
+
+Is this for compatibility with kernel GPU drivers only, or are there
+user space users of the existing tracepoint that can't cope with it
+being extended?
+
+The eBPF used by Android to track the GPU memory is the only established
+user of the tracepoint that I know about. Can existing versions of the
+eBPF can handle this OK?
+
+If the only worry is GPU kernel drivers then I think that extending the
+existing tracepoint, to add a new field with the imported memory sum,
+will be better. There doesn't appear to be any in-kernel GPU drivers
+implementing this yet, and other GPU kernel drivers can just be extended
+to use the new extended tracepoint. As long as there's some mechanism to
+detect the extended variant of the tracepoint for backports, if the new
+tracepoint is ever backported to older kernels, that shouldn't be a
+problem.
+
+-- 
+Ørjan
+
+> [1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
 > 
-> thanks,
-> -jane
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> ---
+>  include/trace/events/gpu_mem.h | 51 ++++++++++++++++++++++++----------
+>  1 file changed, 36 insertions(+), 15 deletions(-)
 > 
+> diff --git a/include/trace/events/gpu_mem.h b/include/trace/events/gpu_mem.h
+> index 26d871f96e94..b9543abf1461 100644
+> --- a/include/trace/events/gpu_mem.h
+> +++ b/include/trace/events/gpu_mem.h
+> @@ -13,21 +13,7 @@
+>  
+>  #include <linux/tracepoint.h>
+>  
+> -/*
+> - * The gpu_memory_total event indicates that there's an update to either the
+> - * global or process total gpu memory counters.
+> - *
+> - * This event should be emitted whenever the kernel device driver allocates,
+> - * frees, imports, unimports memory in the GPU addressable space.
+> - *
+> - * @gpu_id: This is the gpu id.
+> - *
+> - * @pid: Put 0 for global total, while positive pid for process total.
+> - *
+> - * @size: Size of the allocation in bytes.
+> - *
+> - */
+> -TRACE_EVENT(gpu_mem_total,
+> +DECLARE_EVENT_CLASS(gpu_mem_template,
+>  
+>  	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
+>  
+> @@ -51,6 +37,41 @@ TRACE_EVENT(gpu_mem_total,
+>  		__entry->size)
+>  );
+>  
+> +/*
+> + * The gpu_memory_total event indicates that there's an update to either the
+> + * global or process total gpu memory counters.
+> + *
+> + * This event should be emitted whenever the kernel device driver allocates,
+> + * frees, imports, unimports memory in the GPU addressable space.
+> + *
+> + * @gpu_id: This is the gpu id.
+> + *
+> + * @pid: Put 0 for global total, while positive pid for process total.
+> + *
+> + * @size: Size of the allocation in bytes.
+> + *
+> + */
+> +DEFINE_EVENT(gpu_mem_template, gpu_mem_total,
+> +	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
+> +	TP_ARGS(gpu_id, pid, size));
+> +
+> +/*
+> + * The gpu_mem_imported event indicates that there's an update to the
+> + * global or process imported gpu memory counters.
+> + *
+> + * This event should be emitted whenever the kernel device driver imports
+> + * or unimports memory (allocated externally) in the GPU addressable space.
+> + *
+> + * @gpu_id: This is the gpu id.
+> + *
+> + * @pid: Put 0 for global total, while positive pid for process total.
+> + *
+> + * @size: Size of the imported memory in bytes.
+> + */
+> +DEFINE_EVENT(gpu_mem_template, gpu_mem_imported,
+> +	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
+> +	TP_ARGS(gpu_id, pid, size));
+> +
+>  #endif /* _TRACE_GPU_MEM_H */
+>  
+>  /* This part must be outside protection */
 > 
-> On 7/30/2021 3:01 AM, Shiyang Ruan wrote:
->> When memory-failure occurs, we call this function which is implemented
->> by each kind of devices.  For the fsdax case, pmem device driver
->> implements it.  Pmem device driver will find out the filesystem in which
->> the corrupted page located in.  And finally call filesystem handler to
->> deal with this error.
->>
->> The filesystem will try to recover the corrupted data if necessary.
+> base-commit: ff1176468d368232b684f75e82563369208bc371
+> -- 
+> 2.32.0.432.gabb21c7263-goog
 > 
