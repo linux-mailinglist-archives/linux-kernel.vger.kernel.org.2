@@ -2,113 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1776D3ECF3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBE33ECF13
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhHPHSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbhHPHS2 (ORCPT
+        id S234197AbhHPHNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 03:13:30 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13428 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233940AbhHPHNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:18:28 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40800C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:17:57 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a201-20020a1c7fd2000000b002e6d33447f9so2724179wmd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GTZF8j25gwET5PN4w+sszLnTw+kRD4U/DTQ4baFSPGk=;
-        b=GSX0D+Y8punietmHlfz33VhHCEleHXp5sQy/NQBfXkY3XJCWAhlH9KemxTD60mcqV+
-         i+j08SKOsqr1lpVMflGzsuB1Tz5hW1Le0oPMHmog1Z/m9sotwBArxM0yy4pMdDySQa1R
-         7/PlRuyVEfDadsKqdIuHwqToJIUdEbDj+ecZupEIEwbirxswrH3bhHDxY7lUN6v4KesU
-         XJjjiebDRWWaJg9UF3GtckwRWC0wiIzYAByzqUVcljvjPDKCBM9S/xYnuwigcy6IQ8mz
-         ZOSrjP75kG8DeIwbIzMbC9cLJuspsGpO4ejtNL427FQLx6eii/6ZnnI7RP/GWMLpqJhi
-         TfSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GTZF8j25gwET5PN4w+sszLnTw+kRD4U/DTQ4baFSPGk=;
-        b=lWSoGegECx5LQmvVGs8TRCINcDdpYnf4kU3yI4C6duF/8JSL10ztLbAiqWTbhoBYfH
-         Dl9YHRMHGAjTpRAuEcHVrF1s/5UkUNeAy/0QuXcgJZn8KLx9slcOcxsvccRGwx7ygaFh
-         9BYLiJc2OWIz44ENtl/o1jelTLuZ1+kE8DQmHLtQsUHTzNWL6AeLcIikLolrkyS8amHu
-         qDV3bT1w+Y/gOOgdHzm9w//GF53vynFjCrPt3IaoBO4f8TAhKQrN+TCqIUevH3GN1vhq
-         TFrRSeqHKHBXGpL3uaXcv7eJU4j4D2Zyf1wob8csfZTnSOxNz7ABBsiO2KkYCaL1VEIA
-         Wrvg==
-X-Gm-Message-State: AOAM530nVEQwwXmgjif1rknzzq0rAPfWsOeBpuJerUWRGF4lpKfttYdj
-        D4E2Jqd5ACHormsuQEBBt6eMpg==
-X-Google-Smtp-Source: ABdhPJz5+Cd5+Kiz7rt6SDHNZwQShccWmNbOM2zb55+Em6CCwo7OKkH4hIhwNQv3WNZMfhqZlCm6xg==
-X-Received: by 2002:a7b:cf26:: with SMTP id m6mr13945153wmg.165.1629098275547;
-        Mon, 16 Aug 2021 00:17:55 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id o125sm9888277wme.15.2021.08.16.00.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 00:17:54 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 08:17:56 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
- software nodes
-Message-ID: <YRoRJNrmPg4xyGKS@google.com>
-References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
- <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
- <YQubJ1s2YuEZk4lm@google.com>
- <YRPJ7Iws2Hb6pE6G@smile.fi.intel.com>
+        Mon, 16 Aug 2021 03:13:21 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gp4yn1TWczdbLS;
+        Mon, 16 Aug 2021 15:09:05 +0800 (CST)
+Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 15:12:45 +0800
+Received: from localhost.localdomain (10.175.112.125) by
+ dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 15:12:44 +0800
+From:   Chen Huang <chenhuang5@huawei.com>
+To:     Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Wang Hai" <wanghai38@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <stable@vger.kernel.org>, Chen Huang <chenhuang5@huawei.com>
+Subject: [PATCH 5.10.y 00/11] mm: memcontrol: fix nullptr in __mod_lruvec_page_state()
+Date:   Mon, 16 Aug 2021 07:21:36 +0000
+Message-ID: <20210816072147.3481782-1-chenhuang5@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YRPJ7Iws2Hb6pE6G@smile.fi.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema756-chm.china.huawei.com (10.1.198.198)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021, Andy Shevchenko wrote:
+We found a nullptr in __mod_lruvec_page_state(),
+  UIO driver:
+        kmalloc(PAGE_SIZE)
+  UIO user:
+        mmap() then read, but before user read the page, others may alloc the
+page that belong to the same compound page and modify the head page's obj_cgroups
+likes that:
+[   94.845687]  memcg_alloc_page_obj_cgroups+0x50/0xa0
+[   94.846334]  slab_post_alloc_hook+0xc8/0x184
+[   94.846852]  kmem_cache_alloc+0x148/0x2a4
+[   94.847346]  __d_alloc+0x30/0x2e4
+[   94.847809]  d_alloc+0x30/0xc0
 
-> On Thu, Aug 05, 2021 at 09:02:47AM +0100, Lee Jones wrote:
-> > On Wed, 04 Aug 2021, Andy Shevchenko wrote:
-> > 
-> > > The driver can provide a software node group instead of
-> > > passing legacy platform data. This will allow to drop
-> > > the legacy platform data structures along with unifying
-> > > a child device driver to use same interface for all
-> > > property providers, i.e. Device Tree, ACPI, and board files.
-> > > 
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > Tested-by: Serge Semin <fancer.lancer@gmail.com>
-> > > ---
-> > > v2: added tag (Serge)
-> > >  drivers/mfd/intel_quark_i2c_gpio.c | 70 ++++++++++++++++--------------
-> > >  1 file changed, 37 insertions(+), 33 deletions(-)
-> > 
-> > For my own reference (apply this as-is to your sign-off block):
-> > 
-> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Thanks!
-> 
-> Just for your information. I think due to spaces in front of your tag
-> the `b4` tool can't catch this automatically.
+Then when the user reads the page, in __mod_lruvec_page_state(), it will get the
+nullptr in head->mem_cgroup.
 
-Why would it need to?
+[   94.882699] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
+[   94.882773] Mem abort info:
+[   94.882819]   ESR = 0x96000006
+[   94.882953]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   94.883000]   SET = 0, FnV = 0
+[   94.883043]   EA = 0, S1PTW = 0
+[   94.883089] Data abort info:
+[   94.883134]   ISV = 0, ISS = 0x00000006
+[   94.883179]   CM = 0, WnR = 0
+[   94.883402] user pgtable: 4k pages, 48-bit VAs, pgdp=000000010c355000
+[   94.883495] [0000000000000080] pgd=000000010c046003, p4d=000000010c046003, pud=000000010c368003, pmd=0000000000000000
+[   94.884225] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[   94.884480] Modules linked in:
+[   94.884788] CPU: 0 PID: 250 Comm: uio_user_mmap Tainted: G    B             5.10.0-07799-ged92fcf8d408-dirty #112
+[   94.884837] Hardware name: linux,dummy-virt (DT)
+[   94.885052] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+[   94.885169] pc : __mod_lruvec_page_state+0x118/0x180
+[   94.885249] lr : __mod_lruvec_page_state+0x118/0x180
+[   94.885297] sp : ffff2872ce25fb40
+[   94.885402] x29: ffff2872ce25fb40 x28: 0000000000000254
+[   94.885572] x27: 0000000000000000 x26: ffff2872fe2d7c38
+[   94.885724] x25: ffffa000242e7dc0 x24: 0000000000000001
+[   94.885872] x23: 0000000000000012 x22: ffffa00022bcfc60
+[   94.886030] x21: ffff2872fffeb380 x20: 0000000000000144
+[   94.886169] x19: 0000000000000000 x18: 0000000000000000
+[   94.886331] x17: 0000000000000000 x16: 0000000000000000
+[   94.886476] x15: 0000000000000000 x14: 3078303a7865646e
+[   94.886625] x13: 6920303030303030 x12: 1fffe50e5b713f20
+[   94.886765] x11: ffff850e5b713f20 x10: 616d20303a746e75
+[   94.886947] x9 : dfffa00000000000 x8 : 3266666666203d20
+[   94.887095] x7 : ffff2872db89f903 x6 : 0000000000000000
+[   94.887236] x5 : 0000000000000000 x4 : dfffa00000000000
+[   94.887381] x3 : ffffa00021e6c5dc x2 : 0000000000000000
+[   94.887515] x1 : 0000000000000008 x0 : 0000000000000000
+[   94.887702] Call trace:
+[   94.887840]  __mod_lruvec_page_state+0x118/0x180
+[   94.887919]  page_add_file_rmap+0xa8/0xe0
+[   94.887998]  alloc_set_pte+0x2c4/0x2d0
+[   94.888074]  finish_fault+0x94/0xcc
+[   94.888157]  handle_mm_fault+0x7c8/0x1094
+[   94.888230]  do_page_fault+0x358/0x490
+[   94.888300]  do_translation_fault+0x38/0x54
+[   94.888370]  do_mem_abort+0x5c/0xe4
+[   94.888435]  el0_da+0x3c/0x4c
+[   94.888506]  el0_sync_handler+0xd8/0x14c
+[   94.888573]  el0_sync+0x148/0x180
+[   94.888963] Code: d2835101 8b0102b3 91020260 9400e8da (f9404260)
+[   94.889860] ---[ end trace 1de53a0bd9084cde ]---
+[   94.890244] Kernel panic - not syncing: Oops: Fatal exception
+[   94.890620] SMP: stopping secondary CPUs
+[   94.891117] Kernel Offset: 0x11c00000 from 0xffffa00010000000
+[   94.891179] PHYS_OFFSET: 0xffffd78e40000000
+[   94.891293] CPU features: 0x0660012,41002000
+[   94.891365] Memory Limit: none
+[   94.927552] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
 
-This tag is "for my reference", for when I merge it.
+1. Roman Gushchin's 4 patch remove this limitation by moving the PageKmemcg 
+flag into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions.
+Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
 
-Please add it to your sign-off block when you resubmit.
+2. Muchun Song's patchset aim to make those kmem pages to drop the reference 
+to memory cgroup by using the APIs of obj_cgroup.
+Link: https://lkml.kernel.org/r/20210319163821.20704-1-songmuchun@bytedance.com
+
+3. Wang Hai's patch is a bugfix for "mm: memcontrol/slab: Use helpers to 
+access slab page's memcg_data"
+Link: https://lkml.kernel.org/r/20210728145655.274476-1-wanghai38@huawei.com
+
+Muchun Song (6):
+  mm: memcontrol: introduce obj_cgroup_{un}charge_pages
+  mm: memcontrol: directly access page->memcg_data in mm/page_alloc.c
+  mm: memcontrol: change ug->dummy_page only if memcg changed
+  mm: memcontrol: use obj_cgroup APIs to charge kmem pages
+	Conflict for commit c47d5032ed3002311a4188eae51f4641ec436beb not merged
+  mm: memcontrol: inline __memcg_kmem_{un}charge() into
+    obj_cgroup_{un}charge_pages()
+  mm: memcontrol: move PageMemcgKmem to the scope of CONFIG_MEMCG_KMEM
+
+Roman Gushchin (4):
+  mm: memcontrol: Use helpers to read page's memcg data
+	Conflict function:split_page_memcg(), for commit 002ea848d7fd3bdcb6281e75bdde28095c2cd549
+  mm: memcontrol/slab: Use helpers to access slab page's memcg_data
+  mm: Introduce page memcg flags
+  mm: Convert page kmemcg type to a page memcg flag
+
+Wang Hai (1):
+  mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
+
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 320 +++++++++++++++++++++++++++--
+ include/linux/mm.h               |  22 --
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 336 +++++++++++++++----------------
+ mm/page_alloc.c                  |   8 +-
+ mm/page_io.c                     |   6 +-
+ mm/slab.h                        |  38 +---
+ mm/workingset.c                  |   2 +-
+ 15 files changed, 493 insertions(+), 276 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.18.0.huawei.25
+
