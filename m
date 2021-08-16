@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712043ED89B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ADE3ED884
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237281AbhHPOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:04:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22813 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237278AbhHPODg (ORCPT
+        id S236731AbhHPOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:03:27 -0400
+Received: from mail.efficios.com ([167.114.26.124]:51008 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhHPODX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629122584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q3vvbfy31qMUFQX0qq5kyha7ZiZuQZKEoz5ccXNMSVM=;
-        b=fgR33gyeflxID+Yn+Clk/k3+kvlQZ9xfv9eFych0mALiuyv+m3k8KrJ5nLkl+m7fSY0Q1O
-        0OsEGBp0OzRe1utB7AclXGpkKYTgKGJXc/3WKSueFylDjH7HkNEixLFxTNbsgQHiLejrBF
-        1PxSmPcIO7HM56j2gxVsUcmvz3xOpis=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-4Gnwm2rwNJ2_unX-gBhXvw-1; Mon, 16 Aug 2021 10:03:02 -0400
-X-MC-Unique: 4Gnwm2rwNJ2_unX-gBhXvw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C12680A1BC;
-        Mon, 16 Aug 2021 14:03:01 +0000 (UTC)
-Received: from avogadro.lan (unknown [10.39.192.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F7B76788F;
-        Mon, 16 Aug 2021 14:03:00 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 5.4.y] KVM: nSVM: always intercept VMLOAD/VMSAVE when nested (CVE-2021-3656)
-Date:   Mon, 16 Aug 2021 16:02:40 +0200
-Message-Id: <20210816140240.11399-12-pbonzini@redhat.com>
+        Mon, 16 Aug 2021 10:03:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 637BF382651;
+        Mon, 16 Aug 2021 10:02:51 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bNylGs34V7ob; Mon, 16 Aug 2021 10:02:51 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F3877382650;
+        Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F3877382650
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1629122571;
+        bh=ejQJikqjD1O5aRG34kThZj9GE5/6cz818qSzrHRyM8I=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=e5yp/2y2flWtjQ5dfEkrTAJYlp3Y7olGMYSPnJdpvRnpX1w27hG+9c1XsT980HBcS
+         dhffavbQe+b0LCVTkIyyAkBiE1B+oBvzZUd/BpEeNt+4iwxrSdFfwjtBCrdmmxAPgj
+         S6QHQTNjQO2Rx2UFKr/c9pSlWJYZPzJAzaM1GdHRAWGuvkwgVl9rffy8GT/UmVaixV
+         TZrTjQvh9kfGzkru/7Qu0SBKC2kQ/6Vk/cCWqnX9sL8DnFCDpnyMU/dVl11y1tVZwi
+         GUz0pnqKW4SnQk0wzL5aUH9xCYLUMSuiViTMX8SYtmwL17UVt2ijV8H+NRoUrPVi3u
+         X8OiFWv2cgMvQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id JlLKERSo0MOA; Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id E3E3738264F;
+        Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
+Date:   Mon, 16 Aug 2021 10:02:50 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     zhaoxiao <zhaoxiao@uniontech.com>, rostedt <rostedt@goodmis.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <2005434147.15227.1629122570891.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210816052430.16539-1-zhaoxiao@uniontech.com>
+References: <20210816052430.16539-1-zhaoxiao@uniontech.com>
+Subject: Re: [PATCH] tracepoint: Fix the comment style
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: tracepoint: Fix the comment style
+Thread-Index: nOonbYm9y07I5uROTWjvFI3b10hu6Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+----- On Aug 16, 2021, at 1:24 AM, zhaoxiao zhaoxiao@uniontech.com wrote:
 
-[ upstream commit c7dfa4009965a9b2d7b329ee970eb8da0d32f0bc ]
+> Fix function name in tracepoint.c kernel-doc comment
+> to remove a warning found by clang_w1.
+> 
+> kernel/tracepoint.c:589: warning: expecting prototype for
+> register_tracepoint_notifier(). Prototype was for
+> register_tracepoint_module_notifier() instead
+> kernel/tracepoint.c:613: warning: expecting prototype for
+> unregister_tracepoint_notifier(). Prototype was for
+> unregister_tracepoint_module_notifier() instead
 
-If L1 disables VMLOAD/VMSAVE intercepts, and doesn't enable
-Virtual VMLOAD/VMSAVE (currently not supported for the nested hypervisor),
-then VMLOAD/VMSAVE must operate on the L1 physical memory, which is only
-possible by making L0 intercept these instructions.
+Thanks!
 
-Failure to do so allowed the nested guest to run VMLOAD/VMSAVE unintercepted,
-and thus read/write portions of the host physical memory.
+Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Fixes: 89c8a4984fc9 ("KVM: SVM: Enable Virtual VMLOAD VMSAVE feature")
+> 
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+> kernel/tracepoint.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index efd14c79fab4..64ea283f2f86 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -577,7 +577,7 @@ bool trace_module_has_bad_taint(struct module *mod)
+> static BLOCKING_NOTIFIER_HEAD(tracepoint_notify_list);
+> 
+> /**
+> - * register_tracepoint_notifier - register tracepoint coming/going notifier
+> + * register_tracepoint_module_notifier - register tracepoint coming/going
+> notifier
+>  * @nb: notifier block
+>  *
+>  * Notifiers registered with this function are called on module
+> @@ -603,7 +603,7 @@ int register_tracepoint_module_notifier(struct
+> notifier_block *nb)
+> EXPORT_SYMBOL_GPL(register_tracepoint_module_notifier);
+> 
+> /**
+> - * unregister_tracepoint_notifier - unregister tracepoint coming/going notifier
+> + * unregister_tracepoint_module_notifier - unregister tracepoint coming/going
+> notifier
+>  * @nb: notifier block
+>  *
+>  * The notifier block callback should expect a "struct tp_module" data
+> --
+> 2.20.1
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	The above upstream SHA1 is still on its way to Linus
-
- arch/x86/kvm/svm.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 515d0b03bf03..387c1dafee2a 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -516,6 +516,9 @@ static void recalc_intercepts(struct vcpu_svm *svm)
- 	c->intercept_dr = h->intercept_dr | g->intercept_dr;
- 	c->intercept_exceptions = h->intercept_exceptions | g->intercept_exceptions;
- 	c->intercept = h->intercept | g->intercept;
-+
-+	c->intercept |= (1ULL << INTERCEPT_VMLOAD);
-+	c->intercept |= (1ULL << INTERCEPT_VMSAVE);
- }
- 
- static inline struct vmcb *get_host_vmcb(struct vcpu_svm *svm)
 -- 
-2.26.3
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
