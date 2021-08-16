@@ -2,114 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2DB3EDC96
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CE83EDC99
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhHPRtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:49:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231479AbhHPRtv (ORCPT
+        id S231193AbhHPRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhHPRwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:49:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629136159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=plJNW7Y67eXvnax8oo8FvgYyj0Iw4c1g2Thy+LmnVB4=;
-        b=IVWtlu5NVqaHmoEvbNQ2sRc2Y/7IIXo9aDuZveJo7vlg+rVj3wFmZvowcISMNV5+nHKhJB
-        7oZz9YyAXC/7mfpp0MYCVaPeDvFlMFY4pjp+cVXq0v1aG5Py7JaivMu6Yx+AE66Og6sFT4
-        A8fZ5GMoQB+/+ANUrU7cVqW3D28wR4I=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-55u96XS9NRy3e-OqhfOC4g-1; Mon, 16 Aug 2021 13:49:17 -0400
-X-MC-Unique: 55u96XS9NRy3e-OqhfOC4g-1
-Received: by mail-wr1-f69.google.com with SMTP id m5-20020a5d6a050000b0290154e83dce73so5675901wru.19
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:49:17 -0700 (PDT)
+        Mon, 16 Aug 2021 13:52:17 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82773C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:51:44 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bo19so27656852edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eQoek14OE4uQnpIv9Staft1AveAvACmD1pzwivfSdt0=;
+        b=muXE14NSR2ajfttLttLt23nSwQdB/NjuGaDQDIGELGWI5dm5azHDDZ+MwxZSzSMTro
+         VuXk5+H3yk8DknKzfRUleI9CcvkkL9Y+c7hl0yfDFiwSPLvoxFDVEPRZ4spkuwu7pLJi
+         24NbedKuHD4FSohpnGwUgCYLp9j2WHZOD3RYtP4fPSZCjPT1m1FsYGD3ByvV/ZtcAO4F
+         U3H0/6lWRzGL+8iuHXLo4TPnfj97L0RdgQytQEsz57Aaay7ocSBNd044pkJfXO0LsDIt
+         jrcCaXrrfVc0+/vKPL/jAB7tRmkRHg4vS/io6F2lHtBilrJQN0TyZAF3nAAVXjarXGGx
+         VhLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=plJNW7Y67eXvnax8oo8FvgYyj0Iw4c1g2Thy+LmnVB4=;
-        b=r2Q5owQDLUE+JpnMGGUyhxCUo/zRYQQqwX8FrFugExWWy0GGNhZWTqqEPIUUlomnde
-         33WnkCKuvFYcH05Owp8DjxRO4Bw/2WtrpzHDo1y1u9mxPCEJ8QlwiFWQC4cjyGZRdFCj
-         QC06nEuMZwmS4248KaV7sTP5CNBrunHp/csKY+qVGVVnBzaZgaSngj6GW1R8fiKN2bid
-         83We7jL1/HH+OA57BMB8suNmiLIJSAt/Kko1T6le32K+4zS6fZF7BBp71eu5uy+sJS96
-         EanLS+KK89bCiY7fL9811vdR4/kyefEONoeJnCBMHAobV3O/Uz8X7hYvlvAGnwhtsX4D
-         5+Sw==
-X-Gm-Message-State: AOAM532tSe9p0e+fziPumHdhL9WUwm1jBHuSkC3rhFtqp+Z3kpBLub7d
-        BaThRF7+A7jNKPB+3zvL6soYvU4wy24UuLSjd8WWuedc4k+NGz+9lFLSurtQUJUZ7U+TKbA5Guz
-        ynvLm88VVpX7heRnb6ah8fXhc
-X-Received: by 2002:a5d:4852:: with SMTP id n18mr19855634wrs.10.1629136156650;
-        Mon, 16 Aug 2021 10:49:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGGjFxu2Sr4hF+9rlDSFKl2PRwrlX7LDhBhekAWq72hyPIIxvsoLI+OzsZA9j8gnxfP8E0Pg==
-X-Received: by 2002:a5d:4852:: with SMTP id n18mr19855622wrs.10.1629136156447;
-        Mon, 16 Aug 2021 10:49:16 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
-        by smtp.gmail.com with ESMTPSA id l2sm11417288wrx.2.2021.08.16.10.49.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 10:49:16 -0700 (PDT)
-To:     Jiri Olsa <jolsa@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <YRqhqz35tm3hA9CG@krava>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [BUG] general protection fault when reading /proc/kcore
-Message-ID: <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
-Date:   Mon, 16 Aug 2021 19:49:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eQoek14OE4uQnpIv9Staft1AveAvACmD1pzwivfSdt0=;
+        b=j8gVF16mo5J7+pLKryV7zySL92H3Z8icZj/i8O6iaP23Hi7C6Kl1Z0GiHs8o6m1JHt
+         ZoSvIG6Qv7GcILtp4xk3Ks5LEHMx0q+mPYF/5MWvu5EEElXnsaJj1yk8tr6AXBAtobD1
+         JHCmvk1/qOL6RWqNPTS4Ul3X2YrGIpkPwFukBu26Jz6J9e5DWz2oh//F/ODcqeSLY1Z0
+         iPjFHXDQmViD7rV5UiIHX6Jt9zI0vG/KRjvacJmaUsrWpjFJ/iNlwmTsJE3hczR14BOd
+         Ngh6NsABldvMKcwM2gE5hspsFnvc6ZeLaZi1QDuUee3XSilEYtWwF7O1YfL5c0v6SZWX
+         UwBg==
+X-Gm-Message-State: AOAM532WznSQoUmEHNGQNg7/789B0eJXDbCphAPPy962MfxQyN/okkCX
+        xOhKGjEb36CyfQkLQJ5NPNs=
+X-Google-Smtp-Source: ABdhPJw+y4UCCl9Qy2EGsLwyz3bQonhm12710XsPLFFcjV/6GBfwS5lIKqoZh+2xRfcPAj4vKNB+PA==
+X-Received: by 2002:a05:6402:518f:: with SMTP id q15mr21709998edd.226.1629136303114;
+        Mon, 16 Aug 2021 10:51:43 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id w13sm5319361ede.24.2021.08.16.10.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 10:51:42 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2 2/3] staging: r8188eu: Remove code depending on NAT25_LOOKUP
+Date:   Mon, 16 Aug 2021 19:51:38 +0200
+Message-Id: <20210816175138.21633-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YRqhqz35tm3hA9CG@krava>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 19:34, Jiri Olsa wrote:
-> hi,
-> I'm getting fault below when running:
-> 
-> 	# cat /proc/kallsyms | grep ksys_read
-> 	ffffffff8136d580 T ksys_read
-> 	# objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
-> 
-> 	/proc/kcore:     file format elf64-x86-64
-> 
-> 	Segmentation fault
-> 
-> any idea? config is attached
+Remove all the code related to the management of the NAT25_LOOKUP
+method in nat25_db_handle(). The only function that used that method was
+the now deleted nat25_handle_frame(). Remove the NAT25_LOOKUP entry from
+the NAT25_METHOD enum because it is not anymore used everywhere else in
+the code of the driver.
 
-Just tried with a different config on 5.14.0-rc6+
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-[root@localhost ~]# cat /proc/kallsyms | grep ksys_read
-ffffffff8927a800 T ksys_readahead
-ffffffff89333660 T ksys_read
+v2: Patch rebased against the latest Greg K-H's tree.
 
-[root@localhost ~]# objdump -d --start-address=0xffffffff89333660 
---stop-address=0xffffffff89333670
+ drivers/staging/r8188eu/core/rtw_br_ext.c    | 112 -------------------
+ drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
+ 2 files changed, 113 deletions(-)
 
-a.out:     file format elf64-x86-64
-
-
-
-The kern_addr_valid(start) seems to fault in your case, which is weird, 
-because it merely walks the page tables. But it seems to complain about 
-a non-canonical address 0xf887ffcbff000
-
-Can you post your QEMU cmdline? Did you test this on other kernel versions?
-
-Thanks!
-
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index e8eea95a52e3..0402f48319c4 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -484,27 +484,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 
+ 			__nat25_db_print(priv);
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			DEBUG_INFO("NAT25: Lookup IP, SA =%08x, DA =%08x\n", iph->saddr, iph->daddr);
+-			tmp = be32_to_cpu(iph->daddr);
+-			__nat25_generate_ipv4_network_addr(networkAddr, &tmp);
+-
+-			if (!__nat25_db_network_lookup_and_replace(priv, skb, networkAddr)) {
+-				if (*((unsigned char *)&iph->daddr + 3) == 0xff) {
+-					/*  L2 is unicast but L3 is broadcast, make L2 bacome broadcast */
+-					DEBUG_INFO("NAT25: Set DA as boardcast\n");
+-					memset(skb->data, 0xff, ETH_ALEN);
+-				} else {
+-					/*  forward unknow IP packet to upper TCP/IP */
+-					DEBUG_INFO("NAT25: Replace DA with BR's MAC\n");
+-					if ((*(u32 *)priv->br_mac) == 0 && (*(u16 *)(priv->br_mac+4)) == 0) {
+-						printk("Re-init netdev_br_init() due to br_mac == 0!\n");
+-						netdev_br_init(priv->pnetdev);
+-					}
+-					memcpy(skb->data, priv->br_mac, ETH_ALEN);
+-				}
+-			}
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+@@ -536,20 +515,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 			__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
+ 			__nat25_db_print(priv);
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			DEBUG_INFO("NAT25: Lookup ARP\n");
+-
+-			arp_ptr += arp->ar_hln;
+-			sender = (unsigned int *)arp_ptr;
+-			arp_ptr += (arp->ar_hln + arp->ar_pln);
+-			target = (unsigned int *)arp_ptr;
+-			__nat25_generate_ipv4_network_addr(networkAddr, target);
+-			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
+-			/*  change to ARP target mac address to Lookup result */
+-			arp_ptr = (unsigned char *)(arp + 1);
+-			arp_ptr += (arp->ar_hln + arp->ar_pln);
+-			memcpy(arp_ptr, skb->data, ETH_ALEN);
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+@@ -637,70 +602,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 					priv->pppoe_connection_in_progress = 0;
+ 			}
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			if (ph->code == PADO_CODE || ph->code == PADS_CODE) {
+-				if (priv->ethBrExtInfo.addPPPoETag) {
+-					struct pppoe_tag *tag;
+-					unsigned char *ptr;
+-					unsigned short tagType, tagLen;
+-					int offset = 0;
+-
+-					ptr = __nat25_find_pppoe_tag(ph, ntohs(PTT_RELAY_SID));
+-					if (!ptr) {
+-						DEBUG_ERR("Fail to find PTT_RELAY_SID in FADO!\n");
+-						return -1;
+-					}
+-
+-					tag = (struct pppoe_tag *)ptr;
+-					tagType = (unsigned short)((ptr[0] << 8) + ptr[1]);
+-					tagLen = (unsigned short)((ptr[2] << 8) + ptr[3]);
+-
+-					if ((tagType != ntohs(PTT_RELAY_SID)) || (tagLen < (MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN))) {
+-						DEBUG_ERR("Invalid PTT_RELAY_SID tag length [%d]!\n", tagLen);
+-						return -1;
+-					}
+-
+-					pMagic = (unsigned short *)tag->tag_data;
+-					if (ntohs(*pMagic) != MAGIC_CODE) {
+-						DEBUG_ERR("Can't find MAGIC_CODE in %s packet!\n",
+-							(ph->code == PADO_CODE ? "PADO" : "PADS"));
+-						return -1;
+-					}
+-
+-					memcpy(skb->data, tag->tag_data+MAGIC_CODE_LEN, ETH_ALEN);
+-
+-					if (tagLen > MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN)
+-						offset = TAG_HDR_LEN;
+-
+-					if (skb_pull_and_merge(skb, ptr+offset, TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset) < 0) {
+-						DEBUG_ERR("call skb_pull_and_merge() failed in PADO packet!\n");
+-						return -1;
+-					}
+-					ph->length = htons(ntohs(ph->length)-(TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset));
+-					if (offset > 0)
+-						tag->tag_len = htons(tagLen-MAGIC_CODE_LEN-RTL_RELAY_TAG_LEN);
+-
+-					DEBUG_INFO("NAT25: Lookup PPPoE, forward %s Packet from %s\n",
+-						(ph->code == PADO_CODE ? "PADO" : "PADS"),	skb->dev->name);
+-				} else { /*  not add relay tag */
+-					if (!priv->pppoe_connection_in_progress) {
+-						DEBUG_ERR("Discard PPPoE packet due to no connection in progresss!\n");
+-						return -1;
+-					}
+-					memcpy(skb->data, priv->pppoe_addr, ETH_ALEN);
+-					priv->pppoe_connection_in_progress = WAIT_TIME_PPPOE;
+-				}
+-			} else {
+-				if (ph->sid != 0) {
+-					DEBUG_INFO("NAT25: Lookup PPPoE, lookup session packet from %s\n", skb->dev->name);
+-					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &ph->sid);
+-					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
+-					__nat25_db_print(priv);
+-				} else {
+-					return -1;
+-				}
+-			}
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+@@ -713,8 +614,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 			return -1;
+ 		case NAT25_INSERT:
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+@@ -727,8 +626,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 			return -1;
+ 		case NAT25_INSERT:
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+@@ -775,15 +672,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 				}
+ 			}
+ 			return 0;
+-		case NAT25_LOOKUP:
+-			DEBUG_INFO("NAT25: Lookup IP, SA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x, DA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x\n",
+-				   iph->saddr.s6_addr16[0], iph->saddr.s6_addr16[1], iph->saddr.s6_addr16[2], iph->saddr.s6_addr16[3],
+-				   iph->saddr.s6_addr16[4], iph->saddr.s6_addr16[5], iph->saddr.s6_addr16[6], iph->saddr.s6_addr16[7],
+-				   iph->daddr.s6_addr16[0], iph->daddr.s6_addr16[1], iph->daddr.s6_addr16[2], iph->daddr.s6_addr16[3],
+-				   iph->daddr.s6_addr16[4], iph->daddr.s6_addr16[5], iph->daddr.s6_addr16[6], iph->daddr.s6_addr16[7]);
+-			__nat25_generate_ipv6_network_addr(networkAddr, (unsigned int *)&iph->daddr);
+-			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
+-			return 0;
+ 		default:
+ 			return -1;
+ 		}
+diff --git a/drivers/staging/r8188eu/include/rtw_br_ext.h b/drivers/staging/r8188eu/include/rtw_br_ext.h
+index 00d461c4c6fa..69905d30c191 100644
+--- a/drivers/staging/r8188eu/include/rtw_br_ext.h
++++ b/drivers/staging/r8188eu/include/rtw_br_ext.h
+@@ -31,7 +31,6 @@ enum NAT25_METHOD {
+ 	NAT25_MIN,
+ 	NAT25_CHECK,
+ 	NAT25_INSERT,
+-	NAT25_LOOKUP,
+ 	NAT25_PARSE,
+ 	NAT25_MAX
+ };
 -- 
-Thanks,
-
-David / dhildenb
+2.32.0
 
