@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3DB3ED545
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E993ED714
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhHPNKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
+        id S241238AbhHPN1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:27:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236858AbhHPNGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:06:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA164610E8;
-        Mon, 16 Aug 2021 13:06:15 +0000 (UTC)
+        id S240064AbhHPNQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:16:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90669632EA;
+        Mon, 16 Aug 2021 13:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119176;
-        bh=WbJqhSrA2ocgaRSNEopU1L/xoP4jtG1yFh5JF1j/a7k=;
+        s=korg; t=1629119617;
+        bh=OzHKg4XQQx2eDs/B6xuKl4iDNgcJ+RPtAHzgsKZuWQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z1SUEoYmvPXj0pIn9geloQW7+a5aSljj9GsIeUEbQ6Gnoza+nFqL2V0B1yDz4Twrm
-         xwZ7ZjIUaifd3UHRSNWUWAKaXZaFc933Ir50W75596jWgPQXu3qxe8us6zHexUfWrm
-         tlJOQDtux29IUMNVF1xgCGtw6WrLM5L020VAURdY=
+        b=Uq1iMFAINx9nWhwFqqYF2dzQsxj/1hE9hGr3+RcdLFxlhoGfnqjgkvTeXyoMsJvn7
+         RO7elg7140Kt2MGRYEOUR5w+3SoByLdTN6vfZw5Z3jjKGDJGihwtidFj5ZfO77Ubnf
+         Q44BxDgOGfr4VXoupj7uT5GKO0bpTAjCKuViEwEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 21/96] drm/amdgpu: dont enable baco on boco platforms in runpm
-Date:   Mon, 16 Aug 2021 15:01:31 +0200
-Message-Id: <20210816125435.634469297@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Robin=20G=C3=B6gge?= <r.goegge@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 062/151] libbpf: Fix probe for BPF_PROG_TYPE_CGROUP_SOCKOPT
+Date:   Mon, 16 Aug 2021 15:01:32 +0200
+Message-Id: <20210816125446.103028913@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Robin Gögge <r.goegge@googlemail.com>
 
-commit 202ead5a3c589b0594a75cb99f080174f6851fed upstream.
+[ Upstream commit 78d14bda861dd2729f15bb438fe355b48514bfe0 ]
 
-If the platform uses BOCO, don't use BACO in runtime suspend.
-We could end up executing the BACO path if the platform supports
-both.
+This patch fixes the probe for BPF_PROG_TYPE_CGROUP_SOCKOPT,
+so the probe reports accurate results when used by e.g.
+bpftool.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1669
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4cdbfb59c44a ("libbpf: support sockopt hooks")
+Signed-off-by: Robin Gögge <r.goegge@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Link: https://lore.kernel.org/bpf/20210728225825.2357586-1-r.goegge@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |    2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/libbpf_probes.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -1344,6 +1344,8 @@ static int amdgpu_pmops_runtime_suspend(
- 			pci_set_power_state(pdev, PCI_D3cold);
- 		}
- 		drm_dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
-+	} else if (amdgpu_device_supports_boco(drm_dev)) {
-+		/* nothing to do */
- 	} else if (amdgpu_device_supports_baco(drm_dev)) {
- 		amdgpu_device_baco_enter(drm_dev);
- 	}
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index ecaae2927ab8..cd8c703dde71 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -75,6 +75,9 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+ 		xattr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
+ 		break;
++	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
++		xattr.expected_attach_type = BPF_CGROUP_GETSOCKOPT;
++		break;
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+ 		xattr.expected_attach_type = BPF_SK_LOOKUP;
+ 		break;
+@@ -104,7 +107,6 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 	case BPF_PROG_TYPE_SK_REUSEPORT:
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+-	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+ 	case BPF_PROG_TYPE_TRACING:
+ 	case BPF_PROG_TYPE_STRUCT_OPS:
+ 	case BPF_PROG_TYPE_EXT:
+-- 
+2.30.2
+
 
 
