@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1A43ECE72
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18723ECE75
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhHPGKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhHPGK2 (ORCPT
+        id S233328AbhHPGKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:10:55 -0400
+Received: from mail.kingsoft.com ([114.255.44.145]:34924 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhHPGKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:10:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D21C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 23:09:57 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so12348356pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 23:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yBXepx96Uzt7lmwTGPkBmOhdZypR4sb8w0ofMcCIZs4=;
-        b=NL6JRthm9rulAUGXNXWVph105DI2ohRuebCxj7D8+a6nS/Kdk3H8xW6R1/CiKzI9Pb
-         eOu806k5Ui9b9izKOqp93EIb5v1wpJs8uf45xBvkvtj+JjIlKatkoSMycD2dn3coGMQM
-         MdLsSMpFWyMi1JUPgu4ARnn+XgUiJ9zQ9Jyy+rUBbKsHnnh2Zk8+S9qonmojC2czLHXW
-         LQ0KeciC6/X0jwj1a7b40GLO92sDxw0ZcJgrNTVhsPs1FTSmo5Nyv7u/2aTB9JMzM1Ne
-         D9dFm+mgbLsde47q0cB4xYFqKBDJ9RVGjuMB1V4ERDR5T+NGK2HOvOsh8V5jYPcTkLWi
-         nKlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yBXepx96Uzt7lmwTGPkBmOhdZypR4sb8w0ofMcCIZs4=;
-        b=WUy5x4ql/+Q1/HtJyhp8C6lydCrgOKkP62mGHeCQrOnBAsc9/rPoQxDH4qff73TDeB
-         p4UZMntkIRyLDqTQxH4r5YMt8BPnNbKn0KRGhK84B7afSvJ3xxpAJ1GFDYJKlObMXDub
-         sguHWM1sgA4idxQm5BlWFcS9mOZkbO2yVchahhYxJQl4Fg/gIg81JWoZF54725Hq6xTa
-         Ij5rMzF3bIpuJr2IqC2PGB0Fb9EhW4w4PQf5JFlsAz1VX1PFn8AHKsNiCXYlzQWCr6sk
-         l2wXmSzsKhyuxFMVMA5jtunA5PrHdwW0489PEWNqIbHCNXLLl2IhmHVAOyGmS29wtVrg
-         mQvQ==
-X-Gm-Message-State: AOAM531131UjrOP7QfgE5eJBljE0D5CMDWNRa9Vr/VQAqYgzwlTs5e4F
-        3Ze9tRnSWQDS759pTIUH4X4=
-X-Google-Smtp-Source: ABdhPJz7Zbk5K0OogF3OOciuFWfSdaLFO5W2pxGkz13Tapj/4jxxn2a9ahzukk4sel1hoPTBhdoyww==
-X-Received: by 2002:a65:6553:: with SMTP id a19mr14691694pgw.8.1629094197266;
-        Sun, 15 Aug 2021 23:09:57 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id l12sm9628104pff.182.2021.08.15.23.09.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 23:09:56 -0700 (PDT)
-Subject: Re: [PATCH v2] drm: avoid races with modesetting rights
-To:     kernel test robot <lkp@intel.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     kbuild-all@lists.01.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org
-References: <20210815153740.195330-1-desmondcheongzx@gmail.com>
- <202108160234.Q9HPB7zT-lkp@intel.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <edc6e062-8f13-5d44-bb1a-62133878ade7@gmail.com>
-Date:   Mon, 16 Aug 2021 14:09:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 02:10:50 -0400
+X-AuditID: 0a580155-983ff7000002fcd1-2a-611a01488ceb
+Received: from mail.kingsoft.com (bogon [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 1C.C7.64721.8410A116; Mon, 16 Aug 2021 14:10:16 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 16 Aug
+ 2021 14:10:16 +0800
+Date:   Mon, 16 Aug 2021 14:10:15 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+CC:     <yaoaili126@gmail.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: KVM: x86: expose HINTS_REALTIME ablility to qemu
+Message-ID: <20210816141015.31e329e3@alex-virtual-machine>
+In-Reply-To: <20210813175420.62ab2ac2@alex-virtual-machine>
+References: <20210813175420.62ab2ac2@alex-virtual-machine>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <202108160234.Q9HPB7zT-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSbjmail3.kingsoft.cn (10.88.1.78) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCFcHor+vBKJVo0P1P1eLzhn9sFtM2ilts
+        nX6FzaJz9gZ2izlTCy0u75rDZnHpwAImi/3b/rFaHD1/i8li86apzBaTWi8zW+y684TF4seG
+        x6wWz1qvsjjweTw5OI/J43trH4vHzll32T0WbCr12LSqk83j3blz7B7v911l82iceo3N4/Mm
+        OY8TLV9YA7iiuGxSUnMyy1KL9O0SuDJeNW9iK9jMVvHg1DaWBsb/LF2MnBwSAiYS33+vZ+xi
+        5OIQEpjMJHHxRg8LhPOaUWLp7sdsIFUsAqoSm+c1gdlsQPaue7NYQWwRgbNMEnv+M4M0MAu0
+        M0o83rqFHSQhLGArseHPQWYQm1fASmLnjLNgDZwC1hKzly4FiwsBxedvuwB2Br+AmETvlf9M
+        XYwcQCfZSzxerwjRKihxcuYTsBJmAR2JE6uOMUPY8hLb386BGqMocXjJL3aIb5QkjnTPYIOw
+        YyWurb/OOIFReBaSUbOQjJqFZNQCRuZVjCzFuelGmxgh8Re6g3FG00e9Q4xMHIyHGCU4mJVE
+        eIuFxRKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ82q7CSUKCaQnlqRmp6YWpBbBZJk4OKUamBSi
+        VwnfFNqt0rC8V0v9dE9hUn1s6dNA98yJDY1MS/ft/a+wwleFlUHvXcCVvqiwNz27755mmBfl
+        XTbx+ZrfqqduFE4rsHv173CZb5GsjZn6kdt7W19P+FXxzjjo8MG7lvfXaMydqX5i6wNJwZv1
+        nBdaD3s438icZuWuXfmac86fJ2tP3J4yc5VfbCin6hulex0F3iIy01dMSF2a/oD//j/jKpmy
+        hZKnOgT6ghWquj+zFPgs9flZLP5DwZ5zY+WFZy+v38jY5Vj84fyuvjsVid1RWz+W8s3L3lHu
+        XVlf3LxZQ/qa6OyTKdw/JUwWqK/5OUtdsV2sf5XNbg8z9oS3Zw6xiMxb2ffYy3Grr7CXgxJL
+        cUaioRZzUXEiAPrdudMuAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/8/21 2:47 am, kernel test robot wrote:
-> Hi Desmond,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on next-20210813]
-> [also build test WARNING on v5.14-rc5]
-> [cannot apply to linus/master v5.14-rc5 v5.14-rc4 v5.14-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
-> base:    4b358aabb93a2c654cd1dcab1a25a589f6e2b153
-> config: arc-randconfig-r031-20210815 (attached as .config)
-> compiler: arceb-elf-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/0day-ci/linux/commit/cf6d8354b7d7953cd866fad004cbb189adfa074f
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
->          git checkout cf6d8354b7d7953cd866fad004cbb189adfa074f
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/gpu/drm/drm_auth.c:483:6: warning: no previous prototype for 'master_flush' [-Wmissing-prototypes]
->       483 | void master_flush(struct callback_head *cb)
->           |      ^~~~~~~~~~~~
-> 
+On Fri, 13 Aug 2021 17:54:20 +0800
+Aili Yao <yaoaili@kingsoft.com> wrote:
 
-My bad, this should have been declared with static. I'll add it in, thanks.
+> When I do a test that try to enable hint-dedicated for one VM, but qemu
+> says "warning: host doesn't support requested feature:
+> CPUID.40000001H:EDX.kvm-hint-dedicated [bit 0]".
+> 
+> It seems the kernel hasn't expose this ability even when supporting it;
+> So expose it.
 
-> 
-> vim +/master_flush +483 drivers/gpu/drm/drm_auth.c
-> 
->     479	
->     480	/* After flushing, all readers that might have seen old master/lease
->     481	 * permissions are guaranteed to have completed.
->     482	 */
->   > 483	void master_flush(struct callback_head *cb)
->     484	{
->     485		struct drm_device *dev = container_of(cb, struct drm_device,
->     486						      master_flush_work);
->     487	
->     488		down_write(&dev->master_rwsem);
->     489		up_write(&dev->master_rwsem);
->     490	}
->     491	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Sorry, I check it again:
+Ihe issue I met is because of my qemu's mis-backport,
+
+In qemu, kvm_arch_get_supported_cpuid() will set the feature bit:
+    if (function == KVM_CPUID_FEATURES && reg == R_EDX) {
+        ret |= KVM_HINTS_DEDICATED;
+        found = 1;
+    }
+But I have mis-ported the KVM_HINTS_DEDICATED and KVM_HINTS_REALTIME macro; And it lead to
+the error I met;
+
+And it's right that kernel don't expose this ability!
+
+Sorry again!
 
