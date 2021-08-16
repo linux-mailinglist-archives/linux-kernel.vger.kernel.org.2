@@ -2,92 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B953E3ED9EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC863ED9F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbhHPPft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
+        id S235241AbhHPPgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhHPPfr (ORCPT
+        with ESMTP id S236184AbhHPPfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:35:47 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D2AC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:15 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id r16-20020a0568304190b02904f26cead745so21379010otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:15 -0700 (PDT)
+        Mon, 16 Aug 2021 11:35:55 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22FFC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:22 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id bo19so27031709edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=izwgpX7oSIIBHk0sYhZRSPI0m7nv9ZWnNviimlv3Gso=;
-        b=vfpaG8itDkP6v04+k6YoH4XGZJLxHWYS9XMAriNKK//2SkDt3NN7yK1kiF1WfB38UN
-         d4zrAaVVkQsDMG0QZjZtQgB9Xb3GgRM8/7fGsQyUR2g5gVveE7FZh0l/S48Ad1yRNKCW
-         lDwIkecxFeEy0MLogCx5z1bedl3y7Vkwhzgl1OfUvPMLdnO7MZjWDbBTLFka0Tcf9bBt
-         lvRz/oJrh2FEV3vcdUcXjy26++zbEPcOAzwWpZ1jKGn5PmBm2Xa5YzlWExU/4z+wSSap
-         GaFGgbrtBGACITtrbzW22viwPxcaM3ykRc2D8strDPLQwOolMlWh+9krFzaq/yRMsRWs
-         3cxg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IasKvmj0grPyZpclaR8IMBAIBRCjZoEN6q1hySOpIx8=;
+        b=FLJi4iZUP8UiTgTh2IzZR2WM5wp0UlezFnpQ0+W4dKvlP/Bp0N/xwQ5xVJ8QzlbwcW
+         FfqgUTOGQVSAZ6lhJSKcNchtnt2bnEjmau/bBsT9uARYt77GapvGf8OEOjjT0jXDRZQe
+         3IopPSjLA0oQ60FwNzj8SQ1orL3ysEbohceDs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=izwgpX7oSIIBHk0sYhZRSPI0m7nv9ZWnNviimlv3Gso=;
-        b=I8Kv8iizdlsgdTp76jlIknUNyGh60W6MUq7bcmYrZ2LxfixkO5zeHt1W8VI4KGnmfo
-         UCJSgpiQwE/qLd+sXFcT9NRLLzVV+MmAP0qViUMjl1HcS7v+cWSlz3c1sB2EHMHIg5Qp
-         zHp3n++hxA0jLQ2brRa8kdRtxs1fCPf8rD6VJ0UKo5nTtQAevE8rdVhUxtCYWsK6WR00
-         Pn0oHeGw+lbm214lHNNSK2eovKyQeIHsDkkNi5upNnVoXelWicefj1Cu7+a6BVGOL1PC
-         yMI/DFjaJmUoQ2C2mumJPNNzpfSiRhgPU429iSgNpAKGNhUBpkya3T3AVZecl39H8k5q
-         w/fg==
-X-Gm-Message-State: AOAM532GnvmRvCOPexF65fptVrO59T+88Z3Qi38xaX4VclN6oGh66DIE
-        hpETn4R1z6VDM3TZDvIdJ754/w==
-X-Google-Smtp-Source: ABdhPJxNBT6VQqF+a/LrmpscGhFK1PmHsr1ZBxcAfX5odX2+MffbpKSANyXAwOgf8nofz4cDBJlACg==
-X-Received: by 2002:a05:6830:1289:: with SMTP id z9mr3770498otp.28.1629128114671;
-        Mon, 16 Aug 2021 08:35:14 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id k13sm2121887oik.40.2021.08.16.08.35.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 08:35:14 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] iter revert problems
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-References: <cover.1628780390.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <221d06f1-7e6b-c48f-57e8-45111c979217@kernel.dk>
-Date:   Mon, 16 Aug 2021 09:35:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=IasKvmj0grPyZpclaR8IMBAIBRCjZoEN6q1hySOpIx8=;
+        b=Uf6lrMtzmXJUkacNDS3s4Jl1/myq7sKA7KiGDzxuC3RaCITvw6lkInkXQKRxGyjl9+
+         V0Kjg1dpi/kEqE+i4b6jBd7ncR4uUa55Lz3Xnm9Ok7HKbRxsiNYFn3IY2NKQ3GbhUl7i
+         OBMbdR6YWejvmcirMkvuBd7daxcizVTmpZq3ATq/0PKPFKxDO63FgeZorF6ghk3Zm7ye
+         +bHGn5LetPTgsgFGppL4lGah+wNBgmv2oh+M7PZrnhqwwnmuY+9OsNyHT6ApN9WR8xh2
+         jJoTwRTFdIoCUEQIAoWvhJYh5D1qSMUpM8VTK772IEPciz0TahlpOrDjzZJzuxKsO2il
+         s4zQ==
+X-Gm-Message-State: AOAM533Iv99v8LZ/5BOF8lOE/4OWabnYtMQ30kxPNfZH+xT1WELIUiXr
+        54/uyzqTXKvuu2smCKsm99PNDrfNpfYN0A==
+X-Google-Smtp-Source: ABdhPJw86Us3yeAl8Ak8OflhLTWRhOuq8mFn02KQKAqblo+89lWzBRM05emXkzKLODsMjl1K7NUN0w==
+X-Received: by 2002:a05:6402:328:: with SMTP id q8mr21378867edw.84.1629128121309;
+        Mon, 16 Aug 2021 08:35:21 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id wc16sm3821383ejb.15.2021.08.16.08.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 08:35:20 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 17:35:18 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] drm/atomic-helper: Set fence deadline for vblank
+Message-ID: <YRqFtgCNMKOw3GbX@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210807183804.459850-1-robdclark@gmail.com>
+ <20210807183804.459850-4-robdclark@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1628780390.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807183804.459850-4-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 2:40 PM, Pavel Begunkov wrote:
-> For the bug description see 2/2. As mentioned there the current problems
-> is because of generic_write_checks(), but there was also a similar case
-> fixed in 5.12, which should have been triggerable by normal
-> write(2)/read(2) and others.
+On Sat, Aug 07, 2021 at 11:37:57AM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> It may be better to enforce reexpands as a long term solution, but for
-> now this patchset is quickier and easier to backport.
+> For an atomic commit updating a single CRTC (ie. a pageflip) calculate
+> the next vblank time, and inform the fence(s) of that deadline.
 > 
-> v2: don't fail it has been justly fully reverted
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c | 36 +++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index bc3487964fb5..7caa2c3cc304 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -1406,6 +1406,40 @@ void drm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
+>  }
+>  EXPORT_SYMBOL(drm_atomic_helper_commit_modeset_enables);
+>  
+> +/*
+> + * For atomic updates which touch just a single CRTC, calculate the time of the
+> + * next vblank, and inform all the fences of the of the deadline.
 
-Al, what do you think of this approach? It'll fix the issue, but might be
-cleaner to have iov->truncated actually track the truncated size. That'd
-make it a more complete solution, at the expense of bloat iov_iter which
-this version will not.
+s/of the//
+
+Otherwise lgtm, Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+
+> + */
+> +static void set_fence_deadline(struct drm_device *dev,
+> +			       struct drm_atomic_state *state)
+> +{
+> +	struct drm_crtc *crtc, *wait_crtc = NULL;
+> +	struct drm_crtc_state *new_crtc_state;
+> +	struct drm_plane *plane;
+> +	struct drm_plane_state *new_plane_state;
+> +	ktime_t vbltime;
+> +	int i;
+> +
+> +	for_each_new_crtc_in_state (state, crtc, new_crtc_state, i) {
+> +		if (wait_crtc)
+> +			return;
+> +		wait_crtc = crtc;
+> +	}
+> +
+> +	/* If no CRTCs updated, then nothing to do: */
+> +	if (!wait_crtc)
+> +		return;
+> +
+> +	if (drm_crtc_next_vblank_time(wait_crtc, &vbltime))
+> +		return;
+> +
+> +	for_each_new_plane_in_state (state, plane, new_plane_state, i) {
+> +		if (!new_plane_state->fence)
+> +			continue;
+> +		dma_fence_set_deadline(new_plane_state->fence, vbltime);
+> +	}
+> +}
+> +
+>  /**
+>   * drm_atomic_helper_wait_for_fences - wait for fences stashed in plane state
+>   * @dev: DRM device
+> @@ -1435,6 +1469,8 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+>  	struct drm_plane_state *new_plane_state;
+>  	int i, ret;
+>  
+> +	set_fence_deadline(dev, state);
+> +
+>  	for_each_new_plane_in_state(state, plane, new_plane_state, i) {
+>  		if (!new_plane_state->fence)
+>  			continue;
+> -- 
+> 2.31.1
+> 
 
 -- 
-Jens Axboe
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
