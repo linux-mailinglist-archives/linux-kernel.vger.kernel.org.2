@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445633EDD9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5D03EDD88
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhHPTGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        id S229958AbhHPTEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhHPTES (ORCPT
+        with ESMTP id S229481AbhHPTEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:04:18 -0400
+        Mon, 16 Aug 2021 15:04:23 -0400
 Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C433FC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:03:46 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso728064pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:03:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69F7C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:03:51 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so1754704pjl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V36QPSB78BUP0JvLxXDHPbB+JzHEybvXTTUlAkVfNoc=;
-        b=mrg+08PPeSG27e1OQLtgiEdfjDTLdmS3gH16WIqBMO6rtQCIH1tqSXVBOHc7e1YY3j
-         fzazLvJ1mceigbNoAwmYkWhyeqVoyxh6e9qhO1d3Z05yreleoqqLUlxGDBZK9OeFmGZp
-         YT9UdvoCgcj+IO+Zw9w6+4wQiLrF7AM+3+D8NKOEVUkPaH7DvLBJVYWUQlVlPy92bEOy
-         lvF8w7gUXSWCTbmH3vRsGBwlxnPCOH1QBRNeXW5jpnFPuQglUcfh5/1VCsUm556SLEtn
-         7Gu5cfkj4wK/v/cPyuBekeVU0ByIeg1LfyDkCVVz19pi7XCiKBS4t5Jdw+BYUylpMqqA
-         1CyQ==
+        bh=MtJ8xI/B+EIULIghvMhd6tf0lsFMRQDGP/UDMzZQQ5Q=;
+        b=yHQ7KFpaSoLUFXvywBlsxOc007iUMb3VOTOm9M4LWT+9O+bzW85FAsYJ+2+j31NX19
+         htKek/lqVIPZaKxLLvxPFasoLSybrRImtsqOgexCHJCZcMpy/ZYMD/d3DDpe8zooTxzV
+         lmad08s/DI7s8H9JGUvQ9NWD5BRG1qffBwLWpnmgXt/GA/8oMTbLxdWe4azBSn+iLK/R
+         DOTAMO5Gj2jA9NBcLEy9/gNTPEgvCqHKfM99KmVKfXZ931xNKrnAA3g7M2xVzwVLVu8m
+         vat+YxWolXO6PWriuwV7iO6UM63mbcgcLK/ntFm8lXL0+lFyWcOmgEZJyBO90pvmyKPd
+         +p7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V36QPSB78BUP0JvLxXDHPbB+JzHEybvXTTUlAkVfNoc=;
-        b=KUOIOqVeuRH6IqgJFEU3HiWK3na384ZIU7MgFaHn3wJxjr9hlmPW2Z9iR4H93wT2wd
-         gPoSmfZbJ6+k9blOBUUAYhjSZadMsexXufsgx0K7sI7BO1STt4jKIR6iVSWlURkBcuix
-         4Vj2JIMFf5KR2xnCF9anaZRxBJ3NHL6XEVNgX6S7AQAn+klh0lxePTrmA+mqjPEHcroB
-         rkhrlHJlrcMtY9XBKNgy1JnJp+6RqcQOJmHyg8i0LuT2qiORp0yqXK0JLTxdRVUknc6R
-         rrcMztszTaTTTIW01E/JFUujlpmYzbVIH/FTYKY9KWhYyo+WsbX+PWAGmsxd2kGYdp5L
-         JyNA==
-X-Gm-Message-State: AOAM532Q9yXegQLS62yv8LnQJE2smZ9AfH3ZTguCr8HdQkIWEzRPJGNE
-        ceOqwhfc7fm3snSV7PFv3otgSQ==
-X-Google-Smtp-Source: ABdhPJy54aE3klzmp8mUUziYDqnzol/9oH+dtx0ZWZbfjc5xDn2ng+T5DBHIQziZ5c1QKmtBi2M4vg==
-X-Received: by 2002:a17:902:e803:b0:12d:7f02:f782 with SMTP id u3-20020a170902e80300b0012d7f02f782mr300939plg.19.1629140626245;
-        Mon, 16 Aug 2021 12:03:46 -0700 (PDT)
+        bh=MtJ8xI/B+EIULIghvMhd6tf0lsFMRQDGP/UDMzZQQ5Q=;
+        b=TsQJaCLRE9la11M8K+6Ptnjx8tTbgqszbgAxYNr1fFjO15OHKH8BsDudebJ70KQoGJ
+         L2zTAur2+lgj4e9fUrB2UFQK+DIt/gRtHuiT5Cn+ygA1W0XZhGZzXEQwcQjoOJfZ14hY
+         5tBZyMrN8TZdP63CkhSwGS2zpLwQLm1XVEcy8TRGvV4D8oLVpLHNhIHBg+Phq2x7a0ra
+         MQVzQGOjefpr2RMYpWvz7n/LdtDI7as5fsou0Azty0U17y9z/O4mLDd3/8qr5YSgWG4j
+         +SiuF2NTmFcOV5uIJmLluEtervOOyI5I5LnBQ4sEIsgdBx3f4DTENTa0pZbIMUX4cLCU
+         mrog==
+X-Gm-Message-State: AOAM533MAIny76muc0R4Y1k9rec69PO8TkblAJkzqt3MwUUGhioNNrJN
+        PZgVljc7nyad4mzOFSYMPq79EA==
+X-Google-Smtp-Source: ABdhPJyCn1iWQdqbyGCARtxYqmvlkk6vJVemR7k9B/+VUAc9mQ0T9xJxanvkszWmha4+nBIPwcyhvQ==
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr66158pjb.134.1629140631294;
+        Mon, 16 Aug 2021 12:03:51 -0700 (PDT)
 Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id t30sm175845pgl.47.2021.08.16.12.03.44
+        by smtp.gmail.com with ESMTPSA id t30sm175845pgl.47.2021.08.16.12.03.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 12:03:45 -0700 (PDT)
+        Mon, 16 Aug 2021 12:03:51 -0700 (PDT)
 From:   Jiang Wang <jiang.wang@bytedance.com>
 To:     netdev@vger.kernel.org
 Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
         xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        John Fastabend <john.fastabend@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
@@ -69,9 +69,9 @@ Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v7 2/5] af_unix: add unix_stream_proto for sockmap
-Date:   Mon, 16 Aug 2021 19:03:21 +0000
-Message-Id: <20210816190327.2739291-3-jiang.wang@bytedance.com>
+Subject: [PATCH bpf-next v7 3/5] selftest/bpf: add tests for sockmap with unix stream type.
+Date:   Mon, 16 Aug 2021 19:03:22 +0000
+Message-Id: <20210816190327.2739291-4-jiang.wang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210816190327.2739291-1-jiang.wang@bytedance.com>
 References: <20210816190327.2739291-1-jiang.wang@bytedance.com>
@@ -81,391 +81,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, sockmap for AF_UNIX protocol only supports
-dgram type. This patch add unix stream type support, which
-is similar to unix_dgram_proto. To support sockmap, dgram
-and stream cannot share the same unix_proto anymore, because
-they have different implementations, such as unhash for stream
-type (which will remove closed or disconnected sockets from the map),
-so rename unix_proto to unix_dgram_proto and add a new
-unix_stream_proto.
-
-Also implement stream related sockmap functions.
-And add dgram key words to those dgram specific functions.
+Add two tests for unix stream to unix stream redirection
+in sockmap tests.
 
 Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 ---
- include/net/af_unix.h |  8 +++-
- net/core/sock_map.c   |  1 +
- net/unix/af_unix.c    | 83 ++++++++++++++++++++++++++++++++------
- net/unix/unix_bpf.c   | 93 +++++++++++++++++++++++++++++++++----------
- 4 files changed, 148 insertions(+), 37 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-index 4757d7f53f13..7d142e8a0550 100644
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -87,6 +87,8 @@ long unix_outq_len(struct sock *sk);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index a9f1bf9d5dff..7a976d43281a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -2020,11 +2020,13 @@ void test_sockmap_listen(void)
+ 	run_tests(skel, skel->maps.sock_map, AF_INET);
+ 	run_tests(skel, skel->maps.sock_map, AF_INET6);
+ 	test_unix_redir(skel, skel->maps.sock_map, SOCK_DGRAM);
++	test_unix_redir(skel, skel->maps.sock_map, SOCK_STREAM);
  
- int __unix_dgram_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
- 			 int flags);
-+int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
-+			  int flags);
- #ifdef CONFIG_SYSCTL
- int unix_sysctl_register(struct net *net);
- void unix_sysctl_unregister(struct net *net);
-@@ -96,9 +98,11 @@ static inline void unix_sysctl_unregister(struct net *net) {}
- #endif
+ 	skel->bss->test_sockmap = false;
+ 	run_tests(skel, skel->maps.sock_hash, AF_INET);
+ 	run_tests(skel, skel->maps.sock_hash, AF_INET6);
+ 	test_unix_redir(skel, skel->maps.sock_hash, SOCK_DGRAM);
++	test_unix_redir(skel, skel->maps.sock_hash, SOCK_STREAM);
  
- #ifdef CONFIG_BPF_SYSCALL
--extern struct proto unix_proto;
-+extern struct proto unix_dgram_proto;
-+extern struct proto unix_stream_proto;
- 
--int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
-+int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
-+int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
- void __init unix_bpf_build_proto(void);
- #else
- static inline void __init unix_bpf_build_proto(void)
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index ae5fa4338d9c..e252b8ec2b85 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1494,6 +1494,7 @@ void sock_map_unhash(struct sock *sk)
- 	rcu_read_unlock();
- 	saved_unhash(sk);
- }
-+EXPORT_SYMBOL_GPL(sock_map_unhash);
- 
- void sock_map_close(struct sock *sk, long timeout)
- {
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 31061304ccf2..e7da96c80c71 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -797,17 +797,35 @@ static void unix_close(struct sock *sk, long timeout)
- 	 */
- }
- 
--struct proto unix_proto = {
--	.name			= "UNIX",
-+static void unix_unhash(struct sock *sk)
-+{
-+	/* Nothing to do here, unix socket does not need a ->unhash().
-+	 * This is merely for sockmap.
-+	 */
-+}
-+
-+struct proto unix_dgram_proto = {
-+	.name			= "UNIX-DGRAM",
-+	.owner			= THIS_MODULE,
-+	.obj_size		= sizeof(struct unix_sock),
-+	.close			= unix_close,
-+#ifdef CONFIG_BPF_SYSCALL
-+	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
-+#endif
-+};
-+
-+struct proto unix_stream_proto = {
-+	.name			= "UNIX-STREAM",
- 	.owner			= THIS_MODULE,
- 	.obj_size		= sizeof(struct unix_sock),
- 	.close			= unix_close,
-+	.unhash			= unix_unhash,
- #ifdef CONFIG_BPF_SYSCALL
--	.psock_update_sk_prot	= unix_bpf_update_proto,
-+	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
- #endif
- };
- 
--static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-+static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
- {
- 	struct sock *sk = NULL;
- 	struct unix_sock *u;
-@@ -816,7 +834,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
- 	if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
- 		goto out;
- 
--	sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-+	if (type == SOCK_STREAM)
-+		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-+	else /*dgram and  seqpacket */
-+		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-+
- 	if (!sk)
- 		goto out;
- 
-@@ -878,7 +900,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
- 		return -ESOCKTNOSUPPORT;
- 	}
- 
--	return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-+	return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
- }
- 
- static int unix_release(struct socket *sock)
-@@ -1292,7 +1314,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
- 	err = -ENOMEM;
- 
- 	/* create new sock for complete connection */
--	newsk = unix_create1(sock_net(sk), NULL, 0);
-+	newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
- 	if (newsk == NULL)
- 		goto out;
- 
-@@ -2322,8 +2344,10 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
- 	struct sock *sk = sock->sk;
- 
- #ifdef CONFIG_BPF_SYSCALL
--	if (sk->sk_prot != &unix_proto)
--		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-+	const struct proto *prot = READ_ONCE(sk->sk_prot);
-+
-+	if (prot != &unix_dgram_proto)
-+		return prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
- 					    flags & ~MSG_DONTWAIT, NULL);
- #endif
- 	return __unix_dgram_recvmsg(sk, msg, size, flags);
-@@ -2727,6 +2751,20 @@ static int unix_stream_read_actor(struct sk_buff *skb,
- 	return ret ?: chunk;
- }
- 
-+int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-+			  size_t size, int flags)
-+{
-+	struct unix_stream_read_state state = {
-+		.recv_actor = unix_stream_read_actor,
-+		.socket = sk->sk_socket,
-+		.msg = msg,
-+		.size = size,
-+		.flags = flags
-+	};
-+
-+	return unix_stream_read_generic(&state, true);
-+}
-+
- static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
- 			       size_t size, int flags)
- {
-@@ -2738,6 +2776,14 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
- 		.flags = flags
- 	};
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+	struct sock *sk = sock->sk;
-+	const struct proto *prot = READ_ONCE(sk->sk_prot);
-+
-+	if (prot != &unix_stream_proto)
-+		return prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-+					    flags & ~MSG_DONTWAIT, NULL);
-+#endif
- 	return unix_stream_read_generic(&state, true);
- }
- 
-@@ -2798,7 +2844,9 @@ static int unix_shutdown(struct socket *sock, int mode)
- 		(sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET)) {
- 
- 		int peer_mode = 0;
-+		const struct proto *prot = READ_ONCE(other->sk_prot);
- 
-+		prot->unhash(other);
- 		if (mode&RCV_SHUTDOWN)
- 			peer_mode |= SEND_SHUTDOWN;
- 		if (mode&SEND_SHUTDOWN)
-@@ -2807,10 +2855,12 @@ static int unix_shutdown(struct socket *sock, int mode)
- 		other->sk_shutdown |= peer_mode;
- 		unix_state_unlock(other);
- 		other->sk_state_change(other);
--		if (peer_mode == SHUTDOWN_MASK)
-+		if (peer_mode == SHUTDOWN_MASK) {
- 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
--		else if (peer_mode & RCV_SHUTDOWN)
-+			other->sk_state = TCP_CLOSE;
-+		} else if (peer_mode & RCV_SHUTDOWN) {
- 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
-+		}
- 	}
- 	if (other)
- 		sock_put(other);
-@@ -3201,7 +3251,13 @@ static int __init af_unix_init(void)
- 
- 	BUILD_BUG_ON(sizeof(struct unix_skb_parms) > sizeof_field(struct sk_buff, cb));
- 
--	rc = proto_register(&unix_proto, 1);
-+	rc = proto_register(&unix_dgram_proto, 1);
-+	if (rc != 0) {
-+		pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
-+		goto out;
-+	}
-+
-+	rc = proto_register(&unix_stream_proto, 1);
- 	if (rc != 0) {
- 		pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
- 		goto out;
-@@ -3217,7 +3273,8 @@ static int __init af_unix_init(void)
- static void __exit af_unix_exit(void)
- {
- 	sock_unregister(PF_UNIX);
--	proto_unregister(&unix_proto);
-+	proto_unregister(&unix_dgram_proto);
-+	proto_unregister(&unix_stream_proto);
- 	unregister_pernet_subsys(&unix_net_ops);
- }
- 
-diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-index 20f53575b5c9..b927e2baae50 100644
---- a/net/unix/unix_bpf.c
-+++ b/net/unix/unix_bpf.c
-@@ -38,9 +38,18 @@ static int unix_msg_wait_data(struct sock *sk, struct sk_psock *psock,
- 	return ret;
- }
- 
--static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
--				  size_t len, int nonblock, int flags,
--				  int *addr_len)
-+static int __unix_recvmsg(struct sock *sk, struct msghdr *msg,
-+			  size_t len, int flags)
-+{
-+	if (sk->sk_type == SOCK_DGRAM)
-+		return __unix_dgram_recvmsg(sk, msg, len, flags);
-+	else
-+		return __unix_stream_recvmsg(sk, msg, len, flags);
-+}
-+
-+static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
-+			    size_t len, int nonblock, int flags,
-+			    int *addr_len)
- {
- 	struct unix_sock *u = unix_sk(sk);
- 	struct sk_psock *psock;
-@@ -48,14 +57,14 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
--		return __unix_dgram_recvmsg(sk, msg, len, flags);
-+		return __unix_recvmsg(sk, msg, len, flags);
- 
- 	mutex_lock(&u->iolock);
- 	if (!skb_queue_empty(&sk->sk_receive_queue) &&
- 	    sk_psock_queue_empty(psock)) {
- 		mutex_unlock(&u->iolock);
- 		sk_psock_put(sk, psock);
--		return __unix_dgram_recvmsg(sk, msg, len, flags);
-+		return __unix_recvmsg(sk, msg, len, flags);
- 	}
- 
- msg_bytes_ready:
-@@ -71,7 +80,7 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 				goto msg_bytes_ready;
- 			mutex_unlock(&u->iolock);
- 			sk_psock_put(sk, psock);
--			return __unix_dgram_recvmsg(sk, msg, len, flags);
-+			return __unix_recvmsg(sk, msg, len, flags);
- 		}
- 		copied = -EAGAIN;
- 	}
-@@ -80,30 +89,55 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 	return copied;
- }
- 
--static struct proto *unix_prot_saved __read_mostly;
--static DEFINE_SPINLOCK(unix_prot_lock);
--static struct proto unix_bpf_prot;
-+static struct proto *unix_dgram_prot_saved __read_mostly;
-+static DEFINE_SPINLOCK(unix_dgram_prot_lock);
-+static struct proto unix_dgram_bpf_prot;
-+
-+static struct proto *unix_stream_prot_saved __read_mostly;
-+static DEFINE_SPINLOCK(unix_stream_prot_lock);
-+static struct proto unix_stream_bpf_prot;
- 
--static void unix_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
-+static void unix_dgram_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
- {
- 	*prot        = *base;
- 	prot->close  = sock_map_close;
--	prot->recvmsg = unix_dgram_bpf_recvmsg;
-+	prot->recvmsg = unix_bpf_recvmsg;
-+}
-+
-+static void unix_stream_bpf_rebuild_protos(struct proto *prot,
-+					   const struct proto *base)
-+{
-+	*prot        = *base;
-+	prot->close  = sock_map_close;
-+	prot->recvmsg = unix_bpf_recvmsg;
-+	prot->unhash  = sock_map_unhash;
-+}
-+
-+static void unix_dgram_bpf_check_needs_rebuild(struct proto *ops)
-+{
-+	if (unlikely(ops != smp_load_acquire(&unix_dgram_prot_saved))) {
-+		spin_lock_bh(&unix_dgram_prot_lock);
-+		if (likely(ops != unix_dgram_prot_saved)) {
-+			unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, ops);
-+			smp_store_release(&unix_dgram_prot_saved, ops);
-+		}
-+		spin_unlock_bh(&unix_dgram_prot_lock);
-+	}
- }
- 
--static void unix_bpf_check_needs_rebuild(struct proto *ops)
-+static void unix_stream_bpf_check_needs_rebuild(struct proto *ops)
- {
--	if (unlikely(ops != smp_load_acquire(&unix_prot_saved))) {
--		spin_lock_bh(&unix_prot_lock);
--		if (likely(ops != unix_prot_saved)) {
--			unix_bpf_rebuild_protos(&unix_bpf_prot, ops);
--			smp_store_release(&unix_prot_saved, ops);
-+	if (unlikely(ops != smp_load_acquire(&unix_stream_prot_saved))) {
-+		spin_lock_bh(&unix_stream_prot_lock);
-+		if (likely(ops != unix_stream_prot_saved)) {
-+			unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, ops);
-+			smp_store_release(&unix_stream_prot_saved, ops);
- 		}
--		spin_unlock_bh(&unix_prot_lock);
-+		spin_unlock_bh(&unix_stream_prot_lock);
- 	}
- }
- 
--int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-+int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- {
- 	if (sk->sk_type != SOCK_DGRAM)
- 		return -EOPNOTSUPP;
-@@ -114,12 +148,27 @@ int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- 		return 0;
- 	}
- 
--	unix_bpf_check_needs_rebuild(psock->sk_proto);
--	WRITE_ONCE(sk->sk_prot, &unix_bpf_prot);
-+	unix_dgram_bpf_check_needs_rebuild(psock->sk_proto);
-+	WRITE_ONCE(sk->sk_prot, &unix_dgram_bpf_prot);
-+	return 0;
-+}
-+
-+int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-+{
-+	if (restore) {
-+		sk->sk_write_space = psock->saved_write_space;
-+		WRITE_ONCE(sk->sk_prot, psock->sk_proto);
-+		return 0;
-+	}
-+
-+	unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
-+	WRITE_ONCE(sk->sk_prot, &unix_stream_bpf_prot);
- 	return 0;
- }
- 
- void __init unix_bpf_build_proto(void)
- {
--	unix_bpf_rebuild_protos(&unix_bpf_prot, &unix_proto);
-+	unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, &unix_dgram_proto);
-+	unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, &unix_stream_proto);
-+
+ 	test_sockmap_listen__destroy(skel);
  }
 -- 
 2.20.1
