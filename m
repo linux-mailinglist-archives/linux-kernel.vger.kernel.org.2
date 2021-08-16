@@ -2,142 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D18C3EDDAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53103EDDAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhHPTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:13:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60996 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhHPTNX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:13:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2036B1FFCD;
-        Mon, 16 Aug 2021 19:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629141170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bLS7JbPsgoJbranNPm2czgSZVcMxJZOHABRNcu46Ask=;
-        b=iiIk1yfTICvxIUWMfkLRDkxANadOaEzCF1k3U5AH2DFOxWS3+RyjEeXmSTv4YSYs/3Ru30
-        OnA5s8gEmj3COvGl/SukJ7/uSX6dt+7Pn9fO3XXt3hakIxA8xfKIWN75aM5bu46oWtgTlz
-        RG0rUYdFKopPTtHeEfJauWBmZGhH05Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629141170;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bLS7JbPsgoJbranNPm2czgSZVcMxJZOHABRNcu46Ask=;
-        b=E6mboCSuqLSTpqnqzQfD2rw0/viszt8gLpcJKzxPBzsNW2hFu8O6poGJO8nHpU+U7lh+Rs
-        ZPiQ8iK4uLFgcoCw==
-Received: from lion.mk-sys.cz (unknown [10.100.200.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D39EBA3B88;
-        Mon, 16 Aug 2021 19:12:49 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id B9ED36082B; Mon, 16 Aug 2021 21:12:49 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 21:12:49 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: [REGRESSION][BISECTED] flood of "hid-generic ... control queue
- full" since v5.14-rc1
-Message-ID: <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
-References: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz>
- <YRpnfJ719DwPu2B0@kroah.com>
- <20210816141347.zougsudwe5tqgkpt@lion.mk-sys.cz>
- <20210816143856.GA121345@rowland.harvard.edu>
+        id S230118AbhHPTNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:13:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhHPTNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:13:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59BB760F35;
+        Mon, 16 Aug 2021 19:13:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629141197;
+        bh=MfGn258aaLrPNsfLMxzJS8p/bCXZ4kpH5puOFp2U4Dc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zp1kSM412nk5X3DdnzZF8VfqIEw4yt6YgXdnhp33+Ya/TNhc9N254nTUF9Z8ErNsn
+         CIbOiVOWqVcUhGFqbQ1+OhpiFyg3cZ7Qv+JjEqC073qOAkcp3ReRIy3OMJow+b1lWC
+         K8Q6DFyB/3yvdJFhOHl0DEu4ZLMWy1dA3kheiEMfTL5KLqbxUlNT4W6fA/Oay//Kde
+         Kxbl6FzEi1lW83gS/LXMlFVuReAiUaxZJo6T+hbsxY2ymWjTc8ew3vmH6khCkMU+tr
+         pzXDsjsr+ZS5Q88sDmQ7QwLX3Yyg0pkyW5Io5BZRwOVDvEXm+1FK0N+wvzoEPTf5kq
+         li9E/E/0RBpKQ==
+Date:   Mon, 16 Aug 2021 22:12:55 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [BUG] general protection fault when reading /proc/kcore
+Message-ID: <YRq4typgRn342B4i@kernel.org>
+References: <YRqhqz35tm3hA9CG@krava>
+ <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+ <YRqqqvaZHDu1IKrD@krava>
+ <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3ww3jcnbtghg6slm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816143856.GA121345@rowland.harvard.edu>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 08:38:43PM +0200, David Hildenbrand wrote:
+> On 16.08.21 20:12, Jiri Olsa wrote:
+> > On Mon, Aug 16, 2021 at 07:49:15PM +0200, David Hildenbrand wrote:
+> > > On 16.08.21 19:34, Jiri Olsa wrote:
+> > > > hi,
+> > > > I'm getting fault below when running:
+> > > >=20
+> > > > 	# cat /proc/kallsyms | grep ksys_read
+> > > > 	ffffffff8136d580 T ksys_read
+> > > > 	# objdump -d --start-address=3D0xffffffff8136d580 --stop-address=
+=3D0xffffffff8136d590 /proc/kcore
+> > > >=20
+> > > > 	/proc/kcore:     file format elf64-x86-64
+> > > >=20
+> > > > 	Segmentation fault
+> > > >=20
+> > > > any idea? config is attached
+> > >=20
+> > > Just tried with a different config on 5.14.0-rc6+
+> > >=20
+> > > [root@localhost ~]# cat /proc/kallsyms | grep ksys_read
+> > > ffffffff8927a800 T ksys_readahead
+> > > ffffffff89333660 T ksys_read
+> > >=20
+> > > [root@localhost ~]# objdump -d --start-address=3D0xffffffff89333660
+> > > --stop-address=3D0xffffffff89333670
+> > >=20
+> > > a.out:     file format elf64-x86-64
+> > >=20
+> > >=20
+> > >=20
+> > > The kern_addr_valid(start) seems to fault in your case, which is weir=
+d,
+> > > because it merely walks the page tables. But it seems to complain abo=
+ut a
+> > > non-canonical address 0xf887ffcbff000
+> > >=20
+> > > Can you post your QEMU cmdline? Did you test this on other kernel ver=
+sions?
+> >=20
+> > I'm using virt-manager so:
+> >=20
+> > /usr/bin/qemu-system-x86_64 -name guest=3Dfedora33,debug-threads=3Don -=
+S -object secret,id=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/qemu/=
+domain-13-fedora33/master-key.aes -machine pc-q35-5.1,accel=3Dkvm,usb=3Doff=
+,vmport=3Doff,dump-guest-core=3Doff,memory-backend=3Dpc.ram -cpu Skylake-Se=
+rver-IBRS,ss=3Don,vmx=3Don,pdcm=3Don,hypervisor=3Don,tsc-adjust=3Don,clflus=
+hopt=3Don,umip=3Don,pku=3Don,stibp=3Don,arch-capabilities=3Don,ssbd=3Don,xs=
+aves=3Don,ibpb=3Don,amd-stibp=3Don,amd-ssbd=3Don,skip-l1dfl-vmentry=3Don,ps=
+change-mc-no=3Don -m 8192 -object memory-backend-ram,id=3Dpc.ram,size=3D858=
+9934592 -overcommit mem-lock=3Doff -smp 20,sockets=3D20,cores=3D1,threads=
+=3D1 -uuid 2185d5a9-dbad-4d61-aa4e-97af9fd7ebca -no-user-config -nodefaults=
+ -chardev socket,id=3Dcharmonitor,fd=3D36,server,nowait -mon chardev=3Dchar=
+monitor,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc,driftfix=3Dslew -global=
+ kvm-pit.lost_tick_policy=3Ddelay -no-hpet -no-shutdown -global ICH9-LPC.di=
+sable_s3=3D1 -global ICH9-LPC.disable_s4=3D1 -boot strict=3Don -kernel /hom=
+e/jolsa/qemu/run/vmlinux -initrd /home/jolsa/qemu/run/initrd -append root=
+=3D/dev/mapper/fedora_fedora-root ro rd.lvm.lv=3Dfedora_fedora/root console=
+=3Dtty0 console=3DttyS0,115200 -device pcie-root-port,port=3D0x10,chassis=
+=3D1,id=3Dpci.1,bus=3Dpcie.0,multifunction=3Don,addr=3D0x2 -device pcie-roo=
+t-port,port=3D0x11,chassis=3D2,id=3Dpci.2,bus=3Dpcie.0,addr=3D0x2.0x1 -devi=
+ce pcie-root-port,port=3D0x12,chassis=3D3,id=3Dpci.3,bus=3Dpcie.0,addr=3D0x=
+2.0x2 -device pcie-root-port,port=3D0x13,chassis=3D4,id=3Dpci.4,bus=3Dpcie.=
+0,addr=3D0x2.0x3 -device pcie-root-port,port=3D0x14,chassis=3D5,id=3Dpci.5,=
+bus=3Dpcie.0,addr=3D0x2.0x4 -device pcie-root-port,port=3D0x15,chassis=3D6,=
+id=3Dpci.6,bus=3Dpcie.0,addr=3D0x2.0x5 -device pcie-root-port,port=3D0x16,c=
+hassis=3D7,id=3Dpci.7,bus=3Dpcie.0,addr=3D0x2.0x6 -device qemu-xhci,p2=3D15=
+,p3=3D15,id=3Dusb,bus=3Dpci.2,addr=3D0x0 -device virtio-serial-pci,id=3Dvir=
+tio-serial0,bus=3Dpci.3,addr=3D0x0 -blockdev {"driver":"file","filename":"/=
+var/lib/libvirt/images/fedora33.qcow2","node-name":"libvirt-2-storage","aut=
+o-read-only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-2-form=
+at","read-only":false,"driver":"qcow2","file":"libvirt-2-storage","backing"=
+:null} -device virtio-blk-pci,bus=3Dpci.4,addr=3D0x0,drive=3Dlibvirt-2-form=
+at,id=3Dvirtio-disk0,bootindex=3D1 -device ide-cd,bus=3Dide.0,id=3Dsata0-0-=
+0 -netdev tap,fd=3D38,id=3Dhostnet0,vhost=3Don,vhostfd=3D39 -device virtio-=
+net-pci,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:f3:c6:e7,bus=3Dpci.1,add=
+r=3D0x0 -chardev pty,id=3Dcharserial0 -device isa-serial,chardev=3Dcharseri=
+al0,id=3Dserial0 -chardev socket,id=3Dcharchannel0,fd=3D40,server,nowait -d=
+evice virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,chardev=3Dcharchannel0,i=
+d=3Dchannel0,name=3Dorg.qemu.guest_agent.0 -chardev spicevmc,id=3Dcharchann=
+el1,name=3Dvdagent -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D2,cha=
+rdev=3Dcharchannel1,id=3Dchannel1,name=3Dcom.redhat.spice.0 -device usb-tab=
+let,id=3Dinput0,bus=3Dusb.0,port=3D1 -spice port=3D5900,addr=3D127.0.0.1,di=
+sable-ticketing,image-compression=3Doff,seamless-migration=3Don -device qxl=
+-vga,id=3Dvideo0,ram_size=3D67108864,vram_size=3D67108864,vram64_size_mb=3D=
+0,vgamem_mb=3D16,max_outputs=3D1,bus=3Dpcie.0,addr=3D0x1 -device ich9-intel=
+-hda,id=3Dsound0,bus=3Dpcie.0,addr=3D0x1b -device hda-duplex,id=3Dsound0-co=
+dec0,bus=3Dsound0.0,cad=3D0 -chardev spicevmc,id=3Dcharredir0,name=3Dusbred=
+ir -device usb-redir,chardev=3Dcharredir0,id=3Dredir0,bus=3Dusb.0,port=3D2 =
+-chardev spicevmc,id=3Dcharredir1,name=3Dusbredir -device usb-redir,chardev=
+=3Dcharredir1,id=3Dredir1,bus=3Dusb.0,port=3D3 -device virtio-balloon-pci,i=
+d=3Dballoon0,bus=3Dpci.5,addr=3D0x0 -object rng-random,id=3Dobjrng0,filenam=
+e=3D/dev/urandom -device virtio-rng-pci,rng=3Dobjrng0,id=3Drng0,bus=3Dpci.6=
+,addr=3D0x0 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,spawn=3Dde=
+ny,resourcecontrol=3Ddeny -msg timestamp=3Don
+=20
 
---3ww3jcnbtghg6slm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 16, 2021 at 10:38:56AM -0400, Alan Stern wrote:
-> On Mon, Aug 16, 2021 at 04:13:47PM +0200, Michal Kubecek wrote:
-> > Looking at the code, the primary problem seems to be that the "else"
-> > branch in hid_submit_ctrl() recalculates transfer_buffer_length to
-> > a rounded up value but assigns the original length to wLength.
+> > so far I tested just bpf-next/master:
+> >    git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> >=20
 >=20
-> Looks like you found the bug.  Fixing it might be as simple as setting=20
-> len =3D padlen in that "else" branch.  You could then combine the=20
-> transfer_buffer_length assignment with the one in the "if" branch and=20
-> hoist them out after the entire "if" statement.
+> Just tried with upstream Linux (5.14.0-rc6) and your config without
+> triggering it. I'm using "-cpu host", though, on an AMD Ryzen 9 3900X
 
-With the patch below, there are no errors and the UPS communication
-works correctly and so do other HID devices. But I would prefere someone
-familiar with HID code to confirm that this is what we want and what
-would be the right way to handle usb_submit_urb() errors.
+With Jiri's config and '-cpu <very long string>' it triggers for me on
+v5.14-rc6.
 
-Michal
-
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 06130dc431a0..ef240ef63a66 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -377,27 +377,26 @@ static int hid_submit_ctrl(struct hid_device *hid)
- 	len =3D hid_report_len(report);
- 	if (dir =3D=3D USB_DIR_OUT) {
- 		usbhid->urbctrl->pipe =3D usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
--		usbhid->urbctrl->transfer_buffer_length =3D len;
- 		if (raw_report) {
- 			memcpy(usbhid->ctrlbuf, raw_report, len);
- 			kfree(raw_report);
- 			usbhid->ctrl[usbhid->ctrltail].raw_report =3D NULL;
- 		}
- 	} else {
--		int maxpacket, padlen;
-+		int maxpacket;
+I'll also try to take a look tomorrow.
 =20
- 		usbhid->urbctrl->pipe =3D usb_rcvctrlpipe(hid_to_usb_dev(hid), 0);
- 		maxpacket =3D usb_maxpacket(hid_to_usb_dev(hid),
- 					  usbhid->urbctrl->pipe, 0);
- 		if (maxpacket > 0) {
--			padlen =3D DIV_ROUND_UP(len, maxpacket);
--			padlen *=3D maxpacket;
--			if (padlen > usbhid->bufsize)
--				padlen =3D usbhid->bufsize;
-+			len =3D DIV_ROUND_UP(len, maxpacket);
-+			len *=3D maxpacket;
-+			if (len > usbhid->bufsize)
-+				len =3D usbhid->bufsize;
- 		} else
--			padlen =3D 0;
--		usbhid->urbctrl->transfer_buffer_length =3D padlen;
-+			len =3D 0;
- 	}
-+	usbhid->urbctrl->transfer_buffer_length =3D len;
- 	usbhid->urbctrl->dev =3D hid_to_usb_dev(hid);
-=20
- 	usbhid->cr->bRequestType =3D USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
+> > and jsut removed my changes to make sure it wasn't me ;-)
+>=20
+> :)
+>=20
+> >=20
+> > I'll try to find a version that worked for me before
+>=20
+> Can you try with upstream Linux as well?
+>=20
+>=20
+> --=20
+> Thanks,
+>=20
+> David / dhildenb
 
---3ww3jcnbtghg6slm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmEauKkACgkQ538sG/LR
-dpU94AgAvbyi6DxI+0UkhSO6Ln39x8aE67gCKdMLjoAuiA0mWfVQCfFnLA/M22rd
-+MnTe/1jHEUphGXHTQOSiGJk/rPx6zYZTP3IRpXf2j2NBTBWtAXt2EJVJdWNUirO
-6knH8tZSnxXvMsKWBlGGMRptV4FD0XiNhSYmfzV1+QXWjZ312Y+V9icKW8ITVIUR
-U3WJ1xU+TN60Y6FduWK+gZOC6HpggSNkJQb+gh5okLl4Lp6bRUO1fDT2zAqvaA6f
-x2BtYVqWyE3DWr7rkE68aYYO2l9Ytc+5DMOCTeV35Uo+6q3VHC1z5uepDwVqV8ST
-g84Aa8aWYYBDV9pBZo1PcrxtZQA8rQ==
-=UjF7
------END PGP SIGNATURE-----
-
---3ww3jcnbtghg6slm--
+--=20
+Sincerely yours,
+Mike.
