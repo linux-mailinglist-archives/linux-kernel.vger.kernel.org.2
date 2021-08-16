@@ -2,119 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610603EDDB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6E43EDDB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhHPTOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhHPTOl (ORCPT
+        id S230231AbhHPTO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:14:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33206 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229790AbhHPTOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:14:41 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798D4C06179A
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:14:09 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id a93so34933577ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ddKmBAaL4anw3kgNsyAbpqw4YAHAfR61Ukhu3CXAdpQ=;
-        b=T9HdhiT0dXrGmgueqTIb6X9mPePJxHP+j6MIIHkpi0Ns3V30fcgze4d85bGN7i/Vuo
-         +MPAKBqrK9UNlCJ88ifAQlz/TIT4mVkuq5CRHNfwiW3nV/JA4gUczTPuoGwMiA9HETvn
-         UkJGXMZ3PRAE3NHetz2qssyTebmLD/XqOVG/1nN8DeudnElmNQO3KUiYQ4lX8pi0Zp5d
-         tc3HZNUhZyuyxPt/NHWTtCVScOpAR8/0DaN7wD9X2h6uzUvAX25ad2gwed5WHBEO1erQ
-         RQQTrrMv4dJy3GOmZX1IfgTFpjj/33GaoVNpso7HCf3Xamo/63CbJW0Kskj5ds2p4cNz
-         9BXw==
+        Mon, 16 Aug 2021 15:14:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629141263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lWy3l2+IfO7xO6oKpqVQHj7y0vYczHZZ4SIluKLQLb8=;
+        b=YJyhDttYZdTjcGRCCm6w9yFTHcwG8r/HoEac9mMvlxx7UtCgjfeKes8aFtyh1ixUN5fn5Z
+        JdcjMdiAEd7K1ifY5QuMV1Oi5JZponCffUDVcGiXgmHc9I9e8TeiBWt0w/iIAW13Yz15y8
+        7YbDF7xQJXld5QsPZ2UluZg8bykBwYg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-PWkqwUtVNDOJu6Lhv76KTw-1; Mon, 16 Aug 2021 15:14:22 -0400
+X-MC-Unique: PWkqwUtVNDOJu6Lhv76KTw-1
+Received: by mail-wm1-f72.google.com with SMTP id g70-20020a1c20490000b02902e6753bf473so103130wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:14:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ddKmBAaL4anw3kgNsyAbpqw4YAHAfR61Ukhu3CXAdpQ=;
-        b=DIVJ3pmfzu600Dcug2oTbOFyY5jn8qEWIpkfbX9qAiHYcKrEzeg2YY0RHA0L3KfoAp
-         FSRtR2EumBey+ekQ7UbJDzM8QpMxsn+Sq6X+grDc8EKEsFAabTdeCYbPQq8rojSRMKPq
-         L1o8EstVZAkrTHZqKKvEjTuLrcz8BTzp0VpEeQ9n+P1nMovLGv51gVHj6IAk/mLYe5PK
-         7fTlaQEJeKlUvkZtRhlbiH/9wlfFHZiuY4OT6Oyv+t9ZzXo2K5OlwXUisI7tRU9SuVVu
-         LUdN+0YeM0bmDLUrDOJCB7jg1Mqqc12VCftu38xpONxT29GpCaKomjNQQ11rr6HuZcme
-         VSKg==
-X-Gm-Message-State: AOAM531wsENtTo+tSZw9xK0u5sV+l9p9hVqN7YGB8BNTLqGb5sR/EzT+
-        /7rYLy2NTtDqYmajvqHf+FoHYjZjxEHuwxRY4lc4mA==
-X-Google-Smtp-Source: ABdhPJysWBZVCKKJbr6bgcAHayPSYtRM07cY1fPHMS0wTcE5unx6TDl/t07LozWQCgzaBW6Dh5Iiw5yNJwUzKdtfivk=
-X-Received: by 2002:a25:d0d4:: with SMTP id h203mr23601519ybg.0.1629141246719;
- Mon, 16 Aug 2021 12:14:06 -0700 (PDT)
+        bh=lWy3l2+IfO7xO6oKpqVQHj7y0vYczHZZ4SIluKLQLb8=;
+        b=rkOG0qs7BcEqishE6DM4whIr9GLjGPkq/Wa3zrGku/pEbNj3O2Vh5s4vluM5aVCj9W
+         4F2GobROC6WLgkzpGf7nT9RB0sf5/qOzaygvRmqkcAfSvrW8asGUutH8BK2xyvSsGmLW
+         zC7T9vAjkcvLFmVZ8XhM1U7n54wf5sOl6SNbQfYVL+LFnzB+JliYD8Dh40fKhuhf5+nV
+         8e4rmANX146DhTz+X/8dr4F8GFRMwiXx79bsYnAf9IUaLHw6wuO5wk/RpGYe8IioT8r0
+         zS9bruSHwWU8bYiEwccpPxuqZ7X+un+gDHQe7X5GAIkkjYw7rAuZ09ugPQYEomUKG9jR
+         j2Wg==
+X-Gm-Message-State: AOAM532HJ1K/3VWgCaeSWzB+6PDhaHD4CfW0Q37tDQj1+i40KuJwjGp7
+        Ajd5sBZLDDvGmSBOoli5Fo7R1R8FlcCn38DE3sEBGT06x3JKdGZVFggfZWMcNHeG3fa0utvfYqJ
+        Tj3+0DJ+1FAUbvMexiC9x0IF61xyaNS3b6NEkpFcR
+X-Received: by 2002:a5d:674b:: with SMTP id l11mr18978891wrw.357.1629141260958;
+        Mon, 16 Aug 2021 12:14:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3e2hMfKU0iq3mIOu2m32crL3qBkqbuiWv8L806qkeQbGdArMICY3wU0R/Jc0O1nkrsAQGzAuFreIkqVtHZaU=
+X-Received: by 2002:a5d:674b:: with SMTP id l11mr18978869wrw.357.1629141260774;
+ Mon, 16 Aug 2021 12:14:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210816011948.1118959-1-jay.xu@rock-chips.com>
-In-Reply-To: <20210816011948.1118959-1-jay.xu@rock-chips.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 16 Aug 2021 21:13:56 +0200
-Message-ID: <CAMpxmJWQ1pDoPZHjg1vvZYhPrY+3BZi3Zuv2P7xKYRDW0dyw8Q@mail.gmail.com>
-Subject: Re: [PATCH v8 0/9] gpio-rockchip driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210803191818.993968-1-agruenba@redhat.com> <CAHk-=wj+_Y7NQ-NhhE0jk52c9ZB0VJbO1AjtMJFB8wP=PO+bdw@mail.gmail.com>
+In-Reply-To: <CAHk-=wj+_Y7NQ-NhhE0jk52c9ZB0VJbO1AjtMJFB8wP=PO+bdw@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 16 Aug 2021 21:14:09 +0200
+Message-ID: <CAHc6FU6H5q20qiQ5FX1726i0FJHyh=Y46huWkCBZTR3sk+3Dhg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] gfs2: Fix mmap + page fault deadlocks
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 3:19 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
+On Tue, Aug 3, 2021 at 9:45 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Tue, Aug 3, 2021 at 12:18 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> > With this patch queue, fstest generic/208 (aio-dio-invalidate-failure.c)
+> > endlessly spins in gfs2_file_direct_write.  It looks as if there's a bug
+> > in get_user_pages_fast when called with FOLL_FAST_ONLY:
+> >
+> >  (1) The test case performs an aio write into a 32 MB buffer.
+> >
+> >  (2) The buffer is initially not in memory, so when iomap_dio_rw() ->
+> >      ... -> bio_iov_iter_get_pages() is called with the iter->noio flag
+> >      set, we get to get_user_pages_fast() with FOLL_FAST_ONLY set.
+> >      get_user_pages_fast() returns 0, which causes
+> >      bio_iov_iter_get_pages to return -EFAULT.
+> >
+> >  (3) Then gfs2_file_direct_write faults in the entire buffer with
+> >      fault_in_iov_iter_readable(), which succeeds.
+> >
+> >  (4) With the buffer in memory, we retry the iomap_dio_rw() ->
+> >      ... -> bio_iov_iter_get_pages() -> ... -> get_user_pages_fast().
+> >      This should succeed now, but get_user_pages_fast() still returns 0.
 >
-> Separate gpio driver from pinctrl driver, and support gpio v2 controller.
+> Hmm. Have you tried to figure out why that "still returns 0" happens?
+
+The call stack is:
+
+gup_pte_range
+gup_pmd_range
+gup_pud_range
+gup_p4d_range
+gup_pgd_range
+lockless_pages_from_mm
+internal_get_user_pages_fast
+get_user_pages_fast
+iov_iter_get_pages
+__bio_iov_iter_get_pages
+bio_iov_iter_get_pages
+iomap_dio_bio_actor
+iomap_dio_actor
+iomap_apply
+iomap_dio_rw
+gfs2_file_direct_write
+
+In gup_pte_range, pte_special(pte) is true and so we return 0.
+
+> One option - for debugging only - would be to introduce a new flag to
+> get_user_pages_fast() that says "print out reason if failed" and make
+> the retry (but not the original one) have that flag set.
 >
-> Jianqun Xu (9):
->   pinctrl/rockchip: always enable clock for gpio controller
->   pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
->   pinctrl/rockchip: add pinctrl device to gpio bank struct
->   dt-bindings: gpio: change items restriction of clock for
->     rockchip,gpio-bank
->   gpio/rockchip: add driver for rockchip gpio
->   gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
->   gpio/rockchip: support next version gpio controller
->   gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
->   pinctrl/rockchip: drop the gpio related codes
+> There are a couple of things of note when it comes to "get_user_pages_fast()":
 >
->  .../bindings/gpio/rockchip,gpio-bank.yaml     |   5 +-
->  drivers/gpio/Kconfig                          |   8 +
->  drivers/gpio/Makefile                         |   1 +
->  drivers/gpio/gpio-rockchip.c                  | 771 +++++++++++++++
->  drivers/pinctrl/pinctrl-rockchip.c            | 909 +-----------------
->  drivers/pinctrl/pinctrl-rockchip.h            | 287 ++++++
->  6 files changed, 1089 insertions(+), 892 deletions(-)
->  create mode 100644 drivers/gpio/gpio-rockchip.c
->  create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+>  (a) some architectures don't even enable it
 >
-> --
-> v8:
->  - fix rockchip,gpio-bank.yaml about clocks and clock-names
->  - fix commit author of rockchip,gpio-bank.yaml patch to me
+>  (b) it can be very picky about the page table contents, and wants the
+> accessed bit to already be set (or the dirty bit, in the case of a
+> write).
 >
-> v7:
->  - include <linux/gpio/driver.h> instead of <linux/gpio.h>
->  - use gpio align id instead of gpio-name
+> but (a) shouldn't be an issue on any common platform and (b) shouldn't
+> be an issue with  fault_in_iov_iter_readable() that actually does a
+> __get_user() so it will access through the page tables.
 >
-> v6:
->  - new gpio-driver first and then drop gpio from pinctrl
->  - reorder patches
->  - cherry-pick gpio dt-binding from chenliang
+> (It might be more of an issue with fault_in_iov_iter_writable() due to
+> walking the page tables by hand - if we don't do the proper
+> access/dirty setting, I could see get_user_pages_fast() failing).
 >
-> v5:
->  - change to devel branch
+> Anyway, for reason (a) I do think that eventually we should probably
+> introduce FOLL_NOFAULT, and allow the full "slow" page table walk -
+> just not calling down to handle_mm_fault() if it fails.
 >
-> 2.25.1
+> But (a) should be a non-issue in your test environment, and so it
+> would be interesting to hear what it is that fails. Because scanning
+> through the patches, they all _look_ fine to me (apart from the one
+> comment about return values, which is more about being consistent with
+> copy_to/from_user() and making the code simpler - not about
+> correctness)
 >
->
+>                        Linus
 >
 
-Linus,
+Thanks,
+Andreas
 
-are you going to take the entire series through the pinctrl tree or
-should we split the patches?
-
-Bart
