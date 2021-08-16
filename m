@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632AE3ED193
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF463ED196
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235973AbhHPKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:01:57 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3652 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235861AbhHPKBP (ORCPT
+        id S233207AbhHPKFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:05:37 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:7372 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhHPKEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:01:15 -0400
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gp8lj6C3Bz6BGZr;
-        Mon, 16 Aug 2021 17:59:45 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 16 Aug 2021 12:00:31 +0200
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 16 Aug 2021 11:00:30 +0100
-Subject: Re: [PATCH 2/3] scsi: fnic: Stop setting scsi_cmnd.tag
-To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        "Bart Van Assche" <bvanassche@acm.org>
-CC:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
- <1628862553-179450-3-git-send-email-john.garry@huawei.com>
- <3e5d1bd4-cee9-7fd0-93a4-58d808e198f6@acm.org>
- <20210814073948.GA21536@lst.de>
- <b6216e3f-5339-18e4-ca31-61c7968efbb1@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2e6dd74f-bd5a-22b8-f20b-d4b54fc4ade3@huawei.com>
-Date:   Mon, 16 Aug 2021 11:00:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 16 Aug 2021 06:04:50 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 16 Aug
+ 2021 18:04:16 +0800
+Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 16 Aug
+ 2021 18:04:15 +0800
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
+        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
+        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <YanchenSun@zhaoxin.com>
+References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <YRogod0HB4d7Og4E@piout.net>
+Message-ID: <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com>
+Date:   Mon, 16 Aug 2021 18:03:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b6216e3f-5339-18e4-ca31-61c7968efbb1@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YRogod0HB4d7Og4E@piout.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2021 13:35, Hannes Reinecke wrote:
-> On 8/14/21 9:39 AM, Christoph Hellwig wrote:
->> On Fri, Aug 13, 2021 at 08:17:45PM -0700, Bart Van Assche wrote:
->>> On 8/13/21 6:49 AM, John Garry wrote:
->>>> It is never read. Setting it and the request tag seems dodgy
->>>> anyway.
->>>
->>> This is done because there is code in the SCSI error handler that may
->>> allocate a SCSI command without allocating a tag. See also
->>> scsi_ioctl_reset().
 
-Right, so we just get a loan of the tag of a real request. fnic driver 
-comment:
-
-"Really should fix the midlayer to pass in a proper request for ioctls..."
-
+On 16/08/2021 16:24, Alexandre Belloni wrote:
+> Hello,
+> 
+> On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
+>> When the RTC divider is changed from reset to an operating time base,
+>> the first update cycle should be 500ms later. But on some Zhaoxin SOCs,
+>> this first update cycle is one second later.
 >>
->> Yes.  Hannes had a great series to stop passing the pointless scsi_cmnd
->> to the reset methods.  Hannes, any chance you coul look into
->> resurrecting that?
+>> So set RTC time on these Zhaoxin SOCs will causing 500ms delay.
 >>
-> Sure.
+> 
+> Can you explain what is the relationship between writing the divider and
+> the 500ms delay?
+>> Isn't the issue that you are using systohc and set_offset_nsec is set to
+> NSEC_PER_SEC / 2 ?
+> 
+No.
+When using #hwclock -s to set RTC time and set_offset_nsec is
+NSEC_PER_SEC / 2, the function mc146818_set_time() requires the first
+update cycle after RTC divider be changed from reset to an operating
+mode is 500ms as the MC146818A spec specified. But on some Zhaoxin SOCs,
+the first update cycle of RTC is one second later after RTC divider be
+changed from reset to an operating mode. So the first update cycle after
+RTC divider be changed from reset to an operation mode on These SOCs
+will causing 500ms delay with current mc146818_set_time() implementation.
 
-The latest iteration of that series - at v7 - still passed that fake 
-SCSI command to the reset method, and the reset method allocated the 
-internal command.
+Sincerely
+TonyWWang-oc
 
-So will we change change scsi_ioctl_reset() to allocate an internal 
-command, rather than the LLDD?
-
-Thanks,
-John
+>> Skip setup RTC divider on these SOCs in mc146818_set_time to fix it.
+>>
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>> ---
+>>  drivers/rtc/rtc-mc146818-lib.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
+>> index dcfaf09..322f94b 100644
+>> --- a/drivers/rtc/rtc-mc146818-lib.c
+>> +++ b/drivers/rtc/rtc-mc146818-lib.c
+>> @@ -190,8 +190,18 @@ int mc146818_set_time(struct rtc_time *time)
+>>  	spin_lock_irqsave(&rtc_lock, flags);
+>>  	save_control = CMOS_READ(RTC_CONTROL);
+>>  	CMOS_WRITE((save_control|RTC_SET), RTC_CONTROL);
+>> +
+>> +#ifdef CONFIG_X86
+>> +	if (!((boot_cpu_data.x86_vendor == X86_VENDOR_CENTAUR ||
+>> +		boot_cpu_data.x86_vendor == X86_VENDOR_ZHAOXIN) &&
+>> +		(boot_cpu_data.x86 <= 7 && boot_cpu_data.x86_model <= 59))) {
+>> +		save_freq_select = CMOS_READ(RTC_FREQ_SELECT);
+>> +		CMOS_WRITE((save_freq_select|RTC_DIV_RESET2), RTC_FREQ_SELECT);
+>> +	}
+>> +#else
+>>  	save_freq_select = CMOS_READ(RTC_FREQ_SELECT);
+>>  	CMOS_WRITE((save_freq_select|RTC_DIV_RESET2), RTC_FREQ_SELECT);
+>> +#endif
+>>  
+>>  #ifdef CONFIG_MACH_DECSTATION
+>>  	CMOS_WRITE(real_yrs, RTC_DEC_YEAR);
+>> @@ -209,7 +219,15 @@ int mc146818_set_time(struct rtc_time *time)
+>>  #endif
+>>  
+>>  	CMOS_WRITE(save_control, RTC_CONTROL);
+>> +
+>> +#ifdef CONFIG_X86
+>> +	if (!((boot_cpu_data.x86_vendor == X86_VENDOR_CENTAUR ||
+>> +		boot_cpu_data.x86_vendor == X86_VENDOR_ZHAOXIN) &&
+>> +		(boot_cpu_data.x86 <= 7 && boot_cpu_data.x86_model <= 59)))
+>> +		CMOS_WRITE(save_freq_select, RTC_FREQ_SELECT);
+>> +#else
+>>  	CMOS_WRITE(save_freq_select, RTC_FREQ_SELECT);
+>> +#endif
+>>  
+>>  	spin_unlock_irqrestore(&rtc_lock, flags);
+>>  
+>> -- 
+>> 2.7.4
+>>
+> 
