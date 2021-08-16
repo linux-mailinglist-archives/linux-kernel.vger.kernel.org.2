@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123B93ED270
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C7B3ED259
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236204AbhHPKwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:52:06 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:11109 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236159AbhHPKvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:51:54 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 17GAUOsM044052;
-        Mon, 16 Aug 2021 18:30:24 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 16 Aug
- 2021 18:48:29 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v3 11/15] iio: adc: aspeed: Fix the calculate error of clock.
-Date:   Mon, 16 Aug 2021 18:48:42 +0800
-Message-ID: <20210816104846.13155-12-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210816104846.13155-1-billy_tsai@aspeedtech.com>
-References: <20210816104846.13155-1-billy_tsai@aspeedtech.com>
+        id S235806AbhHPKvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:51:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46497 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230250AbhHPKvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:51:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="195422586"
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="195422586"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 03:50:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="530423882"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 16 Aug 2021 03:50:43 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 571FE5808DB;
+        Mon, 16 Aug 2021 03:50:40 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 18:50:37 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, vee.khee.wong@intel.com,
+        weifeng.voon@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v1 2/3] net: stmmac: add ethtool per-queue
+ statistic framework
+Message-ID: <20210816105037.GA11930@linux.intel.com>
+References: <cover.1629092894.git.vijayakannan.ayyathurai@intel.com>
+ <b0fd3bf4e5c105e959df60d3c876297721b62ee6.1629092894.git.vijayakannan.ayyathurai@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 17GAUOsM044052
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0fd3bf4e5c105e959df60d3c876297721b62ee6.1629092894.git.vijayakannan.ayyathurai@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adc clcok formula is
-ast2400/2500:
-ADC clock period = PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-ast2600:
-ADC clock period = PCLK * 2 * (ADC0C[15:0] + 1)
-They all have one fixed divided 2 and the legacy driver didn't handle it.
-This patch register the fixed factory clock device as the parent of adc
-clock scaler to fix this issue.
+On Mon, Aug 16, 2021 at 02:15:59PM +0800, Vijayakannan Ayyathurai wrote:
+> Adding generic ethtool per-queue statistic framework to display the
+> statistics for each rx/tx queue. In future, users can avail it to add
+> more per-queue specific counters. Number of rx/tx queues displayed is
+> depending on the available rx/tx queues in that particular MAC config
+> and this number is limited up to the MTL_MAX_{RX|TX}_QUEUES defined
+> in the driver.
+> 
+> Ethtool per-queue statistic display will look like below, when users
+> start adding more counters.
+> 
+> Example:
+>  q0_tx_statA:
+>  q0_tx_statB:
+>  q0_tx_statC:
+>  |
+>  q0_tx_statX:
+>  .
+>  .
+>  .
+>  qMAX_tx_statA:
+>  qMAX_tx_statB:
+>  qMAX_tx_statC:
+>  |
+>  qMAX_tx_statX:
+> 
+>  q0_rx_statA:
+>  q0_rx_statB:
+>  q0_rx_statC:
+>  |
+>  q0_rx_statX:
+>  .
+>  .
+>  .
+>  qMAX_rx_statA:
+>  qMAX_rx_statB:
+>  qMAX_rx_statC:
+>  |
+>  qMAX_rx_statX:
+> 
+> In addition, this patch has the support on displaying the number of
+> packets received and transmitted per queue.
+>
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index ea3e9a52fcc9..8fe7da1a651f 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -4,6 +4,12 @@
-  *
-  * Copyright (C) 2017 Google, Inc.
-  * Copyright (C) 2021 Aspeed Technology Inc.
-+ *
-+ * ADC clock formula:
-+ * Ast2400/Ast2500:
-+ * clock period = period of PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-+ * Ast2600:
-+ * clock period = period of PCLK * 2 * (ADC0C[15:0] + 1)
-  */
- 
- #include <linux/clk.h>
-@@ -77,6 +83,7 @@ struct aspeed_adc_data {
- 	struct regulator	*regulator;
- 	void __iomem		*base;
- 	spinlock_t		clk_lock;
-+	struct clk_hw		*fixed_div_clk;
- 	struct clk_hw		*clk_prescaler;
- 	struct clk_hw		*clk_scaler;
- 	struct reset_control	*rst;
-@@ -196,6 +203,13 @@ static void aspeed_adc_unregister_divider(void *data)
- 	clk_hw_unregister_divider(clk);
- }
- 
-+static void aspeed_adc_unregister_fixed_divider(void *data)
-+{
-+	struct clk_hw *clk = data;
-+
-+	clk_hw_unregister_fixed_factor(clk);
-+}
-+
- static void aspeed_adc_reset_assert(void *data)
- {
- 	struct reset_control *rst = data;
-@@ -312,6 +326,18 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	/* Register ADC clock prescaler with source specified by device tree. */
- 	spin_lock_init(&data->clk_lock);
- 	snprintf(clk_parent_name, 32, of_clk_get_parent_name(pdev->dev.of_node, 0));
-+	snprintf(clk_name, 32, "%s-fixed-div", data->model_data->model_name);
-+	data->fixed_div_clk = clk_hw_register_fixed_factor(
-+		&pdev->dev, clk_name, clk_parent_name, 0, 1, 2);
-+	if (IS_ERR(data->fixed_div_clk))
-+		return PTR_ERR(data->fixed_div_clk);
-+
-+	ret = devm_add_action_or_reset(data->dev,
-+				       aspeed_adc_unregister_fixed_divider,
-+				       data->clk_prescaler);
-+	if (ret)
-+		return ret;
-+	snprintf(clk_parent_name, 32, clk_name);
- 	if (data->model_data->need_prescaler) {
- 		snprintf(clk_name, 32, "%s-prescaler",
- 			 data->model_data->model_name);
--- 
-2.25.1
-
+> Signed-off-by: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+> ---
