@@ -2,124 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8705C3ED465
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CFD3ED466
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235071AbhHPM5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhHPM5l (ORCPT
+        id S231589AbhHPM6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:58:33 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:31727 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229839AbhHPM6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:57:41 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B3BC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:57:09 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id w20so34218041lfu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rsZbwogPh/AZ096p40e3Illwraa2Wp4Sz1Xn9F07NkY=;
-        b=F/HjoMoSBRQx7O3rJjSKgw+9Y0wXMncq0MMTz8S7BnxM2e9Iv7JPu+4npLw5JpteKf
-         KQsqqlPXITDdg2/w0w7Y6Bi7vB7fo3bbfzquvYSBaqGCYfEhWhxojM8qiawaaakZqSSj
-         GzdoV81BLgKbkGGQ3RiCYSUA3w1o82Lx5MG0gv1UPNoF+O8eAv8hIqwvi7VbEsjIOH0f
-         8mqm53eq+dIs4EoOBnxfqkrPhPCGjERwEFsfoRuXDqeYXEsqLGAOCn0RlPrxqtqeKPH9
-         74of8opK5oPhfvG1fbKsEle6YbzTAcYLvgGNBxjtKABVA7xGo8a/7T4Eyho0pMnXp5VE
-         uHxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rsZbwogPh/AZ096p40e3Illwraa2Wp4Sz1Xn9F07NkY=;
-        b=X2EUjuGomVv4vSp369VG/0AEq77fV/knTsMlCEDEcGLq8WDNDYQ+0797hHvCyn4OlA
-         LDca5YqBeqKsnxF4Kd840PrRw7alYo2qG4D7Q2u0nS+jjBO5lQ/V82PbfkSTI44z6K1i
-         F+n3QGFpRfL+Hp3sZ5NHXNGCpmaXmNMfhINWDUhEfLfOZ/+vhxH5/WacOq+3BMXnTUbD
-         X3YL8F9eVwZTDyNIwNPg1f6OsVaWSjgZL8DGM1Jg6rh2sY9GvOSYF9Znhmm1ACHZWpoo
-         gsUEgR+eyqBHv2Jro76CrjVc1SnFUSIQ14/nP4DKpAeh1xLXiUYG9iQCpxCynDmS2skm
-         cWSA==
-X-Gm-Message-State: AOAM533k8mNaxSgMx0l6RbNYQuOOgPm1gUqU4aMQTt0i6WOPZ7OBdll1
-        Lrp0WA/6/A2zl7nrV7B9SOxUwy7Trnwuj/iYey0ffQ==
-X-Google-Smtp-Source: ABdhPJyt2LM/X6WRHuXQbW9qfjxD4LEdZWv/ACuaKTruy1hSh5nQFOWqwmBEVDelJJo+RvYqJmMM1YTZbloW/jKfxkg=
-X-Received: by 2002:a05:6512:3f89:: with SMTP id x9mr11835532lfa.233.1629118628129;
- Mon, 16 Aug 2021 05:57:08 -0700 (PDT)
+        Mon, 16 Aug 2021 08:58:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1629118680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LoVMMJnXTuj51mnjJV/gHxsypoXFIvEdXo8115uGv7g=;
+        b=eN+H76BipD3OFX/An6LtTR9TMNioFpMJ4Ouy3iaDWBGoREr2CeJxFI77BeAxYIEaqQ6OgQ
+        cxu/1QsTNlQ0A1DLXCDy52OwWIWJ2aVfH6KZkVgLIByLpkaGg0iubFBzTTmYJ6lfhT+x1M
+        j6OZIs8NMMEB9SLFEDFyRjhyo8qrQ7I=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2057.outbound.protection.outlook.com [104.47.13.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-28-vrIqcS-jP8aXeHX6ir7Z6Q-2; Mon, 16 Aug 2021 14:57:59 +0200
+X-MC-Unique: vrIqcS-jP8aXeHX6ir7Z6Q-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lhvTNbNqPR8ZUfcgHUPrx8kz/VwqU+6ms4Lnm6pkLt9DUB7+9ByMRawd0pHFWOSZIOWI8sIZn78piRevkp2+OF1E1HdngcH8V9y/w2w1yFoqQJuicJZDoqZJcWkMuCELxWI+quEaoJ2OiaDMIwW/yjqXyg6Kh0QHzfidA4k8oKhsnUunc+kCU0RWRcCfBa3b4ifC/N2His1sQMVg/+bhEWjITEN6Ty82DoF0sajh6SCiJm64POhbyHsG4j1Fn415ZOcj2dekb5Z3rIHH6Js5+j2HN7/MFFLvm4sTtbYXCPm/kCURxq+kBxBwWHaonRNPuekKOm2taGyAwSFqhEYSWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K9vFlkNw0IMkPaHSuMlVQuZNTssPIbuL561oH5v+rFg=;
+ b=WEcP6H+t0otIs5XDNeXurSwIAC/p7j979o1PkA+iPvPn4Av+wkTjcq1BhC38MqaAiqlfAR701dGcn5MnBwwux4XSGI4ZCPJK/S+Y5I61NuDQ2oV3QNU7LdgUYnL0Ny+WeNF5ED05MvEaD2Dk+pk7HkiFEL11KiKRA30tpqxvs7vAF6KNvgBL5chdf4xaPe3XjOmxlDEpWzq1PH3CYUxDr/hTGQdb+QX/tkHSXIdmm9GocXVWUxXuLksNTuZOLMlX5arWvC3iopBAPNFZjPWMrCVjDXK0UpnMTDttyW8Ivt3NKLosf0noAnLYk6xX0ZEDQBoUN5VqO6hFYjM4/tXXXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB4190.eurprd04.prod.outlook.com (2603:10a6:803:4b::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Mon, 16 Aug
+ 2021 12:57:55 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
+ 12:57:55 +0000
+Subject: Re: [PATCH 2/2] xen: rename wrong named pfn related variables
+To:     Juergen Gross <jgross@suse.com>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210616073007.5215-1-jgross@suse.com>
+ <20210616073007.5215-3-jgross@suse.com>
+ <8dbeb9ea-56c9-de30-4d5f-fc9c0ced6ac4@suse.com>
+ <79434ec4-4543-97ad-b010-3f2c1b6a55ad@suse.com>
+ <b9c64bcd-4192-0075-ddf5-711e84301063@suse.com>
+ <94d629fd-27e2-f2be-ed26-c3e04e95c5b4@suse.com>
+ <4a5d8b43-7ffa-cbcd-943c-3c459d56e55e@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <257be998-be20-407b-144b-db66ca4b5928@suse.com>
+Date:   Mon, 16 Aug 2021 14:57:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <4a5d8b43-7ffa-cbcd-943c-3c459d56e55e@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: PR0P264CA0207.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1f::27) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-References: <20210730020019.1487127-1-joshdon@google.com> <20210730020019.1487127-3-joshdon@google.com>
- <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com> <YRpfdWwJL34PjgI1@hirez.programming.kicks-ass.net>
-In-Reply-To: <YRpfdWwJL34PjgI1@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 16 Aug 2021 14:56:57 +0200
-Message-ID: <CAKfTPtB5gjvF8Gx3BSkOJZ+VVUj_2+yJfSB9tVH8iuEby60kvQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched: adjust SCHED_IDLE interactions
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0207.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16 via Frontend Transport; Mon, 16 Aug 2021 12:57:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 967e1384-69f1-4a9c-d9f9-08d960b576e2
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4190:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4190B39D2641F9AC999418C4B3FD9@VI1PR04MB4190.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sr08BwiFnwCCCu8YLVGMfPKHJNaONDAgyctAagvmdFWmwUsXY6Ot3yyyx5TULRwBhJ+VXaCl3+i0nYfyKIq39SOOZ1YPFUxZbNszcTEH9Bx7AXGgYibOFs6sQ5+XaQgAfiI3Xb2rnAMNIApwsUw+HFqG4ZcrRYRmqfB3ncFMW4QDe8X1qtcr1kNZMcj74QayW+TgSOO7t4hzqq39ZvQY6Hh6niv9PgLcCGJYJJ6peyro2Pn5HXLDWmnBcDn+51eipI4EvdQlAEDpqLSDen3Q0Un/lydevBOxzi7pXiW8KR+CNwQzcsQidHjW9HEzVXPVD8hqm8DqdXUujtdHwxlhI3CzAg1rHtP7M5tRCQLSK3IeQ4FvzMMsuTWfsOeLIiA7mrOW+iLBDIAm5iCz81kDtiyE2hmlaaHtj2cX7Dy3Avfj9FctQgXfFvitg7MfSZmi9achCnj3mfM72sIZuQ9/2E5hsrKVGxP0dKXhj/oZFzK2zFc8DhAbnnsKbucNYCsTP3g9T1HABFJrgo/OBZY4td5snedcLMvUvetUcI5xysGabGslPXKU7s/yEl7RgTUNyPmfeOP6yAYlM23qUAgEtXAK71pc2XorSnrz1AYWasbt5q7T8i6T+HWuhGCUQsRWe6YYz3riuG1+j71faxi4XD5cQTo1K5YGhQj8W8KU7LBvSVtd03deXzMi7zcVwITo3hLHE2F3AQhzhq3yznwgbiwoCObAqmVthIPTyvSf2ns=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(376002)(136003)(36756003)(2906002)(186003)(54906003)(26005)(6486002)(6862004)(6636002)(5660300002)(53546011)(4326008)(316002)(31686004)(956004)(2616005)(16576012)(31696002)(38100700002)(8676002)(37006003)(8936002)(66556008)(66476007)(66946007)(478600001)(83380400001)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I4qaslQkdHfNBJM+Lb1E1PKA4lkvRuq1UZgw8+ve0eeBI18z0LGNrlmWIKlQ?=
+ =?us-ascii?Q?9mX9N/SkWeLCMEKVmaNtPW8l1QHzhTwPzTD+0JhJUqaCusOtn/X9PKhIs+K5?=
+ =?us-ascii?Q?/j3WXkJX3i2znLqniUDwU2F5rUVg9qTf8+Nog1RpE4bGsu3e/fMmXkXTlrwa?=
+ =?us-ascii?Q?1aq72n1KtcS2ay70lBDYPwP4ujDfmppjOwsyek/LQ8v066Pu1KbhU3fPW/UL?=
+ =?us-ascii?Q?tcozelMVnFNvcSW7YVyeNBhgvfidnPmJKrhxfNwqFNrTR88lMpRuRREwCDrs?=
+ =?us-ascii?Q?KMc615cFgRLEGf/nV9q82UpCHM15CGgG2jqTWRs/UCxdEWiOCPisjLvSRVL3?=
+ =?us-ascii?Q?+/04YICsy46fpWzGT3pO6pClvRdI22WmzSMN75SKdlYvgqbuNb6CCz6h4/bd?=
+ =?us-ascii?Q?Lltj7XHZ4vGhzkJAi100aRBVbeyxqmFOP4YlQ8od9qKwXNwoqBiV5NqJ7qKM?=
+ =?us-ascii?Q?+ioYjvChpEtNpbyO9dQnOeZ/rJLZyzWvd0QeQkwl+KLJzK9u45YZ0knjw+FH?=
+ =?us-ascii?Q?GL6DrjijhrwS2NgjX1IH7YzAn1snf44OIX0lGWmcL42YJLQuNwPcuOIuA+50?=
+ =?us-ascii?Q?UTomW3rYanKclAZC1MLLArkenQPImJZ2K9tIzwDQUZPOr9DC+RnrB5Fxxd33?=
+ =?us-ascii?Q?S0t3OMzDyHVCP4tza1oChx4NrLjCvvpGCdR5Yg5xBDkkPJSWOyCXb52000Eb?=
+ =?us-ascii?Q?47O+UPzT1TAw2IACnDQezgNmwYOIspl8Thnm6025IifDg0Gl8t/PumsJRorb?=
+ =?us-ascii?Q?ImiVDOrCtCeVaPYp6AjgSedxTJ8h+z3U1OdxncZTOd78geRp5JDdIZoL7WjS?=
+ =?us-ascii?Q?hr7s1shNNkzW+sDGQUSeBIrnYBsEOVbPkHMccp0QfUHvx9w4FJuJbYBKW415?=
+ =?us-ascii?Q?pDEDOcL88QjncUjH2cXfHXcW3VKtchVcS17LjkPHBk2NSZuM/uYf/VpN0C/K?=
+ =?us-ascii?Q?9HpJMjiJr6HtccjLbT7G8e/BzFfEW0BSuu/G3FdkWDnXDKL8ARaMVqz4Nsct?=
+ =?us-ascii?Q?tFM7q8EImRhLkoyk/j81hqsRPoHLUP7rtQWpl9QYl+ijPVTFF0wj4AWUigJz?=
+ =?us-ascii?Q?ebSAXoz4FogAw0JqYOI4b2FPzOv0sj9vVUPgmtjdFsCUffliIhBWuDVIDgHu?=
+ =?us-ascii?Q?vsBBX1O0GQ1c5Kyi/EL7TknlG7kIrjaKlHbXOUwNVMMTUwjen1KhXNGjrN9Y?=
+ =?us-ascii?Q?YHTjC0J8HSd/Oh+y9JUbn0UJKyBJHTQ+P5hyaICeRZDV/DhyTTemktNJrxgX?=
+ =?us-ascii?Q?A0/Ekt4BW9ED+ev4bgWWNNaL78OcgJj6pfjvBFiZmq1cmTMcg9YIL49q8Gqe?=
+ =?us-ascii?Q?rQh39kfcq8DMx9SkaMXrScnw?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 967e1384-69f1-4a9c-d9f9-08d960b576e2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 12:57:55.0330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LWSrbIdoZqOUV9krrMhJ1mEEXbc73B4YH78DqRVhgoThRmraMowl6xIWlEDMrMmZvSC/J//QyHo0a3vzfZe2IA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 at 14:52, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Aug 11, 2021 at 03:31:49PM +0200, Vincent Guittot wrote:
-> > On Fri, 30 Jul 2021 at 04:00, Josh Don <joshdon@google.com> wrote:
->
->
-> > > @@ -4216,7 +4228,15 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
-> > >                 if (sched_feat(GENTLE_FAIR_SLEEPERS))
-> > >                         thresh >>= 1;
-> > >
-> > > -               vruntime -= thresh;
-> > > +               /*
-> > > +                * Don't give sleep credit to a SCHED_IDLE entity if we're
-> > > +                * placing it onto a cfs_rq with non SCHED_IDLE entities.
-> > > +                */
-> > > +               if (!se_is_idle(se) ||
-> > > +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
->
-> I really dislike that second clause, either never do this for idle or
-> always, but not sometimes when the planets are aligned just right.
+On 16.08.2021 07:25, Juergen Gross wrote:
+> On 03.08.21 12:42, Jan Beulich wrote:
+>> On 30.07.2021 11:00, Juergen Gross wrote:
+>>> On 16.06.21 12:43, Juergen Gross wrote:
+>>>> On 16.06.21 11:56, Jan Beulich wrote:
+>>>>> On 16.06.2021 09:30, Juergen Gross wrote:
+>>>>>> --- a/arch/x86/xen/p2m.c
+>>>>>> +++ b/arch/x86/xen/p2m.c
+>>>>>> @@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
+>>>>>>  =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_addr);
+>>>>>>  =C2=A0 unsigned long xen_p2m_size __read_mostly;
+>>>>>>  =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_size);
+>>>>>> -unsigned long xen_max_p2m_pfn __read_mostly;
+>>>>>> -EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
+>>>>>> +unsigned long xen_p2m_max_size __read_mostly;
+>>>>>> +EXPORT_SYMBOL_GPL(xen_p2m_max_size);
+>>>>>
+>>>>> Instead of renaming the exported variable (which will break consumers
+>>>>> anyway), how about dropping the apparently unneeded export at this
+>>>>> occasion?
+>>>>
+>>>> Why do you think it isn't needed? It is being referenced via the inlin=
+e
+>>>> function __pfn_to_mfn() in arch/x86/include/asm/xen/page.h. And
+>>>> __pfn_to_mfn() is used via lots of other inline functions and macros.
+>>>>
+>>>>> Further it looks to me as if xen_p2m_size and this variable
+>>>>> were actually always kept in sync, so I'd like to put up the question
+>>>>> of dropping one of the two.
+>>>>
+>>>> Hmm, should be possible, yes.
+>>>
+>>> Looking into this it seems this is not possible.
+>>>
+>>> xen_p2m_size always holds the number of p2m entries in the p2m table,
+>>> including invalid ones at the end. xen_p2m_pfn_limit however contains
+>>> the (rounded up) index after the last valid p2m entry.
+>>
+>> I'm afraid I can't follow:
+>>
+>> xen_build_dynamic_phys_to_machine() sets xen_p2m_size and then syncs
+>> its value to what so far has been xen_max_p2m_pfn.
+>>
+>> xen_vmalloc_p2m_tree() sets xen_max_p2m_pfn and then syncs its value
+>> to xen_p2m_size.
+>>
+>> I therefore can't see how the two values would hold different values,
+>> except for the brief periods between updating one and then the other.
+>=20
+> The brief period in xen_vmalloc_p2m_tree() is the problematic one. The
+> different values are especially important for the calls of
+> __pfn_to_mfn() during xen_rebuild_p2m_list().
 
-That was my point too
+I'm still in trouble: Such __pfn_to_mfn() invocations would, afaics,
+occur only in the context of page directory entry manipulation. Isn't
+it the case that all valid RAM is below xen_p2m_size, and hence no
+use of
 
->
-> > Can't this condition above create unfairness between idle entities ?
-> > idle thread 1 wake up while normal thread is running
-> > normal thread thread sleeps immediately after
-> > idle thread 2 wakes up just after and gets some credits compared to the 1st one.
->
-> No. Strictly speaking cfs is unfair here. But it's a really tricky case.
->
-> Consider a task that is running 50% competing against a task that's
-> running 100%. What's fair in that situation, a 50/50 split, or a 25/75
-> split? What if that 50% is 50% of a minute?
->
-> What we do here is fudge the vruntime such that we end up with a 50/50
-> split provided the period over which it blocks is less than a slice.
-> After that it gradually converges to the 'expected' 25/75 split that
-> results from strict runnable competition.
->
-> By not letting idle tasks participate in this, we avoid idle tasks
-> 'stealing' the !runnable time and they revert back to strict runnable
-> competition only.
->
-> > > +                       vruntime -= thresh;
-> > > +               else
-> > > +                       vruntime += 1;
-> > >         }
-> > >
-> > >         /* ensure we never gain time by being placed backwards. */
-> > > --
-> > > 2.32.0.554.ge1b32706d8-goog
-> > >
+	else if (unlikely(pfn < xen_max_p2m_pfn))
+		return get_phys_to_machine(pfn);
+
+would occur during that time window? (We're still way ahead of SMP
+init, so what other CPUs might do does not look to be of concern
+here.)
+
+Jan
+
