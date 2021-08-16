@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6AD3EDCD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A475E3EDCDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhHPSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhHPSHk (ORCPT
+        id S233155AbhHPSKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:10:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57460 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhHPSJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:07:40 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C895AC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:07:08 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id w17so34458972ybl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=33dTcPj9L2G+RiKdxFTGDEqQpLqBfKgRb9SoQPYPLpo=;
-        b=VSWUay3SY15/4NGBWoTChPwDd8ujDO9Higioy3JypbcqKCd0muev0p6XdXyxEwUZVn
-         uKgSYwgM98pbBN/5NVqZHMNTXDUsa7Om5jGYlpjssksxGrct/ihvltgP/uL0wRiXihQh
-         utTideL2Ooc5wfnb9Fv6fzQAYvwAJBGaiZavVhZBU1xWmkFShJhyVxaIfm2JAvt6sdsJ
-         q7IQoqe2TSV/f5zZRF3lDoOAcsNIFkxaBNce0kP1iZDah/5TxMk1N1Ejzb65voAamF47
-         +jYW6wz2jrCtI+fAwY5Yvec9iKYgFyUwT1Q1wNUuJiWZG2zzLkn2lL88MfYUykOmPpC9
-         JJTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=33dTcPj9L2G+RiKdxFTGDEqQpLqBfKgRb9SoQPYPLpo=;
-        b=b5osGaLGAbVX+StT/xyt46V04fqV0FNzxr/i/aCbHPXEAx+sQM3LohMLGku6sVvoEb
-         gWWrNeBSzRguSetXATmj6i/YqvBElKtYotqIMxsgVRfxenHGewZQmzHf90RGBjjxDh3z
-         1XcIzZSvqJO1rnphyWx/ExfcroeXfHZsZr85x/5EtEpUNjPEF/GACwSD9IZ1IRD6dhwj
-         6VuBAIhEX34ZduBJ2iLdxFJS7X6/2sulHNLEW03Wdfjmem3/tvrWzkVL0gNihUW09b+4
-         JDqv9SoowTcpLeIuIAAl3Mm4VVYBy8uNRulfGQWycSzl4T6h8YTgNlh8j5xU6gUSkjZy
-         HXxw==
-X-Gm-Message-State: AOAM5333/A7wji+T3YC+Yxa9rTT7c0aUSvfMmtVf/MVhKxjEkSWt4AL/
-        j455gpayFx4R/Jds8dsQLKPeCZmSRqrN09AEBpdjfw==
-X-Google-Smtp-Source: ABdhPJyVkuwrdgobTNu4kxdPgWfK7qHvFVtdQhFN9x12wS3JBVRcN+l90XrQT/bDKLNpqJbOomcXymVHho5i6gjKmOE=
-X-Received: by 2002:a25:c4:: with SMTP id 187mr24437571yba.498.1629137227399;
- Mon, 16 Aug 2021 11:07:07 -0700 (PDT)
+        Mon, 16 Aug 2021 14:09:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629137363; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ssvOWDCDdDkaUd8v+/clZG/5CfKJpqfuWHBXok87BXs=;
+ b=DUeYYgPixOQVlaMqWaV2c4hb88dJcXwCDH6ZUEMFzPe212xLz31x5kn2hzhSj84XeH/EJbbL
+ xqN8UNZWoYeIdBE4H4ahQ2SerAnmquFQgevl41Q4xjR0PlqtacgIt+igi1ME3uoORnE8f2g7
+ wLFgF/1zzRvBMDeH57AU5iJU4GE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 611aa9c5b14e7e2ecb6c6ca4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 18:09:09
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 571EDC43460; Mon, 16 Aug 2021 18:09:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 217D9C4338F;
+        Mon, 16 Aug 2021 18:09:07 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210812214614.1797845-1-samitolvanen@google.com> <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
-In-Reply-To: <CAK7LNAQ8Ucg=ZrEtMUCMkq3wonZqaijtrqbeUBod6DLERrp=zw@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 16 Aug 2021 11:06:56 -0700
-Message-ID: <CABCJKucbKVFvOmo6AsJBQfxL0zO3N9R2ydoCvZKpTwPSbOvbkA@mail.gmail.com>
-Subject: Re: [PATCH v3] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Aug 2021 23:39:07 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com, Andy Gross <agross@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, mdtipton@codeaurora.org, saravanak@google.com,
+        seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [v6 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
+ SC7280
+In-Reply-To: <1628577962-3995-2-git-send-email-okukatla@codeaurora.org>
+References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
+ <1628577962-3995-2-git-send-email-okukatla@codeaurora.org>
+Message-ID: <141da7d1269c5cf91fbb260192521ab9@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 4:27 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Fri, Aug 13, 2021 at 6:46 AM 'Sami Tolvanen' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> >
-> > With CONFIG_LTO_CLANG, we currently link modules into native
-> > code just before modpost, which means with TRIM_UNUSED_KSYMS
-> > enabled, we still look at the LLVM bitcode in the .o files when
-> > generating the list of used symbols. As the bitcode doesn't
-> > yet have calls to compiler intrinsics and llvm-nm doesn't see
-> > function references that only exist in function-level inline
-> > assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
-> > work with LTO.
-> >
-> > This change moves module LTO linking to happen earlier, and
-> > thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
-> > entirely, allowing us to also drop the whitelist from
-> > gen_autoksyms.sh.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1369
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Alexander Lobakin <alobakin@pm.me>
-> > Tested-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> > Changes in v3:
-> > - Added missing FORCE.
->
->
->
-> All the modules are recompiled every time.
+Hey Odelu,
+Thanks for the patch.
 
-Oops, .lto.o is missing from targets still, which breaks if_changed.
-Fixed in v4. Thanks for testing!
+On 2021-08-10 12:16, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  9 
+> ++++++++-
+>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 
+> +++++++++-
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git
+> a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> index e701524..919fce4 100644
+> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> @@ -18,13 +18,20 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,sc7180-osm-l3
+> +      - qcom,sc7280-epss-l3
+>        - qcom,sc8180x-osm-l3
+>        - qcom,sdm845-osm-l3
+>        - qcom,sm8150-osm-l3
+>        - qcom,sm8250-epss-l3
+> 
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 4
+> +    items:
+> +      - description: OSM clock domain-0 base address and size
+> +      - description: OSM clock domain-1 base address and size
+> +      - description: OSM clock domain-2 base address and size
+> +      - description: OSM clock domain-3 base address and size
 
-Sami
+Looks like you missed addressing
+Stephen's comment from v4 i.e.
+having descriptions based on
+compatibles.
+
+> 
+>    clocks:
+>      items:
+> diff --git a/include/dt-bindings/interconnect/qcom,osm-l3.h
+> b/include/dt-bindings/interconnect/qcom,osm-l3.h
+> index 61ef649..99534a5 100644
+> --- a/include/dt-bindings/interconnect/qcom,osm-l3.h
+> +++ b/include/dt-bindings/interconnect/qcom,osm-l3.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2019 The Linux Foundation. All rights reserved.
+> + * Copyright (C) 2019, 2021 The Linux Foundation. All rights reserved.
+>   */
+> 
+>  #ifndef __DT_BINDINGS_INTERCONNECT_QCOM_OSM_L3_H
+> @@ -11,5 +11,13 @@
+> 
+>  #define MASTER_EPSS_L3_APPS	0
+>  #define SLAVE_EPSS_L3_SHARED	1
+> +#define SLAVE_EPSS_L3_CPU0	2
+> +#define SLAVE_EPSS_L3_CPU1	3
+> +#define SLAVE_EPSS_L3_CPU2	4
+> +#define SLAVE_EPSS_L3_CPU3	5
+> +#define SLAVE_EPSS_L3_CPU4	6
+> +#define SLAVE_EPSS_L3_CPU5	7
+> +#define SLAVE_EPSS_L3_CPU6	8
+> +#define SLAVE_EPSS_L3_CPU7	9
+> 
+>  #endif
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
