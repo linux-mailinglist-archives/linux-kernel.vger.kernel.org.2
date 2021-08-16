@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB36D3ECC90
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A9B3ECC9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 04:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhHPCMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 22:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHPCMW (ORCPT
+        id S232594AbhHPCTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 22:19:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8020 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhHPCTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 22:12:22 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81297C061764;
-        Sun, 15 Aug 2021 19:11:51 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id db14so8543415qvb.10;
-        Sun, 15 Aug 2021 19:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RCriSD8EWtXhtQKktiE7TncAOMeRWKmTNW5hb/Sa0/g=;
-        b=J6xikWU8wKm7Z9E0G7SsPulofLjO9FwDDKk21zs2cS4nuZgEE55Z4YadanEpsD2pRz
-         o7ld0W5h6zoOP1Jok3c3wPlHF55eyD2TThWk1jEQRblyp3T56n4LUQ1B/qy3nRYv14g2
-         pi6Ng+x6TPfgywj+NB2fiJAZVH1J84ALBpjN4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RCriSD8EWtXhtQKktiE7TncAOMeRWKmTNW5hb/Sa0/g=;
-        b=RWMb7ltCXdySfdS0RookTlYax55/aP7+Hhv8lteWBh088RpCn75aYd5wYgYS9l7JGX
-         sgoqclj8+7haFkl7g/5zypUlY3jz5ml9bkHAWHJj0Qg3DAju2p+ISzHA9RC4DiIykL2/
-         sD90m9hZPNyeaxP2CBT+PLtfJA3W0j3x9A/id6XvyKukLOJku2Mk4kxVOmWSt3h2pyMN
-         0eHFCxXRitlHbRB5Hjp6sfPUAUEsEP1HR7W4Ssw/bj94mATRN4qFbqE4mlHIZ7DBg5NS
-         yhibzUztdGyWveQv7rgrkG1BEy5YHvoNC1z5yeIMDKKCEdbWWAcOPfv7ZovOXIGtGxXt
-         pGMQ==
-X-Gm-Message-State: AOAM5332dLbAlio+sbhAmb/7nBFBr25MpKTV8q1NxFnhlv6bJ4pkYa6T
-        n7YkGIMQ46koiA/ZocPo0INH0dLNfYDxKNjdrYs=
-X-Google-Smtp-Source: ABdhPJwhXnrmqh156PtVzL9hcyEAfhvLDsdhzqB6+2cdZvwR1531PgQsyNtKhyvPLIGl5qxjxGsdHQDU14nxJs1lA8E=
-X-Received: by 2002:a05:6214:8c2:: with SMTP id da2mr10826803qvb.10.1629079909644;
- Sun, 15 Aug 2021 19:11:49 -0700 (PDT)
+        Sun, 15 Aug 2021 22:19:47 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GnyWx3QdPzYq1g;
+        Mon, 16 Aug 2021 10:18:53 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 10:19:14 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 10:19:14 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <amitc@mellanox.com>,
+        <idosch@idosch.org>, <andrew@lunn.ch>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH RESEND V2 net-next 0/4] net: hns3: add support ethtool extended link state
+Date:   Mon, 16 Aug 2021 10:15:25 +0800
+Message-ID: <1629080129-46507-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20210720002704.7390-1-rentao.bupt@gmail.com> <20210813062435.GA24497@taoren-ubuntu-R90MNF91>
-In-Reply-To: <20210813062435.GA24497@taoren-ubuntu-R90MNF91>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 16 Aug 2021 02:11:40 +0000
-Message-ID: <CACPK8XcAqU3KASespqS3dPterpzyqD4wYH=qOS8Ok2yUrB_F+Q@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: minipack: Update flash partition table
-To:     Tao Ren <rentao.bupt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Aug 2021 at 06:24, Tao Ren <rentao.bupt@gmail.com> wrote:
->
-> Hi Joel,
->
-> Looks like the patch is not included in "dt-for-v5.15". Any comments? Or
-> should I send v2 if the email was not delivered?
+This series adds support for ethtool extended link state in the HNS3
+ethernet driver to add one additional information for user to know
+why a link is not up.
 
-I had missed it. It's now applied for 5.15.
+change log:
+V1 -> V2:
+1. fix missing a P for "-EOPNOTSUP".
+2. delete unnecessary error log of this feature is not supported by
+   devices of earlier version.
 
-Cheers,
+Guangbin Huang (4):
+  docs: ethtool: Add two link extended substates of bad signal integrity
+  ethtool: add two link extended substates of bad signal integrity
+  net: hns3: add header file hns3_ethtoo.h
+  net: hns3: add support ethtool extended link state
 
-Joel
+ Documentation/networking/ethtool-netlink.rst       |  8 +++
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  2 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 82 ++++++++++++++++++----
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h | 31 ++++++++
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |  3 +
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 24 +++++++
+ include/uapi/linux/ethtool.h                       |  2 +
+ 7 files changed, 137 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h
+
+-- 
+2.8.1
+
