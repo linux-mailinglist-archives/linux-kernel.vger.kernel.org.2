@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807DC3ED373
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8703ED38B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhHPL6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:58:12 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:49251 "EHLO pegase2.c-s.fr"
+        id S235081AbhHPMBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:01:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49131 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhHPL6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:58:10 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GpCMj3cPpz9sTy;
-        Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EIHC1e0M3SAo; Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GpCMj2cRlz9sTd;
-        Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 36DE48B796;
-        Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id zvj6u5B11xyV; Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 09CF88B788;
-        Mon, 16 Aug 2021 13:57:37 +0200 (CEST)
-Subject: Re: [PATCH linux-next] module: remove duplicate include in
- interrupt.c
-To:     cgel.zte@gmail.com, mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-References: <20210816113453.126939-1-lv.ruyi@zte.com.cn>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7bf73aea-5758-63e1-ac69-156a2ffecf2c@csgroup.eu>
-Date:   Mon, 16 Aug 2021 13:57:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234791AbhHPMAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 08:00:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="279586998"
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="279586998"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 05:00:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="572448305"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 16 Aug 2021 05:00:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id DD688FF; Mon, 16 Aug 2021 15:00:02 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Thompson <davthompson@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Asmaa Mnebhi <asmaa@nvidia.com>,
+        Liming Sun <limings@nvidia.com>
+Subject: [PATCH v1 0/6] gpio: mlxbf2: Introduce proper interrupt handling
+Date:   Mon, 16 Aug 2021 14:59:47 +0300
+Message-Id: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210816113453.126939-1-lv.ruyi@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is just a WIP / TODO series based on the discussion [1].
+I hope nVidia will finish it and fix the initial problem sooner than later.
 
+Bart, Linus, First 4 patches may be directly applied to the tree (they are
+at least compile-tested, but I believe they won't change any functionality.
 
-Le 16/08/2021 à 13:34, cgel.zte@gmail.com a écrit :
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> 
-> 'asm/interrupt.h' included in 'interrupt.c' is duplicated.
+Patch 5 is some stubs that should have been done in the driver.
+Patch 6 is follow up removal of custom GPIO IRQ handling from
+Mellanox GBE driver. Both of them are quite far from finishing,
+but it's a start for nVidia to develop and test proper solution.
 
-This patch has been submitted at least half a dozen of times already.
+In any case, I will probably sent end this week the ACPI IRQ abuse
+part from the GBE driver (I won't touch OF path).
 
-You should maintain alphabetic order in the include list.
+ARs for nVidia:
+0) review this series;
+1) properly develop GPIO driver;
+2) replace custom code with correct one;
+3) send the work for review to GPIO and ACPI maintainers (basically list
+   of this series).
 
-But please don't post it again, we have it in the pipe already, see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1624329437-84730-1-git-send-email-jiapeng.chong@linux.alibaba.com/
+On my side I will help you if you have any questions regarding to GPIO
+and ACPI.
 
-Next time please check at https://patchwork.ozlabs.org/project/linuxppc-dev/list/ before submitting 
-a new patch.
+Andy Shevchenko (6):
+  gpio: mlxbf2: Convert to device PM ops
+  gpio: mlxbf2: Drop wrong use of ACPI_PTR()
+  gpio: mlxbf2: Use devm_platform_ioremap_resource()
+  gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper macro
+  TODO: gpio: mlxbf2: Introduce IRQ support
+  TODO: net: mellanox: mlxbf_gige: Replace non-standard interrupt
+    handling
 
-Thanks
-Christophe
+ drivers/gpio/gpio-mlxbf2.c                    | 151 ++++++++++---
+ .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
+ 2 files changed, 120 insertions(+), 243 deletions(-)
+ delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
 
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
-> ---
->   arch/powerpc/kernel/interrupt.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-> index 21bbd615ca41..8a936515e4e4 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -10,7 +10,6 @@
->   #include <asm/cputime.h>
->   #include <asm/interrupt.h>
->   #include <asm/hw_irq.h>
-> -#include <asm/interrupt.h>
->   #include <asm/kprobes.h>
->   #include <asm/paca.h>
->   #include <asm/ptrace.h>
-> 
+-- 
+2.30.2
+
