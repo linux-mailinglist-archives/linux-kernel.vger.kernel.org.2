@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FD93ED4AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D173ED622
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236779AbhHPNFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55540 "EHLO mail.kernel.org"
+        id S236922AbhHPNRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:17:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236677AbhHPNEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F08063290;
-        Mon, 16 Aug 2021 13:03:57 +0000 (UTC)
+        id S238853AbhHPNIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:08:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7392D6108D;
+        Mon, 16 Aug 2021 13:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119038;
-        bh=tntYlxg3LbkKcbp0pGn8VwblpEz3ASOaJgP42fvyb4I=;
+        s=korg; t=1629119247;
+        bh=DmvCyg3+GaFmW/1KXTkP3Udlm3T9LTw6aydB4yoyp6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyjCeceJysUNji41toR+tEYNjbhywYnEP8STqrvl2WdvOaRBfx/CxusRkr5mjb3a8
-         cfSAVwE04Zcot4FsHc9ttf08mkozmreLagRW6ZTC925AbkjjwlhYVjhVtTqRGkzXTm
-         ar9lFJgCcPdPH3fEHwXu/EM/EdakyeUJZreRM1Hg=
+        b=D4kVMszyyd8Y7ooHxQeUks2VnNEYPf+uDbntLoI13NhbgjYoMcH80HDM/KFPAq7wc
+         o3yD6jx3UkYwxWUR9wc1swV2909Gde2IBtmLeeNkLpDQ15qXlbT2FKblzDUIMrUNER
+         4X/xBEfS5QE75o6l2VDHNJfsEIS8V/G6qAkYEwIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,12 +29,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Philip Milev <milev.philip@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 27/62] drm/meson: fix colour distortion from HDR set during vendor u-boot
-Date:   Mon, 16 Aug 2021 15:01:59 +0200
-Message-Id: <20210816125429.121951998@linuxfoundation.org>
+Subject: [PATCH 5.10 50/96] drm/meson: fix colour distortion from HDR set during vendor u-boot
+Date:   Mon, 16 Aug 2021 15:02:00 +0200
+Message-Id: <20210816125436.626424316@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,10 +73,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/meson/meson_registers.h b/drivers/gpu/drm/meson/meson_registers.h
-index 05fce48ceee0..f7da816a5562 100644
+index 446e7961da48..0f3cafab8860 100644
 --- a/drivers/gpu/drm/meson/meson_registers.h
 +++ b/drivers/gpu/drm/meson/meson_registers.h
-@@ -590,6 +590,11 @@
+@@ -634,6 +634,11 @@
  #define VPP_WRAP_OSD3_MATRIX_PRE_OFFSET2 0x3dbc
  #define VPP_WRAP_OSD3_MATRIX_EN_CTRL 0x3dbd
  
@@ -89,10 +89,10 @@ index 05fce48ceee0..f7da816a5562 100644
  #define OSD2_VSC_PHASE_STEP 0x3d00
  #define OSD2_VSC_INI_PHASE 0x3d01
 diff --git a/drivers/gpu/drm/meson/meson_viu.c b/drivers/gpu/drm/meson/meson_viu.c
-index 68cf2c2eca5f..33698814c022 100644
+index aede0c67a57f..259f3e6bec90 100644
 --- a/drivers/gpu/drm/meson/meson_viu.c
 +++ b/drivers/gpu/drm/meson/meson_viu.c
-@@ -356,9 +356,14 @@ void meson_viu_init(struct meson_drm *priv)
+@@ -425,9 +425,14 @@ void meson_viu_init(struct meson_drm *priv)
  	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXM) ||
  	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXL))
  		meson_viu_load_matrix(priv);
