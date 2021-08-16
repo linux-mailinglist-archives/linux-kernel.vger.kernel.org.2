@@ -2,126 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A4C3ECF1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B9B3ECF42
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhHPHNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:13:49 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8023 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234166AbhHPHN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:13:28 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gp52m5XqkzYq71;
-        Mon, 16 Aug 2021 15:12:32 +0800 (CST)
-Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 15:12:51 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 16 Aug 2021 15:12:51 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Wang Hai" <wanghai38@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <stable@vger.kernel.org>, Chen Huang <chenhuang5@huawei.com>,
-        "Christoph Lameter" <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10.y 11/11] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
-Date:   Mon, 16 Aug 2021 07:21:47 +0000
-Message-ID: <20210816072147.3481782-12-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210816072147.3481782-1-chenhuang5@huawei.com>
-References: <20210816072147.3481782-1-chenhuang5@huawei.com>
+        id S233919AbhHPHXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 03:23:05 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:35412 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233725AbhHPHXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 03:23:03 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 17G7MDgs013422;
+        Mon, 16 Aug 2021 09:22:13 +0200
+Date:   Mon, 16 Aug 2021 09:22:13 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     zhao xc <xinchao.zhao.kernelz@gmail.com>, ysato@users.osdn.me,
+        dalias@libc.org, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Patch formatting - Re:
+Message-ID: <20210816072213.GA13349@1wt.eu>
+References: <CAP7CzPfRFSfUka1Wjo1+KNSdhYjR2n59g2yvEFGRyfYwNFNy1A@mail.gmail.com>
+ <fbd17d71-91e8-fb0c-f621-ee41787e4bad@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema756-chm.china.huawei.com (10.1.198.198)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fbd17d71-91e8-fb0c-f621-ee41787e4bad@physik.fu-berlin.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+On Mon, Aug 16, 2021 at 09:04:57AM +0200, John Paul Adrian Glaubitz wrote:
+> Hi Zhao!
+> 
+> Thanks for your patch!
+> 
+> However, the patch has not been properly formatted and needs to be resend.
+> 
+> Could you follow this guide [1] and send your patch again in the correct
+> format?
 
-When I use kfree_rcu() to free a large memory allocated by kmalloc_node(),
-the following dump occurs.
+Adrian, it would be nice to give some hints about what has to be fixed,
+because it's not necessarily easy to be able to figure this by comparing
+one's patch to an example in a blog article.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000020
-  [...]
-  Oops: 0000 [#1] SMP
-  [...]
-  Workqueue: events kfree_rcu_work
-  RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
-  RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
-  RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
-  [...]
-  Call Trace:
-    kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
-    kfree_bulk include/linux/slab.h:413 [inline]
-    kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
-    process_one_work+0x207/0x530 kernel/workqueue.c:2276
-    worker_thread+0x320/0x610 kernel/workqueue.c:2422
-    kthread+0x13d/0x160 kernel/kthread.c:313
-    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Zhao, some hints:
+  - the subject line doesn't make it obvious what subsystem is being touched.
+    Often running "git log" on the file(s) you change can help you figure what
+    others commonly use ;
 
-When kmalloc_node() a large memory, page is allocated, not slab, so when
-freeing memory via kfree_rcu(), this large memory should not be used by
-memcg_slab_free_hook(), because memcg_slab_free_hook() is is used for
-slab.
+  - the commit message is empty, it should carry a description of what you
+    are trying to improve or fix, and when relevant, some indications about
+    how you decided to address that. A good hint is to think that you're
+    trying to "sell" your patch to someone else who will become responsible
+    for maintaining it, thus put all the selling arguments there :-)
 
-Using page_objcgs_check() instead of page_objcgs() in
-memcg_slab_free_hook() to fix this bug.
+  - often a Cc list is desired if it touches areas that may impact others,
+    as well as their maintainers ;
 
-Link: https://lkml.kernel.org/r/20210728145655.274476-1-wanghai38@huawei.com
-Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- mm/slab.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  - using git-send-email like in the article is generally preferred as it
+    makes the process smoother on the receiver's end. It can look scary
+    at first, making you fear to accidentally send poorly formatted
+    e-mails, but in practice it's rare, and recipients are used to seeing
+    this and are very tolerant to this :-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 571757eb4a8f..9759992c720c 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -349,7 +349,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
- 			continue;
- 
- 		page = virt_to_head_page(p[i]);
--		objcgs = page_objcgs(page);
-+		objcgs = page_objcgs_check(page);
- 		if (!objcgs)
- 			continue;
- 
--- 
-2.18.0.huawei.25
+And yes, reading Nick's article is definitely a good idea!
 
+> Thanks,
+> Adrian
+
+Regards,
+Willy
