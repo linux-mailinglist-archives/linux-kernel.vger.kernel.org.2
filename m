@@ -2,255 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48CD3EDD73
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010F93EDD6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhHPS6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhHPS5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229872AbhHPS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Aug 2021 14:57:52 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71254C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:57:20 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id i22so9204849edq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:57:20 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhHPS5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:57:51 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77043C061764;
+        Mon, 16 Aug 2021 11:57:19 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id j18so9021958ioj.8;
+        Mon, 16 Aug 2021 11:57:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=a7ECraBkwCFiPkr0hFOEUiDEhGRF1HGg2NynZZR26r0=;
-        b=1cH3PF0bgyOapqIzhkQDy/yuYUghkYFp3Xv0bsFz/p5R3Jg49CELDbyhGif+6iZ5vR
-         +VMb6GcR/ew8us1qjScyKpF5AF11wv6VPMldyYQFGLcEnMF62Z4x5p9xxuKaYmmBTKVP
-         MBh+VSVh0VJMcuzuOhg635MJrfA9icPiD1sIgNJ1b13X84u7muDyt7zpKe3VzRFHwCHz
-         6/+2hzmSOkLk4GD/aooecAc0FuzjGu3+I1qki4z6xvBpMgReVzbAS3KAnVWIpU1m9ley
-         rs4oebep32bB31B0ViUvECiz8UK2Cs+cIDfxLsD8M/BIcLJw87dFnmIaFHfuzmSgt1Jn
-         BoEg==
+        bh=IMleuJXp1BFCMdO8pZ1Sh8yv+RZboiDdVagdPozQ5ro=;
+        b=rVPf3iXZoTd8p7ZHahrvHPzYSd/MUXUnZeEzWnBewZlgSqqXY4fM7Mn1EIRT4f+CKK
+         TTKD2pXtnyHXpQE1/05m79f/n6MzvLHklC4bnUfEsV0M9WRQ7+H2IE11fblFD2S19n0A
+         5EFPf6uxcJgRoMqu8DuKYBeizu7xU05CP8OvDv0Ck2bkju5FS6LJMqHnAqM4aP1kWjgQ
+         /CtbFj3l/dP/o/Ef2MI6JH6lLmnvc7oUtuhka8nHI/bXEGGMqcr0GOkbyaQtx8MrXoN9
+         545LRX7cXWlNbTuzy6U14v7UoRCZLiHFyCfwMQ1KZemnltv2T0MYrVXAg7w9g3+K8HhA
+         D/qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=a7ECraBkwCFiPkr0hFOEUiDEhGRF1HGg2NynZZR26r0=;
-        b=csELUl1AnPsxHo5pOqXk8SfSNm60+rzK0ogcLukKlvNfP1PPHZf2fN4Dmq5LY33CY7
-         VzwaOQZgISekxdBqKkI7ORbydsKlwHDBTxyzzTLsr5N2UYMbvCwut+Q1Ve4is5GBrQ46
-         XUi+xSHiCQjsALBsVxJ4w1NnHYz0yKp6Oobph2qvTNd3VMxmb2kMRMkFBoJolMr7+V+U
-         kW7FEIl51rTUF07cEwC2+ZvcfKW9/nw7n+MlMsDkiz1sF18+SoddTYpmfbHNTWGuOeAg
-         n4JskqNgC8u2c5aV6WkkyHountKkYw3iKnLpJFYE9B8lMJD8kK5f7De+L32D9d4WFD57
-         GOYg==
-X-Gm-Message-State: AOAM532jryh6fOxB8WIZbY2irm+yCAH/SNYXgg70X6sc2rDTLcYbvELq
-        yvi3jKpn0kPDDUEtZLqzbRx6nS+jWcEUqkp12i5A
-X-Google-Smtp-Source: ABdhPJx0SdTFntxZUuZ5r581q1m85teCQ0nHihV/k5Y2aQb4XAbtmt48WwzHzqw0igGV4mQuMPOfSLw7zqEZzOAoJfc=
-X-Received: by 2002:a05:6402:384:: with SMTP id o4mr57602edv.128.1629140238869;
+        bh=IMleuJXp1BFCMdO8pZ1Sh8yv+RZboiDdVagdPozQ5ro=;
+        b=DoN/znVXYysavTRFWPLQkZs6GNhLz1HazaHdGbCBGpo6SZeH0wRzD7wnqZFuiTn0ao
+         8l/gMpb3qKI7l+Jq+aBMm3mfi7S5IR4PZT8TrWLEUlG+KXdfLcjDtE0IIiHgsQh52/NQ
+         iTX20LbolrYm6l4ZVsi3WsNYGG/yKmP1HJAlL8B75xvlkN5tfbst5P/WAZvHxpIlFNZI
+         dTJWCrmAfgulr7GFSOn/UsoW/wn4ao1+NVLCsKCnldBJVryI9B1EVIjDNykCsQlK5sKf
+         peCxrpI62k9a3y/t9PIjHAiHA7fHrZs0YDDBasVXhkY1JqYGp+xaRgvVg491JUIDtygQ
+         X2vQ==
+X-Gm-Message-State: AOAM533c1yqaZrNAhJacWRnXp7J1UmuzszadZIZew7CxqexF8pwewEyf
+        ZNLezwY7+TSDq5+sAPi+FmvW/wdDOo6/KL9qh0U=
+X-Google-Smtp-Source: ABdhPJy0tRoG6FBen5yt+VzBIYWsQhzTFtpHKMLJbMIqvDPpi5Dm27dM+T37+tBuaCr5qtt0wylZgt06rnUlgSMa5+8=
+X-Received: by 2002:a5d:8b03:: with SMTP id k3mr261937ion.203.1629140238928;
  Mon, 16 Aug 2021 11:57:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722004758.12371-1-casey@schaufler-ca.com>
- <20210722004758.12371-23-casey@schaufler-ca.com> <CAHC9VhTj2OJ7E6+iSBLNZaiPK-16UY0zSFJikpz+teef3JOosg@mail.gmail.com>
- <ace9d273-3560-3631-33fa-7421a165b038@schaufler-ca.com> <CAHC9VhSSASAL1mVwDo1VS3HcEF7Yb3LTTaoajEtq1HsA-8R+xQ@mail.gmail.com>
- <fba1a123-d6e5-dcb0-3d49-f60b26f65b29@schaufler-ca.com> <CAHC9VhQxG+LXxgtczhH=yVdeh9mTO+Xhe=TeQ4eihjtkQ2=3Fw@mail.gmail.com>
- <3ebad75f-1887-bb31-db23-353bfc9c0b4a@schaufler-ca.com>
-In-Reply-To: <3ebad75f-1887-bb31-db23-353bfc9c0b4a@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 16 Aug 2021 14:57:07 -0400
-Message-ID: <CAHC9VhQCN2_MsCoXfU7Z-syYHj2o8HaSECf5E62ZFcNZd9_4QA@mail.gmail.com>
-Subject: Re: [PATCH v28 22/25] Audit: Add record for multiple process LSM attributes
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-6-groug@kaod.org>
+ <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com> <YRqEPjzHg9IlifBo@redhat.com>
+In-Reply-To: <YRqEPjzHg9IlifBo@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 16 Aug 2021 21:57:08 +0300
+Message-ID: <CAOQ4uxg+UX6MWRv9JTQDmf6Yf_NyD+pJ438Ds270vGr9YSSPZw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Robert Krawitz <rlk@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 5:47 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 8/13/2021 1:43 PM, Paul Moore wrote:
-> > On Fri, Aug 13, 2021 at 2:48 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 8/13/2021 8:31 AM, Paul Moore wrote:
-> >>> On Thu, Aug 12, 2021 at 6:38 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>>> On 8/12/2021 1:59 PM, Paul Moore wrote:
-> >>>>> On Wed, Jul 21, 2021 at 9:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>>>>> Create a new audit record type to contain the subject information
-> >>>>>> when there are multiple security modules that require such data.
-> >>> ...
-> >>>
-> >>>>> The local
-> >>>>> audit context is a hack that is made necessary by the fact that we
-> >>>>> have to audit things which happen outside the scope of an executing
-> >>>>> task, e.g. the netfilter audit hooks, it should *never* be used when
-> >>>>> there is a valid task_struct.
-> >>>> In the existing audit code a "current context" is only needed for
-> >>>> syscall events, so that's the only case where it's allocated. Would
-> >>>> you suggest that I track down the non-syscall events that include
-> >>>> subj= fields and add allocate a "current context" for them? I looked
-> >>>> into doing that, and it wouldn't be simple.
-> >>> This is why the "local context" was created.  Prior to these stacking
-> >>> additions, and the audit container ID work, we never needed to group
-> >>> multiple audit records outside of a syscall context into a single
-> >>> audit event so passing a NULL context into audit_log_start() was
-> >>> reasonable.  The local context was designed as a way to generate a
-> >>> context for use in a local function scope to group multiple records,
-> >>> however, for reasons I'll get to below I'm now wondering if the local
-> >>> context approach is really workable ...
-> >> I haven't found a place where it didn't work. What is the concern?
-> > The concern is that use of a local context can destroy any hopes of
-> > linking with other related records, e.g. SYSCALL and PATH records, to
-> > form a single cohesive event.  If the current task_struct is valid for
-> > a given function invocation then we *really* should be using current's
-> > audit_context.
+On Mon, Aug 16, 2021 at 6:29 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> On Sun, Aug 15, 2021 at 05:14:06PM +0300, Amir Goldstein wrote:
+> > Hi Greg,
 > >
-> > However, based on our discussion here it would seem that we may have
-> > some issues where current->audit_context is not being managed
-> > correctly.  I'm not surprised, but I will admit to being disappointed.
->
-> I'd believe that with syscall audit being a special case for other reasons
-> the multiple record situation got taken care of on a case-by-case basis
-> and no one really paid much attention to generality. It's understandable.
->
-> >>> What does your audit config look like?  Both the kernel command line
-> >>> and the output of 'auditctl -l' would be helpful.
-> >> On the fedora system:
-> >>
-> >> BOOT_IMAGE=(hd0,gpt2)/vmlinuz-5.14.0-rc5stack+
-> >> root=/dev/mapper/fedora-root ro resume=/dev/mapper/fedora-swap
-> >> rd.lvm.lv=fedora/root rd.lvm.lv=fedora/swap lsm.debug
-> >>
-> >> -a always,exit -F arch=b64 -S bpf -F key=testsuite-1628714321-EtlWIphW
-> >>
-> >> On the Ubuntu system:
-> >>
-> >> BOOT_IMAGE=/boot/vmlinuz-5.14.0-rc1stack+
-> >> root=UUID=39c25777-d413-4c2e-948c-dfa2bf259049 ro lsm.debug
-> >>
-> >> No rules
-> > The Fedora system looks to have some audit-testsuite leftovers, but
-> > that shouldn't have an impact on what we are discussing; in both cases
-> > I would expect current->audit_context to be allocated and non-NULL.
->
-> As would I.
->
->
-> >>> I'm beginning to suspect that you have the default
-> >>> we-build-audit-into-the-kernel-because-product-management-said-we-have-to-but-we-don't-actually-enable-it-at-runtime
-> >>> audit configuration that is de rigueur for many distros these days.
-> >> Yes, but I've also fiddled about with it so as to get better event coverage.
-> >> I've run the audit-testsuite, which has got to fiddle about with the audit
-> >> configuration.
-> > Yes, it looks like my hunch was wrong.
+> > Sorry for the late reply, I have some questions about this change...
 > >
-> >>> If that is the case, there are many cases where you would not see a
-> >>> NULL current->audit_context simply because the config never allocated
-> >>> one, see kernel/auditsc.c:audit_alloc().
-> >> I assume you mean that I *would* see a NULL current->audit_context
-> >> in the "event not enabled" case.
-> > Yep, typo.
+> > On Fri, May 21, 2021 at 9:12 AM Greg Kurz <groug@kaod.org> wrote:
+> > >
+> > > Even if POSIX doesn't mandate it, linux users legitimately expect
+> > > sync() to flush all data and metadata to physical storage when it
+> > > is located on the same system. This isn't happening with virtiofs
+> > > though : sync() inside the guest returns right away even though
+> > > data still needs to be flushed from the host page cache.
+> > >
+> > > This is easily demonstrated by doing the following in the guest:
+> > >
+> > > $ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
+> > > 5120+0 records in
+> > > 5120+0 records out
+> > > 5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
+> > > sync()                                  = 0 <0.024068>
+> > > +++ exited with 0 +++
+> > >
+> > > and start the following in the host when the 'dd' command completes
+> > > in the guest:
+> > >
+> > > $ strace -T -e fsync /usr/bin/sync virtiofs/foo
+> > > fsync(3)                                = 0 <10.371640>
+> > > +++ exited with 0 +++
+> > >
+> > > There are no good reasons not to honor the expected behavior of
+> > > sync() actually : it gives an unrealistic impression that virtiofs
+> > > is super fast and that data has safely landed on HW, which isn't
+> > > the case obviously.
+> > >
+> > > Implement a ->sync_fs() superblock operation that sends a new
+> > > FUSE_SYNCFS request type for this purpose. Provision a 64-bit
+> > > placeholder for possible future extensions. Since the file
+> > > server cannot handle the wait == 0 case, we skip it to avoid a
+> > > gratuitous roundtrip. Note that this is per-superblock : a
+> > > FUSE_SYNCFS is send for the root mount and for each submount.
+> > >
+> > > Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
+> > > FUSE_SYNCFS in the file server is treated as permanent success.
+> > > This ensures compatibility with older file servers : the client
+> > > will get the current behavior of sync() not being propagated to
+> > > the file server.
 > >
-> >>> Regardless, assuming that is the case we probably need to find an
-> >>> alternative to the local context approach as it currently works.  For
-> >>> reasons we already talked about, we don't want to use a local
-> >>> audit_context if there is the possibility for a proper
-> >>> current->audit_context, but we need to do *something* so that we can
-> >>> group these multiple events into a single record.
-> >> I tried a couple things, but neither was satisfactory.
-> >>
-> >>> Since this is just occurring to me now I need a bit more time to think
-> >>> on possible solutions - all good ideas are welcome - but the first
-> >>> thing that pops into my head is that we need to augment
-> >>> audit_log_end() to potentially generated additional, associated
-> >>> records similar to what we do on syscall exit in audit_log_exit().
-> >> I looked into that. You need a place to save the timestamp
-> >> that doesn't disappear. That's the role the audit_context plays
-> >> now.
-> > Yes, I've spent a few hours staring at the poorly planned struct that
-> > is audit_context ;)
+> > I wonder - even if the server does not support SYNCFS or if the kernel
+> > does not trust the server with SYNCFS, fuse_sync_fs() can wait
+> > until all pending requests up to this call have been completed, either
+> > before or after submitting the SYNCFS request. No?
+>
 > >
-> > Regardless, the obvious place for such a thing is audit_buffer; we can
-> > stash whatever we need in there.
+> > Does virtiofsd track all requests prior to SYNCFS request to make
+> > sure that they were executed on the host filesystem before calling
+> > syncfs() on the host filesystem?
 >
-> I had considered doing that, but was afraid that moving the timestamp
-> out of the audit_context might have dire consequences.
-
-Don't move, copy.  If there is a valid context one would stash the
-timestamp there, if not, we stash it in the audit_buffer.  However,
-before we start messing with that too much I would like to better
-understand why we aren't seeing a valid audit_context in the netlink
-case at the very least.
-
-> >>>  Of
-> >>> course the audit_log_end() changes would be much more limited than
-> >>> audit_log_exit(), just the LSM subject and audit container ID info,
-> >>> and even then we might want to limit that to cases where the ab->ctx
-> >>> value is NULL and let audit_log_exit() handle it otherwise.  We may
-> >>> need to store the event type in the audit_buffer during
-> >>> audit_log_start() so that we can later use that in audit_log_end() to
-> >>> determine what additional records are needed.
-> >>>
-> >>> Regardless, let's figure out why all your current->audit_context
-> >>> values are NULL
-> >> That's what's maddening, and why I implemented audit_alloc_for_lsm().
-> >> They aren't all NULL. Sometimes current->audit_context is NULL,
-> >> sometimes it isn't, for the same event. I thought it might be a
-> >> question of the netlink interface being treated specially, but
-> >> that doesn't explain all the cases.
-> >
-> > Your netlink changes are exactly what made me think, "this is
-> > obviously wrong", but now I'm wondering if a previously held
-> > assumption of "current is valid and points to the calling process" in
-> > the case of the kernel servicing netlink messages sent from userspace.
+> Hi Amir,
 >
-> If that's the case the subject data in the audit record is going
-> to be bogus. From what I've seen that data appears to be correct.
-
-Yeah, the thought occurred to me, but we are clearly already in the
-maybe-the-assumptions-are-wrong stage so I'm not going to rely on that
-being 100%.  We definitely need to track this down before we start
-making to many more guesses about what is working and what is not.
-
-> > Or rather, perhaps that assumption is still true but something is
-> > causing current->audit_context to be NULL in that case.
+> I don't think virtiofsd has any such notion. I would think, that
+> client should make sure all pending writes have completed and
+> then send SYNCFS request.
 >
-> I can imagine someone deciding not to set up audit_context in
-> situations like netlink because they knew that nothing following
-> that would be a syscall event.
-
-*If* the user/kernel transition happens as part of the netlink socket
-send/write/etc. syscall then it *should* have all of the audit syscall
-setup already done ... however, see my earlier comments about
-assumptions :/
-
-> I've been looking into the audit
-> userspace and there are assumptions like that all over the place.
-
-I've made my feelings about audit's design known quite a bit already
-so I'm not going to drag all of that back up, all I'll say is that I
-believe the audit design was tragically and inherently flawed in many
-ways.  We've been working to resolve some of those issues in the
-kernel for a little while now, but the audit userspace remains rooted
-in some of those original design decisions.  Of course, these are just
-my opinions, others clearly feel differently.
-
-Regardless, and somewhat independent of our discussion here, now that
-I am back to being able to dedicate a good chunk of my time to
-upstream efforts, one of my priorities is to start repairing audit ...
-however, I need to get past the io_uring mess first.
-
-> > Friday the 13th indeed.
+> Looking at the sync_filesystem(), I am assuming vfs will take care
+> of flushing out all dirty pages and then call ->sync_fs.
 >
-> I've been banging my head against this for a couple months.
-> My biggest fear is that I may have learned enough about the
-> audit system to make useful contributions.
+> Having said that, I think fuse queues the writeback request internally
+> and signals completion of writeback to mm(end_page_writeback()). And
+> that's why fuse_fsync() has notion of waiting for all pending
+> writes to finish on an inode (fuse_sync_writes()).
+>
+> So I think you have raised a good point. That is if there are pending
+> writes at the time of syncfs(), we don't seem to have a notion of
+> first waiting for all these writes to finish before we send
+> FUSE_SYNCFS request to server.
 
-As the usual refrain goes, "patches are always welcome" ... and I say
-that with equal parts honesty and warning :)
+Maybe, but I was not referring to inode writeback requests.
+I had assumed that those were handled correctly.
+I was referring to pending metadata requests.
 
-Even if you aren't comfortable putting together a patch, simply
-root-causing the missing audit_context setup in the netlink case would
-be helpful.
+->sync_fs() in local fs also takes care of flushing metadata
+(e.g. journal). I assumed that virtiofsd implements FUSE_SYNCFS
+request by calling syncfs() on host fs, but it is does that than
+there is no guarantee that all metadata requests have reached the
+host fs from virtiofs unless client or server take care of waiting
+for all pending metadata requests before issuing FUSE_SYNCFS.
 
--- 
-paul moore
-www.paul-moore.com
+But maybe I am missing something.
+
+It might be worth mentioning that I did not find any sync_fs()
+commands that request to flush metadata caches on the server in
+NFS or SMB protocols either.
+
+Thanks,
+Amir.
