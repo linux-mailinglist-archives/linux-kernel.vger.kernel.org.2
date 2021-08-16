@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445D83EDEB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54013EDEB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhHPUfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:35:14 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:37597 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhHPUfL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:35:11 -0400
-Received: by mail-oi1-f169.google.com with SMTP id u10so28577542oiw.4;
-        Mon, 16 Aug 2021 13:34:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r7oF4cY6wlWIjx7KIyMGDbLK0US100rK8cbns+Ja8Tc=;
-        b=k8dxl8nfbb1SkCudbIvFD8ugkpLhBMJJeo6a1RD3Fcr816qYfBCCLHEu/zqpkc6pVx
-         I2fzjQGmxbvW8+KXSVa/ubECvLIQXMDyzJAUQdV1rDWxfYwdSRc5gzh6CRoqZankUjlZ
-         mcu4GZAuGrtMDWVJS6J5OVMOjU/rCyqOOwF8YNW4k/7p1iKe0dyV8Q2aJfcq6ikZJ5OH
-         CAlloFG7shXHYr0TpO7UUbqvb9gtN5x4Rq2S69jCpeFq4Ivsr+9dKYlHyAL510DBvXaS
-         Cvjq9fGr2NBp4+AiOE/PgiUbZMR66A5zR3CToo+wf2Scc3NtHf4w5QINas2Vwg+2f5PF
-         gisA==
-X-Gm-Message-State: AOAM530I3PD2Zc1REwI+xB3FDi+atSlfqjhoagsS5P4EUOdmjS45EnHr
-        L4SU2+JsIDkq33IeGiAUrw==
-X-Google-Smtp-Source: ABdhPJygpDnonMJ9OuIxHg0kOrR2DRgIqw4+ZZ0Hp+jrDk/Ghxyu8TRUXAKPj95r1mZRfanmb0dAig==
-X-Received: by 2002:a54:4096:: with SMTP id i22mr539410oii.26.1629146078778;
-        Mon, 16 Aug 2021 13:34:38 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 21sm22947ooy.5.2021.08.16.13.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 13:34:38 -0700 (PDT)
-Received: (nullmailer pid 2606260 invoked by uid 1000);
-        Mon, 16 Aug 2021 20:34:37 -0000
-Date:   Mon, 16 Aug 2021 15:34:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Adjust HiKey examples for kirin-pcie
-Message-ID: <YRrL3Y3wvMLYSUsZ@robh.at.kernel.org>
-References: <cover.1629143524.git.mchehab+huawei@kernel.org>
+        id S231785AbhHPUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231594AbhHPUiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:38:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15DB860EFE;
+        Mon, 16 Aug 2021 20:37:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629146249;
+        bh=eJDYTNLTGsOY4pPaf8+T4clZF+4FHQUqr5tqYZY3ues=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sUwYxK9iuOiZagkuS80kK83ka0oWitmalodLodP8uYM4PB6JCLNH8bLBFLs+tjo8L
+         H9Q7i2SRamBn/7XnsXRD8g8aq1fAbsIwN44uZQOlP5RxeZ5hzidc695F3QMmf23ByN
+         bXYjYLjDJqMIL0hu/eRIbZrr1r7Nr7oAegNgNDtMtg2glQMTURFgOJDnpKZejpRwQ2
+         7cdjKEDKZGXWLQaKQsEw3gOrggt2r2IyeOwbYZJiyt+hGcwa1M1YCjzzhodgWHn4zf
+         zAWIHJTE135lY9RBcpKp0pB4Fj/n0zMhoCWey9wpdkIEBEQaYKes9m8llRa4GYFNb5
+         w/6la7tw4n0Kw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] kbuild: Switch to 'f' variants of integrated assembler flag
+Date:   Mon, 16 Aug 2021 13:36:35 -0700
+Message-Id: <20210816203635.53864-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1629143524.git.mchehab+huawei@kernel.org>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:53:24PM +0200, Mauro Carvalho Chehab wrote:
-> Rob,
-> 
-> As discussed on another thread, there are three issues at
-> pci/hisilicon,kirin-pcie.yaml:
-> 
-> - The bus-range parameters are causing warnings;
-> - The Kirin970 example doesn't reflect the right device
->   hierarchy, causing some of_node files under sysfs to
->   not be initialized;
-> - There is a wrong msi-parent node causing it to not work
->   properly and to produce  several warnings.
-> 
-> This small series fix such issues.
-> 
-> Mauro Carvalho Chehab (2):
->   dt-bindings: PCI: kirin: fix bus-range
->   dt-bindings: PCI: kirin: fix HiKey970 example
-> 
->  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 66 ++++++++++---------
->  1 file changed, 36 insertions(+), 30 deletions(-)
+It has been brought up a few times in various code reviews that clang
+3.5 introduced -f{,no-}integrated-as as the preferred way to enable and
+disable the integrated assembler, mentioning that -{no-,}integrated-as
+are now considered legacy flags.
 
-I applied and squashed these into the prior series.
+Switch the kernel over to using those variants in case there is ever a
+time where clang decides to remove the non-'f' variants of the flag.
 
-Rob
+Link: https://releases.llvm.org/3.5.0/tools/clang/docs/ReleaseNotes.html#new-compiler-flags
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ scripts/Makefile.clang | 4 ++--
+ scripts/as-version.sh  | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+index 3ae63bd35582..4cce8fd0779c 100644
+--- a/scripts/Makefile.clang
++++ b/scripts/Makefile.clang
+@@ -23,11 +23,11 @@ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+ endif # CROSS_COMPILE
+ 
+ ifeq ($(LLVM_IAS),0)
+-CLANG_FLAGS	+= -no-integrated-as
++CLANG_FLAGS	+= -fno-integrated-as
+ GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+ CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+ else
+-CLANG_FLAGS	+= -integrated-as
++CLANG_FLAGS	+= -fintegrated-as
+ endif
+ CLANG_FLAGS	+= -Werror=unknown-warning-option
+ KBUILD_CFLAGS	+= $(CLANG_FLAGS)
+diff --git a/scripts/as-version.sh b/scripts/as-version.sh
+index 8b9410e329df..a0fc366728f1 100755
+--- a/scripts/as-version.sh
++++ b/scripts/as-version.sh
+@@ -21,13 +21,13 @@ get_canonical_version()
+ 	echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+ }
+ 
+-# Clang fails to handle -Wa,--version unless -no-integrated-as is given.
+-# We check -(f)integrated-as, expecting it is explicitly passed in for the
++# Clang fails to handle -Wa,--version unless -fno-integrated-as is given.
++# We check -fintegrated-as, expecting it is explicitly passed in for the
+ # integrated assembler case.
+ check_integrated_as()
+ {
+ 	while [ $# -gt 0 ]; do
+-		if [ "$1" = -integrated-as -o "$1" = -fintegrated-as ]; then
++		if [ "$1" = -fintegrated-as ]; then
+ 			# For the intergrated assembler, we do not check the
+ 			# version here. It is the same as the clang version, and
+ 			# it has been already checked by scripts/cc-version.sh.
+
+base-commit: f12b034afeb3a977bbb1c6584dedc0f3dc666f14
+-- 
+2.33.0.rc2
+
