@@ -2,186 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD8A3ECE65
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B2B3ECE6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhHPGFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:05:33 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:38883 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233477AbhHPGFY (ORCPT
+        id S233192AbhHPGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhHPGIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:05:24 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AOV8yt65SIuBaGD4ywAPXwPTXdLJyesId70hD?=
- =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
- =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
-X-IronPort-AV: E=Sophos;i="5.84,324,1620662400"; 
-   d="scan'208";a="112944888"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 16 Aug 2021 14:04:47 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 4E47F4D0D4BB;
-        Mon, 16 Aug 2021 14:04:43 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Mon, 16 Aug 2021 14:04:42 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Mon, 16 Aug 2021 14:04:41 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <djwong@kernel.org>, <hch@lst.de>, <linux-xfs@vger.kernel.org>
-CC:     <ruansy.fnst@fujitsu.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <rgoldwyn@suse.de>, <viro@zeniv.linux.org.uk>,
-        <willy@infradead.org>
-Subject: [PATCH v7 8/8] fs/xfs: Add dax dedupe support
-Date:   Mon, 16 Aug 2021 14:03:59 +0800
-Message-ID: <20210816060359.1442450-9-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
-References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
+        Mon, 16 Aug 2021 02:08:52 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15C4C061764;
+        Sun, 15 Aug 2021 23:08:20 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so9418298wma.0;
+        Sun, 15 Aug 2021 23:08:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=r/nHbEzboSNUFm0n5Kb5WDXFEoEgqApNclI3Nq97ty0=;
+        b=ie5fQk6Qnd9hKkCia2eNH/XTgxZyoKcBv9kjT2vdiPawNoVz5IKxsjRfWwx/7u6DA3
+         B3LMBIAvP0TMgYBJx3lGZMHVXYctir4WQUKBASHWyGABZPZps96mKIQe+Reyd0unhPYr
+         c+AZwtegayBCmm26xwM05NB0SEtleph6zmB/uuULWAhXPOhmAXdBskGRGwMRWe7p+mcj
+         pZElukYdvy8dQba8GYnNIWLQDpXyzAZ4UnVbekjJaY5NyGL8Zm4Al6YVcx58wqCVUcNh
+         UA9nx5FglQx0DHoZeGALT5L41wP0uAhysJ46xHa05/8Uc3jrfaarGhilslX7mCpAEnwh
+         ssbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=r/nHbEzboSNUFm0n5Kb5WDXFEoEgqApNclI3Nq97ty0=;
+        b=F0eQPTwoBk9yf+KAjEkoh9sAdlEG00JbfNd7NlQfTq64ieFfIjkZCOony0L50LkIRO
+         0wBgL9oeFOiDRM0jHDfet4DdxOAF2mFefl5rtScZ0DhU3d33bp62WOuUDys5rjEhSBan
+         m4p02CxlRWUp1dJ/5pT/mFweoTlCPwjRxUUNTEb9gWiWsXBnG/42zf6Dtf+eipWQK9Em
+         /FyDaDQCWb8lDmG5SIjq8Ua87wlW3mbTAAYHB1MChnGs6r3F8g717U9glfCrAOWR1SYF
+         UHF4zo18G70ZWLmLStKTvTfvSf5y+wmj609ExyWahXi1qiA0ehJ3ffunyH3F5YKQlLRn
+         W4cQ==
+X-Gm-Message-State: AOAM5300cssikjaVtabMWchO1jIg0ZVJr3fuojxs0PNdbjkL93pwTv1Q
+        4F54u8CyxOFsAJp7Uv5OcOQ=
+X-Google-Smtp-Source: ABdhPJyxgM9YzKO1jjyjOL7VHA3knQ2ZTEXygRcCRRbxotj675P0dVv4dSpKCKsWvWTeiOXXEUNTiQ==
+X-Received: by 2002:a1c:a181:: with SMTP id k123mr13413029wme.90.1629094099521;
+        Sun, 15 Aug 2021 23:08:19 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:7d83:fd8:eb16:8605? ([2a02:908:1252:fb60:7d83:fd8:eb16:8605])
+        by smtp.gmail.com with ESMTPSA id l2sm9347965wme.28.2021.08.15.23.08.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Aug 2021 23:08:18 -0700 (PDT)
+Subject: Re: [PATCH] drivers:gpu:drm:amd:amdgpu:fix a potential use-after-free
+To:     lwt105 <3061522931@qq.com>, alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch, sumit.semwal@linaro.org, nirmoy.das@amd.com,
+        chenli@uniontech.com, JinhuiEric.Huang@amd.com,
+        mh12gx2825@gmail.com, lee.jones@linaro.org, kevin1.wang@amd.com,
+        luben.tuikov@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <tencent_D167B6522B17C0228524C70F9CA5EEBBEC09@qq.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <fac65461-6ee2-e5dc-3af8-df9bfaecd6d4@gmail.com>
+Date:   Mon, 16 Aug 2021 08:08:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 4E47F4D0D4BB.A23D4
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <tencent_D167B6522B17C0228524C70F9CA5EEBBEC09@qq.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
-who are going to be deduped.  After that, call compare range function
-only when files are both DAX or not.
+Am 13.08.21 um 05:28 schrieb lwt105:
+> in line 1503, "dma_fence_put(fence);" drop the reference to fence and may
+> cause fence to be released. However, fence is used subsequently in line
+> 1510 "fence->error". This may result in an use-after-free bug.
+>
+> It can be fixed by recording fence->error in an variable before dropping
+> the reference to fence and referencing it after dropping.
+>
+> Signed-off-by: lwt105 <3061522931@qq.com>
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/xfs/xfs_file.c    |  2 +-
- fs/xfs/xfs_inode.c   | 57 ++++++++++++++++++++++++++++++++++++++++++++
- fs/xfs/xfs_inode.h   |  1 +
- fs/xfs/xfs_reflink.c |  4 ++--
- 4 files changed, 61 insertions(+), 3 deletions(-)
+Good catch.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 226e3fbaf405..4765abfe777e 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -846,7 +846,7 @@ xfs_wait_dax_page(
- 	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
- }
- 
--static int
-+int
- xfs_break_dax_layouts(
- 	struct inode		*inode,
- 	bool			*retry)
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 990b72ae3635..4b44d9d1e42a 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -3727,6 +3727,59 @@ xfs_iolock_two_inodes_and_break_layout(
- 	return 0;
- }
- 
-+static int
-+xfs_mmaplock_two_inodes_and_break_dax_layout(
-+	struct xfs_inode	*ip1,
-+	struct xfs_inode	*ip2)
-+{
-+	int			error, attempts = 0;
-+	bool			retry;
-+	struct page		*page;
-+	struct xfs_log_item	*lp;
-+
-+	if (ip1->i_ino > ip2->i_ino)
-+		swap(ip1, ip2);
-+
-+again:
-+	retry = false;
-+	/* Lock the first inode */
-+	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
-+	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
-+	if (error || retry) {
-+		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+		goto again;
-+	}
-+
-+	if (ip1 == ip2)
-+		return 0;
-+
-+	/* Nested lock the second inode */
-+	lp = &ip1->i_itemp->ili_item;
-+	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
-+		if (!xfs_ilock_nowait(ip2,
-+		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
-+			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+			if ((++attempts % 5) == 0)
-+				delay(1); /* Don't just spin the CPU */
-+			goto again;
-+		}
-+	} else
-+		xfs_ilock(ip2, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
-+	/*
-+	 * We cannot use xfs_break_dax_layouts() directly here because it may
-+	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
-+	 * for this nested lock case.
-+	 */
-+	page = dax_layout_busy_page(VFS_I(ip2)->i_mapping);
-+	if (page && page_ref_count(page) != 1) {
-+		xfs_iunlock(ip2, XFS_MMAPLOCK_EXCL);
-+		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+		goto again;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
-  * mmap activity.
-@@ -3741,6 +3794,10 @@ xfs_ilock2_io_mmap(
- 	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
- 	if (ret)
- 		return ret;
-+
-+	if (IS_DAX(VFS_I(ip1)) && IS_DAX(VFS_I(ip2)))
-+		return xfs_mmaplock_two_inodes_and_break_dax_layout(ip1, ip2);
-+
- 	if (ip1 == ip2)
- 		xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
- 	else
-diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-index 4b6703dbffb8..f1547330b087 100644
---- a/fs/xfs/xfs_inode.h
-+++ b/fs/xfs/xfs_inode.h
-@@ -456,6 +456,7 @@ enum xfs_prealloc_flags {
- 
- int	xfs_update_prealloc_flags(struct xfs_inode *ip,
- 				  enum xfs_prealloc_flags flags);
-+int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
- int	xfs_break_layouts(struct inode *inode, uint *iolock,
- 		enum layout_break_reason reason);
- 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 13e461cf2055..86c737c2baeb 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1327,8 +1327,8 @@ xfs_reflink_remap_prep(
- 	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
- 		goto out_unlock;
- 
--	/* Don't share DAX file data for now. */
--	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-+	/* Don't share DAX file data with non-DAX file. */
-+	if (IS_DAX(inode_in) != IS_DAX(inode_out))
- 		goto out_unlock;
- 
- 	if (!IS_DAX(inode_in))
--- 
-2.32.0
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> index 30fa1f61e0e5..99d03180e113 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> @@ -1486,7 +1486,7 @@ static int amdgpu_cs_wait_all_fences(struct amdgpu_device *adev,
+>   				     struct drm_amdgpu_fence *fences)
+>   {
+>   	uint32_t fence_count = wait->in.fence_count;
+> -	unsigned int i;
+> +	unsigned int i, error;
+>   	long r = 1;
 
+Would be nice to have if you could reuse the "r" variable here instead 
+of a new one.
 
+Regards,
+Christian.
+
+>   
+>   	for (i = 0; i < fence_count; i++) {
+> @@ -1500,6 +1500,7 @@ static int amdgpu_cs_wait_all_fences(struct amdgpu_device *adev,
+>   			continue;
+>   
+>   		r = dma_fence_wait_timeout(fence, true, timeout);
+> +		error = fence->error;
+>   		dma_fence_put(fence);
+>   		if (r < 0)
+>   			return r;
+> @@ -1507,8 +1508,8 @@ static int amdgpu_cs_wait_all_fences(struct amdgpu_device *adev,
+>   		if (r == 0)
+>   			break;
+>   
+> -		if (fence->error)
+> -			return fence->error;
+> +		if (error)
+> +			return error;
+>   	}
+>   
+>   	memset(wait, 0, sizeof(*wait));
 
