@@ -2,59 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D963EDB3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7F13EDB4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhHPQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52612 "EHLO mail.kernel.org"
+        id S230176AbhHPQwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:52:00 -0400
+Received: from comms.puri.sm ([159.203.221.185]:46824 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhHPQud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF1D60BD3;
-        Mon, 16 Aug 2021 16:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629132601;
-        bh=BZy1S4i5I1xaSTwWwzPJ/uVjtG2fkjv77WBJRVxkhw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2uN00RyHMAL1nyXwlVIPxwaAQakKr0lXKT67a/DJnjpGoXoIReaiV0lcaMIsP1MDi
-         Vs67xZFv9rHx2uWnv0ktjkJNTN8ypYD6KSHx2yquqavRZVSSe22EDaFiN3B79L7fAG
-         2qIf7iG3pteBn7TRLG17OB/k99TpXRLTs1+9QOCw=
-Date:   Mon, 16 Aug 2021 18:49:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] staging: r8188eu: Remove unused code
-Message-ID: <YRqXNyX+fY9qKh3Q@kroah.com>
-References: <20210816160617.11949-1-fmdefrancesco@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816160617.11949-1-fmdefrancesco@gmail.com>
+        id S230179AbhHPQv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 12:51:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 8CB7DDFE25;
+        Mon, 16 Aug 2021 09:51:26 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HiCGyLyjgrIW; Mon, 16 Aug 2021 09:51:21 -0700 (PDT)
+From:   Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Subject: [PATCH 1/4] power: supply: max17042_battery: clean up MAX17055_V_empty
+Date:   Mon, 16 Aug 2021 18:50:13 +0200
+Message-Id: <20210816165016.3153776-1-sebastian.krzyszkowiak@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 06:06:14PM +0200, Fabio M. De Francesco wrote:
-> Remove unused code from the r8188eu driver.
-> 
-> Fabio M. De Francesco (3):
->   staging: r8188eu: Remove unused nat25_handle_frame()
->   staging: r8188eu: Remove all code depending on the NAT25_LOOKUP method
->   staging: r8188eu: Remove no more used variable and function
-> 
->  drivers/staging/r8188eu/core/rtw_br_ext.c    | 263 +------------------
->  drivers/staging/r8188eu/include/recv_osdep.h |   1 -
->  drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
->  3 files changed, 1 insertion(+), 264 deletions(-)
+This register is same as in MAX17047 and MAX17050, so there's no need
+for custom casing it.
 
-Patch 2/3 did not apply, can you please rebase and resend the remaining
-2 patches against my latest tree?
+Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+---
+ drivers/power/supply/max17042_battery.c | 4 ----
+ include/linux/power/max17042_battery.h  | 1 -
+ 2 files changed, 5 deletions(-)
 
-thanks,
+diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+index c6078f179fb3..01e6728a9e2b 100644
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -283,8 +283,6 @@ static int max17042_get_property(struct power_supply *psy,
+ 	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
+ 		if (chip->chip_type == MAXIM_DEVICE_TYPE_MAX17042)
+ 			ret = regmap_read(map, MAX17042_V_empty, &data);
+-		else if (chip->chip_type == MAXIM_DEVICE_TYPE_MAX17055)
+-			ret = regmap_read(map, MAX17055_V_empty, &data);
+ 		else
+ 			ret = regmap_read(map, MAX17047_V_empty, &data);
+ 		if (ret < 0)
+@@ -778,8 +776,6 @@ static inline void max17042_override_por_values(struct max17042_chip *chip)
+ 
+ 	if (chip->chip_type == MAXIM_DEVICE_TYPE_MAX17042)
+ 		max17042_override_por(map, MAX17042_V_empty, config->vempty);
+-	if (chip->chip_type == MAXIM_DEVICE_TYPE_MAX17055)
+-		max17042_override_por(map, MAX17055_V_empty, config->vempty);
+ 	else
+ 		max17042_override_por(map, MAX17047_V_empty, config->vempty);
+ 	max17042_override_por(map, MAX17042_TempNom, config->temp_nom);
+diff --git a/include/linux/power/max17042_battery.h b/include/linux/power/max17042_battery.h
+index d55c746ac56e..7e5da60cbea3 100644
+--- a/include/linux/power/max17042_battery.h
++++ b/include/linux/power/max17042_battery.h
+@@ -113,7 +113,6 @@ enum max17042_register {
+ enum max17055_register {
+ 	MAX17055_QRes		= 0x0C,
+ 	MAX17055_TTF		= 0x20,
+-	MAX17055_V_empty	= 0x3A,
+ 	MAX17055_TIMER		= 0x3E,
+ 	MAX17055_USER_MEM	= 0x40,
+ 	MAX17055_RGAIN		= 0x42,
+-- 
+2.32.0
 
-greg k-h
