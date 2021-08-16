@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAAA3ED92E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB593ED934
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhHPOtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:49:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32699 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232095AbhHPOtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:49:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="196140208"
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="196140208"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 07:48:50 -0700
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="504935472"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 07:48:47 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mFduq-00AQUa-Ie; Mon, 16 Aug 2021 17:48:40 +0300
-Date:   Mon, 16 Aug 2021 17:48:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v1 1/1] x86/platform: Increase maximum GPIO number for
- X86_64
-Message-ID: <YRp6yHt7JMmGvvQn@smile.fi.intel.com>
-References: <20210806143711.37553-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0iTNwQfh6ZZxry16hOjokGOOSZthq6C_yed07a2HQ7h2Q@mail.gmail.com>
- <YRppqnAqJ1G+4mva@smile.fi.intel.com>
- <CAJZ5v0ib7oP5EG2k6_Q0Yiq=_WGu01iGVDmV+QoVRLaxTXZHDw@mail.gmail.com>
+        id S232528AbhHPOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhHPOvO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 10:51:14 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BBDC061764;
+        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id j1so26907625pjv.3;
+        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WJWFiW1tNTGnEXAY83sW/96pfLutJ+nc92p/dxWLkZg=;
+        b=NXbT1zLrDuMqskh2PkrXNK2vbCTKyrRJCbfTY5Bly9fYQ/XU0SfRcVq5Opg7hJuYPq
+         WAHFOfTPq1K1gGqDqCEl7LfXOVRnVK+Trx+MMYCG7OPlcmQ484293t+hm2eNoNgWwPWn
+         FMa4FwwJpv6nh2ij8bhxvHhBGoaIurIFplj7wnpKTSuRMnyldRdPcAWWcSmd+W7oZuoa
+         90O5BmPR7Iyg7k9vnQyRNKKQWgQWCvIDkqkqBKagNtE87pOxDe8b9ZAS8kRj2RhhMem8
+         RcODv8S8rQQKapLBdjj/yipP4YK2d1vrMKq6Wk4vAH1jeB7D9R7aSg32dzMV4dgTGHNn
+         cHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WJWFiW1tNTGnEXAY83sW/96pfLutJ+nc92p/dxWLkZg=;
+        b=fbb1ZaF3MLVycQwQKjbG8tcuwm/EzfPl4vfOeAwIBBIpI5VAHOretXlKvGBNHOafKr
+         J4sliYDv9bM1NJ34ZtWlcNbRQfcnHzCgTsJSjZ0pAbO/Q+ZS9UwLI04fjxxT+t1ulgKB
+         IPPsyL1jDMfRU/xwfVCmRNPq+EgmJqGBCE7H4QBm+3v9G4+J54JJhbaFy3dCu8/Rl3w9
+         7K5pmWB18OdovI59y4YcwLnt6X5UmW2rVsI2M2xXxlqa6WyUhv9ggUES9Q5BEQBjEnks
+         KBjAZ2W/EG6tqNJmH9AiL3oJ2sNgDxByNrP7tGYlYLLOJL3RNWMiejrUZFaa654Spvws
+         dZjg==
+X-Gm-Message-State: AOAM533hjnoppG2uAotsGeSRSsDxViSB6cv8WbrCIyAqlQV10Y3I5ifs
+        bx41x1bQ5oFZapwtaIfmPcA=
+X-Google-Smtp-Source: ABdhPJwwGaWbF5lMH7zWG8CjOdMFhlJFveeUXJRyURV3wu36AAVQm0z4EMghAqWltWQj3nIzdJtriw==
+X-Received: by 2002:a17:90b:3014:: with SMTP id hg20mr17976900pjb.140.1629125442297;
+        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id z2sm6264141pgb.33.2021.08.16.07.50.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 07:50:41 -0700 (PDT)
+Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
+ function for HV IVM
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-11-ltykernel@gmail.com>
+ <20210812122741.GC19050@lst.de>
+ <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
+Message-ID: <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
+Date:   Mon, 16 Aug 2021 22:50:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0ib7oP5EG2k6_Q0Yiq=_WGu01iGVDmV+QoVRLaxTXZHDw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:55:59PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Aug 16, 2021 at 3:35 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Aug 16, 2021 at 03:25:13PM +0200, Rafael J. Wysocki wrote:
-> > > On Fri, Aug 6, 2021 at 4:44 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-
-...
-
-> > > Wouldn't
-> > >
-> > > default 1024 if X86_64
-> > > default 512
-> > >
-> > > be sufficient?
-> > >
-> > > It's either X86_64 or X86_32 anyway AFAICS.
-
-Fixed in v2.
-
-...
-
-> > Btw, what do you think. do we need comment above and help text here? I copied
-> > these from ARM, but I'm not sure it would be useful on x86 as much.
+On 8/14/2021 1:58 AM, Tianyu Lan wrote:
+> On 8/12/2021 8:27 PM, Christoph Hellwig wrote:
+>> This is still broken.  You need to make sure the actual DMA allocations
+>> do have struct page backing.
+>>
 > 
-> Both the comment and the help text aren't particularly useful IMO.
-> 
-> The comment is a bit confusing even, because x86 kernels are
-> multiplatform as a rule.
+> Hi Christoph:
+>       swiotlb_tbl_map_single() still returns PA below vTOM/share_gpa_ > boundary. These PAs has backing pages and belong to system memory.
+> In other word, all PAs passed to DMA API have backing pages and these is 
+> no difference between Isolation guest and traditional guest for DMA API.
+> The new mapped VA for PA above vTOM here is just to access the bounce 
+> buffer in the swiotlb code and isn't exposed to outside.
 
-Ditto.
+Hi Christoph:
+       Sorry to bother you.Please double check with these two patches
+" [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function 
+for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
+unmap_encrypted() function".
+       The swiotlb bounce buffer in the isolation VM are allocated in the
+low end memory and these memory has struct page backing. All dma address
+returned by swiotlb/DMA API are low end memory and this is as same as 
+what happen in the traditional VM.So this means all PAs passed to DMA 
+API have struct page backing. The difference in Isolation VM is to 
+access bounce buffer via address space above vTOM/shared_guest_memory
+_boundary. To access bounce buffer shared with host, the guest needs to
+mark the memory visible to host via hypercall and map bounce buffer in 
+the extra address space(PA + shared_guest_memory_boundary). The vstart
+introduced in this patch is to store va of extra address space and it's 
+only used to access bounce buffer in the swiotlb_bounce(). The PA in 
+extra space is only in the Hyper-V map function and won't be passed to 
+DMA API or other components.
+       The API dma_map_decrypted() introduced in the patch 9 is to map 
+the bounce buffer in the extra space and these memory in the low end 
+space are used as DMA memory in the driver. Do you prefer these APIs
+still in the set_memory.c? I move the API to dma/mapping.c due to the
+suggested name arch_dma_map_decrypted() in the previous mail
+(https://lore.kernel.org/netdev/20210720135437.GA13554@lst.de/).
+       If there are something unclear, please let me know. Hope this
+still can catch the merge window.
+
+Thanks.
 
 
--- 
-With Best Regards,
-Andy Shevchenko
 
 
