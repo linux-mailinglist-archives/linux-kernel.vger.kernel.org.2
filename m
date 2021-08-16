@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01663ED1F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225A33ED1F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbhHPKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbhHPKaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:30:20 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9DAC061764;
-        Mon, 16 Aug 2021 03:29:48 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id g138so11231713wmg.4;
-        Mon, 16 Aug 2021 03:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zC6T7bwIy4U4vQbxXdGtxZMXQsi3PtjnTtfgcrsYRhE=;
-        b=FPOqA7xi7oANwZC58CFFSVRXHbzeGBVYfw1vS8K9e5GA/5tjXBZiCMTP96f+Z0+7Nu
-         MFIVrTtQEnh411BFcqJYmumAHifswyjhxeIv1D5Lmmd2mfIeZ6v1c9WBQ7g/gnRcq8Fx
-         spHvJ9NdNpSAmxKMgTUswYW/6m9LjknaNWh1mnMcGzc0uyKdMMxima0Lnlyzk3TJ0s/d
-         zwtGzAJ1rBcnhsJKRtqHkSJE9gK5STDWJUaUV3dfV4vczF5fJIXEnOIiyHNjjwjAI3kE
-         nNBN8kd/EXbtiO3Mbvc8UvOEchgf3DuOBnNG0f+8+G8L92RUt+KNJAA9jL2IKEztSmE3
-         0RDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zC6T7bwIy4U4vQbxXdGtxZMXQsi3PtjnTtfgcrsYRhE=;
-        b=WvRmPN51iiem2y9DAmuNrz2jtqda+bYP4RIYa9rMJkDBwxRccUGx7pJkTwoRKluQsf
-         XmyZg2kB+1dERc5V17i7qIVfXk+h6guUhVLofupZtrb5UbxaX+AWzFVQin80aDpXc+Y0
-         8GHo6FI0OfBc7ZKWszJbcdJhT+Th7fWaPOjoHIFvdFHYhXLdZx2DmIyB0PnoiPNgh2CC
-         MIiAq0fVwIw14T0fZykjsbQ6NUO1iBMfu5ghEmRHastIcJP1V9CjnzaLkHYnuBoBenAl
-         DnnIZYLcgXuFozX2oFgPr9H2ADQQK8C6FZ25c3nPqbLuRuofRq3AOvYPTgEhRxXuxgvl
-         BFbA==
-X-Gm-Message-State: AOAM530O+e+okCwtWqHrppYo96Vxq7KCIbBSot6zr2pNFq0ui+B7US1E
-        uopy7EerjbSL8UsEj5h26Ik=
-X-Google-Smtp-Source: ABdhPJxj9jwaASRpwTTbZVwcKbG924+JuU0ncGwiIXxe1ss32NyyWPXMUmc+Nec+9/r0sbHas2oXGw==
-X-Received: by 2002:a05:600c:1d01:: with SMTP id l1mr13472797wms.178.1629109787293;
-        Mon, 16 Aug 2021 03:29:47 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id e3sm11767136wrv.65.2021.08.16.03.29.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 03:29:46 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James Hartley <james.hartley@sondrel.com>,
-        linux-mips@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its retirement
-Date:   Mon, 16 Aug 2021 12:29:42 +0200
-Message-Id: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S235833AbhHPKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:30:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233207AbhHPKah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3385861BD2;
+        Mon, 16 Aug 2021 10:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629109806;
+        bh=qAGaiuj7mkRVcBwTMO8R0IPO/4+ZbYODy9JyR9fFCCM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ATUSDptcpvP6ac6N7H7mUH8j3R2H5lHBPmEvCeT+oYytw/H1aQL6qAl8gXbBvvOoE
+         8d8zZ/e6+VpOUsXhDFytmVpduWeKmlpNJ86OEDsFg55NfwlHFB06ormy4U3luEWxu4
+         1c4nJTzyqInQA+nT+IMcOIY+f6MwVOH6bXatSXPc36vor8lSRKi7Zg9Y63dZAYIqcu
+         1hmdXHpVZJ/5E9eDb+34MJF1iuudHGzLyM/BOuQ3Iq04QCpGsLMCz7cO5qYP8ah8sB
+         IxzPwOAFeaeXsA7V+BGjGODv56vT6GnGChi2xWZZsJm4GqGt9Vz4KedsCvvN9C348h
+         EZWugByPFSSFQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2137660A12;
+        Mon, 16 Aug 2021 10:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1 net 1/1] ptp_pch: Restore dependency on PCI
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162910980613.576.16646341237793562162.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Aug 2021 10:30:06 +0000
+References: <20210813173328.16512-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210813173328.16512-1-andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     richardcochran@gmail.com, jonathan.lemon@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lkp@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
-./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
-misses to adjust the corresponding section PISTACHIO SOC SUPPORT
-in MAINTAINERS.
+Hello:
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-  warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
-  warning: no file matches    F:    arch/mips/pistachio/
+On Fri, 13 Aug 2021 20:33:27 +0300 you wrote:
+> During the swap dependency on PCH_GBE to selection PTP_1588_CLOCK_PCH
+> incidentally dropped the implicit dependency on the PCI. Restore it.
+> 
+> Fixes: 18d359ceb044 ("pch_gbe, ptp_pch: Fix the dependency direction between these drivers")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> [...]
 
-Adjust the PISTACHIO SOC SUPPORT after its retirement.
+Here is the summary with links:
+  - [v1,net,1/1] ptp_pch: Restore dependency on PCI
+    https://git.kernel.org/netdev/net/c/55c8fca1dae1
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210816
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Jiaxun, James, please ack. 
-Thomas, please pick this minor non-urgent clean-up patch on mips-next.
-
- MAINTAINERS | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1a2d3ee2711e..8276e59406e4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14802,8 +14802,6 @@ M:	James Hartley <james.hartley@sondrel.com>
- L:	linux-mips@vger.kernel.org
- S:	Odd Fixes
- F:	arch/mips/boot/dts/img/pistachio*
--F:	arch/mips/configs/pistachio*_defconfig
--F:	arch/mips/pistachio/
- 
- PKTCDVD DRIVER
- M:	linux-block@vger.kernel.org
--- 
-2.26.2
 
