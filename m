@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2253ECFCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA3ECFD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhHPH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:56:30 -0400
-Received: from phobos.denx.de ([85.214.62.61]:42756 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234400AbhHPHzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:55:51 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        id S234530AbhHPH6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 03:58:11 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:57824
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234572AbhHPH4k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 03:56:40 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 0ABAC82DF6;
-        Mon, 16 Aug 2021 09:55:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1629100517;
-        bh=qxdKNE6QZJ3jeX2FGy/HZQJa6oKpB6hiuozRQUI6IDw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cRA5UbNdVWoubpaYLWeAE+/oyVcstfuKhxopjzt/MrYg0ujuZ/BQaEZfNnkt4Qj0K
-         dH2Rya1P4R/+CXDvOw/PcB6OLM/h73WT3cYmVvFznM9G6uT+6rqUz+9wwCs3Km6hov
-         +FA5EAOltqqEwU+aozZxR2FT4iOa2XKeJrvRY1krJkV2CLThG17URtI7qw6N530oDZ
-         utvZqKp5OhGSzsbrRkhSiIYUuKjUfSlo4i9Prd+6gUreL3SZcGi/zUdK9wJVQ20NbD
-         8SjQXIeKOS+NexcoBTgj3Qu253V0nv8ui4QiabuQW31Wb5uTRHSpTXu4/2pS7x5Nvy
-         H1fMXDx+uGrFw==
-Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair@alistair23.me>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
- <d983217b-e117-361c-0306-b131695bb93f@denx.de>
- <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de>
-Date:   Mon, 16 Aug 2021 09:55:16 +0200
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9A4EB3F04E;
+        Mon, 16 Aug 2021 07:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629100554;
+        bh=W1ishUz8mHqehwd2h6l+5o4J0QmpazRWbS0Pi/fqFb4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=GiLnTMNy3wdzNYHXYh5Tmcp5wib5D4B8WNvXehZfm7TRXOlYuzY0MiiRXfSlybf3I
+         MoMcxZIsalRbbWp+bFmdY7YMPpFz4g4t7rWWdrgDymaDe+zCiCfK3zjlUGmSqKHVFB
+         XmTLY/v1F7r7f2fWWrWE5FyBOuXV/1NbO10kc+V3/xHDmtf7fLSHRCUG0YiQKMCHHL
+         TBs8Y2jJoYsogkqUPe6SomO8HOZRxBqJFAj5sI16rx5mts9pTXlsa/76oM/DC2RAYM
+         gWxlh1sBeLrlJjO1BYe5aWfvXelJdj5uoEGtNmwCm2hMX9g7KDg8/ZGx115m2gK2AI
+         LXt14C4g8cxug==
+Subject: Re: [PATCH] leds: flash: Remove redundant initialization of variable
+ ret
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-leds@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210612132547.58727-1-colin.king@canonical.com>
+ <20210816065110.GA7500@duo.ucw.cz>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <1864790c-4547-9e19-e6ed-c9b342e0c6aa@canonical.com>
+Date:   Mon, 16 Aug 2021 08:55:54 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210816065110.GA7500@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 9:34 AM, Alistair Francis wrote:
-> On Sun, Aug 15, 2021 at 10:31 PM Marek Vasut <marex@denx.de> wrote:
->>
->> On 8/15/21 2:16 PM, Alistair Francis wrote:
->>> Hello,
->>>
->>> Commit f225f1393f034 "video: fbdev: mxsfb: Remove driver" removed the
->>> mxsfb fbdev driver.
->>>
->>> I am now working on getting mainline Linux running on the reMarkable 2
->>> eInk reader [1]. Unfortunately the rM2 doesn't use the standard EPD
->>> controller on the i.MX SoC, but instead uses the LCD controller.
->>>
->>> eInk panels are complex to control and require writing temperature
->>> dependent waveforms. As these waveforms are proprietary [2] the rM
->>> team runs closed source software called SWTCON in userspace to control
->>> the panel [3].
->>>
->>> This closed source software expects the fbdev mxsfb driver and it
->>> doesn't work with the DRM mxsfb driver (at least not that I can get it
->>> to).
->>>
->>> The NXP fork of Linux also re-adds the fbdev driver [4], so they also
->>> see some uses for it.
->>>
->>> I was wondering if the community would be open to re-adding the fbdev
->>> mxsfb driver to mainline? It could be re-added with a different
->>> dt-binding so that it is not used by default and only enabled for
->>> boards when required (like for the rM2).
->>>
->>> 1: https://remarkable.com/store/remarkable-2
->>> 2: https://goodereader.com/blog/e-paper/e-ink-waveforms-are-a-closely-guarded-secret
->>> 3: https://remarkablewiki.com/tech/rm2_framebuffer
->>> 4: https://source.codeaurora.org/external/imx/linux-imx/log/drivers/video/fbdev/mxsfb.c?h=lf-5.10.35-2.0.0
->>
->> +CC Sam.
->>
->> What sort of special thing does your proprietary userspace do that
->> cannot be added to the DRM driver or the fbdev emulation (if needed) ?
+On 16/08/2021 07:51, Pavel Machek wrote:
+> Hi!
 > 
-> It's hard to tell. When using the DRM driver I get cryptic errors
-> about the frame buffer not being available.
-
-Do you have fbdev emulation enabled ? Does /dev/fbX exist ?
-
-What sort of messages do you get and from where ?
-
-You could run strace on the application to see how it communicates with 
-the old driver via the ioctl interface and compare it with the fbdev 
-emulation on the new driver, maybe there is some odd ioctl which is not 
-emulated.
-
-There is also NXP 5.10.35 fork, so you could try picking the fbdev 
-driver from there and add printks/trace_printks/etc. into both that and 
-the fbdev emulation code, to see whether how either is called and what 
-is failing/missing in the emulation.
-
-> It's difficult to know
-> what is going on as I don't have access to any of the source. I
-> suspect the userspace code could be updated to use the DRM driver, but
-> we would need the reMarkable devs to do that.
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable ret is being initialized with a value that is never read,
+>> it is being updated later on. The assignment is redundant and can be
+>> removed.
+>>
+>> Addresses-Coverity: ("Unused value")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > 
-> There is some effort to re-implement the proprietary user space swtcon
-> (https://github.com/timower/rM2-stuff#swtcon), but it seems to have
-> stalled. It wouldn't be impossible to get swtcon to work with the DRM
-> driver, but it would require a very large amount of reverse
-> engineering, that probably will never happen.
+> I did this instead; hopefully that's okay with everyone.
 > 
-> I wanted to see what the thoughts were on re-adding the fbdev mxsfb
-> driver. The commit message just says that because there is a DRM
-> driver we no longer need the fbdev one, but here is a case for the
-> fbdev driver. I was thinking that continuing to support the fbdev
-> mxsfb driver wouldn't be too much of a maintenance burden (but that's
-> obviously up to you). The NXP tree also seems to think the fbdev
-> driver is worth keeping around.
+> Best regards,
+> 							Pavel
 
-I don't think the NXP tree is a particularly good example of best 
-practice, they don't use the mxsfb in the first place, they wrote their 
-own DRM driver for the LCDIF IP, and they also keep the fbdev driver 
-around, so yes, they have three drivers for the same IP in different 
-state of decay and with different problems, instead of one driver that 
-has all the functionality and fixes. Sigh ...
+Thanks, looks good to me.
 
-I cannot decide on the fbdev thing, that's I think up to Sam. However, 
-my suggestion would be to find out what is missing in the fbdev 
-emulation and possibly fill that in, so we will have only one driver to 
-support all the functionality.
+Colin
+
+> 
+> commit 654933ae7d32f278eecd0bb0f175785574ac4775
+> Author: Pavel Machek <pavel@ucw.cz>
+> Date:   Mon Aug 16 08:47:08 2021 +0200
+> 
+>     leds: flash: Remove redundant initialization of variable ret
+>     
+>     Adjust initialization not to trigger Coverity warnings.
+>     
+>     Reported-by: Colin Ian King <colin.king@canonical.com>
+>     Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> 
+> diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
+> index 6eeb9effcf65..185e17055317 100644
+> --- a/drivers/leds/led-class-flash.c
+> +++ b/drivers/leds/led-class-flash.c
+> @@ -92,14 +92,12 @@ static ssize_t flash_strobe_store(struct device *dev,
+>  	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+>  	struct led_classdev_flash *fled_cdev = lcdev_to_flcdev(led_cdev);
+>  	unsigned long state;
+> -	ssize_t ret = -EINVAL;
+> +	ssize_t ret = -EBUSY;
+>  
+>  	mutex_lock(&led_cdev->led_access);
+>  
+> -	if (led_sysfs_is_disabled(led_cdev)) {
+> -		ret = -EBUSY;
+> +	if (led_sysfs_is_disabled(led_cdev))
+>  		goto unlock;
+> -	}
+>  
+>  	ret = kstrtoul(buf, 10, &state);
+>  	if (ret)
+> 
+> 
+
