@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4313EDBD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177E23EDBD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhHPQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:57:07 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:40778 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhHPQ5G (ORCPT
+        id S232276AbhHPQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhHPQ52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:57:06 -0400
-Received: by mail-oo1-f54.google.com with SMTP id h7-20020a4ab4470000b0290263c143bcb2so5127944ooo.7;
-        Mon, 16 Aug 2021 09:56:34 -0700 (PDT)
+        Mon, 16 Aug 2021 12:57:28 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694EEC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:56:56 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id r26so1637954oij.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QX4ks5jEbADrBKL2S0MNfqw+r43q1WO7tEHO0nENCIk=;
+        b=BbATPvyySBsHiD4X6LlcNoorERrrsncim8+jXRiFqDA2nT5I6DauYiw88uZzfw5ygm
+         ZAZ1HXAB4FtrHpzN7K4m9krfenv65F8WB0DHFatV2SXdv3hW7YVzIWWV1P9lOs8oV7b+
+         Ad8+RxMAmgyk7nQhPGxsU9Mjzps7hMfpoNRfWbrt0/bTfGKNRbE/jF+xwv96/A5nHhJN
+         A7QzK3QfrdSjySEve6URoWlGw+5c3IR2yM+Fno9TPP5lKT/7yxmPEj3rPZf6/ejiULpN
+         ZAybaMEqfIhLwM/bG8OnVEWMXBdpL2TzsKfM1Fs4AR4VPB4aZ0PFS/RZUebR9PHBppYM
+         7giA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QWj5yBFiEzeY1CfelaVMGnWQ+sHeOn7aeheMB1RPzdk=;
-        b=n3GtB/h58YLZ7bxALFabQkUEUhqV7Jsf4as2JQN5IkLc9hRXmViSIzk0EYwaJ9mVvI
-         YU/zQNOss0azyTClB6P8k/gO/uoDHw1NWKNpuqfPDntFQ/2N94ojcRxZO6bOHUwjfHRK
-         lf6ylWmCBmrshpQ6/O329CNU8sVGNZlZnr5KSeDNCh7U1FvNL2cApVlZ5k7NrfkAPpYE
-         xJXcPt/LWQRBflvHxF96jy7CvFU6T69GF4TbHoauGLKGLFy3iZ37Gb7h0sZU/p6Ujk92
-         iJ5hi1ZBrRNxg+SrschF6+Id/6NbjFTUXAB7MrORGvKwRXAHvf7hx3Tx5iMyNBtvn/no
-         1MhA==
-X-Gm-Message-State: AOAM532Zf2/gmfZSxWnJrfM2oX53WnKpzaPsFI7KRX+mR8+MenF24K8a
-        FUnRA1sI2fsAkDocpOVxIsZ7Q0YEyB/GMBG1tjz9wTlf
-X-Google-Smtp-Source: ABdhPJwkFYT0il6IQt3hh1IqQ4fqhzZd4rK10QROed0YACI5gyJWavBXRB6qbP4ZP841isi4Q2+d2cTjjvca+4vDyF4=
-X-Received: by 2002:a4a:9c05:: with SMTP id y5mr12121749ooj.2.1629132994078;
- Mon, 16 Aug 2021 09:56:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QX4ks5jEbADrBKL2S0MNfqw+r43q1WO7tEHO0nENCIk=;
+        b=Jk/590kNQ3MusVH71V9bPQmFo5MiTg1LFasOTpcgAZhjvVE+ArO2A2Guvw9hCQbAzP
+         GkkSu+OgtEgh9NcNxCsEyq1Qe2HovwTdM3g5x3u3OhCsPMFATEoYFxesBFlrvox+hDe6
+         3EM7ykEab7IPhQNZp636EOKvthnDMIGHFEGtZIjIpNXeqrvBvq4xNs2V6vWFaO6gzMGq
+         pA2CXGZn0Kk4xSW/F/+lnCeT2Bu/DyZwQHX7ms8pkJUgTRrY/eNfuEGbUinDIT/6AVPv
+         8lTh9BtWZYz+wuYwhverWxxIqxSWoYEHS7RrLCbe3GH/v/ZfagdeGPpjByfOkdsxjvCp
+         xp8g==
+X-Gm-Message-State: AOAM530WcUAf8MTAhpqRbbgAVV1MMfu9nTffcs1nr2QZ0VRsHSYh8kyt
+        1IQ7FHO//9DkpEO/Cu/fhKeCyg==
+X-Google-Smtp-Source: ABdhPJyBPgXPWG1S8us14BFNk3bFnMIsL9w6Le25xuw3T3je5uxgT9MBjZb1fDsz6TYd/TRax+JiOQ==
+X-Received: by 2002:aca:ea54:: with SMTP id i81mr65816oih.174.1629133015798;
+        Mon, 16 Aug 2021 09:56:55 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id y66sm1181002oia.12.2021.08.16.09.56.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 09:56:55 -0700 (PDT)
+Subject: Re: [PATCH] block: nbd: add sanity check for first_minor
+To:     Pavel Skripkin <paskripkin@gmail.com>, josef@toxicpanda.com
+Cc:     hch@lst.de, linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+References: <20210812091501.22648-1-paskripkin@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a04bfff4-bb38-0d21-3432-5086efaa6c69@kernel.dk>
+Date:   Mon, 16 Aug 2021 10:56:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210811201432.1976916-1-valentin.schneider@arm.com> <20210812071339.fm6kt7wugewxo3al@linutronix.de>
-In-Reply-To: <20210812071339.fm6kt7wugewxo3al@linutronix.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 16 Aug 2021 18:56:23 +0200
-Message-ID: <CAJZ5v0jOWkWEhdKJ31jq02nFWLG9g+X-NyR3jSgcQ5YfM1WcuQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] cpu_pm: cpu_pm_notifier_chain vs PREEMPT_RT
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210812091501.22648-1-paskripkin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 9:13 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2021-08-11 21:14:30 [+0100], Valentin Schneider wrote:
-> > Hi folks,
-> >
-> > This is v3 of:
-> >
-> >   http://lore.kernel.org/r/20210811131405.1731576-1-valentin.schneider@arm.com
-> >
-> > which addresses cpu_pm's notifier chain not playing nice with PREEMPT_RT.
->
-> Thank you.
-> Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 8/12/21 3:15 AM, Pavel Skripkin wrote:
+> Syzbot hit WARNING in internal_create_group(). The problem was in
+> too big disk->first_minor.
+> 
+> disk->first_minor is initialized by value, which comes from userspace
+> and there wasn't any sanity checks about value correctness. It can cause
+> duplicate creation of sysfs files/links, because disk->first_minor will
+> be passed to MKDEV() which causes truncation to byte. Since maximum
+> minor value is 0xff, let's check if first_minor is correct minor number.
+> 
+> NOTE: the root case of the reported warning was in wrong error handling
+> in register_disk(), but we can avoid passing knowingly wrong values to
+> sysfs API, because sysfs error messages can confuse users. For example:
+> user passed 1048576 as index, but sysfs complains about duplicate
+> creation of /dev/block/43:0. It's not obvious how 1048576 becomes 0.
+> Log and reproducer for above example can be found on syzkaller bug
+> report page.
 
-Both patches applied as 5.15 material, thanks!
+Applied, thanks.
+
+-- 
+Jens Axboe
+
