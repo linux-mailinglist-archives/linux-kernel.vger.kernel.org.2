@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B3D3EDFAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FB43EDFAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhHPWFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhHPWFc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:05:32 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C63C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 15:04:59 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h17so29480615ljh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 15:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e31P/2GOTWbuV4ckMdMmZ6I8R+PPJnAJhAHl1ZjYZ8Y=;
-        b=edCdElcoohq5GytpdhwlPhshLDfbAh2jQXYj6et58GR+T01k1EgZoToCc2jeM3lMVd
-         ycx3Io8gwiap261C2Y425b4a3KTRN4VfoqLxoQH4KG1qXQ0ILBUL/pQUZwlhjz2HLMkd
-         HFHumSLdIGBYYGlKRnKqqfC/Fp4JWsKkWSw0B0iCtxRXhd56ecNT5HJZl0uW5mRHPp77
-         mdHGgZMfiXShNgRy/kU/7N9MDTbLwJGS850Wa6HiXN8BEQs+q0SLdMgboC3JQ2xg6AGX
-         LNrOD/8aQVxZg5KtZO3FoAIBh+U7nQ6fHNMAe7dVhGnFMI8s1FEOYl9Pz1boylAkGo8t
-         yG6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e31P/2GOTWbuV4ckMdMmZ6I8R+PPJnAJhAHl1ZjYZ8Y=;
-        b=keqh76vT+GxmS8n+PniijhzRB/+m0VvvcTpBBHwcpnSncPpYpONi2WB4WlECQZWRH3
-         Wbh3IO/fFVpx9qPAWSPClgvHxHbeKHg263D2+ZbR1c0oZVJjcT2hnowMY+ESzejHT8sl
-         ZWoItO3kPZVrh53Cxrp6wQl6cUXPOG1kYM794JHoX89sPsQM0ErNqwk93+YMSRYQYvdL
-         RlGPha9RbdN2YkXXjFZpUodl19+pE/kq6fQhBx8enyWyRyAS+VQXz5GcSwGtil7ChiAp
-         2iqxWTAUxQdAf7qjFKLWqIP82I+rCWOI9K7AT1qE4JpAJe05Am4sZeQI3un2AXCbect6
-         WGnQ==
-X-Gm-Message-State: AOAM533SgnBIOfOjTRfhelpdMKH/Fr/FBU126xNMqgZ2rlA1IUk1k6pp
-        pcpSYKS1Vke4wjaTqVHwjM7ktUYYSxZ2f0eU7+N34A==
-X-Google-Smtp-Source: ABdhPJwxox6PXnfkmEMOrVyFZontRVeS9j/tsjqaDmcNw1hGPr+mKuthyVG+b+ZoQf9FyySDg4k5it5Il/2XusHAYTE=
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr301012ljq.341.1629151498062;
- Mon, 16 Aug 2021 15:04:58 -0700 (PDT)
+        id S233860AbhHPWFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 18:05:25 -0400
+Received: from ozlabs.org ([203.11.71.1]:47621 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232488AbhHPWFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 18:05:23 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GpSrK4FqCz9sT6;
+        Tue, 17 Aug 2021 08:04:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629151489;
+        bh=C+bMqHlDd3mBl6TZcdPBNIEFp33RdS/NB1JqWmH7QW4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hexlHDVINemkUZwjrFSORfDD/yem7jhWosAMHfmMiGsMdGA4oPK7001XazFDQ6iqB
+         SOMP9BRcmQU8YXVnNwRrK6+2djEPp14gLfrafPl3fQWZdLzhqsFbSzDuLdvrloINxv
+         nvGLYBgWVkvnQK2559szifSyYJWQtVs5Na3M7bbKndowXpM+q18MwTednryEjtk1QH
+         0pmLLziGY9QYYMv0vd4LnEQrsRJA/qyESidjvrz8C/WV2ldWl3Duw6BvjchuHwHvl3
+         Qo4Kn8pz/SH5YqiIK7Wni1Okag4gNlcavI9t3CV+s7AQkIlU7s9NK3FcnmZT+gHwyw
+         VNens9bSLmPIg==
+Date:   Tue, 17 Aug 2021 08:04:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Juhee Kang <claudiajkang@gmail.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net-next tree
+Message-ID: <20210817080448.3bc182c0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210816185711.21563-1-nathan@kernel.org>
-In-Reply-To: <20210816185711.21563-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 16 Aug 2021 15:04:46 -0700
-Message-ID: <CAKwvOdkOCraDC0QccntgWD-ZkW8c2+RG8WeOD7aQH3BHZM2BHw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/xive: Do not mark xive_request_ipi() as __init
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/FPTHqf3kHb5g/Zb=s.4afe1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 12:06 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Compiling ppc64le_defconfig with clang-14 shows a modpost warning:
->
-> WARNING: modpost: vmlinux.o(.text+0xa74e0): Section mismatch in
-> reference from the function xive_setup_cpu_ipi() to the function
-> .init.text:xive_request_ipi()
-> The function xive_setup_cpu_ipi() references
-> the function __init xive_request_ipi().
-> This is often because xive_setup_cpu_ipi lacks a __init
-> annotation or the annotation of xive_request_ipi is wrong.
->
-> xive_request_ipi() is called from xive_setup_cpu_ipi(), which is not
-> __init, so xive_request_ipi() should not be marked __init. Remove the
-> attribute so there is no more warning.
->
-> Fixes: cbc06f051c52 ("powerpc/xive: Do not skip CPU-less nodes when creating the IPIs")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+--Sig_/FPTHqf3kHb5g/Zb=s.4afe1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi all,
 
-> ---
->  arch/powerpc/sysdev/xive/common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/sysdev/xive/common.c b/arch/powerpc/sysdev/xive/common.c
-> index 943fd30095af..8183ca343675 100644
-> --- a/arch/powerpc/sysdev/xive/common.c
-> +++ b/arch/powerpc/sysdev/xive/common.c
-> @@ -1170,7 +1170,7 @@ static int __init xive_init_ipis(void)
->         return ret;
->  }
->
-> -static int __init xive_request_ipi(unsigned int cpu)
-> +static int xive_request_ipi(unsigned int cpu)
->  {
->         struct xive_ipi_desc *xid = &xive_ipis[early_cpu_to_node(cpu)];
->         int ret;
->
-> base-commit: a2824f19e6065a0d3735acd9fe7155b104e7edf5
-> --
-> 2.33.0.rc2
->
+In commit
 
+  175e66924719 ("net: bridge: mcast: account for ipv6 size when dumping que=
+rier state")
 
--- 
-Thanks,
-~Nick Desaulniers
+Fixes tag
+
+  Fixes: 5e924fe6ccfd ("net: bridge: mcast: dump ipv6 querier state")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 85b410821174 ("net: bridge: mcast: dump ipv6 querier state")
+
+In commit
+
+  cdda378bd8d9 ("net: bridge: mcast: drop sizeof for nest attribute's zero =
+size")
+
+Fixes tag
+
+  Fixes: 606433fe3e11 ("net: bridge: mcast: dump ipv4 querier state")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: c7fa1d9b1fb1 ("net: bridge: mcast: dump ipv4 querier state")
+
+In commit
+
+  0f0c4f1b72e0 ("samples: pktgen: add missing IPv6 option to pktgen scripts=
+")
+
+Fixes tag
+
+  Fixes: 0f06a6787e05 ("samples: Add an IPv6 "-6" option to the pktgen scri=
+pts")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+Also, please keep all the commit message tags together at the end of
+the commit message.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/FPTHqf3kHb5g/Zb=s.4afe1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEa4QAACgkQAVBC80lX
+0GwPHQf/edmNwjEUGgr8fwH4EjRTrR7gDlefW2JOHXJqlm/VQ2qh++WExnoL69YH
+40ZxoT2fRHFuMX7V78tldmImVUElqcwg9s0pQpTJeV3QsCIU91pSyk9xXfu7fUrb
+8756ociN54+SbLZgQ+Ds4YZ6/37Fv6sZdGXKvFHe0q2yIGPb90Z3MD8GrAzEMA1q
+DQpGMjCHKxsDCEG8MSiDyLccVCzetTfJyWaUUcuP0wUdNf27SZtNz2fGlvlullXP
+VjXb5ayF/ClOZCUj/Zk0uMYnbvM+1KRBuRBclGHuuDPRmxHZcafyr3aCeNr2jqlr
+PR63HSiRP1E487p9iaW3C1/xT8pGmw==
+=67Xo
+-----END PGP SIGNATURE-----
+
+--Sig_/FPTHqf3kHb5g/Zb=s.4afe1--
