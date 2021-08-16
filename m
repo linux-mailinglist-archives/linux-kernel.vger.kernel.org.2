@@ -2,118 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5B83ED123
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0013ED12B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235416AbhHPJkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:40:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62489 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230506AbhHPJkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:40:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629106787; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=oKikVBz7YtjF50RcnbcWEBy/0mgCOYKAeqMfAVhOyHw=; b=YZwZ/RGW0x2sLUNS7lK78RKINFQYEehAJLmVxtXVDbpSLVC7zAyg59UHleWhIjXMcyRQSHt+
- D+AWv44rywZlyFPyNht0YAM1Fufq41OwqexUcA+JXx61h2STFPZMMoZn/l0Fh7QYe5dWC87q
- vSfUVHRNb0pHeRsqrfc5XZVVvXs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 611a325f454b7a558f99ca83 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 09:39:43
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C518C43460; Mon, 16 Aug 2021 09:39:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34952C4338F;
-        Mon, 16 Aug 2021 09:39:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 34952C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, rientjes@google.com,
-        shakeelb@google.com, surenb@google.com, mhocko@suse.com,
-        hannes@cmpxchg.org
-Cc:     vinmenon@codeaurora.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm: oom_kill: add trace logs in process_mrelease() system call
-Date:   Mon, 16 Aug 2021 15:09:16 +0530
-Message-Id: <1629106756-20874-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S235467AbhHPJmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:42:24 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36266 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231673AbhHPJmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 05:42:22 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17G9eb3E018495;
+        Mon, 16 Aug 2021 09:41:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2021-07-09; bh=sVOvBm41+sIPs+kjXvjFXcWmwYIaEUuhb1sLlI8SQhg=;
+ b=LX8Oqs0U51BaQilfnP0sjRPDc5iaxDosypQstPIq8s0ZOFon9Ws1AU9vG+UAo8y+mr0B
+ NbNwgFLOJ+aH/PbAnZnotJ3SfzzHdtAGV6JhakRxTIw9NgCNaMjjVne6uzHlCVgWs5WS
+ IQscqxbYKgnpXrB9GmzTCVnmpFvOgcrHDy/c9buhLIQTIqpu+vpSAgd3mr7bXhA78Arf
+ +8dGMoTOXKFBBeMtKXLGfK8Xc4O2FUdoUVGEZsNUjZDcCZwpaHb1Xic/POMW2KuDh6me
+ Ze1te7YFoyglU88Gg4IrnYlsuJPis8/3HWPg8aBEjJ4VzuP8ndEf3MmFiAab+fyt39Zb 9g== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2020-01-29; bh=sVOvBm41+sIPs+kjXvjFXcWmwYIaEUuhb1sLlI8SQhg=;
+ b=X/Gq9Z/ubPSH2sMGtn69WMXWIZR3P01IlGvlr16flCr9djCMxSYmpyTl6Vuc5ZdSl/NV
+ qCdifZc7os4RZl8SGSzkRjQZKRE/irQQuY4Fgvli0h90hQ6a5pTO5hIvZQ8Jkl5cT/G6
+ hX0OJdLAWzJbC2djXKgf6zTrP7EEqhozsMs+GUQwuGVplnkDSlUD2a7Nod3BJEruEDLD
+ XxGykE/6no2IYF1tPXJ8Fs6zOGkhPqdzwKJzE5h6keRVcNM9ZXjKybgnE54sE4smzTca
+ lbmAKABZUAdzyzs5AlKE2C+i33fATZz8tREJ/pFX4MweiPxYIonrUHvSpk6R5v7bThYe Vg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3af83019gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Aug 2021 09:41:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17G9YqUr055440;
+        Mon, 16 Aug 2021 09:41:25 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by userp3020.oracle.com with ESMTP id 3aeqkrutb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Aug 2021 09:41:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZLbm62P8KRbMWuc8mcr+V1OYkHRUemcT4NDS+Gv9da2qALhElY59771M+0dPXUHgznD9X/ndkQr/J1JD9Qqeo2ZTVJMtbI+bzOUumEPsHLVlFl/qCcp5XCNsQMcrEN3JlLJ2Nmyg/5/9HInNAlvoSoef2TsDcoi/f4DHkQEqruhdlUmEsbMOzdia+LncwHAX+CUdTisXMwwmslmTzTW9ED4vCug+S34+Ro+/UFLvvE/XZafNItjPm2dSz1A4vM4mhMgjpgAwT0b2ctrK4LzXWUznjQuwpC2RToQE+N80ssisXwD3lPH0Gn6KNkAsJPWsNAgPqvXJ4gqq1DPXMgH4Hg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sVOvBm41+sIPs+kjXvjFXcWmwYIaEUuhb1sLlI8SQhg=;
+ b=blXkuOVyQ6XCjUJ/pAv563neklbnLFfP6rEV+riTy3/WtAtu029NBg4Ob8U3pzoJ90O6ukKPW2kZjzOTzGPCaGX4hzZOkUQO/llMxuDJhWEzQte7NxB72/G3jNo4gpi07NK/o4WAmAXhSRcstGlrbejGov+f6nauYb3Ss07xHoJiDEUa0nCxdXHeyPJtQVRCdeB/G2ZxtF7Ks/N/GfbTA3635V+vSsi3z8Rj+Y8qbk3Kowvm5x3QaOOFyS6es5cRWoEL7se6mqV4NMz/uwTqVM1If5KX5G6oR1mK5LJDWF44yQIjQUtU+mzcEU7r6SxOGf58yjhMtCdE7B0GqlMkyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sVOvBm41+sIPs+kjXvjFXcWmwYIaEUuhb1sLlI8SQhg=;
+ b=CzwbKZpO87bXyulZXJnqZAIUML7zCk7tJMK/8kzhTgDl6SCJMWlvqAvsgqrCTRro/l/Q9m9V2b+szah++8hExOgCqAGM11TOqAgu7WcED8olK2UNHySa8tEazzlgRp/E7D5o+yHPHaK3OUApIesfbw5qRyJOsXS0EUCKvsCxVUw=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1358.namprd10.prod.outlook.com
+ (2603:10b6:300:23::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Mon, 16 Aug
+ 2021 09:41:23 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
+ 09:41:22 +0000
+Date:   Mon, 16 Aug 2021 12:40:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        cyrilbur@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Cc:     lkp@intel.com, kbuild-all@lists.01.org
+Subject: Re: [PATCH 1/2] soc: aspeed: Add LPC mailbox support
+Message-ID: <202108160813.GOZ1P4Y8-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813054758.13189-2-chiawei_wang@aspeedtech.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0060.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::14)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JNAP275CA0060.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend Transport; Mon, 16 Aug 2021 09:41:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8b87c884-2390-40b2-af54-08d9609a01ef
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1358:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1358DEC9F16A3C551AFBECB58EFD9@MWHPR10MB1358.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lfUJILokRbre4yQN3x6WXIONhTwEgAULclO8Q1WSLV2YzVN6ZWWq8+ixs7KiWs9Fo/TJfjWwqKy6pziAyPrkps/7zJgocS9J2m33jp74n1eaxQ7C761QIsDFucjMlFpg5OzV0k9RTUnUxFKAF8uAuhJR8sHWw99uMocB3H4svvzbtp7n5ZHMudqXn252bhbiS1yNB3T5jbMcQ+IXjANcL9biIFYupNkSmsDMLJaevj8TW6rpUEScKa+netr8SBQ2G82Zc6KMEHxPrC4P/3GlkkCN+jPPE9RaHd74dWr8YO9XzKX39UnGLsxaA62C3qPGsAB8cqkmpYaR4GjgdGkzoiNmXrNiNdmzV+wmHTLioNjd4EJ//oGEChs6mEZA7SlSpmlo+6w3fuI11R5QzvoJcRuSzTqYFMwNqqsDmJmv7qykXXK3XE+LKMeaeaHkVu8MIav/m4tcF/yRoBGfXIpK22CqX+ESPhTfHO513dl+yu2TGpRVVfC5xIYkk9oorGDE2bVbGiMqrOd/9R2JARwyd19mrmNrHlLazNIioWbK7T7fIA3ubw2nK9hvy8fK9Z8TFfsiUtkQgn4rOiuTLKXfaXz2g1uXXwMvs8GKT5uV+H0bGb9J/HgvPulq6ch4BNv4ObeMedOCr8vcG6zbfAJRssKDhuRIKnxA6yjH9zt1j41gdzhoaZsyszHh0X7fCtJZ6UiHeAkAU9IVi085FT0CU529tohDjINXGzA5YLL40yt9UfMW7Msz2mAnkSWw8c0lzUEPTstAuIBe7fXSAOWiArsBXa1tWHztYf6tYtE+h6jzAc+c7cjTUwh0+gTXFJd1DmtK9jOVeA4goj+vNZOzpA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(39860400002)(376002)(346002)(5660300002)(44832011)(1076003)(316002)(2906002)(66946007)(52116002)(956004)(7416002)(4326008)(966005)(9686003)(38100700002)(36756003)(38350700002)(6496006)(186003)(15650500001)(478600001)(921005)(8936002)(8676002)(6666004)(66556008)(6486002)(66476007)(83380400001)(86362001)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+zbLTzB1NSkrQE1zXtV/Vy0oOvCLA2e3xEY/jeko+GfFZoRLmaCtZfUSHZ8E?=
+ =?us-ascii?Q?8OOcl/X0W3Yancz9mkSm09EBptBQuMOYrFLoLEFR4F7srsNTTi1EgItmJKgq?=
+ =?us-ascii?Q?LJgK17rjdWdUHKWtFfqbtrlmW+EudCHLTURjRst5ATRE5ycojuLUGXVxgbgD?=
+ =?us-ascii?Q?STYjFHc2Mv49dAlmSV8F00ahXBGHEW4EneB0UOhGswZfo7/uOB3pYirMnLtq?=
+ =?us-ascii?Q?yxCGn0+uIT1eg8OR6v3hLl/pFXKXazv444MLurPTnDokgbALw/B4afkT94Az?=
+ =?us-ascii?Q?GjPmxSmVzTStKjGgLRZDralkBokt4Gv27EOz8bEWFMjFKs8tkYYt8XZAUjiy?=
+ =?us-ascii?Q?K2N7KdD4p3BwIfCIpp2bHvZS/PaNoHozVbZZr2pj1MUeLm/CqwohGXcGxKox?=
+ =?us-ascii?Q?xwWsf6CifcTuDPz/nmSOHVmmSfjPPzCvXjKiLNpXywZ9MUcfAfWUfq1iBvm5?=
+ =?us-ascii?Q?REUt7GrHZzuLPMlHwURnJ/oYTje/9if2CdJDu7I/mZhKFHTeQTV+js4ZLXuL?=
+ =?us-ascii?Q?kokfTKnmRgb2IBw1cOX/IxLx6mjEnmETYkV6ZqFV5aOIrHxQVhveRX8vnAvf?=
+ =?us-ascii?Q?5FkEYLC7KyGQPf2b7n+Pbk0WfdaFX8XWoJbh2OpsfCf+bHIhrJ53jaSOTB4T?=
+ =?us-ascii?Q?t34mRQmNfpDn/worNVF5zDG7jj0llZFbxD8AH1TPu827XIt7pRm0H9nr60HU?=
+ =?us-ascii?Q?gNRWsUeIeaoN/u0QE0xGLPwgHpyus18oFSyAeFI30MD/aaoH8D6LJC7bJ5uI?=
+ =?us-ascii?Q?6cFxEbNLi11mVWsPMiB5ZWvjJ0y8Ad2KWbrkwugdSBgaQ6nLN3+b7FyIjerp?=
+ =?us-ascii?Q?Ryy+/FHfbq1NXPn5uwDpc3V1dhHEOpJWkbEM/G8x1hi09WXougWUfBY9/XUw?=
+ =?us-ascii?Q?uKdJQdOk/CoMcwVKmnBvefxUxxTVM7n+8exlOP4yYcvK4TW+tSIf3LXi5C78?=
+ =?us-ascii?Q?FQTBSQnolO1bub2ZFcIbcZUG+MKXvM/cZyTZhXdMVLfm4hH8aTo7oQGtVVYc?=
+ =?us-ascii?Q?1yT0Cxr7pRkhrc5tDdU6mKM1UCEmsqWblGrwj1WOjmMOTXdwFDKiaE4kd+o0?=
+ =?us-ascii?Q?x4Ox/VtTXwCMDRpZ9OYOuqQa8EaRcZ4A5soHpUOcJzEfaE/Ir1UhStYzz2AV?=
+ =?us-ascii?Q?wsCQwD+0ShT5FdTcwEUhvWDBNZ4Ic5+FpT98ARaBUhvineaoljzg4eTBnBgd?=
+ =?us-ascii?Q?PvP90YWr14MmpZVxBAoJX32wqbn8aB1yUrR+gLwFVTxlGgQ5Gh+rWDnsO+T8?=
+ =?us-ascii?Q?+Dnp36vdglmsq/h0cMKR9bIyKzyWIyhuFcBarEsHzJFVQgtSm2igAska4WPN?=
+ =?us-ascii?Q?44cnxAATnKseVAvK88hIoby5?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b87c884-2390-40b2-af54-08d9609a01ef
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 09:41:22.8608
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jY1g6zGDNDoWLweGQTNpgLA81lsohGf4MGFb7t5CMi11hW9UNxhxrqfw2VsUkmG5BM9soC5e2PejlVSuk1M0faCZHnvZCBD3COPr+OS2zvI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1358
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10077 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108160059
+X-Proofpoint-ORIG-GUID: IQ3nKwe6lRpC2qkvVJuxKU3rcv6z1mca
+X-Proofpoint-GUID: IQ3nKwe6lRpC2qkvVJuxKU3rcv6z1mca
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The process_mrelease() system call[1] is used to release the memory of
-a dying process from the context of the caller, which is similar to and
-uses the functions of the oom reaper logic. There exists trace logs for
-a process when reaped by the oom reaper. Just extend the same to when
-done by the process_mrelease() system call.
+Hi Chia-Wei,
 
-[1] https://lore.kernel.org/linux-mm/20210809185259.405936-1-surenb@google.com/
+url:    https://github.com/0day-ci/linux/commits/Chia-Wei-Wang/aspeed-Add-LPC-mailbox-support/20210813-134908
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/joel/aspeed.git for-next
+config: openrisc-randconfig-m031-20210816 (attached as .config)
+compiler: or1k-linux-gcc (GCC) 11.2.0
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+smatch warnings:
+drivers/soc/aspeed/aspeed-lpc-mbox.c:230 aspeed_mbox_ioctl() warn: maybe return -EFAULT instead of the bytes remaining?
+
+vim +230 drivers/soc/aspeed/aspeed-lpc-mbox.c
+
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  214  static long aspeed_mbox_ioctl(struct file *file, unsigned int cmd,
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  215  				 unsigned long param)
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  216  {
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  217  	struct aspeed_mbox *mbox = file_mbox(file);
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  218  	const struct aspeed_mbox_model *model = mbox->model;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  219  	struct aspeed_mbox_ioctl_data data;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  220  	long ret;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  221  
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  222  	switch (cmd) {
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  223  	case ASPEED_MBOX_IOCTL_GET_SIZE:
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  224  		data.data = model->dr_num;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  225  		ret = copy_to_user((void __user *)param, &data, sizeof(data));
+
+This should be:
+
+	if (copy_to_user((void __user *)param, &data, sizeof(data)))
+		return -EFAULT;
+
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  226  		break;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  227  	default:
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  228  		ret = -ENOTTY;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  229  	}
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13 @230  	return ret;
+72c5a69dc779f5 Chia-Wei Wang 2021-08-13  231  }
+
 ---
- mm/oom_kill.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 431d38c..8f4020a 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -941,7 +941,6 @@ static void __oom_kill_process(struct task_struct *victim, const char *message)
- 	mmdrop(mm);
- 	put_task_struct(victim);
- }
--#undef K
- 
- /*
-  * Kill provided task unless it's secured by setting
-@@ -1199,8 +1198,18 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
- 		ret = -EINTR;
- 		goto drop_mm;
- 	}
-+	trace_start_task_reaping(task->pid);
- 	if (!__oom_reap_task_mm(mm))
- 		ret = -EAGAIN;
-+	if (!ret) {
-+		pr_info("process_mrelease: reaped process %d (%s), now anon-rss:%lukB, file-rss:%lukB, shmem-rss:%lukB oom_score_adj:%d\n",
-+			task_pid_nr(task), task->comm,
-+			K(get_mm_counter(mm, MM_ANONPAGES)),
-+			K(get_mm_counter(mm, MM_FILEPAGES)),
-+			K(get_mm_counter(mm, MM_SHMEMPAGES)),
-+			task->signal->oom_score_adj);
-+	}
-+	trace_finish_task_reaping(task->pid);
- 	mmap_read_unlock(mm);
- 
- drop_mm:
-@@ -1208,9 +1217,12 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
- put_task:
- 	put_task_struct(task);
- put_pid:
-+	if (ret && ret != -EAGAIN)
-+		trace_skip_task_reaping(pid_vnr(pid));
- 	put_pid(pid);
- 	return ret;
- #else
- 	return -ENOSYS;
- #endif /* CONFIG_MMU */
- }
-+#undef K
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
