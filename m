@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261E33ED5A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A70C3ED4C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237453AbhHPNMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
+        id S230281AbhHPNF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237158AbhHPNJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EB4632C2;
-        Mon, 16 Aug 2021 13:07:37 +0000 (UTC)
+        id S236873AbhHPNEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56C1C63292;
+        Mon, 16 Aug 2021 13:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119258;
-        bh=RYrcGiuN1XgqYILElz1dObV+4Wp7klA+3ZnmfUl+RQg=;
+        s=korg; t=1629119052;
+        bh=YrbhfmwDpG3TbbYN74OhfL8uCFKA0WPKIEKuYFxI8Lg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gpxkc0awNCdg9RyC/xtoOv6wUJTkurKMfuwPrlQCxsvhO8AH/ncCMF/5yJCP693UV
-         XdXpvtoLV82IX7hPZVYuqauBXiMP7FLBVdVDZeoRHMiC8hV9rhu7etf6Sji+p8Iusq
-         jY+m7hMTco9y7gVe1HOvY2jOWssYJnHJAWrVPnl4=
+        b=G4H/kXD5H0NKYXzM8R1u7Uxm9glqcSl+Q+Dg05isVI0df6HzBjbZxmIgN9Tw3C/vd
+         7T23StvdbvhFAYMvTOsGsNveqL/vLUIhECh28ZciGblbGEjWQV0FI5h8gU2Fec0hEV
+         loCy4jogft4Y2D8cr1l5GVetOmrsyPrJN/uiCABc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takeshi Misawa <jeliantsurux@gmail.com>,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 53/96] net: Fix memory leak in ieee802154_raw_deliver
-Date:   Mon, 16 Aug 2021 15:02:03 +0200
-Message-Id: <20210816125436.726238302@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 32/62] net: dsa: lantiq: fix broken backpressure in .port_fdb_dump
+Date:   Mon, 16 Aug 2021 15:02:04 +0200
+Message-Id: <20210816125429.292223843@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takeshi Misawa <jeliantsurux@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 1090340f7ee53e824fd4eef66a4855d548110c5b ]
+[ Upstream commit 871a73a1c8f55da0a3db234e9dd816ea4fd546f2 ]
 
-If IEEE-802.15.4-RAW is closed before receive skb, skb is leaked.
-Fix this, by freeing sk_receive_queue in sk->sk_destruct().
+rtnl_fdb_dump() has logic to split a dump of PF_BRIDGE neighbors into
+multiple netlink skbs if the buffer provided by user space is too small
+(one buffer will typically handle a few hundred FDB entries).
 
-syzbot report:
-BUG: memory leak
-unreferenced object 0xffff88810f644600 (size 232):
-  comm "softirq", pid 0, jiffies 4294967032 (age 81.270s)
-  hex dump (first 32 bytes):
-    10 7d 4b 12 81 88 ff ff 10 7d 4b 12 81 88 ff ff  .}K......}K.....
-    00 00 00 00 00 00 00 00 40 7c 4b 12 81 88 ff ff  ........@|K.....
-  backtrace:
-    [<ffffffff83651d4a>] skb_clone+0xaa/0x2b0 net/core/skbuff.c:1496
-    [<ffffffff83fe1b80>] ieee802154_raw_deliver net/ieee802154/socket.c:369 [inline]
-    [<ffffffff83fe1b80>] ieee802154_rcv+0x100/0x340 net/ieee802154/socket.c:1070
-    [<ffffffff8367cc7a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5384
-    [<ffffffff8367cd07>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5498
-    [<ffffffff8367cdd9>] netif_receive_skb_internal net/core/dev.c:5603 [inline]
-    [<ffffffff8367cdd9>] netif_receive_skb+0x59/0x260 net/core/dev.c:5662
-    [<ffffffff83fe6302>] ieee802154_deliver_skb net/mac802154/rx.c:29 [inline]
-    [<ffffffff83fe6302>] ieee802154_subif_frame net/mac802154/rx.c:102 [inline]
-    [<ffffffff83fe6302>] __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
-    [<ffffffff83fe6302>] ieee802154_rx+0x612/0x620 net/mac802154/rx.c:284
-    [<ffffffff83fe59a6>] ieee802154_tasklet_handler+0x86/0xa0 net/mac802154/main.c:35
-    [<ffffffff81232aab>] tasklet_action_common.constprop.0+0x5b/0x100 kernel/softirq.c:557
-    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:345
-    [<ffffffff81232f4c>] do_softirq kernel/softirq.c:248 [inline]
-    [<ffffffff81232f4c>] do_softirq+0x5c/0x80 kernel/softirq.c:235
-    [<ffffffff81232fc1>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:198
-    [<ffffffff8367a9a4>] local_bh_enable include/linux/bottom_half.h:32 [inline]
-    [<ffffffff8367a9a4>] rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
-    [<ffffffff8367a9a4>] __dev_queue_xmit+0x7f4/0xf60 net/core/dev.c:4221
-    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
-    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
-    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
-    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
-    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
+When the current buffer becomes full, nlmsg_put() in
+dsa_slave_port_fdb_do_dump() returns -EMSGSIZE and DSA saves the index
+of the last dumped FDB entry, returns to rtnl_fdb_dump() up to that
+point, and then the dump resumes on the same port with a new skb, and
+FDB entries up to the saved index are simply skipped.
 
-Fixes: 9ec767160357 ("net: add IEEE 802.15.4 socket family implementation")
-Reported-and-tested-by: syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Acked-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210805075414.GA15796@DESKTOP
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Since dsa_slave_port_fdb_do_dump() is pointed to by the "cb" passed to
+drivers, then drivers must check for the -EMSGSIZE error code returned
+by it. Otherwise, when a netlink skb becomes full, DSA will no longer
+save newly dumped FDB entries to it, but the driver will continue
+dumping. So FDB entries will be missing from the dump.
+
+Fix the broken backpressure by propagating the "cb" return code and
+allow rtnl_fdb_dump() to restart the FDB dump with a new skb.
+
+Fixes: 58c59ef9e930 ("net: dsa: lantiq: Add Forwarding Database access")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ieee802154/socket.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/dsa/lantiq_gswip.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
-index a45a0401adc5..c25f7617770c 100644
---- a/net/ieee802154/socket.c
-+++ b/net/ieee802154/socket.c
-@@ -984,6 +984,11 @@ static const struct proto_ops ieee802154_dgram_ops = {
- 	.sendpage	   = sock_no_sendpage,
- };
- 
-+static void ieee802154_sock_destruct(struct sock *sk)
-+{
-+	skb_queue_purge(&sk->sk_receive_queue);
-+}
-+
- /* Create a socket. Initialise the socket, blank the addresses
-  * set the state.
-  */
-@@ -1024,7 +1029,7 @@ static int ieee802154_create(struct net *net, struct socket *sock,
- 	sock->ops = ops;
- 
- 	sock_init_data(sock, sk);
--	/* FIXME: sk->sk_destruct */
-+	sk->sk_destruct = ieee802154_sock_destruct;
- 	sk->sk_family = PF_IEEE802154;
- 
- 	/* Checksums on by default */
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index dc75e798dbff..af3d56636a07 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -1399,11 +1399,17 @@ static int gswip_port_fdb_dump(struct dsa_switch *ds, int port,
+ 		addr[1] = mac_bridge.key[2] & 0xff;
+ 		addr[0] = (mac_bridge.key[2] >> 8) & 0xff;
+ 		if (mac_bridge.val[1] & GSWIP_TABLE_MAC_BRIDGE_STATIC) {
+-			if (mac_bridge.val[0] & BIT(port))
+-				cb(addr, 0, true, data);
++			if (mac_bridge.val[0] & BIT(port)) {
++				err = cb(addr, 0, true, data);
++				if (err)
++					return err;
++			}
+ 		} else {
+-			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port)
+-				cb(addr, 0, false, data);
++			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port) {
++				err = cb(addr, 0, false, data);
++				if (err)
++					return err;
++			}
+ 		}
+ 	}
+ 	return 0;
 -- 
 2.30.2
 
