@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172443ED6A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C423ED643
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238761AbhHPNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:22:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37190 "EHLO mail.kernel.org"
+        id S240216AbhHPNTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239754AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BCD632C6;
-        Mon, 16 Aug 2021 13:11:27 +0000 (UTC)
+        id S238554AbhHPNHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:07:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B28FB6328D;
+        Mon, 16 Aug 2021 13:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119488;
-        bh=ytSOdjvMoHCvvmXSDtw8YN6Tm1fNm25S8bOTjIG/qRc=;
+        s=korg; t=1629119209;
+        bh=bze5kZnjIDqbXpUFTLHN6hnMRd3CqCvRXNeKhqUNPz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/DdvyHdJzSHe6T7j1SG8uj/4JTxrK7Z+WirS6YbwxiEs//HsB2AmOniCuAJZXKAi
-         P1DAoZX9U0K944Gb4AGcEcEC0IB83SoEKMaTRf0BLx0C7MgWM7ntaYUX+DQB/pPKNw
-         LeemaRMwrojw28SA7H/4utcBDaw11s1qR1dMB2L8=
+        b=no2RQ3QOQ9/IF2wxlxi0Dlplaz+99JN3H9lTqZQGr+KP8AEwRaJ3YscgfhhTijmIX
+         J/UUNAsUmfS2MsY1d25r9qNcfYcYJ6goTbWhQ3P/lLhuSesYvl/2oNi4fGLyOsqnOw
+         Isz7CZcNJuAFpSi5i2WrUMS+otLMzVavFQjqOIv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 045/151] ASoC: cs42l42: Fix bclk calculation for mono
-Date:   Mon, 16 Aug 2021 15:01:15 +0200
-Message-Id: <20210816125445.559665412@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 06/96] ASoC: xilinx: Fix reference to PCM buffer address
+Date:   Mon, 16 Aug 2021 15:01:16 +0200
+Message-Id: <20210816125435.147602768@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 926ef1a4c245c093acc07807e466ad2ef0ff6ccb ]
+commit 42bc62c9f1d3d4880bdc27acb5ab4784209bb0b0 upstream.
 
-An I2S frame always has a left and right channel slot even if mono
-data is being sent. So if channels==1 the actual bitclock frequency
-is 2 * snd_soc_params_to_bclk(params).
+PCM buffers might be allocated dynamically when the buffer
+preallocation failed or a larger buffer is requested, and it's not
+guaranteed that substream->dma_buffer points to the actually used
+buffer.  The driver needs to refer to substream->runtime->dma_addr
+instead for the buffer address.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2cdba9b045c7 ("ASoC: cs42l42: Use bclk from hw_params if set_sysclk was not called")
-Link: https://lore.kernel.org/r/20210729170929.6589-3-rf@opensource.cirrus.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210728112353.6675-4-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/xilinx/xlnx_formatter_pcm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 0d31c84b0445..fe73a5c70bdd 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -820,6 +820,10 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 	cs42l42->srate = params_rate(params);
- 	cs42l42->bclk = snd_soc_params_to_bclk(params);
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -452,8 +452,8 @@ static int xlnx_formatter_pcm_hw_params(
  
-+	/* I2S frame always has 2 channels even for mono audio */
-+	if (channels == 1)
-+		cs42l42->bclk *= 2;
-+
- 	switch(substream->stream) {
- 	case SNDRV_PCM_STREAM_CAPTURE:
- 		if (channels == 2) {
--- 
-2.30.2
-
+ 	stream_data->buffer_size = size;
+ 
+-	low = lower_32_bits(substream->dma_buffer.addr);
+-	high = upper_32_bits(substream->dma_buffer.addr);
++	low = lower_32_bits(runtime->dma_addr);
++	high = upper_32_bits(runtime->dma_addr);
+ 	writel(low, stream_data->mmio + XLNX_AUD_BUFF_ADDR_LSB);
+ 	writel(high, stream_data->mmio + XLNX_AUD_BUFF_ADDR_MSB);
+ 
 
 
