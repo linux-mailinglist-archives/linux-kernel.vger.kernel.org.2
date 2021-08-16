@@ -2,73 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9AA3ED202
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4733ED203
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhHPKcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S235833AbhHPKc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhHPKbz (ORCPT
+        with ESMTP id S235837AbhHPKcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:31:55 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5089DC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id bo18so25859891pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:21 -0700 (PDT)
+        Mon, 16 Aug 2021 06:32:01 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F6DC0617AE
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:29 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j1so25735773pjv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=YmL0IRxeWrFbh0vlXgRwXxoaH3pPmHoURYabIlp2Hi0=;
-        b=fCrqy509QfV2tffLL7vZj01DZ7IYLSoG0xmG/HTPzZTC2bxijDKAKEM0zfI9FOh6Ip
-         Dbi8OvcJ/qSKGab8q2vbA6uzYh+myiydGMwc/DGukGD9hZoK0sKVCrzKRqHD9TcrVAYZ
-         0d9ZLMgcSmcv9YayrwlpGOUUCvMaICh9JAA/ZiCc3YsMLhbZds79lDAvTuCTGNnmU2F2
-         J+Uf1tZsZiLFrFXFIwrJMGHT7fKoZqJ6+MgJH9ySMFCMEap3ijhHcgRfZ3LI2erBnb8u
-         TzCIp6DhTY6Oho9DZomH5rwdXkRdTCr6Mg+aCRwEWLQXXiuknfvNZcibMH9YIPAEVxp8
-         +9PQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ccX+otJKzYiw7fTpASq5EiKmXI5wu1oM2Rkshyanugg=;
+        b=nyTjql4kPU5b2tlliqQClzMia17+fqOan4LwezfDCn5/sGGbjPNeN6UdQ602MiLmVS
+         yRdL5HwSNqxX3TLwsbGgi1lkq5yoZapTrurxpvYwULnFJ+gBBw23X3lri9m096BgDT//
+         IKposJALqA9eUslVUf0jlBwS/RXtBzOUApWV+mV6x54TX3w2wIDBL8y/bixUv3TDGLkh
+         ighUtLEpkT1PzcFgJuxUHLVrwA0kmYRY/yFPoIiNLH35qyj6sNMT+0/CWqALrtkrCkUF
+         PoqiSd/WVIQT+61eYpyy7yVLmNbqV346PvlJ1Y3xjC52QVqGblfnU+7olmsm/vtjEadr
+         qy6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=YmL0IRxeWrFbh0vlXgRwXxoaH3pPmHoURYabIlp2Hi0=;
-        b=p7UjsK9MwLbFpSesoAr2ZkAQz77ApuFVnDhu33H1QXSXNq2R26RlORTcr3uWLej3pU
-         CGtFwUQamLk5Q31h7hcbXHuLZfXvpH6eUxtG5vX6348LW4A6hUBkEMxGkOm6RYh0Jqu4
-         S504xarhzPX7H9gUNd8sBiQNQzkFOl0iaCuWYsYz2aT8t1CaZMrtKoRo4kq/XC+kQGZ6
-         8eegMJxCqnc+wMzxdsdPFT0g0OKMSAtFGfTjsQmfl2hGfor5UWrm929QU4fA6b8+i8xN
-         vZbsq+trWk+8IR4Hfd3O6Qs8mxNIBhgegd68xvMc6P25wVTF/TA4lnOUVXB9d5NDOKmS
-         x1Ig==
-X-Gm-Message-State: AOAM531t9zZoMXkM4hytBOMCAn16dm1Xyy5B8Y/a0Mpakb9peRS5YXWJ
-        WB/yrh1hKBtJYbsNIUCL573WTX6mZtVx59isYuA=
-X-Google-Smtp-Source: ABdhPJy91KzwGDL89onNk77UcDYXDW6zfojHY8tGafnCpem0Y2fQL6HoRX7KZ2IMZdUrPb1HR1n8Wp1a5+wHXVLf3Zg=
-X-Received: by 2002:a17:902:b711:b029:11e:6480:258a with SMTP id
- d17-20020a170902b711b029011e6480258amr12731595pls.41.1629109880853; Mon, 16
- Aug 2021 03:31:20 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ccX+otJKzYiw7fTpASq5EiKmXI5wu1oM2Rkshyanugg=;
+        b=R7ru4PnB8hgt2vOfTfM8D9qM4V/ZbkrqJWEh33+5M/qk45DXgmMTYTN830X0+FCZd4
+         E91v27Q0KZ/cU58Z6oVDZhCx++sWnRgVqsomG/aU++vMBd+moPoyk3mNzF/TKRVejBe2
+         +j/uKR8ueo5NptZBVd4iON0Joe8QaQ3F9zheu3qytMKtdhUADITnYPU+qpVDIUG3BYVy
+         yBxEue6iTY+zbDmxvO7EKqfiYzqIOdQEM7Kv3oPKoVlcFJJS9r1qKhdxVQ3qJyK0C/oh
+         36G3yiKulTsDi9yyswwQEhcaqx5/Y+5PkJhSzdSaEI/UFVAMO/jaYhlVSbIs5z6mRWnP
+         OQdw==
+X-Gm-Message-State: AOAM532Rc1L7M0R2bQNVaR4QubOOuVnTWz5Gcl9p//5uQdwc/T1fA6Km
+        C0kbypXPoimZYFYNxeSdJZc=
+X-Google-Smtp-Source: ABdhPJw/StLL2fZrdUNp2CW5UwXdwfF+A7iXrh+hhQZgPdXKrA2dAk8JDe77PoSA4AlMAWZTB6qcTQ==
+X-Received: by 2002:a63:111f:: with SMTP id g31mr15459522pgl.80.1629109888650;
+        Mon, 16 Aug 2021 03:31:28 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id f137sm10813481pfa.160.2021.08.16.03.31.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 03:31:28 -0700 (PDT)
+Subject: Re: [PATCH v2] drm: avoid races with modesetting rights
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     kernel test robot <lkp@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>, kbuild-all@lists.01.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210815153740.195330-1-desmondcheongzx@gmail.com>
+ <202108160208.ONHHWxXy-lkp@intel.com>
+ <f88fe698-b40c-b309-96c2-32b314280aad@gmail.com>
+ <CAKMK7uEWMjaDEuMpc1__EwD5rpaouJ-dhahQBEQ5rsBz3VV=qg@mail.gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <3a5ffd83-3d91-73dc-0cae-e822ba381b2b@gmail.com>
+Date:   Mon, 16 Aug 2021 18:31:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a17:902:aa81:b029:123:c8f8:8a68 with HTTP; Mon, 16 Aug 2021
- 03:31:20 -0700 (PDT)
-From:   lisa hugh <lisa.hugh222@gmail.com>
-Date:   Mon, 16 Aug 2021 12:31:20 +0200
-Message-ID: <CANubVJqo3U_=xBc0n937a_GkfgeP=s241OLnX_3+5Z=Qded0VA@mail.gmail.com>
-Subject: MASSAGE OF THE BUSINESS.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKMK7uEWMjaDEuMpc1__EwD5rpaouJ-dhahQBEQ5rsBz3VV=qg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On 16/8/21 5:04 pm, Daniel Vetter wrote:
+> On Mon, Aug 16, 2021 at 10:53 AM Desmond Cheong Zhi Xi
+> <desmondcheongzx@gmail.com> wrote:
+>> On 16/8/21 2:47 am, kernel test robot wrote:
+>>> Hi Desmond,
+>>>
+>>> Thank you for the patch! Yet something to improve:
+>>>
+>>> [auto build test ERROR on next-20210813]
+>>> [also build test ERROR on v5.14-rc5]
+>>> [cannot apply to linus/master v5.14-rc5 v5.14-rc4 v5.14-rc3]
+>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>>> And when submitting patch, we suggest to use '--base' as documented in
+>>> https://git-scm.com/docs/git-format-patch]
+>>>
+>>> url:    https://github.com/0day-ci/linux/commits/Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
+>>> base:    4b358aabb93a2c654cd1dcab1a25a589f6e2b153
+>>> config: i386-randconfig-a004-20210815 (attached as .config)
+>>> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+>>> reproduce (this is a W=1 build):
+>>>           # https://github.com/0day-ci/linux/commit/cf6d8354b7d7953cd866fad004cbb189adfa074f
+>>>           git remote add linux-review https://github.com/0day-ci/linux
+>>>           git fetch --no-tags linux-review Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
+>>>           git checkout cf6d8354b7d7953cd866fad004cbb189adfa074f
+>>>           # save the attached .config to linux build tree
+>>>           make W=1 ARCH=i386
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>>>
+>>>>> ERROR: modpost: "task_work_add" [drivers/gpu/drm/drm.ko] undefined!
+>>>
+>>
+>> I'm a bit uncertain about this. Looking into the .config used, this
+>> error seems to happen because task_work_add isn't an exported symbol,
+>> but DRM is being compiled as a loadable kernel module (CONFIG_DRM=m).
+>>
+>> One way to deal with this is to export the symbol, but there was a
+>> proposed patch to do this a few months back that wasn't picked up [1],
+>> so I'm not sure what to make of this.
+>>
+>> I'll export the symbol as part of a v3 series, and check in with the
+>> task-work maintainers.
+>>
+>> Link:
+>> https://lore.kernel.org/lkml/20210127150029.13766-3-joshi.k@samsung.com/ [1]
+> 
+> Yeah that sounds best. I have two more thoughts on the patch:
+> - drm_master_flush isn't used by any modules outside of drm.ko, so we
+> can unexport it and drop the kerneldoc (the comment is still good).
+> These kind of internal functions have their declaration in
+> drm-internal.h - there's already a few there from drm_auth.c
+> 
 
-I am Ms Lisa Hugh, work in the department of Audit and accounting
-manager here in the Bank.
+Sounds good, I'll do that and move the declaration from drm_auth.h to 
+drm_internal.h.
 
-I need Your help for the transfer of this fund amount ($4,500,000,00
-,U.S.DOLLARS)to your bank account with your co-operation.
+> - We know have 3 locks for master state, that feels a bit like
+> overkill. The spinlock I think we need to keep due to lock inversions,
+> but the master_mutex and master_rwsem look like we should be able to
+> merge them? I.e. anywhere we currently grab the master_mutex we could
+> instead grab the rwsem in either write mode (when we change stuff) or
+> read mode (when we just check, like in master_internal_acquire).
+> 
+> Thoughts?
+> -Daniel
+> 
 
-Please send the follow below, 1)AGE....2)TELEPHONE
-NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
+Using rwsem in the places where we currently hold the mutex seems pretty 
+doable.
 
-Note. reply me ( ms.lisahugh000@gmail.com )
+There are some tricky bits once we add rwsem read locks to the ioctl 
+handler. Some ioctl functions like drm_authmagic need a write lock.
 
-Thanks.
+In this particular case, it might make sense to break master_mutex down 
+into finer-grained locks, since the function doesn't change master 
+permissions. It just needs to prevent concurrent writes to the 
+drm_master.magic_map idr.
 
-Ms Lisa Hugh,
+For other ioctls, I'll take a closer look on a case-by-case basis.
+
+>>
+>>> ---
+>>> 0-DAY CI Kernel Test Service, Intel Corporation
+>>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>>
+>>
+> 
+> 
+
