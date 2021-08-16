@@ -2,187 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A053EDD92
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF133EDD9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhHPTF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:05:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29493 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhHPTFZ (ORCPT
+        id S230376AbhHPTGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:06:24 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44092 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230271AbhHPTGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:05:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629140693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WlPP/8g3mJNR7Cgp7ApvxlHRVciepS4HYikYLtpQg3I=;
-        b=E9dcVBjAWstLjnjbhEMqRgFfm0TtF5T/DHwaaaFAF/JKpu683ufj8qPhTP0J9Ca4BtNm+s
-        UJR1OQHVyRLfHMA4mEWiLXiUb3t9d8LDyr8sLuRm0z83+YFuORSUIqHpIJPR2H2Chi/8Av
-        2tSl69MHn8tatYCfiwMYNVy/HvzIsy8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-8DXmrNLSOTyIsey6J6vSxw-1; Mon, 16 Aug 2021 15:04:51 -0400
-X-MC-Unique: 8DXmrNLSOTyIsey6J6vSxw-1
-Received: by mail-wm1-f72.google.com with SMTP id y206-20020a1c7dd70000b02902e6a442ea44so62741wmc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:04:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WlPP/8g3mJNR7Cgp7ApvxlHRVciepS4HYikYLtpQg3I=;
-        b=ijy5FIU4NXkpMcsKQmNP/PT4L57J4gYms8FfiZfU2+Om2baP7+LvAQyCfJw52BFCst
-         ZBBms8giRpOflcADrYR2ouOp/ecKPKMrxkv7vP8YBn/vgBbGRIEE761G9wI9tU2ilW21
-         NZ4u+MUjqqoaSRQIbR8vzaWy7oJafxITYNvI3+SeNjpl2bCl513cPYT6lDkXv1RKIbNg
-         Ei8uTrCSqiDOzKm1LAXI89frd/rlHrS+TxrLW4Gx8CWEPWXVg7vhFkjeMGs5L9nIu2aM
-         fNBbjRTQs4cPwsAEckUObKW0NWacC86BRzc1sQvKmxed41CAgUwa/DuM/4bz3me7nUxv
-         MAMg==
-X-Gm-Message-State: AOAM5305ioX7n8GO4g3XzbluWkbjRBqH7lk3lkxxBysQ52/SLJ+hsOIH
-        whp8lOmqu4gl7fhpBJaBYefkGDjeCcENbYqp0TSlAkQ1qglxr6mbbZ+VPl8ztNsojIlg2JzIJS4
-        913DIpzKPJnjR6LusbSyVt9Mk3+2FJJLYSb61A9X5S2OTIKsOZbU0dZKXDl5HLY+zYtBUMKZB
-X-Received: by 2002:a05:6000:18b:: with SMTP id p11mr19838054wrx.366.1629140690118;
-        Mon, 16 Aug 2021 12:04:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzegjAdiuTAvddYmUhX62To5fHoHldieTxpuXfj9sq27Zdj+mAht8SDbY0WfSH3KIrHn4gYdg==
-X-Received: by 2002:a05:6000:18b:: with SMTP id p11mr19838028wrx.366.1629140689839;
-        Mon, 16 Aug 2021 12:04:49 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
-        by smtp.gmail.com with ESMTPSA id y11sm88016wru.0.2021.08.16.12.04.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 12:04:49 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
- non-LRU page
-From:   David Hildenbrand <david@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>, naoya.horiguchi@nec.com,
-        osalvador@suse.de, tdmackey@twitter.com, akpm@linux-foundation.org,
-        corbet@lwn.net
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210816180909.3603-1-shy828301@gmail.com>
- <2ea04811-a9a3-0fe6-38aa-222e79ded09a@redhat.com>
-Organization: Red Hat
-Message-ID: <d4e9328b-58ae-9e64-8703-63bdaa63e437@redhat.com>
-Date:   Mon, 16 Aug 2021 21:04:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 15:06:23 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GJ28tE026204;
+        Mon, 16 Aug 2021 19:05:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=/Nji3+Ye2xKHfipMyFWyCPnxbNlyV5UP1OAfZTzZ6Pg=;
+ b=MgOIZ/QGut2Al8e39AysAUeK9WBuLkj7W1zB5A0rQ2Yq96XCyiRrl3JjJrs5uMCCVr0T
+ lDIVB5gm7Ngp3F0Qh+zzWrYrjhizCo3jKqvwuuOUxpJ0zfRWCyM1s/dLC3TafiyIHtvz
+ xV/JgBdAQ1zylz49ygaTlkjtps+IuohNryS0dGtMsz0YdB8mtUjVxyUQdzmD6lu83iSe
+ dWRxf5XsFDt2ZxAoCyguUbm5D55CULZE+MyZ58PqO8zN76CPdWI/zkVPiUSZuJ3e+l4X
+ VqAsxMv/lG/JwzGy/8MVMC7fqpSXwLIDPTrKPmLpWs3LzowIUpR3fFnlh7z+grP9awrn ZQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=/Nji3+Ye2xKHfipMyFWyCPnxbNlyV5UP1OAfZTzZ6Pg=;
+ b=y0mMsEAeI38dGK9oHgrKdTuxGPJCezzbW/PcOZMygk6/o1pkoxu7DXd6o3sRPok6Fr58
+ KnnRoOC9iOc+PlhF/PedfSy5+hCz/KuHt7mK1Jb25+ENN6ggsEfDkZL17aiHuTkcaGog
+ 7gVWzft28uE/cA9MjpaLepGHhsuCj399GzCZF7LdmE6Hq6Jm1j/ZjjSGrFZHqRRZBMh4
+ INvIpw70U2Err+w7WAxiJTI/Q0rPSyZN4CN8B8INf6oAU+m4Dq4amkctESRKATx/e3mN
+ AFN+GfKddOAYuITzJ+2k7EryVRfbf6iG600ycVSECl0Gm/EvH1Sn7SyoSUOmRZnhjDon +g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3af1q9b1f2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Aug 2021 19:05:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17GJ4uBS157060;
+        Mon, 16 Aug 2021 19:05:41 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by userp3030.oracle.com with ESMTP id 3ae2xxqx72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Aug 2021 19:05:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P6U7kdkAN446jMzQa45zNPs6TGD/lMaEOkZpt3Wz5DgP+e7yQe0KPh+CHSpyZFGhuWnc9ot4LoNJz10pDOl+uoFCk1UtnEzVXwkcw5A2bl6aa6ssSEzqq7O+1nceZ7gEbMzmkPkfmNIswwesivn2vYN0DEiu12i7unr33wv22gr2nJu0qv6omRnSReuaKzxyRTZvhwhS8OSfLfslLuVru+2h2z+EgaJYkudTfLzuRmqcBSF5pbuiwzpihQ/4a56I6Yi8poulThjgih5jY66M4FayXl4mAgYu7G/IGnYnZ4B1oRdeJHTDCaaBRgqzHZgzc8zAxTePqaOkOy3x6dhjag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Nji3+Ye2xKHfipMyFWyCPnxbNlyV5UP1OAfZTzZ6Pg=;
+ b=g5kRPuimGGXqEOFFREluF1REgPfJXRxBgq2/bTPB/CrVkJ/lf3ezc8T9MpxMoglNxxSk4VQ/DqaVrCcpUVKhzLPF9N84OJTpXsa4JVZlJSBI3ilBDvKoflxJxQYM7dl+YHH4EYtnNux3byL3SB2JZXLE4Ftm3TwYBbNOLCcKht49ZHTq2qB5I+6q0nhZrlfRNgk8ZIUrmZvZpYlRfGaxQZhnPEjdetbihodLTiOx/6FrouVNehloOwnMtYLyEK6MA71zdS5uboS3k3jh498OpEyxOvAiGU0UjkavnGaxGNDSk692CanorFjSuqyUnV+eaTms60WXzVv8w7WDz9hc2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Nji3+Ye2xKHfipMyFWyCPnxbNlyV5UP1OAfZTzZ6Pg=;
+ b=w8yrIgyKsFw0iE6hoTJq3U+FJhCzQtTqtxAALUMbDTqqMWbgkMgDOfFQTs2CTA1rNSF76fFw6ax5DcNWv9zcM28UDi+wN7UYslQa4V0yUhGi9pLF6wtXXsRZEAi2scQRATZAN91hqcIVEC5SkTKgskuz0cGTF7paaFDgN9ktoEU=
+Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1296.namprd10.prod.outlook.com
+ (2603:10b6:300:1f::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Mon, 16 Aug
+ 2021 19:05:38 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
+ 19:05:38 +0000
+Date:   Mon, 16 Aug 2021 22:05:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Leon Romanovsky <leon@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCH] checkpatch: prefer = {} initializations to = {0}
+Message-ID: <20210816190518.GK7722@kadam>
+References: <20210805104353.GD26417@kili>
+ <1b94e688-a070-998a-3014-96bcbaed4cae@wanadoo.fr>
+ <YRfYr0fsM1R7O5x6@zeniv-ca.linux.org.uk>
+ <20210816065552.GE1931@kadam>
+ <20210816072344.GG22278@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816072344.GG22278@shell.armlinux.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0022.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::8)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <2ea04811-a9a3-0fe6-38aa-222e79ded09a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JNAP275CA0022.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Mon, 16 Aug 2021 19:05:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b5cbee00-2caf-43b5-31d9-08d960e8d502
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1296:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1296CA98381B26A3C787B05C8EFD9@MWHPR10MB1296.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QnC+Q263FTpCwKXuxnuWJOziC/+7KsNR+t0kojoxeIqJFWQsraGfQpSxglUOVV39hML7qoS1WDDjhit6eUdF7YQ0ZZdCs1NkRFJR+Z+UUXSy9iDj/FPWlp9mIsox5ET7N4lo7yvHiiIJMVDY0ccAhpCVNas0uHsg+Kv1TGcfVNbv6/zUNAxHeDmTVyTz3fYZcLT7JytN1l5LkSZo6S08XHf6XSk1VD97d2SIhfRZJ6cx6mLAgz9F2MVSDiJZej1j0Oik7H0V0hzOv5p+M5YCebpIGAzGSyS/zf9ito6OXLUnU/1JMjAOpA5tSD2Z9NnRWHWFSWGbB/Ah+jSn7N1I0KFJxxgVYRcbbQIqiVz+pYpPtUiDOt+1in6pdmX+H2jsgPjTkUrybob0gzT3/iW+yiQmH7zykUuUuFGLa4J+oYvIgFfWQddMA+tt2jzjcDtyQC/B/wSJsSb5gZdJ82tqlqTKTlvD1kGvjeTfEwg17Kq/WPTGw8kKscJXZGG31suMxS63FTFVcyrlujTvV4cFks3LbDQoDNMeOBLlyLdjT05NP0ENrDL4lDLcHJhoWQ8pbkqD8GvQQYMf4+dXPwparP6ULd4kAG5pv9RyyHhUE2rYDsp8KB2PHDvMvRb1LUh7Vh1HKpLqFEXXyA4VxEJ4SfXJMszkZad+KltdKKnDJYkBNLB5qgSsmynLVirOe6oDc8eG8j51QPOfr1TlG5bAjRsJ228dlNmEkzviurxEbHHsnmgGqFJK83rPl9dMg6yO/Q+Zo8NF2/uJyunDNgQX9aqclMIKotUYIj4h+14Tv2XgSnL09iVn8s44UaQdlMLA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(39860400002)(136003)(366004)(52116002)(83380400001)(956004)(55016002)(6916009)(6666004)(9576002)(38350700002)(38100700002)(6496006)(44832011)(1076003)(86362001)(478600001)(4326008)(4744005)(66946007)(8936002)(26005)(33716001)(9686003)(2906002)(5660300002)(33656002)(966005)(8676002)(7416002)(54906003)(186003)(316002)(66476007)(66556008)(125773002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xJ7UWllohUVL7VZUl22U4rc9O/IX8B1jJuODKb9M/AK0muqB39m1zGmgr9yW?=
+ =?us-ascii?Q?4GkJy9X/3Wn9lamGMx2idSkJYmp/PS4H8uxTWdv4gvBjPNZmDO64CG8uBtE/?=
+ =?us-ascii?Q?KWQt5RUc5Bq/0G+4SFLx66VPD/6XxkyfyTjqbXH4SCTMJVpr+Ji5YPSbgWqz?=
+ =?us-ascii?Q?gxT2YXn89c1o3rHDhJ6t/2druQe8eb6o9Vp+wi4qGMxiHVcVe7yJ/bQs/Th1?=
+ =?us-ascii?Q?ewhKMvx2dqGmvR7uVQbKWj6ynsKevapkDUqRsyVcMDQda50e5EiiceEW6RYp?=
+ =?us-ascii?Q?vcs7NiTziq4QeK7QCGU2ltGmmjc2oRcoNgb4px8KIOnPpHhU7Mv/eiWVmjXx?=
+ =?us-ascii?Q?3gUSLVufG3hlHMH1R5+Vhb98y73V4I5siKAE//AUQBrvG5ZVnammI2mqrIN6?=
+ =?us-ascii?Q?yUOaEaiM9t+Hw4d0rvI606UV71Y/f8BQmC+iFJK+7P5wAeV/Xc2INyD+7eWK?=
+ =?us-ascii?Q?Ji/VeT8glOnZimiFURbS5grB91sa7D5ejjTfsIOcbNzOmn7+VwitzSGr1GEc?=
+ =?us-ascii?Q?+lZbk5fyTiqNWTb0BEnya0Nc+xG+AOZOuOMM2f8xPv+X3UmK+9v4pd5T430g?=
+ =?us-ascii?Q?Zqc2AAGPlqQwDjUXdVcLX817XUsHTDWpUVWM+72pGBitKwMR+dvaGPr8XFRA?=
+ =?us-ascii?Q?qyQWzrV7oLQwlGl30FQBJnvaNNGXgd6j66kn63k+Nq5aLBnFyNcaWKiNBHXx?=
+ =?us-ascii?Q?pnTZ8mbih/Xy3uMAned1yWe45m7ZvIL1TRLAh4Y6Y3cZf3B/tNRJbMSbYZ85?=
+ =?us-ascii?Q?qr1X/MLHd5j3bD3SKvCT7DZ7m+6gnXkbi98sXAHpmljgTOLM990Qgz/k3I/H?=
+ =?us-ascii?Q?+J5CXGzJek5SmkU5wvzPd1K3rsSShlH2SHpYV0voWhZgvLGxhavSUAyFJsKu?=
+ =?us-ascii?Q?Cpr1euZ6xX18gxV4xiHeJoOk2sq0V73PXDauL5jpuMoAHMsGeWC7ebZZkmMd?=
+ =?us-ascii?Q?kiVFvAYxEE4oTN6ajBVdw2VH8W0UjwY2+mp+7e5okH/SNI+eP3UCvqjFd+oq?=
+ =?us-ascii?Q?PnsS8oT2fMs8o2dIgmN2xriylhriHOSZ3MO5wqf2baPPOZC3tqDFWMqHS6YL?=
+ =?us-ascii?Q?UeYLeiLxfnYtmKz5WZS9udTCX86CNnZ4OrzqjtoTGJgojwfszqSnlLgy1xkl?=
+ =?us-ascii?Q?aJ6TD5Q0ieM7iCtmiYtt8sOdgSMDJfVx8qWuiot95j6NkysWpT7VwYEo9dsn?=
+ =?us-ascii?Q?7T7PWSr69e2JBD01ugtDcvB60kpCUaEuKBsYy8HH1FtewaE6p8cVbskx17xZ?=
+ =?us-ascii?Q?+aETLFsFU5W9E3qougkA7e66w3h4z3JjcVs2VoyisVG7ZjAnvtmRopdc890P?=
+ =?us-ascii?Q?82ZLldYIqon+9L8xrL7pWktF?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5cbee00-2caf-43b5-31d9-08d960e8d502
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2021 19:05:38.2389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KmlhabErqvUaPDaaAb8pjZNwVmtNbqaAivNtwv2Vhxlp5weoiabalXBXEO5FrKoCpsRc+gpNIqs+vwhTxY2pYiVFTQeb501AW+BRJIAq6j4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1296
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10078 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=990 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108160121
+X-Proofpoint-GUID: yWK4d41a8jZyWkpgSl-j_D1WDCMuFKME
+X-Proofpoint-ORIG-GUID: yWK4d41a8jZyWkpgSl-j_D1WDCMuFKME
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 21:02, David Hildenbrand wrote:
-> On 16.08.21 20:09, Yang Shi wrote:
->> In the current implementation of soft offline, if non-LRU page is met,
->> all the slab caches will be dropped to free the page then offline.  But
->> if the page is not slab page all the effort is wasted in vain.  Even
->> though it is a slab page, it is not guaranteed the page could be freed
->> at all.
->>
->> However the side effect and cost is quite high.  It does not only drop
->> the slab caches, but also may drop a significant amount of page caches
->> which are associated with inode caches.  It could make the most
->> workingset gone in order to just offline a page.  And the offline is not
->> guaranteed to succeed at all, actually I really doubt the success rate
->> for real life workload.
->>
->> Furthermore the worse consequence is the system may be locked up and
->> unusable since the page cache release may incur huge amount of works
->> queued for memcg release.
->>
->> Actually we ran into such unpleasant case in our production environment.
->> Firstly, the workqueue of memory_failure_work_func is locked up as
->> below:
->>
->> BUG: workqueue lockup - pool cpus=1 node=0 flags=0x0 nice=0 stuck for 53s!
->> Showing busy workqueues and worker pools:
->> workqueue events: flags=0x0
->>     pwq 2: cpus=1 node=0 flags=0x0 nice=0 active=14/256 refcnt=15
->>       in-flight: 409271:memory_failure_work_func
->>       pending: kfree_rcu_work, kfree_rcu_monitor, kfree_rcu_work, rht_deferred_worker, rht_deferred_worker, rht_deferred_worker, rht_deferred_worker, kfree_rcu_work, kfree_rcu_work, kfree_rcu_work, kfree_rcu_work, drain_local_stock, kfree_rcu_work
->> workqueue mm_percpu_wq: flags=0x8
->>     pwq 2: cpus=1 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
->>       pending: vmstat_update
->> workqueue cgroup_destroy: flags=0x0
->>     pwq 2: cpus=1 node=0 flags=0x0 nice=0 active=1/1 refcnt=12072
->>       pending: css_release_work_fn
->>
->> There were over 12K css_release_work_fn queued, and this caused a few
->> lockups due to the contention of worker pool lock with IRQ disabled, for
->> example:
->>
->> NMI watchdog: Watchdog detected hard LOCKUP on cpu 1
->> Modules linked in: amd64_edac_mod edac_mce_amd crct10dif_pclmul crc32_pclmul ghash_clmulni_intel xt_DSCP iptable_mangle kvm_amd bpfilter vfat fat acpi_ipmi i2c_piix4 usb_storage ipmi_si k10temp i2c_core ipmi_devintf ipmi_msghandler acpi_cpufreq sch_fq_codel xfs libcrc32c crc32c_intel mlx5_core mlxfw nvme xhci_pci ptp nvme_core pps_core xhci_hcd
->> CPU: 1 PID: 205500 Comm: kworker/1:0 Tainted: G             L    5.10.32-t1.el7.twitter.x86_64 #1
->> Hardware name: TYAN F5AMT /z        /S8026GM2NRE-CGN, BIOS V8.030 03/30/2021
->> Workqueue: events memory_failure_work_func
->> RIP: 0010:queued_spin_lock_slowpath+0x41/0x1a0
->> Code: 41 f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 1b 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 f6 c4 01 75 04 c6 47
->> RSP: 0018:ffff9b2ac278f900 EFLAGS: 00000002
->> RAX: 0000000000480101 RBX: ffff8ce98ce71800 RCX: 0000000000000084
->> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8ce98ce6a140
->> RBP: 00000000000284c8 R08: ffffd7248dcb6808 R09: 0000000000000000
->> R10: 0000000000000003 R11: ffff9b2ac278f9b0 R12: 0000000000000001
->> R13: ffff8cb44dab9c00 R14: ffffffffbd1ce6a0 R15: ffff8cacaa37f068
->> FS:  0000000000000000(0000) GS:ffff8ce98ce40000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007fcf6e8cb000 CR3: 0000000a0c60a000 CR4: 0000000000350ee0
->> Call Trace:
->>    __queue_work+0xd6/0x3c0
->>    queue_work_on+0x1c/0x30
->>    uncharge_batch+0x10e/0x110
->>    mem_cgroup_uncharge_list+0x6d/0x80
->>    release_pages+0x37f/0x3f0
->>    __pagevec_release+0x1c/0x50
->>    __invalidate_mapping_pages+0x348/0x380
->>    ? xfs_alloc_buftarg+0xa4/0x120 [xfs]
->>    inode_lru_isolate+0x10a/0x160
->>    ? iput+0x1d0/0x1d0
->>    __list_lru_walk_one+0x7b/0x170
->>    ? iput+0x1d0/0x1d0
->>    list_lru_walk_one+0x4a/0x60
->>    prune_icache_sb+0x37/0x50
->>    super_cache_scan+0x123/0x1a0
->>    do_shrink_slab+0x10c/0x2c0
->>    shrink_slab+0x1f1/0x290
->>    drop_slab_node+0x4d/0x70
->>    soft_offline_page+0x1ac/0x5b0
->>    ? dev_mce_log+0xee/0x110
->>    ? notifier_call_chain+0x39/0x90
->>    memory_failure_work_func+0x6a/0x90
->>    process_one_work+0x19e/0x340
->>    ? process_one_work+0x340/0x340
->>    worker_thread+0x30/0x360
->>    ? process_one_work+0x340/0x340
->>    kthread+0x116/0x130
+On Mon, Aug 16, 2021 at 08:23:45AM +0100, Russell King (Oracle) wrote:
+> > That's out of date.  It changed in C11.  Both = { 0 } and = { } will
+> > clear out struct holes. The = { } GCC extension has always initialized
+> > struct holes.
+> > 
+> > http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1548.pdf
+> > 
+> > For partial initializations then all the padding is zeroed.
+> > Unfortunately if you fully initialize the struct then padding is not
+> > initialized.
 > 
-> Just curious, who actually ends up calling soft_offline_page() ? I
-> cannot really make sense of this, looking at upstream Linux.
+> If we're going to discuss which C standard applies to the kernel,
+> then...
 > 
-> I can spot
-> 
-> a) drivers/base/memory.c: /sys/devices/system/memory/soft_offline_page
-> seems to be a testing interface
-> 
-> b) MADV_SOFT_OFFLINE seems to be a testing interface as well
-> 
-> c) arch/parisc/kernel/pdt.c doesn't apply to your case I guess?
-> 
-> I'm just wondering who ends up calling soft_offline_page() in a
-> production environment and via which call path. I'm most probably
-> missing something.
-> 
+> As Kbuild passes -std=gnu89, the kernel expects C89 behaviour with
+> GNU extensions from the compiler, both C99 and C11 are not that
+> relevant, although the GNU extensions include some bits from these
+> standards.
 
-... and I missed memory_failure_work_func() with MF_SOFT_OFFLINE :)
+That's fine.  The GCC implementation has always been okay.  The question
+is if we could rely on it going forward so now that it's part of the
+spec that's very reassuring.
 
-Ignore my question :)
+regards,
+dan carpenter
 
--- 
-Thanks,
-
-David / dhildenb
 
