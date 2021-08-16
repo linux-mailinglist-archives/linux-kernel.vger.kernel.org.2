@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4CA3EDF7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3783EDF7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhHPVu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbhHPVu0 (ORCPT
+        id S232294AbhHPVv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:51:58 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:45534 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhHPVv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:50:26 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F7EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id u1so5103286plr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fPCjWgqX+3/mEIfqbp98iVRrYqeF+Ke0tX99HW2DLOE=;
-        b=HqGhGXenLqa31YLQmzWywUKVR3MSaGYsx84QL+SGvf6q2e9ul5NVRG0IkOJ1ef3UKJ
-         FT5xYWIxUX3p5gDEVoF4NeaRCFHRkVeXVWSXYFILcI/83Fogfg5OLC1rQCbjfVco1wSF
-         5aNdZ0t2nhmchiUBdTMHpcSeRukMirVtpn4xljbUzZ8o1OlwcnnUu62z4EppDB7lYD4z
-         aDfIf4UtaW5GiutXH2UEm339oKldAZ6DORjgzemb/0Huod+QBq8fKhL4bWEPVs77eCdV
-         QRGQoUXWoFAe9mvY056nCX/ndVf9vht1Nl5UCcUnVyou6UFnnRWzg2qat16a+VgwHxrW
-         McIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fPCjWgqX+3/mEIfqbp98iVRrYqeF+Ke0tX99HW2DLOE=;
-        b=rl7S+1aEvKmTIAxlEH5UT1yqQE3B2Q6h9juWeDOqIX3oRI1FiJjDFtSx2oLQZ7HrUn
-         CuCLDdifdoqHdIYuh8n2nWrxHiJE5lshUNmpgJe42/oP59oqJlnmoJ0qMskTMRrSb1so
-         otdzUIkkYHuSOeezddaiGaj+tApeDYUbH/SW3kK8ndDzLgyweTwONjH74bztfLro9kdM
-         xmcFUBUqluHDV2ZPwJyURNuua8o/z8F4cfQvkLbhHTLpilJLbTLzoIB+5jbTV7LftocG
-         6EGyObdaP06rcmRnBgr031OWZsKOF14MOrTRo4Ce20IexTjjI3CFQpvRUCORT8x59+YJ
-         dsqQ==
-X-Gm-Message-State: AOAM532FFhgsj/4Gq0nnnB5D0iuybgJO10RjM2eXwDREjkLpLnkjrqxI
-        WOYapCiZmigym76Cy007BZ2MaA==
-X-Google-Smtp-Source: ABdhPJwElnQo3mvh8vErvFS5KTctdbkZs49cCpCdIXRupV4fwTZ/oQnioQo294P4UStdwg44I5wWaw==
-X-Received: by 2002:a65:6393:: with SMTP id h19mr194321pgv.64.1629150594025;
-        Mon, 16 Aug 2021 14:49:54 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id gz17sm109945pjb.8.2021.08.16.14.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 14:49:53 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in __io_queue_sqe
-To:     syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000011fc2505c9b41023@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8236fd18-bf97-b7c6-b2c7-84df0a9bd8e5@kernel.dk>
-Date:   Mon, 16 Aug 2021 15:49:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 16 Aug 2021 17:51:57 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFkVQ-00D7Rq-2k; Mon, 16 Aug 2021 21:50:52 +0000
+Date:   Mon, 16 Aug 2021 21:50:52 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH][RFC] fix PTRACE_KILL
+Message-ID: <YRrdvKEu2JQxLI5n@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <00000000000011fc2505c9b41023@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 3:41 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1784d5e9300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17479216300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147f0111300000
+[Cc'd to security@k.o, *NOT* because I consider it a serious security hole;
+it's just that the odds of catching relevant reviewers there are higher
+than on l-k and there doesn't seem to be any lists where that would be
+on-topic.  My apologies for misuse of security@k.o ;-/]
 
-#syz test: git://git.kernel.dk/linux-block for-next
+Current implementation is racy in quite a few ways - we check that
+the child is traced by us and use ptrace_resume() to feed it
+SIGKILL, provided that it's still alive.
 
--- 
-Jens Axboe
+What we do not do is making sure that the victim is in ptrace stop;
+as the result, it can go and violate all kinds of assumptions,
+starting with "child->sighand won't change under ptrace_resume()",
+"child->ptrace won't get changed under user_disable_single_step()",
+etc.
 
+Note that ptrace(2) manpage has this to say:
+    
+PTRACE_KILL
+      Send  the  tracee a SIGKILL to terminate it.  (addr and data are
+      ignored.)
+    
+      This operation is deprecated; do not use it!   Instead,  send  a
+      SIGKILL  directly  using kill(2) or tgkill(2).  The problem with
+      PTRACE_KILL is that it requires the  tracee  to  be  in  signal-
+      delivery-stop,  otherwise  it  may  not work (i.e., may complete
+      successfully but won't kill the tracee).  By contrast, sending a
+      SIGKILL directly has no such limitation.
+    
+So let it check (under tasklist_lock) that the victim is traced by us
+and call sig_send_info() to feed it SIGKILL.  It's easier that trying
+to force ptrace_resume() into handling that mess and it's less brittle
+that way.
+    
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index f8589bf8d7dc..7f46be488b36 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1220,11 +1220,6 @@ int ptrace_request(struct task_struct *child, long request,
+ 	case PTRACE_CONT:
+ 		return ptrace_resume(child, request, data);
+ 
+-	case PTRACE_KILL:
+-		if (child->exit_state)	/* already dead */
+-			return 0;
+-		return ptrace_resume(child, request, SIGKILL);
+-
+ #ifdef CONFIG_HAVE_ARCH_TRACEHOOK
+ 	case PTRACE_GETREGSET:
+ 	case PTRACE_SETREGSET: {
+@@ -1270,6 +1265,20 @@ int ptrace_request(struct task_struct *child, long request,
+ 	return ret;
+ }
+ 
++static int ptrace_kill(struct task_struct *child)
++{
++	int ret = -ESRCH;
++
++	read_lock(&tasklist_lock);
++	if (child->ptrace && child->parent == current) {
++		if (!child->exit_state)
++			send_sig_info(SIGKILL, SEND_SIG_PRIV, child);
++		ret = 0;
++	}
++	read_unlock(&tasklist_lock);
++	return ret;
++}
++
+ #ifndef arch_ptrace_attach
+ #define arch_ptrace_attach(child)	do { } while (0)
+ #endif
+@@ -1304,8 +1313,12 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 		goto out_put_task_struct;
+ 	}
+ 
+-	ret = ptrace_check_attach(child, request == PTRACE_KILL ||
+-				  request == PTRACE_INTERRUPT);
++	if (request == PTRACE_KILL) {
++		ret = ptrace_kill(child);
++		goto out_put_task_struct;
++	}
++
++	ret = ptrace_check_attach(child, request == PTRACE_INTERRUPT);
+ 	if (ret < 0)
+ 		goto out_put_task_struct;
+ 
+@@ -1449,8 +1462,12 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
+ 		goto out_put_task_struct;
+ 	}
+ 
+-	ret = ptrace_check_attach(child, request == PTRACE_KILL ||
+-				  request == PTRACE_INTERRUPT);
++	if (request == PTRACE_KILL) {
++		ret = ptrace_kill(child);
++		goto out_put_task_struct;
++	}
++
++	ret = ptrace_check_attach(child, request == PTRACE_INTERRUPT);
+ 	if (!ret) {
+ 		ret = compat_arch_ptrace(child, request, addr, data);
+ 		if (ret || request != PTRACE_DETACH)
