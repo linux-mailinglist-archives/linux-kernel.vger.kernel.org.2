@@ -2,154 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746E63ED337
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEFC3ED340
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbhHPLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:40:42 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20831 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236276AbhHPLkl (ORCPT
+        id S236170AbhHPLnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:43:02 -0400
+Received: from smtprelay0169.hostedemail.com ([216.40.44.169]:53110 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231758AbhHPLnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:40:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629114010; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=O00qtUAUcZvqR44D1MBcAC4U2OqiP9I4qUt+ug4VUP4=; b=T+qTVdaT1GA+on+93JOMPvDZUYnIxjs7UvyDSbx7kVyeOT9B0XVC7kBTfqRYIs3UeUny9iAs
- f4o7zLTHWp4/eQHlAbR5Ow9mLZ6k2tmO2BAsxl5ybS4CN/BY9qwvcsyR9QrBCYmgNiM3GzZU
- a4dfQKkGE4G6hKtoh42j+aDrgFg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 611a4e82b3873958f5957d15 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 11:39:45
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DB0CC4360C; Mon, 16 Aug 2021 11:39:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0F7EC4360C;
-        Mon, 16 Aug 2021 11:39:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A0F7EC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V6 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Mon, 16 Aug 2021 17:09:14 +0530
-Message-Id: <1629113954-14084-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629113954-14084-1-git-send-email-deesin@codeaurora.org>
-References: <1629113954-14084-1-git-send-email-deesin@codeaurora.org>
+        Mon, 16 Aug 2021 07:43:01 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 16CDE181A3499;
+        Mon, 16 Aug 2021 11:42:29 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 0165B2EBFA0;
+        Mon, 16 Aug 2021 11:42:27 +0000 (UTC)
+Message-ID: <d6451fbddb3a17c7bad1c2d574e86e00e7295258.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: make email address check case insensitive
+From:   Joe Perches <joe@perches.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Simon Thoby <simon.thoby@viveris.fr>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 16 Aug 2021 04:42:26 -0700
+In-Reply-To: <20210816112725.173206-1-zohar@linux.ibm.com>
+References: <20210816112725.173206-1-zohar@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 0165B2EBFA0
+X-Spam-Status: No, score=5.19
+X-Stat-Signature: b167u5d3g89eykxws36dfw6xw8zz3qsc
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+b+rZ5MuvFtwEXrlsFy3pApEMYUCVTPTA=
+X-HE-Tag: 1629114147-944958
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node for qmp so
-messages can be sent to aoss for debugging and testing purposes.
+On Mon, 2021-08-16 at 07:27 -0400, Mimi Zohar wrote:
+> Instead of checkpatch requiring the patch author to exactly match the
+> signed-off-by tag, commit 48ca2d8ac8a1 ("checkpatch: add new warnings
+> to author signoff checks.") safely relaxed this requirement.
+> 
+> Although the local-part of an email address (local-part@domain), may
+> be case sensitive, exploiting the case sensitivity of mailbox
+> local-parts impedes interoperability and is discouraged.  Mailbox
+> domains follow normal DNS rules and are hence not case sensitive.
+> (Refer to https://datatracker.ietf.org/doc/html/rfc5321#section-2.4.)
+> 
+> Further relax the patch author and signed-off-by tag comparison by
+> making the email address check case insensitive.
+> 
+> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+Acked-by: Joe Perches <joe@perches.com>
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index a43c22c..080bc2e 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -86,6 +87,9 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	struct dentry *debugfs_file;
-+#endif /* CONFIG_DEBUG_FS */
- };
- 
- struct qmp_pd {
-@@ -563,6 +567,33 @@ void qmp_put(struct qmp *qmp)
- }
- EXPORT_SYMBOL(qmp_put);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return -EINVAL;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		return -EFAULT;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -617,6 +648,11 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, qmp);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -633,6 +669,10 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	debugfs_remove(qmp->debugfs_file);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> ---
+>  scripts/checkpatch.pl | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 461d4221e4a4..1efa2997df62 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2909,10 +2909,10 @@ sub process {
+>  					my ($email_name, $email_comment, $email_address, $comment1) = parse_email($ctx);
+>  					my ($author_name, $author_comment, $author_address, $comment2) = parse_email($author);
+>  
+> 
+> -					if ($email_address eq $author_address && $email_name eq $author_name) {
+> +					if (lc $email_address eq lc $author_address && $email_name eq $author_name) {
+>  						$author_sob = $ctx;
+>  						$authorsignoff = 2;
+> -					} elsif ($email_address eq $author_address) {
+> +					} elsif (lc $email_address eq lc $author_address) {
+>  						$author_sob = $ctx;
+>  						$authorsignoff = 3;
+>  					} elsif ($email_name eq $author_name) {
+
 
