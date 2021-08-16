@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EF53ED154
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3373D3ED157
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhHPJzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235336AbhHPJzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:55:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5935461B72;
-        Mon, 16 Aug 2021 09:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629107679;
-        bh=rPHYIXTB11jTLUaw8xSCpjfzdCFfMm8VFV2GzvAfkb4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VRO2j5/pJm8WYPaiWFwt+7bLKrzguPBjC5t2HwDyEw/hO9mS9lnlYzT30/siBqKmo
-         fihZOGhDsy5WPhwnCQb4NXdCmrYAmtUagg709AtqRy2ihFBZQGgsffrxZlUj8NLx/a
-         kXEgVTEmul7EsrDKemw5iroi+8ats8kZgUx994kjA2aG13639FbgtrlStAyR8VAx2h
-         iTWDF6Qrvj5lmxHw9qxl9y4PabIWaicc+p+vRnb7gl/EZE0uJsAiR61kDQN/NWnNrL
-         yrlb3m1Puph3mSkyWDHLEOgCs21qyJBlOa+lGV818PHpLDgcsLkJ9oXz+g6StasqSc
-         AQFxuyWZkbalg==
-Date:   Mon, 16 Aug 2021 11:54:35 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>
-Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
- to WOL event
-Message-ID: <20210816115435.664d921b@dellmb>
-In-Reply-To: <PH0PR11MB49509E7A82947DCB6BB48203D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
-References: <20210813084536.182381-1-yoong.siang.song@intel.com>
-        <20210814172656.GA22278@shell.armlinux.org.uk>
-        <YRgFxzIB3v8wS4tF@lunn.ch>
-        <20210814194916.GB22278@shell.armlinux.org.uk>
-        <PH0PR11MB4950652B4D07C189508767F1D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
-        <YRnmRp92j7Qpir7N@lunn.ch>
-        <PH0PR11MB4950F854C789F610ECD88E6ED8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
-        <20210816071419.GF22278@shell.armlinux.org.uk>
-        <PH0PR11MB495065FCAFD90520684810F7D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
-        <20210816081812.GH22278@shell.armlinux.org.uk>
-        <PH0PR11MB49509E7A82947DCB6BB48203D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235584AbhHPJzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235546AbhHPJzQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 05:55:16 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7A9C061764;
+        Mon, 16 Aug 2021 02:54:45 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r6so22725475wrt.4;
+        Mon, 16 Aug 2021 02:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OVIiXaXt+PNMazqOI2FVcSRJWLlNFOCX48IyWhzo2SE=;
+        b=ER9UOjvpcCe8cps+ZwqPAd/L13LCHSWr7ePe+PGIkWBIviTRId6qN5fHuS/1n4X8uY
+         s1AR6XqZf/OscRAZ6ZLsuv9MIuhK4qhnu1nXnADnc5UJouIVWNw5urML1iDjWxNaXZoZ
+         ksOaN8/cryni9cg0jQDC+qvCJ8YhHhiBO7L9jxJaq1+aJoE2IqxK8PfZUqzcuOR8qrCa
+         1+FyUH61P6/BjU/iQrLPki+I5PJ0KjPVrszUgStU3E3B1J2kbG8Yvk/EWgODW2l13pwY
+         UiVE5Xc5izntFytlVCDjHTsO/21ohg/akLc6YWWM6OihzctxVYrTezb5iVSDBaoc1h1b
+         WnnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OVIiXaXt+PNMazqOI2FVcSRJWLlNFOCX48IyWhzo2SE=;
+        b=sNypIRQSEmnhyo/2M20e1eDkNclYx+xwpNvGeB27H8hMYPvVYRDFN5ufSVaOxfS2NC
+         J16gvx8ahJLZKKfthVA+reDeN19yqCYXpBSFEdMi/ixWmcQk1nFbeToUyt6bRBECWsLt
+         FrRd1gw7ylyJoDnhdZ6ZMnvnS6Wu9K94GOxXKtD4BtiHN525oC/bOtuwfqVdbCPGn5tj
+         hVQI8YU+LaHsiEd3FaF4QSh7nrMTaoxNBPsiQR9p+EnvRlnAN4hXNNPbBIbZvPQUjYul
+         jSwQzJ7kkuC8+wSG8MltGHUajDioLXXGGWPkvBY3iX4Y8ArQcsBAej8PAfyKd/wqbAz9
+         QY6g==
+X-Gm-Message-State: AOAM531uJYb7deDrD6fLh9H6zrzoCpHTZuESS9i9qDt/MWEnvT6xHI0r
+        UAXy5yex3HwXK8fyCwWyTP4=
+X-Google-Smtp-Source: ABdhPJyHV1ltLaoofusnP7m6+Sw8yxHlFYo06zYWZCtvRdcTYPXFyoXEh9LCvs0EL6Gnw3bcnXijzg==
+X-Received: by 2002:a5d:4a52:: with SMTP id v18mr15957821wrs.216.1629107683797;
+        Mon, 16 Aug 2021 02:54:43 -0700 (PDT)
+Received: from localhost (pd9e51807.dip0.t-ipconnect.de. [217.229.24.7])
+        by smtp.gmail.com with ESMTPSA id l21sm9692957wmh.31.2021.08.16.02.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 02:54:42 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 11:54:42 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jawoslav Kysela <perex@perex.cz>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Bjorn Helgaas <bjorn@helgaas.com>
+Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
+Message-ID: <YRo14o5XJpMVUDbH@orome.fritz.box>
+References: <cover.1628971397.git.aakashhemadri123@gmail.com>
+ <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/uNhmtWkYfSYaFoo"
+Content-Disposition: inline
+In-Reply-To: <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 08:56:36 +0000
-"Song, Yoong Siang" <yoong.siang.song@intel.com> wrote:
 
-> Yes, you are right. I missed the effect of get_wol.
-> Is it needed in future to implement link change interrupt in phy
-> driver? Cause I dint see much phy driver implement link change
-> interrupt.
+--/uNhmtWkYfSYaFoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If there is a board that has interrupt pin wired correctly from the
-PHY and the interrupt controller is safe to use (i.e. it is not a
-PCA953x which cannot handle interrupt storms correctly), then I think
-the PHY driver should use the interrupt, instead of polling.
+On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
+> Prefer `of_device_get_match_data` over `of_match_device`
+>=20
+> Retrieve OF match data using `of_device_get_match_data`, this is cleaner
+> and better expresses intent.
+>=20
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>  sound/soc/tegra/tegra30_ahub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Marek
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--/uNhmtWkYfSYaFoo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEaNeEACgkQ3SOs138+
+s6FCpw/7BlHGOK9ti9B6aeIIOMkVFHwa6ssji99uO3n8SCquZ3gTqWd4VE4Bnlsz
+fI4wit4W8R0dRI896hlaBw6U6b/XkKzajDmA02mo38V27POnqWyTKr3nvUibR7Jo
+ILI8fDHs8G9yenX7BoAraShENnlDkJYtslxInAWoxHrcxOAVuj3CS6PsbbP0Tekg
+1aeOxRidBOVHihOHOixf87HOMlz4hONSYC/791lO/r9B59PwOJV67qdQncLEPBFm
+u6I2thVc1ZIalGW/EUcFGouoEN4IBXXTiLKrp50/5y9+MLnwkBfqYr8PLEZ31CV0
+6rmjeAAkVuao1GuA2I/VRuN8j3gz3ra+rbh0qp1wUCUKf6E9k1SW0Lnu9a3O9ctY
+5NkfgAF9UQ6p9Bn72yOP4UbPIyJIfPoQ7LBZvSbmMtQ88PRNZscfgMvnj3ku3qg0
+2fEY21akncJUbahcEZHwRZamunyQ/UaJIl3nUSXAfjGFccMe3vPGAn8h4BAIlaOV
+9hdmVaCxEuAyL9cO21KVfzvJelfeKGLYXsL2YLf1t9KpElFWDK9SpkcrW8hKnYlk
+a5vz1WHFryX5JqS7g9C+FLKefkVv1RC8mH6BPmObJIQJQ0XU+KbnTtTmxFZMr8TR
+Entg6D805mQuzDE0KdepXexhMklsGGo4HamscCn0mG5SvXVfdzg=
+=jhac
+-----END PGP SIGNATURE-----
+
+--/uNhmtWkYfSYaFoo--
