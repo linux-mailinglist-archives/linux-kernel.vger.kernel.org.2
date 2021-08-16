@@ -2,178 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A70F3EDF28
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E473EDF44
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhHPVPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:15:53 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52628 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhHPVPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:15:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=QOz1SztoEYOf+uIyfC3XMLTMwM77KWE1h3rxchFfk90=; b=hlkCINFpYxk8glZKsgK7618O1m
-        t95TbcNMaKzmrs5d6WVKvm6ZReufg0kJGcuFYnhq6EDenQsZ0Fq/LaY+XDG2aGse8GKqPCG1EP6Ge
-        qgiIeGAk4xILqG2GQnicsQ3/FbE0K8oZTHEezKSFZciz4TYvGwThnra39yIzdxMBr+wM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mFjwv-000RNQ-0D; Mon, 16 Aug 2021 23:15:13 +0200
-Date:   Mon, 16 Aug 2021 23:15:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] of: property: fw_devlink: Add support for
- "phy-handle" property
-Message-ID: <YRrVYNi1E2QO+XSY@lunn.ch>
-References: <20210814023132.2729731-1-saravanak@google.com>
- <20210814023132.2729731-3-saravanak@google.com>
- <YRffzVgP2eBw7HRz@lunn.ch>
- <CAGETcx-ETuH_axMF41PzfmKmT-M7URiua332WvzzzXQHg=Hj0w@mail.gmail.com>
+        id S233618AbhHPVUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:20:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42370 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhHPVUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 17:20:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 725931FEF1;
+        Mon, 16 Aug 2021 21:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629148805;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r6G0aVCgmVmUP8HSXqqU/Wq0OX2gySeKiq/rD3SU+Os=;
+        b=LsQwxfBZD9aHcCxyocnUUsx60iCfWshRWodRUvRhDEuYaX3ju+6Nr2ol+wgskJ41Y7tt8a
+        /lefMRXI2LP2wWCTnyiSdOndSSssqbajxzrixiWVOhXd/CjGQWRDoQIMDBBJjTM5Oe67kl
+        7V5BSomrX7msG3nAiAiJMpaMMDdqZl0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629148805;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r6G0aVCgmVmUP8HSXqqU/Wq0OX2gySeKiq/rD3SU+Os=;
+        b=TcFVAitslLHp6XAuUXDCjuMNP+uWKIi8Mof1m6B3Tqf+uye5KiR8BJOOYaUs1OtZMDPzxz
+        O85c4feIp6fjRSBg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 5DC08A3B87;
+        Mon, 16 Aug 2021 21:20:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2E314DA72C; Mon, 16 Aug 2021 23:17:08 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 23:17:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        terrelln@fb.com
+Subject: Re: [PATCH] lib/zstd: Fix bitwise vs logical operators
+Message-ID: <20210816211708.GJ5047@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        terrelln@fb.com
+References: <20210815004154.1781834-1-nathan@kernel.org>
+ <20210816151450.GF5047@twin.jikos.cz>
+ <bbb0a92c-4237-c651-3b8b-84dfaa2a2096@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx-ETuH_axMF41PzfmKmT-M7URiua332WvzzzXQHg=Hj0w@mail.gmail.com>
+In-Reply-To: <bbb0a92c-4237-c651-3b8b-84dfaa2a2096@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 01:43:19PM -0700, Saravana Kannan wrote:
-> On Sat, Aug 14, 2021 at 8:22 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > Hi Saravana
-> >
-> > > Hi Andrew,
-> > >
-> >
-> > > Also there
-> > > are so many phy related properties that my head is spinning. Is there a
-> > > "phy" property (which is different from "phys") that treated exactly as
-> > > "phy-handle"?
-> >
-> > Sorry, i don't understand your question.
+On Mon, Aug 16, 2021 at 09:53:53AM -0700, Nathan Chancellor wrote:
+> On 8/16/2021 8:14 AM, David Sterba wrote:
+> > You should CC Nick Terell for ZSTD patches, added.
 > 
-> Sorry. I was just saying I understand the "phy-handle" DT property
-> (seems specific to ethernet PHY) and "phys" DT property (seems to be
-> for generic PHYs -- used mostly by display and USB?). But I noticed
-> there's yet another "phy" DT property which I'm not sure I understand.
-> It seems to be used by display and ethernet and seems to be a
-> deprecated property. If you can explain that DT property in the
-> context of networking and how to interpret it as a human, that'd be
-> nice.
+> Thanks for the info and adding him, I did not see an entry for lib/zstd/ 
+> in MAINTAINERS and there is no consistent person picking up patches 
+> according to git.
 
-Ah, i think i understand:
+It's in an intermediate state [1], so far the compression algorithms
+have been under the crypto subsystem because it's part of the API, but
+regarding ZSTD, it's a bigger beast IMHO deserving an independent git
+and merge flow, so I just noticed.
 
-Documentation/devicetree/bindings/net/ethernet-controller.yaml
-
-  phy:
-    $ref: "#/properties/phy-handle"
-    deprecated: true
-
-So it is used the same as phy-handle. I doubt there are many examples
-of it, it has been deprecated a long time. Maybe look in the powerpc
-dts files?
-
-> > > +     /*
-> > > +      * Device tree nodes pointed to by phy-handle never have struct devices
-> > > +      * created for them even if they have a "compatible" property. So
-> > > +      * return the parent node pointer.
-> > > +      */
-> >
-> > We have a classic bus with devices on it. The bus master is registers
-> > with linux using one of the mdiobus_register() calls. That then
-> > enumerates the bus, looking at the 32 possible address on the bus,
-> > using mdiobus_scan. It then gets a little complex, due to
-> > history.
-> >
-> > Originally, the only thing you could have on an MDIO bus was a
-> > PHY. But devices on MDIO busses are more generic, and Linux gained
-> > support for Ethernet switches on an MDIO bus, and there are a few
-> > other sort device. So to keep the PHY API untouched, but to add these
-> > extra devices, we added the generic struct mdio_device which
-> > represents any sort of device on an MDIO bus. This has a struct device
-> > embedded in it.
-> >
-> > When we scan the bus and find a PHY, a struct phy_device is created,
-> > which has an embedded struct mdio_device. The struct device in that is
-> > then registered with the driver core.
-> >
-> > So a phy-handle does point to a device, but you need to do an object
-> > orientated style look at the base class to find it.
-> 
-> Thanks for the detailed explanation. I didn't notice a phy_device had
-> an mdio_device inside it. Makes sense. I think my comment is not
-> worded accurately and it really should be:
-> 
-> Device tree nodes pointed to by phy-handle (even if they have a
-> "compatible" property) will never have struct devices probed and bound
-> to a driver through the driver framework. It's the parent node/device
-> that gets bound to a driver and initializes the PHY. So return the
-> parent node pointer instead.
-> 
-> Does this sound right? As opposed to PHYs the other generic mdio
-> devices seem to actually have drivers that'll bind to them through the
-> driver framework.
-
-That sounds wrong. The MDIO bus master is a linux device and has a
-driver. Same as an I2C bus master, or an SPI bus master, or a USB
-host. All these busses have devices on them, same as an MDIO bus. The
-devices on the bus are found and registered with the driver
-framework. The driver framework, with some help from the mdio bus
-class, with then find the correct driver of the device, and probe
-it. During probe, it gets initialized by the PHY driver.
-
-So for me, the parent of a PHY would be the MDIO bus master, and the
-bus master is not driving the PHY, in the same way an I2C bus master
-does not drive the tmp100 temperature sensor on an i2c bus.
-
-But maybe i don't understand your terminology here?
-
-Maybe this will help:
-
-root@370rd:/sys/class/mdio_bus# ls -l
-total 0
-lrwxrwxrwx 1 root root 0 Jan  2  2021 '!soc!internal-regs!mdio@72004!switch@10!mdio' -> '../../devices/platform/soc/soc:internal-regs/f1072004.mdio/mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:10/mdio_bus/!soc!internal-regs!mdio@72004!switch@10!mdio'
-lrwxrwxrwx 1 root root 0 Jan  2  2021  f1072004.mdio-mii -> ../../devices/platform/soc/soc:internal-regs/f1072004.mdio/mdio_bus/f1072004.mdio-mii
-lrwxrwxrwx 1 root root 0 Jan  2  2021  fixed-0 -> '../../devices/platform/Fixed MDIO bus.0/mdio_bus/fixed-0'
-
-So there are three MDIO bus masters.
-
-Going into f1072004.mdio-mii, we see there are two PHYs on this bus:
-
-root@370rd:/sys/class/mdio_bus/f1072004.mdio-mii# ls -l
-total 0
-lrwxrwxrwx 1 root root    0 Aug 16 21:03 device -> ../../../f1072004.mdio
-drwxr-xr-x 5 root root    0 Jan  2  2021 f1072004.mdio-mii:00
-drwxr-xr-x 6 root root    0 Jan  2  2021 f1072004.mdio-mii:10
-lrwxrwxrwx 1 root root    0 Aug 16 21:03 of_node -> ../../../../../../../firmware/devicetree/base/soc/internal-regs/mdio@72004
-drwxr-xr-x 2 root root    0 Aug 16 21:03 power
-drwxr-xr-x 2 root root    0 Aug 16 21:03 statistics
-lrwxrwxrwx 1 root root    0 Jan  2  2021 subsystem -> ../../../../../../../class/mdio_bus
--rw-r--r-- 1 root root 4096 Jan  2  2021 uevent
--r--r--r-- 1 root root 4096 Aug 16 21:03 waiting_for_supplier
-
-and going into one of the PHYs f1072004.mdio-mii:00
-
-lrwxrwxrwx 1 root root    0 Aug 16 20:54 attached_dev -> ../../../../f1070000.ethernet/net/eth0
-lrwxrwxrwx 1 root root    0 Aug 16 20:54 driver -> '../../../../../../../../bus/mdio_bus/drivers/Marvell 88E1510'
-drwxr-xr-x 3 root root    0 Jan  2  2021 hwmon
-lrwxrwxrwx 1 root root    0 Aug 16 20:54 of_node -> ../../../../../../../../firmware/devicetree/base/soc/internal-regs/mdio@72004/ethernet-phy@0
--r--r--r-- 1 root root 4096 Aug 16 20:54 phy_dev_flags
--r--r--r-- 1 root root 4096 Aug 16 20:54 phy_has_fixups
--r--r--r-- 1 root root 4096 Aug 16 20:54 phy_id
--r--r--r-- 1 root root 4096 Aug 16 20:54 phy_interface
-drwxr-xr-x 2 root root    0 Aug 16 20:54 power
-drwxr-xr-x 2 root root    0 Aug 16 20:54 statistics
-lrwxrwxrwx 1 root root    0 Jan  2  2021 subsystem -> ../../../../../../../../bus/mdio_bus
--rw-r--r-- 1 root root 4096 Jan  2  2021 uevent
-
-The phy-handle in the MAC node points to ethernet-phy@0.
-
-    Andrew
+[1] https://lwn.net/ml/linux-kernel/20210430013157.747152-1-nickrterrell@gmail.com/
