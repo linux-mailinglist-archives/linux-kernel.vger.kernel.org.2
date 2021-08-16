@@ -2,126 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E233EDDBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168B33EDDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhHPTPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:15:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhHPTPj (ORCPT
+        id S229758AbhHPTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhHPTRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629141306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0fYCxlBvMGA/LBXj8tHruKymgQRzsd2D5alI8z9FqnE=;
-        b=W03TUqmErJaoGmxbngFDMYhQxaSrz4GSYayJ5D0QdkvMzNyE6k6T/0ZhflWorBrreF/b+w
-        PClKBq3CDZ+AXkTF9ylCuxLvWqx0aSsuhEl2w4E/cpxYU8nLwel7ah+lNe3leP2eMX4bAd
-        MknZdVP7D+8mtrc4M0PmCL9lj2GQKl4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-7k5JgZvrMHuzthFY8RnuCA-1; Mon, 16 Aug 2021 15:15:05 -0400
-X-MC-Unique: 7k5JgZvrMHuzthFY8RnuCA-1
-Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so74037wmj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:15:05 -0700 (PDT)
+        Mon, 16 Aug 2021 15:17:41 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B267C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:17:09 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id b7so15314019iob.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/+MKdii1IDE6z5360eIsjg/aP/1dfVNP9biAfPiNoYo=;
+        b=cCNZeUPU1VrkxHZgHMBleWCTSjnKIMMob9uqsqkHVWWedQXZwm9ng7P/SZ9TPISQxi
+         s3+DIxdnrkEjJhjMmWrxSMOATpwVGW+kFagHYClctuedhIAFM1yg6OF3quyb4jfC0Y9E
+         kxmi/aSuDB3f/9XMEyX5eUQ2BkPQ2uUk+ISYuLxp2oGORi5QINu0Wu43X7bgAJLuXHFH
+         c4I8QIb542ZYwuhk993tcX0k3SPuYM7veR2Qc7YXTte5+69TAparPZawdXjSSwpJcbk0
+         SH35D89IrMToeJQmjevaA35Vm73Sc4GKzMHa7Of3rNnKf1hbrN1zqfOZN/q3GUHLf4cw
+         uIDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0fYCxlBvMGA/LBXj8tHruKymgQRzsd2D5alI8z9FqnE=;
-        b=jLb+hj9+ssH6cSjXec9jsohxu/APkjB7snoqXVeazdOOPGfXcYWpk2de18Zt2NAqVi
-         YBWdqMbTgRQIjrE4+NLq6/FH426aW4BOQ5nGh73pj0KjH3uh0RA3WG+6h+5pt7zUIws5
-         QC+3juehp1dfBE9gaXX4+nmHQyIELXyulQfE8/JhlRJcLT9Gf7aHcTDXVH4xoYJjJV82
-         F0bcJGrX4XpQn8zZQtcKvJe8KZm3Xquqb6GWwGPUNCbC/SpFgpKcJj8Y+2YD5DJNWK2f
-         crQ+kq6lVDeZrcQR3Brd2MefzLwF+yjoRUH+QXIIKvRVzXCy0OP5FbTrQpWWFowu7auZ
-         hh2A==
-X-Gm-Message-State: AOAM532reOOhXxEpsHzHEC4UN9oChJqWlJPpusXi+ejsjWguk1FRycJt
-        ZCMgVjtvXGiCDsDxavuFnOJ59I2G8oC4EKu00YUFDXXS1XdIaFTGBzaIRxffRBe4c4J5J7pwG7O
-        4N0/oPYhQb68cUG2V7AQUGrLz03XMm2ZX4ZPhLxRn0NEYPLTppXtT0jgqb48aLVfosHH0+AlM
-X-Received: by 2002:a5d:4bd1:: with SMTP id l17mr19029wrt.5.1629141304597;
-        Mon, 16 Aug 2021 12:15:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGMAV4ypYcEuNTTFWxKeTz0UQWx3vLgwHnm1667BgV+Huo+EPminRnsv0YDIDvBsvfww0XYw==
-X-Received: by 2002:a5d:4bd1:: with SMTP id l17mr19006wrt.5.1629141304380;
-        Mon, 16 Aug 2021 12:15:04 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
-        by smtp.gmail.com with ESMTPSA id w14sm87376wrt.23.2021.08.16.12.15.03
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/+MKdii1IDE6z5360eIsjg/aP/1dfVNP9biAfPiNoYo=;
+        b=qzucqP9R9J6xIWzZmUqAxgdddIBAj+sWGELZvB3RS61/8DwRSJ/ykVHNMCMuEZaGBy
+         E4rHd4DWOz6eKSVeI6MKdOJv5yvcPq7EDjSRwg9kjZU7QKgaTwej2E8Gphy39oMZ3cn0
+         8CmT3FmSDNVLD3yiFZSEfomZZllXWhNxL4FoHmhjSepj0J7/cioruMB2f1yvEi7GzNt/
+         iPCMZ+lQwMGbMOIt38kbi3qEuA2Qei9fxjaUJXYa7g9WW/6WgFXy6KB+tmdMRL25G6TB
+         YfwuzQ7YUwhj0zNx1Xy9tggrVMYN4/UaG1jSzbW8mW5ocBjsUO6C2jBBS6SFmJE8gOxH
+         ds3w==
+X-Gm-Message-State: AOAM533wIV9Hgn0GBFhxtzxsItNlB9dTxWDW5A09nEp+gYxCmoXKmBr/
+        S5LAie9NkSHdeFPU4bV2q00jsQ==
+X-Google-Smtp-Source: ABdhPJwMRrvHuzBd1qQ8CgOtUcS3oRSF++rwfPlSPoAdYCv8MXqSPknWRI7bRhGjH3/p/gCnSDHh1w==
+X-Received: by 2002:a02:84c2:: with SMTP id f60mr149130jai.133.1629141428769;
+        Mon, 16 Aug 2021 12:17:08 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id h8sm108032ile.39.2021.08.16.12.17.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 12:15:03 -0700 (PDT)
-To:     Yang Shi <shy828301@gmail.com>, naoya.horiguchi@nec.com,
-        osalvador@suse.de, tdmackey@twitter.com, akpm@linux-foundation.org,
-        corbet@lwn.net
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210816180909.3603-1-shy828301@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 1/2] mm: hwpoison: don't drop slab caches for offlining
- non-LRU page
-Message-ID: <08a5ad43-7922-8cf8-31ed-4f6e0c346516@redhat.com>
-Date:   Mon, 16 Aug 2021 21:15:03 +0200
+        Mon, 16 Aug 2021 12:17:08 -0700 (PDT)
+Subject: Re: [greybus-dev] [PATCH v2] staging: greybus: Convert uart.c from
+ IDR to XArray
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Elder <elder@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-staging@lists.linux.dev, Johan Hovold <johan@kernel.org>,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+References: <20210814181130.21383-1-fmdefrancesco@gmail.com>
+ <5541b638-db1e-26f2-2682-81f35504c9a3@ieee.org> <YRp9rnCardsCukju@kroah.com>
+ <20210816150653.GH1931@kadam>
+ <687f29ce-6245-e549-9b7b-7cc2befba962@linaro.org>
+ <20210816183639.GF7722@kadam>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <e37b5a51-29ed-2a91-6285-aaa8885e0b9c@linaro.org>
+Date:   Mon, 16 Aug 2021 14:17:07 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210816180909.3603-1-shy828301@gmail.com>
+In-Reply-To: <20210816183639.GF7722@kadam>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 20:09, Yang Shi wrote:
-> In the current implementation of soft offline, if non-LRU page is met,
-> all the slab caches will be dropped to free the page then offline.  But
-> if the page is not slab page all the effort is wasted in vain.  Even
-> though it is a slab page, it is not guaranteed the page could be freed
-> at all.
+On 8/16/21 1:36 PM, Dan Carpenter wrote:
+>>> There should be a Fixes-from: tag for bugs found in review (not style
+>>> issues) but when I suggest it then people just say to use the
+>>> Reported-by tag.
+>> I think things caught during review aren't normally worthy
+>> of specific mention in the commit message (though maybe in
+>> the non-committed part under "---").  I mean, that's what
+>> review is for.  And in the case of what<lkp@intel.com>
+>> does, that's effectively a technical aspect of "review."
+> I'm not talking about stuff like intending or naming schemes, I'm
+> talking about real bugs like missing error codes or NULL dereferences.
+> People do count tags so we might as well add them for worthwhile
+> behavior.
 
-... but there is a chance it could be and the current behavior is 
-actually helpful in some setups.
+So you're saying that things caught during review *should* be
+given credit, as opposed to acknowledging the credit for catching
+it only when the bug slips by the reviewers, caught after commit.
 
-[...]
+I understand that, and I get your point about the incentives
+(which take the form of tags with acknowledgement).
 
-> The lockup made the machine is quite unusable.  And it also made the
-> most workingset gone, the reclaimabled slab caches were reduced from 12G
-> to 300MB, the page caches were decreased from 17G to 4G.
+As I indicated earlier, I'm all for showering credit on everyone
+that helps.  But I still think doing so for input taken during
+the review phase is too much, and full of fuzzy cases (how do you
+judge whether a suggestion is worth acknowledging?).
+
+I think what you do with Smatch is outstanding, and you deserve
+a lot of credit for it.  But like checkpatch.pl, it would be even
+better if people used it to catch things *before* they ever went
+out for review.  That option would give *no* credit to Smatch for
+catching problems early.  Yet catching issues as early as possible
+is a good thing.  Should we acknowledge checkpatch.pl when it
+tells us to fix something it finds; if so, which of them?
+
+>> So I don't think "Fixes-from" (whatever that means) or
+>> "Reported-by" make sense for this type of update.
+>>
+> Earlier today I forwarded a kbuild Smatch warning where someone had
+> used "sizeof(0)" instead of "0" but because the patch was already
+> applied, that means I got Reported-by credit.  If the kbuild-bot could
+> have reported the bug before the networking people applied it that's
+> more valuable but I get less credit.  It's a perverse incentive.
+
+It's a perverse incentive for you as Smatch developer.  But I think
+the better place to put an incentive is on getting people to avoid
+sending patches at all until they have used tools available to
+automatically find issues before they get out for review.
+
+> Also I sort of don't like the Reviewed-by tag.  I see a lot of people
+> adding Reviewed-by but I've never seen them point out a bug during the
+> review process so that seems pretty worthless.  But Fixes-from means
+> that person knows what they're talking about.
+
+That's not a problem with Reviewed-by, it's a problem with people
+misusing it.  Are you suggesting that "Fixes-from" would be applied
+by the developer, not reviewer?  Regardless, Reviewed-by is *supposed*
+to carry meaning.  "Documentation/process/submitting-patches.rst" has
+a section that describes what the "Reviewer's statement of oversight"
+represents.
+
+I think it would be nice to recognize review feedback.  It's
+actually more valuable than the summary statement "I have
+reviewed this and find it acceptable."  But I don't believe
+adding new acknowledgement tags is a good way to do it.
+
+					-Alex
+
 > 
-> But the most disappointing thing is all the effort doesn't make the page
-> offline, it just returns:
-> 
-> soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 ()
-> 
-
-In your example, yes. I had a look at the introducing commit: 
-facb6011f399 ("HWPOISON: Add soft page offline support")
-
-"
-     When the page is not free or LRU we try to free pages
-     from slab and other caches. The slab freeing is currently
-     quite dumb and does not try to focus on the specific slab
-     cache which might own the page. This could be potentially
-     improved later.
-"
-
-I wonder, if instead of removing it altogether, we could actually 
-improve it as envisioned.
-
-To be precise, for alloc_contig_range() it would also make sense to be 
-able to shrink only in a specific physical memory range; this here seems 
-to be a similar thing. (actually, alloc_contig_range(), actual memory 
-offlining and hw poisoning/soft-offlining have a lot in common)
-
-Unfortunately, the last time I took a brief look at teaching shrinkers 
-to be range-aware, it turned out to be a lot of work ... so maybe this 
-is really a long term goal to be mitigated in the meantime by disabling 
-it, if it turns out to be more of a problem than actually help.
-
--- 
-Thanks,
-
-David / dhildenb
+> regards,
+> dan carpenter
 
