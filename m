@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0180C3EDD1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB4D3EDD22
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhHPSeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S230435AbhHPSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhHPSeY (ORCPT
+        with ESMTP id S230102AbhHPSfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:34:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CFFC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:33:52 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id d16so10531348ljq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:33:52 -0700 (PDT)
+        Mon, 16 Aug 2021 14:35:30 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C3BC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:34:58 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g13so36270944lfj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:34:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YTS8ZgXCuH1PuqQv5c9vfhOBKUsRFjCQLfWXK7K1MRc=;
-        b=NOitTu/47BOg5MpNdaYFQ7Dno4q6xm8dU1P6f5zjdlyVLEJ8Z/asMZW1XsBErQLaiI
-         cOXtgJcyR+jwpZT5F0TcFtw9iwUOPlSUr7Io61W6MFceIzXD8aBVYsrA+bluGOxkaKM2
-         G4w4cPffp1gWB3hmrS/ZBFxUG1g/wC2Sj4FjSUU0f1gAtWvCv6M3/IA2GbxVfGozrvgh
-         BpjM4HvFFTPAjwpza7nepEa+WvBPIkTSq4oh26QxYq779cFw7xtRfcQoB73jYIN3Ly6I
-         LDXwxxkLd543p2zDb0RKNLiL9W6TSO1i4inBO30ug4ynLBdenUjptPJfgdSb8hS0LOH8
-         IKDw==
+        bh=uFoizD91rABkFIcWHSzEWuX3hfrFZBSWrwl/QtKpAiU=;
+        b=oFNy3cH0ASHTjVBWzJXJtojGzpn3ptld69kfnNagomXNGKcQaRdAxvH6yh51NmocmG
+         MBXis16EBBwqcs+XiKcAzL5rwoH/OT/gMIGkGPj1yI2h4nOSsUl/ZhNLcdYRPIkQJZib
+         aNIvVnVncu5G4g2ZNovJ3n4yvSGUgyE7NZl7Uq3a4JzZPmLg/cSPGtYqdNHtfV1SOeiH
+         nJ8J55kXehL9kDQOFiCmn8PWMKSqjEfGM/5Q2g6Bl1TWAhTaRakqLdGntxed5gWXQqSg
+         aaHwYXzldWnJ4NrIOIh9w38zlNdEWxLjD44TmfCopZQS5pRcsj+jD0tQoiY71SBao2sD
+         /iWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=YTS8ZgXCuH1PuqQv5c9vfhOBKUsRFjCQLfWXK7K1MRc=;
-        b=EfK8XmpMh44UnthVGfTqGb6q9YAy69lFY9Z6kjwxEHMNC5Ni4BG4IgzbTkkxN6zKkH
-         byNujVLGrnh0hVg6VwOzPt8la3nhJjpNFXB3ifduWNg/4rb4g09eI4cCqhSwieLDzGcw
-         I2dQT6Q+Rqdf+hmk15ucHXuFZuhiRgkr+FwDcBCyV4GCIxcwMqOK8l1DqGNmJWuXtJee
-         ODjMHaf3gpPORwnsIj0ea6xUwvRLMLjoJ5/m/Ltb8TJZOAcUUbtDqrfJJlesLFBH4Uem
-         baumIjdSrADNlSLLrNCb7Ih17i3b/eIgqpujyy4B6QThInX+5znL/5u7jFMy85Clc1Ld
-         SUIg==
-X-Gm-Message-State: AOAM533/R7BelssEbZGxASCQfNSJkoONCK5D8vuA7A+CQm7BRAWwaGiT
-        2RBqSNO4qudddNjfvtVLPL4=
-X-Google-Smtp-Source: ABdhPJw38xHx3nos1WlUP6JJqE+mD3b9t9CUEFVpmd6uX2c8AzflQM/WrxswEmPSISK7ZyrQC76u4w==
-X-Received: by 2002:a2e:8008:: with SMTP id j8mr4401ljg.233.1629138831261;
-        Mon, 16 Aug 2021 11:33:51 -0700 (PDT)
+        bh=uFoizD91rABkFIcWHSzEWuX3hfrFZBSWrwl/QtKpAiU=;
+        b=qkqG1dpjLfSUZTCPS2T8RQB6mXBklVCYrVSz5RgIywf/G+eOdxXYUVoGPXcDG+fWFR
+         KALezPW5Q8j2S1eZv6ylxN/Yfqq2kULSkjAWWbaws+zf3nOjVigtiuH7NVZi+FJrDj/Q
+         AUHf22A7gNnU/9Vwj/GV4NRoT17aS4yIgbbbFZR3QQUmie2H/kqPsGm6P9/AzD01E5r0
+         cYGChd5daI2DIjJ5479Li/HWIzYutfY00jE882x4VmcPoN5X2O7hSzgUZkm/Oj/naNAY
+         MymXAimiatH7KfHaFACc2Z7HRHM9IeriYk0dnvF9BHXfe/AtkM2uWZXeGIM76I/YCfIi
+         HzZA==
+X-Gm-Message-State: AOAM532fHZNvrOoEXOJdJ1unzQUWxv8Ii4T0puHOidck/U36/FmJOnGv
+        XaWVhaei0ZI9FD0TmqKhdQU=
+X-Google-Smtp-Source: ABdhPJziOViJn7QDLtX6gHrzZuO48V6h3j0n8idKXpMfINxC1WqPkQblzeiYIpUM7DO/U3MN0SQiPw==
+X-Received: by 2002:a05:6512:3231:: with SMTP id f17mr12041211lfe.364.1629138896736;
+        Mon, 16 Aug 2021 11:34:56 -0700 (PDT)
 Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id bu14sm3076lfb.6.2021.08.16.11.33.50
+        by smtp.gmail.com with ESMTPSA id r3sm2379lfc.114.2021.08.16.11.34.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 11:33:50 -0700 (PDT)
-Subject: Re: [PATCH 3/3] ASoC: ti: davinci-evm: Use of_device_get_match_data
+        Mon, 16 Aug 2021 11:34:56 -0700 (PDT)
+Subject: Re: [PATCH 2/3] ASoC: ti: omap-mcbsp: Use of_device_get_match_data
 To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>
@@ -58,14 +58,14 @@ Cc:     Takashi Iwai <tiwai@suse.com>, Jawoslav Kysela <perex@perex.cz>,
         Shuah Khan <skhan@linuxfoundation.org>,
         Bjorn Helgaas <bjorn@helgaas.com>
 References: <cover.1628972198.git.aakashhemadri123@gmail.com>
- <6ebb350fa8a960b8775ce324b7786dbaa865a1c8.1628972198.git.aakashhemadri123@gmail.com>
+ <44f3b21198dd1e40e1e5e783db2b3dd76505b562.1628972198.git.aakashhemadri123@gmail.com>
 From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <b096a803-093a-b70f-2999-38bfe8978513@gmail.com>
-Date:   Mon, 16 Aug 2021 21:34:10 +0300
+Message-ID: <ed02b26b-d1cc-dfc2-ef35-1430677fb1df@gmail.com>
+Date:   Mon, 16 Aug 2021 21:35:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <6ebb350fa8a960b8775ce324b7786dbaa865a1c8.1628972198.git.aakashhemadri123@gmail.com>
+In-Reply-To: <44f3b21198dd1e40e1e5e783db2b3dd76505b562.1628972198.git.aakashhemadri123@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,26 +83,26 @@ On 14/08/2021 23:19, Aakash Hemadri wrote:
 > 
 > Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
 > ---
->  sound/soc/ti/davinci-evm.c | 2 +-
+>  sound/soc/ti/omap-mcbsp.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-> index b043a0070d20..bf13f3d25cec 100644
-> --- a/sound/soc/ti/davinci-evm.c
-> +++ b/sound/soc/ti/davinci-evm.c
-> @@ -389,7 +389,7 @@ static int davinci_evm_probe(struct platform_device *pdev)
->  	struct clk *mclk;
->  	int ret = 0;
+> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+> index 4479d74f0a45..fcb651487854 100644
+> --- a/sound/soc/ti/omap-mcbsp.c
+> +++ b/sound/soc/ti/omap-mcbsp.c
+> @@ -1373,7 +1373,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
+>  	const struct of_device_id *match;
+>  	int ret;
 >  
-> -	match = of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
+> -	match = of_match_device(omap_mcbsp_of_match, &pdev->dev);
 > +	match = of_device_get_match_data(&pdev->dev);
 
-incorrect,
+Similarly incorrect,
 of_device_get_match_data() is retrieving the match->data
 
->  	if (!match) {
->  		dev_err(&pdev->dev, "Error: No device match found\n");
->  		return -ENODEV;
+>  	if (match) {
+>  		struct device_node *node = pdev->dev.of_node;
+>  		struct omap_mcbsp_platform_data *pdata_quirk = pdata;
 > 
 
 -- 
