@@ -2,122 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A733EDDC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8033EDDC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhHPTU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhHPTUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:20:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C1D060F41;
-        Mon, 16 Aug 2021 19:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629141621;
-        bh=/scif1mkCBlmZU+0jJuanWocyxDnQnGUxWglfLlEFKY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XRokmLOLl5aEHn0n/uYcHeCWr8Y1P2RP+CkfGbXWeBpSnmDKiqOVVxuT3i9zz98E/
-         zVNXa759iOQ4K1WrteZ6t2hG9KUL8+i5/2xRjDOUrjx41C4sSufBIledgZK8q2wqSf
-         WQGzdeR1C+/5MfCcIzf5rNCfPy93B7UN2+gqxQbsuiEViflGInEmdYHaOuKpGivwW7
-         DAvbq8ij2x5J5xYnMhecbWwpCbCGnXhUEa4I6VeRSJ9kKU1YHceeXZ+sq8UarREMw8
-         u4kvOVjzkx/Uxn5NRb63VaOQrDIQDeCFEacg2opf1N36KeAKljnFfhb+kT4w4/17rj
-         rp4ev0eKvSuYg==
-Received: by mail-ej1-f50.google.com with SMTP id z20so33738985ejf.5;
-        Mon, 16 Aug 2021 12:20:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532akqLmK/0Dpon/do4G0jaKJ/W28jP8P3c51ZqVAdsFBiEoS7AS
-        QpFHk9enM2Fvz1FtddlIt6TNnGFS5Yw73tgz5w==
-X-Google-Smtp-Source: ABdhPJx8cEr2G1dwVnQKOf4s7ZC1dm+QcfNMleG316aSSHpGdOMw8Euw/KHihuc4Sj8dKo50NQTVwClSZSuFoUYqcDE=
-X-Received: by 2002:a17:906:fa92:: with SMTP id lt18mr7796ejb.359.1629141620181;
- Mon, 16 Aug 2021 12:20:20 -0700 (PDT)
+        id S230051AbhHPTVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:21:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230143AbhHPTU7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:20:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629141627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aml0zRP9j/JKrfL2ZvZqM4B9YGM+m9UTU6MfKu4oLd0=;
+        b=iuyBJAnTkNOuIhCtS8s5cEq62sVCTRlhz9EA+gJvBckRsx7TlgHK2WOrGAv5EGaqFeNRSP
+        JXBDSzgEB50qE21m3ex1haMlBLYfu9N79jYEA6f9PsRtGB4iRa0MA5G1rNur+WjOOrpMs9
+        6idkJX9LGdKfeatAvnLLywpbVIBqrMc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-cz8D3V1dMM64IZCUdttxkQ-1; Mon, 16 Aug 2021 15:20:26 -0400
+X-MC-Unique: cz8D3V1dMM64IZCUdttxkQ-1
+Received: by mail-wm1-f70.google.com with SMTP id e21-20020a05600c4b95b029025b007a168dso88648wmp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:20:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=aml0zRP9j/JKrfL2ZvZqM4B9YGM+m9UTU6MfKu4oLd0=;
+        b=k1aXwjMdhnIDMsa8PjFReIWG8SgGAEAI5NDwwy8gy7SWbXGRgQtQQEWjyItZk4hC84
+         csr+r1XsBsGfNlZGuwtQ3xNBlwFSYhlfXCIcKJPwHeUAAy8Lo//gdgF+ol842faOKEPV
+         HOtuXoB7E6gdS+zUZwnYkkuQUXDPW1pX+tKbGMV/QWyAYpcNfjlQIF3IIib/06/vM+83
+         rgTdmIbmtu/X1VFLDTtmH/ivPeeKl3EPTiSqOYRf7r6JzJOftEIEyT8sVz0MvCuO/KNr
+         LFz4YYHuRTdf9YviZsCx5MFVKOrCVcevAMrp00krCWiwFf+cIqKKxMqczvlaDqvKbMA7
+         Vtgg==
+X-Gm-Message-State: AOAM531HxZYdBu17VlilUcWrYmAWhOr8X9JkKNkdK9DyXYrhN9lWHzyw
+        QBPRevoMhCJk6MuHl8LP9MkCRU+O4vgmNGs3NQB/U4bdWoqRM43oyV8+6BNuymfgenO4uLLjeVY
+        mBqS58ie3enq99RzKlAWvQxgz
+X-Received: by 2002:a1c:a401:: with SMTP id n1mr587887wme.74.1629141624847;
+        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjvCy/E4WNYhW5CKX5H7C+2GHzi2A1tcSHCvvKNSoeIapAbm2Iqz9COfFKrK3o9F/Cn93UJg==
+X-Received: by 2002:a1c:a401:: with SMTP id n1mr587873wme.74.1629141624634;
+        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
+        by smtp.gmail.com with ESMTPSA id y13sm8260wmj.27.2021.08.16.12.20.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
+Subject: Re: [BUG] general protection fault when reading /proc/kcore
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <YRqhqz35tm3hA9CG@krava>
+ <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com> <YRqqqvaZHDu1IKrD@krava>
+ <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
+ <YRq4typgRn342B4i@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b5f3a8b7-e913-2272-115a-677edd35a485@redhat.com>
+Date:   Mon, 16 Aug 2021 21:20:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210814010139.kzryimmp4rizlznt@skbuf> <9accd63a-961c-4dab-e167-9e2654917a94@gmail.com>
- <20210816144622.tgslast6sbblclda@skbuf> <4cad28e0-d6b4-800d-787b-936ffaca7be3@gmail.com>
-In-Reply-To: <4cad28e0-d6b4-800d-787b-936ffaca7be3@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 16 Aug 2021 14:20:08 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKYd288Th2cfOp0_HD1C8xtgKjyJfUW4JLpyn0NkGdU5w@mail.gmail.com>
-Message-ID: <CAL_JsqKYd288Th2cfOp0_HD1C8xtgKjyJfUW4JLpyn0NkGdU5w@mail.gmail.com>
-Subject: Re: of_node_put() usage is buggy all over drivers/of/base.c?!
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRq4typgRn342B4i@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 10:14 AM Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 8/16/21 9:46 AM, Vladimir Oltean wrote:
-> > Hi Frank,
-> >
-> > On Mon, Aug 16, 2021 at 09:33:03AM -0500, Frank Rowand wrote:
-> >> Hi Vladimir,
-> >>
-> >> On 8/13/21 8:01 PM, Vladimir Oltean wrote:
-> >>> Hi,
-> >>>
-> >>> I was debugging an RCU stall which happened during the probing of a
-> >>> driver. Activating lock debugging, I see:
-> >>
-> >> I took a quick look at sja1105_mdiobus_register() in v5.14-rc1 and v5.14-rc6.
-> >>
-> >> Looking at the following stack trace, I did not see any calls to
-> >> of_find_compatible_node() in sja1105_mdiobus_register().  I am
-> >> guessing that maybe there is an inlined function that calls
-> >> of_find_compatible_node().  This would likely be either
-> >> sja1105_mdiobus_base_tx_register() or sja1105_mdioux_base_t1_register().
-> >
-> > Yes, it is sja1105_mdiobus_base_t1_register which is inlined.
-> >
-> >>>
-> >>> [  101.710694] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
-> >>> [  101.719119] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 1534, name: sh
-> >>> [  101.726763] INFO: lockdep is turned off.
-> >>> [  101.730674] irq event stamp: 0
-> >>> [  101.733716] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> >>> [  101.739973] hardirqs last disabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
-> >>> [  101.748146] softirqs last  enabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
-> >>> [  101.756313] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> >>> [  101.762569] CPU: 4 PID: 1534 Comm: sh Not tainted 5.14.0-rc5+ #272
-> >>> [  101.774558] Call trace:
-> >>> [  101.794734]  __might_sleep+0x50/0x88
-> >>> [  101.798297]  __mutex_lock+0x60/0x938
-> >>> [  101.801863]  mutex_lock_nested+0x38/0x50
-> >>> [  101.805775]  kernfs_remove+0x2c/0x50             <---- this takes mutex_lock(&kernfs_mutex);
-> >>> [  101.809341]  sysfs_remove_dir+0x54/0x70
-> >>
-> >> The __kobject_del() occurs only if the refcount on the node
-> >> becomes zero.  This should never be true when of_find_compatible_node()
-> >> calls of_node_put() unless a "from" node is passed to of_find_compatible_node().
-> >
-> > I figured that was the assumption, that the of_node_put would never
-> > trigger a sysfs file / kobject deletion from there.
-> >
-> >> In both sja1105_mdiobus_base_tx_register() and sja1105_mdioux_base_t1_register()
-> >> a from node ("mdio") is passed to of_find_compatible_node() without first doing an
-> >> of_node_get(mdio).  If you add the of_node_get() calls the problem should be fixed.
-> >
-> > The answer seems simple enough, but stupid question, but why does
-> > of_find_compatible_node call of_node_put on "from" in the first place?
->
-> Actually a good question.
->
-> I do not know why of_find_compatible_node() calls of_node_put() instead of making
-> the caller of of_find_compatible_node() responsible.  That pattern was created
-> long before I was involved in devicetree and I have not gone back to read the
-> review comments of when that code was created.
+T24gMTYuMDguMjEgMjE6MTIsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+IE9uIE1vbiwgQXVn
+IDE2LCAyMDIxIGF0IDA4OjM4OjQzUE0gKzAyMDAsIERhdmlkIEhpbGRlbmJyYW5kIHdyb3Rl
+Og0KPj4gT24gMTYuMDguMjEgMjA6MTIsIEppcmkgT2xzYSB3cm90ZToNCj4+PiBPbiBNb24s
+IEF1ZyAxNiwgMjAyMSBhdCAwNzo0OToxNVBNICswMjAwLCBEYXZpZCBIaWxkZW5icmFuZCB3
+cm90ZToNCj4+Pj4gT24gMTYuMDguMjEgMTk6MzQsIEppcmkgT2xzYSB3cm90ZToNCj4+Pj4+
+IGhpLA0KPj4+Pj4gSSdtIGdldHRpbmcgZmF1bHQgYmVsb3cgd2hlbiBydW5uaW5nOg0KPj4+
+Pj4NCj4+Pj4+IAkjIGNhdCAvcHJvYy9rYWxsc3ltcyB8IGdyZXAga3N5c19yZWFkDQo+Pj4+
+PiAJZmZmZmZmZmY4MTM2ZDU4MCBUIGtzeXNfcmVhZA0KPj4+Pj4gCSMgb2JqZHVtcCAtZCAt
+LXN0YXJ0LWFkZHJlc3M9MHhmZmZmZmZmZjgxMzZkNTgwIC0tc3RvcC1hZGRyZXNzPTB4ZmZm
+ZmZmZmY4MTM2ZDU5MCAvcHJvYy9rY29yZQ0KPj4+Pj4NCj4+Pj4+IAkvcHJvYy9rY29yZTog
+ICAgIGZpbGUgZm9ybWF0IGVsZjY0LXg4Ni02NA0KPj4+Pj4NCj4+Pj4+IAlTZWdtZW50YXRp
+b24gZmF1bHQNCj4+Pj4+DQo+Pj4+PiBhbnkgaWRlYT8gY29uZmlnIGlzIGF0dGFjaGVkDQo+
+Pj4+DQo+Pj4+IEp1c3QgdHJpZWQgd2l0aCBhIGRpZmZlcmVudCBjb25maWcgb24gNS4xNC4w
+LXJjNisNCj4+Pj4NCj4+Pj4gW3Jvb3RAbG9jYWxob3N0IH5dIyBjYXQgL3Byb2Mva2FsbHN5
+bXMgfCBncmVwIGtzeXNfcmVhZA0KPj4+PiBmZmZmZmZmZjg5MjdhODAwIFQga3N5c19yZWFk
+YWhlYWQNCj4+Pj4gZmZmZmZmZmY4OTMzMzY2MCBUIGtzeXNfcmVhZA0KPj4+Pg0KPj4+PiBb
+cm9vdEBsb2NhbGhvc3Qgfl0jIG9iamR1bXAgLWQgLS1zdGFydC1hZGRyZXNzPTB4ZmZmZmZm
+ZmY4OTMzMzY2MA0KPj4+PiAtLXN0b3AtYWRkcmVzcz0weGZmZmZmZmZmODkzMzM2NzANCj4+
+Pj4NCj4+Pj4gYS5vdXQ6ICAgICBmaWxlIGZvcm1hdCBlbGY2NC14ODYtNjQNCj4+Pj4NCj4+
+Pj4NCj4+Pj4NCj4+Pj4gVGhlIGtlcm5fYWRkcl92YWxpZChzdGFydCkgc2VlbXMgdG8gZmF1
+bHQgaW4geW91ciBjYXNlLCB3aGljaCBpcyB3ZWlyZCwNCj4+Pj4gYmVjYXVzZSBpdCBtZXJl
+bHkgd2Fsa3MgdGhlIHBhZ2UgdGFibGVzLiBCdXQgaXQgc2VlbXMgdG8gY29tcGxhaW4gYWJv
+dXQgYQ0KPj4+PiBub24tY2Fub25pY2FsIGFkZHJlc3MgMHhmODg3ZmZjYmZmMDAwDQo+Pj4+
+DQo+Pj4+IENhbiB5b3UgcG9zdCB5b3VyIFFFTVUgY21kbGluZT8gRGlkIHlvdSB0ZXN0IHRo
+aXMgb24gb3RoZXIga2VybmVsIHZlcnNpb25zPw0KPj4+DQo+Pj4gSSdtIHVzaW5nIHZpcnQt
+bWFuYWdlciBzbzoNCj4+Pg0KPj4+IC91c3IvYmluL3FlbXUtc3lzdGVtLXg4Nl82NCAtbmFt
+ZSBndWVzdD1mZWRvcmEzMyxkZWJ1Zy10aHJlYWRzPW9uIC1TIC1vYmplY3Qgc2VjcmV0LGlk
+PW1hc3RlcktleTAsZm9ybWF0PXJhdyxmaWxlPS92YXIvbGliL2xpYnZpcnQvcWVtdS9kb21h
+aW4tMTMtZmVkb3JhMzMvbWFzdGVyLWtleS5hZXMgLW1hY2hpbmUgcGMtcTM1LTUuMSxhY2Nl
+bD1rdm0sdXNiPW9mZix2bXBvcnQ9b2ZmLGR1bXAtZ3Vlc3QtY29yZT1vZmYsbWVtb3J5LWJh
+Y2tlbmQ9cGMucmFtIC1jcHUgU2t5bGFrZS1TZXJ2ZXItSUJSUyxzcz1vbix2bXg9b24scGRj
+bT1vbixoeXBlcnZpc29yPW9uLHRzYy1hZGp1c3Q9b24sY2xmbHVzaG9wdD1vbix1bWlwPW9u
+LHBrdT1vbixzdGlicD1vbixhcmNoLWNhcGFiaWxpdGllcz1vbixzc2JkPW9uLHhzYXZlcz1v
+bixpYnBiPW9uLGFtZC1zdGlicD1vbixhbWQtc3NiZD1vbixza2lwLWwxZGZsLXZtZW50cnk9
+b24scHNjaGFuZ2UtbWMtbm89b24gLW0gODE5MiAtb2JqZWN0IG1lbW9yeS1iYWNrZW5kLXJh
+bSxpZD1wYy5yYW0sc2l6ZT04NTg5OTM0NTkyIC1vdmVyY29tbWl0IG1lbS1sb2NrPW9mZiAt
+c21wIDIwLHNvY2tldHM9MjAsY29yZXM9MSx0aHJlYWRzPTEgLXV1aWQgMjE4NWQ1YTktZGJh
+ZC00ZDYxLWFhNGUtOTdhZjlmZDdlYmNhIC1uby11c2VyLWNvbmZpZyAtbm9kZWZhdWx0cyAt
+Y2hhcmRldiBzb2NrZXQsaWQ9Y2hhcm1vbml0b3IsZmQ9MzYsc2VydmVyLG5vd2FpdCAtbW9u
+IGNoYXJkZXY9Y2hhcm1vbml0b3IsaWQ9bW9uaXRvcixtb2RlPWNvbnRyb2wgLXJ0YyBiYXNl
+PXV0YyxkcmlmdGZpeD1zbGV3IC1nbG9iYWwga3ZtLXBpdC5sb3N0X3RpY2tfcG9saWN5PWRl
+bGF5IC1uby1ocGV0IC1uby1zaHV0ZG93biAtZ2xvYmFsIElDSDktTFBDLmRpc2FibGVfczM9
+MSAtZ2xvYmFsIElDSDktTFBDLmRpc2FibGVfczQ9MSAtYm9vdCBzdHJpY3Q9b24gLWtlcm5l
+bCAvaG9tZS9qb2xzYS9xZW11L3J1bi92bWxpbnV4IC1pbml0cmQgL2hvbWUvam9sc2EvcWVt
+dS9ydW4vaW5pdHJkIC1hcHBlbmQgcm9vdD0vZGV2L21hcHBlci9mZWRvcmFfZmVkb3JhLXJv
+b3Qgcm8gcmQubHZtLmx2PWZlZG9yYV9mZWRvcmEvcm9vdCBjb25zb2xlPXR0eTAgY29uc29s
+ZT10dHlTMCwxMTUyMDAgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTAsY2hhc3Np
+cz0xLGlkPXBjaS4xLGJ1cz1wY2llLjAsbXVsdGlmdW5jdGlvbj1vbixhZGRyPTB4MiAtZGV2
+aWNlIHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxMSxjaGFzc2lzPTIsaWQ9cGNpLjIsYnVzPXBj
+aWUuMCxhZGRyPTB4Mi4weDEgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTIsY2hh
+c3Npcz0zLGlkPXBjaS4zLGJ1cz1wY2llLjAsYWRkcj0weDIuMHgyIC1kZXZpY2UgcGNpZS1y
+b290LXBvcnQscG9ydD0weDEzLGNoYXNzaXM9NCxpZD1wY2kuNCxidXM9cGNpZS4wLGFkZHI9
+MHgyLjB4MyAtZGV2aWNlIHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxNCxjaGFzc2lzPTUsaWQ9
+cGNpLjUsYnVzPXBjaWUuMCxhZGRyPTB4Mi4weDQgLWRldmljZSBwY2llLXJvb3QtcG9ydCxw
+b3J0PTB4MTUsY2hhc3Npcz02LGlkPXBjaS42LGJ1cz1wY2llLjAsYWRkcj0weDIuMHg1IC1k
+ZXZpY2UgcGNpZS1yb290LXBvcnQscG9ydD0weDE2LGNoYXNzaXM9NyxpZD1wY2kuNyxidXM9
+cGNpZS4wLGFkZHI9MHgyLjB4NiAtZGV2aWNlIHFlbXUteGhjaSxwMj0xNSxwMz0xNSxpZD11
+c2IsYnVzPXBjaS4yLGFkZHI9MHgwIC1kZXZpY2UgdmlydGlvLXNlcmlhbC1wY2ksaWQ9dmly
+dGlvLXNlcmlhbDAsYnVzPXBjaS4zLGFkZHI9MHgwIC1ibG9ja2RldiB7ImRyaXZlciI6ImZp
+bGUiLCJmaWxlbmFtZSI6Ii92YXIvbGliL2xpYnZpcnQvaW1hZ2VzL2ZlZG9yYTMzLnFjb3cy
+Iiwibm9kZS1uYW1lIjoibGlidmlydC0yLXN0b3JhZ2UiLCJhdXRvLXJlYWQtb25seSI6dHJ1
+ZSwiZGlzY2FyZCI6InVubWFwIn0gLWJsb2NrZGV2IHsibm9kZS1uYW1lIjoibGlidmlydC0y
+LWZvcm1hdCIsInJlYWQtb25seSI6ZmFsc2UsImRyaXZlciI6InFjb3cyIiwiZmlsZSI6Imxp
+YnZpcnQtMi1zdG9yYWdlIiwiYmFja2luZyI6bnVsbH0gLWRldmljZSB2aXJ0aW8tYmxrLXBj
+aSxidXM9cGNpLjQsYWRkcj0weDAsZHJpdmU9bGlidmlydC0yLWZvcm1hdCxpZD12aXJ0aW8t
+ZGlzazAsYm9vdGluZGV4PTEgLWRldmljZSBpZGUtY2QsYnVzPWlkZS4wLGlkPXNhdGEwLTAt
+MCAtbmV0ZGV2IHRhcCxmZD0zOCxpZD1ob3N0bmV0MCx2aG9zdD1vbix2aG9zdGZkPTM5IC1k
+ZXZpY2UgdmlydGlvLW5ldC1wY2ksbmV0ZGV2PWhvc3RuZXQwLGlkPW5ldDAsbWFjPTUyOjU0
+OjAwOmYzOmM2OmU3LGJ1cz1wY2kuMSxhZGRyPTB4MCAtY2hhcmRldiBwdHksaWQ9Y2hhcnNl
+cmlhbDAgLWRldmljZSBpc2Etc2VyaWFsLGNoYXJkZXY9Y2hhcnNlcmlhbDAsaWQ9c2VyaWFs
+MCAtY2hhcmRldiBzb2NrZXQsaWQ9Y2hhcmNoYW5uZWwwLGZkPTQwLHNlcnZlcixub3dhaXQg
+LWRldmljZSB2aXJ0c2VyaWFscG9ydCxidXM9dmlydGlvLXNlcmlhbDAuMCxucj0xLGNoYXJk
+ZXY9Y2hhcmNoYW5uZWwwLGlkPWNoYW5uZWwwLG5hbWU9b3JnLnFlbXUuZ3Vlc3RfYWdlbnQu
+MCAtY2hhcmRldiBzcGljZXZtYyxpZD1jaGFyY2hhbm5lbDEsbmFtZT12ZGFnZW50IC1kZXZp
+Y2UgdmlydHNlcmlhbHBvcnQsYnVzPXZpcnRpby1zZXJpYWwwLjAsbnI9MixjaGFyZGV2PWNo
+YXJjaGFubmVsMSxpZD1jaGFubmVsMSxuYW1lPWNvbS5yZWRoYXQuc3BpY2UuMCAtZGV2aWNl
+IHVzYi10YWJsZXQsaWQ9aW5wdXQwLGJ1cz11c2IuMCxwb3J0PTEgLXNwaWNlIHBvcnQ9NTkw
+MCxhZGRyPTEyNy4wLjAuMSxkaXNhYmxlLXRpY2tldGluZyxpbWFnZS1jb21wcmVzc2lvbj1v
+ZmYsc2VhbWxlc3MtbWlncmF0aW9uPW9uIC1kZXZpY2UgcXhsLXZnYSxpZD12aWRlbzAscmFt
+X3NpemU9NjcxMDg4NjQsdnJhbV9zaXplPTY3MTA4ODY0LHZyYW02NF9zaXplX21iPTAsdmdh
+bWVtX21iPTE2LG1heF9vdXRwdXRzPTEsYnVzPXBjaWUuMCxhZGRyPTB4MSAtZGV2aWNlIGlj
+aDktaW50ZWwtaGRhLGlkPXNvdW5kMCxidXM9cGNpZS4wLGFkZHI9MHgxYiAtZGV2aWNlIGhk
+YS1kdXBsZXgsaWQ9c291bmQwLWNvZGVjMCxidXM9c291bmQwLjAsY2FkPTAgLWNoYXJkZXYg
+c3BpY2V2bWMsaWQ9Y2hhcnJlZGlyMCxuYW1lPXVzYnJlZGlyIC1kZXZpY2UgdXNiLXJlZGly
+LGNoYXJkZXY9Y2hhcnJlZGlyMCxpZD1yZWRpcjAsYnVzPXVzYi4wLHBvcnQ9MiAtY2hhcmRl
+diBzcGljZXZtYyxpZD1jaGFycmVkaXIxLG5hbWU9dXNicmVkaXIgLWRldmljZSB1c2ItcmVk
+aXIsY2hhcmRldj1jaGFycmVkaXIxLGlkPXJlZGlyMSxidXM9dXNiLjAscG9ydD0zIC1kZXZp
+Y2UgdmlydGlvLWJhbGxvb24tcGNpLGlkPWJhbGxvb24wLGJ1cz1wY2kuNSxhZGRyPTB4MCAt
+b2JqZWN0IHJuZy1yYW5kb20saWQ9b2Jqcm5nMCxmaWxlbmFtZT0vZGV2L3VyYW5kb20gLWRl
+dmljZSB2aXJ0aW8tcm5nLXBjaSxybmc9b2Jqcm5nMCxpZD1ybmcwLGJ1cz1wY2kuNixhZGRy
+PTB4MCAtc2FuZGJveCBvbixvYnNvbGV0ZT1kZW55LGVsZXZhdGVwcml2aWxlZ2VzPWRlbnks
+c3Bhd249ZGVueSxyZXNvdXJjZWNvbnRyb2w9ZGVueSAtbXNnIHRpbWVzdGFtcD1vbg0KPiAg
+IA0KPiANCj4gDQo+Pj4gc28gZmFyIEkgdGVzdGVkIGp1c3QgYnBmLW5leHQvbWFzdGVyOg0K
+Pj4+ICAgICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+YnBmL2JwZi1uZXh0LmdpdA0KPj4+DQo+Pg0KPj4gSnVzdCB0cmllZCB3aXRoIHVwc3RyZWFt
+IExpbnV4ICg1LjE0LjAtcmM2KSBhbmQgeW91ciBjb25maWcgd2l0aG91dA0KPj4gdHJpZ2dl
+cmluZyBpdC4gSSdtIHVzaW5nICItY3B1IGhvc3QiLCB0aG91Z2gsIG9uIGFuIEFNRCBSeXpl
+biA5IDM5MDBYDQo+IA0KPiBXaXRoIEppcmkncyBjb25maWcgYW5kICctY3B1IDx2ZXJ5IGxv
+bmcgc3RyaW5nPicgaXQgdHJpZ2dlcnMgZm9yIG1lIG9uDQo+IHY1LjE0LXJjNi4NCj4gDQo+
+IEknbGwgYWxzbyB0cnkgdG8gdGFrZSBhIGxvb2sgdG9tb3Jyb3cuDQoNCk5vIGx1Y2sgaGVy
+ZSBvbiBteSBBTUQgc3lzdGVtLCBldmVuIHdpdGggdGhhdCAnLWNwdSA8dmVyeSBsb25nIHN0
+cmluZz4nLiANCk1heWJlIHNvbWUgcmVsZXZhbnQgQ1BVIGZlYXR1cmVzIGdldCBzaWxlbnRs
+eSBpZ25vcmVkIGJlY2F1c2UgdGhleSBhcmUgDQpub3QgYWN0dWFsbHkgYXZhaWxhYmxlIG9u
+IG15IHN5c3RlbS4NCg0KLS0gDQpUaGFua3MsDQoNCkRhdmlkIC8gZGhpbGRlbmINCg==
 
-Because it is an iterator function and they all drop the ref from the
-prior iteration.
-
-I would say any open coded call where from is not NULL is an error.
-It's not reliable because the DT search order is not defined and could
-change. Someone want to write a coccinelle script to check that?
-
-The above code should be using of_get_compatible_child() instead.
-
-Rob
