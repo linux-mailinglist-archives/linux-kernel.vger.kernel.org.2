@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6733ED026
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91833ED040
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbhHPIWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231716AbhHPIWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B61661B2A;
-        Mon, 16 Aug 2021 08:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629102096;
-        bh=v18Ob//oOAIeQmu3aXKKRsWdxAHyy/T7LeoQ46bi2G8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ubhjgvz4NQPP+8fF72SovDtWK7ukpc33jGB0RILwp86eu70aViqAfg1Ko8sY1NBlF
-         8TLkQhYsCZ6OoaVMoRh2V/s1Cw3iCN0J6Fmjef45KOHC2/EmEaJXX4lPXJ84McPyRT
-         q1kCMMxkdJNHAgXVtxwMn23Y5TUQ99cgnkVkZHwmgpZDU2iK/hnXqtNq49KNme+x1Y
-         6OITEA0cw89WzV8X6XfHDNRoDcL1Uox6HsBhHismMEBLAYozj/LgDL0/t0b5b/xyFM
-         IncMnbZYFKY4R6PvScxotv4gCAc5FiCyAUb/kP/EtsTCxgN8Fq0nurgmfT/8togwVS
-         BegHYWgJa2g3A==
-Date:   Mon, 16 Aug 2021 09:21:27 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] iommu/arm-smmu-v3: Use command queue batching
- helpers to improve performance
-Message-ID: <20210816082126.GA11011@willie-the-truck>
-References: <20210811114852.2429-1-thunder.leizhen@huawei.com>
- <20210811114852.2429-2-thunder.leizhen@huawei.com>
- <81258eb7-eb73-8a32-0983-3487daba1167@arm.com>
- <4e741216-d6e7-c40c-f257-242cd2fea302@huawei.com>
- <5482d2e5-24db-6139-a8a8-74be1282e2ec@huawei.com>
- <52204403-f69a-d2b9-9365-7553e87d1298@huawei.com>
- <a3cdd5df-c028-5484-ce99-928a689d341a@huawei.com>
- <e8b71423-e827-f141-1203-00aca2e70834@huawei.com>
+        id S234864AbhHPI36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:29:58 -0400
+Received: from omta015.useast.a.cloudfilter.net ([34.195.253.206]:49285 "EHLO
+        omta015.useast.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234456AbhHPI35 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 04:29:57 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Aug 2021 04:29:57 EDT
+Received: from cxr.smtp.a.cloudfilter.net ([10.0.17.211])
+        by cmsmtp with ESMTP
+        id FTB1m8bgcMRfUFXswmx7nE; Mon, 16 Aug 2021 08:22:18 +0000
+Received: from ws ([24.255.45.226])
+        by cmsmtp with ESMTPSA
+        id FXsum0KTngQ8tFXsvmxHvt; Mon, 16 Aug 2021 08:22:18 +0000
+Authentication-Results: cox.net; auth=pass (LOGIN)
+ smtp.auth=1i5t5.duncan@cox.net
+X-Authority-Analysis: v=2.4 cv=FL3ee8ks c=1 sm=1 tr=0 ts=611a203a
+ a=rsvNbDP3XdDalhZof1p64w==:117 a=rsvNbDP3XdDalhZof1p64w==:17
+ a=kj9zAlcOel0A:10 a=kviXuzpPAAAA:8 a=pGLkceISAAAA:8 a=eDshZfXNHJhCtg_awq0A:9
+ a=CjuIK1q_8ugA:10 a=qrIFiuKZe2vaD64auk6j:22
+Date:   Mon, 16 Aug 2021 01:22:16 -0700
+From:   Duncan <1i5t5.duncan@cox.net>
+To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Pan Xinhui <Xinhui.Pan@amd.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [REGRESSION][BISECTED] 5.14.0-rc4 thru rc6 69de4421bb broke
+Message-ID: <20210816012216.47babaf6@ws>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8b71423-e827-f141-1203-00aca2e70834@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCA3p6Qy/wdzqHs2PjXrZSSeKX9Nsa+a9Ghxem2WRUDKFpKUbJGHjwtymlrLt9LZdlkwJqp3wocaxP7mIMnO+zY5CmXUAvVzPoKhkAgMlT9oMVJTAGIt
+ wmLakeIEKEyGd4fEwGvJAyQQiOOiiLyn8AbEfGuif2QO9lKos5n4f1esG0vYu1E2B5sI7KoKadKSq47h3WA6WFDxkHK9xl/l0mA7tPDJKU8gkrWhRkWf15iM
+ ndjxsV2fdquCTLibHuqIkk70wLJyrhLhhvGniBa8/P1QeoPDGexH2Mc31dcm+pQO6lfCcl5MlxyF7Vm1+j6fBx5T65rpCuJ+nUySHTmSmK0OzEXWNSzl3Fqi
+ 4wansc1n/owTuZyJT8O2/3KINbjr6bGyNdCbjtu6EprodJ5/Vz5uK14q30iC+uMHjZdufoEb6h9tt64aH+CrPQBAmm5JSg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:47:58PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/8/16 15:24, John Garry wrote:
-> >> In addition, I find that function arm_smmu_cmdq_build_cmd() can also be optimized
-> >> slightly, three useless instructions can be reduced.
-> > 
-> > I think that you could optimise further by pre-building commonly used commands.
-> > 
-> > For example, CMD_SYNC without MSI polling is always the same. And then only different in 1 field for MSI polling.
-> > 
-> > But you need to check if the performance gain is worth the change.
-> 
-> Good advice. I can give it a try.
+Duncan posted on Mon, 16 Aug 2021 07:58:37 +0000 as excerpted:
 
-Please send it as a new patch on top. I've queued the old one and sent
-it to Joerg. Since this is just further cleanup, it can be done separately.
+> Mikael Pettersson posted on Tue, 03 Aug 2021 08:54:18 +0200 as
+> excerpted:
+>> On Mon, Aug 2, 2021 at 8:29 PM Duncan <j.duncan@cox.net> wrote:
+>>> Mikael Pettersson <mikpelinux@gmail.com> wrote...
+>>> > Booting 5.14.0-rc4 on my box with Radeon graphics breaks with
+>>> >
+>>> > [drm:radeon_ttm_init [radeon]] *ERROR* failed initializing buffer
+>>> > object driver(-19).
+>>> > radeon 0000:01:00.0: Fatal error during GPU init
+>>>
+>>> Seeing this here too.  amdgpu on polaris-11, on an old amd-fx6100
+>>> system.
+>>>
+>>> > after which the screen goes black for the rest of kernel boot and
+>>> > early user-space init.
+>>>
+>>> *NOT* seeing that.  However, I have boot messages turned on by
+>>> default and I see them as usual, only it stays in vga-console mode
+>>> instead of switching to framebuffer after early-boot. I'm guessing
+>>> MP has a high-res boot-splash which doesn't work in vga mode, thus
+>>> the black-screen until the login shows up.
+>> 
+>> Yes, I have the Fedora boot splash enabled.
+>> 
+>>> > Once the console login shows up the screen is in some legacy
+>>> > low-res mode and Xorg can't be started.
+>>> >
+>>> > A git bisect between v5.14-rc3 (good) and v5.14-rc4 (bad)
+>>> > identified
+>>> >
+>>> > # first bad commit: [69de4421bb4c103ef42a32bafc596e23918c106f]
+>>> > drm/ttm: Initialize debugfs from ttm_global_init()
+>>> >
+>>> > Reverting that from 5.14.0-rc4 gives me a working kernel again.
+>>> >
+>>> > Note that I have # CONFIG_DEBUG_FS is not set
+>>>
+>>> That all matches here, including the unset CONFIG_DEBUG_FS and
+>>> confirming the revert on 5.14.0-rc4 works.
+>> 
+>> Thanks for the confirmation.
+> 
+> 69de44d1bb introduced a regression in rc4, reported to the list on
+> August 2, that's still there in rc6.  It's also reported on kernel
+> bugzilla as bug #214000.  No maintainer response either on-list or to
+> the bug.  The commit was general ttm and the original post went to
+> dri-devel and kernel,
+> Jason E. and Daniel V., but all three user reports I've seen so far
+> (two on-list and the bug reporter) are on amdgpu or radeon, so in an
+> effort to at least get a response and hopefully a fix before release,
+> I'm adding the amdgpu/radeon list and maintainers.
+> 
+> The bugzilla report confirmed that CONFIG_DEBUG_FS=y AND
+> CONFIG_DEBUG_FS_ALLOW_ALL=y were *both* required to get a working
+> kernel after that commit.  I and I believe the on-list reporter just
+> reverted the commit in question, and kept our CONFIG_DEBUG_FS=n.
 
-Will
+Trying again. I apologize if anyone gets this twice but I don't think
+the first one made it at all (buggy client).
+
+-- 
+Duncan - List replies preferred.   No HTML msgs.
+"Every nonfree program has a lord, a master --
+and if you use the program, he is your master."  Richard Stallman
