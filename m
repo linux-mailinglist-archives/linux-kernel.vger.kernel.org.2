@@ -2,183 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8033EDDC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD23C3EDDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhHPTVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:21:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230143AbhHPTU7 (ORCPT
+        id S230286AbhHPTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230148AbhHPTVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:20:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629141627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aml0zRP9j/JKrfL2ZvZqM4B9YGM+m9UTU6MfKu4oLd0=;
-        b=iuyBJAnTkNOuIhCtS8s5cEq62sVCTRlhz9EA+gJvBckRsx7TlgHK2WOrGAv5EGaqFeNRSP
-        JXBDSzgEB50qE21m3ex1haMlBLYfu9N79jYEA6f9PsRtGB4iRa0MA5G1rNur+WjOOrpMs9
-        6idkJX9LGdKfeatAvnLLywpbVIBqrMc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-cz8D3V1dMM64IZCUdttxkQ-1; Mon, 16 Aug 2021 15:20:26 -0400
-X-MC-Unique: cz8D3V1dMM64IZCUdttxkQ-1
-Received: by mail-wm1-f70.google.com with SMTP id e21-20020a05600c4b95b029025b007a168dso88648wmp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:20:25 -0700 (PDT)
+        Mon, 16 Aug 2021 15:21:17 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A9AC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:20:45 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z18so34882034ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m941o/jFjrWB+9ctuoqyaTbWLdVEpdtxf8KbVW3gbIk=;
+        b=HOcq2K66ZKPP31cm6RZHlq56X1yVo3CslldYBgHbHXxxMx7sY6sZ1vLFOOnXHJleKX
+         tO/frA17gCW9yPjK7AVdKkSSiP1Iv0L+nZ+n2/RgX3kRbvp0GdXhR5nLkOslpYafc0JQ
+         PkpSFzwudTgrqTz7HrQPLEjxSpwXHrxHnygXnrp/cESRvJPu7YQInaR1QVgQiTjVYlb6
+         LO1C9EcGr+3h4RXG8tE7aJOXee5qMGNY/lDMu8mvcEzj1PYJgFi/9sfXDlgiVG6X6XBE
+         XVPzgzGnPL63UhqQdsSPZU6LF4cksKdPLlFNzzp8AE8zUYtDedL9BrXBwozgwbwQdNLz
+         m+UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=aml0zRP9j/JKrfL2ZvZqM4B9YGM+m9UTU6MfKu4oLd0=;
-        b=k1aXwjMdhnIDMsa8PjFReIWG8SgGAEAI5NDwwy8gy7SWbXGRgQtQQEWjyItZk4hC84
-         csr+r1XsBsGfNlZGuwtQ3xNBlwFSYhlfXCIcKJPwHeUAAy8Lo//gdgF+ol842faOKEPV
-         HOtuXoB7E6gdS+zUZwnYkkuQUXDPW1pX+tKbGMV/QWyAYpcNfjlQIF3IIib/06/vM+83
-         rgTdmIbmtu/X1VFLDTtmH/ivPeeKl3EPTiSqOYRf7r6JzJOftEIEyT8sVz0MvCuO/KNr
-         LFz4YYHuRTdf9YviZsCx5MFVKOrCVcevAMrp00krCWiwFf+cIqKKxMqczvlaDqvKbMA7
-         Vtgg==
-X-Gm-Message-State: AOAM531HxZYdBu17VlilUcWrYmAWhOr8X9JkKNkdK9DyXYrhN9lWHzyw
-        QBPRevoMhCJk6MuHl8LP9MkCRU+O4vgmNGs3NQB/U4bdWoqRM43oyV8+6BNuymfgenO4uLLjeVY
-        mBqS58ie3enq99RzKlAWvQxgz
-X-Received: by 2002:a1c:a401:: with SMTP id n1mr587887wme.74.1629141624847;
-        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjvCy/E4WNYhW5CKX5H7C+2GHzi2A1tcSHCvvKNSoeIapAbm2Iqz9COfFKrK3o9F/Cn93UJg==
-X-Received: by 2002:a1c:a401:: with SMTP id n1mr587873wme.74.1629141624634;
-        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c67f1.dip0.t-ipconnect.de. [91.12.103.241])
-        by smtp.gmail.com with ESMTPSA id y13sm8260wmj.27.2021.08.16.12.20.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 12:20:24 -0700 (PDT)
-Subject: Re: [BUG] general protection fault when reading /proc/kcore
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <YRqhqz35tm3hA9CG@krava>
- <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com> <YRqqqvaZHDu1IKrD@krava>
- <2b83f03c-e782-138d-6010-1e4da5829b9a@redhat.com>
- <YRq4typgRn342B4i@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <b5f3a8b7-e913-2272-115a-677edd35a485@redhat.com>
-Date:   Mon, 16 Aug 2021 21:20:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m941o/jFjrWB+9ctuoqyaTbWLdVEpdtxf8KbVW3gbIk=;
+        b=d7ijuy/5M13NTBrNgM7bK0Q4T9JWZE5Q+zM1905nfgaVp/gkRZrwK2gDSEbQaSE/3m
+         Pi5Q1lfMWEqUmAQXyxoSRDYOjt5mzgBu7EqyebvBidD2uMFZZPuK3Hn4DUXBj19fwDgC
+         0x5QlEMd0TDfSfCYSjP92UcpnTgW23qJ/Ln71Os1uDagKlD1/y66g1st9SzokxABgTxh
+         KTYoKt+bPLYevqLL6H+541jgYXpJcyq4Bur9CEnudcycO4QSwOItbAEygEuaXSTSoMxD
+         F3SGrR4rhNXO2AoXcM6UZZunlccO7ACeCZawVziMRuIGjqwe+MygEacn4K5mjj0lPEfz
+         OheA==
+X-Gm-Message-State: AOAM533kxAw760IzLu7oQobINbJxfjv1Tx29HHEMTin+Iowa7628UOt1
+        SRFoNn2zQQzKvl6JLTSw01fT0o0gzJbK6peLzYmTFg==
+X-Google-Smtp-Source: ABdhPJyZubQxyT6jtWns+tJs06g+ZUE+aT6gqe9sdAyanSPoHdmeju9qXBQYZwQYua2zd6rbCJ4Hw7GA9o7bLCNoPSs=
+X-Received: by 2002:a25:db89:: with SMTP id g131mr23150445ybf.302.1629141644661;
+ Mon, 16 Aug 2021 12:20:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YRq4typgRn342B4i@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
+References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com> <20210816115953.72533-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210816115953.72533-3-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 16 Aug 2021 21:20:34 +0200
+Message-ID: <CAMpxmJWrCJb6JJtQVurM3UexPwqz1OuydE9NvxyRwBb5hD=7aQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] gpio: mlxbf2: Drop wrong use of ACPI_PTR()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     David Thompson <davthompson@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Asmaa Mnebhi <asmaa@nvidia.com>,
+        Liming Sun <limings@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTYuMDguMjEgMjE6MTIsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+IE9uIE1vbiwgQXVn
-IDE2LCAyMDIxIGF0IDA4OjM4OjQzUE0gKzAyMDAsIERhdmlkIEhpbGRlbmJyYW5kIHdyb3Rl
-Og0KPj4gT24gMTYuMDguMjEgMjA6MTIsIEppcmkgT2xzYSB3cm90ZToNCj4+PiBPbiBNb24s
-IEF1ZyAxNiwgMjAyMSBhdCAwNzo0OToxNVBNICswMjAwLCBEYXZpZCBIaWxkZW5icmFuZCB3
-cm90ZToNCj4+Pj4gT24gMTYuMDguMjEgMTk6MzQsIEppcmkgT2xzYSB3cm90ZToNCj4+Pj4+
-IGhpLA0KPj4+Pj4gSSdtIGdldHRpbmcgZmF1bHQgYmVsb3cgd2hlbiBydW5uaW5nOg0KPj4+
-Pj4NCj4+Pj4+IAkjIGNhdCAvcHJvYy9rYWxsc3ltcyB8IGdyZXAga3N5c19yZWFkDQo+Pj4+
-PiAJZmZmZmZmZmY4MTM2ZDU4MCBUIGtzeXNfcmVhZA0KPj4+Pj4gCSMgb2JqZHVtcCAtZCAt
-LXN0YXJ0LWFkZHJlc3M9MHhmZmZmZmZmZjgxMzZkNTgwIC0tc3RvcC1hZGRyZXNzPTB4ZmZm
-ZmZmZmY4MTM2ZDU5MCAvcHJvYy9rY29yZQ0KPj4+Pj4NCj4+Pj4+IAkvcHJvYy9rY29yZTog
-ICAgIGZpbGUgZm9ybWF0IGVsZjY0LXg4Ni02NA0KPj4+Pj4NCj4+Pj4+IAlTZWdtZW50YXRp
-b24gZmF1bHQNCj4+Pj4+DQo+Pj4+PiBhbnkgaWRlYT8gY29uZmlnIGlzIGF0dGFjaGVkDQo+
-Pj4+DQo+Pj4+IEp1c3QgdHJpZWQgd2l0aCBhIGRpZmZlcmVudCBjb25maWcgb24gNS4xNC4w
-LXJjNisNCj4+Pj4NCj4+Pj4gW3Jvb3RAbG9jYWxob3N0IH5dIyBjYXQgL3Byb2Mva2FsbHN5
-bXMgfCBncmVwIGtzeXNfcmVhZA0KPj4+PiBmZmZmZmZmZjg5MjdhODAwIFQga3N5c19yZWFk
-YWhlYWQNCj4+Pj4gZmZmZmZmZmY4OTMzMzY2MCBUIGtzeXNfcmVhZA0KPj4+Pg0KPj4+PiBb
-cm9vdEBsb2NhbGhvc3Qgfl0jIG9iamR1bXAgLWQgLS1zdGFydC1hZGRyZXNzPTB4ZmZmZmZm
-ZmY4OTMzMzY2MA0KPj4+PiAtLXN0b3AtYWRkcmVzcz0weGZmZmZmZmZmODkzMzM2NzANCj4+
-Pj4NCj4+Pj4gYS5vdXQ6ICAgICBmaWxlIGZvcm1hdCBlbGY2NC14ODYtNjQNCj4+Pj4NCj4+
-Pj4NCj4+Pj4NCj4+Pj4gVGhlIGtlcm5fYWRkcl92YWxpZChzdGFydCkgc2VlbXMgdG8gZmF1
-bHQgaW4geW91ciBjYXNlLCB3aGljaCBpcyB3ZWlyZCwNCj4+Pj4gYmVjYXVzZSBpdCBtZXJl
-bHkgd2Fsa3MgdGhlIHBhZ2UgdGFibGVzLiBCdXQgaXQgc2VlbXMgdG8gY29tcGxhaW4gYWJv
-dXQgYQ0KPj4+PiBub24tY2Fub25pY2FsIGFkZHJlc3MgMHhmODg3ZmZjYmZmMDAwDQo+Pj4+
-DQo+Pj4+IENhbiB5b3UgcG9zdCB5b3VyIFFFTVUgY21kbGluZT8gRGlkIHlvdSB0ZXN0IHRo
-aXMgb24gb3RoZXIga2VybmVsIHZlcnNpb25zPw0KPj4+DQo+Pj4gSSdtIHVzaW5nIHZpcnQt
-bWFuYWdlciBzbzoNCj4+Pg0KPj4+IC91c3IvYmluL3FlbXUtc3lzdGVtLXg4Nl82NCAtbmFt
-ZSBndWVzdD1mZWRvcmEzMyxkZWJ1Zy10aHJlYWRzPW9uIC1TIC1vYmplY3Qgc2VjcmV0LGlk
-PW1hc3RlcktleTAsZm9ybWF0PXJhdyxmaWxlPS92YXIvbGliL2xpYnZpcnQvcWVtdS9kb21h
-aW4tMTMtZmVkb3JhMzMvbWFzdGVyLWtleS5hZXMgLW1hY2hpbmUgcGMtcTM1LTUuMSxhY2Nl
-bD1rdm0sdXNiPW9mZix2bXBvcnQ9b2ZmLGR1bXAtZ3Vlc3QtY29yZT1vZmYsbWVtb3J5LWJh
-Y2tlbmQ9cGMucmFtIC1jcHUgU2t5bGFrZS1TZXJ2ZXItSUJSUyxzcz1vbix2bXg9b24scGRj
-bT1vbixoeXBlcnZpc29yPW9uLHRzYy1hZGp1c3Q9b24sY2xmbHVzaG9wdD1vbix1bWlwPW9u
-LHBrdT1vbixzdGlicD1vbixhcmNoLWNhcGFiaWxpdGllcz1vbixzc2JkPW9uLHhzYXZlcz1v
-bixpYnBiPW9uLGFtZC1zdGlicD1vbixhbWQtc3NiZD1vbixza2lwLWwxZGZsLXZtZW50cnk9
-b24scHNjaGFuZ2UtbWMtbm89b24gLW0gODE5MiAtb2JqZWN0IG1lbW9yeS1iYWNrZW5kLXJh
-bSxpZD1wYy5yYW0sc2l6ZT04NTg5OTM0NTkyIC1vdmVyY29tbWl0IG1lbS1sb2NrPW9mZiAt
-c21wIDIwLHNvY2tldHM9MjAsY29yZXM9MSx0aHJlYWRzPTEgLXV1aWQgMjE4NWQ1YTktZGJh
-ZC00ZDYxLWFhNGUtOTdhZjlmZDdlYmNhIC1uby11c2VyLWNvbmZpZyAtbm9kZWZhdWx0cyAt
-Y2hhcmRldiBzb2NrZXQsaWQ9Y2hhcm1vbml0b3IsZmQ9MzYsc2VydmVyLG5vd2FpdCAtbW9u
-IGNoYXJkZXY9Y2hhcm1vbml0b3IsaWQ9bW9uaXRvcixtb2RlPWNvbnRyb2wgLXJ0YyBiYXNl
-PXV0YyxkcmlmdGZpeD1zbGV3IC1nbG9iYWwga3ZtLXBpdC5sb3N0X3RpY2tfcG9saWN5PWRl
-bGF5IC1uby1ocGV0IC1uby1zaHV0ZG93biAtZ2xvYmFsIElDSDktTFBDLmRpc2FibGVfczM9
-MSAtZ2xvYmFsIElDSDktTFBDLmRpc2FibGVfczQ9MSAtYm9vdCBzdHJpY3Q9b24gLWtlcm5l
-bCAvaG9tZS9qb2xzYS9xZW11L3J1bi92bWxpbnV4IC1pbml0cmQgL2hvbWUvam9sc2EvcWVt
-dS9ydW4vaW5pdHJkIC1hcHBlbmQgcm9vdD0vZGV2L21hcHBlci9mZWRvcmFfZmVkb3JhLXJv
-b3Qgcm8gcmQubHZtLmx2PWZlZG9yYV9mZWRvcmEvcm9vdCBjb25zb2xlPXR0eTAgY29uc29s
-ZT10dHlTMCwxMTUyMDAgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTAsY2hhc3Np
-cz0xLGlkPXBjaS4xLGJ1cz1wY2llLjAsbXVsdGlmdW5jdGlvbj1vbixhZGRyPTB4MiAtZGV2
-aWNlIHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxMSxjaGFzc2lzPTIsaWQ9cGNpLjIsYnVzPXBj
-aWUuMCxhZGRyPTB4Mi4weDEgLWRldmljZSBwY2llLXJvb3QtcG9ydCxwb3J0PTB4MTIsY2hh
-c3Npcz0zLGlkPXBjaS4zLGJ1cz1wY2llLjAsYWRkcj0weDIuMHgyIC1kZXZpY2UgcGNpZS1y
-b290LXBvcnQscG9ydD0weDEzLGNoYXNzaXM9NCxpZD1wY2kuNCxidXM9cGNpZS4wLGFkZHI9
-MHgyLjB4MyAtZGV2aWNlIHBjaWUtcm9vdC1wb3J0LHBvcnQ9MHgxNCxjaGFzc2lzPTUsaWQ9
-cGNpLjUsYnVzPXBjaWUuMCxhZGRyPTB4Mi4weDQgLWRldmljZSBwY2llLXJvb3QtcG9ydCxw
-b3J0PTB4MTUsY2hhc3Npcz02LGlkPXBjaS42LGJ1cz1wY2llLjAsYWRkcj0weDIuMHg1IC1k
-ZXZpY2UgcGNpZS1yb290LXBvcnQscG9ydD0weDE2LGNoYXNzaXM9NyxpZD1wY2kuNyxidXM9
-cGNpZS4wLGFkZHI9MHgyLjB4NiAtZGV2aWNlIHFlbXUteGhjaSxwMj0xNSxwMz0xNSxpZD11
-c2IsYnVzPXBjaS4yLGFkZHI9MHgwIC1kZXZpY2UgdmlydGlvLXNlcmlhbC1wY2ksaWQ9dmly
-dGlvLXNlcmlhbDAsYnVzPXBjaS4zLGFkZHI9MHgwIC1ibG9ja2RldiB7ImRyaXZlciI6ImZp
-bGUiLCJmaWxlbmFtZSI6Ii92YXIvbGliL2xpYnZpcnQvaW1hZ2VzL2ZlZG9yYTMzLnFjb3cy
-Iiwibm9kZS1uYW1lIjoibGlidmlydC0yLXN0b3JhZ2UiLCJhdXRvLXJlYWQtb25seSI6dHJ1
-ZSwiZGlzY2FyZCI6InVubWFwIn0gLWJsb2NrZGV2IHsibm9kZS1uYW1lIjoibGlidmlydC0y
-LWZvcm1hdCIsInJlYWQtb25seSI6ZmFsc2UsImRyaXZlciI6InFjb3cyIiwiZmlsZSI6Imxp
-YnZpcnQtMi1zdG9yYWdlIiwiYmFja2luZyI6bnVsbH0gLWRldmljZSB2aXJ0aW8tYmxrLXBj
-aSxidXM9cGNpLjQsYWRkcj0weDAsZHJpdmU9bGlidmlydC0yLWZvcm1hdCxpZD12aXJ0aW8t
-ZGlzazAsYm9vdGluZGV4PTEgLWRldmljZSBpZGUtY2QsYnVzPWlkZS4wLGlkPXNhdGEwLTAt
-MCAtbmV0ZGV2IHRhcCxmZD0zOCxpZD1ob3N0bmV0MCx2aG9zdD1vbix2aG9zdGZkPTM5IC1k
-ZXZpY2UgdmlydGlvLW5ldC1wY2ksbmV0ZGV2PWhvc3RuZXQwLGlkPW5ldDAsbWFjPTUyOjU0
-OjAwOmYzOmM2OmU3LGJ1cz1wY2kuMSxhZGRyPTB4MCAtY2hhcmRldiBwdHksaWQ9Y2hhcnNl
-cmlhbDAgLWRldmljZSBpc2Etc2VyaWFsLGNoYXJkZXY9Y2hhcnNlcmlhbDAsaWQ9c2VyaWFs
-MCAtY2hhcmRldiBzb2NrZXQsaWQ9Y2hhcmNoYW5uZWwwLGZkPTQwLHNlcnZlcixub3dhaXQg
-LWRldmljZSB2aXJ0c2VyaWFscG9ydCxidXM9dmlydGlvLXNlcmlhbDAuMCxucj0xLGNoYXJk
-ZXY9Y2hhcmNoYW5uZWwwLGlkPWNoYW5uZWwwLG5hbWU9b3JnLnFlbXUuZ3Vlc3RfYWdlbnQu
-MCAtY2hhcmRldiBzcGljZXZtYyxpZD1jaGFyY2hhbm5lbDEsbmFtZT12ZGFnZW50IC1kZXZp
-Y2UgdmlydHNlcmlhbHBvcnQsYnVzPXZpcnRpby1zZXJpYWwwLjAsbnI9MixjaGFyZGV2PWNo
-YXJjaGFubmVsMSxpZD1jaGFubmVsMSxuYW1lPWNvbS5yZWRoYXQuc3BpY2UuMCAtZGV2aWNl
-IHVzYi10YWJsZXQsaWQ9aW5wdXQwLGJ1cz11c2IuMCxwb3J0PTEgLXNwaWNlIHBvcnQ9NTkw
-MCxhZGRyPTEyNy4wLjAuMSxkaXNhYmxlLXRpY2tldGluZyxpbWFnZS1jb21wcmVzc2lvbj1v
-ZmYsc2VhbWxlc3MtbWlncmF0aW9uPW9uIC1kZXZpY2UgcXhsLXZnYSxpZD12aWRlbzAscmFt
-X3NpemU9NjcxMDg4NjQsdnJhbV9zaXplPTY3MTA4ODY0LHZyYW02NF9zaXplX21iPTAsdmdh
-bWVtX21iPTE2LG1heF9vdXRwdXRzPTEsYnVzPXBjaWUuMCxhZGRyPTB4MSAtZGV2aWNlIGlj
-aDktaW50ZWwtaGRhLGlkPXNvdW5kMCxidXM9cGNpZS4wLGFkZHI9MHgxYiAtZGV2aWNlIGhk
-YS1kdXBsZXgsaWQ9c291bmQwLWNvZGVjMCxidXM9c291bmQwLjAsY2FkPTAgLWNoYXJkZXYg
-c3BpY2V2bWMsaWQ9Y2hhcnJlZGlyMCxuYW1lPXVzYnJlZGlyIC1kZXZpY2UgdXNiLXJlZGly
-LGNoYXJkZXY9Y2hhcnJlZGlyMCxpZD1yZWRpcjAsYnVzPXVzYi4wLHBvcnQ9MiAtY2hhcmRl
-diBzcGljZXZtYyxpZD1jaGFycmVkaXIxLG5hbWU9dXNicmVkaXIgLWRldmljZSB1c2ItcmVk
-aXIsY2hhcmRldj1jaGFycmVkaXIxLGlkPXJlZGlyMSxidXM9dXNiLjAscG9ydD0zIC1kZXZp
-Y2UgdmlydGlvLWJhbGxvb24tcGNpLGlkPWJhbGxvb24wLGJ1cz1wY2kuNSxhZGRyPTB4MCAt
-b2JqZWN0IHJuZy1yYW5kb20saWQ9b2Jqcm5nMCxmaWxlbmFtZT0vZGV2L3VyYW5kb20gLWRl
-dmljZSB2aXJ0aW8tcm5nLXBjaSxybmc9b2Jqcm5nMCxpZD1ybmcwLGJ1cz1wY2kuNixhZGRy
-PTB4MCAtc2FuZGJveCBvbixvYnNvbGV0ZT1kZW55LGVsZXZhdGVwcml2aWxlZ2VzPWRlbnks
-c3Bhd249ZGVueSxyZXNvdXJjZWNvbnRyb2w9ZGVueSAtbXNnIHRpbWVzdGFtcD1vbg0KPiAg
-IA0KPiANCj4gDQo+Pj4gc28gZmFyIEkgdGVzdGVkIGp1c3QgYnBmLW5leHQvbWFzdGVyOg0K
-Pj4+ICAgICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
-YnBmL2JwZi1uZXh0LmdpdA0KPj4+DQo+Pg0KPj4gSnVzdCB0cmllZCB3aXRoIHVwc3RyZWFt
-IExpbnV4ICg1LjE0LjAtcmM2KSBhbmQgeW91ciBjb25maWcgd2l0aG91dA0KPj4gdHJpZ2dl
-cmluZyBpdC4gSSdtIHVzaW5nICItY3B1IGhvc3QiLCB0aG91Z2gsIG9uIGFuIEFNRCBSeXpl
-biA5IDM5MDBYDQo+IA0KPiBXaXRoIEppcmkncyBjb25maWcgYW5kICctY3B1IDx2ZXJ5IGxv
-bmcgc3RyaW5nPicgaXQgdHJpZ2dlcnMgZm9yIG1lIG9uDQo+IHY1LjE0LXJjNi4NCj4gDQo+
-IEknbGwgYWxzbyB0cnkgdG8gdGFrZSBhIGxvb2sgdG9tb3Jyb3cuDQoNCk5vIGx1Y2sgaGVy
-ZSBvbiBteSBBTUQgc3lzdGVtLCBldmVuIHdpdGggdGhhdCAnLWNwdSA8dmVyeSBsb25nIHN0
-cmluZz4nLiANCk1heWJlIHNvbWUgcmVsZXZhbnQgQ1BVIGZlYXR1cmVzIGdldCBzaWxlbnRs
-eSBpZ25vcmVkIGJlY2F1c2UgdGhleSBhcmUgDQpub3QgYWN0dWFsbHkgYXZhaWxhYmxlIG9u
-IG15IHN5c3RlbS4NCg0KLS0gDQpUaGFua3MsDQoNCkRhdmlkIC8gZGhpbGRlbmINCg==
+On Mon, Aug 16, 2021 at 2:00 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> ACPI_PTR() is more harmful than helpful. For example, in this case
+> if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+>
+> Instead of adding ifdeffery here and there, drop ACPI_PTR() and
+> replace acpi.h with mod_devicetable.h.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpio-mlxbf2.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mlxbf2.c b/drivers/gpio/gpio-mlxbf2.c
+> index 68c471c10fa4..c0aa622fef76 100644
+> --- a/drivers/gpio/gpio-mlxbf2.c
+> +++ b/drivers/gpio/gpio-mlxbf2.c
+> @@ -1,6 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>
+> -#include <linux/acpi.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/bitops.h>
+>  #include <linux/device.h>
+> @@ -8,6 +7,7 @@
+>  #include <linux/io.h>
+>  #include <linux/ioport.h>
+>  #include <linux/kernel.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm.h>
+> @@ -307,14 +307,14 @@ static SIMPLE_DEV_PM_OPS(mlxbf2_pm_ops, mlxbf2_gpio_suspend, mlxbf2_gpio_resume)
+>
+>  static const struct acpi_device_id __maybe_unused mlxbf2_gpio_acpi_match[] = {
+>         { "MLNXBF22", 0 },
+> -       {},
+> +       {}
 
+Ninja change :) I removed it - send a separate patch for this if you want to.
+
+Bart
+
+>  };
+>  MODULE_DEVICE_TABLE(acpi, mlxbf2_gpio_acpi_match);
+>
+>  static struct platform_driver mlxbf2_gpio_driver = {
+>         .driver = {
+>                 .name = "mlxbf2_gpio",
+> -               .acpi_match_table = ACPI_PTR(mlxbf2_gpio_acpi_match),
+> +               .acpi_match_table = mlxbf2_gpio_acpi_match,
+>                 .pm = &mlxbf2_pm_ops,
+>         },
+>         .probe    = mlxbf2_gpio_probe,
+> --
+> 2.30.2
+>
