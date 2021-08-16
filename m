@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D433ED927
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCC33ED928
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhHPOrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:47:37 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:55023 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhHPOrd (ORCPT
+        id S232467AbhHPOsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:48:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33010
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229586AbhHPOsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:47:33 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 03B1B3200956;
-        Mon, 16 Aug 2021 10:46:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 16 Aug 2021 10:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=gngd3q55EZGSZShx/0MxyaGo89J
-        meeFQa5pogUBe51Q=; b=sBT3Wtti2e4yh9J/SvPUEj2iHJP2xD6ScrhDXtRmwK/
-        tXqIFrFRv0rwf13mjZsgmkxS9SgIld/FQWBBiXG1tMDC81OIFdNUd2tW+3kKYr9y
-        S2U4sdJgRvL/TSxgccwfZlImc6Yj0rquMXmN4+rxLLVMSrT1PLQTaf15aVTLx+vI
-        X1IdS4oXqFJCH/ShWJc0JabzT1cpiOZnqF1BG8Fq2EpVhSSJOOmkObDmGV+yUEuw
-        h7XeaBHz3Fj+5WgZKODFHCdFTBZfn/hYrlba7DL3HOq9xRIAmBVXMZCkLkr6eC1q
-        NzTlj21g5d4mkfjlvKuBmi70fmTMZyn0t5gpaDI3rTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=gngd3q
-        55EZGSZShx/0MxyaGo89JmeeFQa5pogUBe51Q=; b=umenRCFM5dI0JnNRZ14i/R
-        qZ+7A+VC7ceZbev9AgYgMwsh4n2YcQyCywVNyprzx9fqP33rtEYUQQ9pbes5gQMF
-        zmgassAnNsvlY5IziWmUsCgMeVpU0epOmM6U6xhFm9nOgMKk9Tve4kYeiD+q7BVr
-        BwYBf4DvF/9K1/j2y95QxxRVtWnJPXhayaeqNQE7uiApudHrBo5oIGQm1O4pF3Z6
-        Orxkxgyz3z6Ptt8TKmcnNc7oX7VDVB9h2adMDdpht8KenuLFZpmV5XSU1jO24vRb
-        U1uCmGs3DDV88tVeMco7Vb7eHduYIY+8qJ9QzVhq7F8R8YufRscsdB0RlV8x48TQ
-        ==
-X-ME-Sender: <xms:YXoaYZfgsPpTBRlNgi02JYqSb2pJe-tJL8HteFDLQ5Loo9QxywEUZQ>
-    <xme:YXoaYXNmQexK8dR_yewaw-75Bn28iRXx_0YGHWI_qkZK1rF_dznxqsGe9PKshY-9_
-    Ty3zxzWKnPsIQ>
-X-ME-Received: <xmr:YXoaYShJSH3r6SC7GVYG2mzLWhRv1L0dqbF88l6Ki55uI2cc4N3jyJ0QkYw402dWGf24z_xHInKh60ifmDbR0EA-ODqXX04J>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledugdektdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:YXoaYS-CRK9CbeIhnan93MaGpa6wwTrmS2EfA0xLT3gTTxIxtusLpg>
-    <xmx:YXoaYVtsuS48VWCVwLKPFfcoSLbXXc-wbPLnUIqkvpuyY_3IDPIq0g>
-    <xmx:YXoaYRGBF8uKQFCKW1dDbA0nHoTyEkEXYViRK7GFkD1yoCJfeKC_Mg>
-    <xmx:YXoaYbDLu72TugndILg6E8P7iNi6Y3WHi9LaWUJqgr01wfacD_Ww7Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Aug 2021 10:46:57 -0400 (EDT)
-Date:   Mon, 16 Aug 2021 16:46:55 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 4.14.y] KVM: nSVM: always intercept VMLOAD/VMSAVE when
- nested (CVE-2021-3656)
-Message-ID: <YRp6X3sV50Q94+2/@kroah.com>
-References: <20210816140240.11399-8-pbonzini@redhat.com>
+        Mon, 16 Aug 2021 10:48:13 -0400
+Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C613E3F10B;
+        Mon, 16 Aug 2021 14:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629125261;
+        bh=LpKhP3By7l4CvlmRd1gqogt+J8pQf+y6CrU76SUhQKs=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=dYFeJ3aoPTNv6sbQCK+pQUwJpv5M4pE9gr9fshjkgtEu/75igIuCE/djoDetlBozT
+         7S/KeG01kXExxGUbPZ8BAuVmRX1q0/MKjCGDVQtvwNt6Be29TZKgOr5ArTzF5i4wQp
+         EQzO9XqkxQYtt5FdtttXM86jV3QIPDVzK4WF3GawFNeYgkdq0AAvD4feecOE92WaOs
+         jjFnO+pOyCDXGNnEIVFWw9EOZWY5gx9eY6YgLsQeUv3yFZdVYfm0YSnQ7TkNGGu2j9
+         6w7vQrzVQWCReXPv13WZ2c7/+QWc3tDrL+F651vkixLT4Ezbu2v+3NaJpcZmy6OMdE
+         nVNciKp+8x4IQ==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] riscv: select CONFIG_ARCH_KEEP_MEMBLOCK
+Date:   Mon, 16 Aug 2021 16:47:28 +0200
+Message-Id: <20210816144728.1425121-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816140240.11399-8-pbonzini@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 04:02:36PM +0200, Paolo Bonzini wrote:
-> From: Maxim Levitsky <mlevitsk@redhat.com>
-> 
-> [ upstream commit c7dfa4009965a9b2d7b329ee970eb8da0d32f0bc ]
-> 
-> If L1 disables VMLOAD/VMSAVE intercepts, and doesn't enable
-> Virtual VMLOAD/VMSAVE (currently not supported for the nested hypervisor),
-> then VMLOAD/VMSAVE must operate on the L1 physical memory, which is only
-> possible by making L0 intercept these instructions.
-> 
-> Failure to do so allowed the nested guest to run VMLOAD/VMSAVE unintercepted,
-> and thus read/write portions of the host physical memory.
-> 
-> Fixes: 89c8a4984fc9 ("KVM: SVM: Enable Virtual VMLOAD VMSAVE feature")
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> 	The above upstream SHA1 is still on its way to Linus
+For analyzing memory blocks we can either use the memblock=debug command
+line argument which creates massive output or a debug file system.
 
-Ah, missed this down here, I read top-to-bottom and stopped at the
-second line :)
+Select CONFIG_ARCH_KEEP_MEMBLOCK to provide a debugfs at
+/sys/kernel/debug/memblock to analyze memory blocks. The
+same is already done for arm, arm64, mips, powerpc.
 
-Anyway, will wait for Linus to pick these up first.
+The actual provisioning of the file system depends on CONFIG_DEBUG_FS.
 
-thanks,
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-greg k-h
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4f7b70ae7c31..a6e57614c3fd 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -31,6 +31,7 @@ config RISCV
+ 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
+ 	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
++	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+ 	select ARCH_SUPPORTS_HUGETLBFS if MMU
+-- 
+2.30.2
+
