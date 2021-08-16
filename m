@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC803ED499
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27D13ED6F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236595AbhHPNEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
+        id S240604AbhHPNZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231395AbhHPNEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CC76328D;
-        Mon, 16 Aug 2021 13:03:29 +0000 (UTC)
+        id S240299AbhHPNPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:15:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16AD3632D8;
+        Mon, 16 Aug 2021 13:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119010;
-        bh=BhIA9zJ/exLmau+ZqDDNyypST8RT8hSrTga1VebG2Fo=;
+        s=korg; t=1629119544;
+        bh=wIIjKmFH0euQgXstQ8ky9Kw/RhFBEoQ27fKrn1QOueE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=swK5tzuSHw94kLYf9AyKw8+gYt1biQQSJSk152yifYeH1ShAigY6HgOtqRfazG0W5
-         XCs6s/Ls5rBM+Mlgmpd/oPDyj2tjodAlUqF00nuciWu6CNhr7R8n4wizUV+flIPttP
-         0f66emT8JfUUrirEoEIM7UggwWr50ldAYXdYu9sw=
+        b=YfrAMFeVwXKMVE5m6vJVndS10oHi8RyRazeEhGuyVenrZtHb7g2a+Pi/nOcBlgghp
+         qbqLPTmEGxiIufEOUTfykRPkp6ArZNKcpv9t6ibmeQebLdCeN/0puQDD4tcDBRTGK6
+         7OjXh08p0hkBnirrus0KxjcnRN0T0S6UsxCmd1+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 05/62] ASoC: intel: atom: Fix reference to PCM buffer address
-Date:   Mon, 16 Aug 2021 15:01:37 +0200
-Message-Id: <20210816125428.382162254@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Nadav Amit <namit@vmware.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 068/151] io_uring: clear TIF_NOTIFY_SIGNAL when running task work
+Date:   Mon, 16 Aug 2021 15:01:38 +0200
+Message-Id: <20210816125446.308819084@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Nadav Amit <namit@vmware.com>
 
-commit 2e6b836312a477d647a7920b56810a5a25f6c856 upstream.
+[ Upstream commit ef98eb0409c31c39ab55ff46b2721c3b4f84c122 ]
 
-PCM buffers might be allocated dynamically when the buffer
-preallocation failed or a larger buffer is requested, and it's not
-guaranteed that substream->dma_buffer points to the actually used
-buffer.  The address should be retrieved from runtime->dma_addr,
-instead of substream->dma_buffer (and shouldn't use virt_to_phys).
+When using SQPOLL, the submission queue polling thread calls
+task_work_run() to run queued work. However, when work is added with
+TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
+set afterwards and is never cleared.
 
-Also, remove the line overriding runtime->dma_area superfluously,
-which was already set up at the PCM buffer allocation.
+Consequently, when the submission queue polling thread checks whether
+signal_pending(), it may always find a pending signal, if
+task_work_add() was ever called before.
 
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210728112353.6675-3-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The impact of this bug might be different on different kernel versions.
+It appears that on 5.14 it would only cause unnecessary calculation and
+prevent the polling thread from sleeping. On 5.13, where the bug was
+found, it stops the polling thread from finding newly submitted work.
+
+Instead of task_work_run(), use tracehook_notify_signal() that clears
+TIF_NOTIFY_SIGNAL. Test for TIF_NOTIFY_SIGNAL in addition to
+current->task_works to avoid a race in which task_works is cleared but
+the TIF_NOTIFY_SIGNAL is set.
+
+Fixes: 685fe7feedb96 ("io-wq: eliminate the need for a manager thread")
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Link: https://lore.kernel.org/r/20210808001342.964634-2-namit@vmware.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/io_uring.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -127,7 +127,7 @@ static void sst_fill_alloc_params(struct
- 	snd_pcm_uframes_t period_size;
- 	ssize_t periodbytes;
- 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
--	u32 buffer_addr = virt_to_phys(substream->dma_buffer.area);
-+	u32 buffer_addr = substream->runtime->dma_addr;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 32f3df13a812..8a8507cab580 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -78,6 +78,7 @@
+ #include <linux/task_work.h>
+ #include <linux/pagemap.h>
+ #include <linux/io_uring.h>
++#include <linux/tracehook.h>
  
- 	channels = substream->runtime->channels;
- 	period_size = substream->runtime->period_size;
-@@ -233,7 +233,6 @@ static int sst_platform_alloc_stream(str
- 	/* set codec params and inform SST driver the same */
- 	sst_fill_pcm_params(substream, &param);
- 	sst_fill_alloc_params(substream, &alloc_params);
--	substream->runtime->dma_area = substream->dma_buffer.area;
- 	str_params.sparams = param;
- 	str_params.aparams = alloc_params;
- 	str_params.codec = SST_CODEC_TYPE_PCM;
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/io_uring.h>
+@@ -2250,9 +2251,9 @@ static inline unsigned int io_put_rw_kbuf(struct io_kiocb *req)
+ 
+ static inline bool io_run_task_work(void)
+ {
+-	if (current->task_works) {
++	if (test_thread_flag(TIF_NOTIFY_SIGNAL) || current->task_works) {
+ 		__set_current_state(TASK_RUNNING);
+-		task_work_run();
++		tracehook_notify_signal();
+ 		return true;
+ 	}
+ 
+-- 
+2.30.2
+
 
 
