@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3DF3ED223
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E643ED22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbhHPKlh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 06:41:37 -0400
-Received: from mail-lj1-f173.google.com ([209.85.208.173]:39558 "EHLO
-        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhHPKlf (ORCPT
+        id S235806AbhHPKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhHPKng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:41:35 -0400
-Received: by mail-lj1-f173.google.com with SMTP id q21so4892779ljj.6;
-        Mon, 16 Aug 2021 03:41:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UAgKx9qFimpGqmGeQ3TM0J7Mzn3ZTYhunGpWKj3QW8E=;
-        b=nyexwiSYDeAsM5rhwe390lHcZXxDORt6nUPfzaISmvlk41DyuGEucvb57xenctilfZ
-         +iA02oMlVdWexn0FT3XK+IzBN157tuC0BE0hyeQadaq7rtYDpz1xszCrIZnb8mZAf909
-         rj/sPDK6J9OAxnHEiWb8bh9dz0XCmgDFV19bWeu7hKU96aLLSP0qKJTz8nbK4e+NZgRw
-         iSlqAgeISYZ6PA10HzkZw2XI+6ZLYxfzkDgtCXlwEWtJ2wBl4+tI3RrokeW38iBGD3TJ
-         YDlR8hv5JDVwnQmqaFcB42oj5Qi1rIKqJBfAMXGFcP3m2HcfYe4UgAAgsJDYLAK+n7hc
-         faCQ==
-X-Gm-Message-State: AOAM530Y4xMGAieU3C90nfSMdRQyJ7Ku/OaEZvzfctD8+kfwE+AuJNdd
-        /h5gctffoptOR966ig/t/1lfAxkKnpWbCrVkHLs=
-X-Google-Smtp-Source: ABdhPJxsH8x3EfCOw+pbE7D3sXGxvSvKLrPv+OSgf3ha/r/wegNx+Ubs6UxpEeEqHJoV3c7h3WC3ycTLGRw8+iUhr8g=
-X-Received: by 2002:a05:651c:24a:: with SMTP id x10mr10915127ljn.60.1629110463281;
- Mon, 16 Aug 2021 03:41:03 -0700 (PDT)
+        Mon, 16 Aug 2021 06:43:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81757C061764;
+        Mon, 16 Aug 2021 03:43:05 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08b5004455011f3e43b910.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:4455:11f:3e43:b910])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 050AD1EC04FB;
+        Mon, 16 Aug 2021 12:42:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629110579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KJr3PLH9kdh7sq6ftHE42Mk4Hk9JcVNuZWU5FfzNhng=;
+        b=EdTJv86x/KgsZfUTho7nmU2tWDU7gWlJWwEPgv85zH6gBUrThHi9fC1iX5VEY4vmFQ3Wat
+        4L7CZpxMtqUnumgeTAAvIdt+GZJGAVni8JOdP7ssdtvST2BWMH3jSXeGJW+5iIwTMEZB+b
+        GdsXFMbpKbQbyECkWOQbzWkuxXgeI58=
+Date:   Mon, 16 Aug 2021 12:43:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v28 09/32] x86/mm: Introduce _PAGE_COW
+Message-ID: <YRpBVu7dCBjks71I@zn.tnic>
+References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
+ <20210722205219.7934-10-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
- <20210814101728.75334-5-mailhol.vincent@wanadoo.fr> <20210816081205.7rjdskaui35f3jml@pengutronix.de>
-In-Reply-To: <20210816081205.7rjdskaui35f3jml@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Mon, 16 Aug 2021 19:40:52 +0900
-Message-ID: <CAMZ6RqJiAO-snH0+NKi8=+xi9UnU3sJ+1Ze8qYL0qPwG4eRZVg@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
- Transmitter Delay Compensation (TDC)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        linux-can <linux-can@vger.kernel.org>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210722205219.7934-10-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon. 16 août 2021 at 17:12, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 14.08.2021 19:17:28, Vincent Mailhol wrote:
-> > At high bit rates, the propagation delay from the TX pin to the RX pin
-> > of the transceiver causes measurement errors: the sample point on the
-> > RX pin might occur on the previous bit.
-> >
-> > This issue is addressed in ISO 11898-1 section 11.3.3 "Transmitter
-> > delay compensation" (TDC).
-> >
-> > This patch brings command line support to nine TDC parameters which
-> > were recently added to the kernel's CAN netlink interface in order to
-> > implement TDC:
-> >   - IFLA_CAN_TDC_TDCV_MIN: Transmitter Delay Compensation Value
-> >     minimum value
-> >   - IFLA_CAN_TDC_TDCV_MAX: Transmitter Delay Compensation Value
-> >     maximum value
-> >   - IFLA_CAN_TDC_TDCO_MIN: Transmitter Delay Compensation Offset
-> >     minimum value
-> >   - IFLA_CAN_TDC_TDCO_MAX: Transmitter Delay Compensation Offset
-> >     maximum value
-> >   - IFLA_CAN_TDC_TDCF_MIN: Transmitter Delay Compensation Filter
-> >     window minimum value
-> >   - IFLA_CAN_TDC_TDCF_MAX: Transmitter Delay Compensation Filter
-> >     window maximum value
-> >   - IFLA_CAN_TDC_TDCV: Transmitter Delay Compensation Value
-> >   - IFLA_CAN_TDC_TDCO: Transmitter Delay Compensation Offset
-> >   - IFLA_CAN_TDC_TDCF: Transmitter Delay Compensation Filter window
-> >
-> > All those new parameters are nested together into the attribute
-> > IFLA_CAN_TDC.
-> >
-> > A tdc-mode parameter allow to specify how to operate. Valid options
-> > are:
-> >
-> >   * auto: the transmitter automatically measures TDCV. As such, TDCV
-> >     values can not be manually provided. In this mode, the user must
-> >     specify TDCO and may also specify TDCF if supported.
-> >
-> >   * manual: Use the TDCV value provided by the user are used. In this
->                            ^^^^^                      ^^^
->                            singular                   plural
+On Thu, Jul 22, 2021 at 01:51:56PM -0700, Yu-cheng Yu wrote:
+> @@ -153,13 +178,23 @@ static inline int pud_young(pud_t pud)
+>  
+>  static inline int pte_write(pte_t pte)
+>  {
+> -	return pte_flags(pte) & _PAGE_RW;
+> +	/*
+> +	 * Shadow stack pages are always writable - but not by normal
+> +	 * instructions, and only by shadow stack operations.  Therefore,
+> +	 * the W=0,D=1 test with pte_shstk().
+> +	 */
+> +	return (pte_flags(pte) & _PAGE_RW) || pte_shstk(pte);
 
-ACK. I fixed that broken grammar in my local branch. As commented
-before, I will send the next version of the iproute series after
-we agree on the kernel part (unless someone finds a major issue).
+Well, this is weird: if some kernel code queries a shstk page and this
+here function says it is writable but then goes and tries to write into
+it and that write fails, then it'll confuse the user.
 
-FYI, this is the fixed sentence:
-  * manual: use a static TDCV provided by the user. In this mode, the
-    user must specify both TDCV and TDCO and may also specify TDCF if
-    supported.
+IOW, from where I'm standing, that should be:
 
+	return (pte_flags(pte) & _PAGE_RW) && !pte_shstk(pte);
 
-Yours sincerely,
-Vincent
+as in, a writable page is one which has _PAGE_RW and it is *not* a
+shadow stack page because latter is special and not really writable.
+
+Hmmm?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
