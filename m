@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA3E3ED1E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846F63ED1F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbhHPKZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:25:29 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:44588 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhHPKZ1 (ORCPT
+        id S235719AbhHPK2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233954AbhHPK2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:25:27 -0400
-Received: by mail-lf1-f41.google.com with SMTP id c24so33294352lfi.11;
-        Mon, 16 Aug 2021 03:24:56 -0700 (PDT)
+        Mon, 16 Aug 2021 06:28:12 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BBCC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:27:41 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a4so7333864uae.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pRH4TVFPj1g2bLXry7U6Q5PGawo78fbiYn7oa4P7TUE=;
+        b=wUONjgu57oYf3OfxDDScC3ZokM5dNXLU+0GsEWRZ3QVzsyATXYqT58BpdtitRkQkIH
+         9j4dHB+IpVqScnNr9gIh/8BBpPPN1oyuqGiBT28prUs0TV2sjtlrXSEKM44kpi29mtgm
+         hsFDminvf3C0rKryy/W0IFmoq+mJr3YJ2W9yriAbTRxX9XMEUC0KHf/vO6t4PmpcBVwV
+         eHlohxqA6fWnbXgZMYVKahwwM+7oOdp60WFDNSxi1+1S4L3v05kNYa3zKRhdV51s5eyf
+         6A1sXyDRMjedq0EvnMhnzh20FFACX3TsDX7epWJFWhh3U9Q8UvF+J3vSXdfACqnJmYBH
+         0W0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Et6VdoqknhMfzcobUJoplG75MspKWGymXJPGsvIiMLY=;
-        b=uN6n4Yrzj/lv2cCsu0jeI0GMVNrJ1bfXn7+vIeTxRxzQCpIJMksZS4t6jCxjnchMVd
-         zRbFWC7CxTz6hWj+YqSjGBcifkF8A9aNba7Rps7/yffNYCbf5RTKo5ipiPEPAzjN8/Qo
-         ePBjVQNOYfnJ+SgJpxMDZmdOF2r3Y2qD3goLdh0b2DBsryFas4Q1/GOnPKSMAMp3Cumf
-         6A8gGUW4tGIC87DWhkY1QlGrQUGk1NulZy7jhZw9uVn69tsg4Vihi5uL+3sY5+mLMENh
-         OmFdZVly5l4WHqzr5pHQGooXMRuEvZzYsIUTBnKSJqmRtF+h8pGi8MCJQO5PbX0+Fa0v
-         1neQ==
-X-Gm-Message-State: AOAM530xL5O7lBp5B0wQVxoUQGgKJ7suBEPFs2kI0TCMCyCAZAWXLAnM
-        V5o9wF2YyNbrRE7jM14XGNQzRjCn3Zz0sqBceHk=
-X-Google-Smtp-Source: ABdhPJyje7QhLUM20joBBX1lFLkwMFs6BjXVOogTkuAH00cOLmYzgVMsL5oeXMKauHWSiJ/y6yNatskiUiZcbyoJxVs=
-X-Received: by 2002:ac2:5d27:: with SMTP id i7mr11140330lfb.488.1629109495252;
- Mon, 16 Aug 2021 03:24:55 -0700 (PDT)
+        bh=pRH4TVFPj1g2bLXry7U6Q5PGawo78fbiYn7oa4P7TUE=;
+        b=fhyhfXEbPx9/XjWJbuLeqIu/7EXUWkXgGwxoWKWKPA/CL7Q3HFiYd3Dy2tEZ0i+uF/
+         OlPMrRvN4D5oZkUxlok3KefNVeyTzTlL3EmMQ4e6zJy/ff11+T2wY7qdug1bUHOIMhnr
+         /O914dsK8P643Xcx3LfJQz+40HobfwLJMJZ2trNHhbgbciSLrs/nFC8hUS+eEIENMG/G
+         +PXXM8cl3e8fM8nzOe7pGMMo9EVk8dEUiQaKk6qDctK7Qv/Z3nV2aT0Rz++YoTiV+C1B
+         P9CyF0iB7h9uC3cdll07Ttj+MvRorNAqs5aDZHypoXalpg40I/jWnv0D7zzVM6J566qG
+         yKjg==
+X-Gm-Message-State: AOAM5329j1NMQcj3Rc730o30GKdA4US9Xv173P4a6I08vpdFIq6Bsw4u
+        WNs4GzqyQ9tTZDpGt5sN5kUadLDBlO6/Qe8nMKg/qQ==
+X-Google-Smtp-Source: ABdhPJx12b+Bqmk2bxuZlUu8XnA8FFpwLQVJjtElcHZQSIpFTlWvmHagxQPgWDu9OhRbbdZgmffyA5kUa3yLHHrPYLQ=
+X-Received: by 2002:a9f:25a7:: with SMTP id 36mr8092627uaf.129.1629109660385;
+ Mon, 16 Aug 2021 03:27:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-3-mailhol.vincent@wanadoo.fr> <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
-In-Reply-To: <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Mon, 16 Aug 2021 19:24:43 +0900
-Message-ID: <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add can_tdc_const::tdc{v,o,f}_min
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210809072315.1127-1-derong.liu@mediatek.com>
+In-Reply-To: <20210809072315.1127-1-derong.liu@mediatek.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 16 Aug 2021 12:27:04 +0200
+Message-ID: <CAPDyKFq3_eia7cvo-1Ajj5wcrfEHtp_EsMp27uL4dC_n+vPWZQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: mediatek: add wait dma stop done flow
+To:     Derong Liu <derong.liu@mediatek.com>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        wsp_upstream@mediatek.com, Peng Zhou <peng.zhou@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon. 16 Aug 2021 at 17:42, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 15.08.2021 12:32:43, Vincent Mailhol wrote:
-> > ISO 11898-1 specifies in section 11.3.3 "Transmitter delay
-> > compensation" that "the configuration range for [the] SSP position
-> > shall be at least 0 to 63 minimum time quanta."
-> >
-> > Because SSP = TDCV + TDCO, it means that we should allow both TDCV and
-> > TDCO to hold zero value in order to honor SSP's minimum possible
-> > value.
-> >
-> > However, current implementation assigned special meaning to TDCV and
-> > TDCO's zero values:
-> >   * TDCV = 0 -> TDCV is automatically measured by the transceiver.
-> >   * TDCO = 0 -> TDC is off.
-> >
-> > In order to allow for those values to really be zero and to maintain
-> > current features, we introduce two new flags:
-> >   * CAN_CTRLMODE_TDC_AUTO indicates that the controller support
-> >     automatic measurement of TDCV.
-> >   * CAN_CTRLMODE_TDC_MANUAL indicates that the controller support
-> >     manual configuration of TDCV. N.B.: current implementation failed
-> >     to provide an option for the driver to indicate that only manual
-> >     mode was supported.
-> >
-> > TDC is disabled if both CAN_CTRLMODE_TDC_AUTO and
-> > CAN_CTRLMODE_TDC_MANUAL flags are off, c.f. the helper function
-> > can_tdc_is_enabled() which is also introduced in this patch.
+On Mon, 9 Aug 2021 at 09:25, Derong Liu <derong.liu@mediatek.com> wrote:
 >
-> Nitpick: We can only say that TDC is disabled, if the driver supports
-> the TDC interface at all, which is the case if tdc_const is set.
-
-I would argue that saying that a device does not support TDC is
-equivalent to saying that TDC is always disabled for that device.
-Especially, the function can_tdc_is_enabled() can be used even if
-the device does not support TDC (even if there is no benefit
-doing so).
-
-Do you still want me to rephrase this part?
-
-> > Also, this patch adds three fields: tdcv_min, tdco_min and tdcf_min to
-> > struct can_tdc_const. While we are not convinced that those three
-> > fields could be anything else than zero, we can imagine that some
-> > controllers might specify a lower bound on these. Thus, those minimums
-> > are really added "just in case".
+> We found this issue on a 5G platform, during CMDQ error handling, if DMA status is active when it call msdc_reset_hw, it means mmc host hw reset and DMA transfer will be parallel, mmc host may access sram region unexpectedly.
 >
-> I'm not sure, if we talked about the mcp251xfd's tcdo, valid values are
-> -64...63.
+> According to the programming guide of mtk mmc host,it needs to wait for dma stop done after set dma stop.
+> This change should be applied to all SoCs.
+>
+> Signed-off-by: Derong Liu <derong.liu@mediatek.com>
+> ---
+>  drivers/mmc/host/mtk-sd.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 4dfc246c5f95..1dfd2842471b 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -2339,6 +2339,8 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
+>         if (recovery) {
+>                 sdr_set_field(host->base + MSDC_DMA_CTRL,
+>                               MSDC_DMA_CTRL_STOP, 1);
+> +               while (readl(host->base + MSDC_DMA_CFG) & MSDC_DMA_CFG_STS)
+> +                       cpu_relax();
 
-Yes! Stefan shed some light on this. The mcp251xfd uses a tdco
-value which is relative to the sample point.
-| SSP = TDCV + absolute TDCO
-|     = TDCV + SP + relative TDCO
+I suggest you look into using readl_poll_timeout() - as we don't want
+to hang indefinitely, no matter what.
 
-Consequently:
-| relative TDCO = absolute TDCO - SP
+>                 msdc_reset_hw(host);
+>         }
+>  }
+> --
+> 2.18.0
 
-Which is also why TDCO can be negative.
-
-I added an helper function can_tdc_get_relative_tdco() in the
-fourth path of this series:
-https://lore.kernel.org/linux-can/20210814091750.73931-5-mailhol.vincent@wanadoo.fr/T/#u
-
-Devices which use the absolute TDCO can directly use
-can_priv->tdc.tdco. Devices which use the relative TDCO such as
-the mcp251xfd should use this helper function instead.
-
-However, you will still need to convert the TDCO valid range from
-relative values to absolute ones. In your case 0..127.
-
-
-Yours sincerely,
-Vincent
+Kind regards
+Uffe
