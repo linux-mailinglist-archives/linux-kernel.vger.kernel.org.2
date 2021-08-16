@@ -2,186 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46ECD3EDA48
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489263EDA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhHPP45 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 11:56:57 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:43830 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233342AbhHPP4z (ORCPT
+        id S236730AbhHPP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:57:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233740AbhHPP5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:56:55 -0400
-Received: by mail-lf1-f46.google.com with SMTP id i9so14663410lfg.10;
-        Mon, 16 Aug 2021 08:56:23 -0700 (PDT)
+        Mon, 16 Aug 2021 11:57:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629129401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PZpQLZMB7RJdGulqivRZelq1MarObE9Ch/tXNewyPHo=;
+        b=Hvx30XrpMwS29fa6qCHcCuCc3q+zerWlroiA7O/Z9oTrbhWAC7ZHCPKqzoNp9YyOWRkZTu
+        q2x/qlZ+T7KJ2eRWNLOP9EbC7MeAjEbBSqSc/ByFhYmr9Eg2ikiX2hGHvGk/+uptYxh1RD
+        n9eNxvHWWqJBmnbGdcwARpEVREwM+VI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-zfnYUARkOFmKjypykUW79w-1; Mon, 16 Aug 2021 11:56:38 -0400
+X-MC-Unique: zfnYUARkOFmKjypykUW79w-1
+Received: by mail-ed1-f69.google.com with SMTP id e3-20020a50ec830000b02903be5be2fc73so9015283edr.16
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:56:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=c9l+YE7WNjbQ5edK008G+h5CMzV9oRtp+Y4bgi0QHY0=;
-        b=bKvlsqM3m6mnY+adcVXlDjBVqzBCbajL0FLmE3hrzCmTFuOXO0U0mOy3WCOVsAPOdD
-         w1DWrwiTDsGHC16n4orvRzbqRHuVpVB5c4NFsRaFOxjBCiN96AH6HpZrg9Ryjqy6kKO2
-         GitiEQEbpv3d9ALa5B8+LtCS9++nIoML/E+Ma5ah/VGCneiNHCskFKlB1GiIEKtAUOj6
-         FJNlPykxmyFwNMRafryp1ytyR2WAdCq1QtD8QnU+Fiz6T33uTK34N0VzKuWe23YxNkJy
-         bWT5W5vX1i8+iOyOktqVor/bnT/Iysa/n8VdOdbgoMNF7Z0+uG7eNCEbCcnXipbpfyWU
-         1LTQ==
-X-Gm-Message-State: AOAM530NKmhc/lQQbuQNxX24DPh9nHt1IHz05quSbzj/0XYZ/wj8+0qK
-        3NAI7KyEs9Dt2UlfBpktVWjJ4MYjDfHGiYb4iQc=
-X-Google-Smtp-Source: ABdhPJzaDdNoQPM2AJ4T551pYOs232Gpl7KZcd8TXogLSorum/PF+ss8KS2j5+K7K2WZvhcMxHg4Ocz5JSffzulF3is=
-X-Received: by 2002:ac2:4e8c:: with SMTP id o12mr12617089lfr.374.1629129382855;
- Mon, 16 Aug 2021 08:56:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PZpQLZMB7RJdGulqivRZelq1MarObE9Ch/tXNewyPHo=;
+        b=PFN/fkWtrJF4Vx5utg8k0wlCiDFOWmcxav5vz1h2598vE0RxDR8lUlx+Q7+kMfLfCU
+         k7bDZQ3Kxzztu39p0GIdKHRdVxPrFDFMcH7X3VwEs/ZVZbrU2eGu0qGH+HS7Bow7QT3/
+         RL02VuZ5NI+RqorWcJ3ONqa2L9DkIle+H6my7Koay6dtUOFxO7LxEhLZ4ltnIcIonICX
+         JBj+OLaGfKNUKsptMxNWh9oDoBXZ+Vy1DYgGd4gzXah5Etqgx6CUZfCHGu7iLJ1Z5vSW
+         3ckSBGGI0BKF6SJ/SRgBKGo+ZvThfnCq8zZt1C+xy/t6v0I/FRK4kN9PIVm/9vVO+wGE
+         NKjQ==
+X-Gm-Message-State: AOAM532t/a/VNbcCTk6pNqsAk/mEeX+UAJKfl/P5v6D+CR9SUE/1CkqF
+        57zy85F5gWnH/0R/WU6cQZec1IeItWQd8VOI/orslckN/uxrtSMTsMUyauSdwqJ0OOhKXJITsW8
+        rSZbX+c5+ta9JS86xkK+SSNLc
+X-Received: by 2002:aa7:c894:: with SMTP id p20mr21016339eds.42.1629129397235;
+        Mon, 16 Aug 2021 08:56:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz0zVXLSgao02pT8Fnch/EOLmPpvxZgNu0lTTzYEYe6LDXa/xwx5yX+prRxBm3ZPVFWwFWf4g==
+X-Received: by 2002:aa7:c894:: with SMTP id p20mr21016321eds.42.1629129397047;
+        Mon, 16 Aug 2021 08:56:37 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id i11sm5047064edu.97.2021.08.16.08.56.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 08:56:36 -0700 (PDT)
+Subject: Re: [PATCH 5.12.y] KVM: nSVM: avoid picking up unsupported bits from
+ L2 in int_ctl (CVE-2021-3653)
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210816140240.11399-6-pbonzini@redhat.com>
+ <YRp1bUv85GWsFsuO@kroah.com>
+ <97448bb5-1f58-07f9-1110-96c7ffefd4b2@redhat.com>
+ <YRqAM3gTAscfmr60@kroah.com>
+ <74cf96a9030dc0e996b1814bbf907299e377053e.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ad855723-fe97-6916-8d96-013021e19fc7@redhat.com>
+Date:   Mon, 16 Aug 2021 17:56:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-3-mailhol.vincent@wanadoo.fr> <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
- <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
- <20210816122519.mme272z6tqrkyc6x@pengutronix.de> <79691916e4280970f583a54cd5010ece025a1c53.camel@esd.eu>
-In-Reply-To: <79691916e4280970f583a54cd5010ece025a1c53.camel@esd.eu>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Tue, 17 Aug 2021 00:56:11 +0900
-Message-ID: <CAMZ6Rq+j-x-xHCsPsJyzstLgRy6SLvvONyfaCVexJ6O-0JrQaA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add can_tdc_const::tdc{v,o,f}_min
-To:     =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
-Cc:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <74cf96a9030dc0e996b1814bbf907299e377053e.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon. 16 Aug 2021 at 22:49, Stefan Mätje <Stefan.Maetje@esd.eu> wrote:
-> Hi Vincent,
->
-> I would like to add some comments below:
->
-> Am Montag, den 16.08.2021, 14:25 +0200 schrieb Marc Kleine-Budde:
-> > On 16.08.2021 19:24:43, Vincent MAILHOL wrote:
-> > > On Mon. 16 Aug 2021 at 17:42, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> > > > On 15.08.2021 12:32:43, Vincent Mailhol wrote:
-> > > > > ISO 11898-1 specifies in section 11.3.3 "Transmitter delay
-> > > > > compensation" that "the configuration range for [the] SSP position
-> > > > > shall be at least 0 to 63 minimum time quanta."
-> > > > >
-> > > > > Because SSP = TDCV + TDCO, it means that we should allow both TDCV and
-> > > > > TDCO to hold zero value in order to honor SSP's minimum possible
-> > > > > value.
-> > > > >
-> > > > > However, current implementation assigned special meaning to TDCV and
-> > > > > TDCO's zero values:
-> > > > >   * TDCV = 0 -> TDCV is automatically measured by the transceiver.
-> > > > >   * TDCO = 0 -> TDC is off.
-> > > > >
-> > > > > In order to allow for those values to really be zero and to maintain
-> > > > > current features, we introduce two new flags:
-> > > > >   * CAN_CTRLMODE_TDC_AUTO indicates that the controller support
-> > > > >     automatic measurement of TDCV.
-> > > > >   * CAN_CTRLMODE_TDC_MANUAL indicates that the controller support
-> > > > >     manual configuration of TDCV. N.B.: current implementation failed
-> > > > >     to provide an option for the driver to indicate that only manual
-> > > > >     mode was supported.
-> > > > >
-> > > > > TDC is disabled if both CAN_CTRLMODE_TDC_AUTO and
-> > > > > CAN_CTRLMODE_TDC_MANUAL flags are off, c.f. the helper function
-> > > > > can_tdc_is_enabled() which is also introduced in this patch.
-> > > >
-> > > > Nitpick: We can only say that TDC is disabled, if the driver supports
-> > > > the TDC interface at all, which is the case if tdc_const is set.
-> > >
-> > > I would argue that saying that a device does not support TDC is
-> > > equivalent to saying that TDC is always disabled for that device.
-> > > Especially, the function can_tdc_is_enabled() can be used even if
-> > > the device does not support TDC (even if there is no benefit
-> > > doing so).
-> > >
-> > > Do you still want me to rephrase this part?
-> > >
-> > > > > Also, this patch adds three fields: tdcv_min, tdco_min and tdcf_min to
-> > > > > struct can_tdc_const. While we are not convinced that those three
-> > > > > fields could be anything else than zero, we can imagine that some
-> > > > > controllers might specify a lower bound on these. Thus, those minimums
-> > > > > are really added "just in case".
-> > > >
-> > > > I'm not sure, if we talked about the mcp251xfd's tcdo, valid values are
-> > > > -64...63.
-> > >
-> > > Yes! Stefan shed some light on this. The mcp251xfd uses a tdco
-> > > value which is relative to the sample point.
-> >
-> > I don't read the documentation this way....
->
-> @Vincent: I have to agree with Marc here. Perhaps my email
-> https://lore.kernel.org/linux-can/094d8a2eab2177e5a5143f96cf745b26897e1793.camel@esd.eu/
-> was also misleading. I also referred there to a MicroChip Excel sheet
-> (https://ww1.microchip.com/downloads/en/DeviceDoc/MCP2517FD%20Bit%20Time%20Calculations%20-%20UG.xlsx)
-> that describes the calculation of the bit timing and the TDCO. The values calculated
-> there correspond to the SPO from the above email. Microchip calculates the TDCO as
-> TDCO = (DPRSEG + DPH1SEG) * DBRP.
-> Thus, as already discussed, negative values are not purposeful.
->
-> Sorry, that that email was misleading. So far I've seen now only the ESDACC
-> controller has a "relative" TDCO register value where a negative value may
-> be sensible.
+On 16/08/21 17:37, Maxim Levitsky wrote:
+> 5.13 will more likely to work with the upstream version.
+> I'll check it soon.
 
-So many misleading things on this absolute/relative TDCO topic.
-But be sure of one thing: your help has been precious!
+There are a couple context differences so I've already tested it and 
+sent it out.
 
-> > > > SSP = TDCV + absolute TDCO
-> > > >     = TDCV + SP + relative TDCO
-> > >
-> > > Consequently:
-> > > > relative TDCO = absolute TDCO - SP
-> >
-> > In the mcp15xxfd family manual
-> > (http://ww1.microchip.com/downloads/en/DeviceDoc/MCP251XXFD-CAN-FD-Controller-Module-Family-Reference-Manual-20005678B.pdf)
-> > in the 2mbit/s data bit rate example in table 3-5 (page 21) it says:
-> >
-> > > DTSEG1  15 DTQ
-> > > DTSEG2   4 DTQ
-> > > TDCO    15 DTQ
-> >
-> > The mcp251xfd driver uses 15, the framework calculates 16 (== Sync Seg+
-> > tseg1, which is correct), and relative tdco would be 0:
-> >
-> > > mcp251xfd_set_bittiming: tdco=15, priv->tdc.tdc=16, relative_tdco=0
-> >
-> > Here the output with the patched ip tool:
-> >
-> > > 4: mcp251xfd0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state UP mode DEFAULT group default qlen 10
-> > >     link/can  promiscuity 0 minmtu 0 maxmtu 0
-> > >     can <FD,TDC_AUTO> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 100
-> > >           bitrate 500000 sample-point 0.875
-> > >           tq 25 prop-seg 34 phase-seg1 35 phase-seg2 10 sjw 1 brp 1
-> > >           mcp251xfd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp_inc 1
-> > >           dbitrate 2000000 dsample-point 0.750
-> > >           dtq 25 dprop-seg 7 dphase-seg1 7 dphase-seg2 5 dsjw 1 dbrp 1
-> > >           tdco 15
-> > >           mcp251xfd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbrp_inc 1
-> > >           tdco 0..127
-> > >           clock 40000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 parentbus spi parentdev spi0.0
-> >
-> >
-> > > Which is also why TDCO can be negative.
-> > >
-> > > I added an helper function can_tdc_get_relative_tdco() in the
-> > > fourth path of this series:
-> > > https://lore.kernel.org/linux-can/20210814091750.73931-5-mailhol.vincent@wanadoo.fr/T/#u
-> > >
-> > > Devices which use the absolute TDCO can directly use
-> > > can_priv->tdc.tdco. Devices which use the relative TDCO such as
-> > > the mcp251xfd should use this helper function instead.
-> >
-> > Don't think so....
->
-> @Vincent: Perhaps you should not implement this helper function as it is only needed
-> for the ESDACC so far.
+Paolo
 
-Lets first wait for the response from Microchip and if indeed
-mcp25xxfd does not use a relative TDCO, I am fine to remove this
-from the series. In such a case, do not hesitate to steal the patch
-for your ESD driver.
-
-
-Yours sincerely,
-Vincent
