@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311573ED404
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DEA3ED407
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235071AbhHPMeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234272AbhHPMdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:33:47 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEBFC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:33:15 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFbnl-00010C-3c; Mon, 16 Aug 2021 14:33:13 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 6482F6682CA;
-        Mon, 16 Aug 2021 12:33:11 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 14:33:09 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
- can_tdc_const::tdc{v,o,f}_min
-Message-ID: <20210816123309.pfa57tke5hrycqae@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
- <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
- <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
- <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
+        id S229806AbhHPMhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:37:13 -0400
+Received: from verein.lst.de ([213.95.11.211]:54252 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229632AbhHPMgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 08:36:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EC5286736F; Mon, 16 Aug 2021 14:36:19 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 14:36:19 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Christoph Hellwig <hch@lst.de>, ntfs3@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC PATCH 1/4] fs/ntfs3: Use new api for mounting
+Message-ID: <20210816123619.GB17355@lst.de>
+References: <20210816024703.107251-1-kari.argillander@gmail.com> <20210816024703.107251-2-kari.argillander@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mous7h2ch4x6sr3w"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210816024703.107251-2-kari.argillander@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +/*
+> + * ntfs_load_nls
+> + *
 
---mous7h2ch4x6sr3w
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No need to state the function name here.
 
-On 16.08.2021 14:25:19, Marc Kleine-Budde wrote:
-> > > I'm not sure, if we talked about the mcp251xfd's tcdo, valid values a=
-re
-> > > -64...63.
-> >=20
-> > Yes! Stefan shed some light on this. The mcp251xfd uses a tdco
-> > value which is relative to the sample point.
->=20
-> I don't read the documentation this way....
->=20
-> > | SSP =3D TDCV + absolute TDCO
-> > |     =3D TDCV + SP + relative TDCO
-> >=20
-> > Consequently:
-> > | relative TDCO =3D absolute TDCO - SP
->=20
-> In the mcp15xxfd family manual
-> (http://ww1.microchip.com/downloads/en/DeviceDoc/MCP251XXFD-CAN-FD-Contro=
-ller-Module-Family-Reference-Manual-20005678B.pdf)
-> in the 2mbit/s data bit rate example in table 3-5 (page 21) it says:
->=20
-> | DTSEG1  15 DTQ
-> | DTSEG2   4 DTQ
-> | TDCO    15 DTQ
->=20
-> The mcp251xfd driver uses 15, the framework calculates 16 (=3D=3D Sync Se=
-g+
-> tseg1, which is correct), and relative tdco would be 0:
->=20
-> | mcp251xfd_set_bittiming: tdco=3D15, priv->tdc.tdc=3D16, relative_tdco=
-=3D0
->=20
-> Here the output with the patched ip tool:
+> + * Load nls table or if @nls is utf8 then return NULL because
+> + * nls=utf8 is totally broken.
+> + */
+> +static struct nls_table *ntfs_load_nls(char *nls)
+> +{
+> +	struct nls_table *ret;
+> +
+> +	if (!nls)
+> +		return ERR_PTR(-EINVAL);
+> +	if (strcmp(nls, "utf8"))
+> +		return NULL;
+> +	if (strcmp(nls, CONFIG_NLS_DEFAULT))
+> +		return load_nls_default();
+> +
+> +	ret = load_nls(nls);
+> +	if (!ret)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	return ret;
+> +}
 
-Sorry, the previous output was not using the sample points of the
-example in the data sheet, this is the fixed output:
+This looks like something quite generic and not file system specific.
+But I haven't found time to look at the series from Pali how this all
+fits together.
 
-| 6: mcp251xfd0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state UP =
-mode DEFAULT group default qlen 10
-|     link/can  promiscuity 0 minmtu 0 maxmtu 0=20
-|     can <FD,TDC_AUTO> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart=
--ms 100=20
-|           bitrate 500000 sample-point 0.800
-|           tq 25 prop-seg 31 phase-seg1 32 phase-seg2 16 sjw 1 brp 1
-|           mcp251xfd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp_=
-inc 1
-|           dbitrate 2000000 dsample-point 0.800
-|           dtq 25 dprop-seg 7 dphase-seg1 8 dphase-seg2 4 dsjw 1 dbrp 1
-|           tdco 16
-|           mcp251xfd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbr=
-p_inc 1
-|           tdco 0..127
-|           clock 40000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 g=
-so_max_segs 65535 parentbus spi parentdev spi0.0=20
+> +// clang-format off
 
-Marc
+Please don't use C++ comments.  And we also should not put weird
+formatter annotations into the kernel source anyway.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+> +static void ntfs_default_options(struct ntfs_mount_options *opts)
+>  {
+>  	opts->fs_uid = current_uid();
+>  	opts->fs_gid = current_gid();
+> +	opts->fs_fmask_inv = ~current_umask();
+> +	opts->fs_dmask_inv = ~current_umask();
+> +	opts->nls = ntfs_load_nls(CONFIG_NLS_DEFAULT);
+> +}
 
---mous7h2ch4x6sr3w
-Content-Type: application/pgp-signature; name="signature.asc"
+This function seems pretty pointless with a single trivial caller.
 
------BEGIN PGP SIGNATURE-----
+> +static int ntfs_fs_parse_param(struct fs_context *fc, struct fs_parameter *param)
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaWwMACgkQqclaivrt
-76mIdQf/ZjXMNJovC6gVsk7bpzr0KHJZB1YmUOFDoboV3Ghv/YuNx5X3nPbtM4S4
-TrfQOhjkYVV6Xi0ONIygWnlUXQQP5GeemF8tbK1GeO9ZNaOexwjWU5/mR2xJQQki
-Ubj+wtI80hde07RVuDhQRTde3ugn5lzDtXFL6xYKJ5Zb9Nz/TUkxgbdluTj2v6lo
-VTbBpzJwZwMDtIlg/1MRRD79/DkOLLycAQCK4F6OhU6488hyPIJxLKFes1kq+1zE
-VpwuElW386P4g0BBjpP6sXmg9o1V3gSmdhkjYZHMCGBdz0zW4K7hCz6NAEzZGrS9
-qH6HZnDStHbg1KECeadK+NwZdF0caw==
-=xVXe
------END PGP SIGNATURE-----
+Please avoid the overly long line.
 
---mous7h2ch4x6sr3w--
+> +		break;
+> +	case Opt_showmeta:
+> +		opts->showmeta = result.negated ? 0 : 1;
+> +		break;
+> +	case Opt_nls:
+> +		unload_nls(opts->nls);
+> +
+> +		opts->nls = ntfs_load_nls(param->string);
+> +		if (IS_ERR(opts->nls)) {
+> +			return invalf(fc, "ntfs3: Cannot load nls %s",
+> +				      param->string);
+>  		}
+
+So instead of unloading here, why not set keep a copy of the string
+in the mount options structure and only load the actual table after
+option parsing has finished?
+
+> +     struct ntfs_mount_options *new_opts = fc->s_fs_info;
+
+Does this rely on the mount_options being the first member in struct
+ntfs_sb_info?  If so that is a landmine for future changes.
+
+> +/*
+> + * Set up the filesystem mount context.
+> + */
+> +static int ntfs_init_fs_context(struct fs_context *fc)
+> +{
+> +	struct ntfs_sb_info *sbi;
+> +
+> +	sbi = ntfs_zalloc(sizeof(struct ntfs_sb_info));
+
+Not related to your patch, but why does ntfs3 have kmalloc wrappers
+like this?
