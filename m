@@ -2,255 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CE83EDC99
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A09A3EDC9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhHPRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        id S231439AbhHPRwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhHPRwR (ORCPT
+        with ESMTP id S229590AbhHPRwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:52:17 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82773C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:51:44 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bo19so27656852edb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:51:44 -0700 (PDT)
+        Mon, 16 Aug 2021 13:52:33 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32962C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:52:02 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so1427641pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:52:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQoek14OE4uQnpIv9Staft1AveAvACmD1pzwivfSdt0=;
-        b=muXE14NSR2ajfttLttLt23nSwQdB/NjuGaDQDIGELGWI5dm5azHDDZ+MwxZSzSMTro
-         VuXk5+H3yk8DknKzfRUleI9CcvkkL9Y+c7hl0yfDFiwSPLvoxFDVEPRZ4spkuwu7pLJi
-         24NbedKuHD4FSohpnGwUgCYLp9j2WHZOD3RYtP4fPSZCjPT1m1FsYGD3ByvV/ZtcAO4F
-         U3H0/6lWRzGL+8iuHXLo4TPnfj97L0RdgQytQEsz57Aaay7ocSBNd044pkJfXO0LsDIt
-         jrcCaXrrfVc0+/vKPL/jAB7tRmkRHg4vS/io6F2lHtBilrJQN0TyZAF3nAAVXjarXGGx
-         VhLg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aGcVbwp7D3wcK5fZ7iZV49ZDGmdfLQXktWsw3v/VBwE=;
+        b=OCxsJXDOoFMfKwsfaAy2UCw19Hptc0ltRQafq/yUppY6Z6w6AXcaVhQCMW2nLYui5z
+         weQgraKuGK1VEGcYO+x1nZt4mqJy6nMwxk5B5r0tRq4pQMPTC3VXJKjY82TEGu9FMs4u
+         MEjPG4nvKWv4QWPau2NkJfY90IzCoVQBIiFqI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eQoek14OE4uQnpIv9Staft1AveAvACmD1pzwivfSdt0=;
-        b=j8gVF16mo5J7+pLKryV7zySL92H3Z8icZj/i8O6iaP23Hi7C6Kl1Z0GiHs8o6m1JHt
-         ZoSvIG6Qv7GcILtp4xk3Ks5LEHMx0q+mPYF/5MWvu5EEElXnsaJj1yk8tr6AXBAtobD1
-         JHCmvk1/qOL6RWqNPTS4Ul3X2YrGIpkPwFukBu26Jz6J9e5DWz2oh//F/ODcqeSLY1Z0
-         iPjFHXDQmViD7rV5UiIHX6Jt9zI0vG/KRjvacJmaUsrWpjFJ/iNlwmTsJE3hczR14BOd
-         Ngh6NsABldvMKcwM2gE5hspsFnvc6ZeLaZi1QDuUee3XSilEYtWwF7O1YfL5c0v6SZWX
-         UwBg==
-X-Gm-Message-State: AOAM532WznSQoUmEHNGQNg7/789B0eJXDbCphAPPy962MfxQyN/okkCX
-        xOhKGjEb36CyfQkLQJ5NPNs=
-X-Google-Smtp-Source: ABdhPJw+y4UCCl9Qy2EGsLwyz3bQonhm12710XsPLFFcjV/6GBfwS5lIKqoZh+2xRfcPAj4vKNB+PA==
-X-Received: by 2002:a05:6402:518f:: with SMTP id q15mr21709998edd.226.1629136303114;
-        Mon, 16 Aug 2021 10:51:43 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id w13sm5319361ede.24.2021.08.16.10.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 10:51:42 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2 2/3] staging: r8188eu: Remove code depending on NAT25_LOOKUP
-Date:   Mon, 16 Aug 2021 19:51:38 +0200
-Message-Id: <20210816175138.21633-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aGcVbwp7D3wcK5fZ7iZV49ZDGmdfLQXktWsw3v/VBwE=;
+        b=Zu+lwwfjM7wBwASBs+CbunTzKTvjD+dh56kaq3a8CGTtnUei+WVlqRUPFURRoOel6j
+         yEwqXNaWgDL+3T7ABaTpnigkY/p5PH5i94m58nxSCoHgDTecfxyL8bMb6o6bt37w8WZy
+         3at+05ozus08ePAfex9XPyFv3IIqDvRnNnunApemPJCVUb8Emmq9XpdpqUQ7o7L6DFy+
+         1V3EML0h7LQ7I57m7TqZ3yPy6S02wKVzBGzd8nGtvAXUVBY4kRT8lmWxU0FW14BD3+fu
+         28nHSwERRxSGRj3xqcV7LWYDzfttpxRkiZSKnBU6xrwkMPANTf0JrKwZ4+p26ezPiz2y
+         7lCA==
+X-Gm-Message-State: AOAM533XQXTum33RDxAkCcnSjzhms10LAUEI5EDhFqAnMt6wUJFsJB0K
+        kYQoXYCXX4hrY3OIeiR2I3BS+g==
+X-Google-Smtp-Source: ABdhPJwLz3PZJvaNlW8uPSKRihvQvE593CKTWnAmw5KlVtJqAKGeQc3gRX0SfuGiG1G1qWc6RHMxDQ==
+X-Received: by 2002:a17:90a:5994:: with SMTP id l20mr281441pji.201.1629136321637;
+        Mon, 16 Aug 2021 10:52:01 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:5cff:3a19:755c:1b91])
+        by smtp.gmail.com with UTF8SMTPSA id x4sm35698pff.126.2021.08.16.10.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 10:52:01 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 10:51:58 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sankeerth Billakanti <sbillaka@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, seanpaul@chromium.org, swboyd@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [PATCH v1 1/2] drm/msm/dp: Add support for SC7280 eDP
+Message-ID: <YRqlvuBPlcm/0r4s@google.com>
+References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org>
+ <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove all the code related to the management of the NAT25_LOOKUP
-method in nat25_db_handle(). The only function that used that method was
-the now deleted nat25_handle_frame(). Remove the NAT25_LOOKUP entry from
-the NAT25_METHOD enum because it is not anymore used everywhere else in
-the code of the driver.
+On Thu, Aug 12, 2021 at 05:38:01AM +0530, Sankeerth Billakanti wrote:
+> The eDP controller on SC7280 is similar to the eDP/DP controllers
+> supported by the current driver implementation.
+> 
+> SC7280 supports one EDP and one DP controller which can operate
+> concurrently.
+> 
+> The following are some required changes for the sc7280 sink:
+> 1. Additional gpio configuration for backlight and pwm via pmic.
+> 2. ASSR support programming on the sink.
+> 3. SSC support programming on the sink.
+> 
+> Signed-off-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |  4 ++--
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c               | 19 +++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_display.c            | 32 ++++++++++++++++++++++++--
+>  drivers/gpu/drm/msm/dp/dp_parser.c             | 31 +++++++++++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_parser.h             |  5 ++++
+>  5 files changed, 87 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index b131fd37..1096c44 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -856,9 +856,9 @@ static const struct dpu_intf_cfg sm8150_intf[] = {
+>  };
+>  
+>  static const struct dpu_intf_cfg sc7280_intf[] = {
+> -	INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> +	INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 1, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+>  	INTF_BLK("intf_1", INTF_1, 0x35000, INTF_DSI, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+> -	INTF_BLK("intf_5", INTF_5, 0x39000, INTF_EDP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+> +	INTF_BLK("intf_5", INTF_5, 0x39000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+>  };
+>  
+>  /*************************************************************
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index d2569da..06d5a2d 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1244,7 +1244,9 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
+>  		struct dp_cr_status *cr, int *training_step)
+>  {
+>  	int ret = 0;
+> +	u8 *dpcd = ctrl->panel->dpcd;
+>  	u8 encoding = DP_SET_ANSI_8B10B;
+> +	u8 ssc = 0, assr = 0;
+>  	struct dp_link_info link_info = {0};
+>  
+>  	dp_ctrl_config_ctrl(ctrl);
+> @@ -1254,9 +1256,21 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
+>  	link_info.capabilities = DP_LINK_CAP_ENHANCED_FRAMING;
+>  
+>  	dp_aux_link_configure(ctrl->aux, &link_info);
+> +
+> +	if (dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5) {
+> +		ssc = DP_SPREAD_AMP_0_5;
+> +		drm_dp_dpcd_write(ctrl->aux, DP_DOWNSPREAD_CTRL, &ssc, 1);
+> +	}
+> +
+>  	drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
+>  				&encoding, 1);
+>  
+> +	if (dpcd[DP_EDP_CONFIGURATION_CAP] & DP_ALTERNATE_SCRAMBLER_RESET_CAP) {
+> +		assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
+> +		drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
+> +				&assr, 1);
+> +	}
+> +
+>  	ret = dp_ctrl_link_train_1(ctrl, cr, training_step);
+>  	if (ret) {
+>  		DRM_ERROR("link training #1 failed. ret=%d\n", ret);
+> @@ -1328,9 +1342,11 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+>  	struct dp_io *dp_io = &ctrl->parser->io;
+>  	struct phy *phy = dp_io->phy;
+>  	struct phy_configure_opts_dp *opts_dp = &dp_io->phy_opts.dp;
+> +	u8 *dpcd = ctrl->panel->dpcd;
+>  
+>  	opts_dp->lanes = ctrl->link->link_params.num_lanes;
+>  	opts_dp->link_rate = ctrl->link->link_params.rate / 100;
+> +	opts_dp->ssc = dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5;
+>  	dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+>  					ctrl->link->link_params.rate * 1000);
+>  
+> @@ -1760,6 +1776,9 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+>  	ctrl->link->link_params.num_lanes = ctrl->panel->link_info.num_lanes;
+>  	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
+>  
+> +	if (ctrl->dp_ctrl.pixel_rate == 0)
+> +		return -EINVAL;
+> +
+>  	DRM_DEBUG_DP("rate=%d, num_lanes=%d, pixel_rate=%d\n",
+>  		ctrl->link->link_params.rate,
+>  		ctrl->link->link_params.num_lanes, ctrl->dp_ctrl.pixel_rate);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index ee5bf64..a772290 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -117,8 +117,36 @@ struct dp_display_private {
+>  	struct dp_audio *audio;
+>  };
+>  
+> +struct msm_dp_config {
+> +	phys_addr_t io_start[3];
+> +	size_t num_dp;
+> +};
+> +
+> +static const struct msm_dp_config sc7180_dp_cfg = {
+> +	.io_start = { 0x0ae90000 },
+> +	.num_dp = 1,
+> +};
+> +
+> +static const struct msm_dp_config sc8180x_dp_cfg = {
+> +	.io_start = { 0xae90000, 0xae98000, 0 },
+> +	.num_dp = 3,
+> +};
+> +
+> +static const struct msm_dp_config sc8180x_edp_cfg = {
+> +	.io_start = { 0, 0, 0xae9a000 },
+> +	.num_dp = 3,
+> +};
+> +
+> +static const struct msm_dp_config sc7280_edp_cfg = {
+> +	.io_start = { 0xaea0000, 0 },
+> +	.num_dp = 2,
+> +};
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+This data isn't used anywhere, is there some patch missing?
 
-v2: Patch rebased against the latest Greg K-H's tree.
+And in case it is used (at some point), shouldn't at least the 'io_start'
+addresses be specified in the device tree rather than the driver?
 
- drivers/staging/r8188eu/core/rtw_br_ext.c    | 112 -------------------
- drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
- 2 files changed, 113 deletions(-)
+> +
+>  static const struct of_device_id dp_dt_match[] = {
+> -	{.compatible = "qcom,sc7180-dp"},
+> +	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+> +	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
+> +	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_edp_cfg },
+> +	{ .compatible = "qcom,sc7280-edp", .data = &sc7280_edp_cfg },
+>  	{}
+>  };
+>  
+> @@ -1408,7 +1436,7 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+>  
+>  	dp_hpd_event_setup(dp);
+>  
+> -	dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
+> +	dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
+>  }
+>  
+>  void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor *minor)
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 0519dd3..c05fc0a 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -248,6 +248,33 @@ static int dp_parser_clock(struct dp_parser *parser)
+>  	return 0;
+>  }
+>  
+> +static int dp_parser_gpio(struct dp_parser *parser)
+> +{
+> +	struct device *dev = &parser->pdev->dev;
+> +	int ret;
+> +
+> +	parser->panel_bklt_gpio = devm_gpiod_get(dev, "panel-bklt",
+> +			GPIOD_OUT_HIGH);
+> +	if (IS_ERR(parser->panel_bklt_gpio)) {
+> +		ret = PTR_ERR(parser->panel_bklt_gpio);
+> +		parser->panel_bklt_gpio = NULL;
+> +		DRM_ERROR("%s: cannot get panel-bklt gpio, %d\n", __func__, ret);
+> +		goto fail;
+> +	}
+> +
+> +	parser->panel_pwm_gpio = devm_gpiod_get(dev, "panel-pwm", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(parser->panel_pwm_gpio)) {
+> +		ret = PTR_ERR(parser->panel_pwm_gpio);
+> +		parser->panel_pwm_gpio = NULL;
+> +		DRM_ERROR("%s: cannot get panel-pwm gpio, %d\n", __func__, ret);
+> +		goto fail;
+> +	}
 
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index e8eea95a52e3..0402f48319c4 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -484,27 +484,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 
- 			__nat25_db_print(priv);
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup IP, SA =%08x, DA =%08x\n", iph->saddr, iph->daddr);
--			tmp = be32_to_cpu(iph->daddr);
--			__nat25_generate_ipv4_network_addr(networkAddr, &tmp);
--
--			if (!__nat25_db_network_lookup_and_replace(priv, skb, networkAddr)) {
--				if (*((unsigned char *)&iph->daddr + 3) == 0xff) {
--					/*  L2 is unicast but L3 is broadcast, make L2 bacome broadcast */
--					DEBUG_INFO("NAT25: Set DA as boardcast\n");
--					memset(skb->data, 0xff, ETH_ALEN);
--				} else {
--					/*  forward unknow IP packet to upper TCP/IP */
--					DEBUG_INFO("NAT25: Replace DA with BR's MAC\n");
--					if ((*(u32 *)priv->br_mac) == 0 && (*(u16 *)(priv->br_mac+4)) == 0) {
--						printk("Re-init netdev_br_init() due to br_mac == 0!\n");
--						netdev_br_init(priv->pnetdev);
--					}
--					memcpy(skb->data, priv->br_mac, ETH_ALEN);
--				}
--			}
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -536,20 +515,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
- 			__nat25_db_print(priv);
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup ARP\n");
--
--			arp_ptr += arp->ar_hln;
--			sender = (unsigned int *)arp_ptr;
--			arp_ptr += (arp->ar_hln + arp->ar_pln);
--			target = (unsigned int *)arp_ptr;
--			__nat25_generate_ipv4_network_addr(networkAddr, target);
--			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--			/*  change to ARP target mac address to Lookup result */
--			arp_ptr = (unsigned char *)(arp + 1);
--			arp_ptr += (arp->ar_hln + arp->ar_pln);
--			memcpy(arp_ptr, skb->data, ETH_ALEN);
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -637,70 +602,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 					priv->pppoe_connection_in_progress = 0;
- 			}
- 			return 0;
--		case NAT25_LOOKUP:
--			if (ph->code == PADO_CODE || ph->code == PADS_CODE) {
--				if (priv->ethBrExtInfo.addPPPoETag) {
--					struct pppoe_tag *tag;
--					unsigned char *ptr;
--					unsigned short tagType, tagLen;
--					int offset = 0;
--
--					ptr = __nat25_find_pppoe_tag(ph, ntohs(PTT_RELAY_SID));
--					if (!ptr) {
--						DEBUG_ERR("Fail to find PTT_RELAY_SID in FADO!\n");
--						return -1;
--					}
--
--					tag = (struct pppoe_tag *)ptr;
--					tagType = (unsigned short)((ptr[0] << 8) + ptr[1]);
--					tagLen = (unsigned short)((ptr[2] << 8) + ptr[3]);
--
--					if ((tagType != ntohs(PTT_RELAY_SID)) || (tagLen < (MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN))) {
--						DEBUG_ERR("Invalid PTT_RELAY_SID tag length [%d]!\n", tagLen);
--						return -1;
--					}
--
--					pMagic = (unsigned short *)tag->tag_data;
--					if (ntohs(*pMagic) != MAGIC_CODE) {
--						DEBUG_ERR("Can't find MAGIC_CODE in %s packet!\n",
--							(ph->code == PADO_CODE ? "PADO" : "PADS"));
--						return -1;
--					}
--
--					memcpy(skb->data, tag->tag_data+MAGIC_CODE_LEN, ETH_ALEN);
--
--					if (tagLen > MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN)
--						offset = TAG_HDR_LEN;
--
--					if (skb_pull_and_merge(skb, ptr+offset, TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset) < 0) {
--						DEBUG_ERR("call skb_pull_and_merge() failed in PADO packet!\n");
--						return -1;
--					}
--					ph->length = htons(ntohs(ph->length)-(TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset));
--					if (offset > 0)
--						tag->tag_len = htons(tagLen-MAGIC_CODE_LEN-RTL_RELAY_TAG_LEN);
--
--					DEBUG_INFO("NAT25: Lookup PPPoE, forward %s Packet from %s\n",
--						(ph->code == PADO_CODE ? "PADO" : "PADS"),	skb->dev->name);
--				} else { /*  not add relay tag */
--					if (!priv->pppoe_connection_in_progress) {
--						DEBUG_ERR("Discard PPPoE packet due to no connection in progresss!\n");
--						return -1;
--					}
--					memcpy(skb->data, priv->pppoe_addr, ETH_ALEN);
--					priv->pppoe_connection_in_progress = WAIT_TIME_PPPOE;
--				}
--			} else {
--				if (ph->sid != 0) {
--					DEBUG_INFO("NAT25: Lookup PPPoE, lookup session packet from %s\n", skb->dev->name);
--					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &ph->sid);
--					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--					__nat25_db_print(priv);
--				} else {
--					return -1;
--				}
--			}
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -713,8 +614,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			return -1;
- 		case NAT25_INSERT:
- 			return 0;
--		case NAT25_LOOKUP:
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -727,8 +626,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			return -1;
- 		case NAT25_INSERT:
- 			return 0;
--		case NAT25_LOOKUP:
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -775,15 +672,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 				}
- 			}
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup IP, SA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x, DA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x\n",
--				   iph->saddr.s6_addr16[0], iph->saddr.s6_addr16[1], iph->saddr.s6_addr16[2], iph->saddr.s6_addr16[3],
--				   iph->saddr.s6_addr16[4], iph->saddr.s6_addr16[5], iph->saddr.s6_addr16[6], iph->saddr.s6_addr16[7],
--				   iph->daddr.s6_addr16[0], iph->daddr.s6_addr16[1], iph->daddr.s6_addr16[2], iph->daddr.s6_addr16[3],
--				   iph->daddr.s6_addr16[4], iph->daddr.s6_addr16[5], iph->daddr.s6_addr16[6], iph->daddr.s6_addr16[7]);
--			__nat25_generate_ipv6_network_addr(networkAddr, (unsigned int *)&iph->daddr);
--			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--			return 0;
- 		default:
- 			return -1;
- 		}
-diff --git a/drivers/staging/r8188eu/include/rtw_br_ext.h b/drivers/staging/r8188eu/include/rtw_br_ext.h
-index 00d461c4c6fa..69905d30c191 100644
---- a/drivers/staging/r8188eu/include/rtw_br_ext.h
-+++ b/drivers/staging/r8188eu/include/rtw_br_ext.h
-@@ -31,7 +31,6 @@ enum NAT25_METHOD {
- 	NAT25_MIN,
- 	NAT25_CHECK,
- 	NAT25_INSERT,
--	NAT25_LOOKUP,
- 	NAT25_PARSE,
- 	NAT25_MAX
- };
--- 
-2.32.0
+Just setting the GPIOs to high on initialization and then leaving them
+unattended doesn't look right. I saw Stephen already pointed towards
+drivers/video/backlight/pwm_bl.c.
 
+> +
+> +	DRM_INFO("gpio on");
+> +fail:
+> +	return 0;
+
+This function always returns 0, either the return type should be void, or it
+should return a different value in the error case
+
+> +}
+> +
+>  static int dp_parser_parse(struct dp_parser *parser)
+>  {
+>  	int rc = 0;
+> @@ -269,6 +296,10 @@ static int dp_parser_parse(struct dp_parser *parser)
+>  	if (rc)
+>  		return rc;
+>  
+> +	rc = dp_parser_gpio(parser);
+> +	if (rc)
+> +		return rc;
+
+The function never returns a non-zero value (see above).
