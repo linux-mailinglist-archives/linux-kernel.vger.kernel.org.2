@@ -2,297 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45803EDEA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE1B3EDEA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhHPU15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhHPU14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:27:56 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D742C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:24 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id c11-20020ac87dcb0000b0290293566e00b1so9869745qte.15
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=8uTPw/oT5qHAdMdt5boTQuI0c3E5jP6CvarW8rtmPjg=;
-        b=ka7J9qkV4y/h9IuCvvXFZOBPYhsL1OTJ5evHejxTC870hkP0sSwjikMlBAxoZJUE49
-         ur8HDxuQ3o5FGSf0GrF1cOj6cNZy19+4jAHXrzLrvu9o33oiwuHuzhMkolqhyRAl8mzy
-         4R/OES2Q2vOodJq+h6rOnjjsBagBkyBJWnmw2/ei7FqecneUL7OMWWmm6z9aDa2y8KXI
-         ZWjvPm/hq1l6/TEEym/9zpps4THglTnw+LhmQLoKzCnmhBJB0SIRRBKlHGV65cBywxwK
-         +yZkGY0vGvjRUlVRaQI9pQDhNgapW/njSMwtHuohaLP4o1mJv0x0gULymieX2lvjUDU4
-         uwJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=8uTPw/oT5qHAdMdt5boTQuI0c3E5jP6CvarW8rtmPjg=;
-        b=lVdnBF34vLq163ZNhXwpGnlyY1QYgqQFN33T6BmUFcVR+8d/zMPisj9YhrAUiF2soY
-         SOcqu4er51Xmzq1Gny1DO+UaDlM0/a+yAVzARtmVQyvMWsQODIdT5rayzlEJG2nEXnOH
-         xkqzmjL9JxGQWkHhr/3HxhAzAFKU52WHuPUBp3Dk06zIcKJDBoG2jWB8JcizmuWkkkyt
-         xThTme1q2gNmSdmEGYuALXiHmV7TG1PmOamC8YYhPtRaksR/cs29ctaCKh8+75HEwueF
-         YIH+3P6DAP+Igyeticfz8EndicbX8w1fs8kPgd7nVhsl12T12IdW9qM/oX/g6OUPA530
-         X41Q==
-X-Gm-Message-State: AOAM531eg9yWM+1ioMqxgxj/ADfhRWlzqISVDrSRzrupQK7BWoabBwUl
-        VKKiK+uwZ2gIANHVSLPJ33exSmXFqGzWv5PZIFs=
-X-Google-Smtp-Source: ABdhPJy318cku7YcZQZCfgmr29Nfm2hAabeAKbS0hM6fRTuc5Yr4eCyT3NH4aQF7WQH8T0fLPZdWJ6Nt+EEc0nfIB2k=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:478:6e44:5cf7:fcde])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:4b2:: with SMTP id
- w18mr534035qvz.47.1629145643423; Mon, 16 Aug 2021 13:27:23 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 13:25:01 -0700
-Message-Id: <20210816202504.2228283-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH v2] Makefile: remove stale cc-option checks
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Functional Testing <lkft@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
+        id S231872AbhHPU0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:26:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231307AbhHPU0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:26:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 409F960D07;
+        Mon, 16 Aug 2021 20:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629145567;
+        bh=fgWAjI0DaWa+emARNCzT/HZ9sQ5Rw9p++ET2aIlUCu0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mSOrpBYvL7C1ML2CNGey8a8e2qwGMV0PYBkywy88rxQ3b2G7upkzccpB2NG3oD6Ta
+         /cs9LlyBjqjVO3iMEwVypC+vUYooKDEOgtRIm7tfMNFzoOpuIpBnER78OXvjY9So/T
+         X2oimZkNNKVq7czxGWbtqwgNnh5NoO+zk6NZz4y0O/uyjQR027T3vnhaJCmrr/mBzu
+         l0jvpxg1Oi8hL4rjmytOkAA+yuX0R2U13BA3ErrvkAGhHuZJ0rcoPyjDf5M+K0D+kZ
+         zbR+lBs6t6meqC5owrU+nIb9GI/nkz91UHp1bMYClKPgMz/1RBlpVGetv2upGtg2qI
+         9D11ZtyOIXQQg==
+Received: by mail-ej1-f47.google.com with SMTP id z20so34066165ejf.5;
+        Mon, 16 Aug 2021 13:26:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530olZMK1eXpDhP9SY7pho/rWDfcWMs8M2WLxUD/NF/c9x3wSX2A
+        16RDpZNJIcXMrqzeHpXEnm6eAIePu0IXsOeGlg==
+X-Google-Smtp-Source: ABdhPJwrW/No0ID/B/GwH1N+YFxWM7GR1BPXyyMT2r1NJDL+dw+DfoFcWqQp3yd/VP+S2ErEyfXCtlaZrTexVxMbtDQ=
+X-Received: by 2002:a17:906:fa92:: with SMTP id lt18mr239851ejb.359.1629145565779;
+ Mon, 16 Aug 2021 13:26:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210814010139.kzryimmp4rizlznt@skbuf> <9accd63a-961c-4dab-e167-9e2654917a94@gmail.com>
+ <20210816144622.tgslast6sbblclda@skbuf> <4cad28e0-d6b4-800d-787b-936ffaca7be3@gmail.com>
+ <CAL_JsqKYd288Th2cfOp0_HD1C8xtgKjyJfUW4JLpyn0NkGdU5w@mail.gmail.com> <2e98373f-c37c-0d26-5c9a-1f15ade243c1@gmail.com>
+In-Reply-To: <2e98373f-c37c-0d26-5c9a-1f15ade243c1@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 16 Aug 2021 15:25:53 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK9+Uf526D6535eD=WpThByKmiDcVPzBuyYjb3rWSLDaA@mail.gmail.com>
+Message-ID: <CAL_JsqK9+Uf526D6535eD=WpThByKmiDcVPzBuyYjb3rWSLDaA@mail.gmail.com>
+Subject: Re: of_node_put() usage is buggy all over drivers/of/base.c?!
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc-option, cc-option-yn, and cc-disable-warning all invoke the compiler
-during build time, and can slow down the build when these checks become
-stale for our supported compilers, whose minimally supported versions
-increases over time. See Documentation/process/changes.rst for the
-current supported minimal versions (GCC 4.9+, clang 10.0.1+). Compiler
-version support for these flags may be verified on godbolt.org.
+On Mon, Aug 16, 2021 at 2:57 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 8/16/21 2:20 PM, Rob Herring wrote:
+> > On Mon, Aug 16, 2021 at 10:14 AM Frank Rowand <frowand.list@gmail.com> wrote:
+> >>
+> >> On 8/16/21 9:46 AM, Vladimir Oltean wrote:
+> >>> Hi Frank,
+> >>>
+> >>> On Mon, Aug 16, 2021 at 09:33:03AM -0500, Frank Rowand wrote:
+> >>>> Hi Vladimir,
+> >>>>
+> >>>> On 8/13/21 8:01 PM, Vladimir Oltean wrote:
+> >>>>> Hi,
+> >>>>>
+> >>>>> I was debugging an RCU stall which happened during the probing of a
+> >>>>> driver. Activating lock debugging, I see:
+> >>>>
+> >>>> I took a quick look at sja1105_mdiobus_register() in v5.14-rc1 and v5.14-rc6.
+> >>>>
+> >>>> Looking at the following stack trace, I did not see any calls to
+> >>>> of_find_compatible_node() in sja1105_mdiobus_register().  I am
+> >>>> guessing that maybe there is an inlined function that calls
+> >>>> of_find_compatible_node().  This would likely be either
+> >>>> sja1105_mdiobus_base_tx_register() or sja1105_mdioux_base_t1_register().
+> >>>
+> >>> Yes, it is sja1105_mdiobus_base_t1_register which is inlined.
+> >>>
+> >>>>>
+> >>>>> [  101.710694] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+> >>>>> [  101.719119] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 1534, name: sh
+> >>>>> [  101.726763] INFO: lockdep is turned off.
+> >>>>> [  101.730674] irq event stamp: 0
+> >>>>> [  101.733716] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> >>>>> [  101.739973] hardirqs last disabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+> >>>>> [  101.748146] softirqs last  enabled at (0): [<ffffd3ebecb10120>] copy_process+0xa78/0x1a98
+> >>>>> [  101.756313] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> >>>>> [  101.762569] CPU: 4 PID: 1534 Comm: sh Not tainted 5.14.0-rc5+ #272
+> >>>>> [  101.774558] Call trace:
+> >>>>> [  101.794734]  __might_sleep+0x50/0x88
+> >>>>> [  101.798297]  __mutex_lock+0x60/0x938
+> >>>>> [  101.801863]  mutex_lock_nested+0x38/0x50
+> >>>>> [  101.805775]  kernfs_remove+0x2c/0x50             <---- this takes mutex_lock(&kernfs_mutex);
+> >>>>> [  101.809341]  sysfs_remove_dir+0x54/0x70
+> >>>>
+> >>>> The __kobject_del() occurs only if the refcount on the node
+> >>>> becomes zero.  This should never be true when of_find_compatible_node()
+> >>>> calls of_node_put() unless a "from" node is passed to of_find_compatible_node().
+> >>>
+> >>> I figured that was the assumption, that the of_node_put would never
+> >>> trigger a sysfs file / kobject deletion from there.
+> >>>
+> >>>> In both sja1105_mdiobus_base_tx_register() and sja1105_mdioux_base_t1_register()
+> >>>> a from node ("mdio") is passed to of_find_compatible_node() without first doing an
+> >>>> of_node_get(mdio).  If you add the of_node_get() calls the problem should be fixed.
+> >>>
+> >>> The answer seems simple enough, but stupid question, but why does
+> >>> of_find_compatible_node call of_node_put on "from" in the first place?
+> >>
+> >> Actually a good question.
+> >>
+> >> I do not know why of_find_compatible_node() calls of_node_put() instead of making
+> >> the caller of of_find_compatible_node() responsible.  That pattern was created
+> >> long before I was involved in devicetree and I have not gone back to read the
+> >> review comments of when that code was created.
+> >
+>
+> > Because it is an iterator function and they all drop the ref from the
+> > prior iteration.
+>
+> That is what I was expecting before reading through the code.  But instead
+> I found of_find_compatible_node():
 
-The following flags are GCC only and supported since at least GCC 4.9.
-Remove cc-option and cc-disable-warning tests.
-* -fno-tree-loop-im
-* -Wno-maybe-uninitialized
-* -fno-reorder-blocks
-* -fno-ipa-cp-clone
-* -fno-partial-inlining
-* -femit-struct-debug-baseonly
-* -fno-inline-functions-called-once
-* -fconserve-stack
+No, I meant of_find_compatible_node() is the iterator for
+for_each_compatible_node().
 
-The following flags are supported by all supported versions of GCC and
-Clang. Remove their cc-option, cc-option-yn, and cc-disable-warning tests.
-* -fno-delete-null-pointer-checks
-* -fno-var-tracking
-* -Wno-array-bounds
+>
+>         raw_spin_lock_irqsave(&devtree_lock, flags);
+>         for_each_of_allnodes_from(from, np)
+>                 if (__of_device_is_compatible(np, compatible, type, NULL) &&
+>                     of_node_get(np))
+>                         break;
+>         of_node_put(from);
+>         raw_spin_unlock_irqrestore(&devtree_lock, flags);
+>
+>
+> for_each_of_allnodes_fromir:
+>
+> #define for_each_of_allnodes_from(from, dn) \
+>         for (dn = __of_find_all_nodes(from); dn; dn = __of_find_all_nodes(dn))
 
-The following configs are made dependent on GCC, since they use GCC
-specific flags.
-* READABLE_ASM
-* DEBUG_SECTION_MISMATCH
+This is only used internally, so it can rely on the caller holding the
+lock. This should be moved into of_private.h.
 
--mfentry was not supported by s390-linux-gnu-gcc until gcc-9+, add a
-comment.
+> and __of_find_all_nodes() is:
+>
+> struct device_node *__of_find_all_nodes(struct device_node *prev)
+> {
+>         struct device_node *np;
+>         if (!prev) {
+>                 np = of_root;
+>         } else if (prev->child) {
+>                 np = prev->child;
+>         } else {
+>                 /* Walk back up looking for a sibling, or the end of the structure */
+>                 np = prev;
+>                 while (np->parent && !np->sibling)
+>                         np = np->parent;
+>                 np = np->sibling; /* Might be null at the end of the tree */
+>         }
+>         return np;
+> }
+>
+>
+> So the iterator is not using of_node_get() and of_node_put() for each
+> node that is traversed.  The protection against a node disappearing
+> during the iteration is provided by holding devtree_lock.
 
---param=allow-store-data-races=0 was renamed to -fno-allow-store-data-races
-in the GCC 10 release; add a comment.
+The lock is for traversing the nodes (i.e. a list lock), not keeping
+nodes around.
 
--Wmaybe-uninitialized (GCC specific) was being added for CONFIG_GCOV,
-then again unconditionally; add it only once.
+>
+> >
+> > I would say any open coded call where from is not NULL is an error.
+>
+> I assume you mean any open coded call of of_find_compatible_node().  There are
+> at least a couple of instances of that.  I did only a partial grep while looking
+> at Vladimir's issue.
+>
+> Doing the full grep now, I see 13 instances of architecture and driver code calling
+> of_find_compatible_node().
+>
+> > It's not reliable because the DT search order is not defined and could
+> > change. Someone want to write a coccinelle script to check that?
+> >
+>
+> > The above code should be using of_get_compatible_child() instead.
+>
+> Yes, of_get_compatible_child() should be used here.  Thanks for pointing
+> that out.
+>
+> There are 13 instances of architecture and driver code calling
+> of_find_compatible_node().  If possible, it would be good to change all of
+> them to of_get_compatible_child().  If we could replace all driver
+> usage of of_find_compatible_node() with a from parameter of NULL to
+> a new wrapper without a from parameter, where the wrapper calls
+> of_find_compatible_node() with the from parameter set to NULL, then
+> we could prevent this problem from recurring.
 
-Also, base RETPOLINE_CFLAGS and RETPOLINE_VDSO_CFLAGS on CONFIC_CC_IS_*
-then remove cc-option tests for Clang.
+Patches welcome.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1436
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v1 -> v2:
-* rebase on linux-kbuild/for-next from linux-next/master; patch was
-  dropped from linux-mm:
-  https://lore.kernel.org/mm-commits/20210814215814.W_qqW%25akpm@linux-foundation.org/.
-* Pick up Miguel & Nathan's AB/RB tags.
-* Pick up reports from LKFT/KTR.
-* Note in commit message about -Wmaybe-uninitialized as per Masahiro.
-* Undo changes to to -mfentry due to LKFT report:
-  https://lore.kernel.org/lkml/CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com/.
-* Undo changes to --param=allow-store-data-races=0 &
-  -fno-allow-store-data-races due to KTR report:
-  https://lore.kernel.org/linux-mm/202108160729.Lx0IJzq3-lkp@intel.com/.
-* Add comments to Makefile about -mfentry, -fno-allow-store-data-races,
-  note in commit message.
+I don't know if all 13 are only looking for child nodes. Could be open
+coding for_each_compatible_node or looking for grandchild nodes in
+addition (for which we don't have helpers).
 
- Makefile          | 50 +++++++++++++++++++++++++++++------------------
- lib/Kconfig.debug |  2 ++
- 2 files changed, 33 insertions(+), 19 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 891866af0787..ce5a297ecd7c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -669,9 +669,10 @@ endif # KBUILD_EXTMOD
- # Defaults to vmlinux, but the arch makefile usually adds further targets
- all: vmlinux
- 
--CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
--	$(call cc-option,-fno-tree-loop-im) \
--	$(call cc-disable-warning,maybe-uninitialized,)
-+CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage
-+ifdef CONFIG_CC_IS_GCC
-+CFLAGS_GCOV	+= -fno-tree-loop-im
-+endif
- export CFLAGS_GCOV
- 
- # The arch Makefiles can override CC_FLAGS_FTRACE. We may also append it later.
-@@ -679,12 +680,14 @@ ifdef CONFIG_FUNCTION_TRACER
-   CC_FLAGS_FTRACE := -pg
- endif
- 
--RETPOLINE_CFLAGS_GCC := -mindirect-branch=thunk-extern -mindirect-branch-register
--RETPOLINE_VDSO_CFLAGS_GCC := -mindirect-branch=thunk-inline -mindirect-branch-register
--RETPOLINE_CFLAGS_CLANG := -mretpoline-external-thunk
--RETPOLINE_VDSO_CFLAGS_CLANG := -mretpoline
--RETPOLINE_CFLAGS := $(call cc-option,$(RETPOLINE_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_CFLAGS_CLANG)))
--RETPOLINE_VDSO_CFLAGS := $(call cc-option,$(RETPOLINE_VDSO_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_VDSO_CFLAGS_CLANG)))
-+ifdef CONFIG_CC_IS_GCC
-+RETPOLINE_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
-+RETPOLINE_VDSO_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
-+endif
-+ifdef CONFIG_CC_IS_CLANG
-+RETPOLINE_CFLAGS	:= -mretpoline-external-thunk
-+RETPOLINE_VDSO_CFLAGS	:= -mretpoline
-+endif
- export RETPOLINE_CFLAGS
- export RETPOLINE_VDSO_CFLAGS
- 
-@@ -737,7 +740,7 @@ include/config/auto.conf:
- endif # may-sync-config
- endif # need-config
- 
--KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
-+KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
- KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
- KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
- KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
-@@ -752,17 +755,19 @@ KBUILD_CFLAGS += -Os
- endif
- 
- # Tell gcc to never replace conditional load with a non-conditional one
-+ifdef CONFIG_CC_IS_GCC
-+# gcc-10 renamed --param=allow-store-data-races=0 to
-+# -fno-allow-store-data-races.
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
- KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
-+endif
- 
- ifdef CONFIG_READABLE_ASM
- # Disable optimizations that make assembler listings hard to read.
- # reorder blocks reorders the control in the function
- # ipa clone creates specialized cloned functions
- # partial inlining inlines only parts of functions
--KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
--                 $(call cc-option,-fno-ipa-cp-clone,) \
--                 $(call cc-option,-fno-partial-inlining)
-+KBUILD_CFLAGS += -fno-reorder-blocks -fno-ipa-cp-clone -fno-partial-inlining
- endif
- 
- ifneq ($(CONFIG_FRAME_WARN),0)
-@@ -854,8 +859,10 @@ DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
- endif
- 
- ifdef CONFIG_DEBUG_INFO_REDUCED
--DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
--		   $(call cc-option,-fno-var-tracking)
-+DEBUG_CFLAGS	+= -fno-var-tracking
-+ifdef CONFIG_CC_IS_GCC
-+DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
-+endif
- endif
- 
- ifdef CONFIG_DEBUG_INFO_COMPRESSED
-@@ -889,6 +896,7 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
-   endif
- endif
- ifdef CONFIG_HAVE_FENTRY
-+  # s390-linux-gnu-gcc did not support -mfentry until gcc-9.
-   ifeq ($(call cc-option-yn, -mfentry),y)
-     CC_FLAGS_FTRACE	+= -mfentry
-     CC_FLAGS_USING	+= -DCC_USING_FENTRY
-@@ -901,7 +909,7 @@ endif
- 
- # We trigger additional mismatches with less inlining
- ifdef CONFIG_DEBUG_SECTION_MISMATCH
--KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
-+KBUILD_CFLAGS += -fno-inline-functions-called-once
- endif
- 
- ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-@@ -980,14 +988,16 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
- 
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
--KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
-+KBUILD_CFLAGS += -Wno-array-bounds
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
- 
- # Another good warning that we'll want to enable eventually
- KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
- 
- # Enabled with W=2, disabled by default as noisy
--KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
-+ifdef CONFIG_CC_IS_GCC
-+KBUILD_CFLAGS += -Wno-maybe-uninitialized
-+endif
- 
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= -fno-strict-overflow
-@@ -996,7 +1006,9 @@ KBUILD_CFLAGS	+= -fno-strict-overflow
- KBUILD_CFLAGS  += -fno-stack-check
- 
- # conserve stack if available
--KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
-+ifdef CONFIG_CC_IS_GCC
-+KBUILD_CFLAGS   += -fconserve-stack
-+endif
- 
- # Prohibit date/time macros, which would make the build non-deterministic
- KBUILD_CFLAGS   += -Werror=date-time
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5ddd575159fb..7d3d29203a72 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -365,6 +365,7 @@ config STRIP_ASM_SYMS
- config READABLE_ASM
- 	bool "Generate readable assembler code"
- 	depends on DEBUG_KERNEL
-+	depends on CC_IS_GCC
- 	help
- 	  Disable some compiler optimizations that tend to generate human unreadable
- 	  assembler output. This may make the kernel slightly slower, but it helps
-@@ -383,6 +384,7 @@ config HEADERS_INSTALL
- 
- config DEBUG_SECTION_MISMATCH
- 	bool "Enable full Section mismatch analysis"
-+	depends on CC_IS_GCC
- 	help
- 	  The section mismatch analysis checks if there are illegal
- 	  references from one section to another section.
-
-base-commit: f12b034afeb3a977bbb1c6584dedc0f3dc666f14
--- 
-2.33.0.rc1.237.g0d66db33f3-goog
-
+Rob
