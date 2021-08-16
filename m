@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337B13EDD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834873EDD4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhHPSnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S230445AbhHPSqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhHPSnu (ORCPT
+        with ESMTP id S229722AbhHPSqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:43:50 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB887C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:43:18 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id c12so15661360ljr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:43:18 -0700 (PDT)
+        Mon, 16 Aug 2021 14:46:19 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9DFC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:45:47 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id z2so36461566lft.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tc8LvEjKB125fMvaYu4lvIYEHsbzSNtJpdQim2oDD+w=;
-        b=iQi8JqbQuE1XAZgXMTPQ/bq2ZSyLNYvZn4GHu6SXRYH7hMe75T+H4yVrj5+bLj0y/P
-         1bhzwOTyC9cDAoezDQaNh9rW9ZhUHP2n58JQVG9peGjJCfxR0s/1MMbESF4B2IuA5tCg
-         QIfSTfcM9U6Y427NAhhUvuUz28zeCQFYRwTzY74OTrkzJV/1UcRlKtqLqVETjaQwcNl0
-         stpD1FIzlKpjpcpKNX/UVklYyyxWey440cqHOs0/sgY6Vmod/D50ivwlBpj5Y6e2+Q/y
-         TXSFOAAAI6xpWc5F6Ui3Kam+3RtI9sSp1Z0eKsnls9Et9XhKnnK3XKaAiyL8HxUNr1o+
-         gcNw==
+        bh=DOC2qH+Gi4fjMQIz9mck49PHMjhmRHhlBc5XPTN/slk=;
+        b=dlWwzGdKnjpZ4WYlLo8WeTdORYWvDWRJjhGZmS+s1OFr5JDoN0EGxsPrhHjxuGQ2uc
+         FG7p+14j3jd3Evx8uDZCVwAtozoUshNqkre3LopUGMLuvXCt4QTC5gXmBUeFG1RdoC19
+         UxqeeP50p9nOccLYj5dbMBjyL9e/5U+xPlzTRwdqpmaSj6eqsL6RHWTFqCQsocV0PIzq
+         UjBbjwNeRBGVYoFFl1jT4rEhw57ro4V7soFL46PVVPDEv/eGdlC7v8iAItpt/CMpdvoz
+         mXIKXmr/In7WrV0I26EN050uHGmlXYkprqhH88wh5KHRZGa/uCNEskK8Mf0aOg7/qTVi
+         gd8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tc8LvEjKB125fMvaYu4lvIYEHsbzSNtJpdQim2oDD+w=;
-        b=fnyG9FwTE85FflffNbSPIvwZ5p6tLmRc/xPCZbq9S+G0OGRkuGBEW4Ei3upNXcjBze
-         YUfC+RUtCdm9B5kVNsZ++OQoY32TOtVtqPxZUr5PrbOcMCs/FBwrykD5cFHIohxxkU+a
-         kQB0jXuwuvgI2KUQkKVWcW9saqF8IQOwbtxHR94uSAnRSYN8UrVQfE82lGMGBT4juI7i
-         ss38Dd1Udg6svOmHNIQtwaQc08gcTrymBwsm06eFJmZ/83iBuZ3ZxNLKDD6UThttiqYL
-         +SiQf5FsSDheZ/WDdVamzGZIRWIJjTFDSJC3pFbjqvXh9goD6aVqU2i9GNFCC7L5NRwb
-         1l+Q==
-X-Gm-Message-State: AOAM533tAUMVi0D0AHTi9mV4Ok77tWxNIj6vw5D7JfFZPNRGZxj+s2oH
-        CNEqA8toXedaY7sWyPVea3EMNtm/Uyiuh6LIqPZhbg==
-X-Google-Smtp-Source: ABdhPJxh2J/gfj4uaNJSi+hQ4c8sGsIdVmOD7cbnGyOdIh3lGXQ2f0SdgCyg3NVunsSvPOSfgxwlymzCJCztsFWubLY=
-X-Received: by 2002:a2e:94cb:: with SMTP id r11mr61720ljh.116.1629139396718;
- Mon, 16 Aug 2021 11:43:16 -0700 (PDT)
+        bh=DOC2qH+Gi4fjMQIz9mck49PHMjhmRHhlBc5XPTN/slk=;
+        b=l6ButPUoV6hfWXBBv+tROh4GNRZRDQix07WWUJlqfoEwz1f7g9VLuPXEb55tKgi8fg
+         3E5/OMbo0myvfxt21B4Bjn16pd6rEn6e59OxbDLxu8EIpSo+68AbvqDla0CvIdmwrLvK
+         S0dKcCnlhiehRYoUGl8Xqk5YQF2r5ftW3DKUZjPl8TI3EhRNxbtQ6vc2+nrp5ztZ6YDc
+         ixST7j8tyztIPexO58LKmDWacnVtpjAXceEkqWX74UwS8W/a1NTMKNYwDoyph+T90+nu
+         AiX2WlWZHlxQw1GQ076ckPSqa/+JMEdJDRCT82o5jf7UK+zks+H8/2kK77bO50RFNFuU
+         Iqug==
+X-Gm-Message-State: AOAM530ur9J/Vo7OdU/+M0dBRnTXPI6i+fq7d4RYY/vjTuUkXzZzm9mN
+        6h2JuEipitppImx6cwulN2k/sRFXz3rbYF0vOuoThQ==
+X-Google-Smtp-Source: ABdhPJymwoDPQqlOB+EX5j4gczTEQbJyFmpxxy0jpOPg4mOQagZVz8rvhBzYGr6IYbENYGkyN9TNPwyrWGmpIJJ8je4=
+X-Received: by 2002:a05:6512:3041:: with SMTP id b1mr16693lfb.122.1629139545812;
+ Mon, 16 Aug 2021 11:45:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210815191852.52271-1-nathan@kernel.org>
-In-Reply-To: <20210815191852.52271-1-nathan@kernel.org>
+References: <20210814234248.1755703-1-nathan@kernel.org>
+In-Reply-To: <20210814234248.1755703-1-nathan@kernel.org>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 16 Aug 2021 11:43:05 -0700
-Message-ID: <CAKwvOdknYUxe1dHW-muGr=ZJc=hCKBrfhZCNQR9tEJTwr0fK=Q@mail.gmail.com>
-Subject: Re: [PATCH] bus: ti-sysc: Add break in switch statement in sysc_init_soc()
+Date:   Mon, 16 Aug 2021 11:45:34 -0700
+Message-ID: <CAKwvOd=Oo1u9FsHUaMi-pnb=bM0QngYjhBnDU819aetO2OZsvw@mail.gmail.com>
+Subject: Re: [PATCH] iwlwifi: mvm: Fix bitwise vs logical operator in iwl_mvm_scan_fits()
 To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-omap@vger.kernel.org,
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 12:19 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Sat, Aug 14, 2021 at 4:43 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> After commit a6d90e9f2232 ("bus: ti-sysc: AM3: RNG is GP only"), clang
-> with -Wimplicit-fallthrough enabled warns:
+> Clang warns:
 >
-> drivers/bus/ti-sysc.c:2958:3: warning: unannotated fall-through between
-> switch labels [-Wimplicit-fallthrough]
->                 default:
->                 ^
-> drivers/bus/ti-sysc.c:2958:3: note: insert 'break;' to avoid
-> fall-through
->                 default:
->                 ^
->                 break;
+> drivers/net/wireless/intel/iwlwifi/mvm/scan.c:835:3: warning: bitwise
+> and of boolean expressions; did you mean logical and?
+> [-Wbool-operation-and]
+>                 (n_channels <= mvm->fw->ucode_capa.n_scan_channels) &
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>                                                                     &&
 > 1 warning generated.
 >
-> Clang's version of this warning is a little bit more pedantic than
-> GCC's. Add the missing break to satisfy it to match what has been done
-> all over the kernel tree.
+> Replace the bitwise AND with a logical one to solve the warning, which
+> is clearly what was intended.
 >
+> Fixes: 999d2568ee0c ("iwlwifi: mvm: combine scan size checks into a common function")
 > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
 Thanks for the patch!
 Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
 > ---
->  drivers/bus/ti-sysc.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/net/wireless/intel/iwlwifi/mvm/scan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-> index 0ef98e3ba341..afe8222db7cd 100644
-> --- a/drivers/bus/ti-sysc.c
-> +++ b/drivers/bus/ti-sysc.c
-> @@ -2955,6 +2955,7 @@ static int sysc_init_soc(struct sysc *ddata)
->                         break;
->                 case SOC_AM3:
->                         sysc_add_disabled(0x48310000);  /* rng */
-> +                       break;
->                 default:
->                         break;
->                 }
+> diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
+> index 0368b7101222..494379fc9224 100644
+> --- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
+> +++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
+> @@ -832,7 +832,7 @@ static inline bool iwl_mvm_scan_fits(struct iwl_mvm *mvm, int n_ssids,
+>                                      int n_channels)
+>  {
+>         return ((n_ssids <= PROBE_OPTION_MAX) &&
+> -               (n_channels <= mvm->fw->ucode_capa.n_scan_channels) &
+> +               (n_channels <= mvm->fw->ucode_capa.n_scan_channels) &&
+>                 (ies->common_ie_len +
+>                  ies->len[NL80211_BAND_2GHZ] +
+>                  ies->len[NL80211_BAND_5GHZ] <=
 >
 > base-commit: ba31f97d43be41ca99ab72a6131d7c226306865f
 > --
 > 2.33.0.rc2
 >
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210815191852.52271-1-nathan%40kernel.org.
-
 
 
 -- 
