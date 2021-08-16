@@ -2,229 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACAA3ED446
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13013ED444
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbhHPMrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S233796AbhHPMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhHPMrw (ORCPT
+        with ESMTP id S229643AbhHPMrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 08:47:52 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB83C061764
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1108C0613CF
         for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id f12-20020a05600c4e8c00b002e6bdd6ffe2so9131854wmq.5
+Received: by mail-wr1-x432.google.com with SMTP id k29so23417375wrd.7
         for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=628UnG3xjkZBMBG0VGNKw9sLYLAdXr0sKp9IjqwLtm4=;
-        b=nZUz0VgbAkxNJAiE9MAc/dLOh2wdouuGcy/tenu3ofifjwk5tWoE9ZMx1LtFAEZYIU
-         QONqerIapPAAGzvIzkk/mNlH+qQeSp9tMDcVDsKW5gHXTzTPLztrAx7KngfSMjnuJFFo
-         dHjxPf1qCxFJXqCyutbB3kV8NXqXw7PiZrMYagWbqpoVZ48LNLECUze9dYDjAjmVxNfx
-         pKcEWV8s3eBmVp/N0w03KvQG8OpcaUurrTSEe0xJVYnMZ/+PVAm6NZQFE0aSiva4j427
-         Db+1TcjkumK3wixTTwieyOb2i3wons09jv0G1iypy/bykk7/FJ06CIC/E5UwDgA9Ty8H
-         Hw6Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=UciGnzheksS2qLoDLETrk/e95MzTGXeXG51AsgxNO+k=;
+        b=iD22aRcEZwq4TaevFswvk4OthmpEFUC7ITUQ9Ol6vDK5/eWHqWht8L/R616ABlyCqy
+         y2Uh3QDw+P1dll33nho/xbdwG67gDWgdmJcwgApWfFnItYAf5ylujvoIFcuxW5tQIiEA
+         lLyCYKx9uHCodFNN6kORzWGtVA9wz1sdHOFlsun4DXKuhxFjhqQxo2Z79SAaCqUfd9fJ
+         akJjAXzwQ2fyguv8v17S+mzcNWYgtFqZj/KG6hRTsmqIFPJgPEmrIPjXTbOdH9qjhtPU
+         ITpT0uhjbRMpe7zhnUOAd2hxvGCb2hlRZ0RQatJaSnnleD/W6wYQFU4ZRZRdEV1f7L7f
+         F97w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=628UnG3xjkZBMBG0VGNKw9sLYLAdXr0sKp9IjqwLtm4=;
-        b=Mixg1dmxUStJrYk0dkhe9mRpt4L58HZu7KSP7EgdS6T/MyvIpOyYCtCW9Yw2WlqzB1
-         p0MdhCKmBwCl18guF3jVcWZZgEF7zfCpIl7chESAMr3a21YnvSvoasIiyXflWOqxWwl+
-         3O3p4xaSkq9AStfBeUYyqwtoVI4rAftZ1LteOSAQgpGJkBijtsbHaNoCMsJrtW/f8S5z
-         Zu14d68WcrJGvXNEecmw5HXpjyVAvUP35/8lv8nIVT9UtzqZUWoVQEqfPeTGEV1PUkFQ
-         RApH4AW/uH422hrTrnsMIi6IDVISLJckmQS+ypn12Lt5lDeCh+OeRH/PsqyLIEvjg9a+
-         6xxg==
-X-Gm-Message-State: AOAM530aYldPWP8vrkqUDs1QaAdTmo3ndiJGQuBAg03yxgmWJT2jOrSX
-        0Gcd3iLv+K/ibYiqm3HIpcpYfg==
-X-Google-Smtp-Source: ABdhPJzzWSQkQOBKWoi/NFlSIrCnrGUOE8L5DC8bQK9YcmtgJr492sWEK0o8hMmdRhhMLeglR7G/kg==
-X-Received: by 2002:a05:600c:4ba4:: with SMTP id e36mr5859426wmp.82.1629118039320;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UciGnzheksS2qLoDLETrk/e95MzTGXeXG51AsgxNO+k=;
+        b=OyCN5Nu7NQ+AAC9kkugA3w+hKqGNn02rnj7Y6hvtofUjh5Z4rxLbfr8KiPTCAFmjHK
+         5nOElY5htTbOio3QzNQ3HcFvNTnv9hjUJexuZSXSdkiIkhCFEpON/T1KPY6djc4c6lEg
+         ebbVB7nSWKcBmnq32zrCgRK1htG2hPtt/9m5KJ/4pofeE8YLoqauPZkwlrTAJ9LNgTwH
+         cUlhOab/XOgZQ0Xw2XGvVfk5DASs3U0SJOVBjJsVS5ZiykOPYhlS3qfB44PN59kq9jhi
+         Shz/wXYKSQJuy7EGHXVto7KZ2X92PlvSyRVOedvVSg9uHWkOzeBzJJOhmo9Sfr+lItmV
+         qI1A==
+X-Gm-Message-State: AOAM531sETqw0joTxcdsZQ2fH36FZOwVafhxUkwaC4Z6YBR3KRvbilMP
+        Lc8iAMhxlHJHIm54fWchAyyfbSjhvrY=
+X-Google-Smtp-Source: ABdhPJx74mNcW0G9z1JdJLJUjdM7uql3qXMDms0ym6TmRaR/WZqCVzU/Rghb8dPZfXDv1TnTJXAy/Q==
+X-Received: by 2002:adf:e9c3:: with SMTP id l3mr18612852wrn.300.1629118039512;
         Mon, 16 Aug 2021 05:47:19 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id z126sm10724473wmc.11.2021.08.16.05.47.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 05:47:18 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 13:47:16 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
- as a module
-Message-ID: <YRpeVLf18Z+1R7WE@google.com>
-References: <7hsga8kb8z.fsf@baylibre.com>
- <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org>
- <7h7diwgjup.fsf@baylibre.com>
- <87im0m277h.wl-maz@kernel.org>
- <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
- <87sfzpwq4f.wl-maz@kernel.org>
- <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
- <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
- <YQuZ2cKVE+3Os25Z@google.com>
+Received: from ?IPv6:2a02:908:1252:fb60:f9:c3d:bbad:9698? ([2a02:908:1252:fb60:f9:c3d:bbad:9698])
+        by smtp.gmail.com with ESMTPSA id s17sm10488566wmj.12.2021.08.16.05.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 05:47:19 -0700 (PDT)
+Subject: Re: [PATCH] drm: radeon: r600_dma: Replace cpu_to_le32() by
+ lower_32_bits()
+To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        zhaoxiao <zhaoxiao@uniontech.com>, airlied@linux.ie
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        David1.Zhou@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210813085434.3890-1-zhaoxiao@uniontech.com>
+ <54590a79-7047-cd6f-0f54-a005bdc69769@daenzer.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <4b1faa87-a4d8-57e2-80d0-817c5df8f643@gmail.com>
+Date:   Mon, 16 Aug 2021 14:47:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <54590a79-7047-cd6f-0f54-a005bdc69769@daenzer.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YQuZ2cKVE+3Os25Z@google.com>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021, Lee Jones wrote:
 
-> On Wed, 04 Aug 2021, Saravana Kannan wrote:
-> 
-> > On Wed, Aug 4, 2021 at 11:20 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Wed, Aug 4, 2021 at 1:50 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On Wed, 04 Aug 2021 02:36:45 +0100,
-> > > > Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > Hi Saravana,
-> > > >
-> > > > Thanks for looking into this.
-> > >
-> > > You are welcome. I just don't want people to think fw_devlink is broken :)
-> > >
-> > > >
-> > > > [...]
-> > > >
-> > > > > > Saravana, could you please have a look from a fw_devlink perspective?
-> > > > >
-> > > > > Sigh... I spent several hours looking at this and wrote up an analysis
-> > > > > and then realized I might be looking at the wrong DT files.
-> > > > >
-> > > > > Marc, can you point me to the board file in upstream that corresponds
-> > > > > to the platform in which you see this issue? I'm not asking for [1],
-> > > > > but the actual final .dts (not .dtsi) file that corresponds to the
-> > > > > platform/board/system.
-> > > >
-> > > > The platform I can reproduce this on is described in
-> > > > arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts. It is an
-> > > > intricate maze of inclusion, node merge and other DT subtleties. I
-> > > > suggest you look at the decompiled version to get a view of the
-> > > > result.
-> > >
-> > > Thanks. After decompiling it, it looks something like (stripped a
-> > > bunch of reg and address properties and added the labels back):
-> > >
-> > > eth_phy: mdio-multiplexer@4c000 {
-> > >         compatible = "amlogic,g12a-mdio-mux";
-> > >         clocks = <0x02 0x13 0x1e 0x02 0xb1>;
-> > >         clock-names = "pclk\0clkin0\0clkin1";
-> > >         mdio-parent-bus = <0x22>;
-> > >
-> > >         ext_mdio: mdio@0 {
-> > >                 reg = <0x00>;
-> > >
-> > >                 ethernet-phy@0 {
-> > >                         max-speed = <0x3e8>;
-> > >                         interrupt-parent = <0x23>;
-> > >                         interrupts = <0x1a 0x08>;
-> > >                         phandle = <0x16>;
-> > >                 };
-> > >         };
-> > >
-> > >         int_mdio: mdio@1 {
-> > >                 ...
-> > >         }
-> > > }
-> > >
-> > > And phandle 0x23 refers to the gpio_intc interrupt controller with the
-> > > modular driver.
-> > >
-> > > > > Based on your error messages, it's failing for mdio@0 which
-> > > > > corresponds to ext_mdio. But none of the board dts files in upstream
-> > > > > have a compatible property for "ext_mdio". Which means fw_devlink
-> > > > > _should_ propagate the gpio_intc IRQ dependency all the way up to
-> > > > > eth_phy.
-> > > > >
-> > > > > Also, in the failing case, can you run:
-> > > > > ls -ld supplier:*
-> > > > >
-> > > > > in the /sys/devices/....<something>/ folder that corresponds to the
-> > > > > "eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
-> > > >
-> > > > Here you go:
-> > > >
-> > > > root@tiger-roach:~# find /sys/devices/ -name 'supplier*'|grep -i mdio | xargs ls -ld
-> > > > lrwxrwxrwx 1 root root 0 Aug  4 09:47 /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer/supplier:platform:ff63c000.system-controller:clock-controller -> ../../../../virtual/devlink/platform:ff63c000.system-controller:clock-controller--platform:ff64c000.mdio-multiplexer
-> > >
-> > > As we discussed over chat, this was taken after the mdio-multiplexer
-> > > driver "successfully" probes this device. This will cause
-> > > SYNC_STATE_ONLY device links created by fw_devlink to be deleted
-> > > (because they are useless after a device probes). So, this doesn't
-> > > show the info I was hoping to demonstrate.
-> > >
-> > > In any case, one can see that fw_devlink properly created the device
-> > > link for the clocks dependency. So fw_devlink is parsing this node
-> > > properly. But it doesn't create a similar probe order enforcing device
-> > > link between the mdio-multiplexer and the gpio_intc because the
-> > > dependency is only present in a grand child DT node (ethernet-phy@0
-> > > under ext_mdio). So fw_devlink is working as intended.
-> > >
-> > > I spent several hours squinting at the code/DT yesterday. Here's what
-> > > is going on and causing the problem:
-> > >
-> > > The failing driver in this case is
-> > > drivers/net/mdio/mdio-mux-meson-g12a.c. And the only DT node it's
-> > > handling is what I pasted above in this email. In the failure case,
-> > > the call flow is something like this:
-> > >
-> > > g12a_mdio_mux_probe()
-> > > -> mdio_mux_init()
-> > > -> of_mdiobus_register(ext_mdio DT node)
-> > > -> of_mdiobus_register_phy(ext_mdio DT node)
-> > > -> several calls deep fwnode_mdiobus_phy_device_register(ethernet_phy DT node)
-> > > -> Tried to get the IRQ listed in ethernet_phy and fails with
-> > > -EPROBE_DEFER because the IRQ driver isn't loaded yet.
-> > >
-> > > The error is propagated correctly all the way up to of_mdiobus_register(), but
-> > > mdio_mux_init() ignores the -EPROBE_DEFER from of_mdiobus_register() and just
-> > > continues on with the rest of the stuff and returns success as long as
-> > > one of the child nodes (in this case int_mdio) succeeds.
-> > >
-> > > Since the probe returns 0 without really succeeding, networking stuff
-> > > just fails badly after this. So, IMO, the real problem is with
-> > > mdio_mux_init() not propagating up the -EPROBE_DEFER. I gave Marc a
-> > > quick hack (pasted at the end of this email) to test my theory and he
-> > > confirmed that it fixes the issue (a few deferred probes later, things
-> > > work properly).
-> > >
-> > > Andrew, I don't see any good reason for mdio_mux_init() not
-> > > propagating the errors up correctly (at least for EPROBE_DEFER). I'll
-> > > send a patch to fix this. Please let me know if there's a reason it
-> > > has to stay as-is.
-> > 
-> > I sent out the proper fix as a series:
-> > https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
-> > 
-> > Marc, can you give it a shot please?
-> > 
-> > -Saravana
-> 
-> Superstar!  Thanks for taking the time to rectify this for all of us.
 
-Just to clarify:
+Am 13.08.21 um 17:03 schrieb Michel Dänzer:
+> On 2021-08-13 10:54 a.m., zhaoxiao wrote:
+>> This patch fixes the following sparse errors:
+>> drivers/gpu/drm/radeon/r600_dma.c:247:30: warning: incorrect type in assignment (different base types)
+>> drivers/gpu/drm/radeon/r600_dma.c:247:30:    expected unsigned int volatile [usertype]
+>> drivers/gpu/drm/radeon/r600_dma.c:247:30:    got restricted __le32 [usertype]
+>>
+>> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+>> ---
+>>   drivers/gpu/drm/radeon/r600_dma.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/radeon/r600_dma.c b/drivers/gpu/drm/radeon/r600_dma.c
+>> index fb65e6fb5c4f..a2d0b1edcd22 100644
+>> --- a/drivers/gpu/drm/radeon/r600_dma.c
+>> +++ b/drivers/gpu/drm/radeon/r600_dma.c
+>> @@ -244,7 +244,7 @@ int r600_dma_ring_test(struct radeon_device *rdev,
+>>   	gpu_addr = rdev->wb.gpu_addr + index;
+>>   
+>>   	tmp = 0xCAFEDEAD;
+>> -	rdev->wb.wb[index/4] = cpu_to_le32(tmp);
+>> +	rdev->wb.wb[index/4] = lower_32_bits(tmp);
+>>   
+>>   	r = radeon_ring_lock(rdev, ring, 4);
+>>   	if (r) {
+>>
+> Seems better to mark rdev->wb.wb as little endian instead. It's read with le32_to_cpu (with some exceptions which look like bugs), which would result in 0xADEDFECA like this.
 
-  Are we waiting on a subsequent patch submission at this point?
+Yeah, that patch doesn't look correct at all and most likely breaks ring 
+test on big endian systems.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Christian.
