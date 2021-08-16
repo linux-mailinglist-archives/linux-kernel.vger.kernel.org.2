@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1363ED288
+	by mail.lfdr.de (Postfix) with ESMTP id E7AEB3ED28B
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236345AbhHPKyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:54:14 -0400
-Received: from mga06.intel.com ([134.134.136.31]:17780 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236242AbhHPKyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:54:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="276867110"
-X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
-   d="scan'208";a="276867110"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 03:53:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
-   d="scan'208";a="448502468"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Aug 2021 03:53:29 -0700
-Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 944A85808DB;
-        Mon, 16 Aug 2021 03:53:26 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 18:53:23 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, vee.khee.wong@intel.com,
-        weifeng.voon@intel.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1 3/3] net: stmmac: add ethtool per-queue irq
- statistic support
-Message-ID: <20210816105323.GA13779@linux.intel.com>
-References: <cover.1629092894.git.vijayakannan.ayyathurai@intel.com>
- <5c956016465b688a2679bd02da1f751046be189c.1629092894.git.vijayakannan.ayyathurai@intel.com>
+        id S236272AbhHPKy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236262AbhHPKyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:54:04 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E8EC0617AE;
+        Mon, 16 Aug 2021 03:53:32 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so11332090wmi.1;
+        Mon, 16 Aug 2021 03:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oxOatG4DF7XYl9LgqDB0uxXeMKWrkqq1loDCiH5OyG8=;
+        b=tIftbxq6xukMGm7k5IVdb3khjkUO3tWoZsnC2Q/sTgcx670dnBOZ9OA8YyuqbyhHfP
+         sm5iGcqSHraEVwlgEIbbUbijE7tP9a3QGE9/wEEXw+2GouF+VTXxRcCCqX38QAnE6BpA
+         blOqaIZxYt0aolL/p/OuBGeDYlJDV+6FKwOx5JIJzDXIb0cnPEy578hxwOgFiJ3UDMmc
+         U57WJfmduamBexTbcuthRdkbrGLHpG+IZ4Z3iKUdP8HW+xrUnllWxBHP3fJtoDRP53mA
+         yjSxBJNV14q3jpy2WTjr7ej7xFJUlNv5K6K9sCwdLPVBQAUVYlf29R8E2CvExy0ZWfWQ
+         Veug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oxOatG4DF7XYl9LgqDB0uxXeMKWrkqq1loDCiH5OyG8=;
+        b=jXfPt/K0wIHxBhdkA3FIdIraztMXtPqEncl/aJbB3r1Rj5PLcn79Venw9ffwVZ5BR3
+         tmwZMA916z41DDUBc9vt/ODxACeMzXGEX0iU+mTsl8sLKsBgASlZS6fBTfs8E7KxBQFR
+         1Rrz2NMtN0KFDpSH/g2TwxUMLCNJkawaUol9A+K+aYkoEe8DqEaI5zWyseodgNb3dLWw
+         oCszhiwbowi0MICjTovDakNte1yzCSCCAxVj1bhzWPIy8itLEFjGb+sDH4ZuWnjvWYls
+         DUasjTgtW6UckGgJ3nXXCcXXt321Zf4vewU3eqha2Ejd2s0MfXOqowv97eFK/L8pQUDc
+         Nb9A==
+X-Gm-Message-State: AOAM5328caVfDJIc4uKcPlcGC9g51sOd5Dw5Px0AiHBZmzmjb/9m92y0
+        Yid3TPWSJwSgCeqUJjhrd4w=
+X-Google-Smtp-Source: ABdhPJwjou4vsHP2NA59mLGcx7Ox9lb5n8xWulwoxJDcmZ/PekWAPvEOTFbBleQLNbnjFBVIG8ddRg==
+X-Received: by 2002:a05:600c:3590:: with SMTP id p16mr14302162wmq.33.1629111210554;
+        Mon, 16 Aug 2021 03:53:30 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id k26sm631704wrc.33.2021.08.16.03.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 03:53:29 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rahul Bedarkar <rahulbedarkar89@gmail.com>,
+        linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its retirement
+Date:   Mon, 16 Aug 2021 12:53:26 +0200
+Message-Id: <20210816105326.8050-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c956016465b688a2679bd02da1f751046be189c.1629092894.git.vijayakannan.ayyathurai@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 02:16:00PM +0800, Vijayakannan Ayyathurai wrote:
-> Adding ethtool per-queue statistics support to show number of interrupts
-> generated at DMA tx and DMA rx. All the counters are incremented at
-> dwmac4_dma_interrupt function.
->
+Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
+./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
+misses to adjust the corresponding section PISTACHIO SOC SUPPORT
+in MAINTAINERS.
 
-Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+
+  warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
+  warning: no file matches    F:    arch/mips/pistachio/
+
+As James Hartley is not reachable with the provided email address, the
+remaining dtsi file, arch/mips/boot/dts/img/pistachio.dtsi, must be
+maintained by its only user pistachio_marduk.dts, which is part of MARDUK
+(CREATOR CI40) DEVICE TREE SUPPORT.
+
+Add maintenance of pistachio.dtsi to that section and drop the PISTACHIO
+SOC SUPPORT after its retirement.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210816
+
+Jiaxun, Rahul, please ack. 
+Thomas, please pick this minor non-urgent clean-up patch on mips-next.
+
+ MAINTAINERS | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1a2d3ee2711e..968008105fe7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11088,7 +11088,7 @@ MARDUK (CREATOR CI40) DEVICE TREE SUPPORT
+ M:	Rahul Bedarkar <rahulbedarkar89@gmail.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
+-F:	arch/mips/boot/dts/img/pistachio_marduk.dts
++F:	arch/mips/boot/dts/img/pistachio*
  
-> Signed-off-by: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/common.h         | 2 ++
->  drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c     | 2 ++
->  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 2 ++
->  3 files changed, 6 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-> index 79333deef2e2..b6d945ea903d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> @@ -60,10 +60,12 @@
->  
->  struct stmmac_txq_stats {
->  	unsigned long tx_pkt_n;
-> +	unsigned long tx_normal_irq_n;
->  };
->  
->  struct stmmac_rxq_stats {
->  	unsigned long rx_pkt_n;
-> +	unsigned long rx_normal_irq_n;
->  };
->  
->  /* Extra statistic and debug information exposed by ethtool */
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> index f83db62938dd..9292a1fab7d3 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-> @@ -170,10 +170,12 @@ int dwmac4_dma_interrupt(void __iomem *ioaddr,
->  		x->normal_irq_n++;
->  	if (likely(intr_status & DMA_CHAN_STATUS_RI)) {
->  		x->rx_normal_irq_n++;
-> +		x->rxq_stats[chan].rx_normal_irq_n++;
->  		ret |= handle_rx;
->  	}
->  	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
->  		x->tx_normal_irq_n++;
-> +		x->txq_stats[chan].tx_normal_irq_n++;
->  		ret |= handle_tx;
->  	}
->  	if (unlikely(intr_status & DMA_CHAN_STATUS_TBU))
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> index 10c0895d0b43..595c3ccdcbb7 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> @@ -263,11 +263,13 @@ static const struct stmmac_stats stmmac_mmc[] = {
->  
->  static const char stmmac_qstats_tx_string[][ETH_GSTRING_LEN] = {
->  	"tx_pkt_n",
-> +	"tx_irq_n",
->  #define STMMAC_TXQ_STATS ARRAY_SIZE(stmmac_qstats_tx_string)
->  };
->  
->  static const char stmmac_qstats_rx_string[][ETH_GSTRING_LEN] = {
->  	"rx_pkt_n",
-> +	"rx_irq_n",
->  #define STMMAC_RXQ_STATS ARRAY_SIZE(stmmac_qstats_rx_string)
->  };
->  
+ MARVELL 88E6XXX ETHERNET SWITCH FABRIC DRIVER
+ M:	Andrew Lunn <andrew@lunn.ch>
+@@ -14797,14 +14797,6 @@ S:	Maintained
+ W:	http://www.st.com/spear
+ F:	drivers/pinctrl/spear/
+ 
+-PISTACHIO SOC SUPPORT
+-M:	James Hartley <james.hartley@sondrel.com>
+-L:	linux-mips@vger.kernel.org
+-S:	Odd Fixes
+-F:	arch/mips/boot/dts/img/pistachio*
+-F:	arch/mips/configs/pistachio*_defconfig
+-F:	arch/mips/pistachio/
+-
+ PKTCDVD DRIVER
+ M:	linux-block@vger.kernel.org
+ S:	Orphan
+-- 
+2.26.2
+
