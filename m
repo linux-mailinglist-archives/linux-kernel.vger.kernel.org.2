@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315953ED2F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689923ED2FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhHPLQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235858AbhHPLQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:16:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D2DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:15:43 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFaae-0001ZS-0x; Mon, 16 Aug 2021 13:15:36 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 97AA2668225;
-        Mon, 16 Aug 2021 11:15:32 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 13:15:31 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v5] dt-bindings: net: can: c_can: convert to json-schema
-Message-ID: <20210816111531.bkn2ede33f6hntcb@pengutronix.de>
-References: <20210805192750.9051-1-dariobin@libero.it>
+        id S236020AbhHPLRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:17:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231143AbhHPLRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 07:17:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0896C61B5D;
+        Mon, 16 Aug 2021 11:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629112633;
+        bh=VQHVWgx/Vnp6vrq90JYPhAK5Lk/clExK25/y4fl3xCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RqHWfe7autrBSS9uvYSMOkt15g1cptInQs5EnCeKzesa5Ef8x4GsQT5ZijTDStdUF
+         s1t79tgDSoQfdpeb432fHgYHOmlcqddFDfVQ2D7P4CvIj8JpWN2X1X+MpY1ePuMHCC
+         7SJYggdjMyyGN9/yvE95njTDecBjbEa4Hh62BkTg=
+Date:   Mon, 16 Aug 2021 13:17:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     Reinhard Speyerer <rspmn@arcor.de>, johan@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: [PATCH] [V2,1/1]USB: serial: option: add Foxconn T77W175
+ composition 0x901d
+Message-ID: <YRpJN414JQyfyEGo@kroah.com>
+References: <20210816035404.4210-1-slark_xiao@163.com>
+ <YRoqAJmGBpV/OuZL@arcor.de>
+ <d1d16fd.6f62.17b4e3ffa26.Coremail.slark_xiao@163.com>
+ <YRot+wBa6v529Z7q@kroah.com>
+ <278bcd0d.7189.17b4e479a3a.Coremail.slark_xiao@163.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ik5fvajssuvkrg4d"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805192750.9051-1-dariobin@libero.it>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <278bcd0d.7189.17b4e479a3a.Coremail.slark_xiao@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 05:25:20PM +0800, Slark Xiao wrote:
+> At 2021-08-16 17:20:59, "Greg KH" <gregkh@linuxfoundation.org> wrote:
+> >On Mon, Aug 16, 2021 at 05:17:00PM +0800, Slark Xiao wrote:
+> >>   So should I use USB_DEVICE_INTERFACE_NUMBER(QUALCOMM_VENDOR_ID, 0x901d, 0x00) to bind Diag port only?
+> >
+> >Why is this device using the QUALCOMM vendor id anyway?  Is this allowed
+> >by Qualcomm?
+> >
+> >thanks,
+> >
+> >greg k-h
+> 
+> Hi Greg,
+>   Our product are designed based on Qualcomm SDX55 platform. So it still support Qualcomm vendor ID.
+>   I think there is no infringement about this ID combo.
 
---ik5fvajssuvkrg4d
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you have permission from Qualcomm to use their vendor id?  I know
+some vendors get very upset about this...
 
-On 05.08.2021 21:27:50, Dario Binacchi wrote:
-> Convert the Bosch C_CAN/D_CAN controller device tree binding
-> documentation to json-schema.
->=20
-> Document missing properties.
-> Remove "ti,hwmods" as it is no longer used in TI dts.
-> Make "clocks" required as it is used in all dts.
-> Update the examples.
->=20
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Why not use your own vendor id?
 
-Applied to linux-can-next/testing.
+thanks,
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---ik5fvajssuvkrg4d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaSNAACgkQqclaivrt
-76kkLQf9FQy4inlhFNhTldseSLf/ZVm/d5VLDzbyHH99ovDmBvSA3a/N8RPHF74i
-Glbh4+tuSU8ACsWZqRgGV4Ick8JP4chPLDm5nDs9RCbFfabJLoyVd7QbzwbdX8W8
-nNdkqsomxnbwxhjbZ/hksDZqplRSVV5mtBbHJgmrnRzkj3gyHWmYbY85j/fGjEpF
-kIfhAW4hAmGn9sniglLANIgAjOeThqzAFtUxMzkiYgjbqSfhDEjxG6ujus5QW4qW
-WfWfVWe4PoRtRl9RnvtF/6Ir4fSC5TyTI03LNjiv87+QPrpUP+WbG36mxKSs6rWj
-kAyVE9f9xVbXRM6MXkyFQtYRolWKFQ==
-=h0Ec
------END PGP SIGNATURE-----
-
---ik5fvajssuvkrg4d--
+greg k-h
