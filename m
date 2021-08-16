@@ -2,263 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20ED3ED970
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59C83ED975
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhHPPE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhHPPEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:04:55 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCACB61038;
-        Mon, 16 Aug 2021 15:04:22 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 11:04:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [GIT PULL v2] tracing: Fixes and clean ups for v5.14
-Message-ID: <20210816110416.6fb6d54d@oasis.local.home>
-In-Reply-To: <20210812141636.35e41575@oasis.local.home>
-References: <20210812141636.35e41575@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233564AbhHPPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:05:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46824 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232271AbhHPPFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:05:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629126304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ABrWgRhABY2HK4NysZy+JCnEPDW3vpIo9/TFVUA3ibc=;
+        b=RH/S2jLA9ZxGIxeMvRRwmfhUgsVbCpE8j/zR6EUZhcebKmNg3AWOe1gdnz/R9NXX81kpms
+        gM0bUceO4jNsOPcfxrTrlETYB7bp/d1j73Nm/s0i2Cgiv+8dGoRKAF4MkitNztfkXpkzQG
+        034tLuxd/XyP4SsWwlEcRTKTf1b5ANU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-t9Z_bZPcNVWwtCIv7lVzbA-1; Mon, 16 Aug 2021 11:05:01 -0400
+X-MC-Unique: t9Z_bZPcNVWwtCIv7lVzbA-1
+Received: by mail-wr1-f72.google.com with SMTP id p2-20020a5d48c20000b0290150e4a5e7e0so5548173wrs.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:05:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ABrWgRhABY2HK4NysZy+JCnEPDW3vpIo9/TFVUA3ibc=;
+        b=CblGU443LjDHP5HiLTxM2Po+CFrlSy3vTNFfxljN3hdVdw8u0cT5VX9FnT6YhmfvDd
+         9biYHkezzyXYogXcJhgzciNFqXaJiYkxZw2qk2QFTp5WLYzieVoHPXnP2QNpKE+CCKV4
+         nFd0iQviovfCR2ENtHqDL6ImMDsHJCK4nKLYtbr0esh0XtCZ2MAMbFb177aoeJIu7zNe
+         ftSrfWkL+453T1tsCAsIk24xysc9l0P1vOJCJVBDOOp1GsoLsSSMKDBYtv0zM2A+BY4j
+         nAHegTO//OmBdZOwTFEmBMJka8ByVsmnNY5uczEpwCU0U8H5V1Rkwobjx3KQV50vwgo9
+         neqQ==
+X-Gm-Message-State: AOAM530dia/3AI+qJF4y05DkSzoawW15cZO+Occ0Q7h+By19DH0EDGXo
+        Jkv65xPzK0ZovqjqedyGF4BMSbMjkLzUqCuex8jV/EerWmL00bZ+0lkZCxlrA3XCGTTzL/i8zFN
+        H809U0rGxB3nUg50+FuVeScx3
+X-Received: by 2002:a1c:7dd0:: with SMTP id y199mr15424188wmc.23.1629126299867;
+        Mon, 16 Aug 2021 08:04:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx09VPZkGLXWDG+tXpHYc3YeJl3pSZSqRdKI6EYU61EuoygC/wIwMn44PmYT5H+5icPrjj/xw==
+X-Received: by 2002:a1c:7dd0:: with SMTP id y199mr15424176wmc.23.1629126299653;
+        Mon, 16 Aug 2021 08:04:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id w29sm12856049wra.88.2021.08.16.08.04.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 08:04:59 -0700 (PDT)
+Subject: Re: [PATCH 5.12.y] KVM: nSVM: avoid picking up unsupported bits from
+ L2 in int_ctl (CVE-2021-3653)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210816140240.11399-6-pbonzini@redhat.com>
+ <YRp1bUv85GWsFsuO@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <97448bb5-1f58-07f9-1110-96c7ffefd4b2@redhat.com>
+Date:   Mon, 16 Aug 2021 17:04:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YRp1bUv85GWsFsuO@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 16/08/21 16:25, Greg KH wrote:
+>> [ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
+> 
+> And 5.12.y is long end-of-life, take a look at the front page of
+> kernel.org for the active kernels.
 
-Did this one fall though the cracks?
+Ok, sorry I didn't notice that... it wasn't end of life when the issue 
+was discovered. O:)
 
-It's the same pull request but without the "main" variable change.
+(Damn, the one time that we prepare all the backports in advance, we end 
+up doing too many of them!)
 
--- Steve
-
-
-On Thu, 12 Aug 2021 14:16:36 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> Linus,
-> 
-> [
->   Note. This version was only tested with one config and it passed the
->   ftracetests in the selftests directory. I didn't run my full test
->   suite as that takes forever to run, and the only thing that's
->   different from the version that went through that test suite is that
->   I dropped the "main" variable "fix" patch.
-> ]
-> 
-> Fixes and clean ups to tracing:
-> 
-> - Fix header alignment when PREEMPT_RT is enabled for osnoise tracer
-> 
-> - Inject "stop" event to see where osnoise stopped the trace
-> 
-> - Define DYNAMIC_FTRACE_WITH_ARGS as some code had an #ifdef for it
-> 
-> - Fix erroneous message for bootconfig cmdline parameter
-> 
-> - Fix crash caused by not found variable in histograms
-> 
-> 
-> Please pull the latest trace-v5.14-rc5-2 tree, which can be found at:
-> 
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-> trace-v5.14-rc5-2
-> 
-> Tag SHA1: 26ba5d9bdfa88208677132efa9e64b488420b461
-> Head SHA1: 5acce0bff2a0420ce87d4591daeb867f47d552c2
-> 
-> 
-> Daniel Bristot de Oliveira (3):
->       trace/osnoise: Add a header with PREEMPT_RT additional fields
->       trace/timerlat: Add a header with PREEMPT_RT additional fields
->       trace/osnoise: Print a stop tracing message
-> 
-> Lukas Bulwahn (1):
->       tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
-> 
-> Masami Hiramatsu (1):
->       init: Suppress wrong warning for bootconfig cmdline parameter
-> 
-> Steven Rostedt (VMware) (1):
->       tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
-> 
-> ----
->  init/main.c                      |  9 +++++--
->  kernel/trace/Kconfig             |  5 ++++
->  kernel/trace/trace_events_hist.c |  2 ++
->  kernel/trace/trace_osnoise.c     | 56 +++++++++++++++++++++++++++++++++++++++-
->  4 files changed, 69 insertions(+), 3 deletions(-)
-> ---------------------------
-> diff --git a/init/main.c b/init/main.c
-> index f5b8246e8aa1..8d97aba78c3a 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
->  	return 0;
->  }
->  
-> +static int __init warn_bootconfig(char *str)
-> +{
-> +	/* The 'bootconfig' has been handled by bootconfig_params(). */
-> +	return 0;
-> +}
-> +
->  static void __init setup_boot_config(void)
->  {
->  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
-> @@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
->  	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
->  	return 0;
->  }
-> -early_param("bootconfig", warn_bootconfig);
-> -
->  #endif
-> +early_param("bootconfig", warn_bootconfig);
->  
->  /* Change NUL term back to "=", to make "param" the whole string. */
->  static void __init repair_env_string(char *param, char *val)
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index d567b1717c4c..3ee23f4d437f 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -219,6 +219,11 @@ config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  	depends on DYNAMIC_FTRACE_WITH_REGS
->  	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  
-> +config DYNAMIC_FTRACE_WITH_ARGS
-> +	def_bool y
-> +	depends on DYNAMIC_FTRACE
-> +	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> +
->  config FUNCTION_PROFILER
->  	bool "Kernel function profiler"
->  	depends on FUNCTION_TRACER
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 949ef09dc537..a48aa2a2875b 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
->  			event = data->match_data.event;
->  		}
->  
-> +		if (!event)
-> +			goto free;
->  		/*
->  		 * At this point, we're looking at a field on another
->  		 * event.  Because we can't modify a hist trigger on
-> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-> index a7e3c24dee13..b61eefe5ccf5 100644
-> --- a/kernel/trace/trace_osnoise.c
-> +++ b/kernel/trace/trace_osnoise.c
-> @@ -253,10 +253,40 @@ static struct osnoise_data {
->   */
->  static bool osnoise_busy;
->  
-> +#ifdef CONFIG_PREEMPT_RT
->  /*
->   * Print the osnoise header info.
->   */
->  static void print_osnoise_headers(struct seq_file *s)
-> +{
-> +	if (osnoise_data.tainted)
-> +		seq_puts(s, "# osnoise is tainted!\n");
-> +
-> +	seq_puts(s, "#                                _-------=> irqs-off\n");
-> +	seq_puts(s, "#                               / _------=> need-resched\n");
-> +	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-> +	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-> +	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-> +	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-> +	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-> +
-> +	seq_puts(s, "#                              |||||| /          ");
-> +	seq_puts(s, "                                     MAX\n");
-> +
-> +	seq_puts(s, "#                              ||||| /                         ");
-> +	seq_puts(s, "                    SINGLE      Interference counters:\n");
-> +
-> +	seq_puts(s, "#                              |||||||               RUNTIME   ");
-> +	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
-> +
-> +	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    IN US    ");
-> +	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
-> +
-> +	seq_puts(s, "#              | |         |   |||||||      |           |      ");
-> +	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
-> +}
-> +#else /* CONFIG_PREEMPT_RT */
-> +static void print_osnoise_headers(struct seq_file *s)
->  {
->  	if (osnoise_data.tainted)
->  		seq_puts(s, "# osnoise is tainted!\n");
-> @@ -279,6 +309,7 @@ static void print_osnoise_headers(struct seq_file *s)
->  	seq_puts(s, "#              | |         |   ||||      |           |      ");
->  	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
->  }
-> +#endif /* CONFIG_PREEMPT_RT */
->  
->  /*
->   * osnoise_taint - report an osnoise error.
-> @@ -323,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
->  /*
->   * Print the timerlat header info.
->   */
-> +#ifdef CONFIG_PREEMPT_RT
-> +static void print_timerlat_headers(struct seq_file *s)
-> +{
-> +	seq_puts(s, "#                                _-------=> irqs-off\n");
-> +	seq_puts(s, "#                               / _------=> need-resched\n");
-> +	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-> +	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-> +	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-> +	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-> +	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-> +	seq_puts(s, "#                              |||||| /\n");
-> +	seq_puts(s, "#                              |||||||             ACTIVATION\n");
-> +	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
-> +	seq_puts(s, "       CONTEXT                LATENCY\n");
-> +	seq_puts(s, "#              | |         |   |||||||      |         |      ");
-> +	seq_puts(s, "            |                       |\n");
-> +}
-> +#else /* CONFIG_PREEMPT_RT */
->  static void print_timerlat_headers(struct seq_file *s)
->  {
->  	seq_puts(s, "#                                _-----=> irqs-off\n");
-> @@ -336,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
->  	seq_puts(s, "#              | |         |   ||||      |         |      ");
->  	seq_puts(s, "            |                       |\n");
->  }
-> +#endif /* CONFIG_PREEMPT_RT */
->  
->  /*
->   * Record an timerlat_sample into the tracer buffer.
-> @@ -1025,9 +1075,13 @@ diff_osn_sample_stats(struct osnoise_variables *osn_var, struct osnoise_sample *
->  /*
->   * osnoise_stop_tracing - Stop tracing and the tracer.
->   */
-> -static void osnoise_stop_tracing(void)
-> +static __always_inline void osnoise_stop_tracing(void)
->  {
->  	struct trace_array *tr = osnoise_trace;
-> +
-> +	trace_array_printk_buf(tr->array_buffer.buffer, _THIS_IP_,
-> +			"stop tracing hit on cpu %d\n", smp_processor_id());
-> +
->  	tracer_tracing_off(tr);
->  }
->  
+Paolo
 
