@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424583ED1B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7DE3ED1BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhHPKNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:13:49 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44486
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229739AbhHPKNs (ORCPT
+        id S235591AbhHPKPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233252AbhHPKPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:13:48 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 5A89B4066D;
-        Mon, 16 Aug 2021 10:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629108789;
-        bh=ekQSJfklDT9uSnv9OoKFyRnMJCNZF91NF2do21ZeR1c=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=fpOKtBN7+f2B4banU1KlQoTzq/QNBTKsS4+3MS12hzONxJN14FYx5Zpy7mFnEo8OX
-         HL6myAexAApj11yuxhNPt9WgQ3wwReh+lEqCsMpsHmQdDSsSzWL7XJtiYF77zxwUvn
-         I32KsiGss4foz6PjjFymgT9bboYM2KxnkwEqPfVflNC4amxs/NE/T+TAb8ljWep1c/
-         nLgmiu5sDD+G/QF1JtaCaxIpoBoN7Jr7Fno+aW2GKd4T86Y2ISdlxObKmF9OSdqCFH
-         V7lPunEGLOy9nbbl7evkFjdcnVx3cQbd3aZxCo5lg5E6gCzRQYqJRMpasSvnBBM0BA
-         4tDXUjqX5wD1w==
-From:   Colin King <colin.king@canonical.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kari Argillander <kari.argillander@gmail.com>
-Subject: [PATCH][next][V2] fs/ntfs3: Fix various spelling mistakes
-Date:   Mon, 16 Aug 2021 11:13:08 +0100
-Message-Id: <20210816101308.67769-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 16 Aug 2021 06:15:09 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54429C061764;
+        Mon, 16 Aug 2021 03:14:38 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id k29so22757893wrd.7;
+        Mon, 16 Aug 2021 03:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HEiM/mHMC+8fZgGgGDrXO50KgFWhokpC7aZfIza5YoU=;
+        b=Alj3JYG7a9UTx5Tj/BtzO+qKDd1xCGe0XdfEAcw9Dau4ACK96PX+Djr/axmyQgoX6R
+         Qvw1P5WoBQ0Zu4439v4+F5DLDdDCoS2adFB2fGQ/+RfPhE2BPUKvDB4iS3xNV2DWhqEh
+         ciwDM/15gCMos0rxTHUU6AcIchpqLSHjNOy5QZYERvtL+zHfGLZUj6qzXSLnKRpwB4Sf
+         7DBTcFZ2h1usxN7rpOQU3MhNGARGMuAB3Eih9eKDGUQtDk5r0DupKGA+6vrFRuR4zMyE
+         PeKoORolAUgrtvZWdokZqasLxdrn1iIAAu5M4MglS+0i19PVVSOYx7NsLHTJWAXq0rJS
+         vE+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HEiM/mHMC+8fZgGgGDrXO50KgFWhokpC7aZfIza5YoU=;
+        b=j/TAEGWnctdHa3E7Jrj+X0oqbWw1ltcu/pTAV3vbZjpNnM+9d32ERWMWzaTDNCnVsY
+         fhKTbLgaJx3RfC+xegz519ZICFPwd7gHn5dV+U71s1GnGGBajHoC4E/uCRyPQfVxIpXr
+         GrkB++o7yQYvKbBkEFxuTfMFhDklgZ430E+Ri5YhqBbhzxBOtmRuebavudH76sGwGY4T
+         UeX3lOVLFWmgNXckKtEMrAbRKkEfLLCvBnwiF4qqSia4oxfqPtnb9NumRYkQ079XokaN
+         K5Z24WSvGOgKrdUCUWnZMgIAv3xy3Ozc+7D9OQvSEZvkoWkPB6aaXhwN1gycMpj941eQ
+         HEQA==
+X-Gm-Message-State: AOAM533b6mcEV122I5JdAn+Q0C7pKf8H13fd/ukqiKb6sMOI3ygiF8KV
+        XWQ1+wj0UKUb3zTqcOochGg=
+X-Google-Smtp-Source: ABdhPJxcowAPKRR0W2f+L+GI0ijJFGD6kVXHxpnQwMe320KTJy2VjSNfp1hksoEJaUJeNnRTKuOYPw==
+X-Received: by 2002:adf:9084:: with SMTP id i4mr17980571wri.23.1629108876990;
+        Mon, 16 Aug 2021 03:14:36 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:7d83:fd8:eb16:8605? ([2a02:908:1252:fb60:7d83:fd8:eb16:8605])
+        by smtp.gmail.com with ESMTPSA id q22sm10646849wmj.32.2021.08.16.03.14.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 03:14:36 -0700 (PDT)
+Subject: Re: [PATCH v2 4/5] drm/scheduler: Add fence deadline support
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Steven Price <steven.price@arm.com>, Roy Sun <Roy.Sun@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+References: <20210807183804.459850-1-robdclark@gmail.com>
+ <20210807183804.459850-5-robdclark@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <e28020c5-3da3-c721-96df-9a115f105bf7@gmail.com>
+Date:   Mon, 16 Aug 2021 12:14:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210807183804.459850-5-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Am 07.08.21 um 20:37 schrieb Rob Clark:
+> From: Rob Clark <robdclark@chromium.org>
+>
+> As the finished fence is the one that is exposed to userspace, and
+> therefore the one that other operations, like atomic update, would
+> block on, we need to propagate the deadline from from the finished
+> fence to the actual hw fence.
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/scheduler/sched_fence.c | 25 +++++++++++++++++++++++++
+>   drivers/gpu/drm/scheduler/sched_main.c  |  3 +++
+>   include/drm/gpu_scheduler.h             |  6 ++++++
+>   3 files changed, 34 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+> index 69de2c76731f..f389dca44185 100644
+> --- a/drivers/gpu/drm/scheduler/sched_fence.c
+> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+> @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
+>   	dma_fence_put(&fence->scheduled);
+>   }
+>   
+> +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
+> +						  ktime_t deadline)
+> +{
+> +	struct drm_sched_fence *fence = to_drm_sched_fence(f);
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&fence->lock, flags);
+> +
+> +	/* If we already have an earlier deadline, keep it: */
+> +	if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
+> +	    ktime_before(fence->deadline, deadline)) {
+> +		spin_unlock_irqrestore(&fence->lock, flags);
+> +		return;
+> +	}
+> +
+> +	fence->deadline = deadline;
+> +	set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
+> +
+> +	spin_unlock_irqrestore(&fence->lock, flags);
+> +
+> +	if (fence->parent)
+> +		dma_fence_set_deadline(fence->parent, deadline);
+> +}
+> +
+>   static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
+>   	.get_driver_name = drm_sched_fence_get_driver_name,
+>   	.get_timeline_name = drm_sched_fence_get_timeline_name,
+> @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
+>   	.get_driver_name = drm_sched_fence_get_driver_name,
+>   	.get_timeline_name = drm_sched_fence_get_timeline_name,
+>   	.release = drm_sched_fence_release_finished,
+> +	.set_deadline = drm_sched_fence_set_deadline_finished,
+>   };
+>   
+>   struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+> index a2a953693b45..3ab0900d3596 100644
+> --- a/drivers/gpu/drm/scheduler/sched_main.c
+> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> @@ -818,6 +818,9 @@ static int drm_sched_main(void *param)
+>   
+>   		if (!IS_ERR_OR_NULL(fence)) {
+>   			s_fence->parent = dma_fence_get(fence);
+> +			if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> +				     &s_fence->finished.flags))
+> +				dma_fence_set_deadline(fence, s_fence->deadline);
 
-There is a spelling mistake in a ntfs_err error message. Also
-fix various spelling mistakes in comments.
+Maybe move this into a dma_sched_fence_set_parent() function.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by Kari Argillander <kari.argillander@gmail.com>
----
-V2: Also fix spelling mistakes in comments, thanks to Kari Argillander 
-    for noting that these need fixing too.
----
- fs/ntfs3/debug.h                 | 2 +-
- fs/ntfs3/lib/decompress_common.c | 2 +-
- fs/ntfs3/run.c                   | 2 +-
- fs/ntfs3/super.c                 | 4 ++--
- fs/ntfs3/upcase.c                | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+Apart from that looks good to me.
 
-diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
-index dfaa4c79dc6d..15ac42185e5b 100644
---- a/fs/ntfs3/debug.h
-+++ b/fs/ntfs3/debug.h
-@@ -3,7 +3,7 @@
-  *
-  * Copyright (C) 2019-2021 Paragon Software GmbH, All rights reserved.
-  *
-- * useful functions for debuging
-+ * useful functions for debugging
-  */
- 
- // clang-format off
-diff --git a/fs/ntfs3/lib/decompress_common.c b/fs/ntfs3/lib/decompress_common.c
-index 83c9e93aea77..850d8e8c8f1f 100644
---- a/fs/ntfs3/lib/decompress_common.c
-+++ b/fs/ntfs3/lib/decompress_common.c
-@@ -292,7 +292,7 @@ int make_huffman_decode_table(u16 decode_table[], const u32 num_syms,
- 				 * of as simply the root of the tree.  The
- 				 * representation of these internal nodes is
- 				 * simply the index of the left child combined
--				 * with the special bits 0xC000 to distingush
-+				 * with the special bits 0xC000 to distinguish
- 				 * the entry from direct mapping and leaf node
- 				 * entries.
- 				 */
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index 5cdf6efe67e0..f9c362ac672e 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -949,7 +949,7 @@ int run_unpack(struct runs_tree *run, struct ntfs_sb_info *sbi, CLST ino,
- 		if (next_vcn > 0x100000000ull || (lcn + len) > 0x100000000ull) {
- 			ntfs_err(
- 				sbi->sb,
--				"This driver is compiled whitout CONFIG_NTFS3_64BIT_CLUSTER (like windows driver).\n"
-+				"This driver is compiled without CONFIG_NTFS3_64BIT_CLUSTER (like windows driver).\n"
- 				"Volume contains 64 bits run: vcn %llx, lcn %llx, len %llx.\n"
- 				"Activate CONFIG_NTFS3_64BIT_CLUSTER to process this case",
- 				vcn64, lcn, len);
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 6be13e256c1a..84d4f389f685 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -124,7 +124,7 @@ void ntfs_inode_printk(struct inode *inode, const char *fmt, ...)
- /*
-  * Shared memory struct.
-  *
-- * on-disk ntfs's upcase table is created by ntfs formater
-+ * on-disk ntfs's upcase table is created by ntfs formatter
-  * 'upcase' table is 128K bytes of memory
-  * we should read it into memory when mounting
-  * Several ntfs volumes likely use the same 'upcase' table
-@@ -1208,7 +1208,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
- 	sbi->def_entries = 1;
- 	done = sizeof(struct ATTR_DEF_ENTRY);
- 	sbi->reparse.max_size = MAXIMUM_REPARSE_DATA_BUFFER_SIZE;
--	sbi->ea_max_size = 0x10000; /* default formater value */
-+	sbi->ea_max_size = 0x10000; /* default formatter value */
- 
- 	while (done + sizeof(struct ATTR_DEF_ENTRY) <= bytes) {
- 		u32 t32 = le32_to_cpu(t->type);
-diff --git a/fs/ntfs3/upcase.c b/fs/ntfs3/upcase.c
-index 9617382aca64..b53943538f9f 100644
---- a/fs/ntfs3/upcase.c
-+++ b/fs/ntfs3/upcase.c
-@@ -27,7 +27,7 @@ static inline u16 upcase_unicode_char(const u16 *upcase, u16 chr)
- /*
-  * Thanks Kari Argillander <kari.argillander@gmail.com> for idea and implementation 'bothcase'
-  *
-- * Straigth way to compare names:
-+ * Straight way to compare names:
-  * - case insensitive
-  * - if name equals and 'bothcases' then
-  * - case sensitive
--- 
-2.32.0
+Regards,
+Christian.
+
+>   			r = dma_fence_add_callback(fence, &sched_job->cb,
+>   						   drm_sched_job_done_cb);
+>   			if (r == -ENOENT)
+> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> index d18af49fd009..0f08ade614ae 100644
+> --- a/include/drm/gpu_scheduler.h
+> +++ b/include/drm/gpu_scheduler.h
+> @@ -144,6 +144,12 @@ struct drm_sched_fence {
+>            */
+>   	struct dma_fence		finished;
+>   
+> +	/**
+> +	 * @deadline: deadline set on &drm_sched_fence.finished which
+> +	 * potentially needs to be propagated to &drm_sched_fence.parent
+> +	 */
+> +	ktime_t				deadline;
+> +
+>           /**
+>            * @parent: the fence returned by &drm_sched_backend_ops.run_job
+>            * when scheduling the job on hardware. We signal the
 
