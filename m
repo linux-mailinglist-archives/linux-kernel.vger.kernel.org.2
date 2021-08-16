@@ -2,159 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8512F3ED214
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0813ED217
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhHPKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S235793AbhHPKiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhHPKim (ORCPT
+        with ESMTP id S234197AbhHPKin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:38:42 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1920C061764;
-        Mon, 16 Aug 2021 03:38:10 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r9so23997888lfn.3;
-        Mon, 16 Aug 2021 03:38:10 -0700 (PDT)
+        Mon, 16 Aug 2021 06:38:43 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0E1C061764;
+        Mon, 16 Aug 2021 03:38:12 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z5so31891683ybj.2;
+        Mon, 16 Aug 2021 03:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NfJatabbDRuLjub7mFadaE4bzboEivABMiAWlTI3GXI=;
-        b=FRcS1yQ12WU7K0ZrS2Mhi1L27mX8U82kp/YGBiFsbIYoKjAefR8yXpjynkLeKOfHYb
-         U0FrZU0SQuNc0RxvrQ1up2dlos0z2hheRmKN2oWXX0r5zmlrIC3Fvvo1qSvEm2eM1IjR
-         tAFI+qqwks7gCwE0pOb6EvnmY7D0A1MWSazaarkx1NPPhdX3dZ7AMdznWSiHHTnqB57S
-         2eWJDIIe/5hrQbpmLGVxU7O8cYSKi7GXwq2jevYN1eaoHBVwC7lrcXIGFWa36l4cn/cf
-         3/fFmlE69w09gXSJ/6xTtjGbH13yE5833d1l3vrCGzNhownB42FmTIfNtBKjnoPep9iY
-         ILHg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1KbK256o4936T0+iP2lqkRf5oNWJgGjRNrOhWBLpkFU=;
+        b=TQkfpC5oJKlGAa+jxY3mSiulJOhq65y2Sps6CSTQXaflomdvC1kFnANDQKiduq7Bmz
+         enbULUi/RJVy4yWJpZB/pmiMB8caSuGkMWuSl54KnqVK4T+sjD4VgHFW8eeBycOnmCBb
+         qM6d3hIMC3uWMbWVMZRmdYUJdRwBBW305BOmmaHm9gu0tbydoU+vbkCXg+HXoIRPbOUB
+         26LTyQUX1QZTfX4RcNSao7e+1+MSj0lyzGreBZDSiSef0faZibik9qyQszzylc3EJgZH
+         ScW5O8Gu9E7WWp5aj6pgIuyGyuMNKRKJ+Xe0Hql+ZGQzsP8jx3VSFA4G2QF5udX94aXg
+         Il8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NfJatabbDRuLjub7mFadaE4bzboEivABMiAWlTI3GXI=;
-        b=rSEw+W6BbfYmDuXAf4CQTjioo/909kewQicxHScGkaJQncettL8bVHPOaxI5KJBDeH
-         f6hp88tGlpaXoZ+JZoBFUcoyUksA6ufrjxlqwQnJ/ZmSwwtsi7TdFDUqrsqZfiGn2LDg
-         Z7/bPQzCSnhRud7/J75ihuszxD2rAgJUbhzIYfkF3vpUPco+Im0rxNZ6FT/UwZdcjxYP
-         hRlSA9KmUZqp3OA8eT2oI1gfKwYKHErhIv2buusAYoUh28SFy5JH/N75oFXtFEsS+HT1
-         iyvdoQGiMpILHylikio/BXDhZT07LZC9y2rMri34oX7ip0jBisOXB0efNQPLP3OpVzmP
-         EvlA==
-X-Gm-Message-State: AOAM530BQi/6Hz2MR323UX5kz2SeqJ/u2ZWEgSlEbPNVAJrWbCUs8m3W
-        PzhtEGk4jVLU56vUHtBHxKr/NSI6zkx6M13J
-X-Google-Smtp-Source: ABdhPJzs6220+8j1LIoVUYyvXJU+Edf3AwZGR/I89cb68hlCM2Bx8p3TwSGwCvE0yxT4Bgq0Mf12BA==
-X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr10805648lfa.356.1629110288803;
-        Mon, 16 Aug 2021 03:38:08 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id l6sm1136044ljj.40.2021.08.16.03.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 03:38:08 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fs/ntfs3: Use linux/log2 is_power_of_2 function
-Date:   Mon, 16 Aug 2021 13:37:32 +0300
-Message-Id: <20210816103732.177207-1-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1KbK256o4936T0+iP2lqkRf5oNWJgGjRNrOhWBLpkFU=;
+        b=AVH5ppDmH0JpykY+OgTVM9SSUrvD9Fphnc2lX9yp6c+3hV3N92MDRvc3SKMMfa145t
+         /td6z8Qyx3eiSYtXzo2++Kl1cPeJaDHZ0K0cJMyEjqlLR4+K4PXUcSAkhVnx8lOZWuNh
+         739BO0hCpWiJsysm+TM6iaZGP+sgW+Vo4O1GJSBqrte3SKfe86rRGckk9CrilBSlOuRM
+         b3xim3CYiuQ4OjvPdeU8IvNFcX9ah1Of1SQNn5QpUR4ZIH4LDdgmvjrdzWj5VLDrjz0y
+         KvUI2M/KKp2P+2dXxlccO/5/SG+fbX63LwqROu/pV74kuT0+y9cpW2G2VoYXREv48nhl
+         EGRg==
+X-Gm-Message-State: AOAM532amxu+6rdmANXTRZ6qkGv2l6JvYxA7NGiOO3PQQiRY8T4L8mqM
+        RyPdLuFtxJqWhNt0Hf/YyUajtX1UFcJ7x+QjlFRe4OkbIKM=
+X-Google-Smtp-Source: ABdhPJzdNKt6ySIqdGSttap8fl/rHvJ5JnDQaPdZVrNcewto9i/n12WsgWCb25hD0adKhs5xUvLP3TBI4hUlXSLflYY=
+X-Received: by 2002:a25:505:: with SMTP id 5mr20105139ybf.157.1629110291142;
+ Mon, 16 Aug 2021 03:38:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210816102942.6976-1-lukas.bulwahn@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 16 Aug 2021 12:38:03 +0200
+Message-ID: <CAKXUXMx8o-s=TY9A7DNLdif90PrTYc_bd_aaMRtOmyQAOFXgUw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its retirement
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Hartley <james.hartley@sondrel.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Cc:     kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do not need our own implementation for this function in this
-driver. It is much better to use generic one.
+On Mon, Aug 16, 2021 at 12:29 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
+> ./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
+> misses to adjust the corresponding section PISTACHIO SOC SUPPORT
+> in MAINTAINERS.
+>
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+>
+>   warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
+>   warning: no file matches    F:    arch/mips/pistachio/
+>
+> Adjust the PISTACHIO SOC SUPPORT after its retirement.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20210816
+>
+> Jiaxun, James, please ack.
+> Thomas, please pick this minor non-urgent clean-up patch on mips-next.
+>
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/ntfs_fs.h | 5 -----
- fs/ntfs3/run.c     | 3 ++-
- fs/ntfs3/super.c   | 9 +++++----
- 3 files changed, 7 insertions(+), 10 deletions(-)
+I just received the response that the email james.hartley@sondrel.com
+is unreachable. So, we will probably be better to delete the section
+PISTACHIO SOC SUPPORT completely and extend MARDUK (CREATOR CI40)
+DEVICE TREE SUPPORT to include arch/mips/boot/dts/img/pistachio* (so
+to include the dtsi, the current dts depends on).
 
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 0c3ac89c3115..c8ea6dd38c21 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -972,11 +972,6 @@ static inline struct buffer_head *ntfs_bread(struct super_block *sb,
- 	return NULL;
- }
- 
--static inline bool is_power_of2(size_t v)
--{
--	return v && !(v & (v - 1));
--}
--
- static inline struct ntfs_inode *ntfs_i(struct inode *inode)
- {
- 	return container_of(inode, struct ntfs_inode, vfs_inode);
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index 5cdf6efe67e0..ce6bff3568df 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -9,6 +9,7 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
-+#include <linux/log2.h>
- #include <linux/nls.h>
- 
- #include "debug.h"
-@@ -376,7 +377,7 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, CLST lcn, CLST len,
- 			if (!used) {
- 				bytes = 64;
- 			} else if (used <= 16 * PAGE_SIZE) {
--				if (is_power_of2(run->allocated))
-+				if (is_power_of_2(run->allocated))
- 					bytes = run->allocated << 1;
- 				else
- 					bytes = (size_t)1
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 6be13e256c1a..c1b7127f5e61 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -29,6 +29,7 @@
- #include <linux/exportfs.h>
- #include <linux/fs.h>
- #include <linux/iversion.h>
-+#include <linux/log2.h>
- #include <linux/module.h>
- #include <linux/nls.h>
- #include <linux/parser.h>
-@@ -735,13 +736,13 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 
- 	boot_sector_size = (u32)boot->bytes_per_sector[1] << 8;
- 	if (boot->bytes_per_sector[0] || boot_sector_size < SECTOR_SIZE ||
--	    !is_power_of2(boot_sector_size)) {
-+	    !is_power_of_2(boot_sector_size)) {
- 		goto out;
- 	}
- 
- 	/* cluster size: 512, 1K, 2K, 4K, ... 2M */
- 	sct_per_clst = true_sectors_per_clst(boot);
--	if (!is_power_of2(sct_per_clst))
-+	if (!is_power_of_2(sct_per_clst))
- 		goto out;
- 
- 	mlcn = le64_to_cpu(boot->mft_clst);
-@@ -757,14 +758,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 	/* Check MFT record size */
- 	if ((boot->record_size < 0 &&
- 	     SECTOR_SIZE > (2U << (-boot->record_size))) ||
--	    (boot->record_size >= 0 && !is_power_of2(boot->record_size))) {
-+	    (boot->record_size >= 0 && !is_power_of_2(boot->record_size))) {
- 		goto out;
- 	}
- 
- 	/* Check index record size */
- 	if ((boot->index_size < 0 &&
- 	     SECTOR_SIZE > (2U << (-boot->index_size))) ||
--	    (boot->index_size >= 0 && !is_power_of2(boot->index_size))) {
-+	    (boot->index_size >= 0 && !is_power_of_2(boot->index_size))) {
- 		goto out;
- 	}
- 
--- 
-2.30.2
+If there are no objections, I will send a patch V2.
 
+Lukas
+
+>  MAINTAINERS | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1a2d3ee2711e..8276e59406e4 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14802,8 +14802,6 @@ M:      James Hartley <james.hartley@sondrel.com>
+>  L:     linux-mips@vger.kernel.org
+>  S:     Odd Fixes
+>  F:     arch/mips/boot/dts/img/pistachio*
+> -F:     arch/mips/configs/pistachio*_defconfig
+> -F:     arch/mips/pistachio/
+>
+>  PKTCDVD DRIVER
+>  M:     linux-block@vger.kernel.org
+> --
+> 2.26.2
+>
