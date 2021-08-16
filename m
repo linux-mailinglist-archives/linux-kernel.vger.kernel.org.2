@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF3A3ED717
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB4D3ED47F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240202AbhHPN1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240147AbhHPNST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:18:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 263B0632FD;
-        Mon, 16 Aug 2021 13:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119632;
-        bh=f/NiUibPdla70IKUtLbglAvG5zxydKA3p1/+yLNhIbY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cjkA5TXiZ2DaH9+EePovPKKK57/+qxSJy5VD9N2fDBi3xsAsStcc5HmuQg1aB6QPL
-         ghFKWU4HMs847a2uulFm+QLmA8EB9Ee7IlI9BqFn4hW8kbv/yBhbJB2D9T84xjEvMg
-         37Z7A0entXnNtpsvvWzZdxw8PlfI04pN9PAdHovE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Hutchings <ben.hutchings@mind.be>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 094/151] net: dsa: microchip: ksz8795: Fix VLAN untagged flag change on deletion
-Date:   Mon, 16 Aug 2021 15:02:04 +0200
-Message-Id: <20210816125447.175847517@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235831AbhHPNCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhHPNCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:02:40 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FDFC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:02:08 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id r7so23599300wrs.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KPWJKOlPjeyDb3fAxtx2j5zqy1mEAS/aOviHwpLJkcw=;
+        b=Uca2Z73AvdyZDUWygjav7haKMpo2uqKqIJSEdzOCgL5ZvJi1IYo9hDqMisZsn+DYUX
+         OvhNwcIo4JyRpndvv/VIgwnBdgkGZf75RvUDw1Ambl9wOhYy52XL7k+XqBdCEf7DXqWA
+         P2JYKMR2Ig8tL4bhV5hJrmdFZfUthlagIo4yC35Fg8BvYPzuP5qU+KtJ9uFJLEmfnWoC
+         6FUcS8xriYqdwLb/vsUBR7vpm6p5wjjzTiFI0T5j7yFs8F5y1uerM9+J7Zakw+lMiqDP
+         kXZhaszKkxr76yckcr3/YvEUmJzRRuryPXbdMhVP8hp1bROZZpw2DNz8IUxtlz2N+DEH
+         PGig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KPWJKOlPjeyDb3fAxtx2j5zqy1mEAS/aOviHwpLJkcw=;
+        b=qbv5L87N6/HuXo2gPFDxUXgObx5W23pxlsMcwUbP+y4R0HSWtov4Bw9B9o0OcvWtt3
+         NUnKdW8GZA0rajaRNEXcLNExWOAhvUMsV+knQzZcDpkRz57jpsp8X/nmgIEIyRgf2vsf
+         nKzUzQu0dQeHjpGOomnS5B9Spxnip4fMJg3PnWE1g3/nHNNWN+VsYLwJsdKMYxqpdo9x
+         lWEFNftAFP0d2mEGzgvpghmfuCnc7rdRRo/OEBWas4qVPXN789CV9FcYnGRtQUapNMT+
+         9NV/ZH84iyyL9qi5j1fIzvcWtuTIEWf1xMckO9MjVUVLSXzzJ0YUif0gwbSP1VDLGnrt
+         ARYQ==
+X-Gm-Message-State: AOAM5332OyOXaxpDakzeRSwoQMrz3HNzMYZfHyQ+yyFPReWVGu3j+Xp7
+        zWMnOpu48I4lPnGoNa+CM9Qcm1jbtREAbEJI
+X-Google-Smtp-Source: ABdhPJxSgWHeofgzUT5bmY8er3BPAleO269o7f3LswxczjcO/nrL+ntqLN/L386GSXtCXFgIcqZLuw==
+X-Received: by 2002:a5d:688c:: with SMTP id h12mr18495280wru.313.1629118926997;
+        Mon, 16 Aug 2021 06:02:06 -0700 (PDT)
+Received: from google.com ([2.31.167.59])
+        by smtp.gmail.com with ESMTPSA id i8sm10389918wma.7.2021.08.16.06.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 06:02:06 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 14:02:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] TQMx86: TQMx110EB and TQMxE40x MFD/GPIO support
+Message-ID: <YRphzEn8T1HxE3I8@google.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben.hutchings@mind.be>
+On Fri, 16 Jul 2021, Matthias Schiffer wrote:
 
-[ Upstream commit af01754f9e3c553a2ee63b4693c79a3956e230ab ]
+> v3:
+> - Removed Fixes tag from patch 3 again
+> 
+> v2: 
+> - A number of new patches (more hardware support and a few fixes)
+> - Patches 1-3 have gained Fixes tags
+> - Patch 2 depends on 1, so maybe we can push the GPIO patch through the
+>   MFD tree to keep them together?
+> - The change in patch 7 was somewhat controversial. I've added a
+>   warning, but it is the last patch of the series, so it doesn't affect
+>   the rest of the series if it is rejected.
+> 
+> Matthias Schiffer (7):
+>   gpio: tqmx86: really make IRQ optional
 
-When a VLAN is deleted from a port, the flags in struct
-switchdev_obj_port_vlan are always 0.  ksz8_port_vlan_del() copies the
-BRIDGE_VLAN_INFO_UNTAGGED flag to the port's Tag Removal flag, and
-therefore always clears it.
+>   mfd: tqmx86: clear GPIO IRQ resource when no IRQ is set
+>   mfd: tqmx86: remove incorrect TQMx90UC board ID
+>   mfd: tqmx86: fix typo in "platform"
+>   mfd: tqmx86: add support for TQMx110EB and TQMxE40x
+>   mfd: tqmx86: add support for TQ-Systems DMI IDs
+>   mfd: tqmx86: assume 24MHz LPC clock for unknown boards
 
-In case there are multiple VLANs configured as untagged on this port -
-which seems useless, but is allowed - deleting one of them changes the
-remaining VLANs to be tagged.
+Applied, thanks.
 
-It's only ever necessary to change this flag when a VLAN is added to
-the port, so leave it unchanged in ksz8_port_vlan_del().
-
-Fixes: e66f840c08a2 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
-Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/dsa/microchip/ksz8795.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index c20fb6edd420..46ef5bc79cbd 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1167,7 +1167,6 @@ static int ksz8_port_vlan_add(struct dsa_switch *ds, int port,
- static int ksz8_port_vlan_del(struct dsa_switch *ds, int port,
- 			      const struct switchdev_obj_port_vlan *vlan)
- {
--	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
- 	struct ksz_device *dev = ds->priv;
- 	u16 data, pvid;
- 	u8 fid, member, valid;
-@@ -1178,8 +1177,6 @@ static int ksz8_port_vlan_del(struct dsa_switch *ds, int port,
- 	ksz_pread16(dev, port, REG_PORT_CTRL_VID, &pvid);
- 	pvid = pvid & 0xFFF;
- 
--	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
--
- 	ksz8_r_vlan_table(dev, vlan->vid, &data);
- 	ksz8_from_vlan(dev, data, &fid, &member, &valid);
- 
 -- 
-2.30.2
-
-
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
