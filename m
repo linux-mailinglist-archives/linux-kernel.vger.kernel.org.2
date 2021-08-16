@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC053ED327
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB863ED332
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhHPLhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236131AbhHPLhG (ORCPT
+        id S236260AbhHPLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:40:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46510 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236141AbhHPLkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:37:06 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E243C061764;
-        Mon, 16 Aug 2021 04:36:34 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id d11so31160330eja.8;
-        Mon, 16 Aug 2021 04:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VzNlum+DSRQasFc6iJsqTAHfGRqIbtECs/5GE9/2M24=;
-        b=D9FZU7bCfxstwmg1IwQvB+ltXSZM37ASypF9qRxJd5tPLZ0TXCHD0LPEdbQAnxNYiP
-         6LxBXw+oTeAfMCSdBsBRsk59ZjuxCYONNDnLGFynbBwxB7nHzHqQzS70pck0osw6Capu
-         V0op9grEOW3v4dVdEjUunlgmUguhkRVOgHh18a5kHLSt0/4o4zWbX7AkZnUzeB/JP4F1
-         cpSZUukjN/BLQTjEDwEgP4Ayx8G4dRHVx3oTaR8gKCRhCuq2ILPLuGGwxgpL5sfjVIkk
-         +2mO60nTluhIuUbh3/w/7K6QyWwnJKQ1j/5YGUKfdkZwXkf4uBiIbunZKOhZsg8+DWM0
-         rVyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VzNlum+DSRQasFc6iJsqTAHfGRqIbtECs/5GE9/2M24=;
-        b=gjEeBUK4jmHmjuW+ecQqtaEDEs+2gNNVD8hdC5UYYlfba/2/m4BJEmcnOZDe2sxwdT
-         73MytLh9cX/Ko4uk+lXnOPGYdNZrEB/g6a+0K7up58jA8XHqKor8gpcpNqzJ127eIoHh
-         uaxvF10r0u/OF5Cr1auDJJ0MB6GPrLRCSqZIVh1ziukWR92hoZHfQMuhkyAh/B8YREvs
-         y5OnqKlyLcQnRGmZzGKy3CoADlLTDkKysl6jza/4tg+HZVediaYahwuSPL9Hi8uU4lC+
-         FtM9wDd4E6WlFsEAVcXELIG9eiyvLxvIdTV2Xy/OyQoCQHNFp6FCsmqDQxg08gxQnn6R
-         Y72A==
-X-Gm-Message-State: AOAM530ch19K0Typ0fmnfqmd8G7nTxqLvxd1m+5DCbGcAgCPcMpylBct
-        x+a0BEg/2hZPpNsXhKukR6hbmfkrlsyOLrUe6Qzv6oQ0+2tG4rS3
-X-Google-Smtp-Source: ABdhPJycUVUTWsimWAN1jnk4SNTHhC0Ilmg56FLbekv1lC0i8ZX/z7lqzStoBV7RLX1VYjqF33milOiInanqSKNa+xo=
-X-Received: by 2002:a17:906:8310:: with SMTP id j16mr14322832ejx.135.1629113793086;
- Mon, 16 Aug 2021 04:36:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210816073832.199701-1-mudongliangabcd@gmail.com> <20210816075346.GA10906@gondor.apana.org.au>
-In-Reply-To: <20210816075346.GA10906@gondor.apana.org.au>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 16 Aug 2021 19:36:07 +0800
-Message-ID: <CAD-N9QWwmRuPOKZ2BX8ACde4K2GNFUsAWzcciKVG9BwLPcM2-A@mail.gmail.com>
-Subject: Re: [PATCH] net: xfrm: fix bug in ipcomp_free_scratches
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+b9cfd1cc5d57ee0a09ab@syzkaller.appspotmail.com,
-        stable@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 16 Aug 2021 07:40:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629113983; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Zjz5au/SsM+E+LSwsR31KrM0iznGAcGjPcEAEIoewJ4=; b=AmnJTCs1vYfCtxo9sMgnLLlTz9/XEoo3Pph7JyRGsSacY3uSBA2/UeW8Y+khMMGpWLydGu0v
+ 3orgfRpZLBYAI3bEAqLhTnVeTbYTr6+p+EelXy1mUiC7YStoGgqfi4K2yPT40WRUv2CkKbOT
+ 3zzRyliHmIjwgNcFaM/totManQk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 611a4e72b14e7e2ecb139625 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 11:39:30
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F0FB3C43618; Mon, 16 Aug 2021 11:39:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C57CDC43460;
+        Mon, 16 Aug 2021 11:39:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C57CDC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
+        clew@codeaurora.org, sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: [PATCH V6 0/2] qcom aoss qmp_get and debugfs support patches
+Date:   Mon, 16 Aug 2021 17:09:12 +0530
+Message-Id: <1629113954-14084-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 3:53 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Mon, Aug 16, 2021 at 03:38:29PM +0800, Dongliang Mu wrote:
-> >
-> > -     for_each_possible_cpu(i)
-> > -             vfree(*per_cpu_ptr(scratches, i));
-> > +     for_each_possible_cpu(i) {
-> > +             void *scratch = *per_cpu_ptr(scratches, i);
-> > +             if (!scratch)
-> > +                     vfree(scratch);
-> > +     }
->
-> This patch is unnecessary.  Please check the implementation of
-> vfree, it already checks for NULL pointers just like most of our
-> free primitives.
+[Chnages from V5]
+Updated comments for qmp_pu()
 
-Hi Herbert,
+Deepak Kumar Singh (2):
+  soc: qcom: aoss: Expose send for generic usecase
+  soc: qcom: aoss: Add debugfs entry
 
-since there is no reproducer in the syzbot, I guess the problem might be:
+ drivers/soc/qcom/qcom_aoss.c       | 91 +++++++++++++++++++++++++++++++++++++-
+ include/linux/soc/qcom/qcom_aoss.h | 38 ++++++++++++++++
+ 2 files changed, 128 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/soc/qcom/qcom_aoss.h
 
-if vmalloc_node in the ipcomp_alloc_scratches returns a NULL pointer,
-it directly returns NULL without updating the per_cpu_ptr(scratches,
-i).
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Therefore, in the ipcomp_free_scratches, vfree will take an invalid
-and outdated per_cpu_ptr as its argument, leading to the bug - BUG:
-unable to handle kernel paging request in ipcomp_free_scratches.
-
-Any idea?
-
->
-> Cheers,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
