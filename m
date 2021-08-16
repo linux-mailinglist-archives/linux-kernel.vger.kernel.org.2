@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC03E3EDD5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EE23EDD58
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhHPSyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhHPSyh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:54:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26370C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tgT5CvitXfMITfK+y02y/I/quiStM8gDXffTjUkOrGY=; b=dAhUZEvpT61E1YQLsHl6siDLD0
-        AfR0pwdNCO6ZKTRAwKv9e6eOCweqHEAvl2OJYSbBiMiEMB6IRSUVc8R0cAgzocDDJQzqX2VkEBK/f
-        FnXz928012gYHCz716YjDlHxRjnc66eNGA87Ty8NWq8O7+AI+u1ebWvAwiA93inmFQwDAqmIxy2zo
-        YM1CXgCdh6DX++bIW4+p6T4uZDBq1SMGTIGHG35corEErlxuImHxCAOhCU+TzPbhLTSHIfyDggbuI
-        eNEnYUCMcZqAaam/6H4BZtbhp1ql4u7Lxo10vt9Faig+tDTfAtUlpdgZ6X7IsgRGPEGFo6Iihlh0k
-        Cw1BnSSA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFhiy-001hen-Ft; Mon, 16 Aug 2021 18:52:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91A1A30009A;
-        Mon, 16 Aug 2021 20:52:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4EE7729DAE38C; Mon, 16 Aug 2021 20:52:39 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 20:52:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de
-Subject: Re: [PATCH] sched/core: An optimization of pick_next_task() not sure
-Message-ID: <YRqz93crZIS1Mvmy@hirez.programming.kicks-ass.net>
-References: <20210816154401.23919-1-tao.zhou@linux.dev>
+        id S230399AbhHPSxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:53:18 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45742 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhHPSxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:53:17 -0400
+Received: from zn.tnic (p200300ec2f08b5001959acf655f190dc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:1959:acf6:55f1:90dc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 788041EC0541;
+        Mon, 16 Aug 2021 20:52:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629139960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJIwnKQ9osN83iCsLj2NaLLL1AgWy4Zh2ipZsHW1x4o=;
+        b=q5LhCH6WAzsiNPANO7URaJP0E5ZSG0Xl/x01TWnzdwmNdrqhMGxLC4zQrbuKVeYAvvZgvc
+        uyeMjls24lCTr8QGYbsQPGfFW3oXNspQksYABhhlnS4yLKCKOfIkilY098LhPtsJkS4pN/
+        XTwiVfa7aTOSItIwqjT00QIO6hQaY/k=
+Date:   Mon, 16 Aug 2021 20:53:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 08/26] x86/fpu/xstate: Introduce helpers to manage the
+ XSTATE buffer dynamically
+Message-ID: <YRq0DKXra9zDwYOE@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-9-chang.seok.bae@intel.com>
+ <YRV6M1I/GMXwuJqW@zn.tnic>
+ <4FD76EDB-A5E6-4F32-8C6C-B47D7456C206@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210816154401.23919-1-tao.zhou@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4FD76EDB-A5E6-4F32-8C6C-B47D7456C206@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:44:01PM +0800, Tao Zhou wrote:
-> When find a new candidate max, wipe the stale and start over.
-> Goto again: and use the new max to loop to pick the the task.
-> 
-> Here first want to get the max of the core and use this new
-> max to loop once to pick the task on each thread.
-> 
-> Not sure this is an optimization and just stop here a little
-> and move on..
-> 
+On Mon, Aug 16, 2021 at 06:33:37PM +0000, Bae, Chang Seok wrote:
+> Without DISABLE_XSAVES or something under ifdef CONFIG_X86_XX in
+> $arch/x86/include/asm/disable-features.h, I don’t see the difference with this
+> macro. Am I missing anything here? Or, boot_cpu_has() is going to be
+> deprecated everywhere?
 
-Did you find this retry was an issue on your workload? Or was this from
-reading the source?
+There's:
 
-> ---
->  kernel/sched/core.c | 52 +++++++++++++++++----------------------------
->  1 file changed, 20 insertions(+), 32 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 20ffcc044134..bddcd328df96 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5403,7 +5403,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	const struct sched_class *class;
->  	const struct cpumask *smt_mask;
->  	bool fi_before = false;
-> -	int i, j, cpu, occ = 0;
-> +	int i, cpu, occ = 0;
->  	bool need_sync;
->  
->  	if (!sched_core_enabled(rq))
-> @@ -5508,11 +5508,27 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	 * order.
->  	 */
->  	for_each_class(class) {
-> -again:
-> +		struct rq *rq_i;
-> +		struct task_struct *p;
-> +
->  		for_each_cpu_wrap(i, smt_mask, cpu) {
-> -			struct rq *rq_i = cpu_rq(i);
-> -			struct task_struct *p;
-> +			rq_i = cpu_rq(i);
-> +			p = pick_task(rq_i, class, max, fi_before);
-> +			/*
-> +			 * If this new candidate is of higher priority than the
-> +			 * previous; and they're incompatible; pick_task makes
-> +			 * sure that p's priority is more than max if it doesn't
-> +			 * match max's cookie. Update max.
-> +			 *
-> +			 * NOTE: this is a linear max-filter and is thus bounded
-> +			 * in execution time.
-> +			 */
-> +			if (!max || !cookie_match(max, p))
-> +				max = p;
-> +		}
->  
-> +		for_each_cpu_wrap(i, smt_mask, cpu) {
-> +			rq_i = cpu_rq(i);
->  			if (rq_i->core_pick)
->  				continue;
->  
+cpu_has
+this_cpu_has
+cpu_feature_enabled
+boot_cpu_has
+static_cpu_has
 
-This now calls pick_task() twice for each CPU, which seems unfortunate;
-perhaps add q->core_temp storage to cache that result. Also, since the
-first iteration is now explicitly about the max filter, perhaps we
-shouuld move that part of pick_task() into the loop and simplify things
-further?
+All code where it doesn't matter which CPU, should use
+cpu_feature_enabled() and simplicity will ensue in these here lands.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
