@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35483ECE07
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 07:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4AA3ECE09
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 07:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhHPFZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 01:25:14 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:53697 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhHPFZN (ORCPT
+        id S233230AbhHPFZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 01:25:38 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:52805 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232628AbhHPFZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 01:25:13 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 296FF2B011AB;
-        Mon, 16 Aug 2021 01:24:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 16 Aug 2021 01:24:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=5mOWqSNBK3/mb0NfaVtTdfrOLyN
-        devV1TJzFPzAHTbQ=; b=hmgPPKaSdi3pNxgas6DnbAVkLJJvpqnCJU7lEN38aaQ
-        0brbWWyv+Ne4mHJbBaKnk96NAjlhiDJU6K04M+QRjmuZiSS2e6/P1Z+ZpVKHuOeR
-        AOEX96lXY23DbIZbD8QZVsbAJ8P/1tknZz9DwXVYXMIzFLOVw0yOgG30BUOz0aFi
-        FcL2VrhMr4sMT9znD5/VENzuzx+aFLgGgueYkmntDrv1zJ2+Zf0Cza088+d9Ao9C
-        XD/b6H2U2wimKlFk4RsTK7w6YlSSJCWpAMFPk3Jl25JYeicc7jov1DXGgIcLp3G8
-        txvSPjS4qq5E95TL4nKHQAxs7AifK6yrSSkB8PiStuQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5mOWqS
-        NBK3/mb0NfaVtTdfrOLyNdevV1TJzFPzAHTbQ=; b=ptRZZ0F17jF8VTSfU41TLd
-        kQ0INvdSdDXhKhfTQYxHinCuRYg75EdvC1w5naPGvWY5guNMR0HP36I6RSSIlDEk
-        DMZrGLUBcOoIBY6vxeQ63aNH4l6zLro/EhGLVqoC8Xl90rU1kvwGNaWzxvsGzRMt
-        sU67XgKpynuvqeNQz0U7jMuPgVC44nkhHDplEqSlXbD/90ozdUOzu4o41ovS/stz
-        6ZIWU9qRq4OEXv/6NCWQmhLlE2BawDBPnBm2fLcLqUs/VIjcBnT2OO2e1E62N8ak
-        2+LERlfRry1/9ij4RGjvC28DMfzl76u7jxQt0grW0jo3vFqje9m8UyLQeccoXM7Q
-        ==
-X-ME-Sender: <xms:lvYZYdyKZigrR77b8pLjP-CM3YU9z4UTANZyOgQ4ligNNG0KOuRCzw>
-    <xme:lvYZYdTjMGe1SfbzPzcNeZznh0_x1Trn2CT3In-arD5-XCPdpJ5J13q1ry--rYigH
-    chHXZgFs1R4kg>
-X-ME-Received: <xmr:lvYZYXXRUbP0ngPTRjcDG2UapM8SVO0RVWkvlmH3oC8o7L4vddmAq9ujmStVV9rOmoMQzrCqEN-HurJYAIXE2Y3S27SCMAYm>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledtgdelhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:lvYZYfi4xK6YnSGTCt8rkj0CONWxP4dPsrxrH28ti-9ig3b2HziQEQ>
-    <xmx:lvYZYfBV1fgbxsBm7ZTR3sYZHb0-KxE6_WAzz_65tGCc8793ULoe1w>
-    <xmx:lvYZYYLTMXgEtaJ0FaRq5s2Zs6-F9d8YEX8LmsXT9R-Q31Y7absqkA>
-    <xmx:mPYZYT5E_VnCSfF0ZydVxlHoceSBALzcrCzEdeQQOash64Ko7PkWdykkHSM>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Aug 2021 01:24:37 -0400 (EDT)
-Date:   Mon, 16 Aug 2021 07:24:33 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the staging tree
-Message-ID: <YRn2kUHl2hVFPggS@kroah.com>
-References: <20210816135216.46e50364@canb.auug.org.au>
+        Mon, 16 Aug 2021 01:25:37 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d03 with ME
+        id i5R22500B3riaq2035R2Vr; Mon, 16 Aug 2021 07:25:04 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 16 Aug 2021 07:25:04 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     srinivas.kandagatla@linaro.org, bgoswami@codeaurora.org,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, vkoul@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 0/3] ASoC: wcd9335: Firx some resources leak in the probe and remove function
+Date:   Mon, 16 Aug 2021 07:25:01 +0200
+Message-Id: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816135216.46e50364@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 01:52:16PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the staging tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> drivers/staging/r8188eu/core/rtw_br_ext.c:8:10: fatal error: ../include/net/ipx.h: No such file or directory
->     8 | #include "../include/net/ipx.h"
->       |          ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   6c9b40844751 ("net: Remove net/ipx.h and uapi/linux/ipx.h header files")
-> 
-> from the net-next tree.
-> 
-> I have reverted that commit for today.
-> 
+The first 2 patches are sraightforward and look logical to me.
 
-That's not fair to the networking developers, I'll work on a patch for
-this driver to remove that later today...
+However, the 3rd one in purely speculative. It is based on the fact that a
+comment states that we enable some irqs on some slave ports. That said, it writes
+0xFF in some registers.
 
-thanks,
+So, I guess that we should disable these irqs when the driver is removed. That
+said, writing 0x00 at the same place looks logical to me.
 
-greg k-h
+This cis untested and NOT based on any documentation. Just a blind fix.
+Review with care.
+You'll be warned :)
+
+
+Christophe JAILLET (3):
+  ASoC: wcd9335: Fix a double irq free in the remove function
+  ASoC: wcd9335: Fix a memory leak in the error handling path of the
+    probe function
+  ASoC: wcd9335: Disable irq on slave ports in the remove function
+
+ sound/soc/codecs/wcd9335.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+-- 
+2.30.2
+
