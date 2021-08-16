@@ -2,108 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0AD3ED449
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACAA3ED446
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhHPMse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S235163AbhHPMrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhHPMsd (ORCPT
+        with ESMTP id S229806AbhHPMrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:48:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E6CC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bYq/RlC0v6fhXkriJhOA5FB18MNbZK+nNft2JpmIjus=; b=Y2Zhk1IHVOkWh9NnpfC0ISuW5/
-        M0jdQhL8RnDw0UUxSX6Fs7mqN2zpfMGbaBMZNFHohfaOBozVVF42/fX9ztpM1wjP3q1LVDG1waAkY
-        urC4/xfB47ZHbbgqkMwL9f2M7LIaLNnZQCQy5zldDcS5LFcWkO2oCYcg3gUIBu9OpP8zhtRAIDGM9
-        4o5hlig3wtT65q4DI/H239cmXwfXiehARu85+ypLOrvzCaB355FjjUqyudZVMn+2Ko7gHtBoSw/DR
-        vf2+ltvQsv4iIDVmIK1fcZiSYFXWtFlSn19f+pyQFlyvS3grtV7cqaGBUArYN4z+HUgsVVX02tAJR
-        jMhD7lgg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mFc0U-001M88-Ca; Mon, 16 Aug 2021 12:46:27 +0000
-Date:   Mon, 16 Aug 2021 13:46:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
-        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Message-ID: <YRpeHnP7QDNJRA8Y@casper.infradead.org>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
- <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
- <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
- <YOubKmDwxMIvdAed@casper.infradead.org>
- <a94973ab83ce48bd85c91397f82d7915@huawei.com>
- <55720e1b39cff0a0f882d8610e7906dc80ea0a01.camel@oracle.com>
- <db2b7337-4c6b-4e4b-71d3-dc4940353498@redhat.com>
- <YRpVHnr55LpQQvTb@casper.infradead.org>
- <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+        Mon, 16 Aug 2021 08:47:52 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB83C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id f12-20020a05600c4e8c00b002e6bdd6ffe2so9131854wmq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=628UnG3xjkZBMBG0VGNKw9sLYLAdXr0sKp9IjqwLtm4=;
+        b=nZUz0VgbAkxNJAiE9MAc/dLOh2wdouuGcy/tenu3ofifjwk5tWoE9ZMx1LtFAEZYIU
+         QONqerIapPAAGzvIzkk/mNlH+qQeSp9tMDcVDsKW5gHXTzTPLztrAx7KngfSMjnuJFFo
+         dHjxPf1qCxFJXqCyutbB3kV8NXqXw7PiZrMYagWbqpoVZ48LNLECUze9dYDjAjmVxNfx
+         pKcEWV8s3eBmVp/N0w03KvQG8OpcaUurrTSEe0xJVYnMZ/+PVAm6NZQFE0aSiva4j427
+         Db+1TcjkumK3wixTTwieyOb2i3wons09jv0G1iypy/bykk7/FJ06CIC/E5UwDgA9Ty8H
+         Hw6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=628UnG3xjkZBMBG0VGNKw9sLYLAdXr0sKp9IjqwLtm4=;
+        b=Mixg1dmxUStJrYk0dkhe9mRpt4L58HZu7KSP7EgdS6T/MyvIpOyYCtCW9Yw2WlqzB1
+         p0MdhCKmBwCl18guF3jVcWZZgEF7zfCpIl7chESAMr3a21YnvSvoasIiyXflWOqxWwl+
+         3O3p4xaSkq9AStfBeUYyqwtoVI4rAftZ1LteOSAQgpGJkBijtsbHaNoCMsJrtW/f8S5z
+         Zu14d68WcrJGvXNEecmw5HXpjyVAvUP35/8lv8nIVT9UtzqZUWoVQEqfPeTGEV1PUkFQ
+         RApH4AW/uH422hrTrnsMIi6IDVISLJckmQS+ypn12Lt5lDeCh+OeRH/PsqyLIEvjg9a+
+         6xxg==
+X-Gm-Message-State: AOAM530aYldPWP8vrkqUDs1QaAdTmo3ndiJGQuBAg03yxgmWJT2jOrSX
+        0Gcd3iLv+K/ibYiqm3HIpcpYfg==
+X-Google-Smtp-Source: ABdhPJzzWSQkQOBKWoi/NFlSIrCnrGUOE8L5DC8bQK9YcmtgJr492sWEK0o8hMmdRhhMLeglR7G/kg==
+X-Received: by 2002:a05:600c:4ba4:: with SMTP id e36mr5859426wmp.82.1629118039320;
+        Mon, 16 Aug 2021 05:47:19 -0700 (PDT)
+Received: from google.com ([2.31.167.59])
+        by smtp.gmail.com with ESMTPSA id z126sm10724473wmc.11.2021.08.16.05.47.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 05:47:18 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 13:47:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
+ as a module
+Message-ID: <YRpeVLf18Z+1R7WE@google.com>
+References: <7hsga8kb8z.fsf@baylibre.com>
+ <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+ <87r1hwwier.wl-maz@kernel.org>
+ <7h7diwgjup.fsf@baylibre.com>
+ <87im0m277h.wl-maz@kernel.org>
+ <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
+ <87sfzpwq4f.wl-maz@kernel.org>
+ <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
+ <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
+ <YQuZ2cKVE+3Os25Z@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQuZ2cKVE+3Os25Z@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 02:20:43PM +0200, David Hildenbrand wrote:
-> On 16.08.21 14:07, Matthew Wilcox wrote:
-> > On Mon, Aug 16, 2021 at 10:02:22AM +0200, David Hildenbrand wrote:
-> > > > Mappings within this address range behave as if they were shared
-> > > > between threads, so a write to a MAP_PRIVATE mapping will create a
-> > > > page which is shared between all the sharers. The first process that
-> > > > declares an address range mshare'd can continue to map objects in the
-> > > > shared area. All other processes that want mshare'd access to this
-> > > > memory area can do so by calling mshare(). After this call, the
-> > > > address range given by mshare becomes a shared range in its address
-> > > > space. Anonymous mappings will be shared and not COWed.
-> > > 
-> > > Did I understand correctly that you want to share actual page tables between
-> > > processes and consequently different MMs? That sounds like a very bad idea.
+On Thu, 05 Aug 2021, Lee Jones wrote:
+
+> On Wed, 04 Aug 2021, Saravana Kannan wrote:
+> 
+> > On Wed, Aug 4, 2021 at 11:20 AM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Wed, Aug 4, 2021 at 1:50 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > On Wed, 04 Aug 2021 02:36:45 +0100,
+> > > > Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > Hi Saravana,
+> > > >
+> > > > Thanks for looking into this.
+> > >
+> > > You are welcome. I just don't want people to think fw_devlink is broken :)
+> > >
+> > > >
+> > > > [...]
+> > > >
+> > > > > > Saravana, could you please have a look from a fw_devlink perspective?
+> > > > >
+> > > > > Sigh... I spent several hours looking at this and wrote up an analysis
+> > > > > and then realized I might be looking at the wrong DT files.
+> > > > >
+> > > > > Marc, can you point me to the board file in upstream that corresponds
+> > > > > to the platform in which you see this issue? I'm not asking for [1],
+> > > > > but the actual final .dts (not .dtsi) file that corresponds to the
+> > > > > platform/board/system.
+> > > >
+> > > > The platform I can reproduce this on is described in
+> > > > arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts. It is an
+> > > > intricate maze of inclusion, node merge and other DT subtleties. I
+> > > > suggest you look at the decompiled version to get a view of the
+> > > > result.
+> > >
+> > > Thanks. After decompiling it, it looks something like (stripped a
+> > > bunch of reg and address properties and added the labels back):
+> > >
+> > > eth_phy: mdio-multiplexer@4c000 {
+> > >         compatible = "amlogic,g12a-mdio-mux";
+> > >         clocks = <0x02 0x13 0x1e 0x02 0xb1>;
+> > >         clock-names = "pclk\0clkin0\0clkin1";
+> > >         mdio-parent-bus = <0x22>;
+> > >
+> > >         ext_mdio: mdio@0 {
+> > >                 reg = <0x00>;
+> > >
+> > >                 ethernet-phy@0 {
+> > >                         max-speed = <0x3e8>;
+> > >                         interrupt-parent = <0x23>;
+> > >                         interrupts = <0x1a 0x08>;
+> > >                         phandle = <0x16>;
+> > >                 };
+> > >         };
+> > >
+> > >         int_mdio: mdio@1 {
+> > >                 ...
+> > >         }
+> > > }
+> > >
+> > > And phandle 0x23 refers to the gpio_intc interrupt controller with the
+> > > modular driver.
+> > >
+> > > > > Based on your error messages, it's failing for mdio@0 which
+> > > > > corresponds to ext_mdio. But none of the board dts files in upstream
+> > > > > have a compatible property for "ext_mdio". Which means fw_devlink
+> > > > > _should_ propagate the gpio_intc IRQ dependency all the way up to
+> > > > > eth_phy.
+> > > > >
+> > > > > Also, in the failing case, can you run:
+> > > > > ls -ld supplier:*
+> > > > >
+> > > > > in the /sys/devices/....<something>/ folder that corresponds to the
+> > > > > "eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
+> > > >
+> > > > Here you go:
+> > > >
+> > > > root@tiger-roach:~# find /sys/devices/ -name 'supplier*'|grep -i mdio | xargs ls -ld
+> > > > lrwxrwxrwx 1 root root 0 Aug  4 09:47 /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer/supplier:platform:ff63c000.system-controller:clock-controller -> ../../../../virtual/devlink/platform:ff63c000.system-controller:clock-controller--platform:ff64c000.mdio-multiplexer
+> > >
+> > > As we discussed over chat, this was taken after the mdio-multiplexer
+> > > driver "successfully" probes this device. This will cause
+> > > SYNC_STATE_ONLY device links created by fw_devlink to be deleted
+> > > (because they are useless after a device probes). So, this doesn't
+> > > show the info I was hoping to demonstrate.
+> > >
+> > > In any case, one can see that fw_devlink properly created the device
+> > > link for the clocks dependency. So fw_devlink is parsing this node
+> > > properly. But it doesn't create a similar probe order enforcing device
+> > > link between the mdio-multiplexer and the gpio_intc because the
+> > > dependency is only present in a grand child DT node (ethernet-phy@0
+> > > under ext_mdio). So fw_devlink is working as intended.
+> > >
+> > > I spent several hours squinting at the code/DT yesterday. Here's what
+> > > is going on and causing the problem:
+> > >
+> > > The failing driver in this case is
+> > > drivers/net/mdio/mdio-mux-meson-g12a.c. And the only DT node it's
+> > > handling is what I pasted above in this email. In the failure case,
+> > > the call flow is something like this:
+> > >
+> > > g12a_mdio_mux_probe()
+> > > -> mdio_mux_init()
+> > > -> of_mdiobus_register(ext_mdio DT node)
+> > > -> of_mdiobus_register_phy(ext_mdio DT node)
+> > > -> several calls deep fwnode_mdiobus_phy_device_register(ethernet_phy DT node)
+> > > -> Tried to get the IRQ listed in ethernet_phy and fails with
+> > > -EPROBE_DEFER because the IRQ driver isn't loaded yet.
+> > >
+> > > The error is propagated correctly all the way up to of_mdiobus_register(), but
+> > > mdio_mux_init() ignores the -EPROBE_DEFER from of_mdiobus_register() and just
+> > > continues on with the rest of the stuff and returns success as long as
+> > > one of the child nodes (in this case int_mdio) succeeds.
+> > >
+> > > Since the probe returns 0 without really succeeding, networking stuff
+> > > just fails badly after this. So, IMO, the real problem is with
+> > > mdio_mux_init() not propagating up the -EPROBE_DEFER. I gave Marc a
+> > > quick hack (pasted at the end of this email) to test my theory and he
+> > > confirmed that it fixes the issue (a few deferred probes later, things
+> > > work properly).
+> > >
+> > > Andrew, I don't see any good reason for mdio_mux_init() not
+> > > propagating the errors up correctly (at least for EPROBE_DEFER). I'll
+> > > send a patch to fix this. Please let me know if there's a reason it
+> > > has to stay as-is.
 > > 
-> > That is the entire point.  Consider a machine with 10,000 instances
-> > of an application running (process model, not thread model).  If each
-> > application wants to map 1TB of RAM using 2MB pages, that's 4MB of page
-> > tables per process or 40GB of RAM for the whole machine.
+> > I sent out the proper fix as a series:
+> > https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
+> > 
+> > Marc, can you give it a shot please?
+> > 
+> > -Saravana
 > 
-> What speaks against 1 GB pages then?
+> Superstar!  Thanks for taking the time to rectify this for all of us.
 
-Until recently, the CPUs only having 4 1GB TLB entries.  I'm sure we
-still have customers using that generation of CPUs.  2MB pages perform
-better than 1GB pages on the previous generation of hardware, and I
-haven't seen numbers for the next generation yet.
+Just to clarify:
 
-> > There's a reason hugetlbfs was enhanced to allow this page table sharing.
-> > I'm not a fan of the implementation as it gets some locks upside down,
-> > so this is an attempt to generalise the concept beyond hugetlbfs.
-> 
-> Who do we account the page tables to? What are MADV_DONTNEED semantics? Who
-> cleans up the page tables? What happens during munmap? How does the rmap
-> even work? How to we actually synchronize page table walkers?
-> 
-> See how hugetlbfs just doesn't raise these problems because we are sharing
-> pages and not page tables?
+  Are we waiting on a subsequent patch submission at this point?
 
-No, really, hugetlbfs shares page tables already.  You just didn't
-notice that yet.
-
-> > Think of it like partial threading.  You get to share some parts, but not
-> > all, of your address space with your fellow processes.  Obviously you
-> > don't want to expose this to random other processes, only to other
-> > instances of yourself being run as the same user.
-> 
-> Sounds like a nice way to over-complicate MM to optimize for some special
-> use cases. I know, I'm probably wrong. :)
-
-It's really not as bad as you seem to think it is.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
