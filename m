@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862CE3ED76C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF46F3ED5C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237062AbhHPNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
+        id S239904AbhHPNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239174AbhHPNUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 313CD610E8;
-        Mon, 16 Aug 2021 13:16:15 +0000 (UTC)
+        id S239690AbhHPNKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:10:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9216D60F46;
+        Mon, 16 Aug 2021 13:09:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119775;
-        bh=lxOA3aSuWyHKSpNa7tRacuT9qo1x35lqn6tdw+aPyC4=;
+        s=korg; t=1629119370;
+        bh=BgpVBwlYA6SCKEr4slCLQiaSC7guV0FD4HrxxzLkECM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FVStAgEBeNsRfub8rGSwFA7oupE+U4P+uALcq3Kn3zNlSAHiWPTRIaTxZsxiMcHLK
-         RI098OzvupSjyeuEzyjCfN+W3Zpht9NCv7tQNiI1qYbNpmTCs55UeIcGhEpDrgGzrV
-         669hyGxz6x/P8eIYo7qlGQXioXGDqqfgkSs+DmhQ=
+        b=HPtNLqGWJgSI5yqvkyghj3sVaWEklqymtknSBQ7nHH3HYLEj+DOsOszUbVwzuhlwq
+         i/kVsAYZqLwNKpr4UazMEcY7EbrF+sntG9Y1ATvcQ37jF+L6ZGn61gg2xX2W1TGx/K
+         MKLSRcix5R6HlehJJhuJnWeyFcKp5mhIuUWkvj20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.13 136/151] powerpc/interrupt: Do not call single_step_exception() from other exceptions
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Marco Elver <elver@google.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 96/96] vmlinux.lds.h: Handle clangs module.{c,d}tor sections
 Date:   Mon, 16 Aug 2021 15:02:46 +0200
-Message-Id: <20210816125448.532135780@linuxfoundation.org>
+Message-Id: <20210816125438.177346123@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 01fcac8e4dfc112f420dcaeb70056a74e326cacf upstream.
+commit 848378812e40152abe9b9baf58ce2004f76fb988 upstream.
 
-single_step_exception() is called by emulate_single_step() which
-is called from (at least) alignment exception() handler and
-program_check_exception() handler.
+A recent change in LLVM causes module_{c,d}tor sections to appear when
+CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
+because these are not handled anywhere:
 
-Redefine it as a regular __single_step_exception() which is called
-by both single_step_exception() handler and emulate_single_step()
-function.
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
 
-Fixes: 3a96570ffceb ("powerpc: convert interrupt handlers to use wrappers")
-Cc: stable@vger.kernel.org # v5.12+
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/aed174f5cbc06f2cf95233c071d8aac948e46043.1628611921.git.christophe.leroy@csgroup.eu
+Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
+flag, so it is in a separate section even with -fno-function-sections
+(default)".
+
+Place them in the TEXT_TEXT section so that these technologies continue
+to work with the newer compiler versions. All of the KASAN and KCSAN
+KUnit tests continue to pass after this change.
+
+Cc: stable@vger.kernel.org
+Link: https://github.com/ClangBuiltLinux/linux/issues/1432
+Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210731023107.1932981-1-nathan@kernel.org
+[nc: Resolve conflict due to lack of cf68fffb66d60]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/traps.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ include/asm-generic/vmlinux.lds.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -1103,7 +1103,7 @@ DEFINE_INTERRUPT_HANDLER(RunModeExceptio
- 	_exception(SIGTRAP, regs, TRAP_UNK, 0);
- }
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -599,6 +599,7 @@
+ 		NOINSTR_TEXT						\
+ 		*(.text..refcount)					\
+ 		*(.ref.text)						\
++		*(.text.asan.* .text.tsan.*)				\
+ 	MEM_KEEP(init.text*)						\
+ 	MEM_KEEP(exit.text*)						\
  
--DEFINE_INTERRUPT_HANDLER(single_step_exception)
-+static void __single_step_exception(struct pt_regs *regs)
- {
- 	clear_single_step(regs);
- 	clear_br_trace(regs);
-@@ -1120,6 +1120,11 @@ DEFINE_INTERRUPT_HANDLER(single_step_exc
- 	_exception(SIGTRAP, regs, TRAP_TRACE, regs->nip);
- }
- 
-+DEFINE_INTERRUPT_HANDLER(single_step_exception)
-+{
-+	__single_step_exception(regs);
-+}
-+
- /*
-  * After we have successfully emulated an instruction, we have to
-  * check if the instruction was being single-stepped, and if so,
-@@ -1129,7 +1134,7 @@ DEFINE_INTERRUPT_HANDLER(single_step_exc
- static void emulate_single_step(struct pt_regs *regs)
- {
- 	if (single_stepping(regs))
--		single_step_exception(regs);
-+		__single_step_exception(regs);
- }
- 
- static inline int __parse_fpscr(unsigned long fpscr)
 
 
