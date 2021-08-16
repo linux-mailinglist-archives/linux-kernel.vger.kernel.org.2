@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584E73EDBF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667063EDBFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhHPREG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbhHPRDz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:03:55 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43432C0613CF;
-        Mon, 16 Aug 2021 10:03:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08b500a9c2327ac48af0d7.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:a9c2:327a:c48a:f0d7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 045F31EC0516;
-        Mon, 16 Aug 2021 19:03:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629133395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=cdjFAwQRlWFZrMh487IcfeXjtfV+kPYJk4xdQyxxwG8=;
-        b=NUhUMN3z0T5t1Vvly3U2phQ+JRBo7JbQ8+kHQYZTrWatPMnvakMbGX9OCYIvzB8DUgNiZt
-        3rFOUKsALV6KjJSsyxTWCiPKl9M3JpH0v9SzbA6vMHgawtmQG+yebfxl2m+mllhj+FPIrh
-        dQjTxAjZbSBwv9k/ww48hnbm+fPbw5M=
-Date:   Mon, 16 Aug 2021 19:03:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v28 16/32] x86/mm: Update maybe_mkwrite() for shadow stack
-Message-ID: <YRqaesuEy9ZGttZ6@zn.tnic>
-References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
- <20210722205219.7934-17-yu-cheng.yu@intel.com>
+        id S230367AbhHPRFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:05:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhHPRFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:05:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 206CC60E76;
+        Mon, 16 Aug 2021 17:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629133508;
+        bh=RrPpirxSrKSMhGZJ+QCIH5ubgH4kZX6FvSaNS2s3bXQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=inuI2C2jITpMS8AKBKtJoXTf2zBpon/qSOFvDvMFs9vw9YUxzFHKdDaKaHPn5Qqeh
+         RNBlEGqXdKULxwF2io8nQwSMfq59mOLIGKazvnA6NJqGafauTdoQnyB8XzM/YGyYzD
+         K2QvcSVxWZC2re7K7KmlWLXE6jms0bxjyFVTcOBJgPXTOrHKGESRItexrbXUDyqpw6
+         U9L/R0OqjEfux9335576InPpj9BdcZaeYQ4BYHaSG4IiYP8YeWMLV+0pbxXUdCOCou
+         COvEWGf06XG9WmU77ipHafHzgWNHgAZIECGmsZCEayGWLuz1rdddf1eUbrW+YYOJ9i
+         aKl57NGa3PIpw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        linux-tegra@vger.kernel.org, Bjorn Helgaas <bjorn@helgaas.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jawoslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] ASoC: tegra: Use of_device_get_match_data
+Date:   Mon, 16 Aug 2021 18:04:40 +0100
+Message-Id: <162913223312.13582.10888100799475599538.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1628971397.git.aakashhemadri123@gmail.com>
+References: <cover.1628971397.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210722205219.7934-17-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:52:03PM -0700, Yu-cheng Yu wrote:
-> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-> index 3364fe62b903..ba449d12ec32 100644
-> --- a/arch/x86/mm/pgtable.c
-> +++ b/arch/x86/mm/pgtable.c
-> @@ -610,6 +610,26 @@ int pmdp_clear_flush_young(struct vm_area_struct *vma,
->  }
->  #endif
->  
-> +pte_t maybe_mkwrite(pte_t pte, struct vm_area_struct *vma)
-> +{
-> +	if (likely(vma->vm_flags & VM_WRITE))
-> +		pte = pte_mkwrite(pte);
-> +	else if (likely(vma->vm_flags & VM_SHADOW_STACK))
-> +		pte = pte_mkwrite_shstk(pte);
-> +	return pte;
-> +}
-> +
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
-> +{
-> +	if (likely(vma->vm_flags & VM_WRITE))
-> +		pmd = pmd_mkwrite(pmd);
-> +	else if (likely(vma->vm_flags & VM_SHADOW_STACK))
-> +		pmd = pmd_mkwrite_shstk(pmd);
+On Sun, 15 Aug 2021 01:42:17 +0530, Aakash Hemadri wrote:
+> 	Prefer `of_device_get_match_data` over `of_match_device`. This patch
+> replaces of_match_device with of_device_get_match_data.
+> 
+> This patch series will apply cleanly on for-next
+> 
+> Aakash Hemadri (2):
+>   ASoC: tegra30: ahub: Use of_device_get_match_data
+>   ASoC: tegra30: i2s: Use of_device_get_match_data
+> 
+> [...]
 
-What are all those likely()ies here for?
+Applied to
 
--- 
-Regards/Gruss,
-    Boris.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks!
+
+[1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
+      commit: 80165bb8043391f4ef4916bde947a4d805a54aa6
+[2/2] ASoC: tegra30: i2s: Use of_device_get_match_data
+      commit: 356b94a32a75203616e5a7c3cd2b19101bc87086
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
