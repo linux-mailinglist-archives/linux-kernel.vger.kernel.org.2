@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04FA3ED84D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361A53ED85A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhHPOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:00:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40597 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231312AbhHPN6u (ORCPT
+        id S233003AbhHPOBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:01:06 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:44778 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231445AbhHPN7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:58:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629122256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=j3zwB4umWAR5hgPMKgLnLcK8o/PyyPVw/5nTJsz9JWI=;
-        b=GEZPNz7PiZO+ZhTPdT7rNTwsqnwYGXxDgwXaoCg7j+xthYIOQr4GVbHQmSxGL8FBLwGAS+
-        fbhO6qISIklU4K/Pcr58VkG+NKKOi7lWQ6tmrJHt2p96/cwEeahMqFuFeGkwIR+100TE1Q
-        gUzTSFJfm0vkTN/y6y1gl/ld/8leRu4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-2IeNXc24MkKbo03U-WeXhQ-1; Mon, 16 Aug 2021 09:57:34 -0400
-X-MC-Unique: 2IeNXc24MkKbo03U-WeXhQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85C83801AEB;
-        Mon, 16 Aug 2021 13:57:33 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 05F9D60916;
-        Mon, 16 Aug 2021 13:57:32 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [FYI PATCH] KVM: nSVM: avoid picking up unsupported bits from L2 in int_ctl (CVE-2021-3653)
-Date:   Mon, 16 Aug 2021 09:57:31 -0400
-Message-Id: <20210816135732.3836586-1-pbonzini@redhat.com>
+        Mon, 16 Aug 2021 09:59:54 -0400
+Received: by mail-oi1-f172.google.com with SMTP id w6so26702841oiv.11;
+        Mon, 16 Aug 2021 06:58:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XVC/6gEUhU4vuXQZAwgAC2E+AXjHkZw8kmCwwJT5EkY=;
+        b=o/meJLg2KkDJCYyiLCtWNi/xp4tMAeJFU4ojzVzTzLvSr2yK4E7KYaUMgrm2W73CDp
+         gFZBwwjXv3XUxkONbauz3OT8c+GtX8K32jLtaLoCrn9Bie5aczrX+jSCC3XSVcse6csb
+         2LPokq5h0z6vnIKCTztMFXLpW6/oBJ3DHsjkQvNmCOy89TKJYHHz+lxaYoGbvVTlehia
+         GUIcokyRB2CbSVKtuzVKYqCHYV/5RMCvXQ6BKKo8WEoQ4iJFKFuZsFEOPiRTxo4YdFSr
+         dZufibB96H6M97pnJRK+PYKy76SamCL9dC5F+E7xotQc0C8roS+IKr1NPWaNGaOYaKR/
+         TG0A==
+X-Gm-Message-State: AOAM532d/QDOe/ZmkWcvStc+ZokQUbmKnjp/JzdsPKR1aSCRgtgfUrHn
+        vDtyTrADeuJPS8N9POd6uE+gQawxee2ChKx0gS8=
+X-Google-Smtp-Source: ABdhPJyPgh9rmvAjz/JQaNbgjqpHiYubxebOtNNiEu+tbqf7o2TwycD9Yo4s0S/HWKi7unIB8UtE76WdXOPSeDIPtcg=
+X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr1029801ois.69.1629122300340;
+ Mon, 16 Aug 2021 06:58:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+ <20210802152359.12623-2-lorenzo.pieralisi@arm.com> <YRKtEDycefrZLB3X@infradead.org>
+ <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+ <YRPZ2Kqb/MFggHzQ@infradead.org> <20210811145508.GA3650@lpieralisi>
+ <20210816095854.GA2599@lpieralisi> <CAMj1kXHM8tG2f-i6u8Ohb0RV9XTqq2N1Oooz_Q2kvLpdfTMxqw@mail.gmail.com>
+In-Reply-To: <CAMj1kXHM8tG2f-i6u8Ohb0RV9XTqq2N1Oooz_Q2kvLpdfTMxqw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Aug 2021 15:57:54 +0200
+Message-ID: <CAJZ5v0jp_cQ4gvd6TGO6dSgGtCuuEEpkmArxMMe0tcgoZAbSdg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
+ acpi_os_map_iomem() cast
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+On Mon, Aug 16, 2021 at 12:22 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 16 Aug 2021 at 11:59, Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+> >
+> > On Wed, Aug 11, 2021 at 03:55:08PM +0100, Lorenzo Pieralisi wrote:
+> > > On Wed, Aug 11, 2021 at 03:08:24PM +0100, Christoph Hellwig wrote:
+> > > > On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
+> > > > > The whole problem we are solving here is that ACPI, being based on
+> > > > > x86, conflates MMIO mappings with memory mappings, and has been using
+> > > > > the same underlying infrastructure for either.
+> > > >
+> > > > So let's fix that problem instead of papering over it.
+> > >
+> > > Patch (3) in this series is a fix - I would ask whether it makes
+> > > sense to merge patches (2-3) now and think about reworking the current
+> > > ACPI IO/MEM mapping API later, it can be an invasive change for a fix,
+> > > assuming we agree on how to rework the ACPI IO/MEM mapping API.
+> >
+> > What should we do then with this series ?
+> >
+>
+> It is not even clear that reworking the ACPI core is feasible to begin
+> with, OTOH, fixing a sparse warning is arguably not a critical bug fix
+> either, so I'd suggest we just drop that bit.
 
-* Invert the mask of bits that we pick from L2 in
-  nested_vmcb02_prepare_control
-
-* Invert and explicitly use VIRQ related bits bitmask in svm_clear_vintr
-
-This fixes a security issue that allowed a malicious L1 to run L2 with
-AVIC enabled, which allowed the L2 to exploit the uninitialized and enabled
-AVIC to read/write the host physical memory at some offsets.
-
-Fixes: 3d6368ef580a ("KVM: SVM: Add VMRUN handler")
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/svm.h |  2 ++
- arch/x86/kvm/svm/nested.c  | 10 +++++++---
- arch/x86/kvm/svm/svm.c     |  9 +++++----
- 3 files changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index e322676039f4..b00dbc5fac2b 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -184,6 +184,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
- #define V_IGN_TPR_SHIFT 20
- #define V_IGN_TPR_MASK (1 << V_IGN_TPR_SHIFT)
- 
-+#define V_IRQ_INJECTION_BITS_MASK (V_IRQ_MASK | V_INTR_PRIO_MASK | V_IGN_TPR_MASK)
-+
- #define V_INTR_MASKING_SHIFT 24
- #define V_INTR_MASKING_MASK (1 << V_INTR_MASKING_SHIFT)
- 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 61738ff8ef33..28381ca5221c 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -503,7 +503,11 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
- 
- static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
- {
--	const u32 mask = V_INTR_MASKING_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK;
-+	const u32 int_ctl_vmcb01_bits =
-+		V_INTR_MASKING_MASK | V_GIF_MASK | V_GIF_ENABLE_MASK;
-+
-+	const u32 int_ctl_vmcb12_bits = V_TPR_MASK | V_IRQ_INJECTION_BITS_MASK;
-+
- 	struct kvm_vcpu *vcpu = &svm->vcpu;
- 
- 	/*
-@@ -535,8 +539,8 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
- 		vcpu->arch.l1_tsc_offset + svm->nested.ctl.tsc_offset;
- 
- 	svm->vmcb->control.int_ctl             =
--		(svm->nested.ctl.int_ctl & ~mask) |
--		(svm->vmcb01.ptr->control.int_ctl & mask);
-+		(svm->nested.ctl.int_ctl & int_ctl_vmcb12_bits) |
-+		(svm->vmcb01.ptr->control.int_ctl & int_ctl_vmcb01_bits);
- 
- 	svm->vmcb->control.virt_ext            = svm->nested.ctl.virt_ext;
- 	svm->vmcb->control.int_vector          = svm->nested.ctl.int_vector;
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index e8ccab50ebf6..69639f9624f5 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1589,17 +1589,18 @@ static void svm_set_vintr(struct vcpu_svm *svm)
- 
- static void svm_clear_vintr(struct vcpu_svm *svm)
- {
--	const u32 mask = V_TPR_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK | V_INTR_MASKING_MASK;
- 	svm_clr_intercept(svm, INTERCEPT_VINTR);
- 
- 	/* Drop int_ctl fields related to VINTR injection.  */
--	svm->vmcb->control.int_ctl &= mask;
-+	svm->vmcb->control.int_ctl &= ~V_IRQ_INJECTION_BITS_MASK;
- 	if (is_guest_mode(&svm->vcpu)) {
--		svm->vmcb01.ptr->control.int_ctl &= mask;
-+		svm->vmcb01.ptr->control.int_ctl &= ~V_IRQ_INJECTION_BITS_MASK;
- 
- 		WARN_ON((svm->vmcb->control.int_ctl & V_TPR_MASK) !=
- 			(svm->nested.ctl.int_ctl & V_TPR_MASK));
--		svm->vmcb->control.int_ctl |= svm->nested.ctl.int_ctl & ~mask;
-+
-+		svm->vmcb->control.int_ctl |= svm->nested.ctl.int_ctl &
-+			V_IRQ_INJECTION_BITS_MASK;
- 	}
- 
- 	vmcb_mark_dirty(svm->vmcb, VMCB_INTR);
--- 
-2.27.0
-
+So I'm assuming that one more iteration of this series will be posted.
