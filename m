@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98A83ED2EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3460C3ED2F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhHPLNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbhHPLNm (ORCPT
+        id S236124AbhHPLPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:15:06 -0400
+Received: from smtprelay0203.hostedemail.com ([216.40.44.203]:41686 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231652AbhHPLPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:13:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF242C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:13:10 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFaYH-00016o-94; Mon, 16 Aug 2021 13:13:09 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 106E3668211;
-        Mon, 16 Aug 2021 11:13:07 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 13:13:06 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        Mon, 16 Aug 2021 07:15:05 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A08A6204BB;
+        Mon, 16 Aug 2021 11:14:33 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 64611315D7A;
+        Mon, 16 Aug 2021 11:14:32 +0000 (UTC)
+Message-ID: <5ec326711eaf178754a02816f20510a7d860b378.camel@perches.com>
+Subject: Re: [PATCH 1/4] staging: r8188eu: refactor
+ rtw_is_cckrates_included()
+From:   Joe Perches <joe@perches.com>
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: add Vincent MAILHOL as maintainer for the
- ETAS ES58X CAN/USB driver
-Message-ID: <20210816111306.xdyfb7shpwij4z27@pengutronix.de>
-References: <20210814093353.74391-1-mailhol.vincent@wanadoo.fr>
+Date:   Mon, 16 Aug 2021 04:14:31 -0700
+In-Reply-To: <20210816095840.24259-1-straube.linux@gmail.com>
+References: <20210816095840.24259-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dc5q36jk3j4vbglt"
-Content-Disposition: inline
-In-Reply-To: <20210814093353.74391-1-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: 9n77txsehf73xemcak6m3t9stehd8pqc
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 64611315D7A
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19csrqDwimCnRbpgGA5vCtdn7wIwrapD00=
+X-HE-Tag: 1629112472-559648
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-08-16 at 11:58 +0200, Michael Straube wrote:
+> Refactor function rtw_is_cckrates_included(). Improves readability
+> and slightly reduces object file size.
+[]
+> diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+[]
+> @@ -70,13 +70,12 @@ int rtw_get_bit_value_from_ieee_value(u8 val)
+>  
+> 
+>  uint	rtw_is_cckrates_included(u8 *rate)
+>  {
+> -	u32	i = 0;
+> +	while (*rate) {
+> +		u8 r = *rate & 0x7f;
+> 
+> -	while (rate[i] != 0) {
+> -		if  ((((rate[i]) & 0x7f) == 2) || (((rate[i]) & 0x7f) == 4) ||
+> -		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
+> +		if (r == 2 || r == 4 || r == 11 || r == 22)
+>  			return true;
+> -		i++;
+> +		rate++;
+>  	}
+>  	return false;
+>  }
 
---dc5q36jk3j4vbglt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bikeshed:
 
-On 14.08.2021 18:33:53, Vincent Mailhol wrote:
-> Adding myself (Vincent Mailhol) as a maintainer for the ETAS ES58X
-> CAN/USB driver.
->=20
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> ---
-> When sending the patches for the ETAS ES58X driver, I looked at what
-> other drivers were doing and realized that most of these did not
-> update the MAINTAINERS file. At that time, I candidly thought that the
-> MODULE_AUTHOR macro was sufficient for that. Following this e-mail:
-> https://lore.kernel.org/linux-can/20210809175158.5xdkqeemjo3hqwcw@pengutr=
-onix.de/
-> it appeared that I should have done so.
->=20
-> This patch fixes it. :)
-> ---
-> MAINTAINERS | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 41fcfdb24a81..9a164f4eeee6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11347,6 +11347,12 @@ L:	netdev@vger.kernel.org
->  S:	Supported
->  F:	drivers/net/phy/mxl-gpy.c
-> =20
-> +ETAS ES58X CAN/USB DRIVER
-> +M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> +L:	linux-can@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/net/can/usb/etas_es58x/
-> +
+More compact code with only 1 reference of rate not 3 is more
+readable to at least me.
 
-The file should be sorted alphabetically, fixed while applying.
+	u8 r;
 
-Marc
+	while ((r = *rate++ & 0x7f)) {
+		if (r == 2 || r == 4 || r == 11 || r == 22)
+			return true;
+	}
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+	return false;
 
---dc5q36jk3j4vbglt
-Content-Type: application/pgp-signature; name="signature.asc"
+And you might make a static inline for the test of r so it could
+be reused in the rtw_is_cckratesonly_included function
 
------BEGIN PGP SIGNATURE-----
+static inline bool is_cckrate(u8 rate)
+{
+	return rate == 2 || rate == 4 || rate == 11 || rate == 22;
+}
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaSD4ACgkQqclaivrt
-76mPxgf/U/pNltqTiXwccENNXOBZW5oG8WHAIRlpSPrXvzBBb8NzOBPpj9BNKGM3
-wk5XSPxQSnSriwQo97xOCkDiNnfeewCJ7FHj6LLKrWfUdDawQTum1hTjb+ZMLOO9
-mSQhbBYPOM3qXK8AhgweEWikppsrOjPxEPUpa8LWwgaKOiya5cRmBhOMmj487wfF
-A/i5OCkfOiyJypmz5VfEeiNfY0m0GTujBV1C5iOBND6ti0ESnwM9XgMy/7nxePPR
-17YTzIYOKtBkv8SrwnBP2WxqHLEAtGRuH7HkqSd+fjBy9tNil4YWsoekmMTFVowO
-mBdjdFtPswmMwoGiN/ftp26GalJEFg==
-=9DQ6
------END PGP SIGNATURE-----
+so this could be:
 
---dc5q36jk3j4vbglt--
+	u8 r;
+
+	while ((r = *rate++ & 0x7f)) {
+		if (is_cckrate(r))
+			return true;
+	}
+
+	return false;
+
+
