@@ -2,99 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA853EDC7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A763EDC82
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhHPRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhHPRgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:36:11 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3FAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:35:39 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so1423343pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8SwTsPx4UYisguWy8Lsk5AZC9AKkSCySPlgNFqLhFrs=;
-        b=XhzPXa2/DuXnsWeMM+nj/dHlsE2F9IpphR/qnZL74arj5QR7aFtwzBkgnbqmnEuQab
-         wXc+J7WDhs8fhUNzEwTV/lFDkd/ewsnBLPRPpX1vK0tm/Rq33ZZBu1hjdkqwv0uxN34P
-         KcAaiB4mCP9gmmLCZ3zYd/rGleXHxsWztBTChXNlz4MbCYUDUZE86JPKdBCLLZGMDQ4M
-         qgeOfx+wubjoFoIF6MT0dnfgjwpZVDvbkB5QUscAYNaHg1WHv4gKg6xif40SqQwNgmTf
-         fuxKjSIWvJ+595wqKDuPzxe0Wkls16jGd24iK0hres5cBH3/x48TAv47rsQ2/cDzzvjp
-         Dz4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8SwTsPx4UYisguWy8Lsk5AZC9AKkSCySPlgNFqLhFrs=;
-        b=I858FJ6OGJknbcFwEvMki2zv6Wo8aF6/6MigRhRdxoivfykJKadlcjsooQZHw/pguW
-         cJjW66VFRWAtxRwK9/iB89l5WAAFx83lwJAwEfYN0II7cVPV84lYY5RSSRvXmqFzO3dy
-         NAz5WYD8EusFZpxNC9LniviIHDt+yLrrsf5Y/JA7HMLKn4O21kzASWzsBnv5NL3EpfLB
-         1bkHNIzvrs0HiP20MWQG1p+b4VdEvnJ68JFiRo6npU33aB9bdFzRwkDZvo7ikt+gme7i
-         h24Z13fs8PCyfotJtAOOcVIw8gqx5KAIHqWqW1rwS82OnDFLna/fxtSGo7J+PdL/AG0P
-         bSNg==
-X-Gm-Message-State: AOAM533ecvIG2nitdB1C2QLYOkcV+6V69T4V1MipTSL2j/tG8zXIn1vC
-        IyJhRfAzT6XDsVjjaVZQR05od6vYj4dm3w==
-X-Google-Smtp-Source: ABdhPJx/YiLxJeq0cMJZXttVox/qN9kvq0gqEd++DqW+xgu/P2njP+jG6ErKbdxx1Mr7cDXxVhJA2Q==
-X-Received: by 2002:a63:f656:: with SMTP id u22mr6324635pgj.392.1629135339309;
-        Mon, 16 Aug 2021 10:35:39 -0700 (PDT)
-Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id u10sm14030pgj.48.2021.08.16.10.35.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 10:35:38 -0700 (PDT)
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] staging: rtl8723bs: fix cast to restricted __le32
-Date:   Mon, 16 Aug 2021 23:05:07 +0530
-Message-Id: <1be80f0196bed681bf55bfe3155f564b4ebf3b76.1629135143.git.aakashhemadri123@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1629135143.git.aakashhemadri123@gmail.com>
-References: <cover.1629135143.git.aakashhemadri123@gmail.com>
+        id S229968AbhHPRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:38:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48212 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229590AbhHPRiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:38:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="196170656"
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="196170656"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:37:39 -0700
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="462119781"
+Received: from xzhu13-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.209.7.115])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:37:38 -0700
+Date:   Mon, 16 Aug 2021 10:37:38 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Gayatri Kammela <gayatri.kammela@intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, mgross@linux.intel.com,
+        hdegoede@redhat.com, irenic.rajneesh@gmail.com,
+        andriy.shevchenko@linux.intel.com, vicamo.yang@canonical.com,
+        srinivas.pandruvada@intel.com, david.e.box@intel.com,
+        linux-kernel@vger.kernel.org, tamar.mashiah@intel.com,
+        gregkh@linuxfoundation.org, rajatja@google.com,
+        Shyam-sundar.S-k@amd.com, Alexander.Deucher@amd.com,
+        mlimonci@amd.com, Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v5 1/5] platform/x86/intel: intel_pmc_core: Move
+ intel_pmc_core* files to pmc subfolder
+Message-ID: <20210816173738.oxndqtq6uaql7sz7@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <cover.1626459866.git.gayatri.kammela@intel.com>
+ <b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <b2cb6b10b75445acceab3030c3a9aa585e7c7b65.1626459866.git.gayatri.kammela@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warning:
-warning: cast to restricted __le32
+On Fri, Jul 16, 2021 at 11:38:33AM -0700, Gayatri Kammela wrote:
+>As part of collecting Intel x86 specific drivers in their own
+>folder, move intel_pmc_core* files to its own subfolder there.
+>
+>Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+>Cc: David Box <david.e.box@intel.com>
+>Cc: You-Sheng Yang <vicamo.yang@canonical.com>
+>Cc: Hans de Goede <hdegoede@redhat.com>
+>Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+>Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+>---
+> MAINTAINERS                                   |  2 +-
+> drivers/platform/x86/Kconfig                  | 21 ------------------
+> drivers/platform/x86/Makefile                 |  1 -
+> drivers/platform/x86/intel/Kconfig            |  1 +
+> drivers/platform/x86/intel/Makefile           |  1 +
+> drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
+> drivers/platform/x86/intel/pmc/Makefile       |  5 +++++
+> .../{intel_pmc_core.c => intel/pmc/core.c}    |  2 +-
+> .../{intel_pmc_core.h => intel/pmc/core.h}    |  0
+> .../pmc/pltdrv.c}                             |  0
+> 10 files changed, 31 insertions(+), 24 deletions(-)
+> create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+> create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+> rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
+> rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
+> rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
+>
+>diff --git a/MAINTAINERS b/MAINTAINERS
+>index 6c8be735cc91..c5d610885bf2 100644
+>--- a/MAINTAINERS
+>+++ b/MAINTAINERS
+>@@ -9477,7 +9477,7 @@ M:	David E Box <david.e.box@intel.com>
+> L:	platform-driver-x86@vger.kernel.org
+> S:	Maintained
+> F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+>-F:	drivers/platform/x86/intel_pmc_core*
+>+F:	drivers/platform/x86/intel/pmc/core*
+>
+> INTEL PMIC GPIO DRIVERS
+> M:	Andy Shevchenko <andy@kernel.org>
+>diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+>index 7d385c3b2239..cae72922f448 100644
+>--- a/drivers/platform/x86/Kconfig
+>+++ b/drivers/platform/x86/Kconfig
+>@@ -1184,27 +1184,6 @@ config INTEL_MRFLD_PWRBTN
+> 	  To compile this driver as a module, choose M here: the module
+> 	  will be called intel_mrfld_pwrbtn.
+>
+>-config INTEL_PMC_CORE
+>-	tristate "Intel PMC Core driver"
+>-	depends on PCI
+>-	depends on ACPI
+>-	help
+>-	  The Intel Platform Controller Hub for Intel Core SoCs provides access
+>-	  to Power Management Controller registers via various interfaces. This
+>-	  driver can utilize debugging capabilities and supported features as
+>-	  exposed by the Power Management Controller. It also may perform some
+>-	  tasks in the PMC in order to enable transition into the SLPS0 state.
+>-	  It should be selected on all Intel platforms supported by the driver.
+>-
+>-	  Supported features:
+>-		- SLP_S0_RESIDENCY counter
+>-		- PCH IP Power Gating status
+>-		- LTR Ignore / LTR Show
+>-		- MPHY/PLL gating status (Sunrisepoint PCH only)
+>-		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
+>-		- Low Power Mode registers (Tigerlake and beyond)
+>-		- PMC quirks as needed to enable SLPS0/S0ix
+>-
+> config INTEL_PMT_CLASS
+> 	tristate
+> 	help
+>diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+>index 7ee369aab10d..43d36f8c36f1 100644
+>--- a/drivers/platform/x86/Makefile
+>+++ b/drivers/platform/x86/Makefile
+>@@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
+> obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)	+= intel_bxtwc_tmu.o
+> obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)	+= intel_chtdc_ti_pwrbtn.o
+> obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
+>-obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
+> obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
+> obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
+> obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
+>diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
+>index f2eef337eb98..8ca021785f67 100644
+>--- a/drivers/platform/x86/intel/Kconfig
+>+++ b/drivers/platform/x86/intel/Kconfig
+>@@ -18,5 +18,6 @@ if X86_PLATFORM_DRIVERS_INTEL
+>
+> source "drivers/platform/x86/intel/int33fe/Kconfig"
+> source "drivers/platform/x86/intel/int3472/Kconfig"
+>+source "drivers/platform/x86/intel/pmc/Kconfig"
+>
+> endif # X86_PLATFORM_DRIVERS_INTEL
+>diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
+>index 0653055942d5..49962f4dfdec 100644
+>--- a/drivers/platform/x86/intel/Makefile
+>+++ b/drivers/platform/x86/intel/Makefile
+>@@ -6,3 +6,4 @@
+>
+> obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
+> obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
+>+obj-$(CONFIG_INTEL_PMC_CORE)		+= pmc/
+>diff --git a/drivers/platform/x86/intel/pmc/Kconfig b/drivers/platform/x86/intel/pmc/Kconfig
+>new file mode 100644
+>index 000000000000..b4c955a35674
+>--- /dev/null
+>+++ b/drivers/platform/x86/intel/pmc/Kconfig
+>@@ -0,0 +1,22 @@
+>+# SPDX-License-Identifier: GPL-2.0-only
+>+
+>+config INTEL_PMC_CORE
+>+	tristate "Intel PMC Core driver"
+>+	depends on PCI
+>+	depends on ACPI
+>+	help
+>+	  The Intel Platform Controller Hub for Intel Core SoCs provides access
+>+	  to Power Management Controller registers via various interfaces. This
+>+	  driver can utilize debugging capabilities and supported features as
+>+	  exposed by the Power Management Controller. It also may perform some
+>+	  tasks in the PMC in order to enable transition into the SLPS0 state.
+>+	  It should be selected on all Intel platforms supported by the driver.
+>+
+>+	  Supported features:
+>+		- SLP_S0_RESIDENCY counter
+>+		- PCH IP Power Gating status
+>+		- LTR Ignore / LTR Show
+>+		- MPHY/PLL gating status (Sunrisepoint PCH only)
+>+		- SLPS0 Debug registers (Cannonlake/Icelake PCH)
+>+		- Low Power Mode registers (Tigerlake and beyond)
+>+		- PMC quirks as needed to enable SLPS0/S0ix
+>diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
+>new file mode 100644
+>index 000000000000..e0182e10a035
+>--- /dev/null
+>+++ b/drivers/platform/x86/intel/pmc/Makefile
+>@@ -0,0 +1,5 @@
+>+# SPDX-License-Identifier: GPL-2.0
+>+#
+>+
+>+obj-$(CONFIG_INTEL_PMC_CORE)	+= core.o
+>+obj-$(CONFIG_INTEL_PMC_CORE)	+= pltdrv.o
 
-Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+is the module rename really intentional? If so, it needs to be renamed
+to something else as just calling it core may conflict with other
+equally badly named modules.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index 381deeea99d0..5320b1a46dfb 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -122,7 +122,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		arc4_crypt(ctx, payload, payload,  length);
- 
- 		/* calculate icv and compare the icv */
--		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+		*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
- 
- 	}
- }
-@@ -621,7 +621,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			arc4_setkey(ctx, rc4key, 16);
- 			arc4_crypt(ctx, payload, payload, length);
- 
--			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+			*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
- 
- 			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
- 			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
--- 
-2.32.0
+	error: the following would cause module name conflict:
+	  GEN     .version
+	  drivers/misc/c2port/core.ko
+	  drivers/platform/x86/intel/pmc/core.ko
+	make[2]: *** [Makefile:1417: modules_check] Error 1
+	make[2]: *** Waiting for unfinished jobs....
 
+This builds for me by restoring the previous module names
+
+-----8<------
+diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
+index e0182e10a035..9bfe8ab8fd64 100644
+--- a/drivers/platform/x86/intel/pmc/Makefile
++++ b/drivers/platform/x86/intel/pmc/Makefile
+@@ -1,5 +1,8 @@
+  # SPDX-License-Identifier: GPL-2.0
+  #
+  
+-obj-$(CONFIG_INTEL_PMC_CORE)	+= core.o
+-obj-$(CONFIG_INTEL_PMC_CORE)	+= pltdrv.o
++obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core.o
++obj-$(CONFIG_INTEL_PMC_CORE)	+= intel_pmc_core_pltdrv.o
++
++intel_pmc_core-y		+= core.o
++intel_pmc_core_pltdrv-y		+= pltdrv.o
+-----8<------
+
+
+Lucas De Marchi
+
+>diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel/pmc/core.c
+>similarity index 99%
+>rename from drivers/platform/x86/intel_pmc_core.c
+>rename to drivers/platform/x86/intel/pmc/core.c
+>index b0e486a6bdfb..f9de78b08e5d 100644
+>--- a/drivers/platform/x86/intel_pmc_core.c
+>+++ b/drivers/platform/x86/intel/pmc/core.c
+>@@ -31,7 +31,7 @@
+> #include <asm/msr.h>
+> #include <asm/tsc.h>
+>
+>-#include "intel_pmc_core.h"
+>+#include "core.h"
+>
+> #define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
+> #define ACPI_GET_LOW_MODE_REGISTERS	1
+>diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel/pmc/core.h
+>similarity index 100%
+>rename from drivers/platform/x86/intel_pmc_core.h
+>rename to drivers/platform/x86/intel/pmc/core.h
+>diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel/pmc/pltdrv.c
+>similarity index 100%
+>rename from drivers/platform/x86/intel_pmc_core_pltdrv.c
+>rename to drivers/platform/x86/intel/pmc/pltdrv.c
+>-- 
+>2.25.1
+>
