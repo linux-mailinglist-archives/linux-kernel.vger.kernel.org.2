@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169F03ED055
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01963ED060
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhHPIc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:32:58 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37582
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234778AbhHPIcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:32:53 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id F36C33F07D
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629102741;
-        bh=UCYlNRmzeCEuDZZ2cqWcomGqHyEFVVrQDIMY2+9YLGA=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=MYrqrVmrHcoTPYEI2L6Xw/GkpSth+gyuWRaalz/jJNXNm3pFgstyw4o01/4reBUZh
-         j9IdInuGMeGNyiM/SXdGji5+JcKBeInuICFlQwXI+BOdjoj3MUigDhwVugCv8tPVMl
-         v9NNLo/g4vc5RmXH2rSbmB/D4nbuX8DKMNfLmyq8rsFSJcCs38kwV3+PShWRjGwYvk
-         4ou4pvDwfXiOTUlhBJ/2KLjb/BddxB72kFl7Llf1Ujgp3VMT5Bc5kaZlaRQfy+KRDM
-         Fb4ppBNwOtAdkqLiOkwUq7ZkuhQ9zO4llBPtwexlHJxxVLwrqCVZJkuBbBU8DtWbm6
-         clmPHfbAs5vqg==
-Received: by mail-ej1-f71.google.com with SMTP id nb40-20020a1709071ca8b02905992266c319so4382655ejc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:32:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UCYlNRmzeCEuDZZ2cqWcomGqHyEFVVrQDIMY2+9YLGA=;
-        b=a6mSL25IY39IzhSL03KlG8RVAolLz7wUN+sOUFrPJ0p8NIMwpEN0IztZ2WlOu9bws/
-         DMig2MLmkhSscGhHeWxYVxMCPYBkYBlik0Ms6GpgWHn83DJmTyrSc479A7Wm/N4FnjLK
-         HZ+SP6z5Cs1LRaVvSVWSo6vgrADtqqCLgX7z56ymMCbd9Ao6ruRTgVObbGPfqFYnjJZY
-         WmaBDzzCg3krHfjH0hUZbJviGmujV0NafAPDUHlRXpO1jbyyFVboULRxIwExKVhB94LJ
-         hmF4SQBA4b/Jl12/x3yG+4PxpZMoC6vAUaqC/tGRZaix6vylvlda9FoLK3BkCJPHsYFS
-         NwWQ==
-X-Gm-Message-State: AOAM530E1GLgYEXF6PLPYkvvjW+NQzn6egyLdNMCIpfJezKtEhjM04DJ
-        oVLBVSlhXrX6FHeg5TThK1SUO+e+X1gdyXa6A3+BVAvyYr9x3tHNu2Ez/u3jIOWT2wDgaGegQl5
-        aqu4Sir8jyDpxbH1hAdzpdgYibZM+ZzeYD6xWw8OQ2w==
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr18627046edr.5.1629102741794;
-        Mon, 16 Aug 2021 01:32:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWp7YYIs1HvFB9r8ma/frRskh/jd0dudB3BzbInzpUKcEh8rihjaxeMk6VTvCkVyqBdNIC2w==
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr18627027edr.5.1629102741690;
-        Mon, 16 Aug 2021 01:32:21 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id d16sm4505366edu.8.2021.08.16.01.32.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 01:32:21 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: memory: convert Samsung Exynos DMC to
- dtschema
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20210813125414.104467-1-krzysztof.kozlowski@canonical.com>
- <73eebe7b-46da-137b-1938-09a5b453320a@arm.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0ec05a0b-9499-3bf4-a231-ea53b1cf99ed@canonical.com>
-Date:   Mon, 16 Aug 2021 10:32:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234618AbhHPIe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234025AbhHPIe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 04:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA1F61B23;
+        Mon, 16 Aug 2021 08:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629102865;
+        bh=3YEutj3bDMCaJ4+ve9fprNnWP2Ew89/JAaSv3hfe95A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pw2xK9Dgx6nK8n8BF8fUTZK6n/HfSrKYjtArjqeA6jiMcM1XmISfaJe+sV2cPW4Aj
+         Z1hGfv9QBfjRhHkYKqIUfbCitWjEXn+FDsq4UWy4E81FGSJFhPWhK5f0VMbBz/bSSD
+         2jsv6OjeLMvstIWSHrdpefBMJc7veH1wPFQv1++E=
+Date:   Mon, 16 Aug 2021 10:34:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Huang <chenhuang5@huawei.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Wang Hai <wanghai38@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 5.10.y 01/11] mm: memcontrol: Use helpers to read page's
+ memcg data
+Message-ID: <YRojDsTAjSnw0jIh@kroah.com>
+References: <20210816072147.3481782-1-chenhuang5@huawei.com>
+ <20210816072147.3481782-2-chenhuang5@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <73eebe7b-46da-137b-1938-09a5b453320a@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816072147.3481782-2-chenhuang5@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2021 09:53, Lukasz Luba wrote:
-> Hi Krzysztof,
-> 
-> On 8/13/21 1:54 PM, Krzysztof Kozlowski wrote:
->> Convert Samsung Exynos5422 SoC frequency and voltage scaling for
->> Dynamic Memory Controller to DT schema format using json-schema.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>   .../memory-controllers/exynos5422-dmc.txt     |  84 -----------
->>   .../samsung,exynos5422-dmc.yaml               | 137 ++++++++++++++++++
->>   MAINTAINERS                                   |   2 +-
-> 
-> I'm not an expert in this DT scripts and why it complains. Maybe it
-> complains because the "samsung,exynos-ppmu" is defined in the .txt
-> file... (?)
-> Although, in general looks OK.
-> 
-> Acked-by: Lukasz Luba <lukasz.luba@arm.com>
+On Mon, Aug 16, 2021 at 07:21:37AM +0000, Chen Huang wrote:
+> From: Roman Gushchin <guro@fb.com>
 
-I think the warning (triggered by DT_CHECKER_FLAGS=-m) can be ignored
-because it complains about compatible in example which is not present in
-the bindings. Usually it means someone wrote example not matching the
-bindings (e.g. a typo in compatible) but here it is on purpose.
+What is the git commit id of this patch in Linus's tree?
 
+> 
+> Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
+> 
+> Currently a non-slab kernel page which has been charged to a memory cgroup
+> can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
+> flag is defined as a page type (like buddy, offline, etc), so it takes a
+> bit from a page->mapped counter.  Pages with a type set can't be mapped to
+> userspace.
+> 
+> But in general the kmemcg flag has nothing to do with mapping to
+> userspace.  It only means that the page has been accounted by the page
+> allocator, so it has to be properly uncharged on release.
+> 
+> Some bpf maps are mapping the vmalloc-based memory to userspace, and their
+> memory can't be accounted because of this implementation detail.
+> 
+> This patchset removes this limitation by moving the PageKmemcg flag into
+> one of the free bits of the page->mem_cgroup pointer.  Also it formalizes
+> accesses to the page->mem_cgroup and page->obj_cgroups using new helpers,
+> adds several checks and removes a couple of obsolete functions.  As the
+> result the code became more robust with fewer open-coded bit tricks.
+> 
+> This patch (of 4):
+> 
+> Currently there are many open-coded reads of the page->mem_cgroup pointer,
+> as well as a couple of read helpers, which are barely used.
+> 
+> It creates an obstacle on a way to reuse some bits of the pointer for
+> storing additional bits of information.  In fact, we already do this for
+> slab pages, where the last bit indicates that a pointer has an attached
+> vector of objcg pointers instead of a regular memcg pointer.
+> 
+> This commits uses 2 existing helpers and introduces a new helper to
+> converts all read sides to calls of these helpers:
+>   struct mem_cgroup *page_memcg(struct page *page);
+>   struct mem_cgroup *page_memcg_rcu(struct page *page);
+>   struct mem_cgroup *page_memcg_check(struct page *page);
+> 
+> page_memcg_check() is intended to be used in cases when the page can be a
+> slab page and have a memcg pointer pointing at objcg vector.  It does
+> check the lowest bit, and if set, returns NULL.  page_memcg() contains a
+> VM_BUG_ON_PAGE() check for the page not being a slab page.
+> 
+> To make sure nobody uses a direct access, struct page's
+> mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
+> Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
+> Link: https://lore.kernel.org/bpf/20201201215900.3569844-2-guro@fb.com
+> 
+> Conflicts:
+> 	mm/memcontrol.c
 
-Best regards,
-Krzysztof
+The "Conflicts:" lines should be removed.
+
+Please fix up the patch series and resubmit.  But note, this seems
+really intrusive, are you sure these are all needed?
+
+What UIO driver are you using that is showing problems like this?
+
+thanks,
+
+greg k-h
