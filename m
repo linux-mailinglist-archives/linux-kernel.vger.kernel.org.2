@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3843ED9F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2FB3ED9FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbhHPPiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:38:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40099 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232388AbhHPPh6 (ORCPT
+        id S235833AbhHPPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236434AbhHPPih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:37:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629128246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MCKb5wNEJreY5rYURl0Jx8+gKn2jhtc/9sKfMUUw4dc=;
-        b=FGNixy/MMJ3/NQhCma883opDFSKg9lRuvhxq4pPIvekgZD+gqCMsC0x2LH1bxBTiGZz/gm
-        wusg0laZeXImZ9c55VREMFdCxYQJnRmO0Gkp17Rbki6pdM90y20HFNQl5DnSKYxYZqh0KL
-        7bHsrVAIzsjB6JHEhJ4dGAOEYi8+GQU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-sdv1qCl_PaOKismJBz0Puw-1; Mon, 16 Aug 2021 11:37:25 -0400
-X-MC-Unique: sdv1qCl_PaOKismJBz0Puw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC9271940920;
-        Mon, 16 Aug 2021 15:37:23 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 332546788F;
-        Mon, 16 Aug 2021 15:37:21 +0000 (UTC)
-Message-ID: <74cf96a9030dc0e996b1814bbf907299e377053e.camel@redhat.com>
-Subject: Re: [PATCH 5.12.y] KVM: nSVM: avoid picking up unsupported bits
- from L2 in int_ctl (CVE-2021-3653)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Mon, 16 Aug 2021 18:37:20 +0300
-In-Reply-To: <YRqAM3gTAscfmr60@kroah.com>
-References: <20210816140240.11399-6-pbonzini@redhat.com>
-         <YRp1bUv85GWsFsuO@kroah.com>
-         <97448bb5-1f58-07f9-1110-96c7ffefd4b2@redhat.com>
-         <YRqAM3gTAscfmr60@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 16 Aug 2021 11:38:37 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16710C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:38:04 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so35310006lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bm8tYluwE2tHBRzqwzgJszhrItkJk+y3RCcuMDJTmI8=;
+        b=OT95Md82WHgRGyLWmxE6nitIx0C8BB1adlzRDuzRT9M2zqetzj87ra3kpFm3KgMYga
+         8RIHvMHWlEO+gCYykxVaQ3u+tQvAxFx9yTJkeOeM0wj3hI/3jYP76ODLd+t8d7vyCUu9
+         YqAXy0/NlJDrv+x2x/UfYn7oZho6vLBJ3zIdM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bm8tYluwE2tHBRzqwzgJszhrItkJk+y3RCcuMDJTmI8=;
+        b=gWrX44woG8cRX/vQBjrAqTP19SUMIGemCLZzfI1OiIyJvpJ0xK8eq6XjSIQetnb4eo
+         xPMKp8cXxQL1PcSiT3a0RpblXNwF00Nw05zz2+Fw4VfABsFKjCHJDH0mwSfCxtX+/ctl
+         A9JwQLKFBWdbX2/RuNv28kTkpKLfGihX+lwg7IABw5wrXeNEkchwhmd90NkLk1sSEcv5
+         H4P9g3btdYR50r31DeN3SwdwC9dHiQ52eW0LBh1pRJ9EwEGutvqPJG1Rzy2MPdKu5boJ
+         bwGnNALSGIUyIBhebwRDJ+g8UGqADSxBkpzxJLAbPyGsdxcepvRu6sLQVZWLQJ70Flwh
+         ZXUg==
+X-Gm-Message-State: AOAM530biFoJDHWziyAOQ5weeyqVdi9JXCUL0DolqIuig6+MQMQOj8L2
+        llkOTIOQidmvY6TBY+96xtc5jlTUEWU/Q5vKBGafOw==
+X-Google-Smtp-Source: ABdhPJwM3WmrduknwaHuwv1oS/UWCa6rCVwvP8lSpnbJ99wYVLFaUwqD8adqCCp2RUVXMwg7jhadsyw/D/byN4yaDyY=
+X-Received: by 2002:ac2:51dc:: with SMTP id u28mr10792613lfm.444.1629128282504;
+ Mon, 16 Aug 2021 08:38:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com>
+ <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+ <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+ <CAGXv+5HohMwU8jow5QXO5MK1tO+u=5YsfhArBWCP4Dgm1Q8igg@mail.gmail.com> <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com>
+In-Reply-To: <4fd12d5c53f6492e5fa3ba94a78b9a149f5b6ed9.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 16 Aug 2021 23:37:51 +0800
+Message-ID: <CAGXv+5GCuNK=-z9VAOjkpJdZLUSZFPfUsQ09m1FhfTsbCYLLRw@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-16 at 17:11 +0200, Greg KH wrote:
-> On Mon, Aug 16, 2021 at 05:04:58PM +0200, Paolo Bonzini wrote:
-> > On 16/08/21 16:25, Greg KH wrote:
-> > > > [ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
-> > > 
-> > > And 5.12.y is long end-of-life, take a look at the front page of
-> > > kernel.org for the active kernels.
-> > 
-> > Ok, sorry I didn't notice that... it wasn't end of life when the issue was
-> > discovered. O:)
-> > 
-> > (Damn, the one time that we prepare all the backports in advance, we end up
-> > doing too many of them!)
-> 
-> You didn't do a 5.13.y version :(
-> 
-> Will the 5.12.y patches work for that tree?
+On Mon, Aug 16, 2021 at 6:48 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> On Mon, 2021-08-16 at 14:10 +0800, Chen-Yu Tsai wrote:
+> > On Thu, Aug 5, 2021 at 7:02 AM Linus Walleij <
+> > linus.walleij@linaro.org> wrote:
+> > >
+> > > On Thu, Jul 29, 2021 at 11:43 AM Chen-Yu Tsai <wenst@chromium.org>
+> > > wrote:
+> > > > On Thu, Jul 29, 2021 at 4:23 PM zhiyong.tao <
+> > > > zhiyong.tao@mediatek.com> wrote:
+> > > > > The rsel actual bias resistance of each setting is different in
+> > > > > different IC. we think that the define "MTK_PULL_SET_RSEL_000"
+> > > > > is more
+> > > > > common for all different IC.
+> > > >
+> > > > I see. I personally prefer having things clearly described. I can
+> > > > understand this might be an extra burden to support different
+> > > > chips
+> > > > with different parameters, though this should be fairly
+> > > > straightforward
+> > > > with lookup tables tied to the compatible strings.
+> > > >
+> > > > Let's see if Rob and Linus have anything to add.
+> > >
+> > > Not much. We have "soft pushed" for this to be described as generic
+> > > as possible, using SI units (ohms). But we also allow vendor-
+> > > specific
+> > > numbers in this attribute. Especially when reverse engineering SoCs
+> > > that the contributor don't really have specs on (example M1 Mac).
+> > >
+> > > The intent with the SI units is especially for people like you
+> > > folks working
+> > > with Chromium to be able to use different SoCs and not feel lost
+> > > to a forest of different ways of doing things and associated
+> > > mistakes because vendors have hopelessly idiomatic pin configs.
+> >
+> > I'll take that as "use SI units whenever possible and reasonable".
+>
+> ==> so It doesn't need to change the define, is it right?
+> we will keep the common define.
 
-5.13 will more likely to work with the upstream version.
-I'll check it soon.
+Actually I think it would be possible and reasonable to use SI units
+in this case, since you are the vendor and have the resistor values
+to implement the support. Having different sets of values for different
+chips is nothing out of the ordinary. We already have to account for
+different number of pins and different pin functions. That is what
+compatible strings are for.
 
-Best regards,
-	Maxim Levitsky
-
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Now if you have _many_ different sets of values within the same chip,
+that could make things more difficult. However the clearness of having
+the real values visible in the device tree would likely benefit both
+software and hardware engineers outside of Mediatek. That is what we
+should be aiming for.
 
 
+Regards
+ChenYu
