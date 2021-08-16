@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8896D3ED501
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3833ED504
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236704AbhHPNHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:07:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57746 "EHLO mail.kernel.org"
+        id S237774AbhHPNHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:07:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237242AbhHPNFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B3F5632A5;
-        Mon, 16 Aug 2021 13:05:16 +0000 (UTC)
+        id S237506AbhHPNFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D3E61A7A;
+        Mon, 16 Aug 2021 13:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119116;
-        bh=EEr00xQjhRt4abvlxPqMIxXmKFUHYRW4cSkD8hI5gok=;
+        s=korg; t=1629119119;
+        bh=kdZvqmK6QD4ED6Og6Z2OcHcyFNykabGchmRnIqvtSnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0MbVPOZtOC7HAfxClEf/QglMkvkgqXUQj1xz//YC7mNQGjOrEpdziEJI2Ulhha2e
-         qXaT8t2+QqQ2zTgFo13Sg291AgkEiSo4feS5jhQBF1G46zNrzXO7ntL9pv2M4yIuGC
-         8gsqeDeZg4yq0Ge4PYt/t92/6QjGcHSFG7NnrJLE=
+        b=KiJiQyVOrnZOntspAvrsStqUM8RX+v8dZzbXAduKjSHzls0fD2bcU1ApeCwOIkEPM
+         gLLFzyg8BtWNgYddz+/75SCdyN6U7xJVl30btQmZmiwi1sgjvJ+qn8PM4pYLC/RpwR
+         JhCYdYta6TIapiYZL90TrywP8D/ZAVbnywGdYd1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Nelson <mnelson@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 5.4 60/62] ceph: take snap_empty_lock atomically with snaprealm refcount change
-Date:   Mon, 16 Aug 2021 15:02:32 +0200
-Message-Id: <20210816125430.278005517@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Marco Elver <elver@google.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 61/62] vmlinux.lds.h: Handle clangs module.{c,d}tor sections
+Date:   Mon, 16 Aug 2021 15:02:33 +0200
+Message-Id: <20210816125430.316622916@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
 References: <20210816125428.198692661@linuxfoundation.org>
@@ -41,107 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 8434ffe71c874b9c4e184b88d25de98c2bf5fe3f upstream.
+commit 848378812e40152abe9b9baf58ce2004f76fb988 upstream.
 
-There is a race in ceph_put_snap_realm. The change to the nref and the
-spinlock acquisition are not done atomically, so you could decrement
-nref, and before you take the spinlock, the nref is incremented again.
-At that point, you end up putting it on the empty list when it
-shouldn't be there. Eventually __cleanup_empty_realms runs and frees
-it when it's still in-use.
+A recent change in LLVM causes module_{c,d}tor sections to appear when
+CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
+because these are not handled anywhere:
 
-Fix this by protecting the 1->0 transition with atomic_dec_and_lock,
-and just drop the spinlock if we can get the rwsem.
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
+ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
 
-Because these objects can also undergo a 0->1 refcount transition, we
-must protect that change as well with the spinlock. Increment locklessly
-unless the value is at 0, in which case we take the spinlock, increment
-and then take it off the empty list if it did the 0->1 transition.
+Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
+flag, so it is in a separate section even with -fno-function-sections
+(default)".
 
-With these changes, I'm removing the dout() messages from these
-functions, as well as in __put_snap_realm. They've always been racy, and
-it's better to not print values that may be misleading.
+Place them in the TEXT_TEXT section so that these technologies continue
+to work with the newer compiler versions. All of the KASAN and KCSAN
+KUnit tests continue to pass after this change.
 
 Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/46419
-Reported-by: Mark Nelson <mnelson@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Luis Henriques <lhenriques@suse.de>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1432
+Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210731023107.1932981-1-nathan@kernel.org
+[nc: Resolve conflict due to lack of cf68fffb66d60]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ceph/snap.c |   34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ include/asm-generic/vmlinux.lds.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ceph/snap.c
-+++ b/fs/ceph/snap.c
-@@ -67,19 +67,19 @@ void ceph_get_snap_realm(struct ceph_mds
- {
- 	lockdep_assert_held(&mdsc->snap_rwsem);
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -536,6 +536,7 @@
+ 		NOINSTR_TEXT						\
+ 		*(.text..refcount)					\
+ 		*(.ref.text)						\
++		*(.text.asan.* .text.tsan.*)				\
+ 	MEM_KEEP(init.text*)						\
+ 	MEM_KEEP(exit.text*)						\
  
--	dout("get_realm %p %d -> %d\n", realm,
--	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
- 	/*
--	 * since we _only_ increment realm refs or empty the empty
--	 * list with snap_rwsem held, adjusting the empty list here is
--	 * safe.  we do need to protect against concurrent empty list
--	 * additions, however.
-+	 * The 0->1 and 1->0 transitions must take the snap_empty_lock
-+	 * atomically with the refcount change. Go ahead and bump the
-+	 * nref here, unless it's 0, in which case we take the spinlock
-+	 * and then do the increment and remove it from the list.
- 	 */
--	if (atomic_inc_return(&realm->nref) == 1) {
--		spin_lock(&mdsc->snap_empty_lock);
-+	if (atomic_inc_not_zero(&realm->nref))
-+		return;
-+
-+	spin_lock(&mdsc->snap_empty_lock);
-+	if (atomic_inc_return(&realm->nref) == 1)
- 		list_del_init(&realm->empty_item);
--		spin_unlock(&mdsc->snap_empty_lock);
--	}
-+	spin_unlock(&mdsc->snap_empty_lock);
- }
- 
- static void __insert_snap_realm(struct rb_root *root,
-@@ -208,28 +208,28 @@ static void __put_snap_realm(struct ceph
- {
- 	lockdep_assert_held_write(&mdsc->snap_rwsem);
- 
--	dout("__put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
--	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
-+	/*
-+	 * We do not require the snap_empty_lock here, as any caller that
-+	 * increments the value must hold the snap_rwsem.
-+	 */
- 	if (atomic_dec_and_test(&realm->nref))
- 		__destroy_snap_realm(mdsc, realm);
- }
- 
- /*
-- * caller needn't hold any locks
-+ * See comments in ceph_get_snap_realm. Caller needn't hold any locks.
-  */
- void ceph_put_snap_realm(struct ceph_mds_client *mdsc,
- 			 struct ceph_snap_realm *realm)
- {
--	dout("put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
--	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
--	if (!atomic_dec_and_test(&realm->nref))
-+	if (!atomic_dec_and_lock(&realm->nref, &mdsc->snap_empty_lock))
- 		return;
- 
- 	if (down_write_trylock(&mdsc->snap_rwsem)) {
-+		spin_unlock(&mdsc->snap_empty_lock);
- 		__destroy_snap_realm(mdsc, realm);
- 		up_write(&mdsc->snap_rwsem);
- 	} else {
--		spin_lock(&mdsc->snap_empty_lock);
- 		list_add(&realm->empty_item, &mdsc->snap_empty);
- 		spin_unlock(&mdsc->snap_empty_lock);
- 	}
 
 
