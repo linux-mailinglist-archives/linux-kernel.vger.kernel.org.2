@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132993EDA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C233EDA16
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhHPPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236797AbhHPPkk (ORCPT
+        id S236579AbhHPPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:44:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229550AbhHPPoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:40:40 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C62C06179A
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso14101452pjh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3AyfMcp2yhnMT8b6WgE0Tq0TI+fTS/T3AjxmgLG4RFY=;
-        b=XY+nexCppv0jvgdLyAS8tfu9dWl7F48uM5zLpUFgPuJr5TASNvWiJSsMRb58l1Mdpk
-         ajCsvVhN0kTxNb6wPhp2qKWAIvpEDkmvx/RIKkJG5OUoQFnQIiDBBiuRrYTDfdl0FGbZ
-         O3Blyo5uA7inwySQo0MalCg5X/1J+YC3/KdaETe6dm3vRX6zGZ2pjy9EqQM9ZkyNvXIh
-         RUT3EScLPM+3VVFYU7qOFir/od/db/Rrpk+QNDuvKz1FtK44wpByriIGmNQx+aEgEQkK
-         Jtx69NH6tNW55mQr1lROPIx7/Ldx3iIa4NfMpDphzVU5Cy5+FI08eXlm9qmLmhrNvCOO
-         zwYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3AyfMcp2yhnMT8b6WgE0Tq0TI+fTS/T3AjxmgLG4RFY=;
-        b=dlVAfGbXriWfpd66Dw5OecWva49zZJUaobjvL3VFG55HFfMJHaShT2FpWpI+LCR4Rr
-         TSByVqgkpGWLGbTeuB7AOZTDipYEYXPUj2W3/Vi/epi6K4HfNpjqvkyNhtKQ77D6uaEz
-         CRj55fh/Xe6ATZT0K1lfmaN+HJHPwZhO/dT5dlvTB9Eb62QrlZzpAbxb8Xz/fReb2PRL
-         3PvUKG93z5RzjL7IDidwH7Pwy+t5+9G/Zvxtpq/WjmbAD7lzOxcZ9NgEXn/995RKDhVZ
-         gFLRz59gPbAQJeFLpGOrMl2Qn+/AgCIJHrGlBABM6QylYyM6uEElkHEh+NNsWXpvSxI8
-         cDRg==
-X-Gm-Message-State: AOAM530StSF5E+Al/xqt6KljardL8GOzldoXZVig2BZEogl9jn4nKQp7
-        8cgEGWCXsLfF9BCsAYDe135DjlOJgCzlrm94Xs0siQ==
-X-Google-Smtp-Source: ABdhPJzhnxfzdvPDrfj5hvBd4graOCrPdcFqBHhlQyegW5ZMcqxUq9IwdQQp8Ee69yX+lK+Y0hqPjSkdKOdo0sNmhRk=
-X-Received: by 2002:a63:150e:: with SMTP id v14mr14590874pgl.126.1629128408340;
- Mon, 16 Aug 2021 08:40:08 -0700 (PDT)
+        Mon, 16 Aug 2021 11:44:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629128612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5+H3tVuFTE/yUYCGm/toB+kJDsMZHFf9GHrqRvwC/k8=;
+        b=ZcH4mmDwaJXOgCzs8iwv9RsPo4rKHlF26YGVu6xa5T0Ch1GRCwGttqW1k5MNz9X/L3rLNg
+        7P+5hmwNiqxxS4L21KITikt0zMoL2udUwCFeGO4SpOADaixql8n+jBfPnUwIvgAEKNX7jQ
+        syWujZsbPFVAmA1pC/pIzkL095tTbpM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-of79Wm1UP2mspHzNqK-t-g-1; Mon, 16 Aug 2021 11:43:30 -0400
+X-MC-Unique: of79Wm1UP2mspHzNqK-t-g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 483131082921;
+        Mon, 16 Aug 2021 15:43:29 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBBDF10013D7;
+        Mon, 16 Aug 2021 15:43:28 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 5.13.y] KVM: nSVM: avoid picking up unsupported bits from L2 in int_ctl (CVE-2021-3653)
+Date:   Mon, 16 Aug 2021 11:43:27 -0400
+Message-Id: <20210816154328.3845839-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210723204958.7186-1-tharvey@gateworks.com> <36070609-9f1f-00c8-ccf5-8ed7877b29da@pengutronix.de>
- <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Mon, 16 Aug 2021 08:39:57 -0700
-Message-ID: <CAJ+vNU1tgVsQWtxa0E8SArO=hA2K8OkqiSPrRSpx0Q5XS4gUWA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Add IMX8M Mini PCI support
-To:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 6:28 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
->
-> Hi Tim:
-> Just as Ahmad mentioned, Lucas had issue one patch-set to support i.MX8MM PCIe.
-> Some comments in the review cycle.
-> - One separate PHY driver should be used for i.MX8MM PCIe driver.
-> - Schema file should be used I think, otherwise the .txt file in the dt-binding.
->
-> I'm preparing one patch-set, but it's relied on the yaml file exchanges and power-domain changes(block control and so on).
-> Up to now, I only walking on the first step, trying to exchange the dt-binding files to schema yaml file.
->
-> Best Regards
-> Richard Zhu
+From: Maxim Levitsky <mlevitsk@redhat.com>
 
-Richard / Ahmad,
+[ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
 
-Thanks for your response - I did not see the series from Lucas. I will
-drop this and wait for him to complete his work.
+* Invert the mask of bits that we pick from L2 in
+  nested_vmcb02_prepare_control
 
-Thanks,
+* Invert and explicitly use VIRQ related bits bitmask in svm_clear_vintr
 
-Tim
+This fixes a security issue that allowed a malicious L1 to run L2 with
+AVIC enabled, which allowed the L2 to exploit the uninitialized and enabled
+AVIC to read/write the host physical memory at some offsets.
+
+Fixes: 3d6368ef580a ("KVM: SVM: Add VMRUN handler")
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/include/asm/svm.h | 2 ++
+ arch/x86/kvm/svm/nested.c  | 9 ++++++---
+ arch/x86/kvm/svm/svm.c     | 9 +++++----
+ 3 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index 772e60efe243..b6c445ced0e5 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -178,6 +178,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+ #define V_IGN_TPR_SHIFT 20
+ #define V_IGN_TPR_MASK (1 << V_IGN_TPR_SHIFT)
+ 
++#define V_IRQ_INJECTION_BITS_MASK (V_IRQ_MASK | V_INTR_PRIO_MASK | V_IGN_TPR_MASK)
++
+ #define V_INTR_MASKING_SHIFT 24
+ #define V_INTR_MASKING_MASK (1 << V_INTR_MASKING_SHIFT)
+ 
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 5e8d8443154e..7f3b55561ae8 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -480,7 +480,10 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
+ 
+ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
+ {
+-	const u32 mask = V_INTR_MASKING_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK;
++	const u32 int_ctl_vmcb01_bits =
++		V_INTR_MASKING_MASK | V_GIF_MASK | V_GIF_ENABLE_MASK;
++
++	const u32 int_ctl_vmcb12_bits = V_TPR_MASK | V_IRQ_INJECTION_BITS_MASK;
+ 
+ 	/*
+ 	 * Filled at exit: exit_code, exit_code_hi, exit_info_1, exit_info_2,
+@@ -511,8 +514,8 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
+ 		svm->vcpu.arch.l1_tsc_offset + svm->nested.ctl.tsc_offset;
+ 
+ 	svm->vmcb->control.int_ctl             =
+-		(svm->nested.ctl.int_ctl & ~mask) |
+-		(svm->vmcb01.ptr->control.int_ctl & mask);
++		(svm->nested.ctl.int_ctl & int_ctl_vmcb12_bits) |
++		(svm->vmcb01.ptr->control.int_ctl & int_ctl_vmcb01_bits);
+ 
+ 	svm->vmcb->control.virt_ext            = svm->nested.ctl.virt_ext;
+ 	svm->vmcb->control.int_vector          = svm->nested.ctl.int_vector;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 62f1f06fe197..0a49a0db54e1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1552,17 +1552,18 @@ static void svm_set_vintr(struct vcpu_svm *svm)
+ 
+ static void svm_clear_vintr(struct vcpu_svm *svm)
+ {
+-	const u32 mask = V_TPR_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK | V_INTR_MASKING_MASK;
+ 	svm_clr_intercept(svm, INTERCEPT_VINTR);
+ 
+ 	/* Drop int_ctl fields related to VINTR injection.  */
+-	svm->vmcb->control.int_ctl &= mask;
++	svm->vmcb->control.int_ctl &= ~V_IRQ_INJECTION_BITS_MASK;
+ 	if (is_guest_mode(&svm->vcpu)) {
+-		svm->vmcb01.ptr->control.int_ctl &= mask;
++		svm->vmcb01.ptr->control.int_ctl &= ~V_IRQ_INJECTION_BITS_MASK;
+ 
+ 		WARN_ON((svm->vmcb->control.int_ctl & V_TPR_MASK) !=
+ 			(svm->nested.ctl.int_ctl & V_TPR_MASK));
+-		svm->vmcb->control.int_ctl |= svm->nested.ctl.int_ctl & ~mask;
++
++		svm->vmcb->control.int_ctl |= svm->nested.ctl.int_ctl &
++			V_IRQ_INJECTION_BITS_MASK;
+ 	}
+ 
+ 	vmcb_mark_dirty(svm->vmcb, VMCB_INTR);
+-- 
+2.27.0
+
