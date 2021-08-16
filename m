@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADDE3ED715
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA113ED58B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbhHPN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:27:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
+        id S239478AbhHPNMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:12:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238912AbhHPNQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:16:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0AB632E3;
-        Mon, 16 Aug 2021 13:13:18 +0000 (UTC)
+        id S237376AbhHPNIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:08:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBB12632AC;
+        Mon, 16 Aug 2021 13:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119599;
-        bh=cx7F+aV8WqTN9/nWnRmi7JEc3b+OwcRuJ3a2gTllHIU=;
+        s=korg; t=1629119240;
+        bh=qGu3CLCmhtrCGx81GWXSHiehqdKRJDpU76xkkAtqJL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W+Te0aV6/vNR93lZSRg+1joYt8UX2Y6cWalyxcLgx8h/7SeWzM3leSuONLtbLczN5
-         CpE5+eYYs3bR0IeLvILZgbmHeH7QkOx8cDWq2Cb+d9e74MyRPCrB4z78WG8QxXuFTN
-         yBqZ+lE4qdtLK4Kfr19rnI6bnH6ksOHpwmdbjLDU=
+        b=zfq1PvG9liQv0ZKCblBEHeqOa6LkGY6Hsk1uJ7Lhg2bhDTcLJCpgEPNooVwV5/6FQ
+         O2m7kWCUuAi/NLkby3hwtXziGdWCJFxrBsHuXDdBIzjLl2Ed2q/BrEETQWZisdzeVl
+         nJTkVFZ2uzGv+JBx5Ricj7axy+WxFvxEij3LiEAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 087/151] net/mlx5: Fix return value from tracer initialization
+Subject: [PATCH 5.10 47/96] bareudp: Fix invalid read beyond skbs linear data
 Date:   Mon, 16 Aug 2021 15:01:57 +0200
-Message-Id: <20210816125446.949370489@linuxfoundation.org>
+Message-Id: <20210816125436.524906425@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit bd37c2888ccaa5ceb9895718f6909b247cc372e0 ]
+[ Upstream commit 143a8526ab5fd4f8a0c4fe2a9cb28c181dc5a95f ]
 
-Check return value of mlx5_fw_tracer_start(), set error path and fix
-return value of mlx5_fw_tracer_init() accordingly.
+Data beyond the UDP header might not be part of the skb's linear data.
+Use skb_copy_bits() instead of direct access to skb->data+X, so that
+we read the correct bytes even on a fragmented skb.
 
-Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 4b5f67232d95 ("net: Special handling for IP & MPLS.")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Link: https://lore.kernel.org/r/7741c46545c6ef02e70c80a9b32814b22d9616b3.1628264975.git.gnault@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c  | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/bareudp.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index 01a1d02dcf15..3f8a98093f8c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -1019,12 +1019,19 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer)
- 	MLX5_NB_INIT(&tracer->nb, fw_tracer_event, DEVICE_TRACER);
- 	mlx5_eq_notifier_register(dev, &tracer->nb);
+diff --git a/drivers/net/bareudp.c b/drivers/net/bareudp.c
+index 59c1724bcd0e..39b128205f25 100644
+--- a/drivers/net/bareudp.c
++++ b/drivers/net/bareudp.c
+@@ -71,12 +71,18 @@ static int bareudp_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
+ 		family = AF_INET6;
  
--	mlx5_fw_tracer_start(tracer);
--
-+	err = mlx5_fw_tracer_start(tracer);
-+	if (err) {
-+		mlx5_core_warn(dev, "FWTracer: Failed to start tracer %d\n", err);
-+		goto err_notifier_unregister;
-+	}
- 	return 0;
+ 	if (bareudp->ethertype == htons(ETH_P_IP)) {
+-		struct iphdr *iphdr;
++		__u8 ipversion;
  
-+err_notifier_unregister:
-+	mlx5_eq_notifier_unregister(dev, &tracer->nb);
-+	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
- err_dealloc_pd:
- 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
-+	cancel_work_sync(&tracer->read_fw_strings_work);
- 	return err;
- }
- 
+-		iphdr = (struct iphdr *)(skb->data + BAREUDP_BASE_HLEN);
+-		if (iphdr->version == 4) {
+-			proto = bareudp->ethertype;
+-		} else if (bareudp->multi_proto_mode && (iphdr->version == 6)) {
++		if (skb_copy_bits(skb, BAREUDP_BASE_HLEN, &ipversion,
++				  sizeof(ipversion))) {
++			bareudp->dev->stats.rx_dropped++;
++			goto drop;
++		}
++		ipversion >>= 4;
++
++		if (ipversion == 4) {
++			proto = htons(ETH_P_IP);
++		} else if (ipversion == 6 && bareudp->multi_proto_mode) {
+ 			proto = htons(ETH_P_IPV6);
+ 		} else {
+ 			bareudp->dev->stats.rx_dropped++;
 -- 
 2.30.2
 
