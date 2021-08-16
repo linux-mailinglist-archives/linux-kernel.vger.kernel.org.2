@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C033ED621
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9565D3ED4C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238841AbhHPNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59346 "EHLO mail.kernel.org"
+        id S237158AbhHPNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236619AbhHPNJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1136D610A1;
-        Mon, 16 Aug 2021 13:07:50 +0000 (UTC)
+        id S236991AbhHPNEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:04:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2489632AA;
+        Mon, 16 Aug 2021 13:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119271;
-        bh=JjQF0/IFbP28eS/8fY6KNZ8hBKAnwDM0QDsaYI1RRZo=;
+        s=korg; t=1629119062;
+        bh=Rxqm1YAwNPqM3lUQa+7ZC894ANw1ofrWEJYCyh8AmFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dV8pu6d2+ijr7BNKGW9CaL6sEoE1axSLnVBddpjyEdDrrsfoRN44jyOFnujha2qSV
-         g/EGu0//NuqoUE/qFKGtLa+4C0GbpBbpfXNZ3RZ0Lb1fB+etj410bTrYJ3IXK1cdRS
-         4Gd3+EpAldVplDxlDgAJIWP5vmJ9bHagJXYG63RE=
+        b=iEKBYSjxtZmq8YZzBfZ3uOgBa5AMEU7j56zs8ug9fyTJpipvIca9aBqBEwkswkCrn
+         LoYgYnKwgRSwFrmzq921wDZ2/3mxDymmmsM6LSi/GRGzP2k//Mp+r4Gl1TD8m+EJHu
+         GOsrILnmtq+iGKm5JnPLlb/WJkFNBCyChlClEWXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
+        Yuchung Cheng <ycheng@google.com>, Kevin Yang <yyd@google.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 58/96] net: bridge: validate the NUD_PERMANENT bit when adding an extern_learn FDB entry
+Subject: [PATCH 5.4 36/62] tcp_bbr: fix u32 wrap bug in round logic if bbr_init() called after 2B packets
 Date:   Mon, 16 Aug 2021 15:02:08 +0200
-Message-Id: <20210816125436.889975962@linuxfoundation.org>
+Message-Id: <20210816125429.427530518@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,188 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Neal Cardwell <ncardwell@google.com>
 
-[ Upstream commit 0541a6293298fb52789de389dfb27ef54df81f73 ]
+[ Upstream commit 6de035fec045f8ae5ee5f3a02373a18b939e91fb ]
 
-Currently it is possible to add broken extern_learn FDB entries to the
-bridge in two ways:
+Currently if BBR congestion control is initialized after more than 2B
+packets have been delivered, depending on the phase of the
+tp->delivered counter the tracking of BBR round trips can get stuck.
 
-1. Entries pointing towards the bridge device that are not local/permanent:
+The bug arises because if tp->delivered is between 2^31 and 2^32 at
+the time the BBR congestion control module is initialized, then the
+initialization of bbr->next_rtt_delivered to 0 will cause the logic to
+believe that the end of the round trip is still billions of packets in
+the future. More specifically, the following check will fail
+repeatedly:
 
-ip link add br0 type bridge
-bridge fdb add 00:01:02:03:04:05 dev br0 self extern_learn static
+  !before(rs->prior_delivered, bbr->next_rtt_delivered)
 
-2. Entries pointing towards the bridge device or towards a port that
-are marked as local/permanent, however the bridge does not process the
-'permanent' bit in any way, therefore they are recorded as though they
-aren't permanent:
+and thus the connection will take up to 2B packets delivered before
+that check will pass and the connection will set:
 
-ip link add br0 type bridge
-bridge fdb add 00:01:02:03:04:05 dev br0 self extern_learn permanent
+  bbr->round_start = 1;
 
-Since commit 52e4bec15546 ("net: bridge: switchdev: treat local FDBs the
-same as entries towards the bridge"), these incorrect FDB entries can
-even trigger NULL pointer dereferences inside the kernel.
+This could cause many mechanisms in BBR to fail to trigger, for
+example bbr_check_full_bw_reached() would likely never exit STARTUP.
 
-This is because that commit made the assumption that all FDB entries
-that are not local/permanent have a valid destination port. For context,
-local / permanent FDB entries either have fdb->dst == NULL, and these
-point towards the bridge device and are therefore local and not to be
-used for forwarding, or have fdb->dst == a net_bridge_port structure
-(but are to be treated in the same way, i.e. not for forwarding).
+This bug is 5 years old and has not been observed, and as a practical
+matter this would likely rarely trigger, since it would require
+transferring at least 2B packets, or likely more than 3 terabytes of
+data, before switching congestion control algorithms to BBR.
 
-That assumption _is_ correct as long as things are working correctly in
-the bridge driver, i.e. we cannot logically have fdb->dst == NULL under
-any circumstance for FDB entries that are not local. However, the
-extern_learn code path where FDB entries are managed by a user space
-controller show that it is possible for the bridge kernel driver to
-misinterpret the NUD flags of an entry transmitted by user space, and
-end up having fdb->dst == NULL while not being a local entry. This is
-invalid and should be rejected.
+This patch is a stable candidate for kernels as far back as v4.9,
+when tcp_bbr.c was added.
 
-Before, the two commands listed above both crashed the kernel in this
-check from br_switchdev_fdb_notify:
-
-	struct net_device *dev = info.is_local ? br->dev : dst->dev;
-
-info.is_local == false, dst == NULL.
-
-After this patch, the invalid entry added by the first command is
-rejected:
-
-ip link add br0 type bridge && bridge fdb add 00:01:02:03:04:05 dev br0 self extern_learn static; ip link del br0
-Error: bridge: FDB entry towards bridge must be permanent.
-
-and the valid entry added by the second command is properly treated as a
-local address and does not crash br_switchdev_fdb_notify anymore:
-
-ip link add br0 type bridge && bridge fdb add 00:01:02:03:04:05 dev br0 self extern_learn permanent; ip link del br0
-
-Fixes: eb100e0e24a2 ("net: bridge: allow to add externally learned entries from user-space")
-Reported-by: syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Link: https://lore.kernel.org/r/20210801231730.7493-1-vladimir.oltean@nxp.com
+Fixes: 0f8782ea1497 ("tcp_bbr: add BBR congestion control")
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Reviewed-by: Yuchung Cheng <ycheng@google.com>
+Reviewed-by: Kevin Yang <yyd@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210811024056.235161-1-ncardwell@google.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br.c         |  3 ++-
- net/bridge/br_fdb.c     | 30 ++++++++++++++++++++++++------
- net/bridge/br_private.h |  2 +-
- 3 files changed, 27 insertions(+), 8 deletions(-)
+ net/ipv4/tcp_bbr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bridge/br.c b/net/bridge/br.c
-index 1b169f8e7491..a416b01ee773 100644
---- a/net/bridge/br.c
-+++ b/net/bridge/br.c
-@@ -166,7 +166,8 @@ static int br_switchdev_event(struct notifier_block *unused,
- 	case SWITCHDEV_FDB_ADD_TO_BRIDGE:
- 		fdb_info = ptr;
- 		err = br_fdb_external_learn_add(br, p, fdb_info->addr,
--						fdb_info->vid, false);
-+						fdb_info->vid,
-+						fdb_info->is_local, false);
- 		if (err) {
- 			err = notifier_from_errno(err);
- 			break;
-diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
-index 32ac8343b0ba..a729786e0f03 100644
---- a/net/bridge/br_fdb.c
-+++ b/net/bridge/br_fdb.c
-@@ -950,7 +950,8 @@ static int fdb_add_entry(struct net_bridge *br, struct net_bridge_port *source,
+diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
+index 6ea3dc2e4219..6274462b86b4 100644
+--- a/net/ipv4/tcp_bbr.c
++++ b/net/ipv4/tcp_bbr.c
+@@ -1041,7 +1041,7 @@ static void bbr_init(struct sock *sk)
+ 	bbr->prior_cwnd = 0;
+ 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
+ 	bbr->rtt_cnt = 0;
+-	bbr->next_rtt_delivered = 0;
++	bbr->next_rtt_delivered = tp->delivered;
+ 	bbr->prev_ca_state = TCP_CA_Open;
+ 	bbr->packet_conservation = 0;
  
- static int __br_fdb_add(struct ndmsg *ndm, struct net_bridge *br,
- 			struct net_bridge_port *p, const unsigned char *addr,
--			u16 nlh_flags, u16 vid, struct nlattr *nfea_tb[])
-+			u16 nlh_flags, u16 vid, struct nlattr *nfea_tb[],
-+			struct netlink_ext_ack *extack)
- {
- 	int err = 0;
- 
-@@ -969,7 +970,15 @@ static int __br_fdb_add(struct ndmsg *ndm, struct net_bridge *br,
- 		rcu_read_unlock();
- 		local_bh_enable();
- 	} else if (ndm->ndm_flags & NTF_EXT_LEARNED) {
--		err = br_fdb_external_learn_add(br, p, addr, vid, true);
-+		if (!p && !(ndm->ndm_state & NUD_PERMANENT)) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "FDB entry towards bridge must be permanent");
-+			return -EINVAL;
-+		}
-+
-+		err = br_fdb_external_learn_add(br, p, addr, vid,
-+						ndm->ndm_state & NUD_PERMANENT,
-+						true);
- 	} else {
- 		spin_lock_bh(&br->hash_lock);
- 		err = fdb_add_entry(br, p, addr, ndm, nlh_flags, vid, nfea_tb);
-@@ -1041,9 +1050,11 @@ int br_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
- 		}
- 
- 		/* VID was specified, so use it. */
--		err = __br_fdb_add(ndm, br, p, addr, nlh_flags, vid, nfea_tb);
-+		err = __br_fdb_add(ndm, br, p, addr, nlh_flags, vid, nfea_tb,
-+				   extack);
- 	} else {
--		err = __br_fdb_add(ndm, br, p, addr, nlh_flags, 0, nfea_tb);
-+		err = __br_fdb_add(ndm, br, p, addr, nlh_flags, 0, nfea_tb,
-+				   extack);
- 		if (err || !vg || !vg->num_vlans)
- 			goto out;
- 
-@@ -1055,7 +1066,7 @@ int br_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
- 			if (!br_vlan_should_use(v))
- 				continue;
- 			err = __br_fdb_add(ndm, br, p, addr, nlh_flags, v->vid,
--					   nfea_tb);
-+					   nfea_tb, extack);
- 			if (err)
- 				goto out;
- 		}
-@@ -1195,7 +1206,7 @@ void br_fdb_unsync_static(struct net_bridge *br, struct net_bridge_port *p)
- }
- 
- int br_fdb_external_learn_add(struct net_bridge *br, struct net_bridge_port *p,
--			      const unsigned char *addr, u16 vid,
-+			      const unsigned char *addr, u16 vid, bool is_local,
- 			      bool swdev_notify)
- {
- 	struct net_bridge_fdb_entry *fdb;
-@@ -1212,6 +1223,10 @@ int br_fdb_external_learn_add(struct net_bridge *br, struct net_bridge_port *p,
- 
- 		if (swdev_notify)
- 			flags |= BIT(BR_FDB_ADDED_BY_USER);
-+
-+		if (is_local)
-+			flags |= BIT(BR_FDB_LOCAL);
-+
- 		fdb = fdb_create(br, p, addr, vid, flags);
- 		if (!fdb) {
- 			err = -ENOMEM;
-@@ -1238,6 +1253,9 @@ int br_fdb_external_learn_add(struct net_bridge *br, struct net_bridge_port *p,
- 		if (swdev_notify)
- 			set_bit(BR_FDB_ADDED_BY_USER, &fdb->flags);
- 
-+		if (is_local)
-+			set_bit(BR_FDB_LOCAL, &fdb->flags);
-+
- 		if (modified)
- 			fdb_notify(br, fdb, RTM_NEWNEIGH, swdev_notify);
- 	}
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 5e5726048a1a..26f311b2cc11 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -708,7 +708,7 @@ int br_fdb_get(struct sk_buff *skb, struct nlattr *tb[], struct net_device *dev,
- int br_fdb_sync_static(struct net_bridge *br, struct net_bridge_port *p);
- void br_fdb_unsync_static(struct net_bridge *br, struct net_bridge_port *p);
- int br_fdb_external_learn_add(struct net_bridge *br, struct net_bridge_port *p,
--			      const unsigned char *addr, u16 vid,
-+			      const unsigned char *addr, u16 vid, bool is_local,
- 			      bool swdev_notify);
- int br_fdb_external_learn_del(struct net_bridge *br, struct net_bridge_port *p,
- 			      const unsigned char *addr, u16 vid,
 -- 
 2.30.2
 
