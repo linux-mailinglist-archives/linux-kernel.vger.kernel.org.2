@@ -2,69 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358053EDEBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB5F3EDEC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhHPUrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:47:36 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52562 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231618AbhHPUre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:47:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=wM7NLhhRKCLXOkWiW3ssYsySfg/tolxoL+fTJnsYsLY=; b=PAGyO4xvb/aGG1Id4V6YzW2DPE
-        i5NFgO9AZHheDLl8HosrJyIrImmF4yDbWK6MmnhpED3MHgUSbTm+FBEx7NDDDaYhunpSN6CSvLcH+
-        MSkeeD2SJ/eoBtCO/6fim73b+vpnPcJSZEbN98RclZazMqaRuwSTBRNfunZpnBeU2YMA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mFjVU-000R9t-6C; Mon, 16 Aug 2021 22:46:52 +0200
-Date:   Mon, 16 Aug 2021 22:46:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
- as a module
-Message-ID: <YRrOvJBLp3WreEUf@lunn.ch>
-References: <87r1hwwier.wl-maz@kernel.org>
- <7h7diwgjup.fsf@baylibre.com>
- <87im0m277h.wl-maz@kernel.org>
- <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
- <87sfzpwq4f.wl-maz@kernel.org>
- <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
- <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
- <YQuZ2cKVE+3Os25Z@google.com>
- <YRpeVLf18Z+1R7WE@google.com>
- <CAGETcx-gSJD0Ra=U_55k3Anps11N_3Ev9gEQV6NaXOvqwP0J3g@mail.gmail.com>
+        id S232812AbhHPUtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231785AbhHPUtd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 16:49:33 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976F4C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:48:58 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i28so10308189lfl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RkFK9buKoxTffeATRlVHoBzA8iEtr+XNkO5dgCSB86k=;
+        b=m3xilTAzBzihkA8v50VsWQG5DE3gEYSRMpfHNON4yVg8CpvTvPXX2TwqQPp8C6Q/Lo
+         Hzhp9tkqPXRB4YPHyQtREdBUlEGyzpmKyVQ8521U1Rb25UqcULU9r3XUi73qHFJmexa9
+         kCdtmLcLhrDUEDy3og/wnXBNl5IJUkdfWRwgEGpEHDTLVft5X00zemrmoi2cRbCzVd/U
+         UPTUzL0m0748lk3DbQN8bwzPRoT2v9e8ldYxOXnaEX2xYNJY6UXLwSJvUW7E//x6RerG
+         5RHmcNXtjfxRMwtHarVuBSXG7U6+ORge9VLnV9nIToAd3ew5hUJm40M1XieDGOqnylyp
+         C6yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RkFK9buKoxTffeATRlVHoBzA8iEtr+XNkO5dgCSB86k=;
+        b=MkJt6rq0dKhGmoKZ++bC1k861/wfpX+FeoLqPjPkIdf0CHDYcpVKG1IZaKxU8Z1+bo
+         8Vwu3RWUNEkn9OyvtnLcWfNWL8XN3M4Xsa0yMCxf6fSF5drlxEiIJhcJRywH0qUkBlyA
+         qBDs55FwgCmjI+4hCtQ+8NJlg3t/gCA0bBAndifRsFNHhhuiOEpwtQHhhoUeHHsWnGzv
+         TACTLGD74BA5RUn9KrORwOMSE8f40zU5bq3xlKbsvitFCyucpgJKnq8rfKeFzoWQ51p5
+         dEPz1DjJHlVxpd3cv+uagEDAIzvplEqIK9nxMEF4e3EfyuwQFV1A8cKmaiSIEhwlO7Cc
+         4ABA==
+X-Gm-Message-State: AOAM530vpZS5cpEDzrcQsNxhWaXlQmy//T3lsshhBPNXTKGkM7usbQDf
+        kGLkBVI0isnR0xqoz00eS967ysxLT8Na3T1heeUlqA==
+X-Google-Smtp-Source: ABdhPJwe+qAgFomVIXuWbzGAauJU9wj72eVu31zTOsLfxyczSpIqa75RCrqQAbiGL1Hz6QJ8MriELl6fBZWSTfBvUWI=
+X-Received: by 2002:ac2:4e8c:: with SMTP id o12mr188297lfr.374.1629146936679;
+ Mon, 16 Aug 2021 13:48:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx-gSJD0Ra=U_55k3Anps11N_3Ev9gEQV6NaXOvqwP0J3g@mail.gmail.com>
+References: <20210816203635.53864-1-nathan@kernel.org>
+In-Reply-To: <20210816203635.53864-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 13:48:45 -0700
+Message-ID: <CAKwvOd=+rn-xyHrX=P=B19EJ8MSmDvQt8oU+QD=59KUHOC7R=A@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Switch to 'f' variants of integrated assembler flag
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Not that I'm aware of. Andrew added a "Reviewed-by" to all 3 of my
-> proper fix patches. I didn't think I needed to send any newer patches.
-> Is there some reason you that I needed to?
-> https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
+On Mon, Aug 16, 2021 at 1:37 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> It has been brought up a few times in various code reviews that clang
+> 3.5 introduced -f{,no-}integrated-as as the preferred way to enable and
+> disable the integrated assembler, mentioning that -{no-,}integrated-as
+> are now considered legacy flags.
+>
+> Switch the kernel over to using those variants in case there is ever a
+> time where clang decides to remove the non-'f' variants of the flag.
+>
+> Link: https://releases.llvm.org/3.5.0/tools/clang/docs/ReleaseNotes.html#new-compiler-flags
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=&submitter=&state=*&q=net%3A+mdio-mux%3A+Delete+unnecessary+devm_kfree&archive=both&delegate=
+Thanks for the patch! Want to fix
+tools/testing/selftests/rseq/Makefile and
+tools/testing/selftests/sched/Makefile, too? Either way...
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-State Changes Requested. I guess because you got the subject wrong.
+> ---
+>  scripts/Makefile.clang | 4 ++--
+>  scripts/as-version.sh  | 6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> index 3ae63bd35582..4cce8fd0779c 100644
+> --- a/scripts/Makefile.clang
+> +++ b/scripts/Makefile.clang
+> @@ -23,11 +23,11 @@ CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  endif # CROSS_COMPILE
+>
+>  ifeq ($(LLVM_IAS),0)
+> -CLANG_FLAGS    += -no-integrated-as
+> +CLANG_FLAGS    += -fno-integrated-as
+>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+>  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>  else
+> -CLANG_FLAGS    += -integrated-as
+> +CLANG_FLAGS    += -fintegrated-as
+>  endif
+>  CLANG_FLAGS    += -Werror=unknown-warning-option
+>  KBUILD_CFLAGS  += $(CLANG_FLAGS)
+> diff --git a/scripts/as-version.sh b/scripts/as-version.sh
+> index 8b9410e329df..a0fc366728f1 100755
+> --- a/scripts/as-version.sh
+> +++ b/scripts/as-version.sh
+> @@ -21,13 +21,13 @@ get_canonical_version()
+>         echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+>  }
+>
+> -# Clang fails to handle -Wa,--version unless -no-integrated-as is given.
+> -# We check -(f)integrated-as, expecting it is explicitly passed in for the
+> +# Clang fails to handle -Wa,--version unless -fno-integrated-as is given.
+> +# We check -fintegrated-as, expecting it is explicitly passed in for the
+>  # integrated assembler case.
+>  check_integrated_as()
+>  {
+>         while [ $# -gt 0 ]; do
+> -               if [ "$1" = -integrated-as -o "$1" = -fintegrated-as ]; then
+> +               if [ "$1" = -fintegrated-as ]; then
+>                         # For the intergrated assembler, we do not check the
 
-With netdev, if it has not been merged within three days, you probably
-need to resubmit.
+^ want to fix this typo, too? s/intergrated/integrated/
 
-     Andrew
+>                         # version here. It is the same as the clang version, and
+>                         # it has been already checked by scripts/cc-version.sh.
+>
+> base-commit: f12b034afeb3a977bbb1c6584dedc0f3dc666f14
+> --
+> 2.33.0.rc2
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
