@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BC33ED775
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CB73ED481
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236923AbhHPNdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238884AbhHPNUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:20:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D6563282;
-        Mon, 16 Aug 2021 13:15:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119760;
-        bh=1l0+J2M7qEDy6UA/jxg3EyhCu+XI+CCG7b6WtlfBZ0o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oejhmLiCmlQ5ZsW1uEznwECJLJhd0lhqUIlfcxJJUmEi7h4YfDwPqXNCFfj7qgYIE
-         nldQAO3HmGJhoLCvmBOiOANcW3rYOfNH4tWvV7D0i2iXbOfvT0cL54zMPTtM0krV9T
-         hVyF9x/HMbOYLcVaRq0fq07Z4x3WdNilACpPTIkg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.13 151/151] kasan, slub: reset tag when printing address
-Date:   Mon, 16 Aug 2021 15:03:01 +0200
-Message-Id: <20210816125449.058559553@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231665AbhHPNDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhHPNDj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:03:39 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DEEC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:03:07 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id bt14so15827676ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0gDpDkzRxQRlixBQR7npyfgn3bTr4IPbX9H8aX4jeAU=;
+        b=cYLKOxYJTIkkHGCkFBWHO+SRTXY28id2ocgWbr/IwlFhPzitX+KATmadUdZwZJZTRq
+         TpImd3bVbCk6+RzEBDDAZoBMxfyTbQ70AMUMN8HPP7h05vyUEo1m1TrU1XiebDV8zTBq
+         r7R7CdpsAZAtCPgRkfQwZVyLEY/h/HMAjrWLkQaK2pniDSGdkseXy6/5qYoSZ+qVZO3e
+         d+hNbpBI7unYL5dU8aTq4ZDXJa1jIGi4qyHEU/s46b+H2w5rDZxf45vHTGht8cgjnWpU
+         /ogmQme+grhiMxc+BIc9x9Z5drNmmynscswKFK4MwXy5lP9E/EWgz0HNnidTa4mT7Mox
+         lf3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0gDpDkzRxQRlixBQR7npyfgn3bTr4IPbX9H8aX4jeAU=;
+        b=t1L4U5tUmcGiMuHVm9lbST/pKgGm6lGN1hDFOMnHKF3QnvkZ8fNpatUaRnHcSSqjYg
+         aEOP2C4Lr6xj0yE7x8r6TgqWulP8Ut8ThnNH24xVQviGKmlLU3g28FFU6dPDNBYP+rVN
+         BzDioFZL5ydEpBv768AuEOzzZVy8GhGUslucBwvsjRsGPjmAXSZN+UWzbzm0Y8CldTHc
+         HN6Up7XkLWxDsccbgNs1u9Gp9no5xy89QsCTTjGcIn0QoD1SJYQ9IjyLciIapfKIcWR3
+         ZJZLwa8touWPI7j9jQLSaEC4UmK0RYUp4bFGd/QwByYfqbMMON6dMfMopfUZpe0TOOJO
+         Em9w==
+X-Gm-Message-State: AOAM531OgNpORbHSNSPFxI6IhOG0w+DevewTdB65I4vDtq29/2yYhpJg
+        HUcB9ul0ncrV7RtHl8FV/Vk=
+X-Google-Smtp-Source: ABdhPJxc9AiiP8G8g58vtTbvxXAu9cyszcx03ZgTMcXuNeuwayn5MbacXdkxTyxdP7eguqx8qlcITQ==
+X-Received: by 2002:a17:906:5a98:: with SMTP id l24mr15441373ejq.540.1629118986053;
+        Mon, 16 Aug 2021 06:03:06 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id c21sm3668108ejz.69.2021.08.16.06.03.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 06:03:05 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org,
+        Michael Straube <straube.linux@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] staging: r8188eu: refactor rtw_is_cckratesonly_included()
+Date:   Mon, 16 Aug 2021 15:03:03 +0200
+Message-ID: <5487901.nydP0h6v93@localhost.localdomain>
+In-Reply-To: <20210816115430.28264-3-straube.linux@gmail.com>
+References: <20210816115430.28264-1-straube.linux@gmail.com> <20210816115430.28264-3-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+On Monday, August 16, 2021 1:54:29 PM CEST Michael Straube wrote:
+> Refactor function rtw_is_cckratesonly_included(). Improves readability
+> and slightly reduces object file size.
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+> v1 -> v2
+> Refactored to more compact code as suggested by Joe Perches.
+> 
+>  drivers/staging/r8188eu/core/rtw_ieee80211.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 
-commit 340caf178ddc2efb0294afaf54c715f7928c258e upstream.
+Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
-The address still includes the tags when it is printed.  With hardware
-tag-based kasan enabled, we will get a false positive KASAN issue when
-we access metadata.
+Thanks,
 
-Reset the tag before we access the metadata.
+Fabio
 
-Link: https://lkml.kernel.org/r/20210804090957.12393-3-Kuan-Ying.Lee@mediatek.com
-Fixes: aa1ef4d7b3f6 ("kasan, mm: reset tags when accessing metadata")
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Chinwen Chang <chinwen.chang@mediatek.com>
-Cc: Nicholas Tang <nicholas.tang@mediatek.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- mm/slub.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -551,8 +551,8 @@ static void print_section(char *level, c
- 			  unsigned int length)
- {
- 	metadata_access_enable();
--	print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
--			16, 1, addr, length, 1);
-+	print_hex_dump(level, text, DUMP_PREFIX_ADDRESS,
-+			16, 1, kasan_reset_tag((void *)addr), length, 1);
- 	metadata_access_disable();
- }
- 
 
 
