@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745F93ED77A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1063ED77D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240727AbhHPNdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:33:37 -0400
-Received: from mail-m17636.qiye.163.com ([59.111.176.36]:46412 "EHLO
-        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240410AbhHPNXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:23:22 -0400
-Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
-        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 491E5C40261;
-        Mon, 16 Aug 2021 21:22:49 +0800 (CST)
-From:   Yangtao Li <frank.li@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
-Subject: [PATCH] f2fs: always call f2fs_issue_checkpoint() in f2fs_sync_fs()
-Date:   Mon, 16 Aug 2021 21:22:48 +0800
-Message-Id: <20210816132248.276865-1-frank.li@vivo.com>
-X-Mailer: git-send-email 2.32.0
+        id S241460AbhHPNdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241036AbhHPNYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:24:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C01760F46;
+        Mon, 16 Aug 2021 13:24:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629120259;
+        bh=cKKMlSBWoufnd5Wsg7F5EwD3oZ+md/XLQSla6gfvJ+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MPP/MhaP1q9ijHc4dooD0mpkxvWYLenMhsyyMx0F2eWTJw8LW3ykWy4l6K7pfHu9M
+         QBkiFuVXoxnBKuIxSl4DjcVuGf2T9oSfQTZa3rSdiHAGvhXqinjpTQtwkMfB8iGj5L
+         Vx3yyWLjDUbK+dh7ien7bt3vZoSkyptmive8EhBNdzqQLcAxwm/Vp2q9rY/dQLakje
+         oMHb8IGGEf8/p0HbeeFF78vXj0bMcxM2p+Q2rYv085qFxV/lopvWC8z49k+pKJziux
+         CwgBHUFqp5vzHiuB1EawC/BE0VAHVeBwr28f3Z3230bW7k+jF6HqHfL0VUUMDFO/Cs
+         1hSUQNploooRA==
+Received: by pali.im (Postfix)
+        id 05797949; Mon, 16 Aug 2021 15:24:16 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 15:24:16 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC PATCH 1/4] fs/ntfs3: Use new api for mounting
+Message-ID: <20210816132416.zk326rbhwe7eaj3i@pali>
+References: <20210816024703.107251-1-kari.argillander@gmail.com>
+ <20210816024703.107251-2-kari.argillander@gmail.com>
+ <20210816123619.GB17355@lst.de>
+ <20210816131417.4mix6s2nzuxhkh53@kari-VirtualBox>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUJKGkNWHU9NGE0ZGElKSE
-        geVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjY6PSo6Mz9JNRwzLBkSF08N
-        SRMaCypVSlVKTUlCSklLSk1CQ05PVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
-        VUpLT1VKQ0NVSk1OWVdZCAFZQUpNQ0k3Bg++
-X-HM-Tid: 0a7b4f2105efd996kuws491e5c40261
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816131417.4mix6s2nzuxhkh53@kari-VirtualBox>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sync is always 1, so delete the check of the value.
+On Monday 16 August 2021 16:14:17 Kari Argillander wrote:
+> > > + * Load nls table or if @nls is utf8 then return NULL because
+> > > + * nls=utf8 is totally broken.
+> > > + */
+> > > +static struct nls_table *ntfs_load_nls(char *nls)
+> > > +{
+> > > +	struct nls_table *ret;
+> > > +
+> > > +	if (!nls)
+> > > +		return ERR_PTR(-EINVAL);
+> > > +	if (strcmp(nls, "utf8"))
+> > > +		return NULL;
+> > > +	if (strcmp(nls, CONFIG_NLS_DEFAULT))
+> > > +		return load_nls_default();
+> > > +
+> > > +	ret = load_nls(nls);
+> > > +	if (!ret)
+> > > +		return ERR_PTR(-EINVAL);
+> > > +
+> > > +	return ret;
+> > > +}
+> > 
+> > This looks like something quite generic and not file system specific.
+> > But I haven't found time to look at the series from Pali how this all
+> > fits together.
+> 
+> It is quite generic I agree. Pali's series not implemeted any new way
+> doing this thing. In many cases Pali uses just load_nls and not
+> load_nls_default. This function basically use that if possible. It seems
+> that load_nls_default does not need error path so that's why it is nicer
+> to use.
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- fs/f2fs/super.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Yes, I'm using what is currently available. But providing some helper
+function should be a nice cleanup.
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 98727e04d271..b823c7e3f303 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1553,7 +1553,6 @@ static void f2fs_put_super(struct super_block *sb)
- int f2fs_sync_fs(struct super_block *sb, int sync)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
--	int err = 0;
- 
- 	if (unlikely(f2fs_cp_error(sbi)))
- 		return 0;
-@@ -1565,10 +1564,7 @@ int f2fs_sync_fs(struct super_block *sb, int sync)
- 	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
- 		return -EAGAIN;
- 
--	if (sync)
--		err = f2fs_issue_checkpoint(sbi);
--
--	return err;
-+	return f2fs_issue_checkpoint(sbi);
- }
- 
- static int f2fs_freeze(struct super_block *sb)
--- 
-2.32.0
+> One though is to implement api function load_nls_or_utf8(). Then we do not
+> need to test this utf8 stuff in all places.
 
+Beware that there are more cases which can happen:
+
+- iocharset is not specified
+  --> then driver default behavior is used
+      --> it is either some fixed encoding (e.g. iso8859-1, utf8) or
+          CONFIG_NLS_DEFAULT (*); so it should behave like iocharset is
+          set to that fixed encoding or CONFIG_NLS_DEFAULT
+- iocharset is set to utf8
+  --> then native utf8* functions should be used instead of nls
+- iocharset is set to CONFIG_NLS_DEFAULT
+  --> then load_nls_default() should be used which is IIRC guaranteed to
+      not fail
+- iocharset is not set to utf8, neither to CONFIG_NLS_DEFAULT
+  --> then load_nls(iocharset) should be used; this may fail
+
+(*) - it is pity that not all fs drivers are using CONFIG_NLS_DEFAULT
+      and some are using some their own fixed encoding... it just
+      increase mess and "user surprise"
