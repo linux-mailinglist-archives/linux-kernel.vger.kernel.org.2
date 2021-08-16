@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655CC3ED5AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837B63ED731
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236506AbhHPNNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:13:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
+        id S241658AbhHPNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237429AbhHPNJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54464610E8;
-        Mon, 16 Aug 2021 13:08:06 +0000 (UTC)
+        id S238299AbhHPNSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:18:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29962632FC;
+        Mon, 16 Aug 2021 13:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119286;
-        bh=ZvYpSPnb/sjZPhLX8TXBfRVqa37SIfIGq7PHbMXwfHQ=;
+        s=korg; t=1629119637;
+        bh=IMh7Dmq8MIpX0F+ZNZlos+dTf2PKE1HJ2IDJikYHEbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGiCwvQCsMaoJ9dUhvQ0Et/0yT46s13OE4jFpS4E5xbUXBx9v7c31Mdvg8WYmm1xT
-         8pj+Y5owzVPSNk5OehaodvZYa3OY3opn055924bFojPbt7XD+0kUcExvOWEyRgWtX6
-         k0GGh6t08YlkHlBao36Jis826WIV+6kpXpZsnOes=
+        b=sr7EVZPTCOkTFdS78MVKGYy+jERtcWH6323Ju2c0hfOSOoavXgYIFZrMvnXP175/B
+         Rb5iOf44V965RuUP2MZafYgMy6Xr+rAjFOx8Zg1B5r6tdJhLw24Ii2CAF0k3+F8M5o
+         YN4F9UhMLBBJwC2V61XhPuyUMg/pnXmsOBamC4v0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 63/96] net: igmp: increase size of mr_ifc_count
-Date:   Mon, 16 Aug 2021 15:02:13 +0200
-Message-Id: <20210816125437.048044635@linuxfoundation.org>
+Subject: [PATCH 5.13 104/151] pinctrl: sunxi: Dont underestimate number of functions
+Date:   Mon, 16 Aug 2021 15:02:14 +0200
+Message-Id: <20210816125447.502952777@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit b69dd5b3780a7298bd893816a09da751bc0636f7 ]
+[ Upstream commit d1dee814168538eba166ae4150b37f0d88257884 ]
 
-Some arches support cmpxchg() on 4-byte and 8-byte only.
-Increase mr_ifc_count width to 32bit to fix this problem.
+When we are building all the various pinctrl structures for the
+Allwinner pinctrl devices, we do some estimation about the maximum
+number of distinct function (names) that we will need.
 
-Fixes: 4a2b285e7e10 ("net: igmp: fix data-race in igmp_ifc_timer_expire()")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210811195715.3684218-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+So far we take the number of pins as an upper bound, even though we
+can actually have up to four special functions per pin. This wasn't a
+problem until now, since we indeed have typically far more pins than
+functions, and most pins share common functions.
+
+However the H616 "-r" pin controller has only two pins, but four
+functions, so we run over the end of the array when we are looking for
+a matching function name in sunxi_pinctrl_add_function - there is no
+NULL sentinel left that would terminate the loop:
+
+[    8.200648] Unable to handle kernel paging request at virtual address fffdff7efbefaff5
+[    8.209179] Mem abort info:
+....
+[    8.368456] Call trace:
+[    8.370925]  __pi_strcmp+0x90/0xf0
+[    8.374559]  sun50i_h616_r_pinctrl_probe+0x1c/0x28
+[    8.379557]  platform_probe+0x68/0xd8
+
+Do an actual worst case allocation (4 functions per pin, three common
+functions and the sentinel) for the initial array allocation. This is
+now heavily overestimating the number of functions in the common case,
+but we will reallocate this array later with the actual number of
+functions, so it's only temporarily.
+
+Fixes: 561c1cf17c46 ("pinctrl: sunxi: Add support for the Allwinner H616-R pin controller")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210722132548.22121-1-andre.przywara@arm.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/inetdevice.h | 2 +-
- net/ipv4/igmp.c            | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/sunxi/pinctrl-sunxi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 3515ca64e638..b68fca08be27 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -41,7 +41,7 @@ struct in_device {
- 	unsigned long		mr_qri;		/* Query Response Interval */
- 	unsigned char		mr_qrv;		/* Query Robustness Variable */
- 	unsigned char		mr_gq_running;
--	unsigned char		mr_ifc_count;
-+	u32			mr_ifc_count;
- 	struct timer_list	mr_gq_timer;	/* general query timer */
- 	struct timer_list	mr_ifc_timer;	/* interface change timer */
+diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+index dc8d39ae045b..9c7679c06dca 100644
+--- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
++++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+@@ -1219,10 +1219,12 @@ static int sunxi_pinctrl_build_state(struct platform_device *pdev)
+ 	}
  
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index a51360087b19..00576bae183d 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -803,7 +803,7 @@ static void igmp_gq_timer_expire(struct timer_list *t)
- static void igmp_ifc_timer_expire(struct timer_list *t)
- {
- 	struct in_device *in_dev = from_timer(in_dev, t, mr_ifc_timer);
--	u8 mr_ifc_count;
-+	u32 mr_ifc_count;
- 
- 	igmpv3_send_cr(in_dev);
- restart:
+ 	/*
+-	 * We suppose that we won't have any more functions than pins,
+-	 * we'll reallocate that later anyway
++	 * Find an upper bound for the maximum number of functions: in
++	 * the worst case we have gpio_in, gpio_out, irq and up to four
++	 * special functions per pin, plus one entry for the sentinel.
++	 * We'll reallocate that later anyway.
+ 	 */
+-	pctl->functions = kcalloc(pctl->ngroups,
++	pctl->functions = kcalloc(4 * pctl->ngroups + 4,
+ 				  sizeof(*pctl->functions),
+ 				  GFP_KERNEL);
+ 	if (!pctl->functions)
 -- 
 2.30.2
 
