@@ -2,278 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4013ED393
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF943ED375
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhHPMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:01:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:38495 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233463AbhHPMA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:00:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="215572761"
-X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
-   d="scan'208";a="215572761"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 05:00:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
-   d="scan'208";a="504864844"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 16 Aug 2021 05:00:07 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 30F076BF; Mon, 16 Aug 2021 15:00:03 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        netdev@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Asmaa Mnebhi <asmaa@nvidia.com>,
-        Liming Sun <limings@nvidia.com>
-Subject: [PATCH v1 6/6] TODO: net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
-Date:   Mon, 16 Aug 2021 14:59:53 +0300
-Message-Id: <20210816115953.72533-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
-References: <20210816115953.72533-1-andriy.shevchenko@linux.intel.com>
+        id S230257AbhHPL7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:59:04 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:14209 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhHPL7C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 07:59:02 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GpCNJ10b6z1CXNj;
+        Mon, 16 Aug 2021 19:58:08 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 19:58:29 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 16 Aug
+ 2021 19:58:29 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <thomas.hellstrom@linux.intel.com>
+Subject: [PATCH -next] drm/i915: pass correct pointer to PTR_ERR()
+Date:   Mon, 16 Aug 2021 20:04:20 +0800
+Message-ID: <20210816120420.693002-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since GPIO driver supports interrupt handling, replace custom routine with
-simple IRQ request.
+The 'obj' is tested by IS_ERR(), we should pass it to PTR_ERR().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
- 1 file changed, 212 deletions(-)
- delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+ drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-deleted file mode 100644
-index a8d966db5715..000000000000
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-+++ /dev/null
-@@ -1,212 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
--
--/* Initialize and handle GPIO interrupt triggered by INT_N PHY signal.
-- * This GPIO interrupt triggers the PHY state machine to bring the link
-- * up/down.
-- *
-- * Copyright (C) 2021 NVIDIA CORPORATION & AFFILIATES
-- */
--
--#include <linux/acpi.h>
--#include <linux/bitfield.h>
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/gpio/driver.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/irq.h>
--#include <linux/irqdomain.h>
--#include <linux/irqreturn.h>
--#include <linux/platform_device.h>
--#include <linux/property.h>
--
--#include "mlxbf_gige.h"
--#include "mlxbf_gige_regs.h"
--
--#define MLXBF_GIGE_GPIO_CAUSE_FALL_EN		0x48
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0	0x80
--#define MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0		0x94
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE	0x98
--
--static void mlxbf_gige_gpio_enable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	/* The INT_N interrupt level is active low.
--	 * So enable cause fall bit to detect when GPIO
--	 * state goes low.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--
--	/* Enable PHY interrupt by setting the priority level */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static void mlxbf_gige_gpio_disable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val &= ~priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static irqreturn_t mlxbf_gige_gpio_handler(int irq, void *ptr)
--{
--	struct mlxbf_gige *priv;
--	u32 val;
--
--	priv = ptr;
--
--	/* Check if this interrupt is from PHY device.
--	 * Return if it is not.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0);
--	if (!(val & priv->phy_int_gpio_mask))
--		return IRQ_NONE;
--
--	/* Clear interrupt when done, otherwise, no further interrupt
--	 * will be triggered.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	generic_handle_irq(priv->phy_irq);
--
--	return IRQ_HANDLED;
--}
--
--static void mlxbf_gige_gpio_mask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_disable(priv);
--}
--
--static void mlxbf_gige_gpio_unmask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_enable(priv);
--}
--
--static struct irq_chip mlxbf_gige_gpio_chip = {
--	.name			= "mlxbf_gige_phy",
--	.irq_mask		= mlxbf_gige_gpio_mask,
--	.irq_unmask		= mlxbf_gige_gpio_unmask,
--};
--
--static int mlxbf_gige_gpio_domain_map(struct irq_domain *d,
--				      unsigned int irq,
--				      irq_hw_number_t hwirq)
--{
--	irq_set_chip_data(irq, d->host_data);
--	irq_set_chip_and_handler(irq, &mlxbf_gige_gpio_chip, handle_simple_irq);
--	irq_set_noprobe(irq);
--
--	return 0;
--}
--
--static const struct irq_domain_ops mlxbf_gige_gpio_domain_ops = {
--	.map    = mlxbf_gige_gpio_domain_map,
--	.xlate	= irq_domain_xlate_twocell,
--};
--
--#ifdef CONFIG_ACPI
--static int mlxbf_gige_gpio_resources(struct acpi_resource *ares,
--				     void *data)
--{
--	struct acpi_resource_gpio *gpio;
--	u32 *phy_int_gpio = data;
--
--	if (ares->type == ACPI_RESOURCE_TYPE_GPIO) {
--		gpio = &ares->data.gpio;
--		*phy_int_gpio = gpio->pin_table[0];
--	}
--
--	return 1;
--}
--#endif
--
--void mlxbf_gige_gpio_free(struct mlxbf_gige *priv)
--{
--	irq_dispose_mapping(priv->phy_irq);
--	irq_domain_remove(priv->irqdomain);
--}
--
--int mlxbf_gige_gpio_init(struct platform_device *pdev,
--			 struct mlxbf_gige *priv)
--{
--	struct device *dev = &pdev->dev;
--	struct resource *res;
--	u32 phy_int_gpio = 0;
--	int ret;
--
--	LIST_HEAD(resources);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, MLXBF_GIGE_RES_GPIO0);
--	if (!res)
--		return -ENODEV;
--
--	priv->gpio_io = devm_ioremap(dev, res->start, resource_size(res));
--	if (!priv->gpio_io)
--		return -ENOMEM;
--
--#ifdef CONFIG_ACPI
--	ret = acpi_dev_get_resources(ACPI_COMPANION(dev),
--				     &resources, mlxbf_gige_gpio_resources,
--				     &phy_int_gpio);
--	acpi_dev_free_resource_list(&resources);
--	if (ret < 0 || !phy_int_gpio) {
--		dev_err(dev, "Error retrieving the gpio phy pin");
--		return -EINVAL;
--	}
--#endif
--
--	priv->phy_int_gpio_mask = BIT(phy_int_gpio);
--
--	mlxbf_gige_gpio_disable(priv);
--
--	priv->hw_phy_irq = platform_get_irq(pdev, MLXBF_GIGE_PHY_INT_N);
--
--	priv->irqdomain = irq_domain_add_simple(NULL, 1, 0,
--						&mlxbf_gige_gpio_domain_ops,
--						priv);
--	if (!priv->irqdomain) {
--		dev_err(dev, "Failed to add IRQ domain\n");
--		return -ENOMEM;
--	}
--
--	priv->phy_irq = irq_create_mapping(priv->irqdomain, 0);
--	if (!priv->phy_irq) {
--		irq_domain_remove(priv->irqdomain);
--		priv->irqdomain = NULL;
--		dev_err(dev, "Error mapping PHY IRQ\n");
--		return -EINVAL;
--	}
--
--	ret = devm_request_irq(dev, priv->hw_phy_irq, mlxbf_gige_gpio_handler,
--			       IRQF_ONESHOT | IRQF_SHARED, "mlxbf_gige_phy", priv);
--	if (ret) {
--		dev_err(dev, "Failed to request PHY IRQ");
--		mlxbf_gige_gpio_free(priv);
--		return ret;
--	}
--
--	return ret;
--}
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
+index ffae7df5e4d7..88531d06811e 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
+@@ -102,7 +102,7 @@ static int igt_dmabuf_import_same_driver_lmem(void *arg)
+ 	obj = __i915_gem_object_create_user(i915, PAGE_SIZE, &lmem, 1);
+ 	if (IS_ERR(obj)) {
+ 		pr_err("__i915_gem_object_create_user failed with err=%ld\n",
+-		       PTR_ERR(dmabuf));
++		       PTR_ERR(obj));
+ 		err = PTR_ERR(obj);
+ 		goto out_ret;
+ 	}
+@@ -156,7 +156,7 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
+ 					    regions, num_regions);
+ 	if (IS_ERR(obj)) {
+ 		pr_err("__i915_gem_object_create_user failed with err=%ld\n",
+-		       PTR_ERR(dmabuf));
++		       PTR_ERR(obj));
+ 		err = PTR_ERR(obj);
+ 		goto out_ret;
+ 	}
 -- 
-2.30.2
+2.25.1
 
