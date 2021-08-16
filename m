@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080893ED4AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADDE3ED715
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236952AbhHPNEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55340 "EHLO mail.kernel.org"
+        id S239421AbhHPN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:27:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhHPNEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2177C63292;
-        Mon, 16 Aug 2021 13:03:50 +0000 (UTC)
+        id S238912AbhHPNQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:16:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0AB632E3;
+        Mon, 16 Aug 2021 13:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119031;
-        bh=LPMaJ9ZVY7+KRz2c2ftd5MfC1UvkplOauhOCq0lMLAU=;
+        s=korg; t=1629119599;
+        bh=cx7F+aV8WqTN9/nWnRmi7JEc3b+OwcRuJ3a2gTllHIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HytsVUT17K9G+RXco+dqb+Mt6dLKtztODN8j5/A6DKyK9jr/IJmSzb4QVRYykV142
-         rYdqaV+1DeyncNVnpbJimgY8nOXhOJ1ePVCmbcvucK+lb8D25D2tUBB+KB1vVIPSul
-         KUwGmgElmktaMYH4U3Thk4Gl7SLeuZRP91c7k1z8=
+        b=W+Te0aV6/vNR93lZSRg+1joYt8UX2Y6cWalyxcLgx8h/7SeWzM3leSuONLtbLczN5
+         CpE5+eYYs3bR0IeLvILZgbmHeH7QkOx8cDWq2Cb+d9e74MyRPCrB4z78WG8QxXuFTN
+         yBqZ+lE4qdtLK4Kfr19rnI6bnH6ksOHpwmdbjLDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 24/62] iavf: Set RSS LUT and key in reset handle path
-Date:   Mon, 16 Aug 2021 15:01:56 +0200
-Message-Id: <20210816125429.019844544@linuxfoundation.org>
+Subject: [PATCH 5.13 087/151] net/mlx5: Fix return value from tracer initialization
+Date:   Mon, 16 Aug 2021 15:01:57 +0200
+Message-Id: <20210816125446.949370489@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit a7550f8b1c9712894f9e98d6caf5f49451ebd058 ]
+[ Upstream commit bd37c2888ccaa5ceb9895718f6909b247cc372e0 ]
 
-iavf driver should set RSS LUT and key unconditionally in reset
-path. Currently, the driver does not do that. This patch fixes
-this issue.
+Check return value of mlx5_fw_tracer_start(), set error path and fix
+return value of mlx5_fw_tracer_init() accordingly.
 
-Fixes: 2c86ac3c7079 ("i40evf: create a generic config RSS function")
-Signed-off-by: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c  | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index cda9b9a8392a..dc902e371c2c 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -1499,11 +1499,6 @@ static int iavf_reinit_interrupt_scheme(struct iavf_adapter *adapter)
- 	set_bit(__IAVF_VSI_DOWN, adapter->vsi.state);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+index 01a1d02dcf15..3f8a98093f8c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -1019,12 +1019,19 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer)
+ 	MLX5_NB_INIT(&tracer->nb, fw_tracer_event, DEVICE_TRACER);
+ 	mlx5_eq_notifier_register(dev, &tracer->nb);
  
- 	iavf_map_rings_to_vectors(adapter);
+-	mlx5_fw_tracer_start(tracer);
 -
--	if (RSS_AQ(adapter))
--		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
--	else
--		err = iavf_init_rss(adapter);
- err:
++	err = mlx5_fw_tracer_start(tracer);
++	if (err) {
++		mlx5_core_warn(dev, "FWTracer: Failed to start tracer %d\n", err);
++		goto err_notifier_unregister;
++	}
+ 	return 0;
+ 
++err_notifier_unregister:
++	mlx5_eq_notifier_unregister(dev, &tracer->nb);
++	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
+ err_dealloc_pd:
+ 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
++	cancel_work_sync(&tracer->read_fw_strings_work);
  	return err;
  }
-@@ -2179,6 +2174,14 @@ continue_reset:
- 			goto reset_err;
- 	}
- 
-+	if (RSS_AQ(adapter)) {
-+		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
-+	} else {
-+		err = iavf_init_rss(adapter);
-+		if (err)
-+			goto reset_err;
-+	}
-+
- 	adapter->aq_required |= IAVF_FLAG_AQ_GET_CONFIG;
- 	adapter->aq_required |= IAVF_FLAG_AQ_MAP_VECTORS;
  
 -- 
 2.30.2
