@@ -2,66 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A584B3ECEF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BE73ECEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhHPHFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:05:32 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34877 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233349AbhHPHFb (ORCPT
+        id S233725AbhHPHJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 03:09:48 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:37812 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233349AbhHPHJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:05:31 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mFWg6-000Oy1-DC; Mon, 16 Aug 2021 09:04:58 +0200
-Received: from p5b13a086.dip0.t-ipconnect.de ([91.19.160.134] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mFWg6-001jRq-6V; Mon, 16 Aug 2021 09:04:58 +0200
-Subject: Patch formatting - Re:
-To:     zhao xc <xinchao.zhao.kernelz@gmail.com>,
-        ysato@users.sourceforge.jp
-Cc:     dalias@libc.org, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAP7CzPfRFSfUka1Wjo1+KNSdhYjR2n59g2yvEFGRyfYwNFNy1A@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <fbd17d71-91e8-fb0c-f621-ee41787e4bad@physik.fu-berlin.de>
-Date:   Mon, 16 Aug 2021 09:04:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 16 Aug 2021 03:09:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Uj7Ybxv_1629097753;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0Uj7Ybxv_1629097753)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 16 Aug 2021 15:09:13 +0800
+From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, anderson@cs.unc.edu, baruah@wustl.edu,
+        bsegall@google.com, changhuaixin@linux.alibaba.com,
+        dietmar.eggemann@arm.com, dtcccc@linux.alibaba.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
+        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
+        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: [PATCH 0/2] Add statistics and document for cfs bandwidth burst
+Date:   Mon, 16 Aug 2021 15:08:47 +0800
+Message-Id: <20210816070849.3153-1-changhuaixin@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-In-Reply-To: <CAP7CzPfRFSfUka1Wjo1+KNSdhYjR2n59g2yvEFGRyfYwNFNy1A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.160.134
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhao!
+The comparison in __refill_cfs_bandwidth_runtime is further simplified.
 
-Thanks for your patch!
+Huaixin Chang (2):
+  sched/fair: Add cfs bandwidth burst statistics
+  sched/fair: Add document for burstable CFS bandwidth
 
-However, the patch has not been properly formatted and needs to be resend.
-
-Could you follow this guide [1] and send your patch again in the correct
-format?
-
-Thanks,
-Adrian
-
-> [1] http://nickdesaulniers.github.io/blog/2017/05/16/submitting-your-first-patch-to-the-linux-kernel-and-responding-to-feedback/
+ Documentation/admin-guide/cgroup-v2.rst |  8 ++++
+ Documentation/scheduler/sched-bwc.rst   | 85 +++++++++++++++++++++++++++++----
+ kernel/sched/core.c                     | 13 +++--
+ kernel/sched/fair.c                     |  9 ++++
+ kernel/sched/sched.h                    |  3 ++
+ 5 files changed, 105 insertions(+), 13 deletions(-)
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.14.4.44.g2045bb6
+
