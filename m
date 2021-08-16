@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A593ED4DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261E33ED5A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237069AbhHPNFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55744 "EHLO mail.kernel.org"
+        id S237453AbhHPNMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236691AbhHPNEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A12DD63290;
-        Mon, 16 Aug 2021 13:04:07 +0000 (UTC)
+        id S237158AbhHPNJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EB4632C2;
+        Mon, 16 Aug 2021 13:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119048;
-        bh=AA9zUKYgDRroZsU4JqG8GeVdzSqJnW093S3jupmgRZE=;
+        s=korg; t=1629119258;
+        bh=RYrcGiuN1XgqYILElz1dObV+4Wp7klA+3ZnmfUl+RQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UW3VcGiUoe3g9cze8aIpIdd37efdCCB5b22y8i/1T+nh5qrc5Mfmo07o1r/aj6GLp
-         mgH7+fLPyqlAkzdyJNKwpbtXU2BtQWdBz1YxjEuXC06tlKsCc/jibi4AQ2bR7iEfjv
-         2L52vQTPKRj5xGiAaGlIqYFRQ860GsUkghS6Enbg=
+        b=gpxkc0awNCdg9RyC/xtoOv6wUJTkurKMfuwPrlQCxsvhO8AH/ncCMF/5yJCP693UV
+         XdXpvtoLV82IX7hPZVYuqauBXiMP7FLBVdVDZeoRHMiC8hV9rhu7etf6Sji+p8Iusq
+         jY+m7hMTco9y7gVe1HOvY2jOWssYJnHJAWrVPnl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/62] net: dsa: lan9303: fix broken backpressure in .port_fdb_dump
+        stable@vger.kernel.org, Takeshi Misawa <jeliantsurux@gmail.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 53/96] net: Fix memory leak in ieee802154_raw_deliver
 Date:   Mon, 16 Aug 2021 15:02:03 +0200
-Message-Id: <20210816125429.260082764@linuxfoundation.org>
+Message-Id: <20210816125436.726238302@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,136 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Takeshi Misawa <jeliantsurux@gmail.com>
 
-[ Upstream commit ada2fee185d8145afb89056558bb59545b9dbdd0 ]
+[ Upstream commit 1090340f7ee53e824fd4eef66a4855d548110c5b ]
 
-rtnl_fdb_dump() has logic to split a dump of PF_BRIDGE neighbors into
-multiple netlink skbs if the buffer provided by user space is too small
-(one buffer will typically handle a few hundred FDB entries).
+If IEEE-802.15.4-RAW is closed before receive skb, skb is leaked.
+Fix this, by freeing sk_receive_queue in sk->sk_destruct().
 
-When the current buffer becomes full, nlmsg_put() in
-dsa_slave_port_fdb_do_dump() returns -EMSGSIZE and DSA saves the index
-of the last dumped FDB entry, returns to rtnl_fdb_dump() up to that
-point, and then the dump resumes on the same port with a new skb, and
-FDB entries up to the saved index are simply skipped.
+syzbot report:
+BUG: memory leak
+unreferenced object 0xffff88810f644600 (size 232):
+  comm "softirq", pid 0, jiffies 4294967032 (age 81.270s)
+  hex dump (first 32 bytes):
+    10 7d 4b 12 81 88 ff ff 10 7d 4b 12 81 88 ff ff  .}K......}K.....
+    00 00 00 00 00 00 00 00 40 7c 4b 12 81 88 ff ff  ........@|K.....
+  backtrace:
+    [<ffffffff83651d4a>] skb_clone+0xaa/0x2b0 net/core/skbuff.c:1496
+    [<ffffffff83fe1b80>] ieee802154_raw_deliver net/ieee802154/socket.c:369 [inline]
+    [<ffffffff83fe1b80>] ieee802154_rcv+0x100/0x340 net/ieee802154/socket.c:1070
+    [<ffffffff8367cc7a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5384
+    [<ffffffff8367cd07>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5498
+    [<ffffffff8367cdd9>] netif_receive_skb_internal net/core/dev.c:5603 [inline]
+    [<ffffffff8367cdd9>] netif_receive_skb+0x59/0x260 net/core/dev.c:5662
+    [<ffffffff83fe6302>] ieee802154_deliver_skb net/mac802154/rx.c:29 [inline]
+    [<ffffffff83fe6302>] ieee802154_subif_frame net/mac802154/rx.c:102 [inline]
+    [<ffffffff83fe6302>] __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+    [<ffffffff83fe6302>] ieee802154_rx+0x612/0x620 net/mac802154/rx.c:284
+    [<ffffffff83fe59a6>] ieee802154_tasklet_handler+0x86/0xa0 net/mac802154/main.c:35
+    [<ffffffff81232aab>] tasklet_action_common.constprop.0+0x5b/0x100 kernel/softirq.c:557
+    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:345
+    [<ffffffff81232f4c>] do_softirq kernel/softirq.c:248 [inline]
+    [<ffffffff81232f4c>] do_softirq+0x5c/0x80 kernel/softirq.c:235
+    [<ffffffff81232fc1>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:198
+    [<ffffffff8367a9a4>] local_bh_enable include/linux/bottom_half.h:32 [inline]
+    [<ffffffff8367a9a4>] rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
+    [<ffffffff8367a9a4>] __dev_queue_xmit+0x7f4/0xf60 net/core/dev.c:4221
+    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
+    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
+    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
+    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
+    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
+    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
+    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
 
-Since dsa_slave_port_fdb_do_dump() is pointed to by the "cb" passed to
-drivers, then drivers must check for the -EMSGSIZE error code returned
-by it. Otherwise, when a netlink skb becomes full, DSA will no longer
-save newly dumped FDB entries to it, but the driver will continue
-dumping. So FDB entries will be missing from the dump.
-
-Fix the broken backpressure by propagating the "cb" return code and
-allow rtnl_fdb_dump() to restart the FDB dump with a new skb.
-
-Fixes: ab335349b852 ("net: dsa: lan9303: Add port_fast_age and port_fdb_dump methods")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 9ec767160357 ("net: add IEEE 802.15.4 socket family implementation")
+Reported-and-tested-by: syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
+Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
+Acked-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210805075414.GA15796@DESKTOP
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/lan9303-core.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ net/ieee802154/socket.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
-index bbec86b9418e..19d1f1c51f97 100644
---- a/drivers/net/dsa/lan9303-core.c
-+++ b/drivers/net/dsa/lan9303-core.c
-@@ -557,12 +557,12 @@ static int lan9303_alr_make_entry_raw(struct lan9303 *chip, u32 dat0, u32 dat1)
- 	return 0;
- }
- 
--typedef void alr_loop_cb_t(struct lan9303 *chip, u32 dat0, u32 dat1,
--			   int portmap, void *ctx);
-+typedef int alr_loop_cb_t(struct lan9303 *chip, u32 dat0, u32 dat1,
-+			  int portmap, void *ctx);
- 
--static void lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
-+static int lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
- {
--	int i;
-+	int ret = 0, i;
- 
- 	mutex_lock(&chip->alr_mutex);
- 	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
-@@ -582,13 +582,17 @@ static void lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
- 						LAN9303_ALR_DAT1_PORT_BITOFFS;
- 		portmap = alrport_2_portmap[alrport];
- 
--		cb(chip, dat0, dat1, portmap, ctx);
-+		ret = cb(chip, dat0, dat1, portmap, ctx);
-+		if (ret)
-+			break;
- 
- 		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
- 					 LAN9303_ALR_CMD_GET_NEXT);
- 		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD, 0);
- 	}
- 	mutex_unlock(&chip->alr_mutex);
-+
-+	return ret;
- }
- 
- static void alr_reg_to_mac(u32 dat0, u32 dat1, u8 mac[6])
-@@ -606,18 +610,20 @@ struct del_port_learned_ctx {
+diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
+index a45a0401adc5..c25f7617770c 100644
+--- a/net/ieee802154/socket.c
++++ b/net/ieee802154/socket.c
+@@ -984,6 +984,11 @@ static const struct proto_ops ieee802154_dgram_ops = {
+ 	.sendpage	   = sock_no_sendpage,
  };
  
- /* Clear learned (non-static) entry on given port */
--static void alr_loop_cb_del_port_learned(struct lan9303 *chip, u32 dat0,
--					 u32 dat1, int portmap, void *ctx)
-+static int alr_loop_cb_del_port_learned(struct lan9303 *chip, u32 dat0,
-+					u32 dat1, int portmap, void *ctx)
- {
- 	struct del_port_learned_ctx *del_ctx = ctx;
- 	int port = del_ctx->port;
- 
- 	if (((BIT(port) & portmap) == 0) || (dat1 & LAN9303_ALR_DAT1_STATIC))
--		return;
-+		return 0;
- 
- 	/* learned entries has only one port, we can just delete */
- 	dat1 &= ~LAN9303_ALR_DAT1_VALID; /* delete entry */
- 	lan9303_alr_make_entry_raw(chip, dat0, dat1);
++static void ieee802154_sock_destruct(struct sock *sk)
++{
++	skb_queue_purge(&sk->sk_receive_queue);
++}
 +
-+	return 0;
- }
+ /* Create a socket. Initialise the socket, blank the addresses
+  * set the state.
+  */
+@@ -1024,7 +1029,7 @@ static int ieee802154_create(struct net *net, struct socket *sock,
+ 	sock->ops = ops;
  
- struct port_fdb_dump_ctx {
-@@ -626,19 +632,19 @@ struct port_fdb_dump_ctx {
- 	dsa_fdb_dump_cb_t *cb;
- };
+ 	sock_init_data(sock, sk);
+-	/* FIXME: sk->sk_destruct */
++	sk->sk_destruct = ieee802154_sock_destruct;
+ 	sk->sk_family = PF_IEEE802154;
  
--static void alr_loop_cb_fdb_port_dump(struct lan9303 *chip, u32 dat0,
--				      u32 dat1, int portmap, void *ctx)
-+static int alr_loop_cb_fdb_port_dump(struct lan9303 *chip, u32 dat0,
-+				     u32 dat1, int portmap, void *ctx)
- {
- 	struct port_fdb_dump_ctx *dump_ctx = ctx;
- 	u8 mac[ETH_ALEN];
- 	bool is_static;
- 
- 	if ((BIT(dump_ctx->port) & portmap) == 0)
--		return;
-+		return 0;
- 
- 	alr_reg_to_mac(dat0, dat1, mac);
- 	is_static = !!(dat1 & LAN9303_ALR_DAT1_STATIC);
--	dump_ctx->cb(mac, 0, is_static, dump_ctx->data);
-+	return dump_ctx->cb(mac, 0, is_static, dump_ctx->data);
- }
- 
- /* Set a static ALR entry. Delete entry if port_map is zero */
-@@ -1210,9 +1216,7 @@ static int lan9303_port_fdb_dump(struct dsa_switch *ds, int port,
- 	};
- 
- 	dev_dbg(chip->dev, "%s(%d)\n", __func__, port);
--	lan9303_alr_loop(chip, alr_loop_cb_fdb_port_dump, &dump_ctx);
--
--	return 0;
-+	return lan9303_alr_loop(chip, alr_loop_cb_fdb_port_dump, &dump_ctx);
- }
- 
- static int lan9303_port_mdb_prepare(struct dsa_switch *ds, int port,
+ 	/* Checksums on by default */
 -- 
 2.30.2
 
