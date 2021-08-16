@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F653ED53C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9763ED6AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236783AbhHPNKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
+        id S235798AbhHPNW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:22:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237962AbhHPNGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D76B3610A1;
-        Mon, 16 Aug 2021 13:06:10 +0000 (UTC)
+        id S239757AbhHPNOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:14:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D5BF632C5;
+        Mon, 16 Aug 2021 13:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119171;
-        bh=Zs91IUOg8YGIl26LLlpmQ/LtLCLzJsR+KmZ4cVyeSLg=;
+        s=korg; t=1629119482;
+        bh=teouDwq1yocALtCbuH+Ckh0J/no6zZImXL6Yirhl3lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j8jpQ6fAfMaM5uF56qPOD0lbQi0Gc8RxybWb5xW+jDOwGZY2DjS2zvoeCgeHGymjC
-         qAMRoLoOw7EltdEk5+WkyZJIZG3eXvv4LjG1tiqI5joRrB9qEpuP6gMiExQpSzbGTH
-         1u1PuxupFIMGmjK/RBM0W4N8nWOQ8TF32xrfi5Bg=
+        b=WJM0p+If+4KHLSx7wV7Z4e2MfAlsdLpZRvT3MWQlC5vvJ5u9xLClbpqUlO4qFJ9eY
+         wYG7pxRWBJ6RQIgjMW7AzwjiquZ6s5FyB+/i7miONqvHqUpzJbggGJAPKt8/JP57hn
+         nH5iqOsiR2VytSZGf3sy58sQpUCG1hdQ4baYL0Xg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>,
-        =?UTF-8?q?Antti=20Ker=C3=A4nen?= <detegr@rbx.email>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 02/96] iio: adis: set GPIO reset pin direction
-Date:   Mon, 16 Aug 2021 15:01:12 +0200
-Message-Id: <20210816125435.025565619@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 043/151] ASoC: cs42l42: Correct definition of ADC Volume control
+Date:   Mon, 16 Aug 2021 15:01:13 +0200
+Message-Id: <20210816125445.492829336@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antti Keränen <detegr@rbx.email>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-commit 7e77ef8b8d600cf8448a2bbd32f682c28884551f upstream.
+[ Upstream commit ee86f680ff4c9b406d49d4e22ddf10805b8a2137 ]
 
-Set reset pin direction to output as the reset pin needs to be an active
-low output pin.
+The ADC volume is a signed 8-bit number with range -97 to +12,
+with -97 being mute. Use a SOC_SINGLE_S8_TLV() to define this
+and fix the DECLARE_TLV_DB_SCALE() to have the correct start and
+mute flag.
 
-Co-developed-by: Hannu Hartikainen <hannu@hrtk.in>
-Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
-Signed-off-by: Antti Keränen <detegr@rbx.email>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Fixes: ecb010d44108 ("iio: imu: adis: Refactor adis_initial_startup")
-Link: https://lore.kernel.org/r/20210708095425.13295-1-detegr@rbx.email
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210729170929.6589-1-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/cs42l42.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/imu/adis.c
-+++ b/drivers/iio/imu/adis.c
-@@ -415,12 +415,11 @@ int __adis_initial_startup(struct adis *
- 	int ret;
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 8434c48354f1..3956912e23ac 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -404,7 +404,7 @@ static const struct regmap_config cs42l42_regmap = {
+ 	.use_single_write = true,
+ };
  
- 	/* check if the device has rst pin low */
--	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_ASIS);
-+	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_OUT_HIGH);
- 	if (IS_ERR(gpio))
- 		return PTR_ERR(gpio);
+-static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
++static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
  
- 	if (gpio) {
--		gpiod_set_value_cansleep(gpio, 1);
- 		msleep(10);
- 		/* bring device out of reset */
- 		gpiod_set_value_cansleep(gpio, 0);
+ static const char * const cs42l42_hpf_freq_text[] = {
+@@ -443,8 +443,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_ADC_INV_SHIFT, true, false),
+ 	SOC_SINGLE("ADC Boost Switch", CS42L42_ADC_CTL,
+ 				CS42L42_ADC_DIG_BOOST_SHIFT, true, false),
+-	SOC_SINGLE_SX_TLV("ADC Volume", CS42L42_ADC_VOLUME,
+-				CS42L42_ADC_VOL_SHIFT, 0xA0, 0x6C, adc_tlv),
++	SOC_SINGLE_S8_TLV("ADC Volume", CS42L42_ADC_VOLUME, -97, 12, adc_tlv),
+ 	SOC_SINGLE("ADC WNF Switch", CS42L42_ADC_WNF_HPF_CTL,
+ 				CS42L42_ADC_WNF_EN_SHIFT, true, false),
+ 	SOC_SINGLE("ADC HPF Switch", CS42L42_ADC_WNF_HPF_CTL,
+-- 
+2.30.2
+
 
 
