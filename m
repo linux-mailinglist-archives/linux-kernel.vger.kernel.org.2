@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91813ECCE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BA53ECCEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 05:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhHPDBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Aug 2021 23:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbhHPDA4 (ORCPT
+        id S232941AbhHPDBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Aug 2021 23:01:25 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:46171 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232295AbhHPDBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Aug 2021 23:00:56 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19442C061764;
-        Sun, 15 Aug 2021 20:00:25 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id k5so3768468lfu.4;
-        Sun, 15 Aug 2021 20:00:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UVxo0TU1/PZKTtidRHbhDfJ247pdNPz8xHTGf3pxWZE=;
-        b=ihucGqvPgXI3Q6uE/m5kq1YEuqWcpsa4C1ezuf1fv7ZJUx5qyF0/GwWMt3KgSMuXhU
-         rZpcxtJHUGm7BAuZTrRIGunaQJn7TY5bkbxi6QREE2J5vcnzUMcOHyN3XcTFvDJ3Kf96
-         JLvB2DCuRyDPZkqmGTAFe4kEMzLGV+jX4bvYNpAkZj/k73gSj6bl6PYz7hSy+7SQKYYc
-         Uge1NzbSQQS1Zmtz9C+K9/uaELSMIJJnQZhXSYsI1WScMfG1y34mVeBWo6LMS+0FKjbn
-         CQjgnVt9ixuseMQSWx8M5q1f/JEt8tl3Wr4rqkfpQgsfE3QJSIizuP0cJTthUqEIgog7
-         uUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UVxo0TU1/PZKTtidRHbhDfJ247pdNPz8xHTGf3pxWZE=;
-        b=hglecNAWkssXVEG0hHq53WtQudBJ+mSTGfwGZ9HlRNVNdvdCYmTfkCgzm05v1IfUDf
-         lNahQALXerc8bP3JIz32ByJT/An2XjXmGJTcfPSjiXoVOCJxNuW86T9rRIVWQuYdOFHR
-         e5vR+JYC/npah1MZDGWVXAl/yrYuODmHsjwnp+giJj/gx6EQ+61QwNyZr66Vmkiuq1Kb
-         qaVCfKPac0CLy0XRYn6iGe0709urmnwSsNxAgyrmEPb+nuLyMd16VZ3JcIp+3rQUjHdW
-         Zwn/KC68Rpdaq097jiZLVE6Lv8uyiRZw4Ez0uSMO2JrUW75n8LmvYgQxUEruFdmVMyTg
-         ct7A==
-X-Gm-Message-State: AOAM530YMMX/h25B6lpmaM6pjgOmxIKwErF3Y+tHjjbmB3aFRDS6Jmn7
-        GHTVtxpwOXifwmi+awNmFKs=
-X-Google-Smtp-Source: ABdhPJySVRynnB0BISUVxbKKXS6GOaAOFU/7gx4atEEA98LMe/FDhrLKjMYzXxvyFWhbQo3ydspnfQ==
-X-Received: by 2002:a05:6512:33c7:: with SMTP id d7mr7655994lfg.545.1629082823521;
-        Sun, 15 Aug 2021 20:00:23 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id h6sm890880lfu.230.2021.08.15.20.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Aug 2021 20:00:23 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 06:00:21 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        "zajec5@gmail.com" <zajec5@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
-Subject: Re: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
-Message-ID: <20210816030021.dgd6xrsjcuajkaq7@kari-VirtualBox>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com>
- <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com>
- <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
- <a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com>
+        Sun, 15 Aug 2021 23:01:23 -0400
+X-UUID: 060f8fb93bfb46c1aeb54d6b302e7429-20210816
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ftfxv/CUlIAeWYbL6TwrbvlRMZgW/5AhLaNvhnbvyfA=;
+        b=qBwi7cXiAlbJ1BNq3cG4nTbAZE/rR+7nAUwecmgYTBIwWUh6dJgWiAKyQTtazveWsUlwDvljyilW+CU8PuPssPDyNWCH668HwUcZyqNhaqwnpVVvXS/4N+iqorAC8KmNdFSWQn2QaKhe+G+xyMjhtwyytfdBdvio27YcPv9ncL4=;
+X-UUID: 060f8fb93bfb46c1aeb54d6b302e7429-20210816
+Received: from mtkmrs31.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 660280701; Mon, 16 Aug 2021 11:00:47 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 16 Aug
+ 2021 11:00:35 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 16 Aug 2021 11:00:35 +0800
+Message-ID: <bf98c5ee749bca755bd46832f858536dbf51a2a4.camel@mediatek.com>
+Subject: Re: [PATCH v6 7/9] media: mtk-mdp: use mdp-rdma0 alias to point to
+ MDP master
+From:   houlong wei <houlong.wei@mediatek.com>
+To:     Eizan Miyamoto <eizan@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "wenst@chromium.org" <wenst@chromium.org>,
+        "Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?=" <Yong.Wu@mediatek.com>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?=" 
+        <Andrew-CT.Chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?=" 
+        <Minghsiu.Tsai@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
+Date:   Mon, 16 Aug 2021 11:00:35 +0800
+In-Reply-To: <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
+References: <20210802121215.703023-1-eizan@chromium.org>
+         <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9114805f777461eac6fbb0e8e5c46f6@paragon-software.com>
+X-TM-SNTS-SMTP: C652353803CBC4B984A0B8AA9034DD10E6D5E4C205CD082C270162525F6A8B8D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 04:11:10PM +0000, Konstantin Komarov wrote:
-> > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > Sent: Friday, July 30, 2021 8:24 PM
-> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; Stephen Rothwell <sfr@canb.auug.org.au>
-> > Cc: Leonidas P. Papadakos <papadakospan@gmail.com>; zajec5@gmail.com; Darrick J. Wong <djwong@kernel.org>; Greg Kroah-
-> > Hartman <gregkh@linuxfoundation.org>; Hans de Goede <hdegoede@redhat.com>; linux-fsdevel <linux-fsdevel@vger.kernel.org>;
-> > Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Al Viro <viro@zeniv.linux.org.uk>; Matthew Wilcox <willy@infradead.org>
-> > Subject: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
-> > 
-> > On Fri, Jul 30, 2021 at 8:55 AM Konstantin Komarov
-> > <almaz.alexandrovich@paragon-software.com> wrote:
-> > >
-> > > We've just sent the 27th patch series which fixes to the buildability against
-> > > current linux-next. And we'll need several days to prepare a proper pull request
-> > > before sending it to you.
-> > 
-> > Well, I won't pull until the next merge window opens anyway (about a
-> > month away). But it would be good to have your tree in linux-next for
-> > at least a couple of weeks before that happens.
-> > 
-> > Added Stephen to the participants list as a heads-up for him - letting
-> > him know where to fetch the git tree from will allow that to happen if
-> > you haven't done so already.
-> > 
-> 
-> Thanks for this clarification, Linus!
-> Stephen, please find the tree here:
-> https://github.com/Paragon-Software-Group/linux-ntfs3.git
-> It is the fork from 5.14-rc5 tag with ntfs3 patches applied.
-> Also, the latest changes
-> - fix some generic/XYZ xfstests, which were discussed
-> with Theodore, Darrick and others
-> - updates the MAINTAINERS with mailing list (also added to CC here) and scm tree link.
+T24gTW9uLCAyMDIxLTA4LTAyIGF0IDIwOjEyICswODAwLCBFaXphbiBNaXlhbW90byB3cm90ZToN
+Cj4gLi4uIEluc3RlYWQgb2YgZGVwZW5kaW5nIG9uIHRoZSBwcmVzZW5jZSBvZiBhIG1lZGlhdGVr
+LHZwdSBwcm9wZXJ0eQ0KPiBpbg0KPiB0aGUgZGV2aWNlIG5vZGUuDQo+IA0KPiBUaGF0IHByb3Bl
+cnR5IHdhcyBvcmlnaW5hbGx5IGFkZGVkIHRvIGxpbmsgdG8gdGhlIHZwdSBub2RlIHNvIHRoYXQN
+Cj4gdGhlDQo+IG10a19tZHBfY29yZSBkcml2ZXIgY291bGQgcGFzcyB0aGUgcmlnaHQgZGV2aWNl
+IHRvDQo+IHZwdV93ZHRfcmVnX2hhbmRsZXIoKS4gSG93ZXZlciBpbiBhIHByZXZpb3VzIHBhdGNo
+IGluIHRoaXMgc2VyaWVzLA0KPiB0aGUgZHJpdmVyIGhhcyBiZWVuIG1vZGlmaWVkIHRvIHNlYXJj
+aCB0aGUgZGV2aWNlIHRyZWUgZm9yIHRoYXQgbm9kZQ0KPiBpbnN0ZWFkLg0KPiANCj4gVGhhdCBw
+cm9wZXJ0eSB3YXMgYWxzbyB1c2VkIHRvIGluZGljYXRlIHRoZSBwcmltYXJ5IE1EUCBkZXZpY2Us
+IHNvDQo+IHRoYXQNCj4gaXQgY2FuIGJlIHBhc3NlZCB0byB0aGUgVjRMMiBzdWJzeXN0ZW0gYXMg
+d2VsbCBhcyByZWdpc3RlciBpdCB0byBiZQ0KPiB1c2VkIHdoZW4gc2V0dGluZyB1cCBxdWV1ZXMg
+aW4gdGhlIG9wZW4oKSBjYWxsYmFjayBmb3IgdGhlIGZpbGVzeXN0ZW0NCj4gZGV2aWNlIG5vZGUg
+dGhhdCBpcyBjcmVhdGVkLiBJbiB0aGlzIGNhc2UsIGFzc3VtaW5nIHRoYXQgdGhlIHByaW1hcnkN
+Cj4gTURQIGRldmljZSBpcyB0aGUgb25lIHdpdGggYSBzcGVjaWZpYyBhbGlhcyBzZWVtcyB1c2Vh
+YmxlIGJlY2F1c2UgdGhlDQo+IGFsdGVybmF0aXZlIGlzIHRvIGFkZCBhIHByb3BlcnR5IHRvIHRo
+ZSBkZXZpY2UgdHJlZSB3aGljaCBkb2Vzbid0DQo+IGFjdHVhbGx5IHJlcHJlc2VudCBhbnkgZmFj
+ZXQgb2YgaGFyZHdhcmUgKGkuZS4sIHRoaXMgYmVpbmcgdGhlDQo+IHByaW1hcnkNCj4gTURQIGRl
+dmljZSBpcyBhIHNvZnR3YXJlIGRlY2lzaW9uKS4gSW4gb3RoZXIgd29yZHMsIHRoaXMgc29sdXRp
+b24gaXMNCj4gZXF1YWxseSBhcyBhcmJpdHJhcnksIGJ1dCBhdCBsZWFzdCBpdCBkb2Vzbid0IGFk
+ZCBhIHByb3BlcnR5IHRvIGENCj4gZGV2aWNlIG5vZGUgd2hlcmUgc2FpZCBwcm9wZXJ0eSBpcyB1
+bnJlbGF0ZWQgdG8gdGhlIGhhcmR3YXJlIHByZXNlbnQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBF
+aXphbiBNaXlhbW90byA8ZWl6YW5AY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gDQo+IChubyBjaGFu
+Z2VzIHNpbmNlIHYxKQ0KPiANCj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtf
+bWRwX2NvbXAuYyB8IDU2ICsrKysrKysrKysrKystLQ0KPiAtLS0tDQo+ICBkcml2ZXJzL21lZGlh
+L3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb3JlLmMgfCAzNiArKysrKysrKy0tLS0NCj4gIDIg
+ZmlsZXMgY2hhbmdlZCwgNjQgaW5zZXJ0aW9ucygrKSwgMjggZGVsZXRpb25zKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5j
+DQo+IGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5jDQo+IGlu
+ZGV4IDg1ZWYyNzQ4NDFhMy4uOTUyNzY0OWRlOThlIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL21l
+ZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb21wLmMNCj4gKysrIGIvZHJpdmVycy9tZWRp
+YS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29tcC5jDQo+IEBAIC0xNTEsMjkgKzE1MSw1MCBA
+QCB2b2lkIG10a19tZHBfY29tcF9jbG9ja19vZmYoc3RydWN0IG10a19tZHBfY29tcA0KPiAqY29t
+cCkNCj4gIAkJbXRrX3NtaV9sYXJiX3B1dChjb21wLT5sYXJiX2Rldik7DQo+ICB9DQo+ICANCj4g
+LXN0YXRpYyBpbnQgbXRrX21kcF9jb21wX2JpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3Qg
+ZGV2aWNlDQo+ICptYXN0ZXIsIHZvaWQgKmRhdGEpDQo+ICsvKg0KPiArICogVGhlIE1EUCBtYXN0
+ZXIgZGV2aWNlIG5vZGUgaXMgaWRlbnRpZmllZCBieSB0aGUgZGV2aWNlIHRyZWUgYWxpYXMNCj4g
+KyAqICJtZHAtcmRtYTAiLg0KPiArICovDQo+ICtzdGF0aWMgYm9vbCBpc19tZHBfbWFzdGVyKHN0
+cnVjdCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKmFsaWFzZXMs
+ICptZHBfcmRtYTBfbm9kZTsNCj4gKwljb25zdCBjaGFyICptZHBfcmRtYTBfcGF0aDsNCj4gKw0K
+PiArCWlmICghZGV2LT5vZl9ub2RlKQ0KPiArCQlyZXR1cm4gZmFsc2U7DQo+ICsNCj4gKwlhbGlh
+c2VzID0gb2ZfZmluZF9ub2RlX2J5X3BhdGgoIi9hbGlhc2VzIik7DQo+ICsJaWYgKCFhbGlhc2Vz
+KSB7DQo+ICsJCWRldl9lcnIoZGV2LCAibm8gYWxpYXNlcyBmb3VuZCBmb3IgbWRwLXJkbWEwIik7
+DQo+ICsJCXJldHVybiBmYWxzZTsNCj4gKwl9DQo+ICsNCj4gKwltZHBfcmRtYTBfcGF0aCA9IG9m
+X2dldF9wcm9wZXJ0eShhbGlhc2VzLCAibWRwLXJkbWEwIiwgTlVMTCk7DQo+ICsJaWYgKCFtZHBf
+cmRtYTBfcGF0aCkgew0KPiArCQlkZXZfZXJyKGRldiwgImdldCBtZHAtcmRtYTAgcHJvcGVydHkg
+b2YgL2FsaWFzZXMNCj4gZmFpbGVkIik7DQo+ICsJCXJldHVybiBmYWxzZTsNCj4gKwl9DQo+ICsN
+Cj4gKwltZHBfcmRtYTBfbm9kZSA9IG9mX2ZpbmRfbm9kZV9ieV9wYXRoKG1kcF9yZG1hMF9wYXRo
+KTsNCj4gKwlpZiAoIW1kcF9yZG1hMF9ub2RlKSB7DQo+ICsJCWRldl9lcnIoZGV2LCAicGF0aCBy
+ZXNvbHV0aW9uIGZhaWxlZCBmb3IgJXMiLA0KPiBtZHBfcmRtYTBfcGF0aCk7DQo+ICsJCXJldHVy
+biBmYWxzZTsNCj4gKwl9DQo+ICsNCg0KSGkgRWl6YW4sDQoNCiJtZHAtcmRtYTAiIG1heSBiZSBu
+b3QgdGhlIG9ubHkgb25lIG1hc3RlciBkZXZpY2Ugbm9kZS4gSW4gZmFjdCwgdGhlcmUNCmFyZSAy
+ICJtZHAtcmRtYSIgaW4gbXQ4MTczLiBZb3UgY2FuIHNlZSAibWRwX3JkbWExIiB2aWEgYmVsb3cg
+bGluay4NCg0KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+c3RhYmxlL2xpbnV4LmdpdC90cmVlL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTcz
+LmR0c2k/aD12NS4xMy4xMSNuMTAxNg0KSWYgd2UgYWRkICJtZWRpYXRlayxtdDgxNzMtbWRwIiB0
+byAibWRwX3JkbWExIiBsaWtlIGJlbG93LCB3ZSB3aWxsIGhhdmUNCm9uZSBtb3JlIFY0TDIgdmlk
+ZW8gZGV2aWUgbm9kZS4NCg0KCQltZHBfcmRtYTE6IHJkbWFAMTQwMDIwMDAgew0KCQkJY29tcGF0
+aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtbWRwLXJkbWEiLA0KCQkJCSAgICAgIm1lZGlhdGVrLG10
+ODE3My1tZHAiOw0KCQkJLi4uDQoJCX0NCg0KV2Ugc2hvdWxkIGNvbnNpZGVyIHRoZSBjYXNlIHRo
+YXQgdGhlcmUgYXJlIG1vcmUgdGhhbiBvbmUgIk1EUF9SRE1BIg0KY29tcG9uZW50cy4gDQoNClJl
+Z2FyZHMsDQpIb3Vsb25nDQoNCj4gKwlyZXR1cm4gZGV2LT5vZl9ub2RlID09IG1kcF9yZG1hMF9u
+b2RlOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IG10a19tZHBfY29tcF9iaW5kKHN0cnVjdCBk
+ZXZpY2UgKmRldiwgc3RydWN0IGRldmljZQ0KPiAqbWFzdGVyLA0KPiArCQkJdm9pZCAqZGF0YSkN
+Cj4gIHsNCj4gIAlzdHJ1Y3QgbXRrX21kcF9jb21wICpjb21wID0gZGV2X2dldF9kcnZkYXRhKGRl
+dik7DQo+ICAJc3RydWN0IG10a19tZHBfZGV2ICptZHAgPSBkYXRhOw0KPiAtCXN0cnVjdCBkZXZp
+Y2Vfbm9kZSAqdnB1X25vZGU7DQo+ICANCj4gIAltdGtfbWRwX3JlZ2lzdGVyX2NvbXBvbmVudCht
+ZHAsIGNvbXApOw0KPiAgDQo+IC0JLyoNCj4gLQkgKiBJZiB0aGlzIGNvbXBvbmVudCBoYXMgYSAi
+bWVkaWF0ZWstdnB1IiBwcm9wZXJ0eSwgaXQgaXMNCj4gcmVzcG9uc2libGUgZm9yDQo+IC0JICog
+bm90aWZ5aW5nIHRoZSBtZHAgbWFzdGVyIGRyaXZlciBhYm91dCBpdCBzbyBpdCBjYW4gYmUNCj4g
+ZnVydGhlciBpbml0aWFsaXplZA0KPiAtCSAqIGxhdGVyLg0KPiAtCSAqLw0KPiAtCXZwdV9ub2Rl
+ID0gb2ZfcGFyc2VfcGhhbmRsZShkZXYtPm9mX25vZGUsICJtZWRpYXRlayx2cHUiLCAwKTsNCj4g
+LQlpZiAodnB1X25vZGUpIHsNCj4gKwlpZiAoaXNfbWRwX21hc3RlcihkZXYpKSB7DQo+ICAJCWlu
+dCByZXQ7DQo+ICANCj4gLQkJbWRwLT52cHVfZGV2ID0gb2ZfZmluZF9kZXZpY2VfYnlfbm9kZSh2
+cHVfbm9kZSk7DQo+IC0JCWlmIChXQVJOX09OKCFtZHAtPnZwdV9kZXYpKSB7DQo+IC0JCQlkZXZf
+ZXJyKGRldiwgInZwdSBwZGV2IGZhaWxlZFxuIik7DQo+IC0JCQlvZl9ub2RlX3B1dCh2cHVfbm9k
+ZSk7DQo+IC0JCX0NCj4gLQ0KPiAgCQlyZXQgPSB2NGwyX2RldmljZV9yZWdpc3RlcihkZXYsICZt
+ZHAtPnY0bDJfZGV2KTsNCj4gIAkJaWYgKHJldCkgew0KPiAgCQkJZGV2X2VycihkZXYsICJGYWls
+ZWQgdG8gcmVnaXN0ZXIgdjRsMg0KPiBkZXZpY2VcbiIpOw0KPiBAQCAtMTg3LDkgKzIwOCw4IEBA
+IHN0YXRpYyBpbnQgbXRrX21kcF9jb21wX2JpbmQoc3RydWN0IGRldmljZSAqZGV2LA0KPiBzdHJ1
+Y3QgZGV2aWNlICptYXN0ZXIsIHZvaWQgKmRhDQo+ICAJCX0NCj4gIA0KPiAgCQkvKg0KPiAtCQkg
+KiBwcmVzZW5jZSBvZiB0aGUgIm1lZGlhdGVrLHZwdSIgcHJvcGVydHkgaW4gYSBkZXZpY2UNCj4g
+bm9kZQ0KPiAtCQkgKiBpbmRpY2F0ZXMgdGhhdCBpdCBpcyB0aGUgcHJpbWFyeSBNRFAgcmRtYSBk
+ZXZpY2UgYW5kDQo+IE1EUCBETUENCj4gLQkJICogb3BzIHNob3VsZCBiZSBoYW5kbGVkIGJ5IGl0
+cyBETUEgY2FsbGJhY2tzLg0KPiArCQkgKiBNRFAgRE1BIG9wcyB3aWxsIGJlIGhhbmRsZWQgYnkg
+dGhlIERNQSBjYWxsYmFja3MNCj4gYXNzb2NpYXRlZCB3aXRoIHRoaXMNCj4gKwkJICogZGV2aWNl
+Ow0KPiAgCQkgKi8NCj4gIAkJbWRwLT5yZG1hX2RldiA9IGRldjsNCj4gIAl9DQo+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb3JlLmMNCj4gYi9k
+cml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb3JlLmMNCj4gaW5kZXggNTBl
+YWZjYzk5OTNkLi42YTc3NTQ2MzM5OWMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxh
+dGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL21lZGlhL3BsYXRm
+b3JtL210ay1tZHAvbXRrX21kcF9jb3JlLmMNCj4gQEAgLTE1MCw4ICsxNTAsOSBAQCBzdGF0aWMg
+dm9pZCByZWxlYXNlX29mKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZA0KPiAqZGF0YSkNCj4gIA0K
+PiAgc3RhdGljIGludCBtdGtfbWRwX21hc3Rlcl9iaW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCj4g
+IHsNCj4gLQlpbnQgc3RhdHVzOw0KPiAgCXN0cnVjdCBtdGtfbWRwX2RldiAqbWRwID0gZGV2X2dl
+dF9kcnZkYXRhKGRldik7DQo+ICsJc3RydWN0IGRldmljZV9ub2RlICp2cHVfbm9kZTsNCj4gKwlp
+bnQgc3RhdHVzOw0KPiAgDQo+ICAJc3RhdHVzID0gY29tcG9uZW50X2JpbmRfYWxsKGRldiwgbWRw
+KTsNCj4gIAlpZiAoc3RhdHVzKSB7DQo+IEBAIC0xNTksMTUgKzE2MCwzMCBAQCBzdGF0aWMgaW50
+IG10a19tZHBfbWFzdGVyX2JpbmQoc3RydWN0IGRldmljZQ0KPiAqZGV2KQ0KPiAgCQlnb3RvIGVy
+cl9jb21wb25lbnRfYmluZF9hbGw7DQo+ICAJfQ0KPiAgDQo+IC0JaWYgKG1kcC0+dnB1X2Rldikg
+ew0KPiAtCQlpbnQgcmV0ID0gdnB1X3dkdF9yZWdfaGFuZGxlcihtZHAtPnZwdV9kZXYsDQo+IG10
+a19tZHBfcmVzZXRfaGFuZGxlciwgbWRwLA0KPiAtCQkJCQkgIFZQVV9SU1RfTURQKTsNCj4gLQkJ
+aWYgKHJldCkgew0KPiAtCQkJZGV2X2VycihkZXYsICJGYWlsZWQgdG8gcmVnaXN0ZXIgcmVzZXQN
+Cj4gaGFuZGxlclxuIik7DQo+IC0JCQlnb3RvIGVycl93ZHRfcmVnOw0KPiAtCQl9DQo+IC0JfSBl
+bHNlIHsNCj4gLQkJZGV2X2VycihkZXYsICJubyB2cHVfZGV2IGZvdW5kXG4iKTsNCj4gKwlpZiAo
+bWRwLT5yZG1hX2RldiA9PSBOVUxMKSB7DQo+ICsJCWRldl9lcnIoZGV2LCAiUHJpbWFyeSBNRFAg
+ZGV2aWNlIG5vdCBmb3VuZCIpOw0KPiArCQlzdGF0dXMgPSAtRU5PREVWOw0KPiArCQlnb3RvIGVy
+cl9jb21wb25lbnRfYmluZF9hbGw7DQo+ICsJfQ0KPiArDQo+ICsJdnB1X25vZGUgPSBvZl9maW5k
+X25vZGVfYnlfbmFtZShOVUxMLCAidnB1Iik7DQo+ICsJaWYgKCF2cHVfbm9kZSkgew0KPiArCQlk
+ZXZfZXJyKGRldiwgInVuYWJsZSB0byBmaW5kIHZwdSBub2RlIik7DQo+ICsJCXN0YXR1cyA9IC1F
+Tk9ERVY7DQo+ICsJCWdvdG8gZXJyX3dkdF9yZWc7DQo+ICsJfQ0KPiArDQo+ICsJbWRwLT52cHVf
+ZGV2ID0gb2ZfZmluZF9kZXZpY2VfYnlfbm9kZSh2cHVfbm9kZSk7DQo+ICsJaWYgKCFtZHAtPnZw
+dV9kZXYpIHsNCj4gKwkJZGV2X2VycihkZXYsICJ1bmFibGUgdG8gZmluZCB2cHUgZGV2aWNlIik7
+DQo+ICsJCXN0YXR1cyA9IC1FTk9ERVY7DQo+ICsJCWdvdG8gZXJyX3dkdF9yZWc7DQo+ICsJfQ0K
+PiArDQo+ICsJc3RhdHVzID0gdnB1X3dkdF9yZWdfaGFuZGxlcihtZHAtPnZwdV9kZXYsDQo+IG10
+a19tZHBfcmVzZXRfaGFuZGxlciwgbWRwLCBWUFVfUlNUX01EUCk7DQo+ICsJaWYgKHN0YXR1cykg
+ew0KPiArCQlkZXZfZXJyKGRldiwgIkZhaWxlZCB0byByZWdpc3RlciByZXNldCBoYW5kbGVyXG4i
+KTsNCj4gKwkJZ290byBlcnJfd2R0X3JlZzsNCj4gIAl9DQo+ICANCj4gIAlzdGF0dXMgPSBtdGtf
+bWRwX3JlZ2lzdGVyX20ybV9kZXZpY2UobWRwKTsNCj4gLS0gDQo+IDIuMzIuMC41NTQuZ2UxYjMy
+NzA2ZDgtZ29vZw0KPiANCg==
 
-Can you please send this also as normal patch series to mailing lists so
-we can comment there.
-
-One thing a like to ask you to do before that is add reviewed-by tag
-and signed-off-by tag as stated here
-https://lore.kernel.org/linux-fsdevel/20210810054637.aap4zuiiparfl2gq@kari-VirtualBox/
-and
-https://lore.kernel.org/linux-fsdevel/20210810074740.mkjcow2inyjaakch@kari-VirtualBox/
-
-> Please let me know if additional changes requred to get fetched into linux-next.
-> 
-> > The one other thing I do want when there's big new pieces like this
-> > being added is to ask you to make sure that everything is signed-off
-> > properly, and that there is no internal confusion about the GPLv2
-> > inside Paragon, and that any legal people etc are all aware of this
-> > all and are on board. The last thing we want to see is some "oops, we
-> > didn't mean to do this" brouhaha six months later.
-> > 
-> > I doubt that's an issue, considering how public this all has been, but
-> > I just wanted to mention it just to be very obvious about it.
-> > 
-> >                   Linus
-> Indeed, there is no internal confusion about the GPLv2 and we mean to make this contribution.
-> 
-> Best regards,
-> Konstantin.
