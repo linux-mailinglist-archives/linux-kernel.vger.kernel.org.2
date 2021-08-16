@@ -2,171 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4733ED203
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E167E3ED208
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhHPKc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbhHPKcB (ORCPT
+        id S233725AbhHPKfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:35:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64370 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235629AbhHPKfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:32:01 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F6DC0617AE
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:29 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j1so25735773pjv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ccX+otJKzYiw7fTpASq5EiKmXI5wu1oM2Rkshyanugg=;
-        b=nyTjql4kPU5b2tlliqQClzMia17+fqOan4LwezfDCn5/sGGbjPNeN6UdQ602MiLmVS
-         yRdL5HwSNqxX3TLwsbGgi1lkq5yoZapTrurxpvYwULnFJ+gBBw23X3lri9m096BgDT//
-         IKposJALqA9eUslVUf0jlBwS/RXtBzOUApWV+mV6x54TX3w2wIDBL8y/bixUv3TDGLkh
-         ighUtLEpkT1PzcFgJuxUHLVrwA0kmYRY/yFPoIiNLH35qyj6sNMT+0/CWqALrtkrCkUF
-         PoqiSd/WVIQT+61eYpyy7yVLmNbqV346PvlJ1Y3xjC52QVqGblfnU+7olmsm/vtjEadr
-         qy6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ccX+otJKzYiw7fTpASq5EiKmXI5wu1oM2Rkshyanugg=;
-        b=R7ru4PnB8hgt2vOfTfM8D9qM4V/ZbkrqJWEh33+5M/qk45DXgmMTYTN830X0+FCZd4
-         E91v27Q0KZ/cU58Z6oVDZhCx++sWnRgVqsomG/aU++vMBd+moPoyk3mNzF/TKRVejBe2
-         +j/uKR8ueo5NptZBVd4iON0Joe8QaQ3F9zheu3qytMKtdhUADITnYPU+qpVDIUG3BYVy
-         yBxEue6iTY+zbDmxvO7EKqfiYzqIOdQEM7Kv3oPKoVlcFJJS9r1qKhdxVQ3qJyK0C/oh
-         36G3yiKulTsDi9yyswwQEhcaqx5/Y+5PkJhSzdSaEI/UFVAMO/jaYhlVSbIs5z6mRWnP
-         OQdw==
-X-Gm-Message-State: AOAM532Rc1L7M0R2bQNVaR4QubOOuVnTWz5Gcl9p//5uQdwc/T1fA6Km
-        C0kbypXPoimZYFYNxeSdJZc=
-X-Google-Smtp-Source: ABdhPJw/StLL2fZrdUNp2CW5UwXdwfF+A7iXrh+hhQZgPdXKrA2dAk8JDe77PoSA4AlMAWZTB6qcTQ==
-X-Received: by 2002:a63:111f:: with SMTP id g31mr15459522pgl.80.1629109888650;
-        Mon, 16 Aug 2021 03:31:28 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id f137sm10813481pfa.160.2021.08.16.03.31.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 03:31:28 -0700 (PDT)
-Subject: Re: [PATCH v2] drm: avoid races with modesetting rights
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     kernel test robot <lkp@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>, kbuild-all@lists.01.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210815153740.195330-1-desmondcheongzx@gmail.com>
- <202108160208.ONHHWxXy-lkp@intel.com>
- <f88fe698-b40c-b309-96c2-32b314280aad@gmail.com>
- <CAKMK7uEWMjaDEuMpc1__EwD5rpaouJ-dhahQBEQ5rsBz3VV=qg@mail.gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <3a5ffd83-3d91-73dc-0cae-e822ba381b2b@gmail.com>
-Date:   Mon, 16 Aug 2021 18:31:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 06:35:05 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GAWqTO088486;
+        Mon, 16 Aug 2021 06:33:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=5av6NHoF+9D8KsZzLIfgybg2fcuVJ3/w9uvWlIZ0S8E=;
+ b=XSiURWvhMUM8bUl7ohQj/FuEneCHvAhrCp1nzc2YA9I+Y4Evl5eiOlifEEGAGtgIJ/Nk
+ D/3yFRlyNIkfcXbWnV24eofq/qJH7O8c/uHruBOX7BeHGvgL3AQC6q9NGQJR2hGLGuau
+ ad0cGLYu+Hg1xmf6wxwYGxtEdp+3oMUTHd4+GpUwIeDwDPQFTzVSniQgvL6A5pTFlfu+
+ 2+4HdYXbH6j9KBHnckVlARx1SdJ+q+qdmVJw6SBoJa7NN4XAZY7fPJYfPZ1dR0XMlvqt
+ bRR+A9D7oNutrrcsGVauWndn2vM0kQXTxz9ap7anskp6JHD6ol7ph1ZHGbk95QXNUsUm Pw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3aetwauads-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Aug 2021 06:33:56 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17GABxX5025816;
+        Mon, 16 Aug 2021 10:33:55 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ae5f8b1v5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Aug 2021 10:33:54 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17GAXpDG56820028
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Aug 2021 10:33:51 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73CC4A407B;
+        Mon, 16 Aug 2021 10:33:51 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE56EA4065;
+        Mon, 16 Aug 2021 10:33:47 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 16 Aug 2021 10:33:47 +0000 (GMT)
+Date:   Mon, 16 Aug 2021 16:03:47 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for
+ non-online nodes
+Message-ID: <20210816103347.GC21942@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
+ <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
+ <875yxu85wi.mognet@arm.com>
+ <20210712124856.GA3836887@linux.vnet.ibm.com>
+ <87zguqmay9.mognet@arm.com>
+ <20210723143914.GI3836887@linux.vnet.ibm.com>
+ <87h7g09bgg.mognet@arm.com>
+ <20210809065235.GH4072958@linux.vnet.ibm.com>
+ <875yweaig9.mognet@arm.com>
+ <20210810114727.GB21942@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uEWMjaDEuMpc1__EwD5rpaouJ-dhahQBEQ5rsBz3VV=qg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20210810114727.GB21942@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lc-xZ-bSsq-whyxuvFTxQWN5R-J4ehy4
+X-Proofpoint-ORIG-GUID: lc-xZ-bSsq-whyxuvFTxQWN5R-J4ehy4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-16_03:2021-08-16,2021-08-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108160065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/8/21 5:04 pm, Daniel Vetter wrote:
-> On Mon, Aug 16, 2021 at 10:53 AM Desmond Cheong Zhi Xi
-> <desmondcheongzx@gmail.com> wrote:
->> On 16/8/21 2:47 am, kernel test robot wrote:
->>> Hi Desmond,
->>>
->>> Thank you for the patch! Yet something to improve:
->>>
->>> [auto build test ERROR on next-20210813]
->>> [also build test ERROR on v5.14-rc5]
->>> [cannot apply to linus/master v5.14-rc5 v5.14-rc4 v5.14-rc3]
->>> [If your patch is applied to the wrong git tree, kindly drop us a note.
->>> And when submitting patch, we suggest to use '--base' as documented in
->>> https://git-scm.com/docs/git-format-patch]
->>>
->>> url:    https://github.com/0day-ci/linux/commits/Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
->>> base:    4b358aabb93a2c654cd1dcab1a25a589f6e2b153
->>> config: i386-randconfig-a004-20210815 (attached as .config)
->>> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
->>> reproduce (this is a W=1 build):
->>>           # https://github.com/0day-ci/linux/commit/cf6d8354b7d7953cd866fad004cbb189adfa074f
->>>           git remote add linux-review https://github.com/0day-ci/linux
->>>           git fetch --no-tags linux-review Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
->>>           git checkout cf6d8354b7d7953cd866fad004cbb189adfa074f
->>>           # save the attached .config to linux build tree
->>>           make W=1 ARCH=i386
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>, old ones prefixed by <<):
->>>
->>>>> ERROR: modpost: "task_work_add" [drivers/gpu/drm/drm.ko] undefined!
->>>
->>
->> I'm a bit uncertain about this. Looking into the .config used, this
->> error seems to happen because task_work_add isn't an exported symbol,
->> but DRM is being compiled as a loadable kernel module (CONFIG_DRM=m).
->>
->> One way to deal with this is to export the symbol, but there was a
->> proposed patch to do this a few months back that wasn't picked up [1],
->> so I'm not sure what to make of this.
->>
->> I'll export the symbol as part of a v3 series, and check in with the
->> task-work maintainers.
->>
->> Link:
->> https://lore.kernel.org/lkml/20210127150029.13766-3-joshi.k@samsung.com/ [1]
 > 
-> Yeah that sounds best. I have two more thoughts on the patch:
-> - drm_master_flush isn't used by any modules outside of drm.ko, so we
-> can unexport it and drop the kerneldoc (the comment is still good).
-> These kind of internal functions have their declaration in
-> drm-internal.h - there's already a few there from drm_auth.c
-> 
-
-Sounds good, I'll do that and move the declaration from drm_auth.h to 
-drm_internal.h.
-
-> - We know have 3 locks for master state, that feels a bit like
-> overkill. The spinlock I think we need to keep due to lock inversions,
-> but the master_mutex and master_rwsem look like we should be able to
-> merge them? I.e. anywhere we currently grab the master_mutex we could
-> instead grab the rwsem in either write mode (when we change stuff) or
-> read mode (when we just check, like in master_internal_acquire).
-> 
-> Thoughts?
-> -Daniel
-> 
-
-Using rwsem in the places where we currently hold the mutex seems pretty 
-doable.
-
-There are some tricky bits once we add rwsem read locks to the ioctl 
-handler. Some ioctl functions like drm_authmagic need a write lock.
-
-In this particular case, it might make sense to break master_mutex down 
-into finer-grained locks, since the function doesn't change master 
-permissions. It just needs to prevent concurrent writes to the 
-drm_master.magic_map idr.
-
-For other ioctls, I'll take a closer look on a case-by-case basis.
-
->>
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>
->>
+> Your version is much much better than mine.
+> And I have verified that it works as expected.
 > 
 > 
 
+Hey Peter/Valentin
+
+Are we waiting for any more feedback/testing for this?
+
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
