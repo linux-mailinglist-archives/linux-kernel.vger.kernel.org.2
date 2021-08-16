@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAA33EE016
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFBC3EE022
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Aug 2021 00:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhHPWux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 18:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S234456AbhHPWv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 18:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbhHPWut (ORCPT
+        with ESMTP id S234314AbhHPWvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:50:49 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A9DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 15:50:17 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id d16so11596625ljq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 15:50:16 -0700 (PDT)
+        Mon, 16 Aug 2021 18:51:47 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F62C0613CF;
+        Mon, 16 Aug 2021 15:51:15 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x12so25740899wrr.11;
+        Mon, 16 Aug 2021 15:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FNF5yTfl26yRV2ZnsuQAzfTJ86jyXsPYWOJul2CIIxA=;
-        b=oDjyNYYpKlqJROuUn6VAmXIcYHiu6KQoGMGqHi3LT/irIYzgdbpbgayMX522y/+rd/
-         jnHlAxW6jlIvUp6V+6fvpzHR4DETHRN8cH/swJifdTkk6BsMWKFMWWMotDhKQOOKU3PC
-         iMUf55Iq5l7WJvdXq+WVb3ngr23evdvduoWLIYk2prD0RbgKiMADcl3Xpb4cSyV9WjLa
-         mbAVTODa66G8a4RNboLzF3QI9emyb2cF6Auk+NLtkwzknbBOV+j2d+eJAtfwbqsbVNL/
-         6T3B/93fPiq/Mst3eXuYNImGCpN1chnz0zkiPNxsIyQ9HpUuxdm7gVAJ63J9+o8fVWaV
-         jHTQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ofQY1mQBvnfrDRq8IwE+M9gjT2BSYoc2hzlBRViABDo=;
+        b=Veqp45NSRcVHNb65GcV2PYdNMQZiR8Ar7QMmsVHJv9+u8KiVVKpCaYMv+iQUa2cUPG
+         oIiwL12wBMdy6NVXwCjV2GmPdv6FqN+yaOYjqtgC7031a4EQ2Kw0ilsKghz9UfZJV0We
+         v15fWl5RUL4FV+7BM+OL9SIMg+aP5Jj+ouK2e4sLB6y0QWpqBnmAqxj2+K2+Xm90qXhg
+         bBimHWPixPJ7c6xhAtJ3v5s6Y+p3Dg6SsF/LlRjKDm6dNxH8mtYRxBJYQgx3EZ6nDA0W
+         9cIqrYZ2z9301dXXzlrhvq6A1ALPQL+kbGCw4Lw5CX7pZIh1T1ZlaYS4O9+b5w4Slrxn
+         Gycw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FNF5yTfl26yRV2ZnsuQAzfTJ86jyXsPYWOJul2CIIxA=;
-        b=iHcRIUP3ubDlB4rcQKxKShWD6C0mU7bBtBdKC7fZRLWY7fwtEZewYZUtIUtlEowdYi
-         tdfRDqVnGftndnDD0zrnqkeqYoE8YtzRwku8kHVs8F7nViI5jHdEtkaFzRi9OBA8A3+O
-         SfRcIl6PvdGOnC3A2WEE4hRbsxCVZ+6vkABzZ2QdOyRHMJMxY1Ap6Zfkatd4qQ+JDpU+
-         /Inn22L246ebZqPiOVUxeNI0KIm7L6jQC8DkLK+9tEuTdmpLW30duXdu98h9dzt4YA4J
-         GmNeAqT0zYHU36/LnggHZffRdt8WX4KiJu4CQnAcl6mgac6cvvIgH8jca2w2Lj96PGza
-         6GEw==
-X-Gm-Message-State: AOAM533hsi3jYduwQaELV2fnF/Glric9w4RlhCC41+vVwbkeiy7W/E4Y
-        VusnWixRKz6oU8e2lMY7p7oyxHVuvVhrBrizXfGU9atf2e/oWg==
-X-Google-Smtp-Source: ABdhPJwejuMKkXaC6E+32YRGzv21MU1jcY2Mzp8d92kWVWOhvV+9Vcw6sn8yIbSQqLqlZjHqEqrw0wI296H4Er0NMxE=
-X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr463144ljf.368.1629154215340;
- Mon, 16 Aug 2021 15:50:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ofQY1mQBvnfrDRq8IwE+M9gjT2BSYoc2hzlBRViABDo=;
+        b=rhtnNE5K7cvJjl56OZgrkxOpsfLVdxzlu2O9WP23oyZl1ZDy+jcpNDvpc0aoV795oJ
+         c34IbgpduET7rLolRrpQA7WxlAeIvoljpC42WlvxWooc728hvejMPXc2xx1u91OCo5hw
+         xJo/H+MhqLdR4xdvRPpU0HLuGu4XJiVpw+qU1i8656KzVodY+mzz5lVZ0i+ALwL0mHK6
+         aAsv1eYO9sUztnvpWHa38Rq8yoBwBxaKHtwqD9f4Fd+WuF5xQJU9AtC4OZ9tWMzI0OXq
+         BjcaCh5Rb7bfTellh40JtnoDsRPlcxcYU/hkYhFwh9m1BhF/x5orqh2MRVIz1Sxi9wYU
+         DA6A==
+X-Gm-Message-State: AOAM532uB0BUsZx8mzqJt0NrmxqIo8R4ySmmbJJEq3Y1Ofb6GZUrCDO5
+        FLycKjFrK+ewve0Cz0ZLGDo=
+X-Google-Smtp-Source: ABdhPJwwG3OlL7pFAxzo5XfgoGWXmTE32jwfJbyXDo3beODWdQCSbOSQwCcaAC+6Cn/CmPJQxJ/d0g==
+X-Received: by 2002:a05:6000:1b8e:: with SMTP id r14mr373440wru.251.1629154273878;
+        Mon, 16 Aug 2021 15:51:13 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.12])
+        by smtp.gmail.com with ESMTPSA id h2sm150174wmm.33.2021.08.16.15.51.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 15:51:13 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in __io_queue_sqe
+To:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000011fc2505c9b41023@google.com>
+ <8236fd18-bf97-b7c6-b2c7-84df0a9bd8e5@kernel.dk>
+ <d13c4e6b-b935-c517-f90d-d8201861800f@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <ec15a6e6-4bd6-25a5-3b91-c60715d51a0c@gmail.com>
+Date:   Mon, 16 Aug 2021 23:50:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210816082836.67511-1-aardelean@deviqon.com> <20210816082836.67511-2-aardelean@deviqon.com>
-In-Reply-To: <20210816082836.67511-2-aardelean@deviqon.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Aug 2021 00:50:04 +0200
-Message-ID: <CACRpkdaYLd=R9SjqLF=j94fjbG-urHW6C6rXJ3oGnJM9W78P4g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] iio: st_sensors: disable regulators after device unregistration
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Denis CIOCCA <denis.ciocca@st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d13c4e6b-b935-c517-f90d-d8201861800f@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 10:30 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
+On 8/16/21 10:57 PM, Jens Axboe wrote:
+> On 8/16/21 3:49 PM, Jens Axboe wrote:
+>> On 8/16/21 3:41 PM, syzbot wrote:
+>>> syzbot has found a reproducer for the following issue on:
+>>>
+>>> HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
+>>> git tree:       linux-next
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1784d5e9300000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
+>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17479216300000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147f0111300000
+>>
+>> #syz test: git://git.kernel.dk/linux-block for-next
+> 
+> Forgot to push out the update...
+> 
+> #syz test: git://git.kernel.dk/linux-block 16a390b4109c6eaa65f84e31c2c1d19bcbeb666f
 
-> Up until commit ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal
-> to core") only the ST pressure driver seems to have had any regulator
-> disable. After that commit, the regulator handling was moved into the
-> common st_sensors logic.
->
-> In all instances of this regulator handling, the regulators were disabled
-> before unregistering the IIO device.
-> This can cause issues where the device would be powered down and still be
-> available to userspace, allowing it to send invalid/garbage data.
->
-> This change moves the st_sensors_power_disable() after the common probe
-> functions. These common probe functions also handle unregistering the IIO
-> device.
->
-> Fixes: 774487611c949 ("iio: pressure-core: st: Provide support for the Vdd power supply")
-> Fixes: ea7e586bdd331 ("iio: st_sensors: move regulator retrieveal to core")
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Denis CIOCCA <denis.ciocca@st.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+fwiw, tested locally, solves the problem
 
-That's a valid concern I suppose:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-But as it now occurs last before return 0, can't we just solve
-this with a
-devm_add_action_or_reset(dev, st_sensors_power_off_action, *);
-of some kind and let devres handle it?
-
-c.f
-drivers/input/touchscreen/cy8ctma140.c
-
-Yours,
-Linus Walleij
+-- 
+Pavel Begunkov
