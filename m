@@ -2,453 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08173ECFA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA433ECFA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhHPHtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234208AbhHPHtA (ORCPT
+        id S234410AbhHPHtT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 03:49:19 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:44071 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234556AbhHPHtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:49:00 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE208C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:48:28 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id a201so8427266vsd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cnZfn/AOksPTDwn6vTx+nMUzsCcqo75FfKdHjwSoewg=;
-        b=PZTUBGq371PVF6hScXNRtMfRg4n4tFR9jnT/hRqU0eSr94+IJq/0FXDPwIT0zEl2Cy
-         CZvTZ7pf8Ghl324D+a0iiXuG07atv5izzwdW5bo8ygWIEc6BAkTsQ5YO5r7ntMD1eRsK
-         EknQ3/SB2YByeAjy5F4bltQLUZE5flZmMURv+OdM+Drb3Q52uenuqglt6Ua0n8FDS2Z1
-         9/D95Yc7ktcKVp++8q6U8lh3WZgbDmpccodzB815vvxLnfl90n3aWqR+B26VJObOlHrT
-         qrTXpwIdqOx8u767nYIcsMQkh8sZsla4W7y1mhoPR9qDd6Mcu/+pXEbIo+5TjfbUzsZA
-         OvdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cnZfn/AOksPTDwn6vTx+nMUzsCcqo75FfKdHjwSoewg=;
-        b=IAtKK0iNE5ZxuTKuD1//Mi+fTXfrAngIpmuShIZICJK42ELE603lEADVcuTb5HsLSH
-         UXZdZSFHCixdiKJtrcQ6pZR3awARG3roOA7vCy2G8GMpKekS5GgxVIs5L5lhJ75ciNNd
-         82V3XycfPsjYtvRK6j48prT0n6xfunR8Mwtpn8okVL8DKLIQg9GKeOd+S3y3pbuiq5uK
-         SjVpT0WoV2mDYDBDXya/KBi+QJ5ScZrfgAz8RH6+mrr4evWsQp2tc5Q1m4BRpgMJTn6I
-         F9LhnvrWxfMNpLeeMcCHNaPCjE1VnkXYL3FCko/tHR1iHlZGi81FS8TOLNgCUOycQmHH
-         KwVA==
-X-Gm-Message-State: AOAM533uimyqll08Ys71MVMAyHB+EZjYKzLamkB/SpVcVcZgyFfkQhdY
-        iHIsdVht4UdzCf+/QjZK2UH7CzWhM07GcHe6jddAcg==
-X-Google-Smtp-Source: ABdhPJxAiZGhbtt2UXfobPUE7N//yiC4iv2XNU3Uc6yEIfDHW8Gyx1PIJTe8d2hroqDG8b5Gwwpri856nieDNc8m9io=
-X-Received: by 2002:a05:6102:222f:: with SMTP id d15mr2771845vsb.16.1629100108038;
- Mon, 16 Aug 2021 00:48:28 -0700 (PDT)
+        Mon, 16 Aug 2021 03:49:14 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5374F1BF207;
+        Mon, 16 Aug 2021 07:48:39 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 09:48:38 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        Anton Vasilyev <vasilyev@ispras.ru>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] mtd: rawnand: intel: Fix error handling in probe
+Message-ID: <20210816094838.78c8e248@xps13>
+In-Reply-To: <20210812110100.1279-1-novikov@ispras.ru>
+References: <20210812110100.1279-1-novikov@ispras.ru>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210726071404.14529-1-aardelean@deviqon.com> <20210726071404.14529-3-aardelean@deviqon.com>
- <20210731183707.20bf8e00@jic23-huawei> <CAASAkoatK69RFyj3Sc1USv70RMBCcOF1rVd-XyensawuoLra5Q@mail.gmail.com>
-In-Reply-To: <CAASAkoatK69RFyj3Sc1USv70RMBCcOF1rVd-XyensawuoLra5Q@mail.gmail.com>
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-Date:   Mon, 16 Aug 2021 10:48:16 +0300
-Message-ID: <CAASAkoaB4t1zpqF4aUCSybga1_S9vs57udzijCB107gOyOwOvQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: st_sensors: remove st_sensors_power_disable() function
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        denis.ciocca@st.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 at 10:30, Alexandru Ardelean <aardelean@deviqon.com> wrote:
->
-> On Sat, 31 Jul 2021 at 20:34, Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Mon, 26 Jul 2021 10:14:02 +0300
-> > Alexandru Ardelean <aardelean@deviqon.com> wrote:
-> >
-> > > This change converts the st_sensors_power_enable() function to use
-> > > devm_add_action_or_reset() handlers to register regulator_disable hooks for
-> > > when the drivers get unloaded.
-> > >
-> > > The parent device of the IIO device object is used. This is based on the
-> > > assumption that all other devm_ calls in the ST sensors use this reference.
-> > >
-> > > This makes the st_sensors_power_disable() un-needed.
-> > > Removing this also changes unload order a bit, as all ST drivers would call
-> > > st_sensors_power_disable() first and iio_device_unregister() after that.
-> >
-> > Huh.  So currently the drivers turn the power off before calling
-> > iio_device_unregister()?
-> >
-> > That's a bad idea (turn off power when userspace is still available)
-> > and looks like a bug fix to me.  Perhaps the reorder should be pulled out as
-> > a precursor patch in case anyone wants to backport it?
-> >
-> > (note I initially thought you were going the other way and was just writing
-> >  a rant about breaking the order when I realised you were fixing it ;)
+Hi Evgeny,
 
-I'm seeing a bit of a clash with this patch [by Andy from April 2021]:
+Evgeny Novikov <novikov@ispras.ru> wrote on Thu, 12 Aug 2021 14:01:00
++0300:
 
-https://lore.kernel.org/linux-devicetree/20210414195454.84183-4-andriy.shevchenko@linux.intel.com/
+> ebu_nand_probe() did not invoke ebu_dma_cleanup() and
+> clk_disable_unprepare() on some error handling paths. The patch fixes
+> that.
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
 
-I can do the fix commits, but they will be short-lived, since they
-will be applied on 5.13 and onwards.
-We'd need maybe another set for the LTS kernels.
+LGTM
 
-So, how should we proceed here?
-I think I'll do the fix commits anyway for this set.
+Can you add a Fixes: tag and possibly a Cc: stable tag as well?
+(same for "mtd: rawnand: mxic: Enable and prepare clocks in probe")
 
-Thanks
-Alex
+> 
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+> Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+> Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+> Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
+> Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
+> ---
+>  drivers/mtd/nand/raw/intel-nand-controller.c | 27 +++++++++++++-------
+>  1 file changed, 18 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+> index 8b49fd56cf96..29e8a546dcd6 100644
+> --- a/drivers/mtd/nand/raw/intel-nand-controller.c
+> +++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+> @@ -631,19 +631,26 @@ static int ebu_nand_probe(struct platform_device *pdev)
+>  	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
+>  
+>  	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+> -	if (IS_ERR(ebu_host->dma_tx))
+> -		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+> -				     "failed to request DMA tx chan!.\n");
+> +	if (IS_ERR(ebu_host->dma_tx)) {
+> +		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
+> +				    "failed to request DMA tx chan!.\n");
+> +		goto err_disable_unprepare_clk;
+> +	}
+>  
+>  	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+> -	if (IS_ERR(ebu_host->dma_rx))
+> -		return dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+> -				     "failed to request DMA rx chan!.\n");
+> +	if (IS_ERR(ebu_host->dma_rx)) {
+> +		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_rx),
+> +				    "failed to request DMA rx chan!.\n");
+> +		ebu_host->dma_rx = NULL;
+> +		goto err_cleanup_dma;
+> +	}
+>  
+>  	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
+>  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
+> -	if (!res)
+> -		return -EINVAL;
+> +	if (!res) {
+> +		ret = -EINVAL;
+> +		goto err_cleanup_dma;
+> +	}
+>  	ebu_host->cs[cs].addr_sel = res->start;
+>  	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
+>  	       ebu_host->ebu + EBU_ADDR_SEL(cs));
+> @@ -653,7 +660,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
+>  	mtd = nand_to_mtd(&ebu_host->chip);
+>  	if (!mtd->name) {
+>  		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto err_cleanup_dma;
+>  	}
+>  
+>  	mtd->dev.parent = dev;
+> @@ -681,6 +689,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+>  	nand_cleanup(&ebu_host->chip);
+>  err_cleanup_dma:
+>  	ebu_dma_cleanup(ebu_host);
+> +err_disable_unprepare_clk:
+>  	clk_disable_unprepare(ebu_host->clk);
+>  
+>  	return ret;
 
->
-> Probably the best advantage of devm_ functions .
-> Not needing to care about un-init order.
->
-> I hated debugging driver crashes when they were unloaded, usually
-> because the driver gets into a weird state.
->
-> I'll send a V2 with the re-order fixes in the front.
->
-> >
-> > >
-> > > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> > > ---
-> > >  drivers/iio/accel/st_accel_i2c.c              | 13 +------
-> > >  drivers/iio/accel/st_accel_spi.c              | 13 +------
-> > >  .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++++-----------
-> > >  drivers/iio/gyro/st_gyro_i2c.c                | 13 +------
-> > >  drivers/iio/gyro/st_gyro_spi.c                | 13 +------
-> > >  drivers/iio/magnetometer/st_magn_i2c.c        | 13 +------
-> > >  drivers/iio/magnetometer/st_magn_spi.c        | 13 +------
-> > >  drivers/iio/pressure/st_pressure_i2c.c        | 13 +------
-> > >  drivers/iio/pressure/st_pressure_spi.c        | 13 +------
-> > >  include/linux/iio/common/st_sensors.h         |  2 --
-> > >  10 files changed, 23 insertions(+), 117 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/accel/st_accel_i2c.c b/drivers/iio/accel/st_accel_i2c.c
-> > > index f711756e41e3..b377575efc41 100644
-> > > --- a/drivers/iio/accel/st_accel_i2c.c
-> > > +++ b/drivers/iio/accel/st_accel_i2c.c
-> > > @@ -177,24 +177,13 @@ static int st_accel_i2c_probe(struct i2c_client *client)
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > -     ret = st_accel_common_probe(indio_dev);
-> > > -     if (ret < 0)
-> > > -             goto st_accel_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_accel_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return ret;
-> > > +     return st_accel_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_accel_i2c_remove(struct i2c_client *client)
-> > >  {
-> > >       struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_accel_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/accel/st_accel_spi.c b/drivers/iio/accel/st_accel_spi.c
-> > > index bb45d9ff95b8..4ca87e73bdb3 100644
-> > > --- a/drivers/iio/accel/st_accel_spi.c
-> > > +++ b/drivers/iio/accel/st_accel_spi.c
-> > > @@ -127,24 +127,13 @@ static int st_accel_spi_probe(struct spi_device *spi)
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_accel_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_accel_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_accel_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_accel_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_accel_spi_remove(struct spi_device *spi)
-> > >  {
-> > >       struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_accel_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/common/st_sensors/st_sensors_core.c b/drivers/iio/common/st_sensors/st_sensors_core.c
-> > > index 0bbb090b108c..a5a140de9a23 100644
-> > > --- a/drivers/iio/common/st_sensors/st_sensors_core.c
-> > > +++ b/drivers/iio/common/st_sensors/st_sensors_core.c
-> > > @@ -215,13 +215,19 @@ int st_sensors_set_axis_enable(struct iio_dev *indio_dev, u8 axis_enable)
-> > >  }
-> > >  EXPORT_SYMBOL(st_sensors_set_axis_enable);
-> > >
-> > > +static void st_reg_disable(void *reg)
-> > > +{
-> > > +     regulator_disable(reg);
-> > > +}
-> > > +
-> > >  int st_sensors_power_enable(struct iio_dev *indio_dev)
-> > >  {
-> > >       struct st_sensor_data *pdata = iio_priv(indio_dev);
-> > > +     struct device *parent = indio_dev->dev.parent;
-> > >       int err;
-> > >
-> > >       /* Regulators not mandatory, but if requested we should enable them. */
-> > > -     pdata->vdd = devm_regulator_get(indio_dev->dev.parent, "vdd");
-> > > +     pdata->vdd = devm_regulator_get(parent, "vdd");
-> > >       if (IS_ERR(pdata->vdd)) {
-> > >               dev_err(&indio_dev->dev, "unable to get Vdd supply\n");
-> > >               return PTR_ERR(pdata->vdd);
-> > > @@ -233,36 +239,26 @@ int st_sensors_power_enable(struct iio_dev *indio_dev)
-> > >               return err;
-> > >       }
-> > >
-> > > -     pdata->vdd_io = devm_regulator_get(indio_dev->dev.parent, "vddio");
-> > > +     err = devm_add_action_or_reset(parent, st_reg_disable, pdata->vdd);
-> > > +     if (err)
-> > > +             return err;
-> > > +
-> > > +     pdata->vdd_io = devm_regulator_get(parent, "vddio");
-> > >       if (IS_ERR(pdata->vdd_io)) {
-> > >               dev_err(&indio_dev->dev, "unable to get Vdd_IO supply\n");
-> > > -             err = PTR_ERR(pdata->vdd_io);
-> > > -             goto st_sensors_disable_vdd;
-> > > +             return PTR_ERR(pdata->vdd_io);
-> > >       }
-> > >       err = regulator_enable(pdata->vdd_io);
-> > >       if (err != 0) {
-> > >               dev_warn(&indio_dev->dev,
-> > >                        "Failed to enable specified Vdd_IO supply\n");
-> > > -             goto st_sensors_disable_vdd;
-> > > +             return err;
-> > >       }
-> > >
-> > > -     return 0;
-> > > -
-> > > -st_sensors_disable_vdd:
-> > > -     regulator_disable(pdata->vdd);
-> > > -     return err;
-> > > +     return devm_add_action_or_reset(parent, st_reg_disable, pdata->vdd_io);
-> > >  }
-> > >  EXPORT_SYMBOL(st_sensors_power_enable);
-> > >
-> > > -void st_sensors_power_disable(struct iio_dev *indio_dev)
-> > > -{
-> > > -     struct st_sensor_data *pdata = iio_priv(indio_dev);
-> > > -
-> > > -     regulator_disable(pdata->vdd);
-> > > -     regulator_disable(pdata->vdd_io);
-> > > -}
-> > > -EXPORT_SYMBOL(st_sensors_power_disable);
-> > > -
-> > >  static int st_sensors_set_drdy_int_pin(struct iio_dev *indio_dev,
-> > >                                       struct st_sensors_platform_data *pdata)
-> > >  {
-> > > diff --git a/drivers/iio/gyro/st_gyro_i2c.c b/drivers/iio/gyro/st_gyro_i2c.c
-> > > index 3ef86e16ee65..0bd80dfd389f 100644
-> > > --- a/drivers/iio/gyro/st_gyro_i2c.c
-> > > +++ b/drivers/iio/gyro/st_gyro_i2c.c
-> > > @@ -90,24 +90,13 @@ static int st_gyro_i2c_probe(struct i2c_client *client,
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_gyro_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_gyro_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_gyro_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_gyro_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_gyro_i2c_remove(struct i2c_client *client)
-> > >  {
-> > >       struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_gyro_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/gyro/st_gyro_spi.c b/drivers/iio/gyro/st_gyro_spi.c
-> > > index 41d835493347..f74b09fa5cde 100644
-> > > --- a/drivers/iio/gyro/st_gyro_spi.c
-> > > +++ b/drivers/iio/gyro/st_gyro_spi.c
-> > > @@ -94,24 +94,13 @@ static int st_gyro_spi_probe(struct spi_device *spi)
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_gyro_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_gyro_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_gyro_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_gyro_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_gyro_spi_remove(struct spi_device *spi)
-> > >  {
-> > >       struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_gyro_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
-> > > index 2dfe4ee99591..0a5117dffcf4 100644
-> > > --- a/drivers/iio/magnetometer/st_magn_i2c.c
-> > > +++ b/drivers/iio/magnetometer/st_magn_i2c.c
-> > > @@ -86,24 +86,13 @@ static int st_magn_i2c_probe(struct i2c_client *client,
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_magn_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_magn_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_magn_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_magn_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_magn_i2c_remove(struct i2c_client *client)
-> > >  {
-> > >       struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_magn_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
-> > > index fba978796395..1f3bf02b24e0 100644
-> > > --- a/drivers/iio/magnetometer/st_magn_spi.c
-> > > +++ b/drivers/iio/magnetometer/st_magn_spi.c
-> > > @@ -80,24 +80,13 @@ static int st_magn_spi_probe(struct spi_device *spi)
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_magn_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_magn_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_magn_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_magn_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_magn_spi_remove(struct spi_device *spi)
-> > >  {
-> > >       struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_magn_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/pressure/st_pressure_i2c.c b/drivers/iio/pressure/st_pressure_i2c.c
-> > > index 52fa98f24478..afeeab485c0d 100644
-> > > --- a/drivers/iio/pressure/st_pressure_i2c.c
-> > > +++ b/drivers/iio/pressure/st_pressure_i2c.c
-> > > @@ -103,24 +103,13 @@ static int st_press_i2c_probe(struct i2c_client *client,
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > -     ret = st_press_common_probe(indio_dev);
-> > > -     if (ret < 0)
-> > > -             goto st_press_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_press_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return ret;
-> > > +     return st_press_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_press_i2c_remove(struct i2c_client *client)
-> > >  {
-> > >       struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_press_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
-> > > index ee393df54cee..834ad6d40a70 100644
-> > > --- a/drivers/iio/pressure/st_pressure_spi.c
-> > > +++ b/drivers/iio/pressure/st_pressure_spi.c
-> > > @@ -86,24 +86,13 @@ static int st_press_spi_probe(struct spi_device *spi)
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = st_press_common_probe(indio_dev);
-> > > -     if (err < 0)
-> > > -             goto st_press_power_off;
-> > > -
-> > > -     return 0;
-> > > -
-> > > -st_press_power_off:
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > > -     return err;
-> > > +     return st_press_common_probe(indio_dev);
-> > >  }
-> > >
-> > >  static int st_press_spi_remove(struct spi_device *spi)
-> > >  {
-> > >       struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> > >
-> > > -     st_sensors_power_disable(indio_dev);
-> > > -
-> > >       st_press_common_remove(indio_dev);
-> > >
-> > >       return 0;
-> > > diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
-> > > index e74b55244f35..fc90c202d15e 100644
-> > > --- a/include/linux/iio/common/st_sensors.h
-> > > +++ b/include/linux/iio/common/st_sensors.h
-> > > @@ -293,8 +293,6 @@ int st_sensors_set_axis_enable(struct iio_dev *indio_dev, u8 axis_enable);
-> > >
-> > >  int st_sensors_power_enable(struct iio_dev *indio_dev);
-> > >
-> > > -void st_sensors_power_disable(struct iio_dev *indio_dev);
-> > > -
-> > >  int st_sensors_debugfs_reg_access(struct iio_dev *indio_dev,
-> > >                                 unsigned reg, unsigned writeval,
-> > >                                 unsigned *readval);
-> >
+Thanks,
+Miquèl
