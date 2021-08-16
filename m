@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E643ED22C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC553ED23F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhHPKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhHPKng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:43:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81757C061764;
-        Mon, 16 Aug 2021 03:43:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08b5004455011f3e43b910.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:4455:11f:3e43:b910])
+        id S235774AbhHPKsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:48:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4868 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230250AbhHPKsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:48:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="213987707"
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="213987707"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 03:47:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="504848340"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 16 Aug 2021 03:47:53 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 050AD1EC04FB;
-        Mon, 16 Aug 2021 12:42:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629110579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=KJr3PLH9kdh7sq6ftHE42Mk4Hk9JcVNuZWU5FfzNhng=;
-        b=EdTJv86x/KgsZfUTho7nmU2tWDU7gWlJWwEPgv85zH6gBUrThHi9fC1iX5VEY4vmFQ3Wat
-        4L7CZpxMtqUnumgeTAAvIdt+GZJGAVni8JOdP7ssdtvST2BWMH3jSXeGJW+5iIwTMEZB+b
-        GdsXFMbpKbQbyECkWOQbzWkuxXgeI58=
-Date:   Mon, 16 Aug 2021 12:43:34 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v28 09/32] x86/mm: Introduce _PAGE_COW
-Message-ID: <YRpBVu7dCBjks71I@zn.tnic>
-References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
- <20210722205219.7934-10-yu-cheng.yu@intel.com>
+        by linux.intel.com (Postfix) with ESMTPS id DF374580866;
+        Mon, 16 Aug 2021 03:47:49 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 18:47:46 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, vee.khee.wong@intel.com,
+        weifeng.voon@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v1 1/3] net: stmmac: fix INTR TBU status
+ affecting irq count statistic
+Message-ID: <20210816104746.GA9014@linux.intel.com>
+References: <cover.1629092894.git.vijayakannan.ayyathurai@intel.com>
+ <f82f52076841285309a997f849e2786781548538.1629092894.git.vijayakannan.ayyathurai@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722205219.7934-10-yu-cheng.yu@intel.com>
+In-Reply-To: <f82f52076841285309a997f849e2786781548538.1629092894.git.vijayakannan.ayyathurai@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:51:56PM -0700, Yu-cheng Yu wrote:
-> @@ -153,13 +178,23 @@ static inline int pud_young(pud_t pud)
+On Mon, Aug 16, 2021 at 02:15:58PM +0800, Vijayakannan Ayyathurai wrote:
+> From: Voon Weifeng <weifeng.voon@intel.com>
+> 
+> DMA channel status "Transmit buffer unavailable(TBU)" bit is not
+> considered as a successful dma tx. Hence, it should not affect
+> all the irq count statistic.
+>
+
+Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+ 
+> Fixes: 1103d3a5531c ("net: stmmac: dwmac4: Also use TBU interrupt to clean TX path")
+> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+> Signed-off-by: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> index e63270267578..f83db62938dd 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> @@ -172,11 +172,12 @@ int dwmac4_dma_interrupt(void __iomem *ioaddr,
+>  		x->rx_normal_irq_n++;
+>  		ret |= handle_rx;
+>  	}
+> -	if (likely(intr_status & (DMA_CHAN_STATUS_TI |
+> -		DMA_CHAN_STATUS_TBU))) {
+> +	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
+>  		x->tx_normal_irq_n++;
+>  		ret |= handle_tx;
+>  	}
+> +	if (unlikely(intr_status & DMA_CHAN_STATUS_TBU))
+> +		ret |= handle_tx;
+>  	if (unlikely(intr_status & DMA_CHAN_STATUS_ERI))
+>  		x->rx_early_irq++;
 >  
->  static inline int pte_write(pte_t pte)
->  {
-> -	return pte_flags(pte) & _PAGE_RW;
-> +	/*
-> +	 * Shadow stack pages are always writable - but not by normal
-> +	 * instructions, and only by shadow stack operations.  Therefore,
-> +	 * the W=0,D=1 test with pte_shstk().
-> +	 */
-> +	return (pte_flags(pte) & _PAGE_RW) || pte_shstk(pte);
-
-Well, this is weird: if some kernel code queries a shstk page and this
-here function says it is writable but then goes and tries to write into
-it and that write fails, then it'll confuse the user.
-
-IOW, from where I'm standing, that should be:
-
-	return (pte_flags(pte) & _PAGE_RW) && !pte_shstk(pte);
-
-as in, a writable page is one which has _PAGE_RW and it is *not* a
-shadow stack page because latter is special and not really writable.
-
-Hmmm?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
