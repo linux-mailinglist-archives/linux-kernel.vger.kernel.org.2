@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B4E3EDA74
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1843EDA75
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhHPQBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
+        id S230242AbhHPQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhHPQBf (ORCPT
+        with ESMTP id S229904AbhHPQCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:01:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DBEC061764;
-        Mon, 16 Aug 2021 09:01:03 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08b5007042c35e67cc1097.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:7042:c35e:67cc:1097])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E82191EC03D5;
-        Mon, 16 Aug 2021 18:00:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629129658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fWWTWO1JV4RsH463+53B7fbAW0qIhoTlvqX4vBT05vw=;
-        b=BRIM2XbGCS8PHu4uS9LjB3oJPIwmGugzEX2I9WKF3Kk3KgHt7XBxSQY7R/h21OIthbEVbt
-        DxcGj5ZGjnftTImnuk4LNOX/n4WudjZC4XiRhQdco5iHZwIha2bu0OFEbAvx4QipOjrqtA
-        ris5Up7VSOO60XbJjm+5MKqK4cEzRHg=
-Date:   Mon, 16 Aug 2021 18:01:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v28 12/32] x86/mm: Update ptep_set_wrprotect() and
- pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
-Message-ID: <YRqL4QyYPaCXSmi+@zn.tnic>
-References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
- <20210722205219.7934-13-yu-cheng.yu@intel.com>
+        Mon, 16 Aug 2021 12:02:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EACC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fBMlb0ygdUm6+NM8jGsYKG5X9oTlxwjPGdYLupXccPE=; b=CGcgxXHC5rcTWVny6Qzeqxu0oV
+        E9F+/tS3acpEPqqAl30GquJ9tOy9TC0PtVwspw0H70496Gq/DQ3fneIkBQdvAcMvxX1LjIR0ILd/E
+        HfGlKTzSQOmSRrvhEmL9cZLyQH/omRfb7PoWwkgWRLeOgwymPIn96NoAazUt10EmE1gA2IMQZJCXZ
+        Uwvp6pi1QbRZ3ppZP+RHXh3nYHtSIsVuWn7ejgns8wNkEOIo4cbTchRDbqC62ix99jpDlTYsPDXbG
+        6owMrk2whKlWS1leOk60khUhxkh403iArY/lL3c2mkb+3KyCrJqIoiTYtsDGA1O7TFNfHYm/fGpcA
+        7zJL0rcQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mFf1f-001Y0U-Ms; Mon, 16 Aug 2021 16:00:16 +0000
+Date:   Mon, 16 Aug 2021 16:59:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Khalid Aziz <khalid.aziz@oracle.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Message-ID: <YRqLc2W1P77tiSqj@casper.infradead.org>
+References: <YRpVHnr55LpQQvTb@casper.infradead.org>
+ <ca2d4ea4-e875-475a-6094-1ac58bc0b544@redhat.com>
+ <YRpeHnP7QDNJRA8Y@casper.infradead.org>
+ <88884f55-4991-11a9-d330-5d1ed9d5e688@redhat.com>
+ <YRpo4EAJSkY7hI7Q@casper.infradead.org>
+ <40bad572-501d-e4cf-80e3-9a8daa98dc7e@redhat.com>
+ <YRp169xvwB3j0rpD@casper.infradead.org>
+ <3ce1f52f-d84d-49ba-c027-058266e16d81@redhat.com>
+ <YRp4+EmohNoxzv2x@casper.infradead.org>
+ <e6a31927-8f93-22af-2d5a-9d80578e9317@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722205219.7934-13-yu-cheng.yu@intel.com>
+In-Reply-To: <e6a31927-8f93-22af-2d5a-9d80578e9317@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:51:59PM -0700, Yu-cheng Yu wrote:
-> When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
-> shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
+On Mon, Aug 16, 2021 at 05:01:44PM +0200, David Hildenbrand wrote:
+> On 16.08.21 16:40, Matthew Wilcox wrote:
+> > On Mon, Aug 16, 2021 at 04:33:09PM +0200, David Hildenbrand wrote:
+> > > > > I did not follow why we have to play games with MAP_PRIVATE, and having
+> > > > > private anonymous pages shared between processes that don't COW, introducing
+> > > > > new syscalls etc.
+> > > > 
+> > > > It's not about SHMEM, it's about file-backed pages on regular
+> > > > filesystems.  I don't want to have XFS, ext4 and btrfs all with their
+> > > > own implementations of ARCH_WANT_HUGE_PMD_SHARE.
+> > > 
+> > > Let me ask this way: why do we have to play such games with MAP_PRIVATE?
+> > 
+> > : Mappings within this address range behave as if they were shared
+> > : between threads, so a write to a MAP_PRIVATE mapping will create a
+> > : page which is shared between all the sharers.
+> > 
+> > If so, that's a misunderstanding, because there are no games being played.
+> > What Khalid's saying there is that because the page tables are already
+> > shared for that range of address space, the COW of a MAP_PRIVATE will
+> > create a new page, but that page will be shared between all the sharers.
+> > The second write to a MAP_PRIVATE page (by any of the sharers) will not
+> > create a COW situation.  Just like if all the sharers were threads of
+> > the same process.
+> > 
 > 
-> When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
-> become a transient shadow stack PTE in two cases:
+> It actually seems to be just like I understood it. We'll have multiple
+> processes share anonymous pages writable, even though they are not using
+> shared memory.
 > 
-> The first case is that some processors can start a write but end up seeing
-> a read-only PTE by the time they get to the Dirty bit, creating a transient
-> shadow stack PTE.  However, this will not occur on processors supporting
-> Shadow Stack, and a TLB flush is not necessary.
+> IMHO, sharing page tables to optimize for something kernel-internal (page
+> table consumption) should be completely transparent to user space. Just like
+> ARCH_WANT_HUGE_PMD_SHARE currently is unless I am missing something
+> important.
 > 
-> The second case is that when _PAGE_DIRTY is replaced with _PAGE_COW non-
-> atomically, a transient shadow stack PTE can be created as a result.
-> Thus, prevent that with cmpxchg.
-> 
-> Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
-> insights to the issue.  Jann Horn provided the cmpxchg solution.
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  arch/x86/include/asm/pgtable.h | 36 ++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> index cf7316e968df..df4ce715560a 100644
-> --- a/arch/x86/include/asm/pgtable.h
-> +++ b/arch/x86/include/asm/pgtable.h
-> @@ -1278,6 +1278,24 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
->  static inline void ptep_set_wrprotect(struct mm_struct *mm,
->  				      unsigned long addr, pte_t *ptep)
->  {
-> +	/*
-> +	 * If Shadow Stack is enabled, pte_wrprotect() moves _PAGE_DIRTY
-> +	 * to _PAGE_COW (see comments at pte_wrprotect()).
-> +	 * When a thread reads a RW=1, Dirty=0 PTE and before changing it
-> +	 * to RW=0, Dirty=0, another thread could have written to the page
-> +	 * and the PTE is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-> +	 * PTE changes and update old_pte, then try again.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pte_t old_pte, new_pte;
-> +
-> +		old_pte = READ_ONCE(*ptep);
-> +		do {
-> +			new_pte = pte_wrprotect(old_pte);
-> +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
-> +
-> +		return;
-> +	}
->  	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
->  }
->  
-> @@ -1322,6 +1340,24 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
->  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
->  				      unsigned long addr, pmd_t *pmdp)
->  {
-> +	/*
-> +	 * If Shadow Stack is enabled, pmd_wrprotect() moves _PAGE_DIRTY
-> +	 * to _PAGE_COW (see comments at pmd_wrprotect()).
-> +	 * When a thread reads a RW=1, Dirty=0 PMD and before changing it
-> +	 * to RW=0, Dirty=0, another thread could have written to the page
-> +	 * and the PMD is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-> +	 * PMD changes and update old_pmd, then try again.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pmd_t old_pmd, new_pmd;
-> +
-> +		old_pmd = READ_ONCE(*pmdp);
-> +		do {
-> +			new_pmd = pmd_wrprotect(old_pmd);
-> +		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
+> The VM_MAYSHARE check in want_pmd_share()->vma_shareable() makes me assume
+> that we really only optimize for MAP_SHARED right now, never for
+> MAP_PRIVATE.
 
-Why is that try_cmpxchg() call doing casting to its operands instead of
-like the pte one above?
+It's definitely *not* about being transparent to userspace.  It's about
+giving userspace new functionality where multiple processes can choose
+to share a portion of their address space with each other.  What any
+process changes in that range changes, every sharing process sees.
+mmap(), munmap(), mprotect(), mremap(), everything.
 
-I.e., why aren't you doing here the same thing as above:
-
-		...
-		} while (!try_cmpxchg(&pmdp->pmd, &old_pmd.pmd, new_pmd.pmd));
-
-?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
