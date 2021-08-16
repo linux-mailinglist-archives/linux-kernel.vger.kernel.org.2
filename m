@@ -2,111 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236FE3ECEAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A653ECEB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhHPGir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:38:47 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:18128 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230442AbhHPGiq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:38:46 -0400
-X-UUID: 5d7d5474ea4e4f7eb6e3e368c49424be-20210816
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=12//E0MrCca/AisDc97mnYI9peKrrOex0Lod2WXevtQ=;
-        b=ssV5h5u8EZW1zd9G1ePs3eVH5JNCm1zmIaRx0YE/J818wXBjfxdvaOggHc08CB3aWCOIdkUaGp+pnCJYlxFPq8Jc4jgVEAYSNJbQRAk35FDFeoIjVqeAlY5dfj4vd5rYQSR27o7mL6RvOPKuNqnkMP6ScxCBhLcvhq9TXE2KV64=;
-X-UUID: 5d7d5474ea4e4f7eb6e3e368c49424be-20210816
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <houlong.wei@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1073371218; Mon, 16 Aug 2021 14:38:12 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 16 Aug
- 2021 14:38:01 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 16 Aug 2021 14:38:00 +0800
-Message-ID: <76560e846d084f89e37cc8ccd7ca714e539c2803.camel@mediatek.com>
-Subject: Re: [PATCH v2] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-From:   houlong wei <houlong.wei@mediatek.com>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "dafna3@gmail.com" <dafna3@gmail.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "tfiga@chromium.org" <tfiga@chromium.org>,
-        Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?= 
-        <Minghsiu.Tsai@mediatek.com>,
-        Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?= 
-        <Andrew-CT.Chen@mediatek.com>,
-        Tiffany Lin =?UTF-8?Q?=28=E6=9E=97=E6=85=A7=E7=8F=8A=29?= 
-        <tiffany.lin@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "courbot@chromium.org" <courbot@chromium.org>,
-        "hsinyi@chromium.org" <hsinyi@chromium.org>,
-        "eizan@chromium.org" <eizan@chromium.org>,
-        <houlong.wei@mediatek.com>
-Date:   Mon, 16 Aug 2021 14:38:01 +0800
-In-Reply-To: <20210806082810.9378-1-dafna.hirschfeld@collabora.com>
-References: <20210806082810.9378-1-dafna.hirschfeld@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S233487AbhHPGm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230442AbhHPGmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 02:42:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C4361A51;
+        Mon, 16 Aug 2021 06:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629096108;
+        bh=O8dpjKa3LoFhx1uZWjgWVWjFUc5corw5KPdK4GWHD80=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gFQi9tedmh5BXSbzTqAybSYyXPQPQiC+RwW62EAbwkAFZJAozqqXviXot5x11Rmr2
+         F04A4gAqonO8y7aLbYYknMhgQSNmgUXZMakrU+1OEnF36bIkzoUCAM5nn7cc26Jyig
+         Zccsd6+u3RAQqbFeIw9Q3JSXoqJd2SNf1XgkD6UvCk6KUcP5UCqDnOShBw2Ep5LCVe
+         /CXRcMx+Jo20gM4kLPsa/nwZbwRY80h9SPFS0WrnQBowBTelvV9sW5eQHRSgu7JyHy
+         8XaUnCoMlIfod3zCqehpbZulwoTQIcuCPcDG7CfOS/G/cSFhI12QUkqNTXiwB0ZISr
+         Ab25LR2V1n4RA==
+Subject: Re: [PATCH v6] f2fs: introduce /sys/fs/f2fs/<disk>/fsck_stack node
+To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>, jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <AJAAagAPD-VfBUmHLD9YN4pD.3.1629086526174.Hmail.frank.li@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <2692c9c0-bb9f-0dd2-f0ca-6abb89e34c47@kernel.org>
+Date:   Mon, 16 Aug 2021 14:41:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 771D58D45B93244CED2E1141867E5E3129C614AEA2FA04CE8851AE9F5553180F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <AJAAagAPD-VfBUmHLD9YN4pD.3.1629086526174.Hmail.frank.li@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA4LTA2IGF0IDE2OjI4ICswODAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
-Og0KPiBGcm9tOiBBbGV4YW5kcmUgQ291cmJvdCA8YWNvdXJib3RAY2hyb21pdW0ub3JnPg0KPiAN
-Cj4gV2hlbiBydW5uaW5nIG1lbWNweV90b2lvOg0KPiBtZW1jcHlfdG9pbyhzZW5kX29iai0+c2hh
-cmVfYnVmLCBidWYsIGxlbik7DQo+IGl0IHdhcyBmb3VuZCB0aGF0IGVycm9ycyBhcHBlYXIgaWYg
-bGVuIGlzIG5vdCBhIG11bHRpcGxlIG9mIDg6DQo+IA0KPiBbNTguMzUwODQxXSBtdGstbWRwIDE0
-MDAxMDAwLnJkbWE6IHByb2Nlc3NpbmcgZmFpbGVkOiAtMjINCj4gDQo+IFRoaXMgcGF0Y2ggZW5z
-dXJlIGNvcHkgb2YgYSBtdWx0aWxlIG9mIDggc2l6ZSBieSBjYWxsaW5nDQo+IHJvdW5kX3VwKGxl
-biwgOCkgd2hlbiBjb3B5aW5nDQo+IA0KPiBGaXhlczogZTY1OTlhZGZhZDMwICgibWVkaWE6IG10
-ay12cHU6IGF2b2lkIHVuYWxpZ25lZCBhY2Nlc3MgdG8gRFRDTQ0KPiBidWZmZXIuIikNCj4gU2ln
-bmVkLW9mZi1ieTogQWxleGFuZHJlIENvdXJib3QgPGFjb3VyYm90QGNocm9taXVtLm9yZz4NCj4g
-U2lnbmVkLW9mZi1ieTogRW5yaWMgQmFsbGV0Ym8gaSBTZXJyYSA8ZW5yaWMuYmFsbGV0Ym9AY29s
-bGFib3JhLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogRGFmbmEgSGlyc2NoZmVsZCA8ZGFmbmEuaGly
-c2NoZmVsZEBjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gY2hhbmdlcyBzaW5jZSB2MToNCj4gMS4g
-Y2hhbmdlIHNpZ24tb2ZmLWJ5IHRhZ3MNCj4gMi4gY2hhbmdlIHZhbHVlcyB0byBtZW1zZXQNCj4g
-DQo+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12cHUvbXRrX3ZwdS5jIHwgNSArKysrLQ0K
-PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZwdS9tdGtfdnB1LmMNCj4g
-Yi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12cHUvbXRrX3ZwdS5jDQo+IGluZGV4IGVjMjkw
-ZGRlNTljZi4uNjYyNzZjNWExYmMzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRm
-b3JtL210ay12cHUvbXRrX3ZwdS5jDQo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRr
-LXZwdS9tdGtfdnB1LmMNCj4gQEAgLTMxNiw2ICszMTYsNyBAQCBpbnQgdnB1X2lwaV9zZW5kKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQo+ICB7DQo+ICAJc3RydWN0IG10a192cHUgKnZw
-dSA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOw0KPiAgCXN0cnVjdCBzaGFyZV9vYmogX19p
-b21lbSAqc2VuZF9vYmogPSB2cHUtPnNlbmRfYnVmOw0KPiArCXVuc2lnbmVkIGNoYXIgZGF0YVtT
-SEFSRV9CVUZfU0laRV07DQo+ICAJdW5zaWduZWQgbG9uZyB0aW1lb3V0Ow0KPiAgCWludCByZXQg
-PSAwOw0KPiAgDQo+IEBAIC0zNDksNyArMzUwLDkgQEAgaW50IHZwdV9pcGlfc2VuZChzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2LA0KPiAgCQl9DQo+ICAJfSB3aGlsZSAodnB1X2NmZ19yZWFk
-bCh2cHUsIEhPU1RfVE9fVlBVKSk7DQo+ICANCj4gLQltZW1jcHlfdG9pbyhzZW5kX29iai0+c2hh
-cmVfYnVmLCBidWYsIGxlbik7DQo+ICsJbWVtc2V0KGRhdGEgKyBsZW4sIDAsIHNpemVvZihkYXRh
-KSAtIGxlbik7DQo+ICsJbWVtY3B5KGRhdGEsIGJ1ZiwgbGVuKTsNCj4gKwltZW1jcHlfdG9pbyhz
-ZW5kX29iai0+c2hhcmVfYnVmLCBkYXRhLCByb3VuZF91cChsZW4sIDgpKTsNCg0KSGkgRGFmbmEs
-DQoNClRoYW5rcyBmb3IgeW91ciBwYXRjaC4NCkluIHRoaXMgcGF0Y2gsIHRoZSBkYXRhIGlzIGNv
-cGllZCB0d2ljZSBldmVuIGlmIHRoZSAnbGVuJyBpcyBtdWxpdHBsZQ0Kb2YgOC4gQ2FuIHdlIGp1
-ZGdlIHRoZSBhbGlnbm1lbnQgYW5kIGRlY2lkZSB0byBjb3B5IG9uY2Ugb3IgdHdpY2UgPyANCkxp
-a2UgYmVsb3csIHdoaWNoIG1heSByZWR1Y2UgdGhlIGxhdGVuY3kgb2YgdGhpcyBmdW5jdGlvbiBh
-IGJpdCB3aGVuDQonbGVuJyBpcyBtdWx0aXBsZSBvZiA4Lg0KaWYgKHVubGlrZWx5KChsZW4gJSA4
-KSAhPSAwKSkgew0KCXVuc2lnbmVkIGNoYXIgZGF0YVtTSEFSRV9CVUZfU0laRV07DQoJDQoJbWVt
-c2V0KGRhdGEgKyBsZW4sIDAsIHNpemVvZihkYXRhKSAtIGxlbik7DQoJbWVtY3B5KGRhdGEsIGJ1
-ZiwgbGVuKTsNCgltZW1jcHlfdG9pbyhzZW5kX29iai0+c2hhcmVfYnVmLCBkYXRhLCByb3VuZF91
-cChsZW4sIDgpKTsNCn0gZWxzZSB7DQoJbWVtY3B5X3RvaW8oc2VuZF9vYmotPnNoYXJlX2J1Ziwg
-YnVmLCBsZW4pOw0KfQ0KDQoNClJlZ2FyZHMsDQpIb3Vsb25nDQoNCj4gIAl3cml0ZWwobGVuLCAm
-c2VuZF9vYmotPmxlbik7DQo+ICAJd3JpdGVsKGlkLCAmc2VuZF9vYmotPmlkKTsNCj4gIA0KPiAt
-LSANCj4gMi4xNy4xDQoNCg==
+On 2021/8/16 12:02, 李扬韬 wrote:
+> HI Chao,
+>>> SBI_NEED_FSCK is an indicator that fsck.f2fs needs to be triggered,
+>>> this flag is set in too many places. For some scenes that are not very
+>>> reproducible, adding stack information will help locate the problem.
+>>>
+>>> Let's record all fsck stack history, I added F2FS_FSCK_STACK_TRACE
+>>> configuration options and sysfs nodes. After opening the configuration
+>>> options and enabling the node, it will start recording. The recorded
+>>> stack information will not be clear, and we can get information form
+>>> kernel log.
+>>>
+>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+>>> ---
+>>>    Documentation/ABI/testing/sysfs-fs-f2fs |  7 ++++
+>>>    fs/f2fs/Kconfig                         | 10 ++++++
+>>>    fs/f2fs/f2fs.h                          | 45 +++++++++++++++++++++++++
+>>>    fs/f2fs/sysfs.c                         | 27 +++++++++++++++
+>>>    4 files changed, 89 insertions(+)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+>>> index ef4b9218ae1e..047c398093cf 100644
+>>> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+>>> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+>>> @@ -493,3 +493,10 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
+>>>    Description:	When ATGC is on, it controls age threshold to bypass GCing young
+>>>    		candidates whose age is not beyond the threshold, by default it was
+>>>    		initialized as 604800 seconds (equals to 7 days).
+>>> +
+>>> +What:		/sys/fs/f2fs/<disk>/fsck_stack
+>>> +Date:		August 2021
+>>> +Contact:	"Yangtao Li" <frank.li@vivo.com>
+>>> +Description:	Controls to enable/disable fsck stack trace, you can get stack
+>>> +		information from kernel log. Note that the recorded stack information
+>>> +		will not be cleared.
+>>
+>> Again, please don't add this into sysfs.
 
+Oh, I missed to check the details...
+
+> 
+> I added this node, part of the idea is to trigger the export of stack information.
+> There is no information transmitted through sysfs here, but the record of the stack is switched on and off.
+> If don't export this information through procfs and sysfs, is there a more appropriate way?
+
+Well, I doubt why we should export stack info via proc/sysfs node or
+sysfs switch.
+
+Those info will always be needed to troubleshoot issues no matter in
+user or eng version of Android, can we just print them directly into
+kernel message... what I concern is we may lost the bug scene due to
+no one can help to trigger dmesg printing via sysfs.
+
+Jaegeuk, thoughts?
+
+> 
+>>
+>>> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+>>> index 7669de7b49ce..f451e567e4a8 100644
+>>> --- a/fs/f2fs/Kconfig
+>>> +++ b/fs/f2fs/Kconfig
+>>> @@ -135,3 +135,13 @@ config F2FS_FS_LZORLE
+>>>    	default y
+>>>    	help
+>>>    	  Support LZO-RLE compress algorithm, if unsure, say Y.
+>>> +
+>>> +config F2FS_FSCK_STACK_TRACE
+>>
+>> I don't think we need another config to wrap this functionality, may be we
+>> can use F2FS_CHECK_FS instead.
+> 
+> OK.
+> 
+>>
+>>> +	bool "F2FS fsck stack information record"
+>>> +	depends on F2FS_FS
+>>> +	depends on STACKDEPOT
+>>> +	default y
+>>> +	help
+>>> +	 Support printing out fsck stack history. With this, you have to
+>>> +	 turn on "fsck_stack" sysfs node. Then you can get information
+>>> +	 from kernel log.
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index ee8eb33e2c25..b2d1d1a5a3fc 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -24,6 +24,8 @@
+>>>    #include <linux/quotaops.h>
+>>>    #include <linux/part_stat.h>
+>>>    #include <crypto/hash.h>
+>>> +#include <linux/stackdepot.h>
+>>> +#include <linux/stacktrace.h>
+>>>    
+>>>    #include <linux/fscrypt.h>
+>>>    #include <linux/fsverity.h>
+>>> @@ -117,6 +119,8 @@ typedef u32 nid_t;
+>>>    
+>>>    #define COMPRESS_EXT_NUM		16
+>>>    
+>>> +#define FSCK_STACK_DEPTH		64
+>>
+>> 16?
+> 
+> OK.
+> 
+>>
+>>> +
+>>>    struct f2fs_mount_info {
+>>>    	unsigned int opt;
+>>>    	int write_io_size_bits;		/* Write IO size bits */
+>>> @@ -1748,6 +1752,11 @@ struct f2fs_sb_info {
+>>>    	unsigned int compress_watermark;	/* cache page watermark */
+>>>    	atomic_t compress_page_hit;		/* cache hit count */
+>>>    #endif
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +	depot_stack_handle_t *fsck_stack_history;
+>>> +	unsigned int fsck_count;
+>>> +	bool fsck_stack;
+>>
+>> IMO, all bug_on()s are corner cases, and catching those stacks won't cost
+>> much, so we can just use CONFIG_XXX to enable/disable this feature.
+> 
+> F2FS_CHECK_FS ？
+> 
+>>
+>>> +#endif
+>>>    };
+>>>    
+>>>    struct f2fs_private_dio {
+>>> @@ -1954,6 +1963,38 @@ static inline struct address_space *NODE_MAPPING(struct f2fs_sb_info *sbi)
+>>>    	return sbi->node_inode->i_mapping;
+>>>    }
+>>>    
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +static void fsck_stack_trace(struct f2fs_sb_info *sbi)
+>>> +{
+>>> +	unsigned long entries[FSCK_STACK_DEPTH];
+>>> +	depot_stack_handle_t stack, *new;
+>>> +	unsigned int nr_entries;
+>>> +	int i;
+>>> +
+>>> +	if (!sbi->fsck_stack)
+>>> +		return;
+>>> +
+>>> +	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
+>>> +	nr_entries = filter_irq_stacks(entries, nr_entries);
+>>> +	stack = stack_depot_save(entries, nr_entries, GFP_KERNEL);
+>>> +	if (!stack)
+>>> +		return;
+>>> +
+>>> +	/* Try to find an existing entry for this backtrace */
+>>> +	for (i = 0; i < sbi->fsck_count; i++)
+>>> +		if (sbi->fsck_stack_history[i] == stack)
+>>> +			return;
+>>> +
+>>> +	new = krealloc(sbi->fsck_stack_history, (sbi->fsck_count + 1) *
+>>> +		       sizeof(*sbi->fsck_stack_history), GFP_KERNEL);
+>>> +	if (!new)
+>>> +		return;
+>>> +
+>>> +	sbi->fsck_stack_history = new;
+>>> +	sbi->fsck_stack_history[sbi->fsck_count++] = stack;
+>>
+>> It will case memory leak after f2fs module exits.
+> 
+> So let's enable this feature when f2fs is not a module and enable F2FS_CHECK_FS.
+
+I mean it needs to free .fsck_stack_history during umount().
+
+Thanks,
+
+> 
+>>
+>>> +}
+>>> +#endif
+>>> +
+>>>    static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+>>>    {
+>>>    	return test_bit(type, &sbi->s_flag);
+>>> @@ -1962,6 +2003,10 @@ static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+>>>    static inline void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+>>>    {
+>>>    	set_bit(type, &sbi->s_flag);
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +	if (unlikely(type == SBI_NEED_FSCK))
+>>> +		fsck_stack_trace(sbi);
+>>> +#endif
+>>>    }
+>>>    
+>>>    static inline void clear_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>>> index 204de4c2c818..4e786bb797e7 100644
+>>> --- a/fs/f2fs/sysfs.c
+>>> +++ b/fs/f2fs/sysfs.c
+>>> @@ -306,6 +306,26 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+>>>    	if (!strcmp(a->attr.name, "compr_new_inode"))
+>>>    		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
+>>>    #endif
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +	if (!strcmp(a->attr.name, "fsck_stack")) {
+>>> +		unsigned long *entries;
+>>> +		unsigned int nr_entries;
+>>> +		unsigned int i;
+>>> +		int count;
+>>> +
+>>> +		count = sysfs_emit(buf, "%u\n", sbi->fsck_stack);
+>>> +		if (!sbi->fsck_stack)
+>>> +			return count;
+>>> +
+>>> +		for (i = 0; i < sbi->fsck_count; i++) {
+>>> +			nr_entries = stack_depot_fetch(sbi->fsck_stack_history[i], &entries);
+>>> +			if (!entries)
+>>> +				return count;
+>>> +			stack_trace_print(entries, nr_entries, 0);
+>>> +		}
+>>> +		return count;
+>>> +	}
+>>> +#endif
+>>>    
+>>>    	ui = (unsigned int *)(ptr + a->offset);
+>>>    
+>>> @@ -740,6 +760,10 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
+>>>    F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
+>>>    F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
+>>>    
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, fsck_stack, fsck_stack);
+>>> +#endif
+>>> +
+>>>    #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+>>>    static struct attribute *f2fs_attrs[] = {
+>>>    	ATTR_LIST(gc_urgent_sleep_time),
+>>> @@ -812,6 +836,9 @@ static struct attribute *f2fs_attrs[] = {
+>>>    	ATTR_LIST(atgc_candidate_count),
+>>>    	ATTR_LIST(atgc_age_weight),
+>>>    	ATTR_LIST(atgc_age_threshold),
+>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>> +	ATTR_LIST(fsck_stack),
+>>> +#endif
+>>>    	NULL,
+>>>    };
+>>>    ATTRIBUTE_GROUPS(f2fs);
+>>>
+> 
+> Thx,
+> Yangtao
+> 
