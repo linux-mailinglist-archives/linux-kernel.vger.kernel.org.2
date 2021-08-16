@@ -2,187 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9813EDCE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DEB3EDCE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhHPSKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
+        id S233017AbhHPSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233119AbhHPSKZ (ORCPT
+        with ESMTP id S233104AbhHPSKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 14:10:25 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2927FC0612A4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so655985pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E975EC0612A5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:48 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id r19so24454077eds.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p2bkqWFEC2gR2YtuFUx6Fm7qYd1zZdWbBWhk55kWfPA=;
-        b=a2tVNda0WPfrJUw66HIu72ovJiFEENcVs4kaBBZ++kllMOZqV2QLrtqOxDWz3czrbp
-         WfSp55yY9ZysyKQW9q5/bm++/rWkAz4/buGG4G1HLv3QwcC2UALa3b5E9XK84NVBwXC/
-         FTYyqS2F106horA2gZpCs1tPa47BJf71yM0gmITYiFBWgF2dUknhn+zZ46lsMja6ZTKL
-         Dlj0r4xQEKt4ABoGbVRDjroXAnV3Mqx6hSJazfcczijWk/PfPURd92RomCfOyQnTWDbY
-         068hp5vjXluNF9B3R6p4JCN0Fl8WYuYtXMJVL7rxHX+1U2rNPk3VeOYtBXyZj2ajuWOW
-         DlaQ==
+        d=mind.be; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Zj9DtZNu3Q5lzcO5ya/7HcU4ots3BHO7m+UZEwEjOK0=;
+        b=P3od03FJR7TCIir+ZWZ9KFRvdy627Sj59JznVxQNEjZa6DAEwzLat+vf7fsL9PQ1VN
+         g82QHQo0uSEd2nbyoaIaxq8SAMKn8nJp/9mDdE23HWEkokYeLfS1EAFeC4XsI+YBsGQm
+         bdz+8X1RiY5vA2SuWJO820nQ6wVY+quykzw4wbtATB2lFSv3wOaYmCB64y32DnVxYTyj
+         +Yw7iIY9HT7ib4OE0zs6dZuDKpzCK1WvFDB97AvvzSLKCvm3M3aT9+Y3NNGYx1GymQ6O
+         KqW6EJkyU0eHqPSNpEQ9PpRj159vYQ9NzfqoszO0ccVvSD+3V6Dz5I3Z78tqRA7vfOsy
+         yRlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=p2bkqWFEC2gR2YtuFUx6Fm7qYd1zZdWbBWhk55kWfPA=;
-        b=AZGudx3ojYhhg+6hy4nzJOKERylwnGrO5TnAj0QKf3so+wuryJ9Xu7QM5QReAFNEME
-         tf0TOOqDqyMUSHRCl28xxA3517MvpijOrAY9ZZq63K8tk5HcN+k7d3aqUeUw7fS+khKq
-         pATOmbTiWGzmHf8V9vj9/6GHEfAqJHA3UrO+duVX8ysFZ0C5ZIqnaZHj7goKTXf//b01
-         r2ZJ/ecEbecuub3fPa2+XNmPqRPYYAzg4DIhF8uesLHT7xeD86VgpSZ2y8V0o7WltHLa
-         g6++ehK2gX8venG93qQUjjouJvf9EhQc6ZCJdGg2Gw+H9Q6uTrt5efB7wrA9Sz01m9ru
-         0EXA==
-X-Gm-Message-State: AOAM532Odp1DDRdRWNFRkWAnBNA5AueK8503fW2yJrH7G3x2s1AH1mb2
-        yFoptHF7N6C60OuCkzKuTJ9v0Q==
-X-Google-Smtp-Source: ABdhPJx6qk04s9V+PiQeWIf6lJD6Fodj3Tj/KvxstJ8AiEsyYECec+zhqFGWJCp6Zb+C5CUk4VwmRQ==
-X-Received: by 2002:a65:4307:: with SMTP id j7mr58100pgq.387.1629137386557;
-        Mon, 16 Aug 2021 11:09:46 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id gd14sm165849pjb.4.2021.08.16.11.09.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Zj9DtZNu3Q5lzcO5ya/7HcU4ots3BHO7m+UZEwEjOK0=;
+        b=G1LLVUklsZxSgPBC6qwyS2ATv60zdNEdbt4JAcDs9uqd9MgFrB5NzkgOJGphUVDa0X
+         +/eI0Ac64LpIn/1k6OzZBZnxMoGcPAtiJXP/dhunRjN1Fd85emw+rBps+3vqYfG5qlLm
+         G0YImWaGDUuJ3W8ZHQsKDEkgVpFa+E8GI6kKIsy3mJuYje/8WoNK1/UvaCD5nvqHnxK6
+         WSyhC11MBzMNK777d+a/Hrm39f9RU53tWDVRvdGQ50mqoGhOI7ofqw4gET4tZaYSPBtq
+         +YBflK8PXR6plPyi34KE4VbaL/MgS3NcqPFIrGx0cnGyWwKhAk4oI3TXgn3PdBVa3f4M
+         U44g==
+X-Gm-Message-State: AOAM530PCGRAzTneb6G9y9D8fihGJKeNiRrqPwk8C7Mm4SmpC/b4aET/
+        EfggcTEoVy484dm/9vIe9/YGpQ==
+X-Google-Smtp-Source: ABdhPJyu91YcIG5W9sZ9ALo4QBALyweoiLRGGYmbZVc/12XWHfdEMc8XMzaOyCZdbTrBKUIiFGiDqw==
+X-Received: by 2002:aa7:d681:: with SMTP id d1mr22359818edr.186.1629137387595;
+        Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
+Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
+        by smtp.gmail.com with ESMTPSA id bm1sm3989649ejb.38.2021.08.16.11.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 11:09:45 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 11:09:45 -0700 (PDT)
-X-Google-Original-Date: Mon, 16 Aug 2021 11:09:43 PDT (-0700)
-Subject:     Re: [PATCH 1/1] riscv: __asm_copy_to-from_user: Improve using word copy if size < 9*SZREG
-In-Reply-To: <e3e9fb3a-40b1-50f3-23cc-50bfa53baa8d@gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, linux@roeck-us.net,
-        geert@linux-m68k.org, qiuwenbo@kylinos.com.cn,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     akira.tsukamoto@gmail.com
-Message-ID: <mhng-f83b1d51-c006-4b01-830a-0f827f0c56a1@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 16 Aug 2021 11:09:47 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 20:09:45 +0200
+From:   Ben Hutchings <ben.hutchings@mind.be>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 5/5] net: dsa: microchip: ksz8795: Use software
+ untagging on CPU port
+Message-ID: <20210816180945.GI18930@cephalopod>
+References: <20210816174905.GD18930@cephalopod>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816174905.GD18930@cephalopod>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 06:52:44 PDT (-0700), akira.tsukamoto@gmail.com wrote:
-> Reduce the number of slow byte_copy when the size is in between
-> 2*SZREG to 9*SZREG by using none unrolled word_copy.
->
-> Without it any size smaller than 9*SZREG will be using slow byte_copy
-> instead of none unrolled word_copy.
->
-> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
-> ---
->  arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
->  1 file changed, 42 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-> index 63bc691cff91..6a80d5517afc 100644
-> --- a/arch/riscv/lib/uaccess.S
-> +++ b/arch/riscv/lib/uaccess.S
-> @@ -34,8 +34,10 @@ ENTRY(__asm_copy_from_user)
->  	/*
->  	 * Use byte copy only if too small.
->  	 * SZREG holds 4 for RV32 and 8 for RV64
-> +	 * a3 - 2*SZREG is minimum size for word_copy
-> +	 *      1*SZREG for aligning dst + 1*SZREG for word_copy
->  	 */
-> -	li	a3, 9*SZREG /* size must be larger than size in word_copy */
-> +	li	a3, 2*SZREG
->  	bltu	a2, a3, .Lbyte_copy_tail
->
->  	/*
-> @@ -66,9 +68,40 @@ ENTRY(__asm_copy_from_user)
->  	andi	a3, a1, SZREG-1
->  	bnez	a3, .Lshift_copy
->
-> +.Lcheck_size_bulk:
-> +	/*
-> +	 * Evaluate the size if possible to use unrolled.
-> +	 * The word_copy_unlrolled requires larger than 8*SZREG
-> +	 */
-> +	li	a3, 8*SZREG
-> +	add	a4, a0, a3
-> +	bltu	a4, t0, .Lword_copy_unlrolled
-> +
->  .Lword_copy:
-> -        /*
-> -	 * Both src and dst are aligned, unrolled word copy
-> +	/*
-> +	 * Both src and dst are aligned
-> +	 * None unrolled word copy with every 1*SZREG iteration
-> +	 *
-> +	 * a0 - start of aligned dst
-> +	 * a1 - start of aligned src
-> +	 * t0 - end of aligned dst
-> +	 */
-> +	bgeu	a0, t0, .Lbyte_copy_tail /* check if end of copy */
-> +	addi	t0, t0, -(SZREG) /* not to over run */
-> +1:
-> +	REG_L	a5, 0(a1)
-> +	addi	a1, a1, SZREG
-> +	REG_S	a5, 0(a0)
-> +	addi	a0, a0, SZREG
-> +	bltu	a0, t0, 1b
-> +
-> +	addi	t0, t0, SZREG /* revert to original value */
-> +	j	.Lbyte_copy_tail
-> +
-> +.Lword_copy_unlrolled:
-> +	/*
-> +	 * Both src and dst are aligned
-> +	 * Unrolled word copy with every 8*SZREG iteration
->  	 *
->  	 * a0 - start of aligned dst
->  	 * a1 - start of aligned src
-> @@ -97,7 +130,12 @@ ENTRY(__asm_copy_from_user)
->  	bltu	a0, t0, 2b
->
->  	addi	t0, t0, 8*SZREG /* revert to original value */
-> -	j	.Lbyte_copy_tail
-> +
-> +	/*
-> +	 * Remaining might large enough for word_copy to reduce slow byte
-> +	 * copy
-> +	 */
-> +	j	.Lcheck_size_bulk
->
->  .Lshift_copy:
+commit 9130c2d30c17846287b803a9803106318cbe5266 upstream.
 
-I'm still not convinced that going all the way to such a large unrolling 
-factor is a net win, but this at least provides a much smoother cost 
-curve.
+On the CPU port, we can support both tagged and untagged VLANs at the
+same time by doing any necessary untagging in software rather than
+hardware.  To enable that, keep the CPU port's Remove Tag flag cleared
+and set the dsa_switch::untag_bridge_pvid flag.
 
-That said, this is causing my 32-bit configs to hang.  There were a few 
-conflicts so I may have messed something up, but nothing is jumping out 
-at me.  I've put what I ended up with on a branch, if you have time to 
-look that'd be great but if not then I'll take another shot at this when 
-I get back around to it.
+Fixes: e66f840c08a2 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
+Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[bwh: Backport to 5.10: adjust context]
+Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
+---
+ drivers/net/dsa/microchip/ksz8795.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/commit/?h=wip-word_user_copy
-
-Here's the backtrace, though that's probably not all that useful:
-
-[    0.703694] Unable to handle kernel NULL pointer dereference at virtual address 000005a8
-[    0.704194] Oops [#1]
-[    0.704301] Modules linked in:[    0.704463] CPU: 2 PID: 1 Comm: init Not tainted 5.14.0-rc1-00016-g59461ddb9dbd #5
-[    0.704660] Hardware name: riscv-virtio,qemu (DT)
-[    0.704802] epc : walk_stackframe+0xac/0xc2[    0.704941]  ra : dump_backtrace+0x1a/0x22
-[    0.705074] epc : c0004558 ra : c0004588 sp : c1c5fe10
-[    0.705216]  gp : c18b41c8 tp : c1cd8000 t0 : 00000000[    0.705357]  t1 : ffffffff t2 : 00000000 s0 : c1c5fe40
-[    0.705506]  s1 : c11313dc a0 : 00000000 a1 : 00000000
-[    0.705647]  a2 : c06fd2c2 a3 : c11313dc a4 : c084292d[    0.705787]  a5 : 00000000 a6 : c1864cb8 a7 : 3fffffff
-[    0.705926]  s2 : 00000000 s3 : c1123e88 s4 : 00000000
-[    0.706066]  s5 : c11313dc s6 : c06fd2c2 s7 : 00000001[    0.706206]  s8 : 00000000 s9 : 95af6e28 s10: 00000000
-[    0.706345]  s11: 00000001 t3 : 00000000 t4 : 00000000
-[    0.706482]  t5 : 00000001 t6 : 00000000[    0.706594] status: 00000100 badaddr: 000005a8 cause: 0000000d
-[    0.706809] [<c0004558>] walk_stackframe+0xac/0xc2
-[    0.707019] [<c0004588>] dump_backtrace+0x1a/0x22[    0.707149] [<c06fd312>] show_stack+0x2c/0x38
-[    0.707271] [<c06ffba4>] dump_stack_lvl+0x40/0x58
-[    0.707400] [<c06ffbce>] dump_stack+0x12/0x1a[    0.707521] [<c06fd4f6>] panic+0xfa/0x2a6
-[    0.707632] [<c000e2f4>] do_exit+0x7a8/0x7ac
-[    0.707749] [<c000eefa>] do_group_exit+0x2a/0x7e[    0.707872] [<c000ef60>] __wake_up_parent+0x0/0x20
-[    0.707999] [<c0003020>] ret_from_syscall+0x0/0x2
-[    0.708385] ---[ end trace 260976561a3770d1 ]---
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 8f2b54ae57f2..ada0533b81fa 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -812,9 +812,11 @@ static bool ksz8795_port_vlan_changes_remove_tag(
+ 	/* If a VLAN is added with untagged flag different from the
+ 	 * port's Remove Tag flag, we need to change the latter.
+ 	 * Ignore VID 0, which is always untagged.
++	 * Ignore CPU port, which will always be tagged.
+ 	 */
+ 	return untagged != p->remove_tag &&
+-		!(vlan->vid_begin == 0 && vlan->vid_end == 0);
++		!(vlan->vid_begin == 0 && vlan->vid_end == 0) &&
++		port != dev->cpu_port;
+ }
+ 
+ int ksz8795_port_vlan_prepare(struct dsa_switch *ds, int port,
+@@ -1325,6 +1327,11 @@ static int ksz8795_switch_init(struct ksz_device *dev)
+ 	/* set the real number of ports */
+ 	dev->ds->num_ports = dev->port_cnt + 1;
+ 
++	/* We rely on software untagging on the CPU port, so that we
++	 * can support both tagged and untagged VLANs
++	 */
++	dev->ds->untag_bridge_pvid = true;
++
+ 	/* VLAN filtering is partly controlled by the global VLAN
+ 	 * Enable flag
+ 	 */
+-- 
+2.20.1
