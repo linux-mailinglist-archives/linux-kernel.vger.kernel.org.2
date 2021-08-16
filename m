@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464323ED4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8F23ED623
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236762AbhHPNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:04:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
+        id S238198AbhHPNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236599AbhHPNEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95922632A7;
-        Mon, 16 Aug 2021 13:03:48 +0000 (UTC)
+        id S237215AbhHPNIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:08:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C4B632C0;
+        Mon, 16 Aug 2021 13:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119029;
-        bh=R0Mc7QO+yEoUaS4z/SSDX/RmdCS+x8sLx0+hl7F9KDU=;
+        s=korg; t=1629119237;
+        bh=+8+I/aHfhTxU6u0ECwrMbi1S1XkESYbRawlupUyyV7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvZn5BvUfxfkm6l4AuLO0Bg0cHNnjW+pbOwApKadROlhm9aVOEBQZP3PRTEeOTs12
-         6Dtw+t/7hwNip3LVR2cSEzFsKktFJ/MY0tYSxj3YhlXIu155iyRLVmX/6q1a8uuE+A
-         P/UfVp+bTY8+0CRNLdkAI/MRGst/6qnB3gROL0IY=
+        b=v4HyfbKL+vhcbVQmcdKFEJJqvfBWWMsS8LwceQpBW82U5rpy+zkABal2XKM+i5yHX
+         +Ukzd2OXUyLjt0WXKK1Q6GFSMcDWB/LdQ989zKo5NrH3zu7cBL9xV/FoueSH9Mdnf1
+         KsgDrS7hcP5aOibblkFj7AQQ5WKWyRVvQRBz4U9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 23/62] net: sched: act_mirred: Reset ct info when mirror/redirect skb
-Date:   Mon, 16 Aug 2021 15:01:55 +0200
-Message-Id: <20210816125428.980318023@linuxfoundation.org>
+Subject: [PATCH 5.10 46/96] psample: Add a fwd declaration for skbuff
+Date:   Mon, 16 Aug 2021 15:01:56 +0200
+Message-Id: <20210816125436.494334290@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Roi Dayan <roid@nvidia.com>
 
-[ Upstream commit d09c548dbf3b31cb07bba562e0f452edfa01efe3 ]
+[ Upstream commit beb7f2de5728b0bd2140a652fa51f6ad85d159f7 ]
 
-When mirror/redirect a skb to a different port, the ct info should be reset
-for reclassification. Or the pkts will match unexpected rules. For example,
-with following topology and commands:
+Without this there is a warning if source files include psample.h
+before skbuff.h or doesn't include it at all.
 
-    -----------
-              |
-       veth0 -+-------
-              |
-       veth1 -+-------
-              |
-   ------------
-
- tc qdisc add dev veth0 clsact
- # The same with "action mirred egress mirror dev veth1" or "action mirred ingress redirect dev veth1"
- tc filter add dev veth0 egress chain 1 protocol ip flower ct_state +trk action mirred ingress mirror dev veth1
- tc filter add dev veth0 egress chain 0 protocol ip flower ct_state -inv action ct commit action goto chain 1
- tc qdisc add dev veth1 clsact
- tc filter add dev veth1 ingress chain 0 protocol ip flower ct_state +trk action drop
-
- ping <remove ip via veth0> &
- tc -s filter show dev veth1 ingress
-
-With command 'tc -s filter show', we can find the pkts were dropped on
-veth1.
-
-Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
+Fixes: 6ae0a6286171 ("net: Introduce psample, a new genetlink channel for packet sampling")
 Signed-off-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210808065242.1522535-1-roid@nvidia.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_mirred.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/net/psample.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
-index 8327ef9793ef..e3ff884a48c5 100644
---- a/net/sched/act_mirred.c
-+++ b/net/sched/act_mirred.c
-@@ -261,6 +261,9 @@ static int tcf_mirred_act(struct sk_buff *skb, const struct tc_action *a,
- 			goto out;
- 	}
+diff --git a/include/net/psample.h b/include/net/psample.h
+index 68ae16bb0a4a..20a17551f790 100644
+--- a/include/net/psample.h
++++ b/include/net/psample.h
+@@ -18,6 +18,8 @@ struct psample_group *psample_group_get(struct net *net, u32 group_num);
+ void psample_group_take(struct psample_group *group);
+ void psample_group_put(struct psample_group *group);
  
-+	/* All mirred/redirected skbs should clear previous ct info */
-+	nf_reset_ct(skb2);
++struct sk_buff;
 +
- 	want_ingress = tcf_mirred_act_wants_ingress(m_eaction);
+ #if IS_ENABLED(CONFIG_PSAMPLE)
  
- 	expects_nh = want_ingress || !m_mac_header_xmit;
+ void psample_sample_packet(struct psample_group *group, struct sk_buff *skb,
 -- 
 2.30.2
 
