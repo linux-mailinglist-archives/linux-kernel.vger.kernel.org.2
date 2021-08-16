@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40FC3ED707
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773E43ED4F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbhHPN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:26:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39178 "EHLO mail.kernel.org"
+        id S238230AbhHPNHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:07:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239876AbhHPNQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:16:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9717B632E5;
-        Mon, 16 Aug 2021 13:13:03 +0000 (UTC)
+        id S237328AbhHPNFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B3A63292;
+        Mon, 16 Aug 2021 13:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119584;
-        bh=YcVE0Oy/cmWLgozty8WMzI/97SELMO6QwLwVTGuNg1M=;
+        s=korg; t=1629119105;
+        bh=w1sIXQYp8mVTz7idXQYrWyp3HBVP2rORx89dx15yiR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ELlnzH6fGJjxB1W2MEWjFhkvab+T6WAflB0cOH07Emebfj9IFr+GULJKAGY46GW3O
-         yxo+zvyjwisv1BLl53TB//g1PO/8yPFyaYNNABq5WrHX2KbzvFHydooOl5LUCpEshP
-         Arsne3fGuaUZHN+LcKzuZC8MqBNBOP1i3TMCaP/0=
+        b=yFwlnE87UAUWcZVAmrnV+GbtdqGyT/eJWUt4SKFIPU0S3pNDOfqUXqwNTqnfsfbMF
+         VFSgGgpa213VHz3QdIyH9O/HdZ+fUcU0g4yPs5hFJfJrSnK5N5rVHrGbia+GAgjefI
+         0yX0owOOuVjGYAYO8VKm2DXuBu9hClbptRvxfuMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
-        Maor Dickman <maord@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Ben Hutchings <ben.hutchings@mind.be>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 082/151] net/mlx5e: Avoid creating tunnel headers for local route
-Date:   Mon, 16 Aug 2021 15:01:52 +0200
-Message-Id: <20210816125446.779241357@linuxfoundation.org>
+Subject: [PATCH 5.4 21/62] net: phy: micrel: Fix link detection on ksz87xx switch"
+Date:   Mon, 16 Aug 2021 15:01:53 +0200
+Message-Id: <20210816125428.912210031@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roi Dayan <roid@nvidia.com>
+From: Ben Hutchings <ben.hutchings@mind.be>
 
-[ Upstream commit c623c95afa56bf4bf64e4f58742dc94616ef83db ]
+[ Upstream commit 2383cb9497d113360137a2be308b390faa80632d ]
 
-It could be local and remote are on the same machine and the route
-result will be a local route which will result in creating encap id
-with src/dst mac address of 0.
+Commit a5e63c7d38d5 "net: phy: micrel: Fix detection of ksz87xx
+switch" broke link detection on the external ports of the KSZ8795.
 
-Fixes: a54e20b4fcae ("net/mlx5e: Add basic TC tunnel set action for SRIOV offloads")
-Signed-off-by: Roi Dayan <roid@nvidia.com>
-Reviewed-by: Maor Dickman <maord@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+The previously unused phy_driver structure for these devices specifies
+config_aneg and read_status functions that appear to be designed for a
+fixed link and do not work with the embedded PHYs in the KSZ8795.
+
+Delete the use of these functions in favour of the generic PHY
+implementations which were used previously.
+
+Fixes: a5e63c7d38d5 ("net: phy: micrel: Fix detection of ksz87xx switch")
+Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/phy/micrel.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-index 172e0474f2e6..3980a3905084 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-@@ -124,6 +124,11 @@ static int mlx5e_route_lookup_ipv4_get(struct mlx5e_priv *priv,
- 	if (IS_ERR(rt))
- 		return PTR_ERR(rt);
- 
-+	if (rt->rt_type != RTN_UNICAST) {
-+		ret = -ENETUNREACH;
-+		goto err_rt_release;
-+	}
-+
- 	if (mlx5_lag_is_multipath(mdev) && rt->rt_gw_family != AF_INET) {
- 		ret = -ENETUNREACH;
- 		goto err_rt_release;
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 910ab2182158..f95bd1b0fb96 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -1184,8 +1184,6 @@ static struct phy_driver ksphy_driver[] = {
+ 	.name		= "Micrel KSZ87XX Switch",
+ 	/* PHY_BASIC_FEATURES */
+ 	.config_init	= kszphy_config_init,
+-	.config_aneg	= ksz8873mll_config_aneg,
+-	.read_status	= ksz8873mll_read_status,
+ 	.match_phy_device = ksz8795_match_phy_device,
+ 	.suspend	= genphy_suspend,
+ 	.resume		= genphy_resume,
 -- 
 2.30.2
 
