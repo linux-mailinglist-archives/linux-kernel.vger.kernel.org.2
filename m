@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E473EDF44
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EF33EDF2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhHPVUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:20:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42370 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhHPVUi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:20:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 725931FEF1;
-        Mon, 16 Aug 2021 21:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629148805;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r6G0aVCgmVmUP8HSXqqU/Wq0OX2gySeKiq/rD3SU+Os=;
-        b=LsQwxfBZD9aHcCxyocnUUsx60iCfWshRWodRUvRhDEuYaX3ju+6Nr2ol+wgskJ41Y7tt8a
-        /lefMRXI2LP2wWCTnyiSdOndSSssqbajxzrixiWVOhXd/CjGQWRDoQIMDBBJjTM5Oe67kl
-        7V5BSomrX7msG3nAiAiJMpaMMDdqZl0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629148805;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r6G0aVCgmVmUP8HSXqqU/Wq0OX2gySeKiq/rD3SU+Os=;
-        b=TcFVAitslLHp6XAuUXDCjuMNP+uWKIi8Mof1m6B3Tqf+uye5KiR8BJOOYaUs1OtZMDPzxz
-        O85c4feIp6fjRSBg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5DC08A3B87;
-        Mon, 16 Aug 2021 21:20:05 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2E314DA72C; Mon, 16 Aug 2021 23:17:08 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 23:17:08 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        terrelln@fb.com
-Subject: Re: [PATCH] lib/zstd: Fix bitwise vs logical operators
-Message-ID: <20210816211708.GJ5047@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        terrelln@fb.com
-References: <20210815004154.1781834-1-nathan@kernel.org>
- <20210816151450.GF5047@twin.jikos.cz>
- <bbb0a92c-4237-c651-3b8b-84dfaa2a2096@kernel.org>
+        id S233376AbhHPVSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:18:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52650 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231750AbhHPVSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 17:18:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kMWO17uroZoWE99yM+teIahXpEmXjbr7uxr0ADzSYXE=; b=D3CQoKEZpkE+iWTOSXDF/Wa3Dg
+        FkFlm1lBg5bE2FfnmT524cwap7V9GWmojVuwAQ4qWZ2m5W9diaI+gAivl4A49HAtMJHPaLFzXrjRE
+        FaGbLlKVlWAuL//0lxWBujKNc8hPOuV4rBHpU8k3d7djWUHQd18gEIan0lcQQMt0PCOw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mFjzc-000RQB-72; Mon, 16 Aug 2021 23:18:00 +0200
+Date:   Mon, 16 Aug 2021 23:18:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
+ as a module
+Message-ID: <YRrWCC1E1nKDsx4N@lunn.ch>
+References: <87im0m277h.wl-maz@kernel.org>
+ <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
+ <87sfzpwq4f.wl-maz@kernel.org>
+ <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
+ <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
+ <YQuZ2cKVE+3Os25Z@google.com>
+ <YRpeVLf18Z+1R7WE@google.com>
+ <CAGETcx-gSJD0Ra=U_55k3Anps11N_3Ev9gEQV6NaXOvqwP0J3g@mail.gmail.com>
+ <YRrOvJBLp3WreEUf@lunn.ch>
+ <CAGETcx_Q2-7B5RpHSfDu1KB0n+pT8nkCwGsthN20QBvgePcUtQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bbb0a92c-4237-c651-3b8b-84dfaa2a2096@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CAGETcx_Q2-7B5RpHSfDu1KB0n+pT8nkCwGsthN20QBvgePcUtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:53:53AM -0700, Nathan Chancellor wrote:
-> On 8/16/2021 8:14 AM, David Sterba wrote:
-> > You should CC Nick Terell for ZSTD patches, added.
+On Mon, Aug 16, 2021 at 02:02:12PM -0700, Saravana Kannan wrote:
+> On Mon, Aug 16, 2021 at 1:46 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > Not that I'm aware of. Andrew added a "Reviewed-by" to all 3 of my
+> > > proper fix patches. I didn't think I needed to send any newer patches.
+> > > Is there some reason you that I needed to?
+> > > https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
+> >
+> > https://patchwork.kernel.org/project/netdevbpf/list/?series=&submitter=&state=*&q=net%3A+mdio-mux%3A+Delete+unnecessary+devm_kfree&archive=both&delegate=
+> >
+> > State Changes Requested. I guess because you got the subject wrong.
 > 
-> Thanks for the info and adding him, I did not see an entry for lib/zstd/ 
-> in MAINTAINERS and there is no consistent person picking up patches 
-> according to git.
+> I'm assuming the prefix is wrong? What should it be? I went by looking
+> at the latest commit in:
+> $ git log --oneline  drivers/net/mdio/
+> ac53c26433b5 net: mdiobus: withdraw fwnode_mdbiobus_register
+> 
+> What prefix do I need to use to be considered correct?
+> net: mdio:?
 
-It's in an intermediate state [1], so far the compression algorithms
-have been under the crypto subsystem because it's part of the API, but
-regarding ZSTD, it's a bigger beast IMHO deserving an independent git
-and merge flow, so I just noticed.
+https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
 
-[1] https://lwn.net/ml/linux-kernel/20210430013157.747152-1-nickrterrell@gmail.com/
+and in particular:
+
+https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#how-do-i-indicate-which-tree-net-vs-net-next-my-patch-should-be-in
+
+	Andrew
