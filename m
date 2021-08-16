@@ -2,96 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52963EDD27
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513AA3EDD2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhHPShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S231773AbhHPSiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhHPShc (ORCPT
+        with ESMTP id S231439AbhHPSiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:37:32 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBC9C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:36:59 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id r9so26919483lfn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:36:59 -0700 (PDT)
+        Mon, 16 Aug 2021 14:38:08 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87049C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:37:36 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id h11so28625211ljo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b5nG1Sn4hEdSmCIfBVPgAPJIisiduFp0SMRlWQtkxmg=;
-        b=Krt2XuzEx+T0LB6/+Mqg7SLTP0H1Ms829dCOLPBmV+PMoYsLuoTj4BkFpOgyLD1Cud
-         rHN1gLifgizAPGHBd8TE7qFQO/K3OIdj1NfWl4BwlWApnFTf/9J36pYUdEXVjGeira4T
-         CT2CcnchOItqMUDKXtLxC8QqohujzXsw2OyxtJMwLLWy0Q0S9dNKkHZOHTJAj5elcFuY
-         Hq7Jk52ICxtTIMm3xp0o3CRGDH2gmRv2fMN5kjFdTaci+9Nf/haebpwlbLozd+sv1ke8
-         5dJPz79F7y1SqyCj/1XkeVISdXEt06Tm9cmNM1sS61Xg2DazBPZhH+7jw4ZIrGHcpBbt
-         jYag==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XndSTNBGC/OVGDPTeJO5zkDBc6MmDsbiG3f/bm1ches=;
+        b=clzrAfCZGa3epa+0RLcPiQ4pi+6Gx2p6G43vR036knzDySj2wP8xKyxaBq39YlRTzJ
+         3pEBUaA80Qkoy/SavugPvt70guj0agCPXW5EDqiYtBqYIcdla6Ma9fTVrlaSjb6u8IDo
+         HG4VZ7AfeXb4XRWmn05hGtvmg0u+J9+hAWrWbtb0O7MYdJApBjCzf8MgsGP4iByf24qv
+         ftePr9bpnqdl0nuwour04fZa2b0LQ11bRt83wgbjaryUH6o1ALB9eS7Qi4ZUySBEYHCq
+         3s8wCUv9obZhqu0uIs7r0jhmI1w9ALjMbjG0YIG4xEdjxg8ldHHmXIM2JEv8c1fmATVN
+         jazw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b5nG1Sn4hEdSmCIfBVPgAPJIisiduFp0SMRlWQtkxmg=;
-        b=r13jrRhokeHEm/gWyYerf6tFK5Ud4dHdNKoP0x+OFOC9I2C8mRYnWEzoZFdjINGG+m
-         +sE+ACX9oFRNoUxBeLjmQW0SsYJEPMO0cXPoHvmsdwZxNvhx+neFf32dwikIQXiMthI7
-         /+j68WW0Kf4q05iPcquAi1Me/9HZvDD4OXiMxdGLvziYXUmE+YAb8fuz331YfIo6x7nC
-         ZV3JfDee3KR4P+EmDPCohmCFTb4kyFwk0HoNWiSHdz5P4Ttz0kiXbZsXjU6qJ97gF5ua
-         yRbso9PTsz2WxiBRXyq2AV7KgTuTr6FXHKCJ1Gmqm8PR3sNjNkGPEEk5Gvnyfg+WdClb
-         4Arg==
-X-Gm-Message-State: AOAM530KgYOjE8826AgQURZR0Vu1nVa4GPB9hwrBttZ4YiMn39zi+/P8
-        q3NcB3biDpoYdGneyLVOups=
-X-Google-Smtp-Source: ABdhPJwY2sNOrA2E597YG4aWdgHZYmP6uRwu780vRZDNWrG8dd9L2RvW7GPQGpmMe+aIsQYFnvUfVA==
-X-Received: by 2002:a05:6512:c1f:: with SMTP id z31mr11205955lfu.373.1629139018394;
-        Mon, 16 Aug 2021 11:36:58 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id b6sm2203lfv.167.2021.08.16.11.36.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 11:36:58 -0700 (PDT)
-Subject: Re: [PATCH 0/3] ASoC: ti: Use of_device_get_match_data
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jawoslav Kysela <perex@perex.cz>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>
-References: <cover.1628972198.git.aakashhemadri123@gmail.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <e7a5274a-3605-9f49-e77b-51343c060b94@gmail.com>
-Date:   Mon, 16 Aug 2021 21:37:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XndSTNBGC/OVGDPTeJO5zkDBc6MmDsbiG3f/bm1ches=;
+        b=BH8Bu8nz8pG+hSUnYGJ+W+pg61lBhECSp08FNI/S/E3DWzPN8Cth5A3pJ4QLIpAdXH
+         YY973GiQfI7VgxWZsY4/k6oV5svL8zWfTb8D3miikufGVDbKdINquUpaPxiyDexxtGz2
+         vpYkQP9jL2WNl2XviH6WGLK4r/4WIRThNdg1TGsS2LN/5tRvtNy1G5rBes+WqFsTy3CN
+         coRTjIvqQ4df3jlw0KnhMUkgJ42ywcOTYAzMnZokmTkwgEVahQAc2al6X1LfA8W7RGyv
+         ivTo0q2MALSblhHmXA9QKdxvdwCikAv2maw2tYoU3+i20jifyrp4qozOJqDyv8ur7Qj+
+         6iew==
+X-Gm-Message-State: AOAM531+iOqCVsdSkuMLbdHQotAY49951RaVV0hCAkBClbzn7i/JL0zc
+        R5Ki0sK4OfAJWA6METjimvf0ISIh+0wQLs81lOiSLA==
+X-Google-Smtp-Source: ABdhPJxWq2tjkwNatdZ+tDOMdg4OI7qWWNlv0xhJqOSWsL1yWF0cClzplPmteJay2aA3uBLdV47tklHjELuhCZD47Y4=
+X-Received: by 2002:a2e:9ec1:: with SMTP id h1mr48136ljk.0.1629139054576; Mon,
+ 16 Aug 2021 11:37:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1628972198.git.aakashhemadri123@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210810204240.4008685-1-ndesaulniers@google.com> <CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com>
+In-Reply-To: <CA+G9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 11:37:23 -0700
+Message-ID: <CAKwvOdkckey1=VUHApTcJYufyhdRJ=jb4qYs52f59g6ha7qphw@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: remove stale cc-option checks
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        linux-kbuild@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Brown <broonie@kernel.org>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Aug 14, 2021 at 4:02 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> On Wed, 11 Aug 2021 at 02:12, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > cc-option, cc-option-yn, and cc-disable-warning all invoke the compiler
+> > during build time, and can slow down the build when these checks become
+> > stale for our supported compilers, whose minimally supported versions
+> > increases over time. See Documentation/process/changes.rst for the
+> > current supported minimal versions (GCC 4.9+, clang 10.0.1+). Compiler
+> > version support for these flags may be verified on godbolt.org.
+> >
+> > The following flags are GCC only and supported since at least GCC 4.9.
+> > Remove cc-option and cc-disable-warning tests.
+> > * -fno-tree-loop-im
+> > * -Wno-maybe-uninitialized
+> > * -fno-reorder-blocks
+> > * -fno-ipa-cp-clone
+> > * -fno-partial-inlining
+> > * -femit-struct-debug-baseonly
+> > * -fno-inline-functions-called-once
+> > * -fconserve-stack
+> >
+> > The following flags are supported by all supported versions of GCC and
+> > Clang. Remove their cc-option, cc-option-yn, and cc-disable-warning tests.
+> > * -fno-delete-null-pointer-checks
+> > * -fno-var-tracking
+> > * -mfentry
+> > * -Wno-array-bounds
+> >
+> > The following configs are made dependent on GCC, since they use GCC
+> > specific flags.
+> > * READABLE_ASM
+> > * DEBUG_SECTION_MISMATCH
+> >
+> > --param=allow-store-data-races=0 was renamed to --allow-store-data-races
+> > in the GCC 10 release.
+>
+> [Please ignore this if it is already reported]
+>
+> Linux next 20210813 tag s390 build failed with gcc-8 but pass with
+> gcc-9 and gcc-10.
+>
+>  s390 (defconfig) with gcc-8 FAILED
+>  s390 (defconfig) with gcc-9 PASS
+>  s390 (defconfig) with gcc-10 PASS
 
-On 14/08/2021 23:19, Aakash Hemadri wrote:
-> Hi,
-> 	This patch series will apply cleanly on for-next
-> Prefer `of_device_get_match_data` over `of_match_device`.
+Thanks for the report. Andrew has dropped the patch from mm-next.
+Looks like it's too soon to remove build configuration tests for
+-mfentry.
 
-All three patch is wrong.
-Mark, please do not pick them up.
+>
+> Build error:
+> -----------
+> s390x-linux-gnu-gcc: error: unrecognized command line option
+> '-mfentry'; did you mean '--entry'?
+> make[2]: *** [/builds/linux/scripts/Makefile.build:272:
+> scripts/mod/empty.o] Error 1
+> s390x-linux-gnu-gcc: error: unrecognized command line option
+> '-mfentry'; did you mean '--entry'?
+> make[2]: *** [/builds/linux/scripts/Makefile.build:118:
+> scripts/mod/devicetable-offsets.s] Error 1
+> make[2]: Target '__build' not remade because of errors.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> Build log,
+> https://builds.tuxbuild.com/1wfNcaYbsp29k3RvYuPXzxrM4vs/
+>
+> metadata:
+> --------
+>     git_describe: next-20210813
+>     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>     git_short_log: 4b358aabb93a (\Add linux-next specific files for 20210813\)
+>     target_arch: s390
+>     toolchain: gcc-8
+>
+>
+> Steps to reproduce:
+> -------------------
+> # TuxMake is a command line tool and Python library that provides
+> # portable and repeatable Linux kernel builds across a variety of
+> # architectures, toolchains, kernel configurations, and make targets.
+> #
+> # TuxMake supports the concept of runtimes.
+> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> # that you install podman or docker on your system.
+> #
+> # To install tuxmake on your system globally:
+> # sudo pip3 install -U tuxmake
+> #
+> # See https://docs.tuxmake.org/ for complete documentation.
+>
+>
+> tuxmake --runtime podman --target-arch s390 --toolchain gcc-8
+> --kconfig defconfig
+>
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CA%2BG9fYtPBp_-Ko_P7NuOX6vN9-66rjJuBt21h3arrLqEaQQn6w%40mail.gmail.com.
 
-> Aakash Hemadri (3):
->   ASoC: ti: davinci-mcasp: Use of_device_get_match_data
->   ASoC: ti: omap-mcbsp: Use of_device_get_match_data
->   ASoC: ti: davinci-evm: Use of_device_get_match_data
-> 
->  sound/soc/ti/davinci-evm.c   | 2 +-
->  sound/soc/ti/davinci-mcasp.c | 2 +-
->  sound/soc/ti/omap-mcbsp.c    | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
+
 
 -- 
-Péter
+Thanks,
+~Nick Desaulniers
