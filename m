@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3063ED21E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3DF3ED223
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhHPKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:40:06 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60587 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233320AbhHPKkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:40:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629110373; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7FQMN00bWUtkew/aYXgY67FhLuXjMYkzri60rq8/V1I=;
- b=ivqIeJHMtvbH1kAevmFVT8qcRjK5UzPMJwHUzxMdeqN1Mx583aJ9jtQBL6wNeUGIfTAxODtH
- ErY7dSuCJNJhUst6W1hnjxmvFbbZKYcm6wWtXYdlujuUGEuxQTo980tjFSqtihWlZx7cgh6Q
- dM0tSkUSwNIy8daST1iGqtwfJBc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 611a403e454b7a558fc1c90d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Aug 2021 10:38:54
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B089C4360C; Mon, 16 Aug 2021 10:38:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8AF0C4338F;
-        Mon, 16 Aug 2021 10:38:52 +0000 (UTC)
+        id S235841AbhHPKlh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 06:41:37 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:39558 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhHPKlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:41:35 -0400
+Received: by mail-lj1-f173.google.com with SMTP id q21so4892779ljj.6;
+        Mon, 16 Aug 2021 03:41:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UAgKx9qFimpGqmGeQ3TM0J7Mzn3ZTYhunGpWKj3QW8E=;
+        b=nyexwiSYDeAsM5rhwe390lHcZXxDORt6nUPfzaISmvlk41DyuGEucvb57xenctilfZ
+         +iA02oMlVdWexn0FT3XK+IzBN157tuC0BE0hyeQadaq7rtYDpz1xszCrIZnb8mZAf909
+         rj/sPDK6J9OAxnHEiWb8bh9dz0XCmgDFV19bWeu7hKU96aLLSP0qKJTz8nbK4e+NZgRw
+         iSlqAgeISYZ6PA10HzkZw2XI+6ZLYxfzkDgtCXlwEWtJ2wBl4+tI3RrokeW38iBGD3TJ
+         YDlR8hv5JDVwnQmqaFcB42oj5Qi1rIKqJBfAMXGFcP3m2HcfYe4UgAAgsJDYLAK+n7hc
+         faCQ==
+X-Gm-Message-State: AOAM530Y4xMGAieU3C90nfSMdRQyJ7Ku/OaEZvzfctD8+kfwE+AuJNdd
+        /h5gctffoptOR966ig/t/1lfAxkKnpWbCrVkHLs=
+X-Google-Smtp-Source: ABdhPJxsH8x3EfCOw+pbE7D3sXGxvSvKLrPv+OSgf3ha/r/wegNx+Ubs6UxpEeEqHJoV3c7h3WC3ycTLGRw8+iUhr8g=
+X-Received: by 2002:a05:651c:24a:: with SMTP id x10mr10915127ljn.60.1629110463281;
+ Mon, 16 Aug 2021 03:41:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 16 Aug 2021 16:08:52 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Trilok Soni <quic_tsoni@quicinc.com>, quic_eberman@quicinc.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: Re: [PATCH 0/3] soc: qcom: Add download mode support for QTI
- platforms
-In-Reply-To: <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
-References: <cover.1628757036.git.saiprakash.ranjan@codeaurora.org>
- <CAE-0n52PzadMxB_4h2DGJGLO++Bu_PCSsxS8NHe+cuhv=Mw0sA@mail.gmail.com>
-Message-ID: <30aba45d0e657fd77adba119e5fad345@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
+ <20210814101728.75334-5-mailhol.vincent@wanadoo.fr> <20210816081205.7rjdskaui35f3jml@pengutronix.de>
+In-Reply-To: <20210816081205.7rjdskaui35f3jml@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 16 Aug 2021 19:40:52 +0900
+Message-ID: <CAMZ6RqJiAO-snH0+NKi8=+xi9UnU3sJ+1Ze8qYL0qPwG4eRZVg@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
+ Transmitter Delay Compensation (TDC)
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        linux-can <linux-can@vger.kernel.org>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 05:46, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-08-12 02:17:39)
->> Collecting ramdumps on QTI platforms mainly require two things,
->> SDI (System Debug Image) enabled firmware and kernel support to
->> configure download mode cookies and SDI settings. Ramdumps can
->> be collected once the system enters the download mode. To enter
->> download mode, magic values or cookies need to be set in IMEM
->> which is used by firmware to decide to enter download mode or not.
->> Download mode cookies remain the same across targets and SDI disable
->> register needs to be set or SDI needs to be disabled in case of normal
->> reboot since ramdumps are supposed to be for crash debugging and
->> not for every reboot. This series adds the kernel support required
->> to enter download mode.
-> 
-> I don't recall if we discussed this on the list, but I'd really prefer
-> that we don't make kernel changes to support this beyond implementing
-> PSCI SYSTEM_RESET2 support and then some sort of vendor specific (or if
-> ARM is willing to update the spec then ARM specific) reset command on
-> panic reboot paths. The idea is to set the cookie in the bootloader
-> before the kernel is booted, then any insta-reboots/watchdogs would go
-> into download mode, no special init code required to lay down the 
-> cookie
-> or clear it on normal reboot. The normal reboot PSCI call would clear
-> the cookie in the firmware, in case something goes wrong after the
-> kernel hands off control to PSCI, and then panics that want to go into
-> download mode would make the SYSTEM_RESET2 reboot call into PSCI that
-> sets the cookie.
-> 
-> Maybe it could be a linux specific psci number or maybe we could
-> configure the reboot call in the psci node to be this specific number 
-> so
-> that it can be different based on the firmware implementation if
-> consolidating around a single number doesn't work. Either way, that all
-> seems manageable and we can keep these cookie details out of the kernel
-> and the reboot/panic paths.
-> 
+On Mon. 16 août 2021 at 17:12, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 14.08.2021 19:17:28, Vincent Mailhol wrote:
+> > At high bit rates, the propagation delay from the TX pin to the RX pin
+> > of the transceiver causes measurement errors: the sample point on the
+> > RX pin might occur on the previous bit.
+> >
+> > This issue is addressed in ISO 11898-1 section 11.3.3 "Transmitter
+> > delay compensation" (TDC).
+> >
+> > This patch brings command line support to nine TDC parameters which
+> > were recently added to the kernel's CAN netlink interface in order to
+> > implement TDC:
+> >   - IFLA_CAN_TDC_TDCV_MIN: Transmitter Delay Compensation Value
+> >     minimum value
+> >   - IFLA_CAN_TDC_TDCV_MAX: Transmitter Delay Compensation Value
+> >     maximum value
+> >   - IFLA_CAN_TDC_TDCO_MIN: Transmitter Delay Compensation Offset
+> >     minimum value
+> >   - IFLA_CAN_TDC_TDCO_MAX: Transmitter Delay Compensation Offset
+> >     maximum value
+> >   - IFLA_CAN_TDC_TDCF_MIN: Transmitter Delay Compensation Filter
+> >     window minimum value
+> >   - IFLA_CAN_TDC_TDCF_MAX: Transmitter Delay Compensation Filter
+> >     window maximum value
+> >   - IFLA_CAN_TDC_TDCV: Transmitter Delay Compensation Value
+> >   - IFLA_CAN_TDC_TDCO: Transmitter Delay Compensation Offset
+> >   - IFLA_CAN_TDC_TDCF: Transmitter Delay Compensation Filter window
+> >
+> > All those new parameters are nested together into the attribute
+> > IFLA_CAN_TDC.
+> >
+> > A tdc-mode parameter allow to specify how to operate. Valid options
+> > are:
+> >
+> >   * auto: the transmitter automatically measures TDCV. As such, TDCV
+> >     values can not be manually provided. In this mode, the user must
+> >     specify TDCO and may also specify TDCF if supported.
+> >
+> >   * manual: Use the TDCV value provided by the user are used. In this
+>                            ^^^^^                      ^^^
+>                            singular                   plural
 
-Alright, I think we can probably make it work without much/any changes
-in kernel. So following what you said, we can just implement
-PSCI_SYSTEM_RESET2 in firmware to enter the download mode having cookies
-already set by default and the cookie is cleared when we have a normal
-reboot via PSCI_SYSTEM_RESET. For panic reboot, we already have a 
-cmdline
-*reboot=panic_warm* to identify panic reboots and can call into
-PSCI_SYSTEM_RESET2. I have just tested and it works fine if we have
-psci_system_reset2_supported as true.
+ACK. I fixed that broken grammar in my local branch. As commented
+before, I will send the next version of the iproute series after
+we agree on the kernel part (unless someone finds a major issue).
 
-@Trilok/@Elliot, you can check if above works for your usecases in 
-android
-as well and it doesn't need any of your additional changes to kernel.
+FYI, this is the fixed sentence:
+  * manual: use a static TDCV provided by the user. In this mode, the
+    user must specify both TDCV and TDCO and may also specify TDCF if
+    supported.
 
-Thanks,
-Sai
 
->> 
->> Currently this series doesn't add support for android targets where
->> a couple of SCM calls are required to set/unset the download mode
->> cookies and SDI configuration but can be easily added gradually to
->> the same driver, so as of now only chrome platforms are supported
->> and tested.
->> 
->> Sai Prakash Ranjan (3):
->>   soc: qcom: Add download mode support
->>   dt-bindings: msm: Add QTI download mode support binding
->>   arm64: dts: qcom: sc7180: Add IMEM, pil info and download mode 
->> region
->> 
->>  .../bindings/arm/msm/qcom,dload-mode.yaml     |  53 ++++++
->>  MAINTAINERS                                   |   7 +
->>  arch/arm64/boot/dts/qcom/sc7180.dtsi          |  21 +++
->>  drivers/soc/qcom/Kconfig                      |  10 ++
->>  drivers/soc/qcom/Makefile                     |   1 +
->>  drivers/soc/qcom/download_mode.c              | 152 
->> ++++++++++++++++++
->>  6 files changed, 244 insertions(+)
->>  create mode 100644 
->> Documentation/devicetree/bindings/arm/msm/qcom,dload-mode.yaml
->>  create mode 100644 drivers/soc/qcom/download_mode.c
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Yours sincerely,
+Vincent
