@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087E43ED078
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859163ED07B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhHPImi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:42:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234645AbhHPImg (ORCPT
+        id S234951AbhHPInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234728AbhHPInN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:42:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629103324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4EFm6gVEreXk1Z8T6prMck0p8oHnL3WE32KdZ7f5jjo=;
-        b=WM8BMIxu13avenlRsUaKF9KhIVfdlb2WJBfIWKJrpOk6uhCQy05bxYm+MykVVPu4LEGkMo
-        raQK1NjBXDrDHQS6OEOgD1RWpdjJTxkUTum3Y/+diYztgTsN3FFH70shkcsIm53jDQVfvr
-        7+J5gI7HnjoVY/Es2197B80Wd96eT2U=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-DKxskaKbN6GZV8_dt26jJw-1; Mon, 16 Aug 2021 04:42:03 -0400
-X-MC-Unique: DKxskaKbN6GZV8_dt26jJw-1
-Received: by mail-ej1-f69.google.com with SMTP id zp23-20020a17090684f7b02905a13980d522so4419855ejb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:42:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4EFm6gVEreXk1Z8T6prMck0p8oHnL3WE32KdZ7f5jjo=;
-        b=PR1Np+iqccqwEfaj5TdKtS6ktxKDV1+w+VvWFcyWCfPJwQNZc0P5oDc5vZ3pM+fObe
-         i6+cNkQtnAt+Xb0D5niJQD49z4ll16MK1pTZDX3wavIZikPg3qguwCIIB6JPvYzkCin9
-         Xefza5Pswu1xXUl/p6QaFYnOafkNtfrMajpUJ86xVctXt2F61zy/AfPWvMZp7nJfh0vr
-         eFXgMv6BiJI5XG93AHCAfL2X6BEhoy0poA7QxLF6+sMWNJUgxfvUtWMSKBPz3/ywlCHY
-         7EvL6DlD+ABEKmuTq/pSEzkMQ24QPxtLNV8G7zUUgu3cmdC8f2UpiZ9e75matkWqMbQJ
-         39qw==
-X-Gm-Message-State: AOAM530GOgZ2gcJMUfq7YVusFeepEJEF5hB/aWo0Mhm0moX7lOcWFXMy
-        29FzpHPe43jjGnJP6GnUGxS0vqtVfRGNZRsy7hgCkei/pa7rvWrDkor9becYivDcpkAkNwkcnQg
-        DCUM7SXLgoakuCluTYJOu9xfl
-X-Received: by 2002:a17:907:6089:: with SMTP id ht9mr14319202ejc.422.1629103322112;
-        Mon, 16 Aug 2021 01:42:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhMOzUyKSIFJf2ZL/Rg4zpaV6lNxzUjZedt8/SufJLv342AisfKH/2GBGZYRWCOz9DFVAUbQ==
-X-Received: by 2002:a17:907:6089:: with SMTP id ht9mr14319179ejc.422.1629103321911;
-        Mon, 16 Aug 2021 01:42:01 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id d22sm3453388ejj.47.2021.08.16.01.42.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 01:42:01 -0700 (PDT)
-Subject: Re: [PATCH 1/3] power: supply: max17042: handle fails of reading
- status register
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        stable@vger.kernel.org
-References: <20210816082716.21193-1-krzysztof.kozlowski@canonical.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <820c80fa-c412-dd71-62a4-0ba1e1a97820@redhat.com>
-Date:   Mon, 16 Aug 2021 10:42:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 04:43:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3E7C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:42:41 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFYCd-0007Bz-18; Mon, 16 Aug 2021 10:42:39 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 587C1668068;
+        Mon, 16 Aug 2021 08:42:37 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 10:42:35 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
+ can_tdc_const::tdc{v,o,f}_min
+Message-ID: <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <20210816082716.21193-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qprdy2lzjeysr5w5"
+Content-Disposition: inline
+In-Reply-To: <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 8/16/21 10:27 AM, Krzysztof Kozlowski wrote:
-> Reading status register can fail in the interrupt handler.  In such
-> case, the regmap_read() will not store anything useful under passed
-> 'val' variable and random stack value will be used to determine type of
-> interrupt.
-> 
-> Handle the regmap_read() failure to avoid handling interrupt type and
-> triggering changed power supply event based on random stack value.
-> 
-> Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+--qprdy2lzjeysr5w5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, the entire series looks good to me:
+On 15.08.2021 12:32:43, Vincent Mailhol wrote:
+> ISO 11898-1 specifies in section 11.3.3 "Transmitter delay
+> compensation" that "the configuration range for [the] SSP position
+> shall be at least 0 to 63 minimum time quanta."
+>=20
+> Because SSP =3D TDCV + TDCO, it means that we should allow both TDCV and
+> TDCO to hold zero value in order to honor SSP's minimum possible
+> value.
+>=20
+> However, current implementation assigned special meaning to TDCV and
+> TDCO's zero values:
+>   * TDCV =3D 0 -> TDCV is automatically measured by the transceiver.
+>   * TDCO =3D 0 -> TDC is off.
+>=20
+> In order to allow for those values to really be zero and to maintain
+> current features, we introduce two new flags:
+>   * CAN_CTRLMODE_TDC_AUTO indicates that the controller support
+>     automatic measurement of TDCV.
+>   * CAN_CTRLMODE_TDC_MANUAL indicates that the controller support
+>     manual configuration of TDCV. N.B.: current implementation failed
+>     to provide an option for the driver to indicate that only manual
+>     mode was supported.
+>=20
+> TDC is disabled if both CAN_CTRLMODE_TDC_AUTO and
+> CAN_CTRLMODE_TDC_MANUAL flags are off, c.f. the helper function
+> can_tdc_is_enabled() which is also introduced in this patch.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Nitpick: We can only say that TDC is disabled, if the driver supports
+the TDC interface at all, which is the case if tdc_const is set.
 
-For the series.
+> Also, this patch adds three fields: tdcv_min, tdco_min and tdcf_min to
+> struct can_tdc_const. While we are not convinced that those three
+> fields could be anything else than zero, we can imagine that some
+> controllers might specify a lower bound on these. Thus, those minimums
+> are really added "just in case".
 
-Regards,
+I'm not sure, if we talked about the mcp251xfd's tcdo, valid values are
+-64...63.
 
-Hans
+Marc
 
-> ---
->  drivers/power/supply/max17042_battery.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-> index ce2041b30a06..858ae97600d4 100644
-> --- a/drivers/power/supply/max17042_battery.c
-> +++ b/drivers/power/supply/max17042_battery.c
-> @@ -869,8 +869,12 @@ static irqreturn_t max17042_thread_handler(int id, void *dev)
->  {
->  	struct max17042_chip *chip = dev;
->  	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
-> +	if (ret)
-> +		return IRQ_HANDLED;
->  
-> -	regmap_read(chip->regmap, MAX17042_STATUS, &val);
->  	if ((val & STATUS_INTR_SOCMIN_BIT) ||
->  		(val & STATUS_INTR_SOCMAX_BIT)) {
->  		dev_info(&chip->client->dev, "SOC threshold INTR\n");
-> 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
+--qprdy2lzjeysr5w5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaJPkACgkQqclaivrt
+76l28wf/ZljL35oamfKggJEeY/5PhnAwWEa5xIh52ICfNuefGYMqgBvQ9mpiUeMh
+CQJSQbLA/bWmFvkHGRp2RS5AWYizMl2EcxwUQYdt/9FZXsotnBg7O+ogzCPGs3Pn
+7isZJD1a/8vbWBLga7li7W97HyOd2aQa+qC2hF1uFl365E3vGhL59wAfXeRb6YCG
+uc0CRYwl3nr7uFHiKDjeYbg6QYqovar6pgWCNktmx0uuphwuTXF056GGZM35/iZ+
+NE/u3C4n4TkjjYLdlSvI3fzwkP1i8ckXsRF9QZLK/dvcKbdl2Sttwh0Rt/46QPsQ
+i+wKejuZk0SaG7jy1FkU7cI3icnVDw==
+=Deyf
+-----END PGP SIGNATURE-----
+
+--qprdy2lzjeysr5w5--
