@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9DF3ECEE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03903ECEEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhHPHBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbhHPHBx (ORCPT
+        id S233692AbhHPHC6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 03:02:58 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:40183 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233349AbhHPHC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:01:53 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A90C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:01:21 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v2so14436055edq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ak4JwnrZ9gSNOvvGFAQ1po2LI2/cEmkml+wEnVfkQng=;
-        b=R/UrMnFVb7gCuoZ0nclUlvcJzMkhaDIK2+SebUsSpiqjxYvE2C0KV4xOd1R/X0P3Xn
-         yruSF2G73sMVQ+CXBt5q1CBLYMEZzy74jABciHN51MfWVf7ABADlmOYMeGMysnXNBmaH
-         zGRLmV4/ySeJr4EnZirbW8zw6RYcICeqUP6O0B1PyUYoRi75eb/J4SPrUYpi4OlnTxz6
-         yfyMMplkcetY7VB1H6FL5UdPUjNTY9YZCxdYVm5FwQO50Yq1fvWpI68QQgjD6fdoWWT4
-         FjII11fhmHMdW3Efc3cuZiQRONUka/5Y5jpX6VGTgN+5nxmsSUY15pr8KMVbgYtY3F0v
-         j60Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ak4JwnrZ9gSNOvvGFAQ1po2LI2/cEmkml+wEnVfkQng=;
-        b=smJymObbUC/kFwX7irvE52O0QOFWzHpUIMfg8DbaDp2NOJUhAjofjRsg6JgMGyuR0u
-         V91JNw8jeIidyQxx2Xxjxpn4WB8VnZbDG9Dd1tx3chW9Ac+slhmqgibQbWRg8l2U0+sP
-         Ojs4leWdmi5dKoLa95v3AZ/F5H99buK/7SPnrGRIxcXqDRv9wqwimkatZZCup508Yl5J
-         y3vi+Lo5wzFiIrfD0IGVs8/WRGhCo/EsspRZS/moJ3/u0oUGdtd8UTJsyg1CNu9zilv6
-         wHyNCHX1Dqsa0I4l7DFEIzVwoRLuifiPVPIoj4pVRDIW3PcmFgE6iN6m115qrAbaEGWH
-         3AYw==
-X-Gm-Message-State: AOAM531uRlIsxPywOLrLFq3UQiCOkO9IGdWC3PiUVXreo6lHKfP8Zsoo
-        6D9HiHOW0So/UjOfaomm+cc=
-X-Google-Smtp-Source: ABdhPJyJf/DefOj/TjYvwmRafKSAcggJ5p8fRXMflb7Mz8yNO0XlfQ+EcmG7RgOLK8CxfVZwYdymtw==
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr18354452edv.306.1629097280526;
-        Mon, 16 Aug 2021 00:01:20 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id a25sm3289600ejv.91.2021.08.16.00.01.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 00:01:20 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: remove unused variable and DBG_88E in hal/rtl8188e_cmd.c
-Date:   Mon, 16 Aug 2021 09:01:16 +0200
-Message-ID: <325822103.EpFXLVovdo@localhost.localdomain>
-In-Reply-To: <11475165.p2zfeMNkXv@localhost.localdomain>
-References: <20210815230518.91656-1-phil@philpotter.co.uk> <11475165.p2zfeMNkXv@localhost.localdomain>
+        Mon, 16 Aug 2021 03:02:57 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id AF17724000A;
+        Mon, 16 Aug 2021 07:02:24 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 09:02:23 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH V4 8/8] i3c: master: svc: enable the interrupt in the
+ enable ibi function
+Message-ID: <20210816090223.32475a5c@xps13>
+In-Reply-To: <20210809063645.2289988-9-xiaoning.wang@nxp.com>
+References: <20210809063645.2289988-1-xiaoning.wang@nxp.com>
+        <20210809063645.2289988-9-xiaoning.wang@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, August 16, 2021 8:55:06 AM CEST Fabio M. De Francesco wrote:
-> On Monday, August 16, 2021 1:05:18 AM CEST Phillip Potter wrote:
-> > Remove set but unused variable init_rate from rtl8188e_Add_RateATid
-> > function in hal/rtl8188e_cmd.c, as it fixes a kernel test robot warning.
-> > Removing the call to get_highest_rate_idx has no side effects here so is
-> > safe.
-> > 
-> > Also remove the DBG_88E macro call in this function, as it is not
-> > particularly clear in my opinion. Additionally, rename variable
-> > shortGIrate to short_gi_rate to conform to kernel camel case rules,
-> > and improve general spacing around operators, some of which triggers
-> > checkpatch 'CHECK' messages. These are not related to the test robot
-> > warning.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > ---
-> > 
-> >  drivers/staging/r8188eu/hal/rtl8188e_cmd.c | 22 +++++++---------------
-> >  1 file changed, 7 insertions(+), 15 deletions(-)
-> 
-> Dear Philip,
-> 
-> I'm sorry but, although every change here is fine, I cannot ack your patch 
-as-
-> is. It shouldn't address so many different issues all at once, according to
-> the best practices in patching and the kernel development rules.
-> 
-> I understand that you think that, while you are at the removal of 
-"init_rate",
-> why shouldn't I address all other trivial issues at once?
-> 
-> Even if the patch is short and it probably doesn't require particular hard
-> effort to review it, that mix-up of different works shouldn't be done, 
-mainly
-> because this attitude could potentially lead you to add more and more
-> different work in future patches. Where is the limit? Why not add some more
-> different works next time you find some more problems into the same file/
-> directory?
-> 
-> If I were you I'd, at least, prepare a series of two or three patches:
-> 
-> 1/3 - Remove init_rate as reported by KTR;
-> 2/3 - Remove unneeded DBG_88E macro;
-> 3/3 - Do some clean-up of rtl8188e_cmd.c;
-> 
-> Perhaps patches 2/3 and 3/3 could be merged into one, but I'm not really 
-sure.
-> 
-> Thanks,
-> 
-> Fabio
+Hi Clark,
 
-Furthermore, I forgot to say that the "Subject" should summarize with few 
-words the whole work you do and in this case it is not what it does.
+Clark Wang <xiaoning.wang@nxp.com> wrote on Mon,  9 Aug 2021 14:36:45
++0800:
 
-Fabio
+> If enable interrupt in the svc_i3c_master_bus_init() but do not call
+> enable ibi in the device driver, it will cause a kernel dump in the
+> svc_i3c_master_handle_ibi() when a slave start occurs on the i3c bus,
+> because the data->ibi_pool is not initialized.
+> So only enable the interrupt in svc_i3c_master_enable_ibi() function.
 
+Is this situation actually happening or is this purely theoretical?
 
+Anyway this doesn't hurt so:
 
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+> 
+> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+> ---
+> V4: New patch in this patchset
+> ---
+>  drivers/i3c/master/svc-i3c-master.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+> index 77f67d407acd..b802afd8eb7d 100644
+> --- a/drivers/i3c/master/svc-i3c-master.c
+> +++ b/drivers/i3c/master/svc-i3c-master.c
+> @@ -569,8 +569,6 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  	if (ret)
+>  		goto rpm_out;
+>  
+> -	svc_i3c_master_enable_interrupts(master, SVC_I3C_MINT_SLVSTART);
+> -
+>  rpm_out:
+>  	pm_runtime_mark_last_busy(master->dev);
+>  	pm_runtime_put_autosuspend(master->dev);
+> @@ -1398,6 +1396,8 @@ static int svc_i3c_master_enable_ibi(struct i3c_dev_desc *dev)
+>  		return ret;
+>  	}
+>  
+> +	svc_i3c_master_enable_interrupts(master, SVC_I3C_MINT_SLVSTART);
+> +
+>  	return i3c_master_enec_locked(m, dev->info.dyn_addr, I3C_CCC_EVENT_SIR);
+>  }
+>  
+> @@ -1407,6 +1407,8 @@ static int svc_i3c_master_disable_ibi(struct i3c_dev_desc *dev)
+>  	struct svc_i3c_master *master = to_svc_i3c_master(m);
+>  	int ret;
+>  
+> +	svc_i3c_master_disable_interrupts(master);
+> +
+>  	ret = i3c_master_disec_locked(m, dev->info.dyn_addr, I3C_CCC_EVENT_SIR);
+>  
+>  	pm_runtime_mark_last_busy(master->dev);
+
+Thanks,
+Miquèl
