@@ -2,144 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212AA3ED7CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D5F3ED78A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238472AbhHPNmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbhHPNmt (ORCPT
+        id S241669AbhHPNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:34:21 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:33667 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241544AbhHPN3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:42:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B318C05333D
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:29:02 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id b10so23278386eju.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=RC1V5xe/NRcvL4rUhNzUeKyyDFkKgwzUwCe/4teWMGI=;
-        b=UqDMf56DTErsNFxMUSv48/ZXirgYN6JFk7mqaQjhhyNiD6Kv2Pp38zEkgPQb+wrVNr
-         VzL1GSUBzzEr1b/yD0hqWwZootrtBxqNg4uLIWTgQbT+8TOANLofanxJtdrOXsH6y61w
-         sg33ZAtuHzMLkwohBnBimz6S7NZQH6+thGSOEZvKALXigounTZWtB6knVGmjFTmZMbl3
-         Ro7ez8rMvYBtWZ8ydczcOnqJkEofMd7c7RiEWsbwQBYpnaMa0per6kG44UW8UNQe0CY0
-         dsRCTB2KE0Oi5thFrKW6y2ZPmGp7fLLAFJaaEwj7n4QowcCS+ETRIv1aNXuYBmCg+6Vw
-         oyCg==
+        Mon, 16 Aug 2021 09:29:49 -0400
+Received: by mail-il1-f198.google.com with SMTP id i15-20020a92540f0000b0290222feb23cf5so9749733ilb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:29:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=RC1V5xe/NRcvL4rUhNzUeKyyDFkKgwzUwCe/4teWMGI=;
-        b=Ht+nItLjisYw4yK7PS/z4PfsUCBWTio6lTkg2Q7d9T17KRKjOVs8KGUKGPZ++WPVx0
-         0bOxtHSndB+eXQf07qKZkeruacCVS3u3F33CeBrrB3ObEdrBDb9BfRIo6z8eto/QFryJ
-         wrqiEZioPUeURBwhseQB8E7P+9qVW0OnmI9GQEnNCJijLlq6swD0KhYoMptLx6CTv0lD
-         dYRH9g8F4EHuEC+MdbJ0ejmuH1N8HC5jhi7jZkrXumFWY0BMAB+qg7CPOYtBHPSPigbq
-         ijzmCe7xHfvR5IzfawjMHgzoiDjN6mAFMcefjxJkcNZA0jGMcrsX9z7LoNfYfuJk47h/
-         H31w==
-X-Gm-Message-State: AOAM5330ZP3OMfYuNU4bFl5C6XKdkisUd5/b3RWe+085uAmJKcl2f5dW
-        0UggopuuYQ3aQvnGN/JHbE8UdA==
-X-Google-Smtp-Source: ABdhPJzg5Q2yGNtiVPCgYVb9rgz3YWoNA8AxWNsfge0oT4NkacCAAQa/VzZBv0pDYscUroc9QvNbQg==
-X-Received: by 2002:a17:907:7896:: with SMTP id ku22mr16781228ejc.166.1629120540739;
-        Mon, 16 Aug 2021 06:29:00 -0700 (PDT)
-Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
-        by smtp.gmail.com with ESMTPSA id g10sm3689219ejj.44.2021.08.16.06.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 06:29:00 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 15:28:58 +0200
-From:   Ben Hutchings <ben.hutchings@essensium.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 52/96] net: dsa: microchip: ksz8795: Fix VLAN
- filtering
-Message-ID: <20210816132858.GC18930@cephalopod>
-References: <20210816125434.948010115@linuxfoundation.org>
- <20210816125436.688497376@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SPj4+myJ8JzhjGfXTTH/Z+OtZy43EqV2wJdhxiY1nKw=;
+        b=SXXneu74FJdN9+ute4Oe84CwBLVTLHmzO3H+9P/FJjg1zhK74kqVmge01OO4+EL0Xr
+         AsQoogX3OkGXOdbG79e8IDvkos3GwoZVNurgqVitH8X0wRjVU0vNv8Td7jgUKlZr8u50
+         LdDe6/oSnWyFXhOri5Aa+6Cd5k1a2hL5nbVXH10N1+5h5MktBMVKMhUDi1NVycD9hhxB
+         7f9ozB/td4A1L5MWbh6xx2N3ygn2f8OH7DgzLEe3XUSqKtasa1GR1f+Xj023gdoFHeeO
+         xdfDzuHxEkLCEs+8oHWLVFvYvsz1eiR62LSQGGS9PgeymP9MRRAhzca/Z1RmyBoogqR5
+         nL6w==
+X-Gm-Message-State: AOAM530/OzIN2P57bqmyKm7Vi668q0Hs/kqN7oC04l+Tp6HruvHz4K1V
+        LCuq/X+0GiOxRtat5MMm10uUWCnThDpIM/c22E7BOYKSUSli
+X-Google-Smtp-Source: ABdhPJzdFf1fUonPWgBMICFHQ9n+A3WIhVwouHe1nI1iOJn6/OQWrzU3ZXPFaBWCxwkT67w9KcFotwb20V+bX6r8Rpt1g/Z81EAI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210816125436.688497376@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a05:6e02:1a4f:: with SMTP id u15mr11985302ilv.251.1629120557493;
+ Mon, 16 Aug 2021 06:29:17 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 06:29:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000020339705c9ad30ee@google.com>
+Subject: [syzbot] general protection fault in __io_queue_sqe
+From:   syzbot <syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:02:02PM +0200, Greg Kroah-Hartman wrote:
-> From: Ben Hutchings <ben.hutchings@mind.be>
-> 
-> [ Upstream commit 164844135a3f215d3018ee9d6875336beb942413 ]
+Hello,
 
-This will probably work on its own, but it was tested as part of a
-series of changes to VLAN handling in the driver.  Since I initially
-developed and tested that on top of 5.10-stable, I would prefer to
-send you the complete series to apply together.
+syzbot found the following issue on:
 
-Ben.
+HEAD commit:    b9011c7e671d Add linux-next specific files for 20210816
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15474781300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a245d1aa4f055cc1
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b85e9379c34945fe38f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-> Currently ksz8_port_vlan_filtering() sets or clears the VLAN Enable
-> hardware flag.  That controls discarding of packets with a VID that
-> has not been enabled for any port on the switch.
-> 
-> Since it is a global flag, set the dsa_switch::vlan_filtering_is_global
-> flag so that the DSA core understands this can't be controlled per
-> port.
-> 
-> When VLAN filtering is enabled, the switch should also discard packets
-> with a VID that's not enabled on the ingress port.  Set or clear each
-> external port's VLAN Ingress Filter flag in ksz8_port_vlan_filtering()
-> to make that happen.
-> 
-> Fixes: e66f840c08a2 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
-> Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/dsa/microchip/ksz8795.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-> index 1e101ab56cea..108a14db1f1a 100644
-> --- a/drivers/net/dsa/microchip/ksz8795.c
-> +++ b/drivers/net/dsa/microchip/ksz8795.c
-> @@ -790,8 +790,14 @@ static int ksz8795_port_vlan_filtering(struct dsa_switch *ds, int port,
->  	if (switchdev_trans_ph_prepare(trans))
->  		return 0;
->  
-> +	/* Discard packets with VID not enabled on the switch */
->  	ksz_cfg(dev, S_MIRROR_CTRL, SW_VLAN_ENABLE, flag);
->  
-> +	/* Discard packets with VID not enabled on the ingress port */
-> +	for (port = 0; port < dev->phy_port_cnt; ++port)
-> +		ksz_port_cfg(dev, port, REG_PORT_CTRL_2, PORT_INGRESS_FILTER,
-> +			     flag);
-> +
->  	return 0;
->  }
->  
-> @@ -1266,6 +1272,11 @@ static int ksz8795_switch_init(struct ksz_device *dev)
->  	/* set the real number of ports */
->  	dev->ds->num_ports = dev->port_cnt + 1;
->  
-> +	/* VLAN filtering is partly controlled by the global VLAN
-> +	 * Enable flag
-> +	 */
-> +	dev->ds->vlan_filtering_is_global = true;
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.30.2
-> 
-> 
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Ben Hutchings · Senior Embedded Software Engineer, Essensium-Mind · mind.be
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2b85e9379c34945fe38f@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc000000000b: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000058-0x000000000000005f]
+CPU: 0 PID: 6232 Comm: syz-executor.1 Not tainted 5.14.0-rc5-next-20210816-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
+RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
+RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
+RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
+Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
+RSP: 0018:ffffc9000a9ffd48 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 1ffff9200153ffb0 RCX: ffffc9000ba6a000
+RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
+RBP: ffff888037d15dc0 R08: 0000000000000001 R09: ffff888037d15e1f
+R10: ffffed1006fa2bc3 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff888037d15e30 R15: ffff888037d15e30
+FS:  00007fb490054700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000388c5000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_req_task_submit+0xaa/0x120 fs/io_uring.c:2139
+ tctx_task_work+0x106/0x540 fs/io_uring.c:2063
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+ handle_signal_work kernel/entry/common.c:146 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb490054188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: 0000000000000081 RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 00000000000045f5 RDI: 0000000000000003
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe3ce9ca1f R14: 00007fb490054300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 221813d58846ad59 ]---
+RIP: 0010:__io_req_set_refcount fs/io_uring.c:1152 [inline]
+RIP: 0010:__io_prep_linked_timeout fs/io_uring.c:1348 [inline]
+RIP: 0010:io_prep_linked_timeout fs/io_uring.c:1356 [inline]
+RIP: 0010:__io_queue_sqe+0x278/0xeb0 fs/io_uring.c:6708
+Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 07 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 70 49 8d 7c 24 58 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 3e 0b 00 00 45 8b 74 24 58 31
+RSP: 0018:ffffc9000a9ffd48 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 1ffff9200153ffb0 RCX: ffffc9000ba6a000
+RDX: 000000000000000b RSI: ffffffff81e1bcbf RDI: 0000000000000058
+RBP: ffff888037d15dc0 R08: 0000000000000001 R09: ffff888037d15e1f
+R10: ffffed1006fa2bc3 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff888037d15e30 R15: ffff888037d15e30
+FS:  00007fb490054700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b3213a000 CR3: 00000000388c5000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	89 fa                	mov    %edi,%edx
+   2:	48 c1 ea 03          	shr    $0x3,%rdx
+   6:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   a:	0f 85 07 0c 00 00    	jne    0xc17
+  10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  17:	fc ff df 
+  1a:	4c 8b 65 70          	mov    0x70(%rbp),%r12
+  1e:	49 8d 7c 24 58       	lea    0x58(%r12),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+  2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	74 08                	je     0x3a
+  32:	3c 03                	cmp    $0x3,%al
+  34:	0f 8e 3e 0b 00 00    	jle    0xb78
+  3a:	45 8b 74 24 58       	mov    0x58(%r12),%r14d
+  3f:	31                   	.byte 0x31
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
