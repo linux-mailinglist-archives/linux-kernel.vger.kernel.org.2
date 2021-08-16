@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E023EDCB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC373EDCBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhHPR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:57:22 -0400
-Received: from mga01.intel.com ([192.55.52.88]:17964 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232320AbhHPR5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:57:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="237980198"
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="237980198"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:56:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="519744355"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 10:56:48 -0700
-Date:   Mon, 16 Aug 2021 10:56:46 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] mm,hwpoison: fix race with hugetlb page allocation
-Message-ID: <20210816175646.GA1600630@agluck-desk2.amr.corp.intel.com>
-References: <20210603233632.2964832-1-nao.horiguchi@gmail.com>
- <20210603233632.2964832-2-nao.horiguchi@gmail.com>
- <20210812042813.GA1576603@agluck-desk2.amr.corp.intel.com>
- <20210812090303.GA153531@hori.linux.bs1.fc.nec.co.jp>
- <20210812152548.GA1579021@agluck-desk2.amr.corp.intel.com>
- <20210813062951.GA203438@hori.linux.bs1.fc.nec.co.jp>
- <96d4fd8b75e44a6c970e4d9530980f21@intel.com>
- <20210816171207.GA2239284@u2004>
+        id S232165AbhHPSCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231390AbhHPSCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:02:18 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1CCC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:01:46 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so638061pje.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CQAn3RJnCnEKhUAHlpFfnDVdKYIBRS8GR6cHa78A0bI=;
+        b=OiP/jE5lIKzaI86z/cSbkWq8KS+Zn367o727+x1oyIZCvtiHty5VuI3vR9Wd9m/DKC
+         mrAvJapyrn3wsenqZ8mHt9roDOSCGfRyzs/k1mCcI1rBa1xvrOhQ1kmKQT1zcDOSS1FB
+         9jlHPQve9GjHuRcHIygklthjRruh8CAuZ7VKU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CQAn3RJnCnEKhUAHlpFfnDVdKYIBRS8GR6cHa78A0bI=;
+        b=Cv+XUUY6JdDz5lkNPFOW67wjdLqQRGx0gVknoJdt9XeE8H/3Jles2LM2iH9wAc4TKb
+         7XmT9zK5iYyUuuZFN5WqtUn0lys2WJ8X4eacO6bzuxFhV5nFk5Pe77luZjnZoNRylT1m
+         IhZ2R4ylQ+ApDAuACwPWrd+b1XAeYWERYsg1li/V4x+N30ctOsO8jLaDYaK7lZqmLl4b
+         BYU6pXDpWMzljUyhVv2UoteDFXZUfsZQPlb17bKVeFUKg80KONj70sIcC7bvzw15Ey8E
+         W/2sLeB90g1dNr1RBbNPEnoTiQysWGFEXD5aeYezyExXJlUyiIRLlIjjIQLbnPHpEFb7
+         nlKA==
+X-Gm-Message-State: AOAM530Y/8ccINCW3lwLlElAq5cCtIOiwN9urrSRgytaojzytMsY70tS
+        Drr3cBX09hhW9UlJXAIe3I90cA==
+X-Google-Smtp-Source: ABdhPJwa1Xm3ePFA3SuM8XZOqgsVOXYMQm8FtguFpY+P9+T3EtyPVM2ryfi8HpcN6WgUHqWEMqbCBg==
+X-Received: by 2002:a17:902:a609:b029:12b:858e:d116 with SMTP id u9-20020a170902a609b029012b858ed116mr104173plq.25.1629136905928;
+        Mon, 16 Aug 2021 11:01:45 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:5cff:3a19:755c:1b91])
+        by smtp.gmail.com with UTF8SMTPSA id x12sm63119pfu.21.2021.08.16.11.01.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 11:01:45 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 11:01:43 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sankeerth Billakanti <sbillaka@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, seanpaul@chromium.org, swboyd@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [PATCH v1 2/2] dt-bindings: Add SC7280 compatible string
+Message-ID: <YRqoB2UEJtVcr6AN@google.com>
+References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org>
+ <1628726882-27841-3-git-send-email-sbillaka@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210816171207.GA2239284@u2004>
+In-Reply-To: <1628726882-27841-3-git-send-email-sbillaka@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 02:12:07AM +0900, Naoya Horiguchi wrote:
-> This dump indicates that HWPoisonHandlable() returned false due to
-> the lack of PG_lru flag.  In older code before 5.13, get_any_page() does
-> retry with shake_page(), but does not since 5.13, which seems to me
-> the root cause of the issue. So my suggestion is to call shake_page()
-> when HWPoisonHandlable() is false.
+On Thu, Aug 12, 2021 at 05:38:02AM +0530, Sankeerth Billakanti wrote:
+> The Qualcomm SC7280 platform supports an eDP controller, add
+> compatible string for it to msm/binding.
 > 
-> Could you try checking that the following diff fixes the issue?
-> I could still have better fix (like inserting shake_page() to other
-> retry paths in get_any_page()), but the below is the minimum one.
+> Signed-off-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> index 64d8d9e..23b78ac 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> @@ -17,6 +17,9 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,sc7180-dp
+> +      - qcom,sc8180x-dp
+> +      - qcom,sc8180x-edp
+> +      - qcom,sc7280-edp
 
-Tried it ... and it works! Injected and recovered from a thousand
-errors without seeing any problems.
+This adds compatible strings for sc8180x and sc7280 (e)DP, however the
+commit message only mentions sc7280. So either the commit message needs
+and update or the sc8180x compatibles should be removed.
 
--Tony
-
-P.S. Somewhere in the mail system your patch arrived with <TAB>s
-changed to spaces. Here's what I applied to v5.14-rc6 (hopefully with
-TABS preserved) ... just in case anyone else is following along with
-this thread and wants to try some tests.
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index eefd823deb67..aa6592540f17 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1146,7 +1146,7 @@ static int __get_hwpoison_page(struct page *page)
- 	 * unexpected races caused by taking a page refcount.
- 	 */
- 	if (!HWPoisonHandlable(head))
--		return 0;
-+		return -EBUSY;
- 
- 	if (PageTransHuge(head)) {
- 		/*
-@@ -1199,9 +1199,14 @@ static int get_any_page(struct page *p, unsigned long flags)
- 			}
- 			goto out;
- 		} else if (ret == -EBUSY) {
--			/* We raced with freeing huge page to buddy, retry. */
--			if (pass++ < 3)
-+			/*
-+			 * We raced with (possibly temporary) unhandlable
-+			 * page, retry.
-+			 */
-+			if (pass++ < 3) {
-+				shake_page(p, 1);
- 				goto try_again;
-+			}
- 			goto out;
- 		}
- 	}
+The driver change (https://patchwork.kernel.org/project/linux-arm-msm/patch/1628726882-27841-2-git-send-email-sbillaka@codeaurora.org/)
+adds some (currently unused) 'io_start' addresses which are hardcoded,
+I wonder if these should be in the device tree instead (and 'num_dp'
+too?), if they are needed at all.
