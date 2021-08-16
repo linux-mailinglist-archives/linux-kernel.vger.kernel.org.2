@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB203EDE67
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B08E3EDE6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhHPUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhHPUG7 (ORCPT
+        id S231567AbhHPUHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:07:40 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:40487 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhHPUHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:06:59 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC7BC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:06:27 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id d4so36733672lfk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 13:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MCHefUYIGF0rDVJ88x82+J6avfifkq1IRlnZNezfBi0=;
-        b=MPmTA2z8ZBWyznTkjJSbBpYBiKSwRKqaPJeK9g3MrNUu8QU8lEs5G4eyP6K7/RVcib
-         rSElteGsKie7jonGaiPHLEev7ZJR39UsHoWnioW4gtfpWCZ9nV+JIPZsxF60HByTqbb9
-         j7JYeW3xlEobvuQxyzLtdXgUlKS7aYkJpjy7Nu2K+ot3LLgsdN3F7BANNoZtkkxvjKkt
-         dGEXpeuZZdT2BdyMcaHDXZEKEksVb4fzCEFmwGHSgHQzj2453B2zyxa1bgFTn06Z3YVT
-         vFkgP5QR9kW7iF7gnZDyd8JMU2V5mlF4Ggg6j6bMIsE6BTI2AySTsf/MQHl+/rRNXjuu
-         x0Zg==
+        Mon, 16 Aug 2021 16:07:39 -0400
+Received: by mail-oi1-f169.google.com with SMTP id r5so28421226oiw.7;
+        Mon, 16 Aug 2021 13:07:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MCHefUYIGF0rDVJ88x82+J6avfifkq1IRlnZNezfBi0=;
-        b=Ur+WLAQCLa2N8xcvPt5BTmGZt3uBBD4EZEOYO9+Dr+bN2GXRwpwXtefcWve5v0Pt8h
-         AB179r9NXhA3eqr5yGP65RDLd5cZHAYINGHuij61mf0A0hMNAu+VTkJyejKQcVvP+0aB
-         GoJc5i6734Y9WJqlxK6338ho/Cq/ixcvEpxlAqIQDYWEofup3OvnhNnZWV7BLeHMgYLt
-         PWFU02HBacP7DAkBHbnpY7EU1QSxfzMzLVavIhEu18ajmGFT9pCkzjnytnR//RdMOVuB
-         /HwPmHQMFIRCwssRHmzAe0fGY0604oq3A/RlbPzJLBD44Gfh1ogQusnkKSB8FWoHcy+Q
-         qC/Q==
-X-Gm-Message-State: AOAM5300fNYuCBVQznfkuy75aIDQP8v/dNkpIhPqQOt/zW4DthFy20jq
-        TCVPIsIZukycpK0Vd22SNHVgTANbslJYr+AgPT6CUQ==
-X-Google-Smtp-Source: ABdhPJzgjBXZZxuAxDiFWmfUvUkPVNJRQydgWlOCjtRurPN+dmCZo022hvuTevpvOkS2jjpo/C6Z7hmM+uQdsNMPd34=
-X-Received: by 2002:a19:f017:: with SMTP id p23mr55541lfc.547.1629144384999;
- Mon, 16 Aug 2021 13:06:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210810204240.4008685-1-ndesaulniers@google.com> <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com>
-In-Reply-To: <CAK7LNASotywVkNjaBC7wYke70QL+a0tMJEVEvRTPpt8dDgHE9Q@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 16 Aug 2021 13:06:13 -0700
-Message-ID: <CAKwvOdnc-GAHOQtjrjFzc6GzCLR35rQ6uVAenLLKBkEqws9Tbw@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: remove stale cc-option checks
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=uHtjUONg6FCY3pnZJevLSPNM0uWf/2eId9QZ5tVSivw=;
+        b=hd5K7p0b1Y0HgHqNBQKlQe6cANf6svvTe38gBbbOIPmlFYPqdomMJJl1a0Em3vYuLr
+         qO27l/yCJNwfsWYcG0I/UjiRDeEY+n1NFnntCRQSBxvksflXOq/3RctUfsmEgvdessDs
+         xBNLgeSyC+OCQ0uWXZK0+CUhBCepADXdYXbuetYiost2liR6np1TjHZeHTJrqBIbfQMw
+         mE4bkfvbPBvFoeEqCvQTNlhoh5RchZE3IcQDXD9spsuaF3scHgSanyKQnA8102iwgd95
+         tiOyKuW/ZkXIhRySTiFqFDPm02uayk6KdfcrEqc20jxdXUiHb44szEhvibp0nMdaDNE4
+         3xFQ==
+X-Gm-Message-State: AOAM531cz/26MFUSsVHQPsmpfHFMgsOHbTxOU7C9PMUbj9gtQMVSfHsA
+        mUPvOqUVzpHXARYQVP2uPl12D7FMFw==
+X-Google-Smtp-Source: ABdhPJwPoLDRQz/e37Bg6ivbukWiCoD/59uOvrNG7ZaBLascqxFx2/JD5NsoIT8X2Em6vbYg4dR/Pw==
+X-Received: by 2002:a05:6808:2084:: with SMTP id s4mr383200oiw.31.1629144427275;
+        Mon, 16 Aug 2021 13:07:07 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p4sm4019ooa.35.2021.08.16.13.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 13:07:06 -0700 (PDT)
+Received: (nullmailer pid 2563335 invoked by uid 1000);
+        Mon, 16 Aug 2021 20:07:03 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     linux-kernel@vger.kernel.org, lars@metafoo.de, andrew@aj.id.au,
+        BMC-SW@aspeedtech.com, joel@jms.id.au, robh+dt@kernel.org,
+        p.zabel@pengutronix.de, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lgirdwood@gmail.com, broonie@kernel.org,
+        linux-aspeed@lists.ozlabs.org, pmeerw@pmeerw.net, jic23@kernel.org
+In-Reply-To: <20210816104846.13155-2-billy_tsai@aspeedtech.com>
+References: <20210816104846.13155-1-billy_tsai@aspeedtech.com> <20210816104846.13155-2-billy_tsai@aspeedtech.com>
+Subject: Re: [v3 01/15] dt-bindings: iio: adc: Add ast2600-adc bindings
+Date:   Mon, 16 Aug 2021 15:07:03 -0500
+Message-Id: <1629144423.392245.2563334.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Wed, Aug 11, 2021 at 5:42 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 027fdf2a14fe..3e3fb4affba1 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -798,7 +801,7 @@ include/config/auto.conf:
-> >  endif # may-sync-config
-> >  endif # need-config
-> >
-> > -KBUILD_CFLAGS  += $(call cc-option,-fno-delete-null-pointer-checks,)
-> > +KBUILD_CFLAGS  += -fno-delete-null-pointer-checks
-> >  KBUILD_CFLAGS  += $(call cc-disable-warning,frame-address,)
-> >  KBUILD_CFLAGS  += $(call cc-disable-warning, format-truncation)
-> >  KBUILD_CFLAGS  += $(call cc-disable-warning, format-overflow)
-> > @@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
-> >  endif
-> >
-> >  # Tell gcc to never replace conditional load with a non-conditional one
-> > -KBUILD_CFLAGS  += $(call cc-option,--param=allow-store-data-races=0)
-> > +ifdef CONFIG_CC_IS_GCC
->
->
-> Can you insert a comment here?
->
-> # GCC 10 renamed --param=allow-store-data-races=0 to --allow-store-data-races
->
->
-> It will remind us of dropping this conditional
-> in the (long long distant) future.
->
->
->
->
-> > +KBUILD_CFLAGS  += $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
-> >  KBUILD_CFLAGS  += $(call cc-option,-fno-allow-store-data-races)
-> > +endif
+On Mon, 16 Aug 2021 18:48:32 +0800, Billy Tsai wrote:
+> Add device tree bindings document for the aspeed ast2600 adc device
+> driver.
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../bindings/iio/adc/aspeed,ast2600-adc.yaml  | 98 +++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
+> 
 
-So it looks like `-fallow-store-data-races` was also supported. Reading through
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97309
-https://gcc.gnu.org/wiki/Atomic/GCCMM/ExecutiveSummary
-it seems that the default is not to allow "store data races." So I
-should not be adding `--allow-store-data-races` or
-`-fallow-store-data-races`; so this just should be the existing test,
-with a comment that it can be removed once gcc-10+ is the minimum.
-Will update that in v2.
--- 
-Thanks,
-~Nick Desaulniers
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: properties:aspeed,int_vref_mv: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('enum' was unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: properties:aspeed,int_vref_mv: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	1200 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	2500 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: ignoring, error in schema: properties: aspeed,int_vref_mv
+warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
+Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.example.dt.yaml:0:0: /example-0/adc@1e6e9000: failed to match any schema with compatible: ['aspeed,ast2600-adc0']
+Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.example.dt.yaml:0:0: /example-0/adc@1e6e9100: failed to match any schema with compatible: ['aspeed,ast2600-adc1']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1517123
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
