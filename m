@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681F83ED0CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964F73ED0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhHPJFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S234988AbhHPJFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbhHPJFc (ORCPT
+        with ESMTP id S233053AbhHPJFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:05:32 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C4EC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:01 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id q6so10982923wrv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:00 -0700 (PDT)
+        Mon, 16 Aug 2021 05:05:35 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488CCC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:04 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so20169539otl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=mMaesSXI/1ebDXpZxtJ9KM9Ruw6o7aKYtfvKIOk0/pg=;
-        b=XbxJRgeIK1EnHAxTA0KXtizH38cpXbRQZwPqr/qe4xGSzahCbKRoW1ev6TTS91EaGN
-         32Bx7vxDQaFuwDG2sPHP/Te5Iy36Kju8obuCiOrrogPQ42JqhWf5tA0xumk9K4KvPnof
-         hOjBP7iHJ+hYdvhVJvjebfKRpisLGSehXzxvK8uLcBW5kTvFFDl56gVSh91TU31Derro
-         xA1kjRLhro84EKFTj7DcFDFlQgE5DB7XK0sh0cHym+XnFQYVRrClMyE7zY2bfKOPDZeY
-         fRkzIIfJOXpkIwn5GekPua5kQIsuA1kqE80fBhmMb4UgONBDhsj90x8eeVyWHtkOmHwJ
-         h6/g==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I0X8cjnS3exVhKOIPaaxhXaLTasft0jjNO1dDnir+M0=;
+        b=WsrmEAbKR9Ea1DN08aTHGiAKPFqgbYhwc/9LS5oJ/HgSk5p3+zAIlUvaEE/ADQPgGI
+         cbx68FP3RCl9hHQN2gqWFmFuSN6q5AvO1obN0fG5yDYwq1dbG2mdRJCH7IUPvuPyo4+N
+         z0/O2WvILWTFfLPT83dMk2DaEY89r5CjM7/lE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mMaesSXI/1ebDXpZxtJ9KM9Ruw6o7aKYtfvKIOk0/pg=;
-        b=EXbCrXsx7EnmlB2zp4Taj+dZVgWOiotfYpE0bqG0dVdamyft/eAegqjmVWBkYSvpwb
-         8+yG08hgJCmcr9S0kKUmywxj8tSYxLtXA+Sb+c/VQU4TP9UcJJiCvH5fecNUp4gA5wzw
-         pmXeanwqkRmx3H5ntSalwdgafD5ezjq6oM8d5+fi6EOH+y7JRIQaXPSUoUz8uVjAj/K/
-         V1SBjMC6Gp92LOt6Yjc7tzE1mREv9dYXNFfuPDcoz0fDXvr0ef32GQARpGcxB3HGZibG
-         3uDO9esaT5BCcZoap1+i2IkZNKtHD2ARh6Uj8ba1C8wd3IqBZKFeD7Y26cknZI54NHlt
-         BSWg==
-X-Gm-Message-State: AOAM531FANcd9+TtS23X9UG546eJXhF/PkZSPdraqBc6d6j6bwpBskmW
-        0yE5B7iAb5KzUmHrPEsXxy1fAQ==
-X-Google-Smtp-Source: ABdhPJwbZOXGLGuWCEeUa31iyyVOThWJ8ZKO/RjWuqmTI89nAoGHQrLzkB9L8b5Ws/U6urBbrXbXQw==
-X-Received: by 2002:a5d:658e:: with SMTP id q14mr17226897wru.142.1629104699511;
-        Mon, 16 Aug 2021 02:04:59 -0700 (PDT)
-Received: from localhost.localdomain (81.227.26.93.rev.sfr.net. [93.26.227.81])
-        by smtp.gmail.com with ESMTPSA id l12sm9381761wms.24.2021.08.16.02.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 02:04:59 -0700 (PDT)
-From:   Roger Knecht <roger@norberthealth.com>
-To:     Jiri Kosina <trivial@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Roger Knecht <roger@norberthealth.com>
-Subject: [PATCH] Trivial comment fix for the CRC ITU-T polynom
-Date:   Mon, 16 Aug 2021 11:04:31 +0200
-Message-Id: <20210816090431.6540-1-roger@norberthealth.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I0X8cjnS3exVhKOIPaaxhXaLTasft0jjNO1dDnir+M0=;
+        b=AlFZy3BoGxTfjj5IhEVOxgFb+ame+V25WIb5T8zKEnb4yD9GswCH7+HGiES9LUnncs
+         L0foPtqx2P7u3NV7fegvsG6S0Mkn72u/mlN1ThmRx2kUZ/gd5kHlQ6F2cryV676nZlYL
+         OalBAL7Cc8m7Tt9P1zElWLJsGKCcfzlUu8y4JYnwEql+ZaP/LTaNHRjPcyXVbO+b8fqf
+         8bFYDssBycwlfWemzQY3RmCVAbGihDWt9ooywg7uCJCh4ofqEYOp9F2CbSZvncVkwyMk
+         UL1NTTv3POrGzjOfbVayaqffiHJvHMmK0hcjQg+SnvKWwYPiHNicNesp5H5UMbf2bJ8d
+         frkA==
+X-Gm-Message-State: AOAM530YAfOeiWuZ9M00YZ97PYXTU7K+3ITvT+HKIW7EWRULzfDfDYBL
+        SuwLhfoi4x6XRz2IcyLHqn6TdGUErY+CjNqp8q5VuA==
+X-Google-Smtp-Source: ABdhPJwYfeYsTGTja3gdEWuUROrubaV5DSeozV6ZWk480EPEPOe0sNVBRHe913XVZngXT6YGFbGy1Z4ZGIwcRux0I0g=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr12175776otb.281.1629104703642;
+ Mon, 16 Aug 2021 02:05:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210815153740.195330-1-desmondcheongzx@gmail.com>
+ <202108160208.ONHHWxXy-lkp@intel.com> <f88fe698-b40c-b309-96c2-32b314280aad@gmail.com>
+In-Reply-To: <f88fe698-b40c-b309-96c2-32b314280aad@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 16 Aug 2021 11:04:52 +0200
+Message-ID: <CAKMK7uEWMjaDEuMpc1__EwD5rpaouJ-dhahQBEQ5rsBz3VV=qg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm: avoid races with modesetting rights
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>, kbuild-all@lists.01.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the CRC ITU-T V.41 spec the polynom is x^16 + x^12 + x^5 + 1.
-Source: https://www.itu.int/rec/T-REC-V.41-198811-I/en
+On Mon, Aug 16, 2021 at 10:53 AM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
+> On 16/8/21 2:47 am, kernel test robot wrote:
+> > Hi Desmond,
+> >
+> > Thank you for the patch! Yet something to improve:
+> >
+> > [auto build test ERROR on next-20210813]
+> > [also build test ERROR on v5.14-rc5]
+> > [cannot apply to linus/master v5.14-rc5 v5.14-rc4 v5.14-rc3]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
+> > base:    4b358aabb93a2c654cd1dcab1a25a589f6e2b153
+> > config: i386-randconfig-a004-20210815 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > reproduce (this is a W=1 build):
+> >          # https://github.com/0day-ci/linux/commit/cf6d8354b7d7953cd866fad004cbb189adfa074f
+> >          git remote add linux-review https://github.com/0day-ci/linux
+> >          git fetch --no-tags linux-review Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
+> >          git checkout cf6d8354b7d7953cd866fad004cbb189adfa074f
+> >          # save the attached .config to linux build tree
+> >          make W=1 ARCH=i386
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>, old ones prefixed by <<):
+> >
+> >>> ERROR: modpost: "task_work_add" [drivers/gpu/drm/drm.ko] undefined!
+> >
+>
+> I'm a bit uncertain about this. Looking into the .config used, this
+> error seems to happen because task_work_add isn't an exported symbol,
+> but DRM is being compiled as a loadable kernel module (CONFIG_DRM=m).
+>
+> One way to deal with this is to export the symbol, but there was a
+> proposed patch to do this a few months back that wasn't picked up [1],
+> so I'm not sure what to make of this.
+>
+> I'll export the symbol as part of a v3 series, and check in with the
+> task-work maintainers.
+>
+> Link:
+> https://lore.kernel.org/lkml/20210127150029.13766-3-joshi.k@samsung.com/ [1]
 
-Signed-off-by: Roger Knecht <roger@norberthealth.com>
----
- include/linux/crc-itu-t.h | 2 +-
- lib/crc-itu-t.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Yeah that sounds best. I have two more thoughts on the patch:
+- drm_master_flush isn't used by any modules outside of drm.ko, so we
+can unexport it and drop the kerneldoc (the comment is still good).
+These kind of internal functions have their declaration in
+drm-internal.h - there's already a few there from drm_auth.c
 
-diff --git a/include/linux/crc-itu-t.h b/include/linux/crc-itu-t.h
-index a4367051e192..2f991a427ade 100644
---- a/include/linux/crc-itu-t.h
-+++ b/include/linux/crc-itu-t.h
-@@ -4,7 +4,7 @@
-  *
-  * Implements the standard CRC ITU-T V.41:
-  *   Width 16
-- *   Poly  0x1021 (x^16 + x^12 + x^15 + 1)
-+ *   Poly  0x1021 (x^16 + x^12 + x^5 + 1)
-  *   Init  0
-  */
- 
-diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
-index 1974b355c148..56e6e0d63d1e 100644
---- a/lib/crc-itu-t.c
-+++ b/lib/crc-itu-t.c
-@@ -7,7 +7,7 @@
- #include <linux/module.h>
- #include <linux/crc-itu-t.h>
- 
--/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
-+/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
- const u16 crc_itu_t_table[256] = {
- 	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
- 	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
+- We know have 3 locks for master state, that feels a bit like
+overkill. The spinlock I think we need to keep due to lock inversions,
+but the master_mutex and master_rwsem look like we should be able to
+merge them? I.e. anywhere we currently grab the master_mutex we could
+instead grab the rwsem in either write mode (when we change stuff) or
+read mode (when we just check, like in master_internal_acquire).
+
+Thoughts?
+-Daniel
+
+>
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >
+>
+
+
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
