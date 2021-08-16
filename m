@@ -2,104 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7825E3ECED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A83B3ECED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhHPGvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:51:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41322 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbhHPGvm (ORCPT
+        id S233654AbhHPGxJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Aug 2021 02:53:09 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58809 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233349AbhHPGxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:51:42 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7BBD71C0B77; Mon, 16 Aug 2021 08:51:10 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 08:51:10 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Colin King <colin.king@canonical.com>
-Cc:     linux-leds@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: flash: Remove redundant initialization of variable
- ret
-Message-ID: <20210816065110.GA7500@duo.ucw.cz>
-References: <20210612132547.58727-1-colin.king@canonical.com>
+        Mon, 16 Aug 2021 02:53:08 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 211171BF209;
+        Mon, 16 Aug 2021 06:52:33 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 08:52:32 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH V4 3/8] i3c: master: svc: separate err, fifo and disable
+ interrupt of reset function
+Message-ID: <20210816085232.46682b0e@xps13>
+In-Reply-To: <20210809063645.2289988-4-xiaoning.wang@nxp.com>
+References: <20210809063645.2289988-1-xiaoning.wang@nxp.com>
+        <20210809063645.2289988-4-xiaoning.wang@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
-In-Reply-To: <20210612132547.58727-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Clark,
 
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Clark Wang <xiaoning.wang@nxp.com> wrote on Mon,  9 Aug 2021 14:36:40
++0800:
 
-Hi!
+> Sometimes only need to reset err and fifo regs, so split the origin
+> reset function to three functions.
+> Put them at the top of the file, to let more functions can call them.
+> 
+> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+> Reviewed-by: Jun Li <jun.li@nxp.com>
 
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> The variable ret is being initialized with a value that is never read,
-> it is being updated later on. The assignment is redundant and can be
-> removed.
->=20
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-I did this instead; hopefully that's okay with everyone.
-
-Best regards,
-							Pavel
-
-commit 654933ae7d32f278eecd0bb0f175785574ac4775
-Author: Pavel Machek <pavel@ucw.cz>
-Date:   Mon Aug 16 08:47:08 2021 +0200
-
-    leds: flash: Remove redundant initialization of variable ret
-   =20
-    Adjust initialization not to trigger Coverity warnings.
-   =20
-    Reported-by: Colin Ian King <colin.king@canonical.com>
-    Signed-off-by: Pavel Machek <pavel@ucw.cz>
-
-diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
-index 6eeb9effcf65..185e17055317 100644
---- a/drivers/leds/led-class-flash.c
-+++ b/drivers/leds/led-class-flash.c
-@@ -92,14 +92,12 @@ static ssize_t flash_strobe_store(struct device *dev,
- 	struct led_classdev *led_cdev =3D dev_get_drvdata(dev);
- 	struct led_classdev_flash *fled_cdev =3D lcdev_to_flcdev(led_cdev);
- 	unsigned long state;
--	ssize_t ret =3D -EINVAL;
-+	ssize_t ret =3D -EBUSY;
-=20
- 	mutex_lock(&led_cdev->led_access);
-=20
--	if (led_sysfs_is_disabled(led_cdev)) {
--		ret =3D -EBUSY;
-+	if (led_sysfs_is_disabled(led_cdev))
- 		goto unlock;
--	}
-=20
- 	ret =3D kstrtoul(buf, 10, &state);
- 	if (ret)
-
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRoK3gAKCRAw5/Bqldv6
-8j8dAJ4ofrlkLRgyhMsj+wAlN16lq/bCRgCeN7K/b+N0KrTKckmebbrTfnoryCs=
-=RFL6
------END PGP SIGNATURE-----
-
---PEIAKu/WMn1b1Hv9--
+Thanks,
+Miquèl
