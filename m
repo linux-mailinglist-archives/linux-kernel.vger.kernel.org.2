@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939333ED609
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA323ED51A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238305AbhHPNQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:16:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
+        id S236789AbhHPNIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:08:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239903AbhHPNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:10:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5425A6108D;
-        Mon, 16 Aug 2021 13:09:44 +0000 (UTC)
+        id S236195AbhHPNGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:06:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B79796329B;
+        Mon, 16 Aug 2021 13:05:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119384;
-        bh=FyBYRvJmpuJKP1noFuPFBmmXWo5HEiWM1mBvVvqy7Mk=;
+        s=korg; t=1629119133;
+        bh=7cWPMzY1hYSOYsbx0wWobSkykJyWrKrysUpuxEPauLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mfwd0bvZ982vayHPn1nvUCDmNUlQpkLO8GursDvvj4TQyUzZ57e4t42chDEj6Sqs/
-         Xg5RkONoM34M9GQgqejExq/Eygo0I52H/u5XgB+pB8s7slbm7Px91lg6wPLuQ0cdBO
-         MWvYvFBEQR8b7KXrCTTAOFi1+UBXM1F29o0fIHSU=
+        b=SxgmZGStjlkldsuH/7GAqLLH9dLoS6QwuCZ7PK9aqULgaFik2PmmWhXRBjSA2Axv+
+         1T0ARzpO+PKxkrhZZFucaGXs9sD1S/uzDoUYs0H21wBrznM9G02xbKbNcak49tYaXV
+         +LlLKgfZ+/MsStWlhAxNwPPTtPSWB3naswmlYTfI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 75/96] x86/ioapic: Force affinity setup before startup
-Date:   Mon, 16 Aug 2021 15:02:25 +0200
-Message-Id: <20210816125437.476088066@linuxfoundation.org>
+Subject: [PATCH 5.4 54/62] PCI/MSI: Correct misleading comments
+Date:   Mon, 16 Aug 2021 15:02:26 +0200
+Message-Id: <20210816125430.068956554@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 0c0e37dc11671384e53ba6ede53a4d91162a2cc5 upstream.
+commit 689e6b5351573c38ccf92a0dd8b3e2c2241e4aff upstream.
 
-The IO/APIC cannot handle interrupt affinity changes safely after startup
-other than from an interrupt handler. The startup sequence in the generic
-interrupt code violates that assumption.
+The comments about preserving the cached state in pci_msi[x]_shutdown() are
+misleading as the MSI descriptors are freed right after those functions
+return. So there is nothing to restore. Preparatory change.
 
-Mark the irq chip with the new IRQCHIP_AFFINITY_PRE_STARTUP flag so that
-the default interrupt setting happens before the interrupt is started up
-for the first time.
-
-Fixes: 18404756765c ("genirq: Expose default irq affinity mask (take 3)")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Marc Zyngier <maz@kernel.org>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.832143400@linutronix.de
+Link: https://lore.kernel.org/r/20210729222542.621609423@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/io_apic.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/msi.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1948,7 +1948,8 @@ static struct irq_chip ioapic_chip __rea
- 	.irq_set_affinity	= ioapic_set_affinity,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_get_irqchip_state	= ioapic_irq_get_chip_state,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_AFFINITY_PRE_STARTUP,
- };
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -960,7 +960,6 @@ static void pci_msi_shutdown(struct pci_
  
- static struct irq_chip ioapic_ir_chip __read_mostly = {
-@@ -1961,7 +1962,8 @@ static struct irq_chip ioapic_ir_chip __
- 	.irq_set_affinity	= ioapic_set_affinity,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_get_irqchip_state	= ioapic_irq_get_chip_state,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_AFFINITY_PRE_STARTUP,
- };
+ 	/* Return the device with MSI unmasked as initial states */
+ 	mask = msi_mask(desc->msi_attrib.multi_cap);
+-	/* Keep cached state to be restored */
+ 	__pci_msi_desc_mask_irq(desc, mask, 0);
  
- static inline void init_IO_APIC_traps(void)
+ 	/* Restore dev->irq to its default pin-assertion IRQ */
+@@ -1046,10 +1045,8 @@ static void pci_msix_shutdown(struct pci
+ 	}
+ 
+ 	/* Return the device with MSI-X masked as initial states */
+-	for_each_pci_msi_entry(entry, dev) {
+-		/* Keep cached states to be restored */
++	for_each_pci_msi_entry(entry, dev)
+ 		__pci_msix_desc_mask_irq(entry, 1);
+-	}
+ 
+ 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+ 	pci_intx_for_msi(dev, 1);
 
 
