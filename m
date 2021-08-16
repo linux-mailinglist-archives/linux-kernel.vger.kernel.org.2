@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5C73ED16E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E183ED179
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhHPJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:58:50 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44807 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235568AbhHPJ6s (ORCPT
+        id S235543AbhHPKAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhHPKAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:58:48 -0400
-Received: by mail-io1-f71.google.com with SMTP id d15-20020a0566022befb02905b2e9040807so3329290ioy.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:58:16 -0700 (PDT)
+        Mon, 16 Aug 2021 06:00:06 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30E9C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:59:34 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u15so11193394wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Numga2hqtD01622lT/5bjEpXP8+Om7SgZ96+WGsQTRk=;
+        b=ZHE7l0A/jC1ogN8tUXdtbzpjmzb228cQYd9kyxVufzH1FDPNdeJxzpId5+Ce2e+vaV
+         4/rpREGlOYwgAB2boHXyUvOgilOJQBT07cegirefHAm7YTEPwAdOY4MjAtzo07aDYSof
+         H4DVlRAoR3DidXoXh4B2/tV3qi8Cgf00yiwWQwCroBGVALojCVFJt46voQ6v6yLKpesD
+         v8iKqP41S9hrlpF8d1O8ErAq/sH5wGo5fh82hyIVfyD6iwPLPTwPOb+36ez+64c68LAb
+         IGBETucBOIADKTAdfT4d8/+/eesEtIOjynj5QoueLpHvZjxVnZRkqJen4d+tHbnZswn2
+         BiFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cvdPNR7jr5eQX1OC4+6gYdzVx/93pcSVWwtCA0gF2kA=;
-        b=g7x0G70nVsfoYL6VHGsuiDbj3uuxEdzeJlq4L60+sHSMWtEyISDKwgW/UALkgJSldY
-         kgNXbMU2Y3BjPKThH832xqwMUJ2Pyjrb77g2Lts8w5BuXcde71tTG5JUBvNVrAKEE7lH
-         U7dRsC8KWEapwHIvmPOAwgFaWaD0TIt041bjhNfk0xMx+0uYwGQZiqsNSdCu8OQxWYvD
-         +oE0EsODx2zzekpbg5mlgxLl7vMSWhVidjmdFTMT689JPnC6gTKQPJnNiIdvsbHHypA4
-         51oyMA44JIHZKa8tF1uZJywDzHH9EVitltaxd7fIqiu30WgB4CVhVdP4DPQ996uc/fwA
-         VL5A==
-X-Gm-Message-State: AOAM530bVfrnpGekCWTNBOlFIzQECl+snVpqw0yio93Gnwv9cV/4+9Ws
-        FetmAKZXjIZaBlmU70SeA/JzXYFbYa83/zkT6+yzV1tEriy5
-X-Google-Smtp-Source: ABdhPJxLZM0cN8828twYWtoFL5FZcx0w0oQf9DArw1kYJsHlxTGHkbpXlQh5vSim8ZOwSlO7qkc63xkPT0N7nr6TBrwHCCCw5165
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Numga2hqtD01622lT/5bjEpXP8+Om7SgZ96+WGsQTRk=;
+        b=K4ohukIf9TXmnS1anfp5OkRSR5tHzxHxD/1ks42SOSWHEYKRHhbkK9WihDVovm9mT7
+         d5ogBVCtRL5P7Nq/EDjzho26EhrQchycBCxcGVWrTEsRWPgFUFQFmG2qtay+udEucKsN
+         pzWflcjV5A+O51rUn/ggVRZkx7GZ6TIR49nUebFlrZpXV1M5XCDqkV6Ra+MS5t7LO53h
+         5vVt/GSdjAJlQGptITgIdhDTmZqQ/sH1UeW4o+SJ5lza9OEDjXp49uoOXXT1rGtzzlzu
+         OTGaV/ASYlDNWH2x2jp+Xry7pSwYn+HL21tz107Ia37j+6Uqhzu/u8GvrMQrx9UBQGel
+         JvDA==
+X-Gm-Message-State: AOAM531QsSLZXjy00vWn8HduRuM7UOPaJl5qh9QBH8xt8ygzl5ZcTdST
+        7d+qf1CltGXAlagVBTSGAKNgan+p+/w=
+X-Google-Smtp-Source: ABdhPJyIke+MPO0KYbzPWDNTLA1WQFAkQmmAMGGdzdCES3dQA0fa43plOkooJrRHwa27bCxbJG5fcw==
+X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr14383455wmi.176.1629107973356;
+        Mon, 16 Aug 2021 02:59:33 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::4058])
+        by smtp.gmail.com with ESMTPSA id g21sm1946635wmk.8.2021.08.16.02.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 02:59:32 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/4] staging: r8188eu: refactor rtw_is_cckrates_included()
+Date:   Mon, 16 Aug 2021 11:58:37 +0200
+Message-Id: <20210816095840.24259-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:970d:: with SMTP id x13mr14664887jai.57.1629107896489;
- Mon, 16 Aug 2021 02:58:16 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 02:58:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000789bcd05c9aa3d5d@google.com>
-Subject: [syzbot] WARNING in __v9fs_get_acl
-From:   syzbot <syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com>
-To:     a@unstable.cc, asmadeus@codewreck.org,
-        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
-        ericvh@gmail.com, linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        lucien.xin@gmail.com, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Refactor function rtw_is_cckrates_included(). Improves readability
+and slightly reduces object file size.
 
-syzbot found the following issue on:
-
-HEAD commit:    761c6d7ec820 Merge tag 'arc-5.14-rc6' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d87ca1300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=56fdf7f6291d819b9b19
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ca6029300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bf42a1300000
-
-The issue was bisected to:
-
-commit 0ac1077e3a549bf8d35971613e2be05bdbb41a00
-Author: Xin Long <lucien.xin@gmail.com>
-Date:   Tue Oct 16 07:52:02 2018 +0000
-
-    sctp: get pr_assoc and pr_stream all status with SCTP_PR_SCTP_ALL instead
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f311fa300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f311fa300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f311fa300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+56fdf7f6291d819b9b19@syzkaller.appspotmail.com
-Fixes: 0ac1077e3a54 ("sctp: get pr_assoc and pr_stream all status with SCTP_PR_SCTP_ALL instead")
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8426 at mm/page_alloc.c:5366 __alloc_pages+0x588/0x5f0 mm/page_alloc.c:5413
-Modules linked in:
-CPU: 1 PID: 8426 Comm: syz-executor477 Not tainted 5.14.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages+0x588/0x5f0 mm/page_alloc.c:5413
-Code: 00 48 ba 00 00 00 00 00 fc ff df e9 5e fd ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 6d fd ff ff e8 bd 62 0a 00 e9 63 fd ff ff <0f> 0b 45 31 e4 e9 7a fd ff ff 48 8d 4c 24 50 80 e1 07 80 c1 03 38
-RSP: 0018:ffffc90000fff9a0 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90000fffa28
-RBP: ffffc90000fffaa8 R08: dffffc0000000000 R09: ffffc90000fffa00
-R10: fffff520001fff45 R11: 0000000000000000 R12: 0000000000040d40
-R13: ffffc90000fffa00 R14: 1ffff920001fff3c R15: 1ffff920001fff38
-FS:  000000000148e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa1e9a97740 CR3: 000000003406e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kmalloc_order+0x41/0x170 mm/slab_common.c:955
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:971
- kmalloc_large include/linux/slab.h:520 [inline]
- __kmalloc+0x292/0x390 mm/slub.c:4101
- kmalloc include/linux/slab.h:596 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- __v9fs_get_acl+0x40/0x110 fs/9p/acl.c:36
- v9fs_get_acl+0xa5/0x290 fs/9p/acl.c:71
- v9fs_mount+0x6ea/0x870 fs/9p/vfs_super.c:182
- legacy_get_tree+0xea/0x180 fs/fs_context.c:610
- vfs_get_tree+0x86/0x270 fs/super.c:1498
- do_new_mount fs/namespace.c:2919 [inline]
- path_mount+0x196f/0x2be0 fs/namespace.c:3249
- do_mount fs/namespace.c:3262 [inline]
- __do_sys_mount fs/namespace.c:3470 [inline]
- __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3447
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f2e9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcc30ccf58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f2e9
-RDX: 0000000020000200 RSI: 0000000020000000 RDI: 0000000000000000
-RBP: 0000000000403040 R08: 0000000020004440 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004030d0
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-
-
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/staging/r8188eu/core/rtw_ieee80211.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+index 0c7231cefdda..beff2ab73a1a 100644
+--- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
++++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+@@ -70,13 +70,12 @@ int rtw_get_bit_value_from_ieee_value(u8 val)
+ 
+ uint	rtw_is_cckrates_included(u8 *rate)
+ {
+-	u32	i = 0;
++	while (*rate) {
++		u8 r = *rate & 0x7f;
+ 
+-	while (rate[i] != 0) {
+-		if  ((((rate[i]) & 0x7f) == 2) || (((rate[i]) & 0x7f) == 4) ||
+-		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
++		if (r == 2 || r == 4 || r == 11 || r == 22)
+ 			return true;
+-		i++;
++		rate++;
+ 	}
+ 	return false;
+ }
+-- 
+2.32.0
+
