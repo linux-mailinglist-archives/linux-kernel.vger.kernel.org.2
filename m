@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6B93EDD19
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0093EDD1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhHPScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhHPScY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:32:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1C4C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:31:52 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id j12-20020a17090aeb0c00b00179530520b3so218186pjz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:31:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P8DIXUMiWfpgr4xiz7M1lZjbV422f4u1f8RA8daYKwY=;
-        b=Y1bHjiUg1/uo6UKofntGpU/ZbEsHifM0SwBLuaQ7Jw5m72bq+BPsNs+BRugmgUNIeX
-         gocGufpnx8xIAoqbwpdmXw00bpDw7Wxtbh0XIJyjcBkLR4e/6K/WhFEY4FImr7QUl2E/
-         TtsQrBOdEXsTxxCaauBKdfznYy6uo0w2uITDo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P8DIXUMiWfpgr4xiz7M1lZjbV422f4u1f8RA8daYKwY=;
-        b=RWVRNm46Flsr3+ft4M2QlzJPi8xbH6S35f6NRHXMX/96wr3MXxNDBKhj6TAMCffJEd
-         v1etKJ9sJXnXCCXVb+Br+qNkEB4GRiCqcqXtVzWwDahN0aDKRUU2c8zJO7Ugvkbfo5Vy
-         fWwGW2KvZevc9iSQSxbd0MqZpbBhKIkbQZDWZzW+T0BdN0zqiCrzboH1SKRJ4IZc/e9F
-         Sj2PHhrg/ELPvCRKe6AVfe+1hvv/qO6jZhAXgHHum49uC8nhN+510Xdhg7ZTmQ5h7Lao
-         SMPdFoqO5W4kOLcoBiEXsUZ15Oj8j7Q9SQAS6cvamfKXEjKQtSYYdAqZ7EPMUrjgEQ14
-         qHLQ==
-X-Gm-Message-State: AOAM531ZP4PxdPY+j/+kS0HgC1PZYgIdIPeJsknWaKe+FuZzCH6Maarr
-        59z5ZISz5yFYKo2nvCMafxktsg==
-X-Google-Smtp-Source: ABdhPJwP0+ppbwzuAALtAJstVM8BY2ZJK6ehuGRK7VCp/BFOHhAvQ06CxsU9A8S2m8rrl2QBn4w+tw==
-X-Received: by 2002:aa7:98da:0:b029:3e0:8b98:df83 with SMTP id e26-20020aa798da0000b02903e08b98df83mr81603pfm.63.1629138711918;
-        Mon, 16 Aug 2021 11:31:51 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:5cff:3a19:755c:1b91])
-        by smtp.gmail.com with UTF8SMTPSA id g26sm114755pgb.45.2021.08.16.11.31.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 11:31:51 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 11:31:49 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Deepak Kumar Singh <deesin@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, sibis@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V2 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P
- IRQ
-Message-ID: <YRqvFVw1EJl+dnM+@google.com>
-References: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
+        id S230454AbhHPSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:33:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:42794 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhHPSdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:33:02 -0400
+Received: from zn.tnic (p200300ec2f08b5001959acf655f190dc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:b500:1959:acf6:55f1:90dc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1E2281EC0532;
+        Mon, 16 Aug 2021 20:32:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629138745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ARclN6i8lJWAR8it0q9cJ4KTgeJ1amJtAnp2oSSWv/k=;
+        b=cWOKXdNYXNxJXgUO7tlnHCqaYtMjyBZ4Ig0JUOaA/koQkCQWPhXSjgkPYyMppaVXCJ3H7u
+        N9Al/P/5jVZWLM8z3JyQFW6BDyTSqAjOTE9VWDLmP5tAkgjYjauIpxMOMuccqF/RWpvRRX
+        57uZXFGUvdU2Vc+PtyAN5CdN+PvVsww=
+Date:   Mon, 16 Aug 2021 20:33:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dinh Nguyen <dinguyen@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] EDAC, altera: skip defining unused structures for
+ specific configs
+Message-ID: <YRqvXy1/cs8A5lnv@zn.tnic>
+References: <20210601092704.203555-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210601092704.203555-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:35:35PM +0530, Deepak Kumar Singh wrote:
-> Remote susbsystems notify fatal crash throught smp2p interrupt.
-> When modem/wifi crashes it can cause soc to come out of low power state
-> and may not allow again to enter in low power state until crash is handled.
+On Tue, Jun 01, 2021 at 11:27:04AM +0200, Krzysztof Kozlowski wrote:
+> The Altera EDAC driver has several features conditionally built
+> depending on Kconfig options.  The edac_device_prv_data structures are
+> conditionally used in of_device_id tables.  They reference other
+> functions and structures which can be defined as __maybe_unused.  This
+> silences build warnings like:
 > 
-> Mark smp2p interrupt wakeup capable so that interrupt handler is executed
-> and remote susbsystem crash can be handled in system  resume path.
+>     drivers/edac/altera_edac.c:643:37: warning:
+>         ‘altr_edac_device_inject_fops’ defined but not used [-Wunused-const-variable=]
 > 
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  drivers/soc/qcom/smp2p.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-> index 2df4883..646848b 100644
-> --- a/drivers/soc/qcom/smp2p.c
-> +++ b/drivers/soc/qcom/smp2p.c
-> @@ -18,6 +18,7 @@
->  #include <linux/soc/qcom/smem.h>
->  #include <linux/soc/qcom/smem_state.h>
->  #include <linux/spinlock.h>
-> +#include <linux/pm_wakeirq.h>
->  
->  /*
->   * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
-> @@ -538,9 +539,20 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
->  		goto unwind_interfaces;
->  	}
->  
-> +	/* Setup smp2p interrupt as wakeup source */
-> +	ret = device_init_wakeup(&pdev->dev, true);
-> +	if (ret)
-> +		goto unwind_interfaces;
-> +
-> +	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
-> +	if (ret)
-> +		goto set_wakeup_failed;
->  
->  	return 0;
->  
-> +set_wakeup_failed:
-> +	device_init_wakeup(&pdev->dev, false);
-> +
+>  drivers/edac/altera_edac.c | 44 ++++++++++++++++++++++----------------
+>  1 file changed, 26 insertions(+), 18 deletions(-)
 
-I think you need to call dev_pm_clear_wake_irq() and
-device_init_wakeup(..., false) in qcom_smp2p_remove()
-to free all resources.
+Applied, thanks.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
