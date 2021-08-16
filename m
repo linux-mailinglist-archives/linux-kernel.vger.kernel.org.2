@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7153ED18F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632AE3ED193
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhHPKBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbhHPKAx (ORCPT
+        id S235973AbhHPKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:01:57 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3652 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235861AbhHPKBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:00:53 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA4DC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:00:21 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id w24so3413472wmi.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 03:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UDJl1ra07oVDdz98SG+iWdsSDX/qH4lLdmGYx5g/CN8=;
-        b=UQAyx7S0xUtzb5rTtzfeSVsO9o+fgeGp9Nm2qsgnLgbRKWX+fddfLIKN64iYkM2A2z
-         MRfyQMKROkCJ8L1xbxXgKL3EO4qI17hTWLw+CYKLPoINaJuhRbiTNmhkhxFqY91AL86v
-         t1pPO6mPDprK4yELktLu/ZBvlmCrSt7uvigyNzkoTQ1AzmWbroFa8xAqYOmtn63mwUrz
-         BeLHNgGed4T/eRoYG7o/v9tL99Q+Kr2DWH3quLRUwE46LMI484PxnHCwLQi3Fy4U/MjY
-         P3l0wI0LIep52C7+iLezChqstJBlHfUr56ubVB4HKdRGa1TjZySBQateYIbI+wAl+7Zl
-         d1ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UDJl1ra07oVDdz98SG+iWdsSDX/qH4lLdmGYx5g/CN8=;
-        b=Bo4blLbYvM4he58RDLRXF3TPh2GVTrXRmgypA14KwsLGdcjovL8MThfvMsB1vXU8Cj
-         3SoWRTUiO6z6VtrXJL5sNcYORzuqiPOT4t5GVe2tLTjZpZQWvhFgDkyEM9sQFsbqRvhH
-         0S9B+iF4+cDKtmowMfsrnfM0bsUrGO8nfCjzLHxwe/muAed3z4igou1NVnQtB+2Akmlb
-         UO7xp2L4Q9RJM07+AEa8yJpQneD8O7i5h9t+gePUwkiZ5WkIDXRvVEOFDaT5O9sS1CAN
-         C53zc7BAQw3BBY7TxRexjgr41+ltM/rtrc5Fc8aGnR+193H0wJ7N2BzqvLU9zwDRhHa4
-         GyvQ==
-X-Gm-Message-State: AOAM532MIY6NWSs0c09MOHWvRkCbtvLWQSbjiwPCa4K7sUg1NpygV0FF
-        Y4dGc7wEzt1s4lIFdld59q94tA==
-X-Google-Smtp-Source: ABdhPJwDYN8zt110c62GL+L9QAZr4E6pKpjaOL2oGDz6fohYbxdvZxmPMyAy0YyEKhI9y39j9ZFhaw==
-X-Received: by 2002:a7b:c185:: with SMTP id y5mr14711494wmi.2.1629108020370;
-        Mon, 16 Aug 2021 03:00:20 -0700 (PDT)
-Received: from groot.home ([2a01:cb19:826e:8e00:92b1:d3c2:1204:85e2])
-        by smtp.gmail.com with ESMTPSA id u10sm1916645wrt.14.2021.08.16.03.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 03:00:20 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: [PATCH RESEND v3 4/4] arm64: dts: mt6358: add mt6358-keys node
-Date:   Mon, 16 Aug 2021 12:00:13 +0200
-Message-Id: <20210816100013.100412-5-mkorpershoek@baylibre.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210816100013.100412-1-mkorpershoek@baylibre.com>
-References: <20210816100013.100412-1-mkorpershoek@baylibre.com>
+        Mon, 16 Aug 2021 06:01:15 -0400
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gp8lj6C3Bz6BGZr;
+        Mon, 16 Aug 2021 17:59:45 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 16 Aug 2021 12:00:31 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 16 Aug 2021 11:00:30 +0100
+Subject: Re: [PATCH 2/3] scsi: fnic: Stop setting scsi_cmnd.tag
+To:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        "Bart Van Assche" <bvanassche@acm.org>
+CC:     <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
+ <1628862553-179450-3-git-send-email-john.garry@huawei.com>
+ <3e5d1bd4-cee9-7fd0-93a4-58d808e198f6@acm.org>
+ <20210814073948.GA21536@lst.de>
+ <b6216e3f-5339-18e4-ca31-61c7968efbb1@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <2e6dd74f-bd5a-22b8-f20b-d4b54fc4ade3@huawei.com>
+Date:   Mon, 16 Aug 2021 11:00:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <b6216e3f-5339-18e4-ca31-61c7968efbb1@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the power,home keys on MediaTek boards with a mt6358 pmic.
+On 14/08/2021 13:35, Hannes Reinecke wrote:
+> On 8/14/21 9:39 AM, Christoph Hellwig wrote:
+>> On Fri, Aug 13, 2021 at 08:17:45PM -0700, Bart Van Assche wrote:
+>>> On 8/13/21 6:49 AM, John Garry wrote:
+>>>> It is never read. Setting it and the request tag seems dodgy
+>>>> anyway.
+>>>
+>>> This is done because there is code in the SCSI error handler that may
+>>> allocate a SCSI command without allocating a tag. See also
+>>> scsi_ioctl_reset().
 
-Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt6358.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Right, so we just get a loan of the tag of a real request. fnic driver 
+comment:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6358.dtsi b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-index fa159b20379e..a1b017a6a751 100644
---- a/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) 2020 MediaTek Inc.
-  */
-+#include <dt-bindings/input/input.h>
- 
- &pwrap {
- 	pmic: mt6358 {
-@@ -356,5 +357,16 @@ mt6358_vsim2_reg: ldo_vsim2 {
- 		mt6358rtc: mt6358rtc {
- 			compatible = "mediatek,mt6358-rtc";
- 		};
-+
-+		mt6358keys: mt6358keys {
-+			compatible = "mediatek,mt6358-keys";
-+			power {
-+				linux,keycodes = <KEY_POWER>;
-+				wakeup-source;
-+			};
-+			home {
-+				linux,keycodes = <KEY_HOME>;
-+			};
-+		};
- 	};
- };
--- 
-2.30.2
+"Really should fix the midlayer to pass in a proper request for ioctls..."
 
+>>
+>> Yes.  Hannes had a great series to stop passing the pointless scsi_cmnd
+>> to the reset methods.  Hannes, any chance you coul look into
+>> resurrecting that?
+>>
+> Sure.
+
+The latest iteration of that series - at v7 - still passed that fake 
+SCSI command to the reset method, and the reset method allocated the 
+internal command.
+
+So will we change change scsi_ioctl_reset() to allocate an internal 
+command, rather than the LLDD?
+
+Thanks,
+John
