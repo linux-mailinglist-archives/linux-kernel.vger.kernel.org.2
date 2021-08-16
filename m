@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C21F3EDCE6
+	by mail.lfdr.de (Postfix) with ESMTP id A58B93EDCE7
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhHPSKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        id S233181AbhHPSKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233028AbhHPSKW (ORCPT
+        with ESMTP id S232504AbhHPSKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Aug 2021 14:10:22 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3B6C0617AF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:34 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id b7so27832629edu.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:34 -0700 (PDT)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB6AC0613A4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:42 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id b15so33309525ejg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:09:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mind.be; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=JPEdTz55eeFZmTipGCcbNE0GKiAhFZ1eLySPvZceEsU=;
-        b=USZrrePZsDm1l8YAZ/qA5fx/fzePtZlbfJmkcDUvidT8YYfBpHcnJ9Ru5an+FSzJZU
-         6Ksam4Ily92x5UxlqvSAhFzkuhQR7yP+a7bK5fItcVA9fziVe02VifdHAi5sVIcP+y3X
-         mQRFG+iXGFPyxISaCewFUPws/p4y3rRhWCCOpZLTCVs73SBmIldOZ/VQeFV10HHemunT
-         E0+8CZtfAo9HDcixqDp5Ny7WaQVm2NVMCMiN+GRi5ZG5XOl3P62mX0Cdir5HAI10hW6Y
-         rT2fgRd6EBVEdDhsMSUv2njTokMe6+eGzae6wMs+iCd7HVjotR6yM4l5/3jrtzWzxO28
-         OQ0Q==
+        bh=NFp8ItiruJnih8e9B4NvO8TxjUv+6GZH4k3SEINJRWk=;
+        b=E1InZ1hal7yp02RIrwVVQjsdGWFrPpLbbs2F7t3WAdWY1X9p3HMjfAXGSmw4peYrPc
+         hn5ACP1mNRr6UqSHEav6ZuaV7j9Sp9qjLVZ0BPsX5CoUdTcsoKlUtl4tCGaA4lypA7J/
+         QfpbRzbsFrrHNEoUHXFQbbTmys9d10Cx2bNOdxTy8MhVZZV4iZuKnk1r1mN+8ZWVHUeI
+         5ali6tx0mWL0IZmq9Y7FkxWu7x5TnvhqOwT+FQ8YqHFlyaHAo9Yu+jSqxOhaKAmTIVVV
+         j+sGFEZ8qZIqDtMa6gIvtoxoIerL6rDMO7rAugqRs6aTQ+G6HWKwd3VZ3Jd3kWPAk8Eg
+         DiOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JPEdTz55eeFZmTipGCcbNE0GKiAhFZ1eLySPvZceEsU=;
-        b=eiIRYt8DDAiPZzydPZ2Ok1MLSrihs1VXNkCZdURWa0nfCDIPzKsKdRYJ2V8Edw1aq9
-         6NQYrTi0yXEJAlSK9B7xh53OVeuNzpZZFCDrJXeygyV39NdFjdnmWV9kBauxyB6zw/RD
-         HufFlJQBtxMN/jnUIe3UZbIvC07Bj/47b+G1IWJ98pXL+C0gRuRIK+X9LlDKjvfWfT4j
-         6l/pl8OOVTFovt7TaGuxNC8HRXJg4qz8CutpqB8tS0q/1wZ5VGSJotC48mTWjWQhwetm
-         LUtHBx0X8o588B/yjYa5MiEi1GkZcvtQbjdHmPC911lqMfjd6MeI2fhC0TrQwHirVip7
-         WjgQ==
-X-Gm-Message-State: AOAM530hYGKdRmbNqrXL/vh2Ip+Iv6mXjH94xa+u2RlMCiUcMVFiJbSJ
-        8TWF1jNaj6K5rHbkp6SUvbC9XA==
-X-Google-Smtp-Source: ABdhPJxszyCJ08/thUnQI+lhz3dx9qB5WP9ylaGefLhrTFvXdKKvVKNZnl6sgZrrxL5mNFug+OqH7Q==
-X-Received: by 2002:a05:6402:27d2:: with SMTP id c18mr22129669ede.87.1629137373079;
-        Mon, 16 Aug 2021 11:09:33 -0700 (PDT)
+        bh=NFp8ItiruJnih8e9B4NvO8TxjUv+6GZH4k3SEINJRWk=;
+        b=Xi3dhnZG0TaEHT4v9Kx4ZyFrLCS0XsghsyfQfrgOTG7NErmnCxW7Ef1YSbxCYEuAex
+         UE2udh3InnH7OT3l85kKk8tycMOdtGRXOwRCYPTObMpHPMSHBFPSf7LJjStvWI31nzfw
+         7I+IY4eCcF5djs4VfoS69seVzT9Moz1+nCoBJD1hFjS33XWBlOJMQSENz74zvqjmWiq+
+         AtBnsA+UUovDih0r1iih37SsotGpmFvCoU7zgc21Em7M0ET0/2CSxm1wkqHXcnmjDcUb
+         Klsj+lI8em0wzC+VL4zFb5z/EjpYrN+ZrvmjOs5BEmoyq8rnQq0+zSro4lX9WkrDD0vz
+         cf4Q==
+X-Gm-Message-State: AOAM532UE6j9SPixG15mhm12esO7dp8yZKI5DWXhnFKbSMQvFX3kdNtI
+        8yEqPF3nzv5KbQIq6yhNWy50KQ==
+X-Google-Smtp-Source: ABdhPJyd6Icy7JkcnIET+jJmCfJJVeWWnPGZJHWOUFGzYh0WiS8FCkv7jqnD53UJkM7z99h59bPGRw==
+X-Received: by 2002:a17:906:6847:: with SMTP id a7mr8949015ejs.288.1629137380678;
+        Mon, 16 Aug 2021 11:09:40 -0700 (PDT)
 Received: from cephalopod (168.7-181-91.adsl-dyn.isp.belgacom.be. [91.181.7.168])
-        by smtp.gmail.com with ESMTPSA id m6sm5201725edq.22.2021.08.16.11.09.32
+        by smtp.gmail.com with ESMTPSA id t17sm5180003edw.13.2021.08.16.11.09.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 11:09:32 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 20:09:31 +0200
+        Mon, 16 Aug 2021 11:09:40 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 20:09:38 +0200
 From:   Ben Hutchings <ben.hutchings@mind.be>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 3/5] net: dsa: microchip: ksz8795: Reject unsupported
- VLAN configuration
-Message-ID: <20210816180930.GG18930@cephalopod>
+Subject: [PATCH 5.10 4/5] net: dsa: microchip: ksz8795: Fix VLAN untagged
+ flag change on deletion
+Message-ID: <20210816180938.GH18930@cephalopod>
 References: <20210816174905.GD18930@cephalopod>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -67,129 +67,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 8f4f58f88fe0d9bd591f21f53de7dbd42baeb3fa upstream.
+commit af01754f9e3c553a2ee63b4693c79a3956e230ab upstream.
 
-The switches supported by ksz8795 only have a per-port flag for Tag
-Removal.  This means it is not possible to support both tagged and
-untagged VLANs on the same port.  Reject attempts to add a VLAN that
-requires the flag to be changed, unless there are no VLANs currently
-configured.
+When a VLAN is deleted from a port, the flags in struct
+switchdev_obj_port_vlan are always 0.  ksz8_port_vlan_del() copies the
+BRIDGE_VLAN_INFO_UNTAGGED flag to the port's Tag Removal flag, and
+therefore always clears it.
 
-VID 0 is excluded from this check since it is untagged regardless of
-the state of the flag.
+In case there are multiple VLANs configured as untagged on this port -
+which seems useless, but is allowed - deleting one of them changes the
+remaining VLANs to be tagged.
 
-On the CPU port we could support tagged and untagged VLANs at the same
-time.  This will be enabled by a later patch.
+It's only ever necessary to change this flag when a VLAN is added to
+the port, so leave it unchanged in ksz8_port_vlan_del().
 
 Fixes: e66f840c08a2 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
 Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backport to 5.10:
- - This configuration has to be detected and rejected in the
-   port_vlan_prepare operation
- - ksz8795_port_vlan_add() has to check again to decide whether to
-   change the Tag Removal flag, so put the common condition in a
-   separate function
- - Handle VID ranges]
+[bwh: Backport to 5.10: adjust context]
 Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
 ---
- drivers/net/dsa/microchip/ksz8795.c    | 55 +++++++++++++++++++++++++-
- drivers/net/dsa/microchip/ksz_common.h |  1 +
- 2 files changed, 54 insertions(+), 2 deletions(-)
+ drivers/net/dsa/microchip/ksz8795.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 3d36ffff1f4e..b4b164d75520 100644
+index b4b164d75520..8f2b54ae57f2 100644
 --- a/drivers/net/dsa/microchip/ksz8795.c
 +++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -801,15 +801,66 @@ static int ksz8795_port_vlan_filtering(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
-+static bool ksz8795_port_vlan_changes_remove_tag(
-+	struct dsa_switch *ds, int port,
-+	const struct switchdev_obj_port_vlan *vlan)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	struct ksz_port *p = &dev->ports[port];
-+
-+	/* If a VLAN is added with untagged flag different from the
-+	 * port's Remove Tag flag, we need to change the latter.
-+	 * Ignore VID 0, which is always untagged.
-+	 */
-+	return untagged != p->remove_tag &&
-+		!(vlan->vid_begin == 0 && vlan->vid_end == 0);
-+}
-+
-+int ksz8795_port_vlan_prepare(struct dsa_switch *ds, int port,
-+			      const struct switchdev_obj_port_vlan *vlan)
-+{
-+	struct ksz_device *dev = ds->priv;
-+
-+	/* Reject attempts to add a VLAN that requires the Remove Tag
-+	 * flag to be changed, unless there are no other VLANs
-+	 * currently configured.
-+	 */
-+	if (ksz8795_port_vlan_changes_remove_tag(ds, port, vlan)) {
-+		unsigned int vid;
-+
-+		for (vid = 1; vid < dev->num_vlans; ++vid) {
-+			u8 fid, member, valid;
-+
-+			/* Skip the VIDs we are going to add or reconfigure */
-+			if (vid == vlan->vid_begin) {
-+				vid = vlan->vid_end;
-+				continue;
-+			}
-+
-+			ksz8795_from_vlan(dev->vlan_cache[vid].table[0],
-+					  &fid, &member, &valid);
-+			if (valid && (member & BIT(port)))
-+				return -EINVAL;
-+		}
-+	}
-+
-+	return ksz_port_vlan_prepare(ds, port, vlan);
-+}
-+
- static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
- 				  const struct switchdev_obj_port_vlan *vlan)
+@@ -895,7 +895,6 @@ static void ksz8795_port_vlan_add(struct dsa_switch *ds, int port,
+ static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
+ 				 const struct switchdev_obj_port_vlan *vlan)
  {
- 	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+-	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
  	struct ksz_device *dev = ds->priv;
-+	struct ksz_port *p = &dev->ports[port];
- 	u16 data, vid, new_pvid = 0;
+ 	u16 data, vid, pvid;
  	u8 fid, member, valid;
+@@ -904,8 +903,6 @@ static int ksz8795_port_vlan_del(struct dsa_switch *ds, int port,
+ 	ksz_pread16(dev, port, REG_PORT_CTRL_VID, &pvid);
+ 	pvid = pvid & 0xFFF;
  
 -	ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
-+	if (ksz8795_port_vlan_changes_remove_tag(ds, port, vlan)) {
-+		ksz_port_cfg(dev, port, P_TAG_CTRL, PORT_REMOVE_TAG, untagged);
-+		p->remove_tag = untagged;
-+	}
- 
+-
  	for (vid = vlan->vid_begin; vid <= vlan->vid_end; vid++) {
  		ksz8795_r_vlan_table(dev, vid, &data);
-@@ -1128,7 +1179,7 @@ static const struct dsa_switch_ops ksz8795_switch_ops = {
- 	.port_stp_state_set	= ksz8795_port_stp_state_set,
- 	.port_fast_age		= ksz_port_fast_age,
- 	.port_vlan_filtering	= ksz8795_port_vlan_filtering,
--	.port_vlan_prepare	= ksz_port_vlan_prepare,
-+	.port_vlan_prepare	= ksz8795_port_vlan_prepare,
- 	.port_vlan_add		= ksz8795_port_vlan_add,
- 	.port_vlan_del		= ksz8795_port_vlan_del,
- 	.port_fdb_dump		= ksz_port_fdb_dump,
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index a51c716ec920..309ad4a72d78 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -27,6 +27,7 @@ struct ksz_port_mib {
- struct ksz_port {
- 	u16 member;
- 	u16 vid_member;
-+	bool remove_tag;		/* Remove Tag flag set, for ksz8795 only */
- 	int stp_state;
- 	struct phy_device phydev;
- 
+ 		ksz8795_from_vlan(data, &fid, &member, &valid);
 -- 
 2.20.1
 
