@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A046A3EDDF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BC83EDDF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 21:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhHPTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 15:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229676AbhHPTep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:34:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B7960E76;
-        Mon, 16 Aug 2021 19:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629142453;
-        bh=YRQj9u9GI1q4ap5E3mewc0gaW+gUGqlP+qhQSTUE1bE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gn4lt2x/3l5UPyWS7M4Cs1jydsIfBIVBSmUfEQtIGKdJEYI69Z0NuhJa4IcT+tnTm
-         mkGX0kx6bpB/c4jMM3YX673GGH7ancayRSgvfCqG2YA1Mu9Ho8ZX03j3HQPi17lBDM
-         RvBdMnxc7vu0vla5ZeN/u8DccGAy5UHkmb8GLoBk86iYMlSZ34kUOY9JDNbiQqj58b
-         83okJ3HeLBl5vcjjg+QT85kqJxYUjFjI++qIgp8t26sGTIn8PyYBFQFyNQt5YuPqk3
-         Vp3zhyWAUXPRrqrCXlKLWe2EvTDKqVh5w6VRtmlIzVLbeiezBiB9/yiyB7aG6LPg4Z
-         9qpDAHRtiBsEg==
-Received: by mail-ej1-f49.google.com with SMTP id bt14so18010609ejb.3;
-        Mon, 16 Aug 2021 12:34:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533B5L3qJXbSXM4pmbLZt6l35EfeLgWGkkV1mTFh3aYRsQyNY7Bv
-        35C7j1SmkCVr635pJH8DhaR/E700Poh02UEMNg==
-X-Google-Smtp-Source: ABdhPJyCdYjb9e8fQEVVbIfderD/YQW5ccQdF65I+3D3lgm2dUdHJDw0WIp2CEtNHy+8bDBjJfdcYll9zhFcOm4+0Zw=
-X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr61179eje.341.1629142451615;
- Mon, 16 Aug 2021 12:34:11 -0700 (PDT)
+        id S230148AbhHPTiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 15:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhHPTiA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:38:00 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB60C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:37:28 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id q3so24015748edt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 12:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hWBgaZy/6OsUctviq0mTpGRfIkXffP/uL/sHIzQRKqw=;
+        b=LaEUTxeXvM1m0ruw74D8pqZaaZI/GGNETOjvIEV8fw/BiBu7ddzIaQ4kgJlziCVNbI
+         tPS8BFwPPrn1X2oLj+gs72hj2ewi8e74tmKsr6ipHcXkXvbesOqljPUAhC5iPudYQDw3
+         hkM+NCo+WvmaaC1GRmwYIVU0qsm9h097PVKyvzqGIjVGooLClFvXS/EllvA01Hm2HJLt
+         jp1RBQnrvCbrAC5KsaAbPHVNBb/FftXhxoqR7AaSNqUUpAQsb5KU0MWLcFvNgjPmXTgG
+         ZFcBRnGOzNOuPeMYiBb0aSvFOqF1phR5/T1sGsYdAbpYMsX+BGNFShs153H0ETbmNX0/
+         4BGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hWBgaZy/6OsUctviq0mTpGRfIkXffP/uL/sHIzQRKqw=;
+        b=pkNHpUH1MrW+KCo5O0NEJlTnyihrWfIHCFuOr+BIcOtYfk1+faXc8Fs0NBpDOi6B7C
+         BujuNvxQSD+I84UnQzvVdgFpOk/yErzc7hQnMcRfWdNzav/wT3/lUDFpF7b6kcsxbz3T
+         FJ4NakxKytjOcQjT1jdxJgynxjJ1XO6n1K3HNe0gxa0vLtz1u1RXgPOh6hDvsACkFRlg
+         3ewGdtbO2/SMovDRujJarmbNK37qy4g+ew7puFqnK3bjXRc80d4dMr9BkobmPLpS76vU
+         rBND5pDzGpqkiZYvT3DXFXhw3i6W9B6S+806EvVQ245e5tErEyMhlrUTxEBdBVm4WLST
+         my8w==
+X-Gm-Message-State: AOAM532A2e1NAPPo60MK//Ef/Q1CFPkFYDloO3Nxzfo43XNQWuXW8K8t
+        GswU2DZmi/rz4Rx+iXFLFwXCvK1EKKk=
+X-Google-Smtp-Source: ABdhPJxdCrIuKYXWhR95PUNP7cr+X72slU1ZspA8KvPxIw0CCWVxTDxBURgHesFPkbw4Vd+qaxpAQQ==
+X-Received: by 2002:a05:6402:1d3c:: with SMTP id dh28mr201892edb.257.1629142647171;
+        Mon, 16 Aug 2021 12:37:27 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::4058? ([2a02:8108:96c0:3b88::4058])
+        by smtp.gmail.com with ESMTPSA id x20sm58610ejb.100.2021.08.16.12.37.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 12:37:26 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] staging: r8188eu: refactor
+ rtw_is_cckrates_included()
+To:     Joe Perches <joe@perches.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210816115430.28264-1-straube.linux@gmail.com>
+ <22319347.s0ZA6q4zN9@localhost.localdomain>
+ <c30b9e08b7df2bade93d217c0bf6eb4b416eb2ec.camel@perches.com>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <7a09afdb-5f85-0302-0375-93665e2f3f1a@gmail.com>
+Date:   Mon, 16 Aug 2021 21:36:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <m3k0klzl1x.fsf@t19.piap.pl>
-In-Reply-To: <m3k0klzl1x.fsf@t19.piap.pl>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 16 Aug 2021 14:34:00 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+M7xdqf8bVhs-isHoGCGjLhi6N2q+tm7msWLBy52OsMw@mail.gmail.com>
-Message-ID: <CAL_Jsq+M7xdqf8bVhs-isHoGCGjLhi6N2q+tm7msWLBy52OsMw@mail.gmail.com>
-Subject: Re: [PATCH v2] PCIe: limit Max Read Request Size on i.MX to 512 bytes
-To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Artem Lapkin <email2tema@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c30b9e08b7df2bade93d217c0bf6eb4b416eb2ec.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 6:27 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wro=
-te:
->
-> DWC PCIe controller imposes limits on the Read Request Size that it can
-> handle. For i.MX6 family it's fixed at 512 bytes by default.
->
-> If a memory read larger than the limit is requested, the CPU responds
-> with Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
-> instead due to a design error).
->
-> The i.MX6 documentation states that the limit can be changed by writing
-> to the PCIE_PL_MRCCR0 register, however there is a fixed (and
-> undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests indicate
-> that values larger than 512 bytes don't work, though.
->
-> This patch makes the RTL8111 work on i.MX6.
->
-> Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
-> ---
-> This version drops CONFIG_NEED_PCIE_MAX_MRRS.
->
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controll=
-er/dwc/pci-imx6.c
-> index 80fc98acf097..225380e75fff 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device *=
-pdev)
->                 imx6_pcie->vph =3D NULL;
->         }
->
-> +       max_pcie_mrrs =3D 512;
->         platform_set_drvdata(pdev, imx6_pcie);
->
->         ret =3D imx6_pcie_attach_pd(dev);
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index aacf575c15cf..44815af4ad85 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -112,6 +112,10 @@ enum pcie_bus_config_types pcie_bus_config =3D PCIE_=
-BUS_PEER2PEER;
->  enum pcie_bus_config_types pcie_bus_config =3D PCIE_BUS_DEFAULT;
->  #endif
->
-> +#ifdef CONFIG_ARM
-> +u16 max_pcie_mrrs =3D 4096; // no limit - needed mostly for DWC PCIe
-> +#endif
-> +
->  /*
->   * The default CLS is used if arch didn't set CLS explicitly and not
->   * all pci devices agree on the same value.  Arch can override either
-> @@ -5816,6 +5820,11 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
->                         rq =3D mps;
->         }
->
-> +#ifdef CONFIG_ARM
-> +       if (rq > max_pcie_mrrs)
-> +               rq =3D max_pcie_mrrs;
-> +#endif
+On 8/16/21 6:15 PM, Joe Perches wrote:
+> On Mon, 2021-08-16 at 14:59 +0200, Fabio M. De Francesco wrote:
+>> On Monday, August 16, 2021 1:54:27 PM CEST Michael Straube wrote:
+>>> Refactor function rtw_is_cckrates_included(). Improves readability
+>>> and slightly reduces object file size.
+>>>
+>>> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+>>> ---
+>>> v1 -> v2
+>>> Refactored to more compact code as suggested by Joe Perches.
+>>>
+>>>   drivers/staging/r8188eu/core/rtw_ieee80211.c | 9 ++++-----
+>>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>>
+>>
+>> Thanks for redoing the series as suggested by Joe Perches.
+>> This is a perfect case where conciseness and readability don't clash and
+>> instead the former enhances the latter.
+> 
+> Perhaps do the whole thing in one go (moving the & 0x7f into the helper
+> avoids an early loop exit defect when the rate being indexed is 0x80)
+> 
 
-My objection wasn't having another kconfig option so much as I don't
-think we need one at all here unless Bjorn feels otherwise. It's 2
-bytes of data and about 3 instructions (load, cmp, store).
+I have sent a new patch that does the refactoring in one go,
+so this series is obsolete now. ;)
 
-If we do have a config option, using or basing on the arch is wrong.
-Has nothing to do with the arch. Are the other platforms needing this
-arm32 as well?
-
-Also, when you do use kconfig options, use IS_ENABLED() whenever possible.
-
-Rob
+Regards,
+Michael
