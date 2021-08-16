@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E908A3ED9E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B953E3ED9EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhHPPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        id S233824AbhHPPft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhHPPdP (ORCPT
+        with ESMTP id S232884AbhHPPfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:33:15 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26230C061764;
-        Mon, 16 Aug 2021 08:32:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id k5so7425483lfu.4;
-        Mon, 16 Aug 2021 08:32:44 -0700 (PDT)
+        Mon, 16 Aug 2021 11:35:47 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D2AC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:15 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id r16-20020a0568304190b02904f26cead745so21379010otu.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 08:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jji36Y1LnDODoev0Avwliy2xCTIsB97zZRauZf075VA=;
-        b=mq21gBQ8hLGp/4Yem98VGS4lu+97ERbV+BdyANot4LQDqDEn6yV6pZEgs57D3sBn8i
-         AKhumVMRQWlu3qOa+7tpEimZck8FBr/kBmcU+2n48Q8uoIrV+MMFS123XL05FkUXFxf+
-         /0JYZrlk0tn7e/TMCqzihJV02rInAjFKP9Y6RuET+6LdEogLckQHhRmxR5S4u3ZdBcjs
-         4hC7LfjWHb16c0dtkPcxHJuPtTRthmlm5m5uVc9kaK/Wek6OZfECLD26a2zzVDOJ649r
-         QSb8DuWk2bejZTMCyF6y1QvH2ianxDE/uJHV7XTkHUPWUE6PX4U3XNbtFUvOKAj+sD1f
-         HZ1A==
+        bh=izwgpX7oSIIBHk0sYhZRSPI0m7nv9ZWnNviimlv3Gso=;
+        b=vfpaG8itDkP6v04+k6YoH4XGZJLxHWYS9XMAriNKK//2SkDt3NN7yK1kiF1WfB38UN
+         d4zrAaVVkQsDMG0QZjZtQgB9Xb3GgRM8/7fGsQyUR2g5gVveE7FZh0l/S48Ad1yRNKCW
+         lDwIkecxFeEy0MLogCx5z1bedl3y7Vkwhzgl1OfUvPMLdnO7MZjWDbBTLFka0Tcf9bBt
+         lvRz/oJrh2FEV3vcdUcXjy26++zbEPcOAzwWpZ1jKGn5PmBm2Xa5YzlWExU/4z+wSSap
+         GaFGgbrtBGACITtrbzW22viwPxcaM3ykRc2D8strDPLQwOolMlWh+9krFzaq/yRMsRWs
+         3cxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Jji36Y1LnDODoev0Avwliy2xCTIsB97zZRauZf075VA=;
-        b=PFhrLkjU5y7rd3SXMBQ5I85n4FYR0TdMmgGLOwpkTKhQmxZFz8VA21uuxnAj4SN+Sw
-         JLFDOYwlGUiCjWClFTgzewLN9yYeoS6nPh9GN7eQO3MeL46OJKIVZID9jBsb4ApjJs9v
-         fYl9s2BGTrYV7qXsxtao0bW/COdJCB+052XV5di8Lt1YO9B07GgB3Qnec5ToOaI1lFXR
-         wmylTZlhnk/Wq27uJEIfev/tRRoJsl5UVCLF/3qZjdZ1HUbFTcpLnDiRdlEy1VRMCH8i
-         u0+IADuXSrGugsNs8p0zaPc7Sxi4pC/z1P1ASXEeBFk7cNWJweWtyyltMukPG6wXsu+R
-         Ejxw==
-X-Gm-Message-State: AOAM533e990pD+gZjcoEjkyDXRfIGHIZs8nst06KNP2MpGHQSm34kn/b
-        /J9eNgArlM/xZXMlpuCTJUJPJng0kYQ=
-X-Google-Smtp-Source: ABdhPJwrfG+4glx/MIR0iQjCsOWrCk7lJWJpozxMy17cyAj+4ybUrvU9zFV8aaBEA/EiyPngthUS/w==
-X-Received: by 2002:a05:6512:3e06:: with SMTP id i6mr11877182lfv.81.1629127962417;
-        Mon, 16 Aug 2021 08:32:42 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-85-91.dynamic.spd-mgts.ru. [46.138.85.91])
-        by smtp.googlemail.com with ESMTPSA id l26sm974295lfh.247.2021.08.16.08.32.41
+        bh=izwgpX7oSIIBHk0sYhZRSPI0m7nv9ZWnNviimlv3Gso=;
+        b=I8Kv8iizdlsgdTp76jlIknUNyGh60W6MUq7bcmYrZ2LxfixkO5zeHt1W8VI4KGnmfo
+         UCJSgpiQwE/qLd+sXFcT9NRLLzVV+MmAP0qViUMjl1HcS7v+cWSlz3c1sB2EHMHIg5Qp
+         zHp3n++hxA0jLQ2brRa8kdRtxs1fCPf8rD6VJ0UKo5nTtQAevE8rdVhUxtCYWsK6WR00
+         Pn0oHeGw+lbm214lHNNSK2eovKyQeIHsDkkNi5upNnVoXelWicefj1Cu7+a6BVGOL1PC
+         yMI/DFjaJmUoQ2C2mumJPNNzpfSiRhgPU429iSgNpAKGNhUBpkya3T3AVZecl39H8k5q
+         w/fg==
+X-Gm-Message-State: AOAM532GnvmRvCOPexF65fptVrO59T+88Z3Qi38xaX4VclN6oGh66DIE
+        hpETn4R1z6VDM3TZDvIdJ754/w==
+X-Google-Smtp-Source: ABdhPJxNBT6VQqF+a/LrmpscGhFK1PmHsr1ZBxcAfX5odX2+MffbpKSANyXAwOgf8nofz4cDBJlACg==
+X-Received: by 2002:a05:6830:1289:: with SMTP id z9mr3770498otp.28.1629128114671;
+        Mon, 16 Aug 2021 08:35:14 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id k13sm2121887oik.40.2021.08.16.08.35.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 08:32:41 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] cpuidle: tegra: Check whether PMC is ready
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210718212706.21659-1-digetx@gmail.com>
- <20210718212706.21659-3-digetx@gmail.com> <YROdQXO4aVLQ8DkP@orome.fritz.box>
- <8d61d4d5-8e4b-5c18-923c-eceb954e8d5d@linaro.org>
- <8f22c97d-63f7-6d2a-7b1e-92b0b80a5275@gmail.com>
- <YRo1hK/KnS0oA1vj@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1fb32fd0-97c0-9215-6e38-c53c5155f27a@gmail.com>
-Date:   Mon, 16 Aug 2021 18:32:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 08:35:14 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] iter revert problems
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc:     Palash Oswal <oswalpalash@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+References: <cover.1628780390.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <221d06f1-7e6b-c48f-57e8-45111c979217@kernel.dk>
+Date:   Mon, 16 Aug 2021 09:35:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YRo1hK/KnS0oA1vj@orome.fritz.box>
+In-Reply-To: <cover.1628780390.git.asml.silence@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.08.2021 12:53, Thierry Reding пишет:
-> On Sat, Aug 14, 2021 at 04:45:42PM +0300, Dmitry Osipenko wrote:
->> 14.08.2021 13:37, Daniel Lezcano пишет:
->>> On 11/08/2021 11:49, Thierry Reding wrote:
->>>> On Mon, Jul 19, 2021 at 12:27:06AM +0300, Dmitry Osipenko wrote:
->>>>> Check whether PMC is ready before proceeding with the cpuidle registration.
->>>>> This fixes racing with the PMC driver probe order, which results in a
->>>>> disabled deepest CC6 idling state if cpuidle driver is probed before the
->>>>> PMC.
->>>>>
->>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>> ---
->>>>>  drivers/cpuidle/cpuidle-tegra.c | 3 +++
->>>>>  1 file changed, 3 insertions(+)
->>>>
->>>> Rafael, Daniel,
->>>>
->>>> would you mind if I took this into the Tegra tree? It's got a dependency
->>>> on the PMC driver, which usually goes via the Tegra tree already, and
->>>> there's nothing cpuidle-specific in here, it's all Tegra-specific
->>>> integration quirks.
->>>
->>> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>
->> I got another thought about how it could be solved. We could move the
->> creation of the cpuidle platform device into the PMC driver. Thierry,
->> what do you think?
+On 8/12/21 2:40 PM, Pavel Begunkov wrote:
+> For the bug description see 2/2. As mentioned there the current problems
+> is because of generic_write_checks(), but there was also a similar case
+> fixed in 5.12, which should have been triggerable by normal
+> write(2)/read(2) and others.
 > 
-> Looking around a bit, it looks like we've got two "virtual" platform
-> devices related to CPU on Tegra20 and some of the later SoCs. A little
-> while ago when we introduced the CPU frequency driver for Tegra194 we
-> had a similar discussion. The problem at the time was that there was no
-> way to create a virtual platform device from platform code, and adding a
-> device tree node for this wasn't really an option either, since it does
-> not actually describe the hardware accurately.
+> It may be better to enforce reexpands as a long term solution, but for
+> now this patchset is quickier and easier to backport.
 > 
-> What we ended up doing for Tegra194 was to add a compatible string to
-> the /cpus node ("nvidia,tegra194-ccplex") which was then used for
-> matching a CPU frequency driver against.
-> 
-> I imagine we could do something similar for these older chips and
-> perhaps even have a single driver for the CCPLEX that either registers
-> CPU idle and CPU frequency scaling functionality, or have that driver
-> register virtual devices. I slightly prefer the first variant because
-> then we associate the driver with the hardware that it's actually
-> driving. It's slightly unconventional because now CPU idle and CPU
-> frequency drivers would be implemented in the same driver, but it isn't
-> all that exotic these days anymore, either.
-> 
-> If the maintainers prefer we could always keep the code split into two
-> source files, one per subsystem, and call into that code from the CCPLEX
-> driver. I think even then it'd still be the cleanest solution because we
-> don't have to "invent" a new device just for the sake of fitting the
-> driver model that we happen to have.
+> v2: don't fail it has been justly fully reverted
 
-It's doable, but it's a bit too much effort for a little problem we have
-here. It also doesn't solve the root of the problem since PMC isn't a
-part of CCPLEX. Should be better to stick with this patch for now then.
+Al, what do you think of this approach? It'll fix the issue, but might be
+cleaner to have iov->truncated actually track the truncated size. That'd
+make it a more complete solution, at the expense of bloat iov_iter which
+this version will not.
+
+-- 
+Jens Axboe
+
