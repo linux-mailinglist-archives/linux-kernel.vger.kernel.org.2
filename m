@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B08E3EDE6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F31E3EDE6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhHPUHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:07:40 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:40487 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhHPUHj (ORCPT
+        id S231364AbhHPUHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:07:38 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:39733 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhHPUHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:07:39 -0400
-Received: by mail-oi1-f169.google.com with SMTP id r5so28421226oiw.7;
-        Mon, 16 Aug 2021 13:07:07 -0700 (PDT)
+        Mon, 16 Aug 2021 16:07:37 -0400
+Received: by mail-ot1-f51.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so5315379otf.6;
+        Mon, 16 Aug 2021 13:07:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=uHtjUONg6FCY3pnZJevLSPNM0uWf/2eId9QZ5tVSivw=;
-        b=hd5K7p0b1Y0HgHqNBQKlQe6cANf6svvTe38gBbbOIPmlFYPqdomMJJl1a0Em3vYuLr
-         qO27l/yCJNwfsWYcG0I/UjiRDeEY+n1NFnntCRQSBxvksflXOq/3RctUfsmEgvdessDs
-         xBNLgeSyC+OCQ0uWXZK0+CUhBCepADXdYXbuetYiost2liR6np1TjHZeHTJrqBIbfQMw
-         mE4bkfvbPBvFoeEqCvQTNlhoh5RchZE3IcQDXD9spsuaF3scHgSanyKQnA8102iwgd95
-         tiOyKuW/ZkXIhRySTiFqFDPm02uayk6KdfcrEqc20jxdXUiHb44szEhvibp0nMdaDNE4
-         3xFQ==
-X-Gm-Message-State: AOAM531cz/26MFUSsVHQPsmpfHFMgsOHbTxOU7C9PMUbj9gtQMVSfHsA
-        mUPvOqUVzpHXARYQVP2uPl12D7FMFw==
-X-Google-Smtp-Source: ABdhPJwPoLDRQz/e37Bg6ivbukWiCoD/59uOvrNG7ZaBLascqxFx2/JD5NsoIT8X2Em6vbYg4dR/Pw==
-X-Received: by 2002:a05:6808:2084:: with SMTP id s4mr383200oiw.31.1629144427275;
-        Mon, 16 Aug 2021 13:07:07 -0700 (PDT)
+        bh=6VOPws0NSYeiNS4YuPCVxgucGvvQhrDQn05HTfSiBi4=;
+        b=gmeUTr7NuK6x3dA6ijbTJdVOk4zsVVbnUwIohglt7uzWDhdkcfEKRP24zUeOcPZgWi
+         hdq+DQwHXbEN9CgcJxxLHcrVonFUtZ1PTkfxpOxuxfR7lKhUjldzJ8qR2hAKcf0ykc+p
+         uXSqDKfp8F/pbiDSwyyl+O67ke/LHsN8liPOrxoj+nt35AT5DCnp6F5CVEy0qkMt49NA
+         pUzjzFlHMlKnBYWizC/aZGj1agQkn3xf7BLY95GOLScINXN7D2onR0Pnn02IGWO5Dxj0
+         qAjsIR144R6iUvd845+F+1PNczPFI/kiX6FDhei2OthVMdtYBxZ55mH9N6lXzPD7e8jW
+         S9rQ==
+X-Gm-Message-State: AOAM532rTvfRRXUXChgkZbru8oAUTZzekmZyVzgG8+CSURyQuc1F3xeM
+        vBf7QeIeRid+eVXNgB5FoQ==
+X-Google-Smtp-Source: ABdhPJyuh1bpHeI/c8OwEcGGijzGSgY+tSdMoztSLM4aXW9bUBiJeMX5BhftwpQheFofiveHYymA7A==
+X-Received: by 2002:a05:6830:4414:: with SMTP id q20mr336412otv.189.1629144425355;
+        Mon, 16 Aug 2021 13:07:05 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p4sm4019ooa.35.2021.08.16.13.07.05
+        by smtp.gmail.com with ESMTPSA id y33sm57065ota.66.2021.08.16.13.07.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 13:07:06 -0700 (PDT)
-Received: (nullmailer pid 2563335 invoked by uid 1000);
+        Mon, 16 Aug 2021 13:07:04 -0700 (PDT)
+Received: (nullmailer pid 2563332 invoked by uid 1000);
         Mon, 16 Aug 2021 20:07:03 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     linux-kernel@vger.kernel.org, lars@metafoo.de, andrew@aj.id.au,
-        BMC-SW@aspeedtech.com, joel@jms.id.au, robh+dt@kernel.org,
-        p.zabel@pengutronix.de, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lgirdwood@gmail.com, broonie@kernel.org,
-        linux-aspeed@lists.ozlabs.org, pmeerw@pmeerw.net, jic23@kernel.org
-In-Reply-To: <20210816104846.13155-2-billy_tsai@aspeedtech.com>
-References: <20210816104846.13155-1-billy_tsai@aspeedtech.com> <20210816104846.13155-2-billy_tsai@aspeedtech.com>
-Subject: Re: [v3 01/15] dt-bindings: iio: adc: Add ast2600-adc bindings
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     robh+dt@kernel.org, nicolas.ferre@microchip.com,
+        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
+        ajay.kathat@microchip.com, ludovic.desroches@microchip.com,
+        linux-arm-kernel@lists.infradead.org, alexandre.belloni@bootlin.com
+In-Reply-To: <20210816085530.1723402-2-claudiu.beznea@microchip.com>
+References: <20210816085530.1723402-1-claudiu.beznea@microchip.com> <20210816085530.1723402-2-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: pwrseq-sd8787: add binding for wilc1000
 Date:   Mon, 16 Aug 2021 15:07:03 -0500
-Message-Id: <1629144423.392245.2563334.nullmailer@robh.at.kernel.org>
+Message-Id: <1629144423.378578.2563331.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 18:48:32 +0800, Billy Tsai wrote:
-> Add device tree bindings document for the aspeed ast2600 adc device
-> driver.
+On Mon, 16 Aug 2021 11:55:27 +0300, Claudiu Beznea wrote:
+> Add binding for wilc1000 devices.
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  .../bindings/iio/adc/aspeed,ast2600-adc.yaml  | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
+>  Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -70,30 +67,112 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: properties:aspeed,int_vref_mv: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-		hint: A vendor boolean property can use "type: boolean"
-	Additional properties are not allowed ('enum' was unexpected)
-		hint: A vendor boolean property can use "type: boolean"
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: properties:aspeed,int_vref_mv: 'oneOf' conditional failed, one must be fixed:
-		'$ref' is a required property
-		'allOf' is a required property
-		hint: A vendor property needs a $ref to types.yaml
-		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-	1200 is not of type 'string'
-		hint: A vendor string property with exact values has an implicit type
-	2500 is not of type 'string'
-		hint: A vendor string property with exact values has an implicit type
-	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml: ignoring, error in schema: properties: aspeed,int_vref_mv
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
-Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.example.dt.yaml:0:0: /example-0/adc@1e6e9000: failed to match any schema with compatible: ['aspeed,ast2600-adc0']
-Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.example.dt.yaml:0:0: /example-0/adc@1e6e9100: failed to match any schema with compatible: ['aspeed,ast2600-adc1']
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 15, column 7
+found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
+  in "<unicode string>", line 16, column 7
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
+    ret = check_doc(f)
+  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
+    testtree = dtschema.load(filename, line_number=line_number)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 623, in load
+    return yaml.load(f.read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 15, column 7
+found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
+  in "<unicode string>", line 16, column 7
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema-examples.json'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-mk-schema", line 38, in <module>
+    schemas = dtschema.process_schemas(args.schemas, core_schema=(not args.useronly))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 585, in process_schemas
+    sch = process_schema(os.path.abspath(filename))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 558, in process_schema
+    schema = load_schema(filename)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 125, in load_schema
+    return do_load(os.path.join(schema_basedir, schema))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 111, in do_load
+    return yaml.load(f.read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 15, column 7
+found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
+  in "<unicode string>", line 16, column 7
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:62: Documentation/devicetree/bindings/processed-schema-examples.json] Error 1
+make: *** [Makefile:1419: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1517123
+See https://patchwork.ozlabs.org/patch/1517069
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
