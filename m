@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1EE3ED733
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56343ED5BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237989AbhHPNaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:30:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        id S236811AbhHPNOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:14:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240616AbhHPNT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCEA0632C3;
-        Mon, 16 Aug 2021 13:15:00 +0000 (UTC)
+        id S239247AbhHPNJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E039760F46;
+        Mon, 16 Aug 2021 13:09:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119701;
-        bh=6MuOVSHG7XRNq1sUR6/ktoUzZo2xHt3LD9S+QoJ7tf0=;
+        s=korg; t=1629119349;
+        bh=RpW2zC9BPsC3SH+gJglb1jVNby7j7xJJFJpo7r9P9DQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ix2g6Jnt2E2EaGlIGMdI99FdSFg3cPzh58nqWAn/DayBMfQ57ukL/OGMAiOUEJs8f
-         MD3uE3O+1XrIsoM9lc4lhahrnUmK7e+foYIQ3RD82bT02kvXyrhVjUjCn/qjNSvOmB
-         uERNJly7O3R+MzJc7Fe42w6EPsxunEEmQ2IyI+FI=
+        b=m4yr56/PnEEHMupIcxOnMZZSAULuWzSM4WQeUWhL0I2799A2PEM4S0cN7t9T6nlBX
+         fYyE5yAeOTUGZUuQoUoawajTL3gxw6ajz1CplD1yHSWqAqRnrfOY2ZvnbHMV2iUu1l
+         zWMo8+H+37y3e4hvaaCHmBc9S09MBFZni7aPnMsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stan Johnson <userm57@yahoo.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.13 127/151] powerpc/interrupt: Fix OOPS by not calling do_IRQ() from timer_interrupt()
-Date:   Mon, 16 Aug 2021 15:02:37 +0200
-Message-Id: <20210816125448.239446260@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH 5.10 88/96] efi/libstub: arm64: Double check image alignment at entry
+Date:   Mon, 16 Aug 2021 15:02:38 +0200
+Message-Id: <20210816125437.920682951@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,146 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 98694166c27d473c36b434bd3572934c2f2a16ab upstream.
+commit c32ac11da3f83bb42b986702a9b92f0a14ed4182 upstream.
 
-An interrupt handler shall not be called from another interrupt
-handler otherwise this leads to problems like the following:
+On arm64, the stub only moves the kernel image around in memory if
+needed, which is typically only for KASLR, given that relocatable
+kernels (which is the default) can run from any 64k aligned address,
+which is also the minimum alignment communicated to EFI via the PE/COFF
+header.
 
-  Kernel attempted to write user page (afd4fa84) - exploit attempt? (uid: 1000)
-  ------------[ cut here ]------------
-  Bug: Write fault blocked by KUAP!
-  WARNING: CPU: 0 PID: 1617 at arch/powerpc/mm/fault.c:230 do_page_fault+0x484/0x720
-  Modules linked in:
-  CPU: 0 PID: 1617 Comm: sshd Tainted: G        W         5.13.0-pmac-00010-g8393422eb77 #7
-  NIP:  c001b77c LR: c001b77c CTR: 00000000
-  REGS: cb9e5bc0 TRAP: 0700   Tainted: G        W          (5.13.0-pmac-00010-g8393422eb77)
-  MSR:  00021032 <ME,IR,DR,RI>  CR: 24942424  XER: 00000000
+Unfortunately, some loaders appear to ignore this header, and load the
+kernel at some arbitrary offset in memory. We can deal with this, but
+let's check for this condition anyway, so non-compliant code can be
+spotted and fixed.
 
-  GPR00: c001b77c cb9e5c80 c1582c00 00000021 3ffffbff 085b0000 00000027 c8eb644c
-  GPR08: 00000023 00000000 00000000 00000000 24942424 0063f8c8 00000000 000186a0
-  GPR16: afd52dd4 afd52dd0 afd52dcc afd52dc8 0065a990 c07640c4 cb9e5e98 cb9e5e90
-  GPR24: 00000040 afd4fa96 00000040 02000000 c1fda6c0 afd4fa84 00000300 cb9e5cc0
-  NIP [c001b77c] do_page_fault+0x484/0x720
-  LR [c001b77c] do_page_fault+0x484/0x720
-  Call Trace:
-  [cb9e5c80] [c001b77c] do_page_fault+0x484/0x720 (unreliable)
-  [cb9e5cb0] [c000424c] DataAccess_virt+0xd4/0xe4
-  --- interrupt: 300 at __copy_tofrom_user+0x110/0x20c
-  NIP:  c001f9b4 LR: c03250a0 CTR: 00000004
-  REGS: cb9e5cc0 TRAP: 0300   Tainted: G        W          (5.13.0-pmac-00010-g8393422eb77)
-  MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 48028468  XER: 20000000
-  DAR: afd4fa84 DSISR: 0a000000
-  GPR00: 20726f6f cb9e5d80 c1582c00 00000004 cb9e5e3a 00000016 afd4fa80 00000000
-  GPR08: 3835202d 72777872 2d78722d 00000004 28028464 0063f8c8 00000000 000186a0
-  GPR16: afd52dd4 afd52dd0 afd52dcc afd52dc8 0065a990 c07640c4 cb9e5e98 cb9e5e90
-  GPR24: 00000040 afd4fa96 00000040 cb9e5e0c 00000daa a0000000 cb9e5e98 afd4fa56
-  NIP [c001f9b4] __copy_tofrom_user+0x110/0x20c
-  LR [c03250a0] _copy_to_iter+0x144/0x990
-  --- interrupt: 300
-  [cb9e5d80] [c03e89c0] n_tty_read+0xa4/0x598 (unreliable)
-  [cb9e5df0] [c03e2a0c] tty_read+0xdc/0x2b4
-  [cb9e5e80] [c0156bf8] vfs_read+0x274/0x340
-  [cb9e5f00] [c01571ac] ksys_read+0x70/0x118
-  [cb9e5f30] [c0016048] ret_from_syscall+0x0/0x28
-  --- interrupt: c00 at 0xa7855c88
-  NIP:  a7855c88 LR: a7855c5c CTR: 00000000
-  REGS: cb9e5f40 TRAP: 0c00   Tainted: G        W          (5.13.0-pmac-00010-g8393422eb77)
-  MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 2402446c  XER: 00000000
-
-  GPR00: 00000003 afd4ec70 a72137d0 0000000b afd4ecac 00004000 0065a990 00000800
-  GPR08: 00000000 a7947930 00000000 00000004 c15831b0 0063f8c8 00000000 000186a0
-  GPR16: afd52dd4 afd52dd0 afd52dcc afd52dc8 0065a990 0065a9e0 00000001 0065fac0
-  GPR24: 00000000 00000089 00664050 00000000 00668e30 a720c8dc a7943ff4 0065f9b0
-  NIP [a7855c88] 0xa7855c88
-  LR [a7855c5c] 0xa7855c5c
-  --- interrupt: c00
-  Instruction dump:
-  3884aa88 38630178 48076861 807f0080 48042e45 2f830000 419e0148 3c80c079
-  3c60c076 38841be4 386301c0 4801f705 <0fe00000> 3860000b 4bfffe30 3c80c06b
-  ---[ end trace fd69b91a8046c2e5 ]---
-
-Here the problem is that by re-enterring an exception handler,
-kuap_save_and_lock() is called a second time with this time KUAP
-access locked, leading to regs->kuap being overwritten hence
-KUAP not being unlocked at exception exit as expected.
-
-Do not call do_IRQ() from timer_interrupt() directly. Instead,
-redefine do_IRQ() as a standard function named __do_IRQ(), and
-call it from both do_IRQ() and time_interrupt() handlers.
-
-Fixes: 3a96570ffceb ("powerpc: convert interrupt handlers to use wrappers")
-Cc: stable@vger.kernel.org # v5.12+
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c17d234f4927d39a1d7100864a8e1145323d33a0.1628611927.git.christophe.leroy@csgroup.eu
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/interrupt.h |    3 +++
- arch/powerpc/include/asm/irq.h       |    2 +-
- arch/powerpc/kernel/irq.c            |    7 ++++++-
- arch/powerpc/kernel/time.c           |    2 +-
- 4 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/firmware/efi/libstub/arm64-stub.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/powerpc/include/asm/interrupt.h
-+++ b/arch/powerpc/include/asm/interrupt.h
-@@ -531,6 +531,9 @@ DECLARE_INTERRUPT_HANDLER_NMI(hmi_except
+--- a/drivers/firmware/efi/libstub/arm64-stub.c
++++ b/drivers/firmware/efi/libstub/arm64-stub.c
+@@ -119,6 +119,10 @@ efi_status_t handle_kernel_image(unsigne
+ 	if (image->image_base != _text)
+ 		efi_err("FIRMWARE BUG: efi_loaded_image_t::image_base has bogus value\n");
  
- DECLARE_INTERRUPT_HANDLER_ASYNC(TAUException);
- 
-+/* irq.c */
-+DECLARE_INTERRUPT_HANDLER_ASYNC(do_IRQ);
++	if (!IS_ALIGNED((u64)_text, EFI_KIMG_ALIGN))
++		efi_err("FIRMWARE BUG: kernel image not aligned on %ldk boundary\n",
++			EFI_KIMG_ALIGN >> 10);
 +
- void __noreturn unrecoverable_exception(struct pt_regs *regs);
- 
- void replay_system_reset(void);
---- a/arch/powerpc/include/asm/irq.h
-+++ b/arch/powerpc/include/asm/irq.h
-@@ -53,7 +53,7 @@ extern void *mcheckirq_ctx[NR_CPUS];
- extern void *hardirq_ctx[NR_CPUS];
- extern void *softirq_ctx[NR_CPUS];
- 
--extern void do_IRQ(struct pt_regs *regs);
-+void __do_IRQ(struct pt_regs *regs);
- extern void __init init_IRQ(void);
- extern void __do_irq(struct pt_regs *regs);
- 
---- a/arch/powerpc/kernel/irq.c
-+++ b/arch/powerpc/kernel/irq.c
-@@ -654,7 +654,7 @@ void __do_irq(struct pt_regs *regs)
- 	trace_irq_exit(regs);
- }
- 
--DEFINE_INTERRUPT_HANDLER_ASYNC(do_IRQ)
-+void __do_IRQ(struct pt_regs *regs)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 	void *cursp, *irqsp, *sirqsp;
-@@ -678,6 +678,11 @@ DEFINE_INTERRUPT_HANDLER_ASYNC(do_IRQ)
- 	set_irq_regs(old_regs);
- }
- 
-+DEFINE_INTERRUPT_HANDLER_ASYNC(do_IRQ)
-+{
-+	__do_IRQ(regs);
-+}
-+
- static void *__init alloc_vm_stack(void)
- {
- 	return __vmalloc_node(THREAD_SIZE, THREAD_ALIGN, THREADINFO_GFP,
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -607,7 +607,7 @@ DEFINE_INTERRUPT_HANDLER_ASYNC(timer_int
- 
- #if defined(CONFIG_PPC32) && defined(CONFIG_PPC_PMAC)
- 	if (atomic_read(&ppc_n_lost_interrupts) != 0)
--		do_IRQ(regs);
-+		__do_IRQ(regs);
- #endif
- 
- 	old_regs = set_irq_regs(regs);
+ 	kernel_size = _edata - _text;
+ 	kernel_memsize = kernel_size + (_end - _edata);
+ 	*reserve_size = kernel_memsize;
 
 
