@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0793ECD88
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1A33ECD8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 06:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhHPER0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 00:17:26 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:39480 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhHPERZ (ORCPT
+        id S232628AbhHPESC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 00:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhHPER4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 00:17:25 -0400
-Received: by mail-pj1-f53.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so30343511pjn.4;
-        Sun, 15 Aug 2021 21:16:54 -0700 (PDT)
+        Mon, 16 Aug 2021 00:17:56 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DF5C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 21:17:22 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so25371653pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Aug 2021 21:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Hx4SkasqHslIrkDgnLhNdvAsspclML8ZdzK0kZt3bgQ=;
+        b=nk3VDIgd23DD3SPeU1QaCI04yRwaNdCElwpLEL+QnPbgWztx6y+IenZkEqvYt3bbda
+         KhYFqS5LjiT5U+z9otfnJob8ezly+O/p+5X9UoxseetHcn87sClcYhy3gakoCl3OmSPA
+         81X5IJiuY+hNuvEHQrvKXUf99f5X4YSLvZQQIX6svQYBuf7CvML2DhdSLEK3i2DAaAL3
+         hD+XzuaYLz70iOOHae45AcK+ZRRBUCNhikKPn909cn0RiGqp5rzXoQbvNyb+2290lyuu
+         J3BJcYvxJnu5XS1VfUw1MjUm3Q7PDp1u7NnwmRyEvkFucJeA34p+NH2jASOnJIpUja/R
+         g4cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VGQ6B94EGHj3H0WVGab38MvJV4C1IW98Ade2+yP4yzc=;
-        b=PSVtZALkFwOJGJ8udoFHQbP2WdGcj7XSnJ6t8cKKBrkP2rlDnmwDIP7AnHuTdUNXrX
-         vUFECheWoCh+5UfKxpvMS9Dx23wVDeX8C8eNg42EOuA05RtAj32sXQN0aCWJc6wbQP7B
-         yGjmp1BjKctM/8vlpryKuFKQ6G7W8n9YRACyX8jdm4rtuijLf4XEkZOI3RF8e3rny5sV
-         SLrx3TMeyDAdwBx1j2bZ9T+ZZcdXg1JYA/jnQ+sGcXEVMRY8WCzdpfqqosYM73ek87ao
-         06LuT0l7EnkTr0V4fWhaa715F9a++mzXPWfRXWCU1YgHubYDObsHflG74TOspsMRTs+E
-         7RGQ==
-X-Gm-Message-State: AOAM533fBPUgDftsDx4V7M2B6NrK9juL+Rsl6XQpkb/+mY2/vnHaRwoG
-        09B9qt933DRwPQlOJAqkkXs=
-X-Google-Smtp-Source: ABdhPJxnBLahpzCRRiIlIwdrSPnemb10fYGm83yYh2erypPGIj9DtbMV8M9OYocf2o2upR65MApJKA==
-X-Received: by 2002:a05:6a00:1884:b029:3bb:640f:4cfc with SMTP id x4-20020a056a001884b02903bb640f4cfcmr14420387pfh.61.1629087413831;
-        Sun, 15 Aug 2021 21:16:53 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:fa8f:c6de:b478:78fe? ([2601:647:4000:d7:fa8f:c6de:b478:78fe])
-        by smtp.gmail.com with ESMTPSA id d15sm2808358pfd.115.2021.08.15.21.16.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Aug 2021 21:16:53 -0700 (PDT)
-Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
- sharing a tag set
-To:     "yukuai (C)" <yukuai3@huawei.com>, axboe@kernel.dk,
-        ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-References: <20210712031818.31918-1-yukuai3@huawei.com>
- <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
- <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
- <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
- <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
- <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
- <a63fbd36-5a43-e412-c0a2-a06730945a13@huawei.com>
- <b4603b71-4306-4542-e4fb-bf30133f89a8@acm.org>
- <010fcd39-c819-8e0e-c188-62b1947603bf@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <a47ba8e9-520e-19b5-dd8f-7929f624bbbd@acm.org>
-Date:   Sun, 15 Aug 2021 21:16:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Hx4SkasqHslIrkDgnLhNdvAsspclML8ZdzK0kZt3bgQ=;
+        b=NR5ouA9kGdye8jf1djsXX1Nj6V5wEwv8Crheonxi8Ac3AMMuQAQATfID79Tchjzw0S
+         Pagag2gmQNm+aay44DCIGNSj8D/pQeEq1FpKKlZ/Cjwmi9Q3m36xxEeoFJQ2zQortWZF
+         CNg3HDcZci4N9LT1FAdggDn0U4NeOET9pV+N3EjD7/3KEzuIXc5icUXyrXzjqvCUWQYA
+         WgDTLDsk0Rz3kjTKLWpAc6f/fbkJj1YBz7CBXt5z2qm4/V8M6x9QQ5AQWii4rAKAqb8k
+         IkJjy6PyGtl8sU1uOmW7LzNzH9wlL64nS+2xCUjwBHQUIpuQnEu0V1okDU3pzW2rfJwz
+         xWMQ==
+X-Gm-Message-State: AOAM533xIPFrlTpw8d4atuDgbrd0998ye1fZ8JYVJreci8WSIhTw/t4i
+        vPoIBOLgto1OVhmlUULHuZVo1A==
+X-Google-Smtp-Source: ABdhPJwSgSjgEUvvzoEEm5XqAAvnv82h9wIkZthBG0xOjXr2hpHl3GotbydTdxfNnQhSq8gAh8JHvg==
+X-Received: by 2002:a65:6444:: with SMTP id s4mr5065185pgv.11.1629087441329;
+        Sun, 15 Aug 2021 21:17:21 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id l126sm11484011pgl.14.2021.08.15.21.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Aug 2021 21:17:20 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 09:47:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v1] opp: Drop empty-table checks from _put functions
+Message-ID: <20210816041718.yguabfbebzgdf5ea@vireshk-i7>
+References: <20210815164344.7796-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <010fcd39-c819-8e0e-c188-62b1947603bf@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210815164344.7796-1-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/21 2:43 AM, yukuai (C) wrote:
-> test result:
-> | test round | with this patch | without this patch |
-> | ---------- | --------------- | ------------------ |
-> | 1          | 4310k           | 4265k              |
-> | 2          | 4295k           | 4327k              |
-> | 3          | 4217k           | 4213k              |
-> | 4          | 4355k           | 4236k              |
-> | 5          | 4315k           | 4337k              |
-> | average    | 4294k           | 4275k              |
+On 15-08-21, 19:43, Dmitry Osipenko wrote:
+> The current_opp is released only when whole OPP table is released,
+> otherwise it's only marked as removed by dev_pm_opp_remove_table().
+> Functions like dev_pm_opp_put_clkname() and dev_pm_opp_put_supported_hw()
+> are checking whether OPP table is empty and it's not if current_opp is
+> set since it holds the refcount of OPP, this produces a noisy warning
+> from these functions about busy OPP table. Remove the checks to fix it.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/opp/core.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index b335c077f215..5543c54dacc5 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1856,9 +1856,6 @@ void dev_pm_opp_put_supported_hw(struct opp_table *opp_table)
+>  	if (unlikely(!opp_table))
+>  		return;
+>  
+> -	/* Make sure there are no concurrent readers while updating opp_table */
+> -	WARN_ON(!list_empty(&opp_table->opp_list));
+> -
+>  	kfree(opp_table->supported_hw);
+>  	opp_table->supported_hw = NULL;
+>  	opp_table->supported_hw_count = 0;
+> @@ -1944,9 +1941,6 @@ void dev_pm_opp_put_prop_name(struct opp_table *opp_table)
+>  	if (unlikely(!opp_table))
+>  		return;
+>  
+> -	/* Make sure there are no concurrent readers while updating opp_table */
+> -	WARN_ON(!list_empty(&opp_table->opp_list));
+> -
+>  	kfree(opp_table->prop_name);
+>  	opp_table->prop_name = NULL;
+>  
+> @@ -2056,9 +2050,6 @@ void dev_pm_opp_put_regulators(struct opp_table *opp_table)
+>  	if (!opp_table->regulators)
+>  		goto put_opp_table;
+>  
+> -	/* Make sure there are no concurrent readers while updating opp_table */
+> -	WARN_ON(!list_empty(&opp_table->opp_list));
+> -
+>  	if (opp_table->enabled) {
+>  		for (i = opp_table->regulator_count - 1; i >= 0; i--)
+>  			regulator_disable(opp_table->regulators[i]);
+> @@ -2178,9 +2169,6 @@ void dev_pm_opp_put_clkname(struct opp_table *opp_table)
+>  	if (unlikely(!opp_table))
+>  		return;
+>  
+> -	/* Make sure there are no concurrent readers while updating opp_table */
+> -	WARN_ON(!list_empty(&opp_table->opp_list));
+> -
+>  	clk_put(opp_table->clk);
+>  	opp_table->clk = ERR_PTR(-EINVAL);
+>  
+> @@ -2279,9 +2267,6 @@ void dev_pm_opp_unregister_set_opp_helper(struct opp_table *opp_table)
+>  	if (unlikely(!opp_table))
+>  		return;
+>  
+> -	/* Make sure there are no concurrent readers while updating opp_table */
+> -	WARN_ON(!list_empty(&opp_table->opp_list));
+> -
+>  	opp_table->set_opp = NULL;
+>  
+>  	mutex_lock(&opp_table->lock);
 
-Hi Kuai,
+Applied. Thanks.
 
-Thank you for having taken the time to rerun the IOPS measurements with
-kernel debugging disabled. According to my calculations the standard
-deviation (50K) is larger than the difference between the averages
-(19K). Unfortunately that makes it hard to draw any conclusion ...
-
-Bart.
+-- 
+viresh
