@@ -2,176 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578D13EDCEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188453EDD08
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 20:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhHPSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 14:13:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229481AbhHPSNg (ORCPT
+        id S230054AbhHPSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 14:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhHPSYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:13:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629137583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ObwAiK1SanC6EIqEOVjwPOQt8lDrmZK5pIQ+0d+6crA=;
-        b=ZRCsMd11GJy5nSKOd5jGFMPLKAWR7lnREhW8rxxJc1Z43axPu3a2GkwDsV1rQIVAe6giAN
-        5vUfa0utXNgcX7JJN39lxCb3Tuqt3Lb9m37hNnyX798CE4cI51leOMCJq3qLQENa61WtjU
-        g87BSoPpkroyetosdZiFwXFBJei6db0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-RPL-AnGXOtST2hleI73Gow-1; Mon, 16 Aug 2021 14:13:01 -0400
-X-MC-Unique: RPL-AnGXOtST2hleI73Gow-1
-Received: by mail-wr1-f69.google.com with SMTP id h24-20020adfa4d8000000b00156d9931072so63910wrb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:13:01 -0700 (PDT)
+        Mon, 16 Aug 2021 14:24:09 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46696C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:23:37 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id u22so5123725lfq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 11:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iXNEBxrdRbaW0Zvj9MoErhLjqBG//qAZColhvKB/ENU=;
+        b=jWiF3VDph9SCQ7Z9TWhCBKY7M4MxDINi1f9q51QNR6NlxmXmrVgobbVvJDEQDOBFFw
+         vrQCBsjpqSjyDNrB9Oe6GBTwnTuE7I2TY0V11+O/YpkP/M+0mdK8zXTUa3D7wGe3iQEl
+         yRKnC0DrJ56G3HYURyQ61EIG7nMHK02ISMY90WJ63a7Alx4qg82rRlXBpLnahl/Sn8YF
+         TZnF+44omfJnCvWDZk0+aXT91MC3A8uVkEaVW0ZrDTeOrLe0ZzSMfE4XxEP16hZhD+2q
+         c0lupGivadoXOvmBa5dhmPiZF02iQsgYQRUm4Rh/50ZvFZxOkO8fofYrf6OPbA4MoIeC
+         BYQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ObwAiK1SanC6EIqEOVjwPOQt8lDrmZK5pIQ+0d+6crA=;
-        b=BZJqC7uLjIa+8UPC25LBB+ieXVilnyDSyQwa9Hk/1qG099ZeZsnxsnuksfRKDtF0k9
-         LoutjyMFZ1hV/1SvTVwMYXxlQWCQHbyaoorCIE36e9Y1tssFSnCLZDfkqRo5Mcxs1Qqp
-         XSnilgUQ6k9TZVxT3zuXw4qc2zNMqht+dS3JY6ZSkDV1Y/MRMu9uE8fxSZjgeEIR/ww5
-         3qnQEri5jV3/2cHIGVxqe56oMHmXT1ECFVapCSXxNgcLVbAm9XA1U6x37cMJ4YOUABFI
-         DnsvmoDTvXmxvUOmTW0sJttPyPGadPr31RhHkIsvcywBkqT7aYa3rDNemt0lylH5pqQL
-         +8wg==
-X-Gm-Message-State: AOAM530IT98GPhhXp87TsFYGSLhlWe8+f7UaaXBROOcl+asOeG6nnrXZ
-        CSuic4grkABMMOIg6oBXp5sfiX5Tx0/5w/yuKHS5LA9Ps8ei+sjAgarjq5FjtDIw1qe5iw+t5mA
-        V6L4aDGo3/+gt+oNJNNu2C4kV
-X-Received: by 2002:adf:f403:: with SMTP id g3mr20183228wro.222.1629137580064;
-        Mon, 16 Aug 2021 11:13:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSkkSVax500dJoptbIZkzkC8VGwiA1i59fRi1lf7+73SVVl22U3bvekg7+YoUHgubxd2vmww==
-X-Received: by 2002:adf:f403:: with SMTP id g3mr20183201wro.222.1629137579804;
-        Mon, 16 Aug 2021 11:12:59 -0700 (PDT)
-Received: from krava ([83.240.61.5])
-        by smtp.gmail.com with ESMTPSA id n16sm12471749wru.79.2021.08.16.11.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 11:12:59 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 20:12:58 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [BUG] general protection fault when reading /proc/kcore
-Message-ID: <YRqqqvaZHDu1IKrD@krava>
-References: <YRqhqz35tm3hA9CG@krava>
- <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iXNEBxrdRbaW0Zvj9MoErhLjqBG//qAZColhvKB/ENU=;
+        b=tPkkdL5zniP+Yg8QhYw6f3buQe89UISvPXK8IpeSyDiEA5inqsvQlS4pz0Dpeu08j9
+         cq+A7Nmqt+kNiaAlGY2ECaVLEIM/fSySE3Dg+S9lqKdwVm1ds553s4FKOE44llhFiZw2
+         CRvO8L3zFQDcMIyoMDy+bbZNTMXDBa3duInqnW1zD27A7TtbuGYO8PAoWOhC0v5ViLqQ
+         KVC7kfydN35xhSoWEucBDaMvmxX7Il15CHdB50bIfCR8t6UoBr83z5OjvqXezpOYh7CG
+         QudQN1vgpO0G7shrzi7iEym7RUJJa/6Z/4H5EoAp9RRgerk9spM7l9yBrjueGUXv0oyA
+         serg==
+X-Gm-Message-State: AOAM5300NmJh+nJeRPGeGQzMBQAQHzRSKq6Tg9LOFWQGVSNsuHuj4uq8
+        sizZJYdY1tS2m1RiKsSIZg51J3pKDd243iqV6Ac0ww==
+X-Google-Smtp-Source: ABdhPJx29dpsm62whVHg2TLbCN1NCHzvOehsnCbFttsXFejNnRpyUhhYa6o1V3PMI4Vghz8JxPO81Zer/jhXfmHTLb8=
+X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr12931757lfu.547.1629138215110;
+ Mon, 16 Aug 2021 11:23:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1a05d147-e249-7682-2c86-bbd157bc9c7d@redhat.com>
+References: <20210810205611.4013424-1-ndesaulniers@google.com> <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
+In-Reply-To: <CAK7LNAT0KR_xjPNzdB1aJ9nj3=A-ktU-aoP0CWvAnMJ91djfyA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 11:23:23 -0700
+Message-ID: <CAKwvOdn4DvH_S3wgk49E=mCgwKhErhf8BDVzPXLTmB74GDQBKw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add Nick to Kbuild reviewers
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 07:49:15PM +0200, David Hildenbrand wrote:
-> On 16.08.21 19:34, Jiri Olsa wrote:
-> > hi,
-> > I'm getting fault below when running:
-> >=20
-> > 	# cat /proc/kallsyms | grep ksys_read
-> > 	ffffffff8136d580 T ksys_read
-> > 	# objdump -d --start-address=3D0xffffffff8136d580 --stop-address=3D0xf=
-fffffff8136d590 /proc/kcore
-> >=20
-> > 	/proc/kcore:     file format elf64-x86-64
-> >=20
-> > 	Segmentation fault
-> >=20
-> > any idea? config is attached
->=20
-> Just tried with a different config on 5.14.0-rc6+
->=20
-> [root@localhost ~]# cat /proc/kallsyms | grep ksys_read
-> ffffffff8927a800 T ksys_readahead
-> ffffffff89333660 T ksys_read
->=20
-> [root@localhost ~]# objdump -d --start-address=3D0xffffffff89333660
-> --stop-address=3D0xffffffff89333670
->=20
-> a.out:     file format elf64-x86-64
->=20
->=20
->=20
-> The kern_addr_valid(start) seems to fault in your case, which is weird,
-> because it merely walks the page tables. But it seems to complain about a
-> non-canonical address 0xf887ffcbff000
->=20
-> Can you post your QEMU cmdline? Did you test this on other kernel version=
-s?
++ Linux kbuild, Michal
 
-I'm using virt-manager so:
+On Fri, Aug 13, 2021 at 6:08 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Aug 11, 2021 at 5:56 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > Kees' post inspired me to get more involved. I still have a long way to
+> > go in terms of mastery of GNU make, but at the least I can help with
+> > more code review. It's also helpful for me to pick up on what's missing
+> > from the LLVM ecosystem.
+>
+>
+> Reviews and tests are always appreciated.
+> Of course, not only from those who are listed in
+> the MAINTAINERS file, but everybody can provide
+> reviews to any patches in their interests.
+>
+> Applied to linux-kbuild. Thanks.
+>
+>
+> BTW, one struggle about being a maintainter
+> of this entry is I need to take a look
+> into random stuff.
+>
+> KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>
+> Another BTW, this patch reminds me of Michal.
+> He is inactive for a long time.
+> I should ask him if he wants to continue
+> to be a kbuild maintainer.
 
-/usr/bin/qemu-system-x86_64 -name guest=3Dfedora33,debug-threads=3Don -S -o=
-bject secret,id=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/qemu/doma=
-in-13-fedora33/master-key.aes -machine pc-q35-5.1,accel=3Dkvm,usb=3Doff,vmp=
-ort=3Doff,dump-guest-core=3Doff,memory-backend=3Dpc.ram -cpu Skylake-Server=
--IBRS,ss=3Don,vmx=3Don,pdcm=3Don,hypervisor=3Don,tsc-adjust=3Don,clflushopt=
-=3Don,umip=3Don,pku=3Don,stibp=3Don,arch-capabilities=3Don,ssbd=3Don,xsaves=
-=3Don,ibpb=3Don,amd-stibp=3Don,amd-ssbd=3Don,skip-l1dfl-vmentry=3Don,pschan=
-ge-mc-no=3Don -m 8192 -object memory-backend-ram,id=3Dpc.ram,size=3D8589934=
-592 -overcommit mem-lock=3Doff -smp 20,sockets=3D20,cores=3D1,threads=3D1 -=
-uuid 2185d5a9-dbad-4d61-aa4e-97af9fd7ebca -no-user-config -nodefaults -char=
-dev socket,id=3Dcharmonitor,fd=3D36,server,nowait -mon chardev=3Dcharmonito=
-r,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc,driftfix=3Dslew -global kvm-p=
-it.lost_tick_policy=3Ddelay -no-hpet -no-shutdown -global ICH9-LPC.disable_=
-s3=3D1 -global ICH9-LPC.disable_s4=3D1 -boot strict=3Don -kernel /home/jols=
-a/qemu/run/vmlinux -initrd /home/jolsa/qemu/run/initrd -append root=3D/dev/=
-mapper/fedora_fedora-root ro rd.lvm.lv=3Dfedora_fedora/root console=3Dtty0 =
-console=3DttyS0,115200 -device pcie-root-port,port=3D0x10,chassis=3D1,id=3D=
-pci.1,bus=3Dpcie.0,multifunction=3Don,addr=3D0x2 -device pcie-root-port,por=
-t=3D0x11,chassis=3D2,id=3Dpci.2,bus=3Dpcie.0,addr=3D0x2.0x1 -device pcie-ro=
-ot-port,port=3D0x12,chassis=3D3,id=3Dpci.3,bus=3Dpcie.0,addr=3D0x2.0x2 -dev=
-ice pcie-root-port,port=3D0x13,chassis=3D4,id=3Dpci.4,bus=3Dpcie.0,addr=3D0=
-x2.0x3 -device pcie-root-port,port=3D0x14,chassis=3D5,id=3Dpci.5,bus=3Dpcie=
-=2E0,addr=3D0x2.0x4 -device pcie-root-port,port=3D0x15,chassis=3D6,id=3Dpci=
-=2E6,bus=3Dpcie.0,addr=3D0x2.0x5 -device pcie-root-port,port=3D0x16,chassis=
-=3D7,id=3Dpci.7,bus=3Dpcie.0,addr=3D0x2.0x6 -device qemu-xhci,p2=3D15,p3=3D=
-15,id=3Dusb,bus=3Dpci.2,addr=3D0x0 -device virtio-serial-pci,id=3Dvirtio-se=
-rial0,bus=3Dpci.3,addr=3D0x0 -blockdev {"driver":"file","filename":"/var/li=
-b/libvirt/images/fedora33.qcow2","node-name":"libvirt-2-storage","auto-read=
--only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-2-format","r=
-ead-only":false,"driver":"qcow2","file":"libvirt-2-storage","backing":null}=
- -device virtio-blk-pci,bus=3Dpci.4,addr=3D0x0,drive=3Dlibvirt-2-format,id=
-=3Dvirtio-disk0,bootindex=3D1 -device ide-cd,bus=3Dide.0,id=3Dsata0-0-0 -ne=
-tdev tap,fd=3D38,id=3Dhostnet0,vhost=3Don,vhostfd=3D39 -device virtio-net-p=
-ci,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:f3:c6:e7,bus=3Dpci.1,addr=3D0=
-x0 -chardev pty,id=3Dcharserial0 -device isa-serial,chardev=3Dcharserial0,i=
-d=3Dserial0 -chardev socket,id=3Dcharchannel0,fd=3D40,server,nowait -device=
- virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,chardev=3Dcharchannel0,id=3Dc=
-hannel0,name=3Dorg.qemu.guest_agent.0 -chardev spicevmc,id=3Dcharchannel1,n=
-ame=3Dvdagent -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D2,chardev=
-=3Dcharchannel1,id=3Dchannel1,name=3Dcom.redhat.spice.0 -device usb-tablet,=
-id=3Dinput0,bus=3Dusb.0,port=3D1 -spice port=3D5900,addr=3D127.0.0.1,disabl=
-e-ticketing,image-compression=3Doff,seamless-migration=3Don -device qxl-vga=
-,id=3Dvideo0,ram_size=3D67108864,vram_size=3D67108864,vram64_size_mb=3D0,vg=
-amem_mb=3D16,max_outputs=3D1,bus=3Dpcie.0,addr=3D0x1 -device ich9-intel-hda=
-,id=3Dsound0,bus=3Dpcie.0,addr=3D0x1b -device hda-duplex,id=3Dsound0-codec0=
-,bus=3Dsound0.0,cad=3D0 -chardev spicevmc,id=3Dcharredir0,name=3Dusbredir -=
-device usb-redir,chardev=3Dcharredir0,id=3Dredir0,bus=3Dusb.0,port=3D2 -cha=
-rdev spicevmc,id=3Dcharredir1,name=3Dusbredir -device usb-redir,chardev=3Dc=
-harredir1,id=3Dredir1,bus=3Dusb.0,port=3D3 -device virtio-balloon-pci,id=3D=
-balloon0,bus=3Dpci.5,addr=3D0x0 -object rng-random,id=3Dobjrng0,filename=3D=
-/dev/urandom -device virtio-rng-pci,rng=3Dobjrng0,id=3Drng0,bus=3Dpci.6,add=
-r=3D0x0 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,spawn=3Ddeny,r=
-esourcecontrol=3Ddeny -msg timestamp=3Don
+I was going to ask if there was handling for "emeritus status?"  The
+last meaningful commit seems to be from Nov 2016, though it seems they
+were the maintainer since 2009 (5ce45962b26a)!
 
-so far I tested just bpf-next/master:
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+>
+>
+>
+>
+>
+> > Link: https://security.googleblog.com/2021/08/linux-kernel-security-done-right.html
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index efac6221afe1..9768e4a19662 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -10091,6 +10091,7 @@ F:      fs/autofs/
+> >  KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
+> >  M:     Masahiro Yamada <masahiroy@kernel.org>
+> >  M:     Michal Marek <michal.lkml@markovi.net>
+> > +R:     Nick Desaulniers <ndesaulniers@google.com>
+> >  L:     linux-kbuild@vger.kernel.org
+> >  S:     Maintained
+> >  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+> > --
+> > 2.32.0.605.g8dce9f2422-goog
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
 
-and jsut removed my changes to make sure it wasn't me ;-)
-
-I'll try to find a version that worked for me before
-
-
-thanks,
-jirka
-
+-- 
+Thanks,
+~Nick Desaulniers
