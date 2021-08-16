@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECE23ED75C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1D03ED4AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235483AbhHPNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39180 "EHLO mail.kernel.org"
+        id S236610AbhHPNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238894AbhHPNQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:16:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B71F8632ED;
-        Mon, 16 Aug 2021 13:13:21 +0000 (UTC)
+        id S231395AbhHPNE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:04:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B474B6328A;
+        Mon, 16 Aug 2021 13:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119602;
-        bh=DmvCyg3+GaFmW/1KXTkP3Udlm3T9LTw6aydB4yoyp6w=;
+        s=korg; t=1629119036;
+        bh=ne+Wtu4hJc2IMFSic/LraoYeyWkhVZd4VoE3DVZFSig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lQtTxxI8RQjIfinTh2UeQ/Zh26C7CdUNmoExL7XNxuBG79sbFFXrtM9nPiS6dmid4
-         LBWnke7QXKiIqiOnGe628VHQ73Ewz4U9sXeOvkKXtXJE2SdZqgSmsM4pabhTFTtMCA
-         2vzmEZcYHhe/Fv3njES3B8m0pNx/j7HxEsD3I5Ew=
+        b=f2ZfgvLvqhqGxZJuSXmNJvMF4LntcRw7pu+t7SNKVit0orvRk0Zo6CED+5ZY9Kv6m
+         vRvjT/gJ2bv3DKWR/6+/panPB0dH3RHp8CjjGSl4dlsvxZe013Y7j0EMrPnsTeSqwW
+         zyCPfBWgVFqm5EzbC0amo963PjC9QyozgfnpOU4o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Steiger <mathias.steiger@googlemail.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Philip Milev <milev.philip@gmail.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 088/151] drm/meson: fix colour distortion from HDR set during vendor u-boot
+Subject: [PATCH 5.4 26/62] net/mlx5: Fix return value from tracer initialization
 Date:   Mon, 16 Aug 2021 15:01:58 +0200
-Message-Id: <20210816125446.981911556@linuxfoundation.org>
+Message-Id: <20210816125429.087053624@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Hewitt <christianshewitt@gmail.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit bf33677a3c394bb8fddd48d3bbc97adf0262e045 ]
+[ Upstream commit bd37c2888ccaa5ceb9895718f6909b247cc372e0 ]
 
-Add support for the OSD1 HDR registers so meson DRM can handle the HDR
-properties set by Amlogic u-boot on G12A and newer devices which result
-in blue/green/pink colour distortion to display output.
+Check return value of mlx5_fw_tracer_start(), set error path and fix
+return value of mlx5_fw_tracer_init() accordingly.
 
-This takes the original patch submissions from Mathias [0] and [1] with
-corrections for formatting and the missing description and attribution
-needed for merge.
-
-[0] https://lore.kernel.org/linux-amlogic/59dfd7e6-fc91-3d61-04c4-94e078a3188c@baylibre.com/T/
-[1] https://lore.kernel.org/linux-amlogic/CAOKfEHBx_fboUqkENEMd-OC-NSrf46nto+vDLgvgttzPe99kXg@mail.gmail.com/T/#u
-
-Fixes: 728883948b0d ("drm/meson: Add G12A Support for VIU setup")
-Suggested-by: Mathias Steiger <mathias.steiger@googlemail.com>
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Tested-by: Neil Armstrong <narmstrong@baylibre.com>
-Tested-by: Philip Milev <milev.philip@gmail.com>
-[narmsrong: adding missing space on second tested-by tag]
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210806094005.7136-1-christianshewitt@gmail.com
+Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/meson/meson_registers.h | 5 +++++
- drivers/gpu/drm/meson/meson_viu.c       | 7 ++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ .../net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c  | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/meson/meson_registers.h b/drivers/gpu/drm/meson/meson_registers.h
-index 446e7961da48..0f3cafab8860 100644
---- a/drivers/gpu/drm/meson/meson_registers.h
-+++ b/drivers/gpu/drm/meson/meson_registers.h
-@@ -634,6 +634,11 @@
- #define VPP_WRAP_OSD3_MATRIX_PRE_OFFSET2 0x3dbc
- #define VPP_WRAP_OSD3_MATRIX_EN_CTRL 0x3dbd
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+index eb2e57ff08a6..dc36b0db3722 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -1017,12 +1017,19 @@ int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer)
+ 	MLX5_NB_INIT(&tracer->nb, fw_tracer_event, DEVICE_TRACER);
+ 	mlx5_eq_notifier_register(dev, &tracer->nb);
  
-+/* osd1 HDR */
-+#define OSD1_HDR2_CTRL 0x38a0
-+#define OSD1_HDR2_CTRL_VDIN0_HDR2_TOP_EN       BIT(13)
-+#define OSD1_HDR2_CTRL_REG_ONLY_MAT            BIT(16)
-+
- /* osd2 scaler */
- #define OSD2_VSC_PHASE_STEP 0x3d00
- #define OSD2_VSC_INI_PHASE 0x3d01
-diff --git a/drivers/gpu/drm/meson/meson_viu.c b/drivers/gpu/drm/meson/meson_viu.c
-index aede0c67a57f..259f3e6bec90 100644
---- a/drivers/gpu/drm/meson/meson_viu.c
-+++ b/drivers/gpu/drm/meson/meson_viu.c
-@@ -425,9 +425,14 @@ void meson_viu_init(struct meson_drm *priv)
- 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXM) ||
- 	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXL))
- 		meson_viu_load_matrix(priv);
--	else if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A))
-+	else if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A)) {
- 		meson_viu_set_g12a_osd1_matrix(priv, RGB709_to_YUV709l_coeff,
- 					       true);
-+		/* fix green/pink color distortion from vendor u-boot */
-+		writel_bits_relaxed(OSD1_HDR2_CTRL_REG_ONLY_MAT |
-+				OSD1_HDR2_CTRL_VDIN0_HDR2_TOP_EN, 0,
-+				priv->io_base + _REG(OSD1_HDR2_CTRL));
+-	mlx5_fw_tracer_start(tracer);
+-
++	err = mlx5_fw_tracer_start(tracer);
++	if (err) {
++		mlx5_core_warn(dev, "FWTracer: Failed to start tracer %d\n", err);
++		goto err_notifier_unregister;
 +	}
+ 	return 0;
  
- 	/* Initialize OSD1 fifo control register */
- 	reg = VIU_OSD_DDR_PRIORITY_URGENT |
++err_notifier_unregister:
++	mlx5_eq_notifier_unregister(dev, &tracer->nb);
++	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
+ err_dealloc_pd:
+ 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
++	cancel_work_sync(&tracer->read_fw_strings_work);
+ 	return err;
+ }
+ 
 -- 
 2.30.2
 
