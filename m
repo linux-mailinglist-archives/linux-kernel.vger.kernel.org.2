@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEE13ED425
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C6D3ED42A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbhHPMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        id S232496AbhHPMmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhHPMkG (ORCPT
+        with ESMTP id S231642AbhHPMk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:40:06 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E653C061796;
-        Mon, 16 Aug 2021 05:39:32 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id n11so14005384qkk.1;
-        Mon, 16 Aug 2021 05:39:32 -0700 (PDT)
+        Mon, 16 Aug 2021 08:40:59 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C69C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:40:27 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id j186so8181884vsc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 05:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=5AngW8YnH2bBvvJ2iUVtLSJUllib7jnVTIimPTcWaRY=;
-        b=KcBKXBC4VncaPthNtFvRbNGsY2mjuh8fT49RoRjs4sZlA0N35uGAXEguwPjyYgm+VL
-         LOk5qQyDY3k+GL9SvbS4/ZC5fyuwQTxwCiFOzu/Dgd/oqb+n4iRTy8LjJ3W2ux+dN4np
-         9xvSvDCBroDw1DSagCytU/W28HaJa+FbY8jbzif8ey+sNGOmV8PV/LOOFPP/IgjAWuiz
-         TEGY1OolnpW3N9KQscv5+yh+KxXKKOaExcnX9Xs09zxFuRc23Z4DDn19Fd/fzmanGHe3
-         Ajdv2nG2I9uAgiEFLsVuPqN52cxbsg3QsCVTkL3D98y5W3prFKYhGSj+GfOBQ0Ipll8s
-         7P+A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VNwNXBDUCMkICc2Rzv/9tnwKQF1vpl085cudEYRntr8=;
+        b=eJ2Z9oE5XSxgvUeoUoyA/QJ3fbSbHxOql3/ikT40/h43t83u9YAwm5tAMJnIaEyg9f
+         44FiyWb/5H3WGR/ajGF13MxeUzFqLItwt44K/lzpxpI/Ptn8oIfP5knni2Y24xqOF7p2
+         ktZnZyUFYQrCyls8vP166RJWV3FxOzNTr149i/UL1H8No7CEqSHsNMaCWckYipyM5Q1y
+         UvvXuTrGbqS/jwtjW/VMb/bbJ7k5HrOfPPNAVyCcFMzKfLLTNbMsU01qcOvZ4zgekOsa
+         u4QlGOSN67FvIzBkrcTUMJwEiCvyjvLOuefHSogxy7lhHe4ou6SKfToph75Pp7xyWPwx
+         hJEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=5AngW8YnH2bBvvJ2iUVtLSJUllib7jnVTIimPTcWaRY=;
-        b=a8wukj5ImwNRsFBJXrdLXyih6zrgZoKyvNO+DhJOUQOV+xp4HnhpHvzZNZwCcTN1qi
-         8YvuqBpX9lF6Jb2jb5YYRPh6TFDwnOg58dF0iBN6V8Ofr4YgyyCEzTzasq16IcKXIfMO
-         nu9BTB3yCdhSJwuCSgMej3hfIBz22YHzO01B4r2ZcvxhVRFrZr1P97Re6EbfnUOvRJfm
-         RQE9tjcox7YxuMEsHGka17zKnrHQTJ0HALzTOsWM68nalN95fTPn15uLAIgUj4XGPSn2
-         RlXAt6Sep9JhJh7dl7NIW/wG8fXcQaoQw1F24SKTQO8Chqs0R2EZXP8jsWfK5jqmuiud
-         4nqA==
-X-Gm-Message-State: AOAM531LpwEQ0ikn5MEqEQduL5INgEQ9QlVy1PstvqxcWalLyWx1D/Z+
-        1GMTDP/NlQXVXk9lAKgANI8=
-X-Google-Smtp-Source: ABdhPJxG9zATTGdIZbGWnZXkrXcXYG+ALQRYRS5Q7pNocY8rLsBZ2LDWIYAbFg5NrkFUSjxGwDnrbQ==
-X-Received: by 2002:a05:620a:f91:: with SMTP id b17mr15627824qkn.107.1629117571707;
-        Mon, 16 Aug 2021 05:39:31 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id l14sm4754286qtj.26.2021.08.16.05.39.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 05:39:31 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 16 Aug 2021 08:39:30 -0400
-Message-Id: <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
-Cc:     "Lars-Peter Clausen" <lars@metafoo.de>,
-        "Michael Hennerich" <Michael.Hennerich@analog.com>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
-        =?utf-8?q?Nuno_S=C3=A1?= <Nuno.Sa@analog.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "linux-iio" <linux-iio@vger.kernel.org>,
-        "devicetree" <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>
-Subject: Re: [PATCH v6 3/5] iio: adc: ad7949: add vref selection support
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
-References: <20210815213309.2847711-1-liambeguin@gmail.com>
- <20210815213309.2847711-4-liambeguin@gmail.com>
- <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VNwNXBDUCMkICc2Rzv/9tnwKQF1vpl085cudEYRntr8=;
+        b=DvNmhOyTwZXt18qiYePn+GQ7ChC5MbUsc12Pn10hzYF3vpeAc23KY+3l9CopHFK3ju
+         31evWMMTJ07mxhvQSFcrqYF4RxwLPoka/VznruisfCUlknL8VHE2p5t0ifzRX65+5lo/
+         hK+DFDO5GYc8J+udRLxuSxC7HBtGbepsLd12RYF6duTtjSXaaUgSM4/NkT45uEEAfqTi
+         ze6qnRvdbRu6P04wmraHs15sAjRQqmb6UUCG2tJMh27PQir1h8aWf6g+cX8ywfht6RtL
+         E2Qi5WixKgjsHVHxBLg0cQAjZ9IGmwdaJbr6rjbJLDcs5Xa13vlwPGuUzKr34BzmIXuh
+         QAoA==
+X-Gm-Message-State: AOAM532rhr2uz7ks0rtADX1FGRPdjLWpiCtsJtAt3xwEWVuykXeJWSkX
+        X6G7wppShnCg1lshWuU5t/YgNk6SCvsyy8cllgmZtA==
+X-Google-Smtp-Source: ABdhPJwnIQS+cXgSTOG+a52nR/Nh2oBLImU+hFLKk4wPBtJQC0PSnWjuzP3Uv4Ytu64uB5g5788/5QHxin3DbwAOFZU=
+X-Received: by 2002:a67:7cc9:: with SMTP id x192mr9550967vsc.42.1629117626325;
+ Mon, 16 Aug 2021 05:40:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210816032003.1162779-1-jay.xu@rock-chips.com> <20210816032003.1162779-5-jay.xu@rock-chips.com>
+In-Reply-To: <20210816032003.1162779-5-jay.xu@rock-chips.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 16 Aug 2021 14:39:50 +0200
+Message-ID: <CAPDyKFqYPfYqmFWHy818EKam7AOk1gNs99JAy3=W5cDGeE1QrQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] soc: rockchip: io-domain: do more thing about
+ regulator notify
+To:     Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, zhangchangzhong@huawei.com,
+        Heiko Stuebner <heiko@sntech.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Aug 16, 2021 at 4:04 AM EDT, Andy Shevchenko wrote:
-> On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
-> wrote:
-> >
-> > From: Liam Beguin <lvb@xiphos.com>
-> >
-> > Add support for selecting the voltage reference from the devicetree.
-> >
-> > This change is required to get valid readings with all three
-> > vref hardware configurations supported by the ADC.
-> >
-> > For instance if the ADC isn't provided with an external reference,
-> > the sample request must specify an internal voltage reference to get a
-> > valid reading.
+On Mon, 16 Aug 2021 at 05:20, Jianqun Xu <jay.xu@rock-chips.com> wrote:
 >
-> ...
+> Do a fix to rockchip io-domain, follow this orders:
 >
-> > +       /* Setup internal voltage reference */
-> > +       tmp =3D 4096000;
-> > +       ret =3D device_property_read_u32(dev, "adi,internal-ref-microvo=
-lt", &tmp);
+> * system running state
+>   -> io-domain vsel to 3.3V
+>     -> regulator_enable
+>       -> vsel change according to regulator voltage
 >
-> > +       if (ret < 0 && ret !=3D -EINVAL) {
+> * system running state
+>   -> io-domain vsel to 3.3V
+>     -> regulator_disable
+>
+> Found on some Rockchip SoCs, the regulator enable or disable without
+> care about the io-domain maybe caused soc damaged.
 
-Hi Andy,
+Can you please try to elaborate on the problem a bit more, as I don't
+quite get the problem.
+
+What regulator is causing this problem? Who is the consumer of the regulator?
+
+Kind regards
+Uffe
 
 >
-> What does this check (second part) is supposed to mean?
-> The first part will make it mandatory, is it the goal?
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> ---
+>  drivers/soc/rockchip/io-domain.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-
-device_property_read_u32() will return -EINVAL if the property isn't
-found in the devicetree.
-
-This checks for errors when the property is defined while keeping it
-optional.
-
-Liam
-
-> > +               dev_err(dev, "invalid value for adi,internal-ref-microv=
-olt\n");
-> > +               return ret;
-> > +       }
->
+> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+> index cf8182fc3642..af5fb11ad9a3 100644
+> --- a/drivers/soc/rockchip/io-domain.c
+> +++ b/drivers/soc/rockchip/io-domain.c
+> @@ -123,6 +123,12 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
+>         } else if (event & (REGULATOR_EVENT_VOLTAGE_CHANGE |
+>                             REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE)) {
+>                 uV = (unsigned long)data;
+> +       } else if (event & REGULATOR_EVENT_PRE_ENABLE) {
+> +               uV = MAX_VOLTAGE_3_3;
+> +       } else if (event & REGULATOR_EVENT_PRE_DISABLE) {
+> +               uV = MAX_VOLTAGE_3_3;
+> +       } else if (event & REGULATOR_EVENT_ENABLE) {
+> +               uV = (unsigned long)data;
+>         } else {
+>                 return NOTIFY_OK;
+>         }
 > --
-> With Best Regards,
-> Andy Shevchenko
-
+> 2.25.1
+>
+>
+>
