@@ -2,418 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694EE3ECEA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB003ECEAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 08:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhHPG3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 02:29:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233373AbhHPG27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:28:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3CC61501;
-        Mon, 16 Aug 2021 06:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629095308;
-        bh=/I2o9z5v4c7qCCtlTJCyxsKf9WdxvH1qKT191sCE6/g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=V7mQoBuHFBuZpYblCzaW0JT3WzYN93xw2YdCtjiRJUucAjuI9uB6FFoQhbWUYt/ro
-         wT8mfyfbCpEVne9gctOKimRLwbpKD+gAwstaJXshIqCpQJEVTNuCc9I8TVF8H5X3Dk
-         VehzLoCw0hoIrMiYC0i/cacNwbD7y9wrfjDXLNEaG7kEOfQNNFgfo/nb3FSRS2Fqyy
-         pThqlAsUGCH2SzcIMLedb0rnp1oH+xuc7QSmQ2jSh8LQJy4Yob4FE8jwcXXsXBdVnA
-         y2VUw9tMFS9K5r7EqrAaEvZ3PdmkHimNzq0Mpa9X82CFrMW9pIzZXuru8Qaw5e8hAF
-         o1FreeXQ//fJg==
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce blk_alloc_mode mount option
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-References: <20210809185449.2565768-1-daeho43@gmail.com>
- <425daf77-8020-26ce-dc9f-019d9a881b78@kernel.org>
- <CACOAw_xTh_HZizaVzDNjnVswu_OQwOjzEWRNxouGtM9E5qj6Pg@mail.gmail.com>
- <071534dd-cf10-38d3-b83b-c833f9c0a70a@kernel.org>
- <CACOAw_ye4y-njHbewXsvVr3gTT4URsw7VH4HM_D_g=zntwjtdA@mail.gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <dc21e445-126d-ef74-3d09-c5a71782ed2a@kernel.org>
-Date:   Mon, 16 Aug 2021 14:28:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CACOAw_ye4y-njHbewXsvVr3gTT4URsw7VH4HM_D_g=zntwjtdA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233387AbhHPGiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 02:38:12 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59429 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230442AbhHPGiM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 02:38:12 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B0A415803F4;
+        Mon, 16 Aug 2021 02:37:40 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Mon, 16 Aug 2021 02:37:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=Y+Y8bItjRSuIneNwxBw1hKFEPXmc
+        Y/iN7ZOtGJL3Lbo=; b=SOZkP1zZ4kebx+16BqgC2h35QLRiEtZqUKLdnyVBAL2q
+        pQbit3dsS61mSZekzCyN0BC0QXaYvUw1Hve6wvtzyKKpLTSc3o6+ZbdEtoCkVljm
+        YwNpOaivlHIBya2RqdCPc4fWjK+xJfyvu8bKzZh88eNE/6bijFlkLX1C2ESOD37H
+        iP67dAgChuRx+19mK3sx23lk7iEhO5XxLDn9O7KQtUtJrI0qqZqJk+atjDLvYMOh
+        V2fQ9MIijYIu189HwELEo4arypW1PVbLQZyeGY5TWQWihemUXvd0sudxF8GKf5Dm
+        B4f4xmmhxa7FfnXsGCMqtSoIA6l2X3sSk+xOMyMomA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Y+Y8bI
+        tjRSuIneNwxBw1hKFEPXmcY/iN7ZOtGJL3Lbo=; b=t7FVMQbvBXdKASCSel4B3U
+        BRLMx3ZifZ9shiQxD1QpjiZCyD+DouCWaeNvwe0YVoZFgqbBZp1NUB4C8hq9yS4v
+        LADfoWgIhsI6phpOespB0FZMhIie655+7QjAtlb9OOLWAlNZIE1JIUWUbuiQllHU
+        uXCpo31YwASjIH6ouN/Ig0RMxWgASfz2lVswgRdRrYnkAEY69n5hpwkKU/3E/iTo
+        7LCjM0Rv3bSsM7an8NPmQTpQ0n/FVsQym1P7KbWk40lZZM5eZh4cTq/52gKBseFi
+        aOUcSXpR122CvyHzNgrMqi3qPV6viJ+RwMlDlRqLtYD3v5f/m6wIiGgrkdFhon6w
+        ==
+X-ME-Sender: <xms:sgcaYf5xBgFd8o_mUsDs8gETRxVNMcnBjYzs-KSEteXXV2IbsTA4mw>
+    <xme:sgcaYU7ZRtz_liAxsP4o8B4jUMnh_1e0G6k7ZtqX_97GmIriQi68lXuR8eER-DWDI
+    4HtC7EFMV599MKOF68>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledtgdduuddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:sgcaYWfyrmCZWgx6n7fvWRm5Fuspqk-SviX3GAJYIVJmbk9p8YTyIg>
+    <xmx:sgcaYQIsHWZb34YwarIoAh8USLQVC5SoFJvDPHj3grI_hxAMseOqkA>
+    <xmx:sgcaYTJNETr3IJ_Yd-TmRROxyBnKC7goYD0oWrKh_dKzgAJ-lN3Xsg>
+    <xmx:tAcaYUVRvfX99w0Ux9Ev7cFNZSlccnGDR8WLLZ5qTeKdOXKkgyp-6g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 97F7B51C0060; Mon, 16 Aug 2021 02:37:38 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1118-g75eff666e5-fm-20210816.002-g75eff666
+Mime-Version: 1.0
+Message-Id: <6c97e086-52f6-4f2f-8238-d9b1c24fe8da@www.fastmail.com>
+In-Reply-To: <871r6u1wlz.wl-maz@kernel.org>
+References: <20210815042525.36878-1-alyssa@rosenzweig.io>
+ <20210815042525.36878-3-alyssa@rosenzweig.io> <87a6lj17d1.wl-maz@kernel.org>
+ <8650c850-2642-4582-ae97-a95134bda3e2@www.fastmail.com>
+ <871r6u1wlz.wl-maz@kernel.org>
+Date:   Mon, 16 Aug 2021 08:37:07 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Marc Zyngier" <maz@kernel.org>
+Cc:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <kettenis@openbsd.org>,
+        "Hector Martin" <marcan@marcan.st>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] PCI: apple: Add driver for the Apple M1
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/16 12:57, Daeho Jeong wrote:
-> On Wed, Aug 11, 2021 at 5:41 AM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2021/8/11 13:41, Daeho Jeong wrote:
->>> On Tue, Aug 10, 2021 at 6:58 PM Chao Yu <chao@kernel.org> wrote:
->>>>
->>>> On 2021/8/10 2:54, Daeho Jeong wrote:
->>>>> From: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> Added a mount option to control block allocation mode for filesystem
->>>>> developer to simulate filesystem fragmentation and after-GC situation
->>>>> for experimental reasons to understand the filesystem behaviors well
->>>>
->>>> At a glance, I think this functionality can be used to initialize filesystem
->>>> status as fragmented one, which is commonly used in the first step of aging
->>>> test, in order to make filesystem fragmented, aging program needs to fill
->>>> file or block sequentially and remove them at fixed interval, that takes a
->>>> lot of time. IMO, it will be great to support this by filesystem naturally
->>>> to save time of aging filessytem, rather just for experimental reasons to
->>>> understand filesystem behavior.
->>>>
->>>
->>> Yes, that's what I meant~ :)
->>>
->>>> Maybe we can add a new mode for filesystem allocation mode except adaptive
->>>> and lfs mode, maybe "fragment" mode... :P
->>>>
->>>
->>> Sounds good~ Could you suggest the names for both blk_random and seg_random.
->>> We need seg_random mode,too, in order to simulate after-GC condition.
->>
->> mode=fragment:block and mode=fragment:segment?
->>
->>>
->>>>> under the severe condition. This supports "normal", "seg_random" and
->>>>> "blk_random:<num>" options.
->>>>>
->>>>> "normal" (default): f2fs allocates blocks in the normal way.
->>>>> "seg_random": f2fs allocates a new segment in ramdom position.
->>>>>                  With this, we can simulate the after-GC condition.
->>>>> "blk_random:<num>": We can make f2fs allocate only 1..<num> blocks
->>>>>                        in a row and forcibly change the segment randomly.
->>>>>                        With this, the newly allocated blocks will be scatter
->>>>>                        throughout the whole partition and we can simulate
->>>>>                        filesystem fragmentation condition.
->>>>>
->>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> ---
->>>>> v2: changed the <num> initialization way.
->>>>> ---
->>>>>     Documentation/filesystems/f2fs.rst | 16 ++++++++++
->>>>>     fs/f2fs/f2fs.h                     | 20 +++++++++++++
->>>>>     fs/f2fs/gc.c                       |  5 +++-
->>>>>     fs/f2fs/segment.c                  | 12 ++++++++
->>>>>     fs/f2fs/super.c                    | 47 ++++++++++++++++++++++++++++++
->>>>>     5 files changed, 99 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>>>> index ff9e7cc97c65..a0ca963fda20 100644
->>>>> --- a/Documentation/filesystems/f2fs.rst
->>>>> +++ b/Documentation/filesystems/f2fs.rst
->>>>> @@ -312,6 +312,22 @@ inlinecrypt               When possible, encrypt/decrypt the contents of encrypted
->>>>>                          Documentation/block/inline-encryption.rst.
->>>>>     atgc                         Enable age-threshold garbage collection, it provides high
->>>>>                          effectiveness and efficiency on background GC.
->>>>> +blk_alloc_mode=%s     Control block allocation mode. This is a developer option
->>>>> +                      for experiments to simulate filesystem fragmentation and
->>>>> +                      after-GC situation. The developers use this mode to understand
->>>>> +                      filesystem fragmentation and after-GC condition well, and
->>>>> +                      eventually get the insight to handle them better.
->>>>> +                      This supports "normal", "seg_random" and "blk_random:<num>" modes.
->>>>> +                      In "normal" mode (default), f2fs allocates blocks in the normal way.
->>>>> +                      In "seg_random", f2fs allocates a new segment in ramdom position.
->>>>> +                      With this, we can simulate the after-GC condition.
->>>>> +                      In "blk_random:<num>", we can make f2fs allocate only 1..<num>
->>>>> +                      blocks in a row and forcibly change the segment randomly.
->>>>> +                      You can set the <num> within 1 .. 512 number.
->>>>> +                      With this, the newly allocated blocks will be scatter throughout
->>>>> +                      the whole partition and we can simulate filesystem fragmentation
->>>>> +                      condition. Please, use this option for your experiments and we
->>>>> +                      strongly recommand a filesystem format after using this option.
->>>>>     ======================== ============================================================
->>>>>
->>>>>     Debugfs Entries
->>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>> index fccee18ab776..aed09e8c0fce 100644
->>>>> --- a/fs/f2fs/f2fs.h
->>>>> +++ b/fs/f2fs/f2fs.h
->>>>> @@ -155,6 +155,9 @@ struct f2fs_mount_info {
->>>>>         int compress_mode;                      /* compression mode */
->>>>>         unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
->>>>>         unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
->>>>> +
->>>>> +     int blk_alloc_mode;             /* block allocation mode */
->>>>> +     int blk_alloc_random_max;       /* the maximum chunk size for block random allocation mode */
->>>>>     };
->>>>>
->>>>>     #define F2FS_FEATURE_ENCRYPT                0x0001
->>>>> @@ -1740,6 +1743,8 @@ struct f2fs_sb_info {
->>>>>
->>>>>         unsigned long seq_file_ra_mul;          /* multiplier for ra_pages of seq. files in fadvise */
->>>>>
->>>>> +     int blk_alloc_remained;                 /* remained block count for this block allocation period */
->>>>> +
->>>>>     #ifdef CONFIG_F2FS_FS_COMPRESSION
->>>>>         struct kmem_cache *page_array_slab;     /* page array entry */
->>>>>         unsigned int page_array_slab_size;      /* default page array slab size */
->>>>> @@ -3619,6 +3624,21 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
->>>>>     unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
->>>>>                         unsigned int segno);
->>>>>
->>>>> +#define MIN_BLK_ALLOC_RANDOM 1
->>>>> +#define MAX_BLK_ALLOC_RANDOM 512
->>>>> +
->>>>> +enum {
->>>>> +     BLK_ALLOC_MODE_NORMAL,          /* normal block allocation mode */
->>>>> +     BLK_ALLOC_MODE_SEG_RANDOM,      /* make segment allocation random */
->>>>> +     BLK_ALLOC_MODE_BLK_RANDOM,      /* make block allocation random */
->>>>> +};
->>>>> +
->>>>> +static inline bool f2fs_need_seg_random(struct f2fs_sb_info *sbi)
->>>>> +{
->>>>> +     return F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM ||
->>>>> +             F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM;
->>>>> +}
->>>>> +
->>>>>     /*
->>>>>      * checkpoint.c
->>>>>      */
->>>>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->>>>> index 9dce44619069..571b50322e6e 100644
->>>>> --- a/fs/f2fs/gc.c
->>>>> +++ b/fs/f2fs/gc.c
->>>>> @@ -14,6 +14,7 @@
->>>>>     #include <linux/delay.h>
->>>>>     #include <linux/freezer.h>
->>>>>     #include <linux/sched/signal.h>
->>>>> +#include <linux/random.h>
->>>>>
->>>>>     #include "f2fs.h"
->>>>>     #include "node.h"
->>>>> @@ -256,7 +257,9 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
->>>>>                 p->max_search = sbi->max_victim_search;
->>>>>
->>>>>         /* let's select beginning hot/small space first in no_heap mode*/
->>>>> -     if (test_opt(sbi, NOHEAP) &&
->>>>> +     if (f2fs_need_seg_random(sbi))
->>>>> +             p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
->>>>> +     else if (test_opt(sbi, NOHEAP) &&
->>>>>                 (type == CURSEG_HOT_DATA || IS_NODESEG(type)))
->>>>>                 p->offset = 0;
->>>>>         else
->>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>> index f9b7fb785e1d..6dff2d36ad6b 100644
->>>>> --- a/fs/f2fs/segment.c
->>>>> +++ b/fs/f2fs/segment.c
->>>>> @@ -15,6 +15,7 @@
->>>>>     #include <linux/timer.h>
->>>>>     #include <linux/freezer.h>
->>>>>     #include <linux/sched/signal.h>
->>>>> +#include <linux/random.h>
->>>>>
->>>>>     #include "f2fs.h"
->>>>>     #include "segment.h"
->>>>> @@ -2587,6 +2588,8 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
->>>>>         unsigned short seg_type = curseg->seg_type;
->>>>>
->>>>>         sanity_check_seg_type(sbi, seg_type);
->>>>> +     if (f2fs_need_seg_random(sbi))
->>>>> +             return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
->>>>>
->>>>>         /* if segs_per_sec is large than 1, we need to keep original policy. */
->>>>>         if (__is_large_section(sbi))
->>>>> @@ -3150,6 +3153,15 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
->>>>>     static bool __has_curseg_space(struct f2fs_sb_info *sbi,
->>>>>                                         struct curseg_info *curseg)
->>>>>     {
->>>>> +     /* To allocate block chunks in different sizes, use random number */
->>>>> +     if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM) {
->>>>> +             if (--sbi->blk_alloc_remained < 0) {
->>>>> +                     sbi->blk_alloc_remained = prandom_u32() %
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_random_max;
->>>>> +                     return false;
->>>>> +             }
->>>>> +     }
->>>>
->>>> Why not adjusting __refresh_next_blkoff(), so we can control granularity of
->>>> allocation interval, e.g.
->>>>
->>>>           if (seg->alloc_type == SSR)
->>>>                   seg->next_blkoff =
->>>>                           __next_free_blkoff(sbi, seg->segno,
->>>>                                                   seg->next_blkoff + 1);
->>>>           else if (seg->alloc_type == LFS)
->>>>                   seg->next_blkoff++;
->>>>           else
->>>>                   seg->next_blkoff += sbi->fragment_granularity;
->>>>
->>>> Thanks,
->>>>
->>>
->>> I am not sure this is safe, is this?
->>
->> I didn't look into the details, but what I mean here is we can control
->> log header pointer directly to fragment filesystem as we expect.
->>
->>> Plus, I wanted to allocate the blocks in a chunk sized between
->>> <1..num>. This is a little bit different from what I meant.
->>
->> Ah, I see, maybe we can maintain an extra config cur_chunk_size for each
->> log header to control chunksize in fragmenting flow.
->>
->> __refresh_next_blkoff()
->>
->>          seg->next_blkoff++;
->>          seg->cur_chunk_size++;
->>          if (seg->cur_chunk_size == sbi->fragment_chunk_size) {
->>                  seg->cur_chunk_size = 0;
->>                  seg->next_blkoff += sbi->fragment_hole_size;
->>          }
->>
->> .fragment_chunk_size + .fragment_hole_size should be 1 << n (1 <= n <= 9), e.g.:
->>
->> a) data(4k) | hole(4k) | data | hole | ...
->> .fragment_chunk_size = 1
->> .fragment_hole_size = 1
->>
->> b) data(12k) | hole(4k) | data | hole | ...
->> .fragment_chunk_size = 3
->> .fragment_hole_size = 1
->>
->> c) data(4k) | hole (12k) |data | hole | ...
->> .fragment_chunk_size = 1
->> .fragment_hole_size = 3
->>
->> And we can control .fragment_chunk_size and .fragment_hole_size via sysfs?
->>
->> Thoughts?
+
+
+On Sun, Aug 15, 2021, at 18:49, Marc Zyngier wrote:
+> On Sun, 15 Aug 2021 13:33:14 +0100,
+> "Sven Peter" <sven@svenpeter.dev> wrote:
+> > 
+> > 
+> > 
+> > On Sun, Aug 15, 2021, at 09:42, Marc Zyngier wrote:
+> > > On Sun, 15 Aug 2021 05:25:25 +0100,
+> > > Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
+> > [...]
+> > > > +
+> > > > +static int apple_pcie_setup_port(struct apple_pcie *pcie, unsigned int i)
+> > > > +{
+> > > > +	struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
+> > > > +	void __iomem *port;
+> > > > +	struct gpio_desc *reset;
+> > > > +	uint32_t stat;
+> > > > +	int ret;
+> > > > +
+> > > > +	port = devm_of_iomap(pcie->dev, to_of_node(fwnode), i + 3, NULL);
+> > > > +
+> > > > +	if (IS_ERR(port))
+> > > > +		return -ENODEV;
+> > > > +
+> > > > +	reset = devm_gpiod_get_index(pcie->dev, "reset", i, 0);
+> > > > +	if (IS_ERR(reset))
+> > > > +		return PTR_ERR(reset);
+> > > > +
+> > > > +	gpiod_direction_output(reset, 0);
+> > > > +
+> > > > +	rmwl(0, PORT_APPCLK_EN, port + PORT_APPCLK);
+> > > > +
+> > > > +	ret = apple_pcie_setup_refclk(pcie->rc, port, i);
+> > > > +	if (ret < 0)
+> > > > +		return ret;
+> > > > +
+> > > > +	rmwl(0, PORT_PERST_OFF, port + PORT_PERST);
+> > > > +	gpiod_set_value(reset, 1);
+> > > > +
+> > > > +	ret = readl_poll_timeout(port + PORT_STATUS, stat,
+> > > > +				 stat & PORT_STATUS_READY, 100, 250000);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(pcie->dev, "port %u ready wait timeout\n", i);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	rmwl(PORT_REFCLK_CGDIS, 0, port + PORT_REFCLK);
+> > > > +	rmwl(PORT_APPCLK_CGDIS, 0, port + PORT_APPCLK);
+> > > > +
+> > > > +	ret = readl_poll_timeout(port + PORT_LINKSTS, stat,
+> > > > +				 !(stat & PORT_LINKSTS_BUSY), 100, 250000);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(pcie->dev, "port %u link not busy timeout\n", i);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	writel(0xfb512fff, port + PORT_INTMSKSET);
+> > > 
+> > > Magic. What is this for?
+> > 
+> > The magic comes from the original Corellium driver. It first masks everything
+> > except for the interrupts in the next line, then acks the interrupts it keeps
+> > enabled and then probably wants to wait for PORT_INT_LINK_UP (or any of the
+> > other interrupts which seem to indicate various error conditions) to fire but
+> > instead polls for PORT_LINKSTS_UP.
+> > 
+> > > 
+> > > > +
+> > > > +	writel(PORT_INT_LINK_UP | PORT_INT_LINK_DOWN | PORT_INT_AF_TIMEOUT |
+> > > > +	       PORT_INT_REQADDR_GT32 | PORT_INT_MSI_ERR |
+> > > > +	       PORT_INT_MSI_BAD_DATA | PORT_INT_CPL_ABORT |
+> > > > +	       PORT_INT_CPL_TIMEOUT | (1 << 26), port + PORT_INTSTAT);
+> > > > +
+> > > > +	usleep_range(5000, 10000);
+> > > > +
+> > > > +	rmwl(0, PORT_LTSSMCTL_START, port + PORT_LTSSMCTL);
+> > > > +
+> > > > +	ret = readl_poll_timeout(port + PORT_LINKSTS, stat,
+> > > > +				 stat & PORT_LINKSTS_UP, 100, 500000);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(pcie->dev, "port %u link up wait timeout\n", i);
+> > > > +		return ret;
+> > > > +	}
+> > > 
+> > > I have the strong feeling that a lot of things in the above is to get
+> > > an interrupt when the port reports an event. Why the polling then?
+> > 
+> > 
+> > I'm pretty sure this is true. The same registers are also used to setup
+> > and handle legacy interrupts.
+> >
+> > My current understanding is that PORT_INTSTAT is used to retrieve the fired
+> > interrupts and ack them, and PORT_INTMSK are the masked interrupts.
+> > And then PORT_INTMSKSET and PORT_INTMSKCLR can be used to manipulate
+> > individual bits of PORT_INTMSK with a single store.
 > 
-> This way, we might have some trouble when we are running out of disk space.
-> Under low free disk space, we might not be able to allocate the space this way.
-> That is the reason I went my first way.
+> So this really should be modelled as an interrupt controller. If
+> someone comes up with a bit of a spec (though the bit assignment is
+> relatively clear), I can update the interrupt code to handle
+> that. After all, I moan enough at people writing horrible PCI driver
+> code, I might as well write an example myself and point them to it.
 
-I'd like to ask what's the consideration of using this mode in a low free space
-image? After fragmentation, we go back to normal mode, right?
-
-> 
-> Do you have other thoughts for this? Otherwise, I think my first
-
-In order to fragment filesystem which has already data there, we need to
-calculate the data we need to write in fragment allocation mode, e.g.:
-
-Image size is 64G, and half of them was been used, and if we want to fragment
-the left part space with [4k valid, 4k hole] pattern, it needs to:
-
-- call F2FS_IOC_GARBAGE_COLLECT as much as possible
-- remount filesystem with -o mode=fragment:block
-- write 16G data sequentially
-- remount filesystem with -o mode=adaptive
-- do test to check how fragmentation affects performance
-
-> approach would work.
-> Giving a way to make the filesystem fragmented is also good, but I
-> think just simulating the performance drop after fragmentation might
-> be useful for most cases.
-
-IMO, we'd better do test on adaptive mode rather than fragment mode.
-
-Thoughts?
+Thanks for the offer!
+Unfortunately, what I've written above is almost everything I know about this
+hardware. If you tell me what additional details you need to know I can see
+what I'm able to figure out though and write a small summary.
 
 Thanks,
 
-> 
->>
->> Thanks,
->>
->>>
->>>
->>>>> +
->>>>>         return curseg->next_blkoff < f2fs_usable_blks_in_seg(sbi,
->>>>>                                                         curseg->segno);
->>>>>     }
->>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>> index 9ead6d2e703b..ef14f3e8b29a 100644
->>>>> --- a/fs/f2fs/super.c
->>>>> +++ b/fs/f2fs/super.c
->>>>> @@ -155,6 +155,7 @@ enum {
->>>>>         Opt_atgc,
->>>>>         Opt_gc_merge,
->>>>>         Opt_nogc_merge,
->>>>> +     Opt_blk_alloc_mode,
->>>>>         Opt_err,
->>>>>     };
->>>>>
->>>>> @@ -231,6 +232,7 @@ static match_table_t f2fs_tokens = {
->>>>>         {Opt_atgc, "atgc"},
->>>>>         {Opt_gc_merge, "gc_merge"},
->>>>>         {Opt_nogc_merge, "nogc_merge"},
->>>>> +     {Opt_blk_alloc_mode, "blk_alloc_mode=%s"},
->>>>>         {Opt_err, NULL},
->>>>>     };
->>>>>
->>>>> @@ -1173,6 +1175,40 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>>                 case Opt_nogc_merge:
->>>>>                         clear_opt(sbi, GC_MERGE);
->>>>>                         break;
->>>>> +             case Opt_blk_alloc_mode:
->>>>> +                     name = match_strdup(&args[0]);
->>>>> +                     if (!name)
->>>>> +                             return -ENOMEM;
->>>>> +                     if (!strcmp(name, "normal")) {
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
->>>>> +                                     BLK_ALLOC_MODE_NORMAL;
->>>>> +                     } else if (!strcmp(name, "seg_random")) {
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
->>>>> +                                     BLK_ALLOC_MODE_SEG_RANDOM;
->>>>> +                     } else if (!strncmp(name, "blk_random:", 11)) {
->>>>> +                             const char *num = name + 11;
->>>>> +                             long size;
->>>>> +
->>>>> +                             ret = kstrtol(num, 10, &size);
->>>>> +                             if (ret) {
->>>>> +                                     kfree(name);
->>>>> +                                     return ret;
->>>>> +                             }
->>>>> +                             if (size < MIN_BLK_ALLOC_RANDOM)
->>>>> +                                     size = MIN_BLK_ALLOC_RANDOM;
->>>>> +                             else if (size > MAX_BLK_ALLOC_RANDOM)
->>>>> +                                     size = MAX_BLK_ALLOC_RANDOM;
->>>>> +
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_mode =
->>>>> +                                     BLK_ALLOC_MODE_BLK_RANDOM;
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_random_max = size;
->>>>> +                             sbi->blk_alloc_remained = size;
->>>>> +                     } else {
->>>>> +                             kfree(name);
->>>>> +                             return -EINVAL;
->>>>> +                     }
->>>>> +                     kfree(name);
->>>>> +                     break;
->>>>>                 default:
->>>>>                         f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
->>>>>                                  p);
->>>>> @@ -1919,6 +1955,14 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>>>         else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_NOBARRIER)
->>>>>                 seq_printf(seq, ",fsync_mode=%s", "nobarrier");
->>>>>
->>>>> +     if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_NORMAL)
->>>>> +             seq_printf(seq, ",blk_alloc_mode=%s", "normal");
->>>>> +     else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM)
->>>>> +             seq_printf(seq, ",blk_alloc_mode=%s", "seg_random");
->>>>> +     else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM)
->>>>> +             seq_printf(seq, ",blk_alloc_mode=%s:%d", "blk_random",
->>>>> +                             F2FS_OPTION(sbi).blk_alloc_random_max);
->>>>> +
->>>>>     #ifdef CONFIG_F2FS_FS_COMPRESSION
->>>>>         f2fs_show_compress_options(seq, sbi->sb);
->>>>>     #endif
->>>>> @@ -1947,6 +1991,9 @@ static void default_options(struct f2fs_sb_info *sbi)
->>>>>         F2FS_OPTION(sbi).compress_ext_cnt = 0;
->>>>>         F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
->>>>>         F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
->>>>> +     F2FS_OPTION(sbi).blk_alloc_mode = BLK_ALLOC_MODE_NORMAL;
->>>>> +     F2FS_OPTION(sbi).blk_alloc_random_max = MAX_BLK_ALLOC_RANDOM;
->>>>> +     sbi->blk_alloc_remained = MAX_BLK_ALLOC_RANDOM;
->>>>>
->>>>>         sbi->sb->s_flags &= ~SB_INLINECRYPT;
->>>>>
->>>>>
+
+Sven
