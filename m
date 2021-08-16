@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DA83EDAD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C703EDAD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhHPQWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhHPQWm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:22:42 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364A9C061764;
-        Mon, 16 Aug 2021 09:22:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 86B9B1F412B4
-Received: by earth.universe (Postfix, from userid 1000)
-        id B35603C0C9B; Mon, 16 Aug 2021 18:22:07 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 18:22:07 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v6 05/12] dt-bindings: power: supply: smb347-charger:
- Document USB VBUS regulator
-Message-ID: <20210816162207.v4ka4vtuajf5jpb6@earth.universe>
-References: <20210731173842.19643-1-digetx@gmail.com>
- <20210731173842.19643-6-digetx@gmail.com>
- <20210806211314.sfjl5jke27hz3jj7@earth.universe>
- <dce19bb0-216e-bcd7-3db5-b2c074b4ca47@gmail.com>
+        id S229884AbhHPQYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhHPQYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 12:24:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AA9460C3F;
+        Mon, 16 Aug 2021 16:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629131038;
+        bh=DlztwX6oGEQpC8Ajn6PZ26PnFSBBm+842Su7RTqdRKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Si6+slpIeoPw2dog7qoMFzg6J3sl9xGm8OxFOo3j8Ul6Va2OD2jh8XizOLCR+Mpbt
+         gaanA2Ik5a6e04xh+owwTujAiLdwpD2Xex1Eu1d1mXOjHUG4iewbItPJZ2WZyukk7m
+         5d1LZmd63U39n/tetSOSfSaiSyMnneqkBy8FAAf3YyEwruXlRvd31yVzZn1ez6hD0d
+         ecAc/Dpy1OdiqSvw4k5gQ+h9yv1f5xIKM23xLGG4DcRDvgsHARqED4BT6m+AWUYSmR
+         pElw4xJ8GH6AgBPW8yLIRkw6v7ijKqH4eT4T45AswqszVKi0bCYX4gJYGta6sNKRqR
+         +pyW0FuTSK9SQ==
+Received: by pali.im (Postfix)
+        id E3E24949; Mon, 16 Aug 2021 18:23:55 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 18:23:55 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Guillaume Nault <gnault@redhat.com>
+Cc:     James Carlson <carlsonj@workingcode.com>,
+        Chris Fowler <cfowler@outpostsentinel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-ppp@vger.kernel.org" <linux-ppp@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
+ ppp unit id
+Message-ID: <20210816162355.7ssd53lrpclfvuiz@pali>
+References: <BN0P223MB0327A247724B7AE211D2E84EA7F79@BN0P223MB0327.NAMP223.PROD.OUTLOOK.COM>
+ <20210810171626.z6bgvizx4eaafrbb@pali>
+ <2f10b64e-ba50-d8a5-c40a-9b9bd4264155@workingcode.com>
+ <20210811173811.GE15488@pc-32.home>
+ <20210811180401.owgmie36ydx62iep@pali>
+ <20210812092847.GB3525@pc-23.home>
+ <20210812134845.npj3m3vzkrmhx6uy@pali>
+ <20210812182645.GA10725@pc-23.home>
+ <20210812190440.fknfthdk3mazm6px@pali>
+ <20210816161114.GA3611@pc-32.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="erjfwqt7yl2kd7cr"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <dce19bb0-216e-bcd7-3db5-b2c074b4ca47@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210816161114.GA3611@pc-32.home>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 16 August 2021 18:11:14 Guillaume Nault wrote:
+> On Thu, Aug 12, 2021 at 09:04:40PM +0200, Pali Rohár wrote:
+> > The point here is that there is application (pppd) which allows
+> > specifying custom unit id as an option argument. Also it allows to call
+> > external applications (at some events) with sharing file descriptors.
+> > And it is one of the options how to touch part of ppp connection via
+> > external scripts / applications. You start pppd for /dev/ttyUSB<N> with
+> > unit id <N> and then in external script you use <N> for ioctls. And I do
+> > not know if there is a way how to retrieve unit id in those external
+> > scripts. There was already discussion about marking all file descriptors
+> > in pppd as close-on-exec and it was somehow rejected as it will broke
+> > custom scripts / applications which pppd invokes on events. So looks
+> > like that people are using these "features" of pppd.
+> 
+> Potential external pppd scripts, that depend on the unit id, may be a
+> valid use case for letting the netlink api define this identifier (if
+> pppd ever gets netlink support).
+> 
+> > Option "unit" in pppd specifies ppp unit id. And if new API (rtnl) would
+> > not provide equivalent for allowing to specify it then migrating pppd
+> > from ioctl to rtnl is not possible without breaking compatibility.
+> > 
+> > As you already described, we can simulate setting default interface name
+> > in pppd application. But above usage or any other which expose pppd API
+> > to other application is not possible to simulate.
+> 
+> If the pppd project is interested in adding support for the netlink
+> api, then I'm fine with adding this feature. I just want to make sure
+> that it'll have a real world use case.
+> 
+> > So I think we need to first decide or solve issue if rtnl ppp API should
+> > provide same functionality as ioctl ppp API. If answer is yes, then some
+> > kind of specifying custom ppp unit id is required. If answer is no (e.g.
+> > because we do not want ppp unit id in rtnl API as it looks legacy and
+> > has issues) then rtnl ppp API cannot be used by ppp as it cannot provide
+> > all existing / supported features without breaking legacy compatibility.
+> > 
+> > I see pros & cons for both answers. Not supporting legacy code paths in
+> > new code/API is the way how to clean up code and prevent repeating old
+> > historic issues. But if new code/API is not fully suitable for pppd --
+> > which is de-facto standard Linux userspace implementation -- does it
+> > make sense to have it? Or does it mean to also implement new userspace
+> > part of implementation (e.g. pppd2) to avoid these legacy / historic
+> > issues? Or... is not whole ppp protocol just legacy part of our history
+> > which should not be used in new modern setups? And for "legacy usage" is
+> > current implementation enough and it does not make sense to invest time
+> > into this area? I cannot answer to these questions, but I think it is
+> > something quite important as it can show what should be direction and
+> > future of ppp subsystem.
+> 
+> PPP isn't legacy, but very few people are interested in working on and
+> maintaining the code.
+> 
+> Do you have plans for adding netlink support to pppd? If so, is the
+> project ready to accept such code?
 
---erjfwqt7yl2kd7cr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I have already some WIP code and I'm planning to send a pull
+request to pppd on github for it. I guess that it could be accepted,
+specially if there still would be backward compatibility via ioctl for
+kernels which do not support rtnl API. One of the argument which can be
+used why rtnl API is better, is fixing issue: atomic creating of
+interface with specific name.
 
-Hi,
+But pppd is maintained by Paul (already in loop), so I hope we could
+hear some feedback.
 
-On Mon, Aug 16, 2021 at 06:39:09PM +0300, Dmitry Osipenko wrote:
-> 07.08.2021 00:13, Sebastian Reichel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Hi,
-> >=20
-> > On Sat, Jul 31, 2021 at 08:38:35PM +0300, Dmitry Osipenko wrote:
-> >> SMB347 can supply power to USB VBUS, which is required by OTG-cable
-> >> devices that want to switch USB port into the host mode. Add USB VBUS
-> >> regulator properties.
-> >>
-> >> Reviewed-by: Rob Herring <robh@kernel.org>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >=20
-> > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->=20
-> Sebastian, you can pick up these patches into the power tree:
->=20
-> dt-bindings: power: supply: smb347-charger: Document USB VBUS
-> regulator
-> power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
-> power: supply: smb347-charger: Utilize generic regmap caching
-> power: supply: smb347-charger: Add missing pin control activation
-> power: supply: smb347-charger: Implement USB VBUS regulator
->=20
-> The reset of the patches could go via the Tegra tree. It's probably a
-> bit too late for the Tegra patches since Thierry already made 5.15 PR,
-> but should be fine for the power. Thanks in advance!
-
-Queued now.
-
--- Sebastian
-
---erjfwqt7yl2kd7cr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEakJ8ACgkQ2O7X88g7
-+ppCOA//Uim7ycc5jXS9N7YcXL7DOj+86gG/dde8tv/tLAtvEWcyZvRNsJqO/P4q
-jF8rSsiOytZ6PZi7swIU+/lBUIs2sVAY55+GGFAxMAf8ZVWu4b0hUHiMdrCAL3BZ
-CCRP5NNT8HNQOetJ5Xt8zjpiBCZFy5OXim+F+JQF8w9H23co7DS1Fx2IjWJwulAF
-5uwxEB5Hy9FxosI97g7LFKR37Qe2NwNNSxW3q9wDRqNri5HP64frhOut/tT6Wnmn
-t1S1WD9m/JsP1QA9cofXKKF9enhXCdzLnDEWUqcZZol3cDm+LGsMdAnHCPmcsfJ+
-iQpIXtJec6je5pPQpd9nbS/UlriErZSfoGEKrnIVTYLV+qOI+gY1Y0bt33HgChBy
-LOnmVUTuBxGD2Za1pPray1bEeAV5hQI+H5BtWqar5Dk/xFsBMFMnxWymQn/bkD7j
-GzI0daxC2IAaSIexsfoPnv1gM6DMrlV1Zuv1rpmaT3r/XV3Pk+FgnGifwW9R3CEW
-KrDTTTKe48TxtNv92B+8WynRN1y2YBhAjuPtyvBOgVe7ohbphWAqjdYX+dBBi2mC
-kjWfXAMTunUjnIkO3ik06UsC+h8+WMKwIwNb3zLbsp0COv91+bZi/O/gaQokvqmU
-OTEYff6rwW/cuLzKptXhEwT61Q52jdbS44NSBcFv/kpLC9vgVwQ=
-=AMiA
------END PGP SIGNATURE-----
-
---erjfwqt7yl2kd7cr--
+> BTW, sorry for the delay.
+> 
