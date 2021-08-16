@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D418C3ED640
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD6A3ED748
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239500AbhHPNTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
+        id S240056AbhHPNao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:30:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhHPNKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C88D604DC;
-        Mon, 16 Aug 2021 13:09:46 +0000 (UTC)
+        id S239287AbhHPNSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:18:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACA3963299;
+        Mon, 16 Aug 2021 13:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119387;
-        bh=o1+X27DbvoZN7vkGa0UwvzPJCnhRGyktF6o2yPyzFsY=;
+        s=korg; t=1629119673;
+        bh=OTIXAMB6dCGEU/8rRAr0ViwN3O0QNHXD46z4RovXdLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B6ziLKigULLq0fwDVVG5a71dMXYDnSWNz9xmQWQIHeq7jcd1rZNtT4o8tyIfSuEd/
-         6xqwS2vRsDOkhlC3jUxzckPnagxw4QLh/hbVKmj9ICg2krlncKMj9h2VWqzIeUdbQq
-         m8AqaqzXkXew5yXSnt73uSpFHaJYn7TIrl4oSAwY=
+        b=r1L7zo96/Bz7q7nugFFRfMgKHHBR+YcJK/c8bobQsN9aF7/kMsL2wJenG2iA6Ld6m
+         JJBRHG+2BNd03tP80kJZ7OjVIEnaLQcVMNfcGiXfyHXGu+fRBTF7r0/r4fh4wRFUKc
+         ZFd6io9VkNOqCsgwtSy7Ny/Gfa4NMkCOd+zkz/cU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pawe=C5=82=20Szulik?= <pawel.szulik@intel.com>,
-        Babu Moger <Babu.Moger@amd.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH 5.10 76/96] x86/resctrl: Fix default monitoring groups reporting
-Date:   Mon, 16 Aug 2021 15:02:26 +0200
-Message-Id: <20210816125437.515264570@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 117/151] efi/libstub: arm64: Relax 2M alignment again for relocatable kernels
+Date:   Mon, 16 Aug 2021 15:02:27 +0200
+Message-Id: <20210816125447.923391116@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,122 +40,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <Babu.Moger@amd.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 064855a69003c24bd6b473b367d364e418c57625 upstream.
+[ Upstream commit 3a262423755b83a5f85009ace415d6e7f572dfe8 ]
 
-Creating a new sub monitoring group in the root /sys/fs/resctrl leads to
-getting the "Unavailable" value for mbm_total_bytes and mbm_local_bytes
-on the entire filesystem.
+Commit 82046702e288 ("efi/libstub/arm64: Replace 'preferred' offset with
+alignment check") simplified the way the stub moves the kernel image
+around in memory before booting it, given that a relocatable image does
+not need to be copied to a 2M aligned offset if it was loaded on a 64k
+boundary by EFI.
 
-Steps to reproduce:
+Commit d32de9130f6c ("efi/arm64: libstub: Deal gracefully with
+EFI_RNG_PROTOCOL failure") inadvertently defeated this logic by
+overriding the value of efi_nokaslr if EFI_RNG_PROTOCOL is not
+available, which was mistaken by the loader logic as an explicit request
+on the part of the user to disable KASLR and any associated relocation
+of an Image not loaded on a 2M boundary.
 
-  1. mount -t resctrl resctrl /sys/fs/resctrl/
+So let's reinstate this functionality, by capturing the value of
+efi_nokaslr at function entry to choose the minimum alignment.
 
-  2. cd /sys/fs/resctrl/
-
-  3. cat mon_data/mon_L3_00/mbm_total_bytes
-     23189832
-
-  4. Create sub monitor group:
-  mkdir mon_groups/test1
-
-  5. cat mon_data/mon_L3_00/mbm_total_bytes
-     Unavailable
-
-When a new monitoring group is created, a new RMID is assigned to the
-new group. But the RMID is not active yet. When the events are read on
-the new RMID, it is expected to report the status as "Unavailable".
-
-When the user reads the events on the default monitoring group with
-multiple subgroups, the events on all subgroups are consolidated
-together. Currently, if any of the RMID reads report as "Unavailable",
-then everything will be reported as "Unavailable".
-
-Fix the issue by discarding the "Unavailable" reads and reporting all
-the successful RMID reads. This is not a problem on Intel systems as
-Intel reports 0 on Inactive RMIDs.
-
-Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
-Reported-by: Paweł Szulik <pawel.szulik@intel.com>
-Signed-off-by: Babu Moger <Babu.Moger@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213311
-Link: https://lkml.kernel.org/r/162793309296.9224.15871659871696482080.stgit@bmoger-ubuntu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: d32de9130f6c ("efi/arm64: libstub: Deal gracefully with EFI_RNG_PROTOCOL failure")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Tested-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c |   27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ drivers/firmware/efi/libstub/arm64-stub.c | 28 +++++++++++------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -222,15 +222,14 @@ static u64 mbm_overflow_count(u64 prev_m
- 	return chunks >>= shift;
+diff --git a/drivers/firmware/efi/libstub/arm64-stub.c b/drivers/firmware/efi/libstub/arm64-stub.c
+index 3698c1ce2940..6f214c9c303e 100644
+--- a/drivers/firmware/efi/libstub/arm64-stub.c
++++ b/drivers/firmware/efi/libstub/arm64-stub.c
+@@ -79,18 +79,6 @@ static bool check_image_region(u64 base, u64 size)
+ 	return ret;
  }
  
--static int __mon_event_count(u32 rmid, struct rmid_read *rr)
-+static u64 __mon_event_count(u32 rmid, struct rmid_read *rr)
- {
- 	struct mbm_state *m;
- 	u64 chunks, tval;
+-/*
+- * Although relocatable kernels can fix up the misalignment with respect to
+- * MIN_KIMG_ALIGN, the resulting virtual text addresses are subtly out of
+- * sync with those recorded in the vmlinux when kaslr is disabled but the
+- * image required relocation anyway. Therefore retain 2M alignment unless
+- * KASLR is in use.
+- */
+-static u64 min_kimg_align(void)
+-{
+-	return efi_nokaslr ? MIN_KIMG_ALIGN : EFI_KIMG_ALIGN;
+-}
+-
+ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 				 unsigned long *image_size,
+ 				 unsigned long *reserve_addr,
+@@ -101,6 +89,16 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 	unsigned long kernel_size, kernel_memsize = 0;
+ 	u32 phys_seed = 0;
  
- 	tval = __rmid_read(rmid, rr->evtid);
- 	if (tval & (RMID_VAL_ERROR | RMID_VAL_UNAVAIL)) {
--		rr->val = tval;
--		return -EINVAL;
-+		return tval;
- 	}
- 	switch (rr->evtid) {
- 	case QOS_L3_OCCUP_EVENT_ID:
-@@ -242,12 +241,6 @@ static int __mon_event_count(u32 rmid, s
- 	case QOS_L3_MBM_LOCAL_EVENT_ID:
- 		m = &rr->d->mbm_local[rmid];
- 		break;
--	default:
--		/*
--		 * Code would never reach here because
--		 * an invalid event id would fail the __rmid_read.
--		 */
--		return -EINVAL;
- 	}
- 
- 	if (rr->first) {
-@@ -297,23 +290,29 @@ void mon_event_count(void *info)
- 	struct rdtgroup *rdtgrp, *entry;
- 	struct rmid_read *rr = info;
- 	struct list_head *head;
-+	u64 ret_val;
- 
- 	rdtgrp = rr->rgrp;
- 
--	if (__mon_event_count(rdtgrp->mon.rmid, rr))
--		return;
-+	ret_val = __mon_event_count(rdtgrp->mon.rmid, rr);
- 
- 	/*
--	 * For Ctrl groups read data from child monitor groups.
-+	 * For Ctrl groups read data from child monitor groups and
-+	 * add them together. Count events which are read successfully.
-+	 * Discard the rmid_read's reporting errors.
- 	 */
- 	head = &rdtgrp->mon.crdtgrp_list;
- 
- 	if (rdtgrp->type == RDTCTRL_GROUP) {
- 		list_for_each_entry(entry, head, mon.crdtgrp_list) {
--			if (__mon_event_count(entry->mon.rmid, rr))
--				return;
-+			if (__mon_event_count(entry->mon.rmid, rr) == 0)
-+				ret_val = 0;
- 		}
- 	}
++	/*
++	 * Although relocatable kernels can fix up the misalignment with
++	 * respect to MIN_KIMG_ALIGN, the resulting virtual text addresses are
++	 * subtly out of sync with those recorded in the vmlinux when kaslr is
++	 * disabled but the image required relocation anyway. Therefore retain
++	 * 2M alignment if KASLR was explicitly disabled, even if it was not
++	 * going to be activated to begin with.
++	 */
++	u64 min_kimg_align = efi_nokaslr ? MIN_KIMG_ALIGN : EFI_KIMG_ALIGN;
 +
-+	/* Report error if none of rmid_reads are successful */
-+	if (ret_val)
-+		rr->val = ret_val;
- }
+ 	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
+ 		if (!efi_nokaslr) {
+ 			status = efi_get_random_bytes(sizeof(phys_seed),
+@@ -130,7 +128,7 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 		 * If KASLR is enabled, and we have some randomness available,
+ 		 * locate the kernel at a randomized offset in physical memory.
+ 		 */
+-		status = efi_random_alloc(*reserve_size, min_kimg_align(),
++		status = efi_random_alloc(*reserve_size, min_kimg_align,
+ 					  reserve_addr, phys_seed);
+ 	} else {
+ 		status = EFI_OUT_OF_RESOURCES;
+@@ -139,7 +137,7 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 	if (status != EFI_SUCCESS) {
+ 		if (!check_image_region((u64)_text, kernel_memsize)) {
+ 			efi_err("FIRMWARE BUG: Image BSS overlaps adjacent EFI memory region\n");
+-		} else if (IS_ALIGNED((u64)_text, min_kimg_align())) {
++		} else if (IS_ALIGNED((u64)_text, min_kimg_align)) {
+ 			/*
+ 			 * Just execute from wherever we were loaded by the
+ 			 * UEFI PE/COFF loader if the alignment is suitable.
+@@ -150,7 +148,7 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 		}
  
- /*
+ 		status = efi_allocate_pages_aligned(*reserve_size, reserve_addr,
+-						    ULONG_MAX, min_kimg_align());
++						    ULONG_MAX, min_kimg_align);
+ 
+ 		if (status != EFI_SUCCESS) {
+ 			efi_err("Failed to relocate kernel\n");
+-- 
+2.30.2
+
 
 
