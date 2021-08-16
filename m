@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE683ED4DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D350C3ED5B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhHPNFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S238031AbhHPNNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:13:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237059AbhHPNFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC6061A7A;
-        Mon, 16 Aug 2021 13:04:36 +0000 (UTC)
+        id S239058AbhHPNJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88283632AB;
+        Mon, 16 Aug 2021 13:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119077;
-        bh=QLywhIFywpWEbX+dsv5bULDj7Qr/eK9d1Tt5jUC5M00=;
+        s=korg; t=1629119302;
+        bh=KYCo+phnvH1Oz3lVEGMTKrqdvNqc12keM+9c2k4jccI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xsg20tCAHBYu57Ce18hcvzvx5ej66n4XD04w4qoKX8r3cyJNW78FHspiwZh3JDVg9
-         7YWwQifcppyqpNfWxZkw7O8y431zFwZNwfpZ5b9kGeWIf0WfHrahFhUT77cHADMj7E
-         Wafq/nHwshn7BMhWuiar6RwfJV4CqcLBiZh03cbw=
+        b=XraaSKryrLCOcGVeCZnkm2FKV4bEKYN9XYkbBf17FN7X1DMawhotDcCnSeqa6/nUK
+         RxpopaRahQTkZhf00/mwGpZ8ufwrnsmZquc64CxINXMKSiolpJEuXsEA96VMCkgATA
+         36w8a7usfqnLlG939MAbwA+SvxCgBQWq9l3/rDHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Robin=20G=C3=B6gge?= <r.goegge@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/62] ASoC: cs42l42: Remove duplicate control for WNF filter frequency
+Subject: [PATCH 5.10 37/96] libbpf: Fix probe for BPF_PROG_TYPE_CGROUP_SOCKOPT
 Date:   Mon, 16 Aug 2021 15:01:47 +0200
-Message-Id: <20210816125428.707073382@linuxfoundation.org>
+Message-Id: <20210816125436.193246155@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Robin Gögge <r.goegge@googlemail.com>
 
-[ Upstream commit 8b353bbeae20e2214c9d9d88bcb2fda4ba145d83 ]
+[ Upstream commit 78d14bda861dd2729f15bb438fe355b48514bfe0 ]
 
-The driver was defining two ALSA controls that both change the same
-register field for the wind noise filter corner frequency. The filter
-response has two corners, at different frequencies, and the duplicate
-controls most likely were an attempt to be able to set the value using
-either of the frequencies.
+This patch fixes the probe for BPF_PROG_TYPE_CGROUP_SOCKOPT,
+so the probe reports accurate results when used by e.g.
+bpftool.
 
-However, having two controls changing the same field can be problematic
-and it is unnecessary. Both frequencies are related to each other so
-setting one implies exactly what the other would be.
-
-Removing a control affects user-side code, but there is currently no
-known use of the removed control so it would be best to remove it now
-before it becomes a problem.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Link: https://lore.kernel.org/r/20210803160834.9005-2-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 4cdbfb59c44a ("libbpf: support sockopt hooks")
+Signed-off-by: Robin Gögge <r.goegge@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Link: https://lore.kernel.org/bpf/20210728225825.2357586-1-r.goegge@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ tools/lib/bpf/libbpf_probes.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 032ec4bd060b..eb37f88f8233 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -423,15 +423,6 @@ static SOC_ENUM_SINGLE_DECL(cs42l42_wnf3_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
- 			    CS42L42_ADC_WNF_CF_SHIFT,
- 			    cs42l42_wnf3_freq_text);
- 
--static const char * const cs42l42_wnf05_freq_text[] = {
--	"280Hz", "315Hz", "350Hz", "385Hz",
--	"420Hz", "455Hz", "490Hz", "525Hz"
--};
--
--static SOC_ENUM_SINGLE_DECL(cs42l42_wnf05_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
--			    CS42L42_ADC_WNF_CF_SHIFT,
--			    cs42l42_wnf05_freq_text);
--
- static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	/* ADC Volume and Filter Controls */
- 	SOC_SINGLE("ADC Notch Switch", CS42L42_ADC_CTL,
-@@ -449,7 +440,6 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_ADC_HPF_EN_SHIFT, true, false),
- 	SOC_ENUM("HPF Corner Freq", cs42l42_hpf_freq_enum),
- 	SOC_ENUM("WNF 3dB Freq", cs42l42_wnf3_freq_enum),
--	SOC_ENUM("WNF 05dB Freq", cs42l42_wnf05_freq_enum),
- 
- 	/* DAC Volume and Filter Controls */
- 	SOC_SINGLE("DACA Invert Switch", CS42L42_DAC_CTL1,
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 5482a9b7ae2d..d38284a3aaf0 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -75,6 +75,9 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+ 		xattr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
+ 		break;
++	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
++		xattr.expected_attach_type = BPF_CGROUP_GETSOCKOPT;
++		break;
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+ 		xattr.expected_attach_type = BPF_SK_LOOKUP;
+ 		break;
+@@ -104,7 +107,6 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 	case BPF_PROG_TYPE_SK_REUSEPORT:
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+-	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+ 	case BPF_PROG_TYPE_TRACING:
+ 	case BPF_PROG_TYPE_STRUCT_OPS:
+ 	case BPF_PROG_TYPE_EXT:
 -- 
 2.30.2
 
