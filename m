@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95CB3ED0AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0BB3ED0B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 10:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbhHPIxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 04:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235199AbhHPIxr (ORCPT
+        id S235014AbhHPI6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 04:58:11 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:48652 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhHPI6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 04:53:47 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA7EC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:53:16 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id oa17so25393884pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 01:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wediW2rQNAFGcxyFW6VD+CmiCi3BD219aCF7GpyjEEU=;
-        b=TmQlHO6/pVnUytiENEwc9/8WzC/lixrLcEqbj1EIxba1GAR++VeY3wXSuU6BTINntx
-         2XYEnMQ01HvHhvYdpyTQ/jKmWx4aAhFeKavsMqE73VhuD1EWjG3ubdyl0AhnUR+nV2Gw
-         gt2mMvb1hEezGPu5pLYPY/L4qLXOVG1nRcUss9TS+ItzU91gtWGIexxeQJVXayQa9aRK
-         eN6BnEiWlF11bJghxEKyWqslxkayWAF/WVyM2Cp6k6n8evqw2oMWDxfUVQ7QWmcSR+nd
-         oaPawBMpQ4W5RHk6Bzx4GQZoBmYbQWqeex3e8uzUe7p1lkqQuXkl2PNI3N1XY2XhsUvZ
-         q9Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wediW2rQNAFGcxyFW6VD+CmiCi3BD219aCF7GpyjEEU=;
-        b=Y9rYdV21QuXh9aXzWcsSh4s/fcMqULAiu8YGCQtE2kHKVN0ExPCr2wAozg1AKcgJVn
-         UVQbYQwcmC8uohDk6JMA2ui190idNswAM/D/k+D2LSulE2V/kTKjn3LUJwRNmIz16tbz
-         5rAytbjAaAr1X274DlfqnMwDgxCRhtoP5ChgmDsnhLLC73Z6FsCEaNqrz4bGpGE0sEOh
-         Vdl23xkVAJU46eEFcmUU36gPDji0iDUzag57b/CuMEcri00b4MX9HHbxNlvRTRheWh/o
-         h2uuMYUUa66W8smmZFG8J2dQLF1AmbW2Vpsbw+F/kFS+lUxNIMJuDhhnN1CJ4m2U0LVc
-         vY6A==
-X-Gm-Message-State: AOAM533VrCamY6nIvDbZbdn7RMMc19Kbs11bxU52NWtXZ2yQYGianvmw
-        0fjmvIkecUVAzClwb+MLyCo=
-X-Google-Smtp-Source: ABdhPJwjtmkAuRRMKifOjbWX4QIGY38V894IQNCB/ZBdw4UZQeT6CTo+O+ko0QSFGwf7xXgopNsdmQ==
-X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr16584952pju.127.1629103995604;
-        Mon, 16 Aug 2021 01:53:15 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id i11sm10448056pfo.29.2021.08.16.01.53.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 01:53:15 -0700 (PDT)
-Subject: Re: [PATCH v2] drm: avoid races with modesetting rights
-To:     kernel test robot <lkp@intel.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     kbuild-all@lists.01.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org
-References: <20210815153740.195330-1-desmondcheongzx@gmail.com>
- <202108160208.ONHHWxXy-lkp@intel.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <f88fe698-b40c-b309-96c2-32b314280aad@gmail.com>
-Date:   Mon, 16 Aug 2021 16:53:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 16 Aug 2021 04:58:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1629104258; x=1660640258;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kDfDdf720Lw4cE03NwUXgTqylizJCbBg1dQhcEVXHd4=;
+  b=JUZPrPM4yGQE6S1Dr4b3T9nyavnTy2TduC365TT5cb/TLo6yBlDeQy3U
+   f7nzeCzKzRHhyaaVRP8Fo9MutrVzQ3AyMNTjydHoUCIxIUzENrPiDWJsT
+   uJXZOzhmj35Pz4q3D2AlEGj3/79XUBWRaf6qLAFN3PMzub8YhK+693OZ5
+   PQAGb1EhNS2YhGPmonGs8EfrI1Bl80vzmJROCG3LEzsqKGgKrHgrZL05p
+   oanFLlTOk2XDHphzZnLPQtzGxqq8uDft+He2y+ef14fBd0dvjG5h4zKU9
+   flRcO8s4FxwNXFDnazSEp+6ZNiuKSNb1SUilr0Kt5PTBPOYrr0i9Ophwp
+   g==;
+IronPort-SDR: WWI1Uyx6+4+coBKi80K2oNe/PNI/mOuWyCriBFo27YSNg8M4IHR8Z0yv6at47sm44Nfc0/pd/6
+ Jah9ZbPMVQdPLzx42BGo107Yeds/u5iev0wN9rN2R9S4O+PI249u3ZLodM1kgaR3mf/5JAEoRn
+ VzkAxZnK/iZIyUgvEd0v962ETp5Gu2KIFxvOeTPplqW6s4rqF0LuW3Thk9uSAlw2j+4YAAI5wx
+ TBoSWTjpwMEyEUIznZ5RByxwETw6/QnJ+r5qZOG1ja2PKxY9XblqYIdMFsH5jynyN8tyH/AnA8
+ +fRLbDjt3fywo2DOIJD/482P
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="125916694"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Aug 2021 01:57:37 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 16 Aug 2021 01:57:37 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 16 Aug 2021 01:57:33 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <ulf.hansson@linaro.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/4] mmc: pwrseq: sd8787: add support wilc1000 devices
+Date:   Mon, 16 Aug 2021 11:55:26 +0300
+Message-ID: <20210816085530.1723402-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <202108160208.ONHHWxXy-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/8/21 2:47 am, kernel test robot wrote:
-> Hi Desmond,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on next-20210813]
-> [also build test ERROR on v5.14-rc5]
-> [cannot apply to linus/master v5.14-rc5 v5.14-rc4 v5.14-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
-> base:    4b358aabb93a2c654cd1dcab1a25a589f6e2b153
-> config: i386-randconfig-a004-20210815 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->          # https://github.com/0day-ci/linux/commit/cf6d8354b7d7953cd866fad004cbb189adfa074f
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Desmond-Cheong-Zhi-Xi/drm-avoid-races-with-modesetting-rights/20210815-234145
->          git checkout cf6d8354b7d7953cd866fad004cbb189adfa074f
->          # save the attached .config to linux build tree
->          make W=1 ARCH=i386
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
->>> ERROR: modpost: "task_work_add" [drivers/gpu/drm/drm.ko] undefined!
-> 
+Hi,
 
-I'm a bit uncertain about this. Looking into the .config used, this 
-error seems to happen because task_work_add isn't an exported symbol, 
-but DRM is being compiled as a loadable kernel module (CONFIG_DRM=m).
+This series adds support for WILC1000 devices on pwrseq-sd8787 driver.
+WILC1000 devices needs a minimum delay of 5ms b/w reset and power lines.
+Adapt the sd8787 driver for this by adding a new compatible for WILC1000
+devices and specify the delay on .data field of struct of_device_id.
 
-One way to deal with this is to export the symbol, but there was a 
-proposed patch to do this a few months back that wasn't picked up [1], 
-so I'm not sure what to make of this.
+Thank you,
+Claudiu Beznea
 
-I'll export the symbol as part of a v3 series, and check in with the 
-task-work maintainers.
+Changes in v2:
+- changed cover letter title (it was: mmc: pwrseq: sd8787: add support
+  for selectable)
+- use new compatible in pwrseq-sd8787 driver instead of adding a new
+  binding for specifying the delay; with this, the patch 1/1 from v1 is
+  not necessary
+- adapt patch 3/3 from this version with the new compatible
 
-Link: 
-https://lore.kernel.org/lkml/20210127150029.13766-3-joshi.k@samsung.com/ [1]
+Claudiu Beznea (3):
+  dt-bindings: pwrseq-sd8787: add binding for wilc1000
+  mmc: pwrseq: sd8787: add support for wilc1000
+  mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Eugen Hristev (1):
+  ARM: dts: at91: sama5d27_wlsom1: add wifi device
+
+ .../bindings/mmc/mmc-pwrseq-sd8787.yaml       |  4 +-
+ arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi   | 71 +++++++++++++++++++
+ drivers/mmc/core/Kconfig                      |  2 +-
+ drivers/mmc/core/pwrseq_sd8787.c              | 11 ++-
+ 4 files changed, 84 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
 
