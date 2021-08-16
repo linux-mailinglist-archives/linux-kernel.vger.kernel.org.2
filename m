@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66373ED44E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B5C3ED44B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhHPMtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S230106AbhHPMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhHPMtk (ORCPT
+        with ESMTP id S229716AbhHPMtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:49:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8909AC061764;
-        Mon, 16 Aug 2021 05:49:08 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso27455064pjb.1;
-        Mon, 16 Aug 2021 05:49:08 -0700 (PDT)
+        Mon, 16 Aug 2021 08:49:21 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8911C061764;
+        Mon, 16 Aug 2021 05:48:49 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id d16so8864230ljq.4;
+        Mon, 16 Aug 2021 05:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fy2isYPKNPiV5shXC0pHBU+VcJN04Q1fGssTZF6jyrk=;
-        b=dbgyiLbUICxgXBHTpnPAt/qsKESjlH/GBJ5TU7nhRGV6hU3DTxWOTZYXjVLe6V0LOw
-         Dy5an50QuHgAsakguL9U4ZBtazFIOR++CnKTFqv4riOyEDkF9ulw4+gyQSQC2VKERLTL
-         pY7zB8ORh5dlqbAOIym3VEBlvcua2JM0gIUmuyxst6vgBfbDaQESHW6DNjybfifgsXf5
-         lDXOZD7hV6xVp4uZod0U+x4SRKyNDnumXP7YuRH3pPBF5WUYsw+oX8jD3xMRRdkUh3xq
-         wuXCGi1NAz8Q2egjbTe1ppJ4daHst0QJjkwiyLAKGPXSH+3Latwvcs25zzB7dzjdypEE
-         KELA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IAseUJzCEH3EGqR891+PdvwcBt5uEgyLMqq+opj8S3M=;
+        b=CWHqECygy9DQCAIDNbOx5cSJT7oXu06wN1f6J4ZzT3BxRAOmR+JDHcEohf/xjXMDEZ
+         tr++ZkV/+vnNEs4frOREIBmWE7GCvZPInjym1EClTRJddOiVWTDxv1r3p9sopMwPMBpk
+         ny6Ydi28Cw34Uqkc6Njg0IbTl1N3a5bNYjKVhYAIZkjsh0WvgMQFBY/9IEBBk/2Ql4h3
+         /fjGwz8QZSXLlsVhL7q63/G3JHbkG4rZXll7h+NjA025Ru2rhFlO2NwU+WNUw7AS9okm
+         XZTXcvOkmxx1M77iJLlKwbmHerLS+Pkv+kyZK3sEvoZANVY+Z5iC95J6PQejwqSV+rCO
+         9wrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fy2isYPKNPiV5shXC0pHBU+VcJN04Q1fGssTZF6jyrk=;
-        b=B8BkGsQzmhDbELiYJO0GPW2Vy2o/eCmYHYGkRRI9VK+b1lz8alK4J3zBW3h9RAmxEF
-         zjvLmntlBpqLT6RmX/ez7GrkzfeodfBhl/JDTiWXit6fUppek0SCaVyU+AHb3QwVLUXP
-         7FmwkftYxnkOKQBsNj8HkXPiltEy7419qfyXkvUZgu79U8Rr5ALwf1Ss61+/6aySwRC0
-         3dBHfYKIaTqjklc5SjMKoPlkvlbbIQIJ2kR2j5a2Cj883jCxEdRAL7f8IQPzndV0Bsb9
-         8sh5jm3gFRTcZlbNqjJdOyAFWZIDq2BnTpAT2zIZEZaSm5lnz7wJTd19wsTHyxmAda+d
-         9o7g==
-X-Gm-Message-State: AOAM530vlzj9VyV2t+yoa4YW8mGbGp7L/rNqzuJ5tjplxLpwc8Ba8qUM
-        FfSNjvsRdWXsyv3tD7TO4mjSv+hqxARq+AH7Kag=
-X-Google-Smtp-Source: ABdhPJxw1y148kB9C6s1stB/oyZ5CgbZ7lwNMKRJajO3KET6bGTP3m7dnAH7DpztooEiwAxSMphInYVT5VYiQ08bv94=
-X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
- cp6-20020a170902e786b029012d02a7365fmr13247410plb.21.1629118148043; Mon, 16
- Aug 2021 05:49:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IAseUJzCEH3EGqR891+PdvwcBt5uEgyLMqq+opj8S3M=;
+        b=iwUZoyPYNv9V0wEDxba1oczls6vBfdryS6Oouiuyn6WN4E+WAp1EQPnTXWrhdZmWx/
+         zS0wIjNKD+qZsy5jJTZi0wEQHzyr4hDbf5eXuwITqHcpgnTGBPmDVoxEVUaKir9usryU
+         HKQjQ/cYpq/MJTJb4cElHaFR8oEaaf9+7VvpZbeu2K8ZbAvJbaRIsoFSgHkz/Zk+U9Pm
+         DI4ufi1DwaxjTqK8D1BqwvhLBd9VpGCL7B2LXER4YDgSdtRomQlpmfWmY68k57XE84XN
+         HGK9cQisYrvTZ1jYKY8CzSzb6CqC0IriziHYMUDuRXEvSljDqce373ayGY98o8yFDT85
+         hyKg==
+X-Gm-Message-State: AOAM530uyhIxy9HySr6prwxv/tU798jFCGl+MQs7ZpJo8wzYhBgbFdKQ
+        5opcxsKeWXVvuk6Y2v/jOsY=
+X-Google-Smtp-Source: ABdhPJyokRtXOdYbc9fYHAFaKAkBRDUCseGttle5YbiP+rZH54yqMi8rEAeCFs1cVaLKFF3KsiIi1A==
+X-Received: by 2002:a2e:a811:: with SMTP id l17mr11921981ljq.456.1629118128250;
+        Mon, 16 Aug 2021 05:48:48 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id h1sm940645lfv.226.2021.08.16.05.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 05:48:47 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 15:48:46 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC PATCH 0/4] fs/ntfs3: Use new mount api and change some opts
+Message-ID: <20210816124846.sp4topnxfyamc62y@kari-VirtualBox>
+References: <20210816024703.107251-1-kari.argillander@gmail.com>
+ <20210816122721.GA17355@lst.de>
 MIME-Version: 1.0
-References: <20210815213309.2847711-1-liambeguin@gmail.com>
- <20210815213309.2847711-4-liambeguin@gmail.com> <CAHp75Vd-AfmwMyYyy5ygwmvGfwZLh9VwvBEzSwW3fc99jxFpnQ@mail.gmail.com>
- <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
-In-Reply-To: <CDKXZBW1JDOD.1ZXIT12Y3WK5B@shaak>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 16 Aug 2021 15:48:28 +0300
-Message-ID: <CAHp75VdC8GFmV-uOHPQpv5q=q0ZwSKFXW6gOL-hK6N4_qS1YJw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/5] iio: adc: ad7949: add vref selection support
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Charles-Antoine Couret <charles-antoine.couret@essensium.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <Nuno.Sa@analog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816122721.GA17355@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 3:39 PM Liam Beguin <liambeguin@gmail.com> wrote:
-> On Mon Aug 16, 2021 at 4:04 AM EDT, Andy Shevchenko wrote:
-> > On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
-> > wrote:
+On Mon, Aug 16, 2021 at 02:27:21PM +0200, Christoph Hellwig wrote:
+> On Mon, Aug 16, 2021 at 05:46:59AM +0300, Kari Argillander wrote:
+> > I would like really like to get fsparam_flag_no also for no_acs_rules
+> > but then we have to make new name for it. Other possibility is to
+> > modify mount api so it mount option can be no/no_. I think that would
+> > maybe be good change. 
+> 
+> I don't think adding another no_ alias is a good idea.  I'd suggest
+> to just rename the existing flag before the ntfs3 driver ever hits
+> mainline.
 
-...
+Konstantin can suggest what should we call this.
 
-> > > +       tmp = 4096000;
-> > > +       ret = device_property_read_u32(dev, "adi,internal-ref-microvolt", &tmp);
-> >
-> > > +       if (ret < 0 && ret != -EINVAL) {
->
-> Hi Andy,
->
-> >
-> > What does this check (second part) is supposed to mean?
-> > The first part will make it mandatory, is it the goal?
-> >
->
-> device_property_read_u32() will return -EINVAL if the property isn't
-> found in the devicetree.
->
-> This checks for errors when the property is defined while keeping it
-> optional.
-
-Don't assign and don't check the error code of the API. As simply as that.
-
-> > > +               dev_err(dev, "invalid value for adi,internal-ref-microvolt\n");
-> > > +               return ret;
-> > > +       }
-
-
--- 
-With Best Regards,
-Andy Shevchenko
