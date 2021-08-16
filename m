@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EB43ED436
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9213ED439
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 14:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhHPMoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 08:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhHPMoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 08:44:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7385963272;
-        Mon, 16 Aug 2021 12:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629117842;
-        bh=kSw1KOIjJJOA+srQgisUf/zjB7LEm89DflSYBZRlzZo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ShlnE/4YogzIOVGDx1tjPZnl3nkNolmZCJkG0Rkh3gHik6EJ7v8Nh2LAXWAfg2gOy
-         7n9aNm6fnmDCr4EpuNvnD3lOz1a/7KsrEAuJnwJU7/H6kFdusQ0kqogb2ikcOve5Ac
-         rMCXm2dS1kGdcGCEWZgSZ9ze0sHyWAiTGhZjYes8ZUP6kS7OJ0FkQT5LlmjvznznkY
-         4+4XadXsZTjlgpGhtYXl5sJJhBbgEqFJU8O/bBhTQfsR1vCXoO5oePmROyiAQ+ig4Z
-         6sufmUDdyWRm52p+P+sa2drHI13tXProabBBj3mY6WtQsGx1RkE7pCz1WE+WYaLQeY
-         MBG0d7R43gzrQ==
-Message-ID: <e07e5f52bf73c0a9ef1441295f5ff42753d3e29a.camel@kernel.org>
-Subject: Re: [fscrypt][RFC PATCH] ceph: don't allow changing layout on
- encrypted files/directories
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 16 Aug 2021 08:44:01 -0400
-In-Reply-To: <YRZtiL+qo95vK0Nf@suse.de>
-References: <YRZtiL+qo95vK0Nf@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S231934AbhHPMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 08:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhHPMpV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 08:45:21 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402DFC061764;
+        Mon, 16 Aug 2021 05:44:49 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r7so23516006wrs.0;
+        Mon, 16 Aug 2021 05:44:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DJtQNdsaxbxXPd+1fbcf6zTZaliIWObu1grzvpCsw7Q=;
+        b=ty3ZQ4MBZ9QNySq22cxPNfiCh3sjEYho2Mj1RVFTelHUITguMF7yG0NZFzeuuPadko
+         ME56w21NQABREfhotE7xxpe/kiug4Leeb2w080Rzz/RtwxZU8SELC9nC8eIKPjs0/YmG
+         bYY1f1UgcX2KTW4AxnSYK7bLbszO86FoY9cT+XCNbsTFxdnOP06sEtC6OtjgiWfCinH6
+         QV1VxH6LQAHTkleg7noCeFHdKckiD18oaC0cayEw3dWvluWDFo+VMWXMS71rFKkKpUyr
+         INbze26/Dxh0qfJuOiDDr9UfT3KxBbimkkRrY/FR+nFQDSsDLeQ5FRud7PAs3++W/iiN
+         jOJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DJtQNdsaxbxXPd+1fbcf6zTZaliIWObu1grzvpCsw7Q=;
+        b=rrK2hrFlUi41+R7jVuJukaeU4pOJXtEi+sdi/wtMqOvmWMtsegfk6v0/Ad9+smLuxw
+         NNRvH0WsI6M8X8/I/YErljy8CYWSIDY3UuYYs9s/JnCyrbnoLQJzeq+pA0ZJxggnnEGP
+         7WcdwpzQOYrpKWvk/ksEmfJOcmlM4SFLqYq4Q5v+k8SJK122KsHy8tBKaZPHxB+DqREq
+         PFx8NTgiBIRjBdi38F9yQ7kgGVEUS+2E0cwaggQkyaeGuqIJD68wGw2N+72KpyOToC4V
+         nyqCMCq4oQD/JEIBm/MQ2a99JMeHoz59u9xMRHPVKiwSuxRQyAujOC5m2cOC27DUZRRW
+         gfPw==
+X-Gm-Message-State: AOAM530XOGwx15+I8Mq1/c+JgoSoMOJGWaQM0zwIMRhfDt5FfAXc8m0y
+        BmWXigPziT8kSuywTzk1YwYYIplJdZQ=
+X-Google-Smtp-Source: ABdhPJy/ZcykOyZGSyodpCi4n2tEX1JG/ESBnQKzhENL0IJ22TIb2lYZrXg9POpFr0vDgEly3ztb/A==
+X-Received: by 2002:a5d:58cd:: with SMTP id o13mr18277136wrf.421.1629117887732;
+        Mon, 16 Aug 2021 05:44:47 -0700 (PDT)
+Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
+        by smtp.gmail.com with ESMTPSA id l2sm10564848wrx.2.2021.08.16.05.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 05:44:47 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] crypto: remove rmd320 in Makefile
+Date:   Mon, 16 Aug 2021 14:44:33 +0200
+Message-Id: <20210816124433.10411-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-13 at 14:03 +0100, Luis Henriques wrote:
-> Encryption is currently only supported on files/directories with layouts
-> where stripe_count=1.  Forbid changing layouts when encryption is involved.
-> 
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
-> Hi!
-> 
-> While continuing looking into fscrypt, I realized we're not yet forbidding
-> different layouts on encrypted files.  This patch tries to do just that.
-> 
-> Regarding the setxattr, I've also made a change [1] to the MDS code so that it
-> also prevents layouts to be changed.  This should make the changes to
-> ceph_sync_setxattr() redundant, but in practice it doesn't because if we encrypt
-> a directory and immediately after that we change that directory layout, the MDS
-> wouldn't yet have received the fscrypt_auth for that inode.  So... yeah, an
-> alternative would be to propagate the fscrypt context immediately after
-> encrypting a directory.
-> 
-> [1] https://github.com/luis-henrix/ceph/commit/601488ae798ecfa5ec81677d1ced02f7dd42aa10
-> 
-> Cheers,
-> --
-> Luis
-> 
->  fs/ceph/ioctl.c | 4 ++++
->  fs/ceph/xattr.c | 6 ++++++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/fs/ceph/ioctl.c b/fs/ceph/ioctl.c
-> index 477ecc667aee..42abfc564301 100644
-> --- a/fs/ceph/ioctl.c
-> +++ b/fs/ceph/ioctl.c
-> @@ -294,6 +294,10 @@ static long ceph_set_encryption_policy(struct file *file, unsigned long arg)
->  	struct inode *inode = file_inode(file);
->  	struct ceph_inode_info *ci = ceph_inode(inode);
->  
-> +	/* encrypted directories can't have striped layout */
-> +	if (ci->i_layout.stripe_count > 1)
-> +		return -EOPNOTSUPP;
-> +
+Commit 93f64202926f ("crypto: rmd320 - remove RIPE-MD 320 hash algorithm")
+removes the Kconfig and code, but misses to adjust the Makefile.
 
-Yes, I've been needing to add that for a while. I'm not sure EOPNOTSUPP
-is the right error code though. Maybe EINVAL instead?
+Hence, ./scripts/checkkconfigsymbols.py warns:
 
->  	ret = vet_mds_for_fscrypt(file);
->  	if (ret)
->  		return ret;
-> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
-> index b175b3029dc0..7921cb34900c 100644
-> --- a/fs/ceph/xattr.c
-> +++ b/fs/ceph/xattr.c
-> @@ -1051,6 +1051,12 @@ static int ceph_sync_setxattr(struct inode *inode, const char *name,
->  	int op = CEPH_MDS_OP_SETXATTR;
->  	int err;
->  
-> +	/* encrypted directories/files can't have their layout changed */
-> +	if (IS_ENCRYPTED(inode) &&
-> +	    (!strncmp(name, "ceph.file.layout", 16) ||
-> +	     !strncmp(name, "ceph.dir.layout", 15)))
-> +		return -EOPNOTSUPP;
-> +
+CRYPTO_RMD320
+Referencing files: crypto/Makefile
 
-Yuck.
+Remove the missing piece of this code removal.
 
-What might be nicer is to just make ceph_vxattrcb_layout* return an
-error when the inode is encrypted? You can return negative error codes
-from the ->getxattr_cb ops, and that's probably the better place to
-check for this.
+Fixes: 93f64202926f ("crypto: rmd320 - remove RIPE-MD 320 hash algorithm")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ crypto/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
->  	if (size > 0) {
->  		/* copy value into pagelist */
->  		pagelist = ceph_pagelist_alloc(GFP_NOFS);
-> 
-> Cheers,
-> --
-> Luís
-
+diff --git a/crypto/Makefile b/crypto/Makefile
+index 10526d4559b8..c633f15a0481 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -74,7 +74,6 @@ obj-$(CONFIG_CRYPTO_NULL2) += crypto_null.o
+ obj-$(CONFIG_CRYPTO_MD4) += md4.o
+ obj-$(CONFIG_CRYPTO_MD5) += md5.o
+ obj-$(CONFIG_CRYPTO_RMD160) += rmd160.o
+-obj-$(CONFIG_CRYPTO_RMD320) += rmd320.o
+ obj-$(CONFIG_CRYPTO_SHA1) += sha1_generic.o
+ obj-$(CONFIG_CRYPTO_SHA256) += sha256_generic.o
+ obj-$(CONFIG_CRYPTO_SHA512) += sha512_generic.o
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.26.2
 
