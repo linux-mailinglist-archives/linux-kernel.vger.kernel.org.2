@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952E43ED624
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DBD3ED708
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239090AbhHPNR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
+        id S238871AbhHPN0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:26:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238049AbhHPNIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:08:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B537560E78;
-        Mon, 16 Aug 2021 13:07:14 +0000 (UTC)
+        id S239116AbhHPNQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:16:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61721632E8;
+        Mon, 16 Aug 2021 13:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119235;
-        bh=sD+kHG8bzB50R504rt+xhViQPS1oUjfSyADjVV6IfVI=;
+        s=korg; t=1629119592;
+        bh=fArbgl+/scpmangpUQZshNqHMCHt8W4wStYztp6fXHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5W4siETb+Sze6QHm6lJ9v8jC6lsyNP5iiOV12QpOQ9lnfh/ZOD2pGmNFuwDtv1fT
-         Vz2HJE96gTQdI/XR3c02d3EXVUWd0mMU12gQc9jszNcAv7Ysmt3H1ES7K2VAf+s2xg
-         aMShJSa2Xo/7UVt0f7BdOalftgcbl96g/vla+TEo=
+        b=HwAUl/YjabgchqzvKgQVawVPRNYDqcdoHhoiDEy5bsPb6WsbiOu9WOSoU8fWFpVXt
+         VLKAtSb+2gJBoZZOi3DCbp9gAvTkxdJQhUd1TWHskjLPAfBUWjRDIRPgcYBOXHuQvc
+         GftPNl1tY7NUc2VkqUNUCperJxIG08GvmzfIQJTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Chris Mi <cmi@nvidia.com>,
+        Oz Shlomo <ozsh@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 45/96] iavf: Set RSS LUT and key in reset handle path
+Subject: [PATCH 5.13 085/151] net/mlx5e: TC, Fix error handling memory leak
 Date:   Mon, 16 Aug 2021 15:01:55 +0200
-Message-Id: <20210816125436.464192722@linuxfoundation.org>
+Message-Id: <20210816125446.873409998@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
+From: Chris Mi <cmi@nvidia.com>
 
-[ Upstream commit a7550f8b1c9712894f9e98d6caf5f49451ebd058 ]
+[ Upstream commit 88bbd7b2369aca4598eb8f38c5f16be98c3bb5d4 ]
 
-iavf driver should set RSS LUT and key unconditionally in reset
-path. Currently, the driver does not do that. This patch fixes
-this issue.
+Free the offload sample action on error.
 
-Fixes: 2c86ac3c7079 ("i40evf: create a generic config RSS function")
-Signed-off-by: Md Fahad Iqbal Polash <md.fahad.iqbal.polash@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: f94d6389f6a8 ("net/mlx5e: TC, Add support to offload sample action")
+Signed-off-by: Chris Mi <cmi@nvidia.com>
+Reviewed-by: Oz Shlomo <ozsh@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/sample.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index f3caf5eab8d4..c4ec9a91c7c5 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -1489,11 +1489,6 @@ static int iavf_reinit_interrupt_scheme(struct iavf_adapter *adapter)
- 	set_bit(__IAVF_VSI_DOWN, adapter->vsi.state);
- 
- 	iavf_map_rings_to_vectors(adapter);
--
--	if (RSS_AQ(adapter))
--		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
--	else
--		err = iavf_init_rss(adapter);
- err:
- 	return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/sample.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/sample.c
+index 794012c5c476..d3ad78aa9d45 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/sample.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/sample.c
+@@ -501,6 +501,7 @@ err_sampler:
+ err_offload_rule:
+ 	mlx5_esw_vporttbl_put(esw, &per_vport_tbl_attr);
+ err_default_tbl:
++	kfree(sample_flow);
+ 	return ERR_PTR(err);
  }
-@@ -2167,6 +2162,14 @@ continue_reset:
- 			goto reset_err;
- 	}
- 
-+	if (RSS_AQ(adapter)) {
-+		adapter->aq_required |= IAVF_FLAG_AQ_CONFIGURE_RSS;
-+	} else {
-+		err = iavf_init_rss(adapter);
-+		if (err)
-+			goto reset_err;
-+	}
-+
- 	adapter->aq_required |= IAVF_FLAG_AQ_GET_CONFIG;
- 	adapter->aq_required |= IAVF_FLAG_AQ_MAP_VECTORS;
  
 -- 
 2.30.2
