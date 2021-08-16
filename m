@@ -2,121 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E353ED144
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF113ED150
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbhHPJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S235467AbhHPJxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235461AbhHPJtq (ORCPT
+        with ESMTP id S235336AbhHPJxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:49:46 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FA8C061796;
-        Mon, 16 Aug 2021 02:49:15 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id t9so33212902lfc.6;
-        Mon, 16 Aug 2021 02:49:15 -0700 (PDT)
+        Mon, 16 Aug 2021 05:53:43 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2001C061764;
+        Mon, 16 Aug 2021 02:53:11 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id x10so16377088wrt.8;
+        Mon, 16 Aug 2021 02:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nXQkd2q77TOQv6T4FwVMR9d3o4F1nC8GrjwhGPICxZ8=;
-        b=SBBhUAr/94AcXNknpsI3LDZGEiTZxXp8Nv0pR5pfhO5YKqbAZAp9WtQpxsxqux1mF9
-         VdIYaW6PokYC171lJ37pa2e/d32X1fJ4SGFAHNxnPJpsIvR1Xw0y/5dRCXHpS/KVlHQy
-         YGso0yy735YdoFIu7hBEoxWpVoG142jwD3Vq3bfm7HQqDokNz/vmyT/EiRyNamEcTNdx
-         j+Zhs1J9S1gK4gaXVGyTAJtdQDhmiuJQF+D2eTNxPplc9nBwBl+lhG+j9EohwYAGnzuW
-         tmpW7uSJ672ilrw8NDLwLUl0eTnlEGhsm1JZnYnS/xnj0f1rNZmEOmu3Hqr7bW3QMBkO
-         95JA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=JAhbLXhuiKr15f569cp5ZlH29FsUdWP9r+HrMVJpIZI=;
+        b=ZTYDLcpgsR+WBvS9Ay5rkaSI2IDGZJx7bHVphRf9rG25VzfxPWNxwM2FBOQYlksEYJ
+         nkbRT5W4oE6Zb6uSH23FVDcxJ1U6vRGkxonLza7J371J+nFmuF52PzHezn3AJ84/iBfk
+         wLsqHgfC/b0EmBIpmDVTUDi1s/xWEogvnuY2U6Z9heaHoU03aGviK8EG6HDr7cwvWcCS
+         EJT5aur4lYO8970HvvRs88lu3rIv2gXi5Fac5Ux5SufAulQxXsdFx82LbcjbuSm8qnNr
+         7DH/aELVrFdCz9pcz0yP4eDWo7EPDg+lZcewV9DtsPMIKhJbKSqgSLc+k0cxYpa1lnxz
+         kmtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nXQkd2q77TOQv6T4FwVMR9d3o4F1nC8GrjwhGPICxZ8=;
-        b=l+mtExbkGl9OWt2TLd74KGO6bI9jp17nPRmeNzFyVi8gt0w/KjnjRviXFV5hdyanx3
-         BufjAuTaboGdTbNqedc/q02UJGbMOTp8JnoWzqhAPC7b4rjWfHFfYo39TccJRwloEcb1
-         VdqiyRByIF2v9P2+2SFgFNBXH6/n++t4AYKcSLU1F9y8CC0hpD+xMMKaR0MfWQ/qKTV+
-         q7iq2/TWmv/awMQ2lVxcwrUmKx+53aa8gQNOeynh97+rYzlE5iCHZlACoEztNapNDuGP
-         28e6gtaTMzE5ZY6Q/xgyUL9AkYPPVMLHIK72fe4Rbnjr8NUCfvl9YOfPiyEVbtYwDw6i
-         8+kg==
-X-Gm-Message-State: AOAM531bRrR/JrJKcC++Ub+lVr2lscQRfR4s166M1wKUNlGGmktfxHv4
-        +sRwbZ5NWVc1fpuV1aKW5As=
-X-Google-Smtp-Source: ABdhPJw5neqaXhHypDeponE4sCAfMSIj7fTm1QPuk8Dxr4Z/7tfAui/7WZEzLomQWtQHbbK7/+pqGQ==
-X-Received: by 2002:ac2:5bd0:: with SMTP id u16mr10709655lfn.172.1629107353431;
-        Mon, 16 Aug 2021 02:49:13 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id f25sm1086055ljj.69.2021.08.16.02.49.12
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JAhbLXhuiKr15f569cp5ZlH29FsUdWP9r+HrMVJpIZI=;
+        b=B2xSR/c2gRBqAUhSCm8UA6UrbnLAwPJQQ9DyiwiOBrO5Qvt6k7ToMX5OJmWFRoLkEs
+         1me09sZwfGykfkRLQZmZTVGUqm+m7U1qRFQnvuc7GbwKQvH/aH2TdalbVdl2xjGw/vHz
+         VHmQvEaWYWEEpA8b4LwIp+hDhWVbVEm+41gtt19Z+dV7Pso95bk3BRv/x3git13gVEF9
+         7XoN34RA5rLo1szm9EDSb4+TZcINhJw5rpveGjlaMY34Ya+JzBmF0JsE3ih2YQWnSgcX
+         ZZGZJPrULslDHBfF/g5bsP89WtJzFMceKUm43kKneumICuj/ruZDQ2S59SzLh3IPSmLb
+         XIeQ==
+X-Gm-Message-State: AOAM533steB8XBOLhEWRhjBuO/0X3pooqxkP4Jn5KlO2kWjTNGTrn9go
+        bZHOyooMPdVTJCjAd6+DpkQ=
+X-Google-Smtp-Source: ABdhPJzkq0DMPLKzLvG3MOiFX8IELX/UVhokVOU8VeEoHR+ro93o2BiXPK7pgpZuDyfCQ9CEkmBwlw==
+X-Received: by 2002:a05:6000:186:: with SMTP id p6mr17698437wrx.19.1629107590269;
+        Mon, 16 Aug 2021 02:53:10 -0700 (PDT)
+Received: from localhost (pd9e51807.dip0.t-ipconnect.de. [217.229.24.7])
+        by smtp.gmail.com with ESMTPSA id m6sm3398602wms.42.2021.08.16.02.53.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 02:49:12 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 12:49:11 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        Mon, 16 Aug 2021 02:53:09 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 11:53:08 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: Fix spelling mistake "whitout" -> "without"
-Message-ID: <20210816094911.loukjpyxq6cdzv3u@kari-VirtualBox>
-References: <20210816081401.5825-1-colin.king@canonical.com>
- <20210816092106.s5oexqqztctaa544@kari-VirtualBox>
- <f987fb3d-0037-fe9c-52fe-78d528c85b07@canonical.com>
+Subject: Re: [PATCH v1 2/2] cpuidle: tegra: Check whether PMC is ready
+Message-ID: <YRo1hK/KnS0oA1vj@orome.fritz.box>
+References: <20210718212706.21659-1-digetx@gmail.com>
+ <20210718212706.21659-3-digetx@gmail.com>
+ <YROdQXO4aVLQ8DkP@orome.fritz.box>
+ <8d61d4d5-8e4b-5c18-923c-eceb954e8d5d@linaro.org>
+ <8f22c97d-63f7-6d2a-7b1e-92b0b80a5275@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/FxjFLhUbsKPIo++"
 Content-Disposition: inline
-In-Reply-To: <f987fb3d-0037-fe9c-52fe-78d528c85b07@canonical.com>
+In-Reply-To: <8f22c97d-63f7-6d2a-7b1e-92b0b80a5275@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 10:41:07AM +0100, Colin Ian King wrote:
-> On 16/08/2021 10:21, Kari Argillander wrote:
-> > On Mon, Aug 16, 2021 at 09:14:01AM +0100, Colin King wrote:
-> >> From: Colin Ian King <colin.king@canonical.com>
+
+--/FxjFLhUbsKPIo++
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Aug 14, 2021 at 04:45:42PM +0300, Dmitry Osipenko wrote:
+> 14.08.2021 13:37, Daniel Lezcano =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On 11/08/2021 11:49, Thierry Reding wrote:
+> >> On Mon, Jul 19, 2021 at 12:27:06AM +0300, Dmitry Osipenko wrote:
+> >>> Check whether PMC is ready before proceeding with the cpuidle registr=
+ation.
+> >>> This fixes racing with the PMC driver probe order, which results in a
+> >>> disabled deepest CC6 idling state if cpuidle driver is probed before =
+the
+> >>> PMC.
+> >>>
+> >>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>> ---
+> >>>  drivers/cpuidle/cpuidle-tegra.c | 3 +++
+> >>>  1 file changed, 3 insertions(+)
 > >>
-> >> There is a spelling mistake in a ntfs_err error message. Fix it.
+> >> Rafael, Daniel,
 > >>
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >> ---
-> >>  fs/ntfs3/run.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-> >> index 5cdf6efe67e0..f9c362ac672e 100644
-> >> --- a/fs/ntfs3/run.c
-> >> +++ b/fs/ntfs3/run.c
-> >> @@ -949,7 +949,7 @@ int run_unpack(struct runs_tree *run, struct ntfs_sb_info *sbi, CLST ino,
-> >>  		if (next_vcn > 0x100000000ull || (lcn + len) > 0x100000000ull) {
-> >>  			ntfs_err(
-> >>  				sbi->sb,
-> >> -				"This driver is compiled whitout CONFIG_NTFS3_64BIT_CLUSTER (like windows driver).\n"
-> >> +				"This driver is compiled without CONFIG_NTFS3_64BIT_CLUSTER (like windows driver).\n"
-> >>  				"Volume contains 64 bits run: vcn %llx, lcn %llx, len %llx.\n"
-> >>  				"Activate CONFIG_NTFS3_64BIT_CLUSTER to process this case",
-> >>  				vcn64, lcn, len);
-> > 
-> > There is still other spelling typos what codespell catch. Why you just
-> > fix this one?
-> 
-> Normally there are so many spelling mistakes in comments in the kernel I
-> ignore these, as life it too short. I'm trying to first fix the
-> user-facing text messages in errors and warnings etc..
+> >> would you mind if I took this into the Tegra tree? It's got a dependen=
+cy
+> >> on the PMC driver, which usually goes via the Tegra tree already, and
+> >> there's nothing cpuidle-specific in here, it's all Tegra-specific
+> >> integration quirks.
+> >=20
+> > Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>=20
+> I got another thought about how it could be solved. We could move the
+> creation of the cpuidle platform device into the PMC driver. Thierry,
+> what do you think?
 
-Good point.
+Looking around a bit, it looks like we've got two "virtual" platform
+devices related to CPU on Tegra20 and some of the later SoCs. A little
+while ago when we introduced the CPU frequency driver for Tegra194 we
+had a similar discussion. The problem at the time was that there was no
+way to create a virtual platform device from platform code, and adding a
+device tree node for this wasn't really an option either, since it does
+not actually describe the hardware accurately.
 
-> > codespell -L iput,te,fo,ane,filp fs/ntfs3
-> > 	fs/ntfs3/debug.h:6: debuging ==> debugging
-> > 	fs/ntfs3/run.c:952: whitout ==> without, whiteout
-> > 	fs/ntfs3/super.c:127: formater ==> formatter
-> > 	fs/ntfs3/super.c:1211: formater ==> formatter
-> > 	fs/ntfs3/upcase.c:30: Straigth ==> Straight
-> > 	fs/ntfs3/lib/decompress_common.c:295: distingush ==> distinguish
-> > 
-> 
-> Yep, I'll fix these later in a V2.
+What we ended up doing for Tegra194 was to add a compatible string to
+the /cpus node ("nvidia,tegra194-ccplex") which was then used for
+matching a CPU frequency driver against.
 
-Thanks :)
+I imagine we could do something similar for these older chips and
+perhaps even have a single driver for the CCPLEX that either registers
+CPU idle and CPU frequency scaling functionality, or have that driver
+register virtual devices. I slightly prefer the first variant because
+then we associate the driver with the hardware that it's actually
+driving. It's slightly unconventional because now CPU idle and CPU
+frequency drivers would be implemented in the same driver, but it isn't
+all that exotic these days anymore, either.
 
-> > If just this gets in then:
-> > Reviewed-by Kari Argillander <kari.argillander@gmail.com>
-> > 
-> > If you send v2 I will tag that again.
+If the maintainers prefer we could always keep the code split into two
+source files, one per subsystem, and call into that code from the CCPLEX
+driver. I think even then it'd still be the cleanest solution because we
+don't have to "invent" a new device just for the sake of fitting the
+driver model that we happen to have.
 
+Thierry
+
+--/FxjFLhUbsKPIo++
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEaNYEACgkQ3SOs138+
+s6HT+w//ZI+9IViNuhkUW3Z7Peo91l6nKc6T7XOGIXQfV19555Sj60sEI6t/iVJq
+b3FFliv1NUCr3LgZRD+YzGQbW00GiVunreVgI/EDhXiXDAHAlT8n1dsf4qqoa5lc
+H8frsJOGd0B+nMG13ycwFQYGh1xUVUxU80lPhbdivPucCIDB+1B/XKexN7Leqd82
+idhpaHw+gT6YWBrR8dDxdX2tBYox/9n6Iy8HjIx4G9ErKErVkKk26grNKzmHY07X
+2tUF727WFpunZsnpOKbgdPr3yBmg0MxAvhygG4otqQz92SzY0ZiHFYtVO4nCwDz+
+XmwaklY2NMUeSoNjekCNj7sPhCkGw8cPhYTIgs6twg+xXQgkwSdkHmcDm2WP81D1
+5H5YVNfQznxONIAD9xSqS3EdIAT9wzd7sipcDp/IHzMG3L83pi/DN6tYNyhBdbPO
+1a8/oskfmNWKJ/sx7mRgzrvybGcFaIO3MxTnafRMOnWoVVpAOLFyhnNuKaupdEEs
+K/KvkJEZaTbcxDYP323WTkZ3RMNn4OczQELL7lcJW2TZOikLFLooEu6/lSI4iAVa
+ICoKuQwmA9KLA67AVViFwRlZAvsCHjZi6t2HFErtBpwdvZKLQzoLNdfS5DinL5o3
+OVpk+2IeZ4XSTUd/gn859qgNJMD94gSnJ3uqvdRBNv04etaiQ2U=
+=N2nq
+-----END PGP SIGNATURE-----
+
+--/FxjFLhUbsKPIo++--
