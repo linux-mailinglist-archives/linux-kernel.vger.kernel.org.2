@@ -2,166 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BAA3ED132
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA7E3ED13A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 11:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhHPJp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 05:45:27 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43732 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235452AbhHPJp0 (ORCPT
+        id S235524AbhHPJqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 05:46:04 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36690
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235460AbhHPJp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 05:45:26 -0400
-Received: by mail-il1-f199.google.com with SMTP id v5-20020a92ab050000b02902223cc2accaso9376693ilh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:44:55 -0700 (PDT)
+        Mon, 16 Aug 2021 05:45:59 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 4078140C9E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629107127;
+        bh=0YPeosyPSKYRu+3IMfidh4Xy4sl5Ld4HC2vVfEQcmh8=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=knmfLTwYYlk+AxjW60bh1sR9dBCBPVP25ps+bsxO1n9x+UIpDIeBffaxaWHaTxu50
+         DyjAQcw/OrSo1KPnaUIri67hxlNNdn39dadN60xfaJDNiU7uZs3+WznMcXkw1DlFV+
+         P8EiJywLSQ+MAHrqoBKehZhJ6rwChro225FHInEkMfSv7gIWPeEPKjM08kMFD/fQ9z
+         lxHhMtnwZfdHBhgh6Pz4We9l/fqV+ShqcvyMeWlv+zpDug3CVu0fzfgreVbNT+sni/
+         oCjbIrorDinNVF7BwaMjtkBxSiuydDtCziFDfchL4d9Uy8jlSB4n8vSZX+sZle80uB
+         xXdfE0fSCbj7w==
+Received: by mail-ed1-f71.google.com with SMTP id n4-20020aa7c6840000b02903be94ce771fso8053883edq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 02:45:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=AWDrtkZcqSVB2VBviFqKgDzrsXU4Xns2A2MCqI88BgI=;
-        b=SZch1PaqYkG0XhqlIcXk5ZiNAJTXchz9QTF/tk5hNz/kAcKtQOqdBbq2xfFw5OYCVP
-         l1210bcprKqCvNDwxyJhIbYSy1kR6+vvr+dRuo/ZD0jWS5wkMmvBlVysRDOOF7r8xB+k
-         tO+PRpQhRyxQfU3WcYl1uQndFIC/+uLhMQZY4y6tbesDz2fvneI00mtwNqEDdWR7ogZl
-         FDbrTuKVD5WFSZT9DmiWT54YVGc7jZLJ8bsmZyEfx0ChYCLAJnhFAbvTpOxrWqsyTy1l
-         c+xMF9Gm5r+BzbE9mCKinMFGHCvHzveARfItCd/MqaSeXFDz/c4VUG6/zhYxzvVlYSdd
-         Z8Yw==
-X-Gm-Message-State: AOAM5335A3Z5QbgyfDJDwXI7rUvSEyv53K7SL7AfekSc02BeqTn0yEJV
-        q+Ik7DRlwaHxakm5aTbvafJ03Bs/rO0hwZ87gr3khmZ+i6H8
-X-Google-Smtp-Source: ABdhPJwxX4MjMTqfCbe54lcZ64G5M2rGOXLxURKKv8daDmqyb7db9ccQa/YxEThUlxS5m5LpnY2sUoXmRrPsk8S2HJjwkbw4kqJJ
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0YPeosyPSKYRu+3IMfidh4Xy4sl5Ld4HC2vVfEQcmh8=;
+        b=oBhw8lFRnMJD1OjQ9x9y3at7VxeIf5ySiW3nmqq7SxdwJOsB2GmKQf+Oi1SRUsZ5+m
+         uSouF5lVX0fB/QBLZlQYcngsXLGumYSKKdniwmUYxuPXiqkbk8NMjbLzN+vMBOfFvAXn
+         6Rxyj+gfvnuxZsrvIhfm1CfqchaEle746egjLt2EaRqqqPsD9jsBDgAFX/HCEoqxEyQx
+         Tgliw9rthl9kJPG+AhrnZjrxATFhBUac0k77vdksdXAbIuonauSCou1LKgJJNHc2Hpa7
+         AZxs5tgJDa1m70elScXjz6KDyHqeQNsI0k7tfJlYSGsDEvXyDv9thsR+1eGSSId+aonm
+         cglw==
+X-Gm-Message-State: AOAM533I9ZZ3v0Yf8ciOvfN24Ciy2lUTLbpJWRuGG9wK/Y/hn/2F084a
+        mzPlb7UWptPEeJ7tyoo7vRpFW36Ach2qG+Q85b+AisuBBhAtWgThjP7tzVsGZGYpYylKdOIotWM
+        tTz/SYa5ly3PTqPtgraru+W+dcli4yJhzjvHZL8eR+Q==
+X-Received: by 2002:a17:906:b195:: with SMTP id w21mr3439806ejy.12.1629107126842;
+        Mon, 16 Aug 2021 02:45:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwuvp8D3ZgBwPmEOii5wrRifN9jfWsAO8nKcRBli/sHMv7eXnxEkHJaNyywLt+pQvHAdcMCQg==
+X-Received: by 2002:a17:906:b195:: with SMTP id w21mr3439794ejy.12.1629107126702;
+        Mon, 16 Aug 2021 02:45:26 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id wc16sm3479626ejb.15.2021.08.16.02.45.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Aug 2021 02:45:26 -0700 (PDT)
+Subject: Re: [PATCH v3 7/7] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210811114827.27322-1-semen.protsenko@linaro.org>
+ <20210811114827.27322-8-semen.protsenko@linaro.org>
+ <f0e892ce-acd0-7acc-4881-dd67dda6fb38@canonical.com>
+ <CAPLW+4=2msw44EjujeTUvcYJ701iZTPwkVoO3UzZyakspev20A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <40dd9a0a-eccc-1b0c-70ec-06edc8b91177@canonical.com>
+Date:   Mon, 16 Aug 2021 11:45:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:da0c:: with SMTP id z12mr10894191ilm.205.1629107094768;
- Mon, 16 Aug 2021 02:44:54 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 02:44:54 -0700
-In-Reply-To: <CACT4Y+a-+AdKxsCnqPtE-0VRCO7CJjWmVQ0gmjZQ04YCcAHLsA@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af527b05c9aa0df9@google.com>
-Subject: Re: [syzbot] general protection fault in hwsim_new_edge_nl
-From:   syzbot <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     alex.aring@gmail.com, davem@davemloft.net, dvyukov@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mudongliangabcd@gmail.com,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPLW+4=2msw44EjujeTUvcYJ701iZTPwkVoO3UzZyakspev20A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, 9 Aug 2021 at 10:22, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+On 12/08/2021 19:42, Sam Protsenko wrote:
+> On Thu, 12 Aug 2021 at 11:17, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
 >>
->> On Mon, Aug 9, 2021 at 3:54 PM syzbot
->> <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com> wrote:
->> >
->> > Hello,
->> >
->> > syzbot found the following issue on:
->> >
->> > HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
->> > git tree:       net-next
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=1226099a300000
->> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
->> > dashboard link: https://syzkaller.appspot.com/bug?extid=fafb46da3f65fdbacd16
->> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->> >
->> > Unfortunately, I don't have any reproducer for this issue yet.
->> >
->> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> > Reported-by: syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com
->> >
->> > general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>> On 11/08/2021 13:48, Sam Protsenko wrote:
+>>> Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
+>>>
+>>> This patch adds minimal SoC support by including next Device Tree nodes:
+>>>
+>>> 1. Octa cores (Cortex-A55), supporting PSCI v1.0
+>>> 2. ARM architecture timer (armv8-timer)
+>>> 3. Interrupt controller (GIC-400)
+>>> 4. Pinctrl nodes for GPIO
+>>> 5. Serial node
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>> Changes in v3:
+>>>  - Used generic fixed clock for serial
+>>>
+>>> Changes in v2:
+>>>  * Commit message:
+>>>    - Documented added dts features instead of CPU features
+>>>
+>>>  * exynos850-usi.dtsi:
+>>>    - Removed, moved everything to exynos850.dtsi
+>>>
+>>>  * exynos850.dtsi:
+>>>    - Root node:
+>>>      - Added comment about engineering name (Exynos3830)
+>>>      - Renamed pinctrl nodes, adding domain names
+>>>      - Used hard coded IRQ numbers instead of named constants everywhere
+>>>      - Added soc node, moved next nodes there: gic, clock, pinctrls and
+>>>        serial
+>>>      - Used address-cells=1 for soc node and removed unneeded 0x0 from
+>>>        reg properties
+>>>      - Moved exynos850-pinctrl.dtsi include line to the end of
+>>>        exynos850.dtsi
+>>>      - Coding style fixes
+>>>    - cpus:
+>>>      - Used address-cells=1 for cpus node
+>>>      - Renamed cpu@0001 to cpu@1, and so on
+>>>      - Left only "arm,cortex-a55" for cpus compatible
+>>>      - Renamed reg = <0x0001> to <0x1> for cpus
+>>>    - armv8 timer:
+>>>      - Add comment about missing HV timer IRQ to armv8 timer node
+>>>      - Removed not existing properties from armv8 timer node
+>>>      - Fixed cpu number in CPU_MASK()
+>>>      - Removed obsolete clock-frequency property
+>>>    - GIC:
+>>>      - Fixed GIC type to be GIC-400
+>>>      - Fixed size of GIC's 2nd region to be 0x2000
+>>>    - serial node:
+>>>      - Hard coded clock number for serial_0 for now; will replace with
+>>>        named const once proper clock driver is implemented
+>>>      - Removed gate_uart_clk0 clock from serial_0, as that clock is not
+>>>        supported in serial driver anyway (yet)
+>>>    - clock node:
+>>>      - Fixed clock controller node name (@0x12.. -> @12..)
+>>>
+>>>  * exynos850-pinctrl.dtsi:
+>>>    - Referenced pinctrl nodes instead of defining those again in root node
+>>>    - Fixed interrupt-cells (3 -> 2)
+>>>    - Fixed USI related comments for pin config nodes
+>>>    - Removed decon_f_te_* and fm_lna_en nodes (won't be used)
+>>>    - Reordered pin config nodes by pin numbers
+>>>    - Improved all comments
+>>>    - Used existing named constants for pin-function and pin-pud
+>>>    - Fixed node names (used hyphens instead of underscore)
+>>>    - Fixed warnings found in W=1 build
+>>>
+>>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 748 ++++++++++++++++++
+>>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 261 ++++++
+>>>  2 files changed, 1009 insertions(+)
+>>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
+>>>
+>>> diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>> new file mode 100644
+>>> index 000000000000..ba5d5f33e2f6
+>>> --- /dev/null
+>>> +++ b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>> @@ -0,0 +1,748 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Samsung's Exynos850 SoC pin-mux and pin-config device tree source
+>>> + *
+>>> + * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+>>> + * Copyright (C) 2021 Linaro Ltd.
+>>> + *
+>>> + * Samsung's Exynos850 SoC pin-mux and pin-config options are listed as device
+>>> + * tree nodes in this file.
+>>> + */
+>>> +
+>>> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+>>> +#include <dt-bindings/pinctrl/samsung.h>
+>>> +
+>>> +&pinctrl_alive {
+>>> +     gpa0: gpa0 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpa1: gpa1 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpa2: gpa2 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpa3: gpa3 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpa4: gpa4 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                          <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpq0: gpq0 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +     };
+>>> +
+>>> +     /* I2C5 (also called CAM_PMIC_I2C in TRM) */
+>>> +     i2c5_bus: i2c5-bus {
+>>> +             samsung,pins = "gpa3-5", "gpa3-6";
+>>> +             samsung,pin-function = <EXYNOS_PIN_FUNC_3>;
+>>> +             samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
+>>> +             samsung,pin-drv = <0>;
+>>> +     };
+>>> +
+>>> +     /* I2C6 (also called MOTOR_I2C in TRM) */
+>>> +     i2c6_bus: i2c6-bus {
+>>> +             samsung,pins = "gpa3-7", "gpa4-0";
+>>> +             samsung,pin-function = <EXYNOS_PIN_FUNC_3>;
+>>> +             samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
+>>> +             samsung,pin-drv = <0>;
+>>> +     };
+>>> +
+>>> +     /* USI: UART */
+>>> +     uart0_bus: uart0-bus {
+>>> +             samsung,pins = "gpq0-0", "gpq0-1";
+>>> +             samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
+>>> +             samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
+>>> +     };
+>>> +};
+>>> +
+>>> +&pinctrl_cmgp {
+>>> +     gpm0: gpm0 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpm1: gpm1 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpm2: gpm2 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpm3: gpm3 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpm4: gpm4 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     gpm5: gpm5 {
+>>> +             gpio-controller;
+>>> +             #gpio-cells = <2>;
+>>> +
+>>> +             interrupt-controller;
+>>> +             #interrupt-cells = <2>;
+>>> +             interrupt-parent = <&gic>;
+>>> +             interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+>>> +     };
+>>> +
+>>> +     /* USI_CMGP0: HSI2C function */
+>>> +     hsi2c3_bus: hsi2c3-bus {
+>>> +             samsung,pins = "gpm0-0", "gpm1-0";
+>>> +             samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
+>>> +             samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
+>>> +             samsung,pin-drv = <0>;
 >>
->> Hi all,
+>> There are also macros for DRV.
 >>
->> I think the crash can be fixed by [PATCH] ieee802154: hwsim: fix GPF
->> in hwsim_new_edge_nl [1]. For now, it is in the wpan tree.
->>
->> [1] https://lkml.org/lkml/2021/7/8/66
->
-> Let's tell syzbot about the fix:
->
-> #syz fx: ieee802154: hwsim: fix GPF in hwsim_new_edge_nl
+> 
+> Unfortunately, existing DRV macros won't work for Exynos850. DRV
+> constants have different meaning for different GPIO domains in
+> Exynos850, so I thought introducing several groups of DRV constants
+> might be confusing. But please let me know if you still want me do
+> that.
+> 
 
-unknown command "fx:"
+Oh, damn, raw values are ok then.
 
->
->> > CPU: 1 PID: 1403 Comm: syz-executor.2 Not tainted 5.14.0-rc3-syzkaller #0
->> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> > RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
->> > RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
->> > RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
->> > Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
->> > RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
->> > RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
->> > RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
->> > RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
->> > R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
->> > R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
->> > FS:  00007f8448923700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
->> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > CR2: 00000000032f4708 CR3: 0000000033eed000 CR4: 00000000001506e0
->> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> > Call Trace:
->> >  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
->> >  genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
->> >  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
->> >  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
->> >  genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
->> >  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->> >  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->> >  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->> >  sock_sendmsg_nosec net/socket.c:704 [inline]
->> >  sock_sendmsg+0xcf/0x120 net/socket.c:724
->> >  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
->> >  ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
->> >  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
->> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> > RIP: 0033:0x4665e9
->> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
->> > RSP: 002b:00007f8448923188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
->> > RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
->> > RDX: 0000000000000000 RSI: 0000000020001ac0 RDI: 0000000000000004
->> > RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
->> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
->> > R13: 00007ffd8ac8e60f R14: 00007f8448923300 R15: 0000000000022000
->> > Modules linked in:
->> > ---[ end trace d1679fe789931133 ]---
->> > RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
->> > RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
->> > RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
->> > Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
->> > RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
->> > RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
->> > RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
->> > RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
->> > R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
->> > R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
->> > FS:  00007f8448923700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > CR2: 000055bb2ea2f160 CR3: 0000000033eed000 CR4: 00000000001506f0
->> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> >
->> >
->> > ---
->> > This report is generated by a bot. It may contain errors.
->> > See https://goo.gl/tpsmEJ for more information about syzbot.
->> > syzbot engineers can be reached at syzkaller@googlegroups.com.
->> >
->> > syzbot will keep track of this issue. See:
->> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->> >
->> > --
->> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
->> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000007faf7505c91bb19d%40google.com.
->>
->> --
->> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/CAD-N9QULPO0jNkKr6VxtXb78TSzzFTJ9n%2Ba36h1vruO9q6nhSw%40mail.gmail.com.
+
+Best regards,
+Krzysztof
