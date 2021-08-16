@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73EA3EDA32
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27283ED9D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 17:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbhHPPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 11:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237069AbhHPPuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 11:50:14 -0400
-X-Greylist: delayed 1375 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 Aug 2021 08:49:39 PDT
-Received: from lounge.grep.be (lounge.grep.be [IPv6:2a01:4f8:200:91e8::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042A1C061764;
-        Mon, 16 Aug 2021 08:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=uter.be;
-        s=2021.lounge; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vmThffkGGDgcWcG0Dk35BzlpwCbQj80Wk0DEcCCbVK8=; b=h3dSssa2xKXPzlkXUPxsujpovQ
-        xZdcqiP40AquCSI/eUYTz59WMBzqnGOolC/9EAvHoAppQty/bmdfNZpnLp4tUnym+TXUBr4QiEcBv
-        iq6sEDb3WCbNdBszNbDtd9/GIN/k6r6XPQWCst2g7ln2dXtsABC1oJ+RGqKnPT0/mJL/BnCdUrDgF
-        NiZPhcof8aZoQ9HNHeUgdMPMXrRorUkfI7KO7GXhGzxkFV9VfnmiDmq1jb5D0eVGVKUmJfRQAF3af
-        Z3wbdgqxdt/sBQ/XXLVDPVlcWALll2Ib9eJprVvHUQZaf+FHPL8t7MbUaM/VuwKqipoW9R47OMKLD
-        WgGD8T0w==;
-Received: from [102.39.40.13] (helo=pc181009)
-        by lounge.grep.be with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <w@uter.be>)
-        id 1mFeVY-003uLJ-Tc; Mon, 16 Aug 2021 17:26:36 +0200
-Received: from wouter by pc181009 with local (Exim 4.94.2)
-        (envelope-from <w@uter.be>)
-        id 1mFeVM-000K3X-FY; Mon, 16 Aug 2021 17:26:24 +0200
-Date:   Mon, 16 Aug 2021 17:26:23 +0200
-From:   Wouter Verhelst <w@uter.be>
-To:     Eric Blake <eblake@redhat.com>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>, josef@toxicpanda.com,
-        axboe@kernel.dk, hch@lst.de, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-kernel@vger.kernel.org,
-        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
-Subject: Re: [PATCH] block: nbd: add sanity check for first_minor
-Message-ID: <YRqDn2AVd3ApchWF@pc181009.grep.be>
-References: <20210812091501.22648-1-paskripkin@gmail.com>
- <7f9a6877-12d9-0177-d09a-6522e5a557ec@gmail.com>
- <20210812153525.hlged76ivhqtffyg@redhat.com>
+        id S232917AbhHPP1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 11:27:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52114 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhHPP1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 11:27:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=vqDcByoS/t/ZISrx+gwmaKvJwGlUqSJuqfW+dLPvQEI=; b=3wrQex6Aqm3DvRfzw43RS4F7ZL
+        pCM6as+plmPZev72prdCFC59jJ0NUenzmlaN9N5VzFevPHhn65tsQ7caGod4KblbbEpNlGZj4O521
+        1JVH9+sITsVQy0sEMA/FkuhOzHMrrTF8dz8s5xFRiqEMZKi5zvasS0Y75zE4h/eygD/A=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mFeW7-000PPH-Qv; Mon, 16 Aug 2021 17:27:11 +0200
+Date:   Mon, 16 Aug 2021 17:27:11 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/1] net: phy: marvell10g: Add WAKE_PHY support
+ to WOL event
+Message-ID: <YRqDz9QZwqjadNdL@lunn.ch>
+References: <20210814194916.GB22278@shell.armlinux.org.uk>
+ <PH0PR11MB4950652B4D07C189508767F1D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+ <YRnmRp92j7Qpir7N@lunn.ch>
+ <PH0PR11MB4950F854C789F610ECD88E6ED8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+ <20210816071419.GF22278@shell.armlinux.org.uk>
+ <PH0PR11MB495065FCAFD90520684810F7D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+ <20210816081812.GH22278@shell.armlinux.org.uk>
+ <PH0PR11MB49509E7A82947DCB6BB48203D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
+ <20210816115435.664d921b@dellmb>
+ <PH0PR11MB49507764E1924DAB8B588D59D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210812153525.hlged76ivhqtffyg@redhat.com>
-X-Speed: Gates' Law: Every 18 months, the speed of software halves.
-Organization: none
+In-Reply-To: <PH0PR11MB49507764E1924DAB8B588D59D8FD9@PH0PR11MB4950.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:35:25AM -0500, Eric Blake wrote:
-> On Thu, Aug 12, 2021 at 12:42:38PM +0300, Pavel Skripkin wrote:
+On Mon, Aug 16, 2021 at 03:02:03PM +0000, Song, Yoong Siang wrote:
+> > > Yes, you are right. I missed the effect of get_wol.
+> > > Is it needed in future to implement link change interrupt in phy
+> > > driver? Cause I dint see much phy driver implement link change
+> > > interrupt.
 > > 
-> > Fun thing: I got a reply to this email from
-> > nsd-public@police.gov.hk, which is Hong Kong Police office email. Does
-> > anyone know what is going on? :) It's a bit scary...
+> > If there is a board that has interrupt pin wired correctly from the PHY and the
+> > interrupt controller is safe to use (i.e. it is not a PCA953x which cannot
+> > handle interrupt storms correctly), then I think the PHY driver should use the
+> > interrupt, instead of polling.
+> > 
+> > Marek
 > 
-> You are not alone.  Apparently, someone subscribed that address to the
-> nbd@other.debian.org list and it is auto-responding to every message
-> it receives; hopefully, a list administrator (I am not one) will be
-> willing to forcefully unsubscribe that address.
+> Any suggestion to avoid the conflict of "WoL on link change" mentioned by Russell?
+> Is it make sense to create a new member called wolopts under struct phy_device
+> to track the WoL status and return the correct status in get_wol callback?
 
-FWIW, this has now happened, so you should no longer see such autoreplies.
+I really think you need to look at your PMC and see if you can make it
+an interrupt controller. You only need level interrupts, not edge. So
+the microcontroller in the PMC could just poll the GPIO. There appears
+to be a simple IPC between the host and PMC, so just extend it with a
+couple of registers, interrupt state, interrupt mask, and make use of
+the existing interrupt between the host and PMC.
 
--- 
-     w@uter.{be,co.za}
-wouter@{grep.be,fosdem.org,debian.org}
+    Andrew
