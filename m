@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67F23ED4E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30BD3ED4EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237138AbhHPNGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:06:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
+        id S237162AbhHPNG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230236AbhHPNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 407EE63295;
-        Mon, 16 Aug 2021 13:04:48 +0000 (UTC)
+        id S237064AbhHPNFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:05:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF2C632A6;
+        Mon, 16 Aug 2021 13:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119088;
-        bh=gYvZPHl1S3Azo3e2R5H74EyjrpW5T+1DAIPB8RAvSlY=;
+        s=korg; t=1629119091;
+        bh=Q6i3T57RX6TV9PUrnLivdr2WkPChCIv41a7zXyC6zxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oPEs4ZX7g57jj+7XpSspmkmfGJ5LFcF88/Lqm48S4M+28XDIwtmWiNFDI4ziXCyn4
-         MgGV3zdeT6HHZJd2gUdHC1Vd23/SgiChrGlk7absss1ef6htdgzJR2Ml03WdB1fbbX
-         D2szGUGw1FLJV8JW9itsXQI24fHPYG9HMuo8lj5w=
+        b=J1SGLO4RAW8w7/62oC6wfi6uJQwYROlZYHCPDBY2I/vlhlIUEtHWkBZy5K4QrTvYU
+         znsG6NCnrw5In366RIY4bkwmEJYQ6mw6d+9xYdz8hEmL1460i1EZQ5nxP/jdMpxHjr
+         JGUXMBxlxfacXmfIJtX60ME1sPbpuKx6NgGuqxx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pawe=C5=82=20Szulik?= <pawel.szulik@intel.com>,
-        Babu Moger <Babu.Moger@amd.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH 5.4 46/62] x86/resctrl: Fix default monitoring groups reporting
-Date:   Mon, 16 Aug 2021 15:02:18 +0200
-Message-Id: <20210816125429.781698173@linuxfoundation.org>
+        stable@vger.kernel.org, Bixuan Cui <cuibixuan@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 47/62] genirq/msi: Ensure deactivation on teardown
+Date:   Mon, 16 Aug 2021 15:02:19 +0200
+Message-Id: <20210816125429.820363920@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
 References: <20210816125428.198692661@linuxfoundation.org>
@@ -41,122 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <Babu.Moger@amd.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-commit 064855a69003c24bd6b473b367d364e418c57625 upstream.
+commit dbbc93576e03fbe24b365fab0e901eb442237a8a upstream.
 
-Creating a new sub monitoring group in the root /sys/fs/resctrl leads to
-getting the "Unavailable" value for mbm_total_bytes and mbm_local_bytes
-on the entire filesystem.
+msi_domain_alloc_irqs() invokes irq_domain_activate_irq(), but
+msi_domain_free_irqs() does not enforce deactivation before tearing down
+the interrupts.
 
-Steps to reproduce:
+This happens when PCI/MSI interrupts are set up and never used before being
+torn down again, e.g. in error handling pathes. The only place which cleans
+that up is the error handling path in msi_domain_alloc_irqs().
 
-  1. mount -t resctrl resctrl /sys/fs/resctrl/
+Move the cleanup from msi_domain_alloc_irqs() into msi_domain_free_irqs()
+to cure that.
 
-  2. cd /sys/fs/resctrl/
-
-  3. cat mon_data/mon_L3_00/mbm_total_bytes
-     23189832
-
-  4. Create sub monitor group:
-  mkdir mon_groups/test1
-
-  5. cat mon_data/mon_L3_00/mbm_total_bytes
-     Unavailable
-
-When a new monitoring group is created, a new RMID is assigned to the
-new group. But the RMID is not active yet. When the events are read on
-the new RMID, it is expected to report the status as "Unavailable".
-
-When the user reads the events on the default monitoring group with
-multiple subgroups, the events on all subgroups are consolidated
-together. Currently, if any of the RMID reads report as "Unavailable",
-then everything will be reported as "Unavailable".
-
-Fix the issue by discarding the "Unavailable" reads and reporting all
-the successful RMID reads. This is not a problem on Intel systems as
-Intel reports 0 on Inactive RMIDs.
-
-Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
-Reported-by: Paweł Szulik <pawel.szulik@intel.com>
-Signed-off-by: Babu Moger <Babu.Moger@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated early")
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213311
-Link: https://lkml.kernel.org/r/162793309296.9224.15871659871696482080.stgit@bmoger-ubuntu
+Link: https://lore.kernel.org/r/20210518033117.78104-1-cuibixuan@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c |   27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ kernel/irq/msi.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -223,15 +223,14 @@ static u64 mbm_overflow_count(u64 prev_m
- 	return chunks >>= shift;
- }
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -477,11 +477,6 @@ skip_activate:
+ 	return 0;
  
--static int __mon_event_count(u32 rmid, struct rmid_read *rr)
-+static u64 __mon_event_count(u32 rmid, struct rmid_read *rr)
+ cleanup:
+-	for_each_msi_vector(desc, i, dev) {
+-		irq_data = irq_domain_get_irq_data(domain, i);
+-		if (irqd_is_activated(irq_data))
+-			irq_domain_deactivate_irq(irq_data);
+-	}
+ 	msi_domain_free_irqs(domain, dev);
+ 	return ret;
+ }
+@@ -494,7 +489,15 @@ cleanup:
+  */
+ void msi_domain_free_irqs(struct irq_domain *domain, struct device *dev)
  {
- 	struct mbm_state *m;
- 	u64 chunks, tval;
- 
- 	tval = __rmid_read(rmid, rr->evtid);
- 	if (tval & (RMID_VAL_ERROR | RMID_VAL_UNAVAIL)) {
--		rr->val = tval;
--		return -EINVAL;
-+		return tval;
- 	}
- 	switch (rr->evtid) {
- 	case QOS_L3_OCCUP_EVENT_ID:
-@@ -243,12 +242,6 @@ static int __mon_event_count(u32 rmid, s
- 	case QOS_L3_MBM_LOCAL_EVENT_ID:
- 		m = &rr->d->mbm_local[rmid];
- 		break;
--	default:
--		/*
--		 * Code would never reach here because
--		 * an invalid event id would fail the __rmid_read.
--		 */
--		return -EINVAL;
- 	}
- 
- 	if (rr->first) {
-@@ -298,23 +291,29 @@ void mon_event_count(void *info)
- 	struct rdtgroup *rdtgrp, *entry;
- 	struct rmid_read *rr = info;
- 	struct list_head *head;
-+	u64 ret_val;
- 
- 	rdtgrp = rr->rgrp;
- 
--	if (__mon_event_count(rdtgrp->mon.rmid, rr))
--		return;
-+	ret_val = __mon_event_count(rdtgrp->mon.rmid, rr);
- 
- 	/*
--	 * For Ctrl groups read data from child monitor groups.
-+	 * For Ctrl groups read data from child monitor groups and
-+	 * add them together. Count events which are read successfully.
-+	 * Discard the rmid_read's reporting errors.
- 	 */
- 	head = &rdtgrp->mon.crdtgrp_list;
- 
- 	if (rdtgrp->type == RDTCTRL_GROUP) {
- 		list_for_each_entry(entry, head, mon.crdtgrp_list) {
--			if (__mon_event_count(entry->mon.rmid, rr))
--				return;
-+			if (__mon_event_count(entry->mon.rmid, rr) == 0)
-+				ret_val = 0;
- 		}
- 	}
++	struct irq_data *irq_data;
+ 	struct msi_desc *desc;
++	int i;
 +
-+	/* Report error if none of rmid_reads are successful */
-+	if (ret_val)
-+		rr->val = ret_val;
- }
++	for_each_msi_vector(desc, i, dev) {
++		irq_data = irq_domain_get_irq_data(domain, i);
++		if (irqd_is_activated(irq_data))
++			irq_domain_deactivate_irq(irq_data);
++	}
  
- /*
+ 	for_each_msi_entry(desc, dev) {
+ 		/*
 
 
