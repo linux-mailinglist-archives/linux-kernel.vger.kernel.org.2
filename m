@@ -2,137 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB593ED934
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DECB3ED938
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhHPOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbhHPOvO (ORCPT
+        id S232281AbhHPOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:51:28 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:51436 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232555AbhHPOvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:51:14 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BBDC061764;
-        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id j1so26907625pjv.3;
-        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WJWFiW1tNTGnEXAY83sW/96pfLutJ+nc92p/dxWLkZg=;
-        b=NXbT1zLrDuMqskh2PkrXNK2vbCTKyrRJCbfTY5Bly9fYQ/XU0SfRcVq5Opg7hJuYPq
-         WAHFOfTPq1K1gGqDqCEl7LfXOVRnVK+Trx+MMYCG7OPlcmQ484293t+hm2eNoNgWwPWn
-         FMa4FwwJpv6nh2ij8bhxvHhBGoaIurIFplj7wnpKTSuRMnyldRdPcAWWcSmd+W7oZuoa
-         90O5BmPR7Iyg7k9vnQyRNKKQWgQWCvIDkqkqBKagNtE87pOxDe8b9ZAS8kRj2RhhMem8
-         RcODv8S8rQQKapLBdjj/yipP4YK2d1vrMKq6Wk4vAH1jeB7D9R7aSg32dzMV4dgTGHNn
-         cHbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WJWFiW1tNTGnEXAY83sW/96pfLutJ+nc92p/dxWLkZg=;
-        b=fbb1ZaF3MLVycQwQKjbG8tcuwm/EzfPl4vfOeAwIBBIpI5VAHOretXlKvGBNHOafKr
-         J4sliYDv9bM1NJ34ZtWlcNbRQfcnHzCgTsJSjZ0pAbO/Q+ZS9UwLI04fjxxT+t1ulgKB
-         IPPsyL1jDMfRU/xwfVCmRNPq+EgmJqGBCE7H4QBm+3v9G4+J54JJhbaFy3dCu8/Rl3w9
-         7K5pmWB18OdovI59y4YcwLnt6X5UmW2rVsI2M2xXxlqa6WyUhv9ggUES9Q5BEQBjEnks
-         KBjAZ2W/EG6tqNJmH9AiL3oJ2sNgDxByNrP7tGYlYLLOJL3RNWMiejrUZFaa654Spvws
-         dZjg==
-X-Gm-Message-State: AOAM533hjnoppG2uAotsGeSRSsDxViSB6cv8WbrCIyAqlQV10Y3I5ifs
-        bx41x1bQ5oFZapwtaIfmPcA=
-X-Google-Smtp-Source: ABdhPJwwGaWbF5lMH7zWG8CjOdMFhlJFveeUXJRyURV3wu36AAVQm0z4EMghAqWltWQj3nIzdJtriw==
-X-Received: by 2002:a17:90b:3014:: with SMTP id hg20mr17976900pjb.140.1629125442297;
-        Mon, 16 Aug 2021 07:50:42 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id z2sm6264141pgb.33.2021.08.16.07.50.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Aug 2021 07:50:41 -0700 (PDT)
-Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
- function for HV IVM
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-11-ltykernel@gmail.com>
- <20210812122741.GC19050@lst.de>
- <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
-Message-ID: <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
-Date:   Mon, 16 Aug 2021 22:50:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 16 Aug 2021 10:51:17 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id ECF2D20C29DE;
+        Mon, 16 Aug 2021 07:50:44 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ECF2D20C29DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629125445;
+        bh=EtK88Klp/csYiXGlHYdDL4COx9P3F5jeMkcQ38wpqdY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j5eWDo8biK0TWQ9O7y48EhsnZe5sHR+7lF44x/5qMHz87OsfNWA/nt2BunNEJYJmg
+         7QJUlOM7A0mViYMDy8tjUp0CIvSK1TXOZ61nn2Va5wGXskzWmtOMhc6s1AkhntG32Z
+         do45fOJ+OrEF4oSPksIkv53UvoJm4mwUEXoXvI3s=
+Date:   Mon, 16 Aug 2021 09:50:40 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+Cc:     akpm@linux-foundation.org, shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasha.tatashin@soleen.com
+Subject: Re: [PATCH v2 1/2] selftests: vm: add KSM merging time test
+Message-ID: <20210816145040.GL5469@sequoia>
+References: <cover.1628199399.git.zhansayabagdaulet@gmail.com>
+ <318b946ac80cc9205c89d0962048378f7ce0705b.1628199399.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <318b946ac80cc9205c89d0962048378f7ce0705b.1628199399.git.zhansayabagdaulet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/2021 1:58 AM, Tianyu Lan wrote:
-> On 8/12/2021 8:27 PM, Christoph Hellwig wrote:
->> This is still broken.  You need to make sure the actual DMA allocations
->> do have struct page backing.
->>
+On 2021-08-06 16:10:27, Zhansaya Bagdauletkyzy wrote:
+> Add ksm_merge_time() function to determine speed and time needed for
+> merging. The total spent time is shown in seconds while speed is
+> in MiB/s. User must specify the size of duplicated memory area (in MiB)
+> before running the test.
 > 
-> Hi Christoph:
->       swiotlb_tbl_map_single() still returns PA below vTOM/share_gpa_ > boundary. These PAs has backing pages and belong to system memory.
-> In other word, all PAs passed to DMA API have backing pages and these is 
-> no difference between Isolation guest and traditional guest for DMA API.
-> The new mapped VA for PA above vTOM here is just to access the bounce 
-> buffer in the swiotlb code and isn't exposed to outside.
+> The test is run as follows: ./ksm_tests -P -s 100
+> The output:
+> 	Total size:    100 MiB
+> 	Total time:    0.201106786 s
+> 	Average speed:  497.248 MiB/s
+> 
+> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
 
-Hi Christoph:
-       Sorry to bother you.Please double check with these two patches
-" [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function 
-for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
-unmap_encrypted() function".
-       The swiotlb bounce buffer in the isolation VM are allocated in the
-low end memory and these memory has struct page backing. All dma address
-returned by swiotlb/DMA API are low end memory and this is as same as 
-what happen in the traditional VM.So this means all PAs passed to DMA 
-API have struct page backing. The difference in Isolation VM is to 
-access bounce buffer via address space above vTOM/shared_guest_memory
-_boundary. To access bounce buffer shared with host, the guest needs to
-mark the memory visible to host via hypercall and map bounce buffer in 
-the extra address space(PA + shared_guest_memory_boundary). The vstart
-introduced in this patch is to store va of extra address space and it's 
-only used to access bounce buffer in the swiotlb_bounce(). The PA in 
-extra space is only in the Hyper-V map function and won't be passed to 
-DMA API or other components.
-       The API dma_map_decrypted() introduced in the patch 9 is to map 
-the bounce buffer in the extra space and these memory in the low end 
-space are used as DMA memory in the driver. Do you prefer these APIs
-still in the set_memory.c? I move the API to dma/mapping.c due to the
-suggested name arch_dma_map_decrypted() in the previous mail
-(https://lore.kernel.org/netdev/20210720135437.GA13554@lst.de/).
-       If there are something unclear, please let me know. Hope this
-still can catch the merge window.
+Thanks for addressing all of Pavel's feedback. This looks good to me.
 
-Thanks.
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
+Tyler
 
-
-
+> ---
+> v1 -> v2:
+>  As suggested by Pavel,
+>  - replace MB with MiB
+>  - measure speed more accurately
+> 
+> Pavel's review comments:
+> https://lore.kernel.org/lkml/CA+CK2bBpzdWMYoJdR2EQNNCrRn+Pg1Gs2oBqLR65JW3UUnWt0w@mail.gmail.com/
+> 
+>  tools/testing/selftests/vm/ksm_tests.c | 74 ++++++++++++++++++++++++--
+>  1 file changed, 70 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
+> index cdeb4a028538..432dfe615e50 100644
+> --- a/tools/testing/selftests/vm/ksm_tests.c
+> +++ b/tools/testing/selftests/vm/ksm_tests.c
+> @@ -7,6 +7,7 @@
+>  #include <numa.h>
+>  
+>  #include "../kselftest.h"
+> +#include "../../../../include/vdso/time64.h"
+>  
+>  #define KSM_SYSFS_PATH "/sys/kernel/mm/ksm/"
+>  #define KSM_FP(s) (KSM_SYSFS_PATH s)
+> @@ -15,6 +16,7 @@
+>  #define KSM_PROT_STR_DEFAULT "rw"
+>  #define KSM_USE_ZERO_PAGES_DEFAULT false
+>  #define KSM_MERGE_ACROSS_NODES_DEFAULT true
+> +#define MB (1ul << 20)
+>  
+>  struct ksm_sysfs {
+>  	unsigned long max_page_sharing;
+> @@ -30,7 +32,8 @@ enum ksm_test_name {
+>  	CHECK_KSM_MERGE,
+>  	CHECK_KSM_UNMERGE,
+>  	CHECK_KSM_ZERO_PAGE_MERGE,
+> -	CHECK_KSM_NUMA_MERGE
+> +	CHECK_KSM_NUMA_MERGE,
+> +	KSM_MERGE_TIME
+>  };
+>  
+>  static int ksm_write_sysfs(const char *file_path, unsigned long val)
+> @@ -86,13 +89,16 @@ static int str_to_prot(char *prot_str)
+>  static void print_help(void)
+>  {
+>  	printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n"
+> -	       "[-z use_zero_pages] [-m merge_across_nodes]\n");
+> +	       "[-z use_zero_pages] [-m merge_across_nodes] [-s size]\n");
+>  
+>  	printf("Supported <test type>:\n"
+>  	       " -M (page merging)\n"
+>  	       " -Z (zero pages merging)\n"
+>  	       " -N (merging of pages in different NUMA nodes)\n"
+> -	       " -U (page unmerging)\n\n");
+> +	       " -U (page unmerging)\n"
+> +	       " -P evaluate merging time and speed.\n"
+> +	       "    For this test, the size of duplicated memory area (in MiB)\n"
+> +	       "    must be provided using -s option\n\n");
+>  
+>  	printf(" -a: specify the access protections of pages.\n"
+>  	       "     <prot> must be of the form [rwx].\n"
+> @@ -105,6 +111,7 @@ static void print_help(void)
+>  	       "     Default: %d\n", KSM_USE_ZERO_PAGES_DEFAULT);
+>  	printf(" -m: change merge_across_nodes tunable\n"
+>  	       "     Default: %d\n", KSM_MERGE_ACROSS_NODES_DEFAULT);
+> +	printf(" -s: the size of duplicated memory area (in MiB)\n");
+>  
+>  	exit(0);
+>  }
+> @@ -407,6 +414,47 @@ static int check_ksm_numa_merge(int mapping, int prot, int timeout, bool merge_a
+>  	return KSFT_FAIL;
+>  }
+>  
+> +static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
+> +{
+> +	void *map_ptr;
+> +	struct timespec start_time, end_time;
+> +	unsigned long scan_time_ns;
+> +
+> +	map_size *= MB;
+> +
+> +	map_ptr = allocate_memory(NULL, prot, mapping, '*', map_size);
+> +	if (!map_ptr)
+> +		return KSFT_FAIL;
+> +
+> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
+> +		perror("clock_gettime");
+> +		goto err_out;
+> +	}
+> +	if (ksm_merge_pages(map_ptr, map_size, start_time, timeout))
+> +		goto err_out;
+> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
+> +		perror("clock_gettime");
+> +		goto err_out;
+> +	}
+> +
+> +	scan_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
+> +		       (end_time.tv_nsec - start_time.tv_nsec);
+> +
+> +	printf("Total size:    %lu MiB\n", map_size / MB);
+> +	printf("Total time:    %ld.%09ld s\n", scan_time_ns / NSEC_PER_SEC,
+> +	       scan_time_ns % NSEC_PER_SEC);
+> +	printf("Average speed:  %.3f MiB/s\n", (map_size / MB) /
+> +					       ((double)scan_time_ns / NSEC_PER_SEC));
+> +
+> +	munmap(map_ptr, map_size);
+> +	return KSFT_PASS;
+> +
+> +err_out:
+> +	printf("Not OK\n");
+> +	munmap(map_ptr, map_size);
+> +	return KSFT_FAIL;
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+>  	int ret, opt;
+> @@ -418,8 +466,9 @@ int main(int argc, char *argv[])
+>  	int test_name = CHECK_KSM_MERGE;
+>  	bool use_zero_pages = KSM_USE_ZERO_PAGES_DEFAULT;
+>  	bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
+> +	long size_MB = 0;
+>  
+> -	while ((opt = getopt(argc, argv, "ha:p:l:z:m:MUZN")) != -1) {
+> +	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNP")) != -1) {
+>  		switch (opt) {
+>  		case 'a':
+>  			prot = str_to_prot(optarg);
+> @@ -453,6 +502,12 @@ int main(int argc, char *argv[])
+>  			else
+>  				merge_across_nodes = 1;
+>  			break;
+> +		case 's':
+> +			size_MB = atol(optarg);
+> +			if (size_MB <= 0) {
+> +				printf("Size must be greater than 0\n");
+> +				return KSFT_FAIL;
+> +			}
+>  		case 'M':
+>  			break;
+>  		case 'U':
+> @@ -464,6 +519,9 @@ int main(int argc, char *argv[])
+>  		case 'N':
+>  			test_name = CHECK_KSM_NUMA_MERGE;
+>  			break;
+> +		case 'P':
+> +			test_name = KSM_MERGE_TIME;
+> +			break;
+>  		default:
+>  			return KSFT_FAIL;
+>  		}
+> @@ -505,6 +563,14 @@ int main(int argc, char *argv[])
+>  		ret = check_ksm_numa_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
+>  					   merge_across_nodes, page_size);
+>  		break;
+> +	case KSM_MERGE_TIME:
+> +		if (size_MB == 0) {
+> +			printf("Option '-s' is required.\n");
+> +			return KSFT_FAIL;
+> +		}
+> +		ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
+> +				     size_MB);
+> +		break;
+>  	}
+>  
+>  	if (ksm_restore(&ksm_sysfs_old)) {
+> -- 
+> 2.25.1
+> 
