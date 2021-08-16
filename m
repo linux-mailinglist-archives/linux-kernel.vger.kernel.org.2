@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1575E3ED4D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBCE3ED704
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237134AbhHPNFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55778 "EHLO mail.kernel.org"
+        id S239800AbhHPN0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230493AbhHPNEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E813C6329B;
-        Mon, 16 Aug 2021 13:04:09 +0000 (UTC)
+        id S240347AbhHPNPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:15:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 160EB632A3;
+        Mon, 16 Aug 2021 13:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119050;
-        bh=2RDGw+17aNRNKD3+r6dIer4eSrmnY/Ax8xoQfyxg9yo=;
+        s=korg; t=1629119570;
+        bh=BrxAP1n3XrLK6AtpB1iXPo29xwVVZ/wr5Yi7vfnCZJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ITRcaEiL/boYE8FY0K6dcY1MfZgqtKTRCkYFfPU0cH4nrj4dyjlCuuyvNFv+QWsAs
-         7MkQ63opzdq3iV0mW16DlPgun4GbBnOytryOfO3ignHN+CVjNagiYW/RVWyaTxutAk
-         GnkhJB87dBNDQ8tDw0NX+KgErYdyU7piSZ5RiCTM=
+        b=BHB6CZDg5a8bI/Af5xUgp8junXhi45lBFD8eOC7yVVfdT1V1lbw7MwZEXMMxXQ9bf
+         +5P0GJRcjAVzjzmtmJncb3Nv4bIVb5j6pOXVTohG1cRH+y20StuqxWKAG7PhUqfWX8
+         pPEDsjWqd+QWspU40UqiCGofAlPSlMqa0u+cbyEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/62] ASoC: cs42l42: Fix inversion of ADC Notch Switch control
-Date:   Mon, 16 Aug 2021 15:01:46 +0200
-Message-Id: <20210816125428.675989543@linuxfoundation.org>
+Subject: [PATCH 5.13 077/151] bareudp: Fix invalid read beyond skbs linear data
+Date:   Mon, 16 Aug 2021 15:01:47 +0200
+Message-Id: <20210816125446.613978388@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
-References: <20210816125428.198692661@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit 30615bd21b4cc3c3bb5ae8bd70e2a915cc5f75c7 ]
+[ Upstream commit 143a8526ab5fd4f8a0c4fe2a9cb28c181dc5a95f ]
 
-The underlying register field has inverted sense (0 = enabled) so
-the control definition must be marked as inverted.
+Data beyond the UDP header might not be part of the skb's linear data.
+Use skb_copy_bits() instead of direct access to skb->data+X, so that
+we read the correct bytes even on a fragmented skb.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Link: https://lore.kernel.org/r/20210803160834.9005-1-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 4b5f67232d95 ("net: Special handling for IP & MPLS.")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Link: https://lore.kernel.org/r/7741c46545c6ef02e70c80a9b32814b22d9616b3.1628264975.git.gnault@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/bareudp.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 978f5df1ff79..032ec4bd060b 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -435,7 +435,7 @@ static SOC_ENUM_SINGLE_DECL(cs42l42_wnf05_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
- static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	/* ADC Volume and Filter Controls */
- 	SOC_SINGLE("ADC Notch Switch", CS42L42_ADC_CTL,
--				CS42L42_ADC_NOTCH_DIS_SHIFT, true, false),
-+				CS42L42_ADC_NOTCH_DIS_SHIFT, true, true),
- 	SOC_SINGLE("ADC Weak Force Switch", CS42L42_ADC_CTL,
- 				CS42L42_ADC_FORCE_WEAK_VCM_SHIFT, true, false),
- 	SOC_SINGLE("ADC Invert Switch", CS42L42_ADC_CTL,
+diff --git a/drivers/net/bareudp.c b/drivers/net/bareudp.c
+index edfad93e7b68..22e26458a86e 100644
+--- a/drivers/net/bareudp.c
++++ b/drivers/net/bareudp.c
+@@ -71,12 +71,18 @@ static int bareudp_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
+ 		family = AF_INET6;
+ 
+ 	if (bareudp->ethertype == htons(ETH_P_IP)) {
+-		struct iphdr *iphdr;
++		__u8 ipversion;
+ 
+-		iphdr = (struct iphdr *)(skb->data + BAREUDP_BASE_HLEN);
+-		if (iphdr->version == 4) {
+-			proto = bareudp->ethertype;
+-		} else if (bareudp->multi_proto_mode && (iphdr->version == 6)) {
++		if (skb_copy_bits(skb, BAREUDP_BASE_HLEN, &ipversion,
++				  sizeof(ipversion))) {
++			bareudp->dev->stats.rx_dropped++;
++			goto drop;
++		}
++		ipversion >>= 4;
++
++		if (ipversion == 4) {
++			proto = htons(ETH_P_IP);
++		} else if (ipversion == 6 && bareudp->multi_proto_mode) {
+ 			proto = htons(ETH_P_IPV6);
+ 		} else {
+ 			bareudp->dev->stats.rx_dropped++;
 -- 
 2.30.2
 
