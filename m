@@ -2,221 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3FF3ECEFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4976E3ECF00
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 09:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhHPHJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 03:09:51 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:51101 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233349AbhHPHJu (ORCPT
+        id S233782AbhHPHL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 03:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233600AbhHPHL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 03:09:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Uj7Nyur_1629097754;
-Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0Uj7Nyur_1629097754)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 16 Aug 2021 15:09:15 +0800
-From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, anderson@cs.unc.edu, baruah@wustl.edu,
-        bsegall@google.com, changhuaixin@linux.alibaba.com,
-        dietmar.eggemann@arm.com, dtcccc@linux.alibaba.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
-        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
-        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: [PATCH 2/2] sched/fair: Add document for burstable CFS bandwidth
-Date:   Mon, 16 Aug 2021 15:08:49 +0800
-Message-Id: <20210816070849.3153-3-changhuaixin@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
-In-Reply-To: <20210816070849.3153-1-changhuaixin@linux.alibaba.com>
-References: <20210816070849.3153-1-changhuaixin@linux.alibaba.com>
+        Mon, 16 Aug 2021 03:11:58 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010BCC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:11:27 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id d16so7537154ljq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 00:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K1MP/CLQ5UxOhTtXkR4NWOKZQUDna/VXaqmZ5Y18D+Y=;
+        b=dv4s8wYRv2UexG5fYe/L9LefRe2lJY2AlCbdse1UgIPHE5tFl4/+9gzjG1+20V78Y7
+         XFuieXknWYc1tLKwQXAjEVv8RK65X5Bx7FaNsk3UjQjpq09Z85GgcDa/pr0hg3Od1IkP
+         LDHM3JNzHl/+mrYSlGA+TPbiptx+ajmIft7bM9Z4UvHqp5BUP6WzRSQvWXpcrgHK6Nw2
+         /JZ55NGMyfaG2OLnF/pE3tthDNGGbeTg+oLJULUAvNt5iR+KNZrmzUgfh9NPTeET5VG4
+         hhuXfsSwd9VG1coXJBUPPJoh/K7/pMYw0p4l736zMLNx5S2BrUZb+bRxIQe0D4/055Fu
+         UNhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K1MP/CLQ5UxOhTtXkR4NWOKZQUDna/VXaqmZ5Y18D+Y=;
+        b=I7Ls95QtD5iHXDX06PxWkfmQ3b1uXRTvNkCUvs9IgIR40dcrUVWWlOPFfM6KAQfbom
+         4XPAc5B9SFQp7JzgIxCNUiARSlRbgQB9OuDoiyWJOsgOx2yf840loFs5//lx8+h4aK10
+         imAJIK9Q5QrdliyfUCc3ImVNWaJz0j1/D5bApZRvnCfvnOi0S8AqfR6NI9hhgYsOUyc3
+         EuORFMGCBmdPlu6MUS4n69ChtqtbrvrDU4hhPIYfiuMkEYoTgTVHmMWi9sh+QLMH2vQK
+         w8YEYNO4PYnwKixAxTyYrbjswpdtIT1KWDcP97G+n8PHhiME2jG7vwGsbgigyNwlD3SY
+         DYHg==
+X-Gm-Message-State: AOAM533oF+L9Oxz6Pc9fCOSY5JaVhXgMMjcRdvLnvVwgAq2anJe2SVkz
+        d6vERiYNy3KDrzLjIju+srETG3eWOQ0jM4iZHYY=
+X-Google-Smtp-Source: ABdhPJxzchjcXdTB0dGFPYdZFPWFClqWlEArFtzNwGoDEFnWTpe3bAsEm+C54IrQR9MnM1ahgquwwvVdQmKX83Wh9sg=
+X-Received: by 2002:a2e:2d01:: with SMTP id t1mr11200831ljt.400.1629097885325;
+ Mon, 16 Aug 2021 00:11:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20210809185449.2565768-1-daeho43@gmail.com> <425daf77-8020-26ce-dc9f-019d9a881b78@kernel.org>
+ <CACOAw_xTh_HZizaVzDNjnVswu_OQwOjzEWRNxouGtM9E5qj6Pg@mail.gmail.com>
+ <071534dd-cf10-38d3-b83b-c833f9c0a70a@kernel.org> <CACOAw_ye4y-njHbewXsvVr3gTT4URsw7VH4HM_D_g=zntwjtdA@mail.gmail.com>
+ <dc21e445-126d-ef74-3d09-c5a71782ed2a@kernel.org>
+In-Reply-To: <dc21e445-126d-ef74-3d09-c5a71782ed2a@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Mon, 16 Aug 2021 00:11:14 -0700
+Message-ID: <CACOAw_x1F6Uu3p9RA8S7XBXnEYsnjPFY0JSG_VqBLrUjqAGeCA@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce blk_alloc_mode mount option
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basic description of usage and effect for CFS Bandwidth Control Burst.
+I agree with you. But still I think "fragment" mode should work even
+in low free space conditions.
+Otherwise, it will be seeking the free blocks again and again like a busy loop.
+Or we can change the block allocation way into adaptive mode under low
+free space even staying in "fragment" mode.
 
-Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- Documentation/admin-guide/cgroup-v2.rst |  8 ++++
- Documentation/scheduler/sched-bwc.rst   | 85 +++++++++++++++++++++++++++++----
- 2 files changed, 83 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5c7377b5bd3e..c79477089c53 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1016,6 +1016,8 @@ All time durations are in microseconds.
- 	- nr_periods
- 	- nr_throttled
- 	- throttled_usec
-+	- nr_bursts
-+	- burst_usec
- 
-   cpu.weight
- 	A read-write single value file which exists on non-root
-@@ -1047,6 +1049,12 @@ All time durations are in microseconds.
- 	$PERIOD duration.  "max" for $MAX indicates no limit.  If only
- 	one number is written, $MAX is updated.
- 
-+  cpu.max.burst
-+	A read-write single value file which exists on non-root
-+	cgroups.  The default is "0".
-+
-+	The burst in the range [0, $QUOTA].
-+
-   cpu.pressure
- 	A read-write nested-keyed file.
- 
-diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-index 1fc73555f5c4..0b2a3b2e3369 100644
---- a/Documentation/scheduler/sched-bwc.rst
-+++ b/Documentation/scheduler/sched-bwc.rst
-@@ -22,39 +22,89 @@ cfs_quota units at each period boundary. As threads consume this bandwidth it
- is transferred to cpu-local "silos" on a demand basis. The amount transferred
- within each of these updates is tunable and described as the "slice".
- 
-+Burst feature
-+-------------
-+This feature borrows time now against our future underrun, at the cost of
-+increased interference against the other system users. All nicely bounded.
-+
-+Traditional (UP-EDF) bandwidth control is something like:
-+
-+  (U = \Sum u_i) <= 1
-+
-+This guaranteeds both that every deadline is met and that the system is
-+stable. After all, if U were > 1, then for every second of walltime,
-+we'd have to run more than a second of program time, and obviously miss
-+our deadline, but the next deadline will be further out still, there is
-+never time to catch up, unbounded fail.
-+
-+The burst feature observes that a workload doesn't always executes the full
-+quota; this enables one to describe u_i as a statistical distribution.
-+
-+For example, have u_i = {x,e}_i, where x is the p(95) and x+e p(100)
-+(the traditional WCET). This effectively allows u to be smaller,
-+increasing the efficiency (we can pack more tasks in the system), but at
-+the cost of missing deadlines when all the odds line up. However, it
-+does maintain stability, since every overrun must be paired with an
-+underrun as long as our x is above the average.
-+
-+That is, suppose we have 2 tasks, both specify a p(95) value, then we
-+have a p(95)*p(95) = 90.25% chance both tasks are within their quota and
-+everything is good. At the same time we have a p(5)p(5) = 0.25% chance
-+both tasks will exceed their quota at the same time (guaranteed deadline
-+fail). Somewhere in between there's a threshold where one exceeds and
-+the other doesn't underrun enough to compensate; this depends on the
-+specific CDFs.
-+
-+At the same time, we can say that the worst case deadline miss, will be
-+\Sum e_i; that is, there is a bounded tardiness (under the assumption
-+that x+e is indeed WCET).
-+
-+The interferenece when using burst is valued by the possibilities for
-+missing the deadline and the average WCET. Test results showed that when
-+there many cgroups or CPU is under utilized, the interference is
-+limited. More details are shown in:
-+https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B@linux.alibaba.com/
-+
- Management
- ----------
--Quota and period are managed within the cpu subsystem via cgroupfs.
-+Quota, period and burst are managed within the cpu subsystem via cgroupfs.
- 
- .. note::
-    The cgroupfs files described in this section are only applicable
-    to cgroup v1. For cgroup v2, see
-    :ref:`Documentation/admin-guide/cgroup-v2.rst <cgroup-v2-cpu>`.
- 
--- cpu.cfs_quota_us: the total available run-time within a period (in
--  microseconds)
-+- cpu.cfs_quota_us: run-time replenished within a period (in microseconds)
- - cpu.cfs_period_us: the length of a period (in microseconds)
- - cpu.stat: exports throttling statistics [explained further below]
-+- cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)
- 
- The default values are::
- 
- 	cpu.cfs_period_us=100ms
--	cpu.cfs_quota=-1
-+	cpu.cfs_quota_us=-1
-+	cpu.cfs_burst_us=0
- 
- A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
- bandwidth restriction in place, such a group is described as an unconstrained
- bandwidth group. This represents the traditional work-conserving behavior for
- CFS.
- 
--Writing any (valid) positive value(s) will enact the specified bandwidth limit.
--The minimum quota allowed for the quota or period is 1ms. There is also an
--upper bound on the period length of 1s. Additional restrictions exist when
--bandwidth limits are used in a hierarchical fashion, these are explained in
--more detail below.
-+Writing any (valid) positive value(s) no smaller than cpu.cfs_burst_us will
-+enact the specified bandwidth limit. The minimum quota allowed for the quota or
-+period is 1ms. There is also an upper bound on the period length of 1s.
-+Additional restrictions exist when bandwidth limits are used in a hierarchical
-+fashion, these are explained in more detail below.
- 
- Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
- and return the group to an unconstrained state once more.
- 
-+A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
-+any unused bandwidth. It makes the traditional bandwidth control behavior for
-+CFS unchanged. Writing any (valid) positive value(s) no larger than
-+cpu.cfs_quota_us into cpu.cfs_burst_us will enact the cap on unused bandwidth
-+accumulation.
-+
- Any updates to a group's bandwidth specification will result in it becoming
- unthrottled if it is in a constrained state.
- 
-@@ -74,7 +124,7 @@ for more fine-grained consumption.
- 
- Statistics
- ----------
--A group's bandwidth statistics are exported via 3 fields in cpu.stat.
-+A group's bandwidth statistics are exported via 5 fields in cpu.stat.
- 
- cpu.stat:
- 
-@@ -82,6 +132,9 @@ cpu.stat:
- - nr_throttled: Number of times the group has been throttled/limited.
- - throttled_time: The total time duration (in nanoseconds) for which entities
-   of the group have been throttled.
-+- nr_bursts: Number of periods burst occurs.
-+- burst_usec: Cumulative wall-time that any CPUs has used above quota in
-+  respective periods
- 
- This interface is read-only.
- 
-@@ -179,3 +232,15 @@ Examples
- 
-    By using a small period here we are ensuring a consistent latency
-    response at the expense of burst capacity.
-+
-+4. Limit a group to 40% of 1 CPU, and allow accumulate up to 20% of 1 CPU
-+   additionally, in case accumulation has been done.
-+
-+   With 50ms period, 20ms quota will be equivalent to 40% of 1 CPU.
-+   And 10ms burst will be equivalent to 20% of 1 CPU.
-+
-+	# echo 20000 > cpu.cfs_quota_us /* quota = 20ms */
-+	# echo 50000 > cpu.cfs_period_us /* period = 50ms */
-+	# echo 10000 > cpu.cfs_burst_us /* burst = 10ms */
-+
-+   Larger buffer setting (no larger than quota) allows greater burst capacity.
--- 
-2.14.4.44.g2045bb6
-
+If we can handle this, we might use "fragment" mode for both
+simulating after fragmentation and making the filesystem fragmented.
