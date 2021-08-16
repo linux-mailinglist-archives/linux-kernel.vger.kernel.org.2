@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7433ED552
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A09D3ED718
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238998AbhHPNKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58258 "EHLO mail.kernel.org"
+        id S241345AbhHPN0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237640AbhHPNHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:07:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 715576113D;
-        Mon, 16 Aug 2021 13:06:20 +0000 (UTC)
+        id S240071AbhHPNQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:16:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B830A632F8;
+        Mon, 16 Aug 2021 13:13:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119181;
-        bh=UA4kffAx4RIlO1pP+jpNrtfMYTtYnlGxe/qwYlyizuo=;
+        s=korg; t=1629119622;
+        bh=8n7fKA6o2yylu2ozHvI9dzT6Y9m7/8bAE62WE4O1QCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vS7OI7vZG3IFlzsdAX+3Ac8Mi1mM1l0+cBuyzmeRmF6LMYMkTKls6hup5IOB8KeR4
-         CRuL2sQzSltQc4nFMCL93ddy3zsDieMniHj4MyWC0h5ebbKpgESaVM/3/3L15HiArR
-         /+J3Ts0AOD40Nmx4fBfaXJvZbtwJ7ToRvIQJRjeU=
+        b=T1RmlD9BGml+RK+hTntTpQWIRdhYT3XYAoX++rmHnnqwoUyJNRyrtX+z05wEal6Ii
+         lDODPLk0X9/5X+xsG0l7/n+imJGGVRJe3dzIO78J1t8NT/X4ZikUuhqF+nbpGIuYpT
+         ERhE7g7GdK4ZrumyOkCBqDLVQbZJ7/2w0gsXKSiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
+        stable@vger.kernel.org,
+        Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 23/96] ieee802154: hwsim: fix GPF in hwsim_new_edge_nl
-Date:   Mon, 16 Aug 2021 15:01:33 +0200
-Message-Id: <20210816125435.702167414@linuxfoundation.org>
+Subject: [PATCH 5.13 064/151] bpf: Fix integer overflow involving bucket_size
+Date:   Mon, 16 Aug 2021 15:01:34 +0200
+Message-Id: <20210816125446.176472058@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
+References: <20210816125444.082226187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
 
-[ Upstream commit 889d0e7dc68314a273627d89cbb60c09e1cc1c25 ]
+[ Upstream commit c4eb1f403243fc7bbb7de644db8587c03de36da6 ]
 
-Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE
-must be present to fix GPF.
+In __htab_map_lookup_and_delete_batch(), hash buckets are iterated
+over to count the number of elements in each bucket (bucket_size).
+If bucket_size is large enough, the multiplication to calculate
+kvmalloc() size could overflow, resulting in out-of-bounds write
+as reported by KASAN:
 
-Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Acked-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210707155633.1486603-1-mudongliangabcd@gmail.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+  [...]
+  [  104.986052] BUG: KASAN: vmalloc-out-of-bounds in __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+  [  104.986489] Write of size 4194224 at addr ffffc9010503be70 by task crash/112
+  [  104.986889]
+  [  104.987193] CPU: 0 PID: 112 Comm: crash Not tainted 5.14.0-rc4 #13
+  [  104.987552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+  [  104.988104] Call Trace:
+  [  104.988410]  dump_stack_lvl+0x34/0x44
+  [  104.988706]  print_address_description.constprop.0+0x21/0x140
+  [  104.988991]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+  [  104.989327]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+  [  104.989622]  kasan_report.cold+0x7f/0x11b
+  [  104.989881]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+  [  104.990239]  kasan_check_range+0x17c/0x1e0
+  [  104.990467]  memcpy+0x39/0x60
+  [  104.990670]  __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+  [  104.990982]  ? __wake_up_common+0x4d/0x230
+  [  104.991256]  ? htab_of_map_free+0x130/0x130
+  [  104.991541]  bpf_map_do_batch+0x1fb/0x220
+  [...]
+
+In hashtable, if the elements' keys have the same jhash() value, the
+elements will be put into the same bucket. By putting a lot of elements
+into a single bucket, the value of bucket_size can be increased to
+trigger the integer overflow.
+
+Triggering the overflow is possible for both callers with CAP_SYS_ADMIN
+and callers without CAP_SYS_ADMIN.
+
+It will be trivial for a caller with CAP_SYS_ADMIN to intentionally
+reach this overflow by enabling BPF_F_ZERO_SEED. As this flag will set
+the random seed passed to jhash() to 0, it will be easy for the caller
+to prepare keys which will be hashed into the same value, and thus put
+all the elements into the same bucket.
+
+If the caller does not have CAP_SYS_ADMIN, BPF_F_ZERO_SEED cannot be
+used. However, it will be still technically possible to trigger the
+overflow, by guessing the random seed value passed to jhash() (32bit)
+and repeating the attempt to trigger the overflow. In this case,
+the probability to trigger the overflow will be low and will take
+a very long time.
+
+Fix the integer overflow by calling kvmalloc_array() instead of
+kvmalloc() to allocate memory.
+
+Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210806150419.109658-1-th.yasumatsu@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ieee802154/mac802154_hwsim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/hashtab.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
-index 43f389540bba..080b15fc0060 100644
---- a/drivers/net/ieee802154/mac802154_hwsim.c
-+++ b/drivers/net/ieee802154/mac802154_hwsim.c
-@@ -418,7 +418,7 @@ static int hwsim_new_edge_nl(struct sk_buff *msg, struct genl_info *info)
- 	struct hwsim_edge *e;
- 	u32 v0, v1;
- 
--	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
-+	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] ||
- 	    !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
- 		return -EINVAL;
- 
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index d7ebb12ffffc..49857e8cd6ce 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1464,8 +1464,8 @@ alloc:
+ 	/* We cannot do copy_from_user or copy_to_user inside
+ 	 * the rcu_read_lock. Allocate enough space here.
+ 	 */
+-	keys = kvmalloc(key_size * bucket_size, GFP_USER | __GFP_NOWARN);
+-	values = kvmalloc(value_size * bucket_size, GFP_USER | __GFP_NOWARN);
++	keys = kvmalloc_array(key_size, bucket_size, GFP_USER | __GFP_NOWARN);
++	values = kvmalloc_array(value_size, bucket_size, GFP_USER | __GFP_NOWARN);
+ 	if (!keys || !values) {
+ 		ret = -ENOMEM;
+ 		goto after_loop;
 -- 
 2.30.2
 
