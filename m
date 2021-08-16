@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9490F3ED911
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C7D3ED90C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhHPOnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhHPOjw (ORCPT
+        id S232133AbhHPOja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:39:30 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:35401 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230177AbhHPOj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:39:52 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B77C061764;
-        Mon, 16 Aug 2021 07:39:20 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d5so4991947qtd.3;
-        Mon, 16 Aug 2021 07:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qmlXMatWSYYRVrk+FklMkfhLPVeb/cB811pl9zDJ0Hw=;
-        b=viBpZPu/7MsqC1I8Iw17SqiDARudLf+rBYxHhn2vnJBnKGkRs8einnxcmbj5PjVyz3
-         HD7L6S4cfRGNr/05vLUwz7bvPvdnbsI23AwFLlsTJW088/AdjOjplsJ6JcytAHaloe65
-         9dfriMgy1r+Xzp4L8S88fnw6AdrClMAsBFsie00AhsLKfrEPXrdDhLrjsc9rZmme+flS
-         OFyGr4vqdi0IX3IoGip3GGzijG2L5v9i+HWygt2V/68b4RapCF0jXnertppJqNtsqSqo
-         a2CqPfrehhZZb2i5nhWDwVGHNod8Ch/OExlXyBt6iisqDkXABlH+GmDHXurXyRocd1B0
-         +nlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qmlXMatWSYYRVrk+FklMkfhLPVeb/cB811pl9zDJ0Hw=;
-        b=IfeP9llGWKtHBW8cOAOGP3/KxVQVMZOnjOqgwjdM4RlskfGc1eF0VLSBqfdZkxssoM
-         p1i+5P+K0jdFS6O5aVGp2X6ncOaemc7gPxL/r89P2+oepDDaKq9zPb0Vk6/UyD8JhPkl
-         ulM05ChmSSUFb2UqiUbGV5WOVyyRL+ki+Jj7tTqyHNyhqk3qeQXV0MlDxy9LwrKH/l6p
-         Ofbg1vDWU6TCunAHkd0pBdw2AsbVF/d3fQljaIwxMtOUqzZwdRcDk4PxqSAF9OP9oAyB
-         B4aafF2gGJVih/3V2CRRpdNzHeXghzY8Li85vFP0YJJsZyp/ETUWgXHeAxbuXXmlgNK3
-         of4g==
-X-Gm-Message-State: AOAM532zws2WmMR/n4FlQWiZFF5TCOZU2oA4BQgCvStuosvU9P3yT7SV
-        K1MxE8c6nVEcy+2GNuCYfK4Y+rcnBkjKGe0+x2c=
-X-Google-Smtp-Source: ABdhPJw6qslwCXrPWWfHr57jZxjB0JbMoVqC/nFCS0vK5z8ngIjZmScq7v+RK+HvLZxSfARd3qRTmCmrDsGtGsW7LNE=
-X-Received: by 2002:ac8:5702:: with SMTP id 2mr13921322qtw.65.1629124759754;
- Mon, 16 Aug 2021 07:39:19 -0700 (PDT)
+        Mon, 16 Aug 2021 10:39:28 -0400
+Received: (qmail 123046 invoked by uid 1000); 16 Aug 2021 10:38:56 -0400
+Date:   Mon, 16 Aug 2021 10:38:56 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [REGRESSION][BISECTED] flood of "hid-generic ... control queue
+ full" since v5.14-rc1
+Message-ID: <20210816143856.GA121345@rowland.harvard.edu>
+References: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz>
+ <YRpnfJ719DwPu2B0@kroah.com>
+ <20210816141347.zougsudwe5tqgkpt@lion.mk-sys.cz>
 MIME-Version: 1.0
-References: <20210811154557.6935-1-minhquangbui99@gmail.com>
-In-Reply-To: <20210811154557.6935-1-minhquangbui99@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 16 Aug 2021 07:38:40 -0700
-Message-ID: <CAF=yD-LnDSzFFz6B8o84B1OSxTQE9p=LyFoAe_7+-k7q_r0yog@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] udp: UDP socket send queue repair
-To:     Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrei Vagin <avagin@gmail.com>, alexander@mihalicyn.com,
-        Lese Doru Calin <lesedorucalin01@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816141347.zougsudwe5tqgkpt@lion.mk-sys.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 8:48 AM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
->
-> In this patch, I implement UDP_REPAIR sockoption and a new path in
-> udp_recvmsg for dumping the corked packet in UDP socket's send queue.
->
-> A userspace program can use recvmsg syscall to get the packet's data and
-> the msg_name information of the packet. Currently, other related
-> information in inet_cork that are set in cmsg are not dumped.
+On Mon, Aug 16, 2021 at 04:13:47PM +0200, Michal Kubecek wrote:
+> On Mon, Aug 16, 2021 at 03:26:20PM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Aug 16, 2021 at 03:00:59PM +0200, Michal Kubecek wrote:
+> > > Hello,
+> > > 
+> > > starting with v5.14-rc1, my kernel log gets flooded with messages
+> > > 
+> > >   hid-generic 0003:051D:0002.0002: control queue full
+> > > 
+> > > at rate of ~33 per second. Device 051d:0002 is an APC UPS (BR-650 VA).
+> > > I bisected the issue to commit
+> > > 
+> > >   7652dd2c5cb7 ("USB: core: Check buffer length matches wLength for control transfers")
+> > > 
+> > > Reverting this commit on top of v5.14-rc6 resolves the issue. I suspect
+> > > the problem is some missing cleanup when usb_submit_urb() bails out on
+> > > the newly added check but I'm not familiar enough with the code to see
+> > > what is missing or if the problem is on USB or HID side.
 
-[ intended to include in my previous response ]
+...
 
-What other related information? Fields like transmit_time and gso_size?
+> Looking at the code, the primary problem seems to be that the "else"
+> branch in hid_submit_ctrl() recalculates transfer_buffer_length to
+> a rounded up value but assigns the original length to wLength.
 
-This would be another reason to prefer dropping the packet over trying
-to restore it incompletely.
+Looks like you found the bug.  Fixing it might be as simple as setting 
+len = padlen in that "else" branch.  You could then combine the 
+transfer_buffer_length assignment with the one in the "if" branch and 
+hoist them out after the entire "if" statement.
+
+Alan Stern
