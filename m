@@ -2,128 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B552F3ED2FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F6E3ED307
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbhHPLTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:19:06 -0400
-Received: from ni.piap.pl ([195.187.100.5]:46120 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhHPLTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:19:03 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id 3498FC3F2A57;
-        Mon, 16 Aug 2021 13:18:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 3498FC3F2A57
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1629112710; bh=jom1m2zV0A64UbIJZMq9VLdri6bu1FYEMPAJTzg5Phg=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=dYvD/qzboATUDqZDtrhBSDNnQV6eV9SgQUQU8sIg5yw2TjlndYDs1E49SdciIru6+
-         I6bfUznjxZB8z7nFJF1avTVkyQqVfFumLpYf0cjiwvZa17VY4myCm9ZM9tyKD+NKz3
-         22q9yeLlaPr5JLCCmUpDZarcon8kRlJ2622gOtGE=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84s?= =?utf-8?Q?ki?= 
-        <kw@linux.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Artem Lapkin <email2tema@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCIe: limit Max Read Request Size on i.MX to 512 bytes
-References: <20210813192254.GA2604116@bjorn-Precision-5520>
-        <m3wnomynkm.fsf@t19.piap.pl>
-        <VI1PR04MB5853728C0FD18D19901138048CFD9@VI1PR04MB5853.eurprd04.prod.outlook.com>
-Sender: khalasa@piap.pl
-Date:   Mon, 16 Aug 2021 13:18:30 +0200
-In-Reply-To: <VI1PR04MB5853728C0FD18D19901138048CFD9@VI1PR04MB5853.eurprd04.prod.outlook.com>
-        (Richard Zhu's message of "Mon, 16 Aug 2021 07:49:52 +0000")
-Message-ID: <m3o89xzlh5.fsf@t19.piap.pl>
+        id S236026AbhHPLXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhHPLXc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 07:23:32 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4576DC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:23:01 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id x5so5372943qtq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 04:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
+        b=kvyETQFCZXtBz7kqCRBs15bm8sELTR1yZLjxto0dTAuQpceAE0teE2J2mqncbYXYNJ
+         G//4W8f3GHb6PqVuLAZCgFHDaokb65zRdEYWDU9Dh+YFWxQkvILw/C0chVD8oB+tWKir
+         ZwtDHhm6kueXb0rZ95c4X0Q95icxg9LOgr0pHt872CPKf7lP0kxnkBBY64x4anb51o2b
+         /ikP7ogrJDoz5SJsQ+wXJcuIxHlobQGRcgL+m/mtWLGnW4D2Hkb9AoTcN8Ewg4vOoXn6
+         WKZHK7rbUNaiEqGg3QG5CrCJGlPQNVUwlIbxEHu5j4CmXonMdTUpPtOLHNFgUjlod3+S
+         FsJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
+        b=fzvqMb9rxNKUXIespyXDQxjHzuWpa+ljFjRjH6YKTsP71fRk+lTZoHQvIvuRAcFSaX
+         ALAF7tn0q62a25n5WmsncTvvCF2C6HWUSnbFamMxMBUxjwx1/+fd35NMOn/LHKs96YAA
+         TnOUUhaJiCGF0fl8erhPoLRM4woXyGmj+YyfKg46KC4qR4uR/UBBclZBdMkDxZ075exe
+         WMmhO7bptT0TEkh6l8CC/Dt8ocvSfWxziq2HVM1r30IGAmmn9yQW5gpnF9SiRQgd1pgV
+         em5dT9Io4sYxwedBX109z6yN+wENleaDx6hmym3V3Hhqk0N6WJykstN1o6dhHEEdd7tM
+         +J+w==
+X-Gm-Message-State: AOAM531v4Ts+DlQegsuTQ5Isotfy5DTJ0vVzDZlEJt8MtWlsRda9pqOO
+        MAcxey1zX7+UG2Gc2ceDGioCik9l8gh+jVoI8oQ=
+X-Google-Smtp-Source: ABdhPJy7Z7Fm+GC1ls1Sjd8Vw7aDl35tF3tCV14nXyub0rg7PzOc23hZgbatZHt79yovWaQGfUJcku6H1tjTTm4Ri8g=
+X-Received: by 2002:a05:622a:652:: with SMTP id a18mr13197575qtb.112.1629112980415;
+ Mon, 16 Aug 2021 04:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 165577 [Aug 16 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;piap.pl:7.1.1;t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/08/16 10:32:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/15 23:54:00 #17042267
-X-KLMS-AntiVirus-Status: Clean, skipped
+Received: by 2002:a0c:f752:0:0:0:0:0 with HTTP; Mon, 16 Aug 2021 04:23:00
+ -0700 (PDT)
+Reply-To: abdwabbomaddahm@gmail.com
+From:   Abdwabbo Maddah <maddahabdwabbo52@gmail.com>
+Date:   Mon, 16 Aug 2021 12:23:00 +0100
+Message-ID: <CAGqN+qZyt4Ar9t147a+_rynrjzEJVhQS6teGLeVLYPw7Rq3bBQ@mail.gmail.com>
+Subject: DID YOU RECEIVE MY MAIL?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-Please correct me if I got something wrong:
-
-> Regarding my understanding, that there should be decomposition operations=
- if the
->  Max_Read_Request_Size is larger than the Max_Payload_size specified
->  by RC port.
-
-I think this means that, for example, a memory read request (a single
-short physical TLP packet on PCIe, from the peripheral device to the
-CPU) can request more data than Max_Payload_size (128 bytes on i.MX6).
-In such case, up to 4 "completion" physical TLP packets are returned by
-the CPU (up to 512 bytes, with each individual TLP up to 128 bytes as
-per Max_Payload_size).
-
-The device can't request more than 512 bytes, though - the CPU would not
-service such request.
-
-> The bit0 of AMBA Multiple Outbound Decomposed NP Sub-Requests Control Reg=
-ister(Offset:0x700 + 0x24)
->  had been set to be 1b1 in default.
->
-> Note: The description of this bit.
-> Enable AMBA Multiple Outbound Decomposed NP Sub- Requests.
-> This bit when set to '0' disables the possibility of having multiple outs=
-tanding non-posted requests that
-> were derived from decomposition of an outbound AMBA request. See Supporte=
-d AXI Burst Operations for
-> more details.
-
-I think the above means that - when I disable the bit in question - I
-can't issue memory read requests longer than 128 bytes (max payload
-size).
-
-This is not exactly clear to me:
-
-> You should not clear this register unless your application master is
-> requesting an amount of read data greater than Max_Read_Request_Size,
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Is "completing" such a request at all possible?
-The device shouldn't request more data than its (not CPU's)
-Max_Read_Request_Size. I. e. if 512 is written to RTL8111's
-Max_Read_Request_Size, then the Realtek chip will request max 512 bytes
-at a time.
-
-> and the remote device (or switch) is reordering completions that have
-> different tags
-
-Fortunately, such completions don't seem to be reordered.
-
-However, I'm not sure how setting a bit in the CPU registers could help
-here. I think the only way *IF* the completions were reordered would be
-setting MRRS =3D MPS (=3D 128 bytes on i.MX6) - so there is nothing that
-could be reordered.
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+-- 
+Dear,
+I had sent you a mail but i don't think you received it that's why am
+writing you again.It is important you get back to me as soon as you
+can.
+Abd-Wabbo Maddah
