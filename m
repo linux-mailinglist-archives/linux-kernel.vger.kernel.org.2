@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F063EDF0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129503EDF13
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 23:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhHPVIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 17:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        id S233320AbhHPVJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 17:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhHPVIo (ORCPT
+        with ESMTP id S232812AbhHPVJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:08:44 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749F0C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:08:12 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id h7-20020a4ab4470000b0290263c143bcb2so5325281ooo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:08:12 -0700 (PDT)
+        Mon, 16 Aug 2021 17:09:38 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34400C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:09:06 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id n6so29292704ljp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 14:09:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=DhhEi9REryF7Euqq+T5kr4qdAnwWtXdUixXZ+suk4Bc=;
-        b=ZFFABO/zVDWWQmLLx0RAO6ybYuaWOdMI8nfvqWkZjHWT8a6efPqOopO3FP63sz7FCF
-         euRekIkxlsBrNPkbbInMLWEp5RUGKhseciWZxhfOUiN7ek051Qryieqvixa9QRfxErmP
-         fGQRczUdjxKv75kS7gpw4JjRovjWd6GJIh454=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kXHESVXtW3fAQs2klw3L8m3LsM2vjy+bWhA8ZxQLeJ4=;
+        b=PckaKH/D1CzdTTCYLJ91P/GUcWYKR/Q6byFdOMVw/5VWzNKfW4RZsrebRYxzy/Y72/
+         zAUVSd7bfvtrMszECKKNEWQy+0LJnjFAT6aRhPpLF1UK1t18VSTI4nCFMBDgjk/T1Cki
+         gBLDu4K1tSzyHhQ/wtP5YFdmZvaji5iCEHztPcwvAUh286pMnJMFLMRkQzw2DLuwTuuh
+         We95oCpLEbULXkyDSJ1wHQpakMeL9WavzZG0vl4nOwtU2ZVO89uISoNYLvda3KiJJdLV
+         kFNUOq2zQS67llPo5HDbPaBarGKNSKVjB4ym8h5Oj8ijDWWZJeHzjgIkS3JleguiXg5u
+         EJ0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=DhhEi9REryF7Euqq+T5kr4qdAnwWtXdUixXZ+suk4Bc=;
-        b=YzjJ2I6UqeS0HLfQMApNi1Lg97HmCvsrR3q1kEzBvb1F2g0/UGscVrEVc1CGJ0Nk7e
-         /LS2VswUvYXkkj6zZE2gQeVJKlOVu6OW4i+kgYMClCng+/C2rkvkbS3H2UULegrebtMr
-         jkXpU7FWszLDVCxY3mp8G3etR5BJDjY2TJ1YHlY0AKKP9JCvwJee0XsAeBuoSFK/V3dE
-         g61CEO7Ou91vXT2wxk+Fm6WT6cQf2unK2fYiRB2LtsmcA79iJTb/mR/gCbW/DKKcsXyr
-         iwAcQUCn4maqPWxZNoikbNfYNNgGa01VklcGG309cYox5jyn3RmfOveI43t0Nji9iw6M
-         d4nQ==
-X-Gm-Message-State: AOAM531k32qRGQDTxpV1VewVD5BiJW4Wp7X3w507bWZfCkR2GAj/9gcr
-        sYHSKmmAJJgW8U1cApVxVbaZ3FwnlrHLTN1Zq6OMLw==
-X-Google-Smtp-Source: ABdhPJwkW0aWkQ3eA/CgUBtD3vfjlQxS+WPjQ68YkWRc3r79J/uwSbmFY0qfQ58wr1VReoLjN/jo6yEDlFehMe1Pnb0=
-X-Received: by 2002:a4a:3651:: with SMTP id p17mr191016ooe.92.1629148091816;
- Mon, 16 Aug 2021 14:08:11 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 16 Aug 2021 14:08:11 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kXHESVXtW3fAQs2klw3L8m3LsM2vjy+bWhA8ZxQLeJ4=;
+        b=rhgSsqSimJmPjoush4HAKUcuoBPNNZ9Qq0o/Y7/m+hbDbrRdhNqCIxZ0+ZsXl8zCNR
+         1Qw4fkjxPlvNq4j/WQm054zUBYKxNHsR7xws0U6hRcLmIU9Xt3aCeFpvBtgIyOeuoM0S
+         JNY1srzwm7lwAtjtE/M6ZN+RjDgyuVwnzRt5GzjpKWUZR7GpV6jR28NT+rCu0Qdta9qL
+         2ucBiywMCA2vbY0VVFu3M1WKPAf1bgLkFoFAB9qrT6+1H5yJipyl78tBtGEdrB77Regi
+         i5Z0RY84FJfacYEEgIiG1UAxVyJ3V4tFxOsgUo+mcwmGJ+w6aoMXhjwH/bl3Mk7DK8g6
+         RHGg==
+X-Gm-Message-State: AOAM531yVuqwt0IRxDEOIpOeZY/AaPgn220i5tobiicPrdL0AXywKqE8
+        zFRG8RYNWTQomnhOWAN4MPgQIW1iXlSdMh+MUWKaJQ==
+X-Google-Smtp-Source: ABdhPJwwTb1fnHHmF9oB+uKc900L02CB0EGcBYEkrJkm6ZTwwahbTwe+2ey0QWu70Oyh+NkPbFv//VO0W7jBM+EZFzc=
+X-Received: by 2002:a2e:9304:: with SMTP id e4mr167248ljh.244.1629148144281;
+ Mon, 16 Aug 2021 14:09:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4af8171aefd6f0387438225666ec1ccc@codeaurora.org>
-References: <1628830531-14648-1-git-send-email-skakit@codeaurora.org>
- <1628830531-14648-2-git-send-email-skakit@codeaurora.org> <CACRpkdZteWY6X+prHeAF0rtPVbCk+X9=ZYgpjgAMH24LhOjhaQ@mail.gmail.com>
- <4af8171aefd6f0387438225666ec1ccc@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 16 Aug 2021 14:08:11 -0700
-Message-ID: <CAE-0n53sR12fEa_cNPeT5eGcQVzzL57pd-tYnJbpP0NXkHMTsw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: qcom: spmi-gpio: correct parent irqspec translation
-To:     Linus Walleij <linus.walleij@linaro.org>, skakit@codeaurora.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20210816210418.59294-1-nathan@kernel.org>
+In-Reply-To: <20210816210418.59294-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Aug 2021 14:08:52 -0700
+Message-ID: <CAKwvOd=usiNsmpRbfBfdCyCcLRudY4aSa72FMLX-P5bKRTH9zw@mail.gmail.com>
+Subject: Re: [PATCH] selftests: Use -fno-integrated-as instead of -no-integrated-as
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting skakit@codeaurora.org (2021-08-15 23:50:37)
-> Hi Linus,
+On Mon, Aug 16, 2021 at 2:05 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> On 2021-08-13 14:27, Linus Walleij wrote:
-> > Hi Satya/David,
-> >
-> > nice work on identifying this bug!
-> >
-> > On Fri, Aug 13, 2021 at 6:56 AM satya priya <skakit@codeaurora.org>
-> > wrote:
-> >>
-> >> From: David Collins <collinsd@codeaurora.org>
-> >>
-> >> pmic_gpio_child_to_parent_hwirq() and
-> >> gpiochip_populate_parent_fwspec_fourcell() translate a pinctrl-
-> >> spmi-gpio irqspec to an SPMI controller irqspec.  When they do
-> >> this, they use a fixed SPMI slave ID of 0 and a fixed GPIO
-> >> peripheral offset of 0xC0 (corresponding to SPMI address 0xC000).
-> >> This translation results in an incorrect irqspec for secondary
-> >> PMICs that don't have a slave ID of 0 as well as for PMIC chips
-> >> which have GPIO peripherals located at a base address other than
-> >> 0xC000.
-> >>
-> >> Correct this issue by passing the slave ID of the pinctrl-spmi-
-> >> gpio device's parent in the SPMI controller irqspec and by
-> >> calculating the peripheral ID base from the device tree 'reg'
-> >> property of the pinctrl-spmi-gpio device.
-> >>
-> >> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> >> Signed-off-by: satya priya <skakit@codeaurora.org>
-
-Can you please add an appropriate Fixes tag?
-
-> >
-> > Is this a regression or is it fine if I just apply it for v5.15?
-> > I was thinking v5.15 since it isn't yet used in device trees.
-> >
+> -no-integrated-as is considered the legacy flag since clang 3.5 so move
+> -fno-integrated-as in case clang ever decides to remove the legacy flag.
 >
-> Without this fix, [2/2] Vol+ support is failing. If possible please
-> merge it on current branch.
+> Link: https://releases.llvm.org/3.5.0/tools/clang/docs/ReleaseNotes.html#new-compiler-flags
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  tools/testing/selftests/rseq/Makefile  | 2 +-
+>  tools/testing/selftests/sched/Makefile | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/rseq/Makefile b/tools/testing/selftests/rseq/Makefile
+> index 2af9d39a9716..32f503c13c61 100644
+> --- a/tools/testing/selftests/rseq/Makefile
+> +++ b/tools/testing/selftests/rseq/Makefile
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0+ OR MIT
+>
+>  ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
+> -CLANG_FLAGS += -no-integrated-as
+> +CLANG_FLAGS += -fno-integrated-as
+>  endif
+>
+>  CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/ -L$(OUTPUT) -Wl,-rpath=./ \
+> diff --git a/tools/testing/selftests/sched/Makefile b/tools/testing/selftests/sched/Makefile
+> index 10c72f14fea9..d84a19363a62 100644
+> --- a/tools/testing/selftests/sched/Makefile
+> +++ b/tools/testing/selftests/sched/Makefile
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0+
+>
+>  ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
+> -CLANG_FLAGS += -no-integrated-as
+> +CLANG_FLAGS += -fno-integrated-as
+>  endif
+>
+>  CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/  -Wl,-rpath=./ \
+>
+> base-commit: 7c60610d476766e128cc4284bb6349732cbd6606
+> --
+> 2.33.0.rc2
 >
 
-Are there any boards supported upstream that have a gpio block that
-isn't at 0xc000?
+
+-- 
+Thanks,
+~Nick Desaulniers
