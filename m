@@ -2,186 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F31E3EDE6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9C63EDE71
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 22:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhHPUHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 16:07:38 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:39733 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhHPUHh (ORCPT
+        id S231320AbhHPUJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 16:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhHPUJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 16:07:37 -0400
-Received: by mail-ot1-f51.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so5315379otf.6;
-        Mon, 16 Aug 2021 13:07:05 -0700 (PDT)
+        Mon, 16 Aug 2021 16:09:51 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96775C061764;
+        Mon, 16 Aug 2021 13:09:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so906069pje.0;
+        Mon, 16 Aug 2021 13:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=e3i/TRNxZkgmIo5b9GF0JXDAT8twapBtaF7YyisE06E=;
+        b=s49OBJ++EqB1i95ifGYY3/hYtZxjjuRiVR4cuXFLyvaXJ3uCqEA/oqOAit5WwQADsx
+         6L0gkVCWJv+McoKuEfRaYb4xTb4fnMP9MXEZlXT5yxmIiHQZknlDCo4khtR+I61KFuKS
+         yXu4lONfQTpnXPJ3mU1XpyrGLpwM/tpYodqmwtyNjThszpAbwlS5C06QvTrNsDIKoOuW
+         q6yRgBiaqZXMTbfZFKTJEMrcymh7SLE3O7VJobTMLfZq42uFKNPjZJvrWhiYievnZHKz
+         SVMAdXPx7Z/8aWtytHhDZ2WEAvmnZHuUVs1AZS14CODlghccN2viu2AjLdrB7TA+6T/g
+         gAeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=6VOPws0NSYeiNS4YuPCVxgucGvvQhrDQn05HTfSiBi4=;
-        b=gmeUTr7NuK6x3dA6ijbTJdVOk4zsVVbnUwIohglt7uzWDhdkcfEKRP24zUeOcPZgWi
-         hdq+DQwHXbEN9CgcJxxLHcrVonFUtZ1PTkfxpOxuxfR7lKhUjldzJ8qR2hAKcf0ykc+p
-         uXSqDKfp8F/pbiDSwyyl+O67ke/LHsN8liPOrxoj+nt35AT5DCnp6F5CVEy0qkMt49NA
-         pUzjzFlHMlKnBYWizC/aZGj1agQkn3xf7BLY95GOLScINXN7D2onR0Pnn02IGWO5Dxj0
-         qAjsIR144R6iUvd845+F+1PNczPFI/kiX6FDhei2OthVMdtYBxZ55mH9N6lXzPD7e8jW
-         S9rQ==
-X-Gm-Message-State: AOAM532rTvfRRXUXChgkZbru8oAUTZzekmZyVzgG8+CSURyQuc1F3xeM
-        vBf7QeIeRid+eVXNgB5FoQ==
-X-Google-Smtp-Source: ABdhPJyuh1bpHeI/c8OwEcGGijzGSgY+tSdMoztSLM4aXW9bUBiJeMX5BhftwpQheFofiveHYymA7A==
-X-Received: by 2002:a05:6830:4414:: with SMTP id q20mr336412otv.189.1629144425355;
-        Mon, 16 Aug 2021 13:07:05 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y33sm57065ota.66.2021.08.16.13.07.03
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=e3i/TRNxZkgmIo5b9GF0JXDAT8twapBtaF7YyisE06E=;
+        b=FjkxUXp4Mu7UIG0tEw8fHF9W6OX+C8pS0oboaCte5ffNGgj7AWdvMtTpj2SiIykGEw
+         cR92AT4zdfKyhMXr84HTJfLOYqZoOMQBnUUoOKJh5DomEYmmA4t4W5Z9mxsU4bZ8Mx8v
+         EAmz4lOniBUMajgv5hUDJBSjiTwbGhppjWH+HpvcxYS2bcGVlcUA8xQGakQJFh++fYQZ
+         kuSdoC+rRSROzLyQVmYFGuHEbw6+4MnXj77EtaDPQXyi2s8ei1mZEzQx3+b2qhnOa7CV
+         9VmJ9jcIVq5aqFMywvkF+txLIt6IePro/ecYRM+LV0MGi2gQIypzgaLS13h6NR6ikqk0
+         7hDg==
+X-Gm-Message-State: AOAM531qEt+N1ZASjRE1O7rTu4vbDcNgiBZNuH1DzoqDGFTgVUZN2Beb
+        yY29y4jwYzAiBulC+Cyo7WgS4Ekb7F85zLR04VI=
+X-Google-Smtp-Source: ABdhPJwH6uqQEw9CUIDqmftwX5hJEX4LhR3FAwDj5p7IjJWBSMFS1nHOmN4YckruKsr43Z8Pm2IGeQ==
+X-Received: by 2002:a63:496:: with SMTP id 144mr486326pge.353.1629144558746;
+        Mon, 16 Aug 2021 13:09:18 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id g13sm18435pfj.128.2021.08.16.13.09.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 13:07:04 -0700 (PDT)
-Received: (nullmailer pid 2563332 invoked by uid 1000);
-        Mon, 16 Aug 2021 20:07:03 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     robh+dt@kernel.org, nicolas.ferre@microchip.com,
-        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
-        ajay.kathat@microchip.com, ludovic.desroches@microchip.com,
-        linux-arm-kernel@lists.infradead.org, alexandre.belloni@bootlin.com
-In-Reply-To: <20210816085530.1723402-2-claudiu.beznea@microchip.com>
-References: <20210816085530.1723402-1-claudiu.beznea@microchip.com> <20210816085530.1723402-2-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: pwrseq-sd8787: add binding for wilc1000
-Date:   Mon, 16 Aug 2021 15:07:03 -0500
-Message-Id: <1629144423.378578.2563331.nullmailer@robh.at.kernel.org>
+        Mon, 16 Aug 2021 13:09:18 -0700 (PDT)
+Message-ID: <611ac5ee.1c69fb81.25042.01d4@mx.google.com>
+Date:   Mon, 16 Aug 2021 13:09:18 -0700 (PDT)
+X-Google-Original-Date: Mon, 16 Aug 2021 20:09:11 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210816171400.936235973@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/98] 5.10.60-rc2 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 11:55:27 +0300, Claudiu Beznea wrote:
-> Add binding for wilc1000 devices.
+On Mon, 16 Aug 2021 19:14:55 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.60 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->  Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Responses should be made by Wed, 18 Aug 2021 17:13:38 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.60-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 15, column 7
-found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
-  in "<unicode string>", line 16, column 7
-
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
-
-Duplicate keys will become an error in future releases, and are errors
-by default when using the new API.
-
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/mmc/mmc-pwrseq-sd8787.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
-    ret = check_doc(f)
-  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
-    testtree = dtschema.load(filename, line_number=line_number)
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 623, in load
-    return yaml.load(f.read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 15, column 7
-found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
-  in "<unicode string>", line 16, column 7
-
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
-
-Duplicate keys will become an error in future releases, and are errors
-by default when using the new API.
-
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema-examples.json'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-mk-schema", line 38, in <module>
-    schemas = dtschema.process_schemas(args.schemas, core_schema=(not args.useronly))
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 585, in process_schemas
-    sch = process_schema(os.path.abspath(filename))
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 558, in process_schema
-    schema = load_schema(filename)
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 125, in load_schema
-    return do_load(os.path.join(schema_basedir, schema))
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 111, in do_load
-    return yaml.load(f.read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 15, column 7
-found duplicate key "const" with value "mmc-pwrseq-wilc1000" (original value: "mmc-pwrseq-sd8787")
-  in "<unicode string>", line 16, column 7
-
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
-
-Duplicate keys will become an error in future releases, and are errors
-by default when using the new API.
-
-make[1]: *** [Documentation/devicetree/bindings/Makefile:62: Documentation/devicetree/bindings/processed-schema-examples.json] Error 1
-make: *** [Makefile:1419: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1517069
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+5.10.60-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
