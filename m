@@ -2,603 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5293EDC02
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FBB3EDC07
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 19:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhHPRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 13:06:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232210AbhHPRGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 13:06:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629133532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HQ8qwEo7/BHEwLXydRRYV4MKMc9Jy/YbNuBdHYVdLgs=;
-        b=OaRT5G+nBnjNIhrxDDaT7a25xGzrsVH+8FHUMu9G2CIC9vVMfBY8/IhosSEsqLGThyLfkz
-        ffGjRFqSGGss7yjh9M4qmrFiLp4K4vezIaNtyoeF1G2mHTaJ42dtUCktdS+19YO9nZgfTs
-        rdKKIw0PuCRKahpwKR3q3FXqYdcNoao=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-cguLKtCwO9GtioePD4v3IA-1; Mon, 16 Aug 2021 13:05:30 -0400
-X-MC-Unique: cguLKtCwO9GtioePD4v3IA-1
-Received: by mail-wr1-f69.google.com with SMTP id k15-20020a5d628f0000b029015501bab520so5708786wru.16
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 10:05:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=HQ8qwEo7/BHEwLXydRRYV4MKMc9Jy/YbNuBdHYVdLgs=;
-        b=b3610R/oB/ozkj6occrtoOogIshEwQzu7TKJ4ySEx0sHpISDwwFRxmVtZwL+P+QhAi
-         GHzAhRwtIod0f7wfVXwp1Tx+kCwSxGbHbMPl1WuSlh1Aw91hWDUr6+4sU5LbD3R65QcS
-         UW0ONXlEez67fbn6x3bkd61ZH85SQYN7jfRC5BX0JiByjn8bD1FL+Y1JQPlhHKtP1U0f
-         Au3BI1aL+NEs36NzbTq4M1SCX8HDu8iZysmSxhsaM7P040p+69dlTI5cZEhc/4HwmeEr
-         M9IusRRMhv7r6faLqyjH1R7uXf92NETdfHw7Tu6QIS6cTmOf5pXoIB7g19xMXkuCULEI
-         FDdw==
-X-Gm-Message-State: AOAM5336q7YuIHw53YPC0VSS13mTuV1d3rMieAnPaMxKMpx1G31yNFmu
-        KID8c+i+6ULv89917xiPZpBF62z2z330F7Uv+x2ahqsSfCPZJ2CRpFv96dreCeu8/eULhGJVEPE
-        I80dpnXOeDKQGbSEbH85YOKOY
-X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr78226wmm.189.1629133529511;
-        Mon, 16 Aug 2021 10:05:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw34GAALgBxekvDOnFTY7wx4WMOSCEVhPYBNFGVb9uHsEl01xXrlJ4AzpWnlJlIEHYJx2wLGg==
-X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr78190wmm.189.1629133529189;
-        Mon, 16 Aug 2021 10:05:29 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id f17sm88645wmq.17.2021.08.16.10.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 10:05:28 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        james.morse@arm.com, mark.rutland@arm.com,
-        Jonathan.Cameron@huawei.com, will@kernel.org, maz@kernel.org,
-        pbonzini@redhat.com, shan.gavin@gmail.com,
-        kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH v4 14/15] arm64: Enable async PF
-In-Reply-To: <20210815005947.83699-15-gshan@redhat.com>
-References: <20210815005947.83699-1-gshan@redhat.com>
- <20210815005947.83699-15-gshan@redhat.com>
-Date:   Mon, 16 Aug 2021 19:05:27 +0200
-Message-ID: <878s11miaw.fsf@vitty.brq.redhat.com>
+        id S230351AbhHPRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 13:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229723AbhHPRIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 13:08:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 197A960560;
+        Mon, 16 Aug 2021 17:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629133654;
+        bh=iwH2lqpuBwaf/UO2ySl5IkevAKeWD9j2qCmbumjqwXM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=f7H2fu3llRvEeEimJRXKtXgGcBh2JhDMFxsC/8pP0ziKbTIFyE6bI0ZOY4Zs7EnpJ
+         y5h2xd2MRk5dxpS9YasbkJfFzjilWLObWqbtRHNxBb/4eKbndooXRMpvjL70plE2uQ
+         yv9ysyUJZzWZq/tNco0FE0JTzJIzd2W33ngUTlPSX4wfniBq9ImBGkSy/xNo1PM5po
+         mNftZ7WSRmVzP5B9J/HxARikBbA4qqwGZ2jpmgr3pNRJjZDZjtxdGEkBqSi6Q04WZD
+         +PLtywPF4ivnzH3R2bN5Pye1G/rBA2qEpRrQtpUq6qp4uNIdELZxbzvEOO+UrkA6ia
+         KBBgP/Y15jZzQ==
+Date:   Mon, 16 Aug 2021 12:07:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v15 7/9] PCI: Setup ACPI fwnode early and at the same
+ time with OF
+Message-ID: <20210816170732.GA2927693@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63e0f64c-e51b-feb7-a193-c2999a280b80@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gavin Shan <gshan@redhat.com> writes:
+On Sat, Aug 14, 2021 at 11:16:11AM -0500, Shanker R Donthineni wrote:
+> Hi Bjorn,
+> 
+> On 8/13/21 11:10 PM, Bjorn Helgaas wrote:
+> >>>> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> >>>> index eaddbf701759..dae021322b3f 100644
+> >>>> --- a/drivers/pci/pci-acpi.c
+> >>>> +++ b/drivers/pci/pci-acpi.c
+> >>>> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> >>>>               return false;
+> >>>>
+> >>>>       /* Assume D3 support if the bridge is power-manageable by ACPI. */
+> >>>> -     pci_set_acpi_fwnode(dev);
+> >>>>       adev = ACPI_COMPANION(&dev->dev);
+> >>> I *think* the Root Port code farther down in this function is also now
+> >>> unnecessary:
+> >>>
+> >>>   acpi_pci_bridge_d3(...)
+> >>>   {
+> >>>     ...
+> >>>     root = pcie_find_root_port(dev);
+> >>>     adev = ACPI_COMPANION(&root->dev);
+> >>>     if (root == dev) {
+> >>>       /*
+> >>>        * It is possible that the ACPI companion is not yet bound
+> >>>        * for the root port so look it up manually here.
+> >>>        */
+> >>>       if (!adev && !pci_dev_is_added(root))
+> >>>         adev = acpi_pci_find_companion(&root->dev);
+> >>>     }
+> >>>
+> >>> Since we're now setting the ACPI_COMPANION for every pci_dev long
+> >>> before we get here, I think this could now be simplified to something
+> >>> like this:
+> >>>
+> >>>   acpi_pci_bridge_d3(...)
+> >>>   {
+> >>>     if (!dev->is_hotplug_bridge)
+> >>>       return false;
+> >>>
+> >>>     adev = ACPI_COMPANION(&dev->dev);
+> >>>     if (adev && acpi_device_power_manageable(adev))
+> >>>       return true;
+> >>>
+> >>>     root = pcie_find_root_port(dev);
+> >>>     if (!root)
+> >>>       return false;
+> >>>
+> >>>     adev = ACPI_COMPANION(&root->dev);
+> >>>     if (!adev)
+> >>>       return false;
+> >>>
+> >>>     rc = acpi_dev_get_property(dev, "HotPlugSupportInD3",
+> >>>                                ACPI_TYPE_INTEGER, &val);
+> >>>     if (rc < 0)
+> >>>       return false;
+> >>>
+> >>>     return val == 1;
+> >>>   }
+> >> Agree, thanks for your suggestion. Yes, it can be simplified too.
+> >> Can I do something like this using the unified device property API?
+> >>
+> >> static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> >> {
+> >>         struct acpi_device *adev;
+> >>         struct pci_dev *root;
+> >>         u8 val;
+> >>
+> >>         if (!dev->is_hotplug_bridge)
+> >>                 return false;
+> >>
+> >>         adev = ACPI_COMPANION(&dev->dev);
+> >>         if (adev && acpi_device_power_manageable(adev))
+> >>                 return true;
+> >>
+> >>         root = pcie_find_root_port(dev);
+> >>         if (!root)
+> >>                 return false;
+> >>
+> >>         if (device_property_read_u8(&root->dev, "HotPlugSupportInD3", &val))
+> >>                 return false;
+> > I guess that might be OK.
+> >
+> > TBH I don't really like the device_property_read_u8() thing because
+> > (1) we know this is an ACPI property and I don't see a reason to use
+> > an "generic" interface that doesn't buy us anything, and (2) the
+> > connection to the source of the data (a _DSD method) is really, really
+> > hard to find.
+> >
+> > Admittedly, it's still pretty hard to connect acpi_dev_get_property()
+> > with "_DSD".  The only real clue is the comment about "Look for a
+> > special _DSD property ..."
+> >
+> Does it satisfy you if I change the comment and still use device_property API?
+> 
+> static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> {
+>         struct pci_dev *rpdev;
+>         u8 val;
+> 
+>         if (!dev->is_hotplug_bridge)
+>                 return false;
+> 
+>         /* Assume D3 support if the bridge is power-manageable by ACPI. */
+>         if (acpi_pci_power_manageable(dev))
+>                 return true;
+> 
+>         /*
+>          * Look for 'HotPlugSupportInD3' property for the root port and if
+>          * it is set we know the hierarchy behind it supports D3 just fine.
+>          */
+>         rpdev = pcie_find_root_port(dev);
+>         if (!rpdev)
+>                 return false;
+> 
+>         if (device_property_read_u8(&rpdev->dev, "HotPlugSupportInD3", &val))
+>                 return false;
+> 
+>         return val == 1;
+> }
+> 
+> If not, I'll do changes like this.
 
-> This enables asynchronous page fault from guest side. The design
-> is highlighted as below:
->
->    * The per-vCPU shared memory region, which is represented by
->      "struct kvm_vcpu_pv_apf_data", is allocated. The reason and
->      token associated with the received notifications of asynchronous
->      page fault are delivered through it.
->
->    * A per-vCPU table, which is represented by "struct kvm_apf_table",
->      is allocated. The process, on which the page-not-present notification
->      is received, is added into the table so that it can reschedule
->      itself on switching from kernel to user mode. Afterwards, the
->      process, identified by token, is removed from the table and put
->      into runnable state when page-ready notification is received.
->
->    * During CPU hotplug, the (private) SDEI event is expected to be
->      enabled or disabled on the affected CPU by SDEI client driver.
->      The (PPI) interrupt is enabled or disabled on the affected CPU
->      by ourself. When the system is going to reboot, the SDEI event
->      is disabled and unregistered and the (PPI) interrupt is disabled.
->
->    * The SDEI event and (PPI) interrupt number are retrieved from host
->      through SMCCC interface. Besides, the version of the asynchronous
->      page fault is validated when the feature is enabled on the guest.
->
->    * The feature is disabled on guest when boot parameter "no-kvmapf"
->      is specified.
+I guess either one is fine.  But I think we should extend the comment
+and commit log to make it clear that device_property_read_u8() and
+acpi_dev_get_property() are ultimately looking for a _DSD.  I should
+have asked for this when we merged 26ad34d510a8 ("PCI / ACPI:
+Whitelist D3 for more PCIe hotplug ports") in the first place.
 
-Documentation/admin-guide/kernel-parameters.txt states this one is
-x86-only:
+If we expect that power management *should* be enabled for a bridge,
+and we observe that it *isn't* enabled, it is unreasonably difficult
+to figure out from the code what is missing in the firmware, namely,
+the _DSD laid out in the commit log for 26ad34d510a8.
 
-        no-kvmapf       [X86,KVM] Disable paravirtualized asynchronous page
-                        fault handling.
-
-makes sense to update in this patch I believe.
-
->
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kernel/Makefile |   1 +
->  arch/arm64/kernel/kvm.c    | 452 +++++++++++++++++++++++++++++++++++++
->  2 files changed, 453 insertions(+)
->  create mode 100644 arch/arm64/kernel/kvm.c
->
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index 3f1490bfb938..f0c1a6a7eaa7 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -59,6 +59,7 @@ obj-$(CONFIG_ACPI)			+= acpi.o
->  obj-$(CONFIG_ACPI_NUMA)			+= acpi_numa.o
->  obj-$(CONFIG_ARM64_ACPI_PARKING_PROTOCOL)	+= acpi_parking_protocol.o
->  obj-$(CONFIG_PARAVIRT)			+= paravirt.o
-> +obj-$(CONFIG_KVM_GUEST)			+= kvm.o
->  obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
->  obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
->  obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
-> diff --git a/arch/arm64/kernel/kvm.c b/arch/arm64/kernel/kvm.c
-> new file mode 100644
-> index 000000000000..effe8dc7e921
-> --- /dev/null
-> +++ b/arch/arm64/kernel/kvm.c
-> @@ -0,0 +1,452 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Asynchronous page fault support.
-> + *
-> + * Copyright (C) 2021 Red Hat, Inc.
-> + *
-> + * Author(s): Gavin Shan <gshan@redhat.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/slab.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/of.h>
-> +#include <linux/of_fdt.h>
-> +#include <linux/arm-smccc.h>
-> +#include <linux/kvm_para.h>
-> +#include <linux/arm_sdei.h>
-> +#include <linux/acpi.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/reboot.h>
-> +
-> +struct kvm_apf_task {
-> +	unsigned int		token;
-> +	struct task_struct	*task;
-> +	struct swait_queue_head	wq;
-> +};
-> +
-> +struct kvm_apf_table {
-> +	raw_spinlock_t		lock;
-> +	unsigned int		count;
-> +	struct kvm_apf_task	tasks[0];
-> +};
-> +
-> +static bool async_pf_available = true;
-> +static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_data) __aligned(64);
-> +static struct kvm_apf_table __percpu *apf_tables;
-> +static unsigned int apf_tasks;
-> +static unsigned int apf_sdei_num;
-> +static unsigned int apf_ppi_num;
-> +static int apf_irq;
-> +
-> +static bool kvm_async_pf_add_task(struct task_struct *task,
-> +				  unsigned int token)
-> +{
-> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
-> +	unsigned int i, index = apf_tasks;
-> +	bool ret = false;
-> +
-> +	raw_spin_lock(&table->lock);
-> +
-> +	if (WARN_ON(table->count >= apf_tasks))
-> +		goto unlock;
-> +
-> +	for (i = 0; i < apf_tasks; i++) {
-> +		if (!table->tasks[i].task) {
-> +			if (index == apf_tasks) {
-> +				ret = true;
-> +				index = i;
-> +			}
-> +		} else if (table->tasks[i].task == task) {
-> +			WARN_ON(table->tasks[i].token != token);
-> +			ret = false;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!ret)
-> +		goto unlock;
-> +
-> +	task->thread.data = &table->tasks[index].wq;
-> +	set_tsk_thread_flag(task, TIF_ASYNC_PF);
-> +
-> +	table->count++;
-> +	table->tasks[index].task = task;
-> +	table->tasks[index].token = token;
-> +
-> +unlock:
-> +	raw_spin_unlock(&table->lock);
-> +	return ret;
-> +}
-> +
-> +static inline void kvm_async_pf_remove_one_task(struct kvm_apf_table *table,
-> +						unsigned int index)
-> +{
-> +	clear_tsk_thread_flag(table->tasks[index].task, TIF_ASYNC_PF);
-> +	WRITE_ONCE(table->tasks[index].task->thread.data, NULL);
-> +
-> +	table->count--;
-> +	table->tasks[index].task = NULL;
-> +	table->tasks[index].token = 0;
-> +
-> +	swake_up_one(&table->tasks[index].wq);
-> +}
-> +
-> +static bool kvm_async_pf_remove_task(unsigned int token)
-> +{
-> +	struct kvm_apf_table *table = this_cpu_ptr(apf_tables);
-> +	unsigned int i;
-> +	bool ret = (token == UINT_MAX);
-> +
-> +	raw_spin_lock(&table->lock);
-> +
-> +	for (i = 0; i < apf_tasks; i++) {
-> +		if (!table->tasks[i].task)
-> +			continue;
-> +
-> +		/* Wakeup all */
-> +		if (token == UINT_MAX) {
-> +			kvm_async_pf_remove_one_task(table, i);
-> +			continue;
-> +		}
-> +
-> +		if (table->tasks[i].token == token) {
-> +			kvm_async_pf_remove_one_task(table, i);
-> +			ret = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	raw_spin_unlock(&table->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int kvm_async_pf_sdei_handler(unsigned int event,
-> +				     struct pt_regs *regs,
-> +				     void *arg)
-> +{
-> +	unsigned int reason = __this_cpu_read(apf_data.reason);
-> +	unsigned int token = __this_cpu_read(apf_data.token);
-> +	bool ret;
-> +
-> +	if (reason != KVM_PV_REASON_PAGE_NOT_PRESENT) {
-> +		pr_warn("%s: Bogus notification (%d, 0x%08x)\n",
-> +			__func__, reason, token);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = kvm_async_pf_add_task(current, token);
-> +	__this_cpu_write(apf_data.token, 0);
-> +	__this_cpu_write(apf_data.reason, 0);
-> +
-> +	if (!ret)
-> +		return -ENOSPC;
-> +
-> +	smp_send_reschedule(smp_processor_id());
-> +
-> +	return 0;
-> +}
-> +
-> +static irqreturn_t kvm_async_pf_irq_handler(int irq, void *dev_id)
-> +{
-> +	unsigned int reason = __this_cpu_read(apf_data.reason);
-> +	unsigned int token = __this_cpu_read(apf_data.token);
-> +	struct arm_smccc_res res;
-> +
-> +	if (reason != KVM_PV_REASON_PAGE_READY) {
-> +		pr_warn("%s: Bogus interrupt %d (%d, 0x%08x)\n",
-> +			__func__, irq, reason, token);
-
-Spurrious interrupt or bogus APF reason set? Could be both I belive.
-
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	kvm_async_pf_remove_task(token);
-> +
-> +	__this_cpu_write(apf_data.token, 0);
-> +	__this_cpu_write(apf_data.reason, 0);
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK, &res);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int __init kvm_async_pf_available(char *arg)
-> +{
-> +	async_pf_available = false;
-> +
-> +	return 0;
-> +}
-> +early_param("no-kvmapf", kvm_async_pf_available);
-> +
-> +static void kvm_async_pf_disable(void)
-> +{
-> +	struct arm_smccc_res res;
-> +	u32 enabled = __this_cpu_read(apf_data.enabled);
-> +
-> +	if (!enabled)
-> +		return;
-> +
-> +	/* Disable the functionality */
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
-> +			     0, 0, &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to disable on CPU%d\n",
-> +			__func__, res.a0, smp_processor_id());
-> +		return;
-> +	}
-> +
-> +	__this_cpu_write(apf_data.enabled, 0);
-> +
-> +	pr_info("Async PF disabled on CPU%d\n", smp_processor_id());
-
-Nitpicking: x86 uses 
-
-"setup async PF for cpu %d\n" and
-"disable async PF for cpu %d\n"
-
-which are not ideal maybe but in any case it would probably make sense
-to be consistent across arches.
-
-
-> +}
-> +
-> +static void kvm_async_pf_enable(void)
-> +{
-> +	struct arm_smccc_res res;
-> +	u32 enabled = __this_cpu_read(apf_data.enabled);
-> +	u64 val = virt_to_phys(this_cpu_ptr(&apf_data));
-> +
-> +	if (enabled)
-> +		return;
-> +
-> +	val |= KVM_ASYNC_PF_ENABLED;
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE,
-> +			     (u32)val, (u32)(val >> 32), &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to enable CPU%d\n",
-> +			__func__, res.a0, smp_processor_id());
-> +		return;
-> +	}
-> +
-> +	__this_cpu_write(apf_data.enabled, 1);
-> +
-> +	pr_info("Async PF enabled on CPU%d\n", smp_processor_id());
-> +}
-> +
-> +static void kvm_async_pf_cpu_disable(void *info)
-> +{
-> +	disable_percpu_irq(apf_irq);
-> +	kvm_async_pf_disable();
-> +}
-> +
-> +static void kvm_async_pf_cpu_enable(void *info)
-> +{
-> +	enable_percpu_irq(apf_irq, IRQ_TYPE_LEVEL_HIGH);
-> +	kvm_async_pf_enable();
-> +}
-> +
-> +static int kvm_async_pf_cpu_reboot_notify(struct notifier_block *nb,
-> +					  unsigned long code,
-> +					  void *unused)
-> +{
-> +	if (code == SYS_RESTART) {
-> +		sdei_event_disable(apf_sdei_num);
-> +		sdei_event_unregister(apf_sdei_num);
-> +
-> +		on_each_cpu(kvm_async_pf_cpu_disable, NULL, 1);
-> +	}
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static struct notifier_block kvm_async_pf_cpu_reboot_nb = {
-> +	.notifier_call = kvm_async_pf_cpu_reboot_notify,
-> +};
-> +
-> +static int kvm_async_pf_cpu_online(unsigned int cpu)
-> +{
-> +	kvm_async_pf_cpu_enable(NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static int kvm_async_pf_cpu_offline(unsigned int cpu)
-> +{
-> +	kvm_async_pf_cpu_disable(NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init kvm_async_pf_check_version(void)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	/*
-> +	 * Check the version and v1.0.0 or higher version is required
-> +	 * to support the functionality.
-> +	 */
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION, &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to get version\n",
-> +			__func__, res.a0);
-> +		return -EPERM;
-> +	}
-> +
-> +	if ((res.a1 & 0xFFFFFFFFFF000000) ||
-> +	    ((res.a1 & 0xFF0000) >> 16) < 0x1) {
-> +		pr_warn("%s: Invalid version (0x%016lx)\n",
-> +			__func__, res.a1);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init kvm_async_pf_info(void)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	/* Retrieve number of tokens */
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS, &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to get token number\n",
-> +			__func__, res.a0);
-> +		return -EPERM;
-> +	}
-> +
-> +	apf_tasks = res.a1 * 2;
-> +
-> +	/* Retrieve SDEI event number */
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI, &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to get SDEI event number\n",
-> +			__func__, res.a0);
-> +		return -EPERM;
-> +	}
-> +
-> +	apf_sdei_num = res.a1;
-> +
-> +	/* Retrieve (PPI) interrupt number */
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_ASYNC_PF_FUNC_ID,
-> +			     ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ, &res);
-> +	if (res.a0 != SMCCC_RET_SUCCESS) {
-> +		pr_warn("%s: Error %ld to get IRQ\n",
-> +			__func__, res.a0);
-> +		return -EPERM;
-> +	}
-> +
-> +	apf_ppi_num = res.a1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init kvm_async_pf_init(void)
-> +{
-> +	struct kvm_apf_table *table;
-> +	size_t size;
-> +	int cpu, i, ret;
-> +
-> +	if (!kvm_para_has_feature(KVM_FEATURE_ASYNC_PF) ||
-> +	    !async_pf_available)
-> +		return -EPERM;
-> +
-> +	ret = kvm_async_pf_check_version();
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = kvm_async_pf_info();
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Allocate and initialize the sleeper table */
-> +	size = sizeof(struct kvm_apf_table) +
-> +	       apf_tasks * sizeof(struct kvm_apf_task);
-> +	apf_tables = __alloc_percpu(size, 0);
-> +	if (!apf_tables) {
-> +		pr_warn("%s: Unable to alloc async PF table\n",
-> +			__func__);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		table = per_cpu_ptr(apf_tables, cpu);
-> +		raw_spin_lock_init(&table->lock);
-> +		for (i = 0; i < apf_tasks; i++)
-> +			init_swait_queue_head(&table->tasks[i].wq);
-> +	}
-> +
-> +	/*
-> +	 * Initialize SDEI event for page-not-present notification.
-> +	 * The SDEI event number should have been retrieved from
-> +	 * the host.
-> +	 */
-> +	ret = sdei_event_register(apf_sdei_num,
-> +				  kvm_async_pf_sdei_handler, NULL);
-> +	if (ret) {
-> +		pr_warn("%s: Error %d to register SDEI event\n",
-> +			__func__, ret);
-> +		ret = -EIO;
-> +		goto release_tables;
-> +	}
-> +
-> +	ret = sdei_event_enable(apf_sdei_num);
-> +	if (ret) {
-> +		pr_warn("%s: Error %d to enable SDEI event\n",
-> +			__func__, ret);
-> +		goto unregister_event;
-> +	}
-> +
-> +	/*
-> +	 * Initialize interrupt for page-ready notification. The
-> +	 * interrupt number and its properties should have been
-> +	 * retrieved from the ACPI:APFT table.
-> +	 */
-> +	apf_irq = acpi_register_gsi(NULL, apf_ppi_num,
-> +				    ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-> +	if (apf_irq <= 0) {
-> +		ret = -EIO;
-> +		pr_warn("%s: Error %d to register IRQ\n",
-> +			__func__, apf_irq);
-> +		goto disable_event;
-> +	}
-> +
-> +	ret = request_percpu_irq(apf_irq, kvm_async_pf_irq_handler,
-> +				 "Asynchronous Page Fault", &apf_data);
-> +	if (ret) {
-> +		pr_warn("%s: Error %d to request IRQ\n",
-> +			__func__, ret);
-> +		goto unregister_irq;
-> +	}
-> +
-> +	register_reboot_notifier(&kvm_async_pf_cpu_reboot_nb);
-> +	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-> +			"arm/kvm:online", kvm_async_pf_cpu_online,
-> +			kvm_async_pf_cpu_offline);
-> +	if (ret < 0) {
-> +		pr_warn("%s: Error %d to install cpu hotplug callbacks\n",
-> +			__func__, ret);
-> +		goto release_irq;
-> +	}
-> +
-> +	/* Enable async PF on the online CPUs */
-> +	on_each_cpu(kvm_async_pf_cpu_enable, NULL, 1);
-> +
-> +	return 0;
-> +
-> +release_irq:
-> +	free_percpu_irq(apf_irq, &apf_data);
-> +unregister_irq:
-> +	acpi_unregister_gsi(apf_ppi_num);
-> +disable_event:
-> +	sdei_event_disable(apf_sdei_num);
-> +unregister_event:
-> +	sdei_event_unregister(apf_sdei_num);
-> +release_tables:
-> +	free_percpu(apf_tables);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __init kvm_guest_init(void)
-> +{
-> +	return kvm_async_pf_init();
-> +}
-> +
-> +fs_initcall(kvm_guest_init);
-
--- 
-Vitaly
-
+> static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+> {
+>         const union acpi_object *obj;
+>         struct acpi_device *adev;
+>         struct pci_dev *rpdev;
+> 
+> 
+>         if (!dev->is_hotplug_bridge)
+>                 return false;
+> 
+>         /* Assume D3 support if the bridge is power-manageable by ACPI. */
+>         if (acpi_pci_power_manageable(dev))
+>                 return true;
+> 
+>         /*
+>          * Look for 'HotPlugSupportInD3' property for the root port and if
+>          * it is set we know the hierarchy behind it supports D3 just fine.
+>          */
+>         rpdev = pcie_find_root_port(dev);
+>         if (!rpdev)
+>                 return false;
+> 
+>         adev = ACPI_COMPANION(&rpdev->dev);
+>         if (!adev)
+>                 return false;
+> 
+>        if (acpi_dev_get_property(adev, "HotPlugSupportInD3",
+>                                    ACPI_TYPE_INTEGER, &obj) < 0)
+>                 return false;
+> 
+>         return obj->integer.value == 1;
+> }
+> 
+> 
