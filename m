@@ -2,183 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937DB3ED7DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBDE3ED7D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhHPNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:46:09 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56824 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237458AbhHPNoF (ORCPT
+        id S237204AbhHPNoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239533AbhHPNoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:44:05 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        Mon, 16 Aug 2021 09:44:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79244C0617AE
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:43:48 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mFcu1-0002BZ-VC; Mon, 16 Aug 2021 15:43:46 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DE5021DF3;
-        Mon, 16 Aug 2021 13:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629121413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UI8w0cxWrr9XgTQX6lpsosrGlq9uh/SVTIgrWnFzpIQ=;
-        b=CTVsBBnxVRta2xtUuwP0Q6AzSa7GyPdQy8/YROzOWsf6kk6BWD2j8FWqphHP+Rlh+Y4AVe
-        nQlZHc23HVyInK47CE9M3nl4oziClBcXX8BjzD5LoqtIhsSbC014W5hiVA32MW7vipqIPB
-        cDAvp+updmhB2KbDb0jLxBGq0PluTfg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629121413;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UI8w0cxWrr9XgTQX6lpsosrGlq9uh/SVTIgrWnFzpIQ=;
-        b=Q9T/ESJDR+QmnMxEXTIxFOhSwtYjBiIUXf9VxRkq+VypXL+/Lyu/Vnxu0mgcSmeNdyb8mH
-        Qabd0dysZi7DUNAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D62A313301;
-        Mon, 16 Aug 2021 13:43:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 5GxSMYRrGmGQPQAAGKfGzw
-        (envelope-from <lhenriques@suse.de>); Mon, 16 Aug 2021 13:43:32 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 3606e8a9;
-        Mon, 16 Aug 2021 13:43:32 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [fscrypt][RFC PATCH] ceph: don't allow changing layout on
- encrypted files/directories
-References: <YRZtiL+qo95vK0Nf@suse.de>
-        <e07e5f52bf73c0a9ef1441295f5ff42753d3e29a.camel@kernel.org>
-Date:   Mon, 16 Aug 2021 14:43:31 +0100
-In-Reply-To: <e07e5f52bf73c0a9ef1441295f5ff42753d3e29a.camel@kernel.org> (Jeff
-        Layton's message of "Mon, 16 Aug 2021 08:44:01 -0400")
-Message-ID: <87pmudtsho.fsf@suse.de>
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 419CC668374;
+        Mon, 16 Aug 2021 13:43:44 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 15:43:42 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/7] can: bittiming: allow TDC{V,O} to be zero and add
+ can_tdc_const::tdc{v,o,f}_min
+Message-ID: <20210816134342.w3bc5zjczwowcjr4@pengutronix.de>
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-3-mailhol.vincent@wanadoo.fr>
+ <20210816084235.fr7fzau2ce7zl4d4@pengutronix.de>
+ <CAMZ6RqK5t62UppiMe9k5jG8EYvnSbFW3doydhCvp72W_X2rXAw@mail.gmail.com>
+ <20210816122519.mme272z6tqrkyc6x@pengutronix.de>
+ <20210816123309.pfa57tke5hrycqae@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b6ihp5r2vxeepeh2"
+Content-Disposition: inline
+In-Reply-To: <20210816123309.pfa57tke5hrycqae@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
 
-> On Fri, 2021-08-13 at 14:03 +0100, Luis Henriques wrote:
->> Encryption is currently only supported on files/directories with layouts
->> where stripe_count=3D1.  Forbid changing layouts when encryption is invo=
-lved.
->>=20
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> ---
->> Hi!
->>=20
->> While continuing looking into fscrypt, I realized we're not yet forbiddi=
-ng
->> different layouts on encrypted files.  This patch tries to do just that.
->>=20
->> Regarding the setxattr, I've also made a change [1] to the MDS code so t=
-hat it
->> also prevents layouts to be changed.  This should make the changes to
->> ceph_sync_setxattr() redundant, but in practice it doesn't because if we=
- encrypt
->> a directory and immediately after that we change that directory layout, =
-the MDS
->> wouldn't yet have received the fscrypt_auth for that inode.  So... yeah,=
- an
->> alternative would be to propagate the fscrypt context immediately after
->> encrypting a directory.
->>=20
->> [1] https://github.com/luis-henrix/ceph/commit/601488ae798ecfa5ec81677d1=
-ced02f7dd42aa10
->>=20
->> Cheers,
->> --
->> Luis
->>=20
->>  fs/ceph/ioctl.c | 4 ++++
->>  fs/ceph/xattr.c | 6 ++++++
->>  2 files changed, 10 insertions(+)
->>=20
->> diff --git a/fs/ceph/ioctl.c b/fs/ceph/ioctl.c
->> index 477ecc667aee..42abfc564301 100644
->> --- a/fs/ceph/ioctl.c
->> +++ b/fs/ceph/ioctl.c
->> @@ -294,6 +294,10 @@ static long ceph_set_encryption_policy(struct file =
-*file, unsigned long arg)
->>  	struct inode *inode =3D file_inode(file);
->>  	struct ceph_inode_info *ci =3D ceph_inode(inode);
->>=20=20
->> +	/* encrypted directories can't have striped layout */
->> +	if (ci->i_layout.stripe_count > 1)
->> +		return -EOPNOTSUPP;
->> +
->
-> Yes, I've been needing to add that for a while. I'm not sure EOPNOTSUPP
-> is the right error code though. Maybe EINVAL instead?
->
+--b6ihp5r2vxeepeh2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right, I had that initially and changed it after a long indecision.  But
-yeah, I've no strong opinion either way.
+On 16.08.2021 14:33:09, Marc Kleine-Budde wrote:
+> On 16.08.2021 14:25:19, Marc Kleine-Budde wrote:
+> > > > I'm not sure, if we talked about the mcp251xfd's tcdo, valid values=
+ are
+> > > > -64...63.
+> > >=20
+> > > Yes! Stefan shed some light on this. The mcp251xfd uses a tdco
+> > > value which is relative to the sample point.
+> >=20
+> > I don't read the documentation this way....
+> >=20
+> > > | SSP =3D TDCV + absolute TDCO
+> > > |     =3D TDCV + SP + relative TDCO
+> > >=20
+> > > Consequently:
+> > > | relative TDCO =3D absolute TDCO - SP
+> >=20
+> > In the mcp15xxfd family manual
+> > (http://ww1.microchip.com/downloads/en/DeviceDoc/MCP251XXFD-CAN-FD-Cont=
+roller-Module-Family-Reference-Manual-20005678B.pdf)
+> > in the 2mbit/s data bit rate example in table 3-5 (page 21) it says:
+> >=20
+> > | DTSEG1  15 DTQ
+> > | DTSEG2   4 DTQ
+> > | TDCO    15 DTQ
+> >=20
+> > The mcp251xfd driver uses 15, the framework calculates 16 (=3D=3D Sync =
+Seg+
+> > tseg1, which is correct), and relative tdco would be 0:
+> >=20
+> > | mcp251xfd_set_bittiming: tdco=3D15, priv->tdc.tdc=3D16, relative_tdco=
+=3D0
+> >=20
+> > Here the output with the patched ip tool:
+>=20
+> Sorry, the previous output was not using the sample points of the
+> example in the data sheet, this is the fixed output:
+>=20
+> | 6: mcp251xfd0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state U=
+P mode DEFAULT group default qlen 10
+> |     link/can  promiscuity 0 minmtu 0 maxmtu 0=20
+> |     can <FD,TDC_AUTO> state ERROR-ACTIVE (berr-counter tx 0 rx 0) resta=
+rt-ms 100=20
+> |           bitrate 500000 sample-point 0.800
+> |           tq 25 prop-seg 31 phase-seg1 32 phase-seg2 16 sjw 1 brp 1
+> |           mcp251xfd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 br=
+p_inc 1
+> |           dbitrate 2000000 dsample-point 0.800
+> |           dtq 25 dprop-seg 7 dphase-seg1 8 dphase-seg2 4 dsjw 1 dbrp 1
+> |           tdco 16
+> |           mcp251xfd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 d=
+brp_inc 1
+> |           tdco 0..127
+> |           clock 40000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536=
+ gso_max_segs 65535 parentbus spi parentdev spi0.0=20
 
->
->>  	ret =3D vet_mds_for_fscrypt(file);
->>  	if (ret)
->>  		return ret;
->> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
->> index b175b3029dc0..7921cb34900c 100644
->> --- a/fs/ceph/xattr.c
->> +++ b/fs/ceph/xattr.c
->> @@ -1051,6 +1051,12 @@ static int ceph_sync_setxattr(struct inode *inode=
-, const char *name,
->>  	int op =3D CEPH_MDS_OP_SETXATTR;
->>  	int err;
->>=20=20
->> +	/* encrypted directories/files can't have their layout changed */
->> +	if (IS_ENCRYPTED(inode) &&
->> +	    (!strncmp(name, "ceph.file.layout", 16) ||
->> +	     !strncmp(name, "ceph.dir.layout", 15)))
->> +		return -EOPNOTSUPP;
->> +
->
-> Yuck.
+The following sequence doesn't clear "tdcv" properly:
 
-Agreed!
+| ip link set dev mcp251xfd0 down; \
+| ip link set mcp251xfd0 txqueuelen 10 up type can \
+|     sample-point 0.8 bitrate 500000  \
+|     dsample-point 0.8 dbitrate 2000000 fd on \
+|     tdc-mode manual tdco 11 tdcv 22
+|=20
+| ip link set dev mcp251xfd0 down; \
+| ip link set mcp251xfd0 txqueuelen 10 up type can \
+|     sample-point 0.8 bitrate 500000  \
+|     dsample-point 0.8 dbitrate 2000000 fd on
 
-> What might be nicer is to just make ceph_vxattrcb_layout* return an
-> error when the inode is encrypted? You can return negative error codes
-> from the ->getxattr_cb ops, and that's probably the better place to
-> check for this.
+| Aug 16 15:10:43 rpi4b8 kernel: mcp251xfd spi0.0 mcp251xfd0: mcp251xfd_set=
+_bittiming: tdco=3D11 tdcv=3D22 mode=3Dmanual
+| Aug 16 15:10:43 rpi4b8 kernel: IPv6: ADDRCONF(NETDEV_CHANGE): mcp251xfd0:=
+ link becomes ready
+| Aug 16 15:10:59 rpi4b8 kernel: mcp251xfd spi0.0 mcp251xfd0: mcp251xfd_set=
+_bittiming: tdco=3D16 tdcv=3D22 mode=3Dautomatic
+| Aug 16 15:10:59 rpi4b8 kernel: IPv6: ADDRCONF(NETDEV_CHANGE): mcp251xfd0:=
+ link becomes ready
 
-I'm not sure I understand your suggestion.  This is on the SETXATTR path,
-so we'll need to block attempts to send this operation to the MDS.
+neither does "tdc-mode off":
 
-An alternative would be to do this (return an error) on the MDS side, but
-this would mean that we should also send the fscrypt fields to the MDS
-because it may may not know yet that the inode is encrypted.  Which could
-be the correct thing to do BTW.  Although I don't think client B could
-concurrently change the layout of a directory that client A just set as
-encrypted without client A sending that information to the MDS first...
+| Aug 16 15:12:18 rpi4b8 kernel: mcp251xfd spi0.0 mcp251xfd0: mcp251xfd_set=
+_bittiming: tdco=3D11 tdcv=3D22 mode=3Doff
+| Aug 16 15:12:18 rpi4b8 kernel: IPv6: ADDRCONF(NETDEV_CHANGE): mcp251xfd0:=
+ link becomes ready
 
-Cheers,
+---
+
+We have 4 operations:
+- tdc-mode off                  switch off tdc altogether
+- tdc-mode manual tdco X tdcv Y configure X and Y for tdco and tdcv
+- tdc-mode auto tdco X          configure X tdco and
+                                controller measures tdcv automatically
+- /* nothing */                 configure default value for tdco
+                                controller measures tdcv automatically
+
+The /* nothing */ operation is what the old "ip" tool does, so we're
+backwards compatible here (using the old "ip" tool on an updated
+kernel/driver).
+
+At first glance it's a bit non-intuitive that you have to specify
+nothing for the "full" automatic mode.
+
+Oh, I just noticed:
+
+| ip link set dev mcp251xfd0 down; \
+| ip link set mcp251xfd0 txqueuelen 10 up type can \
+|     sample-point 0.8 bitrate 500000  \
+|     dsample-point 0.8 dbitrate 2000000 fd on \
+|     tdc-mode manual tdco 11 tdcv 22
+
+followed by:
+
+| ip link set dev mcp251xfd0 down; \
+| ip link set mcp251xfd0 txqueuelen 10 up type can
+
+We stay in manual mode:
+
+| Aug 16 15:27:47 rpi4b8 kernel: mcp251xfd spi0.0 mcp251xfd0: mcp251xfd_set=
+_bittiming: tdco=3D11 tdcv=3D22 mode=3Dmanual
+
+| 8: mcp251xfd0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state UP =
+mode DEFAULT group default qlen 10
+|     link/can  promiscuity 0 minmtu 0 maxmtu 0=20
+|     can <FD,TDC_AUTO,TDC_MANUAL> state ERROR-ACTIVE (berr-counter tx 0 rx=
+ 0) restart-ms 100=20
+|           bitrate 500000 sample-point 0.800
+|           tq 25 prop-seg 31 phase-seg1 32 phase-seg2 16 sjw 1 brp 1
+|           mcp251xfd: tseg1 2..256 tseg2 1..128 sjw 1..128 brp 1..256 brp_=
+inc 1
+|           dbitrate 2000000 dsample-point 0.800
+|           dtq 25 dprop-seg 7 dphase-seg1 8 dphase-seg2 4 dsjw 1 dbrp 1
+|           tdcv 22 tdco 11
+|           mcp251xfd: dtseg1 1..32 dtseg2 1..16 dsjw 1..16 dbrp 1..256 dbr=
+p_inc 1
+|           tdcv 0..63 tdco 0..63
+|           clock 40000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 g=
+so_max_segs 65535 parentbus spi parentdev spi0.0=20
+
+I have to give "fd on" + the bit timing parameters to go to the full
+automatic mode again:
+
+| Aug 16 15:32:46 rpi4b8 kernel: mcp251xfd spi0.0 mcp251xfd0: mcp251xfd_set=
+_bittiming: tdco=3D16 tdcv=3D22 mode=3Dautomatic
+
+
+Does it make sense to let "mode auto" without a tdco value switch the
+controller into full automatic mode and /* nothing */ not tough the tdc
+config at all? If the full automatic mode is power on default mode, then
+new kernel/drivers are compatible with old the old ip tool.
+
+regards,
+Marc
+
 --=20
-Luis
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
+--b6ihp5r2vxeepeh2
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
->>  	if (size > 0) {
->>  		/* copy value into pagelist */
->>  		pagelist =3D ceph_pagelist_alloc(GFP_NOFS);
->>=20
->> Cheers,
->> --
->> Lu=C3=ADs
->
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaa4wACgkQqclaivrt
+76nT3Qf4r1w67xWW1JTwcxdfQ08+yhQ3UCKimU8suYyLsaYM+BLDgIfjJv15Wmiu
+r/rwxVmnSJW1tABVd+fLcKnCVhk25vP73mjhyWVctkgUK3kqa618bXgegM9Cwswd
+GHjVcKsWW9L8vmFs1DknC2C71N1GxVsQxHionJwb8nU5hEDo47Dk0nsiL/0Dlx69
+r7MNlS1Hwy0PJ+/J5b6PY4Yf0FCZFXDpED4WNHWKfra8dCJxZCF8FK6yqg/x5CnQ
+laICro4QDWwcb8ofPVkp+QSdd+dAZrZwJpMhnSpeVdZ3W5aiAjniMXluzIfROtyM
+zLQVrxIALJqLXXsHwm+LdmTOl1eA
+=3qcF
+-----END PGP SIGNATURE-----
+
+--b6ihp5r2vxeepeh2--
