@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D653ED580
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A1C3ED49B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239770AbhHPNLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
+        id S236598AbhHPNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:04:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236833AbhHPNHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:07:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E9E60F46;
-        Mon, 16 Aug 2021 13:06:32 +0000 (UTC)
+        id S236427AbhHPNED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD9B632AB;
+        Mon, 16 Aug 2021 13:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119193;
-        bh=RtQy+kpaH6nhz6lcFr4SyDCP5+ld9E5irSH2O1pX65Y=;
+        s=korg; t=1629119012;
+        bh=KiUG4rsHow+0PFikHCyH1/xyjo/m+2DX3my7nks4ITg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BkWCyDJxgYR40iFPCvz8V2Bm0YnC/9yNZOqEFsTzipk/EnoAy+BZ7ZMuv1m6uPRCw
-         EQ8UbTtFRE3DnOQkM9HYaXy09RHPRTHxhpRk7P2MHweQIYhGgPyf5OZzeFDij03DSC
-         tQTb7ie+2ULbEQLALbVRNLPDDnygSs/Dbkaw2D+w=
+        b=NxEtS20Bwrb36be7WKHxO59IC/U/k5uK8anS8W1ezn/MKPC9jH/mW0EFRO2mn2hlJ
+         rm5Vv0lIQqQk69PLh6Bn1e4456EKnJsxRHO6uwNCOMKpi9Mnfz25iOY6oO6tVci0Ql
+         QncQKqindDcOJS89dya1TQt8+QFMg2+r30zEeSf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 28/96] ASoC: SOF: Intel: hda-ipc: fix reply size checking
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.4 06/62] i2c: dev: zero out array used for i2c reads from userspace
 Date:   Mon, 16 Aug 2021 15:01:38 +0200
-Message-Id: <20210816125435.880081652@linuxfoundation.org>
+Message-Id: <20210816125428.416806739@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
-References: <20210816125434.948010115@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 973b393fdf073a4ebd8d82ef6edea99fedc74af9 ]
+commit 86ff25ed6cd8240d18df58930bd8848b19fce308 upstream.
 
-Checking that two values don't have common bits makes no sense,
-strict equality is meant.
+If an i2c driver happens to not provide the full amount of data that a
+user asks for, it is possible that some uninitialized data could be sent
+to userspace.  While all in-kernel drivers look to be safe, just be sure
+by initializing the buffer to zero before it is passed to the i2c driver
+so that any future drivers will not have this issue.
 
-Fixes: f3b433e4699f  ("ASoC: SOF: Implement Probe IPC API")
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802151749.15417-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Also properly copy the amount of data recvieved to the userspace buffer,
+as pointed out by Dan Carpenter.
+
+Reported-by: Eric Dumazet <edumazet@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/sof/intel/hda-ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/i2c-dev.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index c91aa951df22..acfeca42604c 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -107,8 +107,8 @@ void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
- 	} else {
- 		/* reply correct size ? */
- 		if (reply.hdr.size != msg->reply_size &&
--			/* getter payload is never known upfront */
--			!(reply.hdr.cmd & SOF_IPC_GLB_PROBE)) {
-+		    /* getter payload is never known upfront */
-+		    ((reply.hdr.cmd & SOF_GLB_TYPE_MASK) != SOF_IPC_GLB_PROBE)) {
- 			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
- 				msg->reply_size, reply.hdr.size);
- 			ret = -EINVAL;
--- 
-2.30.2
-
+--- a/drivers/i2c/i2c-dev.c
++++ b/drivers/i2c/i2c-dev.c
+@@ -141,7 +141,7 @@ static ssize_t i2cdev_read(struct file *
+ 	if (count > 8192)
+ 		count = 8192;
+ 
+-	tmp = kmalloc(count, GFP_KERNEL);
++	tmp = kzalloc(count, GFP_KERNEL);
+ 	if (tmp == NULL)
+ 		return -ENOMEM;
+ 
+@@ -150,7 +150,8 @@ static ssize_t i2cdev_read(struct file *
+ 
+ 	ret = i2c_master_recv(client, tmp, count);
+ 	if (ret >= 0)
+-		ret = copy_to_user(buf, tmp, count) ? -EFAULT : ret;
++		if (copy_to_user(buf, tmp, ret))
++			ret = -EFAULT;
+ 	kfree(tmp);
+ 	return ret;
+ }
 
 
