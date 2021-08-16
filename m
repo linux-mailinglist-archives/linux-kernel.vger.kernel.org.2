@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B2D3ED6F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B653ED48D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240054AbhHPNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37396 "EHLO mail.kernel.org"
+        id S236272AbhHPNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236644AbhHPNPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E5D760F46;
-        Mon, 16 Aug 2021 13:12:33 +0000 (UTC)
+        id S236276AbhHPNDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEBF632A1;
+        Mon, 16 Aug 2021 13:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119554;
-        bh=qiBDBaBjsVymJ+wxhbdGIuxoNdMRU1ON8G+24y8kUNs=;
+        s=korg; t=1629119000;
+        bh=EW3jspc19GaMzHHj7ZBULNLWFdHyKZANLS94qxi+9gE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ahK3i5U/MVvnhJEA4jdwd8o9ROvotB3/I4zndYV+W2QgWI+CA4mLx8PPJ8BZ2MDa
-         +KFtzTcMBuwSCGD9RPclD9Kif9ARVeCX9e97JXg4Zq5GhTrgXAzkQJckvqmmc4pTqt
-         1APNj8vLdMvfkMS2Xk1X+DrZvZPpg+tZf6FmcGak=
+        b=SksQIxd33MAFNlbmoCMOTVsCnMPpaJeutyopvpYJqmov68yI6T7VANYdDCty5UhqU
+         EU7r67olXhb/cErdn2NEn2IOVxEPAWSmHu7yimIMZIuA384TTGexoGFuKu5n1G60fZ
+         A/pMjqlo7+1Pg7L17jhBmVIYrF04owyApJGIpkXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Gurucharan G <gurucharanx.g@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 072/151] ice: Prevent probing virtual functions
-Date:   Mon, 16 Aug 2021 15:01:42 +0200
-Message-Id: <20210816125446.450848329@linuxfoundation.org>
+Subject: [PATCH 5.4 11/62] ieee802154: hwsim: fix GPF in hwsim_new_edge_nl
+Date:   Mon, 16 Aug 2021 15:01:43 +0200
+Message-Id: <20210816125428.575828500@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125428.198692661@linuxfoundation.org>
+References: <20210816125428.198692661@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 50ac7479846053ca8054be833c1594e64de496bb ]
+[ Upstream commit 889d0e7dc68314a273627d89cbb60c09e1cc1c25 ]
 
-The userspace utility "driverctl" can be used to change/override the
-system's default driver choices. This is useful in some situations
-(buggy driver, old driver missing a device ID, trying a workaround,
-etc.) where the user needs to load a different driver.
+Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE
+must be present to fix GPF.
 
-However, this is also prone to user error, where a driver is mapped
-to a device it's not designed to drive. For example, if the ice driver
-is mapped to driver iavf devices, the ice driver crashes.
-
-Add a check to return an error if the ice driver is being used to
-probe a virtual function.
-
-Fixes: 837f08fdecbe ("ice: Add basic driver framework for Intel(R) E800 Series")
-Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-Tested-by: Gurucharan G <gurucharanx.g@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Acked-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210707155633.1486603-1-mudongliangabcd@gmail.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ieee802154/mac802154_hwsim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 0eb2307325d3..6a72a3b93037 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -4014,6 +4014,11 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
- 	struct ice_hw *hw;
- 	int i, err;
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
+index da7f8cc9b181..2a78084aeaed 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -418,7 +418,7 @@ static int hwsim_new_edge_nl(struct sk_buff *msg, struct genl_info *info)
+ 	struct hwsim_edge *e;
+ 	u32 v0, v1;
  
-+	if (pdev->is_virtfn) {
-+		dev_err(dev, "can't probe a virtual function\n");
-+		return -EINVAL;
-+	}
-+
- 	/* this driver uses devres, see
- 	 * Documentation/driver-api/driver-model/devres.rst
- 	 */
+-	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
++	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] ||
+ 	    !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
+ 		return -EINVAL;
+ 
 -- 
 2.30.2
 
