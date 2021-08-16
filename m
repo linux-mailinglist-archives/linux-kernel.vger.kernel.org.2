@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD833EDB25
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE913EDB1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhHPQnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:43:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9380 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhHPQnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:43:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="195478923"
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="195478923"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 09:42:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="519724593"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by FMSMGA003.fm.intel.com with SMTP; 16 Aug 2021 09:42:31 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 16 Aug 2021 19:42:30 +0300
-Date:   Mon, 16 Aug 2021 19:42:30 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/i915/dp: Use max params for older panels
-Message-ID: <YRqVdjxMv3R+XbF+@intel.com>
-References: <20210804152408.584823-1-kai.heng.feng@canonical.com>
+        id S231312AbhHPQmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhHPQmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 12:42:19 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF289C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:41:47 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id q10so24575257wro.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaH1mb4YJaNfLIoBKAGqOfF1CidyUq6GE8UUo9yf+IA=;
+        b=0FL71FFEFYgZAt/2TDNCQRJcLZD2MkQLLdGdsGCqZYWqpra+iVRmwzXSODwQZtO7gt
+         QU9YZW3WRnh50AlUz/MsVFLpME9SsElyFHsUnbwad24NUpGtq74VMBZ1Kopr161ovvQk
+         A+yVSlk26gYm/FmroNM/RifBzC6zfHcaqzlotstlTYmgMBjE85WzFkOhkpfJpB0TyfDF
+         vnNeX9EVBOPkURpdcjsTZNDlsyMWPhtVf35FqOJCUZd7nki3E+uMHMtuhUIqqn46g+e5
+         aT7sw8vOMx1QLx3vhhdbE3Z8VBKk4SVr+zpvaqjAFRFmsGKEq3OuP8BFoY/yfj40jTXg
+         KM5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaH1mb4YJaNfLIoBKAGqOfF1CidyUq6GE8UUo9yf+IA=;
+        b=RtXOFVYPy9AJ6ulq5W55Vh9HHvEDH00XIR2m5f4k5otdsOwyDXz0NGX/heYS2wO5t2
+         prLkBmpQXGF5Mp74ngI1czQ2/mLPnj4NAAKbrUGmkrAUt8qYuL0Qy1RDNBdQoVlqMa4u
+         3P+Qxj6TnkAuOYgIFt1LhjWnvvePR3D6AkEaAJfuTe9lABCTMKTtzJDE9jpoPQN8njB9
+         XWDX0/Tdw1iEIpfMVvHKcZ9YossueV3x3YpSa3bLlCvY4MG4QoYkQgzzyt+GR/6OyGXj
+         8qFbZrBJOWWkBmDKxb9IFVyXs+oNJ4FUHdmGLuWOtCvfzNLo5XtY3IMAEvQ3SQgub4LZ
+         d9iA==
+X-Gm-Message-State: AOAM530Opf4hM0pVKOf7R8jb0sXWk1z+OjWfW6OTOiF5wF0dn+mZY/L3
+        OPBlerEEdH33F1vSYOpHpAmqDQ==
+X-Google-Smtp-Source: ABdhPJxQMWnKzZ0ECLs1a7IEhF2g+rE7+74yku7t8LzXIre6H3dSFys3LS0NMgoW5aqYBTJQ3z4dqg==
+X-Received: by 2002:a05:6000:184a:: with SMTP id c10mr19924577wri.26.1629132106459;
+        Mon, 16 Aug 2021 09:41:46 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:3a81:3690:b885:8dcf:f8c6:7841])
+        by smtp.gmail.com with ESMTPSA id m10sm15211730wro.63.2021.08.16.09.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 09:41:45 -0700 (PDT)
+From:   Alexandre Bailon <abailon@baylibre.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     ben.tseng@mediatek.com, michael.kao@mediatek.com,
+        ethan.chang@mediatek.com, fparent@baylibre.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Bailon <abailon@baylibre.com>
+Subject: [PATCH 0/3] Add support of thermal for mt8195
+Date:   Mon, 16 Aug 2021 18:43:04 +0200
+Message-Id: <20210816164307.557315-1-abailon@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210804152408.584823-1-kai.heng.feng@canonical.com>
-X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:24:02PM +0800, Kai-Heng Feng wrote:
-> Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
-> fast+narrow link on eDP again and fall back to the old max strategy on
-> failure"), the screen starts to have wobbly effect.
-> 
-> Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
-> everything") doesn't help either, that means the affected panels only
-> work with max params.
+This adds thermal support for mt8195.
+Depends on https://patchwork.kernel.org/project/linux-mediatek/list/?series=502403
 
-Unfortunate that the link training apparently passes with the bad
-params and thus the automagic use_max_params fallback doesn't kick in
-:(
+The changes required to support the mt8195 look very similar to those for
+the mt6873 but the differences make code factorisation difficult.
 
-> 
-> The panels are all DP 1.1 ones, so apply max params to them to resolve
-> the issue.
-> 
-> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
-> Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
-> Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 75d4ebc669411..e64bab4b016e1 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -1330,14 +1330,16 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
->  	limits.min_bpp = intel_dp_min_bpp(pipe_config->output_format);
->  	limits.max_bpp = intel_dp_max_bpp(intel_dp, pipe_config);
->  
-> -	if (intel_dp->use_max_params) {
-> +	if (intel_dp->use_max_params ||
-> +	    intel_dp->dpcd[DP_DPCD_REV] <= DP_DPCD_REV_11) {
+Alexandre Bailon (1):
+  dt-bindings: thermal: Add binding document for mt8195 thermal
+    controller
 
-IIRC Windows uses the optimal link rate only for EPD_REV>=1.4.
-We should probably do the same the minimize future headaches.
+Michael Kao (1):
+  thermal: mediatek: Add thermal zone settings for mt8195
 
->  		/*
->  		 * Use the maximum clock and number of lanes the eDP panel
->  		 * advertizes being capable of in case the initial fast
-> -		 * optimal params failed us. The panels are generally
-> -		 * designed to support only a single clock and lane
-> -		 * configuration, and typically on older panels these
-> -		 * values correspond to the native resolution of the panel.
-> +		 * optimal params failed us or the panel is DP 1.1 or earlier.
-> +		 * The panels are generally designed to support only a single
-> +		 * clock and lane configuration, and typically on older panels
-> +		 * these values correspond to the native resolution of the
-> +		 * panel.
->  		 */
->  		limits.min_lane_count = limits.max_lane_count;
->  		limits.min_clock = limits.max_clock;
-> -- 
-> 2.31.1
+Tinghan Shen (1):
+  arm64: dts: mt8195: Add thermal zone and thermal policy
+
+ .../thermal/mediatek-thermal-lvts.yaml        |   6 +-
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi      | 164 ++++++++++++++
+ drivers/thermal/mediatek/soc_temp_lvts.c      | 209 ++++++++++++++++--
+ 3 files changed, 361 insertions(+), 18 deletions(-)
 
 -- 
-Ville Syrjälä
-Intel
+2.31.1
+
