@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F663ED4A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5D93ED4E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhHPNEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S237356AbhHPNGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236280AbhHPNEN (ORCPT
+        with ESMTP id S237103AbhHPNFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:04:13 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5726C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:03:41 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q10so23555882wro.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:03:41 -0700 (PDT)
+        Mon, 16 Aug 2021 09:05:17 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557ABC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:04:37 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id h9so31658749ejs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 06:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9UoamzRECn/H6bcGR/4brg3LZ3eUZ0lyLrwMwmz5pKA=;
-        b=ZC0UofNZ2hAtDFaQZcHbKsP/7FVJIrXQ8QBEZZIvkxS7tDnch983O909mgZ3MFNIBb
-         8QHG6gwfo9NW+blGTDLi1MXcmYhPwFnQIZUYojsAKHdNqmhna8wgITIns8wBbBuuo7wY
-         J9oQ8NqFDWDI0zZsNpAKlUa9oZKhhpCeEylRZ8JYzmLHvgZVUN+YvBlQX01l+9BW3TLm
-         M8DW8Qf8hBk7BXqrZV4GGKPa/CmTlOTquLgk/FJg5mfL86Vr6JimUouEKtDMT/69HEoB
-         URVbjm9Frs8AU68yYbpfFH4OgCjKN844HpNfAKkJLu3tam9zZi1/4zS0GwvjuaHLm7ng
-         LUpw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qvCfNxoZ3Ryu9UQ+39HeycOmf+nzV/nDWwq7unBedQ0=;
+        b=tMyMtPLtp4vZi77oVlcLk8a/yyX/a7YBAa8QRDosX6Lc9txL8RVxhogmBQrbflH/Sq
+         L9qOlxSHyceoROKGSxG/VpG+wVZ4BfaB24vRjXeJwaVRv71j0PK9xk6Rie09nI0ohBL1
+         aqVWpqcZms9wVr+p4UPVYRZ6ameZ8juMd7sUxSVqOmuYzPxO4jkROh9TtAot3wJUc8WT
+         iL5Ui9i1ERktNPMJ4dfVEu4uWWtycd7zP6bVPxeFLPl3+XF8pTGt8XEFkK504D+ccO/9
+         b7KPms0f6G8Muw0pKYiDhC5zwL5PB10DlzGvN72qaNu+yPA7xgNMOtlkFGTO9x+hG6d+
+         esDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9UoamzRECn/H6bcGR/4brg3LZ3eUZ0lyLrwMwmz5pKA=;
-        b=JnEQx2jqlg1EEq92MvIDWe2pYzLyB2EaAYn/+qdiaoww0WkOwPy9q/9h6osPXxEw4o
-         xNydRQzrhqy0yqcHvlrvjbfaKRpItOHwd73bF45Aw/qV7SgCAB/5A5FzrNp5nxrlnh45
-         jNVYWMAK8qIaD2TgN0zxKM/paJVDuXWcwDI/9MgVnERWv1kVcIkIYEQHoeXfoFwYNXGE
-         v4WtyVWa5xEtOJdhYatmgf9xuoGMjsu8SKklAKY2vQupaDCaikUr6dk6CpVobplq2LCx
-         OSPp76aHiFVT9NSB9hQwOlHrY4Pt8fVN1YgxPKq/hsiEZyar9TRhtwlLiO+zx/8+D1OQ
-         UrmA==
-X-Gm-Message-State: AOAM530myzberF/ofX/3pbNCDEmWxqMsfydrFOqdzMSM16LTAsfHim1m
-        nuF9GRZkwBzMga+h9RZVdNFMOw==
-X-Google-Smtp-Source: ABdhPJyEWDxdRRAYh1vk0lNY3i6eBbD7ldr1tb7QH1PupZemnFfsMCqlej0tE14FKPG2zd0G28mejg==
-X-Received: by 2002:a5d:534c:: with SMTP id t12mr8871507wrv.219.1629119020395;
-        Mon, 16 Aug 2021 06:03:40 -0700 (PDT)
-Received: from google.com ([2.31.167.59])
-        by smtp.gmail.com with ESMTPSA id z15sm11307578wrp.30.2021.08.16.06.03.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qvCfNxoZ3Ryu9UQ+39HeycOmf+nzV/nDWwq7unBedQ0=;
+        b=Aa0fYcrLrJRKlnmdvqjcR44j/I5HNRE/+GXKKhp/M8roFG11GtiszBa4u1IwkQdvsG
+         /LVmkmSwbbvmygBNodzqPZXZJ3NhEDDSZMT6zFYCF7Vu5R4lkdXqrVF1PpD0mxajHHbG
+         56KCuWsEQL+XG3Gf3baMpZg2XN/Ke/zrtiaFUW5VQZvYSmlwDUz3yOj1LggPQH2vcN0T
+         2orZ9x5JbJMYwQwJ9WziPJ/4JC4sG5MeeIoERwILCKxfa6Mms8U14BLw4XksxMM1Wcsw
+         FpzgrV6MPzECKPyV0Jmel3WFUttMl6TRVn6e7aBhG6ptXtYK2RPLdPKz+by+d/FxQrtI
+         fFvg==
+X-Gm-Message-State: AOAM5320NjPLzQBCLT6NkUlrk8PPKe14JqGNW4n5wzzCwleaq5stlmDq
+        3VfpIqITJN29sX6/MWgJNwo=
+X-Google-Smtp-Source: ABdhPJySviFnoT2Za0+D0LH8HciYPfW9vf+N9+GQUsqtN4Dy2R5rWJ7amDAK8SNIIZj1Drxs+UqqMg==
+X-Received: by 2002:a17:906:e291:: with SMTP id gg17mr16191722ejb.477.1629119075975;
+        Mon, 16 Aug 2021 06:04:35 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id m13sm3658987ejg.76.2021.08.16.06.04.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 06:03:39 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 14:03:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: ti_am335x_tscadc: Delete superfluous error message
-Message-ID: <YRpiKsOMB0PF23EH@google.com>
-References: <20210811121934.23548-1-tangbin@cmss.chinamobile.com>
+        Mon, 16 Aug 2021 06:04:35 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org,
+        Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: Re: [PATCH v2 4/4] staging: r8188eu: convert rtw_is_cckratesonly_included() to bool
+Date:   Mon, 16 Aug 2021 15:04:33 +0200
+Message-ID: <14046781.rP7JVETYk7@localhost.localdomain>
+In-Reply-To: <20210816115430.28264-4-straube.linux@gmail.com>
+References: <20210816115430.28264-1-straube.linux@gmail.com> <20210816115430.28264-4-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210811121934.23548-1-tangbin@cmss.chinamobile.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021, Tang Bin wrote:
-
-> In the function ti_tscadc_probe(), when get irq failed,
-> platform_get_irq() logs an error message, so remove
-> redundant message here.
+On Monday, August 16, 2021 1:54:30 PM CEST Michael Straube wrote:
+> Function rtw_is_cckratesonly_included() returns boolean values.
+> Change the return type to bool to reflect this.
 > 
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
 > ---
->  drivers/mfd/ti_am335x_tscadc.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> v1 -> v2
+> Rewritten to apply with v2 of patch 3/4.
+> 
+>  drivers/staging/r8188eu/core/rtw_ieee80211.c | 2 +-
+>  drivers/staging/r8188eu/include/ieee80211.h  | 3 +--
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 
-Applied, thanks.
+Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+
+Fabio
+
+
+
