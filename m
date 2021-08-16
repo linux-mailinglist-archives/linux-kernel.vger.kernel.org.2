@@ -2,158 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819613ED2A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1363ED288
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236561AbhHPK4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 06:56:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236633AbhHPKzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 06:55:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629111314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LFflC0zLzMPAB/2U5K7UvJmcJ6dorvVEBrSXm7nwkDQ=;
-        b=ZLhIDxj2YuV4tFRUanQVARhN+ZdYRRDEAElkKf1oVAU6rG1WjPDuMmBIRqDJlYePuYPk6j
-        RzKLluiuNOytlLVC73rhFLmf2uJCeaBmrNPTS268UPOymKYT06Y9Z/Nn1c74JaO40tMXmY
-        uvCWwkwrpdhHRQbUBBYSMbFKudv7xfI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-daG6amDgNU-vHeURY_SJQg-1; Mon, 16 Aug 2021 06:55:11 -0400
-X-MC-Unique: daG6amDgNU-vHeURY_SJQg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S236345AbhHPKyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 06:54:14 -0400
+Received: from mga06.intel.com ([134.134.136.31]:17780 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236242AbhHPKyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 06:54:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10077"; a="276867110"
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="276867110"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 03:53:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,324,1620716400"; 
+   d="scan'208";a="448502468"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Aug 2021 03:53:29 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0401CEC1A6;
-        Mon, 16 Aug 2021 10:55:09 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.64.242.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C42B95FC23;
-        Mon, 16 Aug 2021 10:55:02 +0000 (UTC)
-From:   Kate Hsuan <hpa@redhat.com>
-To:     Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
-Cc:     platform-driver-x86@vger.kernel.org, Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v2 20/20] platform/x86: intel-wmi-thunderbolt: Move to intel sub-directory
-Date:   Mon, 16 Aug 2021 18:51:19 +0800
-Message-Id: <20210816105119.704302-21-hpa@redhat.com>
-In-Reply-To: <20210816105119.704302-1-hpa@redhat.com>
-References: <20210816105119.704302-1-hpa@redhat.com>
+        by linux.intel.com (Postfix) with ESMTPS id 944A85808DB;
+        Mon, 16 Aug 2021 03:53:26 -0700 (PDT)
+Date:   Mon, 16 Aug 2021 18:53:23 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, vee.khee.wong@intel.com,
+        weifeng.voon@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v1 3/3] net: stmmac: add ethtool per-queue irq
+ statistic support
+Message-ID: <20210816105323.GA13779@linux.intel.com>
+References: <cover.1629092894.git.vijayakannan.ayyathurai@intel.com>
+ <5c956016465b688a2679bd02da1f751046be189c.1629092894.git.vijayakannan.ayyathurai@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c956016465b688a2679bd02da1f751046be189c.1629092894.git.vijayakannan.ayyathurai@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move intel-wmi-thunderbolt to intel sub-directory to improve
-readability.
+On Mon, Aug 16, 2021 at 02:16:00PM +0800, Vijayakannan Ayyathurai wrote:
+> Adding ethtool per-queue statistics support to show number of interrupts
+> generated at DMA tx and DMA rx. All the counters are incremented at
+> dwmac4_dma_interrupt function.
+>
 
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
----
- drivers/platform/x86/Kconfig                         | 12 ------------
- drivers/platform/x86/Makefile                        |  2 --
- drivers/platform/x86/intel/Makefile                  |  1 +
- drivers/platform/x86/intel/wmi/Kconfig               | 12 ++++++++++++
- drivers/platform/x86/intel/wmi/Makefile              |  2 ++
- .../wmi/thunderbolt.c}                               |  0
- 6 files changed, 15 insertions(+), 14 deletions(-)
- rename drivers/platform/x86/{intel-wmi-thunderbolt.c => intel/wmi/thunderbolt.c} (100%)
-
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index a5b0a654e028..be2c91b2c3a7 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -77,18 +77,6 @@ config UV_SYSFS
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called uv_sysfs.
+Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
  
--config INTEL_WMI_THUNDERBOLT
--	tristate "Intel WMI thunderbolt force power driver"
--	depends on ACPI_WMI
--	help
--	  Say Y here if you want to be able to use the WMI interface on select
--	  systems to force the power control of Intel Thunderbolt controllers.
--	  This is useful for updating the firmware when devices are not plugged
--	  into the controller.
--
--	  To compile this driver as a module, choose M here: the module will
--	  be called intel-wmi-thunderbolt.
--
- config MXM_WMI
-        tristate "WMI support for MXM Laptop Graphics"
-        depends on ACPI_WMI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 60015a4c6b6c..f8500a0439b3 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -10,8 +10,6 @@ obj-$(CONFIG_WMI_BMOF)		+= wmi-bmof.o
- 
- # WMI drivers
- obj-$(CONFIG_HUAWEI_WMI)		+= huawei-wmi.o
--
--obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
- obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
- obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
- obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
-diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index 794aa821611b..6ed28f14a4cf 100644
---- a/drivers/platform/x86/intel/Makefile
-+++ b/drivers/platform/x86/intel/Makefile
-@@ -53,3 +53,4 @@ obj-$(CONFIG_INTEL_SPEED_SELECT_INTERFACE)	+= speed_select_if/
- 
- #WMI drivers
- obj-$(CONFIG_INTEL_WMI_SBL_FW_UPDATE)	+= wmi/
-+obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= wmi/
-diff --git a/drivers/platform/x86/intel/wmi/Kconfig b/drivers/platform/x86/intel/wmi/Kconfig
-index fc70728e0f1f..0d65fc90f5b1 100644
---- a/drivers/platform/x86/intel/wmi/Kconfig
-+++ b/drivers/platform/x86/intel/wmi/Kconfig
-@@ -12,3 +12,15 @@ config INTEL_WMI_SBL_FW_UPDATE
- 
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called intel-wmi-sbl-fw-update.
-+
-+config INTEL_WMI_THUNDERBOLT
-+	tristate "Intel WMI thunderbolt force power driver"
-+	depends on ACPI_WMI
-+	help
-+	  Say Y here if you want to be able to use the WMI interface on select
-+	  systems to force the power control of Intel Thunderbolt controllers.
-+	  This is useful for updating the firmware when devices are not plugged
-+	  into the controller.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called intel-wmi-thunderbolt.
-diff --git a/drivers/platform/x86/intel/wmi/Makefile b/drivers/platform/x86/intel/wmi/Makefile
-index bf1f118b6839..c2d56d25dea0 100644
---- a/drivers/platform/x86/intel/wmi/Makefile
-+++ b/drivers/platform/x86/intel/wmi/Makefile
-@@ -5,3 +5,5 @@
- 
- intel-wmi-sbl-fw-update-y				:= sbl-fw-update.o
- obj-$(CONFIG_INTEL_WMI_SBL_FW_UPDATE)	+= intel-wmi-sbl-fw-update.o
-+intel-wmi-thunderbolt-y					:= thunderbolt.o
-+obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
-diff --git a/drivers/platform/x86/intel-wmi-thunderbolt.c b/drivers/platform/x86/intel/wmi/thunderbolt.c
-similarity index 100%
-rename from drivers/platform/x86/intel-wmi-thunderbolt.c
-rename to drivers/platform/x86/intel/wmi/thunderbolt.c
--- 
-2.31.1
-
+> Signed-off-by: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/common.h         | 2 ++
+>  drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c     | 2 ++
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 2 ++
+>  3 files changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+> index 79333deef2e2..b6d945ea903d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+> @@ -60,10 +60,12 @@
+>  
+>  struct stmmac_txq_stats {
+>  	unsigned long tx_pkt_n;
+> +	unsigned long tx_normal_irq_n;
+>  };
+>  
+>  struct stmmac_rxq_stats {
+>  	unsigned long rx_pkt_n;
+> +	unsigned long rx_normal_irq_n;
+>  };
+>  
+>  /* Extra statistic and debug information exposed by ethtool */
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> index f83db62938dd..9292a1fab7d3 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+> @@ -170,10 +170,12 @@ int dwmac4_dma_interrupt(void __iomem *ioaddr,
+>  		x->normal_irq_n++;
+>  	if (likely(intr_status & DMA_CHAN_STATUS_RI)) {
+>  		x->rx_normal_irq_n++;
+> +		x->rxq_stats[chan].rx_normal_irq_n++;
+>  		ret |= handle_rx;
+>  	}
+>  	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
+>  		x->tx_normal_irq_n++;
+> +		x->txq_stats[chan].tx_normal_irq_n++;
+>  		ret |= handle_tx;
+>  	}
+>  	if (unlikely(intr_status & DMA_CHAN_STATUS_TBU))
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> index 10c0895d0b43..595c3ccdcbb7 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> @@ -263,11 +263,13 @@ static const struct stmmac_stats stmmac_mmc[] = {
+>  
+>  static const char stmmac_qstats_tx_string[][ETH_GSTRING_LEN] = {
+>  	"tx_pkt_n",
+> +	"tx_irq_n",
+>  #define STMMAC_TXQ_STATS ARRAY_SIZE(stmmac_qstats_tx_string)
+>  };
+>  
+>  static const char stmmac_qstats_rx_string[][ETH_GSTRING_LEN] = {
+>  	"rx_pkt_n",
+> +	"rx_irq_n",
+>  #define STMMAC_RXQ_STATS ARRAY_SIZE(stmmac_qstats_rx_string)
+>  };
+>  
