@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667FD3ED7A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745F93ED77A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbhHPNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238816AbhHPNkX (ORCPT
+        id S240727AbhHPNdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:33:37 -0400
+Received: from mail-m17636.qiye.163.com ([59.111.176.36]:46412 "EHLO
+        mail-m17636.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240410AbhHPNXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:40:23 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67895C0698C5;
-        Mon, 16 Aug 2021 06:22:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id b7so26462976edu.3;
-        Mon, 16 Aug 2021 06:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ASKfOUpZVAKtKzShqT3td46CJv+FH9BqYMNcktsexHo=;
-        b=IcBlsysZ3ws214IXTNUrCb+4+DCBm2SCE3c2JJUL51h6dJBKF7Ula8/ob58WJ2k0Cy
-         FEZGtmG1NZYmGAts9FtG2XE/HJ9M843p4t4PU60ERpqzs4zwSqYWgN2XuMd+ihWFP/yv
-         rGHOO9ST32fto7q/TQRueLCBGLMF3huT1BD3tFRwsnzyBrU3vTQ571+4kDHGPVkBwrVw
-         +912H8BxXAm1Vyc1ojbRdp3xiIWUBKeJF4A1z7yDucdj/IHJWLX2lwCvi1UlkXT/qsRj
-         DFg5w+st1jy8gPlwybQpWDfgZVk27vmOxuG/qT3AVWfIE2wfqqx/NjJJcZ+L0esWgr1B
-         oeuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ASKfOUpZVAKtKzShqT3td46CJv+FH9BqYMNcktsexHo=;
-        b=rCaYeE4nT2Pf2vOeXOgFiaM9nnrWYxjhpAU2Kfpa57Vthn07hmgOFewrsTy7UPq9ok
-         i2TbV/tgU1lrxtCeP/UWTYooKMbAX3fkNejlZYWKt4gTupQaDAQm4EVGQzDD+8XPw7KC
-         +c5IokUJh7Vb79j0GHoW0AWFPk2PkohiG7VO39LL5zjlnMkL9vXvxzu+IG7IYE71KJi4
-         NtNYyhmJ1gbJOZrUCrDE1RLY7nCVxkCjYK/4VKtlPb22R+STTA+iUkJj+MEDuf4/bkK+
-         XG1YBfQ7V7hylVapjRe+bC8wwZ95WhfuJg26Dz7OmG8e4AY8c1GR5RtdekYoXvzDqj0F
-         DxcA==
-X-Gm-Message-State: AOAM530U/94yHHlGBFyq/GQC3GvCD8Olf9gtk4aAqCX8gluplCpDFy33
-        sVxJOHUtYR2P+YW9xNv1mWPTFie7MfXYD9Q+5CkkwlngyOTnwsCk
-X-Google-Smtp-Source: ABdhPJx//v0XFjAw696+fxHOjjII7EueTho7mjMVcewyNR038dnvShSmcCCRNZTFY7RXYVxbYyXC1TDmTnk3eFMRwfE=
-X-Received: by 2002:a05:6402:288b:: with SMTP id eg11mr20341402edb.241.1629120131918;
- Mon, 16 Aug 2021 06:22:11 -0700 (PDT)
+        Mon, 16 Aug 2021 09:23:22 -0400
+Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
+        by mail-m17636.qiye.163.com (Hmail) with ESMTPA id 491E5C40261;
+        Mon, 16 Aug 2021 21:22:49 +0800 (CST)
+From:   Yangtao Li <frank.li@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH] f2fs: always call f2fs_issue_checkpoint() in f2fs_sync_fs()
+Date:   Mon, 16 Aug 2021 21:22:48 +0800
+Message-Id: <20210816132248.276865-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210803063149.2821093-1-mudongliangabcd@gmail.com>
- <20210812100437.GA5055@gondor.apana.org.au> <CAD-N9QWGgBBddi5kwTNANKVVdWaQRwagMHvaH592B5GDALpBrg@mail.gmail.com>
- <20210812102954.GA5569@gondor.apana.org.au> <CAD-N9QU6r-yLBvJUpV+xy4pgOFnrtquBymthG7k5ddHt20APzg@mail.gmail.com>
- <20210812104318.GA5780@gondor.apana.org.au>
-In-Reply-To: <20210812104318.GA5780@gondor.apana.org.au>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 16 Aug 2021 21:21:45 +0800
-Message-ID: <CAD-N9QVz3W1E0D4i9iVTpkHVaB_Y9u1_HK2VW+FoQKJ9H8krrA@mail.gmail.com>
-Subject: Re: [PATCH v2] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUJKGkNWHU9NGE0ZGElKSE
+        geVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjY6PSo6Mz9JNRwzLBkSF08N
+        SRMaCypVSlVKTUlCSklLSk1CQ05PVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
+        VUpLT1VKQ0NVSk1OWVdZCAFZQUpNQ0k3Bg++
+X-HM-Tid: 0a7b4f2105efd996kuws491e5c40261
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 6:43 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Thu, Aug 12, 2021 at 06:40:20PM +0800, Dongliang Mu wrote:
-> >
-> > I agree with you and would like to modify "return 0" to "return err"
-> > in the next version.  Even if the parent function does not care about
-> > the return value, it is still necessary to keep the right return
-> > value.
->
-> Well if the parent is ignoring the error then returning the error
-> there obviously isn't going to help.
+Sync is always 1, so delete the check of the value.
 
-If so, do I still need to change my current patch?
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+---
+ fs/f2fs/super.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Dongliang Mu
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 98727e04d271..b823c7e3f303 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1553,7 +1553,6 @@ static void f2fs_put_super(struct super_block *sb)
+ int f2fs_sync_fs(struct super_block *sb, int sync)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+-	int err = 0;
+ 
+ 	if (unlikely(f2fs_cp_error(sbi)))
+ 		return 0;
+@@ -1565,10 +1564,7 @@ int f2fs_sync_fs(struct super_block *sb, int sync)
+ 	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+ 		return -EAGAIN;
+ 
+-	if (sync)
+-		err = f2fs_issue_checkpoint(sbi);
+-
+-	return err;
++	return f2fs_issue_checkpoint(sbi);
+ }
+ 
+ static int f2fs_freeze(struct super_block *sb)
+-- 
+2.32.0
 
->
-> Cheers,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
