@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5913EDA85
+	by mail.lfdr.de (Postfix) with ESMTP id E18313EDA86
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 18:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhHPQHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 12:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
+        id S230099AbhHPQHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 12:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhHPQHA (ORCPT
+        with ESMTP id S230078AbhHPQHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:07:00 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C70BC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:06:28 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id d11so32732705eja.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:06:28 -0700 (PDT)
+        Mon, 16 Aug 2021 12:07:02 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3060C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:06:30 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id i22so8475696edq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Aug 2021 09:06:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=g5Y6A0GU/72isP5rG5oSxTpEZ8IT0eu5BzylQB0NEgo=;
-        b=dCBYpk7vsKoZhZF5PishaJyN4S0IUzseuLE42M1c2jBoCF4Rk+XXoBG14KRzYVTNQW
-         7RANosXFNY6DMX8f2At7e68LaeDqX391WDkvtKFrbJOA9o3Whxu5Y442dMvX0Pn8Eer/
-         ep+pTBgvygsE7IL/Fq1Aw+/f27M+In42QYTenCqKP3ekxqDlTlCZfGb3F0PnJGXAyBsf
-         IzBSPwcAJbNRKGG7C531HjB4RtnaG6VTMFMoeL4CBAo8syvExZqaASVkAYTFtr0jL+i4
-         jkuOUE0qJup9CInfUMr36APEn4MMoaDTcVXKQ+i3k36z6YCY8Zdy5uQZXO4v679EvUDg
-         yqbQ==
+        bh=7SbAK6kGh4YKKfxzmecBRbqxKsR0TxN0251PX8WUATg=;
+        b=m9WXSNiQWMF73vhWyFfKR2TprePa5oqrBG2rBGyxCb0MRCI1rgxQJdKbnDroqoXX1X
+         W6IbVF4I5lITEH8uZNl7a8om8v0gQctWN+h9+jDba6c/75pwI9EJzi/yu1nBoyZNJdmz
+         UVaqDAgdeKKRjy6q2rQzFq5vFQjPD62bDGxcKvlHqh5J2GCYbGwNYEhSeszzc3HLzsfD
+         DFao//2zb5L/TwTDQ2O7DnMJPsyS/bb7URa864MSZ3RA4yKCOSom/H0B9/0m0Cy6oXwv
+         j3HYpOi/eWJmW+qov5mcwvSN5E61H6l1KsuYaZxF2RltXhA271Kz5av9s+xRwp5B24X2
+         RJsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=g5Y6A0GU/72isP5rG5oSxTpEZ8IT0eu5BzylQB0NEgo=;
-        b=J0IP1DlwB1kBUIb6uU3inpbyjG3JuF1xpHW5Q2h/BUGole41S6TDOvuNCSFEnG6gI5
-         vmf9nf+pLb2dnizhbC04eeMRHe5nYYU6+9UuvMEwkYDtbzb1vSJKBpexsb4Pstc3Zf/z
-         GbR56hEvu3CTDK5ovBWZ4T5GHuS3IObiIBpXVlDdNapZm69N9+3P0OmVBmA27c/nDeO2
-         wXZP/03iJ9NmE6W/gDuEzaEl6hBfw0Xt9/++suO4mJ2PwZNHnhb5fxg45Fu8Jw6sRabZ
-         dnmScYLkQw7XluBPK063ufRiNQeHfwdVt4JzSGxzUYRBg1wbL8DGM18b3vtesHf6+KoJ
-         HYuw==
-X-Gm-Message-State: AOAM531xt/e/B3MW5xtcK7hlIJC+skjbLnIGWMpAJfGyH3y7V7KoB+WW
-        M3WCT8gxcOU1EbaojXxMUqM=
-X-Google-Smtp-Source: ABdhPJxT4vY1P7PhIfE1isHn7chFWUyVdwauFffB2VnVSIouc941eX4DdLMQSiNvoRbVVZyBwq5/HQ==
-X-Received: by 2002:a17:906:4c89:: with SMTP id q9mr16785672eju.118.1629129986980;
-        Mon, 16 Aug 2021 09:06:26 -0700 (PDT)
+        bh=7SbAK6kGh4YKKfxzmecBRbqxKsR0TxN0251PX8WUATg=;
+        b=RnqmICE2+TNuCja2o9Hkg9/OWAu0Nq/5wbgw61GzGE+8VklIdbOUViOgiNa0rlG2OQ
+         u1Z0/LR73urHqE7R6ZE7/sFp8DJ9AJQLqkTy5GEXEcCEAqLJeG3fj6Hk5VhJOnzqvtXd
+         gkheVP/BkEXtxOgn2+P/GGg+XHeKRzeDLEoNY8dIllnhyhrgwlHs3NtZVh7MZlzOGe/A
+         dCCQJJALI+5hJMNmQ7XUIf6xA2R8VdFW/ssds7S9YXtuK+kchZs7ftwICF7697ZKwX8P
+         zmH+twvrhPIFGiL8p5Hxlazjc+enVyQBAvKswhmnao+QYu4Dddq/h+eFirp23ajRKEWj
+         OkLQ==
+X-Gm-Message-State: AOAM533gS9UQsQT4nrgzGljJW9CboxaII6z+K65+wx4a0tZjZiUv4cp5
+        086C7uaA3MxDanfxYHhbPv0=
+X-Google-Smtp-Source: ABdhPJykHr+0+rBENMPKLBHbbdok1TimwrnKiDDPP8Uts4sW0j8Ony7kE6mLhRdBAJZRDBg+t6EBQg==
+X-Received: by 2002:a05:6402:2206:: with SMTP id cq6mr20618700edb.384.1629129989327;
+        Mon, 16 Aug 2021 09:06:29 -0700 (PDT)
 Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
-        by smtp.gmail.com with ESMTPSA id s18sm3906239ejh.12.2021.08.16.09.06.25
+        by smtp.gmail.com with ESMTPSA id s18sm3906239ejh.12.2021.08.16.09.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 09:06:26 -0700 (PDT)
+        Mon, 16 Aug 2021 09:06:28 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
@@ -56,9 +56,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH 2/3] staging: r8188eu: Remove code depending on NAT25_LOOKUP
-Date:   Mon, 16 Aug 2021 18:06:16 +0200
-Message-Id: <20210816160617.11949-3-fmdefrancesco@gmail.com>
+Subject: [PATCH 3/3] staging: r8188eu: Remove no more used variable and function
+Date:   Mon, 16 Aug 2021 18:06:17 +0200
+Message-Id: <20210816160617.11949-4-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210816160617.11949-1-fmdefrancesco@gmail.com>
 References: <20210816160617.11949-1-fmdefrancesco@gmail.com>
@@ -68,247 +68,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove all the code related to the management of the NAT25_LOOKUP
-method in nat25_db_handle(). The only function that used that method was
-the now deleted nat25_handle_frame(). Remove the NAT25_LOOKUP entry from
-the NAT25_METHOD enum because it is not anymore used everywhere else in
-the code of the driver.
+Remove the 'sender' pointer to integer. Remove
+__nat25_db_network_lookup_and_replace(). Following the deletion of the
+code related to the NAT25_LOOKUP method, they are no more needed.
 
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_br_ext.c    | 150 -------------------
- drivers/staging/r8188eu/include/rtw_br_ext.h |   1 -
- 2 files changed, 151 deletions(-)
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 52 +----------------------
+ 1 file changed, 1 insertion(+), 51 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index 5035f354081f..5b032406e9d3 100644
+index 5b032406e9d3..62864fbbdef3 100644
 --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
 +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -515,27 +515,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+@@ -326,56 +326,6 @@ static inline void __network_hash_unlink(struct nat25_network_db_entry *ent)
+ 	ent->pprev_hash = NULL;
+ }
  
- 			__nat25_db_print(priv);
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup IP, SA =%08x, DA =%08x\n", iph->saddr, iph->daddr);
--			tmp = be32_to_cpu(iph->daddr);
--			__nat25_generate_ipv4_network_addr(networkAddr, &tmp);
+-static int __nat25_db_network_lookup_and_replace(struct adapter *priv,
+-				struct sk_buff *skb, unsigned char *networkAddr)
+-{
+-	struct nat25_network_db_entry *db;
 -
--			if (!__nat25_db_network_lookup_and_replace(priv, skb, networkAddr)) {
--				if (*((unsigned char *)&iph->daddr + 3) == 0xff) {
--					/*  L2 is unicast but L3 is broadcast, make L2 bacome broadcast */
--					DEBUG_INFO("NAT25: Set DA as boardcast\n");
--					memset(skb->data, 0xff, ETH_ALEN);
--				} else {
--					/*  forward unknow IP packet to upper TCP/IP */
--					DEBUG_INFO("NAT25: Replace DA with BR's MAC\n");
--					if ((*(u32 *)priv->br_mac) == 0 && (*(u16 *)(priv->br_mac+4)) == 0) {
--						printk("Re-init netdev_br_init() due to br_mac == 0!\n");
--						netdev_br_init(priv->pnetdev);
--					}
--					memcpy(skb->data, priv->br_mac, ETH_ALEN);
--				}
+-	spin_lock_bh(&priv->br_ext_lock);
+-
+-	db = priv->nethash[__nat25_network_hash(networkAddr)];
+-	while (db) {
+-		if (!memcmp(db->networkAddr, networkAddr, MAX_NETWORK_ADDR_LEN)) {
+-			if (!__nat25_has_expired(priv, db)) {
+-				/*  replace the destination mac address */
+-				memcpy(skb->data, db->macAddr, ETH_ALEN);
+-				atomic_inc(&db->use_count);
+-
+-				DEBUG_INFO("NAT25: Lookup M:%02x%02x%02x%02x%02x%02x N:%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+-							"%02x%02x%02x%02x%02x%02x\n",
+-					db->macAddr[0],
+-					db->macAddr[1],
+-					db->macAddr[2],
+-					db->macAddr[3],
+-					db->macAddr[4],
+-					db->macAddr[5],
+-					db->networkAddr[0],
+-					db->networkAddr[1],
+-					db->networkAddr[2],
+-					db->networkAddr[3],
+-					db->networkAddr[4],
+-					db->networkAddr[5],
+-					db->networkAddr[6],
+-					db->networkAddr[7],
+-					db->networkAddr[8],
+-					db->networkAddr[9],
+-					db->networkAddr[10],
+-					db->networkAddr[11],
+-					db->networkAddr[12],
+-					db->networkAddr[13],
+-					db->networkAddr[14],
+-					db->networkAddr[15],
+-					db->networkAddr[16]);
 -			}
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -567,20 +546,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
- 			__nat25_db_print(priv);
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup ARP\n");
+-			spin_unlock_bh(&priv->br_ext_lock);
+-			return 1;
+-		}
+-		db = db->next_hash;
+-	}
+-	spin_unlock_bh(&priv->br_ext_lock);
+-	return 0;
+-}
 -
--			arp_ptr += arp->ar_hln;
--			sender = (unsigned int *)arp_ptr;
--			arp_ptr += (arp->ar_hln + arp->ar_pln);
--			target = (unsigned int *)arp_ptr;
--			__nat25_generate_ipv4_network_addr(networkAddr, target);
--			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--			/*  change to ARP target mac address to Lookup result */
--			arp_ptr = (unsigned char *)(arp + 1);
--			arp_ptr += (arp->ar_hln + arp->ar_pln);
--			memcpy(arp_ptr, skb->data, ETH_ALEN);
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -687,22 +652,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 				__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
- 				__nat25_db_print(priv);
- 				return 0;
--			case NAT25_LOOKUP:
--				if (!memcmp(GET_MY_HWADDR(priv), ipx->ipx_dest.node, ETH_ALEN)) {
--					DEBUG_INFO("NAT25: Lookup IPX, Modify Destination IPX Node addr\n");
--
--					__nat25_generate_ipx_network_addr_with_socket(networkAddr, &ipx->ipx_dest.net, &ipx->ipx_dest.sock);
--
--					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--
--					/*  replace IPX destination node addr with Lookup destination MAC addr */
--					memcpy(ipx->ipx_dest.node, skb->data, ETH_ALEN);
--				} else {
--					__nat25_generate_ipx_network_addr_with_node(networkAddr, &ipx->ipx_dest.net, ipx->ipx_dest.node);
--
--					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--				}
--				return 0;
- 			default:
- 				return -1;
- 			}
-@@ -732,19 +681,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ static void __nat25_db_network_insert(struct adapter *priv,
+ 				unsigned char *macAddr, unsigned char *networkAddr)
+ {
+@@ -524,7 +474,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 		/*---------------------------------------------------*/
+ 		struct arphdr *arp = (struct arphdr *)(skb->data + ETH_HLEN);
+ 		unsigned char *arp_ptr = (unsigned char *)(arp + 1);
+-		unsigned int *sender, *target;
++		unsigned int *sender;
  
- 				__nat25_db_print(priv);
- 				return 0;
--			case NAT25_LOOKUP:
--				DEBUG_INFO("NAT25: Lookup AARP, Source =%d,%d Destination =%d,%d\n",
--					ea->pa_src_net,
--					ea->pa_src_node,
--					ea->pa_dst_net,
--					ea->pa_dst_node);
--
--				__nat25_generate_apple_network_addr(networkAddr, &ea->pa_dst_net, &ea->pa_dst_node);
--
--				__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--
--				/*  change to AARP destination mac address to Lookup result */
--				memcpy(ea->hw_dst, skb->data, ETH_ALEN);
- 				return 0;
- 			default:
- 				return -1;
-@@ -766,15 +702,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 
- 				__nat25_db_print(priv);
- 				return 0;
--			case NAT25_LOOKUP:
--				DEBUG_INFO("NAT25: Lookup DDP, Source =%d,%d Destination =%d,%d\n",
--					ddp->deh_snet,
--					ddp->deh_snode,
--					ddp->deh_dnet,
--					ddp->deh_dnode);
--				__nat25_generate_apple_network_addr(networkAddr, &ddp->deh_dnet, &ddp->deh_dnode);
--				__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--				return 0;
- 			default:
- 				return -1;
- 			}
-@@ -865,70 +792,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 					priv->pppoe_connection_in_progress = 0;
- 			}
- 			return 0;
--		case NAT25_LOOKUP:
--			if (ph->code == PADO_CODE || ph->code == PADS_CODE) {
--				if (priv->ethBrExtInfo.addPPPoETag) {
--					struct pppoe_tag *tag;
--					unsigned char *ptr;
--					unsigned short tagType, tagLen;
--					int offset = 0;
--
--					ptr = __nat25_find_pppoe_tag(ph, ntohs(PTT_RELAY_SID));
--					if (!ptr) {
--						DEBUG_ERR("Fail to find PTT_RELAY_SID in FADO!\n");
--						return -1;
--					}
--
--					tag = (struct pppoe_tag *)ptr;
--					tagType = (unsigned short)((ptr[0] << 8) + ptr[1]);
--					tagLen = (unsigned short)((ptr[2] << 8) + ptr[3]);
--
--					if ((tagType != ntohs(PTT_RELAY_SID)) || (tagLen < (MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN))) {
--						DEBUG_ERR("Invalid PTT_RELAY_SID tag length [%d]!\n", tagLen);
--						return -1;
--					}
--
--					pMagic = (unsigned short *)tag->tag_data;
--					if (ntohs(*pMagic) != MAGIC_CODE) {
--						DEBUG_ERR("Can't find MAGIC_CODE in %s packet!\n",
--							(ph->code == PADO_CODE ? "PADO" : "PADS"));
--						return -1;
--					}
--
--					memcpy(skb->data, tag->tag_data+MAGIC_CODE_LEN, ETH_ALEN);
--
--					if (tagLen > MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN)
--						offset = TAG_HDR_LEN;
--
--					if (skb_pull_and_merge(skb, ptr+offset, TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset) < 0) {
--						DEBUG_ERR("call skb_pull_and_merge() failed in PADO packet!\n");
--						return -1;
--					}
--					ph->length = htons(ntohs(ph->length)-(TAG_HDR_LEN+MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN-offset));
--					if (offset > 0)
--						tag->tag_len = htons(tagLen-MAGIC_CODE_LEN-RTL_RELAY_TAG_LEN);
--
--					DEBUG_INFO("NAT25: Lookup PPPoE, forward %s Packet from %s\n",
--						(ph->code == PADO_CODE ? "PADO" : "PADS"),	skb->dev->name);
--				} else { /*  not add relay tag */
--					if (!priv->pppoe_connection_in_progress) {
--						DEBUG_ERR("Discard PPPoE packet due to no connection in progresss!\n");
--						return -1;
--					}
--					memcpy(skb->data, priv->pppoe_addr, ETH_ALEN);
--					priv->pppoe_connection_in_progress = WAIT_TIME_PPPOE;
--				}
--			} else {
--				if (ph->sid != 0) {
--					DEBUG_INFO("NAT25: Lookup PPPoE, lookup session packet from %s\n", skb->dev->name);
--					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &ph->sid);
--					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--					__nat25_db_print(priv);
--				} else {
--					return -1;
--				}
--			}
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -941,8 +804,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			return -1;
- 		case NAT25_INSERT:
- 			return 0;
--		case NAT25_LOOKUP:
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -955,8 +816,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			return -1;
- 		case NAT25_INSERT:
- 			return 0;
--		case NAT25_LOOKUP:
--			return 0;
- 		default:
- 			return -1;
- 		}
-@@ -1003,15 +862,6 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 				}
- 			}
- 			return 0;
--		case NAT25_LOOKUP:
--			DEBUG_INFO("NAT25: Lookup IP, SA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x, DA =%4x:%4x:%4x:%4x:%4x:%4x:%4x:%4x\n",
--				   iph->saddr.s6_addr16[0], iph->saddr.s6_addr16[1], iph->saddr.s6_addr16[2], iph->saddr.s6_addr16[3],
--				   iph->saddr.s6_addr16[4], iph->saddr.s6_addr16[5], iph->saddr.s6_addr16[6], iph->saddr.s6_addr16[7],
--				   iph->daddr.s6_addr16[0], iph->daddr.s6_addr16[1], iph->daddr.s6_addr16[2], iph->daddr.s6_addr16[3],
--				   iph->daddr.s6_addr16[4], iph->daddr.s6_addr16[5], iph->daddr.s6_addr16[6], iph->daddr.s6_addr16[7]);
--			__nat25_generate_ipv6_network_addr(networkAddr, (unsigned int *)&iph->daddr);
--			__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
--			return 0;
- 		default:
- 			return -1;
- 		}
-diff --git a/drivers/staging/r8188eu/include/rtw_br_ext.h b/drivers/staging/r8188eu/include/rtw_br_ext.h
-index 00d461c4c6fa..69905d30c191 100644
---- a/drivers/staging/r8188eu/include/rtw_br_ext.h
-+++ b/drivers/staging/r8188eu/include/rtw_br_ext.h
-@@ -31,7 +31,6 @@ enum NAT25_METHOD {
- 	NAT25_MIN,
- 	NAT25_CHECK,
- 	NAT25_INSERT,
--	NAT25_LOOKUP,
- 	NAT25_PARSE,
- 	NAT25_MAX
- };
+ 		if (arp->ar_pro != __constant_htons(ETH_P_IP)) {
+ 			DEBUG_WARN("NAT25: arp protocol unknown (%4x)!\n", be16_to_cpu(arp->ar_pro));
 -- 
 2.32.0
 
