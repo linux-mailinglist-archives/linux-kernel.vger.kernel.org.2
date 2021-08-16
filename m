@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4DA3ED72A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B693ED5F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 15:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241765AbhHPNaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 09:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
+        id S237962AbhHPNQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 09:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240536AbhHPNTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:19:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF41B632A6;
-        Mon, 16 Aug 2021 13:14:39 +0000 (UTC)
+        id S239171AbhHPNJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 09:09:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EB14604DC;
+        Mon, 16 Aug 2021 13:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629119680;
-        bh=a01H8wLm6Zu59H6wvkNY1oCYyOmh6w5yAlyUoKjNJkg=;
+        s=korg; t=1629119325;
+        bh=ZIM4WeSf3+3e5ZvGeL5gQGEK2JLwfUgyyagH/iCYyWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DZzkqUDfUHKiNJlpJoP4PB2zzTfX6PfEAIzTIdcrKOFQzp+8Lgur3EYgVABuaAx1P
-         BCNh9Yva80wQePxndQvQP+0c6oK/W7Vq8x8x+4AwhlKHjNo1IkdRKy03uwGcgdFLB9
-         O+a3bmvEn+Mmk9xMPok5G7uHO8YJ4Lo9YGuJMIDg=
+        b=mjnyEYC4BI+eTna27JBqO7Q+FfgQ/NRAHM38UMMruFRXV2Si2fC35vaNngDhaBYDP
+         gKBFbPndkrfbWL67k6IK3vBbqsL2kL8bVMQ8COggNzt3PCrHvOtxJ+k55r2I5+6Rmb
+         RIefNlGaTqHJAZol74BrjRAqqMqB6x+CKsnaD+ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 120/151] x86/tools: Fix objdump version check again
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.10 80/96] PCI/MSI: Mask all unused MSI-X entries
 Date:   Mon, 16 Aug 2021 15:02:30 +0200
-Message-Id: <20210816125448.021323524@linuxfoundation.org>
+Message-Id: <20210816125437.656185732@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816125444.082226187@linuxfoundation.org>
-References: <20210816125444.082226187@linuxfoundation.org>
+In-Reply-To: <20210816125434.948010115@linuxfoundation.org>
+References: <20210816125434.948010115@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 839ad22f755132838f406751439363c07272ad87 ]
+commit 7d5ec3d3612396dc6d4b76366d20ab9fc06f399f upstream.
 
-Skip (omit) any version string info that is parenthesized.
+When MSI-X is enabled the ordering of calls is:
 
-Warning: objdump version 15) is older than 2.19
-Warning: Skipping posttest.
+  msix_map_region();
+  msix_setup_entries();
+  pci_msi_setup_msi_irqs();
+  msix_program_entries();
 
-where 'objdump -v' says:
-GNU objdump (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18
+This has a few interesting issues:
 
-Fixes: 8bee738bb1979 ("x86: Fix objdump version check in chkobjdump.awk for different formats.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+ 1) msix_setup_entries() allocates the MSI descriptors and initializes them
+    except for the msi_desc:masked member which is left zero initialized.
+
+ 2) pci_msi_setup_msi_irqs() allocates the interrupt descriptors and sets
+    up the MSI interrupts which ends up in pci_write_msi_msg() unless the
+    interrupt chip provides its own irq_write_msi_msg() function.
+
+ 3) msix_program_entries() does not do what the name suggests. It solely
+    updates the entries array (if not NULL) and initializes the masked
+    member for each MSI descriptor by reading the hardware state and then
+    masks the entry.
+
+Obviously this has some issues:
+
+ 1) The uninitialized masked member of msi_desc prevents the enforcement
+    of masking the entry in pci_write_msi_msg() depending on the cached
+    masked bit. Aside of that half initialized data is a NONO in general
+
+ 2) msix_program_entries() only ensures that the actually allocated entries
+    are masked. This is wrong as experimentation with crash testing and
+    crash kernel kexec has shown.
+
+    This limited testing unearthed that when the production kernel had more
+    entries in use and unmasked when it crashed and the crash kernel
+    allocated a smaller amount of entries, then a full scan of all entries
+    found unmasked entries which were in use in the production kernel.
+
+    This is obviously a device or emulation issue as the device reset
+    should mask all MSI-X table entries, but obviously that's just part
+    of the paper specification.
+
+Cure this by:
+
+ 1) Masking all table entries in hardware
+ 2) Initializing msi_desc::masked in msix_setup_entries()
+ 3) Removing the mask dance in msix_program_entries()
+ 4) Renaming msix_program_entries() to msix_update_entries() to
+    reflect the purpose of that function.
+
+As the masking of unused entries has never been done the Fixes tag refers
+to a commit in:
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+
+Fixes: f036d4ea5fa7 ("[PATCH] ia32 Message Signalled Interrupt support")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210731000146.2720-1-rdunlap@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210729222542.403833459@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/tools/chkobjdump.awk | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/msi.c |   45 +++++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/tools/chkobjdump.awk b/arch/x86/tools/chkobjdump.awk
-index fd1ab80be0de..a4cf678cf5c8 100644
---- a/arch/x86/tools/chkobjdump.awk
-+++ b/arch/x86/tools/chkobjdump.awk
-@@ -10,6 +10,7 @@ BEGIN {
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -698,6 +698,7 @@ static int msix_setup_entries(struct pci
+ {
+ 	struct irq_affinity_desc *curmsk, *masks = NULL;
+ 	struct msi_desc *entry;
++	void __iomem *addr;
+ 	int ret, i;
+ 	int vec_count = pci_msix_vec_count(dev);
  
- /^GNU objdump/ {
- 	verstr = ""
-+	gsub(/\(.*\)/, "");
- 	for (i = 3; i <= NF; i++)
- 		if (match($(i), "^[0-9]")) {
- 			verstr = $(i);
--- 
-2.30.2
-
+@@ -718,6 +719,7 @@ static int msix_setup_entries(struct pci
+ 
+ 		entry->msi_attrib.is_msix	= 1;
+ 		entry->msi_attrib.is_64		= 1;
++
+ 		if (entries)
+ 			entry->msi_attrib.entry_nr = entries[i].entry;
+ 		else
+@@ -729,6 +731,10 @@ static int msix_setup_entries(struct pci
+ 		entry->msi_attrib.default_irq	= dev->irq;
+ 		entry->mask_base		= base;
+ 
++		addr = pci_msix_desc_addr(entry);
++		if (addr)
++			entry->masked = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
++
+ 		list_add_tail(&entry->list, dev_to_msi_list(&dev->dev));
+ 		if (masks)
+ 			curmsk++;
+@@ -739,26 +745,25 @@ out:
+ 	return ret;
+ }
+ 
+-static void msix_program_entries(struct pci_dev *dev,
+-				 struct msix_entry *entries)
++static void msix_update_entries(struct pci_dev *dev, struct msix_entry *entries)
+ {
+ 	struct msi_desc *entry;
+-	int i = 0;
+-	void __iomem *desc_addr;
+ 
+ 	for_each_pci_msi_entry(entry, dev) {
+-		if (entries)
+-			entries[i++].vector = entry->irq;
++		if (entries) {
++			entries->vector = entry->irq;
++			entries++;
++		}
++	}
++}
+ 
+-		desc_addr = pci_msix_desc_addr(entry);
+-		if (desc_addr)
+-			entry->masked = readl(desc_addr +
+-					      PCI_MSIX_ENTRY_VECTOR_CTRL);
+-		else
+-			entry->masked = 0;
++static void msix_mask_all(void __iomem *base, int tsize)
++{
++	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
++	int i;
+ 
+-		msix_mask_irq(entry, 1);
+-	}
++	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
++		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
+ 
+ /**
+@@ -775,9 +780,9 @@ static void msix_program_entries(struct
+ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 				int nvec, struct irq_affinity *affd)
+ {
+-	int ret;
+-	u16 control;
+ 	void __iomem *base;
++	int ret, tsize;
++	u16 control;
+ 
+ 	/*
+ 	 * Some devices require MSI-X to be enabled before the MSI-X
+@@ -789,12 +794,16 @@ static int msix_capability_init(struct p
+ 
+ 	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+ 	/* Request & Map MSI-X table region */
+-	base = msix_map_region(dev, msix_table_size(control));
++	tsize = msix_table_size(control);
++	base = msix_map_region(dev, tsize);
+ 	if (!base) {
+ 		ret = -ENOMEM;
+ 		goto out_disable;
+ 	}
+ 
++	/* Ensure that all table entries are masked. */
++	msix_mask_all(base, tsize);
++
+ 	ret = msix_setup_entries(dev, base, entries, nvec, affd);
+ 	if (ret)
+ 		goto out_disable;
+@@ -808,7 +817,7 @@ static int msix_capability_init(struct p
+ 	if (ret)
+ 		goto out_free;
+ 
+-	msix_program_entries(dev, entries);
++	msix_update_entries(dev, entries);
+ 
+ 	ret = populate_msi_sysfs(dev);
+ 	if (ret)
 
 
