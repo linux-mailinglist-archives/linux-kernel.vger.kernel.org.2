@@ -2,118 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97763ED86D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609D63ED866
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 16:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbhHPOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 10:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbhHPOA2 (ORCPT
+        id S237019AbhHPOBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 10:01:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44334 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231151AbhHPOAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:00:28 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8726BC0612A9;
-        Mon, 16 Aug 2021 06:59:37 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id z9so23713487wrh.10;
-        Mon, 16 Aug 2021 06:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KZutF4knfsOuF8Cv0WuZd4fBJstx8+dJNDUrpHSR5Vs=;
-        b=IabavD9KFls6I9KUiTe51j9br3DeNKSgVE7+mmsIZRHz0USNduyx8sMF2GS0bkAaD2
-         RqF5tIs3hm5fMte83Jy/ne0nQ6mvuaDwKx/gjNxZ6ThciabLsABGrRobFt0FbJW/j7ve
-         EopjjYZCHdUQ15qg1eI9cVfC3tWBCuECilkbZruZGpjauo5XPwo6vUrK5h/CytB8/IyZ
-         TWmSjZCpDUbt7SWGoh6ytEv+2ZdnRuaLJPkNDfOrOlUu21nlXC4kan24kQeCZK3oWF23
-         xhpfveSS+D3AuxtLgsX4H2lR4P+bNpGg9iBx77rHU3SZTDEUfxl+PWhVJfWnvxfH73Cs
-         uyLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KZutF4knfsOuF8Cv0WuZd4fBJstx8+dJNDUrpHSR5Vs=;
-        b=IbKe/PxNJ3WKLbP+oEoXbSzScVi/CCBcVBmfsh5nm7FBQaMRqjaaETcq4AwE5a0oWM
-         lNAYaoqqbBQm/UdLbvkmQS3SBA7dJUsI/NLvnuMJCk6RI/7eSqzOgESlFYVgZI6xeQCA
-         QY/WzVzS/5dM377NoGQfSsptt4djaV9w5L5ASGbrwGTHVxFc8sHFeHiHzO+mCbF3Nkyz
-         J983pgJFj5QTG7RlrogaPeQvX8UQEZxGSE/fUbZb4hlD74SRuQJOvkDcABpptNljZTHY
-         0WHKoA04vpavBDzi2fNrg9ix0ozG/QNSrBq1vVOq7IJnMvahMkJnb4stXtVdIt6IfZFj
-         OK3A==
-X-Gm-Message-State: AOAM532p/zlNQVyOqk3+jKDNeCphFSCOHIvkUeZ98SpJrG2IGaiX6NC0
-        dfQCR01Zn5F7H+IQiCVBQOk=
-X-Google-Smtp-Source: ABdhPJy+Q+4j8nqBRSzx6Z9tbZZ5EqsU+MprxZP86/ilnLcVEKX6wtCdxRv9oY0sEDeO94qwZrdWbg==
-X-Received: by 2002:adf:fc45:: with SMTP id e5mr18410368wrs.127.1629122376151;
-        Mon, 16 Aug 2021 06:59:36 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id r129sm10697693wmr.7.2021.08.16.06.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 06:59:35 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] clk: qcom: adjust selects for SM_VIDEOCC_8150 and SM_VIDEOCC_8250
-Date:   Mon, 16 Aug 2021 15:59:30 +0200
-Message-Id: <20210816135930.11810-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 16 Aug 2021 10:00:41 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5FCD120C29E3;
+        Mon, 16 Aug 2021 07:00:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5FCD120C29E3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629122409;
+        bh=uVD76K1R9bqw+wIlp5GS3K0uZGhGxrkIvE6zHrAIqR4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kQ3ru5kDZ7G9RTxsXMLy5lkKTB3Gk6gTdzKc2jyDbfgo+qMW2driHWdTgHXvqXOmN
+         iudGQXdbD2sAY8tbUbeNLkH1Id/MN687UsGw3vWdSUhMzlg61znONCRTT1CyN+lkIA
+         JhBV6k8NdpwPVT6zBejyEIoXCUrYbMIPzDbjyhn4=
+Date:   Mon, 16 Aug 2021 09:00:07 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+Cc:     shuah@kernel.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, pasha.tatashin@soleen.com
+Subject: Re: [PATCH v2 3/4] selftests: vm: add KSM zero page merging test
+Message-ID: <20210816140007.GJ5469@sequoia>
+References: <cover.1626252248.git.zhansayabagdaulet@gmail.com>
+ <6d0caab00d4bdccf5e3791cb95cf6dfd5eb85e45.1626252248.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6d0caab00d4bdccf5e3791cb95cf6dfd5eb85e45.1626252248.git.zhansayabagdaulet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5658e8cf1a8a ("clk: qcom: add video clock controller driver for
-SM8150") and commit 0e94711a1f29 ("clk: qcom: add video clock controller
-driver for SM8250") add config SM_VIDEOCC_8150 and config SM_VIDEOCC_8250,
-which select the non-existing configs SDM_GCC_8150 and SDM_GCC_8250,
-respectively.
+On 2021-07-14 14:56:14, Zhansaya Bagdauletkyzy wrote:
+> Add check_ksm_zero_page_merge() function to test that empty pages are
+> being handled properly. For this, several zero pages are allocated and
+> merged using madvise. If use_zero_pages is enabled, the pages must be
+> shared with the special kernel zero pages; otherwise, they  are merged
+> as usual duplicate pages. The test is run as follows: ./ksm_tests -Z
+> 
+> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-SDM_GCC_8150
-Referencing files: drivers/clk/qcom/Kconfig
+Tyler
 
-SDM_GCC_8250
-Referencing files: drivers/clk/qcom/Kconfig
-
-It is probably just a typo (or naming confusion of using SM_GCC_xxx and
-SDM_GCC_xxx for various Qualcomm clock drivers) in the config definitions
-for config SM_VIDEOCC_8150 and SM_VIDEOCC_8250, and intends to select the
-existing SM_GCC_8150 and SM_GCC_8250, respectively.
-
-Adjust the selects to the existing configs.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- drivers/clk/qcom/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 85b090a8d9c6..6c54d810d615 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -579,7 +579,7 @@ config SM_GPUCC_8250
- 
- config SM_VIDEOCC_8150
- 	tristate "SM8150 Video Clock Controller"
--	select SDM_GCC_8150
-+	select SM_GCC_8150
- 	select QCOM_GDSC
- 	help
- 	  Support for the video clock controller on SM8150 devices.
-@@ -588,7 +588,7 @@ config SM_VIDEOCC_8150
- 
- config SM_VIDEOCC_8250
- 	tristate "SM8250 Video Clock Controller"
--	select SDM_GCC_8250
-+	select SM_GCC_8250
- 	select QCOM_GDSC
- 	help
- 	  Support for the video clock controller on SM8250 devices.
--- 
-2.26.2
-
+> ---
+>  tools/testing/selftests/vm/ksm_tests.c    | 70 ++++++++++++++++++++++-
+>  tools/testing/selftests/vm/run_vmtests.sh | 32 +++++++++++
+>  2 files changed, 99 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
+> index 80302bb8f64c..5843526471e1 100644
+> --- a/tools/testing/selftests/vm/ksm_tests.c
+> +++ b/tools/testing/selftests/vm/ksm_tests.c
+> @@ -12,6 +12,7 @@
+>  #define KSM_SCAN_LIMIT_SEC_DEFAULT 120
+>  #define KSM_PAGE_COUNT_DEFAULT 10l
+>  #define KSM_PROT_STR_DEFAULT "rw"
+> +#define KSM_USE_ZERO_PAGES_DEFAULT false
+>  
+>  struct ksm_sysfs {
+>  	unsigned long max_page_sharing;
+> @@ -25,7 +26,8 @@ struct ksm_sysfs {
+>  
+>  enum ksm_test_name {
+>  	CHECK_KSM_MERGE,
+> -	CHECK_KSM_UNMERGE
+> +	CHECK_KSM_UNMERGE,
+> +	CHECK_KSM_ZERO_PAGE_MERGE
+>  };
+>  
+>  static int ksm_write_sysfs(const char *file_path, unsigned long val)
+> @@ -80,10 +82,12 @@ static int str_to_prot(char *prot_str)
+>  
+>  static void print_help(void)
+>  {
+> -	printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n");
+> +	printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n"
+> +	       "[-z use_zero_pages]\n");
+>  
+>  	printf("Supported <test type>:\n"
+>  	       " -M (page merging)\n"
+> +	       " -Z (zero pages merging)\n"
+>  	       " -U (page unmerging)\n\n");
+>  
+>  	printf(" -a: specify the access protections of pages.\n"
+> @@ -93,6 +97,8 @@ static void print_help(void)
+>  	       "     Default: %ld\n", KSM_PAGE_COUNT_DEFAULT);
+>  	printf(" -l: limit the maximum running time (in seconds) for a test.\n"
+>  	       "     Default: %d seconds\n", KSM_SCAN_LIMIT_SEC_DEFAULT);
+> +	printf(" -z: change use_zero_pages tunable\n"
+> +	       "     Default: %d\n", KSM_USE_ZERO_PAGES_DEFAULT);
+>  
+>  	exit(0);
+>  }
+> @@ -289,6 +295,50 @@ static int check_ksm_unmerge(int mapping, int prot, int timeout, size_t page_siz
+>  	return KSFT_FAIL;
+>  }
+>  
+> +static int check_ksm_zero_page_merge(int mapping, int prot, long page_count, int timeout,
+> +				     bool use_zero_pages, size_t page_size)
+> +{
+> +	void *map_ptr;
+> +	struct timespec start_time;
+> +
+> +	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
+> +		perror("clock_gettime");
+> +		return KSFT_FAIL;
+> +	}
+> +
+> +	if (ksm_write_sysfs(KSM_FP("use_zero_pages"), use_zero_pages))
+> +		return KSFT_FAIL;
+> +
+> +	/* fill pages with zero and try to merge them */
+> +	map_ptr = allocate_memory(NULL, prot, mapping, 0, page_size * page_count);
+> +	if (!map_ptr)
+> +		return KSFT_FAIL;
+> +
+> +	if (ksm_merge_pages(map_ptr, page_size * page_count, start_time, timeout))
+> +		goto err_out;
+> +
+> +       /*
+> +	* verify that the right number of pages are merged:
+> +	* 1) if use_zero_pages is set to 1, empty pages are merged
+> +	*    with the kernel zero page instead of with each other;
+> +	* 2) if use_zero_pages is set to 0, empty pages are not treated specially
+> +	*    and merged as usual.
+> +	*/
+> +	if (use_zero_pages && !assert_ksm_pages_count(0))
+> +		goto err_out;
+> +	else if (!use_zero_pages && !assert_ksm_pages_count(page_count))
+> +		goto err_out;
+> +
+> +	printf("OK\n");
+> +	munmap(map_ptr, page_size * page_count);
+> +	return KSFT_PASS;
+> +
+> +err_out:
+> +	printf("Not OK\n");
+> +	munmap(map_ptr, page_size * page_count);
+> +	return KSFT_FAIL;
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+>  	int ret, opt;
+> @@ -298,8 +348,9 @@ int main(int argc, char *argv[])
+>  	size_t page_size = sysconf(_SC_PAGESIZE);
+>  	struct ksm_sysfs ksm_sysfs_old;
+>  	int test_name = CHECK_KSM_MERGE;
+> +	bool use_zero_pages = KSM_USE_ZERO_PAGES_DEFAULT;
+>  
+> -	while ((opt = getopt(argc, argv, "ha:p:l:MU")) != -1) {
+> +	while ((opt = getopt(argc, argv, "ha:p:l:z:MUZ")) != -1) {
+>  		switch (opt) {
+>  		case 'a':
+>  			prot = str_to_prot(optarg);
+> @@ -321,11 +372,20 @@ int main(int argc, char *argv[])
+>  		case 'h':
+>  			print_help();
+>  			break;
+> +		case 'z':
+> +			if (strcmp(optarg, "0") == 0)
+> +				use_zero_pages = 0;
+> +			else
+> +				use_zero_pages = 1;
+> +			break;
+>  		case 'M':
+>  			break;
+>  		case 'U':
+>  			test_name = CHECK_KSM_UNMERGE;
+>  			break;
+> +		case 'Z':
+> +			test_name = CHECK_KSM_ZERO_PAGE_MERGE;
+> +			break;
+>  		default:
+>  			return KSFT_FAIL;
+>  		}
+> @@ -359,6 +419,10 @@ int main(int argc, char *argv[])
+>  		ret = check_ksm_unmerge(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
+>  					page_size);
+>  		break;
+> +	case CHECK_KSM_ZERO_PAGE_MERGE:
+> +		ret = check_ksm_zero_page_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, page_count,
+> +						ksm_scan_limit_sec, use_zero_pages, page_size);
+> +		break;
+>  	}
+>  
+>  	if (ksm_restore(&ksm_sysfs_old)) {
+> diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
+> index 3a23c6b47da2..9b4e444fc4ed 100755
+> --- a/tools/testing/selftests/vm/run_vmtests.sh
+> +++ b/tools/testing/selftests/vm/run_vmtests.sh
+> @@ -409,6 +409,38 @@ else
+>  	exitcode=1
+>  fi
+>  
+> +echo "----------------------------------------------------------"
+> +echo "running KSM test with 10 zero pages and use_zero_pages = 0"
+> +echo "----------------------------------------------------------"
+> +./ksm_tests -Z -p 10 -z 0
+> +ret_val=$?
+> +
+> +if [ $ret_val -eq 0 ]; then
+> +	echo "[PASS]"
+> +elif [ $ret_val -eq $ksft_skip ]; then
+> +	 echo "[SKIP]"
+> +	 exitcode=$ksft_skip
+> +else
+> +	echo "[FAIL]"
+> +	exitcode=1
+> +fi
+> +
+> +echo "----------------------------------------------------------"
+> +echo "running KSM test with 10 zero pages and use_zero_pages = 1"
+> +echo "----------------------------------------------------------"
+> +./ksm_tests -Z -p 10 -z 1
+> +ret_val=$?
+> +
+> +if [ $ret_val -eq 0 ]; then
+> +	echo "[PASS]"
+> +elif [ $ret_val -eq $ksft_skip ]; then
+> +	 echo "[SKIP]"
+> +	 exitcode=$ksft_skip
+> +else
+> +	echo "[FAIL]"
+> +	exitcode=1
+> +fi
+> +
+>  exit $exitcode
+>  
+>  exit $exitcode
+> -- 
+> 2.25.1
+> 
