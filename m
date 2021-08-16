@@ -2,91 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CCE3ED2B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 12:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50BE3ED2B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Aug 2021 13:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235881AbhHPLAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Aug 2021 07:00:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:42872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232390AbhHPLAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Aug 2021 07:00:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 583B36D;
-        Mon, 16 Aug 2021 03:59:31 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76F743F40C;
-        Mon, 16 Aug 2021 03:59:29 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
- acpi_os_map_iomem() cast
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
- <20210802152359.12623-2-lorenzo.pieralisi@arm.com>
- <YRKtEDycefrZLB3X@infradead.org>
- <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
- <YRPZ2Kqb/MFggHzQ@infradead.org> <20210811145508.GA3650@lpieralisi>
- <20210816095854.GA2599@lpieralisi>
- <CAMj1kXHM8tG2f-i6u8Ohb0RV9XTqq2N1Oooz_Q2kvLpdfTMxqw@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <381418c8-5302-6991-b3aa-df6378dd1c64@arm.com>
-Date:   Mon, 16 Aug 2021 11:59:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235929AbhHPLAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Aug 2021 07:00:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41062 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235906AbhHPLAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Aug 2021 07:00:43 -0400
+X-UUID: cc736ff5f1614799afeb18f3f67ef431-20210816
+X-UUID: cc736ff5f1614799afeb18f3f67ef431-20210816
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1327086574; Mon, 16 Aug 2021 19:00:09 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 16 Aug 2021 19:00:08 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 16 Aug 2021 19:00:07 +0800
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>, Yong Wu <yong.wu@mediatek.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH 0/9] Enable two H264 encoder cores on MT8195
+Date:   Mon, 16 Aug 2021 18:59:25 +0800
+Message-ID: <20210816105934.28265-1-irui.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXHM8tG2f-i6u8Ohb0RV9XTqq2N1Oooz_Q2kvLpdfTMxqw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-16 11:21, Ard Biesheuvel wrote:
-> On Mon, 16 Aug 2021 at 11:59, Lorenzo Pieralisi
-> <lorenzo.pieralisi@arm.com> wrote:
->>
->> On Wed, Aug 11, 2021 at 03:55:08PM +0100, Lorenzo Pieralisi wrote:
->>> On Wed, Aug 11, 2021 at 03:08:24PM +0100, Christoph Hellwig wrote:
->>>> On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
->>>>> The whole problem we are solving here is that ACPI, being based on
->>>>> x86, conflates MMIO mappings with memory mappings, and has been using
->>>>> the same underlying infrastructure for either.
->>>>
->>>> So let's fix that problem instead of papering over it.
->>>
->>> Patch (3) in this series is a fix - I would ask whether it makes
->>> sense to merge patches (2-3) now and think about reworking the current
->>> ACPI IO/MEM mapping API later, it can be an invasive change for a fix,
->>> assuming we agree on how to rework the ACPI IO/MEM mapping API.
->>
->> What should we do then with this series ?
->>
-> 
-> It is not even clear that reworking the ACPI core is feasible to begin
-> with, OTOH, fixing a sparse warning is arguably not a critical bug fix
-> either, so I'd suggest we just drop that bit.
+MT8195 has two H264 encoder cores, they have their own power-domains,
+clocks, interrupts, register base. The two H264 encoder cores can work
+together to achieve higher performance.
 
-Indeed, the only way to truly fix the issue is to fire up the time 
-machine and rewrite the ACPI and EFI specs to not define that tables and 
-data may or may not be required to be mapped as Device memory depending 
-on the whims of the firmware. Otherwise we're basically always going to 
-have one or more casts *somewhere*, even if we were to play it safe and 
-return everything as iomem instead.
+This series of patches is to use enable two h264 encoder cores.
+path[1..2]: use linux component framework to manage encoder hardware,
+user call "mt8195-vcodec-enc" driver can get the encoder master device,
+the encoding work is done by the two encoder core device. The hw_mode
+variable is added to distinguish from old platform, two encoder cores
+called "FRAME_RACING_MODE".
 
-I guess for read-only access to tables, the core code might be able to 
-maintain a shadow copy of anything device-memory-mapped in normal memory 
-and expose that instead, but if anything has to be writeable I'm not 
-sure how we could abstract that "properly".
+The hardware mode of two encoder cores work together(overlap, another
+word called) on MT8195 called "frame_racing_mode", the two encoder
+power-domains should be power on together while encoding, the encoding
+process look like this:
 
-Robin.
+    VENC Core0 frm#0....frm#2....frm#4
+    VENC Core1  .frm#1....frm#3....frm#5
+
+patch[3..5]: due to the component device, the master device has no
+power-domains/clocks properties in dtsi, so the power/clock init function
+can't use for "frame_racing_mode" device in master device probe process,
+it should be called in component device probe process. Power on the
+hardware power and clock on demand.
+
+patch[6]: "frame_racing_mode" encoding need a new set of memory buffer
+for two encoder cores. For compatibility, we should new a encoder driver
+interface.
+
+patch[7..9]: add "frame_racing_mode" encoding process:
+As-Is: Synchronous
+VIDIOC_QBUF#0 --> device_run(triger encoder) --> wait encoder IRQ -->
+encode done with result --> job_finish
+
+VIDIOC_QBUF#1 --> device_run(triger encoder) --> wait encoder IRQ -->
+encode done with result --> job_finish
+...
+
+To-Be: Asynchronous
+VIDIOC_QBUF#0 --> device_run(triger encoder core0) --> job_finish
+..VIDIOC_QBUF#1 --> device_run(triger encoder core1) --> job_finish
+(core0 may encode done here, return encode result to client)
+VIDIOC_QBUF#2 --> device_run(triger encoder core0) --> job_finish
+
+Thers is no "wait encoder IRQ" synchronous call during "frame_racing_mode"
+encoding process, which can full use the two encoder cores to achieve
+higher performance.
+
+Irui Wang (9):
+  dt-bindings: media: mtk-vcodec: Add binding for MT8195 two venc cores
+  media: mtk-vcodec: Use component framework to manage encoder hardware
+  media: mtk-vcodec: Rewrite venc power manage interface
+  media: mtk-vcodec: Add venc power on/off interface
+  media: mtk-vcodec: Rewrite venc clock interface
+  media: mtk-vcodec: Add new venc drv interface for frame_racing mode
+  media: mtk-vcodec: Add frame racing mode encode process
+  media: mtk-vcodec: Return encode result to client
+  media: mtk-vcodec: Add delayed worker for encode timeout
+
+ .../bindings/media/mediatek-vcodec.txt        |   2 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  34 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 120 +++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc.h      |  10 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  | 204 +++++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_hw.c   | 253 +++++++
+ .../platform/mtk-vcodec/mtk_vcodec_enc_hw.h   |  38 +
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 213 ++++--
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.h   |  13 +-
+ .../platform/mtk-vcodec/mtk_vcodec_util.c     |  19 +
+ .../platform/mtk-vcodec/mtk_vcodec_util.h     |   5 +
+ .../platform/mtk-vcodec/venc/venc_common_if.c | 675 ++++++++++++++++++
+ .../platform/mtk-vcodec/venc/venc_h264_if.c   |   6 +-
+ .../platform/mtk-vcodec/venc/venc_vp8_if.c    |   2 +-
+ .../media/platform/mtk-vcodec/venc_drv_if.c   |  96 ++-
+ .../media/platform/mtk-vcodec/venc_drv_if.h   |   7 +
+ .../media/platform/mtk-vcodec/venc_vpu_if.c   |  11 +-
+ .../media/platform/mtk-vcodec/venc_vpu_if.h   |   3 +-
+ 19 files changed, 1564 insertions(+), 149 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_hw.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_hw.h
+ create mode 100644 drivers/media/platform/mtk-vcodec/venc/venc_common_if.c
+
+-- 
+2.25.1
+
